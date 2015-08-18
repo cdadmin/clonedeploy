@@ -1,0 +1,40 @@
+.icon-host-title:before{font-family:Flaticon;content:"\e017";font-size:1.5em;color:#464242;margin-right:-10px;}
+.icon-group-title:before{font-family:Flaticon;content:"\e003";font-size:1.5em;color:#464242;margin-right:-10px;}
+.icon-image-title:before{font-family:Flaticon;content:"\e009";font-size:1.5em;color:#464242;margin-right:-10px;}
+.icon-task-title:before{font-family:Flaticon;content:"\e020";font-size:1.5em;color:#464242;margin-right:-10px;}
+.icon-user-title:before{font-family:Flaticon;content:"\e01f";font-size:1.5em;color:#464242;margin-right:-10px;}
+.icon-setting-title:before{font-family:Flaticon;content:"\e01c";font-size:1.5em;color:#464242;margin-right:-10px;}
+
+.nav li a.icon-logo:before{font-family:opensans, Calibri, Arial;content:"WDS";font-size:18px;margin-top:30px;}
+.nav li a.icon-host:before{content:"\e017";font-size:2.5em;}
+.nav li a.icon-group:before{content:"\e003";font-size:2.5em;}
+.nav li a.icon-image:before{content:"\e009";font-size:2.5em;}
+.nav li a.icon-user:before{content:"\e01f";font-size:2.5em;}
+.nav li a.icon-task:before{content:"\e020";font-size:2.5em;margin-left:3px;}
+.nav li a.icon-setting:before{content:"\e01c";font-size:2.5em;}
+.nav li a.icon-logout:before{content:"\e01a";font-size:2.5em;}
+.export:before{content:"\e008";font-size:22px;margin-top:3px;}
+.reports:before{content:"\e00c";font-size:22px;margin-top:3px;}
+.global:before{content:"\e007";font-size:30px;margin-top:-1px;margin-left:-1px;}
+.global-large:before{ font-size: 40px;}
+.import:before{content:"\e00f";font-size:28px;}
+.search:before{content:"\e012";font-size:24px;}
+.upload:before{content:"\e01d";font-size:24px;}
+.deploy:before{content:"\e006";font-size:24px;}
+.edit:before{content:"\e018";font-size:24px; margin-top:2px;}
+.delete:before{content:"\e005";font-size:32px;margin:-4px -2px 0 0;}
+.logs:before{content:"\e015";font-size:24px;margin:1px -1px 0 0;}
+.history:before{content:"\e00b";font-size:24px;}
+.boot:before{content:"\e011";font-size:24px;margin:2px -1px 0 0;}
+.create:before{content:"\e019";margin-left:-1px;}
+.active:before{content:"\e01b";font-size:24px;margin:2px 0 0 -2px;}
+.unicast:before{content:"\e01e";font-size:22px;margin-top:2px;}
+.multicast:before{content:"\e004";font-size:26px;margin-top:1px;}
+.ond:before{content:"\e013";font-size:28px;margin-left:2px;}
+.options:before{content:"\e604";font-size:28px;margin-right:-10px;}
+.security:before{content:"\e603";font-size:28px;margin-right:-10px;}
+.scripteditor1:before{content:"\e600";font-size:28px;margin-right:-10px;}
+.scripteditor2:before{content:"\e601";font-size:28px;margin-right:-10px;}
+.scripteditor3:before{content:"\e602";font-size:28px;margin-right:-10px;}
+#icon-mobile-nav:before{content:"\e014";font-size:48px;line-height:.5;}
+#icon-mobile-nav{font-family: 'Flaticon';position: absolute;top: 0;speak:none;font-size:2em;text-decoration:none;color: #fff;line-height:2;-webkit-font-smoothing: antialiased;}

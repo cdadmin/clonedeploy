@@ -1,0 +1,53 @@
+#!/bin/sh
+
+#  
+#    CrucibleWDS A Windows Deployment Solution
+#    Copyright (C) 2011  Jon Dolny
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/.
+#
+
+. functions
+
+echo " ** Host Registration ** "
+echo
+
+echo " ** System MAC Address: ${mac} ** "
+echo
+
+hostName="";
+while [ "$hostName" = "" ]; do
+	echo " ** Enter A Host Name To Register ** "
+	echo
+	echo -n "Hostname: "
+	read hostName
+done
+
+echo
+
+
+# This is ready to accept all properties of a host, like setting the image etc.  Only need to ask the user for the values and modify the json string.
+
+	addHostResult=`curl -sSkX POST -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -H "Content-type: application/json; charset=UTF-8" -d '{"host":{"Name":"'"${hostName}"'","Mac":"'"${mac}"'","Image":"","Group":"","Description":"","Kernel":"3.19.3-WDS","BootImage":"initrd.gz","Args":"","Scripts":""} }' ${web}AddHost --connect-timeout 10 --stderr -`
+	if [ ! "$?" = "0" ]; then
+		echo " ...... Could Not Register Host: $addHostResult"
+	else
+		echo " ...... $addHostResult";
+		echo
+	fi
+
+echo " ** Press Enter To Reboot ** "
+read Enter;
+reboot -f;
+

@@ -1,0 +1,117 @@
+#!/bin/sh
+
+#  
+#    CrucibleWDS A Windows Deployment Solution
+#    Copyright (C) 2011  Jon Dolny
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/.
+#
+# 	Some code snippets have been used from the Fog Project
+
+. functions
+
+isond="$1"
+taskArgs="$2"
+logBootArgs
+
+if [ "$isond" = "true" ]; then
+	log " ** Using On Demand Mode ** "
+	for arg in "$taskArgs"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
+else
+	checkin
+fi
+
+if [ "$imageProtected" = "1" ]; then
+	error "This Image Is Protected And Cannot Be Overwritten"
+fi
+
+if [ "$xferMode" = "nfs" ] || [ "$xferMode" = "nfs+http" ]; then
+	mountNFS
+elif [ "$xferMode" = "smb" ] || [ "$xferMode" = "smb+http" ]; then
+	mountSMB
+fi
+
+getHD
+echo
+sleep 2
+
+if [ "$isond" != "true" ]; then
+	log " ** Updating Client Status To Active ** "
+	curl -sSk -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -Fmac="$(echo -n $mac | base64)" "${web}InSlot" --connect-timeout 10 --stderr - >> /tmp/clientlog.log
+fi
+
+log " ** Removing All Files For Existing Image: $imgName ** "
+delImageStat=`curl -sSk -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -FimgName="$(echo -n $imgName | base64)" "${web}DeleteImage" --connect-timeout 10 --stderr -`
+if [ "$delImageStat" != "true" ]; then
+	error "Could Not Clear Image Directory. $delImageStat"
+fi
+
+if [ "$sizeDebug" = "true" ]; then
+	calcSizeDebug
+else
+	calcSize
+fi
+
+hdPass=0
+for hd in $disks; do
+	hdPass=$(( $hdPass + 1 ))
+
+	if [ "$hdPass" = "1" ]; then
+		imgPath=$imgName
+	else
+		clear
+		imgPath=$imgName/hd$hdPass
+	fi
+		
+	checkUpGPT
+	
+	
+	log " ** Determining Partition Count ** " "display" 
+	getPartCountUpload
+	log " ...... Found $partCount Partition(s)" "display"
+	echo
+		
+		
+	#Create Directory On Server for Next Hard Drive
+	if [ "$hdPass" != "1" ]; then
+		log " ** Creating Directory For Hard Drive ** "
+		createDirStat=`curl -sSk -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -FimgName="$(echo -n $imgName | base64)" -FdirName="$(echo -n $hdPass | base64)" "${web}CreateDirectory" --connect-timeout 10 --stderr -`
+		log  " ...... $createDirStat"
+		if [ ! "$createDirStat" = "true" ]; then
+			error "Could Not Create Directory For This Hard Drive. $createDirStat"
+		fi
+	fi
+	
+	
+	backupMBR
+	echo
+	sleep 5
+	
+	backupBCD
+	
+	pullGlobal
+	
+	if [ "$lvmExists" = "true" ]; then
+		pullLVM
+	fi
+	
+	if [ -n "$hostScripts" ]; then
+	runScripts
+	fi
+
+done
+
+checkout
+
+	

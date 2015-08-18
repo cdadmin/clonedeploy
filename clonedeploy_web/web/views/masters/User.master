@@ -1,0 +1,46 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/views/masters/Site.master" AutoEventWireup="true" CodeFile="User.master.cs" Inherits="views.masters.UserMaster" %>
+<%@ MasterType VirtualPath="~/views/masters/Site.master" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="HeaderNav" Runat="Server">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#nav-users').addClass("nav-current");
+        });
+    </script>
+    <div class="size-1 column">
+        <h1 class="remove-bottom icon-user-title">Users</h1>
+    </div>
+    <div class="size-2 column offset-1">
+        <div class="nav-btn-round">
+            <a id="createuser" href="<%= ResolveUrl("~/views/users/create.aspx") %>" class="icon create" data-info="Create New User"></a>
+            <a id="searchuser" href="<%= ResolveUrl("~/views/users/search.aspx") %>" class="icon search" data-info="Search Users"></a>
+            <a id="importuser" href="<%= ResolveUrl("~/views/users/import.aspx") %>" class="icon import" data-info="Import Users"></a>
+        </div>
+    </div>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="SubNav" Runat="Server">
+    <div class="nav-btn-square ">
+        <h3 class="remove-bottom">
+            <asp:Label ID="labelSubTitle" runat="server"></asp:Label>
+        </h3>
+        <a id="editoption" href="<%= ResolveUrl("~/views/users/edit.aspx") %>?userid=<%= User.Id %>" class="icon edit" data-info="Edit User"></a>
+        <a id="acloption" href="<%= ResolveUrl("~/views/users/acl.aspx") %>?userid=<%= User.Id %>" class="icon2 security" data-info="Edit Access Control"></a>
+        <a id="historyoption" href="<%= ResolveUrl("~/views/users/history.aspx") %>?userid=<%= User.Id %>" class="icon history" data-info="View User History"></a>
+        <asp:LinkButton ID="btnDelete" runat="server" CssClass="icon delete" data-info="Delete User" OnClick="btnDelete_Click"></asp:LinkButton>
+    </div>
+</asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">
+    <asp:ContentPlaceHolder ID="SubContent" runat="server">
+    </asp:ContentPlaceHolder>
+
+    <div id="confirmbox" class="confirm-box-outer">
+        <div class="confirm-box-inner">
+            <h4>
+                <asp:Label ID="lblTitle" runat="server" CssClass="modaltitle"></asp:Label>
+            </h4>
+            <div class="confirm-box-btns">
+                <asp:LinkButton ID="OkButton" OnClick="OkButton_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
+                <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no"/>
+            </div>
+        </div>
+    </div>
+</asp:Content>

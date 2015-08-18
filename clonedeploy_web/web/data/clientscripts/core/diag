@@ -1,0 +1,74 @@
+#!/bin/sh
+
+. functions
+
+clear
+
+
+echo " ** Testing Network Compatibility ** " 
+echo ""
+sleep 1
+if [ -n "$wds_if" ]; then
+	ipinfo=$(ifconfig $wds_if | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}');
+else
+	ipinfo=$(ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}');
+fi
+echo -n " .. Hardware Address: $mac" 
+echo ""
+echo -n " .. Ip Address: $ipinfo" 
+
+echo
+if [ -n "$mac" ] && [ -n "$ipinfo" ]; then
+	echo " ...... Physical Test Passed"
+else
+	echo " ...... Network Card May Not Be Compatible With CrucibleWDS.  A Kernel Update May Be Required." 
+	ifconfig -a
+fi
+echo
+
+echo Press Enter To Continue
+read enter
+
+echo
+echo " ** Testing Hard Drive Compatibility ** " 
+sleep 1
+getHD
+
+
+if [ -n "$disks" ]; then
+	echo
+	echo " ** Testing Block Size ** " 
+	sleep 1
+	for hd in $disks
+	do
+		newhd=$(echo $hd | cut -c 6-9)
+		blksize=$(cat /sys/block/$newhd/queue/logical_block_size)
+		echo " ...... $hd Block size is $blksize" 
+		if [ "$blksize" = 512 ]; then
+			echo " ...... This Hard Drive Appears To Be Compatible With CrucibleWDS" 
+		else
+			echo " ...... Block Size Does Not Equal 512, You May Have Problems Using This Drive" 
+		fi
+	done;
+fi
+
+echo
+echo Press Enter To Continue
+read enter
+
+	echo " ** Testing CrucibleWDS Web Service ** " 
+	webResult=`curl -sSkL "${web}ClientTest" --connect-timeout 10 --stderr -`
+	if [ "$webResult" != "true" ]; then
+		echo " ...... Could Not Contact CrucibleWDS Web Service.  Try The Following In A Web Browser: ${web}clienttest" 
+		echo "$webResult" 	
+	else
+		echo " ...... CrucibleWDS Web Service Connection Passed" 
+	fi
+
+echo
+echo " ** All Tests Complete ** "
+
+
+
+
+

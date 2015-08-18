@@ -1,0 +1,138 @@
+#!/bin/sh
+#  
+#    CrucibleWDS A Windows Deployment Solution
+#    Copyright (C) 2011  Jon Dolny
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/.
+#
+# 	Some code snippets have been used from the Fog Project
+
+. functions
+
+clear
+
+while [ "$taskType" = "" ]; do
+	echo "1 Deploy"
+	echo "2 Upload"
+	echo "3 Multicast"
+	echo
+	echo -n " ...... Select A Task Type: "
+	read taskType
+done
+
+if [ "$taskType" != "1" ] && [ "$taskType" != "2" ] && [ "$taskType" != "3" ]; then
+	error "Could Not Determine Task Type"
+fi
+
+clear
+
+if [ "$taskType" = "1" ]; then
+	imageList
+	ond_HostInfo "push"
+	unicastInfo="${unicastInfo} multicast=false imgDirection=push"
+	
+elif [ "$taskType" = "2" ]; then
+	while [ "$isNewImage" = "" ]; do
+		echo "1 New Image"
+		echo "2 Existing Image"
+		echo
+		echo -n " ...... New Or Existing Image?: "
+		read isNewImage
+	done
+	
+	if [ "$isNewImage" != "1" ] && [ "$isNewImage" != "2" ]; then
+		error "Could Not Determine If This Is A New Or Existing Image"
+	fi
+
+	if [ "$isNewImage" = "1" ]; then
+		clear
+		echo -n " ...... Enter An Image Name: "
+		read imgName
+		echo
+		
+		clear
+		echo " ** Creating Image ** "
+		addImageResult=`curl -sSkX POST -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -H "Content-type: application/json; charset=UTF-8" -d '{"image":{"Name":"'"${imgName}"'","OS":"'""'","Description":"","Protected":"0","IsVisible":"1","ClientSize":""} }' ${web}AddImage --connect-timeout 10 --stderr -`
+		
+		arr=$(echo $addImageResult | tr "," "\n");
+			i=0;
+			for x in $arr; do
+   				imageID[i]=$x;
+				i=$(( $i + 1 ))
+			done		
+		echo " ...... $addImageResult"
+		echo
+		ond_HostInfo "pull"
+		unicastInfo="${unicastInfo} imageID=${imageID[0]} imgDirection=pull"
+	else
+		imageList
+		ond_HostInfo "pull"
+		unicastInfo="${unicastInfo} imgDirection=pull"
+		
+	fi
+	
+elif [ "$taskType" = "3" ]; then
+	while [ "$sessionID" = "" ]; do
+		if [ "$sessionID" = "" ]; then
+			clear
+			mcSessions=`curl -sSk -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" "${web}McSessions" --connect-timeout 10 --stderr -`
+			i=0
+			for session in $mcSessions; do
+				i=$((i+1));
+				echo $session;
+				if [ "$i" = "20" ]; then
+					echo
+					echo -n " ...... Select A Session ID (Enter For More): "
+					read sessionID;
+					if [ -n "$sessionID" ]; then
+						break
+					fi
+					clear
+					i=0
+				fi
+			done
+			echo
+			if [ -n "$sessionID" ]; then
+				break
+			fi
+		
+			echo -n " ...... Select A Session ID (Enter To Repeat Listing): "
+			read sessionID	
+		fi		
+	done
+	echo
+	
+	imageID="0"
+	ond_HostInfo "push"
+	multicastInfo=`curl -sSk -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -FmcTaskName="$(echo -n $sessionID | base64)" -Fmac="$(echo -n $mac | base64)" "${web}McInfo" --connect-timeout 10 --stderr -`
+	for arg in "$multicastInfo"; do case "$arg" in *=*) eval $arg;; esac; done	
+	unicastInfo="${unicastInfo} ${multicastInfo} multicast=true"
+
+else
+	error "An Error Occurred Or No Task Was Selected"
+fi
+
+if [ "$taskType" = "2" ]; then
+	/bin/pull "true" "$unicastInfo"
+else
+	if [ "$hostName" = "" ] || [ "$hostName" = "null" ]; then
+		echo "This Computer Was Not Found In The Database, Enter A Name For It Now:"
+		echo "Leave Blank To Skip Auto Host Renaming"
+		echo
+		read hostName
+		echo 
+		unicastInfo="${unicastInfo} hostName=$hostName"
+	fi
+	/bin/push "true" "$unicastInfo"
+fi

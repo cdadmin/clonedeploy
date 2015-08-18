@@ -1,0 +1,31 @@
+#!/bin/sh
+#Sample shell script to copy a file to all users startup on Windows 7.  There are about 100 different ways you can do this.  Here is one.
+#This Is Just One Example Of A Script To Copy A File.  Anything That Can Be Done In The Client Console,
+#Can Be Done Here
+
+#Change The Partition Number To Your Appropriate Partition
+#Ex: ${hd}2 For Windows 7, 8 OR  ${hd}1 For Xp or Vista
+#Remember Linux is case sensitive
+
+#Set All Arguments - You Will Want The Following 4 Lines For Every Script.
+. /bin/functions
+hd="$1" 
+taskArgs="$2"
+for arg in "$taskArgs"; do case "$arg" in *=*) eval $arg;; esac; done
+
+#BEGIN YOUR SCRIPT HERE
+
+#Mount the second partition of the hard drive to /c
+mkdir /c
+ntfs-3g -o force,rw ${hd}2 /c
+
+#This Example Downloads The Files From The CrucibleWDS Web Server At The Client Script Location
+#You Can Change It To Any Method You Like, nfs, different web server, etc.
+#scriptname = the file you want to get from the CWDS server
+#serverKey = don't change this
+#-o = the output location
+curl -sSk -FscriptName="script1.ps" -FserverKey="$(echo -n "$WDS_KEY" | base64)" "${web}downloadcustomscripts" -o "/c/targetfolder" --stderr -
+curl -sSk -FscriptName="script2.ps" -FserverKey="$(echo -n "$WDS_KEY" | base64)" "${web}downloadcustomscripts" -o "/c/targetfolder" --stderr - 
+
+
+
