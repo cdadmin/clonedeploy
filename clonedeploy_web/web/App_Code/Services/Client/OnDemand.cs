@@ -58,7 +58,7 @@ namespace Services.Client
 
         public string GetCustomUnicastInfo(string direction, string mac, string imageId)
         {
-            var image = new Image {Id = imageId};
+            var image = new Image {Id = Convert.ToInt32(imageId)};
             image.Read();
 
             var host = new Host {Mac = mac.ToLower()};

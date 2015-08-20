@@ -30,36 +30,36 @@ using Global;
 
 namespace Models
 {
-    [Table("users", Schema = "public")]
+    [Table("clonedeploy_users", Schema = "public")]
     public class WdsUser
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("userid", Order = 1)]
+        [Column("clonedeploy_user_id", Order = 1)]
         public string Id { get; set; }
 
-        [Column("username", Order = 2)]
+        [Column("clonedeploy_username", Order = 2)]
         public string Name { get; set; }
 
-        [Column("userpwd", Order = 3)]
+        [Column("clonedeploy_user_pwd", Order = 3)]
         public string Password { get; set; }
 
-        [Column("usersalt", Order = 4)]
+        [Column("clonedeploy_user_salt", Order = 4)]
         public string Salt { get; set; }
 
-        [Column("usermembership", Order = 5)]
+        [Column("clonedeploy_user_role", Order = 5)]
         public string Membership { get; set; }
 
-        [Column("groupmanagement", Order = 6)]
+        [NotMapped]
         public string GroupManagement { get; set; }
 
-        [Column("allowond", Order = 7)]
+        [NotMapped]
         public string OndAccess { get; set; }
 
-        [Column("allowdebug", Order = 8)]
+        [NotMapped]
         public string DebugAccess { get; set; }
 
-        [Column("allowdiag", Order = 9)]
+        [NotMapped]
         public string DiagAccess { get; set; }
         
         public void Create()

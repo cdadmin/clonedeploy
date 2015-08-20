@@ -30,47 +30,55 @@ using Global;
 
 namespace Models
 {
-    [Table("hosts", Schema = "public")]
+    [Table("computers", Schema = "public")]
     public class Host
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("hostid", Order = 1)]
+        [Column("computer_id", Order = 1)]
         public int Id { get; set; }
 
-        [Column("hostname", Order = 2)]
+        [Column("computer_name", Order = 2)]
         public string Name { get; set; }
 
-        [Column("hostmac", Order = 3)]
+        [Column("computer_primary_mac", Order = 3)]
         public string Mac { get; set; }
 
-        [Column("hostimage", Order = 4)]
-        public string Image { get; set; }
-
-        [Column("hostgroup", Order = 5)]
-        public string Group { get; set; }
-
-        [Column("hostdesc", Order = 6)]
+        [Column("computer_description", Order = 4)]
         public string Description { get; set; }
 
-        [Column("hostkernel", Order = 7)]
+        [Column("computer_building_id", Order = 5)]
+        public string Building { get; set; }
+
+        [Column("computer_room_id", Order = 6)]
+        public string Room { get; set; }
+
+        [Column("computer_image_id", Order = 7)]
+        public string Image { get; set; }
+
+        [Column("computer_image_profile_id", Order = 8)]
+        public string ImageProfile { get; set; }
+
+        [NotMapped]
+        public string Group { get; set; }
+
+        [NotMapped]
         public string Kernel { get; set; }
 
-        [Column("hostbootimage", Order = 8)]
+        [NotMapped]
         public string BootImage { get; set; }
 
-        [Column("hostarguments", Order = 9)]
+        [NotMapped]
         public string Args { get; set; }
 
-        [Column("hostscripts", Order = 10)]
+        [NotMapped]
         public string Scripts { get; set; }
 
-        [Column("custombootenabled", Order = 11)]
+        [NotMapped]
         public string CustomBootEnabled { get; set; }
 
-        [Column("partitionscript", Order = 12)]
+        [NotMapped]
         public string PartitionScript { get; set; }
-
         [NotMapped]
         public string TaskId { get; set; }
 

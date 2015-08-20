@@ -29,7 +29,7 @@ namespace views.images
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            var image = new Image { Id = Request.QueryString["imageid"] };
+            var image = new Image { Id = Convert.ToInt32(Request.QueryString["imageid"]) };
             image.Read();
             var subTitle = Master.Master.FindControl("SubNav").FindControl("labelSubTitle") as Label;
             if (subTitle != null) subTitle.Text = image.Name + " | Edit";
@@ -111,7 +111,7 @@ namespace views.images
 
         protected void btnUpdateImage_Click(object sender, EventArgs e)
         {
-            var image = new Image {Id = Request.QueryString["imageid"]};
+            var image = new Image {Id = Convert.ToInt32(Request.QueryString["imageid"])};
             image.Read();
 
 
@@ -135,7 +135,7 @@ namespace views.images
 
         protected void PopulateForm()
         {
-            var image = new Image {Id = Request.QueryString["imageid"]};
+            var image = new Image {Id = Convert.ToInt32(Request.QueryString["imageid"])};
             image.Read();
 
             ViewState["currentName"] = image.Name;
@@ -143,6 +143,7 @@ namespace views.images
 
             txtImageName.Text = image.Name;
             txtImageDesc.Text = image.Description;
+            ddlImageOS.Text = image.Os;
             if (image.Protected == 1)
                 chkProtected.Checked = true;
             if (image.IsVisible == 1)

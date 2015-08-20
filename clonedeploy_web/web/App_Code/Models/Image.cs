@@ -36,32 +36,34 @@ namespace Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("imageid", Order = 1)]
-        public string Id { get; set; }
+        [Column("image_id", Order = 1)]
+        public int Id { get; set; }
 
-        [Column("imagename", Order = 2)]
+        [Column("image_name", Order = 2)]
         public string Name { get; set; }
 
-        [Column("imageos", Order = 3)]
+        [Column("image_os", Order = 3)]
         public string Os { get; set; }
 
-        [Column("imagedesc", Order = 4)]
+        [Column("image_description", Order = 4)]
         public string Description { get; set; }
 
-        [Column("imageprotected", Order = 5)]
+        [Column("image_is_protected", Order = 5)]
         public int Protected { get; set; }
 
-        [Column("imageviewcust", Order = 6)]
+        [Column("image_is_viewable_ond", Order = 6)]
         public int IsVisible { get; set; }
 
-        [Column("imageclientsize", Order = 7)]
+        [Column("image_checksum", Order = 7)]
+        public string Checksum { get; set; }
+
+        [NotMapped]
         public string ClientSize { get; set; }
 
-        [Column("imageclientsizecustom", Order = 8)]
+        [NotMapped]
         public string ClientSizeCustom { get; set; }
 
-        [Column("checksum", Order = 9)]
-        public string Checksum { get; set; }
+       
 
       
         public string Calculate_Hash(string fileName)
@@ -170,7 +172,7 @@ namespace Models
             {
                 Event = "Create",
                 Type = "Image",
-                TypeId = Id
+                TypeId = Id.ToString()
             };
             history.CreateEvent();
             Utility.Message = "Successfully Created " + Name;
@@ -216,7 +218,7 @@ namespace Models
                 {
                     Event = "Delete",
                     Type = "Image",
-                    TypeId = Id
+                    TypeId = Id.ToString()
                 };
                 history.CreateEvent();
             }
@@ -253,7 +255,7 @@ namespace Models
 
         public void Read()
         {
-            if (string.IsNullOrEmpty(Id) && !string.IsNullOrEmpty(Name))
+            if (string.IsNullOrEmpty(Id.ToString()) && !string.IsNullOrEmpty(Name))
                 GetImageId();
 
             using (var db = new DB())
@@ -314,7 +316,7 @@ namespace Models
             {
                 Event = "Edit",
                 Type = "Image",
-                TypeId = Id
+                TypeId = Id.ToString()
             };
             history.CreateEvent();
             //Utility.Message = "Successfully Updated " + Name;

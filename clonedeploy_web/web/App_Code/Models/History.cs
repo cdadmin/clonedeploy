@@ -48,6 +48,8 @@ namespace Models
 
         public void CreateEvent()
         {
+            //FIXME
+            /*
             try
             {
 
@@ -73,6 +75,7 @@ namespace Models
                     Logger.Log(ex.InnerException.InnerException.Message);
                 }
             }
+             * */
         }
 
         public List<History> Read()

@@ -23,7 +23,7 @@
 </div>
 <div class="nav-menu-mobile" id="menu-mobile">
     <div class="mobile-menu-left">
-        <a href="<%= ResolveUrl("~/views/hosts/search.aspx") %>">Hosts</a>
+        <a href="<%= ResolveUrl("~/views/hosts/search.aspx") %>">Computers</a>
         <a href="<%= ResolveUrl("~/views/groups/search.aspx") %>">Groups</a>
         <a href="<%= ResolveUrl("~/views/images/search.aspx") %>">Images</a>
     </div>
@@ -38,12 +38,12 @@
         <div class="nav">
             <li>
                 <a href="<%= ResolveUrl("~/views/dashboard/dash.aspx") %>" class="">
-                    <img alt="logo" src="<%= ResolveUrl("~/") %>content/img/crucible3.png" width="70px" style="margin-left: -1px; margin-top: 0;"/>
+                    <img alt="logo" src="<%= ResolveUrl("~/") %>content/img/crucible3.png" width="40px" style="margin-left: -1px; margin-top: 0;"/>
                 </a>
             </li>
             <li id="nav-hosts">
                 <a href="<%= ResolveUrl("~/views/hosts/search.aspx") %>" class="icon-host">
-                    <span class="nav-text">Hosts</span></a>
+                    <span class="nav-text">Computers</span></a>
             </li>
             <li id="nav-groups">
                 <a href="<%= ResolveUrl("~/views/groups/search.aspx") %>" class="icon-group">

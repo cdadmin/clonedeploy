@@ -134,7 +134,7 @@ namespace Tasks
                 history.Event = "Deploy";
                 history.Type = "Image";
                 history.Notes = Group.Image;
-                history.TypeId = image.Id;
+                history.TypeId = image.Id.ToString();
                 history.CreateEvent();
             }
         }

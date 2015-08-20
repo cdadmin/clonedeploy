@@ -16,7 +16,7 @@ namespace views.images
     {
         protected void btnConfirmChecksum_Click(object sender, EventArgs e)
         {
-            var image = new Image {Id = Request.QueryString["imageid"]};
+            var image = new Image {Id = Convert.ToInt32(Request.QueryString["imageid"])};
             image.Read();
             image.Checksum = (string) (ViewState["checkSum"]);
             image.Update();
@@ -26,7 +26,7 @@ namespace views.images
 
         protected void btnPart_Click(object sender, EventArgs e)
         {
-            var image = new Image {Id = Request.QueryString["imageid"]};
+            var image = new Image {Id = Convert.ToInt32(Request.QueryString["imageid"])};
             image.Read();
             var imagePath = Settings.ImageStorePath + image.Name;
 
@@ -107,7 +107,7 @@ namespace views.images
 
         protected void btnParts_Click(object sender, EventArgs e)
         {
-            var image = new Image {Id = Request.QueryString["imageid"]};
+            var image = new Image {Id = Convert.ToInt32(Request.QueryString["imageid"])};
             image.Read();
 
             var control = sender as Control;
@@ -198,7 +198,7 @@ namespace views.images
         {
             var image = new Image
             {
-                Id = Request.QueryString["imageid"],
+                Id = Convert.ToInt32(Request.QueryString["imageid"]),
                 ClientSizeCustom = ""
             };
             image.Read();
@@ -210,7 +210,7 @@ namespace views.images
 
         protected void btnUpdateImageSpecs_Click(object sender, EventArgs e)
         {
-            var image = new Image {Id = Request.QueryString["imageid"]};
+            var image = new Image {Id = Convert.ToInt32(Request.QueryString["imageid"])};
             image.Read();
 
             ImagePhysicalSpecs specs;
@@ -289,7 +289,7 @@ namespace views.images
 
         protected void btnVG_Click(object sender, EventArgs e)
         {
-            var image = new Image {Id = Request.QueryString["imageid"]};
+            var image = new Image {Id = Convert.ToInt32(Request.QueryString["imageid"])};
             image.Read();
 
             var control = sender as Control;
@@ -366,7 +366,7 @@ namespace views.images
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            var image = new Image {Id = Request.QueryString["imageid"]};
+            var image = new Image {Id = Convert.ToInt32(Request.QueryString["imageid"])};
             image.Read();
             var subTitle = Master.Master.FindControl("SubNav").FindControl("labelSubTitle") as Label;
             if (subTitle != null) subTitle.Text = image.Name + " | Specs";
@@ -375,7 +375,7 @@ namespace views.images
 
         protected void PopulateSpecs()
         {
-            var image = new Image {Id = Request.QueryString["imageid"]};
+            var image = new Image {Id = Convert.ToInt32(Request.QueryString["imageid"])};
             image.Read();
 
             try

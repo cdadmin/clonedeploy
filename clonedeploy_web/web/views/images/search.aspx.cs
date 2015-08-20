@@ -161,7 +161,7 @@ namespace views.images
                 if (cb == null || !cb.Checked) continue;
                 var dataKey = gvImages.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
-                var image = new Image {Id = dataKey.Value.ToString()};
+                var image = new Image {Id = Convert.ToInt32(dataKey.Value)};
                 image.Delete();
             }
 
@@ -244,7 +244,8 @@ namespace views.images
                 try
                 {
                     var lblClient = row.FindControl("lblSizeClient") as Label;
-                    var img = new Image {Id = ((HiddenField) row.FindControl("HiddenID")).Value};
+                    var imageId = ((HiddenField) row.FindControl("HiddenID")).Value;
+                    var img = new Image {Id = Convert.ToInt32(imageId) };
                     img.Read();
 
                     var calc = new MinimumSize {Image = img};

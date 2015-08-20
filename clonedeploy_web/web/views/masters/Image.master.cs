@@ -12,7 +12,7 @@ namespace views.masters
         protected void Page_Load(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(Request["imageid"])) return;
-            Image = new Image { Id = Request.QueryString["imageid"] };
+            Image = new Image { Id = Convert.ToInt32(Request.QueryString["imageid"]) };
             Image.Read();
 
         }

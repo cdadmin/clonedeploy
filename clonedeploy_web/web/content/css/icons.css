@@ -1,18 +1,18 @@
-.icon-host-title:before{font-family:Flaticon;content:"\e017";font-size:1.5em;color:#464242;margin-right:-10px;}
+.icon-host-title:before{font-family:Flaticon;content:"\e017";font-size: 1.5em;color:#464242;margin-right:-10px;}
 .icon-group-title:before{font-family:Flaticon;content:"\e003";font-size:1.5em;color:#464242;margin-right:-10px;}
 .icon-image-title:before{font-family:Flaticon;content:"\e009";font-size:1.5em;color:#464242;margin-right:-10px;}
 .icon-task-title:before{font-family:Flaticon;content:"\e020";font-size:1.5em;color:#464242;margin-right:-10px;}
 .icon-user-title:before{font-family:Flaticon;content:"\e01f";font-size:1.5em;color:#464242;margin-right:-10px;}
 .icon-setting-title:before{font-family:Flaticon;content:"\e01c";font-size:1.5em;color:#464242;margin-right:-10px;}
 
-.nav li a.icon-logo:before{font-family:opensans, Calibri, Arial;content:"WDS";font-size:18px;margin-top:30px;}
-.nav li a.icon-host:before{content:"\e017";font-size:2.5em;}
-.nav li a.icon-group:before{content:"\e003";font-size:2.5em;}
-.nav li a.icon-image:before{content:"\e009";font-size:2.5em;}
-.nav li a.icon-user:before{content:"\e01f";font-size:2.5em;}
-.nav li a.icon-task:before{content:"\e020";font-size:2.5em;margin-left:3px;}
-.nav li a.icon-setting:before{content:"\e01c";font-size:2.5em;}
-.nav li a.icon-logout:before{content:"\e01a";font-size:2.5em;}
+.nav li a.icon-logo:before{font-family:opensans, Calibri, Arial;content:"WDS";font-size:10px;margin-left:50px;}
+.nav li a.icon-host:before{content:"\e017";font-size:2.0em;margin-left: 5px; margin-top: 30px;}
+.nav li a.icon-group:before{content:"\e003";font-size:2.0em;margin-left: 5px;margin-top: 30px;}
+.nav li a.icon-image:before{content:"\e009";font-size:2.0em;margin-left: 5px;margin-top: 30px;}
+.nav li a.icon-user:before{content:"\e01f";font-size:2.0em;margin-left: 5px;margin-top: 30px;}
+.nav li a.icon-task:before{content:"\e020";font-size:2.0em;margin-left: 5px;margin-top: 30px;}
+.nav li a.icon-setting:before{content:"\e01c";font-size:2.0em;margin-left: 5px;margin-top: 30px;}
+.nav li a.icon-logout:before{content:"\e01a";font-size:2.0em;margin-left: 5px;margin-top: 30px;}
 .export:before{content:"\e008";font-size:22px;margin-top:3px;}
 .reports:before{content:"\e00c";font-size:22px;margin-top:3px;}
 .global:before{content:"\e007";font-size:30px;margin-top:-1px;margin-left:-1px;}

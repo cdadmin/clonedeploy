@@ -23,10 +23,11 @@
         <h3 class="remove-bottom">
             <asp:Label ID="labelSubTitle" runat="server"></asp:Label>
         </h3>
-        <a id="editoption" href="<%= ResolveUrl("~/views/images/edit.aspx") %>?imageid=<%= Image.Id %>" class="icon edit" data-info="Edit Image"></a>
-        <a id="historyoption" href="<%= ResolveUrl("~/views/images/history.aspx") %>?imageid=<%= Image.Id %>" class="icon history" data-info="View Image History"></a>
-        <a id="logoption" href="<%= ResolveUrl("~/views/images/specs.aspx") %>?imageid=<%= Image.Id %>" class="icon logs" data-info="View Image Specs"></a>
-        <asp:LinkButton ID="btnDelete" runat="server" CssClass="icon delete" data-info="Delete Image" OnClick="btnDelete_Click"></asp:LinkButton>
+        <a id="editoption" href="<%= ResolveUrl("~/views/images/edit.aspx") %>?imageid=<%= Image.Id %>">Edit</a>
+        <a id="profileoption" href="<%= ResolveUrl("~/views/images/profiles.aspx") %>?imageid=<%= Image.Id %>">Profiles</a>
+        <a id="historyoption" href="<%= ResolveUrl("~/views/images/history.aspx") %>?imageid=<%= Image.Id %>">History</a>
+        <a id="logoption" href="<%= ResolveUrl("~/views/images/specs.aspx") %>?imageid=<%= Image.Id %>">Specs</a>
+        <asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click">Delete</asp:LinkButton>
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">

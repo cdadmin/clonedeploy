@@ -41,7 +41,7 @@ namespace views.images
             var image = new Image
             {
                 Name = txtImageName.Text,
-                Os = "",
+                Os = ddlImageOS.Text,
                 Description = txtImageDesc.Text,
                 Protected = chkProtected.Checked ? 1 : 0,
                 IsVisible = chkVisible.Checked ? 1 : 0

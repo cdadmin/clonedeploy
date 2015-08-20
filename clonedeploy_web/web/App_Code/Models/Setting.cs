@@ -9,25 +9,22 @@ using Global;
 
 namespace Models
 {
-    [Table("settings")]
+    [Table("admin_settings")]
     public class Setting
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("settingid", Order = 1)]
+        [Column("admin_setting_id", Order = 1)]
         public string Id { get; set; }
 
-        [Column("settingname", Order = 2)]
+        [Column("admin_setting_name", Order = 2)]
         public string Name { get; set; }
 
-        [Column("settingdesc", Order = 3)]
-        public string Description { get; set; }
-
-        [Column("settingcategory", Order = 4)]
-        public string Category { get; set; }
-
-        [Column("settingvalue", Order = 5)]
+        [Column("admin_setting_value", Order = 3)]
         public string Value { get; set; }
+
+        [Column("admin_setting_category", Order = 4)]
+        public string Category { get; set; }
 
         public void ExportDatabase()
         {

@@ -81,7 +81,7 @@ namespace Tasks
             image.Read();
             history.Type = "Image";
             history.Notes = Host.Name;
-            history.TypeId = image.Id;
+            history.TypeId = image.Id.ToString();
             history.Event = Direction == "push" ? "Deploy" : "Upload";
 
             history.CreateEvent();

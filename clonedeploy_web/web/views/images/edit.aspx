@@ -16,6 +16,18 @@
         <asp:TextBox ID="txtImageName" runat="server" CssClass="textbox"></asp:TextBox>
     </div>
     <br class="clear"/>
+    
+      <div class="size-4 column">
+        Image OS:
+    </div>
+    <div class="size-5 column">
+        <asp:DropDownList ID="ddlImageOS" runat="server" CssClass="ddlist">
+            <asp:ListItem>Linux</asp:ListItem>
+            <asp:ListItem>Mac</asp:ListItem>
+            <asp:ListItem>Windows</asp:ListItem>
+        </asp:DropDownList>
+    </div>
+    <br class="clear"/>
 
     <div class="size-4 column">
         Image Description:
