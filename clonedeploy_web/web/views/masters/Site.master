@@ -12,10 +12,12 @@
     <script type="text/javascript" src="<%= ResolveUrl("~/scripts/jquery.watermark.min.js") %>"></script>
     <script type="text/javascript" src="<%= ResolveUrl("~/scripts/classie.js") %>"></script>
     <script type="text/javascript" src="<%= ResolveUrl("~/scripts/sha512.js") %>"></script>
+    <script type="text/javascript" src="<%= ResolveUrl("~/scripts/scroller/jquery.mCustomScrollbar.concat.min.js") %>"></script>
     <script type="text/javascript "src="<%= ResolveUrl("~/scripts/ace/src-noconflict/ace.js")%>" charset="utf-8"></script>
     <link href="~/content/css/base.css" rel="stylesheet" type="text/css"/>
     <link href="~/content/css/icons.css" rel="stylesheet" type="text/css"/>
     <link href="~/content/css/layout.css" rel="stylesheet" type="text/css"/>
+    <link href="~/content/css/jquery.mCustomScrollbar.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div class="nav-bar-mobile">
@@ -33,9 +35,11 @@
         <a href="<%= ResolveUrl("~/views/admin/settings.aspx") %>">Admin</a>
     </div>
 </div>
-<div class="container">
+
     <form id="form1" runat="server">
+        <div class="container">
         <div class="nav">
+            <ul>
             <li>
                 <a href="<%= ResolveUrl("~/views/dashboard/dash.aspx") %>" class="">
                     <img alt="logo" src="<%= ResolveUrl("~/") %>content/img/crucible3.png" width="40px" style="margin-left: -1px; margin-top: 0;"/>
@@ -68,21 +72,30 @@
             <li id="nav-logout">
                 <asp:LoginStatus runat="server" CssClass="icon-logout nav-text" Style="height: 50px;"/>
             </li>
+                </ul>
         </div>
+            <div class="header_wrapper">
         <asp:ContentPlaceHolder ID="HeaderNav" runat="server">
         </asp:ContentPlaceHolder>
-        <div class="clearfix">
+                </div>
             <hr/>
+        <div class="clearfix">
+      
         </div>
+        <div class="content_wrapper">
+         
         <asp:ContentPlaceHolder ID="SubNav" runat="server">
         </asp:ContentPlaceHolder>
+                </div>
         <br class="clear"/>
-        <div class="full column">
+
             <asp:ContentPlaceHolder ID="Content" runat="server">
             </asp:ContentPlaceHolder>
         </div>
+
+ 
     </form>
-</div>
+
 <script type="text/javascript">
     $(document).ready(function() {
         $('.searchbox').watermark('Search', { useNative: false });

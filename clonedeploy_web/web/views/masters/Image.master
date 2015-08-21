@@ -16,24 +16,54 @@
             <a id="importimage" href="<%= ResolveUrl("~/views/images/import.aspx") %>" class="icon import" data-info="Import Images"></a>
         </div>
     </div>
+    
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="SubNav" Runat="Server">
-    <div class="nav-btn-square ">
-        <h3 class="remove-bottom">
-            <asp:Label ID="labelSubTitle" runat="server"></asp:Label>
-        </h3>
+     
+        <div class="nav-btn-square">
         <a id="editoption" href="<%= ResolveUrl("~/views/images/edit.aspx") %>?imageid=<%= Image.Id %>">Edit</a>
         <a id="profileoption" href="<%= ResolveUrl("~/views/images/profiles.aspx") %>?imageid=<%= Image.Id %>">Profiles</a>
         <a id="historyoption" href="<%= ResolveUrl("~/views/images/history.aspx") %>?imageid=<%= Image.Id %>">History</a>
-        <a id="logoption" href="<%= ResolveUrl("~/views/images/specs.aspx") %>?imageid=<%= Image.Id %>">Specs</a>
+      
+         <a id="logoption" href="<%= ResolveUrl("~/views/images/specs.aspx") %>?imageid=<%= Image.Id %>">Specs</a>
+       
         <asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click">Delete</asp:LinkButton>
-    </div>
+       </div>
+    
+     <h3 class="remove-bottom">
+            <asp:Label ID="labelSubTitle" runat="server" CssClass="sub-nav-title"></asp:Label>
+        </h3>
+      
+    
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">
+      
+    <script type="text/javascript">
+        $(window).resize(function () {
+            var hgt = $(window).height();
+            $(".content-left").css({ "height": hgt - 155 });
+            $(".content-right").css({ "height": hgt - 155 });
+        });
+        $(document).ready(function () {
+
+
+            var hgt = $(window).height();
+
+
+
+            $(".content-left").css({ "height": hgt - 155 });
+            $(".content-right").css({ "height": hgt - 155 });
+
+
+        });
+    </script>
+     
+    
+    <div class="content-right">
     <asp:ContentPlaceHolder ID="SubContent" runat="server">
     </asp:ContentPlaceHolder>
-
+        </div>
     <div id="confirmbox" class="confirm-box-outer">
         <div class="confirm-box-inner">
             <h4>

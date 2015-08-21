@@ -3,6 +3,7 @@
 <%@ MasterType VirtualPath="~/views/masters/Image.master" %>
 <%@ Reference virtualPath="~/views/masters/Site.master" %>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
+
     <script type="text/javascript">
         $(document).ready(function() {
             $('#searchimage').addClass("nav-current");

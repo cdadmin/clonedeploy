@@ -1,5 +1,7 @@
 /* Base
 ================================================== */
+*{margin:0;padding:0;}
+html,body{ height: 100%;}
 html,body,div,span,h1,h2,h3,h4,h5,h6,p{margin:0;padding:0;border:0;font-size:100%;font:inherit;}
 body{background:#fff;font-size:14px;font-family:opensans, "Calibri Light", "Helvetica Neue", Helvetica, Arial;color:#444;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;}
 a, a:visited { color: #333; text-decoration: none; outline: 0; }
@@ -40,22 +42,31 @@ a img{border: 0;}
 }
 h1,h2,h3,h4,h5,h6{font-family:opensans, Calibri, Arial, sans-serif;color:#47a3da;font-weight:normal;}
 h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{font-weight:inherit;}
-h1{display:block;font-weight:normal;font-size:2em;text-transform:uppercase;letter-spacing:.5em;padding:0 0 .6em;margin-top:20px;font-size:46px;}
+h1{display:block;font-weight:normal;font-size:2em;text-transform:uppercase;letter-spacing:.5em;padding:0 0 .6em;margin-top:0px;font-size:40px;}
 h2{font-size:35px;line-height:40px;margin-bottom:10px;}
 h3{font-size:28px;line-height:34px;margin-bottom:8px;text-align:right;}
 h4{font-size:21px;line-height:30px;margin-bottom:4px;}
 h5{font-size:17px;line-height:24px;}
 h6{font-size:14px;line-height:21px;}
-hr{border:solid #ddd;border-width:1px 0 0;clear:both;margin:10px 0 30px;height:0;}
+hr{border:solid #ddd;border-width:1px 0 0;clear:both;margin:10px 0 0px;height:0;}
 
 /* Desktop Menu Left
 ================================================== */
-.nav{position:fixed;overflow:hidden;top:0;left:0;height:95%;width:200px;list-style-type:none;margin 0;padding:0;background:#fff;border-right: 1px solid #eee;}
+.nav{position:fixed;overflow:hidden;top:0;left:0;height:95%;width:40px;list-style-type:none;margin 0;padding:0;background:#fff;border-right: 1px solid #eee;}
 .nav li a{display:block;height:4em;width:200px;line-height:10px;text-align: left;color:#999;position:relative;-webkit-transition:background .1s ease-in-out;-moz-transition:background .1s ease-in-out;transition:background .1s ease-in-out;}
 .nav li a:hover,.nav li:first-child a{color:#fff;background: #666666;border: none;}
 .nav li.nav-current a{background:#fff;color:#47a3da;border-right:none;}
 .nav li a:before{font-family:Flaticon;speak:none;font-style:normal;font-weight:normal;text-indent:0;position:absolute;top:-5px;left:0;width:100%;height:100%;font-size:1em;-webkit-font-smoothing:antialiased;}
 .nav-text{padding-top:25px;display:inline-block; margin-left:40px}
+
+/* Sub Menu Left
+================================================== */
+
+.sub-nav li a{display:block;height:4em;width:300px;line-height:10px;text-align: left;background: #fff;color:#999;position:relative;-webkit-transition:background .1s ease-in-out;-moz-transition:background .1s ease-in-out;transition:background .1s ease-in-out;}
+.sub-nav li a:hover,.nav li:first-child a{color:#fff;background: #fff;border: none;}
+.sub-nav li.nav-current a{background:#fff;color:#47a3da;border-right:none;}
+.sub-nav li a:before{font-family:Flaticon;speak:none;font-style:normal;font-weight:normal;text-indent:0;position:absolute;top:-5px;left:0;width:100%;height:100%;font-size:1em;-webkit-font-smoothing:antialiased;}
+.sub-nav-text{padding-top:25px;display:inline-block; margin-left:40px}
 
 /* Mobile Menu Top
 ================================================== */
@@ -73,9 +84,9 @@ hr{border:solid #ddd;border-width:1px 0 0;clear:both;margin:10px 0 30px;height:0
 /* Sub Menus
 ================================================== */
 .nav-btn-round{float:right;margin-top:20px;}
-.nav-btn-square{float:left;background: #eee;width: 100%; margin-top:-30px;margin-bottom:30px;padding-bottom:5px;padding-right:0;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;}
+.nav-btn-square{float:left;background: #666;margin-left: 0px;width: 100%;margin-bottom:-10px;padding-bottom:0px;padding-right:0;}
 .nav-btn-round a{display:block;float:left;position:relative;width:2.5em;height:2.5em;background:#fff;border-radius:50%;color:transparent;margin:0 .5em;border:4px solid #47a3da;}
-.nav-btn-square a{display:block;color: white;float:left;position:relative;width:150px;height:35px;background:#666666;margin:0 3px;font-size: 18px;font-weight: 700;text-align: center;padding-top:5px;}
+.nav-btn-square a{display:block;color: white;float:left;position:relative;width:150px;height:35px;background:#666666;margin:0 5px 0 0;font-size: 18px;font-weight: 500;text-align: center;padding-top:5px;}
 .nav-btn-round a:after{content:attr(data-info);color:#47a3da;position:absolute;width:600%;top:120%;text-align:right;right:0;opacity:0;pointer-events:none;}
 
 .nav-btn-round a:hover:after,.nav-btn-square a:hover:after{opacity:1;}
@@ -87,6 +98,7 @@ hr{border:solid #ddd;border-width:1px 0 0;clear:both;margin:10px 0 30px;height:0
 .nav-btn-square-large a{ width: 7em;height: 7em;}
 .icon:before{font-family:Flaticon;position:absolute;top:0;width:100%;height:100%;speak:none;font-size:2em;font-style:normal;font-weight:normal;line-height:1.3;text-align:center;color:#47a3da;-webkit-font-smoothing:antialiased;}
 .icon2:before{font-family:icomoon;position:absolute;top:0;width:100%;height:100%;speak:none;font-size:2em;font-style:normal;font-weight:normal;line-height:1.3;text-align:center;color:#47a3da;-webkit-font-smoothing:antialiased;}
+.sub-nav-title{ color: #666666;font-weight: 700;}
 
 /* Admin Chooser
 ================================================== */
