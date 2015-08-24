@@ -11,8 +11,7 @@
     </div>
     <div class="size-2 column offset-1">
         <div class="nav-btn-round">
-            <a id="createimage" href="<%= ResolveUrl("~/views/images/create.aspx") %>" class="icon create" data-info="Create New Image"></a>
-            <a id="searchimage" href="<%= ResolveUrl("~/views/images/search.aspx") %>" class="icon search" data-info="Search Images"></a>
+           
             <a id="importimage" href="<%= ResolveUrl("~/views/images/import.aspx") %>" class="icon import" data-info="Import Images"></a>
         </div>
     </div>
@@ -20,30 +19,58 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="SubNav" Runat="Server">
-     
-        <div class="nav-btn-square">
-        <a id="editoption" href="<%= ResolveUrl("~/views/images/edit.aspx") %>?imageid=<%= Image.Id %>">Edit</a>
-        <a id="profileoption" href="<%= ResolveUrl("~/views/images/profiles.aspx") %>?imageid=<%= Image.Id %>">Profiles</a>
-        <a id="historyoption" href="<%= ResolveUrl("~/views/images/history.aspx") %>?imageid=<%= Image.Id %>">History</a>
-      
-         <a id="logoption" href="<%= ResolveUrl("~/views/images/specs.aspx") %>?imageid=<%= Image.Id %>">Specs</a>
+     <div class="sub-nav">
+   
+        
+         <ul>
+              <li>
+                  <a id="searchimage" href="<%= ResolveUrl("~/views/images/search.aspx") %>" class="icon-host"><span class="nav-text">Search Images</span></a>
+             </li>
+             <li>
+              <a id="createimage" href="<%= ResolveUrl("~/views/images/create.aspx") %>" class="icon-host"><span class="nav-text">New Image</span></a>
+           </li>
+            
+            
+             </ul>
        
-        <asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click">Delete</asp:LinkButton>
-       </div>
     
-     <h3 class="remove-bottom">
-            <asp:Label ID="labelSubTitle" runat="server" CssClass="sub-nav-title"></asp:Label>
-        </h3>
+    
+        </div>
       
     
 </asp:Content>
+   <asp:Content ID="Content4" ContentPlaceHolderID="SubNavDynamic" Runat="Server">
+       <div class="sub-nav2">
+            <asp:Label ID="labelSubTitle" runat="server" CssClass="sub-nav-title"></asp:Label>
+           
+       <ul>
+                 <li>
+      
+        <a id="editoption" href="<%= ResolveUrl("~/views/images/edit.aspx") %>?imageid=<%= Image.Id %>" class="edit"><span class="sub-nav-text2">Edit</span></a>
+                 </li>
+             <li>
+        <a id="profileoption" href="<%= ResolveUrl("~/views/images/profiles.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text2">Profiles</span></a>
+                 </li>
+             <li>
+        <a id="historyoption" href="<%= ResolveUrl("~/views/images/history.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text2">History</span></a>
+      </li>
+             <li>
+         <a id="logoption" href="<%= ResolveUrl("~/views/images/specs.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text2">Specs</span></a>
+       </li>
+             <li>
+        <asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click"><span class="sub-nav-text2">Delete</span></asp:LinkButton>
+                 </li>
+           </ul>
+           </div>
+                   </asp:Content>
+
 <asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">
       
     <script type="text/javascript">
         $(window).resize(function () {
             var hgt = $(window).height();
-            $(".content-left").css({ "height": hgt - 155 });
-            $(".content-right").css({ "height": hgt - 155 });
+            $(".content-left").css({ "height": hgt - 125 });
+            $(".content-right").css({ "height": hgt - 125 });
         });
         $(document).ready(function () {
 
@@ -52,8 +79,8 @@
 
 
 
-            $(".content-left").css({ "height": hgt - 155 });
-            $(".content-right").css({ "height": hgt - 155 });
+            $(".content-left").css({ "height": hgt - 75 });
+            $(".content-right").css({ "height": hgt - 125 });
 
 
         });

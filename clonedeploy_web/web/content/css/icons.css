@@ -21,7 +21,7 @@
 .search:before{content:"\e012";font-size:24px;}
 .upload:before{content:"\e01d";font-size:24px;}
 .deploy:before{content:"\e006";font-size:24px;}
-.edit:before{content:"\e018";font-size:24px; margin-top:2px;}
+.edit:before{content:"\e018";font-size: 2em;margin-left: 5px; margin-top: 30px;}
 .delete:before{content:"\e005";font-size:32px;margin:-4px -2px 0 0;}
 .logs:before{content:"\e015";font-size:24px;margin:1px -1px 0 0;}
 .history:before{content:"\e00b";font-size:24px;}

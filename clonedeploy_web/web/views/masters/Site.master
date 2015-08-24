@@ -84,15 +84,19 @@
         </div>
         <div class="content_wrapper">
          
+              <div class="content-left">
         <asp:ContentPlaceHolder ID="SubNav" runat="server">
+            
         </asp:ContentPlaceHolder>
-                </div>
-        <br class="clear"/>
+                 <asp:ContentPlaceHolder ID="SubNavDynamic" runat="server">
+    </asp:ContentPlaceHolder>
+                  </div>
+        
 
             <asp:ContentPlaceHolder ID="Content" runat="server">
             </asp:ContentPlaceHolder>
         </div>
-
+        </div>
  
     </form>
 

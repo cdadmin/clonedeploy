@@ -31,7 +31,7 @@ namespace views.images
         {
             var image = new Image { Id = Convert.ToInt32(Request.QueryString["imageid"]) };
             image.Read();
-            var subTitle = Master.Master.FindControl("SubNav").FindControl("labelSubTitle") as Label;
+            var subTitle = Master.Master.FindControl("SubNavDynamic").FindControl("labelSubTitle") as Label;
             if (subTitle != null) subTitle.Text = image.Name;
             if (!IsPostBack) PopulateForm();
         }
