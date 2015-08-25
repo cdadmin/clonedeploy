@@ -1,104 +1,73 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/views/masters/Site.master" AutoEventWireup="true" CodeFile="Image.master.cs" Inherits="views.masters.ImageMaster" %>
+
 <%@ MasterType VirtualPath="~/views/masters/Site.master" %>
-<asp:Content ID="Content1" ContentPlaceHolderID="HeaderNav" Runat="Server">
+<asp:Content ID="Content1" ContentPlaceHolderID="HeaderNav" runat="Server">
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#nav-images').addClass("nav-current");
         });
     </script>
-    <div class="size-1 column">
-        <h1 class="remove-bottom icon-image-title">Images</h1>
-    </div>
-    <div class="size-2 column offset-1">
-        <div class="nav-btn-round">
-           
-            <a id="importimage" href="<%= ResolveUrl("~/views/images/import.aspx") %>" class="icon import" data-info="Import Images"></a>
-        </div>
-    </div>
-    
-</asp:Content>
-
-<asp:Content ID="Content2" ContentPlaceHolderID="SubNav" Runat="Server">
-     <div class="sub-nav">
+  
+        <h1 class="header-title icon-image-title">Images</h1>
+ 
    
-        
-         <ul>
-              <li>
-                  <a id="searchimage" href="<%= ResolveUrl("~/views/images/search.aspx") %>" class="icon-host"><span class="nav-text">Search Images</span></a>
-             </li>
-             <li>
-              <a id="createimage" href="<%= ResolveUrl("~/views/images/create.aspx") %>" class="icon-host"><span class="nav-text">New Image</span></a>
-           </li>
-            
-            
-             </ul>
-       
-    
-    
-        </div>
-      
-    
 </asp:Content>
-   <asp:Content ID="Content4" ContentPlaceHolderID="SubNavDynamic" Runat="Server">
-       <div class="sub-nav2">
-            <asp:Label ID="labelSubTitle" runat="server" CssClass="sub-nav-title"></asp:Label>
-           
-       <ul>
-                 <li>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="SubNav" runat="Server">
       
-        <a id="editoption" href="<%= ResolveUrl("~/views/images/edit.aspx") %>?imageid=<%= Image.Id %>" class="edit"><span class="sub-nav-text2">Edit</span></a>
-                 </li>
-             <li>
-        <a id="profileoption" href="<%= ResolveUrl("~/views/images/profiles.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text2">Profiles</span></a>
-                 </li>
-             <li>
-        <a id="historyoption" href="<%= ResolveUrl("~/views/images/history.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text2">History</span></a>
-      </li>
-             <li>
-         <a id="logoption" href="<%= ResolveUrl("~/views/images/specs.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text2">Specs</span></a>
-       </li>
-             <li>
-        <asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click"><span class="sub-nav-text2">Delete</span></asp:LinkButton>
-                 </li>
-           </ul>
-           </div>
-                   </asp:Content>
+    <div class="sub-nav-top">
+        <ul>
+            <li>
+                <a id="searchimage" href="<%= ResolveUrl("~/views/images/search.aspx") %>" ><span class="sub-nav-text">Search Images</span></a>
+            </li>
+            <li>
+                <a id="createimage" href="<%= ResolveUrl("~/views/images/create.aspx") %>" ><span class="sub-nav-text">New Image</span></a>
+            </li>
+        </ul>
+    </div>
 
-<asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">
+
+</asp:Content>
+<asp:Content ID="Content4" ContentPlaceHolderID="SubNavDynamic" runat="Server">
+    <div class="sub-nav-top">
       
-    <script type="text/javascript">
-        $(window).resize(function () {
-            var hgt = $(window).height();
-            $(".content-left").css({ "height": hgt - 125 });
-            $(".content-right").css({ "height": hgt - 125 });
-        });
-        $(document).ready(function () {
+        <asp:Label ID="labelSubTitle" runat="server" CssClass="sub-nav-title"></asp:Label>
+          <div class="indent">
+        <ul>
+            <li id="editoption">
 
+                <a href="<%= ResolveUrl("~/views/images/edit.aspx") %>?imageid=<%= Image.Id %>" ><span class="sub-nav-text">Edit</span></a>
+            </li>
+            <li>
+                <a id="profileoption" href="<%= ResolveUrl("~/views/images/profiles/search.aspx") %>?imageid=<%= Image.Id %>" ><span class="sub-nav-text">Profiles</span></a>
+            </li>
+            <li>
+                <a id="historyoption" href="<%= ResolveUrl("~/views/images/history.aspx") %>?imageid=<%= Image.Id %>" ><span class="sub-nav-text">History</span></a>
+            </li>
+            <li>
+                <a id="logoption" href="<%= ResolveUrl("~/views/images/specs.aspx") %>?imageid=<%= Image.Id %>" ><span class="sub-nav-text">Specs</span></a>
+            </li>
+            <li>
+                <asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click" ><span class="sub-nav-text">Delete</span></asp:LinkButton>
+            </li>
+        </ul>
+            </div>
+    </div>
+</asp:Content>
 
-            var hgt = $(window).height();
-
-
-
-            $(".content-left").css({ "height": hgt - 75 });
-            $(".content-right").css({ "height": hgt - 125 });
-
-
-        });
-    </script>
-     
-    
+<asp:Content ID="Content3" ContentPlaceHolderID="Content" runat="Server">
     <div class="content-right">
-    <asp:ContentPlaceHolder ID="SubContent" runat="server">
-    </asp:ContentPlaceHolder>
-        </div>
+        <asp:ContentPlaceHolder ID="SubContent" runat="server">
+        </asp:ContentPlaceHolder>
+    </div>
     <div id="confirmbox" class="confirm-box-outer">
         <div class="confirm-box-inner">
             <h4>
                 <asp:Label ID="lblTitle" runat="server" CssClass="modaltitle"></asp:Label>
             </h4>
             <div class="confirm-box-btns">
-                <asp:LinkButton ID="OkButton" OnClick="OkButton_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
-                <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no"/>
+                <asp:LinkButton ID="OkButton" OnClick="OkButton_Click" runat="server" Text="Yes" CssClass="confirm_yes" />
+                <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no" />
             </div>
         </div>
     </div>

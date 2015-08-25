@@ -13,7 +13,7 @@ namespace views.hosts
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            var host = new Host { Id = Convert.ToInt16(Request["hostid"]) };
+            var host = new Computer { Id = Convert.ToInt16(Request["hostid"]) };
             host.Read();
             var subTitle = Master.Master.FindControl("SubNav").FindControl("labelSubTitle") as Label;
             if (subTitle != null) subTitle.Text = host.Name + " | Options";
@@ -22,7 +22,7 @@ namespace views.hosts
 
         protected void buttonUpdateHost_Click(object sender, EventArgs e)
         {
-            var host = new Host { Id = Convert.ToInt16(Request["hostid"]) };
+            var host = new Computer { Id = Convert.ToInt16(Request["hostid"]) };
             host.Read();
             var fixedLineEnding = scriptEditorText.Value.Replace("\r\n", "\n");
             host.PartitionScript = fixedLineEnding;
@@ -33,7 +33,7 @@ namespace views.hosts
 
         protected void PopulateForm()
         {
-            var host = new Host { Id = Convert.ToInt16(Request["hostid"]) };
+            var host = new Computer { Id = Convert.ToInt16(Request["hostid"]) };
             host.Read();
             scriptEditorText.Value = host.PartitionScript;
             Master.Msgbox(Utility.Message);

@@ -9,7 +9,7 @@ namespace Pxe
     {
         public bool CleanPxeBoot(string pxeHostMac)
         {
-            var host = new Host {Mac = Utility.PxeMacToMac(pxeHostMac)};
+            var host = new Computer {Mac = Utility.PxeMacToMac(pxeHostMac)};
             host.Read();
             var mode = Settings.PxeMode;
             var isCustomBootTemplate = Convert.ToBoolean(Convert.ToInt16(host.CustomBootEnabled));
@@ -575,7 +575,7 @@ namespace Pxe
             return path;
         }
 
-        public string GetHostNonProxyPath(Host host, bool isActiveOrCustom)
+        public string GetHostNonProxyPath(Computer host, bool isActiveOrCustom)
         {
             var mode = Settings.PxeMode;
             var pxeHostMac = Utility.MacToPxeMac(host.Mac);
@@ -599,7 +599,7 @@ namespace Pxe
             return path;
         }
 
-        public string GetHostProxyPath(Host host, bool isActiveOrCustom, string proxyType)
+        public string GetHostProxyPath(Computer host, bool isActiveOrCustom, string proxyType)
         {
             var pxeHostMac = Utility.MacToPxeMac(host.Mac);
             string path = null;

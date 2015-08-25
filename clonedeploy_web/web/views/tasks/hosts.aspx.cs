@@ -46,12 +46,12 @@ namespace views.tasks
                 var dataKey = gvHosts.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var host = new Host {Id = Convert.ToInt16(dataKey.Value)};
+                    var host = new Computer {Id = Convert.ToInt16(dataKey.Value)};
                     host.Read();
                     Session["hostID"] = host.Id;
                     Session["direction"] = "push";
                     lblTitle.Text = "Deploy The Selected Host?";
-                    gvConfirm.DataSource = new List<Host> { host };
+                    gvConfirm.DataSource = new List<Computer> { host };
                 }
             }
             gvConfirm.DataBind();
@@ -69,12 +69,12 @@ namespace views.tasks
                 var dataKey = gvHosts.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var host = new Host {Id = Convert.ToInt16(dataKey.Value)};
+                    var host = new Computer {Id = Convert.ToInt16(dataKey.Value)};
                     host.Read();
                     Session["hostID"] = host.Id;
                     Session["direction"] = "pull";
                     lblTitle.Text = "Upload The Selected Host?";
-                    gvConfirm.DataSource = new List<Host> { host };
+                    gvConfirm.DataSource = new List<Computer> { host };
                 }
             }
             gvConfirm.DataBind();
@@ -107,14 +107,14 @@ namespace views.tasks
 
         protected void OkButton_Click(object sender, EventArgs e)
         {
-            var host = new Host {Id = Convert.ToInt16(Session["hostID"])};
+            var host = new Computer {Id = Convert.ToInt16(Session["hostID"])};
             host.Read();
 
             var direction = (string) (Session["direction"]);
 
             if (direction == "push")
             {
-                var image = new Image {Name = host.Image};
+                var image = new Image {Id = host.Image};
                 image.Read();
                 Session["imageID"] = image.Id;
 
@@ -151,7 +151,7 @@ namespace views.tasks
 
         protected void PopulateGrid()
         {
-            var host = new Host();
+            var host = new Computer();
             gvHosts.DataSource = host.Search(txtSearch.Text);
 
             gvHosts.DataBind();

@@ -62,7 +62,7 @@ namespace Global
                 foreach (var history in histories)
                 {
                     var row = table.NewRow();
-                    var host = new Host {Id = Convert.ToInt16(history.TypeId)};
+                    var host = new Computer {Id = Convert.ToInt16(history.TypeId)};
                     host.Read();
                     row["Host"] = host.Name;
                     row["Date"] = history.EventDate;
@@ -134,7 +134,7 @@ namespace Global
                 foreach (var history in histories)
                 {
                     var row = table.NewRow();
-                    var host = new Host { Id = Convert.ToInt16(history.Key) };
+                    var host = new Computer { Id = Convert.ToInt16(history.Key) };
                     host.Read();
                     row["Host"] = host.Name;
                     row["Count"] = history.groupCount;

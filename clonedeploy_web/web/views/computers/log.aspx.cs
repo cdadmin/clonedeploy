@@ -10,11 +10,11 @@ namespace views.hosts
 {
     public partial class HostLog : Page
     {
-        public Host Host { get; set; }
+        public Computer Host { get; set; }
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            Host = new Host { Id = Convert.ToInt16(Request["hostid"]) };
+            Host = new Computer { Id = Convert.ToInt16(Request["hostid"]) };
             Host.Read();
             var subTitle = Master.Master.FindControl("SubNav").FindControl("labelSubTitle") as Label;
             if (subTitle != null) subTitle.Text = Host.Name + " | Logs";

@@ -30,7 +30,7 @@ namespace views.hosts
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            Master.Master.FindControl("SubNav").Visible = false;
+            Master.Master.FindControl("SubNavDynamic").Visible = false;
             if (IsPostBack) return;
             Master.Msgbox(Utility.Message); //For Redirects
             if (Settings.DefaultHostView == "all")
@@ -45,7 +45,7 @@ namespace views.hosts
                 if (cb == null || !cb.Checked) continue;
                 var dataKey = gvHosts.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
-                var host = new Host {Id = Convert.ToInt16(dataKey.Value)};
+                var host = new Computer {Id = Convert.ToInt16(dataKey.Value)};
                 host.Delete();
             }
 
@@ -73,7 +73,7 @@ namespace views.hosts
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
-            List<Host> listHosts = (List<Host>)gvHosts.DataSource;
+            List<Computer> listHosts = (List<Computer>)gvHosts.DataSource;
             switch (e.SortExpression)
             {
                 case "Name":
@@ -97,7 +97,7 @@ namespace views.hosts
 
         protected void PopulateGrid()
         {
-            var host = new Host();
+            var host = new Computer();
             gvHosts.DataSource = host.Search(txtSearch.Text);
             gvHosts.DataBind();
 

@@ -1,6 +1,6 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/masters/Host.master" AutoEventWireup="true" Inherits="views.hosts.Searchhosts" CodeFile="search.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/masters/Computer.master" AutoEventWireup="true" Inherits="views.hosts.Searchhosts" CodeFile="search.aspx.cs" %>
 
-<%@ MasterType VirtualPath="~/views/masters/Host.master" %>
+<%@ MasterType VirtualPath="~/views/masters/Computer.master" %>
 <%@ Reference virtualPath="~/views/masters/Site.master" %>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">
@@ -31,8 +31,8 @@
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"></asp:BoundField>
             <asp:BoundField DataField="Mac" HeaderText="MAC" SortExpression="Mac" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
             <asp:BoundField DataField="Image" HeaderText="Image" SortExpression="Image" ItemStyle-CssClass="width_200 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller"/>
-            <asp:BoundField DataField="Group" HeaderText="Group" SortExpression="Group" ItemStyle-CssClass="width_200 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller"/>
-            <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/hosts/edit.aspx?hostid={0}" Text="View"/>
+         
+            <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/computers/edit.aspx?hostid={0}" Text="View"/>
         </Columns>
         <EmptyDataTemplate>
             No Hosts Found

@@ -31,7 +31,7 @@ using Global;
 namespace Models
 {
     [Table("computers", Schema = "public")]
-    public class Host
+    public class Computer
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -48,16 +48,16 @@ namespace Models
         public string Description { get; set; }
 
         [Column("computer_building_id", Order = 5)]
-        public string Building { get; set; }
+        public int Building { get; set; }
 
         [Column("computer_room_id", Order = 6)]
-        public string Room { get; set; }
+        public int Room { get; set; }
 
         [Column("computer_image_id", Order = 7)]
-        public string Image { get; set; }
+        public int Image { get; set; }
 
         [Column("computer_image_profile_id", Order = 8)]
-        public string ImageProfile { get; set; }
+        public int ImageProfile { get; set; }
 
         [NotMapped]
         public string Group { get; set; }
@@ -201,9 +201,9 @@ namespace Models
             }
         }
 
-        public List<Host> Search(string searchString)
+        public List<Computer> Search(string searchString)
         {
-            List<Host> list = new List<Host>();
+            List<Computer> list = new List<Computer>();
             var user = new WdsUser { Name = HttpContext.Current.User.Identity.Name };
             user.Read();
 

@@ -22,8 +22,30 @@
     </div>
     <div class="size-5 column">
         <asp:DropDownList ID="ddlImageOS" runat="server" CssClass="ddlist">
+            <asp:ListItem>Windows</asp:ListItem>
             <asp:ListItem>Linux</asp:ListItem>
             <asp:ListItem>Mac</asp:ListItem>
+        </asp:DropDownList>
+    </div>
+    <br class="clear"/>
+    
+     <div class="size-4 column">
+        Image Type:
+    </div>
+    <div class="size-5 column">
+        <asp:DropDownList ID="ddlImageType" runat="server" CssClass="ddlist">
+            <asp:ListItem>Block</asp:ListItem>
+            <asp:ListItem>File</asp:ListItem>
+        </asp:DropDownList>
+    </div>
+    <br class="clear"/>
+    
+    <div class="size-4 column">
+        Image Environment:
+    </div>
+    <div class="size-5 column">
+        <asp:DropDownList ID="ddlImageEnvironment" runat="server" CssClass="ddlist">
+            <asp:ListItem>Linux</asp:ListItem>
             <asp:ListItem>Windows</asp:ListItem>
         </asp:DropDownList>
     </div>

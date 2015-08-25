@@ -31,7 +31,7 @@ namespace views.hosts
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            Master.Master.FindControl("SubNav").Visible = false;
+            Master.Master.FindControl("SubNavDynamic").Visible = false;
 
             if (IsPostBack) return;
 
@@ -43,30 +43,20 @@ namespace views.hosts
 
         protected void ButtonAddHost_Click(object sender, EventArgs e)
         {
-            string scripts = null;
-            foreach (ListItem item in lbScripts.Items)
-            {
-                if (item.Selected)
-                    scripts += item.Value + ",";
-            }
-
-            var host = new Host
+      
+            var host = new Computer
             {
                 Name = txtHostName.Text,
                 Mac = Utility.FixMac(txtHostMac.Text),
-                Image = ddlHostImage.Text,
-                Group = ddlHostGroup.Text,
+                Image = Convert.ToInt32(ddlHostImage.SelectedValue),
+                ImageProfile = Convert.ToInt32(ddlImageProfile.SelectedValue),
                 Description = txtHostDesc.Text,
-                Kernel = ddlHostKernel.Text,
-                BootImage = ddlHostBootImage.Text,
-                Args = txtHostArguments.Text,
-                Scripts = scripts
             };
 
             if (host.ValidateHostData())
             {
                 if (host.Create() && !createAnother.Checked)
-                    Response.Redirect("~/views/hosts/edit.aspx?hostid=" + host.Id);
+                    Response.Redirect("~/views/computers/edit.aspx?hostid=" + host.Id);
             }
 
             Master.Msgbox(Utility.Message);
@@ -74,32 +64,23 @@ namespace views.hosts
 
         protected void PopulateForm()
         {
-            ddlHostImage.DataSource = new Image().Search("").Select(i => i.Name);
+            ddlHostImage.DataSource = new Image().Search("").Select (i => new {i.Id,i.Name});
+            ddlHostImage.DataValueField = "Id";
+            ddlHostImage.DataTextField = "Name";
             ddlHostImage.DataBind();
             ddlHostImage.Items.Insert(0, "Select Image");
 
-            ddlHostGroup.DataSource = new Group().Search("").Select(g => g.Name);
-            ddlHostGroup.DataBind();
-            ddlHostGroup.Items.Insert(0, "");
+     
+        }
 
-            ddlHostKernel.DataSource = Utility.GetKernels();
-            ddlHostKernel.DataBind();
-            var itemHostKernel = ddlHostKernel.Items.FindByText(Settings.DefaultKernel32);
-            if (itemHostKernel != null)
-                ddlHostKernel.SelectedValue = Settings.DefaultKernel32;
-            else
-                ddlHostKernel.Items.Insert(0, "Select Kernel");
+        protected void ddlHostImage_OnSelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ddlHostImage.Text == "Select Image") return;
+            ddlImageProfile.DataSource = new ImageProfile().Search(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
+            ddlImageProfile.DataValueField = "Id";
+            ddlImageProfile.DataTextField = "Name";
+            ddlImageProfile.DataBind();
 
-            ddlHostBootImage.DataSource = Utility.GetBootImages();
-            ddlHostBootImage.DataBind();
-            var itemBootImage = ddlHostBootImage.Items.FindByText("initrd.gz");
-            if (itemBootImage != null)
-                ddlHostBootImage.SelectedValue = "initrd.gz";
-            else
-                ddlHostBootImage.Items.Insert(0, "Select Boot Image");
-
-            lbScripts.DataSource = Utility.GetScripts("custom");
-            lbScripts.DataBind();
         }
     }
 }

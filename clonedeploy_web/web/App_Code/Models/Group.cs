@@ -17,6 +17,7 @@
  */
 
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -34,46 +35,55 @@ namespace Models
     {
         public Group()
         {
-            Members = new List<Host>();
+            Members = new List<Computer>();
         }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("groupid", Order = 1)]
+        [Column("group_id", Order = 1)]
         public string Id { get; set; }
 
-        [Column("groupname", Order = 2)]
+        [Column("group_name", Order = 2)]
         public string Name { get; set; }
 
-        [Column("groupdesc", Order = 3)]
+        [Column("group_description", Order = 3)]
         public string Description { get; set; }
 
-        [Column("groupimage", Order = 4)]
+        [Column("group_building_id", Order = 4)]
+        public int Building { get; set; }
+
+        [Column("group_room_id", Order = 5)]
+        public int Room { get; set; }
+
+        [Column("group_image_id", Order = 6)]
         public string Image { get; set; }
 
-        [Column("groupkernel", Order = 5)]
-        public string Kernel { get; set; }
+        [Column("group_image_profile_id", Order = 7)]
+        public string ImageProfile { get; set; }
 
-        [Column("groupbootimage", Order = 6)]
-        public string BootImage { get; set; }
-
-        [Column("grouparguments", Order = 7)]
-        public string Args { get; set; }
-
-        [Column("groupsenderargs", Order = 8)]
-        public string SenderArgs { get; set; }
-
-        [Column("groupscripts", Order = 9)]
-        public string Scripts { get; set; }
-
-        [Column("grouptype", Order = 10)]
+        [Column("group_type", Order = 8)]
         public string Type { get; set; }
 
-        [Column("groupexpression", Order = 11)]
+       [NotMapped] 
+        public string Kernel { get; set; }
+
+        [NotMapped] 
+        public string BootImage { get; set; }
+
+        [NotMapped] 
+        public string Args { get; set; }
+
+        [NotMapped] 
+        public string SenderArgs { get; set; }
+
+        [NotMapped] 
+        public string Scripts { get; set; }
+
+        [NotMapped] 
         public string Expression { get; set; }
 
         [NotMapped] 
-        public List<Host> Members { get; set; }
+        public List<Computer> Members { get; set; }
 
         public void Create()
         {
@@ -148,9 +158,9 @@ namespace Models
             }          
         }
 
-        public List<Host> GroupMembers()
+        public List<Computer> GroupMembers()
         {
-            var hosts = new List<Host>();
+            var hosts = new List<Computer>();
 
             switch (Type)
             {
@@ -276,7 +286,7 @@ namespace Models
             return list;
         }
 
-        public List<Host> SearchSmartHosts(string searchString)
+        public List<Computer> SearchSmartHosts(string searchString)
         {
             /*
             using (var db = new DB())
@@ -287,7 +297,7 @@ namespace Models
                         new NpgsqlParameter("searchstring", searchString)).ToList();
             }
              * */
-            return new List<Host>();
+            return new List<Computer>();
         }
 
         public bool Update()
@@ -340,7 +350,7 @@ namespace Models
                         var newHost = db.Hosts.Find(host.Id);
                         if (Type == "standard")
                             newHost.Group = Name;
-                        newHost.Image = Image;
+                        newHost.Image = Convert.ToInt32(Image);
                         newHost.Kernel = Kernel;
                         newHost.BootImage = BootImage;
                         newHost.Args = Args;

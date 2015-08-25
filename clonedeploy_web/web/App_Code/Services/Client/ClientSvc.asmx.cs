@@ -19,7 +19,7 @@ namespace Services.Client
     public class ClientSvc : WebService
     {
         [WebMethod(EnableSession = true)]
-        public void AddHost(Host host)
+        public void AddHost(Computer host)
         {
             if (!Authenticate()) return;
             host.Create();

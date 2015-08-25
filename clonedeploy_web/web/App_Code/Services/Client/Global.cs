@@ -111,7 +111,7 @@ namespace Services.Client
 
         public string HostOptions(string mac)
         {
-            Host host = new Host {Mac = mac};
+            Computer host = new Computer {Mac = mac};
             host.Read();
             return host.PartitionScript;
 

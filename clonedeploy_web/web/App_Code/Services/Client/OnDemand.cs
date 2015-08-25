@@ -11,7 +11,7 @@ namespace Services.Client
         public string GetCustomMulticastInfo(string mac, string mcTaskName)
         {
             ActiveMcTask mcTask;
-            var host = new Host {Mac = mac.ToLower()};
+            var host = new Computer {Mac = mac.ToLower()};
             host.Read();
 
             using (var db = new DB())
@@ -61,7 +61,7 @@ namespace Services.Client
             var image = new Image {Id = Convert.ToInt32(imageId)};
             image.Read();
 
-            var host = new Host {Mac = mac.ToLower()};
+            var host = new Computer {Mac = mac.ToLower()};
             host.Read();
 
             if (direction == "push")

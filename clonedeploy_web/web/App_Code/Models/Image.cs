@@ -57,6 +57,9 @@ namespace Models
         [Column("image_checksum", Order = 7)]
         public string Checksum { get; set; }
 
+        [Column("image_type", Order = 8)]
+        public string Type { get; set; }
+
         [NotMapped]
         public string ClientSize { get; set; }
 
@@ -270,6 +273,7 @@ namespace Models
                 ClientSize = image.ClientSize;
                 ClientSizeCustom = image.ClientSizeCustom;
                 Checksum = image.Checksum;
+                Type = image.Type;
             }
           
         }

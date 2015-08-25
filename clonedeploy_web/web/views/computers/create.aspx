@@ -1,6 +1,6 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/masters/Host.master" AutoEventWireup="true" Inherits="views.hosts.Addhosts" CodeFile="create.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/masters/Computer.master" AutoEventWireup="true" Inherits="views.hosts.Addhosts" CodeFile="create.aspx.cs" %>
 
-<%@ MasterType VirtualPath="~/views/masters/Host.master" %>
+<%@ MasterType VirtualPath="~/views/masters/Computer.master" %>
 <%@ Reference virtualPath="~/views/masters/Site.master" %>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">
@@ -23,21 +23,22 @@
     </div>
     <br class="clear"/>
     <div class="size-4 column">
-        Host Image:
+        Image:
     </div>
     <div class="size-5 column">
-        <asp:DropDownList ID="ddlHostImage" runat="server" CssClass="ddlist">
-        </asp:DropDownList>
+        <asp:DropDownList ID="ddlHostImage" runat="server" CssClass="ddlist" AutoPostBack="true" OnSelectedIndexChanged="ddlHostImage_OnSelectedIndexChanged"/>
     </div>
     <br class="clear"/>
+   
     <div class="size-4 column">
-        Host Group:
+        Image Profile:
     </div>
     <div class="size-5 column">
-        <asp:DropDownList ID="ddlHostGroup" runat="server" CssClass="ddlist">
-        </asp:DropDownList>
+        <asp:DropDownList ID="ddlImageProfile" runat="server" CssClass="ddlist"/>
     </div>
+
     <br class="clear"/>
+   
     <div class="size-4 column">
         Host Description:
     </div>
@@ -45,36 +46,8 @@
         <asp:TextBox ID="txtHostDesc" runat="server" CssClass="descbox" TextMode="MultiLine"></asp:TextBox>
     </div>
     <br class="clear"/>
-    <div class="size-4 column">
-        Host Kernel:
-    </div>
-    <div class="size-5 column">
-        <asp:DropDownList ID="ddlHostKernel" runat="server" CssClass="ddlist">
-        </asp:DropDownList>
-    </div>
-    <br class="clear"/>
-    <div class="size-4 column">
-        Host Boot Image:
-    </div>
-    <div class="size-5 column">
-        <asp:DropDownList ID="ddlHostBootImage" runat="server" CssClass="ddlist">
-        </asp:DropDownList>
-    </div>
-    <br class="clear"/>
-    <div class="size-4 column">
-        Host Arguments:
-    </div>
-    <div class="size-5 column">
-        <asp:TextBox ID="txtHostArguments" runat="server" CssClass="textbox"></asp:TextBox>
-    </div>
-    <br class="clear"/>
-    <div class="size-4 column">
-        Host Scripts:
-    </div>
-    <div class="size-5 column">
-        <asp:ListBox ID="lbScripts" runat="server" SelectionMode="Multiple"></asp:ListBox>
-    </div>
-    <br class="clear"/>
+   
+   
     <div class="size-4 column">
         Create Another?
         <asp:CheckBox runat="server" ID="createAnother"/>

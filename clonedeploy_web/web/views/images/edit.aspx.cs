@@ -29,6 +29,8 @@ namespace views.images
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            Master.Master.Msgbox(Utility.Message);
+            Master.Master.FindControl("SubNav").Visible = false;
             var image = new Image { Id = Convert.ToInt32(Request.QueryString["imageid"]) };
             image.Read();
             var subTitle = Master.Master.FindControl("SubNavDynamic").FindControl("labelSubTitle") as Label;
@@ -144,6 +146,7 @@ namespace views.images
             txtImageName.Text = image.Name;
             txtImageDesc.Text = image.Description;
             ddlImageOS.Text = image.Os;
+            ddlImageType.Text = image.Type;
             if (image.Protected == 1)
                 chkProtected.Checked = true;
             if (image.IsVisible == 1)

@@ -148,7 +148,7 @@ namespace Pxe
                 };
 
                 var fileOps = new FileOps();
-                var host = new Host { Mac = Utility.PxeMacToMac(PxeHostMac) };
+                var host = new Computer { Mac = Utility.PxeMacToMac(PxeHostMac) };
                 host.Read();
                 if (File.Exists(biosPath))
                 {  
@@ -359,7 +359,7 @@ namespace Pxe
                 var fileOps = new FileOps();
                 if (File.Exists(path))
                 {
-                    var host = new Host {Mac = Utility.PxeMacToMac(PxeHostMac)};
+                    var host = new Computer {Mac = Utility.PxeMacToMac(PxeHostMac)};
                     host.Read();
                     if (Convert.ToBoolean(Convert.ToInt16(host.CustomBootEnabled)))
                     {

@@ -8,7 +8,7 @@ namespace Pxe
     public class CustomBootMenu
     {
         public string FileName { get; set; }
-        public Host Host { get; set; }
+        public Computer Host { get; set; }
 
         /*public void MoveCustomInactiveToActive()
         {

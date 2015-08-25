@@ -1,13 +1,12 @@
-.container{position:relative;width: 1160px;margin:0 0 0 40px;padding:0 0 0 0;}
-.header_wrapper{position:relative;float:left;left:10px;background-color:#fff;width:1160px; height:75px}
-.content_wrapper{position:relative;float:left;left:1px;background-color:#fff;width:1350px;height: 100%;}
-.top-nav-left{position:relative;float:left;left:0;width:500px;background-color: #fff;height: 75px;}
-.top-nav-right{position:relative;float:left;left:0;width:650px;background-color: #fff;height: 75px;}
-.content-left{display: inline;position:relative;float:left;left:0px;width:200px;overflow-x:hidden;overflow-y:hidden;top: 0px;border-right: 1px solid #eee;color: black;background: #fff;}
+.container{position:relative;width: 1160px;margin:0 0 0 40px;padding:0 0 0 0;height: 100%;overflow-x:hidden;overflow-y:hidden;}
+.header_container{position:relative;float:left;left:1px;background-color:#fff;width:1350px;height: 75px;border-bottom: 1px solid #eee;}
+.content_container{position:relative;float:left;left:1px;background-color:#fff;width:1350px;height: 90%;overflow-x:hidden;overflow-y:hidden;}
+.nav{position:fixed;overflow:hidden;top:0;left:0;height:100%;width:40px;list-style-type:none;margin: 0;padding:0;background:#fff;border-right:1px solid #eee}
+.sub-nav_container{display: inline;position:relative;float:left;left:0px;width:200px;overflow-x:hidden;overflow-y:hidden;top: 0px;border-right: 1px solid #eee;color: black;background: #fff; height:100%}
+.spacer{ height: 20px;width: 100%;}
+.content-right{display: inline;position:relative;float:left;left:20px;top: 0px;width:900px;background-color: #fff;overflow-x:hidden;overflow-y:auto;border-right: 1px solid #eee;height:100%;margin-bottom: 100px;}
 
-.content-right{display: inline;position:relative;float:left;left:20px;top: 20px;width:1000px;background-color: #fff;overflow-x:hidden;overflow-y:auto;}
-
-.container .column{float:left;display:inline;margin-left:10px;margin-right:10px;}
+.container .column{float:left;display:inline;margin-right:10px;}
 .row{margin-bottom:20px;}
 .container .full.column{width:1000px;}
 .container .size-1.column{width:500px;}

@@ -13,20 +13,22 @@
 .nav li a.icon-task:before{content:"\e020";font-size:2.0em;margin-left: 5px;margin-top: 30px;}
 .nav li a.icon-setting:before{content:"\e01c";font-size:2.0em;margin-left: 5px;margin-top: 30px;}
 .nav li a.icon-logout:before{content:"\e01a";font-size:2.0em;margin-left: 5px;margin-top: 30px;}
+.image-icon:before{content:"\e009";font-size:26px;margin-left: 5px;margin-top: 25px;}
+.computer:before{content:"\e017";font-size:2.0em;margin: 30px 0 0 5px;}
 .export:before{content:"\e008";font-size:22px;margin-top:3px;}
 .reports:before{content:"\e00c";font-size:22px;margin-top:3px;}
 .global:before{content:"\e007";font-size:30px;margin-top:-1px;margin-left:-1px;}
 .global-large:before{ font-size: 40px;}
 .import:before{content:"\e00f";font-size:28px;}
-.search:before{content:"\e012";font-size:24px;}
+.search-icon:before{content:"\e012";font-size:24px;margin: 25px 0 0 5px;}
 .upload:before{content:"\e01d";font-size:24px;}
 .deploy:before{content:"\e006";font-size:24px;}
-.edit:before{content:"\e018";font-size: 2em;margin-left: 5px; margin-top: 30px;}
-.delete:before{content:"\e005";font-size:32px;margin:-4px -2px 0 0;}
-.logs:before{content:"\e015";font-size:24px;margin:1px -1px 0 0;}
-.history:before{content:"\e00b";font-size:24px;}
+.edit:before{content:"\e018";font-size: 24px;margin-left: 5px; margin-top: 30px;}
+.delete:before{content:"\e005";font-size:32px;margin:30px 0 0 5px;}
+.logs:before{content:"\e015";font-size:26px;margin:30px 0 0 5px;}
+.history:before{content:"\e00b";font-size:26px;margin-top: 30px;margin-left: 8px;}
 .boot:before{content:"\e011";font-size:24px;margin:2px -1px 0 0;}
-.create:before{content:"\e019";margin-left:-1px;}
+.create-icon:before{content:"\e019";font-size: 26px; margin:25px 0 0 5px;}
 .active:before{content:"\e01b";font-size:24px;margin:2px 0 0 -2px;}
 .unicast:before{content:"\e01e";font-size:22px;margin-top:2px;}
 .multicast:before{content:"\e004";font-size:26px;margin-top:1px;}

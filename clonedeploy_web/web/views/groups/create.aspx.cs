@@ -86,7 +86,7 @@ namespace views.groups
 
         protected void PopulateGrid()
         {
-            var host = new Host();
+            var host = new Computer();
             if (ddlGroupType.Text == "standard")
             {
                 gvHosts.DataSource = host.Search(txtSearchHosts.Text);
@@ -121,7 +121,7 @@ namespace views.groups
                     var dataKey = gvHosts.DataKeys[row.RowIndex];
                     if (dataKey != null)
                     {
-                        var host = new Host {Id = Convert.ToInt16(dataKey.Value)};
+                        var host = new Computer {Id = Convert.ToInt16(dataKey.Value)};
                         host.Read();
                         @group.Members.Add(host);
                     }

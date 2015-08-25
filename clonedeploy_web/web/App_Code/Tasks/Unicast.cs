@@ -25,7 +25,7 @@ namespace Tasks
     public class Unicast
     {
         public string Direction { get; set; }
-        public Host Host { get; set; }
+        public Computer Host { get; set; }
         public ActiveTask ActiveTask { get; set; }
 
         public void Create()
@@ -77,7 +77,7 @@ namespace Tasks
             };
             history.CreateEvent();
 
-            var image = new Image {Name = Host.Image};
+            var image = new Image {Id = Host.Image};
             image.Read();
             history.Type = "Image";
             history.Notes = Host.Name;

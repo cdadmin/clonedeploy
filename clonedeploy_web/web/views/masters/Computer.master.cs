@@ -7,14 +7,14 @@ using Tasks;
 
 namespace views.masters
 {
-    public partial class HostMaster : MasterPage
+    public partial class ComputerMaster : MasterPage
     {
-        protected Host Host { get; set; }
+        protected Computer Host { get; set; }
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if(string.IsNullOrEmpty(Request["hostid"])) return;
-            Host = new Host { Id = Convert.ToInt16(Request["hostid"]) };
+            Host = new Computer { Id = Convert.ToInt16(Request["hostid"]) };
             Host.Read();
         }
 
@@ -22,7 +22,6 @@ namespace views.masters
         {
             lblTitle.Text = "Delete This Host?";
             Session["direction"] = "delete";
-            gvConfirm.DataBind(); // clear gridview if deploy or upload was clicked first
             Page.ClientScript.RegisterStartupScript(GetType(), "modalscript",
                 "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
                 true);
@@ -30,10 +29,11 @@ namespace views.masters
 
         protected void btnDeploy_Click(object sender, EventArgs e)
         {
+            Image image = new Image {Id = Host.Image};
+            image.Read();
             Session["direction"] = "push";
-            lblTitle.Text = "Deploy The Selected Host?";
-            gvConfirm.DataSource = new List<Host> { Host };
-            gvConfirm.DataBind();
+            lblTitle.Text = "Deploy " + image.Name + " To " + Host.Name + " ?";
+          
             Page.ClientScript.RegisterStartupScript(GetType(), "modalscript",
                 "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
                 true);
@@ -42,9 +42,7 @@ namespace views.masters
         protected void btnUpload_Click(object sender, EventArgs e)
         {
             Session["direction"] = "pull";
-            lblTitle.Text = "Upload The Selected Host?";
-            gvConfirm.DataSource = new List<Host> { Host };
-            gvConfirm.DataBind();
+            lblTitle.Text = "Upload This Computer?";
             Page.ClientScript.RegisterStartupScript(GetType(), "modalscript",
                 "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });;",
                 true);
@@ -59,11 +57,11 @@ namespace views.masters
                 case "delete":
                     Host.Delete();
                     if (Utility.Message.Contains("Successfully"))
-                        Response.Redirect("~/views/hosts/search.aspx");
+                        Response.Redirect("~/views/computers/search.aspx");
                     break;
                 case "push":
                 {
-                    var image = new Image {Name = Host.Image};
+                    var image = new Image {Id = Host.Image};
                     image.Read();
                     Session["imageID"] = image.Id;
 

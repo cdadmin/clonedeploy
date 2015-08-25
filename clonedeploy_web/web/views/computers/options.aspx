@@ -1,5 +1,5 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/masters/Host.master" AutoEventWireup="true" CodeFile="options.aspx.cs" Inherits="views.hosts.HostOptions" ValidateRequest="false"%>
-<%@ MasterType VirtualPath="~/views/masters/Host.master" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/masters/Computer.master" AutoEventWireup="true" CodeFile="options.aspx.cs" Inherits="views.hosts.HostOptions" ValidateRequest="false"%>
+<%@ MasterType VirtualPath="~/views/masters/Computer.master" %>
 <%@ Reference virtualPath="~/views/masters/Site.master" %>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">

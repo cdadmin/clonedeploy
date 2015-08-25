@@ -34,7 +34,7 @@ namespace Tasks
     {
         public Multicast()
         {
-            Hosts = new List<Host>();
+            Hosts = new List<Computer>();
             Direction = "push";
             IsCustom = false;
             ActiveMcTask = new ActiveMcTask();
@@ -42,7 +42,7 @@ namespace Tasks
 
         public string Direction { get; set; }
         public Group Group { get; set; }
-        public List<Host> Hosts { get; set; }
+        public List<Computer> Hosts { get; set; }
         public bool IsCustom { get; set; }
         public ActiveMcTask ActiveMcTask { get; set; }
 

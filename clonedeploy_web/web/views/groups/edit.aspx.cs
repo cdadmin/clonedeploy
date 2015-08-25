@@ -36,9 +36,9 @@ namespace views.groups
             var group = new Group {Id = Request.QueryString["groupid"]};
             group.Read();
 
-            var currentMembers = new List<Host>();
-            var membersToAdd = new List<Host>();
-            var membersToRemove = new List<Host>();
+            var currentMembers = new List<Computer>();
+            var membersToAdd = new List<Computer>();
+            var membersToRemove = new List<Computer>();
 
             group.Name = txtGroupName.Text;
             group.Description = txtGroupDesc.Text;
@@ -68,7 +68,7 @@ namespace views.groups
                     var dataKey = gvAdd.DataKeys[row.RowIndex];
                     if (dataKey != null)
                     {
-                        var host = new Host {Id = Convert.ToInt16(dataKey.Value)};
+                        var host = new Computer {Id = Convert.ToInt16(dataKey.Value)};
                         host.Read();
                         membersToAdd.Add(host);
                     }
@@ -76,7 +76,7 @@ namespace views.groups
 
                 foreach (GridViewRow row in gvRemove.Rows)
                 {
-                    var host = new Host();
+                    var host = new Computer();
                     var dataKey = gvRemove.DataKeys[row.RowIndex];
                     if (dataKey != null)
                     {
@@ -120,7 +120,7 @@ namespace views.groups
                 txtSmartSearch.Text = group.Expression;
                 gvSmartHosts.DataSource = group.SearchSmartHosts(txtSmartSearch.Text);
                 gvSmartHosts.DataBind();
-                lblSmartTotal.Text = gvSmartHosts.Rows.Count + " Result(s) / " + new Host().GetTotalCount() +
+                lblSmartTotal.Text = gvSmartHosts.Rows.Count + " Result(s) / " + new Computer().GetTotalCount() +
                                      " Total Host(s)";
             }
 
@@ -247,7 +247,7 @@ namespace views.groups
 
         protected void PopulateGrid()
         {
-            var host = new Host();
+            var host = new Computer();
             if (ddlGroupType.Text == "standard")
             {
                 gvAdd.DataSource = host.Search(txtSearchHosts.Text);

@@ -25,28 +25,7 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubNav" Runat="Server">
     
-</asp:Content>
-<asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">
-    <script type="text/javascript">
-        $(window).resize(function () {
-            var hgt = $(window).height();
-            $(".content-left").css({ "height": hgt - 155 });
-            $(".content-right").css({ "height": hgt - 155 });
-        });
-        $(document).ready(function () {
-
-
-            var hgt = $(window).height();
-
-
-
-            $(".content-left").css({ "height": hgt - 155 });
-            $(".content-right").css({ "height": hgt - 155 });
-
-
-        });
-    </script>
-    <div class="content-left sub-nav">
+    <div class="sub-nav-top">
         <ul>
             <li id="subnav-server">
                 <a href="<%= ResolveUrl("~/views/admin/settings.aspx") %>" class="icon-host">
@@ -134,10 +113,15 @@
         </ul>
 
     </div>
+</asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">
+
     <div class="content-right">
         
 
     <asp:ContentPlaceHolder ID="SubContent" runat="server">
     </asp:ContentPlaceHolder>
+         <br class="clear" />
+          <div class="spacer"></div>
         </div>
 </asp:Content>

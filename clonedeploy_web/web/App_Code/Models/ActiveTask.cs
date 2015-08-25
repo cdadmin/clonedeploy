@@ -236,7 +236,7 @@ namespace Models
 
                         if (ext == ".custom") continue;
                         var fileName = Path.GetFileNameWithoutExtension(pxeFile);
-                        var host = new Host { Mac = Utility.PxeMacToMac(fileName) };
+                        var host = new Computer { Mac = Utility.PxeMacToMac(fileName) };
                         host.Read();
                         var isCustomBootTemplate = Convert.ToBoolean(Convert.ToInt16(host.CustomBootEnabled));
                         if (isCustomBootTemplate)

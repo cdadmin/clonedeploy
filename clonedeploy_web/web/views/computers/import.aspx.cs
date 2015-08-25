@@ -41,7 +41,7 @@ namespace views.hosts
                               "csvupload" + Path.DirectorySeparatorChar + "hosts.csv";
             FileUpload.SaveAs(csvFilePath);
             new FileOps().SetUnixPermissions(csvFilePath);
-            new Host().Import();
+            new Computer().Import();
             Master.Msgbox(Utility.Message);
         }       
     }
