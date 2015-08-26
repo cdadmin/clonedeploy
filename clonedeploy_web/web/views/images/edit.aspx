@@ -2,6 +2,9 @@
 
 <%@ MasterType VirtualPath="~/views/masters/Image.master" %>
 <%@ Reference virtualPath="~/views/masters/Site.master" %>
+<asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
+   <li><a href="<%= ResolveUrl("~/views/images/edit.aspx") %>?imageid=<%= Master.Image.Id %>" ><%= Master.Image.Name %></a></li>
+    </asp:Content>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
 
     <script type="text/javascript">

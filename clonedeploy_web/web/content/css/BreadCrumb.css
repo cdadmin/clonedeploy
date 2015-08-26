@@ -29,15 +29,15 @@
 .breadCrumb
 {
     
-	margin: 0 0 0 40px;
+	margin: 0;
 	padding: 0;
 	float: left;
 	display: block;
 	height: 21px;
 	overflow: hidden;
-	width: 990px;
+	width: 100%;
 	padding:5px;
-	border:solid 1px #dedede;
+
 	background:#fff;
 }
 .breadCrumb ul
@@ -57,7 +57,7 @@
 	line-height: 21px;
 	margin: 0px 6px 0px 0;
 	padding: 0px 10px 0px 0;
-	font-size: .9167em;
+	font-size: 18px;
 	background: url(../img/Chevron.gif) no-repeat 100% 0;
 }
 .breadCrumb ul li div.chevronOverlay
@@ -80,7 +80,8 @@
 	line-height: 21px;
 	overflow: hidden;
 	float: left;
-    color: black;
+    color: #47a3da;
+    font-size: 18px;
 }
 .breadCrumb ul li.first a
 {

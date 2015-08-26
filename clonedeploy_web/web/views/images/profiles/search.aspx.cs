@@ -11,8 +11,7 @@ namespace views.images.profiles
     public partial class ImageProfiles : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
-        {
-            Master.Master.FindControl("SubNav").Visible = false;
+        {          
             if (IsPostBack) return;
             Master.Master.Msgbox(Utility.Message); //For Redirects
         

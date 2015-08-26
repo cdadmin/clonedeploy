@@ -13,48 +13,53 @@
    
 </asp:Content>
 <asp:Content runat="server" ID="Breadcrumb" ContentPlaceHolderID="Breadcrumb">
-     <li><a href="#">Imaagesjsdfjjfkasdf d afdjfdsjfsdkjfksdf still longe rdf safjsjfkajsfjaskfaskjfa</a><span class="divider">></span></li>
-            <li><a href="#">...</a><span class="divider">></span></li>
+     <li><a href="<%= ResolveUrl("~/views/images/search.aspx") %>">Images</a></li>
+    <asp:ContentPlaceHolder ID="BreadcrumbSub" runat="server">
+        </asp:ContentPlaceHolder>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubNav" runat="Server">
-      
+
     <div class="sub-nav-top">
+        <div id="Level1" runat="server">
         <ul>
             <li>
-                <a id="searchimage" href="<%= ResolveUrl("~/views/images/search.aspx") %>" ><span class="sub-nav-text">Search Images</span></a>
+                <a id="searchimage" href="<%= ResolveUrl("~/views/images/search.aspx") %>"><span class="sub-nav-text">Search Images</span></a>
             </li>
             <li>
-                <a id="createimage" href="<%= ResolveUrl("~/views/images/create.aspx") %>" ><span class="sub-nav-text">New Image</span></a>
+                <a id="createimage" href="<%= ResolveUrl("~/views/images/create.aspx") %>"><span class="sub-nav-text">New Image</span></a>
             </li>
         </ul>
     </div>
-
-
-</asp:Content>
-<asp:Content ID="Content4" ContentPlaceHolderID="SubNavDynamic" runat="Server">
-    <div class="sub-nav-top">
-      
+    <div id="Level2" runat="server">
         <asp:Label ID="labelSubTitle" runat="server" CssClass="sub-nav-title"></asp:Label>
-          <div class="indent">
-        <ul>
-            <li id="editoption">
+        <div class="indent">
+            <ul>
+                <li id="editoption">
 
-                <a href="<%= ResolveUrl("~/views/images/edit.aspx") %>?imageid=<%= Image.Id %>" ><span class="sub-nav-text">Edit</span></a>
-            </li>
-            <li>
-                <a id="profileoption" href="<%= ResolveUrl("~/views/images/profiles/search.aspx") %>?imageid=<%= Image.Id %>" ><span class="sub-nav-text">Profiles</span></a>
-            </li>
-            <li>
-                <a id="historyoption" href="<%= ResolveUrl("~/views/images/history.aspx") %>?imageid=<%= Image.Id %>" ><span class="sub-nav-text">History</span></a>
-            </li>
-            <li>
-                <a id="logoption" href="<%= ResolveUrl("~/views/images/specs.aspx") %>?imageid=<%= Image.Id %>" ><span class="sub-nav-text">Specs</span></a>
-            </li>
-            <li>
-                <asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click" ><span class="sub-nav-text">Delete</span></asp:LinkButton>
-            </li>
-        </ul>
-            </div>
+                    <a href="<%= ResolveUrl("~/views/images/edit.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text">Edit</span></a>
+                </li>
+                <li>
+                    <a id="profileoption" href="<%= ResolveUrl("~/views/images/profiles/search.aspx") %>?imageid=<%= Image.Id %>&subid=profiles"><span class="sub-nav-text">Profiles</span></a>
+                </li>
+                <li>
+                    <a id="historyoption" href="<%= ResolveUrl("~/views/images/history.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text">History</span></a>
+                </li>
+                <li>
+                    <a id="logoption" href="<%= ResolveUrl("~/views/images/specs.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text">Specs</span></a>
+                </li>
+                <li>
+                    <asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click"><span class="sub-nav-text">Delete</span></asp:LinkButton>
+                </li>
+            </ul>
+        </div>
+    </div>
+        
+         <div class="indent">
+            <ul>
+        <asp:ContentPlaceHolder ID="Level3" runat="server">
+        </asp:ContentPlaceHolder>
+                </ul>
+             </div>
     </div>
 </asp:Content>
 

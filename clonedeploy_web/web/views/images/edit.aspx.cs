@@ -30,11 +30,6 @@ namespace views.images
         protected void Page_Load(object sender, EventArgs e)
         {
             Master.Master.Msgbox(Utility.Message);
-            Master.Master.FindControl("SubNav").Visible = false;
-            var image = new Image { Id = Convert.ToInt32(Request.QueryString["imageid"]) };
-            image.Read();
-            var subTitle = Master.Master.FindControl("SubNavDynamic").FindControl("labelSubTitle") as Label;
-            if (subTitle != null) subTitle.Text = image.Name;
             if (!IsPostBack) PopulateForm();
         }
 

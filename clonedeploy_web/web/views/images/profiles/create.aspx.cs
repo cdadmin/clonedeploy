@@ -13,12 +13,8 @@ public partial class views_images_profiles_create : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         Master.Master.Msgbox(Utility.Message);
-        Master.Master.FindControl("SubNav").Visible = false;
         var image = new Image { Id = Convert.ToInt32(Request.QueryString["imageid"]) };
-        image.Read();
-        var subTitle = Master.Master.FindControl("SubNavDynamic").FindControl("labelSubTitle") as Label;
-        if (subTitle != null) subTitle.Text = image.Name;
-       
+        image.Read();     
     }
     protected void buttonCreateProfile_Click(object sender, EventArgs e)
     {

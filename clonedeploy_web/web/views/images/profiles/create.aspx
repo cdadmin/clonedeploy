@@ -2,6 +2,15 @@
 
 <%@ MasterType VirtualPath="~/views/masters/Image.master" %>
 <%@ Reference virtualPath="~/views/masters/Site.master" %>
+<asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
+   <li><a href="<%= ResolveUrl("~/views/images/edit.aspx") %>?imageid=<%= Master.Image.Id %>" ><%= Master.Image.Name %></a></li>
+     <li><a href="<%= ResolveUrl("~/views/images/profiles/search.aspx") %>?imageid=<%= Master.Image.Id %>&subid=profiles">Profiles</a></li>
+    <li>New</li>
+    </asp:Content>
+<asp:Content runat="server" ID="SubNav3" ContentPlaceHolderID="Level3">
+    <li><a id="profileoption" href="<%= ResolveUrl("~/views/images/profiles/search.aspx") %>?imageid=<%= Master.Image.Id %>&subid=profiles"><span class="sub-nav-text">Search Profiles</span></a></li>
+    <li><a href="<%= ResolveUrl("~/views/images/profiles/create.aspx")  %>?imageid=<%= Master.Image.Id %>&subid=profiles"><span class="sub-nav-text">New Profile</span></a></li>
+</asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="SubContent" Runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {

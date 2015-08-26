@@ -9,13 +9,20 @@ namespace views.masters
     {
         public Image Image { get; set; }
 
-        protected void Page_Load(object sender, EventArgs e)
+        public void Page_Init(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(Request["imageid"])) return;
+            if (string.IsNullOrEmpty(Request["imageid"]))
+            {
+                Level2.Visible = false;
+                return;
+            }
+            Level1.Visible = false;
+            if (Request.QueryString["subid"] == "profiles")
+                Level2.Visible = false;
             Image = new Image { Id = Convert.ToInt32(Request.QueryString["imageid"]) };
             Image.Read();
-
         }
+
         protected void btnDelete_Click(object sender, EventArgs e)
         {
             lblTitle.Text = "Delete This Image?";
