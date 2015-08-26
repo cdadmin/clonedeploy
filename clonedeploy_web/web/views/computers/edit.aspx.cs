@@ -58,7 +58,7 @@ namespace views.hosts
             ddlHostImage.SelectedValue = host.Image.ToString();        
             txtHostDesc.Text = host.Description;
 
-            ddlImageProfile.DataSource = new ImageProfile().Search(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
+            ddlImageProfile.DataSource = new LinuxEnvironmentProfile().Search(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
             ddlImageProfile.DataValueField = "Id";
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();
@@ -70,7 +70,7 @@ namespace views.hosts
         protected void ddlHostImage_OnSelectedIndexChanged(object sender, EventArgs e)
         {
             if (ddlHostImage.Text == "Select Image") return;
-            ddlImageProfile.DataSource = new ImageProfile().Search(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
+            ddlImageProfile.DataSource = new LinuxEnvironmentProfile().Search(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
             ddlImageProfile.DataValueField = "Id";
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();

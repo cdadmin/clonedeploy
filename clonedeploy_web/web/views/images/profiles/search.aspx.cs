@@ -55,7 +55,7 @@ namespace views.images.profiles
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
-            List<ImageProfile> listProfiles = (List<ImageProfile>)gvProfiles.DataSource;
+            List<LinuxEnvironmentProfile> listProfiles = (List<LinuxEnvironmentProfile>)gvProfiles.DataSource;
             switch (e.SortExpression)
             {
                 case "Name":
@@ -71,7 +71,7 @@ namespace views.images.profiles
 
         protected void PopulateGrid()
         {
-            var profile = new ImageProfile();
+            var profile = new LinuxEnvironmentProfile();
             gvProfiles.DataSource = profile.Search(Convert.ToInt32(Request.QueryString["imageid"]));
             gvProfiles.DataBind();
 

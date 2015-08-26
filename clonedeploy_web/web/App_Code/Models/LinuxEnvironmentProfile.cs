@@ -11,8 +11,8 @@ using Global;
 
 namespace Models
 {
-    [Table("image_profiles", Schema = "public")]
-    public class ImageProfile
+    [Table("linux_profiles", Schema = "public")]
+    public class LinuxEnvironmentProfile
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -80,9 +80,9 @@ namespace Models
             }
         }
 
-        public List<ImageProfile> Search(int imageId)
+        public List<LinuxEnvironmentProfile> Search(int imageId)
         {
-            List<ImageProfile> list = new List<ImageProfile>();
+            List<LinuxEnvironmentProfile> list = new List<LinuxEnvironmentProfile>();
 
 
          

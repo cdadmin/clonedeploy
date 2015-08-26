@@ -22,7 +22,7 @@ public partial class views_images_profiles_create : System.Web.UI.Page
     }
     protected void buttonCreateProfile_Click(object sender, EventArgs e)
     {
-        var profile = new ImageProfile
+        var profile = new LinuxEnvironmentProfile()
         {
             Name = txtProfileName.Text,
             Description = txtProfileDesc.Text,

@@ -14,6 +14,8 @@
     <script type="text/javascript" src="<%= ResolveUrl("~/scripts/sha512.js") %>"></script>
     <script type="text/javascript" src="<%= ResolveUrl("~/scripts/scroller/jquery.mCustomScrollbar.concat.min.js") %>"></script>
     <script type="text/javascript " src="<%= ResolveUrl("~/scripts/ace/src-noconflict/ace.js")%>" charset="utf-8"></script>
+    <script type="text/javascript " src="<%= ResolveUrl("~/scripts/jquery.jBreadCrumb.1.1.js")%>" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="~/content/css/BreadCrumb.css"/>
     <link href="~/content/css/base.css" rel="stylesheet" type="text/css" />
     <link href="~/content/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="~/content/css/layout.css" rel="stylesheet" type="text/css" />
@@ -85,7 +87,35 @@
             <div class="clearfix">
             </div>
             <div class="content_container">
-
+               <div class="breadCrumbHolder module breadcrumb">
+                <div id="breadCrumb3" class="breadCrumb module">
+                    <ul>
+                        <li>
+                            <a href="#">Home</a>
+                        </li>
+                        <li>
+                            <a href="#">Biocompare Home</a>
+                        </li>
+                         <li>
+                            <a href="#">Biocompare Home2</a>
+                        </li>
+                         <li>
+                            <a href="#">Biocompare Home3</a>
+                        </li>
+                        <li>
+                            Mutation Generation System&trade;
+                        </li>
+                    </ul>
+                
+            
+           
+           
+        
+                     <asp:ContentPlaceHolder ID="Breadcrumb" runat="server">
+                    </asp:ContentPlaceHolder>
+                        </ul>
+                </div>
+                   </div>
                 <div class="sub-nav_container">
                     <asp:ContentPlaceHolder ID="SubNav" runat="server">
                     </asp:ContentPlaceHolder>
@@ -106,6 +136,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            jQuery("#breadCrumb3").jBreadCrumb();
             $('.searchbox').watermark('Search', { useNative: false });
             $('.label-host-search').watermark('Search For Hosts', { useNative: false });
             $('.new-template').watermark('New Template Name', { useNative: false });
