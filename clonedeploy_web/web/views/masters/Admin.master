@@ -117,11 +117,12 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">
 
     <div class="content-right">
-        
-
+        <div class="nano">
+       
     <asp:ContentPlaceHolder ID="SubContent" runat="server">
     </asp:ContentPlaceHolder>
          <br class="clear" />
           <div class="spacer"></div>
+      
         </div>
 </asp:Content>

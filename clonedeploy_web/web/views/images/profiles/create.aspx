@@ -1,20 +1,13 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/masters/Image.master" AutoEventWireup="true" CodeFile="create.aspx.cs" Inherits="views_images_profiles_create" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/masters/Profile.master" AutoEventWireup="true" CodeFile="create.aspx.cs" Inherits="views_images_profiles_create" %>
+<%@ MasterType VirtualPath="~/views/masters/Profile.master" %>
 
-<%@ MasterType VirtualPath="~/views/masters/Image.master" %>
-<%@ Reference virtualPath="~/views/masters/Site.master" %>
-<asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
-   <li><a href="<%= ResolveUrl("~/views/images/edit.aspx") %>?imageid=<%= Master.Image.Id %>" ><%= Master.Image.Name %></a></li>
-     <li><a href="<%= ResolveUrl("~/views/images/profiles/search.aspx") %>?imageid=<%= Master.Image.Id %>&subid=profiles">Profiles</a></li>
+<asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
     <li>New</li>
-    </asp:Content>
-<asp:Content runat="server" ID="SubNav3" ContentPlaceHolderID="Level3">
-    <li><a id="profileoption" href="<%= ResolveUrl("~/views/images/profiles/search.aspx") %>?imageid=<%= Master.Image.Id %>&subid=profiles"><span class="sub-nav-text">Search Profiles</span></a></li>
-    <li><a href="<%= ResolveUrl("~/views/images/profiles/create.aspx")  %>?imageid=<%= Master.Image.Id %>&subid=profiles"><span class="sub-nav-text">New Profile</span></a></li>
 </asp:Content>
-<asp:Content ID="Content1" ContentPlaceHolderID="SubContent" Runat="Server">
+<asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#optionsoption').addClass("nav-current");
+            $('#create').addClass("nav-current");
         });
     </script>
      <div class="size-4 column">
@@ -196,6 +189,7 @@
         &nbsp;
     </div>
     <div class="size-5 column">
-        <asp:LinkButton ID="buttonUpdateHost" runat="server" OnClick="buttonCreateProfile_Click" Text="Update Host" CssClass="submits" OnClientClick="update_click()"/>
+        <asp:LinkButton ID="buttonCreateProfile" runat="server" OnClick="buttonCreateProfile_OnClick" Text="Create Profile" CssClass="submits" OnClientClick="update_click()"/>
     </div>
 </asp:Content>
+

@@ -12,11 +12,12 @@ public partial class views_images_profiles_create : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        Master.Master.Msgbox(Utility.Message);
+        Master.Msgbox(Utility.Message);
         var image = new Image { Id = Convert.ToInt32(Request.QueryString["imageid"]) };
-        image.Read();     
+        image.Read();    
     }
-    protected void buttonCreateProfile_Click(object sender, EventArgs e)
+
+    protected void buttonCreateProfile_OnClick(object sender, EventArgs e)
     {
         var profile = new LinuxEnvironmentProfile()
         {
@@ -27,9 +28,9 @@ public partial class views_images_profiles_create : System.Web.UI.Page
             ImageId = Convert.ToInt32(Request.QueryString["imageid"])
         };
         if (profile.Create())
-            Response.Redirect("~/views/images/profiles/chooser.aspx?imageid=" + Master.Image.Id +"&profileid="+ profile.Id + "&subid=profiles");
-        
+            Response.Redirect("~/views/images/profiles/chooser.aspx?imageid=" + profile.ImageId + "&profileid=" + profile.Id + "&subid=profiles");
 
-        Master.Master.Msgbox(Utility.Message);
+
+        Master.Msgbox(Utility.Message);
     }
 }

@@ -18,14 +18,18 @@ input.labelauty { display: none !important; }
  * Let's style the input
  * Feel free to work with it as you wish!
  */
+
+.Gridview input.labelauty + label {
+    
+}
 input.labelauty + label
 {
+    
 	display: table;
-	font-size: 18px;
+	font-size: 11px;
 	padding: 10px;
 	background-color: #efefef;
 	color: #b3b3b3;
-	cursor: pointer;
 
 	border-radius: 3px 3px 3px 3px;
 	-moz-border-radius: 3px 3px 3px 3px;
@@ -43,6 +47,7 @@ input.labelauty + label
 	-o-user-select: none;
 }
 
+
 /* Stylish text inside label */
 
 input.labelauty + label > span.labelauty-unchecked,
@@ -59,8 +64,8 @@ input.labelauty + label > span.labelauty-unchecked-image,
 input.labelauty + label > span.labelauty-checked-image
 {
 	display: inline-block;
-	width: 32px;
-	height: 32px;
+	width: 16px;
+	height: 16px;
 	vertical-align: bottom;
 	background-repeat: no-repeat;
 	background-position: left center;
@@ -70,6 +75,14 @@ input.labelauty + label > span.labelauty-checked-image
 	-webkit-transition: background-image 0.5s linear;
 	-o-transition: background-image 0.5s linear;
 }
+
+    .Gridview input.labelauty + label > span.labelauty-unchecked-image,
+    .Gridview input.labelauty + label > span.labelauty-checked-image {
+
+        padding: 10px;
+        margin-left: 10px;
+        margin-right: -10px;
+    }
 
 /* When there's a label, add a little margin to the left */
 input.labelauty + label > span.labelauty-unchecked-image + span.labelauty-unchecked,

@@ -19,6 +19,12 @@ namespace views.masters
             Level1.Visible = false;
             if (Request.QueryString["subid"] == "profiles")
                 Level2.Visible = false;
+            if (string.IsNullOrEmpty(Request.QueryString["profileid"]))
+                Level4.Visible = false;
+            else
+            {
+                Level3.Visible = false;
+            }
             Image = new Image { Id = Convert.ToInt32(Request.QueryString["imageid"]) };
             Image.Read();
         }
@@ -38,6 +44,15 @@ namespace views.masters
                 Response.Redirect("~/views/images/search.aspx");
             else
                 Master.Msgbox(Utility.Message);
-        }     
+        }
+
+        public void Msgbox(string message)
+        {
+            if (string.IsNullOrEmpty(message)) return;
+            const string msgType = "showSuccessToast";
+            Page.ClientScript.RegisterStartupScript(GetType(), "msgBox",
+                "$(function() { $().toastmessage('" + msgType + "', " + "\"" + message + "\"); });", true);
+            Session.Remove("Message");
+        } 
     }
 }
