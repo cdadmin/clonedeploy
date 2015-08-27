@@ -39,7 +39,7 @@
             <asp:BoundField DataField="Id" HeaderText="ID" SortExpression="ID" Visible="False"/>
             <asp:BoundField DataField="ImageId" HeaderText="ImageID" SortExpression="ImageID" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"></asp:BoundField>
-            <asp:HyperLinkField DataNavigateUrlFields="Id,ImageId" DataNavigateUrlFormatString="~/views/images/profiles/edit.aspx?id={0}&imageid={1}" Text="View"/>
+            <asp:HyperLinkField DataNavigateUrlFields="Id,ImageId" DataNavigateUrlFormatString="~/views/images/profiles/chooser.aspx?imageid={1}&profileid={0}&subid=profiles" Text="View"/>
         </Columns>
         <EmptyDataTemplate>
             No Profiles Found

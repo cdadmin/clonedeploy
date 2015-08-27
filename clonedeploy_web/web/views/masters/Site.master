@@ -5,7 +5,7 @@
 <head runat="server">
     <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <title>CrucibleWDS</title>
+    <title>CloneDeploy</title>
     <script type="text/javascript" src="<%= ResolveUrl("~/scripts/jquery-1.9.1.js") %>"></script>
       <script type="text/javascript" src="<%= ResolveUrl("~/scripts/jquery-migrate-1.2.1.min.js") %>"></script>
     <script type="text/javascript" src="<%= ResolveUrl("~/scripts/jquery-ui.js") %>"></script>
@@ -17,7 +17,9 @@
     <script type="text/javascript " src="<%= ResolveUrl("~/scripts/ace/src-noconflict/ace.js")%>" charset="utf-8"></script>
     <script type="text/javascript " src="<%= ResolveUrl("~/scripts/jquery.jBreadCrumb.1.1.js")%>" charset="utf-8"></script>
      <script type="text/javascript " src="<%= ResolveUrl("~/scripts/jquery.easing.1.3.js")%>" charset="utf-8"></script>
+     <script type="text/javascript " src="<%= ResolveUrl("~/scripts/jquery-labelauty.js")%>" charset="utf-8"></script>
     <link rel="stylesheet" type="text/css" href="~/content/css/BreadCrumb.css"/>
+     <link href="~/scripts/jquery-labelauty.css" rel="stylesheet" type="text/css" />
     <link href="~/content/css/base.css" rel="stylesheet" type="text/css" />
     <link href="~/content/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="~/content/css/layout.css" rel="stylesheet" type="text/css" />
@@ -119,6 +121,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            $(":checkbox").labelauty({ label: false });
             jQuery("#bread-crumb1").jBreadCrumb();
             $('.searchbox').watermark('Search', { useNative: false });
             $('.label-host-search').watermark('Search For Hosts', { useNative: false });

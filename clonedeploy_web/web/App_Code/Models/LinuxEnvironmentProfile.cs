@@ -80,6 +80,20 @@ namespace Models
             }
         }
 
+        public void Read()
+        {
+            if (string.IsNullOrEmpty(Id.ToString()))
+                GetProfileId();
+
+            using (var db = new DB())
+            {
+                var profile = db.ImageProfiles.FirstOrDefault(p => p.Id == Id);
+                if (profile == null) return;
+                Name = profile.Name;
+               
+            }
+        }
+
         public List<LinuxEnvironmentProfile> Search(int imageId)
         {
             List<LinuxEnvironmentProfile> list = new List<LinuxEnvironmentProfile>();

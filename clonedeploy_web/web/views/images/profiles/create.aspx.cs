@@ -26,8 +26,9 @@ public partial class views_images_profiles_create : System.Web.UI.Page
             BootImage = ddlBootImage.Text,
             ImageId = Convert.ToInt32(Request.QueryString["imageid"])
         };
-
-        profile.Create();
+        if (profile.Create())
+            Response.Redirect("~/views/images/profiles/chooser.aspx?imageid=" + Master.Image.Id +"&profileid="+ profile.Id + "&subid=profiles");
+        
 
         Master.Master.Msgbox(Utility.Message);
     }
