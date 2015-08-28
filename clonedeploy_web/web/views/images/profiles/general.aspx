@@ -1,7 +1,7 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/masters/Profile.master" AutoEventWireup="true" CodeFile="general.aspx.cs" Inherits="views_images_profiles_general" %>
-<%@ MasterType VirtualPath="~/views/masters/Profile.master" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/images/profiles/profiles.master" AutoEventWireup="true" CodeFile="general.aspx.cs" Inherits="views_images_profiles_general" %>
+<%@ MasterType VirtualPath="~/views/images/profiles/profiles.master" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
-    <li><a href="<%= ResolveUrl("~/views/images/profiles/chooser.aspx") %>?imageid=<%= Master.Image.Id %>&profileid=<%= Master.LinuxEnvironmentProfile.Id %>&subid=profiles"><%= Master.LinuxEnvironmentProfile.Name %></a></li>
+    <li><a href="<%= ResolveUrl("~/views/images/profiles/chooser.aspx") %>?imageid=<%= Master.Image.Id %>&profileid=<%= Master.ImageProfile.Id %>&cat=profiles"><%= Master.ImageProfile.Name %></a></li>
     <li>General</li>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">

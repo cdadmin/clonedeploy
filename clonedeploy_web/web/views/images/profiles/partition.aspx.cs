@@ -11,4 +11,9 @@ public partial class views_images_profiles_partition : System.Web.UI.Page
     {
 
     }
+
+    protected void btnUpdatePartitions_OnClick(object sender, EventArgs e)
+    {
+        throw new NotImplementedException();
+    }
 }

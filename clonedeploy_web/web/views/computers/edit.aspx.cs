@@ -12,11 +12,6 @@ namespace views.hosts
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            Master.Master.FindControl("SubNav").Visible = false;
-            var host = new Computer { Id = Convert.ToInt16(Request["hostid"]) };
-            host.Read();
-            var subTitle = Master.Master.FindControl("SubNavDynamic").FindControl("subTitle") as Label;
-            if (subTitle != null) subTitle.Text = host.Name;
             if (!IsPostBack) PopulateForm();
         }
 
@@ -24,21 +19,16 @@ namespace views.hosts
         {
             var host = new Computer
             {
-                Id = Convert.ToInt16(Request["hostid"]),
+                Id = Master.Host.Id,
                 Name = txtHostName.Text,
                 Mac = Utility.FixMac(txtHostMac.Text),
                 Image = Convert.ToInt32(ddlHostImage.SelectedValue),
-
                 Description = txtHostDesc.Text,
-
-
-
             };
 
            
 
             if (host.ValidateHostData()) host.Update();
-
             Master.Msgbox(Utility.Message);
         }
 
@@ -51,19 +41,17 @@ namespace views.hosts
             ddlHostImage.DataBind();
             ddlHostImage.Items.Insert(0, "Select Image");
 
-            var host = new Computer {Id = Convert.ToInt16(Request["hostid"])};
-            host.Read();
-            txtHostName.Text = host.Name;
-            txtHostMac.Text = host.Mac;
-            ddlHostImage.SelectedValue = host.Image.ToString();        
-            txtHostDesc.Text = host.Description;
+            txtHostName.Text = Master.Host.Name;
+            txtHostMac.Text = Master.Host.Mac;
+            ddlHostImage.SelectedValue = Master.Host.Image.ToString();        
+            txtHostDesc.Text = Master.Host.Description;
 
             ddlImageProfile.DataSource = new LinuxEnvironmentProfile().Search(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
             ddlImageProfile.DataValueField = "Id";
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();
 
-            ddlImageProfile.SelectedValue = host.ImageProfile.ToString();
+            ddlImageProfile.SelectedValue = Master.Host.ImageProfile.ToString();
          
         }
 

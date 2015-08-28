@@ -12,9 +12,7 @@ public partial class views_images_profiles_create : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        Master.Msgbox(Utility.Message);
-        var image = new Image { Id = Convert.ToInt32(Request.QueryString["imageid"]) };
-        image.Read();    
+        new Utility().Msgbox(Utility.Message);   
     }
 
     protected void buttonCreateProfile_OnClick(object sender, EventArgs e)
@@ -23,14 +21,12 @@ public partial class views_images_profiles_create : System.Web.UI.Page
         {
             Name = txtProfileName.Text,
             Description = txtProfileDesc.Text,
-            Kernel = ddlKernel.Text,
-            BootImage = ddlBootImage.Text,
-            ImageId = Convert.ToInt32(Request.QueryString["imageid"])
+            ImageId = Master.Image.Id
         };
         if (profile.Create())
-            Response.Redirect("~/views/images/profiles/chooser.aspx?imageid=" + profile.ImageId + "&profileid=" + profile.Id + "&subid=profiles");
+            Response.Redirect("~/views/images/profiles/chooser.aspx?imageid=" + profile.ImageId + "&profileid=" + profile.Id + "&cat=profiles");
 
 
-        Master.Msgbox(Utility.Message);
+        new Utility().Msgbox(Utility.Message);
     }
 }

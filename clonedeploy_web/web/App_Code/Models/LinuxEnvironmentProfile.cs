@@ -34,6 +34,9 @@ namespace Models
         [Column("profile_boot_image", Order = 6)]
         public string BootImage { get; set; }
 
+        [Column("profile_kernel_arguments", Order = 7)]
+        public string KernelArguments { get; set; }
+
         public bool Create()
         {
             using (var db = new DB())
@@ -82,15 +85,15 @@ namespace Models
 
         public void Read()
         {
-            if (string.IsNullOrEmpty(Id.ToString()))
-                GetProfileId();
-
             using (var db = new DB())
             {
                 var profile = db.ImageProfiles.FirstOrDefault(p => p.Id == Id);
                 if (profile == null) return;
-                Name = profile.Name;
-               
+                this.Name = profile.Name;
+                this.Description = profile.Description;
+                this.Kernel = profile.Kernel;
+                this.BootImage = profile.BootImage;
+                this.KernelArguments = profile.KernelArguments;
             }
         }
 
@@ -118,14 +121,17 @@ namespace Models
                     if (profile != null)
                     {
                         profile.Name = this.Name;
-                       
+                        profile.Description = this.Description;
+                        profile.Kernel = this.Kernel;
+                        profile.BootImage = this.BootImage;
+                        profile.KernelArguments = this.KernelArguments;
                         db.SaveChanges();
                     }
                 }
                 catch (DbUpdateException ex)
                 {
                     Logger.Log(ex.InnerException.InnerException.Message);
-                    Utility.Message = "Could Not Update Host.  Check The Exception Log For More Info.";
+                    Utility.Message = "Could Not Update Image Profile.";
                     return;
                 }
             }

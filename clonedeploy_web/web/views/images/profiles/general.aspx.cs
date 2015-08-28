@@ -9,17 +9,22 @@ using Models;
 
 public partial class views_images_profiles_general : System.Web.UI.Page
 {
-   
+
     protected void Page_Load(object sender, EventArgs e)
     {
-        if(!IsPostBack)
-        txtProfileName.Text = Master.LinuxEnvironmentProfile.Name;
+        if (!IsPostBack)
+        {
+            txtProfileName.Text = Master.ImageProfile.Name;
+            txtProfileDesc.Text = Master.ImageProfile.Description;
+        }
+
     }
 
     protected void buttonUpdateGeneral_OnClick(object sender, EventArgs e)
     {
-        Master.LinuxEnvironmentProfile.Name = txtProfileName.Text;
-        Master.LinuxEnvironmentProfile.Update();
+        var imageProfile = Master.ImageProfile;
+        imageProfile.Name = txtProfileName.Text;
+        imageProfile.Update();
         new Utility().Msgbox(Utility.Message);
     }
 }

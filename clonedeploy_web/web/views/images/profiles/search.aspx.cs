@@ -12,7 +12,7 @@ public partial class views_images_profiles_search : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         if (IsPostBack) return;
-        Master.Msgbox(Utility.Message); //For Redirects
+        new Utility().Msgbox(Utility.Message); //For Redirects
 
         PopulateGrid();
     }
@@ -30,7 +30,7 @@ public partial class views_images_profiles_search : System.Web.UI.Page
         }
 
         PopulateGrid();
-        Master.Msgbox(Utility.Message);
+        new Utility().Msgbox(Utility.Message);
     }
 
     protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
@@ -53,7 +53,7 @@ public partial class views_images_profiles_search : System.Web.UI.Page
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<LinuxEnvironmentProfile> listProfiles = (List<LinuxEnvironmentProfile>)gvProfiles.DataSource;
+        IEnumerable<LinuxEnvironmentProfile> listProfiles = (List<LinuxEnvironmentProfile>)gvProfiles.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -70,7 +70,7 @@ public partial class views_images_profiles_search : System.Web.UI.Page
     protected void PopulateGrid()
     {
         var profile = new LinuxEnvironmentProfile();
-        gvProfiles.DataSource = profile.Search(Convert.ToInt32(Request.QueryString["imageid"]));
+        gvProfiles.DataSource = profile.Search(Master.Image.Id);
         gvProfiles.DataBind();
 
     }

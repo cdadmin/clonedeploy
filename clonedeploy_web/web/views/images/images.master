@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" MasterPageFile="~/views/masters/Site.master" AutoEventWireup="true" CodeFile="Image.master.cs" Inherits="views.masters.ImageMaster" %>
+﻿<%@ Master Language="C#" MasterPageFile="~/views/masters/Site.master" AutoEventWireup="true" CodeFile="images.master.cs" Inherits="views.masters.ImageMaster" %>
 
 <%@ MasterType VirtualPath="~/views/masters/Site.master" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeaderNav" runat="Server">
@@ -39,7 +39,7 @@
                     <a href="<%= ResolveUrl("~/views/images/edit.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text">Edit</span></a>
                 </li>
                 <li>
-                    <a id="profileoption" href="<%= ResolveUrl("~/views/images/profiles/search.aspx") %>?imageid=<%= Image.Id %>&subid=profiles"><span class="sub-nav-text">Profiles</span></a>
+                    <a id="profileoption" href="<%= ResolveUrl("~/views/images/profiles/search.aspx") %>?imageid=<%= Image.Id %>&cat=profiles"><span class="sub-nav-text">Profiles</span></a>
                 </li>
                 <li>
                     <a id="historyoption" href="<%= ResolveUrl("~/views/images/history.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text">History</span></a>

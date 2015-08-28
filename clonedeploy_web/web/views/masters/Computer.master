@@ -10,24 +10,25 @@
     <div class="size-1 column">
         <h1 class="header-title icon-host-title">Computers</h1>
     </div>
-
+</asp:Content>
+<asp:Content runat="server" ID="Breadcrumb" ContentPlaceHolderID="Breadcrumb">
+     <li><a href="<%= ResolveUrl("~/views/computers/search.aspx") %>">Computers</a></li>
+    <asp:ContentPlaceHolder ID="BreadcrumbSub" runat="server">
+        </asp:ContentPlaceHolder>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubNav" Runat="Server">
     <div class="sub-nav-top">
+        <div id="Level1" runat="server">
         <ul>
                         <li><a id="searchhost"href="<%= ResolveUrl("~/views/computers/search.aspx") %>"><span class="sub-nav-text">Search Computers</span></a></li>
          <li><a id="addhost" href="<%= ResolveUrl("~/views/computers/create.aspx") %>"><span class="sub-nav-text">New Computer</span></a></li>
 
             <li><a id="importhost" href="<%= ResolveUrl("~/views/computers/import.aspx") %>"> <span class="sub-nav-text">Import Computers</span></a></li>
        </ul>
-    </div>
-</asp:Content>
-
-<asp:Content ID="Content4" ContentPlaceHolderID="SubNavDynamic" runat="Server">
-    <div class="sub-nav-top">
-      
-        <asp:Label ID="subTitle" runat="server" CssClass="sub-nav-title"></asp:Label>
-          <div class="indent">
+        </div>
+        
+        <div id="Level2" runat="server">
+           <div class="indent">
         <ul>
         <li><a id="editoption" href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?hostid=<%= Host.Id %>"><span class="sub-nav-text">Edit</span></a></li>
         <li><a id="historyoption" href="<%= ResolveUrl("~/views/computers/history.aspx") %>?hostid=<%= Host.Id %>"><span class="sub-nav-text">History</span></a></li>
@@ -38,8 +39,10 @@
         <li><asp:LinkButton ID="buttonDeleteHost" runat="server" OnClick="btnDelete_Click"><span class="sub-nav-text">Delete</span></asp:LinkButton></li>
         </ul>
             </div>
+            </div>
     </div>
 </asp:Content>
+
 <asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">
     <div class="content-right">
     <asp:ContentPlaceHolder ID="SubContent" runat="server">

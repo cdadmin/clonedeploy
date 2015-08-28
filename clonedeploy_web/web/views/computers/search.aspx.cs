@@ -30,7 +30,6 @@ namespace views.hosts
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            Master.Master.FindControl("SubNavDynamic").Visible = false;
             if (IsPostBack) return;
             Master.Msgbox(Utility.Message); //For Redirects
             if (Settings.DefaultHostView == "all")

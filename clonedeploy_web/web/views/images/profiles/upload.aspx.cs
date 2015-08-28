@@ -11,4 +11,9 @@ public partial class views_images_profiles_upload : System.Web.UI.Page
     {
 
     }
+
+    protected void btnUpdateUpload_OnClick(object sender, EventArgs e)
+    {
+        throw new NotImplementedException();
+    }
 }

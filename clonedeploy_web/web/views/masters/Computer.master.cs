@@ -9,13 +9,17 @@ namespace views.masters
 {
     public partial class ComputerMaster : MasterPage
     {
-        protected Computer Host { get; set; }
+        public Computer Host { get { return ReadComputer(); } }
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if(string.IsNullOrEmpty(Request["hostid"])) return;
-            Host = new Computer { Id = Convert.ToInt16(Request["hostid"]) };
-            Host.Read();
+            if (string.IsNullOrEmpty(Request["hostid"]))
+            {
+                Level2.Visible = false;
+                return;
+            }
+
+            Level1.Visible = false;
         }
 
         protected void btnDelete_Click(object sender, EventArgs e)
@@ -105,6 +109,13 @@ namespace views.masters
             Page.ClientScript.RegisterStartupScript(GetType(), "msgBox",
                 "$(function() { $().toastmessage('" + msgType + "', " + "\"" + message + "\"); });", true);
             Session.Remove("Message");
-        } 
+        }
+
+        private Computer ReadComputer()
+        {
+            var tmpComputer = new Computer { Id = Convert.ToInt32(Request.QueryString["hostid"]) };
+            tmpComputer.Read();
+            return tmpComputer;
+        }
     }
 }

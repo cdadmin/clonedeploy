@@ -31,8 +31,6 @@ namespace views.hosts
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            Master.Master.FindControl("SubNavDynamic").Visible = false;
-
             if (IsPostBack) return;
 
             if (new Authorize().IsInMembership("User"))

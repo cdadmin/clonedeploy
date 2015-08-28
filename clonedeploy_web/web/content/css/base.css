@@ -133,13 +133,13 @@ hr{border:solid #ddd;border-width:1px 0 0;clear:both;margin:10px 0 0px;height:0;
 table{margin-bottom:30px;margin-top:0px;}
 Table.Gridview{border:none;white-space:nowrap; width:1000px;}
 .GridviewTable{border:none;}
-.Gridview th{text-align:left;color:White;border:none;padding-bottom:.5em;padding-top:.5em;background-color:#47a3da;}
+.Gridview th{text-align:left;color:White;border:none;background-color:#47a3da;padding: 3px 0 3px 10px;}
 .Gridview th a:link,a:visited{color:White;text-decoration:none;}
-.Gridview td{border:none;padding:.7em 1em .7em .05em;}
+.Gridview td{border:none;padding: 4px 1em 4px 10px;}
 .Gridview tr{color:#666;background-color:white;text-align:left;border-bottom:1px solid #f5f5f5;}
 .Gridview .alt{background:#f8f8f8;}
-.Gridview td a:link, .GridView td a:visited {color:white;text-decoration:none;background:#464242;-webkit-border-radius:5px;-moz-border-radius:5px;-ms-border-radius:5px;-o-border-radius:5px;border-radius:5px;padding:5px 10px;}
-.Gridview a:visited {background:#464242; }
+.Gridview td a:link, .GridView td a:visited {color:white;text-decoration:none;background:#666666;-webkit-border-radius:5px;-moz-border-radius:3px;-ms-border-radius:3px;-o-border-radius:3px;border-radius:3px;padding:8px 12px;}
+.Gridview a:visited {background:#666666; }
 
 Table.log{white-space:normal; word-wrap:break-word;}
 .log tr {border:none; }
@@ -196,7 +196,7 @@ a.confirm{float:right; margin-top:20px;}
 a.confirm_yes{width:100px;display:inline-block;background-color:#fff;padding:15px 30px;color:#47a3da;-webkit-border-radius:5px;-moz-border-radius:5px;-ms-border-radius:5px;-o-border-radius:5px;border-radius:5px;text-decoration:none; }
 a.confirm_no{width:100px;display:inline-block;background-color:#fff;padding:15px 30px;color:#47a3da;-webkit-border-radius:5px;-moz-border-radius:5px;-ms-border-radius:5px;-o-border-radius:5px;border-radius:5px;text-decoration:none; }
 a.confirm_yes:link,a.confirm_yes:visited,a.confirm_no:link,a.confirm_no:visited{color:#47a3da;outline:none;font:normal 1em/1em Calibri , Arial;font-size:24px;}
-a.submits{margin-top:20px;}
+a.submits{margin-top:20px;float: right;}
 a.left {float:left; margin-top:0;}
 a.right { float: right;}
 a.static-width{ width:100px; text-align:center; margin-right:5px; margin-top:0; }
