@@ -107,5 +107,37 @@ namespace Models
             
             return list;
         }
+
+        public void Update()
+        {
+            using (var db = new DB())
+            {
+                try
+                {
+                    var profile = db.ImageProfiles.Find(this.Id);
+                    if (profile != null)
+                    {
+                        profile.Name = this.Name;
+                       
+                        db.SaveChanges();
+                    }
+                }
+                catch (DbUpdateException ex)
+                {
+                    Logger.Log(ex.InnerException.InnerException.Message);
+                    Utility.Message = "Could Not Update Host.  Check The Exception Log For More Info.";
+                    return;
+                }
+            }
+
+            var history = new History
+            {
+                Event = "Edit",
+                Type = "Host",
+                TypeId = Id.ToString()
+            };
+            history.CreateEvent();
+            Utility.Message = "Successfully Updated " + Name;
+        }
     }
 }

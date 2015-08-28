@@ -16,7 +16,7 @@ public partial class views_masters_Profile : System.Web.UI.MasterPage
         if (string.IsNullOrEmpty(Request["profileid"])) return;
         if (string.IsNullOrEmpty(Request["imageid"])) Response.Redirect("~/", true);
 
-        Image = Master.Image;
+        Image = new Image {Id = Convert.ToInt32(Request.QueryString["imageid"])};
         LinuxEnvironmentProfile = new LinuxEnvironmentProfile { Id = Convert.ToInt32(Request.QueryString["profileid"]) };
         LinuxEnvironmentProfile.Read();
     }

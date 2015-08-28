@@ -24,12 +24,27 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace Global
 {
     public class Utility
     {
+        public void Msgbox(string message)
+        {
+            if (string.IsNullOrEmpty(message)) return;
+            const string msgType = "showSuccessToast";
+            var page = HttpContext.Current.CurrentHandler as Page;
+
+            if (page == null)
+            {
+                // throw an exception, something bad happened
+            }
+            page.ClientScript.RegisterStartupScript(GetType(), "msgBox",
+                "$(function() { $().toastmessage('" + msgType + "', " + "\"" + message + "\"); });", true);
+            HttpContext.Current.Session.Remove("Message");
+        }
         public static string Message
         {
             get { return (string) HttpContext.Current.Session["Message"]; }
