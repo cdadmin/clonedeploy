@@ -4,15 +4,30 @@
 <%@ Reference virtualPath="~/views/masters/Site.master" %>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">
+       
         $(document).ready(function() {
+           
             $('#addhost').addClass("nav-current");
+           
+           $("#form1").validate({
+                rules: {
+                    <%=txtHostName.UniqueID %>: {
+                        minlength: 2,
+                        required: true
+                    }
+                 
+                }, messages: {}
+            });
         });
+        
+      
     </script>
     <div class="size-4 column">
         Host Name:
     </div>
     <div class="size-5 column">
-        <asp:TextBox ID="txtHostName" runat="server" CssClass="textbox"></asp:TextBox>
+        <asp:TextBox ID="txtHostName" runat="server" CssClass="textbox" ClientIDMode="Static"></asp:TextBox>
+      
     </div>
     <br class="clear"/>
     <div class="size-4 column">
@@ -57,6 +72,6 @@
         &nbsp;
     </div>
     <div class="size-5 column">
-        <asp:LinkButton ID="buttonAddHost" runat="server" OnClick="ButtonAddHost_Click" Text="Add Host" CssClass="submits"/>
+        <asp:LinkButton ID="buttonAddHost" runat="server" OnClick="ButtonAddHost_Click" Text="Add Host" CssClass="submits" ClientIDMode="Static"/>
     </div>
 </asp:Content>

@@ -1,6 +1,6 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/masters/Admin.master" AutoEventWireup="true" CodeFile="bootmenu.aspx.cs" Inherits="views.admin.AdminBootMenu" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/Admin.master" AutoEventWireup="true" CodeFile="bootmenu.aspx.cs" Inherits="views.admin.AdminBootMenu" %>
 
-<%@ MasterType VirtualPath="~/views/masters/Admin.master" %>
+<%@ MasterType VirtualPath="~/views/admin/Admin.master" %>
 <%@ Reference VirtualPath="~/views/masters/Site.master" %>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">

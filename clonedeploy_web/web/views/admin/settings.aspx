@@ -1,11 +1,13 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/masters/Admin.master" AutoEventWireup="true" Inherits="views.admin.AdminSettings" CodeFile="settings.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/Admin.master" AutoEventWireup="true" Inherits="views.admin.AdminSettings" CodeFile="settings.aspx.cs" %>
 
-<%@ MasterType VirtualPath="~/views/masters/Admin.master" %>
+<%@ MasterType VirtualPath="~/views/admin/Admin.master" %>
 <%@ Reference virtualPath="~/views/masters/Site.master" %>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
 <script type="text/javascript">
     $(document).ready(function() {
         $('#globalSettings').addClass("nav-current");
+        $('#ddlHostView').dropdown();
+        $('#ddlCompLevel').dropdown();
     });
 </script>
 <div id="settings">
@@ -56,8 +58,9 @@
     
      Host View:
 </div>
-<div class="size-setting column">
-    <asp:DropDownList ID="ddlHostView" runat="server" CssClass="ddlist">
+<div class="size-setting column ddl">
+ 
+    <asp:DropDownList ID="ddlHostView" runat="server" CssClass="ddlist" ClientIDMode="Static">
         <asp:ListItem>all</asp:ListItem>
         <asp:ListItem>search</asp:ListItem>
     </asp:DropDownList>
@@ -127,8 +130,8 @@
     Compression Level:
 </div>
 
-<div class="size-setting column">
-    <asp:DropDownList ID="ddlCompLevel" runat="server" CssClass="ddlist">
+<div class="size-setting column ddl">
+    <asp:DropDownList ID="ddlCompLevel" runat="server" CssClass="ddlist" ClientIDMode="Static">
         <asp:ListItem>1</asp:ListItem>
         <asp:ListItem>2</asp:ListItem>
         <asp:ListItem>3</asp:ListItem>

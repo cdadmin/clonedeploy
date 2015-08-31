@@ -28,7 +28,7 @@
     <div class="sub-nav-top">
         <ul>
             <li id="subnav-server">
-                <a href="<%= ResolveUrl("~/views/admin/settings.aspx") %>" class="icon-host">
+                <a href="<%= ResolveUrl("~/views/admin/settings.aspx") %>">
                     <span class="nav-text">Server</span>
                 </a>
             </li>
