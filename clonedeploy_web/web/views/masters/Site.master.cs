@@ -27,9 +27,15 @@ namespace views.masters
 
         public void Page_Load(object sender, EventArgs e)
         {
-            new Utility().Msgbox(Utility.Message);
+
             Page.MaintainScrollPositionOnPostBack = true;
         }
+
+        public void Page_LoadComplete(object sender, EventArgs e)
+        {
+            new Utility().Msgbox(Utility.Message);
+
+        }     
 
         public void Msgbox(string message)
         {

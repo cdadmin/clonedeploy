@@ -42,11 +42,11 @@ namespace Models
             }
         }
 
-        public string GetPort()
+        public int GetPort()
         {
             var port = new Port();
             port.GetNextPort();
-            return port.Number.ToString();
+            return port.Number;
         }
     }
 }

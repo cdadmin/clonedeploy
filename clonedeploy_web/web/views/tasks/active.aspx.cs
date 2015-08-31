@@ -50,7 +50,7 @@ namespace views.tasks
                 var dataKey = gvTasks.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    activeTask.Id = dataKey.Value.ToString();
+                    activeTask.Id = Convert.ToInt32(dataKey.Value);
                     activeTask.Delete();
                 }
             }
@@ -71,9 +71,9 @@ namespace views.tasks
                 var dataKey = gvMcTasks.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    mcTask.Id = dataKey.Value.ToString();
+                    mcTask.Id = Convert.ToInt32(dataKey.Value);
                     mcTask.Name = gvRow.Cells[2].Text;
-                    mcTask.Pid = (gvRow.Cells[3].Text);
+                    mcTask.Pid = Convert.ToInt32(gvRow.Cells[3].Text);
                     mcTask.Delete();
                 }
             }

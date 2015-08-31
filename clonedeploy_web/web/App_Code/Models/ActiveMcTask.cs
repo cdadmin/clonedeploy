@@ -12,24 +12,24 @@ using Pxe;
 
 namespace Models
 {
-    [Table("activemctasks", Schema = "public")]
+    [Table("active_multicast_sessions", Schema = "public")]
     public class ActiveMcTask
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("mctaskid", Order = 1)]
-        public string Id { get; set; }
+        [Column("multicast_session_id", Order = 1)]
+        public int Id { get; set; }
 
-        [Column("mctaskname", Order = 2)]
+        [Column("multicast_name", Order = 2)]
         public string Name { get; set; }
 
-        [Column("mcpid", Order = 3)]
-        public string Pid { get; set; }
+        [Column("multicast_pid", Order = 3)]
+        public int Pid { get; set; }
 
-        [Column("mcportbase", Order = 4)]
-        public string Port { get; set; }
+        [Column("multicast_port", Order = 4)]
+        public int Port { get; set; }
 
-        [Column("mcimage", Order = 5)]
+        [NotMapped]
         public string Image { get; set; }
 
         public bool Create()
@@ -61,7 +61,7 @@ namespace Models
             using (var db = new DB())
             {
                 var hostMacs = (from h in db.Hosts
-                           join t in db.ActiveTasks on h.Name equals t.Name
+                           join t in db.ActiveTasks on h.Id equals t.ComputerId
                            where (t.MulticastName == Name)
                            select h.Mac).ToList();
 

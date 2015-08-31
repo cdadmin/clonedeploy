@@ -18,7 +18,6 @@ namespace Tasks
                 Remaining = values[2],
                 Completed = values[3],
                 Rate = values[4],
-                Name = HostName
             };
 
             activeTask.Update("progress");
@@ -33,7 +32,6 @@ namespace Tasks
                 Completed = "",
                 Rate = "",
                 Partition = partition,
-                Name = hostName
             };
             activeTask.Update("partition");
         }

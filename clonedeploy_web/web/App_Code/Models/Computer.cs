@@ -88,7 +88,7 @@ namespace Models
             using (var db = new DB())
             {
                 var name =(from h in db.Hosts 
-                           join t in db.ActiveTasks on h.Name equals t.Name
+                           join t in db.ActiveTasks on h.Id equals t.ComputerId
                            where (h.Mac == Mac)
                            select h.Name).FirstOrDefault();
                 return name != null ? "Active" : "Inactive";

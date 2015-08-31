@@ -7,34 +7,26 @@
             $('#nav-settings').addClass("nav-current");
         });
     </script>
-    <div class="top-nav-left">
-        <h1 class="remove-bottom icon-setting-title">Admin</h1>
-    </div>
-    <div class="top-nav-right">
-        <div class="nav-btn-round">
-            <a id="globalSettings" href="<%= ResolveUrl("~/views/admin/settings.aspx") %>" class="icon global" data-info="Global Settings"></a>
-            <a id="bootMenuSettings" href="<%= ResolveUrl("~/views/admin/bootmenu.aspx") %>" class="icon boot" data-info="Boot Menu"></a>
-            <a id="logSettings" href="<%= ResolveUrl("~/views/admin/logview.aspx") %>" class="icon logs" data-info="Logs"></a>
-            <a id="exportDatabaseSettings" href="<%= ResolveUrl("~/views/admin/export.aspx") %>" class="icon export" data-info="Export Database"></a>
-            <a id="reportsSettings" href="<%= ResolveUrl("~/views/admin/reports.aspx") %>" class="icon reports" data-info="Reports"></a>
-            <a id="scriptEditorSettings" href="<%= ResolveUrl("~/views/admin/scripteditor.aspx") %>" class="icon2 scripteditor1" data-info="Script Editor"></a>
-            <a id="sysprepSettings" href="<%= ResolveUrl("~/views/admin/sysprep.aspx") %>" class="icon2 scripteditor3" data-info="Sysprep Editor"></a>
-        </div>
-    </div>
-    
+      <h1 class="remove-bottom icon-setting-title">Admin</h1>
+</asp:Content>
+
+<asp:Content runat="server" ID="Breadcrumb" ContentPlaceHolderID="Breadcrumb">
+     <li><a href="<%= ResolveUrl("~/views/admin/chooser.aspx") %>">Admin</a></li>
+    <asp:ContentPlaceHolder ID="BreadcrumbSub" runat="server">
+        </asp:ContentPlaceHolder>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubNav" Runat="Server">
     
     <div class="sub-nav-top">
         <ul>
-            <li id="subnav-server">
-                <a href="<%= ResolveUrl("~/views/admin/settings.aspx") %>">
+            <li id="server">
+                <a href="<%= ResolveUrl("~/views/admin/server.aspx") %>">
                     <span class="nav-text">Server</span>
                 </a>
             </li>
             
-             <li id="subnav-server">
-                <a href="<%= ResolveUrl("~/views/admin/settings.aspx") %>" class="icon-host">
+             <li id="client">
+                <a href="<%= ResolveUrl("~/views/admin/client.aspx") %>">
                     <span class="nav-text">Client</span>
                 </a>
             </li>
@@ -111,18 +103,34 @@
                 </a>
             </li>
         </ul>
-
     </div>
+    
+   
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">
 
-    <div class="content-right">
-        <div class="nano">
-       
+    <div class="content-right">       
     <asp:ContentPlaceHolder ID="SubContent" runat="server">
     </asp:ContentPlaceHolder>
          <br class="clear" />
           <div class="spacer"></div>
       
         </div>
+    
+     <div id="confirmbox" class="confirm-box-outer">
+    <div class="confirm-box-inner">
+        <h4>
+            <asp:Label ID="lblTitle" runat="server" CssClass="modaltitle"></asp:Label>
+        </h4>
+
+        <div class="confirm-box-btns">
+            <asp:LinkButton ID="OkButton" OnClick="OkButton_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
+            <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no"/>
+            <h5 style="color: white;">
+                <asp:Label ID="lblClientISO" runat="server" CssClass="modaltitle"></asp:Label>
+            </h5>
+        </div>
+    </div>
+
+</div>
 </asp:Content>

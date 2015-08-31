@@ -189,8 +189,9 @@ input[type="checkbox"]{display:inline;}
 
 /* Buttons
 ================================================== */
-a.confirm,a.submits,input[type="submit"]{background:#666;color:#fff;display:inline-block;text-decoration:none;cursor:pointer;margin-bottom:3px;line-height:normal;padding:10px 10px; font-size:16px;}
-/*a.confirm:hover,a.submits:hover,input[type="submit"]:hover,a.boot-active{color:#fff;background:#47a3da;-webkit-transition:background .2s ease-in-out;-moz-transition:background .2s ease-in-out;transition:background .2s ease-in-out;border:1px solid #47a3da;text-shadow:none;}*/
+a.confirm,a.submits,input[type="submit"]{background:#fff;border:1px solid #aaa;border-top:1px solid #ccc;border-left:1px solid #ccc;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;color:#444;display:inline-block;text-decoration:none;text-shadow:0 1px rgba(255,255,255,.75);cursor:pointer;margin-bottom:3px;line-height:normal;padding:10px 10px; font-size:16px;}
+a.confirm:hover,a.submits:hover,input[type="submit"]:hover,a.boot-active{color:#fff;background:#47a3da;-webkit-transition:background .2s ease-in-out;-moz-transition:background .2s ease-in-out;transition:background .2s ease-in-out;border:1px solid #47a3da;text-shadow:none;}
+
 a.confirm:active,a.submits:active,input[type="submit"]:active{border:1px solid #47a3da;background:#ccc;}
 a.confirm{float:right; margin-top:20px;}
 a.confirm_yes{width:100px;display:inline-block;background-color:#fff;padding:15px 30px;color:#47a3da;-webkit-border-radius:5px;-moz-border-radius:5px;-ms-border-radius:5px;-o-border-radius:5px;border-radius:5px;text-decoration:none; }

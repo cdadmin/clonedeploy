@@ -16,7 +16,7 @@
         
     void Application_Error(object sender, EventArgs e) 
     {
-        /*
+        
         // Code that runs when an unhandled error occurs
 
         // Get the exception object.
@@ -48,7 +48,7 @@
 
         // Clear the error from the server
         Server.ClearError();
-        */
+        
     }
 
     void Session_Start(object sender, EventArgs e) 

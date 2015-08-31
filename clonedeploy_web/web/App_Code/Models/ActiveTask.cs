@@ -16,46 +16,54 @@ using Pxe;
 
 namespace Models
 {
-    [Table("activetasks", Schema = "public")]
+    [Table("active_imaging_tasks", Schema = "public")]
     public class ActiveTask
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("taskid", Order = 1)]
-        public string Id { get; set; }
+        [Column("active_task_id", Order = 1)]
+        public int Id { get; set; }
 
-        [Column("taskname", Order = 2)]
-        public string Name { get; set; }
+        [Column("computer_id", Order = 2)]
+        public int ComputerId { get; set; }
 
-        [Column("taskstatus", Order = 3)]
+        [Column("task_status", Order = 3)]
         public string Status { get; set; }
 
-        [Column("tasktype", Order = 4)]
-        public string Type { get; set; }
-
-        [Column("taskmulticastname", Order = 5)]
-        public string MulticastName { get; set; }
-
-        [Column("queueposition", Order = 6)]
+        [Column("task_queue_position", Order = 4)]
         public int QueuePosition { get; set; }
 
-        [Column("taskelapsed", Order = 7)]
+        [Column("task_elapsed", Order = 5)]
         public string Elapsed { get; set; }
 
-        [Column("taskremaining", Order = 8)]
+        [Column("task_remaining", Order = 6)]
         public string Remaining { get; set; }
 
-        [Column("taskcompleted", Order = 9)]
+        [Column("task_completed", Order = 7)]
         public string Completed { get; set; }
 
-        [Column("taskrate", Order = 10)]
+        [Column("task_rate", Order = 8)]
         public string Rate { get; set; }
 
-        [Column("taskpartition", Order = 11)]
+        [Column("task_partition", Order = 9)]
         public string Partition { get; set; }
 
-        [Column("taskarguments", Order = 12)]
+        [Column("task_arguments", Order = 10)]
         public string Arguments { get; set; }
+
+        [Column("task_type", Order = 11)]
+        public string Type { get; set; }
+
+        [Column("multicast_id", Order = 12)]
+        public int MulticastId { get; set; }
+
+        [NotMapped]
+        public string MulticastName { get; set; }
+      
+
+      
+
+       
 
         public void Delete()
         {
@@ -63,7 +71,7 @@ namespace Models
             using (var db = new DB())
             {
                 hostMac =  (from h in db.Hosts
-                            join t in db.ActiveTasks on h.Name equals t.Name
+                            join t in db.ActiveTasks on h.Id equals t.ComputerId
                             where (t.Id == Id)
                             select h.Mac).FirstOrDefault();
 
@@ -92,7 +100,7 @@ namespace Models
             using (var db = new DB())
             {
                 return
-                    (from t in db.ActiveTasks where t.MulticastName == MulticastName orderby t.Name select t).ToList();
+                    (from t in db.ActiveTasks where t.MulticastName == MulticastName orderby t.ComputerId select t).ToList();
             }
         }
 
@@ -101,7 +109,7 @@ namespace Models
             using (var db = new DB())
             {
                 return
-                    (from t in db.ActiveTasks where t.MulticastName == MulticastName && t.Status == "3" orderby t.Name select t).Take(1).ToList();
+                    (from t in db.ActiveTasks where t.MulticastName == MulticastName && t.Status == "3" orderby t.ComputerId select t).Take(1).ToList();
             }
         }
 
@@ -109,7 +117,7 @@ namespace Models
         {
             using (var db = new DB())
             {
-                return db.ActiveTasks.OrderBy(t => t.Name).ToList();
+                return db.ActiveTasks.OrderBy(t => t.Id).ToList();
             }
         }
 
@@ -117,7 +125,7 @@ namespace Models
         {
             using (var db = new DB())
             {
-                return (from t in db.ActiveTasks where t.Type == "unicast" orderby t.Name select t).ToList();
+                return (from t in db.ActiveTasks where t.Type == "unicast" orderby t.ComputerId select t).ToList();
             }
         }
 
@@ -127,7 +135,7 @@ namespace Models
             {
                 try
                 {
-                    if (db.ActiveTasks.Any(t => t.Name == Name))
+                    if (db.ActiveTasks.Any(t => t.ComputerId == ComputerId))
                     {
                         Utility.Message += "This Host Is Already Part Of An Active Task <br>";
                         return false;
@@ -145,19 +153,9 @@ namespace Models
             return true;
         }
 
-        private void GetId()
-        {
-            using (var db = new DB())
-            {
-                var activeTask = db.ActiveTasks.First(a => a.Name == Name);
-                Id = activeTask.Id;
-            }
-        }
-
         public bool Update(string updateType)
         {
-            if (string.IsNullOrEmpty(Id))
-                GetId();
+
             using (var db = new DB())
             {
                 try

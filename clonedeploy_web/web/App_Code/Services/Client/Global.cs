@@ -17,7 +17,7 @@ namespace Services.Client
                     return "checkInResult=\"The Host Was Not Found In The Database\"";
 
                 var task = (from h in db.Hosts
-                    join t in db.ActiveTasks on h.Name equals t.Name
+                    join t in db.ActiveTasks on h.Id equals t.ComputerId
                     where (h.Mac.ToLower() == mac.ToLower())
                     select t).FirstOrDefault();
 
@@ -42,7 +42,7 @@ namespace Services.Client
                 using (var db = new DB())
                 {
                     var task = (from h in db.Hosts
-                                join t in db.ActiveTasks on h.Name equals t.Name
+                                join t in db.ActiveTasks on h.Id equals t.ComputerId
                                 where (h.Mac.ToLower() == mac.ToLower())
                                 select t).FirstOrDefault();
                     db.ActiveTasks.Remove(task);

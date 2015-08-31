@@ -84,7 +84,7 @@ namespace Services.Client
             using (var db = new DB())
             {
                 var currentPosition =(from h in db.Hosts 
-                           join t in db.ActiveTasks on h.Name equals t.Name
+                           join t in db.ActiveTasks on h.Id equals t.ComputerId
                            where (h.Mac.ToLower() == mac.ToLower())
                            select t.QueuePosition).FirstOrDefault();
                 int intCurrentPosition = Convert.ToInt16(currentPosition);
@@ -513,7 +513,7 @@ namespace Services.Client
             using (var db = new DB())
             {
                 var q = (from h in db.Hosts
-                         join t in db.ActiveTasks on h.Name equals t.Name
+                         join t in db.ActiveTasks on h.Id equals t.ComputerId
                          where (h.Mac.ToLower() == mac.ToLower())
                          select t).FirstOrDefault();
                 q.Status = "3";
@@ -629,7 +629,7 @@ namespace Services.Client
             ActiveMcTask mcTask;
             using (var db = new DB())
             {
-                mcTask = db.ActiveMcTasks.FirstOrDefault(t => t.Port == portBase);
+                mcTask = db.ActiveMcTasks.FirstOrDefault(t => t.Port == Convert.ToInt32(portBase));
             }
         
             if (mcTask != null)
@@ -691,7 +691,7 @@ namespace Services.Client
 
 
                 var q = (from h in db.Hosts
-                         join t in db.ActiveTasks on h.Name equals t.Name
+                         join t in db.ActiveTasks on h.Id equals t.ComputerId
                          where (h.Mac.ToLower() == mac.ToLower())
                          select t).FirstOrDefault();
                 q.Status = "2";

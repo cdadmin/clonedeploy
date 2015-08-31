@@ -34,7 +34,6 @@ namespace Tasks
 
             ActiveTask = new ActiveTask
             {
-                Name = Host.Name,
                 Status = "0",
                 Type = "unicast",
                 QueuePosition = 0

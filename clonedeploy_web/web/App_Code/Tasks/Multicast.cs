@@ -64,7 +64,7 @@ namespace Tasks
             ActiveMcTask.Name = Group.Name;
             ActiveMcTask.Image = Group.Image;
             ActiveMcTask.Port = new Port().GetPort();
-            if (ActiveMcTask.Port == "0")
+            if (ActiveMcTask.Port == 0)
             {
                 Utility.Message = "Could Not Determine Current Port Base";
                 return;
@@ -145,14 +145,13 @@ namespace Tasks
             {
                 var activeTask = new ActiveTask
                 {
-                    Name = host.Name,
                     Status = "0",
                     Type = "multicast",
                     MulticastName = Group.Name
                 };
                 if (!activeTask.Create())
                     return false;
-                host.TaskId = activeTask.Id;
+                host.TaskId = activeTask.Id.ToString();
             }
             return true;
         }
@@ -181,7 +180,7 @@ namespace Tasks
             var xferMode = Settings.ImageTransferMode;
             foreach (var host in Hosts)
             {
-                var activeTask = new ActiveTask {Id = host.TaskId};
+                var activeTask = new ActiveTask {Id = Convert.ToInt32(host.TaskId)};
                 string storagePath;
 
                 if (xferMode == "smb" || xferMode == "smb+http")
@@ -205,7 +204,7 @@ namespace Tasks
             if (IsCustom)
             {
                 ActiveMcTask.Port = new Port().GetPort();
-                Group = new Group {Name = ActiveMcTask.Port};
+                Group = new Group {Name = ActiveMcTask.Port.ToString()};
             }
             string shell;
 
@@ -496,7 +495,7 @@ namespace Tasks
 
             if (IsCustom)
             {
-                if (sender != null) ActiveMcTask.Pid = sender.Id.ToString();
+                if (sender != null) ActiveMcTask.Pid = sender.Id;
                 ActiveMcTask.Name = Group.Name;
                 ActiveMcTask.Create();
                 Utility.Message = "Successfully Started Multicast " + Group.Name;
@@ -505,7 +504,7 @@ namespace Tasks
 
             if (sender != null)
             {
-                ActiveMcTask.Pid = sender.Id.ToString();
+                ActiveMcTask.Pid = sender.Id;
                 ActiveMcTask.Update();
             }
         
