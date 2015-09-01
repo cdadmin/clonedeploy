@@ -31,8 +31,8 @@
                 </a>
             </li>
             
-             <li id="subnav-server">
-                <a href="<%= ResolveUrl("~/views/admin/settings.aspx") %>" class="icon-host">
+             <li id="pxe">
+                <a href="<%= ResolveUrl("~/views/admin/pxe.aspx") %>">
                     <span class="nav-text">PXE</span>
                 </a>
             </li>
