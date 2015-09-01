@@ -20,6 +20,11 @@ public partial class views_admin_server : System.Web.UI.Page
         txtTFTPPath.Text = Settings.TftpPath;
         txtWebService.Text = Setting.GetValueForAdminView(Settings.WebPath);
         ddlHostView.SelectedValue = Settings.DefaultHostView;
+
+        //These require pxe boot menu or client iso to be recreated
+        ViewState["serverIP"] = txtIP.Text;
+        ViewState["serverPort"] = txtPort.Text;
+        ViewState["webService"] = txtWebService.Text;
     }
 
     protected void btnUpdateSettings_OnClick(object sender, EventArgs e)

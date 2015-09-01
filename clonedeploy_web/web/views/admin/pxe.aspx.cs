@@ -1,30 +1,82 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Global;
 using Models;
+using Pxe;
 
-public partial class views_admin_pxe : System.Web.UI.Page
+public partial class views_admin_pxe : Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
         if (IsPostBack) return;
-       
+
         ddlPXEMode.SelectedValue = Settings.PxeMode;
         ddlProxyDHCP.SelectedValue = Settings.ProxyDhcp;
         ddlProxyBios.SelectedValue = Settings.ProxyBiosFile;
         ddlProxyEfi32.SelectedValue = Settings.ProxyEfi32File;
         ddlProxyEfi64.SelectedValue = Settings.ProxyEfi64File;
-       ShowProxyMode();
+
+        //These require pxe boot menu or client iso to be recreated
+        ViewState["pxeMode"] = ddlPXEMode.Text;
+        ViewState["proxyDHCP"] = ddlProxyDHCP.SelectedValue;
+        ViewState["proxyBios"] = ddlProxyBios.SelectedValue;
+        ViewState["proxyEfi32"] = ddlProxyEfi32.SelectedValue;
+        ViewState["proxyEfi64"] = ddlProxyEfi64.SelectedValue;
+
+        ShowProxyMode();
     }
 
     protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
     {
-        throw new NotImplementedException();
+        if (ValidateSettings())
+        {
+            var listSettings = new List<Setting>
+            {
+                new Setting {Name = "PXE Mode", Value = ddlPXEMode.Text},
+                new Setting {Name = "Proxy Dhcp", Value = ddlProxyDHCP.Text},
+                new Setting {Name = "Proxy Bios File", Value = ddlProxyBios.Text},
+                new Setting {Name = "Proxy Efi32 File", Value = ddlProxyEfi32.Text},
+                new Setting {Name = "Proxy Efi64 File", Value = ddlProxyEfi64.Text}
+            };
+
+
+            var newBootMenu = false;
+            if (new Setting().Update(listSettings))
+            {
+                new PxeFileOps().CopyPxeFiles(ddlPXEMode.Text);
+
+                if ((string) ViewState["proxyDHCP"] != ddlProxyDHCP.Text)
+                    newBootMenu = true;
+                if ((string) ViewState["proxyBios"] != ddlProxyBios.Text)
+                    newBootMenu = true;
+                if ((string) ViewState["proxyEfi32"] != ddlProxyEfi32.Text)
+                    newBootMenu = true;
+                if ((string) ViewState["proxyEfi64"] != ddlProxyEfi64.Text)
+                    newBootMenu = true;
+                if ((string) ViewState["pxeMode"] != ddlPXEMode.Text)
+                {
+                    newBootMenu = true;
+                }
+            }
+
+            if (newBootMenu)
+            {
+                var confirmTitle = Master.Master.FindControl("Content").FindControl("lblTitle") as Label;
+                confirmTitle.Text = Utility.Message;
+                confirmTitle.Text +=
+                    "<br> Your Settings Changes Require A New PXE Boot File Be Created.  <br>Create It Now?";
+
+                ClientScript.RegisterStartupScript(GetType(), "modalscript",
+                    "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
+                    true);
+                Session.Remove("Message");
+            }
+        }
+
+        new Utility().Msgbox(Utility.Message);
     }
 
     protected void ProxyDhcp_Changed(object sender, EventArgs e)
@@ -56,5 +108,16 @@ public partial class views_admin_pxe : System.Web.UI.Page
             ddlPXEMode.BackColor = Color.LightGray;
             ddlPXEMode.Font.Strikeout = true;
         }
+    }
+
+    protected bool ValidateSettings()
+    {
+        if (ActiveTask.ReadAll().Count > 0)
+        {
+            Utility.Message = "Settings Cannot Be Changed While Tasks Are Active";
+            return false;
+        }
+
+        return true;
     }
 }

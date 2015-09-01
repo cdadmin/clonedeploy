@@ -2,6 +2,10 @@
 
 <%@ MasterType VirtualPath="~/views/admin/Admin.master" %>
 <%@ Reference VirtualPath="~/views/masters/Site.master" %>
+<asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
+    <li>Scripts</li>
+    </asp:Content>
+
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {

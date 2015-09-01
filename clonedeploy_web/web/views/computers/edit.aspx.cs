@@ -39,7 +39,7 @@ namespace views.hosts
             ddlHostImage.DataValueField = "Id";
             ddlHostImage.DataTextField = "Name";
             ddlHostImage.DataBind();
-            ddlHostImage.Items.Insert(0, "Select Image");
+            ddlHostImage.Items.Insert(0, new ListItem("Select Image", "0"));
 
             txtHostName.Text = Master.Host.Name;
             txtHostMac.Text = Master.Host.Mac;

@@ -47,10 +47,10 @@ namespace views.hosts
                 Name = txtHostName.Text,
                 Mac = Utility.FixMac(txtHostMac.Text),
                 Image = Convert.ToInt32(ddlHostImage.SelectedValue),
-                ImageProfile = Convert.ToInt32(ddlImageProfile.SelectedValue),
                 Description = txtHostDesc.Text,
             };
 
+            host.ImageProfile = host.Image == 0 ? 0 : Convert.ToInt32(ddlImageProfile.SelectedValue);
             if (host.ValidateHostData())
             {
                 if (host.Create() && !createAnother.Checked)
@@ -66,7 +66,7 @@ namespace views.hosts
             ddlHostImage.DataValueField = "Id";
             ddlHostImage.DataTextField = "Name";
             ddlHostImage.DataBind();
-            ddlHostImage.Items.Insert(0, "Select Image");
+            ddlHostImage.Items.Insert(0, new ListItem("Select Image", "0"));
 
      
         }

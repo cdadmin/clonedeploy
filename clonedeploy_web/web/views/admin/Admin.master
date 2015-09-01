@@ -18,6 +18,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="SubNav" Runat="Server">
     
     <div class="sub-nav-top">
+        <div id="Level1" runat="server">
         <ul>
             <li id="server">
                 <a href="<%= ResolveUrl("~/views/admin/server.aspx") %>">
@@ -37,56 +38,56 @@
                 </a>
             </li>
             
-             <li id="subnav-server">
-                <a href="<%= ResolveUrl("~/views/admin/settings.aspx") %>" class="icon-host">
+             <li id="multicast">
+                <a href="<%= ResolveUrl("~/views/admin/multicast.aspx") %>" >
                     <span class="nav-text">Multicast</span>
                 </a>
             </li>
             
-             <li id="subnav-server">
-                <a href="<%= ResolveUrl("~/views/admin/settings.aspx") %>" class="icon-host">
+             <li id="security">
+                <a href="<%= ResolveUrl("~/views/admin/security.aspx") %>">
                     <span class="nav-text">Security</span>
                 </a>
             </li>
             
-             <li id="subnav-server">
-                <a href="<%= ResolveUrl("~/views/admin/settings.aspx") %>" class="icon-host">
+             <li id="email">
+                <a href="<%= ResolveUrl("~/views/admin/email.aspx") %>">
                     <span class="nav-text">E-mail</span>
                 </a>
             </li>
             
              <li id="subnav-server">
-                <a href="<%= ResolveUrl("~/views/admin/settings.aspx") %>" class="icon-host">
+                <a href="<%= ResolveUrl("~/views/admin/bootmenu.aspx") %>" class="icon-host">
                     <span class="nav-text">Boot Menu</span>
                 </a>
             </li>
             
-             <li id="subnav-server">
-                <a href="<%= ResolveUrl("~/views/admin/settings.aspx") %>" class="icon-host">
+             <li id="scripts">
+                <a href="<%= ResolveUrl("~/views/admin/scripts/search.aspx?cat=sub1") %>" class="icon-host">
                     <span class="nav-text">Scripts</span>
                 </a>
             </li>
             
              <li id="subnav-server">
-                <a href="<%= ResolveUrl("~/views/admin/settings.aspx") %>" class="icon-host">
+                <a href="<%= ResolveUrl("~/views/admin/sysprep.aspx") %>" class="icon-host">
                     <span class="nav-text">Sysprep</span>
                 </a>
             </li>
             
              <li id="subnav-server">
-                <a href="<%= ResolveUrl("~/views/admin/settings.aspx") %>" class="icon-host">
+                <a href="<%= ResolveUrl("~/views/admin/logview.aspx") %>" class="icon-host">
                     <span class="nav-text">Logs</span>
                 </a>
             </li>
             
              <li id="subnav-server">
-                <a href="<%= ResolveUrl("~/views/admin/settings.aspx") %>" class="icon-host">
+                <a href="<%= ResolveUrl("~/views/admin/export.aspx") %>" class="icon-host">
                     <span class="nav-text">Export</span>
                 </a>
             </li>
             
              <li id="subnav-server">
-                <a href="<%= ResolveUrl("~/views/admin/settings.aspx") %>" class="icon-host">
+                <a href="<%= ResolveUrl("~/views/admin/reports.aspx") %>" class="icon-host">
                     <span class="nav-text">Reports</span>
                 </a>
             </li>
@@ -103,6 +104,15 @@
                 </a>
             </li>
         </ul>
+        </div>
+         <div class="indent">
+            <ul>
+        <asp:ContentPlaceHolder ID="Level2" runat="server">
+        </asp:ContentPlaceHolder>
+                
+       
+                </ul>
+             </div>
     </div>
     
    

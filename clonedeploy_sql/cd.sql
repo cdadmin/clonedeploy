@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS `active_imaging_tasks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `active_imaging_tasks` (
-  `active_unicast_task_id` int(11) NOT NULL AUTO_INCREMENT,
+  `active_task_id` int(11) NOT NULL,
   `computer_id` varchar(45) DEFAULT NULL,
   `task_status` varchar(45) DEFAULT NULL,
   `task_queue_position` int(11) DEFAULT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE `active_imaging_tasks` (
   `task_arguments` varchar(255) DEFAULT NULL,
   `task_type` varchar(45) DEFAULT NULL,
   `multicast_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`active_unicast_task_id`)
+  PRIMARY KEY (`active_task_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -56,11 +56,11 @@ DROP TABLE IF EXISTS `active_multicast_sessions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `active_multicast_sessions` (
-  `active_multicast_session_id` int(11) NOT NULL AUTO_INCREMENT,
+  `multicast_session_id` int(11) NOT NULL,
   `multicast_name` varchar(45) DEFAULT NULL,
   `multicast_pid` int(11) DEFAULT NULL,
   `multicast_port` int(11) DEFAULT NULL,
-  PRIMARY KEY (`active_multicast_session_id`)
+  PRIMARY KEY (`multicast_session_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -95,7 +95,7 @@ CREATE TABLE `admin_settings` (
 
 LOCK TABLES `admin_settings` WRITE;
 /*!40000 ALTER TABLE `admin_settings` DISABLE KEYS */;
-INSERT INTO `admin_settings` VALUES (34,'On Demand Requires Login','Yes',''),(33,'Web Task Requires Login','Yes',''),(32,'Proxy Efi64 File','syslinux_64_efi',''),(31,'Proxy Efi32 File','syslinux_32_efi',''),(30,'Proxy Bios File','pxelinux',''),(29,'Proxy Dhcp','Yes',''),(28,'Web Server Port','80',''),(27,'Image Checksum','On',''),(26,'Server Key Mode','NULL',''),(25,'Global Host Args','',''),(24,'Client Receiver Args','',''),(23,'SMB Password','NULL',''),(22,'SMB User Name','',''),(21,'SMB Path','c:/',''),(20,'Force SSL','No',''),(19,'Nfs Deploy Path','c:\\/',''),(18,'Image Hold Path','c:\\inetpub\\wwwroot\\clonedeploy\\image_hold',''),(17,'Udpcast End Port','10000',''),(16,'Udpcast Start Port','9000',''),(15,'Receiver Args','',''),(14,'On Demand','Enabled',''),(13,'Server IP','192.168.1.100',''),(12,'Compression Level','1',''),(11,'Compression Algorithm','lz4',''),(10,'Server Key','abc',''),(9,'Default Host View','all',''),(8,'Image Transfer Mode','smb',''),(7,'AD Login Domain','',''),(6,'Web Path','http://[server-ip]/cruciblewds/service/client.asmx/',''),(5,'PXE Mode','pxelinux',''),(4,'Tftp Path','C:\\Users\\jddol\\Development\\wds\\CrucibleWDS_WinPackage\\cruciblewds\\tftpboot\\',''),(2,'Image Store Path','c:\\inetpub\\wwwroot\\clonedeploy\\image_store\\',''),(3,'Nfs Upload Path','c:\\/',''),(51,'Queue Size','3',''),(1,'Sender Args','',''),(35,'Debug Requires Login','Yes',''),(36,'Register Requires Login','Yes',''),(37,'Smtp Server','',''),(38,'Smtp Port','',''),(39,'Smtp Username','',''),(40,'Smtp Password','NULL',''),(41,'Smtp Mail From','',''),(42,'Smtp Mail To','',''),(43,'Smtp Ssl','Yes',''),(44,'Notify Successful Login','0',''),(45,'Notify Failed Login','0',''),(46,'Notify Task Started','0',''),(47,'Notify Task Completed','0',''),(48,'Notify Image Approved','0',''),(49,'Notify Resize Failed','0','');
+INSERT INTO `admin_settings` VALUES (34,'On Demand Requires Login','Yes',''),(33,'Web Task Requires Login','No',''),(32,'Proxy Efi64 File','ipxe_64_efi_snp',''),(31,'Proxy Efi32 File','ipxe_32_efi_snp',''),(30,'Proxy Bios File','ipxe',''),(29,'Proxy Dhcp','Yes',''),(28,'Web Server Port','80',''),(27,'Image Checksum','On',''),(26,'Server Key Mode','NULL',''),(25,'Global Host Args','',''),(24,'Client Receiver Args','ab',''),(23,'SMB Password','NULL',''),(22,'SMB User Name','abc247',''),(21,'SMB Path','//192.168.56.1',''),(20,'Force SSL','No',''),(19,'Nfs Deploy Path','c:\\/',''),(18,'Image Hold Path','c:\\inetpub\\wwwroot\\clonedeploy\\image_hold\\',''),(17,'Udpcast End Port','102',''),(16,'Udpcast Start Port','100',''),(15,'Receiver Args','ad',''),(14,'On Demand','Enabled',''),(13,'Server IP','192.168.1.101',''),(12,'Compression Level','1',''),(11,'Compression Algorithm','gzip',''),(10,'Server Key','e991eb3d-2de9-ae19',''),(9,'Default Host View','all',''),(8,'Image Transfer Mode','smb',''),(7,'AD Login Domain','',''),(6,'Web Path','http://[server-ip]/cruciblewds/service/client.asmx/',''),(5,'PXE Mode','ipxe',''),(4,'Tftp Path','C:\\inetpub\\wwwroot\\clonedeploy\\',''),(2,'Image Store Path','c:\\inetpub\\wwwroot\\clonedeploy\\image_store\\',''),(3,'Nfs Upload Path','c:\\/',''),(51,'Queue Size','3',''),(1,'Sender Args','asdb',''),(35,'Debug Requires Login','Yes',''),(36,'Register Requires Login','Yes',''),(37,'Smtp Server','abc',''),(38,'Smtp Port','',''),(39,'Smtp Username','',''),(40,'Smtp Password','NULL',''),(41,'Smtp Mail From','',''),(42,'Smtp Mail To','',''),(43,'Smtp Ssl','Yes',''),(44,'Notify Successful Login','0',''),(45,'Notify Failed Login','1',''),(46,'Notify Task Started','0',''),(47,'Notify Task Completed','1',''),(48,'Notify Image Approved','0',''),(49,'Notify Resize Failed','0','');
 /*!40000 ALTER TABLE `admin_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -444,7 +444,7 @@ CREATE TABLE `computers` (
   `computer_image_profile_id` int(11) DEFAULT NULL,
   `computer_inventory_computer_inventory_id` int(11) NOT NULL,
   PRIMARY KEY (`computer_id`,`computer_inventory_computer_inventory_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -453,6 +453,7 @@ CREATE TABLE `computers` (
 
 LOCK TABLES `computers` WRITE;
 /*!40000 ALTER TABLE `computers` DISABLE KEYS */;
+INSERT INTO `computers` VALUES (11,'host5','11','',0,0,3,0,0),(9,'host1','11111111111111111','',0,0,0,2,0);
 /*!40000 ALTER TABLE `computers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -510,31 +511,6 @@ LOCK TABLES `groups` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `image_profiles`
---
-
-DROP TABLE IF EXISTS `image_profiles`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `image_profiles` (
-  `image_profile_id` int(11) NOT NULL AUTO_INCREMENT,
-  `image_id` int(11) DEFAULT NULL,
-  `image_kernel` varchar(45) DEFAULT NULL,
-  `image_boot_image` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`image_profile_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `image_profiles`
---
-
-LOCK TABLES `image_profiles` WRITE;
-/*!40000 ALTER TABLE `image_profiles` DISABLE KEYS */;
-/*!40000 ALTER TABLE `image_profiles` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `images`
 --
 
@@ -549,8 +525,10 @@ CREATE TABLE `images` (
   `image_is_protected` tinyint(1) DEFAULT NULL,
   `image_is_viewable_ond` tinyint(1) DEFAULT NULL,
   `image_checksum` text,
+  `image_type` varchar(45) DEFAULT NULL,
+  `image_environment` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`image_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -559,8 +537,37 @@ CREATE TABLE `images` (
 
 LOCK TABLES `images` WRITE;
 /*!40000 ALTER TABLE `images` DISABLE KEYS */;
-INSERT INTO `images` VALUES (2,'linxtestimage','Linux','',0,1,NULL),(3,'abc','Linux','abc',0,1,NULL);
+INSERT INTO `images` VALUES (3,'abc','Linux','abc',1,1,NULL,NULL,NULL),(6,'test','Windows','',0,1,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `linux_profiles`
+--
+
+DROP TABLE IF EXISTS `linux_profiles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `linux_profiles` (
+  `image_profile_id` int(11) NOT NULL AUTO_INCREMENT,
+  `image_id` int(11) DEFAULT NULL,
+  `profile_kernel` varchar(45) DEFAULT NULL,
+  `profile_boot_image` varchar(45) DEFAULT NULL,
+  `profile_name` varchar(45) DEFAULT NULL,
+  `profile_description` longtext,
+  `profile_kernel_arguments` longtext,
+  PRIMARY KEY (`image_profile_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `linux_profiles`
+--
+
+LOCK TABLES `linux_profiles` WRITE;
+/*!40000 ALTER TABLE `linux_profiles` DISABLE KEYS */;
+INSERT INTO `linux_profiles` VALUES (1,3,'3.19','initrd','test_profile12',NULL,'image=old'),(2,3,'','','profile4','',NULL),(3,3,'3.19','initrd - Copy','profile_19','afjalkfjklejrad\r\nsf\r\nasdf\r\nas\r\ndf','asdfasdfsdf');
+/*!40000 ALTER TABLE `linux_profiles` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -571,8 +578,10 @@ DROP TABLE IF EXISTS `multicast_ports`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `multicast_ports` (
-  `multicast_port_number` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  `multicast_port_id` int(11) NOT NULL AUTO_INCREMENT,
+  `multicast_port_number` int(11) NOT NULL,
+  PRIMARY KEY (`multicast_port_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -581,6 +590,7 @@ CREATE TABLE `multicast_ports` (
 
 LOCK TABLES `multicast_ports` WRITE;
 /*!40000 ALTER TABLE `multicast_ports` DISABLE KEYS */;
+INSERT INTO `multicast_ports` VALUES (1,8998),(2,63998),(3,98),(4,98);
 /*!40000 ALTER TABLE `multicast_ports` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -615,14 +625,14 @@ DROP TABLE IF EXISTS `scripts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `scripts` (
-  `scripts_id` int(11) NOT NULL AUTO_INCREMENT,
+  `script_id` int(11) NOT NULL AUTO_INCREMENT,
   `script_name` varchar(45) DEFAULT NULL,
   `script_description` longtext,
-  `script_priority` varchar(10) DEFAULT NULL,
+  `script_priority` int(11) DEFAULT NULL,
   `script_category_id` int(11) DEFAULT NULL,
   `script_contents` longtext,
-  PRIMARY KEY (`scripts_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`script_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -631,6 +641,7 @@ CREATE TABLE `scripts` (
 
 LOCK TABLES `scripts` WRITE;
 /*!40000 ALTER TABLE `scripts` DISABLE KEYS */;
+INSERT INTO `scripts` VALUES (1,'Myfirstscript','hello',1,0,'updated test'),(2,'newscriptz','hello',55,0,'#!/bin/bash\nhello');
 /*!40000 ALTER TABLE `scripts` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -643,4 +654,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-08-20 16:31:11
+-- Dump completed on 2015-09-01 16:22:56

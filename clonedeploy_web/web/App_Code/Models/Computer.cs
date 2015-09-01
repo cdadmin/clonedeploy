@@ -82,6 +82,9 @@ namespace Models
         [NotMapped]
         public string TaskId { get; set; }
 
+        [NotMapped]
+        public string ImageName { get; set; }
+
 
         public string CheckActive()
         {
@@ -201,10 +204,11 @@ namespace Models
             }
         }
 
+
         public List<Computer> Search(string searchString)
         {
             List<Computer> list = new List<Computer>();
-            var user = new WdsUser { Name = HttpContext.Current.User.Identity.Name };
+            var user = new WdsUser {Name = HttpContext.Current.User.Identity.Name};
             user.Read();
 
             if (!string.IsNullOrEmpty(user.GroupManagement) && user.Membership == "User")
@@ -213,11 +217,16 @@ namespace Models
 
                 foreach (var id in listManagementGroups)
                 {
-                    var mgmtgroup = new Group { Id = id };
+                    var mgmtgroup = new Group {Id = id};
                     mgmtgroup.Read();
                     using (var db = new DB())
                     {
-                        list.AddRange(from h in db.Hosts where (h.Name.Contains(searchString) || h.Mac.Contains(searchString)) && h.Group == mgmtgroup.Name orderby h.Name select h);
+                        list.AddRange(from h in db.Hosts
+                            where
+                                (h.Name.Contains(searchString) || h.Mac.Contains(searchString)) &&
+                                h.Group == mgmtgroup.Name
+                            orderby h.Name
+                            select h);
                     }
                 }
 
@@ -227,7 +236,21 @@ namespace Models
             {
                 using (var db = new DB())
                 {
-                    list.AddRange(from h in db.Hosts where h.Name.Contains(searchString) || h.Mac.Contains(searchString) orderby h.Name select h);
+                    foreach (
+                        var q in
+                            (from h in db.Hosts
+                                where h.Name.Contains(searchString) || h.Mac.Contains(searchString)
+                                orderby h.Name
+                                select h))
+                    {
+                        if (q.Image != 0)
+                        {
+                            var image = new Image {Id = q.Image};
+                            image.Read();
+                            q.ImageName = image.Name;
+                        }
+                        list.Add(q);
+                    }
                 }
             }
             return list;

@@ -1,0 +1,18 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/views/admin/Admin.master" AutoEventWireup="true" CodeFile="scripts.master.cs" Inherits="views_admin_scripts_scripts" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
+     <li ><a href="<%= ResolveUrl("~/views/admin/scripts/search.aspx?cat=sub1") %>">Scripts</a></li>
+    <asp:ContentPlaceHolder runat="server" ID="BreadcrumbSub2">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="Level2" Runat="Server">
+     <li id="search"><a  href="<%= ResolveUrl("~/views/admin/scripts/search.aspx?cat=sub1") %>"><span class="sub-nav-text">Search Scripts</span></a></li>
+    <li id="create"><a href="<%= ResolveUrl("~/views/admin/scripts/create.aspx?cat=sub1")  %>"><span class="sub-nav-text">New Script</span></a></li>
+     <li id="edit"><a href="<%= ResolveUrl("~/views/admin/scripts/editcore.aspx?cat=sub1")  %>"><span class="sub-nav-text">Edit Core Scripts</span></a></li>
+</asp:Content>
+
+<asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
+    <asp:ContentPlaceHolder ID="SubContent2" runat="server">
+        </asp:ContentPlaceHolder>
+</asp:Content>
+

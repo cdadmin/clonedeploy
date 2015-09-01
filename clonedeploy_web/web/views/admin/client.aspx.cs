@@ -61,7 +61,9 @@ public partial class views_admin_client : System.Web.UI.Page
             if (!string.IsNullOrEmpty(txtSMBPass.Text))
                 listSettings.Add(new Setting { Name = "SMB Password", Value = txtSMBPass.Text });
             new Setting().Update(listSettings);
-        }   
+        }
+
+        new Utility().Msgbox(Utility.Message);
     }
 
     protected void ImageXfer_Changed(object sender, EventArgs e)
