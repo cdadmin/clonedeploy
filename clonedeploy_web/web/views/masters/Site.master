@@ -80,10 +80,15 @@
                         <a href="<%= ResolveUrl("~/views/users/search.aspx") %>" class="icon-user">
                             <span class="nav-text">Users</span></a>
                     </li>
+                       <li id="nav-global">
+                        <a href="<%= ResolveUrl("~/views/global/chooser.aspx") %>" class="icon-global">
+                            <span class="nav-text">Global</span></a>
+                    </li>
                     <li id="nav-settings">
                         <a href="<%= ResolveUrl("~/views/admin/chooser.aspx") %>" class="icon-setting">
                             <span class="nav-text">Admin</span></a>
                     </li>
+                 
                     <li id="nav-logout">
                         <asp:LoginStatus runat="server" CssClass="icon-logout nav-text" Style="height: 50px;" />
                     </li>

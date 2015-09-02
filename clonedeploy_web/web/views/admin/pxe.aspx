@@ -1,5 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/Admin.master" AutoEventWireup="true" CodeFile="pxe.aspx.cs" Inherits="views_admin_pxe" %>
 <%@ MasterType VirtualPath="~/views/admin/admin.master" %>
+<%@ Reference virtualPath="~/views/masters/Site.master" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
      <li><a href="<%= ResolveUrl("~/views/admin/client.aspx") %>">PXE Settings</a></li>
 </asp:Content>

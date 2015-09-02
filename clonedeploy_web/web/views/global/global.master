@@ -1,0 +1,97 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/views/masters/Site.master" AutoEventWireup="true" CodeFile="global.master.cs" Inherits="views_global_global" %>
+<%@ MasterType VirtualPath="~/views/masters/Site.master" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="HeaderNav" Runat="Server">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#nav-global').addClass("nav-current");
+        });
+    </script>
+      <h1 class="remove-bottom icon-global-title">Global</h1>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="Breadcrumb" Runat="Server">
+     <li><a href="<%= ResolveUrl("~/views/global/chooser.aspx") %>">Global</a></li>
+    <asp:ContentPlaceHolder ID="BreadcrumbSub" runat="server">
+        </asp:ContentPlaceHolder>
+</asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="SubNav" Runat="Server">
+       <div class="sub-nav-top">
+        <div id="Level1" runat="server">
+        <ul>
+           
+            
+             <li id="subnav-server">
+                <a href="<%= ResolveUrl("~/views/admin/bootmenu.aspx") %>" class="icon-host">
+                    <span class="nav-text">Boot Menu</span>
+                </a>
+            </li>
+            
+             <li id="scripts">
+                <a href="<%= ResolveUrl("~/views/admin/scripts/search.aspx?cat=sub1") %>" class="icon-host">
+                    <span class="nav-text">Scripts</span>
+                </a>
+            </li>
+            
+             <li id="subnav-server">
+                <a href="<%= ResolveUrl("~/views/admin/sysprep.aspx") %>" class="icon-host">
+                    <span class="nav-text">Sysprep</span>
+                </a>
+            </li>
+            
+             <li id="subnav-server">
+                <a href="<%= ResolveUrl("~/views/admin/logview.aspx") %>" class="icon-host">
+                    <span class="nav-text">Logs</span>
+                </a>
+            </li>
+            
+            
+            
+             <li id="subnav-server">
+                <a href="<%= ResolveUrl("~/views/admin/settings.aspx") %>" class="icon-host">
+                    <span class="nav-text">Buildings</span>
+                </a>
+            </li>
+            
+             <li id="subnav-server">
+                <a href="<%= ResolveUrl("~/views/admin/settings.aspx") %>" class="icon-host">
+                    <span class="nav-text">Rooms</span>
+                </a>
+            </li>
+        </ul>
+        </div>
+         <div class="indent">
+            <ul>
+        <asp:ContentPlaceHolder ID="Level2" runat="server">
+        </asp:ContentPlaceHolder>
+                
+       
+                </ul>
+             </div>
+    </div>
+</asp:Content>
+<asp:Content ID="Content4" ContentPlaceHolderID="Content" Runat="Server">
+     <div class="content-right">       
+    <asp:ContentPlaceHolder ID="SubContent" runat="server">
+    </asp:ContentPlaceHolder>
+         <br class="clear" />
+          <div class="spacer"></div>
+      
+        </div>
+    
+     <div id="confirmbox" class="confirm-box-outer">
+    <div class="confirm-box-inner">
+        <h4>
+            <asp:Label ID="lblTitle" runat="server" CssClass="modaltitle"></asp:Label>
+        </h4>
+
+        <div class="confirm-box-btns">
+            <asp:LinkButton ID="OkButton" OnClick="OkButton_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
+            <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no"/>
+            <h5 style="color: white;">
+                <asp:Label ID="lblClientISO" runat="server" CssClass="modaltitle"></asp:Label>
+            </h5>
+        </div>
+    </div>
+
+</div>
+</asp:Content>
+
