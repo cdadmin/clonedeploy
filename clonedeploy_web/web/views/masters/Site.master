@@ -90,7 +90,7 @@
                     </li>
                  
                     <li id="nav-logout">
-                        <asp:LoginStatus runat="server" CssClass="icon-logout nav-text" Style="height: 50px;" />
+                        <asp:LoginStatus runat="server" CssClass="icon-logout" LogoutText=""/>
                     </li>
                 </ul>
             </div>

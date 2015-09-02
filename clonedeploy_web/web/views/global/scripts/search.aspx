@@ -1,7 +1,6 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/scripts/scripts.master" AutoEventWireup="true" CodeFile="search.aspx.cs" Inherits="views_admin_scripts_search" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/scripts/scripts.master" AutoEventWireup="true" CodeFile="search.aspx.cs" Inherits="views_admin_scripts_search" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
-     <li ><a href="<%= ResolveUrl("~/views/admin/scripts/search.aspx?cat=sub1") %>">Scripts</a></li>
     <li>Search</li>
 </asp:Content>
 
@@ -35,7 +34,7 @@
             <asp:BoundField DataField="Priority" HeaderText="Priority" SortExpression="Priority" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
           
          
-            <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/admin/scripts/edit.aspx?cat=sub1&scriptid={0}" Text="View"/>
+            <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/global/scripts/edit.aspx?cat=sub1&scriptid={0}" Text="View"/>
         </Columns>
         <EmptyDataTemplate>
             No Hosts Found

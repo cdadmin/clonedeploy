@@ -1,12 +1,12 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/scripts/scripts.master" AutoEventWireup="true" CodeFile="edit.aspx.cs" Inherits="views_admin_scripts_edit" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/scripts/scripts.master" AutoEventWireup="true" CodeFile="create.aspx.cs" Inherits="views_admin_scripts_create" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
-    <li><%= Script.Name %></li>
+    <li>New Script</li>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#edit').addClass("nav-current");
+            $('#create').addClass("nav-current");
         });
     </script>
     
@@ -65,7 +65,7 @@
     </div>
 
     <div class="size-4 column">
-         <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Update Script" CssClass="submits" OnClientClick="update_click()"/>
+         <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Add Script" CssClass="submits" OnClientClick="update_click()"/>
     </div>
    
     <br class="clear"/>

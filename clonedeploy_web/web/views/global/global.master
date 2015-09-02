@@ -19,31 +19,23 @@
         <ul>
            
             
-             <li id="subnav-server">
-                <a href="<%= ResolveUrl("~/views/admin/bootmenu.aspx") %>" class="icon-host">
-                    <span class="nav-text">Boot Menu</span>
+             <li id="subnav-partition">
+                <a href="<%= ResolveUrl("~/views/global/partitions.aspx") %>" class="icon-host">
+                    <span class="nav-text">Partition Layouts</span>
                 </a>
             </li>
             
              <li id="scripts">
-                <a href="<%= ResolveUrl("~/views/admin/scripts/search.aspx?cat=sub1") %>" class="icon-host">
-                    <span class="nav-text">Scripts</span>
+                <a href="<%= ResolveUrl("~/views/global/scripts/search.aspx?cat=sub1") %>" class="icon-host">
+                    <span class="nav-text">Imaging Scripts</span>
                 </a>
             </li>
             
              <li id="subnav-server">
-                <a href="<%= ResolveUrl("~/views/admin/sysprep.aspx") %>" class="icon-host">
-                    <span class="nav-text">Sysprep</span>
+                <a href="<%= ResolveUrl("~/views/global/sysprep.aspx") %>" class="icon-host">
+                    <span class="nav-text">Sysprep Customizer</span>
                 </a>
             </li>
-            
-             <li id="subnav-server">
-                <a href="<%= ResolveUrl("~/views/admin/logview.aspx") %>" class="icon-host">
-                    <span class="nav-text">Logs</span>
-                </a>
-            </li>
-            
-            
             
              <li id="subnav-server">
                 <a href="<%= ResolveUrl("~/views/admin/settings.aspx") %>" class="icon-host">
