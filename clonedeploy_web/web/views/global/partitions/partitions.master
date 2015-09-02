@@ -2,6 +2,8 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
      <li ><a href="<%= ResolveUrl("~/views/global/partitions/search.aspx?cat=sub1") %>">Partition Layouts</a></li>
+     <asp:ContentPlaceHolder runat="server" ID="BreadcrumbSub2">
+    </asp:ContentPlaceHolder>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="Level2" Runat="Server">
       <li id="search"><a  href="<%= ResolveUrl("~/views/global/partitions/search.aspx?cat=sub1") %>"><span class="sub-nav-text">Search Layouts</span></a></li>

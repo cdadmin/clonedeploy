@@ -595,6 +595,62 @@ INSERT INTO `multicast_ports` VALUES (1,8998),(2,63998),(3,98),(4,98);
 UNLOCK TABLES;
 
 --
+-- Table structure for table `partition_layouts`
+--
+
+DROP TABLE IF EXISTS `partition_layouts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `partition_layouts` (
+  `partition_layout_id` int(11) NOT NULL,
+  `partition_layout_name` varchar(45) DEFAULT NULL,
+  `partition_layout_table` varchar(45) DEFAULT NULL,
+  `imaging_environment` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`partition_layout_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `partition_layouts`
+--
+
+LOCK TABLES `partition_layouts` WRITE;
+/*!40000 ALTER TABLE `partition_layouts` DISABLE KEYS */;
+INSERT INTO `partition_layouts` VALUES (0,'partlayout','MBR','Windows');
+/*!40000 ALTER TABLE `partition_layouts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `partitions`
+--
+
+DROP TABLE IF EXISTS `partitions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `partitions` (
+  `partition_id` int(11) NOT NULL AUTO_INCREMENT,
+  `partition_layout_id` int(11) DEFAULT NULL,
+  `partition_number` tinyint(4) DEFAULT NULL,
+  `partition_type` varchar(45) DEFAULT NULL,
+  `partition_fstype` varchar(45) DEFAULT NULL,
+  `partition_size` int(11) DEFAULT NULL,
+  `partition_size_unit` varchar(45) DEFAULT NULL,
+  `partition_boot_flag` tinyint(4) DEFAULT NULL,
+  PRIMARY KEY (`partition_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `partitions`
+--
+
+LOCK TABLES `partitions` WRITE;
+/*!40000 ALTER TABLE `partitions` DISABLE KEYS */;
+INSERT INTO `partitions` VALUES (1,0,1,'primary','ntfs',1000,'MB',1);
+/*!40000 ALTER TABLE `partitions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `rooms`
 --
 
@@ -654,4 +710,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-09-01 16:22:56
+-- Dump completed on 2015-09-02 16:25:59

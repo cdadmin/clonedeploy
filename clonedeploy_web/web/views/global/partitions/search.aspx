@@ -1,9 +1,45 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/global.master" AutoEventWireup="true" CodeFile="search.aspx.cs" Inherits="views_global_search" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/partitions/partitions.master" AutoEventWireup="true" CodeFile="search.aspx.cs" Inherits="views_global_search" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
+<asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
+    <li>Search</li>
 </asp:Content>
-<asp:Content ID="Content2" ContentPlaceHolderID="Level2" Runat="Server">
-</asp:Content>
-<asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
+
+<asp:Content ID="Content3" ContentPlaceHolderID="SubContent2" Runat="Server">
+     <script type="text/javascript">
+        $(document).ready(function() {
+            $('#search').addClass("nav-current");
+        });
+    </script>
+    <div class="size-7 column">
+        <asp:TextBox ID="txtSearch" runat="server" CssClass="searchbox" OnTextChanged="search_Changed"></asp:TextBox>
+    </div>
+    <br class="clear"/>
+    <p class="total">
+        <asp:Label ID="lblTotal" runat="server"></asp:Label>
+    </p>
+    <asp:GridView ID="gvLayout" runat="server" AllowSorting="True" DataKeyNames="Id" OnSorting="gridView_Sorting" AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
+        <Columns>
+            <asp:TemplateField>
+                <HeaderStyle CssClass="chkboxwidth"></HeaderStyle>
+                <ItemStyle CssClass="chkboxwidth"></ItemStyle>
+                <HeaderTemplate>
+                    <asp:CheckBox ID="chkSelectAll" runat="server" AutoPostBack="True" OnCheckedChanged="chkSelectAll_CheckedChanged"/>
+                </HeaderTemplate>
+                <ItemTemplate>
+                    <asp:CheckBox ID="chkSelector" runat="server"/>
+                </ItemTemplate>
+            </asp:TemplateField>
+            <asp:BoundField DataField="Id" HeaderText="hostID" SortExpression="hostID" Visible="False"/>
+            <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"></asp:BoundField>
+            <asp:BoundField DataField="Table" HeaderText="Table" SortExpression="Table" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
+            <asp:BoundField DataField="ImageEnvironment" HeaderText="Environment" SortExpression="ImageEnvironment" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
+          
+         
+            <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/global/partitions/edit.aspx?cat=sub1&layoutid={0}" Text="View"/>
+        </Columns>
+        <EmptyDataTemplate>
+            No Hosts Found
+        </EmptyDataTemplate>
+    </asp:GridView>
 </asp:Content>
 

@@ -20,7 +20,7 @@
            
             
              <li id="subnav-partition">
-                <a href="<%= ResolveUrl("~/views/global/partitions.aspx") %>" class="icon-host">
+                <a href="<%= ResolveUrl("~/views/global/partitions/search.aspx?cat=sub1") %>" class="icon-host">
                     <span class="nav-text">Partition Layouts</span>
                 </a>
             </li>
