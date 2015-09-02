@@ -49,14 +49,14 @@
         </div>
     </div>
    
-    <form id="form1" runat="server" style="height: 100%;overflow-x:hidden;overflow-y:hidden;" ClientIDMode="Static">
+    <form id="form1" runat="server" style="height: 100%;overflow-x:hidden;overflow-y:hidden;">
         
         <div class="container">
 
-            <div class="nav">
+            <div class="nav" id="navmenu">
                 <ul>
                     <li>
-                        <a href="<%= ResolveUrl("~/views/dashboard/dash.aspx") %>" class="">
+                        <a href="#" class="leftmenu">
                             <img alt="logo" src="<%= ResolveUrl("~/") %>content/img/crucible3.png" width="40px" style="margin-left: -1px; margin-top: 0;" />
                         </a>
                     </li>
@@ -137,12 +137,17 @@
                 return $('#form1').valid();
             });
 
-                    jQuery("#bread-crumb1").jBreadCrumb();
+            jQuery("#bread-crumb1").jBreadCrumb();
             $('.searchbox').watermark('Search', { useNative: false });
             $('.label-host-search').watermark('Search For Hosts', { useNative: false });
             $('.new-template').watermark('New Template Name', { useNative: false });
             $('.txt-generate').watermark('Password', { useNative: false });
-
+            $(".leftmenu").click(function () {
+                
+                $('.nav').css({ "width": "200px" });
+                $('.content_container').css({ "left": "200px" });
+               
+            });
             $(".confirm").click(function () {
                 var menuTop = document.getElementById('confirmbox');
                 classie.toggle(menuTop, 'confirm-box-outer-open');
