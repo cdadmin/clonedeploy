@@ -131,7 +131,7 @@ hr{border:solid #ddd;border-width:1px 0 0;clear:both;margin:10px 0 0px;height:0;
 /* Gridviews
 ================================================== */
 table{margin-bottom:30px;margin-top:0px;}
-Table.Gridview{border:none;white-space:nowrap; width:1000px;}
+Table.Gridview{border:none;white-space:nowrap; width:100%;}
 .GridviewTable{border:none;}
 .Gridview th{text-align:left;color:White;border:none;background-color:#47a3da;padding: 3px 0 3px 10px;}
 .Gridview th a:link,a:visited{color:White;text-decoration:none;}

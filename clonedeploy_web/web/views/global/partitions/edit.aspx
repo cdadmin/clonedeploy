@@ -40,125 +40,123 @@
    
     <br class="clear"/>
      <br/>
-     <asp:GridView ID="gvPartitions" runat="server"  Width = "550px"
+   
+<asp:GridView ID="gvPartitions" runat="server" AutoGenerateColumns="false" DataKeyNames="Id" CssClass="Gridview"
+ OnRowEditing="OnRowEditing" OnRowCancelingEdit="OnRowCancelingEdit" ShowFooter="True" OnRowDataBound="gvPartitions_OnDataBound"
+OnRowUpdating="OnRowUpdating" OnRowDeleting="OnRowDeleting" EmptyDataText="No Partitions Have Been Defined For This Layout.">
+<Columns>
+    <asp:TemplateField HeaderText="Type" ItemStyle-Width="150">
+        <ItemTemplate>
+            <asp:Label ID="lblType" runat="server" Text='<%# Eval("Type") %>'></asp:Label>
+        </ItemTemplate>
+        <EditItemTemplate>
+            <asp:dropdownlist ID="ddlType" runat="server" Text='<%# Eval("Type") %>' OnSelectedIndexChanged="ddlType_OnSelectedIndexChanged" AutoPostBack="True">
+                 <asp:listitem>Primary</asp:listitem>
+             <asp:listitem>Extended</asp:listitem>
+             <asp:listitem>Logical</asp:listitem>
+            </asp:dropdownlist>
+        </EditItemTemplate>
+        <FooterTemplate>
+            <asp:dropdownlist ID="ddlTypeAdd" runat="server" OnSelectedIndexChanged="ddlTypeAdd_OnSelectedIndexChanged" AutoPostBack="true">
+             <asp:listitem>Primary</asp:listitem>
+             <asp:listitem>Extended</asp:listitem>
+             <asp:listitem>Logical</asp:listitem>
+         </asp:dropdownlist>
+        </FooterTemplate>
+    </asp:TemplateField>
+    <asp:TemplateField HeaderText="Number" ItemStyle-Width="150">
+        <ItemTemplate>
+            <asp:Label ID="lblNumber" runat="server" Text='<%# Eval("Number") %>'></asp:Label>
+        </ItemTemplate>
+        <EditItemTemplate>
+            <asp:DropDownList ID="ddlNumber" runat="server"></asp:DropDownList>
+        </EditItemTemplate>
+         <FooterTemplate>
+            <asp:dropdownlist ID="ddlNumberAdd" runat="server"></asp:dropdownlist>
+        </FooterTemplate>
+    </asp:TemplateField>
+     <asp:TemplateField HeaderText="FS Type" ItemStyle-Width="150">
+        <ItemTemplate>
+            <asp:Label ID="lblFsType" runat="server" Text='<%# Eval("FsType") %>'></asp:Label>
+        </ItemTemplate>
+        <EditItemTemplate>
+            <asp:dropdownlist ID="ddlFsType" runat="server" Text='<%# Eval("FsType") %>'>
+                 <asp:ListItem>ntfs</asp:ListItem>
+            </asp:dropdownlist>
+        </EditItemTemplate>
+          <FooterTemplate>
+             <asp:dropdownlist ID="ddlFsTypeAdd" runat="server">
+             <asp:ListItem>ntfs</asp:ListItem>
+         </asp:dropdownlist>
+        </FooterTemplate>
+    </asp:TemplateField>
+     <asp:TemplateField HeaderText="Size" ItemStyle-Width="150">
+        <ItemTemplate>
+            <asp:Label ID="lblSize" runat="server" Text='<%# Eval("Size") %>'></asp:Label>
+        </ItemTemplate>
+        <EditItemTemplate>
+            <asp:TextBox ID="txtSize" runat="server" Text='<%# Eval("Size") %>'></asp:TextBox>
+        </EditItemTemplate>
+          <FooterTemplate>
+            <asp:TextBox ID="txtSizeAdd" runat="server"></asp:TextBox>
+        </FooterTemplate>
+    </asp:TemplateField>
+     <asp:TemplateField HeaderText="Unit" ItemStyle-Width="150">
+        <ItemTemplate>
+            <asp:Label ID="lblUnit" runat="server" Text='<%# Eval("Unit") %>'></asp:Label>
+        </ItemTemplate>
+        <EditItemTemplate>
+            <asp:dropdownlist ID="ddlUnit" runat="server" Text='<%# Eval("Unit") %>'>
+                 <asp:ListItem>MB</asp:ListItem>
+                <asp:ListItem>GB</asp:ListItem>
+               <asp:ListItem>Percent</asp:ListItem>
+            </asp:dropdownlist>
+        </EditItemTemplate>
+          <FooterTemplate>
+              <asp:dropdownlist ID="ddlUnitAdd" runat="server">
+               <asp:ListItem>MB</asp:ListItem>
+                <asp:ListItem>GB</asp:ListItem>
+               <asp:ListItem>Percent</asp:ListItem>
+           </asp:dropdownlist>
+        </FooterTemplate>
+    </asp:TemplateField>
+     <asp:TemplateField HeaderText="Boot/Active" ItemStyle-Width="150">
+        <ItemTemplate>
+            <asp:checkbox ID="lblBoot" runat="server" Checked='<%# Eval("Boot").ToString() == "1" ? true:false %>' Enabled="false"></asp:checkbox>
+        </ItemTemplate>
+        <EditItemTemplate>
+            <asp:checkbox ID="chkBoot" runat="server" ></asp:checkbox>
+        </EditItemTemplate>
+          <FooterTemplate>
+            <asp:checkbox ID="chkBootAdd" runat="server"></asp:checkbox>
 
-AutoGenerateColumns = "false" Font-Names = "Arial"
+        </FooterTemplate>
+    </asp:TemplateField>
+    	<asp:TemplateField ShowHeader="False">
+		<EditItemTemplate>
+			<asp:LinkButton ID="LinkButton1" runat="server" CausesValidation="True" 
+				CommandName="Update" Text="Update"></asp:LinkButton>
+			&nbsp;<asp:LinkButton ID="LinkButton2" runat="server" CausesValidation="False" 
+				CommandName="Cancel" Text="Cancel"></asp:LinkButton>
+		</EditItemTemplate>
+		<ItemTemplate>
+			<asp:LinkButton ID="LinkButton1" runat="server" CausesValidation="False" 
+				CommandName="Edit" Text="Edit"></asp:LinkButton>
+            <asp:LinkButton ID="LinkButton3" runat="server" CausesValidation="False" 
+				CommandName="Delete" Text="Delete"></asp:LinkButton>
+		</ItemTemplate>
+              <FooterTemplate>
 
-Font-Size = "11pt" AlternatingRowStyle-BackColor = "#C2D69B" 
-
-HeaderStyle-BackColor = "green" AllowPaging ="true"  ShowFooter = "true" 
-
-OnPageIndexChanging = "OnPaging" onrowediting="EditCustomer"
-
-onrowupdating="UpdateCustomer"  onrowcancelingedit="CancelEdit"
-
-PageSize = "10" >
-        <Columns>
-
-
-<asp:TemplateField ItemStyle-Width = "30px"  HeaderText = "CustomerID">
-
-    <ItemTemplate>
-
-        <asp:Label ID="lblCustomerID" runat="server"
-
-        Text='<%# Eval("Number")%>'></asp:Label>
-
-    </ItemTemplate>
-
-    <FooterTemplate>
-
-        <asp:TextBox ID="txtCustomerID" Width = "40px"
-
-            MaxLength = "5" runat="server"></asp:TextBox>
-
-    </FooterTemplate>
-
-</asp:TemplateField>
-
-<asp:TemplateField ItemStyle-Width = "100px"  HeaderText = "Name">
-
-    <ItemTemplate>
-
-        <asp:Label ID="lblContactName" runat="server"
-
-                Text='<%# Eval("Type")%>'></asp:Label>
-
-    </ItemTemplate>
-
-    <EditItemTemplate>
-
-        <asp:TextBox ID="txtContactName" runat="server"
-
-            Text='<%# Eval("FsType")%>'></asp:TextBox>
-
-    </EditItemTemplate> 
-
-    <FooterTemplate>
-
-        <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
-
-    </FooterTemplate>
-
-</asp:TemplateField>
-
-<asp:TemplateField ItemStyle-Width = "150px"  HeaderText = "Company">
-
-    <ItemTemplate>
-
-        <asp:Label ID="lblCompany" runat="server"
-
-            Text='<%# Eval("Size")%>'></asp:Label>
-
-    </ItemTemplate>
-
-    <EditItemTemplate>
-
-        <asp:TextBox ID="txtCompany" runat="server"
-
-            Text='<%# Eval("Unit")%>'></asp:TextBox>
-
-    </EditItemTemplate> 
-
-    <FooterTemplate>
-
-        <asp:TextBox ID="TextBox2" runat="server"></asp:TextBox>
-
-    </FooterTemplate>
-
-</asp:TemplateField>
-
-<asp:TemplateField>
-
-    <ItemTemplate>
-
-        <asp:LinkButton ID="lnkRemove" runat="server"
-
-            CommandArgument = '<%# Eval("Id")%>'
-
-         OnClientClick = "return confirm('Do you want to delete?')"
-
-        Text = "Delete" OnClick = "DeletePartition"></asp:LinkButton>
-
-    </ItemTemplate>
-
-    <FooterTemplate>
-
-        <asp:Button ID="btnAdd" runat="server" Text="Add"
-
-            OnClick = "AddPartition" />
-
-    </FooterTemplate>
-
-</asp:TemplateField>
-
-<asp:CommandField  ShowEditButton="True" />
-
+               <asp:Button ID="btnAdd1" runat="server" Text="Add" OnClick="Insert" />
+        </FooterTemplate>
+	</asp:TemplateField>
+    <asp:TemplateField >
+       
+        
+    </asp:TemplateField>
 </Columns>
-          
-        <EmptyDataTemplate>
-            No Partitions Have Been Defined For This Layout
-        </EmptyDataTemplate>
-    </asp:GridView>
+</asp:GridView>
+
+
 </asp:Content>
 
