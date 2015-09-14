@@ -37,6 +37,9 @@ namespace Models
         [Column("profile_kernel_arguments", Order = 7)]
         public string KernelArguments { get; set; }
 
+        [Column("skip_core_download", Order = 8)]
+        public int SkipCore { get; set; }
+
         public bool Create()
         {
             using (var db = new DB())

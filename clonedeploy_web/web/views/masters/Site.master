@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <title>CloneDeploy</title>
-    <script type="text/javascript" src="<%= ResolveUrl("~/scripts/dropdown/js/modernizr.custom.63321.js")%>" charset="utf-8"></script>
+   
     <script type="text/javascript" src="<%= ResolveUrl("~/scripts/jquery-1.9.1.js") %>"></script>
       <script type="text/javascript" src="<%= ResolveUrl("~/scripts/jquery-migrate-1.2.1.min.js") %>"></script>
     <script type="text/javascript" src="<%= ResolveUrl("~/scripts/jquery-ui.js") %>"></script>
@@ -19,11 +19,11 @@
     <script type="text/javascript" src="<%= ResolveUrl("~/scripts/jquery.jBreadCrumb.1.1.js")%>" charset="utf-8"></script>
      <script type="text/javascript" src="<%= ResolveUrl("~/scripts/jquery.easing.1.3.js")%>" charset="utf-8"></script>
      <script type="text/javascript" src="<%= ResolveUrl("~/scripts/jquery-labelauty.js")%>" charset="utf-8"></script>
-     <script type="text/javascript" src="<%= ResolveUrl("~/scripts/dropdown/js/jquery.dropdown.js")%>" charset="utf-8"></script>
+    
     
     
     <link rel="stylesheet" type="text/css" href="~/content/css/BreadCrumb.css"/>
-        <link rel="stylesheet" type="text/css" href="~/scripts/dropdown/css/style4.css"/>
+
      <link href="~/scripts/jquery-labelauty.css" rel="stylesheet" type="text/css" />
     <link href="~/content/css/base.css" rel="stylesheet" type="text/css" />
     <link href="~/content/css/icons.css" rel="stylesheet" type="text/css" />

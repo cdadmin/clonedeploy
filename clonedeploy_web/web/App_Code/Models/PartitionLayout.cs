@@ -23,6 +23,8 @@ namespace Models
         public string Table { get; set; }
         [Column("imaging_environment", Order = 4)]
         public string ImageEnvironment { get; set; }
+        [Column("partition_layout_priority", Order = 5)]
+        public int Priority { get; set; }
 
         public bool Create()
         {
@@ -89,6 +91,7 @@ namespace Models
                 Name = layout.Name;
                 Table = layout.Table;
                 ImageEnvironment = layout.ImageEnvironment;
+                Priority = layout.Priority;
             }
         }
 
@@ -115,6 +118,7 @@ namespace Models
                         layout.Name = Name;
                         layout.Table = Table;
                         layout.ImageEnvironment = ImageEnvironment;
+                        layout.Priority = Priority;
                         db.SaveChanges();
                     }
                 }

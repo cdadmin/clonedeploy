@@ -33,6 +33,7 @@ public partial class views_global_partitions_edit : System.Web.UI.Page
         txtLayoutName.Text = Layout.Name;
         ddlLayoutType.Text = Layout.Table;
         ddlEnvironment.Text = Layout.ImageEnvironment;
+        txtPriority.Text = Layout.Priority.ToString();
         BindGrid();
        
     }

@@ -39,6 +39,15 @@
              <asp:ListItem>Linux</asp:ListItem>
         </asp:DropDownList>
     </div>
+    <br class="clear" />
+     <div class="size-4 column">
+        Priority:
+    </div>
+    <div class="size-5 column">
+        <asp:textbox ID="txtPriority" runat="server" CssClass="textbox">
+
+        </asp:textbox>
+    </div>
     <br class="clear"/>
 
     <div class="size-4 column">

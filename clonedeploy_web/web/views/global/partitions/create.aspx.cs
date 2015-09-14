@@ -20,7 +20,8 @@ public partial class views_global_partitions_create : System.Web.UI.Page
         {
            Name = txtLayoutName.Text,
            Table = ddlLayoutType.Text,
-           ImageEnvironment = ddlEnvironment.Text
+           ImageEnvironment = ddlEnvironment.Text,
+           Priority = Convert.ToInt32(txtPriority.Text)
            
         };
      

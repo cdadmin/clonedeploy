@@ -226,7 +226,7 @@
     {
         maxFinalElementLength: 400,
         minFinalElementLength: 200,
-        minimumCompressionElements: 4,
+        minimumCompressionElements: 10,
         endElementsToLeaveOpen: 1,
         beginingElementsToLeaveOpen: 1,
         timeExpansionAnimation: 800,

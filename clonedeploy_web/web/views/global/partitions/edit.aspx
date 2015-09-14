@@ -39,6 +39,15 @@
     </div>
    
     <br class="clear"/>
+    <div class="size-4 column">
+        Priority:
+    </div>
+    <div class="size-5 column">
+        <asp:textbox ID="txtPriority" runat="server" CssClass="textbox">
+
+        </asp:textbox>
+    </div>
+    <br class="clear"/>
      <br/>
    
 <asp:GridView ID="gvPartitions" runat="server" AutoGenerateColumns="false" DataKeyNames="Id" CssClass="Gridview"
