@@ -1,6 +1,6 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/masters/Group.master" AutoEventWireup="true" CodeFile="history.aspx.cs" Inherits="views.groups.GroupHistory" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/groups/groups.master" AutoEventWireup="true" CodeFile="history.aspx.cs" Inherits="views.groups.GroupHistory" %>
 
-<%@ MasterType VirtualPath="~/views/masters/Group.master" %>
+<%@ MasterType VirtualPath="~/views/groups/groups.master" %>
 <%@ Reference virtualPath="~/views/masters/Site.master" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="SubContent" Runat="Server">
     <script type="text/javascript">

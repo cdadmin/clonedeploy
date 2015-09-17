@@ -40,6 +40,46 @@ namespace Models
         [Column("skip_core_download", Order = 8)]
         public int SkipCore { get; set; }
 
+        [Column("skip_set_clock", Order = 9)]
+        public int SkipClock { get; set; }
+
+        [Column("task_completed_action", Order = 10)]
+        public string TaskCompletedAction { get; set; }
+
+        [Column("remove_gpt_structures", Order = 11)]
+        public int RemoveGPT { get; set; }
+
+        [Column("skip_volume_shrink", Order = 12)]
+        public int SkipShrinkVolumes  { get; set; }
+
+        [Column("skip_lvm_shrink", Order = 13)]
+        public int SkipShrinkLvm { get; set; }
+
+        [Column("resize_debug", Order = 14)]
+        public int DebugResize { get; set; }
+
+        [Column("skip_volume_expand", Order = 15)]
+        public int SkipExpandVolumes { get; set; }
+
+        [Column("fix_bcd", Order = 16)]
+        public int FixBcd { get; set; }
+
+        [Column("fix_bootloader", Order = 17)]
+        public int FixBootloader { get; set; }
+
+        [Column("partition_method", Order = 18)]
+        public string PartitionMethod { get; set; }
+
+        [Column("force_dynamic_partitions", Order = 19)]
+        public int ForceDynamicPartitions { get; set; }
+
+        [Column("always_expand_partitions", Order = 20)]
+        public int ForceExpandPartitions { get; set; }
+
+        [Column("custom_partition_script", Order = 21)]
+        public string CustomPartitionScript { get; set; }
+
+
         public bool Create()
         {
             using (var db = new DB())
@@ -97,6 +137,20 @@ namespace Models
                 this.Kernel = profile.Kernel;
                 this.BootImage = profile.BootImage;
                 this.KernelArguments = profile.KernelArguments;
+                this.SkipCore = profile.SkipCore;
+                this.SkipClock = profile.SkipClock;
+                this.TaskCompletedAction = profile.TaskCompletedAction;
+                this.RemoveGPT = profile.RemoveGPT;
+                this.SkipShrinkVolumes = profile.SkipShrinkVolumes;
+                this.SkipShrinkLvm = profile.SkipShrinkLvm;
+                this.DebugResize = profile.DebugResize;
+                this.SkipExpandVolumes = profile.SkipExpandVolumes;
+                this.FixBcd = profile.FixBcd;
+                this.FixBootloader = profile.FixBootloader;
+                this.PartitionMethod = profile.PartitionMethod;
+                this.ForceDynamicPartitions = profile.ForceDynamicPartitions;
+                this.ForceExpandPartitions = profile.ForceExpandPartitions;
+                this.CustomPartitionScript = profile.CustomPartitionScript;
             }
         }
 
@@ -104,8 +158,6 @@ namespace Models
         {
             List<LinuxEnvironmentProfile> list = new List<LinuxEnvironmentProfile>();
 
-
-         
                 using (var db = new DB())
                 {
                     list.AddRange(from p in db.ImageProfiles where p.ImageId == imageId orderby p.Name select p);
@@ -128,6 +180,20 @@ namespace Models
                         profile.Kernel = this.Kernel;
                         profile.BootImage = this.BootImage;
                         profile.KernelArguments = this.KernelArguments;
+                        profile.SkipCore = this.SkipCore;
+                        profile.SkipClock = this.SkipClock;
+                        profile.TaskCompletedAction = this.TaskCompletedAction;
+                        profile.RemoveGPT = this.RemoveGPT;
+                        profile.SkipShrinkVolumes = this.SkipShrinkVolumes;
+                        profile.SkipShrinkLvm = this.SkipShrinkLvm;
+                        profile.DebugResize = this.DebugResize;
+                        profile.SkipExpandVolumes = this.SkipExpandVolumes;
+                        profile.FixBcd = this.FixBcd;
+                        profile.FixBootloader = this.FixBootloader;
+                        profile.PartitionMethod = this.PartitionMethod;
+                        profile.ForceDynamicPartitions = this.ForceDynamicPartitions;
+                        profile.ForceExpandPartitions = this.ForceExpandPartitions;
+                        profile.CustomPartitionScript = this.CustomPartitionScript;
                         db.SaveChanges();
                     }
                 }

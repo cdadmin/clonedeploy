@@ -19,7 +19,7 @@ namespace views.hosts
         {
             var host = new Computer
             {
-                Id = Master.Host.Id,
+                Id = Master.Computer.Id,
                 Name = txtHostName.Text,
                 Mac = Utility.FixMac(txtHostMac.Text),
                 Image = Convert.ToInt32(ddlHostImage.SelectedValue),
@@ -41,17 +41,17 @@ namespace views.hosts
             ddlHostImage.DataBind();
             ddlHostImage.Items.Insert(0, new ListItem("Select Image", "0"));
 
-            txtHostName.Text = Master.Host.Name;
-            txtHostMac.Text = Master.Host.Mac;
-            ddlHostImage.SelectedValue = Master.Host.Image.ToString();        
-            txtHostDesc.Text = Master.Host.Description;
+            txtHostName.Text = Master.Computer.Name;
+            txtHostMac.Text = Master.Computer.Mac;
+            ddlHostImage.SelectedValue = Master.Computer.Image.ToString();        
+            txtHostDesc.Text = Master.Computer.Description;
 
             ddlImageProfile.DataSource = new LinuxEnvironmentProfile().Search(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
             ddlImageProfile.DataValueField = "Id";
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();
 
-            ddlImageProfile.SelectedValue = Master.Host.ImageProfile.ToString();
+            ddlImageProfile.SelectedValue = Master.Computer.ImageProfile.ToString();
          
         }
 

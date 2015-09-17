@@ -12,7 +12,7 @@ namespace views.groups
     {
         protected void btnRemoveBootMenu_Click(object sender, EventArgs e)
         {
-            var group = new Group {Id = Request.QueryString["groupid"]};
+            var group = new Group {Id = Convert.ToInt32(Request.QueryString["groupid"])};
             group.Read();
 
             switch (@group.Type)
@@ -24,20 +24,14 @@ namespace views.groups
                         customBootMenu.RemoveCustomBootMenu();
                     }
                     break;
-                case "smart":
-                    foreach (var host in @group.SearchSmartHosts(@group.Expression))
-                    {
-                        var customBootMenu = new CustomBootMenu {Host = host};
-                        customBootMenu.RemoveCustomBootMenu();
-                    }
-                    break;
+               
             }
 
             var historyg = new History
             {
                 Event = "Remove Boot Menu",
                 Type = "Group",
-                TypeId = @group.Id
+                TypeId = @group.Id.ToString()
             };
             historyg.CreateEvent();
 
@@ -46,7 +40,7 @@ namespace views.groups
 
         protected void btnSetBootMenu_Click(object sender, EventArgs e)
         {
-            var group = new Group {Id = Request.QueryString["groupid"]};
+            var group = new Group {Id = Convert.ToInt32(Request.QueryString["groupid"])};
             group.Read();
 
             switch (@group.Type)
@@ -62,24 +56,14 @@ namespace views.groups
                         customBootMenu.SetCustomBootMenu();
                     }
                     break;
-                case "smart":
-                    foreach (var host in @group.SearchSmartHosts(@group.Expression))
-                    {
-                        var customBootMenu = new CustomBootMenu
-                        {
-                            Host = host,
-                            FileName = txtCustomBootMenu.Text
-                        };
-                        customBootMenu.SetCustomBootMenu();
-                    }
-                    break;
+               
             }
 
             var historyg = new History
             {
                 Event = "Set Boot Menu",
                 Type = "Group",
-                TypeId = @group.Id
+                TypeId = @group.Id.ToString()
             };
             historyg.CreateEvent();
 
@@ -132,7 +116,7 @@ namespace views.groups
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            var group = new Group {Id = Request.QueryString["groupid"]};
+            var group = new Group {Id = Convert.ToInt32(Request.QueryString["groupid"])};
             group.Read();
             var subTitle = Master.Master.FindControl("SubNav").FindControl("labelSubTitle") as Label;
             if (subTitle != null) subTitle.Text = group.Name + " | Boot Menu";

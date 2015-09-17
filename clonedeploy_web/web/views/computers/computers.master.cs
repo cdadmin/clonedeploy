@@ -9,7 +9,7 @@ namespace views.masters
 {
     public partial class ComputerMaster : MasterPage
     {
-        public Computer Host { get { return ReadComputer(); } }
+        public Computer Computer { get { return ReadComputer(); } }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -33,10 +33,10 @@ namespace views.masters
 
         protected void btnDeploy_Click(object sender, EventArgs e)
         {
-            Image image = new Image {Id = Host.Image};
+            Image image = new Image {Id = Computer.Image};
             image.Read();
             Session["direction"] = "push";
-            lblTitle.Text = "Deploy " + image.Name + " To " + Host.Name + " ?";
+            lblTitle.Text = "Deploy " + image.Name + " To " + Computer.Name + " ?";
           
             Page.ClientScript.RegisterStartupScript(GetType(), "modalscript",
                 "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
@@ -59,20 +59,20 @@ namespace views.masters
             switch (direction)
             {
                 case "delete":
-                    Host.Delete();
+                    Computer.Delete();
                     if (Utility.Message.Contains("Successfully"))
                         Response.Redirect("~/views/computers/search.aspx");
                     break;
                 case "push":
                 {
-                    var image = new Image {Id = Host.Image};
+                    var image = new Image {Id = Computer.Image};
                     image.Read();
                     Session["imageID"] = image.Id;
 
 
                     if (image.Check_Checksum())
                     {
-                        var unicast = new Unicast {Host = Host, Direction = direction};
+                        var unicast = new Unicast {Host = Computer, Direction = direction};
                         unicast.Create();
                     }
                     else
@@ -87,7 +87,7 @@ namespace views.masters
                     break;
                 case "pull":
                 {
-                    var unicast = new Unicast {Host = Host, Direction = direction};
+                    var unicast = new Unicast {Host = Computer, Direction = direction};
                     unicast.Create();
                 }
                     break;

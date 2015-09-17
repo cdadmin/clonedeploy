@@ -62,7 +62,7 @@ namespace Tasks
             }
 
             ActiveMcTask.Name = Group.Name;
-            ActiveMcTask.Image = Group.Image;
+            ActiveMcTask.Image = Group.Image.ToString();
             ActiveMcTask.Port = new Port().GetPort();
             if (ActiveMcTask.Port == 0)
             {
@@ -117,7 +117,7 @@ namespace Tasks
             {
                 Event = "Multicast",
                 Type = "Group",
-                TypeId = Group.Id
+                TypeId = Group.Id.ToString()
             };
             history.CreateEvent();
 
@@ -129,11 +129,11 @@ namespace Tasks
                 history.TypeId = host.Id.ToString();
                 history.CreateEvent();
 
-                var image = new Image {Name = Group.Image};
+                var image = new Image {Id = Group.Image};
                 image.Read();
                 history.Event = "Deploy";
                 history.Type = "Image";
-                history.Notes = Group.Image;
+                history.Notes = Group.Image.ToString();
                 history.TypeId = image.Id.ToString();
                 history.CreateEvent();
             }
@@ -160,11 +160,12 @@ namespace Tasks
         {
             foreach (var host in Hosts)
             {
+                //FIX ME
                 var menu = new TaskBootMenu
                 {
-                    Kernel = Group.Kernel,
-                    BootImage = Group.BootImage,
-                    Arguments = Group.Args,
+                    //Kernel = Group.Kernel,
+                    //BootImage = Group.BootImage,
+                    //Arguments = Group.Args,
                     PxeHostMac = Utility.MacToPxeMac(host.Mac),
                     Direction = "push",
                     IsMulticast = true
@@ -187,8 +188,9 @@ namespace Tasks
                     storagePath = Settings.SmbPath;
                 else
                     storagePath = Direction == "pull" ? Settings.NfsUploadPath : Settings.NfsDeployPath;
+                //FIX ME
                 activeTask.Arguments = "imgName=" + Group.Image + " storage=" + storagePath +
-                                       " hostID=" + host.Id + " multicast=true " + " hostScripts=" + Group.Scripts +
+                                       " hostID=" + host.Id + " multicast=true " + " hostScripts=" + /*Group.Scripts +*/
                                        " xferMode=" + xferMode + " serverIP=" + Settings.ServerIp +
                                        " hostName=" + host.Name + " portBase=" + ActiveMcTask.Port + 
                                        " clientReceiverArgs=" + Settings.ClientReceiverArgs;
@@ -421,8 +423,8 @@ namespace Tasks
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(Group.SenderArgs))
-                        Group.SenderArgs = Settings.SenderArgs;
+                    if (string.IsNullOrEmpty(Group.SenderArguments))
+                        Group.SenderArguments = Settings.SenderArgs;
 
                     if (Environment.OSVersion.ToString().Contains("Unix"))
                     {
@@ -430,13 +432,13 @@ namespace Tasks
                             senderInfo.Arguments = (" -c \"" + compAlg + udpFile + stdout + " | udp-sender" +
                                                     " --portbase " + ActiveMcTask.Port + " --min-receivers " + receivers +
                                                     " " +
-                                                    Group.SenderArgs + " --ttl 32");
+                                                    Group.SenderArguments + " --ttl 32");
 
                         else
                             senderInfo.Arguments += (" ; " + compAlg + udpFile + stdout + " | udp-sender" +
                                                      " --portbase " + ActiveMcTask.Port + " --min-receivers " +
                                                      receivers + " " +
-                                                     Group.SenderArgs + " --ttl 32");
+                                                     Group.SenderArguments + " --ttl 32");
                     }
                     else
                     {
@@ -445,13 +447,13 @@ namespace Tasks
                                                     "udp-sender.exe" +
                                                     " --portbase " + ActiveMcTask.Port + " --min-receivers " + receivers +
                                                     " " +
-                                                    Group.SenderArgs + " --ttl 32");
+                                                    Group.SenderArguments + " --ttl 32");
                         else
                             senderInfo.Arguments += (" & " + appPath + compAlg + udpFile + stdout + " | " + appPath +
                                                      "udp-sender.exe" +
                                                      " --portbase " + ActiveMcTask.Port + " --min-receivers " +
                                                      receivers + " " +
-                                                     Group.SenderArgs + " --ttl 32");
+                                                     Group.SenderArguments + " --ttl 32");
                     }
                 }
             }

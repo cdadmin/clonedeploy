@@ -41,7 +41,7 @@ namespace Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("group_id", Order = 1)]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [Column("group_name", Order = 2)]
         public string Name { get; set; }
@@ -49,45 +49,26 @@ namespace Models
         [Column("group_description", Order = 3)]
         public string Description { get; set; }
 
-        [Column("group_building_id", Order = 4)]
-        public int Building { get; set; }
+        [Column("group_image_id", Order = 4)]
+        public int Image { get; set; }
 
-        [Column("group_room_id", Order = 5)]
-        public int Room { get; set; }
+        [Column("group_image_profile_id", Order = 5)]
+        public int ImageProfile { get; set; }
 
-        [Column("group_image_id", Order = 6)]
-        public string Image { get; set; }
-
-        [Column("group_image_profile_id", Order = 7)]
-        public string ImageProfile { get; set; }
-
-        [Column("group_type", Order = 8)]
+        [Column("group_type", Order = 6)]
         public string Type { get; set; }
 
-       [NotMapped] 
-        public string Kernel { get; set; }
+        [Column("group_sender_arguments", Order = 7)]
+        public string SenderArguments { get; set; }
 
-        [NotMapped] 
-        public string BootImage { get; set; }
-
-        [NotMapped] 
-        public string Args { get; set; }
-
-        [NotMapped] 
-        public string SenderArgs { get; set; }
-
-        [NotMapped] 
-        public string Scripts { get; set; }
-
-        [NotMapped] 
-        public string Expression { get; set; }
+        [Column("group_receiver_arguments", Order = 8)]
+        public string ReceiverArguments { get; set; }
 
         [NotMapped] 
         public List<Computer> Members { get; set; }
 
         public void Create()
         {
-            var affectedRows = 0;
             using (var db = new DB())
             {
                 try
@@ -100,7 +81,7 @@ namespace Models
                     else
                     {
                         db.Groups.Add(this);
-                        affectedRows = db.SaveChanges();
+
                     }
                 }
                 catch (DbUpdateException ex)
@@ -111,18 +92,16 @@ namespace Models
                 }
             }
 
-            if (affectedRows != 1) return;
-            GetGroupId();
+
             var history = new History
             {
                 Event = "Create",
                 Type = "Group",
-                TypeId = Id
+                TypeId = Id.ToString()
             };
             history.CreateEvent();
 
-            if (UpdateHosts(true))
-                Utility.Message = "Successfully Created Group " + Name + " With " + Members.Count + " Hosts";
+                Utility.Message = "Successfully Created Group " + Name;
         }
 
         public void Delete()
@@ -144,7 +123,7 @@ namespace Models
                 }
 
                 Utility.Message = "Successfully Deleted " + Name;
-                var history = new History { Event = "Delete", Type = "Group", TypeId = Id };
+                var history = new History { Event = "Delete", Type = "Group", TypeId = Id.ToString() };
                 history.CreateEvent();
             }
         }
@@ -170,10 +149,7 @@ namespace Models
                         hosts.AddRange(from h in db.Hosts where h.Group == Name orderby h.Name select h);
                     }
                     break;
-                case "smart":
-                    if (string.IsNullOrEmpty(Expression)) return hosts;
-                    hosts.AddRange(SearchSmartHosts(Expression));
-                    break;
+              
             }
 
             return hosts;
@@ -208,22 +184,18 @@ namespace Models
 
         public void Read()
         {
-            if (string.IsNullOrEmpty(Id) && !string.IsNullOrEmpty(Name))
-                GetGroupId();
-
+        
             using (var db = new DB())
             {
                 var group = db.Groups.First(g => g.Id == Id);
                 Name = group.Name;
                 Image = group.Image;
+                ImageProfile = group.ImageProfile;
                 Description = group.Description;
-                Kernel = group.Kernel;
-                BootImage = group.BootImage;
-                Args = group.Args;
-                SenderArgs = group.SenderArgs;
-                Scripts = group.Scripts;
+                SenderArguments = group.SenderArguments;
+                ReceiverArguments = group.ReceiverArguments;
                 Type = group.Type;
-                Expression = group.Expression;
+              
 
             }        
         }
@@ -265,7 +237,7 @@ namespace Models
 
                 foreach (var id in listManagementGroups)
                 {
-                    var mgmtgroup = new Group { Id = id };
+                    var mgmtgroup = new Group { Id = Convert.ToInt32(id) };
                     mgmtgroup.Read();
 
                     using (var db = new DB())
@@ -311,14 +283,12 @@ namespace Models
                     {
                         group.Name = Name;
                         group.Image = Image;
+                        group.ImageProfile = ImageProfile;
                         group.Description = Description;
-                        group.Kernel = Kernel;
-                        group.BootImage = BootImage;
-                        group.Args = Args;
-                        group.Scripts = Scripts;
-                        group.SenderArgs = SenderArgs;
+                        group.SenderArguments = SenderArguments;
+                        group.ReceiverArguments = ReceiverArguments;
                         group.Type = Type;
-                        group.Expression = Expression;
+
                         db.SaveChanges();
                     }
                 }
@@ -332,7 +302,7 @@ namespace Models
                 {
                     Event = "Edit",
                     Type = "Group",
-                    TypeId = Id
+                    TypeId = Id.ToString()
                 };
                 history.CreateEvent();
             }
@@ -351,10 +321,7 @@ namespace Models
                         if (Type == "standard")
                             newHost.Group = Name;
                         newHost.Image = Convert.ToInt32(Image);
-                        newHost.Kernel = Kernel;
-                        newHost.BootImage = BootImage;
-                        newHost.Args = Args;
-                        newHost.Scripts = Scripts;
+                   
                         db.SaveChanges();
 
                     }
@@ -394,16 +361,7 @@ namespace Models
                 Utility.Message = "Group Name Cannot Be Empty Or Contain Spaces";
             }
 
-            if (Kernel == "Select Kernel")
-            {
-                validated = false;
-                Utility.Message = "You Must Select A Kernel";
-            }
-            if (BootImage == "Select Boot Image")
-            {
-                validated = false;
-                Utility.Message = "You Must Select A Boot Image";
-            }
+        
 
             return validated;
         }

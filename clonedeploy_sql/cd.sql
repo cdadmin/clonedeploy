@@ -453,7 +453,7 @@ CREATE TABLE `computers` (
 
 LOCK TABLES `computers` WRITE;
 /*!40000 ALTER TABLE `computers` DISABLE KEYS */;
-INSERT INTO `computers` VALUES (11,'host5','11','',0,0,3,0,0),(9,'host1','11111111111111111','',0,0,0,2,0);
+INSERT INTO `computers` VALUES (11,'host5','11','',0,0,3,0,0),(9,'host1','11111111111111111','',0,0,3,2,0);
 /*!40000 ALTER TABLE `computers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -492,13 +492,13 @@ CREATE TABLE `groups` (
   `group_id` int(11) NOT NULL AUTO_INCREMENT,
   `group_name` varchar(45) NOT NULL,
   `group_description` longtext,
-  `group_building_id` int(11) DEFAULT NULL,
-  `group_room_id` int(11) DEFAULT NULL,
   `group_image_id` int(11) DEFAULT NULL,
   `group_image_profile_id` int(11) DEFAULT NULL,
   `group_type` varchar(45) DEFAULT NULL,
+  `group_sender_arguments` longtext,
+  `group_receiver_arguments` longtext,
   PRIMARY KEY (`group_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -507,7 +507,60 @@ CREATE TABLE `groups` (
 
 LOCK TABLES `groups` WRITE;
 /*!40000 ALTER TABLE `groups` DISABLE KEYS */;
+INSERT INTO `groups` VALUES (1,'Group1_Test26','',3,1,'standard','','');
 /*!40000 ALTER TABLE `groups` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `image_profile_partition_layouts`
+--
+
+DROP TABLE IF EXISTS `image_profile_partition_layouts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `image_profile_partition_layouts` (
+  `image_profile_partition_layout_id` int(11) NOT NULL AUTO_INCREMENT,
+  `image_profile_id` int(11) DEFAULT NULL,
+  `partition_layout_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`image_profile_partition_layout_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `image_profile_partition_layouts`
+--
+
+LOCK TABLES `image_profile_partition_layouts` WRITE;
+/*!40000 ALTER TABLE `image_profile_partition_layouts` DISABLE KEYS */;
+INSERT INTO `image_profile_partition_layouts` VALUES (13,1,1);
+/*!40000 ALTER TABLE `image_profile_partition_layouts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `image_profile_scripts`
+--
+
+DROP TABLE IF EXISTS `image_profile_scripts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `image_profile_scripts` (
+  `image_profile_script_id` int(11) NOT NULL AUTO_INCREMENT,
+  `image_profile_id` int(11) DEFAULT NULL,
+  `script_id` int(11) DEFAULT NULL,
+  `run_pre` tinyint(4) DEFAULT NULL,
+  `run_post` tinyint(4) DEFAULT NULL,
+  PRIMARY KEY (`image_profile_script_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `image_profile_scripts`
+--
+
+LOCK TABLES `image_profile_scripts` WRITE;
+/*!40000 ALTER TABLE `image_profile_scripts` DISABLE KEYS */;
+INSERT INTO `image_profile_scripts` VALUES (4,1,2,0,1),(3,1,1,1,1);
+/*!40000 ALTER TABLE `image_profile_scripts` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -556,8 +609,22 @@ CREATE TABLE `linux_profiles` (
   `profile_name` varchar(45) DEFAULT NULL,
   `profile_description` longtext,
   `profile_kernel_arguments` longtext,
+  `skip_core_download` tinyint(4) DEFAULT NULL,
+  `skip_set_clock` tinyint(4) DEFAULT NULL,
+  `task_completed_action` varchar(45) DEFAULT NULL,
+  `remove_gpt_structures` tinyint(4) DEFAULT NULL,
+  `skip_volume_shrink` tinyint(4) DEFAULT NULL,
+  `skip_lvm_shrink` tinyint(4) DEFAULT NULL,
+  `resize_debug` tinyint(4) DEFAULT NULL,
+  `skip_volume_expand` tinyint(4) DEFAULT NULL,
+  `fix_bcd` tinyint(4) DEFAULT NULL,
+  `fix_bootloader` tinyint(4) DEFAULT NULL,
+  `partition_method` varchar(45) DEFAULT NULL,
+  `force_dynamic_partitions` tinyint(4) DEFAULT NULL,
+  `always_expand_partitions` tinyint(4) DEFAULT NULL,
+  `custom_partition_script` longtext,
   PRIMARY KEY (`image_profile_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -566,7 +633,7 @@ CREATE TABLE `linux_profiles` (
 
 LOCK TABLES `linux_profiles` WRITE;
 /*!40000 ALTER TABLE `linux_profiles` DISABLE KEYS */;
-INSERT INTO `linux_profiles` VALUES (1,3,'3.19','initrd','test_profile12',NULL,'image=old'),(2,3,'','','profile4','',NULL),(3,3,'3.19','initrd - Copy','profile_19','afjalkfjklejrad\r\nsf\r\nasdf\r\nas\r\ndf','asdfasdfsdf');
+INSERT INTO `linux_profiles` VALUES (1,3,'3.19','initrd','test_profile12',NULL,'image=old',1,1,'Power Off',0,1,0,1,0,1,0,'Dynamic',0,0,'');
 /*!40000 ALTER TABLE `linux_profiles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -602,12 +669,13 @@ DROP TABLE IF EXISTS `partition_layouts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `partition_layouts` (
-  `partition_layout_id` int(11) NOT NULL,
+  `partition_layout_id` int(11) NOT NULL AUTO_INCREMENT,
   `partition_layout_name` varchar(45) DEFAULT NULL,
   `partition_layout_table` varchar(45) DEFAULT NULL,
   `imaging_environment` varchar(45) DEFAULT NULL,
+  `partition_layout_priority` int(11) DEFAULT NULL,
   PRIMARY KEY (`partition_layout_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -616,7 +684,7 @@ CREATE TABLE `partition_layouts` (
 
 LOCK TABLES `partition_layouts` WRITE;
 /*!40000 ALTER TABLE `partition_layouts` DISABLE KEYS */;
-INSERT INTO `partition_layouts` VALUES (0,'partlayout','MBR','Windows');
+INSERT INTO `partition_layouts` VALUES (1,'partlayout','MBR','Windows',1),(2,'abc','MBR','Windows',1);
 /*!40000 ALTER TABLE `partition_layouts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -637,7 +705,7 @@ CREATE TABLE `partitions` (
   `partition_size_unit` varchar(45) DEFAULT NULL,
   `partition_boot_flag` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`partition_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -646,7 +714,7 @@ CREATE TABLE `partitions` (
 
 LOCK TABLES `partitions` WRITE;
 /*!40000 ALTER TABLE `partitions` DISABLE KEYS */;
-INSERT INTO `partitions` VALUES (1,0,1,'primary','ntfs',1000,'MB',1);
+INSERT INTO `partitions` VALUES (20,0,1,'Primary','ntfs',100,'Percent',1),(21,2,7,'Logical','ntfs',100,'MB',0),(23,1,1,'Primary','ntfs',8,'MB',1),(24,2,1,'Primary','ntfs',5,'MB',1);
 /*!40000 ALTER TABLE `partitions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -697,7 +765,7 @@ CREATE TABLE `scripts` (
 
 LOCK TABLES `scripts` WRITE;
 /*!40000 ALTER TABLE `scripts` DISABLE KEYS */;
-INSERT INTO `scripts` VALUES (1,'Myfirstscript','hello',1,0,'updated test'),(2,'newscriptz','hello',55,0,'#!/bin/bash\nhello');
+INSERT INTO `scripts` VALUES (2,'newscriptz','hello',55,0,'#!/bin/bash\nhello');
 /*!40000 ALTER TABLE `scripts` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -710,4 +778,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-09-02 16:25:59
+-- Dump completed on 2015-09-17 16:28:09

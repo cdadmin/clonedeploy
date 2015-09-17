@@ -36,11 +36,11 @@ namespace views.tasks
 
         protected void btnConfirm_Click(object sender, EventArgs e)
         {
-            var groupId = (string) (Session["groupID"]);
+            var groupId = Convert.ToInt32(Session["groupID"]);
             var isUnicast = Convert.ToInt32(Session["isGroupUnicast"]);
             var group = new Group {Id = groupId};
             group.Read();
-            var image = new Image {Name = @group.Image};
+            var image = new Image {Id = @group.Image};
             image.Read();
             Session["imageID"] = image.Id;
             if (image.Check_Checksum())
@@ -85,7 +85,7 @@ namespace views.tasks
                 if (dataKey != null)
                 {
                     var group = new Group();
-                    group.Id = dataKey.Value.ToString();
+                    group.Id = Convert.ToInt32(dataKey.Value);
                     group.Read();
                     Session["groupID"] = group.Id;
                     Session["isGroupUnicast"] = 0;
@@ -109,7 +109,7 @@ namespace views.tasks
                 if (dataKey != null)
                 {
                     var group = new Group();
-                    group.Id = dataKey.Value.ToString();
+                    group.Id = Convert.ToInt32(dataKey.Value);
                     group.Read();
                     Session["groupID"] = group.Id;
                     Session["isGroupUnicast"] = 1;

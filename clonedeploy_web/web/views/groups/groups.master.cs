@@ -9,13 +9,32 @@ namespace views.masters
 {
     public partial class GroupMaster : MasterPage
     {
-        public Group Group { get; set; }
+        public Group Group { get { return ReadGroup(); } }
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(Request["groupid"])) return;
-            Group = new Group { Id = Request.QueryString["groupid"] };
-            Group.Read();
+            if (string.IsNullOrEmpty(Request["groupid"]))
+            {
+                Level2.Visible = false;
+                Level2_Edit.Visible = false;
+                Level2_Smart_Group.Visible = false;
+                Level2_Standard_Group.Visible = false;
+                return;
+            }
+
+
+            Level1.Visible = false;
+            if (Group.Type == "standard")
+            {
+                Level2_Standard_Group.Visible = true;
+                Level2_Smart_Group.Visible = false;
+            }
+            else
+            {
+                Level2_Standard_Group.Visible = false;
+                Level2_Smart_Group.Visible = true;
+            }
+
         }
 
         protected void btnConfirm_Click(object sender, EventArgs e)
@@ -31,7 +50,7 @@ namespace views.masters
             }
             else
             {
-                var image = new Image {Name = Group.Image};
+                var image = new Image {Id = Group.Image};
                 image.Read();
                 Session["imageID"] = image.Id;
                 if (image.Check_Checksum())
@@ -51,7 +70,7 @@ namespace views.masters
                         {
                             Event = "Unicast",
                             Type = "Group",
-                            TypeId = Group.Id
+                            TypeId = Group.Id.ToString()
                         };
                         history.CreateEvent();
                     }
@@ -112,6 +131,13 @@ namespace views.masters
             var imageId = (string) (Session["imageID"]);
             Response.Redirect("~/views/images/specs.aspx?imageid=" + imageId, false);
             Session.Remove("imageID");
+        }
+
+        private Group ReadGroup()
+        {
+            var tmpGroup = new Group { Id = Convert.ToInt32(Request.QueryString["groupid"]) };
+            tmpGroup.Read();
+            return tmpGroup;
         }
     }
 }

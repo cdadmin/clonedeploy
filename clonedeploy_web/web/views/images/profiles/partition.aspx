@@ -94,7 +94,7 @@
         &nbsp;
     </div>
     <div class="size-5 column">
-        <asp:LinkButton ID="btnUpdatePartitions" runat="server" OnClick="btnUpdatePartitions_OnClick" Text="Update Partition Options" CssClass="submits"/>
+        <asp:LinkButton ID="btnUpdatePartitions" runat="server" OnClick="btnUpdatePartitions_OnClick" Text="Update Partition Options" CssClass="submits" OnClientClick="update_click();"/>
     </div>
 </asp:Content>
 

@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" MasterPageFile="~/views/masters/Site.master" AutoEventWireup="true" CodeFile="Computer.master.cs" Inherits="views.masters.ComputerMaster" %>
+﻿<%@ Master Language="C#" MasterPageFile="~/views/masters/Site.master" AutoEventWireup="true" CodeFile="computers.master.cs" Inherits="views.masters.ComputerMaster" %>
 
 <%@ MasterType VirtualPath="~/views/masters/Site.master" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeaderNav" Runat="Server">
@@ -30,10 +30,10 @@
         <div id="Level2" runat="server">
            <div class="indent">
         <ul>
-        <li><a id="editoption" href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?hostid=<%= Host.Id %>"><span class="sub-nav-text">Edit</span></a></li>
-        <li><a id="historyoption" href="<%= ResolveUrl("~/views/computers/history.aspx") %>?hostid=<%= Host.Id %>"><span class="sub-nav-text">History</span></a></li>
-        <li><a id="bootmenuoption" href="<%= ResolveUrl("~/views/computers/bootmenu.aspx") %>?hostid=<%= Host.Id %>"><span class="sub-nav-text">Boot Menu</span></a></li>
-        <li><a id="logoption" href="<%= ResolveUrl("~/views/computers/log.aspx") %>?hostid=<%= Host.Id %>"><span class="sub-nav-text">Logs</span></a></li>
+        <li><a id="editoption" href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?hostid=<%= Computer.Id %>"><span class="sub-nav-text">Edit</span></a></li>
+        <li><a id="historyoption" href="<%= ResolveUrl("~/views/computers/history.aspx") %>?hostid=<%= Computer.Id %>"><span class="sub-nav-text">History</span></a></li>
+        <li><a id="bootmenuoption" href="<%= ResolveUrl("~/views/computers/bootmenu.aspx") %>?hostid=<%= Computer.Id %>"><span class="sub-nav-text">Boot Menu</span></a></li>
+        <li><a id="logoption" href="<%= ResolveUrl("~/views/computers/log.aspx") %>?hostid=<%= Computer.Id %>"><span class="sub-nav-text">Logs</span></a></li>
         <li><asp:LinkButton ID="buttonUploadHost" runat="server" OnClick="btnUpload_Click"><span class="sub-nav-text">Upload</span></asp:LinkButton></li>
         <li><asp:LinkButton ID="buttonDeployHost" runat="server" OnClick="btnDeploy_Click"><span class="sub-nav-text">Deploy</span></asp:LinkButton></li>
         <li><asp:LinkButton ID="buttonDeleteHost" runat="server" OnClick="btnDelete_Click"><span class="sub-nav-text">Delete</span></asp:LinkButton></li>

@@ -1,8 +1,10 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/masters/Group.master" AutoEventWireup="true" Inherits="views.groups.GroupSearch" CodeFile="search.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/groups/groups.master" AutoEventWireup="true" Inherits="views.groups.GroupSearch" CodeFile="search.aspx.cs" %>
 
-<%@ MasterType VirtualPath="~/views/masters/Group.master" %>
+<%@ MasterType VirtualPath="~/views/groups/groups.master" %>
 <%@ Reference virtualPath="~/views/masters/Site.master" %>
-
+<asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
+    <li><a href="<%= ResolveUrl("~/views/computers/search.aspx") %>">Search</a></li>
+    </asp:Content>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {

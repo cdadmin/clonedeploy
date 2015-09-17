@@ -15,7 +15,7 @@ namespace views.groups
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            var group = new Group {Id = Request.QueryString["groupid"]};
+            var group = new Group {Id = Convert.ToInt32(Request.QueryString["groupid"])};
             group.Read();
             var subTitle = Master.Master.FindControl("SubNav").FindControl("labelSubTitle") as Label;
             if (subTitle != null) subTitle.Text = group.Name + " | History";
@@ -24,7 +24,7 @@ namespace views.groups
 
         protected void PopulateHistory()
         {
-            var group = new Group {Id = Request.QueryString["groupid"]};
+            var group = new Group {Id = Convert.ToInt32(Request.QueryString["groupid"])};
             group.Read();
 
             if (!IsPostBack)
@@ -32,7 +32,7 @@ namespace views.groups
             var history = new History
             {
                 Type = "Group",
-                TypeId = group.Id,
+                TypeId = group.Id.ToString(),
                 Limit = ddlLimit.Text
             };
             gvHistory.DataSource = history.Read();

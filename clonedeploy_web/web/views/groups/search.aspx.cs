@@ -36,7 +36,7 @@ namespace views.groups
                 if (cb == null || !cb.Checked) continue;
                 var dataKey = gvGroups.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
-                var group = new Group {Id = dataKey.Value.ToString()};
+                var group = new Group {Id = Convert.ToInt32(dataKey.Value)};
                 @group.Delete();
             }
 
@@ -82,9 +82,10 @@ namespace views.groups
                 {
                     var dataKey = gvGroups.DataKeys[row.RowIndex];
                     if (dataKey != null)
-                        @group.Id = dataKey.Value.ToString();
+                        @group.Id = Convert.ToInt32(dataKey.Value);
                     @group.Read();
-                    if (lbl != null) lbl.Text = @group.SearchSmartHosts(@group.Expression).Count.ToString();
+                    //FIX ME
+                    //if (lbl != null) lbl.Text = @group.SearchSmartHosts(@group.Expression).Count.ToString();
                 }
                 else if (lbl != null)
                 {
@@ -96,8 +97,7 @@ namespace views.groups
         }
 
         protected void Page_Load(object sender, EventArgs e)
-        {
-            Master.Master.FindControl("SubNav").Visible = false;
+        {        
             if (IsPostBack) return;
             Master.Master.Msgbox(Utility.Message); //Display message after redirect to this page.
             PopulateGrid();
@@ -114,19 +114,20 @@ namespace views.groups
             foreach (GridViewRow row in gvGroups.Rows)
             {
                 var lbl = row.FindControl("lblCount") as Label;
+                var dataKey = gvGroups.DataKeys[row.RowIndex];
+                if (dataKey != null)
+                    @group.Id = Convert.ToInt32(dataKey.Value);
+                group.Read();
                 if (row.Cells[4].Text == "smart")
                 {
-                    var dataKey = gvGroups.DataKeys[row.RowIndex];
-                    if (dataKey != null)
-                        @group.Id = dataKey.Value.ToString();
-                    group.Read();
-                    if (lbl != null) lbl.Text = @group.SearchSmartHosts(@group.Expression).Count.ToString();
+                   
+
+                    //if (lbl != null) lbl.Text = @group.SearchSmartHosts(@group.Expression).Count.ToString();
                 }
                 else if (lbl != null)
                 {
-                    group.Name = row.Cells[2].Text;
-                    group.Read();
-                    lbl.Text = @group.GetMemberCount();
+
+                    //lbl.Text = @group.GetMemberCount();
                 }
             }
 

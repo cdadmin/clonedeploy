@@ -17,6 +17,7 @@
  */
 
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -217,7 +218,7 @@ namespace Models
 
                 foreach (var id in listManagementGroups)
                 {
-                    var mgmtgroup = new Group {Id = id};
+                    var mgmtgroup = new Group {Id = Convert.ToInt32(id)};
                     mgmtgroup.Read();
                     using (var db = new DB())
                     {

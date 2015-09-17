@@ -1,6 +1,9 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/masters/Computer.master" AutoEventWireup="true" CodeFile="edit.aspx.cs" Inherits="views.hosts.HostEdit" %>
-<%@ MasterType VirtualPath="~/views/masters/Computer.master" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/computers/computers.master" AutoEventWireup="true" CodeFile="edit.aspx.cs" Inherits="views.hosts.HostEdit" %>
+<%@ MasterType VirtualPath="~/views/computers/computers.master" %>
 <%@ Reference virtualPath="~/views/masters/Site.master" %>
+<asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
+   <li><a href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?imageid=<%= Master.Computer.Id %>" ><%= Master.Computer.Name %></a></li>
+    </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {

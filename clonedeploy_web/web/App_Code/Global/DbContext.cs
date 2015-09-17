@@ -19,7 +19,9 @@ namespace Global
         public DbSet<LinuxEnvironmentProfile> ImageProfiles { get; set; }
         public DbSet<Script> Scripts { get; set; }
         public DbSet<PartitionLayout> PartitionLayout { get; set; }
-        public DbSet<Models.Partition> Partition { get; set; } 
+        public DbSet<Models.Partition> Partition { get; set; }
+        public DbSet<ImageProfilePartition> ImageProfilePartition { get; set; }
+        public DbSet<ImageProfileScript> ImageProfileScript { get; set; }
     }
 }
 

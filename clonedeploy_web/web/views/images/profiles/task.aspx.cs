@@ -12,19 +12,20 @@ public partial class views_images_profiles_task : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
-            chkGlobalNoCore.Checked = Master.ImageProfile.
-            ddlKernel.DataSource = Utility.GetKernels();
-            ddlBootImage.DataSource = Utility.GetBootImages();
-            ddlKernel.DataBind();
-            ddlBootImage.DataBind();
-            ddlKernel.Text = Master.ImageProfile.Kernel;
-            ddlBootImage.Text = Master.ImageProfile.BootImage;
-            txtKernelArgs.Text = Master.ImageProfile.KernelArguments;
+            chkGlobalNoCore.Checked = Convert.ToBoolean(Master.ImageProfile.SkipCore);
+            chkGlobalNoClock.Checked = Convert.ToBoolean(Master.ImageProfile.SkipClock);
+            ddlTaskComplete.Text = Master.ImageProfile.TaskCompletedAction;
+
         }
     }
 
     protected void btnUpdateTask_OnClick(object sender, EventArgs e)
     {
-        throw new NotImplementedException();
+        var imageProfile = Master.ImageProfile;
+        imageProfile.SkipCore = Convert.ToInt16(chkGlobalNoCore.Checked);
+        imageProfile.SkipClock = Convert.ToInt16(chkGlobalNoClock.Checked);
+        imageProfile.TaskCompletedAction = ddlTaskComplete.Text;
+        imageProfile.Update();
+        new Utility().Msgbox(Utility.Message);
     }
 }

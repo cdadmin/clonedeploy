@@ -38,7 +38,7 @@ namespace Global
                 {
                     var row = table.NewRow();
                     var group = new Group();
-                    group.Id = history.TypeId;
+                    group.Id = Convert.ToInt32(history.TypeId);
                     group.Read();
                     row["Group"] = group.Name;
                     row["Date"] = history.EventDate;
@@ -110,7 +110,7 @@ namespace Global
                 foreach (var history in histories)
                 {
                     var row = table.NewRow();
-                    var group = new Group { Id = history.Key };
+                    var group = new Group { Id = Convert.ToInt32(history.Key) };
                     group.Read();
                     row["Group"] = group.Name;
                     row["Count"] = history.groupCount;

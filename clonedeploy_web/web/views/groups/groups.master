@@ -1,0 +1,111 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/views/masters/Site.master" AutoEventWireup="true" CodeFile="groups.master.cs" Inherits="views.masters.GroupMaster" %>
+<%@ MasterType VirtualPath="~/views/masters/Site.master" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="HeaderNav" Runat="Server">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#nav-groups').addClass("nav-current");
+        });
+    </script>
+    <div class="size-1 column">
+        <h1 class="remove-bottom icon-group-title">Groups</h1>
+    </div>
+    <div class="size-2 column offset-1">
+        <div class="nav-btn-round">
+          
+        </div>
+    </div>
+</asp:Content>
+<asp:Content runat="server" ID="Breadcrumb" ContentPlaceHolderID="Breadcrumb">
+     <li><a href="<%= ResolveUrl("~/views/groups/search.aspx") %>">Computers</a></li>
+    <asp:ContentPlaceHolder ID="BreadcrumbSub" runat="server">
+        </asp:ContentPlaceHolder>
+</asp:Content>
+<asp:Content ID="Content4" ContentPlaceHolderID="SubNav" Runat="Server">
+    <div class="sub-nav-top">
+        <div id="Level1" runat="server">
+        <ul>
+            <li><a id="searchgroup" href="<%= ResolveUrl("~/views/groups/search.aspx") %>" ><span class="sub-nav-text">Search Groups</span></a></li>
+            <li><a id="creategroup" href="<%= ResolveUrl("~/views/groups/create.aspx") %>" ><span class="sub-nav-text">New Group</span></a></li>          
+            <li><a id="importgroup" href="<%= ResolveUrl("~/views/groups/import.aspx") %>" ><span class="sub-nav-text">Import Groups</span></a></li>
+       </ul>
+        </div>
+        
+        <div class="indent">
+            <div id="Level2_Edit" runat="server">
+                <ul>
+                     <li><a id="editoption" href="<%= ResolveUrl("~/views/groups/edit.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">Edit</span></a></li>
+                </ul>
+
+            </div>
+          <div id="Level2_Standard_Group" runat="server">
+
+                    <ul>
+                        <li><a id="addmembers" href="<%= ResolveUrl("~/views/groups/edit.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">Add Members</span></a></li>
+                         <li><a id="removemembers" href="<%= ResolveUrl("~/views/groups/edit.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">Remove Members</span></a></li>
+                    </ul>
+
+            </div>
+              <div id="Level2_Smart_Group" runat="server">
+
+                    <ul>
+                        <li><a id="criteria" href="<%= ResolveUrl("~/views/groups/edit.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">Criteria</span></a></li>
+                      
+                    </ul>
+
+            </div>
+            </div>
+        <div id="Level2" runat="server">
+           <div class="indent">
+        <ul>
+       
+          
+        <li><a id="historyoption" href="<%= ResolveUrl("~/views/groups/history.aspx") %>?groupid=<%= Group.Id %>"> <span class="sub-nav-text">History</span></a></li>
+        <li><a id="bootmenuoption" href="<%= ResolveUrl("~/views/groups/bootmenu.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">Boot Menu</span></a></li>
+        <li><asp:LinkButton ID="btnMulticast" runat="server" OnClick="btnMulticast_Click"><span class="sub-nav-text">Multicast</span></asp:LinkButton></li>
+        <li><asp:LinkButton ID="btnUnicast" runat="server" OnClick="btnUnicast_Click"><span class="sub-nav-text">Unicast</span></asp:LinkButton></li>
+        <li><asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click"><span class="sub-nav-text">Delete</span></asp:LinkButton></li>
+        </ul>
+            </div>
+            </div>
+    </div>
+</asp:Content>
+
+<asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">
+    <div class="content-right">
+    <asp:ContentPlaceHolder ID="SubContent" runat="server">
+    </asp:ContentPlaceHolder>
+        <br class="clear" />
+          <div class="spacer"></div>
+        </div>
+    <br class="clear"/>
+    <div id="confirmbox" class="confirm-box-outer">
+        <div class="confirm-box-inner">
+            <h4>
+                <asp:Label ID="lblTitle" runat="server" CssClass="modaltitle"></asp:Label>
+            </h4>
+            <asp:GridView ID="gvConfirm" runat="server" CssClass="Gridview gv-confirm" AutoGenerateColumns="false">
+                <Columns>
+                    <asp:BoundField DataField="Name" HeaderText="Name" ItemStyle-CssClass="width_200"/>
+                    <asp:BoundField DataField="Image" HeaderText="Image" ItemStyle-CssClass="width_200"/>
+                </Columns>
+            </asp:GridView>
+            <div class="confirm-box-btns">
+                <asp:LinkButton ID="OkButton" OnClick="btnConfirm_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
+                <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no"/>
+            </div>
+        </div>
+    </div>
+    <div id="incorrectChecksum" class="confirm-box-outer">
+        <div class="confirm-box-inner">
+            <h4>
+                <asp:Label ID="lblIncorrectChecksum" runat="server" CssClass="modaltitle"></asp:Label>
+            </h4>
+
+            <div class="confirm-box-btns">
+                <asp:LinkButton ID="LinkButton1" OnClick="OkButtonChecksum_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
+                <asp:LinkButton ID="LinkButton2" runat="server" Text="No" CssClass="confirm_no"/>
+            </div>
+
+        </div>
+    </div>
+</asp:Content>
