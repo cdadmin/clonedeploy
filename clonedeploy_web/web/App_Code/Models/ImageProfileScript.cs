@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Web;
+using System.Web.UI.WebControls.Expressions;
 using Global;
 using Models;
 
@@ -59,7 +60,7 @@ public class ImageProfileScript
         List<ImageProfileScript> list = new List<ImageProfileScript>();
         using (var db = new DB())
         {
-            list.AddRange(from p in db.ImageProfileScript where p.ProfileId == searchId orderby p.Id select p);
+            list.AddRange(from p in db.ImageProfileScript join s in db.Scripts on p.ScriptId equals s.Id where p.ProfileId == searchId orderby s.Priority ascending,s.Name ascending select p);
         }
 
         return list;

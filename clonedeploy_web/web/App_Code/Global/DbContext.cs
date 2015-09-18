@@ -7,7 +7,7 @@ namespace Global
     {
         public DB() : base("mysql") { }
         public DbSet<Computer> Hosts { get; set; }
-        public DbSet<ActiveTask> ActiveTasks { get; set; }
+        public DbSet<ActiveImagingTask> ActiveTasks { get; set; }
         public DbSet<ActiveMcTask> ActiveMcTasks { get; set; }
         public DbSet<BootTemplate> BootTemplates { get; set; }
         public DbSet<Group> Groups { get; set; }
@@ -22,6 +22,7 @@ namespace Global
         public DbSet<Models.Partition> Partition { get; set; }
         public DbSet<ImageProfilePartition> ImageProfilePartition { get; set; }
         public DbSet<ImageProfileScript> ImageProfileScript { get; set; }
+        public DbSet<GroupMembership> GroupMembership { get; set; }
     }
 }
 

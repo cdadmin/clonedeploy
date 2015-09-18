@@ -69,7 +69,7 @@ namespace Models
                 db.ActiveMcTasks.Remove(mcTask);
                 db.SaveChanges();
 
-                var activeTask = new ActiveTask {MulticastName = Name};
+                var activeTask = new ActiveImagingTask {MulticastName = Name};
                 activeTask.DeleteForMulticast();
 
                 foreach (var mac in hostMacs)

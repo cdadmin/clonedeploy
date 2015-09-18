@@ -16,6 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/.
  */
 
+using System;
 using Global;
 using Models;
 using Pxe;
@@ -26,18 +27,27 @@ namespace Tasks
     {
         public string Direction { get; set; }
         public Computer Host { get; set; }
-        public ActiveTask ActiveTask { get; set; }
-
+        private ActiveImagingTask ActiveTask { get; set; }
+        private Image Image { get; set; }
+        private LinuxEnvironmentProfile ImageProfile { get; set; }
+        
         public void Create()
         {
             if (Host == null) return;
 
-            ActiveTask = new ActiveTask
+            ActiveTask = new ActiveImagingTask
             {
                 Status = "0",
                 Type = "unicast",
-                QueuePosition = 0
+                QueuePosition = 0,
+                ComputerId = Host.Id
             };
+
+            Image = new Image {Id = Host.Image};
+            Image.Read();
+
+            ImageProfile = new LinuxEnvironmentProfile {Id = Host.ImageProfile};
+            ImageProfile.Read();
 
             if (!ActiveTask.Create())
             {
@@ -60,7 +70,7 @@ namespace Tasks
                 return;
             }
 
-            ActiveTask.WakeUp(Host.Mac);
+            ActiveImagingTask.WakeUp(Host.Mac);
             Utility.Message = "Successfully Created Task For " + Host.Name;
             CreateHistoryEvents();
         }
@@ -88,15 +98,14 @@ namespace Tasks
 
         private bool CreatePxeFile()
         {
-            //FIX ME
             var taskBootMenu = new TaskBootMenu
             {
                 Direction = Direction,
                 PxeHostMac = Utility.MacToPxeMac(Host.Mac),
-                //Kernel = Host.Kernel,
-                //BootImage = Host.BootImage,
+                Kernel = ImageProfile.Kernel,
+                BootImage = ImageProfile.BootImage,
                 IsMulticast = false,
-                //Arguments = Host.Args
+                Arguments = ImageProfile.KernelArguments
             };
 
             return taskBootMenu.CreatePxeBoot();
@@ -104,6 +113,17 @@ namespace Tasks
 
         private bool CreateTaskArguments()
         {
+            string preScripts = null;
+            string postScripts = null;
+            foreach(var script in new ImageProfileScript().Search(ImageProfile.Id))
+            {
+                if(Convert.ToBoolean(script.RunPre))
+                preScripts += script.Id + " ";
+
+                if (Convert.ToBoolean(script.RunPost))
+                    postScripts += script.Id + " ";
+            }
+
             string storagePath;
             var xferMode = Settings.ImageTransferMode;
             if (xferMode == "smb" || xferMode == "smb+http")
@@ -111,8 +131,8 @@ namespace Tasks
             else
                 storagePath = Direction == "pull" ? Settings.NfsUploadPath : Settings.NfsDeployPath;
             //FIX ME
-            ActiveTask.Arguments = "imgName=" + Host.Image + " storage=" + storagePath + " hostID=" + Host.Id +
-                                   //" multicast=false" + " hostScripts=" + Host.Scripts + " xferMode=" + xferMode +
+            ActiveTask.Arguments = "imgName=" + Image.Name + " storage=" + storagePath + " hostID=" + Host.Id +
+                                   " multicast=false" + " preScripts=" + preScripts + " postScripts=" + postScripts + " xferMode=" + xferMode +
                                    " serverIP=" + Settings.ServerIp + " hostName=" + Host.Name +
                                    " compAlg=" + Settings.CompressionAlgorithm + " compLevel=-";
                                    //Settings.CompressionLevel + " customPartition=" + "\"" + Host.PartitionScript + "\"";

@@ -30,9 +30,9 @@ namespace views.tasks
         {
             if (IsPostBack) return;
             ViewState["clickTracker"] = "1";
-            gvTasks.DataSource = ActiveTask.ReadAll();
+            gvTasks.DataSource = ActiveImagingTask.ReadAll();
             gvTasks.DataBind();
-            gvUcTasks.DataSource = ActiveTask.ReadUnicasts();
+            gvUcTasks.DataSource = ActiveImagingTask.ReadUnicasts();
             gvUcTasks.DataBind();
             gvMcTasks.DataSource = ActiveMcTask.ReadMulticasts();
             gvMcTasks.DataBind();
@@ -42,7 +42,7 @@ namespace views.tasks
 
         protected void btnCancel_Click(object sender, EventArgs e)
         {
-            var activeTask = new ActiveTask();
+            var activeTask = new ActiveImagingTask();
             var control = sender as Control;
             if (control != null)
             {
@@ -55,9 +55,9 @@ namespace views.tasks
                 }
             }
             Master.Master.Msgbox(Utility.Message);
-            gvTasks.DataSource = ActiveTask.ReadAll();
+            gvTasks.DataSource = ActiveImagingTask.ReadAll();
             gvTasks.DataBind();
-            gvUcTasks.DataSource = ActiveTask.ReadUnicasts();
+            gvUcTasks.DataSource = ActiveImagingTask.ReadUnicasts();
             gvUcTasks.DataBind();
         }
 
@@ -80,7 +80,7 @@ namespace views.tasks
             Master.Master.Msgbox(Utility.Message);
             gvMcTasks.DataSource = ActiveMcTask.ReadMulticasts();
             gvMcTasks.DataBind();
-            gvTasks.DataSource = ActiveTask.ReadAll();
+            gvTasks.DataSource = ActiveImagingTask.ReadAll();
             gvTasks.DataBind();
         }
 
@@ -89,7 +89,7 @@ namespace views.tasks
             int cTracker = Convert.ToInt16(ViewState["clickTracker"]);
             TimerMC.Enabled = cTracker%2 == 0;
             ViewState["clickTracker"] = cTracker + 1;
-            var task = new ActiveTask();
+            var task = new ActiveImagingTask();
             var control = sender as Control;
             if (control != null)
             {
@@ -124,12 +124,12 @@ namespace views.tasks
 
         protected void cancelTasks_Click(object sender, EventArgs e)
         {
-            ActiveTask.CancelAll();
+            ActiveImagingTask.CancelAll();
             gvMcTasks.DataSource = ActiveMcTask.ReadMulticasts();
             gvMcTasks.DataBind();
-            gvUcTasks.DataSource = ActiveTask.ReadUnicasts();
+            gvUcTasks.DataSource = ActiveImagingTask.ReadUnicasts();
             gvUcTasks.DataBind();
-            gvTasks.DataSource = ActiveTask.ReadAll();
+            gvTasks.DataSource = ActiveImagingTask.ReadAll();
             gvTasks.DataBind();
             Master.Master.Msgbox(Utility.Message);
         }
@@ -140,7 +140,7 @@ namespace views.tasks
             {
                 try
                 {
-                    var task = new ActiveTask {MulticastName = row.Cells[2].Text};
+                    var task = new ActiveImagingTask {MulticastName = row.Cells[2].Text};
                     var listActive = task.MulticastProgress();
                     var lblPartition = row.FindControl("lblPartition") as Label;
                     var lblElapsed = row.FindControl("lblElapsed") as Label;
@@ -165,9 +165,9 @@ namespace views.tasks
 
         protected void Timer_Tick(object sender, EventArgs e)
         {
-            gvTasks.DataSource = ActiveTask.ReadAll();
+            gvTasks.DataSource = ActiveImagingTask.ReadAll();
             gvTasks.DataBind();
-            gvUcTasks.DataSource = ActiveTask.ReadUnicasts();
+            gvUcTasks.DataSource = ActiveImagingTask.ReadUnicasts();
             gvUcTasks.DataBind();
             UpdatePanel1.Update();
         }

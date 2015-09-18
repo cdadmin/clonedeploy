@@ -12,7 +12,7 @@ namespace Tasks
         public void UpdateProgress()
         {
             var values = Progress.Split('*').ToList();
-            var activeTask = new ActiveTask
+            var activeTask = new ActiveImagingTask
             {
                 Elapsed = values[1],
                 Remaining = values[2],
@@ -25,7 +25,7 @@ namespace Tasks
 
         public void UpdateProgressPartition(string hostName, string partition)
         {
-            var activeTask = new ActiveTask
+            var activeTask = new ActiveImagingTask
             {
                 Elapsed = "",
                 Remaining = "",

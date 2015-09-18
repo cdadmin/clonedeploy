@@ -17,7 +17,7 @@ using Pxe;
 namespace Models
 {
     [Table("active_imaging_tasks", Schema = "public")]
-    public class ActiveTask
+    public class ActiveImagingTask
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -95,7 +95,7 @@ namespace Models
             }
         }
 
-        public List<ActiveTask> MulticastMemberStatus()
+        public List<ActiveImagingTask> MulticastMemberStatus()
         {
             using (var db = new DB())
             {
@@ -104,7 +104,7 @@ namespace Models
             }
         }
 
-        public List<ActiveTask> MulticastProgress()
+        public List<ActiveImagingTask> MulticastProgress()
         {
             using (var db = new DB())
             {
@@ -113,7 +113,7 @@ namespace Models
             }
         }
 
-        public static List<ActiveTask> ReadAll()
+        public static List<ActiveImagingTask> ReadAll()
         {
             using (var db = new DB())
             {
@@ -121,7 +121,7 @@ namespace Models
             }
         }
 
-        public static List<ActiveTask> ReadUnicasts()
+        public static List<ActiveImagingTask> ReadUnicasts()
         {
             using (var db = new DB())
             {

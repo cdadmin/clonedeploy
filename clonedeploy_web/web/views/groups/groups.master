@@ -30,18 +30,18 @@
        </ul>
         </div>
         
-        <div class="indent">
+
             <div id="Level2_Edit" runat="server">
                 <ul>
-                     <li><a id="editoption" href="<%= ResolveUrl("~/views/groups/edit.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">Edit</span></a></li>
+                     <li id="general"><a href="<%= ResolveUrl("~/views/groups/edit.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">General</span></a></li>
                 </ul>
 
             </div>
           <div id="Level2_Standard_Group" runat="server">
 
                     <ul>
-                        <li><a id="addmembers" href="<%= ResolveUrl("~/views/groups/edit.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">Add Members</span></a></li>
-                         <li><a id="removemembers" href="<%= ResolveUrl("~/views/groups/edit.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">Remove Members</span></a></li>
+                        <li id="addmembers"><a  href="<%= ResolveUrl("~/views/groups/addmembers.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">Add Members</span></a></li>
+                         <li id="removemembers"><a  href="<%= ResolveUrl("~/views/groups/removemembers.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">Remove Members</span></a></li>
                     </ul>
 
             </div>
@@ -53,19 +53,20 @@
                     </ul>
 
             </div>
-            </div>
+      
         <div id="Level2" runat="server">
-           <div class="indent">
+        
         <ul>
        
           
         <li><a id="historyoption" href="<%= ResolveUrl("~/views/groups/history.aspx") %>?groupid=<%= Group.Id %>"> <span class="sub-nav-text">History</span></a></li>
         <li><a id="bootmenuoption" href="<%= ResolveUrl("~/views/groups/bootmenu.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">Boot Menu</span></a></li>
+            <li><hr style="margin-right: 10px;"/></li>
         <li><asp:LinkButton ID="btnMulticast" runat="server" OnClick="btnMulticast_Click"><span class="sub-nav-text">Multicast</span></asp:LinkButton></li>
         <li><asp:LinkButton ID="btnUnicast" runat="server" OnClick="btnUnicast_Click"><span class="sub-nav-text">Unicast</span></asp:LinkButton></li>
         <li><asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click"><span class="sub-nav-text">Delete</span></asp:LinkButton></li>
         </ul>
-            </div>
+           
             </div>
     </div>
 </asp:Content>

@@ -23,6 +23,7 @@ namespace views.hosts
                 Name = txtHostName.Text,
                 Mac = Utility.FixMac(txtHostMac.Text),
                 Image = Convert.ToInt32(ddlHostImage.SelectedValue),
+                ImageProfile = Convert.ToInt32(ddlImageProfile.SelectedValue),
                 Description = txtHostDesc.Text,
             };
 

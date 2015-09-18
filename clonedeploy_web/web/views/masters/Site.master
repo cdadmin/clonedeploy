@@ -57,7 +57,7 @@
                 <ul>
                     <li>
                         <a href="#" class="leftmenu">
-                            <img alt="logo" src="<%= ResolveUrl("~/") %>content/img/crucible3.png" width="40px" style="margin-left: -1px; margin-top: 0;" />
+                            <img alt="logo" src="<%= ResolveUrl("~/") %>content/img/cd.png" style="margin-top: 8px;" />
                         </a>
                     </li>
                     <li id="nav-hosts">

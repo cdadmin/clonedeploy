@@ -391,7 +391,7 @@ namespace views.admin
 
         protected bool ValidateSettings()
         {
-            if (ActiveTask.ReadAll().Count > 0)
+            if (ActiveImagingTask.ReadAll().Count > 0)
             {
                 Utility.Message = "Settings Cannot Be Changed While Tasks Are Active";
                 return false;

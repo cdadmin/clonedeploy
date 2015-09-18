@@ -123,7 +123,7 @@ public partial class views_admin_security : System.Web.UI.Page
     }
     protected bool ValidateSettings()
     {
-        if (ActiveTask.ReadAll().Count > 0)
+        if (ActiveImagingTask.ReadAll().Count > 0)
         {
             Utility.Message = "Settings Cannot Be Changed While Tasks Are Active";
             return false;

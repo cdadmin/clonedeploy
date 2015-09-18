@@ -105,7 +105,7 @@ namespace Tasks
             }
 
             foreach (var host in Hosts)
-                ActiveTask.WakeUp(host.Mac);
+                ActiveImagingTask.WakeUp(host.Mac);
 
             Utility.Message = "Successfully Started Multicast " + Group.Name;
             CreateHistoryEvents();
@@ -143,7 +143,7 @@ namespace Tasks
         {
             foreach (var host in Hosts)
             {
-                var activeTask = new ActiveTask
+                var activeTask = new ActiveImagingTask
                 {
                     Status = "0",
                     Type = "multicast",
@@ -181,7 +181,7 @@ namespace Tasks
             var xferMode = Settings.ImageTransferMode;
             foreach (var host in Hosts)
             {
-                var activeTask = new ActiveTask {Id = Convert.ToInt32(host.TaskId)};
+                var activeTask = new ActiveImagingTask {Id = Convert.ToInt32(host.TaskId)};
                 string storagePath;
 
                 if (xferMode == "smb" || xferMode == "smb+http")

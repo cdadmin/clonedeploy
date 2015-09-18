@@ -180,8 +180,7 @@ namespace Models
                 Name = host.Name;
                 Mac = host.Mac;
                 Image = host.Image;
-              
-               
+                ImageProfile = host.ImageProfile;             
                 CustomBootEnabled = host.CustomBootEnabled;
            
             }
@@ -238,7 +237,7 @@ namespace Models
                         host.Name = Name;
                         host.Mac = Mac;
                         host.Image = Image;
-                       
+                        host.ImageProfile = ImageProfile;
                         host.Description = Description;
                       
                         host.CustomBootEnabled = CustomBootEnabled;
