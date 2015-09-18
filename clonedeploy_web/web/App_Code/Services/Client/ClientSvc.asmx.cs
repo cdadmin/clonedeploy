@@ -236,11 +236,7 @@ namespace Services.Client
             HttpContext.Current.Response.Write(DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"));
         }
 
-        public void HostOptions()
-        {
-            var mac = Utility.Decode(HttpContext.Current.Request.Form["mac"]);
-            if (Authenticate()) HttpContext.Current.Response.Write(new Global().HostOptions(mac));
-        }
+      
 
         [WebMethod]
         public void ImageSize()

@@ -84,9 +84,7 @@ namespace views.hosts
                 case "Image":
                     listHosts = GetSortDirection(e.SortExpression) == "Asc" ? listHosts.OrderBy(h => h.Image).ToList() : listHosts.OrderByDescending(h => h.Image).ToList();
                     break;
-                case "Group":
-                    listHosts = GetSortDirection(e.SortExpression) == "Asc" ? listHosts.OrderBy(h => h.Group).ToList() : listHosts.OrderByDescending(h => h.Group).ToList();
-                    break;
+             
             }
             
 

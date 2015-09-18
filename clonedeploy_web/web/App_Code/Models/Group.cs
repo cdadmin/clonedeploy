@@ -81,7 +81,7 @@ namespace Models
                     else
                     {
                         db.Groups.Add(this);
-
+                        db.SaveChanges();
                     }
                 }
                 catch (DbUpdateException ex)
@@ -141,26 +141,14 @@ namespace Models
         {
             var hosts = new List<Computer>();
 
-            switch (Type)
-            {
-                case "standard":
-                    using (var db = new DB())
-                    {
-                        hosts.AddRange(from h in db.Hosts where h.Group == Name orderby h.Name select h);
-                    }
-                    break;
-              
-            }
+          
 
             return hosts;
         }
 
         public string GetMemberCount()
         {
-            using (var db = new DB())
-            {
-                return db.Hosts.Count(h => h.Group == Name).ToString();
-            }
+            return "n/a";
         }
 
         public string GetTotalCount()
@@ -209,7 +197,7 @@ namespace Models
                     try
                     {
                         var newHost = db.Hosts.Find(host.Id);            
-                        newHost.Group = "";
+                     
                         db.SaveChanges();
 
                     }
@@ -318,8 +306,7 @@ namespace Models
                     try
                     {
                         var newHost = db.Hosts.Find(host.Id);
-                        if (Type == "standard")
-                            newHost.Group = Name;
+                       
                         newHost.Image = Convert.ToInt32(Image);
                    
                         db.SaveChanges();

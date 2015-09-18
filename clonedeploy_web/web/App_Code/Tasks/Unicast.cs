@@ -88,14 +88,15 @@ namespace Tasks
 
         private bool CreatePxeFile()
         {
+            //FIX ME
             var taskBootMenu = new TaskBootMenu
             {
                 Direction = Direction,
                 PxeHostMac = Utility.MacToPxeMac(Host.Mac),
-                Kernel = Host.Kernel,
-                BootImage = Host.BootImage,
+                //Kernel = Host.Kernel,
+                //BootImage = Host.BootImage,
                 IsMulticast = false,
-                Arguments = Host.Args
+                //Arguments = Host.Args
             };
 
             return taskBootMenu.CreatePxeBoot();
@@ -109,12 +110,12 @@ namespace Tasks
                 storagePath = Settings.SmbPath;
             else
                 storagePath = Direction == "pull" ? Settings.NfsUploadPath : Settings.NfsDeployPath;
-
+            //FIX ME
             ActiveTask.Arguments = "imgName=" + Host.Image + " storage=" + storagePath + " hostID=" + Host.Id +
-                                   " multicast=false" + " hostScripts=" + Host.Scripts + " xferMode=" + xferMode +
+                                   //" multicast=false" + " hostScripts=" + Host.Scripts + " xferMode=" + xferMode +
                                    " serverIP=" + Settings.ServerIp + " hostName=" + Host.Name +
-                                   " compAlg=" + Settings.CompressionAlgorithm + " compLevel=-" +
-                                   Settings.CompressionLevel + " customPartition=" + "\"" + Host.PartitionScript + "\"";
+                                   " compAlg=" + Settings.CompressionAlgorithm + " compLevel=-";
+                                   //Settings.CompressionLevel + " customPartition=" + "\"" + Host.PartitionScript + "\"";
 
             if (Direction == "pull" && xferMode == "udp+http")
             {

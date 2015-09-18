@@ -60,26 +60,12 @@ namespace Models
         [Column("computer_image_profile_id", Order = 8)]
         public int ImageProfile { get; set; }
 
-        [NotMapped]
-        public string Group { get; set; }
-
-        [NotMapped]
-        public string Kernel { get; set; }
-
-        [NotMapped]
-        public string BootImage { get; set; }
-
-        [NotMapped]
-        public string Args { get; set; }
-
-        [NotMapped]
-        public string Scripts { get; set; }
+       
 
         [NotMapped]
         public string CustomBootEnabled { get; set; }
 
-        [NotMapped]
-        public string PartitionScript { get; set; }
+       
         [NotMapped]
         public string TaskId { get; set; }
 
@@ -194,14 +180,10 @@ namespace Models
                 Name = host.Name;
                 Mac = host.Mac;
                 Image = host.Image;
-                Group = host.Group;
-                Description = host.Description;
-                Kernel = host.Kernel;
-                BootImage = host.BootImage;
-                Args = host.Args;
-                Scripts = host.Scripts;
+              
+               
                 CustomBootEnabled = host.CustomBootEnabled;
-                PartitionScript = host.PartitionScript;
+           
             }
         }
 
@@ -216,20 +198,7 @@ namespace Models
             {
                 var listManagementGroups = user.GroupManagement.Split(' ').ToList();
 
-                foreach (var id in listManagementGroups)
-                {
-                    var mgmtgroup = new Group {Id = Convert.ToInt32(id)};
-                    mgmtgroup.Read();
-                    using (var db = new DB())
-                    {
-                        list.AddRange(from h in db.Hosts
-                            where
-                                (h.Name.Contains(searchString) || h.Mac.Contains(searchString)) &&
-                                h.Group == mgmtgroup.Name
-                            orderby h.Name
-                            select h);
-                    }
-                }
+               
 
                 list = list.OrderBy(h => h.Name).ToList();
             }
@@ -269,14 +238,11 @@ namespace Models
                         host.Name = Name;
                         host.Mac = Mac;
                         host.Image = Image;
-                        host.Group = Group;
+                       
                         host.Description = Description;
-                        host.Kernel = Kernel;
-                        host.BootImage = BootImage;
-                        host.Args = Args;
-                        host.Scripts = Scripts;
+                      
                         host.CustomBootEnabled = CustomBootEnabled;
-                        host.PartitionScript = PartitionScript;
+                      
                         db.SaveChanges();
                     }
                 }
@@ -312,16 +278,7 @@ namespace Models
                 validated = false;
                 Utility.Message = "Host Mac Cannot Be Empty Or Contain Spaces";
             }
-            if (Kernel == "Select Kernel")
-            {
-                validated = false;
-                Utility.Message = "You Must Select A Kernel";
-            }
-            if (BootImage == "Select Boot Image")
-            {
-                validated = false;
-                Utility.Message = "You Must Select A Boot Image";
-            }
+          
 
             return validated;
         }

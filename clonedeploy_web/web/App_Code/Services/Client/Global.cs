@@ -109,13 +109,7 @@ namespace Services.Client
             return "";
         }
 
-        public string HostOptions(string mac)
-        {
-            Computer host = new Computer {Mac = mac};
-            host.Read();
-            return host.PartitionScript;
-
-        }
+      
 
         public string IsLoginRequired(string task)
         {

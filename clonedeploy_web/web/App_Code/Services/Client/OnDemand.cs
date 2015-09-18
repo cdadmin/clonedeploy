@@ -85,9 +85,9 @@ namespace Services.Client
                 storage = direction == "pull" ? Settings.NfsUploadPath : Settings.NfsDeployPath;
             }
 
-
+            //FIX ME
             result = "imgName=" + image.Name + " hostName=" + host.Name +
-                     " hostScripts=" + "\"" + host.Scripts + "\" " + host.Args + " storage=" +
+                     //" hostScripts=" + "\"" + host.Scripts + "\" " + host.Args + " storage=" +
                      storage + " serverIP=" + serverIp + " xferMode=" + xferMode + " compAlg=" + compAlg +
                      " compLevel=-" + compLevel + " imageProtected=" + image.Protected;
 
