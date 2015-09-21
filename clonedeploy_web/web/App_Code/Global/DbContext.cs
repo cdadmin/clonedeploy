@@ -16,7 +16,7 @@ namespace Global
         public DbSet<WdsUser> Users { get; set; }
         public DbSet<Port> Ports { get; set; }
         public DbSet<Setting> Settings { get; set; }
-        public DbSet<LinuxEnvironmentProfile> ImageProfiles { get; set; }
+        public DbSet<LinuxProfile> LinuxProfiles { get; set; }
         public DbSet<Script> Scripts { get; set; }
         public DbSet<PartitionLayout> PartitionLayout { get; set; }
         public DbSet<Models.Partition> Partition { get; set; }

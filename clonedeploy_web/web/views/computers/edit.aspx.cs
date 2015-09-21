@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using DataAccess;
 using Global;
 using Models;
 using Image = Models.Image;
@@ -47,7 +48,7 @@ namespace views.hosts
             ddlHostImage.SelectedValue = Master.Computer.Image.ToString();        
             txtHostDesc.Text = Master.Computer.Description;
 
-            ddlImageProfile.DataSource = new LinuxEnvironmentProfile().Search(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
+            ddlImageProfile.DataSource = new LinuxProfileDataAccess().Search(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
             ddlImageProfile.DataValueField = "Id";
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();
@@ -59,7 +60,7 @@ namespace views.hosts
         protected void ddlHostImage_OnSelectedIndexChanged(object sender, EventArgs e)
         {
             if (ddlHostImage.Text == "Select Image") return;
-            ddlImageProfile.DataSource = new LinuxEnvironmentProfile().Search(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
+            ddlImageProfile.DataSource = new LinuxProfileDataAccess().Search(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
             ddlImageProfile.DataValueField = "Id";
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();

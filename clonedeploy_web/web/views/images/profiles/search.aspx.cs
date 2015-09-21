@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using DataAccess;
 using Global;
 using Models;
 
@@ -53,7 +54,7 @@ public partial class views_images_profiles_search : System.Web.UI.Page
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        IEnumerable<LinuxEnvironmentProfile> listProfiles = (List<LinuxEnvironmentProfile>)gvProfiles.DataSource;
+        IEnumerable<LinuxProfile> listProfiles = (List<LinuxProfile>)gvProfiles.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -69,8 +70,7 @@ public partial class views_images_profiles_search : System.Web.UI.Page
 
     protected void PopulateGrid()
     {
-        var profile = new LinuxEnvironmentProfile();
-        gvProfiles.DataSource = profile.Search(Master.Image.Id);
+        gvProfiles.DataSource = new LinuxProfileDataAccess().Search(Master.Image.Id);
         gvProfiles.DataBind();
 
     }

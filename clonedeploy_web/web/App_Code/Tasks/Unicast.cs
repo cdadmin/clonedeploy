@@ -17,6 +17,7 @@
  */
 
 using System;
+using DataAccess;
 using Global;
 using Models;
 using Pxe;
@@ -29,7 +30,7 @@ namespace Tasks
         public Computer Host { get; set; }
         private ActiveImagingTask ActiveTask { get; set; }
         private Image Image { get; set; }
-        private LinuxEnvironmentProfile ImageProfile { get; set; }
+        private LinuxProfile ImageProfile { get; set; }
         
         public void Create()
         {
@@ -46,29 +47,27 @@ namespace Tasks
             Image = new Image {Id = Host.Image};
             Image.Read();
 
-            ImageProfile = new LinuxEnvironmentProfile {Id = Host.ImageProfile};
-            ImageProfile.Read();
 
-            if (!ActiveTask.Create())
-            {
-                Utility.Message = "Could Not Create Host Database Task";
-                return;
-            }
+            ImageProfile = new LinuxProfileDataAccess().Read(Host.ImageProfile);
+            if (ImageProfile == null) return;
+         
+            if (!ActiveTask.Create()) return;
+            
 
 
             if (!CreatePxeFile())
             {
                 ActiveTask.Delete();
-                Utility.Message = "Could Not Create PXE File";
                 return;
             }
 
             if (!CreateTaskArguments())
             {
                 ActiveTask.Delete();
-                Utility.Message = "Could Not Create Host Task Arguments";
                 return;
             }
+
+
 
             ActiveImagingTask.WakeUp(Host.Mac);
             Utility.Message = "Successfully Created Task For " + Host.Name;
@@ -124,24 +123,38 @@ namespace Tasks
                     postScripts += script.Id + " ";
             }
 
+            string profileArgs = "";
+            if (Convert.ToBoolean(ImageProfile.SkipCore)) profileArgs += "skip_core_download=true ";
+            if (Convert.ToBoolean(ImageProfile.SkipClock)) profileArgs += "skip_clock=true ";
+            profileArgs += "task_completed_action=" + ImageProfile.TaskCompletedAction + " ";
+            switch (Direction)
+            {
+                case "pull":
+                    if (Convert.ToBoolean(ImageProfile.RemoveGPT)) profileArgs += "remove_gpt_structures=true ";
+                    if (Convert.ToBoolean(ImageProfile.SkipShrinkVolumes)) profileArgs += "skip_shrink_volumes=true ";
+                    if (Convert.ToBoolean(ImageProfile.SkipShrinkLvm)) profileArgs += "skip_shrink_lvm=true ";
+                    if (Convert.ToBoolean(ImageProfile.DebugResize)) profileArgs += "debug_resize=true ";
+                    break;
+                case "push":
+                    if (Convert.ToBoolean(ImageProfile.SkipExpandVolumes)) profileArgs += "skip_expand_volumes=true ";
+                    if (Convert.ToBoolean(ImageProfile.FixBcd)) profileArgs += "fix_bcd=true ";
+                    if (Convert.ToBoolean(ImageProfile.FixBootloader)) profileArgs += "fix_bootloader=true ";
+                    break;
+            }
             string storagePath;
             var xferMode = Settings.ImageTransferMode;
             if (xferMode == "smb" || xferMode == "smb+http")
                 storagePath = Settings.SmbPath;
             else
                 storagePath = Direction == "pull" ? Settings.NfsUploadPath : Settings.NfsDeployPath;
-            //FIX ME
-            ActiveTask.Arguments = "imgName=" + Image.Name + " storage=" + storagePath + " hostID=" + Host.Id +
-                                   " multicast=false" + " preScripts=" + preScripts + " postScripts=" + postScripts + " xferMode=" + xferMode +
-                                   " serverIP=" + Settings.ServerIp + " hostName=" + Host.Name +
-                                   " compAlg=" + Settings.CompressionAlgorithm + " compLevel=-";
-                                   //Settings.CompressionLevel + " customPartition=" + "\"" + Host.PartitionScript + "\"";
+            
+            ActiveTask.Arguments = "image_name=" + Image.Name + " storage=" + storagePath + " host_id=" + Host.Id +
+                                   " multicast=false" + " pre_scripts=" + preScripts + " post_scripts=" + postScripts + " xfer_mode=" + xferMode +
+                                   " server_ip=" + Settings.ServerIp + " host_name=" + Host.Name +
+                                   " comp_alg=" + Settings.CompressionAlgorithm + " comp_evel=-" +
+                                   Settings.CompressionLevel + " partition_method=" + ImageProfile.PartitionMethod + " " + profileArgs;
 
-            if (Direction == "pull" && xferMode == "udp+http")
-            {
-                var portBase = new Port().GetPort();
-                ActiveTask.Arguments = ActiveTask.Arguments + " portBase=" + portBase;
-            }
+           
 
             return ActiveTask.Update("arguments");
         }

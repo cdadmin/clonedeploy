@@ -1,0 +1,81 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Models
+{
+    /// <summary>
+    /// Summary description for LinuxProfile
+    /// </summary>
+    [Table("linux_profiles")]
+    public class LinuxProfile
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("image_profile_id", Order = 1)]
+        public int Id { get; set; }
+
+        [Column("profile_name", Order = 2)]
+        public string Name { get; set; }
+
+        [Column("profile_description", Order = 3)]
+        public string Description { get; set; }
+
+        [Column("image_id", Order = 4)]
+        public int ImageId { get; set; }
+
+        [Column("profile_kernel", Order = 5)]
+        public string Kernel { get; set; }
+
+        [Column("profile_boot_image", Order = 6)]
+        public string BootImage { get; set; }
+
+        [Column("profile_kernel_arguments", Order = 7)]
+        public string KernelArguments { get; set; }
+
+        [Column("skip_core_download", Order = 8)]
+        public int SkipCore { get; set; }
+
+        [Column("skip_set_clock", Order = 9)]
+        public int SkipClock { get; set; }
+
+        [Column("task_completed_action", Order = 10)]
+        public string TaskCompletedAction { get; set; }
+
+        [Column("remove_gpt_structures", Order = 11)]
+        public int RemoveGPT { get; set; }
+
+        [Column("skip_volume_shrink", Order = 12)]
+        public int SkipShrinkVolumes { get; set; }
+
+        [Column("skip_lvm_shrink", Order = 13)]
+        public int SkipShrinkLvm { get; set; }
+
+        [Column("resize_debug", Order = 14)]
+        public int DebugResize { get; set; }
+
+        [Column("skip_volume_expand", Order = 15)]
+        public int SkipExpandVolumes { get; set; }
+
+        [Column("fix_bcd", Order = 16)]
+        public int FixBcd { get; set; }
+
+        [Column("fix_bootloader", Order = 17)]
+        public int FixBootloader { get; set; }
+
+        [Column("partition_method", Order = 18)]
+        public string PartitionMethod { get; set; }
+
+        [Column("force_dynamic_partitions", Order = 19)]
+        public int ForceDynamicPartitions { get; set; }
+
+        [Column("always_expand_partitions", Order = 20)]
+        public int ForceExpandPartitions { get; set; }
+
+        [Column("custom_partition_script", Order = 21)]
+        public string CustomPartitionScript { get; set; }
+
+
+   
+    }
+}
+

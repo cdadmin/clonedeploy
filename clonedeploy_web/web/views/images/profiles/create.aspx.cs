@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using DataAccess;
 using Global;
 using Models;
 using Image = Models.Image;
@@ -17,13 +18,13 @@ public partial class views_images_profiles_create : System.Web.UI.Page
 
     protected void buttonCreateProfile_OnClick(object sender, EventArgs e)
     {
-        var profile = new LinuxEnvironmentProfile()
+        var profile = new LinuxProfile()
         {
             Name = txtProfileName.Text,
             Description = txtProfileDesc.Text,
             ImageId = Master.Image.Id
         };
-        if (profile.Create())
+        if (new LinuxProfileDataAccess().Create(profile))
             Response.Redirect("~/views/images/profiles/chooser.aspx?imageid=" + profile.ImageId + "&profileid=" + profile.Id + "&cat=profiles");
 
 

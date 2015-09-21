@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using DataAccess;
 using Global;
 using Models;
 
@@ -53,7 +54,7 @@ public partial class views_images_profiles_partition : System.Web.UI.Page
         {
             imageProfile.CustomPartitionScript = "";
         }
-        imageProfile.Update();
+        new LinuxProfileDataAccess().Update(imageProfile);
         new Utility().Msgbox(Utility.Message);
     }
 

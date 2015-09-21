@@ -81,8 +81,8 @@ namespace Models
             }
 
             var pxeHostMac = Utility.MacToPxeMac(hostMac);
-            if (new PxeFileOps().CleanPxeBoot(pxeHostMac))
-                Utility.Message = "Successfully Deleted Task ";
+            new PxeFileOps().CleanPxeBoot(pxeHostMac);
+
         }
 
         public void DeleteForMulticast()
