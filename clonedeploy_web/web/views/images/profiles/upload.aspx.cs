@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using DataAccess;
 using Global;
+using Logic;
 
 public partial class views_images_profiles_upload : System.Web.UI.Page
 {
@@ -29,7 +30,7 @@ public partial class views_images_profiles_upload : System.Web.UI.Page
         imageProfile.SkipShrinkVolumes = Convert.ToInt16(chkUpNoShrink.Checked);
         imageProfile.SkipShrinkLvm = Convert.ToInt16(chkUpNoShrinkLVM.Checked);
         imageProfile.DebugResize = Convert.ToInt16(chkUpDebugResize.Checked);
-        new LinuxProfileDataAccess().Update(imageProfile);
+        new LinuxProfileLogic().UpdateProfile(imageProfile);
         new Utility().Msgbox(Utility.Message);
     }
 }

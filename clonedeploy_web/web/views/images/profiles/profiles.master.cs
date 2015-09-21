@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using DataAccess;
+using Logic;
 using Models;
 using Image = Models.Image;
 
@@ -21,7 +22,7 @@ public partial class views_masters_Profile : System.Web.UI.MasterPage
 
     private LinuxProfile ReadProfile ()
     {
-        var tmpProfile = new LinuxProfileDataAccess().Read(Convert.ToInt32(Request.QueryString["profileid"]));
+        var tmpProfile = new LinuxProfileLogic().ReadProfile(Convert.ToInt32(Request.QueryString["profileid"]));
         return tmpProfile;
     }
 }

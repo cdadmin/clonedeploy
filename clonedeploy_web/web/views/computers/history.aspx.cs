@@ -8,14 +8,11 @@ namespace views.hosts
 {
     public partial class HostHistory : Page
     {
-        public Computer Host { get; set; }
+      
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            Host = new Computer { Id = Convert.ToInt16(Request["hostid"] )};
-            Host.Read();
-            var subTitle = Master.Master.FindControl("SubNav").FindControl("labelSubTitle") as Label;
-            if (subTitle != null) subTitle.Text = Host.Name + " | History";
+          
             if (!IsPostBack) PopulateHistory();
         }
 
@@ -27,7 +24,7 @@ namespace views.hosts
         protected void PopulateHistory()
         {
             if (!IsPostBack) ddlLimit.SelectedValue = "10";
-            var history = new History {Type = "Host", TypeId = Host.Id.ToString(), Limit = ddlLimit.Text};
+            var history = new History {Type = "Host", TypeId = Master.Computer.Id.ToString(), Limit = ddlLimit.Text};
             gvHistory.DataSource = history.Read();
             gvHistory.DataBind();
             Master.Msgbox(Utility.Message);

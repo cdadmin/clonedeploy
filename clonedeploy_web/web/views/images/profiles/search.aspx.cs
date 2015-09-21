@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using DataAccess;
 using Global;
+using Logic;
 using Models;
 
 public partial class views_images_profiles_search : System.Web.UI.Page
@@ -26,8 +27,7 @@ public partial class views_images_profiles_search : System.Web.UI.Page
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvProfiles.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            var host = new Computer { Id = Convert.ToInt16(dataKey.Value) };
-            host.Delete();
+            new ComputerLogic().DeleteComputer(Convert.ToInt32(dataKey.Value));
         }
 
         PopulateGrid();
@@ -70,7 +70,7 @@ public partial class views_images_profiles_search : System.Web.UI.Page
 
     protected void PopulateGrid()
     {
-        gvProfiles.DataSource = new LinuxProfileDataAccess().Search(Master.Image.Id);
+        gvProfiles.DataSource = new LinuxProfileLogic().SearchProfiles(Master.Image.Id);
         gvProfiles.DataBind();
 
     }

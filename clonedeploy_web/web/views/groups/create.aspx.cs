@@ -22,6 +22,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using DataAccess;
 using Global;
+using Logic;
 using Models;
 using Security;
 using Image = Models.Image;
@@ -80,7 +81,7 @@ namespace views.groups
         protected void ddlGroupImage_OnSelectedIndexChanged(object sender, EventArgs e)
         {
             if (ddlGroupImage.Text == "Select Image") return;
-            ddlImageProfile.DataSource = new LinuxProfileDataAccess().Search(Convert.ToInt32(ddlGroupImage.SelectedValue)).Select(i => new { i.Id, i.Name });
+            ddlImageProfile.DataSource = new LinuxProfileLogic().SearchProfiles(Convert.ToInt32(ddlGroupImage.SelectedValue)).Select(i => new { i.Id, i.Name });
             ddlImageProfile.DataValueField = "Id";
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();

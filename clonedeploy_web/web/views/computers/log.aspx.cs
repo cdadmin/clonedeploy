@@ -10,14 +10,12 @@ namespace views.hosts
 {
     public partial class HostLog : Page
     {
-        public Computer Host { get; set; }
+      
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            Host = new Computer { Id = Convert.ToInt16(Request["hostid"]) };
-            Host.Read();
-            var subTitle = Master.Master.FindControl("SubNav").FindControl("labelSubTitle") as Label;
-            if (subTitle != null) subTitle.Text = Host.Name + " | Logs";
+         
+           
             if (!IsPostBack) PopulateLog();
         }
 
@@ -37,12 +35,12 @@ namespace views.hosts
             }
             try
             {
-                var hostLogPath = "hosts" + Path.DirectorySeparatorChar + Host.Id + logType;
+                var hostLogPath = "hosts" + Path.DirectorySeparatorChar + Master.Computer.Id + logType;
                 var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
                               Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar;
                 HttpContext.Current.Response.ContentType = "application/octet-stream";
                 HttpContext.Current.Response.AppendHeader("Content-Disposition",
-                    "attachment; filename=" + Host.Id + logType);
+                    "attachment; filename=" + Master.Computer.Id + logType);
                 HttpContext.Current.Response.TransmitFile(logPath + hostLogPath);
                 HttpContext.Current.Response.End();
             }
@@ -70,7 +68,7 @@ namespace views.hosts
             if (ddlLogType.Text == "Select A Log") return;
             var logType = ddlLogType.Text == "Upload" ? ".upload" : ".download";
 
-            gvHostLog.DataSource = Logger.ViewLog("hosts" + Path.DirectorySeparatorChar + Host.Id + logType,
+            gvHostLog.DataSource = Logger.ViewLog("hosts" + Path.DirectorySeparatorChar + Master.Computer.Id + logType,
                 ddlLogLimit.Text);
             gvHostLog.DataBind();
             Master.Msgbox(Utility.Message);

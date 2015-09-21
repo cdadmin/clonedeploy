@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using DataAccess;
 using Global;
+using Logic;
 
 public partial class views_images_profiles_pxe : System.Web.UI.Page
 {
@@ -29,7 +30,7 @@ public partial class views_images_profiles_pxe : System.Web.UI.Page
         imageProfile.Kernel = ddlKernel.Text;
         imageProfile.BootImage = ddlBootImage.Text;
         imageProfile.KernelArguments = txtKernelArgs.Text;
-        new LinuxProfileDataAccess().Update(imageProfile);
+        new LinuxProfileLogic().UpdateProfile(imageProfile);
         new Utility().Msgbox(Utility.Message);
     }
 }

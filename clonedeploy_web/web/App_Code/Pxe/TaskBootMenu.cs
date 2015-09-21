@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Global;
+using Logic;
 using Models;
 
 namespace Pxe
@@ -148,8 +149,7 @@ namespace Pxe
                 };
 
                 var fileOps = new FileOps();
-                var host = new Computer { Mac = Utility.PxeMacToMac(PxeHostMac) };
-                host.Read();
+                var host = new ComputerLogic().GetComputerFromMac(Utility.PxeMacToMac(PxeHostMac));
                 if (File.Exists(biosPath))
                 {  
                     if (Convert.ToBoolean(Convert.ToInt16(host.CustomBootEnabled)))
@@ -360,7 +360,6 @@ namespace Pxe
                 if (File.Exists(path))
                 {
                     var host = new Computer {Mac = Utility.PxeMacToMac(PxeHostMac)};
-                    host.Read();
                     if (Convert.ToBoolean(Convert.ToInt16(host.CustomBootEnabled)))
                     {
                         if (mode.Contains("ipxe"))

@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Management;
 using System.Threading;
+using DataAccess;
 using Global;
 using Pxe;
 
@@ -58,9 +59,10 @@ namespace Models
 
         public void Delete()
         {
+            CloneDeployDbContext context = new CloneDeployDbContext();
             using (var db = new DB())
             {
-                var hostMacs = (from h in db.Hosts
+                var hostMacs = (from h in context.Computers
                            join t in db.ActiveTasks on h.Id equals t.ComputerId
                            where (t.MulticastName == Name)
                            select h.Mac).ToList();

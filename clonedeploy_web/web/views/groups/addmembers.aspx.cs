@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Global;
+using Logic;
 using Models;
 
 public partial class views_groups_addmembers : System.Web.UI.Page
@@ -55,11 +56,11 @@ public partial class views_groups_addmembers : System.Web.UI.Page
 
     protected void PopulateGrid()
     {
-        var host = new Computer();
-        gvHosts.DataSource = host.Search(txtSearch.Text);
+        var computerLogic = new ComputerLogic();
+        gvHosts.DataSource = computerLogic.SearchComputers(txtSearch.Text);
         gvHosts.DataBind();
 
-        lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + host.GetTotalCount() + " Total Host(s)";
+        lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + computerLogic.TotalCount() + " Total Host(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)

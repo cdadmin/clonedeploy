@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Script.Services;
 using System.Web.Services;
 using Global;
+using Logic;
 using Models;
 using Partition;
 using Security;
@@ -22,7 +23,7 @@ namespace Services.Client
         public void AddHost(Computer host)
         {
             if (!Authenticate()) return;
-            host.Create();
+            new ComputerLogic().AddComputer(host);
             HttpContext.Current.Response.Write(Utility.Message);
         }
 

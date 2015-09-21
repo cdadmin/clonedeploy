@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using DataAccess;
 using Global;
 using Models;
 using Pxe;
@@ -9,14 +10,15 @@ namespace Services.Client
 {
     public class Global
     {
+        private readonly CloneDeployDbContext _context = new CloneDeployDbContext();
         public string CheckIn(string mac)
         {
             using (var db = new DB())
             {
-                if (!db.Hosts.Any(h => h.Mac.ToLower() == mac.ToLower()))
+                if (!_context.Computers.Any(h => h.Mac.ToLower() == mac.ToLower()))
                     return "checkInResult=\"The Host Was Not Found In The Database\"";
 
-                var task = (from h in db.Hosts
+                var task = (from h in _context.Computers
                     join t in db.ActiveTasks on h.Id equals t.ComputerId
                     where (h.Mac.ToLower() == mac.ToLower())
                     select t).FirstOrDefault();
@@ -41,7 +43,7 @@ namespace Services.Client
             {
                 using (var db = new DB())
                 {
-                    var task = (from h in db.Hosts
+                    var task = (from h in _context.Computers
                                 join t in db.ActiveTasks on h.Id equals t.ComputerId
                                 where (h.Mac.ToLower() == mac.ToLower())
                                 select t).FirstOrDefault();

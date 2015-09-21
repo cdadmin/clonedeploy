@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Global;
+using Logic;
 using Models;
 
 namespace Services.Client
@@ -11,9 +12,8 @@ namespace Services.Client
         public string GetCustomMulticastInfo(string mac, string mcTaskName)
         {
             ActiveMcTask mcTask;
-            var host = new Computer {Mac = mac.ToLower()};
-            host.Read();
-
+            var host = new ComputerLogic().GetComputerFromMac(mac.ToLower());
+  
             using (var db = new DB())
             {
                 mcTask = db.ActiveMcTasks.FirstOrDefault(t => t.Name == mcTaskName);
@@ -61,8 +61,7 @@ namespace Services.Client
             var image = new Image {Id = Convert.ToInt32(imageId)};
             image.Read();
 
-            var host = new Computer {Mac = mac.ToLower()};
-            host.Read();
+            var host = new ComputerLogic().GetComputerFromMac(mac.ToLower());
 
             if (direction == "push")
             {

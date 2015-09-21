@@ -1,35 +1,43 @@
-﻿using DataAccess;
+﻿using System.Collections.Generic;
+using DataAccess;
+using Global;
 using Models;
 
 namespace Logic
 {
-    /// <summary>
-    /// Summary description for LinuxProfileLogic
-    /// </summary>
     public class LinuxProfileLogic
     {
-        public string AddProfile(LinuxProfile profile)
+        private readonly LinuxProfileDataAccess _da = new LinuxProfileDataAccess();
+
+        public bool AddProfile(LinuxProfile profile)
         {
-            var da = new LinuxProfileDataAccess();
-            if (da.ProfileExists(profile))
-                return "A Profile With This Name Already Exists";
-            if (da.Create(profile))
+            if (_da.Exists(profile))
             {
-                //var history = new History { Event = "Create", Type = "Host", Notes = Mac, TypeId = Id.ToString() };
-                //history.CreateEvent();
-                return "Successfully Created Profile";
-               
+                Utility.Message = "A Profile With This Name Already Exists";
+                return false;
             }
-            else
+            if (_da.Create(profile))
             {
-                return "Could Not Create Profile";
+                Utility.Message = "Successfully Created Profile";
+                return true;
             }
+            Utility.Message = "Could Not Create Profile";
+            return false;
         }
 
         public LinuxProfile ReadProfile(int profileId)
         {
-            var da = new LinuxProfileDataAccess();
-            return da.Read(profileId);
+            return _da.Read(profileId);
+        }
+
+        public List<LinuxProfile> SearchProfiles(int imageId)
+        {
+            return _da.Find(imageId);
+        }
+
+        public void UpdateProfile(LinuxProfile profile)
+        {
+            _da.Update(profile);
         }
     }
 }

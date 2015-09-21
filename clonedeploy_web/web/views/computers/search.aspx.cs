@@ -22,6 +22,7 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Global;
+using Logic;
 using Models;
 
 namespace views.hosts
@@ -44,8 +45,7 @@ namespace views.hosts
                 if (cb == null || !cb.Checked) continue;
                 var dataKey = gvHosts.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
-                var host = new Computer {Id = Convert.ToInt16(dataKey.Value)};
-                host.Delete();
+                new ComputerLogic().DeleteComputer(Convert.ToInt32(dataKey.Value));
             }
 
             PopulateGrid();
@@ -94,11 +94,11 @@ namespace views.hosts
 
         protected void PopulateGrid()
         {
-            var host = new Computer();
-            gvHosts.DataSource = host.Search(txtSearch.Text);
+            var computerLogic = new ComputerLogic();
+            gvHosts.DataSource = computerLogic.SearchComputers(txtSearch.Text);
             gvHosts.DataBind();
 
-            lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + host.GetTotalCount() + " Total Host(s)";
+            lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + computerLogic.TotalCount() + " Total Host(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)

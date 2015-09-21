@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Global;
+using Logic;
 using Models;
 
 namespace Pxe
@@ -9,8 +10,7 @@ namespace Pxe
     {
         public bool CleanPxeBoot(string pxeHostMac)
         {
-            var host = new Computer {Mac = Utility.PxeMacToMac(pxeHostMac)};
-            host.Read();
+            var host = new ComputerLogic().GetComputerFromMac(Utility.PxeMacToMac(pxeHostMac));
             var mode = Settings.PxeMode;
             var isCustomBootTemplate = Convert.ToBoolean(Convert.ToInt16(host.CustomBootEnabled));
             var proxyDhcp = Settings.ProxyDhcp;

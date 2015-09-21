@@ -3,6 +3,7 @@ using System.IO;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Global;
+using Logic;
 using Models;
 using Pxe;
 
@@ -10,28 +11,26 @@ namespace views.hosts
 {
     public partial class HostBootMenu : Page
     {
-        public Computer Host { get; set; }
+      
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            Host = new Computer { Id = Convert.ToInt16(Request["hostid"]) };
-            Host.Read();
-            var subTitle = Master.Master.FindControl("SubNav").FindControl("labelSubTitle") as Label;
-            if (subTitle != null) subTitle.Text = Host.Name + " | Boot Menu";
+       
+
 
             if (!IsPostBack) DisplayActiveMenu();
         }
 
         protected void btnRemoveBootMenu_Click(object sender, EventArgs e)
         {
-            var customBootMenu = new CustomBootMenu {Host = Host};
+            var customBootMenu = new CustomBootMenu {Host = Master.Computer};
             customBootMenu.RemoveCustomBootMenu();
             Master.Msgbox(Utility.Message);
         }
 
         protected void btnSetBootMenu_Click(object sender, EventArgs e)
         {
-            var customBootMenu = new CustomBootMenu {Host = Host, FileName = txtCustomBootMenu.Text};
+            var customBootMenu = new CustomBootMenu {Host = Master.Computer, FileName = txtCustomBootMenu.Text};
             customBootMenu.SetCustomBootMenu();
             Master.Msgbox(Utility.Message);
         }
@@ -71,7 +70,7 @@ namespace views.hosts
         protected void DisplayActiveMenu()
         {
             var proxyDhcp = Settings.ProxyDhcp;
-            var isActive = Host.CheckActive();
+            var isActive = new ComputerLogic().ActiveStatus(Master.Computer.Mac);
             var pxeFileOps = new PxeFileOps();
             string path;
 
@@ -81,17 +80,17 @@ namespace views.hosts
             if (isActive == "Active")
             {
                 path = proxyDhcp == "Yes"
-                    ? pxeFileOps.GetHostProxyPath(Host, true, ddlProxyMode.Text)
-                    : pxeFileOps.GetHostNonProxyPath(Host, true);
+                    ? pxeFileOps.GetHostProxyPath(Master.Computer, true, ddlProxyMode.Text)
+                    : pxeFileOps.GetHostNonProxyPath(Master.Computer, true);
                 lblActiveBoot.Text = "Active Task Found <br> Displaying Task Boot Menu";
             }
             else
             {
-                if (Convert.ToBoolean(Convert.ToInt16(Host.CustomBootEnabled)))
+                if (Convert.ToBoolean(Convert.ToInt16(Master.Computer.CustomBootEnabled)))
                 {
                     path = proxyDhcp == "Yes"
-                        ? pxeFileOps.GetHostProxyPath(Host, true, ddlProxyMode.Text)
-                        : pxeFileOps.GetHostNonProxyPath(Host, true);
+                        ? pxeFileOps.GetHostProxyPath(Master.Computer, true, ddlProxyMode.Text)
+                        : pxeFileOps.GetHostNonProxyPath(Master.Computer, true);
 
                     lblActiveBoot.Text =
                         "No Active Task Found <br> Custom Boot Menu Found <br> Displaying Custom Boot Menu";
@@ -100,8 +99,8 @@ namespace views.hosts
                 else //Not Active, display default global boot menu
                 {
                     path = proxyDhcp == "Yes"
-                        ? pxeFileOps.GetHostProxyPath(Host, false, ddlProxyMode.Text)
-                        : pxeFileOps.GetHostNonProxyPath(Host, false);
+                        ? pxeFileOps.GetHostProxyPath(Master.Computer, false, ddlProxyMode.Text)
+                        : pxeFileOps.GetHostNonProxyPath(Master.Computer, false);
 
                     lblActiveBoot.Text =
                         "No Active Task Found <br> No Custom Boot Menu Found <br> Displaying Global Default Boot Menu";

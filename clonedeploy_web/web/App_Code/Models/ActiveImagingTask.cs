@@ -11,7 +11,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading;
+using DataAccess;
 using Global;
+using Logic;
 using Pxe;
 
 namespace Models
@@ -67,10 +69,11 @@ namespace Models
 
         public void Delete()
         {
+            CloneDeployDbContext context = new CloneDeployDbContext();
             string hostMac;
             using (var db = new DB())
             {
-                hostMac =  (from h in db.Hosts
+                hostMac =  (from h in context.Computers
                             join t in db.ActiveTasks on h.Id equals t.ComputerId
                             where (t.Id == Id)
                             select h.Mac).FirstOrDefault();
@@ -234,8 +237,8 @@ namespace Models
 
                         if (ext == ".custom") continue;
                         var fileName = Path.GetFileNameWithoutExtension(pxeFile);
-                        var host = new Computer { Mac = Utility.PxeMacToMac(fileName) };
-                        host.Read();
+                        var host = new ComputerLogic().GetComputerFromMac(Utility.PxeMacToMac(fileName));
+
                         var isCustomBootTemplate = Convert.ToBoolean(Convert.ToInt16(host.CustomBootEnabled));
                         if (isCustomBootTemplate)
                         {

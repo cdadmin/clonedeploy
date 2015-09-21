@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web.UI;
 using Global;
+using Logic;
 using Models;
 using Tasks;
 
@@ -9,8 +10,9 @@ namespace views.masters
 {
     public partial class ComputerMaster : MasterPage
     {
+        private readonly ComputerLogic _logic = new ComputerLogic();
         public Computer Computer { get { return ReadComputer(); } }
-
+        
         protected void Page_Load(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(Request["hostid"]))
@@ -59,7 +61,7 @@ namespace views.masters
             switch (direction)
             {
                 case "delete":
-                    Computer.Delete();
+                    _logic.DeleteComputer(Computer.Id);
                     if (Utility.Message.Contains("Successfully"))
                         Response.Redirect("~/views/computers/search.aspx");
                     break;
@@ -113,9 +115,7 @@ namespace views.masters
 
         private Computer ReadComputer()
         {
-            var tmpComputer = new Computer { Id = Convert.ToInt32(Request.QueryString["hostid"]) };
-            tmpComputer.Read();
-            return tmpComputer;
+            return _logic.GetComputer(Convert.ToInt32(Request.QueryString["hostid"]));
         }
     }
 }

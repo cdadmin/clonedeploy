@@ -4,6 +4,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using DataAccess;
 using Global;
+using Logic;
 using Models;
 using Image = Models.Image;
 
@@ -11,6 +12,8 @@ namespace views.hosts
 {
     public partial class HostEdit : Page
     {
+        private readonly LinuxProfileLogic _profileLogic = new LinuxProfileLogic();
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack) PopulateForm();
@@ -29,8 +32,8 @@ namespace views.hosts
             };
 
            
-
-            if (host.ValidateHostData()) host.Update();
+            var computerLogic = new ComputerLogic();
+            if (computerLogic.ValidateHostData(host)) computerLogic.UpdateComputer(host);
             Master.Msgbox(Utility.Message);
         }
 
@@ -48,7 +51,7 @@ namespace views.hosts
             ddlHostImage.SelectedValue = Master.Computer.Image.ToString();        
             txtHostDesc.Text = Master.Computer.Description;
 
-            ddlImageProfile.DataSource = new LinuxProfileDataAccess().Search(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
+            ddlImageProfile.DataSource = _profileLogic.SearchProfiles(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
             ddlImageProfile.DataValueField = "Id";
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();
@@ -60,7 +63,7 @@ namespace views.hosts
         protected void ddlHostImage_OnSelectedIndexChanged(object sender, EventArgs e)
         {
             if (ddlHostImage.Text == "Select Image") return;
-            ddlImageProfile.DataSource = new LinuxProfileDataAccess().Search(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
+            ddlImageProfile.DataSource = _profileLogic.SearchProfiles(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
             ddlImageProfile.DataValueField = "Id";
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();

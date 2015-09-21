@@ -22,6 +22,7 @@ using System.Data;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Global;
+using Logic;
 using Models;
 using Tasks;
 using Image = Models.Image;
@@ -30,6 +31,7 @@ namespace views.tasks
 {
     public partial class TaskUnicast : Page
     {
+        ComputerLogic _computerLogic = new ComputerLogic();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (IsPostBack) return;
@@ -46,8 +48,7 @@ namespace views.tasks
                 var dataKey = gvHosts.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var host = new Computer {Id = Convert.ToInt16(dataKey.Value)};
-                    host.Read();
+                    var host = _computerLogic.GetComputer(Convert.ToInt32(dataKey.Value));
                     Session["hostID"] = host.Id;
                     Session["direction"] = "push";
                     lblTitle.Text = "Deploy The Selected Host?";
@@ -69,8 +70,7 @@ namespace views.tasks
                 var dataKey = gvHosts.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var host = new Computer {Id = Convert.ToInt16(dataKey.Value)};
-                    host.Read();
+                    var host = _computerLogic.GetComputer(Convert.ToInt32(dataKey.Value));
                     Session["hostID"] = host.Id;
                     Session["direction"] = "pull";
                     lblTitle.Text = "Upload The Selected Host?";
@@ -107,8 +107,8 @@ namespace views.tasks
 
         protected void OkButton_Click(object sender, EventArgs e)
         {
-            var host = new Computer {Id = Convert.ToInt16(Session["hostID"])};
-            host.Read();
+            var host = _computerLogic.GetComputer(Convert.ToInt32(Session["hostID"]));
+
 
             var direction = (string) (Session["direction"]);
 
@@ -151,12 +151,12 @@ namespace views.tasks
 
         protected void PopulateGrid()
         {
-            var host = new Computer();
-            gvHosts.DataSource = host.Search(txtSearch.Text);
+
+            gvHosts.DataSource = _computerLogic.SearchComputers(txtSearch.Text);
 
             gvHosts.DataBind();
 
-            lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + host.GetTotalCount() + " Total Host(s)";
+            lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + _computerLogic.TotalCount() + " Total Host(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)

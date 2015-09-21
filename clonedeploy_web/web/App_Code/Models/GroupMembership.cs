@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Web;
+using DataAccess;
 using Global;
 using Models;
 
@@ -73,11 +74,12 @@ public class GroupMembership
     }
     public List<Computer> Search(int searchGroupId, string searchString)
     {
+        CloneDeployDbContext context = new CloneDeployDbContext();
         List<Computer> list = new List<Computer>();
         using (var db = new DB())
         {
          
-            list.AddRange(from h in db.Hosts
+            list.AddRange(from h in context.Computers
                 join g in db.GroupMembership on h.Id equals g.ComputerId
                           where (g.GroupId == searchGroupId) && (h.Name.Contains(searchString) || h.Mac.Contains(searchString))
                 select h);

@@ -25,6 +25,7 @@ using System.Data.Entity.Infrastructure;
 using System.IO;
 using System.Linq;
 using System.Web;
+using DataAccess;
 using Global;
 
 
@@ -190,13 +191,14 @@ namespace Models
 
         public void RemoveGroupHosts()
         {
+            CloneDeployDbContext context = new CloneDeployDbContext();
             foreach (var host in Members)
             {
                 using (var db = new DB())
                 {
                     try
                     {
-                        var newHost = db.Hosts.Find(host.Id);            
+                        var newHost = context.Computers.Find(host.Id);            
                      
                         db.SaveChanges();
 
@@ -299,13 +301,14 @@ namespace Models
 
         public bool UpdateHosts(bool isAdd)
         {
+            CloneDeployDbContext context = new CloneDeployDbContext();
             foreach (var host in Members)
             {
                 using (var db = new DB())
                 {
                     try
                     {
-                        var newHost = db.Hosts.Find(host.Id);
+                        var newHost = context.Computers.Find(host.Id);
                        
                         newHost.Image = Convert.ToInt32(Image);
                    

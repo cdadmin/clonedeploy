@@ -6,14 +6,16 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using DataAccess;
 using Global;
+using Logic;
 using Models;
 using Image = Models.Image;
 
 public partial class views_images_profiles_create : System.Web.UI.Page
 {
+    private readonly Message _message = new Message();
     protected void Page_Load(object sender, EventArgs e)
     {
-        new Utility().Msgbox(Utility.Message);   
+        _message.Show(Message.Text);   
     }
 
     protected void buttonCreateProfile_OnClick(object sender, EventArgs e)
@@ -24,10 +26,10 @@ public partial class views_images_profiles_create : System.Web.UI.Page
             Description = txtProfileDesc.Text,
             ImageId = Master.Image.Id
         };
-        if (new LinuxProfileDataAccess().Create(profile))
+        if (new LinuxProfileLogic().AddProfile(profile))
             Response.Redirect("~/views/images/profiles/chooser.aspx?imageid=" + profile.ImageId + "&profileid=" + profile.Id + "&cat=profiles");
 
 
-        new Utility().Msgbox(Utility.Message);
+        _message.Show(Message.Text);
     }
 }

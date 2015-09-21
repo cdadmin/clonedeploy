@@ -22,6 +22,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using DataAccess;
 using Global;
+using Logic;
 using Models;
 using Security;
 using Image = Models.Image;
@@ -52,9 +53,10 @@ namespace views.hosts
             };
 
             host.ImageProfile = host.Image == 0 ? 0 : Convert.ToInt32(ddlImageProfile.SelectedValue);
-            if (host.ValidateHostData())
+            var computerLogic = new ComputerLogic();
+            if (computerLogic.ValidateHostData(host))
             {
-                if (host.Create() && !createAnother.Checked)
+                if (computerLogic.AddComputer(host) && !createAnother.Checked)
                     Response.Redirect("~/views/computers/edit.aspx?hostid=" + host.Id);
             }
 
@@ -75,7 +77,7 @@ namespace views.hosts
         protected void ddlHostImage_OnSelectedIndexChanged(object sender, EventArgs e)
         {
             if (ddlHostImage.Text == "Select Image") return;
-            ddlImageProfile.DataSource = new LinuxProfileDataAccess().Search(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
+            ddlImageProfile.DataSource = new LinuxProfileLogic().SearchProfiles(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
             ddlImageProfile.DataValueField = "Id";
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();

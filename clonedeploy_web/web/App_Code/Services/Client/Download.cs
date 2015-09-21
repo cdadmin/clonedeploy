@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using DataAccess;
 using Global;
 using Models;
 using Newtonsoft.Json;
@@ -81,9 +82,10 @@ namespace Services.Client
 
         public string CurrentQueuePosition(string mac)
         {
+            CloneDeployDbContext context = new CloneDeployDbContext();
             using (var db = new DB())
             {
-                var currentPosition =(from h in db.Hosts 
+                var currentPosition =(from h in context.Computers 
                            join t in db.ActiveTasks on h.Id equals t.ComputerId
                            where (h.Mac.ToLower() == mac.ToLower())
                            select t.QueuePosition).FirstOrDefault();
@@ -510,9 +512,10 @@ namespace Services.Client
 
         public string InSlot(string mac)
         {
+            CloneDeployDbContext context = new CloneDeployDbContext();
             using (var db = new DB())
             {
-                var q = (from h in db.Hosts
+                var q = (from h in context.Computers
                          join t in db.ActiveTasks on h.Id equals t.ComputerId
                          where (h.Mac.ToLower() == mac.ToLower())
                          select t).FirstOrDefault();
@@ -681,6 +684,7 @@ namespace Services.Client
 
         public string QueuePosition(string mac)
         {
+            CloneDeployDbContext context = new CloneDeployDbContext();
             string result;
             using (var db = new DB())
             {
@@ -690,7 +694,7 @@ namespace Services.Client
                                         select t.QueuePosition).FirstOrDefault();
 
 
-                var q = (from h in db.Hosts
+                var q = (from h in context.Computers
                          join t in db.ActiveTasks on h.Id equals t.ComputerId
                          where (h.Mac.ToLower() == mac.ToLower())
                          select t).FirstOrDefault();

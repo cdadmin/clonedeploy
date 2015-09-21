@@ -19,6 +19,7 @@
 using System;
 using DataAccess;
 using Global;
+using Logic;
 using Models;
 using Pxe;
 
@@ -48,7 +49,7 @@ namespace Tasks
             Image.Read();
 
 
-            ImageProfile = new LinuxProfileDataAccess().Read(Host.ImageProfile);
+            ImageProfile = new LinuxProfileLogic().ReadProfile(Host.ImageProfile);
             if (ImageProfile == null) return;
          
             if (!ActiveTask.Create()) return;
