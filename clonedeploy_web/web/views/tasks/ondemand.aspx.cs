@@ -51,7 +51,7 @@ namespace views.tasks
                 secureMsg.Visible = false;
             }
             if (IsPostBack) return;
-            ddlImage.DataSource = new Image().Search("").Select(i => i.Name);
+            ddlImage.DataSource = new BLL.Image().SearchImages("").Select(i => i.Name);
             ddlImage.DataBind();
             ddlImage.Items.Insert(0, "Select Image");
         }

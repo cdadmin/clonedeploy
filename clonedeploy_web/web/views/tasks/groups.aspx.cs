@@ -23,12 +23,13 @@ using System.Web.UI.WebControls;
 using Global;
 using Models;
 using Tasks;
-using Image = Models.Image;
+
 
 namespace views.tasks
 {
     public partial class TaskMulticast : Page
     {
+        private readonly BLL.Group _bllGroup = new BLL.Group();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack) PopulateGrid();
@@ -38,17 +39,17 @@ namespace views.tasks
         {
             var groupId = Convert.ToInt32(Session["groupID"]);
             var isUnicast = Convert.ToInt32(Session["isGroupUnicast"]);
-            var group = new Group {Id = groupId};
-            group.Read();
-            var image = new Image {Id = @group.Image};
-            image.Read();
+            var group = new BLL.Group().GetGroup(groupId);
+            var bllImage = new BLL.Image();
+            var image = bllImage.GetImage(group.Image);
+
             Session["imageID"] = image.Id;
-            if (image.Check_Checksum())
+            if (bllImage.Check_Checksum(image))
             {
                 if (isUnicast == 1)
                 {
                     var count = 0;
-                    foreach (var host in group.GroupMembers())
+                    foreach (var host in new BLL.GroupMembership().GetGroupMembers(group.Id, ""))
                     {
                         var unicast = new Unicast {Host = host, Direction = "push"};
                         unicast.Create();
@@ -84,9 +85,9 @@ namespace views.tasks
                 var dataKey = gvGroups.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var group = new Group();
-                    group.Id = Convert.ToInt32(dataKey.Value);
-                    group.Read();
+                    var group = _bllGroup.GetGroup(Convert.ToInt32(dataKey.Value));
+
+                 
                     Session["groupID"] = group.Id;
                     Session["isGroupUnicast"] = 0;
                     lblTitle.Text = "Multicast The Selected Group?";
@@ -108,9 +109,8 @@ namespace views.tasks
                 var dataKey = gvGroups.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var group = new Group();
-                    group.Id = Convert.ToInt32(dataKey.Value);
-                    group.Read();
+                    var group = _bllGroup.GetGroup(Convert.ToInt32(dataKey.Value));
+                  
                     Session["groupID"] = group.Id;
                     Session["isGroupUnicast"] = 1;
                     lblTitle.Text = "Unicast All The Hosts In The Selected Group?";
@@ -134,11 +134,11 @@ namespace views.tasks
         {
             var group = new Group();
 
-            gvGroups.DataSource = @group.Search(txtSearch.Text);
+            gvGroups.DataSource = _bllGroup.SearchGroups(txtSearch.Text);
 
             gvGroups.DataBind();
 
-            lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + group.GetTotalCount() + " Total Group(s)";
+            lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + _bllGroup.TotalCount() + " Total Group(s)";
         }
     }
 }

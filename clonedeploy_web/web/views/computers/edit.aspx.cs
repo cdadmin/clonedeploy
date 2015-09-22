@@ -2,9 +2,8 @@
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using DataAccess;
+using BLL;
 using Global;
-using Logic;
 using Models;
 using Image = Models.Image;
 
@@ -12,7 +11,7 @@ namespace views.hosts
 {
     public partial class HostEdit : Page
     {
-        private readonly LinuxProfileLogic _profileLogic = new LinuxProfileLogic();
+        private readonly BLL.LinuxProfile _bllLinuxProfile = new BLL.LinuxProfile();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -21,7 +20,7 @@ namespace views.hosts
 
         protected void buttonUpdateHost_Click(object sender, EventArgs e)
         {
-            var host = new Computer
+            var host = new Models.Computer
             {
                 Id = Master.Computer.Id,
                 Name = txtHostName.Text,
@@ -32,15 +31,15 @@ namespace views.hosts
             };
 
            
-            var computerLogic = new ComputerLogic();
-            if (computerLogic.ValidateHostData(host)) computerLogic.UpdateComputer(host);
+            var bllComputerLogic = new BLL.Computer();
+            if (bllComputerLogic.ValidateHostData(host)) bllComputerLogic.UpdateComputer(host);
             Master.Msgbox(Utility.Message);
         }
 
         protected void PopulateForm()
         {
             Master.Msgbox(Utility.Message);
-            ddlHostImage.DataSource = new Image().Search("").Select(i => new { i.Id, i.Name });
+            ddlHostImage.DataSource = new BLL.Image().SearchImages("").Select(i => new { i.Id, i.Name });
             ddlHostImage.DataValueField = "Id";
             ddlHostImage.DataTextField = "Name";
             ddlHostImage.DataBind();
@@ -51,7 +50,7 @@ namespace views.hosts
             ddlHostImage.SelectedValue = Master.Computer.Image.ToString();        
             txtHostDesc.Text = Master.Computer.Description;
 
-            ddlImageProfile.DataSource = _profileLogic.SearchProfiles(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
+            ddlImageProfile.DataSource = _bllLinuxProfile.SearchProfiles(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
             ddlImageProfile.DataValueField = "Id";
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();
@@ -63,7 +62,7 @@ namespace views.hosts
         protected void ddlHostImage_OnSelectedIndexChanged(object sender, EventArgs e)
         {
             if (ddlHostImage.Text == "Select Image") return;
-            ddlImageProfile.DataSource = _profileLogic.SearchProfiles(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
+            ddlImageProfile.DataSource = _bllLinuxProfile.SearchProfiles(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
             ddlImageProfile.DataValueField = "Id";
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();

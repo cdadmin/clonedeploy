@@ -28,6 +28,7 @@ using Newtonsoft.Json;
 using Partition;
 using Pxe;
 
+
 namespace Tasks
 {
     public class Multicast
@@ -41,8 +42,8 @@ namespace Tasks
         }
 
         public string Direction { get; set; }
-        public Group Group { get; set; }
-        public List<Computer> Hosts { get; set; }
+        public Models.Group Group { get; set; }
+        public List<Models.Computer> Hosts { get; set; }
         public bool IsCustom { get; set; }
         public ActiveMcTask ActiveMcTask { get; set; }
 
@@ -54,7 +55,7 @@ namespace Tasks
                 return;
             }
 
-            Hosts = Group.GroupMembers();
+            Hosts = new BLL.GroupMembership().GetGroupMembers(Group.Id, "");
             if (Hosts.Count < 1)
             {
                 Utility.Message = "The Group Does Not Have Any Hosts";
@@ -129,8 +130,7 @@ namespace Tasks
                 history.TypeId = host.Id.ToString();
                 history.CreateEvent();
 
-                var image = new Image {Id = Group.Image};
-                image.Read();
+                var image = new BLL.Image().GetImage(Group.Image);
                 history.Event = "Deploy";
                 history.Type = "Image";
                 history.Notes = Group.Image.ToString();
@@ -248,8 +248,7 @@ namespace Tasks
 
             //Multicasting currently only supports the first active hd
             //Find First Active HD
-            var image = new Image {Name = ActiveMcTask.Image};
-            image.Read();
+            var image = new BLL.Image().GetImage(Convert.ToInt32(ActiveMcTask.Image));
             ImagePhysicalSpecs specs;
             if (!string.IsNullOrEmpty(image.ClientSizeCustom))
             {

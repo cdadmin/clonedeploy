@@ -8,27 +8,27 @@ using System.Web.UI.WebControls;
 using Global;
 using Newtonsoft.Json;
 using Partition;
-using Image = Models.Image;
+
 
 namespace views.images
 {
     public partial class ImageSpecs : Page
     {
+        private readonly BLL.Image _bllImage = new BLL.Image();
+
         protected void btnConfirmChecksum_Click(object sender, EventArgs e)
         {
-            var image = new Image {Id = Convert.ToInt32(Request.QueryString["imageid"])};
-            image.Read();
+            var image = _bllImage.GetImage(Master.Image.Id);
             image.Checksum = (string) (ViewState["checkSum"]);
-            image.Update();
+            _bllImage.UpdateImage(image,image.Name);
             Master.Master.Msgbox(Utility.Message);
             Response.Redirect("~/views/images/edit.aspx?imageid=" + image.Id, true);
         }
 
         protected void btnPart_Click(object sender, EventArgs e)
         {
-            var image = new Image {Id = Convert.ToInt32(Request.QueryString["imageid"])};
-            image.Read();
-            var imagePath = Settings.ImageStorePath + image.Name;
+       
+            var imagePath = Settings.ImageStorePath + Master.Image.Name;
 
             var selectedHd = (string) (ViewState["selectedHD"]);
             var control = sender as Control;
@@ -107,8 +107,7 @@ namespace views.images
 
         protected void btnParts_Click(object sender, EventArgs e)
         {
-            var image = new Image {Id = Convert.ToInt32(Request.QueryString["imageid"])};
-            image.Read();
+        
 
             var control = sender as Control;
             if (control == null) return;
@@ -119,9 +118,9 @@ namespace views.images
             ViewState["selectedHD"] = gvRow.RowIndex.ToString();
             ViewState["selectedHDName"] = selectedHd;
             var specs =
-                JsonConvert.DeserializeObject<ImagePhysicalSpecs>(!string.IsNullOrEmpty(image.ClientSizeCustom)
-                    ? image.ClientSizeCustom
-                    : image.ClientSize);
+                JsonConvert.DeserializeObject<ImagePhysicalSpecs>(!string.IsNullOrEmpty(Master.Image.ClientSizeCustom)
+                    ? Master.Image.ClientSizeCustom
+                    : Master.Image.ClientSize);
 
             var specslist = new List<PartitionPhysicalSpecs>();
             var vgList = new List<VgPhysicalSpecs>();
@@ -196,23 +195,19 @@ namespace views.images
 
         protected void btnRestoreImageSpecs_Click(object sender, EventArgs e)
         {
-            var image = new Image
-            {
-                Id = Convert.ToInt32(Request.QueryString["imageid"]),
-                ClientSizeCustom = ""
-            };
-            image.Read();
+            var image = Master.Image;
+            image.ClientSizeCustom = "";
+           
 
-            Master.Master.Msgbox(image.Update()
+            Master.Master.Msgbox(_bllImage.UpdateImage(image,image.Name)
                 ? "Successfully Restored Image Specs.  Reload This Page To View Changes."
                 : "Could Not Restore Image Specs");
         }
 
         protected void btnUpdateImageSpecs_Click(object sender, EventArgs e)
         {
-            var image = new Image {Id = Convert.ToInt32(Request.QueryString["imageid"])};
-            image.Read();
-
+            var image = Master.Image;
+           
             ImagePhysicalSpecs specs;
             try
             {
@@ -282,15 +277,15 @@ namespace views.images
                 rowCounter++;
             }
             image.ClientSizeCustom = JsonConvert.SerializeObject(specs);
-            Master.Master.Msgbox(image.Update()
+            Master.Master.Msgbox(_bllImage.UpdateImage(image,image.Name)
                 ? "Successfully Updated Image Specs"
                 : "Could Not Update Image Specs");
         }
 
         protected void btnVG_Click(object sender, EventArgs e)
         {
-            var image = new Image {Id = Convert.ToInt32(Request.QueryString["imageid"])};
-            image.Read();
+            var image = Master.Image;
+
 
             var control = sender as Control;
             if (control == null) return;
@@ -366,24 +361,20 @@ namespace views.images
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            var image = new Image {Id = Convert.ToInt32(Request.QueryString["imageid"])};
-            image.Read();
-            var subTitle = Master.Master.FindControl("SubNav").FindControl("labelSubTitle") as Label;
-            if (subTitle != null) subTitle.Text = image.Name + " | Specs";
+         
             if (!IsPostBack) PopulateSpecs();
         }
 
         protected void PopulateSpecs()
         {
-            var image = new Image {Id = Convert.ToInt32(Request.QueryString["imageid"])};
-            image.Read();
+         
 
             try
             {
                 var specs =
-                    JsonConvert.DeserializeObject<ImagePhysicalSpecs>(!string.IsNullOrEmpty(image.ClientSizeCustom)
-                        ? image.ClientSizeCustom
-                        : image.ClientSize);
+                    JsonConvert.DeserializeObject<ImagePhysicalSpecs>(!string.IsNullOrEmpty(Master.Image.ClientSizeCustom)
+                        ? Master.Image.ClientSizeCustom
+                        : Master.Image.ClientSize);
 
 
                 var specslist = new List<HdPhysicalSpecs>();
@@ -418,7 +409,7 @@ namespace views.images
             try
             {
                 var listPhysicalImageChecksums = new List<HdChecksum>();
-                var path = Settings.ImageStorePath + image.Name;
+                var path = Settings.ImageStorePath + Master.Image.Name;
                 var imageChecksum = new HdChecksum
                 {
                     HdNumber = "hd1",
@@ -449,7 +440,7 @@ namespace views.images
                         var fc = new FileChecksum
                         {
                             FileName = Path.GetFileName(file),
-                            Checksum = image.Calculate_Hash(file)
+                            Checksum = _bllImage.Calculate_Hash(file)
                         };
                         listChecksums.Add(fc);
                     }
@@ -459,7 +450,7 @@ namespace views.images
 
 
                 var physicalImageJson = JsonConvert.SerializeObject(listPhysicalImageChecksums);
-                if (physicalImageJson == image.Checksum) return;
+                if (physicalImageJson == Master.Image.Checksum) return;
                 incorrectChecksum.Visible = true;
                 ViewState["checkSum"] = physicalImageJson;
             }

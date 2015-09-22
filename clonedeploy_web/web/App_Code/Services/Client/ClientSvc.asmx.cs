@@ -4,8 +4,8 @@ using System.IO;
 using System.Web;
 using System.Web.Script.Services;
 using System.Web.Services;
+using BLL;
 using Global;
-using Logic;
 using Models;
 using Partition;
 using Security;
@@ -20,18 +20,18 @@ namespace Services.Client
     public class ClientSvc : WebService
     {
         [WebMethod(EnableSession = true)]
-        public void AddHost(Computer host)
+        public void AddHost(Models.Computer host)
         {
             if (!Authenticate()) return;
-            new ComputerLogic().AddComputer(host);
+            new BLL.Computer().AddComputer(host);
             HttpContext.Current.Response.Write(Utility.Message);
         }
 
         [WebMethod(EnableSession = true)]
-        public void AddImage(Image image)
+        public void AddImage(Models.Image image)
         {
             if (!Authenticate()) return;
-            image.Create();
+            new BLL.Image().AddImage(image);
             HttpContext.Current.Response.Write(image.Id + "," + Utility.Message);
         }
 
@@ -214,10 +214,9 @@ namespace Services.Client
         }
 
         [WebMethod]
-        public void GetPartLayout(string imgName, string hdToGet, string newHdSize, string clientHd, string taskType)
+        public void GetPartLayout(string imageId, string hdToGet, string newHdSize, string clientHd, string taskType)
         {
-            var image = new Image {Name = imgName};
-            image.Read();
+            var image = new BLL.Image().GetImage(Convert.ToInt32(imageId));
 
             var partLayout = new ClientLayout
             {

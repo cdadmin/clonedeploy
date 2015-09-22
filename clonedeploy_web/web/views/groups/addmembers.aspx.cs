@@ -4,8 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using BLL;
 using Global;
-using Logic;
 using Models;
 
 public partial class views_groups_addmembers : System.Web.UI.Page
@@ -37,7 +37,7 @@ public partial class views_groups_addmembers : System.Web.UI.Page
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<Computer> listHosts = (List<Computer>)gvHosts.DataSource;
+        List<Models.Computer> listHosts = (List<Models.Computer>)gvHosts.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -56,11 +56,11 @@ public partial class views_groups_addmembers : System.Web.UI.Page
 
     protected void PopulateGrid()
     {
-        var computerLogic = new ComputerLogic();
-        gvHosts.DataSource = computerLogic.SearchComputers(txtSearch.Text);
+        var bllComputer = new BLL.Computer();
+        gvHosts.DataSource = bllComputer.SearchComputers(txtSearch.Text);
         gvHosts.DataBind();
 
-        lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + computerLogic.TotalCount() + " Total Host(s)";
+        lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + bllComputer.TotalCount() + " Total Host(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)
@@ -88,12 +88,12 @@ public partial class views_groups_addmembers : System.Web.UI.Page
             var dataKey = gvHosts.DataKeys[row.RowIndex];
             if (dataKey != null)
             {
-                var membership = new GroupMembership
+                var membership = new Models.GroupMembership
                 {
                     ComputerId = Convert.ToInt32(dataKey.Value),
                     GroupId = Master.Group.Id
                 };
-                if (membership.Create())
+                if (new BLL.GroupMembership().AddMembership(membership))
                     addedCount++;
             }
         }

@@ -24,10 +24,12 @@ using System.Web.UI.WebControls;
 using Global;
 using Models;
 
+
 namespace views.groups
 {
     public partial class GroupSearch : Page
     {
+        private readonly BLL.Group _bllGroup = new BLL.Group();
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             foreach (GridViewRow row in gvGroups.Rows)
@@ -36,8 +38,7 @@ namespace views.groups
                 if (cb == null || !cb.Checked) continue;
                 var dataKey = gvGroups.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
-                var group = new Group {Id = Convert.ToInt32(dataKey.Value)};
-                @group.Delete();
+                _bllGroup.DeleteGroup(Convert.ToInt32(dataKey.Value));
             }
 
 
@@ -76,22 +77,22 @@ namespace views.groups
             gvGroups.DataBind();
             foreach (GridViewRow row in gvGroups.Rows)
             {
-                var group = new Group();
+                var group = new Models.Group();
                 var lbl = row.FindControl("lblCount") as Label;
+                var dataKey = gvGroups.DataKeys[row.RowIndex];
+                if (dataKey != null)
+                    group = _bllGroup.GetGroup(Convert.ToInt32(dataKey.Value));
                 if (row.Cells[4].Text == "smart")
                 {
-                    var dataKey = gvGroups.DataKeys[row.RowIndex];
-                    if (dataKey != null)
-                        @group.Id = Convert.ToInt32(dataKey.Value);
-                    @group.Read();
+                   
+                       
+                
                     //FIX ME
                     //if (lbl != null) lbl.Text = @group.SearchSmartHosts(@group.Expression).Count.ToString();
                 }
                 else if (lbl != null)
                 {
-                    group.Name = row.Cells[2].Text;
-                    group.Read();
-                    lbl.Text = @group.GetMemberCount();
+                    lbl.Text = new BLL.GroupMembership().GetGroupMemberCount(group.Id);
                 }
             }
         }
@@ -105,19 +106,20 @@ namespace views.groups
 
         protected void PopulateGrid()
         {
-            var group = new Group();
+           
 
-            gvGroups.DataSource = @group.Search(txtSearch.Text);
+            gvGroups.DataSource = _bllGroup.SearchGroups(txtSearch.Text);
 
             gvGroups.DataBind();
 
             foreach (GridViewRow row in gvGroups.Rows)
             {
+                var group = new Models.Group();
                 var lbl = row.FindControl("lblCount") as Label;
                 var dataKey = gvGroups.DataKeys[row.RowIndex];
                 if (dataKey != null)
-                    @group.Id = Convert.ToInt32(dataKey.Value);
-                group.Read();
+                    group = _bllGroup.GetGroup(Convert.ToInt32(dataKey.Value));
+                
                 if (row.Cells[4].Text == "smart")
                 {
                    
@@ -127,12 +129,12 @@ namespace views.groups
                 else if (lbl != null)
                 {
 
-                    //lbl.Text = @group.GetMemberCount();
+                    lbl.Text = new BLL.GroupMembership().GetGroupMemberCount(group.Id);
                 }
             }
 
 
-            lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + group.GetTotalCount() + " Total Group(s)";
+            lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + _bllGroup.TotalCount() + " Total Group(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)

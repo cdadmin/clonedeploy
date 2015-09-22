@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
+using BLL;
 using Global;
-using Logic;
 using Models;
 
 namespace Pxe
@@ -10,7 +10,7 @@ namespace Pxe
     {
         public bool CleanPxeBoot(string pxeHostMac)
         {
-            var host = new ComputerLogic().GetComputerFromMac(Utility.PxeMacToMac(pxeHostMac));
+            var host = new BLL.Computer().GetComputerFromMac(Utility.PxeMacToMac(pxeHostMac));
             var mode = Settings.PxeMode;
             var isCustomBootTemplate = Convert.ToBoolean(Convert.ToInt16(host.CustomBootEnabled));
             var proxyDhcp = Settings.ProxyDhcp;
@@ -575,7 +575,7 @@ namespace Pxe
             return path;
         }
 
-        public string GetHostNonProxyPath(Computer host, bool isActiveOrCustom)
+        public string GetHostNonProxyPath(Models.Computer host, bool isActiveOrCustom)
         {
             var mode = Settings.PxeMode;
             var pxeHostMac = Utility.MacToPxeMac(host.Mac);
@@ -599,7 +599,7 @@ namespace Pxe
             return path;
         }
 
-        public string GetHostProxyPath(Computer host, bool isActiveOrCustom, string proxyType)
+        public string GetHostProxyPath(Models.Computer host, bool isActiveOrCustom, string proxyType)
         {
             var pxeHostMac = Utility.MacToPxeMac(host.Mac);
             string path = null;

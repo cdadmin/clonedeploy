@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using DataAccess;
+using DAL;
 using Global;
 using Models;
 
-namespace Logic
+namespace BLL
 {
-    /// <summary>
-    /// Summary description for ComputerLogic
-    /// </summary>
-    public class ComputerLogic
-    {
-        private readonly ComputerDataAccess _da = new ComputerDataAccess();
 
-        public bool AddComputer(Computer computer)
+    public class Computer
+    {
+        private readonly DAL.Computer _da = new DAL.Computer();
+
+        public bool AddComputer(Models.Computer computer)
         {
             if (_da.Exists(computer))
             {
@@ -46,27 +44,27 @@ namespace Logic
             _da.Delete(computerId);
         }
 
-        public Computer GetComputer(int computerId)
+        public Models.Computer GetComputer(int computerId)
         {
             return _da.Read(computerId);
         }
 
-        public Computer GetComputerFromMac(string mac)
+        public Models.Computer GetComputerFromMac(string mac)
         {
             return _da.GetComputerFromMac(mac);
         }
 
-        public List<Computer> SearchComputers(string searchString)
+        public List<Models.Computer> SearchComputers(string searchString)
         {
             return _da.Find(searchString);
         }
 
-        public void UpdateComputer(Computer computer)
+        public void UpdateComputer(Models.Computer computer)
         {
             _da.Update(computer);
         }
 
-        public bool ValidateHostData(Computer computer)
+        public bool ValidateHostData(Models.Computer computer)
         {
             var validated = true;
             if (string.IsNullOrEmpty(computer.Name) || computer.Name.Contains(" "))

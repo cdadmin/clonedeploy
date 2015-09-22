@@ -108,9 +108,7 @@ namespace views.images
 
         protected void btnUpdateImage_Click(object sender, EventArgs e)
         {
-            var image = new Image {Id = Convert.ToInt32(Request.QueryString["imageid"])};
-            image.Read();
-
+            var image = Master.Image;
 
             var currentName = (string) (ViewState["currentName"]);
             image.Name = txtImageName.Text;
@@ -119,32 +117,25 @@ namespace views.images
             image.Protected = chkProtected.Checked ? 1 : 0;
             image.IsVisible = chkVisible.Checked ? 1 : 0;
 
-            if (image.ValidateImageData())
-            {
-                if (image.Update())
-                {
-                    if (currentName != image.Name)
-                        new FileOps().RenameFolder(currentName, image.Name);
-                }
-            }
+            var bllImage = new BLL.Image();
+            
+            if (bllImage.ValidateImageData(image))
+                bllImage.UpdateImage(image, currentName);
             Master.Master.Msgbox(Utility.Message);
         }
 
         protected void PopulateForm()
         {
-            var image = new Image {Id = Convert.ToInt32(Request.QueryString["imageid"])};
-            image.Read();
-
-            ViewState["currentName"] = image.Name;
+            ViewState["currentName"] = Master.Image.Name;
             var currentName = (string) (ViewState["currentName"]);
 
-            txtImageName.Text = image.Name;
-            txtImageDesc.Text = image.Description;
-            ddlImageOS.Text = image.Os;
-            ddlImageType.Text = image.Type;
-            if (image.Protected == 1)
+            txtImageName.Text = Master.Image.Name;
+            txtImageDesc.Text = Master.Image.Description;
+            ddlImageOS.Text = Master.Image.Os;
+            ddlImageType.Text = Master.Image.Type;
+            if (Master.Image.Protected == 1)
                 chkProtected.Checked = true;
-            if (image.IsVisible == 1)
+            if (Master.Image.IsVisible == 1)
                 chkVisible.Checked = true;
 
             try

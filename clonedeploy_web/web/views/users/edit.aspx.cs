@@ -113,8 +113,8 @@ namespace views.users
 
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
-            var group = new Group();
-            gvGroups.DataSource = group.Search("%");
+       
+            gvGroups.DataSource = new BLL.Group().SearchGroups("%");
             var dataTable = (DataTable) gvGroups.DataSource;
 
             if (dataTable == null) return;
@@ -131,7 +131,7 @@ namespace views.users
             var user = new WdsUser {Id = Request.QueryString["userid"]};
             user.Read();
             var group = new Group();
-            gvGroups.DataSource = group.Search("%");
+            gvGroups.DataSource = new BLL.Group().SearchGroups("%");
             gvGroups.DataBind();
 
             if (user.Membership == "User")

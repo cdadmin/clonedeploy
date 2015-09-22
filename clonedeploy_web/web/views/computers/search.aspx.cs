@@ -21,8 +21,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using BLL;
 using Global;
-using Logic;
 using Models;
 
 namespace views.hosts
@@ -45,7 +45,7 @@ namespace views.hosts
                 if (cb == null || !cb.Checked) continue;
                 var dataKey = gvHosts.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
-                new ComputerLogic().DeleteComputer(Convert.ToInt32(dataKey.Value));
+                new BLL.Computer().DeleteComputer(Convert.ToInt32(dataKey.Value));
             }
 
             PopulateGrid();
@@ -72,7 +72,7 @@ namespace views.hosts
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
-            List<Computer> listHosts = (List<Computer>)gvHosts.DataSource;
+            List<Models.Computer> listHosts = (List<Models.Computer>)gvHosts.DataSource;
             switch (e.SortExpression)
             {
                 case "Name":
@@ -94,11 +94,11 @@ namespace views.hosts
 
         protected void PopulateGrid()
         {
-            var computerLogic = new ComputerLogic();
-            gvHosts.DataSource = computerLogic.SearchComputers(txtSearch.Text);
+            var bllComputer = new BLL.Computer();
+            gvHosts.DataSource = bllComputer.SearchComputers(txtSearch.Text);
             gvHosts.DataBind();
 
-            lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + computerLogic.TotalCount() + " Total Host(s)";
+            lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + bllComputer.TotalCount() + " Total Host(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)

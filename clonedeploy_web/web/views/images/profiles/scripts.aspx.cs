@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Models;
 
 public partial class views_images_profiles_scripts : System.Web.UI.Page
 {

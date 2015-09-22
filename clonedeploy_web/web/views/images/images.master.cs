@@ -9,6 +9,7 @@ namespace views.masters
     public partial class ImageMaster : MasterPage
     {
         public Image Image { get { return ReadProfile(); } }
+        private readonly BLL.Image _bllImage = new BLL.Image();
 
         public void Page_Load(object sender, EventArgs e)
         {
@@ -39,7 +40,7 @@ namespace views.masters
 
         protected void OkButton_Click(object sender, EventArgs e)
         {
-            Image.Delete();
+            _bllImage.DeleteImage(Image);
             if (Utility.Message.Contains("Successfully"))
                 Response.Redirect("~/views/images/search.aspx");
             else
@@ -48,9 +49,7 @@ namespace views.masters
 
         private Image ReadProfile()
         {
-            var tmpImage = new Image { Id = Convert.ToInt32(Request.QueryString["imageid"]) };
-            tmpImage.Read();
-            return tmpImage;
+            return _bllImage.GetImage(Convert.ToInt32(Request.QueryString["imageid"]));
         }
     }
 }

@@ -20,9 +20,8 @@ using System;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using DataAccess;
+using BLL;
 using Global;
-using Logic;
 using Models;
 using Security;
 using Image = Models.Image;
@@ -44,7 +43,7 @@ namespace views.hosts
         protected void ButtonAddHost_Click(object sender, EventArgs e)
         {
       
-            var host = new Computer
+            var host = new Models.Computer
             {
                 Name = txtHostName.Text,
                 Mac = Utility.FixMac(txtHostMac.Text),
@@ -53,10 +52,10 @@ namespace views.hosts
             };
 
             host.ImageProfile = host.Image == 0 ? 0 : Convert.ToInt32(ddlImageProfile.SelectedValue);
-            var computerLogic = new ComputerLogic();
-            if (computerLogic.ValidateHostData(host))
+            var bllComputer = new BLL.Computer();
+            if (bllComputer.ValidateHostData(host))
             {
-                if (computerLogic.AddComputer(host) && !createAnother.Checked)
+                if (bllComputer.AddComputer(host) && !createAnother.Checked)
                     Response.Redirect("~/views/computers/edit.aspx?hostid=" + host.Id);
             }
 
@@ -65,7 +64,7 @@ namespace views.hosts
 
         protected void PopulateForm()
         {
-            ddlHostImage.DataSource = new Image().Search("").Select (i => new {i.Id,i.Name});
+            ddlHostImage.DataSource = new BLL.Image().SearchImages("").Select (i => new {i.Id,i.Name});
             ddlHostImage.DataValueField = "Id";
             ddlHostImage.DataTextField = "Name";
             ddlHostImage.DataBind();
@@ -77,7 +76,7 @@ namespace views.hosts
         protected void ddlHostImage_OnSelectedIndexChanged(object sender, EventArgs e)
         {
             if (ddlHostImage.Text == "Select Image") return;
-            ddlImageProfile.DataSource = new LinuxProfileLogic().SearchProfiles(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
+            ddlImageProfile.DataSource = new BLL.LinuxProfile().SearchProfiles(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
             ddlImageProfile.DataValueField = "Id";
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();

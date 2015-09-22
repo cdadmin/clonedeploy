@@ -11,9 +11,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading;
-using DataAccess;
+using BLL;
+using DAL;
 using Global;
-using Logic;
 using Pxe;
 
 namespace Models
@@ -237,7 +237,7 @@ namespace Models
 
                         if (ext == ".custom") continue;
                         var fileName = Path.GetFileNameWithoutExtension(pxeFile);
-                        var host = new ComputerLogic().GetComputerFromMac(Utility.PxeMacToMac(fileName));
+                        var host = new BLL.Computer().GetComputerFromMac(Utility.PxeMacToMac(fileName));
 
                         var isCustomBootTemplate = Convert.ToBoolean(Convert.ToInt16(host.CustomBootEnabled));
                         if (isCustomBootTemplate)

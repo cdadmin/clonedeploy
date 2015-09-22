@@ -2,8 +2,8 @@
 using System.IO;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using BLL;
 using Global;
-using Logic;
 using Models;
 using Pxe;
 
@@ -70,7 +70,7 @@ namespace views.hosts
         protected void DisplayActiveMenu()
         {
             var proxyDhcp = Settings.ProxyDhcp;
-            var isActive = new ComputerLogic().ActiveStatus(Master.Computer.Mac);
+            var isActive = new BLL.Computer().ActiveStatus(Master.Computer.Mac);
             var pxeFileOps = new PxeFileOps();
             string path;
 

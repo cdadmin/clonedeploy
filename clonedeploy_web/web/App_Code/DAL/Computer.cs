@@ -6,10 +6,10 @@ using System.Web;
 using Global;
 using Models;
 
-namespace DataAccess
+namespace DAL
 {
 
-    public class ComputerDataAccess
+    public class Computer
     {
         private readonly CloneDeployDbContext _context = new CloneDeployDbContext();
 
@@ -22,12 +22,12 @@ namespace DataAccess
             return name;
         }
 
-        public bool Exists(Computer computer)
+        public bool Exists(Models.Computer computer)
         {
             return _context.Computers.Any(h => h.Name == computer.Name || h.Mac == computer.Mac);
         }
 
-        public bool Create(Computer computer)
+        public bool Create(Models.Computer computer)
         {
             try
             {
@@ -80,12 +80,12 @@ namespace DataAccess
             }
         }
 
-        public Computer Read(int computerId)
+        public Models.Computer Read(int computerId)
         {
             return _context.Computers.FirstOrDefault(p => p.Id == computerId);
         }
 
-        public List<Computer> Find(string searchString)
+        public List<Models.Computer> Find(string searchString)
         {
             return (from h in _context.Computers
                 where h.Name.Contains(searchString) || h.Mac.Contains(searchString)
@@ -93,11 +93,11 @@ namespace DataAccess
                 select h).ToList();
         }
 
-        public Computer GetComputerFromMac(string mac)
+        public Models.Computer GetComputerFromMac(string mac)
         {
             return _context.Computers.FirstOrDefault(p => p.Mac == mac);
         }
-        public bool Update(Computer computer)
+        public bool Update(Models.Computer computer)
         {
             try
             {

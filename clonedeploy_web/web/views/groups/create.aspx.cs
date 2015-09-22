@@ -20,12 +20,11 @@ using System;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using DataAccess;
+using BLL;
 using Global;
-using Logic;
 using Models;
 using Security;
-using Image = Models.Image;
+
 
 namespace views.groups
 {
@@ -42,7 +41,7 @@ namespace views.groups
 
         protected void PopulateForm()
         {
-            ddlGroupImage.DataSource = new Image().Search("").Select(i => new { i.Id, i.Name });
+            ddlGroupImage.DataSource = new BLL.Image().SearchImages("").Select(i => new { i.Id, i.Name });
             ddlGroupImage.DataValueField = "Id";
             ddlGroupImage.DataTextField = "Name";
             ddlGroupImage.DataBind();
@@ -58,7 +57,7 @@ namespace views.groups
 
         protected void Submit_Click(object sender, EventArgs e)
         {
-            var group = new Group();
+            var group = new Models.Group();
 
         
             group.Name = txtGroupName.Text;
@@ -68,8 +67,8 @@ namespace views.groups
             group.Type = ddlGroupType.Text;
             group.ImageProfile = group.Image == 0 ? 0 : Convert.ToInt32(ddlImageProfile.SelectedValue);
           
-
-            if (group.ValidateGroupData()) group.Create();
+            var bllGroup = new BLL.Group();
+            if (bllGroup.ValidateGroupData(group)) bllGroup.AddGroup(group);
 
             if (Utility.Message.Contains("Successfully"))
                 Response.Redirect("~/views/groups/edit.aspx?groupid=" + group.Id);
@@ -81,7 +80,7 @@ namespace views.groups
         protected void ddlGroupImage_OnSelectedIndexChanged(object sender, EventArgs e)
         {
             if (ddlGroupImage.Text == "Select Image") return;
-            ddlImageProfile.DataSource = new LinuxProfileLogic().SearchProfiles(Convert.ToInt32(ddlGroupImage.SelectedValue)).Select(i => new { i.Id, i.Name });
+            ddlImageProfile.DataSource = new BLL.LinuxProfile().SearchProfiles(Convert.ToInt32(ddlGroupImage.SelectedValue)).Select(i => new { i.Id, i.Name });
             ddlImageProfile.DataValueField = "Id";
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();

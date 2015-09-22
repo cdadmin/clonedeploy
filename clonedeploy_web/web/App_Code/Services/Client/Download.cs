@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using DataAccess;
+using DAL;
 using Global;
 using Models;
 using Newtonsoft.Json;
@@ -122,10 +122,9 @@ namespace Services.Client
             return result;
         }
 
-        public string GetHdParameter(string imgName, string hdToGet, string partNumber, string paramName)
+        public string GetHdParameter(string imageId, string hdToGet, string partNumber, string paramName)
         {
-            var image = new Image {Name = imgName};
-            image.Read();
+            var image = new BLL.Image().GetImage(Convert.ToInt32(imageId));
             var specs =
                 JsonConvert.DeserializeObject<ImagePhysicalSpecs>(!string.IsNullOrEmpty(image.ClientSizeCustom)
                     ? image.ClientSizeCustom
@@ -192,9 +191,9 @@ namespace Services.Client
                     {
                         string imageFiles;
                         if (hdNumberToGet == 0)
-                            imageFiles = Settings.ImageStorePath + imgName;
+                            imageFiles = Settings.ImageStorePath + image.Name;
                         else
-                            imageFiles = Settings.ImageStorePath + imgName + Path.DirectorySeparatorChar +
+                            imageFiles = Settings.ImageStorePath + image.Name + Path.DirectorySeparatorChar +
                                          "hd" + (hdNumberToGet + 1);
 
                         try
@@ -252,9 +251,9 @@ namespace Services.Client
                     {
                         string imageFiles;
                         if (hdNumberToGet == 0)
-                            imageFiles = Settings.ImageStorePath + imgName;
+                            imageFiles = Settings.ImageStorePath + image.Name;
                         else
-                            imageFiles = Settings.ImageStorePath + imgName + Path.DirectorySeparatorChar +
+                            imageFiles = Settings.ImageStorePath + image.Name + Path.DirectorySeparatorChar +
                                          "hd" + (hdNumberToGet + 1);
 
                         try
@@ -387,10 +386,10 @@ namespace Services.Client
             return "false";
         }
 
-        public string GetMinHdSize(string imgName, string hdToGet, string newHdSize)
+        public string GetMinHdSize(string imageId, string hdToGet, string newHdSize)
         {
-            var image = new Image {Name = imgName};
-            image.Read();
+            var image = new BLL.Image().GetImage(Convert.ToInt32(imageId));
+
             ImagePhysicalSpecs specs;
             if (!string.IsNullOrEmpty(image.ClientSizeCustom))
             {
@@ -474,11 +473,11 @@ namespace Services.Client
             return "true," + (hdNumberToGet + 1);
         }
 
-        public string GetOriginalLvm(string imgName, string clienthd, string hdToGet)
+        public string GetOriginalLvm(string imageId, string clienthd, string hdToGet)
         {
             string result = null;
-            var image = new Image {Name = imgName};
-            image.Read();
+            var image = new BLL.Image().GetImage(Convert.ToInt32(imageId));
+
             var specs =
                 JsonConvert.DeserializeObject<ImagePhysicalSpecs>(!string.IsNullOrEmpty(image.ClientSizeCustom)
                     ? image.ClientSizeCustom

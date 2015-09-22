@@ -16,23 +16,19 @@ namespace views.images
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            var image = new Image {Id = Convert.ToInt32(Request.QueryString["imageid"])};
-            image.Read();
-            var subTitle = Master.Master.FindControl("SubNav").FindControl("labelSubTitle") as Label;
-            if (subTitle != null) subTitle.Text = image.Name + " | History";
+           
             if (!IsPostBack) PopulateHistory();
         }
 
         protected void PopulateHistory()
         {
-            var image = new Image {Id = Convert.ToInt32(Request.QueryString["imageid"])};
-            image.Read();
+         
             if (!IsPostBack)
                 ddlLimit.SelectedValue = "10";
             var history = new History()
             {
                 Type = "Image",
-                TypeId = image.Id.ToString(),
+                TypeId = Master.Image.Id.ToString(),
                 Limit = ddlLimit.Text
             };
             gvHistory.DataSource = history.Read();

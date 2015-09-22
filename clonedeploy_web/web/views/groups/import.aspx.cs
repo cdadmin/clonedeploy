@@ -23,6 +23,7 @@ using Global;
 using Models;
 using Security;
 
+
 namespace views.groups
 {
     public partial class GroupImport : Page
@@ -33,7 +34,7 @@ namespace views.groups
                               "csvupload" + Path.DirectorySeparatorChar + "groups.csv";
             FileUpload.SaveAs(csvFilePath);
             new FileOps().SetUnixPermissions(csvFilePath);
-            new Group().Import();
+            new BLL.Group().ImportGroups();
             Master.Master.Msgbox(Utility.Message);
         }
 

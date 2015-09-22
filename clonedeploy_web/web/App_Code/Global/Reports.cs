@@ -19,13 +19,16 @@
 using System;
 using System.Data;
 using System.Linq;
-using Logic;
+
 using Models;
+
 
 namespace Global
 {
+    
     public class Reports
     {
+        /*
         public DataTable LastMulticasts()
         {
             
@@ -63,7 +66,7 @@ namespace Global
                 foreach (var history in histories)
                 {
                     var row = table.NewRow();
-                    var host = new ComputerLogic().GetComputer(Convert.ToInt16(history.TypeId));
+                    var host = new BLL.Computer().GetComputer(Convert.ToInt16(history.TypeId));
                     row["Host"] = host.Name;
                     row["Date"] = history.EventDate;
                     table.Rows.Add(row);
@@ -134,7 +137,7 @@ namespace Global
                 foreach (var history in histories)
                 {
                     var row = table.NewRow();
-                    var host = new ComputerLogic().GetComputer(Convert.ToInt32(history.Key));
+                    var host = new BLL.Computer().GetComputer(Convert.ToInt32(history.Key));
                     row["Host"] = host.Name;
                     row["Count"] = history.groupCount;
                     table.Rows.Add(row);
@@ -169,5 +172,7 @@ namespace Global
             }
             return table;
         }
+         * */
     }
+         
 }

@@ -14,6 +14,7 @@ namespace Services.Client
     {
         public string AddNewImageSpecs(string imagename, string imagesize)
         {
+            /*
             var image = new Image {Name = imagename};
             image.Read();
             image.ClientSize = imagesize;
@@ -38,10 +39,13 @@ namespace Services.Client
             image.ClientSizeCustom = "";
             image.Update();
             return "true";
+             * */
+            return "fixme";
         }
 
         public string CreateDirectory(string imageName, string dirName)
         {
+            /*
             var image = new Image {Name = imageName};
             image.Read();
             if (image.Protected != 1)
@@ -63,10 +67,13 @@ namespace Services.Client
                 return "true";
             }
             return "Image Is Protected";
+             * */
+            return "fixme";
         }
 
         public string DeleteImage(string imageName)
         {
+            /*
             var image = new Image {Name = imageName};
             image.Read();
             if (image.Protected != 1)
@@ -100,7 +107,7 @@ namespace Services.Client
             }
             else
                 return "Image Is Protected";
-
+            */
             return "true";
         }
 

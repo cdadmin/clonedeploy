@@ -4,9 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using DataAccess;
+using BLL;
 using Global;
-using Logic;
 using Models;
 
 public partial class views_images_profiles_search : System.Web.UI.Page
@@ -27,7 +26,7 @@ public partial class views_images_profiles_search : System.Web.UI.Page
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvProfiles.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            new ComputerLogic().DeleteComputer(Convert.ToInt32(dataKey.Value));
+            new BLL.Computer().DeleteComputer(Convert.ToInt32(dataKey.Value));
         }
 
         PopulateGrid();
@@ -54,7 +53,7 @@ public partial class views_images_profiles_search : System.Web.UI.Page
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        IEnumerable<LinuxProfile> listProfiles = (List<LinuxProfile>)gvProfiles.DataSource;
+        IEnumerable<Models.LinuxProfile> listProfiles = (List<Models.LinuxProfile>)gvProfiles.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -70,7 +69,7 @@ public partial class views_images_profiles_search : System.Web.UI.Page
 
     protected void PopulateGrid()
     {
-        gvProfiles.DataSource = new LinuxProfileLogic().SearchProfiles(Master.Image.Id);
+        gvProfiles.DataSource = new BLL.LinuxProfile().SearchProfiles(Master.Image.Id);
         gvProfiles.DataBind();
 
     }

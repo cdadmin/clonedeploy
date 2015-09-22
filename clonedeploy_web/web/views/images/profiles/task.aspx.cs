@@ -4,9 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using DataAccess;
+using BLL;
 using Global;
-using Logic;
 
 public partial class views_images_profiles_task : System.Web.UI.Page
 {
@@ -27,7 +26,7 @@ public partial class views_images_profiles_task : System.Web.UI.Page
         imageProfile.SkipCore = Convert.ToInt16(chkGlobalNoCore.Checked);
         imageProfile.SkipClock = Convert.ToInt16(chkGlobalNoClock.Checked);
         imageProfile.TaskCompletedAction = ddlTaskComplete.Text;
-        new LinuxProfileLogic().UpdateProfile(imageProfile);
+        new BLL.LinuxProfile().UpdateProfile(imageProfile);
         new Utility().Msgbox(Utility.Message);
     }
 }

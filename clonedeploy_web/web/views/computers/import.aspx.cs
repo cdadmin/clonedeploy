@@ -19,8 +19,8 @@
 using System;
 using System.IO;
 using System.Web.UI;
+using BLL;
 using Global;
-using Logic;
 using Models;
 using Security;
 
@@ -42,7 +42,7 @@ namespace views.hosts
                               "csvupload" + Path.DirectorySeparatorChar + "hosts.csv";
             FileUpload.SaveAs(csvFilePath);
             new FileOps().SetUnixPermissions(csvFilePath);
-            new ComputerLogic().ImportComputers();
+            new BLL.Computer().ImportComputers();
             Master.Msgbox(Utility.Message);
         }       
     }

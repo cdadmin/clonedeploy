@@ -17,9 +17,8 @@
  */
 
 using System;
-using DataAccess;
+using BLL;
 using Global;
-using Logic;
 using Models;
 using Pxe;
 
@@ -28,10 +27,10 @@ namespace Tasks
     public class Unicast
     {
         public string Direction { get; set; }
-        public Computer Host { get; set; }
+        public Models.Computer Host { get; set; }
         private ActiveImagingTask ActiveTask { get; set; }
-        private Image Image { get; set; }
-        private LinuxProfile ImageProfile { get; set; }
+        private Models.Image Image { get; set; }
+        private Models.LinuxProfile ImageProfile { get; set; }
         
         public void Create()
         {
@@ -45,11 +44,11 @@ namespace Tasks
                 ComputerId = Host.Id
             };
 
-            Image = new Image {Id = Host.Image};
-            Image.Read();
+            Image = new BLL.Image().GetImage(Host.Image);
 
 
-            ImageProfile = new LinuxProfileLogic().ReadProfile(Host.ImageProfile);
+
+            ImageProfile = new BLL.LinuxProfile().ReadProfile(Host.ImageProfile);
             if (ImageProfile == null) return;
          
             if (!ActiveTask.Create()) return;
@@ -86,8 +85,7 @@ namespace Tasks
             };
             history.CreateEvent();
 
-            var image = new Image {Id = Host.Image};
-            image.Read();
+            var image = new BLL.Image().GetImage(Host.Image);
             history.Type = "Image";
             history.Notes = Host.Name;
             history.TypeId = image.Id.ToString();

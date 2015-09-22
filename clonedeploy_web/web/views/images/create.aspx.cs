@@ -46,7 +46,8 @@ namespace views.images
                 IsVisible = chkVisible.Checked ? 1 : 0
             };
 
-            if (image.ValidateImageData()) image.Create();
+            var bllImage = new BLL.Image();
+            if (bllImage.ValidateImageData(image)) bllImage.AddImage(image);
             if (Utility.Message.Contains("Successfully"))
                 Response.Redirect("~/views/images/edit.aspx?imageid=" + image.Id);
 

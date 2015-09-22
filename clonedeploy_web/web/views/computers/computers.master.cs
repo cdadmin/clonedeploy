@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.UI;
+using BLL;
 using Global;
-using Logic;
 using Models;
 using Tasks;
 
@@ -10,8 +10,9 @@ namespace views.masters
 {
     public partial class ComputerMaster : MasterPage
     {
-        private readonly ComputerLogic _logic = new ComputerLogic();
-        public Computer Computer { get { return ReadComputer(); } }
+        private readonly BLL.Computer _bllComputer = new BLL.Computer();
+        private readonly BLL.Image _bllImage = new BLL.Image();
+        public Models.Computer Computer { get { return ReadComputer(); } }
         
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -35,8 +36,7 @@ namespace views.masters
 
         protected void btnDeploy_Click(object sender, EventArgs e)
         {
-            Image image = new Image {Id = Computer.Image};
-            image.Read();
+            var image = _bllImage.GetImage(Computer.Image);
             Session["direction"] = "push";
             lblTitle.Text = "Deploy " + image.Name + " To " + Computer.Name + " ?";
           
@@ -61,18 +61,18 @@ namespace views.masters
             switch (direction)
             {
                 case "delete":
-                    _logic.DeleteComputer(Computer.Id);
+                    _bllComputer.DeleteComputer(Computer.Id);
                     if (Utility.Message.Contains("Successfully"))
                         Response.Redirect("~/views/computers/search.aspx");
                     break;
                 case "push":
                 {
-                    var image = new Image {Id = Computer.Image};
-                    image.Read();
+                    var image = _bllImage.GetImage(Computer.Image);
+
                     Session["imageID"] = image.Id;
 
 
-                    if (image.Check_Checksum())
+                    if (_bllImage.Check_Checksum(image))
                     {
                         var unicast = new Unicast {Host = Computer, Direction = direction};
                         unicast.Create();
@@ -113,9 +113,9 @@ namespace views.masters
             Session.Remove("Message");
         }
 
-        private Computer ReadComputer()
+        private Models.Computer ReadComputer()
         {
-            return _logic.GetComputer(Convert.ToInt32(Request.QueryString["hostid"]));
+            return _bllComputer.GetComputer(Convert.ToInt32(Request.QueryString["hostid"]));
         }
     }
 }

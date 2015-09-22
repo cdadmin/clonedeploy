@@ -4,18 +4,18 @@ using System.Linq;
 using Global;
 using Models;
 
-namespace DataAccess
+namespace DAL
 {
-    public class LinuxProfileDataAccess
+    public class LinuxProfile
     {
         private readonly CloneDeployDbContext _context = new CloneDeployDbContext();
 
-        public bool Exists(LinuxProfile profile)
+        public bool Exists(Models.LinuxProfile profile)
         {
             return _context.LinuxProfiles.Any(p => p.Name == profile.Name);
         }
 
-        public bool Create(LinuxProfile newProfile)
+        public bool Create(Models.LinuxProfile newProfile)
         {
             try
             {
@@ -30,17 +30,17 @@ namespace DataAccess
             }
         }
 
-        public LinuxProfile Read(int id)
+        public Models.LinuxProfile Read(int id)
         {
             return _context.LinuxProfiles.FirstOrDefault(p => p.Id == id);
         }
 
-        public List<LinuxProfile> Find(int imageId)
+        public List<Models.LinuxProfile> Find(int imageId)
         {
             return (from p in _context.LinuxProfiles where p.ImageId == imageId orderby p.Name select p).ToList();
         }
 
-        public bool Update(LinuxProfile updatedProfile)
+        public bool Update(Models.LinuxProfile updatedProfile)
         {
             try
             {

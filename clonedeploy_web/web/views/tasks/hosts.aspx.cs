@@ -21,8 +21,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using BLL;
 using Global;
-using Logic;
 using Models;
 using Tasks;
 using Image = Models.Image;
@@ -31,7 +31,7 @@ namespace views.tasks
 {
     public partial class TaskUnicast : Page
     {
-        ComputerLogic _computerLogic = new ComputerLogic();
+        BLL.Computer _bllComputer = new BLL.Computer();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (IsPostBack) return;
@@ -48,11 +48,11 @@ namespace views.tasks
                 var dataKey = gvHosts.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var host = _computerLogic.GetComputer(Convert.ToInt32(dataKey.Value));
+                    var host = _bllComputer.GetComputer(Convert.ToInt32(dataKey.Value));
                     Session["hostID"] = host.Id;
                     Session["direction"] = "push";
                     lblTitle.Text = "Deploy The Selected Host?";
-                    gvConfirm.DataSource = new List<Computer> { host };
+                    gvConfirm.DataSource = new List<Models.Computer> { host };
                 }
             }
             gvConfirm.DataBind();
@@ -70,11 +70,11 @@ namespace views.tasks
                 var dataKey = gvHosts.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var host = _computerLogic.GetComputer(Convert.ToInt32(dataKey.Value));
+                    var host = _bllComputer.GetComputer(Convert.ToInt32(dataKey.Value));
                     Session["hostID"] = host.Id;
                     Session["direction"] = "pull";
                     lblTitle.Text = "Upload The Selected Host?";
-                    gvConfirm.DataSource = new List<Computer> { host };
+                    gvConfirm.DataSource = new List<Models.Computer> { host };
                 }
             }
             gvConfirm.DataBind();
@@ -107,18 +107,18 @@ namespace views.tasks
 
         protected void OkButton_Click(object sender, EventArgs e)
         {
-            var host = _computerLogic.GetComputer(Convert.ToInt32(Session["hostID"]));
+            var host = _bllComputer.GetComputer(Convert.ToInt32(Session["hostID"]));
 
 
             var direction = (string) (Session["direction"]);
 
             if (direction == "push")
             {
-                var image = new Image {Id = host.Image};
-                image.Read();
+                var bllImage = new BLL.Image();
+                var image = bllImage.GetImage(host.Image);
                 Session["imageID"] = image.Id;
 
-                if (image.Check_Checksum())
+                if (bllImage.Check_Checksum(image))
                 {
                     var unicast = new Unicast {Host = host, Direction = direction};
                     unicast.Create();
@@ -152,11 +152,11 @@ namespace views.tasks
         protected void PopulateGrid()
         {
 
-            gvHosts.DataSource = _computerLogic.SearchComputers(txtSearch.Text);
+            gvHosts.DataSource = _bllComputer.SearchComputers(txtSearch.Text);
 
             gvHosts.DataBind();
 
-            lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + _computerLogic.TotalCount() + " Total Host(s)";
+            lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + _bllComputer.TotalCount() + " Total Host(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)

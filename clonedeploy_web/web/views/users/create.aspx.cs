@@ -24,6 +24,7 @@ using System.Web.UI.WebControls;
 using Global;
 using Models;
 using Security;
+using Group = BLL.Group;
 
 namespace views.users
 {
@@ -37,8 +38,8 @@ namespace views.users
             if (new Authorize().IsInMembership("User"))
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
 
-            var group = new Group();
-            gvGroups.DataSource = @group.Search("%");
+
+            gvGroups.DataSource = new BLL.Group().SearchGroups("%");
             gvGroups.DataBind();
         }
 
@@ -111,8 +112,8 @@ namespace views.users
 
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
-            var group = new Group();
-            gvGroups.DataSource = group.Search("%");
+
+            gvGroups.DataSource = new BLL.Group().SearchGroups("%");
             var dataTable = (DataTable) gvGroups.DataSource;
 
             if (dataTable == null) return;

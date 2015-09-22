@@ -55,11 +55,11 @@ public partial class views_groups_removemembers : System.Web.UI.Page
 
     protected void PopulateGrid()
     {
-        var membership = new GroupMembership();
-        gvHosts.DataSource = membership.Search(Master.Group.Id,txtSearch.Text);
+        var bllGroupMembership = new BLL.GroupMembership();
+        gvHosts.DataSource = bllGroupMembership.GetGroupMembers(Master.Group.Id,txtSearch.Text);
         gvHosts.DataBind();
 
-        lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + membership.GetTotalCount(Master.Group.Id) + " Total Host(s)";
+        lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + bllGroupMembership.GetGroupMemberCount(Master.Group.Id) + " Total Host(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)
@@ -92,7 +92,7 @@ public partial class views_groups_removemembers : System.Web.UI.Page
                     ComputerId = Convert.ToInt32(dataKey.Value),
                     GroupId = Master.Group.Id
                 };
-                if (membership.Delete())
+                if (new BLL.GroupMembership().DeleteMembership(membership))
                     removedCount++;
             }
         }

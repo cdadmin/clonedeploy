@@ -5,12 +5,13 @@ using Global;
 using Models;
 using Tasks;
 
+
 namespace views.masters
 {
     public partial class GroupMaster : MasterPage
     {
-        public Group Group { get { return ReadGroup(); } }
-
+        public Models.Group Group { get { return ReadGroup(); } }
+        private readonly BLL.Group _bllGroup = new BLL.Group();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(Request["groupid"]))
@@ -42,7 +43,7 @@ namespace views.masters
             if ((string) Session["direction"] == "delete")
             {
                 Session.Remove("direction");
-                Group.Delete();
+                _bllGroup.DeleteGroup(Group.Id);
                 if (Utility.Message.Contains("Successfully"))
                     Response.Redirect("~/views/groups/search.aspx");
                 else
@@ -50,16 +51,16 @@ namespace views.masters
             }
             else
             {
-                var image = new Image {Id = Group.Image};
-                image.Read();
+                var bllImage = new BLL.Image();
+                var image = bllImage.GetImage(Group.Image);
                 Session["imageID"] = image.Id;
-                if (image.Check_Checksum())
+                if (bllImage.Check_Checksum(image))
                 {
                     var count = 0;
                     var isUnicast = Convert.ToInt32(Session["isGroupUnicast"]);
                     if (isUnicast == 1)
                     {
-                        foreach (var host in Group.GroupMembers())
+                        foreach (var host in new BLL.GroupMembership().GetGroupMembers(Group.Id, ""))
                         {
                             var unicast = new Unicast {Host = host, Direction = "push"};
                             unicast.Create();
@@ -135,9 +136,8 @@ namespace views.masters
 
         private Group ReadGroup()
         {
-            var tmpGroup = new Group { Id = Convert.ToInt32(Request.QueryString["groupid"]) };
-            tmpGroup.Read();
-            return tmpGroup;
+            return _bllGroup.GetGroup(Convert.ToInt32(Request.QueryString["groupid"]));
+
         }
     }
 }

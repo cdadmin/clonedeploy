@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BLL;
 using Global;
-using Logic;
 using Models;
 
 namespace Services.Client
@@ -12,7 +12,7 @@ namespace Services.Client
         public string GetCustomMulticastInfo(string mac, string mcTaskName)
         {
             ActiveMcTask mcTask;
-            var host = new ComputerLogic().GetComputerFromMac(mac.ToLower());
+            var host = new BLL.Computer().GetComputerFromMac(mac.ToLower());
   
             using (var db = new DB())
             {
@@ -58,14 +58,14 @@ namespace Services.Client
 
         public string GetCustomUnicastInfo(string direction, string mac, string imageId)
         {
-            var image = new Image {Id = Convert.ToInt32(imageId)};
-            image.Read();
+            var image = new BLL.Image().GetImage(Convert.ToInt32(imageId));
 
-            var host = new ComputerLogic().GetComputerFromMac(mac.ToLower());
+
+            var host = new BLL.Computer().GetComputerFromMac(mac.ToLower());
 
             if (direction == "push")
             {
-                if (!image.Check_Checksum())
+                if (!new BLL.Image().Check_Checksum(image))
                 {
                     return "Client Error: This Image Has Not Been Confirmed And Cannot Be Deployed.";
                 }
@@ -102,13 +102,14 @@ namespace Services.Client
         public string GetImageListing()
         {
             string result = null;
+            /*
             using (var db = new DB())
             {
                 var images = from i in db.Images where i.IsVisible == 1 orderby i.Name select i;
                  foreach (var image in images)
                     result += image.Id  + " " + image.Name + ",";
             }
-         
+         */
             return result;
         }
     }

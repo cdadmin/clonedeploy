@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
-using DataAccess;
+using DAL;
 using Global;
 using Models;
 
-namespace Logic
+namespace BLL
 {
-    public class LinuxProfileLogic
+    public class LinuxProfile
     {
-        private readonly LinuxProfileDataAccess _da = new LinuxProfileDataAccess();
+        private readonly DAL.LinuxProfile _da = new DAL.LinuxProfile();
 
-        public bool AddProfile(LinuxProfile profile)
+        public bool AddProfile(Models.LinuxProfile profile)
         {
             if (_da.Exists(profile))
             {
@@ -25,17 +25,17 @@ namespace Logic
             return false;
         }
 
-        public LinuxProfile ReadProfile(int profileId)
+        public Models.LinuxProfile ReadProfile(int profileId)
         {
             return _da.Read(profileId);
         }
 
-        public List<LinuxProfile> SearchProfiles(int imageId)
+        public List<Models.LinuxProfile> SearchProfiles(int imageId)
         {
             return _da.Find(imageId);
         }
 
-        public void UpdateProfile(LinuxProfile profile)
+        public void UpdateProfile(Models.LinuxProfile profile)
         {
             _da.Update(profile);
         }
