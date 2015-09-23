@@ -28,7 +28,7 @@ namespace Tasks
     {
         public string Direction { get; set; }
         public Models.Computer Host { get; set; }
-        private ActiveImagingTask ActiveTask { get; set; }
+        private Models.ActiveImagingTask ActiveTask { get; set; }
         private Models.Image Image { get; set; }
         private Models.LinuxProfile ImageProfile { get; set; }
         
@@ -36,7 +36,7 @@ namespace Tasks
         {
             if (Host == null) return;
 
-            ActiveTask = new ActiveImagingTask
+            ActiveTask = new Models.ActiveImagingTask
             {
                 Status = "0",
                 Type = "unicast",
@@ -69,7 +69,7 @@ namespace Tasks
 
 
 
-            ActiveImagingTask.WakeUp(Host.Mac);
+            Models.ActiveImagingTask.WakeUp(Host.Mac);
             Utility.Message = "Successfully Created Task For " + Host.Name;
             CreateHistoryEvents();
         }

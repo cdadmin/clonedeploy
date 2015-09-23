@@ -2,7 +2,7 @@
 <%@ MasterType VirtualPath="~/views/computers/computers.master" %>
 <%@ Reference virtualPath="~/views/masters/Site.master" %>
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
-   <li><a href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?hostid=<%= Master.Computer.Id %>" ><%= Master.Computer.Name %></a></li>
+   <li><a href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?hostid=<%= Computer.Id %>" ><%= Computer.Name %></a></li>
     </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
     <script type="text/javascript">

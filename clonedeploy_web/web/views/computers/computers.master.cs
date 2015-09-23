@@ -8,20 +8,22 @@ using Tasks;
 
 namespace views.masters
 {
-    public partial class ComputerMaster : MasterPage
+    public partial class ComputerMaster : BasePages.CloneDeploy
     {
         private readonly BLL.Computer _bllComputer = new BLL.Computer();
         private readonly BLL.Image _bllImage = new BLL.Image();
-        public Models.Computer Computer { get { return ReadComputer(); } }
-        
+        public Models.Computer Computer { get; set; }
         protected void Page_Load(object sender, EventArgs e)
         {
+         
             if (string.IsNullOrEmpty(Request["hostid"]))
             {
                 Level2.Visible = false;
                 return;
             }
 
+            
+            Computer = _bllComputer.GetComputer(Convert.ToInt32(Request["hostid"]));
             Level1.Visible = false;
         }
 
@@ -29,9 +31,7 @@ namespace views.masters
         {
             lblTitle.Text = "Delete This Host?";
             Session["direction"] = "delete";
-            Page.ClientScript.RegisterStartupScript(GetType(), "modalscript",
-                "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
-                true);
+            DisplayConfirm();
         }
 
         protected void btnDeploy_Click(object sender, EventArgs e)
@@ -39,19 +39,15 @@ namespace views.masters
             var image = _bllImage.GetImage(Computer.Image);
             Session["direction"] = "push";
             lblTitle.Text = "Deploy " + image.Name + " To " + Computer.Name + " ?";
-          
-            Page.ClientScript.RegisterStartupScript(GetType(), "modalscript",
-                "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
-                true);
+            DisplayConfirm();
+         
         }
 
         protected void btnUpload_Click(object sender, EventArgs e)
         {
             Session["direction"] = "pull";
             lblTitle.Text = "Upload This Computer?";
-            Page.ClientScript.RegisterStartupScript(GetType(), "modalscript",
-                "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });;",
-                true);
+            DisplayConfirm();
         }
 
         protected void buttonConfirm_Click(object sender, EventArgs e)
@@ -113,9 +109,6 @@ namespace views.masters
             Session.Remove("Message");
         }
 
-        private Models.Computer ReadComputer()
-        {
-            return _bllComputer.GetComputer(Convert.ToInt32(Request.QueryString["hostid"]));
-        }
+     
     }
 }

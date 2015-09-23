@@ -55,7 +55,7 @@ namespace views.hosts
             var bllComputer = new BLL.Computer();
             if (bllComputer.ValidateHostData(host))
             {
-                if (bllComputer.AddComputer(host) && !createAnother.Checked)
+                if (new  BLL.Computer().AddComputer(host) && !createAnother.Checked)
                     Response.Redirect("~/views/computers/edit.aspx?hostid=" + host.Id);
             }
 
