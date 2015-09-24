@@ -9,15 +9,15 @@ using System.Web.UI;
 /// </summary>
 public class Message
 {
-    public void Show(string message)
+    public void Show()
     {
-        if (string.IsNullOrEmpty(message)) return;
+        if (string.IsNullOrEmpty(Message.Text)) return;
         const string msgType = "showSuccessToast";
         var page = HttpContext.Current.CurrentHandler as Page;
 
         if (page != null)
             page.ClientScript.RegisterStartupScript(GetType(), "msgBox",
-                "$(function() { $().toastmessage('" + msgType + "', " + "\"" + message + "\"); });", true);
+                "$(function() { $().toastmessage('" + msgType + "', " + "\"" + Message.Text + "\"); });", true);
         HttpContext.Current.Session.Remove("Message");
     }
     public static string Text

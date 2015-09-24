@@ -8,22 +8,21 @@ using Tasks;
 
 namespace views.masters
 {
-    public partial class ComputerMaster : BasePages.CloneDeploy
+    public partial class ComputerMaster : BasePages.MasterBaseMaster
     {
-        private readonly BLL.Computer _bllComputer = new BLL.Computer();
+        private BasePages.Computers abc { get; set; }    
         private readonly BLL.Image _bllImage = new BLL.Image();
         public Models.Computer Computer { get; set; }
         protected void Page_Load(object sender, EventArgs e)
         {
-         
-            if (string.IsNullOrEmpty(Request["hostid"]))
+            abc = (Page as BasePages.Computers);
+            Computer = abc.Computer;
+            if (Computer == null)
             {
                 Level2.Visible = false;
                 return;
             }
 
-            
-            Computer = _bllComputer.GetComputer(Convert.ToInt32(Request["hostid"]));
             Level1.Visible = false;
         }
 
@@ -57,8 +56,7 @@ namespace views.masters
             switch (direction)
             {
                 case "delete":
-                    _bllComputer.DeleteComputer(Computer.Id);
-                    if (Utility.Message.Contains("Successfully"))
+                    if (abc.BllComputer.DeleteComputer(Computer.Id))
                         Response.Redirect("~/views/computers/search.aspx");
                     break;
                 case "push":
@@ -90,7 +88,7 @@ namespace views.masters
                 }
                     break;
             }
-            Msgbox(Utility.Message);
+          
         }
 
         protected void buttonConfirmChecksum_Click(object sender, EventArgs e)
@@ -100,14 +98,7 @@ namespace views.masters
             Session.Remove("imageID");
         }
 
-        public void Msgbox(string message)
-        {
-            if (string.IsNullOrEmpty(message)) return;
-            const string msgType = "showSuccessToast";
-            Page.ClientScript.RegisterStartupScript(GetType(), "msgBox",
-                "$(function() { $().toastmessage('" + msgType + "', " + "\"" + message + "\"); });", true);
-            Session.Remove("Message");
-        }
+       
 
      
     }

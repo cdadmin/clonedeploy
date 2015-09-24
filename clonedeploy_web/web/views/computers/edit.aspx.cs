@@ -23,7 +23,7 @@ namespace views.hosts
         {
             var host = new Models.Computer
             {
-                Id = Master.Computer.Id,
+                Id = Computer.Id,
                 Name = txtHostName.Text,
                 Mac = Utility.FixMac(txtHostMac.Text),
                 Image = Convert.ToInt32(ddlHostImage.SelectedValue),
@@ -33,12 +33,13 @@ namespace views.hosts
 
            
             if (BllComputer.ValidateHostData(host)) BllComputer.UpdateComputer(host);
-            Master.Msgbox(Utility.Message);
+            //Master.Msgbox(Utility.Message);
+            //new Message().Show();
         }
 
         protected void PopulateForm()
         {
-            Master.Msgbox(Utility.Message);
+            //Master.Msgbox(Utility.Message);
             ddlHostImage.DataSource = new BLL.Image().SearchImages("").Select(i => new { i.Id, i.Name });
             ddlHostImage.DataValueField = "Id";
             ddlHostImage.DataTextField = "Name";
@@ -50,10 +51,7 @@ namespace views.hosts
             ddlHostImage.SelectedValue = Computer.Image.ToString();        
             txtHostDesc.Text = Computer.Description;
 
-            ddlImageProfile.DataSource = _bllLinuxProfile.SearchProfiles(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
-            ddlImageProfile.DataValueField = "Id";
-            ddlImageProfile.DataTextField = "Name";
-            ddlImageProfile.DataBind();
+            PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlHostImage.SelectedValue));
 
             ddlImageProfile.SelectedValue = Computer.ImageProfile.ToString();
          
@@ -63,7 +61,7 @@ namespace views.hosts
         {
            
             if (ddlHostImage.Text == "Select Image") return;
-            Test(ddlImageProfile, Convert.ToInt32(ddlHostImage.SelectedValue));
+            PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlHostImage.SelectedValue));
 
         }
     }

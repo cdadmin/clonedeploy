@@ -20,6 +20,7 @@ using System;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using BasePages;
 using BLL;
 using Global;
 using Models;
@@ -28,7 +29,7 @@ using Image = Models.Image;
 
 namespace views.hosts
 {
-    public partial class Addhosts : Page
+    public partial class Addhosts : BasePages.Computers
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -59,27 +60,19 @@ namespace views.hosts
                     Response.Redirect("~/views/computers/edit.aspx?hostid=" + host.Id);
             }
 
-            Master.Msgbox(Utility.Message);
+           
         }
 
         protected void PopulateForm()
         {
-            ddlHostImage.DataSource = new BLL.Image().SearchImages("").Select (i => new {i.Id,i.Name});
-            ddlHostImage.DataValueField = "Id";
-            ddlHostImage.DataTextField = "Name";
-            ddlHostImage.DataBind();
-            ddlHostImage.Items.Insert(0, new ListItem("Select Image", "0"));
+            
 
      
         }
 
         protected void ddlHostImage_OnSelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ddlHostImage.Text == "Select Image") return;
-            ddlImageProfile.DataSource = new BLL.LinuxProfile().SearchProfiles(Convert.ToInt32(ddlHostImage.SelectedValue)).Select(i => new { i.Id, i.Name });
-            ddlImageProfile.DataValueField = "Id";
-            ddlImageProfile.DataTextField = "Name";
-            ddlImageProfile.DataBind();
+            PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlHostImage.SelectedValue));
 
         }
     }

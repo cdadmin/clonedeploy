@@ -27,7 +27,7 @@ namespace views.hosts
             var history = new History {Type = "Host", TypeId = Master.Computer.Id.ToString(), Limit = ddlLimit.Text};
             gvHistory.DataSource = history.Read();
             gvHistory.DataBind();
-            Master.Msgbox(Utility.Message);
+          
         }
     }
 }

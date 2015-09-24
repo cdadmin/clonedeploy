@@ -8,7 +8,7 @@ using Models;
 
 namespace BasePages
 {
-    public class Computers : Global
+    public class Computers : PageBaseMaster
     {
         public Models.Computer Computer { get; set; }
         public BLL.Computer BllComputer { get; set; }
@@ -27,13 +27,7 @@ namespace BasePages
             }
         }
 
-        protected void Test(DropDownList ddlImageProfile, int value)
-        {
-            ddlImageProfile.DataSource = new BLL.LinuxProfile().SearchProfiles(value).Select(i => new { i.Id, i.Name });
-            ddlImageProfile.DataValueField = "Id";
-            ddlImageProfile.DataTextField = "Name";
-            ddlImageProfile.DataBind();
-        }
+       
 
         
     }

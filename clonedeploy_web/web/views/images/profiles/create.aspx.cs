@@ -14,7 +14,7 @@ public partial class views_images_profiles_create : System.Web.UI.Page
     private readonly Message _message = new Message();
     protected void Page_Load(object sender, EventArgs e)
     {
-        _message.Show(Message.Text);   
+        //_message.Show(Message.Text);   
     }
 
     protected void buttonCreateProfile_OnClick(object sender, EventArgs e)
@@ -29,6 +29,6 @@ public partial class views_images_profiles_create : System.Web.UI.Page
             Response.Redirect("~/views/images/profiles/chooser.aspx?imageid=" + profile.ImageId + "&profileid=" + profile.Id + "&cat=profiles");
 
 
-        _message.Show(Message.Text);
+        //_message.Show(Message.Text);
     }
 }

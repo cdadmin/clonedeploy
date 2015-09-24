@@ -27,12 +27,12 @@ using Models;
 
 namespace views.hosts
 {
-    public partial class Searchhosts : Page
+    public partial class Searchhosts : BasePages.Computers
     {
         protected void Page_Load(object sender, EventArgs e)
         {
             if (IsPostBack) return;
-            Master.Msgbox(Utility.Message); //For Redirects
+           
             if (Settings.DefaultHostView == "all")
                 PopulateGrid();
         }
@@ -49,7 +49,7 @@ namespace views.hosts
             }
 
             PopulateGrid();
-            Master.Msgbox(Utility.Message);
+           
         }
 
         protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)

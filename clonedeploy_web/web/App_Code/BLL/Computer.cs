@@ -39,9 +39,9 @@ namespace BLL
         {
             return _da.CheckActive(mac) != null ? "Active" : "Inactive";
         }
-        public void DeleteComputer(int computerId)
+        public bool DeleteComputer(int computerId)
         {
-            _da.Delete(computerId);
+            return _da.Delete(computerId);
         }
 
         public Models.Computer GetComputer(int computerId)
@@ -61,7 +61,8 @@ namespace BLL
 
         public void UpdateComputer(Models.Computer computer)
         {
-            _da.Update(computer);
+            if (_da.Update(computer))
+                Message.Text = "Successfully Update Computer";
         }
 
         public bool ValidateHostData(Models.Computer computer)

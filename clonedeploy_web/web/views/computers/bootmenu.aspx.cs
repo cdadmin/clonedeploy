@@ -25,14 +25,14 @@ namespace views.hosts
         {
             var customBootMenu = new CustomBootMenu {Host = Master.Computer};
             customBootMenu.RemoveCustomBootMenu();
-            Master.Msgbox(Utility.Message);
+          
         }
 
         protected void btnSetBootMenu_Click(object sender, EventArgs e)
         {
             var customBootMenu = new CustomBootMenu {Host = Master.Computer, FileName = txtCustomBootMenu.Text};
             customBootMenu.SetCustomBootMenu();
-            Master.Msgbox(Utility.Message);
+           
         }
 
         protected void buttonShowActive_OnClick(object sender, EventArgs e)

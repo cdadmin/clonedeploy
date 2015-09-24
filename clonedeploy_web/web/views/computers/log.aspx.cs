@@ -71,7 +71,7 @@ namespace views.hosts
             gvHostLog.DataSource = Logger.ViewLog("hosts" + Path.DirectorySeparatorChar + Master.Computer.Id + logType,
                 ddlLogLimit.Text);
             gvHostLog.DataBind();
-            Master.Msgbox(Utility.Message);
+          
         }
     }
 }

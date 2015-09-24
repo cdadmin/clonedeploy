@@ -7,7 +7,7 @@ using System.Web;
 
 namespace BasePages
 {
-    public class CloneDeploy : System.Web.UI.MasterPage
+    public class MasterBaseMaster : System.Web.UI.MasterPage
     {
       
         protected virtual void DisplayConfirm()

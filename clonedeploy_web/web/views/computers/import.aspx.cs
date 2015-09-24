@@ -43,7 +43,7 @@ namespace views.hosts
             FileUpload.SaveAs(csvFilePath);
             new FileOps().SetUnixPermissions(csvFilePath);
             new BLL.Computer().ImportComputers();
-            Master.Msgbox(Utility.Message);
+           
         }       
     }
 }
