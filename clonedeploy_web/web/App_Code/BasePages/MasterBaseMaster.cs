@@ -9,6 +9,7 @@ namespace BasePages
 {
     public class MasterBaseMaster : System.Web.UI.MasterPage
     {
+
       
         protected virtual void DisplayConfirm()
         {

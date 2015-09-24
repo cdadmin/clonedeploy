@@ -51,7 +51,6 @@ namespace views.admin
             {
                 GridView1.DataSource = Logger.ViewLog(ddlLog.Text, ddlLimit.Text);
                 GridView1.DataBind();
-                Master.Master.Msgbox(Utility.Message);
             }
         }
 
@@ -72,7 +71,6 @@ namespace views.admin
             {
                 GridView1.DataSource = Logger.ViewLog(ddlLog.Text, ddlLimit.Text);
                 GridView1.DataBind();
-                Master.Master.Msgbox(Utility.Message);
             }
         }
     }

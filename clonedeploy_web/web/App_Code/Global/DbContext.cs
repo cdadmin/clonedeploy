@@ -10,7 +10,7 @@ namespace Global
         public DB() : base("mysql") { }
 
         public DbSet<ActiveImagingTask> ActiveTasks { get; set; }
-        public DbSet<ActiveMcTask> ActiveMcTasks { get; set; }
+        public DbSet<ActiveMulticastSession> ActiveMcTasks { get; set; }
         public DbSet<BootTemplate> BootTemplates { get; set; }
 
         public DbSet<History> History { get; set; }

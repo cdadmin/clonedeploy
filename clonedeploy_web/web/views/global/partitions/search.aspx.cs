@@ -17,11 +17,11 @@ public partial class views_global_search : System.Web.UI.Page
 
     protected void PopulateGrid()
     {
-        var layout = new PartitionLayout();
-        gvLayout.DataSource = layout.Search(txtSearch.Text);
+        var bllPartitionLayout = new BLL.PartitionLayout();
+        gvLayout.DataSource = bllPartitionLayout.SearchPartitionLayouts(txtSearch.Text);
         gvLayout.DataBind();
 
-        lblTotal.Text = gvLayout.Rows.Count + " Result(s) / " + layout.GetTotalCount() + " Total Partition Layout(s)";
+        lblTotal.Text = gvLayout.Rows.Count + " Result(s) / " + bllPartitionLayout.TotalCount() + " Total Partition Layout(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)

@@ -51,25 +51,26 @@ namespace Tasks
             ImageProfile = new BLL.LinuxProfile().ReadProfile(Host.ImageProfile);
             if (ImageProfile == null) return;
          
-            if (!ActiveTask.Create()) return;
+            var bllActiveImagingTask = new BLL.ActiveImagingTask();
+            if (!bllActiveImagingTask.AddActiveImagingTask(ActiveTask)) return;
             
 
 
             if (!CreatePxeFile())
             {
-                ActiveTask.Delete();
+                bllActiveImagingTask.DeleteActiveImagingTask(ActiveTask.Id);
                 return;
             }
 
             if (!CreateTaskArguments())
             {
-                ActiveTask.Delete();
+                 bllActiveImagingTask.DeleteActiveImagingTask(ActiveTask.Id);
                 return;
             }
 
 
 
-            Models.ActiveImagingTask.WakeUp(Host.Mac);
+            BLL.ActiveImagingTask.WakeUp(Host.Mac);
             Utility.Message = "Successfully Created Task For " + Host.Name;
             CreateHistoryEvents();
         }
@@ -113,7 +114,7 @@ namespace Tasks
         {
             string preScripts = null;
             string postScripts = null;
-            foreach(var script in new ImageProfileScript().Search(ImageProfile.Id))
+            foreach(var script in new BLL.ImageProfileScript().SearchImageProfileScripts(ImageProfile.Id))
             {
                 if(Convert.ToBoolean(script.RunPre))
                 preScripts += script.Id + " ";
@@ -153,9 +154,9 @@ namespace Tasks
                                    " comp_alg=" + Settings.CompressionAlgorithm + " comp_evel=-" +
                                    Settings.CompressionLevel + " partition_method=" + ImageProfile.PartitionMethod + " " + profileArgs;
 
-           
 
-            return ActiveTask.Update("arguments");
+
+            return new BLL.ActiveImagingTask().UpdateActiveImagingTask(ActiveTask);
         }
 
        

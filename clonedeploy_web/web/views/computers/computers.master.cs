@@ -10,13 +10,15 @@ namespace views.masters
 {
     public partial class ComputerMaster : BasePages.MasterBaseMaster
     {
-        private BasePages.Computers abc { get; set; }    
+        private BasePages.Computers computerBasePage { get; set; }
         private readonly BLL.Image _bllImage = new BLL.Image();
         public Models.Computer Computer { get; set; }
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            abc = (Page as BasePages.Computers);
-            Computer = abc.Computer;
+            
+            computerBasePage = (Page as BasePages.Computers);
+            Computer = computerBasePage.Computer;
             if (Computer == null)
             {
                 Level2.Visible = false;
@@ -28,6 +30,7 @@ namespace views.masters
 
         protected void btnDelete_Click(object sender, EventArgs e)
         {
+            
             lblTitle.Text = "Delete This Host?";
             Session["direction"] = "delete";
             DisplayConfirm();
@@ -39,7 +42,6 @@ namespace views.masters
             Session["direction"] = "push";
             lblTitle.Text = "Deploy " + image.Name + " To " + Computer.Name + " ?";
             DisplayConfirm();
-         
         }
 
         protected void btnUpload_Click(object sender, EventArgs e)
@@ -50,21 +52,19 @@ namespace views.masters
         }
 
         protected void buttonConfirm_Click(object sender, EventArgs e)
-        {        
+        {
             var direction = (string) (Session["direction"]);
             Session.Remove("direction");
             switch (direction)
             {
                 case "delete":
-                    if (abc.BllComputer.DeleteComputer(Computer.Id))
+                    if (computerBasePage.BllComputer.DeleteComputer(Computer.Id))
                         Response.Redirect("~/views/computers/search.aspx");
                     break;
                 case "push":
                 {
                     var image = _bllImage.GetImage(Computer.Image);
-
                     Session["imageID"] = image.Id;
-
 
                     if (_bllImage.Check_Checksum(image))
                     {
@@ -88,7 +88,6 @@ namespace views.masters
                 }
                     break;
             }
-          
         }
 
         protected void buttonConfirmChecksum_Click(object sender, EventArgs e)
@@ -97,9 +96,5 @@ namespace views.masters
             Response.Redirect("~/views/images/specs.aspx?imageid=" + imageId, false);
             Session.Remove("imageID");
         }
-
-       
-
-     
     }
 }

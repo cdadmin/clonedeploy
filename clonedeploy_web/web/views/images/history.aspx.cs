@@ -33,7 +33,6 @@ namespace views.images
             };
             gvHistory.DataSource = history.Read();
             gvHistory.DataBind();
-            Master.Master.Msgbox(Utility.Message);
         }
     }
 }

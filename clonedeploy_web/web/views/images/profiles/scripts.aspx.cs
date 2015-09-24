@@ -8,6 +8,7 @@ using Models;
 
 public partial class views_images_profiles_scripts : System.Web.UI.Page
 {
+    private readonly BLL.ImageProfileScript _bllImageProfileScript = new BLL.ImageProfileScript();
     protected void Page_Load(object sender, EventArgs e)
     {
         if (IsPostBack) return;
@@ -17,11 +18,11 @@ public partial class views_images_profiles_scripts : System.Web.UI.Page
 
     protected void PopulateGrid()
     {
-        var script = new Script();
-        gvScripts.DataSource = script.Search("");
+
+        gvScripts.DataSource = new BLL.Script().SearchScripts("");
         gvScripts.DataBind();
 
-        var profileScripts = new ImageProfileScript().Search(Master.ImageProfile.Id);
+        var profileScripts = _bllImageProfileScript.SearchImageProfileScripts(Master.ImageProfile.Id);
         foreach (GridViewRow row in gvScripts.Rows)
         {
             var pre = (CheckBox)row.FindControl("chkPre");
@@ -75,7 +76,7 @@ public partial class views_images_profiles_scripts : System.Web.UI.Page
 
     protected void btnUpdateScripts_OnClick(object sender, EventArgs e)
     {
-        new ImageProfileScript().DeleteAllForProfile(Master.ImageProfile.Id);
+        _bllImageProfileScript.DeleteImageProfileScripts((Master.ImageProfile.Id));
         foreach (GridViewRow row in gvScripts.Rows)
         {
             var pre = (CheckBox)row.FindControl("chkPre");
@@ -92,7 +93,7 @@ public partial class views_images_profiles_scripts : System.Web.UI.Page
                 RunPre = Convert.ToInt16(pre.Checked),
                 RunPost = Convert.ToInt16(post.Checked)
             };
-            profileScript.Create();
+            _bllImageProfileScript.AddImageProfileScript(profileScript);
         }
     }
 }

@@ -73,7 +73,7 @@ public partial class views_admin_email : System.Web.UI.Page
 
 
      
-        new Setting().Update(listSettings);
+        new BLL.Setting().UpdateSetting(listSettings);
         new Utility().Msgbox(Utility.Message);
     }
 

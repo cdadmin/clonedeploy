@@ -33,7 +33,7 @@ namespace views.users
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            Master.Master.FindControl("SubNav").Visible = false;
+         
             if (IsPostBack) return;
             if (new Authorize().IsInMembership("User"))
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
@@ -45,9 +45,10 @@ namespace views.users
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
+            var bllUser = new BLL.User();
             if (txtUserPwd.Text != txtUserPwdConfirm.Text)
             {
-                Master.Master.Msgbox("Passwords Did Not Match");
+                Message.Text  = "Passwords Did Not Match";
                 return;
             }
 
@@ -66,7 +67,7 @@ namespace views.users
                 Name = txtUserName.Text,
                 Password = txtUserPwd.Text,
                 Membership = ddluserMembership.Text,
-                Salt = new WdsUser().CreateSalt(16)
+                Salt = bllUser.CreateSalt(16)
             };
 
             if (permissions.Visible)
@@ -81,9 +82,8 @@ namespace views.users
                 user.DiagAccess = "1";
                 user.DebugAccess = "1";
             }
-            if (user.ValidateUserData()) user.Create();
+            if (bllUser.ValidateUserData(user)) bllUser.AddUser(user);
 
-            Master.Master.Msgbox(Utility.Message);
         }
 
         protected void ddluserMembership_SelectedIndexChanged(object sender, EventArgs e)

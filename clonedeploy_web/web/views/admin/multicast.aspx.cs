@@ -43,14 +43,14 @@ public partial class views_admin_multicast : System.Web.UI.Page
                   
             };
 
-            if (new Setting().Update(listSettings))
+            if (new BLL.Setting().UpdateSetting(listSettings))
             {
                 if ((string)(ViewState["startPort"]) != txtStartPort.Text)
                 {
                     var startPort = Convert.ToInt32(txtStartPort.Text);
                     startPort = startPort - 2;
                     var port = new Port { Number = startPort };
-                    port.Create();
+                    new BLL.Port().AddPort(port);
                 }
             }
         }
@@ -60,7 +60,7 @@ public partial class views_admin_multicast : System.Web.UI.Page
 
     protected bool ValidateSettings()
     {
-        if (ActiveImagingTask.ReadAll().Count > 0)
+        if (new BLL.ActiveImagingTask().ReadAll().Count > 0)
         {
             Utility.Message = "Settings Cannot Be Changed While Tasks Are Active";
             return false;

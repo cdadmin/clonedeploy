@@ -8,7 +8,7 @@ using Models;
 
 namespace views.hosts
 {
-    public partial class HostLog : Page
+    public partial class HostLog : BasePages.Computers
     {
       
 
@@ -35,12 +35,12 @@ namespace views.hosts
             }
             try
             {
-                var hostLogPath = "hosts" + Path.DirectorySeparatorChar + Master.Computer.Id + logType;
+                var hostLogPath = "hosts" + Path.DirectorySeparatorChar + Computer.Id + logType;
                 var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
                               Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar;
                 HttpContext.Current.Response.ContentType = "application/octet-stream";
                 HttpContext.Current.Response.AppendHeader("Content-Disposition",
-                    "attachment; filename=" + Master.Computer.Id + logType);
+                    "attachment; filename=" + Computer.Id + logType);
                 HttpContext.Current.Response.TransmitFile(logPath + hostLogPath);
                 HttpContext.Current.Response.End();
             }
@@ -68,7 +68,7 @@ namespace views.hosts
             if (ddlLogType.Text == "Select A Log") return;
             var logType = ddlLogType.Text == "Upload" ? ".upload" : ".download";
 
-            gvHostLog.DataSource = Logger.ViewLog("hosts" + Path.DirectorySeparatorChar + Master.Computer.Id + logType,
+            gvHostLog.DataSource = Logger.ViewLog("hosts" + Path.DirectorySeparatorChar + Computer.Id + logType,
                 ddlLogLimit.Text);
             gvHostLog.DataBind();
           

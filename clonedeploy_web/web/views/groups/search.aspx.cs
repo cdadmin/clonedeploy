@@ -43,7 +43,6 @@ namespace views.groups
 
 
             PopulateGrid();
-            Master.Master.Msgbox(Utility.Message);
         }
 
         public string GetSortDirection(string sortExpression)
@@ -100,7 +99,6 @@ namespace views.groups
         protected void Page_Load(object sender, EventArgs e)
         {        
             if (IsPostBack) return;
-            Master.Master.Msgbox(Utility.Message); //Display message after redirect to this page.
             PopulateGrid();
         }
 

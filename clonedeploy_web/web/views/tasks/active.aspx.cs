@@ -26,44 +26,42 @@ namespace views.tasks
 {
     public partial class TaskActive : Page
     {
+        private readonly BLL.ActiveImagingTask _bllActiveImagingTask = new BLL.ActiveImagingTask();
+        private readonly BLL.ActiveMulticastSession _bllActiveMulticastSession = new BLL.ActiveMulticastSession();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (IsPostBack) return;
             ViewState["clickTracker"] = "1";
-            gvTasks.DataSource = ActiveImagingTask.ReadAll();
+            gvTasks.DataSource = _bllActiveImagingTask.ReadAll();
             gvTasks.DataBind();
-            gvUcTasks.DataSource = ActiveImagingTask.ReadUnicasts();
+            gvUcTasks.DataSource = _bllActiveImagingTask.ReadUnicasts();
             gvUcTasks.DataBind();
-            gvMcTasks.DataSource = ActiveMcTask.ReadMulticasts();
+            gvMcTasks.DataSource = _bllActiveMulticastSession.GetAllMulticastSessions();
             gvMcTasks.DataBind();
             GetMcInfo();
-            Master.Master.Msgbox(Utility.Message);
         }
 
         protected void btnCancel_Click(object sender, EventArgs e)
         {
-            var activeTask = new ActiveImagingTask();
             var control = sender as Control;
             if (control != null)
             {
                 var gvRow = (GridViewRow) control.Parent.Parent;
                 var dataKey = gvTasks.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
-                {
-                    activeTask.Id = Convert.ToInt32(dataKey.Value);
-                    activeTask.Delete();
-                }
+
+                    _bllActiveImagingTask.DeleteActiveImagingTask(Convert.ToInt32(dataKey.Value));
+
             }
-            Master.Master.Msgbox(Utility.Message);
-            gvTasks.DataSource = ActiveImagingTask.ReadAll();
+            gvTasks.DataSource = _bllActiveImagingTask.ReadAll();
             gvTasks.DataBind();
-            gvUcTasks.DataSource = ActiveImagingTask.ReadUnicasts();
+            gvUcTasks.DataSource = _bllActiveImagingTask.ReadUnicasts();
             gvUcTasks.DataBind();
         }
 
         protected void btnCancelMc_Click(object sender, EventArgs e)
         {
-            var mcTask = new ActiveMcTask();
+
             var control = sender as Control;
             if (control != null)
             {
@@ -71,16 +69,12 @@ namespace views.tasks
                 var dataKey = gvMcTasks.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    mcTask.Id = Convert.ToInt32(dataKey.Value);
-                    mcTask.Name = gvRow.Cells[2].Text;
-                    mcTask.Pid = Convert.ToInt32(gvRow.Cells[3].Text);
-                    mcTask.Delete();
+                    _bllActiveMulticastSession.Delete(Convert.ToInt32(dataKey.Value));
                 }
             }
-            Master.Master.Msgbox(Utility.Message);
-            gvMcTasks.DataSource = ActiveMcTask.ReadMulticasts();
+            gvMcTasks.DataSource = _bllActiveMulticastSession.GetAllMulticastSessions();
             gvMcTasks.DataBind();
-            gvTasks.DataSource = ActiveImagingTask.ReadAll();
+            gvTasks.DataSource = _bllActiveImagingTask.ReadAll();
             gvTasks.DataBind();
         }
 
@@ -89,21 +83,20 @@ namespace views.tasks
             int cTracker = Convert.ToInt16(ViewState["clickTracker"]);
             TimerMC.Enabled = cTracker%2 == 0;
             ViewState["clickTracker"] = cTracker + 1;
-            var task = new ActiveImagingTask();
+
             var control = sender as Control;
             if (control != null)
             {
                 var gvRow = (GridViewRow) control.Parent.Parent;
                 var gv = (GridView) gvRow.FindControl("gvMembers");
 
-                task.MulticastName = gvRow.Cells[2].Text;
                 if (gv.Visible == false)
                 {
                     var td = gvRow.FindControl("tdMembers");
                     td.Visible = true;
                     gv.Visible = true;
 
-                    var table = task.MulticastMemberStatus();
+                    var table = _bllActiveImagingTask.MulticastMemberStatus(Convert.ToInt32(gvRow.Cells[1].Text));
                     gv.DataSource = table;
                     gv.DataBind();
                 }
@@ -114,7 +107,6 @@ namespace views.tasks
                     td.Visible = false;
                 }
             }
-            Master.Master.Msgbox(Utility.Message);
         }
 
         protected void btnShowAll_Click(object sender, EventArgs e)
@@ -124,14 +116,13 @@ namespace views.tasks
 
         protected void cancelTasks_Click(object sender, EventArgs e)
         {
-            ActiveImagingTask.CancelAll();
-            gvMcTasks.DataSource = ActiveMcTask.ReadMulticasts();
+            _bllActiveImagingTask.CancelAll();
+            gvMcTasks.DataSource = _bllActiveMulticastSession.GetAllMulticastSessions();
             gvMcTasks.DataBind();
-            gvUcTasks.DataSource = ActiveImagingTask.ReadUnicasts();
+            gvUcTasks.DataSource = _bllActiveImagingTask.ReadUnicasts();
             gvUcTasks.DataBind();
-            gvTasks.DataSource = ActiveImagingTask.ReadAll();
+            gvTasks.DataSource = _bllActiveImagingTask.ReadAll();
             gvTasks.DataBind();
-            Master.Master.Msgbox(Utility.Message);
         }
 
         protected void GetMcInfo()
@@ -140,8 +131,7 @@ namespace views.tasks
             {
                 try
                 {
-                    var task = new ActiveImagingTask {MulticastName = row.Cells[2].Text};
-                    var listActive = task.MulticastProgress();
+                    var listActive = _bllActiveImagingTask.MulticastProgress(Convert.ToInt32(row.Cells[1].Text));
                     var lblPartition = row.FindControl("lblPartition") as Label;
                     var lblElapsed = row.FindControl("lblElapsed") as Label;
                     var lblRemaining = row.FindControl("lblRemaining") as Label;
@@ -165,16 +155,16 @@ namespace views.tasks
 
         protected void Timer_Tick(object sender, EventArgs e)
         {
-            gvTasks.DataSource = ActiveImagingTask.ReadAll();
+            gvTasks.DataSource = _bllActiveImagingTask.ReadAll();
             gvTasks.DataBind();
-            gvUcTasks.DataSource = ActiveImagingTask.ReadUnicasts();
+            gvUcTasks.DataSource = _bllActiveImagingTask.ReadUnicasts();
             gvUcTasks.DataBind();
             UpdatePanel1.Update();
         }
 
         protected void TimerMC_Tick(object sender, EventArgs e)
         {
-            gvMcTasks.DataSource = ActiveMcTask.ReadMulticasts();
+            gvMcTasks.DataSource = _bllActiveMulticastSession.GetAllMulticastSessions();
             gvMcTasks.DataBind();
             GetMcInfo();
         }

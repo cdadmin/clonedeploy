@@ -18,7 +18,7 @@ public partial class views_admin_server : System.Web.UI.Page
         txtImagePath.Text = Settings.ImageStorePath;
         txtImageHoldPath.Text = Settings.ImageHoldPath;
         txtTFTPPath.Text = Settings.TftpPath;
-        txtWebService.Text = Setting.GetValueForAdminView(Settings.WebPath);
+        txtWebService.Text = BLL.Setting.GetValueForAdminView(Settings.WebPath);
         ddlHostView.SelectedValue = Settings.DefaultHostView;
 
         //These require pxe boot menu or client iso to be recreated
@@ -45,7 +45,7 @@ public partial class views_admin_server : System.Web.UI.Page
 
             var newBootMenu = false;
             var newClientIso = false;
-            if (new Setting().Update(listSettings))
+            if (new BLL.Setting().UpdateSetting(listSettings))
             {
 
                 if ((string) ViewState["serverIP"] != txtIP.Text)
@@ -96,7 +96,7 @@ public partial class views_admin_server : System.Web.UI.Page
 
     protected bool ValidateSettings()
     {
-        if (ActiveImagingTask.ReadAll().Count > 0)
+        if (new BLL.ActiveImagingTask().ReadAll().Count > 0)
         {
             Utility.Message = "Settings Cannot Be Changed While Tasks Are Active";
             return false;

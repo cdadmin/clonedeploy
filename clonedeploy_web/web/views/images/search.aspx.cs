@@ -166,8 +166,6 @@ namespace views.images
                 _bllImage.DeleteImage(image);
             }
 
-
-            Master.Master.Msgbox(Utility.Message);
             PopulateGrid(true);
         }
 
@@ -206,7 +204,6 @@ namespace views.images
             if (new Authorize().IsInMembership("User"))
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
 
-            Master.Master.Msgbox(Utility.Message); //For Redirects
             PopulateGrid(true);
         }
 

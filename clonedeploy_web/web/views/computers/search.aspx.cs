@@ -32,7 +32,7 @@ namespace views.hosts
         protected void Page_Load(object sender, EventArgs e)
         {
             if (IsPostBack) return;
-           
+
             if (Settings.DefaultHostView == "all")
                 PopulateGrid();
         }
@@ -45,48 +45,36 @@ namespace views.hosts
                 if (cb == null || !cb.Checked) continue;
                 var dataKey = gvHosts.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
-                new BLL.Computer().DeleteComputer(Convert.ToInt32(dataKey.Value));
+                BllComputer.DeleteComputer(Convert.ToInt32(dataKey.Value));
             }
 
             PopulateGrid();
-           
         }
 
-        protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
-        {
-            var hcb = (CheckBox) gvHosts.HeaderRow.FindControl("chkSelectAll");
-
-            ToggleCheckState(hcb.Checked);
-        }
-
-        public string GetSortDirection(string sortExpression)
-        {
-            if (ViewState[sortExpression] == null)
-                ViewState[sortExpression] = "Desc";
-            else
-                ViewState[sortExpression] = ViewState[sortExpression].ToString() == "Desc" ? "Asc" : "Desc";
-
-            return ViewState[sortExpression].ToString();
-        }
 
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
-            List<Models.Computer> listHosts = (List<Models.Computer>)gvHosts.DataSource;
+            List<Models.Computer> listHosts = (List<Models.Computer>) gvHosts.DataSource;
             switch (e.SortExpression)
             {
                 case "Name":
-                    listHosts = GetSortDirection(e.SortExpression) == "Asc" ? listHosts.OrderBy(h => h.Name).ToList() : listHosts.OrderByDescending(h => h.Name).ToList();
+                    listHosts = GetSortDirection(e.SortExpression) == "Asc"
+                        ? listHosts.OrderBy(h => h.Name).ToList()
+                        : listHosts.OrderByDescending(h => h.Name).ToList();
                     break;
                 case "Mac":
-                    listHosts = GetSortDirection(e.SortExpression) == "Asc" ? listHosts.OrderBy(h => h.Mac).ToList() : listHosts.OrderByDescending(h => h.Mac).ToList();
+                    listHosts = GetSortDirection(e.SortExpression) == "Asc"
+                        ? listHosts.OrderBy(h => h.Mac).ToList()
+                        : listHosts.OrderByDescending(h => h.Mac).ToList();
                     break;
                 case "Image":
-                    listHosts = GetSortDirection(e.SortExpression) == "Asc" ? listHosts.OrderBy(h => h.Image).ToList() : listHosts.OrderByDescending(h => h.Image).ToList();
+                    listHosts = GetSortDirection(e.SortExpression) == "Asc"
+                        ? listHosts.OrderBy(h => h.Image).ToList()
+                        : listHosts.OrderByDescending(h => h.Image).ToList();
                     break;
-             
             }
-            
+
 
             gvHosts.DataSource = listHosts;
             gvHosts.DataBind();
@@ -94,11 +82,10 @@ namespace views.hosts
 
         protected void PopulateGrid()
         {
-            var bllComputer = new BLL.Computer();
-            gvHosts.DataSource = bllComputer.SearchComputers(txtSearch.Text);
+            gvHosts.DataSource = BllComputer.SearchComputers(txtSearch.Text);
             gvHosts.DataBind();
 
-            lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + bllComputer.TotalCount() + " Total Host(s)";
+            lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + BllComputer.TotalCount() + " Total Host(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)
@@ -106,14 +93,9 @@ namespace views.hosts
             PopulateGrid();
         }
 
-        private void ToggleCheckState(bool checkState)
+        protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
         {
-            foreach (GridViewRow row in gvHosts.Rows)
-            {
-                var cb = (CheckBox) row.FindControl("chkSelector");
-                if (cb != null)
-                    cb.Checked = checkState;
-            }
+            ChkAll(gvHosts);
         }
     }
 }

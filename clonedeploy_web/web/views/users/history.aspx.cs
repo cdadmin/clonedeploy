@@ -10,10 +10,6 @@ namespace views.users
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            var user = new WdsUser { Id = Request.QueryString["userid"] };
-            user.Read();
-            var subTitle = Master.Master.FindControl("SubNav").FindControl("labelSubTitle") as Label;
-            if (subTitle != null) subTitle.Text = user.Name + " | Edit";
             if (!IsPostBack) PopulateHistory();
         }
 
@@ -24,21 +20,19 @@ namespace views.users
 
         protected void PopulateHistory()
         {
-            var user = new WdsUser {Id = Request.QueryString["userid"]};
-            user.Read();
+         
 
             if (!IsPostBack)
                 ddlLimit.SelectedValue = "10";
             var history = new History
             {
                 Type = "User",
-                TypeId = user.Id,
+                TypeId = Master.User.Id.ToString(),
                 Limit = ddlLimit.Text,
-                EventUser = user.Name
+                EventUser = Master.User.Name
             };
             gvHistory.DataSource = history.ReadUser();
             gvHistory.DataBind();
-            Master.Master.Msgbox(Utility.Message);
         }
     }
 }

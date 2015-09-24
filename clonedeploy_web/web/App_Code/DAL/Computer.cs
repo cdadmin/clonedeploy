@@ -16,7 +16,7 @@ namespace DAL
         public string CheckActive(string mac)
         {
             var name = (from h in _context.Computers
-                join t in _context.ActiveTasks on h.Id equals t.ComputerId
+                join t in _context.ActiveImagingTasks on h.Id equals t.ComputerId
                 where (h.Mac == mac)
                 select h.Name).FirstOrDefault();
             return name;

@@ -15,8 +15,8 @@ namespace Security
         public string ConsoleLogin(string username, string password, string task, string isWebTask, string ip)
         {
             if (!GlobalLogin(username, password, "Console")) return "false";
-            var wdsuser = new WdsUser {Name = username};
-            wdsuser.Read();
+            var wdsuser = new BLL.User().GetUser(username);
+
 
 
             if ((task == "ond" && wdsuser.OndAccess == "1") || (task == "debug" && wdsuser.DebugAccess == "1") ||
@@ -61,8 +61,7 @@ namespace Security
         {
             bool validated = false;
             //Check if user exists in CWDS
-            var user = new WdsUser {Name = userName};
-            user.Read();
+            var user = new BLL.User().GetUser(userName);
 
             if (user.Id != null)
             {
@@ -90,7 +89,7 @@ namespace Security
                     Event = "Successful " + loginType + " Login",
                     Type = "User",
                     EventUser = userName,
-                    TypeId = user.Id,
+                    TypeId = user.Id.ToString(),
                     Notes = ""
                 };
                 //history.CreateEvent();

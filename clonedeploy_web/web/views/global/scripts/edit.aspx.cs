@@ -27,7 +27,7 @@ public partial class views_admin_scripts_edit : System.Web.UI.Page
         };
         var fixedLineEnding = scriptEditor.Value.Replace("\r\n", "\n");
         script.Contents = fixedLineEnding;
-        script.Update();
+        new BLL.Script().UpdateScript(script);
         new Utility().Msgbox(Utility.Message);
     }
 
@@ -41,8 +41,7 @@ public partial class views_admin_scripts_edit : System.Web.UI.Page
 
     private Script ReadProfile()
     {
-        var tmpScript = new Script { Id = Convert.ToInt32(Request.QueryString["scriptid"]) };
-        tmpScript.Read();
-        return tmpScript;
+        return new BLL.Script().GetScript(Convert.ToInt32(Request.QueryString["scriptid"]));
+
     }
 }

@@ -30,21 +30,18 @@ namespace views.users
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            var user = new WdsUser { Id = Request.QueryString["userid"] };
-            user.Read();
-            var subTitle = Master.Master.FindControl("SubNav").FindControl("labelSubTitle") as Label;
-            if (subTitle != null) subTitle.Text = user.Name + " | Edit";
             if (!IsPostBack) PopulateForm();
         }
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            var user = new WdsUser {Id = Request.QueryString["userid"]};
-            user.Read();
+            var user = new Models.WdsUser();
+            var bllUser = new BLL.User();
+            
 
-            if (user.GetAdminCount() == 1 && ddluserMembership.Text != "Administrator" &&
+            if (bllUser.GetAdminCount() == 1 && ddluserMembership.Text != "Administrator" &&
                 user.Membership == "Administrator")
-                Master.Master.Msgbox("There Must Be At Least One Administrator");
+                Message.Text = "There Must Be At Least One Administrator";
             else
             {
                 var listGroupManagement = new List<string>();
@@ -74,17 +71,16 @@ namespace views.users
                 }
 
                 if ((string.IsNullOrEmpty(txtUserPwd.Text)) && (string.IsNullOrEmpty(txtUserPwdConfirm.Text)))
-                    if (user.ValidateUserData()) user.Update(false);
+                    if (bllUser.ValidateUserData(user)) bllUser.UpdateUser(user, false);
                 if (txtUserPwd.Text == txtUserPwdConfirm.Text)
                 {
                     user.Password = txtUserPwd.Text;
-                    user.Salt = user.CreateSalt(16);
-                    if (user.ValidateUserData()) user.Update(true);
+                    user.Salt = bllUser.CreateSalt(16);
+                    if (bllUser.ValidateUserData(user)) bllUser.UpdateUser(user, true);
                 }
                 else
                     Utility.Message = "Passwords Did Not Match";
             }
-            Master.Master.Msgbox(Utility.Message);
         }
 
         protected void ddluserMembership_SelectedIndexChanged(object sender, EventArgs e)
@@ -128,13 +124,12 @@ namespace views.users
 
         protected void PopulateForm()
         {
-            var user = new WdsUser {Id = Request.QueryString["userid"]};
-            user.Read();
+         
             var group = new Group();
             gvGroups.DataSource = new BLL.Group().SearchGroups("%");
             gvGroups.DataBind();
 
-            if (user.Membership == "User")
+            if (Master.User.Membership == "User")
             {
                 management.Visible = true;
                 permissions.Visible = true;
@@ -142,17 +137,17 @@ namespace views.users
                 {
                     var cb = (CheckBox) row.FindControl("chkSelector");
                     var dataKey = gvGroups.DataKeys[row.RowIndex];
-                    if (dataKey != null && user.GroupManagement.Contains(dataKey.Value.ToString()))
+                    if (dataKey != null && Master.User.GroupManagement.Contains(dataKey.Value.ToString()))
                         cb.Checked = true;
                 }
             }
-            txtUserName.Text = user.Name;
-            ddluserMembership.Text = user.Membership;
-            if (user.OndAccess == "1")
+            txtUserName.Text = Master.User.Name;
+            ddluserMembership.Text = Master.User.Membership;
+            if (Master.User.OndAccess == "1")
                 chkOnd.Checked = true;
-            if (user.DebugAccess == "1")
+            if (Master.User.DebugAccess == "1")
                 chkDebug.Checked = true;
-            if (user.DiagAccess == "1")
+            if (Master.User.DiagAccess == "1")
                 chkDiag.Checked = true;
         }
 

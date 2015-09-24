@@ -1,6 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/computers/computers.master" AutoEventWireup="true" CodeFile="log.aspx.cs" Inherits="views.hosts.HostLog" %>
-<%@ MasterType VirtualPath="~/views/computers/computers.master" %>
-<%@ Reference virtualPath="~/views/masters/Site.master" %>
+
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {

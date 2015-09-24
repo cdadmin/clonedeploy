@@ -1,6 +1,6 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/views/masters/Site.master" AutoEventWireup="true" CodeFile="computers.master.cs" Inherits="views.masters.ComputerMaster" %>
 
-<%@ MasterType VirtualPath="~/views/masters/Site.master" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="HeaderNav" Runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {

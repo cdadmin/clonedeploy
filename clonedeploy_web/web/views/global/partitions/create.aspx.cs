@@ -24,11 +24,9 @@ public partial class views_global_partitions_create : System.Web.UI.Page
            Priority = Convert.ToInt32(txtPriority.Text)
            
         };
-     
-        layout.Create();
-        //if (script.Create())
-        //Response.Redirect("~/views/computers/edit.aspx?hostid=" + host.Id);
 
+        new BLL.PartitionLayout().AddPartitionLayout(layout);
+     
         new Utility().Msgbox(Utility.Message);
     }
 }

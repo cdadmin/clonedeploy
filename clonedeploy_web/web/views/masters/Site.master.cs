@@ -36,14 +36,5 @@ namespace views.masters
             new Utility().Msgbox(Utility.Message);
 
         }     
-
-        public void Msgbox(string message)
-        {
-            if (string.IsNullOrEmpty(message)) return;
-            const string msgType = "showSuccessToast";
-            Page.ClientScript.RegisterStartupScript(GetType(), "msgBox",
-                "$(function() { $().toastmessage('" + msgType + "', " + "\"" + message + "\"); });", true);
-            Session.Remove("Message");
-        } 
     }
 }

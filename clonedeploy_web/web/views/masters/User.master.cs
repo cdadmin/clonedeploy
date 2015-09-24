@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.UI;
+using BLL;
 using Global;
 using Models;
 
@@ -8,19 +9,18 @@ namespace views.masters
     public partial class UserMaster : MasterPage
     {
         public WdsUser User { get; set; }
-
+        private readonly BLL.User _bllUser = new BLL.User();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(Request["userid"])) return;
-            User = new WdsUser { Id = Request.QueryString["userid"] };
-            User.Read();
+            User = _bllUser.GetUser(Convert.ToInt32(Request.QueryString["userid"]));
         }
 
         protected void btnDelete_Click(object sender, EventArgs e)
         {
-            if (User.GetAdminCount() == 1 && User.Membership == "Administrator")
+            if (_bllUser.GetAdminCount() == 1 && User.Membership == "Administrator")
             {
-                Master.Msgbox("There Must Be At Least One Administrator");
+                Message.Text = "There Must Be At Least One Administrator";
             }
             else
             {
@@ -33,11 +33,10 @@ namespace views.masters
 
         protected void OkButton_Click(object sender, EventArgs e)
         {
-            User.Delete();
+            _bllUser.DeleteUser(User.Id);
             if (Utility.Message.Contains("Successfully"))
                 Response.Redirect("~/views/users/search.aspx");
-            else
-                Master.Msgbox(Utility.Message);
+          
         }       
     }
 }

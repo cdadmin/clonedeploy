@@ -10,6 +10,7 @@ using Models;
 
 public partial class views_images_profiles_partition : System.Web.UI.Page
 {
+    private readonly BLL.ImageProfilePartition _bllImageProfilePartition = new BLL.ImageProfilePartition();
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
@@ -34,7 +35,7 @@ public partial class views_images_profiles_partition : System.Web.UI.Page
         }
         else if (ddlPartitionMethod.SelectedIndex == 3)
         {
-            new ImageProfilePartition().DeleteAllForProfile(Master.ImageProfile.Id);
+            _bllImageProfilePartition.DeleteImageProfilePartitions(Master.ImageProfile.Id);
             imageProfile.CustomPartitionScript = "";
             foreach (GridViewRow row in gvLayout.Rows)
             {
@@ -42,12 +43,12 @@ public partial class views_images_profiles_partition : System.Web.UI.Page
                 if (cb == null || !cb.Checked) continue;
                 var dataKey = gvLayout.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
-                var profilePartitionLayout = new ImageProfilePartition()
+                var profilePartitionLayout = new Models.ImageProfilePartition()
                 {
                     LayoutId = Convert.ToInt16(dataKey.Value),
                     ProfileId = Master.ImageProfile.Id            
                 };
-                profilePartitionLayout.Create();
+                _bllImageProfilePartition.AddImageProfilePartition(profilePartitionLayout);
             }
         }
         else
@@ -76,7 +77,7 @@ public partial class views_images_profiles_partition : System.Web.UI.Page
             customScript.Visible = false;
             customLayout.Visible = true;
             PopulateGrid();
-            var profilePartitionLayouts = new ImageProfilePartition().Search(Master.ImageProfile.Id);
+            var profilePartitionLayouts = _bllImageProfilePartition.SearchImageProfilePartitions(Master.ImageProfile.Id);
             foreach (GridViewRow row in gvLayout.Rows)
             {
                 var cb = (CheckBox) row.FindControl("chkSelector");
@@ -115,15 +116,14 @@ public partial class views_images_profiles_partition : System.Web.UI.Page
 
     protected void PopulateGrid()
     {
-        var layout = new PartitionLayout();
-        gvLayout.DataSource = layout.Search("");
+        gvLayout.DataSource = new BLL.PartitionLayout().SearchPartitionLayouts("");
         gvLayout.DataBind();
     }
 
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<PartitionLayout> listLayouts = (List<PartitionLayout>)gvLayout.DataSource;
+        List<Models.PartitionLayout> listLayouts = (List<Models.PartitionLayout>)gvLayout.DataSource;
         switch (e.SortExpression)
         {
             case "Name":

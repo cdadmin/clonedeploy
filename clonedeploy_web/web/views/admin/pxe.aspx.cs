@@ -44,7 +44,7 @@ public partial class views_admin_pxe : Page
 
 
             var newBootMenu = false;
-            if (new Setting().Update(listSettings))
+            if (new BLL.Setting().UpdateSetting(listSettings))
             {
                 new PxeFileOps().CopyPxeFiles(ddlPXEMode.Text);
 
@@ -112,7 +112,7 @@ public partial class views_admin_pxe : Page
 
     protected bool ValidateSettings()
     {
-        if (ActiveImagingTask.ReadAll().Count > 0)
+        if (new BLL.ActiveImagingTask().ReadAll().Count > 0)
         {
             Utility.Message = "Settings Cannot Be Changed While Tasks Are Active";
             return false;

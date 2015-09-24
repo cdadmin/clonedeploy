@@ -139,7 +139,6 @@ namespace views.tasks
             }
             Session.Remove("hostID");
             Session.Remove("direction");
-            Master.Master.Msgbox(Utility.Message);
         }
 
         protected void OkButtonChecksum_Click(object sender, EventArgs e)

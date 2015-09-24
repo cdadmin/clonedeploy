@@ -11,7 +11,7 @@ namespace Services.Client
     {
         public string GetCustomMulticastInfo(string mac, string mcTaskName)
         {
-            ActiveMcTask mcTask;
+            Models.ActiveMulticastSession mcTask;
             var host = new BLL.Computer().GetComputerFromMac(mac.ToLower());
   
             using (var db = new DB())
@@ -92,7 +92,7 @@ namespace Services.Client
 
             if (direction == "pull" && Settings.ImageTransferMode == "udp+http")
             {
-                var portBase = new Port().GetPort();
+                var portBase = new BLL.Port().GetNextPort();
                 result = result + " portBase=" + portBase;
             }
 

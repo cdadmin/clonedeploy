@@ -52,8 +52,6 @@ namespace views.groups
            new BLL.Group().UpdateGroup(group);
            
 
-
-            Master.Master.Msgbox(Utility.Message);
         }
 
         protected void ddlGroupImage_OnSelectedIndexChanged(object sender, EventArgs e)
@@ -76,7 +74,6 @@ namespace views.groups
 
         protected void PopulateForm()
         {
-            Master.Master.Msgbox(Utility.Message);
 
             ddlGroupImage.DataSource = new BLL.Image().SearchImages("").Select(i => new { i.Id, i.Name });
             ddlGroupImage.DataValueField = "Id";

@@ -51,7 +51,6 @@ namespace views.images
             if (Utility.Message.Contains("Successfully"))
                 Response.Redirect("~/views/images/edit.aspx?imageid=" + image.Id);
 
-            Master.Master.Msgbox(Utility.Message);
         }
     }
 }

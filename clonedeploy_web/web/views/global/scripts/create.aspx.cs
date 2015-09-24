@@ -25,7 +25,7 @@ public partial class views_admin_scripts_create : System.Web.UI.Page
         };
         var fixedLineEnding = scriptEditor.Value.Replace("\r\n", "\n");
         script.Contents = fixedLineEnding;
-        script.Create();
+        new BLL.Script().AddScript(script);
             //if (script.Create())
                 //Response.Redirect("~/views/computers/edit.aspx?hostid=" + host.Id);
 

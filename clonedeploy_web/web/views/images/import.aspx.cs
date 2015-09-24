@@ -34,7 +34,6 @@ namespace views.images
             FileUpload.SaveAs(csvFilePath);
             new FileOps().SetUnixPermissions(csvFilePath);
             new BLL.Image().Import();
-            Master.Master.Msgbox(Utility.Message);
         }
 
         protected void Page_Load(object sender, EventArgs e)

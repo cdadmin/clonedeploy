@@ -30,8 +30,7 @@ namespace views.tasks
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            var user = new WdsUser { Name = HttpContext.Current.User.Identity.Name };
-            user.Read();
+            var user = new BLL.User().GetUser(HttpContext.Current.User.Identity.Name);
 
             if (Settings.OnDemand == "Disabled")
             {
@@ -67,10 +66,9 @@ namespace views.tasks
                 };
                 multicast.StartMulticastSender();
 
-                Master.Master.Msgbox(Utility.Message);
             }
             else
-                Master.Master.Msgbox("Select An Image");
+                Message.Text = "Select An Image";
         }
     }
 }

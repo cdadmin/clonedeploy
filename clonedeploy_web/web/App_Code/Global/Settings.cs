@@ -1,4 +1,4 @@
-﻿using Models;
+﻿using BLL;
 
 namespace Global
 {
@@ -6,32 +6,32 @@ namespace Global
     {
         public static string AdLoginDomain
         {
-            get { return Setting.Read("AD Login Domain"); }
+            get { return Setting.GetSetting("AD Login Domain"); }
         }
 
         public static string ClientReceiverArgs
         {
-            get { return Setting.Read("Client Receiver Args"); }
+            get { return Setting.GetSetting("Client Receiver Args"); }
         }
 
         public static string CompressionAlgorithm
         {
-            get { return Setting.Read("Compression Algorithm"); }
+            get { return Setting.GetSetting("Compression Algorithm"); }
         }
 
         public static string CompressionLevel
         {
-            get { return Setting.Read("Compression Level"); }
+            get { return Setting.GetSetting("Compression Level"); }
         }
 
         public static string DebugRequiresLogin
         {
-            get { return Setting.Read("Debug Requires Login"); }
+            get { return Setting.GetSetting("Debug Requires Login"); }
         }
 
         public static string DefaultHostView
         {
-            get { return Setting.Read("Default Host View"); }
+            get { return Setting.GetSetting("Default Host View"); }
         }
 
         public static string DefaultKernel32
@@ -46,107 +46,107 @@ namespace Global
 
         public static string EndPort
         {
-            get { return Setting.Read("Udpcast End Port"); }
+            get { return Setting.GetSetting("Udpcast End Port"); }
         }
 
         public static string ForceSsL
         {
-            get { return Setting.Read("Force SSL"); }
+            get { return Setting.GetSetting("Force SSL"); }
         }
 
         public static string GlobalHostArgs
         {
-            get { return Setting.Read("Global Host Args"); }
+            get { return Setting.GetSetting("Global Host Args"); }
         }
 
         public static string ImageChecksum
         {
-            get { return Setting.Read("Image Checksum"); }
+            get { return Setting.GetSetting("Image Checksum"); }
         }
 
         public static string ImageHoldPath
         {
-            get { return Setting.Read("Image Hold Path"); }
+            get { return Setting.GetSetting("Image Hold Path"); }
         }
 
         public static string ImageStorePath
         {
-            get { return Setting.Read("Image Store Path"); }
+            get { return Setting.GetSetting("Image Store Path"); }
         }
 
         public static string ImageTransferMode
         {
-            get { return Setting.Read("Image Transfer Mode"); }
+            get { return Setting.GetSetting("Image Transfer Mode"); }
         }
 
         public static string NfsDeployPath
         {
-            get { return Setting.Read("Nfs Deploy Path"); }
+            get { return Setting.GetSetting("Nfs Deploy Path"); }
         }
 
         public static string NfsUploadPath
         {
-            get { return Setting.Read("Nfs Upload Path"); }
+            get { return Setting.GetSetting("Nfs Upload Path"); }
         }
 
         public static string OnDemand
         {
-            get { return Setting.Read("On Demand"); }
+            get { return Setting.GetSetting("On Demand"); }
         }
 
         public static string OnDemandRequiresLogin
         {
-            get { return Setting.Read("On Demand Requires Login"); }
+            get { return Setting.GetSetting("On Demand Requires Login"); }
         }
 
         public static string ProxyBiosFile
         {
-            get { return Setting.Read("Proxy Bios File"); }
+            get { return Setting.GetSetting("Proxy Bios File"); }
         }
 
         public static string ProxyDhcp
         {
-            get { return Setting.Read("Proxy Dhcp"); }
+            get { return Setting.GetSetting("Proxy Dhcp"); }
         }
 
         public static string ProxyEfi32File
         {
-            get { return Setting.Read("Proxy Efi32 File"); }
+            get { return Setting.GetSetting("Proxy Efi32 File"); }
         }
 
         public static string ProxyEfi64File
         {
-            get { return Setting.Read("Proxy Efi64 File"); }
+            get { return Setting.GetSetting("Proxy Efi64 File"); }
         }
 
         public static string PxeMode
         {
-            get { return Setting.Read("PXE Mode"); }
+            get { return Setting.GetSetting("PXE Mode"); }
         }
 
         public static string QueueSize
         {
-            get { return Setting.Read("Queue Size"); }
+            get { return Setting.GetSetting("Queue Size"); }
         }
 
         public static string ReceiverArgs
         {
-            get { return Setting.Read("Receiver Args"); }
+            get { return Setting.GetSetting("Receiver Args"); }
         }
 
         public static string RegisterRequiresLogin
         {
-            get { return Setting.Read("Register Requires Login"); }
+            get { return Setting.GetSetting("Register Requires Login"); }
         }
 
         public static string SenderArgs
         {
-            get { return Setting.Read("Sender Args"); }
+            get { return Setting.GetSetting("Sender Args"); }
         }
 
         public static string ServerIp
         {
-            get { return Setting.Read("Server IP"); }
+            get { return Setting.GetSetting("Server IP"); }
         }
 
         public static string ServerIpWithPort
@@ -156,112 +156,112 @@ namespace Global
 
         public static string ServerKey
         {
-            get { return Setting.Read("Server Key"); }
+            get { return Setting.GetSetting("Server Key"); }
         }
 
         public static string SmbPassword
         {
-            get { return Setting.Read("SMB Password"); }
+            get { return Setting.GetSetting("SMB Password"); }
         }
 
         public static string SmbPath
         {
-            get { return Setting.Read("SMB Path"); }
+            get { return Setting.GetSetting("SMB Path"); }
         }
 
         public static string SmbUserName
         {
-            get { return Setting.Read("SMB User Name"); }
+            get { return Setting.GetSetting("SMB User Name"); }
         }
 
         public static string StartPort
         {
-            get { return Setting.Read("Udpcast Start Port"); }
+            get { return Setting.GetSetting("Udpcast Start Port"); }
         }
 
         public static string TftpPath
         {
-            get { return Setting.Read("Tftp Path"); }
+            get { return Setting.GetSetting("Tftp Path"); }
         }
 
         public static string WebPath
         {
-            get { return Setting.Read("Web Path"); }
+            get { return Setting.GetSetting("Web Path"); }
         }
 
         public static string WebServerPort
         {
-            get { return Setting.Read("Web Server Port"); }
+            get { return Setting.GetSetting("Web Server Port"); }
         }
 
         public static string WebTaskRequiresLogin
         {
-            get { return Setting.Read("Web Task Requires Login"); }
+            get { return Setting.GetSetting("Web Task Requires Login"); }
         }
 
         public static string SmtpServer
         {
-            get { return Setting.Read("Smtp Server"); }
+            get { return Setting.GetSetting("Smtp Server"); }
         }
 
         public static string SmtpPort
         {
-            get { return Setting.Read("Smtp Port"); }
+            get { return Setting.GetSetting("Smtp Port"); }
         }
 
         public static string SmtpUsername
         {
-            get { return Setting.Read("Smtp Username"); }
+            get { return Setting.GetSetting("Smtp Username"); }
         }
 
         public static string SmtpPassword
         {
-            get { return Setting.Read("Smtp Password"); }
+            get { return Setting.GetSetting("Smtp Password"); }
         }
 
         public static string SmtpMailFrom
         {
-            get { return Setting.Read("Smtp Mail From"); }
+            get { return Setting.GetSetting("Smtp Mail From"); }
         }
 
         public static string SmtpMailTo
         {
-            get { return Setting.Read("Smtp Mail To"); }
+            get { return Setting.GetSetting("Smtp Mail To"); }
         }
 
         public static string SmtpSsl
         {
-            get { return Setting.Read("Smtp Ssl"); }
+            get { return Setting.GetSetting("Smtp Ssl"); }
         }
 
         public static string NotifySuccessfulLogin
         {
-            get { return Setting.Read("Notify Successful Login"); }
+            get { return Setting.GetSetting("Notify Successful Login"); }
         }
 
         public static string NotifyFailedLogin
         {
-            get { return Setting.Read("Notify Failed Login"); }
+            get { return Setting.GetSetting("Notify Failed Login"); }
         }
 
         public static string NotifyTaskStarted
         {
-            get { return Setting.Read("Notify Task Started"); }
+            get { return Setting.GetSetting("Notify Task Started"); }
         }
 
         public static string NotifyTaskCompleted
         {
-            get { return Setting.Read("Notify Task Completed"); }
+            get { return Setting.GetSetting("Notify Task Completed"); }
         }
 
         public static string NotifyImageApproved
         {
-            get { return Setting.Read("Notify Image Approved"); }
+            get { return Setting.GetSetting("Notify Image Approved"); }
         }
 
         public static string NotifyResizeFailed
         {
-            get { return Setting.Read("Notify Resize Failed"); }
+            get { return Setting.GetSetting("Notify Resize Failed"); }
         }
     
     }

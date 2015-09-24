@@ -21,14 +21,7 @@ namespace BasePages
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
-            if (!string.IsNullOrEmpty(Request["hostid"]))
-            {
-                Computer = BllComputer.GetComputer(Convert.ToInt32(Request.QueryString["hostid"]));
-            }
+            Computer = !string.IsNullOrEmpty(Request["hostid"]) ? BllComputer.GetComputer(Convert.ToInt32(Request.QueryString["hostid"])) : null;
         }
-
-       
-
-        
     }
 }

@@ -42,12 +42,12 @@ namespace views.masters
         {
             if ((string) Session["direction"] == "delete")
             {
+
                 Session.Remove("direction");
                 _bllGroup.DeleteGroup(Group.Id);
                 if (Utility.Message.Contains("Successfully"))
                     Response.Redirect("~/views/groups/search.aspx");
-                else
-                    Master.Msgbox(Utility.Message);
+               
             }
             else
             {
@@ -81,7 +81,6 @@ namespace views.masters
                         multicast.Create();
                     }
                     Session.Remove("isGroupUnicast");
-                    Master.Msgbox(Utility.Message);
                 }
 
                 else

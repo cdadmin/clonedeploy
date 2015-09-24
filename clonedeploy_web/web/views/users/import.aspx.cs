@@ -41,8 +41,7 @@ namespace views.users
                               "csvupload" + Path.DirectorySeparatorChar + "users.csv";
             FileUpload.SaveAs(csvFilePath);
             new FileOps().SetUnixPermissions(csvFilePath);
-            new WdsUser().Import();
-            Master.Master.Msgbox(Utility.Message);
+            new BLL.User().ImportUsers();
         }        
     }
 }

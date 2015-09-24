@@ -20,13 +20,13 @@ namespace BasePages
             new Message().Show();
         }
 
-        protected void PopulateImagesDdl(DropDownList ddlImages, int value)
+        protected void PopulateImagesDdl(DropDownList ddlImages)
         {
-            ddlHostImage.DataSource = new BLL.Image().SearchImages("").Select(i => new { i.Id, i.Name });
-            ddlHostImage.DataValueField = "Id";
-            ddlHostImage.DataTextField = "Name";
-            ddlHostImage.DataBind();
-            ddlHostImage.Items.Insert(0, new ListItem("Select Image", "0"));
+            ddlImages.DataSource = new BLL.Image().SearchImages("").Select(i => new { i.Id, i.Name });
+            ddlImages.DataValueField = "Id";
+            ddlImages.DataTextField = "Name";
+            ddlImages.DataBind();
+            ddlImages.Items.Insert(0, new ListItem("Select Image", "0"));
         }
 
         protected void PopulateImageProfilesDdl(DropDownList ddlImageProfile, int value)
@@ -36,5 +36,30 @@ namespace BasePages
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();
         }
+
+
+        public void ChkAll(GridView gridview)
+        {
+            var hcb = (CheckBox)gridview.HeaderRow.FindControl("chkSelectAll");
+
+            foreach (GridViewRow row in gridview.Rows)
+            {
+                var cb = (CheckBox)row.FindControl("chkSelector");
+                if (cb != null)
+                    cb.Checked = hcb.Checked;
+            }
+        }
+
+        public string GetSortDirection(string sortExpression)
+        {
+            if (ViewState[sortExpression] == null)
+                ViewState[sortExpression] = "Desc";
+            else
+                ViewState[sortExpression] = ViewState[sortExpression].ToString() == "Desc" ? "Asc" : "Desc";
+
+            return ViewState[sortExpression].ToString();
+        }
+
+        
     }
 }

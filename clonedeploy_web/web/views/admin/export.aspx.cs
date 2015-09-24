@@ -27,9 +27,7 @@ namespace views.admin
     {
         protected void btnExport_Click(object sender, EventArgs e)
         {
-            var settings = new Setting();
-            settings.ExportDatabase();
-            Master.Master.Msgbox(Utility.Message);
+            new BLL.Setting().ExportDatabase();
         }
     }
 }

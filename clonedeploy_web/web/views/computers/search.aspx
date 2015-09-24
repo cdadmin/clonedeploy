@@ -1,7 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/computers/computers.master" AutoEventWireup="true" Inherits="views.hosts.Searchhosts" CodeFile="search.aspx.cs" %>
 
-<%@ MasterType VirtualPath="~/views/computers/computers.master" %>
-<%@ Reference virtualPath="~/views/masters/Site.master" %>
+
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li><a href="<%= ResolveUrl("~/views/computers/search.aspx") %>">Search</a></li>
     </asp:Content>

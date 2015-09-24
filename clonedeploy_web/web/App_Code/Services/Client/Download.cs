@@ -512,16 +512,15 @@ namespace Services.Client
         public string InSlot(string mac)
         {
             CloneDeployDbContext context = new CloneDeployDbContext();
-            using (var db = new DB())
-            {
+
                 var q = (from h in context.Computers
-                         join t in db.ActiveTasks on h.Id equals t.ComputerId
+                         join t in context.ActiveImagingTasks on h.Id equals t.ComputerId
                          where (h.Mac.ToLower() == mac.ToLower())
                          select t).FirstOrDefault();
                 q.Status = "3";
-                return q.Update("status") ? "Success" : "";
+                return new BLL.ActiveImagingTask().UpdateActiveImagingTask(q) ? "Success" : "";
 
-            }
+            
 
            
         }
@@ -628,7 +627,7 @@ namespace Services.Client
         public string MulticastCheckout(string portBase)
         {
             string result;
-            ActiveMcTask mcTask;
+            Models.ActiveMulticastSession mcTask;
             using (var db = new DB())
             {
                 mcTask = db.ActiveMcTasks.FirstOrDefault(t => t.Port == Convert.ToInt32(portBase));
@@ -685,23 +684,22 @@ namespace Services.Client
         {
             CloneDeployDbContext context = new CloneDeployDbContext();
             string result;
-            using (var db = new DB())
-            {
-                var maxQueuePosition = (from t in db.ActiveTasks
+
+                var maxQueuePosition = (from t in context.ActiveImagingTasks
                                         where t.Status == "2" && t.Type == "unicast"
                                         orderby t.QueuePosition descending
                                         select t.QueuePosition).FirstOrDefault();
 
 
                 var q = (from h in context.Computers
-                         join t in db.ActiveTasks on h.Id equals t.ComputerId
+                         join t in context.ActiveImagingTasks on h.Id equals t.ComputerId
                          where (h.Mac.ToLower() == mac.ToLower())
                          select t).FirstOrDefault();
                 q.Status = "2";
                 q.QueuePosition = (Convert.ToInt16(maxQueuePosition) + 1);
                 result = q.QueuePosition.ToString();
-                q.Update("task");
-            }
+            new BLL.ActiveImagingTask().UpdateActiveImagingTask(q);
+            
 
             return result;
         }

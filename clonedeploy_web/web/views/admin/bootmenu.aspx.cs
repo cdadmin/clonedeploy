@@ -15,7 +15,6 @@ namespace views.admin
         {
             var template = new BootTemplate {Name = txtModifyTemplate.Text};
             template.Delete();
-            Master.Master.Msgbox(Utility.Message);
             modifyTemplate.Visible = false;
             showTemplates_Click(sender, e);
         }
@@ -46,11 +45,10 @@ namespace views.admin
                 };
                 template.Create();
                 showTemplates_Click(sender, e);
-                Master.Master.Msgbox(Utility.Message);
             }
 
             else
-                Master.Master.Msgbox("Template Name Cannot Be Empty Or Contain Spaces");
+                Message.Text = "Template Name Cannot Be Empty Or Contain Spaces";
         }
 
         public void btnProxSubmitDefault_Click(object sender, EventArgs e)
@@ -78,7 +76,7 @@ namespace views.admin
             defaultBootMenu.BootImage = ddlEfi64BootImage.SelectedValue;
             defaultBootMenu.Type = "efi64";
             defaultBootMenu.CreateGlobalDefaultBootMenu();
-            Master.Master.Msgbox(Utility.Message);
+
         }
 
         public void btnSubmitDefault_Click(object sender, EventArgs e)
@@ -101,7 +99,7 @@ namespace views.admin
             defaultBootMenu.BootImage = ddlHostBootImage.SelectedValue;
             defaultBootMenu.Type = "noprox";
             defaultBootMenu.CreateGlobalDefaultBootMenu();
-            Master.Master.Msgbox(Utility.Message);
+ 
         }
 
         protected void btnUpdateTemplate_Click(object sender, EventArgs e)
@@ -112,7 +110,6 @@ namespace views.admin
                 Content = scriptEditorModify.Value
             };
             template.Update();
-            Master.Master.Msgbox(Utility.Message);
         }
 
         protected void ddlTemplate_SelectedIndexChanged(object sender, EventArgs e)
@@ -343,7 +340,7 @@ namespace views.admin
                 if (path != null)
                 {
                     path = path.Replace(@"\", @"\\");
-                    Master.Master.Msgbox("Could Not Find " + path);
+                    Message.Text = "Could Not Find " + path;
                 }
             }
         }
@@ -554,13 +551,13 @@ namespace views.admin
                     }
                     new FileOps().SetUnixPermissions(path);
                 }
-                Master.Master.Msgbox("Successfully Updated Default Global Boot Menu");
+                Message.Text = "Successfully Updated Default Global Boot Menu";
             }
 
             catch (Exception ex)
             {
-                Master.Master.Msgbox(
-                    "Could Not Update Default Global Boot Menu.  Check The Exception Log For More Info.");
+                
+                    Message.Text = "Could Not Update Default Global Boot Menu.  Check The Exception Log For More Info.";
                 Logger.Log(ex.Message);
             }
         }
@@ -653,7 +650,7 @@ namespace views.admin
                 if (path != null)
                 {
                     path = path.Replace(@"\", @"\\");
-                    Master.Master.Msgbox("Could Not Find " + path);
+                    Message.Text = "Could Not Find " + path;
                 }
             }
         }

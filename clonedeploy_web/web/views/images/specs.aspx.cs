@@ -21,7 +21,6 @@ namespace views.images
             var image = _bllImage.GetImage(Master.Image.Id);
             image.Checksum = (string) (ViewState["checkSum"]);
             _bllImage.UpdateImage(image,image.Name);
-            Master.Master.Msgbox(Utility.Message);
             Response.Redirect("~/views/images/edit.aspx?imageid=" + image.Id, true);
         }
 
@@ -199,7 +198,7 @@ namespace views.images
             image.ClientSizeCustom = "";
            
 
-            Master.Master.Msgbox(_bllImage.UpdateImage(image,image.Name)
+            Message.Text = (_bllImage.UpdateImage(image,image.Name)
                 ? "Successfully Restored Image Specs.  Reload This Page To View Changes."
                 : "Could Not Restore Image Specs");
         }
@@ -277,7 +276,7 @@ namespace views.images
                 rowCounter++;
             }
             image.ClientSizeCustom = JsonConvert.SerializeObject(specs);
-            Master.Master.Msgbox(_bllImage.UpdateImage(image,image.Name)
+            Message.Text = (_bllImage.UpdateImage(image,image.Name)
                 ? "Successfully Updated Image Specs"
                 : "Could Not Update Image Specs");
         }

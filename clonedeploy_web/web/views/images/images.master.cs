@@ -43,8 +43,6 @@ namespace views.masters
             _bllImage.DeleteImage(Image);
             if (Utility.Message.Contains("Successfully"))
                 Response.Redirect("~/views/images/search.aspx");
-            else
-                Master.Msgbox(Utility.Message);
         }
 
         private Image ReadProfile()

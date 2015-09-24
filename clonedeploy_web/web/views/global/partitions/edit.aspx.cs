@@ -9,6 +9,8 @@ using Partition = Models.Partition;
 
 public partial class views_global_partitions_edit : System.Web.UI.Page
 {
+    private readonly BLL.Partition _bllPartition = new BLL.Partition();
+
     public PartitionLayout Layout
     {
         get { return ReadProfile(); }
@@ -40,7 +42,7 @@ public partial class views_global_partitions_edit : System.Web.UI.Page
 
     protected void BindGrid()
     {
-        gvPartitions.DataSource = new Models.Partition().Search(Layout.Id);
+        gvPartitions.DataSource = _bllPartition.SearchPartitions(Layout.Id);
         gvPartitions.DataBind();
 
         if(gvPartitions.Rows.Count == 0)
@@ -68,9 +70,7 @@ public partial class views_global_partitions_edit : System.Web.UI.Page
 
     private PartitionLayout ReadProfile()
     {
-        var tmpLayout = new PartitionLayout {Id = Convert.ToInt32(Request.QueryString["layoutid"])};
-        tmpLayout.Read();
-        return tmpLayout;
+        return new BLL.PartitionLayout().GetPartitionLayout(Convert.ToInt32(Request.QueryString["layoutid"]));
     }
 
     protected void Insert(object sender, EventArgs e)
@@ -87,7 +87,7 @@ public partial class views_global_partitions_edit : System.Web.UI.Page
             Boot = Convert.ToInt32(((CheckBox)gvRow.FindControl("chkBootAdd")).Checked)
         };
 
-        partition.Create();
+        _bllPartition.AddPartition(partition);
 
         this.BindGrid();
     }
@@ -113,7 +113,7 @@ public partial class views_global_partitions_edit : System.Web.UI.Page
             Unit = ((DropDownList)gvRow.FindControl("ddlUnit")).Text,
             Boot = Convert.ToInt32(((CheckBox)gvRow.FindControl("chkBoot")).Checked)
         };
-        partition.Update();
+        _bllPartition.UpdatePartition(partition);
 
         gvPartitions.EditIndex = -1;
         this.BindGrid();
@@ -127,9 +127,7 @@ public partial class views_global_partitions_edit : System.Web.UI.Page
 
     protected void OnRowDeleting(object sender, GridViewDeleteEventArgs e)
     {
-        var partition = new Models.Partition {Id = Convert.ToInt32(gvPartitions.DataKeys[e.RowIndex].Values[0])};
-        partition.Read();
-        partition.Delete();
+        _bllPartition.DeletePartition(Convert.ToInt32(gvPartitions.DataKeys[e.RowIndex].Values[0]));
         BindGrid();
     }
 

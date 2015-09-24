@@ -32,27 +32,23 @@ namespace views.users
             Master.Master.FindControl("SubNav").Visible = false;
             if (IsPostBack) return;
             if (new Authorize().IsInMembership("Administrator")) return;
-            var wdsuser = new WdsUser { Name = HttpContext.Current.User.Identity.Name };
-            wdsuser.Read();
-            if (wdsuser.Id != Request.QueryString["userid"])
+           
+            if (Master.User.Id.ToString() != Request.QueryString["userid"])
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
         }
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            var user = new WdsUser {Id = Request.QueryString["userid"]};
-            user.Read();
-
+            var user = Master.User;
+            var bllUser = new BLL.User();
             if (txtUserPwd.Text == txtUserPwdConfirm.Text)
             {
                 user.Password = txtUserPwd.Text;
-                user.Salt = new WdsUser().CreateSalt(16);
-                if (user.ValidateUserData()) user.Update(true);
+                user.Salt = bllUser.CreateSalt(16);
+                if (bllUser.ValidateUserData(user)) bllUser.UpdateUser(user, true);
             }
             else
                 Utility.Message = "Passwords Did Not Match";
-
-            Master.Master.Msgbox(Utility.Message);
         }
     }
 }

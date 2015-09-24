@@ -26,7 +26,7 @@ using Security;
 
 namespace views.hosts
 {
-    public partial class HostImport : Page
+    public partial class HostImport : BasePages.Computers
     {
         protected void Page_Load(object sender, EventArgs e)
         {

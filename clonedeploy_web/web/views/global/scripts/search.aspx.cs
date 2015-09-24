@@ -17,11 +17,11 @@ public partial class views_admin_scripts_search : System.Web.UI.Page
 
     protected void PopulateGrid()
     {
-        var script = new Script();
-        gvScripts.DataSource = script.Search(txtSearch.Text);
+        var bllScript = new BLL.Script();
+        gvScripts.DataSource = bllScript.SearchScripts(txtSearch.Text);
         gvScripts.DataBind();
 
-        lblTotal.Text = gvScripts.Rows.Count + " Result(s) / " + script.GetTotalCount() + " Total Script(s)";
+        lblTotal.Text = gvScripts.Rows.Count + " Result(s) / " + bllScript.TotalCount() + " Total Script(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)

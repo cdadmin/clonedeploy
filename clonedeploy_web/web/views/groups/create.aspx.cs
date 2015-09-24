@@ -73,7 +73,6 @@ namespace views.groups
             if (Utility.Message.Contains("Successfully"))
                 Response.Redirect("~/views/groups/edit.aspx?groupid=" + group.Id);
 
-            Master.Master.Msgbox(Utility.Message);
         }
 
 

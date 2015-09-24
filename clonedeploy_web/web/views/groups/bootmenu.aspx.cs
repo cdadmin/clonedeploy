@@ -36,8 +36,6 @@ namespace views.groups
                 TypeId = Master.Group.Id.ToString()
             };
             historyg.CreateEvent();
-
-            Master.Master.Msgbox(Utility.Message);
         }
 
         protected void btnSetBootMenu_Click(object sender, EventArgs e)
@@ -67,8 +65,6 @@ namespace views.groups
                 TypeId = Master.Group.Id.ToString()
             };
             historyg.CreateEvent();
-
-            Master.Master.Msgbox(Utility.Message);
         }
 
         protected void ddlTemplate_SelectedIndexChanged(object sender, EventArgs e)
@@ -92,7 +88,7 @@ namespace views.groups
                     }
                     catch (Exception ex)
                     {
-                        Master.Master.Msgbox("Could Not Read Default Boot Menu.  Check The Exception Log For More Info");
+                        Message.Text = "Could Not Read Default Boot Menu.  Check The Exception Log For More Info";
                         Logger.Log(ex.Message);
                     }
                     break;

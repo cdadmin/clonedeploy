@@ -27,7 +27,7 @@ namespace Services.Client
                     return "checkInResult=\"A Task Is Not Running For This Host\"";
 
                 task.Status = "1";
-                task.Update("task");
+                new BLL.ActiveImagingTask().UpdateActiveImagingTask(task);
 
                 return "checkInResult=Success " + task.Arguments;
 

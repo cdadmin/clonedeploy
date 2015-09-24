@@ -53,27 +53,21 @@ namespace views.hosts
             };
 
             host.ImageProfile = host.Image == 0 ? 0 : Convert.ToInt32(ddlImageProfile.SelectedValue);
-            var bllComputer = new BLL.Computer();
-            if (bllComputer.ValidateHostData(host))
-            {
-                if (new  BLL.Computer().AddComputer(host) && !createAnother.Checked)
-                    Response.Redirect("~/views/computers/edit.aspx?hostid=" + host.Id);
-            }
 
-           
+            if (!BllComputer.ValidateHostData(host)) return;
+
+            if (BllComputer.AddComputer(host) && !createAnother.Checked)
+                Response.Redirect("~/views/computers/edit.aspx?hostid=" + host.Id);
         }
 
         protected void PopulateForm()
         {
-            
-
-     
+            PopulateImagesDdl(ddlHostImage);
         }
 
         protected void ddlHostImage_OnSelectedIndexChanged(object sender, EventArgs e)
         {
             PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlHostImage.SelectedValue));
-
         }
     }
 }

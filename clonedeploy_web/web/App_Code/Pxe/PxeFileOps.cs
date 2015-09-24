@@ -108,7 +108,6 @@ namespace Pxe
                 catch (Exception ex)
                 {
                     Logger.Log(ex.ToString());
-                    Utility.Message = "Could Not Delete PXE File";
                     return false;
                 }
             }
@@ -153,7 +152,6 @@ namespace Pxe
             catch (Exception ex)
             {
                 Logger.Log(ex.ToString());
-                Utility.Message = "Could Not Delete PXE File";
                 return false;
             }
         }

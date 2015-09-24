@@ -26,44 +26,5 @@ namespace Models
         [Column("run_post", Order = 5)]
         public int RunPost { get; set; }
 
-        public bool Create()
-        {
-            using (var db = new DB())
-            {
-                try
-                {         
-                    db.ImageProfileScript.Add(this);
-                    db.SaveChanges();
-                }
-                catch (DbUpdateException ex)
-                {
-                    Logger.Log(ex.InnerException.InnerException.Message);
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        public void DeleteAllForProfile(int profileId)
-        {
-            using (var db = new DB())
-            {
-                db.ImageProfileScript.RemoveRange(db.ImageProfileScript.Where(x => x.ProfileId == profileId));
-                db.SaveChanges();
-            }
-        }
-   
-        public List<ImageProfileScript> Search(int searchId)
-        {
-            List<ImageProfileScript> list = new List<ImageProfileScript>();
-            using (var db = new DB())
-            {
-                list.AddRange(from p in db.ImageProfileScript join s in db.Scripts on p.ScriptId equals s.Id where p.ProfileId == searchId orderby s.Priority ascending,s.Name ascending select p);
-            }
-
-            return list;
-        }
-
-   
     }
 }

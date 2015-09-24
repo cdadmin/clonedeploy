@@ -29,7 +29,6 @@ namespace views.images
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            Master.Master.Msgbox(Utility.Message);
             if (!IsPostBack) PopulateForm();
         }
 
@@ -103,8 +102,7 @@ namespace views.images
 
             if (!needsFixed)
                 Utility.Message = "No Fixes Are Needed For This Image";
-            Master.Master.Msgbox(Utility.Message);
-        }
+    }
 
         protected void btnUpdateImage_Click(object sender, EventArgs e)
         {
@@ -121,7 +119,6 @@ namespace views.images
             
             if (bllImage.ValidateImageData(image))
                 bllImage.UpdateImage(image, currentName);
-            Master.Master.Msgbox(Utility.Message);
         }
 
         protected void PopulateForm()

@@ -19,12 +19,12 @@ public partial class views_admin_client : System.Web.UI.Page
         if (IsPostBack) return;
      
         txtQSize.Text = Settings.QueueSize;    
-        txtNFSPath.Text = Setting.GetValueForAdminView(Settings.NfsUploadPath);   
+        txtNFSPath.Text = BLL.Setting.GetValueForAdminView(Settings.NfsUploadPath);   
         ddlCompAlg.SelectedValue = Settings.CompressionAlgorithm;
         ddlCompLevel.SelectedValue = Settings.CompressionLevel;   
         ddlImageXfer.SelectedValue = Settings.ImageTransferMode;  
-        txtNFSDeploy.Text = Setting.GetValueForAdminView(Settings.NfsDeployPath);       
-        txtSMBPath.Text = Setting.GetValueForAdminView(Settings.SmbPath);
+        txtNFSDeploy.Text = BLL.Setting.GetValueForAdminView(Settings.NfsDeployPath);       
+        txtSMBPath.Text = BLL.Setting.GetValueForAdminView(Settings.SmbPath);
         txtSMBUser.Text = Settings.SmbUserName;
         txtSMBPass.Text = Settings.SmbPassword;      
         txtGlobalHostArgs.Text = Settings.GlobalHostArgs;
@@ -60,7 +60,7 @@ public partial class views_admin_client : System.Web.UI.Page
 
             if (!string.IsNullOrEmpty(txtSMBPass.Text))
                 listSettings.Add(new Setting { Name = "SMB Password", Value = txtSMBPass.Text });
-            new Setting().Update(listSettings);
+            new BLL.Setting().UpdateSetting(listSettings);
         }
 
         new Utility().Msgbox(Utility.Message);
@@ -127,7 +127,7 @@ public partial class views_admin_client : System.Web.UI.Page
 
     protected bool ValidateSettings()
     {
-        if (ActiveImagingTask.ReadAll().Count > 0)
+        if (new BLL.ActiveImagingTask().ReadAll().Count > 0)
         {
             Utility.Message = "Settings Cannot Be Changed While Tasks Are Active";
             return false;

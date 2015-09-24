@@ -11,6 +11,10 @@ namespace BLL
     {
         private readonly DAL.Computer _da = new DAL.Computer();
 
+        public void Test()
+        {
+            Message.Text = "new Message";
+        }
         public bool AddComputer(Models.Computer computer)
         {
             if (_da.Exists(computer))

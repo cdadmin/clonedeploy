@@ -64,7 +64,6 @@ namespace views.tasks
                 }
                 Session.Remove("groupID");
                 Session.Remove("isGroupUnicast");
-                Master.Master.Msgbox(Utility.Message);
             }
             else
             {

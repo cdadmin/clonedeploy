@@ -31,17 +31,9 @@ namespace views.users
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            Master.Master.FindControl("SubNav").Visible = false;
+        
             if (IsPostBack) return;
-            if (!new Authorize().IsInMembership("Administrator"))
-            {
-                var wdsuser = new WdsUser { Name = HttpContext.Current.User.Identity.Name };
-                wdsuser.Read();
-                if (string.IsNullOrEmpty(wdsuser.Id)) //Fix for clicking logout button when on users page
-                    Response.Redirect("~/");
-                else
-                    Response.Redirect("~/views/users/resetpass.aspx?userid=" + wdsuser.Id);
-            }
+          
             PopulateGrid();
         }
 
@@ -55,7 +47,7 @@ namespace views.users
                 var dataKey = gvUsers.DataKeys[row.RowIndex];
                 if (dataKey != null)
                 {
-                    user.Id = dataKey.Value.ToString();
+                    user.Id = Convert.ToInt32(dataKey.Value);
                     user.Membership = row.Cells[3].Text;
                 }
                 if (user.Membership == "Administrator")
@@ -63,11 +55,10 @@ namespace views.users
                     Utility.Message = "Administrators Must Be Changed To A Lower Level User Before They Can Be Deleted";
                     break;
                 }
-                user.Delete();
+                new BLL.User().DeleteUser(user.Id);
             }
 
             PopulateGrid();
-            Master.Master.Msgbox(Utility.Message);
         }
 
         protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
@@ -102,10 +93,11 @@ namespace views.users
 
         protected void PopulateGrid()
         {
-            var user = new WdsUser();
-            gvUsers.DataSource = user.Search(txtSearch.Text);
+            var bllUser = new BLL.User();
+            
+            gvUsers.DataSource = bllUser.SearchUsers(txtSearch.Text);
             gvUsers.DataBind();
-            lblTotal.Text = gvUsers.Rows.Count + " Result(s) / " + user.GetTotalCount() + " Total User(s)";
+            lblTotal.Text = gvUsers.Rows.Count + " Result(s) / " + bllUser.TotalCount() + " Total User(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)

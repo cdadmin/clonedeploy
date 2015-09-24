@@ -10,8 +10,7 @@ namespace Security
     {
         public bool IsInMembership(string membership)
         {
-            WdsUser user = new WdsUser {Name = HttpContext.Current.User.Identity.Name};
-            user.Read();
+            WdsUser user = new BLL.User().GetUser(HttpContext.Current.User.Identity.Name);
             return membership == user.Membership;
         }
     }
