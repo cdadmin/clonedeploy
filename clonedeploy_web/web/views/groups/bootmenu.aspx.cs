@@ -9,7 +9,7 @@ using Pxe;
 
 namespace views.groups
 {
-    public partial class GroupBootMenu : Page
+    public partial class GroupBootMenu : BasePages.Groups
     {
         private readonly BLL.Group _bllGroup = new BLL.Group();
         private readonly BLL.GroupMembership _bllGroupMembership = new BLL.GroupMembership();
@@ -17,10 +17,10 @@ namespace views.groups
         {
           
 
-            switch (Master.Group.Type)
+            switch (Group.Type)
             {
                 case "standard":
-                    foreach (var host in _bllGroupMembership.GetGroupMembers(Master.Group.Id, ""))
+                    foreach (var host in _bllGroupMembership.GetGroupMembers(Group.Id, ""))
                     {
                         var customBootMenu = new CustomBootMenu {Host = host};
                         customBootMenu.RemoveCustomBootMenu();
@@ -33,7 +33,7 @@ namespace views.groups
             {
                 Event = "Remove Boot Menu",
                 Type = "Group",
-                TypeId = Master.Group.Id.ToString()
+                TypeId = Group.Id.ToString()
             };
             historyg.CreateEvent();
         }
@@ -42,10 +42,10 @@ namespace views.groups
         {
           
 
-            switch (Master.Group.Type)
+            switch (Group.Type)
             {
                 case "standard":
-                    foreach (var host in _bllGroupMembership.GetGroupMembers(Master.Group.Id, ""))
+                    foreach (var host in _bllGroupMembership.GetGroupMembers(Group.Id, ""))
                     {                    
                         var customBootMenu = new CustomBootMenu
                         {
@@ -62,7 +62,7 @@ namespace views.groups
             {
                 Event = "Set Boot Menu",
                 Type = "Group",
-                TypeId = Master.Group.Id.ToString()
+                TypeId = Group.Id.ToString()
             };
             historyg.CreateEvent();
         }

@@ -26,7 +26,7 @@ using Security;
 
 namespace views.groups
 {
-    public partial class GroupImport : Page
+    public partial class GroupImport : BasePages.Groups
     {
         protected void btnImport_Click(object sender, EventArgs e)
         {
@@ -39,7 +39,7 @@ namespace views.groups
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            Master.Master.FindControl("SubNav").Visible = false;
+           
             if (IsPostBack) return;
             if (new Authorize().IsInMembership("User"))
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied");

@@ -8,7 +8,7 @@ using BLL;
 using Global;
 using Models;
 
-public partial class views_groups_addmembers : System.Web.UI.Page
+public partial class views_groups_addmembers : BasePages.Groups
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -91,7 +91,7 @@ public partial class views_groups_addmembers : System.Web.UI.Page
                 var membership = new Models.GroupMembership
                 {
                     ComputerId = Convert.ToInt32(dataKey.Value),
-                    GroupId = Master.Group.Id
+                    GroupId = Group.Id
                 };
                 if (new BLL.GroupMembership().AddMembership(membership))
                     addedCount++;

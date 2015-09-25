@@ -28,7 +28,7 @@ using Security;
 
 namespace views.groups
 {
-    public partial class GroupCreate : Page
+    public partial class GroupCreate : BasePages.Groups
     {
         protected void Page_Load(object sender, EventArgs e)
         {

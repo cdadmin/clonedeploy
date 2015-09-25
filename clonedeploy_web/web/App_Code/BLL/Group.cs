@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Global;
+using Models;
+using Tasks;
 
 namespace BLL
 {
@@ -36,9 +38,9 @@ namespace BLL
         }
 
       
-        public void DeleteGroup(int groupId)
+        public bool DeleteGroup(int groupId)
         {
-            _da.Delete(groupId);
+            return _da.Delete(groupId);
         }
 
         public Models.Group GetGroup(int groupId)
@@ -54,6 +56,38 @@ namespace BLL
         public void UpdateGroup(Models.Group group)
         {
             _da.Update(group);
+        }
+
+        public void StartMulticast(Models.Group group)
+        {
+            var multicast = new Multicast { Group = group };
+            multicast.Create();
+        }
+
+        public void StartGroupUnicast(Models.Group group)
+        {
+            var bllImage = new BLL.Image();
+            var image = bllImage.GetImage(group.Image);
+
+            if (bllImage.Check_Checksum(image))
+            {
+                var count = 0;
+
+                foreach (var host in new BLL.GroupMembership().GetGroupMembers(group.Id, ""))
+                {
+                    var unicast = new Unicast {Host = host, Direction = "push"};
+                    unicast.Create();
+                    count++;
+                }
+                Utility.Message = "Started " + count + " Tasks";
+                var history = new History
+                {
+                    Event = "Unicast",
+                    Type = "Group",
+                    TypeId = group.Id.ToString()
+                };
+                history.CreateEvent();
+            }
         }
 
         public void ImportGroups()

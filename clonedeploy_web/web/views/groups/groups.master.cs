@@ -8,13 +8,16 @@ using Tasks;
 
 namespace views.masters
 {
-    public partial class GroupMaster : MasterPage
+    public partial class GroupMaster : BasePages.MasterBaseMaster
     {
-        public Models.Group Group { get { return ReadGroup(); } }
-        private readonly BLL.Group _bllGroup = new BLL.Group();
+        private BasePages.Groups groupBasePage { get; set; }
+        public Models.Group Group { get; set; }
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(Request["groupid"]))
+            groupBasePage = (Page as BasePages.Groups);
+            Group = groupBasePage.Group;
+            if (Group == null)
             {
                 Level2.Visible = false;
                 Level2_Edit.Visible = false;
@@ -40,103 +43,58 @@ namespace views.masters
 
         protected void btnConfirm_Click(object sender, EventArgs e)
         {
-            if ((string) Session["direction"] == "delete")
+            var taskType = (string) (Session["taskType"]);
+            Session.Remove("taskType");
+            switch (taskType)
             {
+                case "delete":
+                    if (groupBasePage.BllGroup.DeleteGroup(Group.Id))
+                        Response.Redirect("~/views/groups/search.aspx");
+                    break;
+                case "unicast":
+                    groupBasePage.BllGroup.StartGroupUnicast(Group);
+                    break;
+                case "multicast":
+                    groupBasePage.BllGroup.StartMulticast(Group);
+                    break;
 
-                Session.Remove("direction");
-                _bllGroup.DeleteGroup(Group.Id);
-                if (Utility.Message.Contains("Successfully"))
-                    Response.Redirect("~/views/groups/search.aspx");
-               
             }
-            else
-            {
-                var bllImage = new BLL.Image();
-                var image = bllImage.GetImage(Group.Image);
-                Session["imageID"] = image.Id;
-                if (bllImage.Check_Checksum(image))
-                {
-                    var count = 0;
-                    var isUnicast = Convert.ToInt32(Session["isGroupUnicast"]);
-                    if (isUnicast == 1)
-                    {
-                        foreach (var host in new BLL.GroupMembership().GetGroupMembers(Group.Id, ""))
-                        {
-                            var unicast = new Unicast {Host = host, Direction = "push"};
-                            unicast.Create();
-                            count++;
-                        }
-                        Utility.Message = "Started " + count + " Tasks";
-                        var history = new History
-                        {
-                            Event = "Unicast",
-                            Type = "Group",
-                            TypeId = Group.Id.ToString()
-                        };
-                        history.CreateEvent();
-                    }
-                    else
-                    {
-                        var multicast = new Multicast {Group = Group};
-                        multicast.Create();
-                    }
-                    Session.Remove("isGroupUnicast");
-                }
 
-                else
-                {
-                    lblIncorrectChecksum.Text =
-                        "This Image Has Not Been Confirmed And Cannot Be Deployed.  <br>Confirm It Now?";
-                    Page.ClientScript.RegisterStartupScript(GetType(), "modalscript",
-                        "$(function() {  var menuTop = document.getElementById('incorrectChecksum'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
-                        true);
-                }
-            }
+            lblIncorrectChecksum.Text =
+                "This Image Has Not Been Confirmed And Cannot Be Deployed.  <br>Confirm It Now?";
+            DisplayIncorrectChecksum();
+
         }
+
 
         protected void btnDelete_Click(object sender, EventArgs e)
         {
             lblTitle.Text = "Delete This Group?";
-            Session["direction"] = "delete";
+            Session["taskType"] = "delete";
             gvConfirm.DataBind(); // clear gridview if deploy or upload was clicked first
-            Page.ClientScript.RegisterStartupScript(GetType(), "modalscript",
-                "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
-                true);
+            DisplayConfirm();
         }
 
         protected void btnMulticast_Click(object sender, EventArgs e)
         {
-            Session["isGroupUnicast"] = 0;
+            Session["taskType"] = "multicast";
             lblTitle.Text = "Multicast The Selected Group?";
             gvConfirm.DataSource = new List<Group> {Group};
             gvConfirm.DataBind();
-            Page.ClientScript.RegisterStartupScript(GetType(), "modalscript",
-                "$(function() { var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
-                true);
+            DisplayConfirm();
         }
-
         protected void btnUnicast_Click(object sender, EventArgs e)
         {
-            Session["isGroupUnicast"] = 1;
+            Session["taskType"] = "unicast";
             lblTitle.Text = "Unicast All The Hosts In The Selected Group?";
             gvConfirm.DataSource = new List<Group> { Group };
             gvConfirm.DataBind();
-            Page.ClientScript.RegisterStartupScript(GetType(), "modalscript",
-                "$(function() { var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
-                true);
+            DisplayConfirm();
         }
 
         protected void OkButtonChecksum_Click(object sender, EventArgs e)
         {
-            var imageId = (string) (Session["imageID"]);
-            Response.Redirect("~/views/images/specs.aspx?imageid=" + imageId, false);
-            Session.Remove("imageID");
-        }
-
-        private Group ReadGroup()
-        {
-            return _bllGroup.GetGroup(Convert.ToInt32(Request.QueryString["groupid"]));
-
+            ApproveChecksumRedirect();
         }
     }
 }

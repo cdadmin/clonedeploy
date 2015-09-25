@@ -18,7 +18,7 @@ namespace BasePages
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
-            Group = !string.IsNullOrEmpty(Request["hostid"]) ? BllGroup.GetGroup(Convert.ToInt32(Request.QueryString["groupid"])) : null;
+            Group = !string.IsNullOrEmpty(Request["groupid"]) ? BllGroup.GetGroup(Convert.ToInt32(Request.QueryString["groupid"])) : null;
         }
     }
 }

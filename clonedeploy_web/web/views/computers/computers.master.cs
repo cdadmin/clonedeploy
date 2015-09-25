@@ -75,9 +75,7 @@ namespace views.masters
                     {
                         lblIncorrectChecksum.Text =
                             "This Image Has Not Been Confirmed And Cannot Be Deployed.  <br>Confirm It Now?";
-                        Page.ClientScript.RegisterStartupScript(GetType(), "modalscript",
-                            "$(function() {  var menuTop = document.getElementById('incorrectChecksum'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
-                            true);
+                        DisplayIncorrectChecksum();
                     }
                 }
                     break;
@@ -92,9 +90,7 @@ namespace views.masters
 
         protected void buttonConfirmChecksum_Click(object sender, EventArgs e)
         {
-            var imageId = (string) (Session["imageID"]);
-            Response.Redirect("~/views/images/specs.aspx?imageid=" + imageId, false);
-            Session.Remove("imageID");
+            ApproveChecksumRedirect();
         }
     }
 }

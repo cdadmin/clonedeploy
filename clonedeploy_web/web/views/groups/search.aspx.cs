@@ -27,7 +27,7 @@ using Models;
 
 namespace views.groups
 {
-    public partial class GroupSearch : Page
+    public partial class GroupSearch : BasePages.Groups
     {
         private readonly BLL.Group _bllGroup = new BLL.Group();
         protected void btnSubmit_Click(object sender, EventArgs e)

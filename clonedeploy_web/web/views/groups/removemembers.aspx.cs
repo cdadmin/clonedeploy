@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using Global;
 using Models;
 
-public partial class views_groups_removemembers : System.Web.UI.Page
+public partial class views_groups_removemembers : BasePages.Groups
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -56,10 +56,10 @@ public partial class views_groups_removemembers : System.Web.UI.Page
     protected void PopulateGrid()
     {
         var bllGroupMembership = new BLL.GroupMembership();
-        gvHosts.DataSource = bllGroupMembership.GetGroupMembers(Master.Group.Id,txtSearch.Text);
+        gvHosts.DataSource = bllGroupMembership.GetGroupMembers(Group.Id,txtSearch.Text);
         gvHosts.DataBind();
 
-        lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + bllGroupMembership.GetGroupMemberCount(Master.Group.Id) + " Total Host(s)";
+        lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + bllGroupMembership.GetGroupMemberCount(Group.Id) + " Total Host(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)
@@ -90,7 +90,7 @@ public partial class views_groups_removemembers : System.Web.UI.Page
                 var membership = new GroupMembership
                 {
                     ComputerId = Convert.ToInt32(dataKey.Value),
-                    GroupId = Master.Group.Id
+                    GroupId = Group.Id
                 };
                 if (new BLL.GroupMembership().DeleteMembership(membership))
                     removedCount++;

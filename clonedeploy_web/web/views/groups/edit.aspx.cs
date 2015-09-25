@@ -30,7 +30,7 @@ using Security;
 
 namespace views.groups
 {
-    public partial class GroupEdit : Page
+    public partial class GroupEdit : BasePages.Groups
     {
         private readonly BLL.LinuxProfile _bllLinuxProfile = new BLL.LinuxProfile();
 
@@ -38,9 +38,9 @@ namespace views.groups
         {
             var group = new Models.Group
             {
-                Id = Master.Group.Id,
+                Id = Group.Id,
                 Name = txtGroupName.Text,
-                Type = Master.Group.Type,
+                Type = Group.Type,
                 Image = Convert.ToInt32(ddlGroupImage.SelectedValue),
                 ImageProfile = Convert.ToInt32(ddlGroupImage.SelectedValue) == 0 ? 0 : Convert.ToInt32(ddlImageProfile.SelectedValue),
                 Description = txtGroupDesc.Text,
@@ -81,17 +81,17 @@ namespace views.groups
             ddlGroupImage.DataBind();
             ddlGroupImage.Items.Insert(0, new ListItem("Select Image", "0"));
 
-            txtGroupName.Text = Master.Group.Name;
-            txtGroupDesc.Text = Master.Group.Description;
-            ddlGroupImage.SelectedValue = Master.Group.Image.ToString();
-            txtGroupSenderArgs.Text = Master.Group.SenderArguments;
-            ddlGroupType.Text = Master.Group.Type;
+            txtGroupName.Text = Group.Name;
+            txtGroupDesc.Text = Group.Description;
+            ddlGroupImage.SelectedValue = Group.Image.ToString();
+            txtGroupSenderArgs.Text = Group.SenderArguments;
+            ddlGroupType.Text = Group.Type;
 
             ddlImageProfile.DataSource = _bllLinuxProfile.SearchProfiles(Convert.ToInt32(ddlGroupImage.SelectedValue)).Select(i => new { i.Id, i.Name });
             ddlImageProfile.DataValueField = "Id";
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();
-            ddlImageProfile.SelectedValue = Master.Group.ImageProfile.ToString();
+            ddlImageProfile.SelectedValue = Group.ImageProfile.ToString();
 
         }
 

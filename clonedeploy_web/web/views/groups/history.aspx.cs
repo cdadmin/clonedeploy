@@ -6,7 +6,7 @@ using Models;
 
 namespace views.groups
 {
-    public partial class GroupHistory : Page
+    public partial class GroupHistory : BasePages.Groups
     {
         protected void ddlLimit_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -28,7 +28,7 @@ namespace views.groups
             var history = new History
             {
                 Type = "Group",
-                TypeId = Master.Group.Id.ToString(),
+                TypeId = Group.Id.ToString(),
                 Limit = ddlLimit.Text
             };
             gvHistory.DataSource = history.Read();
