@@ -21,12 +21,13 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using Global;
+using Helpers;
 using Models;
 using Tasks;
 
 namespace views.tasks
 {
-    public partial class TaskCustom : Page
+    public partial class TaskCustom : BasePages.Tasks
     {
         protected void Page_Load(object sender, EventArgs e)
         {

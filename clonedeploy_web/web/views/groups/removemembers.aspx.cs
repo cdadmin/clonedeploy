@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Global;
+using Helpers;
 using Models;
 
 public partial class views_groups_removemembers : BasePages.Groups
@@ -97,7 +98,7 @@ public partial class views_groups_removemembers : BasePages.Groups
             }
         }
 
-        new Utility().Msgbox("Successfully Removed " + removedCount + " Members" );
+        Message.Text = "Successfully Removed " + removedCount + " Members";
 
         PopulateGrid();
 

@@ -1,7 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/masters/Task.master" AutoEventWireup="true" Inherits="views.tasks.TaskCustom" CodeFile="ondemand.aspx.cs" %>
-
-<%@ MasterType VirtualPath="~/views/masters/Task.master" %>
-<%@ Reference virtualPath="~/views/masters/Site.master" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/tasks/Task.master" AutoEventWireup="true" Inherits="views.tasks.TaskCustom" CodeFile="ondemand.aspx.cs" %>
 
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">

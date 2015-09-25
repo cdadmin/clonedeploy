@@ -1,6 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/Admin.master" AutoEventWireup="true" CodeFile="pxe.aspx.cs" Inherits="views_admin_pxe" %>
-<%@ MasterType VirtualPath="~/views/admin/admin.master" %>
-<%@ Reference virtualPath="~/views/masters/Site.master" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
      <li><a href="<%= ResolveUrl("~/views/admin/client.aspx") %>">PXE Settings</a></li>
 </asp:Content>
@@ -84,5 +83,22 @@
     <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update PXE Settings" OnClick="btnUpdateSettings_OnClick" CssClass="submits"/>
 </div>
 <br class="clear"/>
+    
+     <div id="confirmbox" class="confirm-box-outer">
+    <div class="confirm-box-inner">
+        <h4>
+            <asp:Label ID="lblTitle" runat="server" CssClass="modaltitle"></asp:Label>
+        </h4>
+
+        <div class="confirm-box-btns">
+            <asp:LinkButton ID="OkButton" OnClick="OkButton_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
+            <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no"/>
+            <h5 style="color: white;">
+                <asp:Label ID="lblClientISO" runat="server" CssClass="modaltitle"></asp:Label>
+            </h5>
+        </div>
+    </div>
+
+</div>
 </asp:Content>
 

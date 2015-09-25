@@ -6,28 +6,27 @@ using System.IO;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Global;
+using Helpers;
 using Newtonsoft.Json;
 using Partition;
 
 
 namespace views.images
 {
-    public partial class ImageSpecs : Page
+    public partial class ImageSpecs : BasePages.Images
     {
-        private readonly BLL.Image _bllImage = new BLL.Image();
-
         protected void btnConfirmChecksum_Click(object sender, EventArgs e)
         {
-            var image = _bllImage.GetImage(Master.Image.Id);
+            var image = BllImage.GetImage(Image.Id);
             image.Checksum = (string) (ViewState["checkSum"]);
-            _bllImage.UpdateImage(image,image.Name);
+            BllImage.UpdateImage(image,image.Name);
             Response.Redirect("~/views/images/edit.aspx?imageid=" + image.Id, true);
         }
 
         protected void btnPart_Click(object sender, EventArgs e)
         {
        
-            var imagePath = Settings.ImageStorePath + Master.Image.Name;
+            var imagePath = Settings.ImageStorePath + Image.Name;
 
             var selectedHd = (string) (ViewState["selectedHD"]);
             var control = sender as Control;
@@ -117,9 +116,9 @@ namespace views.images
             ViewState["selectedHD"] = gvRow.RowIndex.ToString();
             ViewState["selectedHDName"] = selectedHd;
             var specs =
-                JsonConvert.DeserializeObject<ImagePhysicalSpecs>(!string.IsNullOrEmpty(Master.Image.ClientSizeCustom)
-                    ? Master.Image.ClientSizeCustom
-                    : Master.Image.ClientSize);
+                JsonConvert.DeserializeObject<ImagePhysicalSpecs>(!string.IsNullOrEmpty(Image.ClientSizeCustom)
+                    ? Image.ClientSizeCustom
+                    : Image.ClientSize);
 
             var specslist = new List<PartitionPhysicalSpecs>();
             var vgList = new List<VgPhysicalSpecs>();
@@ -194,18 +193,18 @@ namespace views.images
 
         protected void btnRestoreImageSpecs_Click(object sender, EventArgs e)
         {
-            var image = Master.Image;
+            var image = Image;
             image.ClientSizeCustom = "";
            
 
-            Message.Text = (_bllImage.UpdateImage(image,image.Name)
+            Message.Text = (BllImage.UpdateImage(image,image.Name)
                 ? "Successfully Restored Image Specs.  Reload This Page To View Changes."
                 : "Could Not Restore Image Specs");
         }
 
         protected void btnUpdateImageSpecs_Click(object sender, EventArgs e)
         {
-            var image = Master.Image;
+            var image = Image;
            
             ImagePhysicalSpecs specs;
             try
@@ -276,14 +275,14 @@ namespace views.images
                 rowCounter++;
             }
             image.ClientSizeCustom = JsonConvert.SerializeObject(specs);
-            Message.Text = (_bllImage.UpdateImage(image,image.Name)
+            Message.Text = (BllImage.UpdateImage(image,image.Name)
                 ? "Successfully Updated Image Specs"
                 : "Could Not Update Image Specs");
         }
 
         protected void btnVG_Click(object sender, EventArgs e)
         {
-            var image = Master.Image;
+            var image = Image;
 
 
             var control = sender as Control;
@@ -371,9 +370,9 @@ namespace views.images
             try
             {
                 var specs =
-                    JsonConvert.DeserializeObject<ImagePhysicalSpecs>(!string.IsNullOrEmpty(Master.Image.ClientSizeCustom)
-                        ? Master.Image.ClientSizeCustom
-                        : Master.Image.ClientSize);
+                    JsonConvert.DeserializeObject<ImagePhysicalSpecs>(!string.IsNullOrEmpty(Image.ClientSizeCustom)
+                        ? Image.ClientSizeCustom
+                        : Image.ClientSize);
 
 
                 var specslist = new List<HdPhysicalSpecs>();
@@ -408,7 +407,7 @@ namespace views.images
             try
             {
                 var listPhysicalImageChecksums = new List<HdChecksum>();
-                var path = Settings.ImageStorePath + Master.Image.Name;
+                var path = Settings.ImageStorePath + Image.Name;
                 var imageChecksum = new HdChecksum
                 {
                     HdNumber = "hd1",
@@ -439,7 +438,7 @@ namespace views.images
                         var fc = new FileChecksum
                         {
                             FileName = Path.GetFileName(file),
-                            Checksum = _bllImage.Calculate_Hash(file)
+                            Checksum = BllImage.Calculate_Hash(file)
                         };
                         listChecksums.Add(fc);
                     }
@@ -449,7 +448,7 @@ namespace views.images
 
 
                 var physicalImageJson = JsonConvert.SerializeObject(listPhysicalImageChecksums);
-                if (physicalImageJson == Master.Image.Checksum) return;
+                if (physicalImageJson == Image.Checksum) return;
                 incorrectChecksum.Visible = true;
                 ViewState["checkSum"] = physicalImageJson;
             }

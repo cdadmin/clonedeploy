@@ -8,20 +8,19 @@ using BLL;
 using Models;
 using Image = Models.Image;
 
-public partial class views_masters_Profile : System.Web.UI.MasterPage
+public partial class views_masters_Profile : BasePages.MasterBaseMaster
 {
-    public Image Image { get { return Master.Image; } }
-    public Models.LinuxProfile ImageProfile { get { return ReadProfile(); } }
+    private BasePages.Images imageBasePage { get; set; }
+    public Models.LinuxProfile ImageProfile { get; set; }
+    public Models.Image Image { get; set; }
 
     public void Page_Load(object sender, EventArgs e)
     {
-        if (string.IsNullOrEmpty(Request["profileid"])) return;
-        if (string.IsNullOrEmpty(Request["imageid"])) Response.Redirect("~/", true);
-    }
+        imageBasePage = (Page as BasePages.Images);
+        ImageProfile = imageBasePage.ImageProfile;
+        Image = imageBasePage.Image;
 
-    private Models.LinuxProfile ReadProfile ()
-    {
-        var tmpProfile = new BLL.LinuxProfile().ReadProfile(Convert.ToInt32(Request.QueryString["profileid"]));
-        return tmpProfile;
-    }
+        if (ImageProfile == null) return;
+        if (Image == null) Response.Redirect("~/", true);
+    } 
 }

@@ -8,15 +8,15 @@ using BLL;
 using Global;
 using Models;
 
-public partial class views_images_profiles_partition : System.Web.UI.Page
+public partial class views_images_profiles_partition : BasePages.Images
 {
     private readonly BLL.ImageProfilePartition _bllImageProfilePartition = new BLL.ImageProfilePartition();
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
         {
-            ddlPartitionMethod.Text = Master.ImageProfile.PartitionMethod;
-            chkDownForceDynamic.Checked = Convert.ToBoolean(Master.ImageProfile.ForceDynamicPartitions);
+            ddlPartitionMethod.Text = ImageProfile.PartitionMethod;
+            chkDownForceDynamic.Checked = Convert.ToBoolean(ImageProfile.ForceDynamicPartitions);
           
             DisplayLayout();
         }
@@ -24,7 +24,7 @@ public partial class views_images_profiles_partition : System.Web.UI.Page
 
     protected void btnUpdatePartitions_OnClick(object sender, EventArgs e)
     {
-        var imageProfile = Master.ImageProfile;
+        var imageProfile = ImageProfile;
         imageProfile.PartitionMethod = ddlPartitionMethod.Text;
         imageProfile.ForceDynamicPartitions = Convert.ToInt16(chkDownForceDynamic.Checked);
 
@@ -35,7 +35,7 @@ public partial class views_images_profiles_partition : System.Web.UI.Page
         }
         else if (ddlPartitionMethod.SelectedIndex == 3)
         {
-            _bllImageProfilePartition.DeleteImageProfilePartitions(Master.ImageProfile.Id);
+            _bllImageProfilePartition.DeleteImageProfilePartitions(ImageProfile.Id);
             imageProfile.CustomPartitionScript = "";
             foreach (GridViewRow row in gvLayout.Rows)
             {
@@ -46,7 +46,7 @@ public partial class views_images_profiles_partition : System.Web.UI.Page
                 var profilePartitionLayout = new Models.ImageProfilePartition()
                 {
                     LayoutId = Convert.ToInt16(dataKey.Value),
-                    ProfileId = Master.ImageProfile.Id            
+                    ProfileId = ImageProfile.Id            
                 };
                 _bllImageProfilePartition.AddImageProfilePartition(profilePartitionLayout);
             }
@@ -55,8 +55,7 @@ public partial class views_images_profiles_partition : System.Web.UI.Page
         {
             imageProfile.CustomPartitionScript = "";
         }
-        new BLL.LinuxProfile().UpdateProfile(imageProfile);
-        new Utility().Msgbox(Utility.Message);
+        BllLinuxProfile.UpdateProfile(imageProfile);
     }
 
     protected void ddlPartitionMethod_OnSelectedIndexChanged(object sender, EventArgs e)
@@ -70,14 +69,14 @@ public partial class views_images_profiles_partition : System.Web.UI.Page
         {
             customScript.Visible = true;
             customLayout.Visible = false;
-            scriptEditorText.Value = Master.ImageProfile.CustomPartitionScript;
+            scriptEditorText.Value = ImageProfile.CustomPartitionScript;
         }
         else if (ddlPartitionMethod.SelectedIndex == 3)
         {
             customScript.Visible = false;
             customLayout.Visible = true;
             PopulateGrid();
-            var profilePartitionLayouts = _bllImageProfilePartition.SearchImageProfilePartitions(Master.ImageProfile.Id);
+            var profilePartitionLayouts = _bllImageProfilePartition.SearchImageProfilePartitions(ImageProfile.Id);
             foreach (GridViewRow row in gvLayout.Rows)
             {
                 var cb = (CheckBox) row.FindControl("chkSelector");

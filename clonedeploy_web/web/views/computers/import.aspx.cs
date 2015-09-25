@@ -21,6 +21,7 @@ using System.IO;
 using System.Web.UI;
 using BLL;
 using Global;
+using Helpers;
 using Models;
 using Security;
 
@@ -30,7 +31,7 @@ namespace views.hosts
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            Master.Master.FindControl("SubNav").Visible = false;
+          
             if (IsPostBack) return;
             if (new Authorize().IsInMembership("User"))
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied");

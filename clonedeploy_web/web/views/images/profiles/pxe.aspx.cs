@@ -6,8 +6,9 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using BLL;
 using Global;
+using Helpers;
 
-public partial class views_images_profiles_pxe : System.Web.UI.Page
+public partial class views_images_profiles_pxe : BasePages.Images
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -17,19 +18,18 @@ public partial class views_images_profiles_pxe : System.Web.UI.Page
             ddlBootImage.DataSource = Utility.GetBootImages();
             ddlKernel.DataBind();
             ddlBootImage.DataBind();
-            ddlKernel.Text = Master.ImageProfile.Kernel;
-            ddlBootImage.Text = Master.ImageProfile.BootImage;
-            txtKernelArgs.Text = Master.ImageProfile.KernelArguments;
+            ddlKernel.Text = ImageProfile.Kernel;
+            ddlBootImage.Text = ImageProfile.BootImage;
+            txtKernelArgs.Text = ImageProfile.KernelArguments;
         }
     }
 
     protected void buttonUpdatePXE_OnClick(object sender, EventArgs e)
     {
-        var imageProfile = Master.ImageProfile;
+        var imageProfile = ImageProfile;
         imageProfile.Kernel = ddlKernel.Text;
         imageProfile.BootImage = ddlBootImage.Text;
         imageProfile.KernelArguments = txtKernelArgs.Text;
-        new BLL.LinuxProfile().UpdateProfile(imageProfile);
-        new Utility().Msgbox(Utility.Message);
+        BllLinuxProfile.UpdateProfile(imageProfile);
     }
 }

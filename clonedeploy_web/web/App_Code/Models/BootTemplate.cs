@@ -21,7 +21,9 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using DAL;
 using Global;
+using Helpers;
 
 namespace Models
 {
@@ -39,89 +41,86 @@ namespace Models
         [Column("templatename", Order = 3)]
         public string Name { get; set; }
 
+        private readonly CloneDeployDbContext _context = new CloneDeployDbContext();
+
         public void Create()
         {
-            using (var db = new DB())
-            {
+           
                 try
                 {
-                    if (db.BootTemplates.Any(b => b.Name == Name))
+                    if (_context.BootTemplates.Any(b => b.Name == Name))
                     {
-                        Utility.Message = "This Template already exists";
+                        Message.Text = "This Template already exists";
                         return;
                     }
-                    db.BootTemplates.Add(this);
-                    db.SaveChanges();
+                    _context.BootTemplates.Add(this);
+                    _context.SaveChanges();
 
                 }
                 catch (DbUpdateException ex)
                 {
                     Logger.Log(ex.InnerException.InnerException.Message);
-                    Utility.Message = "Could Not Create Template.  Check The Exception Log For More Info.";
+                    Message.Text = "Could Not Create Template.  Check The Exception Log For More Info.";
                 }
 
-                Utility.Message = "Successfully Created Template";
-            }
+                Message.Text = "Successfully Created Template";
+            
         }
 
         public void Delete()
         {
-            using (var db = new DB())
-            {
+          
                 try
                 {
-                    db.BootTemplates.Attach(this);
-                    db.BootTemplates.Remove(this);
-                    db.SaveChanges();
+                    _context.BootTemplates.Attach(this);
+                    _context.BootTemplates.Remove(this);
+                    _context.SaveChanges();
                 }
 
                 catch (DbUpdateException ex)
                 {
                     Logger.Log(ex.InnerException.InnerException.Message);
-                    Utility.Message = "Could Not Delete Template.  Check The Exception Log For More Info.";
+                    Message.Text = "Could Not Delete Template.  Check The Exception Log For More Info.";
                     return;
                 }
 
-                Utility.Message = "Successfully Deleted Template";
-          }
+                Message.Text = "Successfully Deleted Template";
+          
         }
 
         public void Read()
         {
-            using (var db = new DB())
-            {
-                var template = db.BootTemplates.First(b => b.Name == Name);
+           
+                var template = _context.BootTemplates.First(b => b.Name == Name);
                 Name = template.Name;
                 Content = template.Content;
-            }
+            
         }
 
         public void Update()
         {
-            using (var db = new DB())
-            {
+          
                 try
                 {
-                    var oldTemplate = db.BootTemplates.Attach(this);
+                    var oldTemplate = _context.BootTemplates.Attach(this);
                     oldTemplate.Name = Name;
                     oldTemplate.Content = Content;
-                    db.SaveChanges();
+                    _context.SaveChanges();
                 }
                 catch (DbUpdateException ex)
                 {
                     Logger.Log(ex.InnerException.InnerException.Message);
-                    Utility.Message = "Could Not Update Template.  Check The Exception Log For More Info.";
+                    Message.Text = "Could Not Update Template.  Check The Exception Log For More Info.";
                 }
-            }
+            
         }
 
         public List<string> ListAll()
         {
             List<string> list = new List<string>();
-            using (var db = new DB())
-            {
-                list.AddRange(from b in db.BootTemplates orderby b.Name select b.Name);
-            }
+          
+                list.AddRange(from b in _context.BootTemplates orderby b.Name select b.Name);
+            
             return list;
         }
     }

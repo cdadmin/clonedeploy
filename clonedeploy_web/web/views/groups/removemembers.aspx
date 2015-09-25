@@ -1,10 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/groups/groups.master" AutoEventWireup="true" CodeFile="removemembers.aspx.cs" Inherits="views_groups_removemembers" %>
 
-<%@ MasterType VirtualPath="~/views/groups/groups.master" %>
-<%@ Reference virtualPath="~/views/masters/Site.master" %>
 
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
-   <li><a href="<%= ResolveUrl("~/views/groups/edit.aspx") %>?groupid=<%= Master.Group.Id %>" ><%= Master.Group.Name %></a></li>
+   <li><a href="<%= ResolveUrl("~/views/groups/edit.aspx") %>?groupid=<%= Group.Id %>" ><%= Group.Name %></a></li>
     <li>Remove Members</li>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent" Runat="Server">

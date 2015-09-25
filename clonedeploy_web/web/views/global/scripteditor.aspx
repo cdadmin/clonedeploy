@@ -1,7 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/Admin.master" AutoEventWireup="true" Inherits="views.admin.AdminSysprep" CodeFile="scripteditor.aspx.cs" ValidateRequest="false" %>
 
-<%@ MasterType VirtualPath="~/views/admin/Admin.master" %>
-<%@ Reference VirtualPath="~/views/masters/Site.master" %>
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li>Scripts</li>
     </asp:Content>

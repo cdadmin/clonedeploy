@@ -1,7 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/masters/Task.master" AutoEventWireup="true" Inherits="views.tasks.TaskActive" CodeFile="active.aspx.cs" %>
-
-<%@ MasterType VirtualPath="~/views/masters/Task.master" %>
-<%@ Reference virtualPath="~/views/masters/Site.master" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/tasks/Task.master" AutoEventWireup="true" Inherits="views.tasks.TaskActive" CodeFile="active.aspx.cs" %>
 
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">
@@ -93,7 +90,7 @@
             <asp:GridView ID="gvUcTasks" runat="server" AutoGenerateColumns="False" DataKeyNames="Id" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
                 <Columns>
                     <asp:BoundField DataField="Id" HeaderText="taskID" SortExpression="Id" InsertVisible="False" ReadOnly="True" Visible="False"/>
-                    <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_150"/>
+                    <asp:BoundField DataField="ComputerId" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_150"/>
                     <asp:BoundField DataField="Status" HeaderText="Status" SortExpression="Status" ItemStyle-CssClass="width_50"/>
                     <asp:BoundField DataField="Partition" HeaderText="Partition" ItemStyle-CssClass="mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller"/>
                     <asp:BoundField DataField="Elapsed" HeaderText="Elapsed" ItemStyle-CssClass="mobi-hide-small" HeaderStyle-CssClass="mobi-hide-small"/>
@@ -116,7 +113,7 @@
             <asp:GridView ID="gvTasks" Visible="false" runat="server" AutoGenerateColumns="False" DataKeyNames="Id" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
                 <Columns>
                     <asp:BoundField DataField="Id" HeaderText="taskID" SortExpression="_taskID" InsertVisible="False" ReadOnly="True" Visible="False"/>
-                    <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="_taskName" ItemStyle-CssClass="width_150"/>
+                    <asp:BoundField DataField="ComputerId" HeaderText="Name" SortExpression="_taskName" ItemStyle-CssClass="width_150"/>
                     <asp:BoundField DataField="Status" HeaderText="Status" SortExpression="_taskStatus" ItemStyle-CssClass="width_50"/>
                     <asp:BoundField DataField="Partition" HeaderText="Partition" ItemStyle-CssClass="mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller"/>
                     <asp:BoundField DataField="Elapsed" HeaderText="Elapsed" ItemStyle-CssClass="mobi-hide-small" HeaderStyle-CssClass="mobi-hide-small"/>

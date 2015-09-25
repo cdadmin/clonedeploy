@@ -1,7 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/masters/User.master" AutoEventWireup="true" Inherits="views.users.UserSearch" CodeFile="search.aspx.cs" %>
-
-<%@ MasterType VirtualPath="~/views/masters/User.master" %>
-<%@ Reference virtualPath="~/views/masters/Site.master" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/users/User.master" AutoEventWireup="true" Inherits="views.users.UserSearch" CodeFile="search.aspx.cs" %>
 
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">

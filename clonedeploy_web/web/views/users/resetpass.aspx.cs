@@ -20,26 +20,27 @@ using System;
 using System.Web;
 using System.Web.UI;
 using Global;
+using Helpers;
 using Models;
 using Security;
 
 namespace views.users
 {
-    public partial class ResetPass : Page
+    public partial class ResetPass : BasePages.Users
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            Master.Master.FindControl("SubNav").Visible = false;
+         
             if (IsPostBack) return;
             if (new Authorize().IsInMembership("Administrator")) return;
            
-            if (Master.User.Id.ToString() != Request.QueryString["userid"])
+            if (CloneDeployUser.Id.ToString() != Request.QueryString["userid"])
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
         }
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            var user = Master.User;
+            var user = CloneDeployUser;
             var bllUser = new BLL.User();
             if (txtUserPwd.Text == txtUserPwdConfirm.Text)
             {
@@ -48,7 +49,7 @@ namespace views.users
                 if (bllUser.ValidateUserData(user)) bllUser.UpdateUser(user, true);
             }
             else
-                Utility.Message = "Passwords Did Not Match";
+                Message.Text = "Passwords Did Not Match";
         }
     }
 }

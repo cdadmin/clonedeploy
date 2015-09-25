@@ -6,7 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Models;
 
-public partial class views_admin_scripts_search : System.Web.UI.Page
+public partial class views_admin_scripts_search : BasePages.Global
 {
     protected void Page_Load(object sender, EventArgs e)
     {

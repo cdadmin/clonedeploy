@@ -74,5 +74,22 @@
 </div>
 <br class="clear"/>
     </div>
+    
+      <div id="confirmbox" class="confirm-box-outer">
+    <div class="confirm-box-inner">
+        <h4>
+            <asp:Label ID="lblTitle" runat="server" CssClass="modaltitle"></asp:Label>
+        </h4>
+
+        <div class="confirm-box-btns">
+            <asp:LinkButton ID="OkButton" OnClick="OkButton_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
+            <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no"/>
+            <h5 style="color: white;">
+                <asp:Label ID="lblClientISO" runat="server" CssClass="modaltitle"></asp:Label>
+            </h5>
+        </div>
+    </div>
+
+</div>
 </asp:Content>
 

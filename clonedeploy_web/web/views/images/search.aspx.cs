@@ -23,6 +23,7 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Global;
+using Helpers;
 using Newtonsoft.Json;
 using Partition;
 using Security;
@@ -30,15 +31,14 @@ using Image = Models.Image;
 
 namespace views.images
 {
-    public partial class ImageSearch : Page
+    public partial class ImageSearch : BasePages.Images
     {
-        private readonly BLL.Image _bllImage = new BLL.Image();
         protected void btnHds_Click(object sender, EventArgs e)
         {
             var control = sender as Control;
             if (control == null) return;
             var row = (GridViewRow) control.Parent.Parent;
-            var image = _bllImage.GetImage(Convert.ToInt32(row.Cells[0].Text));
+            var image = BllImage.GetImage(Convert.ToInt32(row.Cells[0].Text));
 
 
             var gvHDs = (GridView) row.FindControl("gvHDs");
@@ -120,7 +120,7 @@ namespace views.images
                 {
                     var lbl = hdrow.FindControl("lblHDSize") as Label;
                     if (lbl != null) lbl.Text = "N/A";
-                    Utility.Message = "";
+                    Message.Text = "";
                 }
 
                 try
@@ -149,7 +149,7 @@ namespace views.images
                 {
                     var lblClient = hdrow.FindControl("lblHDSizeClient") as Label;
                     if (lblClient != null) lblClient.Text = "N/A";
-                    Utility.Message = "";
+                    Message.Text = "";
                 }
             }
         }
@@ -162,8 +162,8 @@ namespace views.images
                 if (cb == null || !cb.Checked) continue;
                 var dataKey = gvImages.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
-                var image = _bllImage.GetImage(Convert.ToInt32(dataKey.Value));
-                _bllImage.DeleteImage(image);
+                var image = BllImage.GetImage(Convert.ToInt32(dataKey.Value));
+                BllImage.DeleteImage(image);
             }
 
             PopulateGrid(true);
@@ -212,9 +212,9 @@ namespace views.images
             if (bind)
             {
                
-                gvImages.DataSource = _bllImage.SearchImages(txtSearch.Text);
+                gvImages.DataSource = BllImage.SearchImages(txtSearch.Text);
                 gvImages.DataBind();
-                lblTotal.Text = gvImages.Rows.Count + " Result(s) / " + _bllImage.TotalCount() + " Total Image(s)";
+                lblTotal.Text = gvImages.Rows.Count + " Result(s) / " + BllImage.TotalCount() + " Total Image(s)";
             }
 
             foreach (GridViewRow row in gvImages.Rows)
@@ -235,14 +235,14 @@ namespace views.images
                 {
                     var lbl = row.FindControl("lblSize") as Label;
                     if (lbl != null) lbl.Text = "N/A";
-                    Utility.Message = "";
+                    Message.Text = "";
                 }
 
                 try
                 {
                     var lblClient = row.FindControl("lblSizeClient") as Label;
                     var imageId = ((HiddenField) row.FindControl("HiddenID")).Value;
-                    var img = _bllImage.GetImage(Convert.ToInt32(imageId));
+                    var img = BllImage.GetImage(Convert.ToInt32(imageId));
 
                     var calc = new MinimumSize {Image = img};
                     var fltClientSize = calc.Hd(0, "1")/1024f/1024f/1024f;
@@ -256,7 +256,7 @@ namespace views.images
                 {
                     var lblClient = row.FindControl("lblSizeClient") as Label;
                     if (lblClient != null) lblClient.Text = "N/A";
-                    Utility.Message = "";
+                    Message.Text = "";
                 }
             }
         }

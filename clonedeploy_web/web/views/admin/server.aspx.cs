@@ -6,9 +6,10 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Global;
+using Helpers;
 using Models;
 
-public partial class views_admin_server : System.Web.UI.Page
+public partial class views_admin_server : BasePages.Admin
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -72,14 +73,13 @@ public partial class views_admin_server : System.Web.UI.Page
 
             if (newBootMenu)
             {
-                var confirmTitle = Master.Master.FindControl("Content").FindControl("lblTitle") as Label;
-                confirmTitle.Text = Utility.Message;
-                confirmTitle.Text +=
+               
+                lblTitle.Text = Message.Text;
+                lblTitle.Text +=
                     "<br> Your Settings Changes Require A New PXE Boot File Be Created.  <br>Create It Now?";
                 if (newClientIso)
                 {
-                    var isoTitle = Master.Master.FindControl("Content").FindControl("lblClientISO") as Label;
-                    isoTitle.Text = "If You Are Using The Client ISO, It Must Also Be Manually Updated.";
+                    lblClientISO.Text = "If You Are Using The Client ISO, It Must Also Be Manually Updated.";
                 }
                 ClientScript.RegisterStartupScript(GetType(), "modalscript",
                     "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
@@ -90,15 +90,19 @@ public partial class views_admin_server : System.Web.UI.Page
             
 
         }
-        new Utility().Msgbox(Utility.Message);
+    }
 
+
+    protected void OkButton_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("~/views/admin/bootmenu.aspx?defaultmenu=true");
     }
 
     protected bool ValidateSettings()
     {
         if (new BLL.ActiveImagingTask().ReadAll().Count > 0)
         {
-            Utility.Message = "Settings Cannot Be Changed While Tasks Are Active";
+            Message.Text = "Settings Cannot Be Changed While Tasks Are Active";
             return false;
         }
         if (txtPort.Text != "80" && txtPort.Text != "443" && !string.IsNullOrEmpty(txtPort.Text))

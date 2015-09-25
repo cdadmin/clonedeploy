@@ -4,7 +4,7 @@ using Security;
 
 namespace views.admin
 {
-    public partial class Reports : Page
+    public partial class Reports : BasePages.Admin
     {
         protected void Page_Load(object sender, EventArgs e)
         {

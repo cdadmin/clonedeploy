@@ -1,6 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/images/profiles/profiles.master" AutoEventWireup="true" CodeFile="search.aspx.cs" Inherits="views_images_profiles_search" %>
 
-<%@ MasterType VirtualPath="~/views/images/profiles/profiles.master" %>
+
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
     <li>Search</li>

@@ -6,8 +6,9 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Global;
+using Helpers;
 
-public partial class views_admin_scripts_editcore : System.Web.UI.Page
+public partial class views_admin_scripts_editcore : BasePages.Global
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -36,6 +37,6 @@ public partial class views_admin_scripts_editcore : System.Web.UI.Page
 
         var fixedLineEnding = scriptEditor.Value.Replace("\r\n", "\n");
         File.WriteAllText(path, fixedLineEnding);
-        new Utility().Msgbox("Successfully Updated " + ddlCoreScripts.Text);
+        Message.Text = "Successfully Updated " + ddlCoreScripts.Text;
     }
 }

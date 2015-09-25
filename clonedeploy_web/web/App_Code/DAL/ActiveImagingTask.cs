@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 using Global;
+using Helpers;
 using Pxe;
 
 namespace DAL
@@ -134,6 +135,11 @@ namespace DAL
             }
         }
 
+        public void DeleteAll()
+        {
+            _context.Database.ExecuteSqlCommand("TRUNCATE TABLE activetasks;");
+            _context.Database.ExecuteSqlCommand("TRUNCATE TABLE activemctasks;");
+        }
         
     }
 }

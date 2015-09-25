@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Web;
+using DAL;
 using Global;
 
 namespace Models
@@ -46,6 +47,9 @@ namespace Models
         [NotMapped]
         public string Limit { get; set; }
 
+
+        private readonly CloneDeployDbContext _context = new CloneDeployDbContext();
+
         public void CreateEvent()
         {
             //FIXME
@@ -78,18 +82,19 @@ namespace Models
              * */
         }
 
+
+
         public List<History> Read()
         {
             if (Limit == "All")
                 Limit = "9999";
             List<History> list = new List<History>();
-            using (var db = new DB())
-            {
-                list.AddRange((from h in db.History
+
+                list.AddRange((from h in _context.History
                     where h.Type == Type && h.TypeId == TypeId
                     orderby h.EventDate descending
                     select h).Take(Convert.ToInt16(Limit)));              
-            }
+
             return list;
         }
 
@@ -98,13 +103,12 @@ namespace Models
             if (Limit == "All")
                 Limit = "9999";
             List<History> list = new List<History>();
-            using (var db = new DB())
-            {
-                list.AddRange((from h in db.History
+
+                list.AddRange((from h in _context.History
                                where (h.Type == Type && h.TypeId == TypeId) || h.EventUser == EventUser
                                orderby h.EventDate descending
                                select h).Take(Convert.ToInt16(Limit)));
-            }
+            
             return list;
         }
     }

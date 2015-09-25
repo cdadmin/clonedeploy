@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using Global;
+using Helpers;
 using Models;
 
 namespace DAL
@@ -68,13 +69,7 @@ namespace DAL
 
         public void Import()
         {
-            var path = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
-                         Path.DirectorySeparatorChar + "csvupload" + Path.DirectorySeparatorChar;
-            using (var db = new DB())
-            {
-                var importCount = db.Database.ExecuteSqlCommand("copy groups(groupname,groupdesc,groupimage,groupkernel,groupbootimage,grouparguments,groupsenderargs,groupscripts) from '" + path + "hosts.csv' DELIMITER ',' csv header FORCE NOT NULL groupdesc,groupimage,groupkernel,groupbootimage,grouparguments,groupsenderargs,groupscripts;");
-                Utility.Message = importCount + " Group(s) Imported Successfully";
-            }
+          throw new Exception("Not Implemented");
         }
 
         public Models.Group Read(int groupId)

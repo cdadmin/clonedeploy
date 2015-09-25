@@ -23,7 +23,7 @@ using Models;
 
 namespace views.admin
 {
-    public partial class AdminExport : Page
+    public partial class AdminExport : BasePages.Admin
     {
         protected void btnExport_Click(object sender, EventArgs e)
         {

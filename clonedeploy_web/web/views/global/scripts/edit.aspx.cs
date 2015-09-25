@@ -8,7 +8,7 @@ using Global;
 using Models;
 using Image = Models.Image;
 
-public partial class views_admin_scripts_edit : System.Web.UI.Page
+public partial class views_admin_scripts_edit : BasePages.Global
 {
     public Script Script { get { return ReadProfile(); } }
     protected void Page_Load(object sender, EventArgs e)
@@ -28,7 +28,6 @@ public partial class views_admin_scripts_edit : System.Web.UI.Page
         var fixedLineEnding = scriptEditor.Value.Replace("\r\n", "\n");
         script.Contents = fixedLineEnding;
         new BLL.Script().UpdateScript(script);
-        new Utility().Msgbox(Utility.Message);
     }
 
     protected void PopulateForm()

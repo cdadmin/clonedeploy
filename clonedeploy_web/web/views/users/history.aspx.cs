@@ -6,7 +6,7 @@ using Models;
 
 namespace views.users
 {
-    public partial class UserHistory : Page
+    public partial class UserHistory : BasePages.Users
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -27,9 +27,9 @@ namespace views.users
             var history = new History
             {
                 Type = "User",
-                TypeId = Master.User.Id.ToString(),
+                TypeId = CloneDeployUser.Id.ToString(),
                 Limit = ddlLimit.Text,
-                EventUser = Master.User.Name
+                EventUser = CloneDeployUser.Name
             };
             gvHistory.DataSource = history.ReadUser();
             gvHistory.DataBind();

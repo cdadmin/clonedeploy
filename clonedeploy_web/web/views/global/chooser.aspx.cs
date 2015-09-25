@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-public partial class views_global_chooser : System.Web.UI.Page
+public partial class views_global_chooser : BasePages.Global
 {
     protected void Page_Load(object sender, EventArgs e)
     {

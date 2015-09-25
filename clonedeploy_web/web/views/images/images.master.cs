@@ -2,18 +2,21 @@
 using System.Activities.Statements;
 using System.Web.UI;
 using Global;
+using Helpers;
 using Models;
 
 namespace views.masters
 {
-    public partial class ImageMaster : MasterPage
+    public partial class ImageMaster : BasePages.MasterBaseMaster
     {
-        public Image Image { get { return ReadProfile(); } }
-        private readonly BLL.Image _bllImage = new BLL.Image();
+        private BasePages.Images imagesBasePage { get; set; }
+        public Models.Image Image { get; set; }
 
         public void Page_Load(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(Request["imageid"]))
+            imagesBasePage = (Page as BasePages.Images);
+            if (imagesBasePage != null) Image = imagesBasePage.Image;
+            if (Image == null)
             {
                 Level2.Visible = false;
                 return;
@@ -33,21 +36,14 @@ namespace views.masters
         protected void btnDelete_Click(object sender, EventArgs e)
         {
             lblTitle.Text = "Delete This Image?";
-            Page.ClientScript.RegisterStartupScript(GetType(), "modalscript",
-                "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
-                true);
+            DisplayConfirm();
         }
 
         protected void OkButton_Click(object sender, EventArgs e)
         {
-            _bllImage.DeleteImage(Image);
-            if (Utility.Message.Contains("Successfully"))
+            imagesBasePage.BllImage.DeleteImage(Image);
+            if (Message.Text.Contains("Successfully"))
                 Response.Redirect("~/views/images/search.aspx");
-        }
-
-        private Image ReadProfile()
-        {
-            return _bllImage.GetImage(Convert.ToInt32(Request.QueryString["imageid"]));
         }
     }
 }

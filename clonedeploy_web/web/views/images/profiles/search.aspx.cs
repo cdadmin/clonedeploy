@@ -8,12 +8,11 @@ using BLL;
 using Global;
 using Models;
 
-public partial class views_images_profiles_search : System.Web.UI.Page
+public partial class views_images_profiles_search : BasePages.Images
 {
     protected void Page_Load(object sender, EventArgs e)
     {
         if (IsPostBack) return;
-        new Utility().Msgbox(Utility.Message); //For Redirects
 
         PopulateGrid();
     }
@@ -30,7 +29,6 @@ public partial class views_images_profiles_search : System.Web.UI.Page
         }
 
         PopulateGrid();
-        new Utility().Msgbox(Utility.Message);
     }
 
     protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
@@ -69,7 +67,7 @@ public partial class views_images_profiles_search : System.Web.UI.Page
 
     protected void PopulateGrid()
     {
-        gvProfiles.DataSource = new BLL.LinuxProfile().SearchProfiles(Master.Image.Id);
+        gvProfiles.DataSource = BllLinuxProfile.SearchProfiles(Image.Id);
         gvProfiles.DataBind();
 
     }

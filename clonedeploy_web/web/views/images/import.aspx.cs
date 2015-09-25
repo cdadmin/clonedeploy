@@ -20,12 +20,13 @@ using System;
 using System.IO;
 using System.Web.UI;
 using Global;
+using Helpers;
 using Models;
 using Security;
 
 namespace views.images
 {
-    public partial class ImageImport : Page
+    public partial class ImageImport : BasePages.Images
     {
         protected void btnImport_Click(object sender, EventArgs e)
         {
@@ -38,7 +39,6 @@ namespace views.images
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            Master.Master.FindControl("SubNav").Visible = false;
             if (IsPostBack) return;
             if (new Authorize().IsInMembership("User"))
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied");

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.IO;
 using System.Linq;
 using System.Web;
 using Global;
+using Helpers;
 using Models;
 
 namespace DAL
@@ -67,17 +69,7 @@ namespace DAL
 
         public void Import()
         {
-            var path = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
-                       Path.DirectorySeparatorChar + "csvupload" + Path.DirectorySeparatorChar;
-            using (var db = new DB())
-            {
-                var importCount =
-                    db.Database.ExecuteSqlCommand(
-                        "copy hosts(hostname,hostmac,hostimage,hostgroup,hostdesc,hostkernel,hostbootimage,hostarguments,hostscripts) from '" +
-                        path +
-                        "hosts.csv' DELIMITER ',' csv header force not null hostimage,hostgroup,hostdesc,hostkernel,hostbootimage,hostarguments,hostscripts;");
-                Utility.Message = importCount + " Host(s) Imported Successfully";
-            }
+           throw new Exception("Not Implemented");
         }
 
         public Models.Computer Read(int computerId)

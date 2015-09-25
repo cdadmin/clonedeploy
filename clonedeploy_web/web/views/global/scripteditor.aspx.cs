@@ -21,11 +21,12 @@ using System.IO;
 using System.Web;
 using System.Web.UI;
 using Global;
+using Helpers;
 using Models;
 
 namespace views.admin
 {
-    public partial class AdminSysprep : Page
+    public partial class AdminSysprep : BasePages.Global
     {
         protected void Page_Load(object sender, EventArgs e)
         {

@@ -21,13 +21,14 @@ using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Global;
+using Helpers;
 using Models;
 using Tasks;
 
 
 namespace views.tasks
 {
-    public partial class TaskMulticast : Page
+    public partial class TaskMulticast : BasePages.Tasks
     {
         private readonly BLL.Group _bllGroup = new BLL.Group();
         protected void Page_Load(object sender, EventArgs e)
@@ -55,7 +56,7 @@ namespace views.tasks
                         unicast.Create();
                         count++;
                     }
-                    Utility.Message = "Started " + count + " Tasks";
+                    Message.Text = "Started " + count + " Tasks";
                 }
                 else
                 {

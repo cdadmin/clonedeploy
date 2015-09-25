@@ -1,7 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/groups/groups.master" AutoEventWireup="true" Inherits="views.groups.GroupCreate" CodeFile="create.aspx.cs" %>
 
-<%@ MasterType VirtualPath="~/views/groups/groups.master" %>
-<%@ Reference virtualPath="~/views/masters/Site.master" %>
+
 
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">

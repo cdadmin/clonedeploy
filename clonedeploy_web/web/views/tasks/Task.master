@@ -1,0 +1,41 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/views/Site.master" AutoEventWireup="true" CodeFile="Task.master.cs" Inherits="views.masters.TaskMaster" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="HeaderNav" Runat="Server">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#nav-tasks').addClass("nav-current");
+        });
+    </script>
+    <div class="size-1 column">
+        <h1 class="remove-bottom icon-task-title">Tasks</h1>
+    </div>
+ 
+</asp:Content>
+
+<asp:Content runat="server" ID="Breadcrumb" ContentPlaceHolderID="Breadcrumb">
+     <li><a href="<%= ResolveUrl("~/views/users/search.aspx") %>">Users</a></li>
+    <asp:ContentPlaceHolder ID="BreadcrumbSub" runat="server">
+        </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="SubNav" Runat="Server">
+    
+    <div class="sub-nav-top">
+        <div id="Level1" runat="server">
+        <ul>
+            <li><a id="taskactive" href="<%= ResolveUrl("~/views/tasks/active.aspx") %>" ><span class="sub-nav-text">Active Tasks</span></a></li>
+            <li><a id="taskunicast" href="<%= ResolveUrl("~/views/tasks/hosts.aspx") %>" ><span class="sub-nav-text">Start Computer Task</span></a></li>
+            <li><a id="taskmulticast" href="<%= ResolveUrl("~/views/tasks/groups.aspx") %>" ><span class="sub-nav-text">Start Group Task</span></a></li>
+            <li><a id="taskond" href="<%= ResolveUrl("~/views/tasks/ondemand.aspx") %>"><span class="sub-nav-text">Start On Demand</span></a></li>
+       </ul>
+        </div>
+    </div>
+</asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">
+    <div class="content-right">
+    <asp:ContentPlaceHolder ID="SubContent" runat="server">
+    </asp:ContentPlaceHolder>
+        <br class="clear" />
+          <div class="spacer"></div>
+        </div>
+</asp:Content>

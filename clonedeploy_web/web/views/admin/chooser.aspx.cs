@@ -25,7 +25,7 @@ using Models;
 
 namespace views.admin
 {
-    public partial class AdminChooser : Page
+    public partial class AdminChooser : BasePages.Admin
     {
         protected void Page_Load(object sender, EventArgs e)
         {

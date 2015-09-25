@@ -1,7 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/images/images.master" AutoEventWireup="true" Inherits="views.images.ImageCreate" CodeFile="create.aspx.cs" %>
 
-<%@ MasterType VirtualPath="~/views/images/images.master" %>
-<%@ Reference virtualPath="~/views/masters/Site.master" %>
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li><a href="<%= ResolveUrl("~/views/images/create.aspx") %>">New</a></li>
     </asp:Content>

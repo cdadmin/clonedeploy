@@ -25,7 +25,7 @@ using Models;
 
 namespace views.admin
 {
-    public partial class AdminScriptEditor : Page
+    public partial class AdminScriptEditor : BasePages.Global
     {
         protected void Page_Load(object sender, EventArgs e)
         {

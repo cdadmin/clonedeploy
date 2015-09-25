@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using Global;
 using Models;
 
-public partial class views_global_partitions_create : System.Web.UI.Page
+public partial class views_global_partitions_create : BasePages.Global
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -27,6 +27,5 @@ public partial class views_global_partitions_create : System.Web.UI.Page
 
         new BLL.PartitionLayout().AddPartitionLayout(layout);
      
-        new Utility().Msgbox(Utility.Message);
     }
 }

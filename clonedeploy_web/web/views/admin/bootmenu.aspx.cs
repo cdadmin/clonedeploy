@@ -3,13 +3,14 @@ using System.IO;
 using System.Net;
 using System.Web.UI;
 using Global;
+using Helpers;
 using Models;
 using Pxe;
 using Security;
 
 namespace views.admin
 {
-    public partial class AdminBootMenu : Page
+    public partial class AdminBootMenu : BasePages.Admin
     {
         protected void btnDeleteTemplate_Click(object sender, EventArgs e)
         {

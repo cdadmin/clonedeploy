@@ -6,7 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Models;
 
-public partial class views_images_profiles_scripts : System.Web.UI.Page
+public partial class views_images_profiles_scripts : BasePages.Images
 {
     private readonly BLL.ImageProfileScript _bllImageProfileScript = new BLL.ImageProfileScript();
     protected void Page_Load(object sender, EventArgs e)
@@ -22,7 +22,7 @@ public partial class views_images_profiles_scripts : System.Web.UI.Page
         gvScripts.DataSource = new BLL.Script().SearchScripts("");
         gvScripts.DataBind();
 
-        var profileScripts = _bllImageProfileScript.SearchImageProfileScripts(Master.ImageProfile.Id);
+        var profileScripts = _bllImageProfileScript.SearchImageProfileScripts(ImageProfile.Id);
         foreach (GridViewRow row in gvScripts.Rows)
         {
             var pre = (CheckBox)row.FindControl("chkPre");
@@ -76,7 +76,7 @@ public partial class views_images_profiles_scripts : System.Web.UI.Page
 
     protected void btnUpdateScripts_OnClick(object sender, EventArgs e)
     {
-        _bllImageProfileScript.DeleteImageProfileScripts((Master.ImageProfile.Id));
+        _bllImageProfileScript.DeleteImageProfileScripts((ImageProfile.Id));
         foreach (GridViewRow row in gvScripts.Rows)
         {
             var pre = (CheckBox)row.FindControl("chkPre");
@@ -89,7 +89,7 @@ public partial class views_images_profiles_scripts : System.Web.UI.Page
             var profileScript = new ImageProfileScript()
             {
                 ScriptId = Convert.ToInt16(dataKey.Value),
-                ProfileId = Master.ImageProfile.Id,
+                ProfileId = ImageProfile.Id,
                 RunPre = Convert.ToInt16(pre.Checked),
                 RunPost = Convert.ToInt16(post.Checked)
             };

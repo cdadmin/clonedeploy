@@ -7,9 +7,10 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Global;
+using Helpers;
 using Models;
 
-public partial class views_admin_client : System.Web.UI.Page
+public partial class views_admin_client : BasePages.Admin
 {
    
     protected void Page_Load(object sender, EventArgs e)
@@ -62,8 +63,6 @@ public partial class views_admin_client : System.Web.UI.Page
                 listSettings.Add(new Setting { Name = "SMB Password", Value = txtSMBPass.Text });
             new BLL.Setting().UpdateSetting(listSettings);
         }
-
-        new Utility().Msgbox(Utility.Message);
     }
 
     protected void ImageXfer_Changed(object sender, EventArgs e)
@@ -129,7 +128,7 @@ public partial class views_admin_client : System.Web.UI.Page
     {
         if (new BLL.ActiveImagingTask().ReadAll().Count > 0)
         {
-            Utility.Message = "Settings Cannot Be Changed While Tasks Are Active";
+            Message.Text = "Settings Cannot Be Changed While Tasks Are Active";
             return false;
         }
 

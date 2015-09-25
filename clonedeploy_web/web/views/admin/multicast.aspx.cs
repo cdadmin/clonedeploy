@@ -6,9 +6,10 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Global;
+using Helpers;
 using Models;
 
-public partial class views_admin_multicast : System.Web.UI.Page
+public partial class views_admin_multicast : BasePages.Admin
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -55,14 +56,13 @@ public partial class views_admin_multicast : System.Web.UI.Page
             }
         }
 
-        new Utility().Msgbox(Utility.Message);
     }
 
     protected bool ValidateSettings()
     {
         if (new BLL.ActiveImagingTask().ReadAll().Count > 0)
         {
-            Utility.Message = "Settings Cannot Be Changed While Tasks Are Active";
+            Message.Text = "Settings Cannot Be Changed While Tasks Are Active";
             return false;
         }
 
@@ -88,7 +88,7 @@ public partial class views_admin_multicast : System.Web.UI.Page
             {
                 return true;
             }
-            Utility.Message = "End Port Must Be At Least 2 More Than Starting Port";
+            Message.Text = "End Port Must Be At Least 2 More Than Starting Port";
             return false;
         }
         catch (Exception ex)

@@ -11,9 +11,6 @@ namespace views.masters
                 Level1.Visible = false;
         }
 
-        protected void OkButton_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("~/views/admin/bootmenu.aspx?defaultmenu=true");
-        }
+     
     }
 }

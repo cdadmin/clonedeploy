@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/images/profiles/profiles.master" AutoEventWireup="true" CodeFile="create.aspx.cs" Inherits="views_images_profiles_create" %>
-<%@ MasterType VirtualPath="~/views/images/profiles/profiles.master" %>
+
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
     <li>New</li>

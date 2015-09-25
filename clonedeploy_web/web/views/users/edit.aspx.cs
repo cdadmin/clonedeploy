@@ -22,11 +22,12 @@ using System.Data;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Global;
+using Helpers;
 using Models;
 
 namespace views.users
 {
-    public partial class EditUser : Page
+    public partial class EditUser : BasePages.Users
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -79,7 +80,7 @@ namespace views.users
                     if (bllUser.ValidateUserData(user)) bllUser.UpdateUser(user, true);
                 }
                 else
-                    Utility.Message = "Passwords Did Not Match";
+                    Message.Text = "Passwords Did Not Match";
             }
         }
 
@@ -129,7 +130,7 @@ namespace views.users
             gvGroups.DataSource = new BLL.Group().SearchGroups("%");
             gvGroups.DataBind();
 
-            if (Master.User.Membership == "User")
+            if (CloneDeployUser.Membership == "User")
             {
                 management.Visible = true;
                 permissions.Visible = true;
@@ -137,17 +138,17 @@ namespace views.users
                 {
                     var cb = (CheckBox) row.FindControl("chkSelector");
                     var dataKey = gvGroups.DataKeys[row.RowIndex];
-                    if (dataKey != null && Master.User.GroupManagement.Contains(dataKey.Value.ToString()))
+                    if (dataKey != null && CloneDeployUser.GroupManagement.Contains(dataKey.Value.ToString()))
                         cb.Checked = true;
                 }
             }
-            txtUserName.Text = Master.User.Name;
-            ddluserMembership.Text = Master.User.Membership;
-            if (Master.User.OndAccess == "1")
+            txtUserName.Text = CloneDeployUser.Name;
+            ddluserMembership.Text = CloneDeployUser.Membership;
+            if (CloneDeployUser.OndAccess == "1")
                 chkOnd.Checked = true;
-            if (Master.User.DebugAccess == "1")
+            if (CloneDeployUser.DebugAccess == "1")
                 chkDebug.Checked = true;
-            if (Master.User.DiagAccess == "1")
+            if (CloneDeployUser.DiagAccess == "1")
                 chkDiag.Checked = true;
         }
 

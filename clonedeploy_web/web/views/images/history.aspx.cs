@@ -7,7 +7,7 @@ using Image = Models.Image;
 
 namespace views.images
 {
-    public partial class ImageHistory : Page
+    public partial class ImageHistory : BasePages.Images
     {
         protected void ddlLimit_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -28,7 +28,7 @@ namespace views.images
             var history = new History()
             {
                 Type = "Image",
-                TypeId = Master.Image.Id.ToString(),
+                TypeId = Image.Id.ToString(),
                 Limit = ddlLimit.Text
             };
             gvHistory.DataSource = history.Read();

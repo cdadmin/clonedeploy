@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Web;
 using System.Web.Security;
 using Global;
+using Helpers;
 using Models;
 
 namespace DAL

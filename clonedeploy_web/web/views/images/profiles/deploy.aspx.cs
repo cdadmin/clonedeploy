@@ -7,26 +7,25 @@ using System.Web.UI.WebControls;
 using BLL;
 using Global;
 
-public partial class views_images_profiles_deploy : System.Web.UI.Page
+public partial class views_images_profiles_deploy : BasePages.Images
 {
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
         {
-            chkDownNoExpand.Checked = Convert.ToBoolean(Master.ImageProfile.SkipExpandVolumes);
-            chkAlignBCD.Checked = Convert.ToBoolean(Master.ImageProfile.FixBcd);
-            chkRunFixBoot.Checked = Convert.ToBoolean(Master.ImageProfile.FixBootloader);
+            chkDownNoExpand.Checked = Convert.ToBoolean(ImageProfile.SkipExpandVolumes);
+            chkAlignBCD.Checked = Convert.ToBoolean(ImageProfile.FixBcd);
+            chkRunFixBoot.Checked = Convert.ToBoolean(ImageProfile.FixBootloader);
         }
 
     }
 
     protected void btnUpdateDeploy_OnClick(object sender, EventArgs e)
     {
-        var imageProfile = Master.ImageProfile;
+        var imageProfile = ImageProfile;
         imageProfile.SkipExpandVolumes = Convert.ToInt16(chkDownNoExpand.Checked);
         imageProfile.FixBcd = Convert.ToInt16(chkAlignBCD.Checked);
         imageProfile.FixBootloader = Convert.ToInt16(chkRunFixBoot.Checked);
-        new BLL.LinuxProfile().UpdateProfile(imageProfile);
-        new Utility().Msgbox(Utility.Message);
+        BllLinuxProfile.UpdateProfile(imageProfile);
     }
 }

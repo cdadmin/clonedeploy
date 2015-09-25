@@ -21,11 +21,12 @@ using System.IO;
 using System.Web;
 using System.Web.UI;
 using Global;
+using Helpers;
 using Security;
 
 namespace views.admin
 {
-    public partial class Logview : Page
+    public partial class Logview : BasePages.Admin
     {
         protected void btnExportLog_Click(object sender, EventArgs e)
         {

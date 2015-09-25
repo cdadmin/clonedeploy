@@ -22,13 +22,14 @@ using System.Data;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Global;
+using Helpers;
 using Models;
 using Security;
 using Group = BLL.Group;
 
 namespace views.users
 {
-    public partial class CreateUser : Page
+    public partial class CreateUser : BasePages.Users
     {
 
         protected void Page_Load(object sender, EventArgs e)

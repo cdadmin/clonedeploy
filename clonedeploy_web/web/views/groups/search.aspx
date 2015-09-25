@@ -1,7 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/groups/groups.master" AutoEventWireup="true" Inherits="views.groups.GroupSearch" CodeFile="search.aspx.cs" %>
 
-<%@ MasterType VirtualPath="~/views/groups/groups.master" %>
-<%@ Reference virtualPath="~/views/masters/Site.master" %>
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li><a href="<%= ResolveUrl("~/views/computers/search.aspx") %>">Search</a></li>
     </asp:Content>

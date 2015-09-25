@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 using Global;
 using Models;
 
-public partial class views_admin_scripts_create : System.Web.UI.Page
+public partial class views_admin_scripts_create : BasePages.Global
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -29,6 +29,5 @@ public partial class views_admin_scripts_create : System.Web.UI.Page
             //if (script.Create())
                 //Response.Redirect("~/views/computers/edit.aspx?hostid=" + host.Id);
 
-        new Utility().Msgbox(Utility.Message);
-    }
+   }
 }

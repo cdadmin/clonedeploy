@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Web;
 using Global;
+using Helpers;
 using Models;
 using Newtonsoft.Json;
 using Partition;
@@ -72,13 +73,7 @@ namespace DAL
 
         public void Import()
         {
-            var path = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
-                        Path.DirectorySeparatorChar + "csvupload" + Path.DirectorySeparatorChar + "images.csv";
-            using (var db = new DB())
-            {
-                var importCount = db.Database.ExecuteSqlCommand("copy images(imagename,imageos,imagedesc,imageclientsize,imageclientsizecustom,checksum) from '" + path + "' DELIMITER ',' csv header FORCE NOT NULL imagedesc,checksum;");
-                Utility.Message = importCount + " Images(s) Imported Successfully";
-            }
+            throw new Exception("Not Implemented");
         }
 
         public Models.Image Read(int imageId)

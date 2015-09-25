@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-public partial class views_images_profiles_drivers : System.Web.UI.Page
+public partial class views_images_profiles_drivers : BasePages.Images
 {
     protected void Page_Load(object sender, EventArgs e)
     {

@@ -8,24 +8,23 @@ using BLL;
 using Global;
 using Models;
 
-public partial class views_images_profiles_general : System.Web.UI.Page
+public partial class views_images_profiles_general : BasePages.Images
 {
 
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
         {
-            txtProfileName.Text = Master.ImageProfile.Name;
-            txtProfileDesc.Text = Master.ImageProfile.Description;
+            txtProfileName.Text = ImageProfile.Name;
+            txtProfileDesc.Text = ImageProfile.Description;
         }
 
     }
 
     protected void buttonUpdateGeneral_OnClick(object sender, EventArgs e)
     {
-        var imageProfile = Master.ImageProfile;
+        var imageProfile = ImageProfile;
         imageProfile.Name = txtProfileName.Text;
-        new BLL.LinuxProfile().UpdateProfile(imageProfile);
-        new Utility().Msgbox(Utility.Message);
+        BllLinuxProfile.UpdateProfile(imageProfile);
     }
 }

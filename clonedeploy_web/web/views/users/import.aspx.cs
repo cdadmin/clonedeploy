@@ -20,16 +20,16 @@ using System;
 using System.IO;
 using System.Web.UI;
 using Global;
+using Helpers;
 using Models;
 using Security;
 
 namespace views.users
 {
-    public partial class ImportUser : Page
+    public partial class ImportUser : BasePages.Users
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            Master.Master.FindControl("SubNav").Visible = false;
             if (IsPostBack) return;
             if (!new Authorize().IsInMembership("Administrator"))
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
@@ -41,7 +41,7 @@ namespace views.users
                               "csvupload" + Path.DirectorySeparatorChar + "users.csv";
             FileUpload.SaveAs(csvFilePath);
             new FileOps().SetUnixPermissions(csvFilePath);
-            new BLL.User().ImportUsers();
+            BllUser.ImportUsers();
         }        
     }
 }

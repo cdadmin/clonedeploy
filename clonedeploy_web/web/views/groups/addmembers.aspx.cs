@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using BLL;
 using Global;
+using Helpers;
 using Models;
 
 public partial class views_groups_addmembers : BasePages.Groups
@@ -98,7 +99,7 @@ public partial class views_groups_addmembers : BasePages.Groups
             }
         }
 
-        new Utility().Msgbox("Successfully Added " + addedCount + " New Members" );
+        Message.Text = "Successfully Added " + addedCount + " New Members" ;
 
     }
 }

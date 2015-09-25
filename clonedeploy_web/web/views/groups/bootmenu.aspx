@@ -1,7 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/groups/groups.master" AutoEventWireup="true" CodeFile="bootmenu.aspx.cs" Inherits="views.groups.GroupBootMenu" %>
 
-<%@ MasterType VirtualPath="~/views/groups/groups.master" %>
-<%@ Reference virtualPath="~/views/masters/Site.master" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="SubContent" Runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {

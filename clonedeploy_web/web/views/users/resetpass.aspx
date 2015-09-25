@@ -1,7 +1,5 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/masters/User.master" AutoEventWireup="true" Inherits="views.users.ResetPass" CodeFile="resetpass.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/users/User.master" AutoEventWireup="true" Inherits="views.users.ResetPass" CodeFile="resetpass.aspx.cs" %>
 
-<%@ MasterType VirtualPath="~/views/masters/User.master" %>
-<%@ Reference virtualPath="~/views/masters/Site.master" %>
 
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <h4 style="margin-bottom: 20px;">Change Password</h4>

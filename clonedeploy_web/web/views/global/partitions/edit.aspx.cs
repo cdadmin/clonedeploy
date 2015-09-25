@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using Models;
 using Partition = Models.Partition;
 
-public partial class views_global_partitions_edit : System.Web.UI.Page
+public partial class views_global_partitions_edit : BasePages.Global
 {
     private readonly BLL.Partition _bllPartition = new BLL.Partition();
 

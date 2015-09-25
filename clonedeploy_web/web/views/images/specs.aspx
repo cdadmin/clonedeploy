@@ -1,6 +1,4 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/images/images.master" AutoEventWireup="true" CodeFile="specs.aspx.cs" Inherits="views.images.ImageSpecs" %>
-<%@ MasterType VirtualPath="~/views/images/images.master" %>
-<%@ Reference virtualPath="~/views/masters/Site.master" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="SubContent" Runat="Server">
 <script type="text/javascript">

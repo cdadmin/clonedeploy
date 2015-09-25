@@ -21,11 +21,12 @@ using System.IO;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Global;
+using Helpers;
 using Image = Models.Image;
 
 namespace views.images
 {
-    public partial class ImageEdit : Page
+    public partial class ImageEdit : BasePages.Images
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -43,12 +44,12 @@ namespace views.images
                 try
                 {
                     Directory.CreateDirectory(Settings.ImageStorePath + currentName);
-                    Utility.Message = "Successfully Created Directory In Image Store Path. ";
+                    Message.Text = "Successfully Created Directory In Image Store Path. ";
                 }
                 catch (Exception ex)
                 {
                     Logger.Log("Could Not Create Directory In Image Store Path. " + ex.Message);
-                    Utility.Message =
+                    Message.Text =
                         "Could Not Create Directory In Image Store Path.  Check The Exception Log For More Info. ";
                 }
             }
@@ -58,12 +59,12 @@ namespace views.images
                 try
                 {
                     Directory.CreateDirectory(Settings.ImageHoldPath + currentName);
-                    Utility.Message += "Successfully Created Directory In Image Hold Path. ";
+                    Message.Text += "Successfully Created Directory In Image Hold Path. ";
                 }
                 catch (Exception ex)
                 {
                     Logger.Log("Could Not Create Directory In Image Hold Path. " + ex.Message);
-                    Utility.Message +=
+                    Message.Text +=
                         "Could Not Create Directory In Image Hold Path.  Check The Exception Log For More Info. ";
                 }
             }
@@ -82,31 +83,31 @@ namespace views.images
                         {
                             Directory.CreateDirectory(Settings.ImageHoldPath + currentName);
                             // for next upload
-                            Utility.Message = "Successfully Moved Image From Hold To Store";
+                            Message.Text = "Successfully Moved Image From Hold To Store";
                         }
                         catch (Exception ex)
                         {
                             Logger.Log("Could Not Recreate Directory " + ex.Message);
-                            Utility.Message =
+                            Message.Text =
                                 "Could Not Recreate Directory,  You Must Create It Before You Can Upload Again";
                         }
                     }
                     catch (Exception ex)
                     {
                         Logger.Log("Could Not Move Image From Hold Path To Store Path " + ex.Message);
-                        Utility.Message =
+                        Message.Text =
                             "Could Not Move Image From Hold Path To Store Path.  Check The Exception Log For More Info.";
                     }
                 }
             }
 
             if (!needsFixed)
-                Utility.Message = "No Fixes Are Needed For This Image";
+                Message.Text = "No Fixes Are Needed For This Image";
     }
 
         protected void btnUpdateImage_Click(object sender, EventArgs e)
         {
-            var image = Master.Image;
+            var image = Image;
 
             var currentName = (string) (ViewState["currentName"]);
             image.Name = txtImageName.Text;
@@ -115,24 +116,22 @@ namespace views.images
             image.Protected = chkProtected.Checked ? 1 : 0;
             image.IsVisible = chkVisible.Checked ? 1 : 0;
 
-            var bllImage = new BLL.Image();
-            
-            if (bllImage.ValidateImageData(image))
-                bllImage.UpdateImage(image, currentName);
+          if (BllImage.ValidateImageData(image))
+                BllImage.UpdateImage(image, currentName);
         }
 
         protected void PopulateForm()
         {
-            ViewState["currentName"] = Master.Image.Name;
+            ViewState["currentName"] = Image.Name;
             var currentName = (string) (ViewState["currentName"]);
 
-            txtImageName.Text = Master.Image.Name;
-            txtImageDesc.Text = Master.Image.Description;
-            ddlImageOS.Text = Master.Image.Os;
-            ddlImageType.Text = Master.Image.Type;
-            if (Master.Image.Protected == 1)
+            txtImageName.Text = Image.Name;
+            txtImageDesc.Text = Image.Description;
+            ddlImageOS.Text = Image.Os;
+            ddlImageType.Text = Image.Type;
+            if (Image.Protected == 1)
                 chkProtected.Checked = true;
-            if (Master.Image.IsVisible == 1)
+            if (Image.IsVisible == 1)
                 chkVisible.Checked = true;
 
             try

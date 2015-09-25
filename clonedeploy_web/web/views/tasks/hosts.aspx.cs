@@ -23,13 +23,14 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using BLL;
 using Global;
+using Helpers;
 using Models;
 using Tasks;
 using Image = Models.Image;
 
 namespace views.tasks
 {
-    public partial class TaskUnicast : Page
+    public partial class TaskUnicast : BasePages.Tasks
     {
         BLL.Computer _bllComputer = new BLL.Computer();
         protected void Page_Load(object sender, EventArgs e)

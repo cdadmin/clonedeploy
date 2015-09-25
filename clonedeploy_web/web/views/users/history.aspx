@@ -1,6 +1,5 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/masters/User.master" AutoEventWireup="true" CodeFile="history.aspx.cs" Inherits="views.users.UserHistory" %>
-<%@ MasterType VirtualPath="~/views/masters/User.master" %>
-<%@ Reference virtualPath="~/views/masters/Site.master" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/users/User.master" AutoEventWireup="true" CodeFile="history.aspx.cs" Inherits="views.users.UserHistory" %>
+
 
 <asp:Content ID="Content1" ContentPlaceHolderID="SubContent" Runat="Server">
 

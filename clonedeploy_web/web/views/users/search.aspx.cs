@@ -22,12 +22,13 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Global;
+using Helpers;
 using Models;
 using Security;
 
 namespace views.users
 {
-    public partial class UserSearch : Page
+    public partial class UserSearch : BasePages.Users
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -52,7 +53,7 @@ namespace views.users
                 }
                 if (user.Membership == "Administrator")
                 {
-                    Utility.Message = "Administrators Must Be Changed To A Lower Level User Before They Can Be Deleted";
+                    Message.Text = "Administrators Must Be Changed To A Lower Level User Before They Can Be Deleted";
                     break;
                 }
                 new BLL.User().DeleteUser(user.Id);
