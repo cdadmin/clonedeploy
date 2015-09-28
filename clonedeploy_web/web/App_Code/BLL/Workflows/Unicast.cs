@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Runtime.Remoting.Messaging;
 using BLL;
 using Global;
 using Helpers;
 using Models;
 using Pxe;
 
-namespace Tasks
+namespace BLL.Workflows
 {
     public class Unicast
     {
@@ -14,10 +15,22 @@ namespace Tasks
         private Models.ActiveImagingTask ActiveTask { get; set; }
         private Models.Image Image { get; set; }
         private Models.LinuxProfile ImageProfile { get; set; }
-        
-        public void Create()
+
+        public Unicast(Models.Computer computer, string direction )
         {
-            if (Host == null) return;
+            if (computer == null)
+                return;
+
+            Host = computer;
+            Direction = direction;
+
+            Run();
+
+        }
+
+        public void Run()
+        {
+           
 
             ActiveTask = new Models.ActiveImagingTask
             {

@@ -39,10 +39,7 @@ namespace views.groups
         protected void ddlGroupImage_OnSelectedIndexChanged(object sender, EventArgs e)
         {
             if (ddlGroupImage.Text == "Select Image") return;
-            ddlImageProfile.DataSource = _bllLinuxProfile.SearchProfiles(Convert.ToInt32(ddlGroupImage.SelectedValue)).Select(i => new { i.Id, i.Name });
-            ddlImageProfile.DataValueField = "Id";
-            ddlImageProfile.DataTextField = "Name";
-            ddlImageProfile.DataBind();
+            PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlGroupImage.SelectedValue));
 
         }
 
@@ -57,11 +54,7 @@ namespace views.groups
         protected void PopulateForm()
         {
 
-            ddlGroupImage.DataSource = new BLL.Image().SearchImages("").Select(i => new { i.Id, i.Name });
-            ddlGroupImage.DataValueField = "Id";
-            ddlGroupImage.DataTextField = "Name";
-            ddlGroupImage.DataBind();
-            ddlGroupImage.Items.Insert(0, new ListItem("Select Image", "0"));
+            PopulateImagesDdl(ddlGroupImage);
 
             txtGroupName.Text = Group.Name;
             txtGroupDesc.Text = Group.Description;
@@ -69,10 +62,7 @@ namespace views.groups
             txtGroupSenderArgs.Text = Group.SenderArguments;
             ddlGroupType.Text = Group.Type;
 
-            ddlImageProfile.DataSource = _bllLinuxProfile.SearchProfiles(Convert.ToInt32(ddlGroupImage.SelectedValue)).Select(i => new { i.Id, i.Name });
-            ddlImageProfile.DataValueField = "Id";
-            ddlImageProfile.DataTextField = "Name";
-            ddlImageProfile.DataBind();
+            PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlGroupImage.SelectedValue));
             ddlImageProfile.SelectedValue = Group.ImageProfile.ToString();
 
         }

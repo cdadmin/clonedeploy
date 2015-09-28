@@ -52,8 +52,7 @@ namespace views.tasks
                     var count = 0;
                     foreach (var host in new BLL.GroupMembership().GetGroupMembers(group.Id, ""))
                     {
-                        var unicast = new Unicast {Host = host, Direction = "push"};
-                        unicast.Create();
+                        new BLL.Computer().StartUnicast(host, "push");
                         count++;
                     }
                     Message.Text = "Started " + count + " Tasks";

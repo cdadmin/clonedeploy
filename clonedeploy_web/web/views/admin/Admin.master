@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" MasterPageFile="~/views/Site.master" AutoEventWireup="true" CodeFile="Admin.master.cs" Inherits="views.masters.AdminMaster" %>
+﻿<%@ Master Language="C#" MasterPageFile="~/views/Site.master" AutoEventWireup="true" CodeFile="admin.master.cs" Inherits="views.masters.AdminMaster" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeaderNav" Runat="Server">

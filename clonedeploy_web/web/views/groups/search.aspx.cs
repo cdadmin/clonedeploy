@@ -27,15 +27,7 @@ namespace views.groups
             PopulateGrid();
         }
 
-        public string GetSortDirection(string sortExpression)
-        {
-            if (ViewState[sortExpression] == null)
-                ViewState[sortExpression] = "Desc";
-            else
-                ViewState[sortExpression] = ViewState[sortExpression].ToString() == "Desc" ? "Asc" : "Desc";
-
-            return ViewState[sortExpression].ToString();
-        }
+       
 
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
@@ -124,19 +116,9 @@ namespace views.groups
 
         protected void SelectAll_CheckedChanged(object sender, EventArgs e)
         {
-            var hcb = (CheckBox) gvGroups.HeaderRow.FindControl("chkSelectAll");
-
-            ToggleCheckState(hcb.Checked);
+            ChkAll(gvGroups);
         }
 
-        private void ToggleCheckState(bool checkState)
-        {
-            foreach (GridViewRow row in gvGroups.Rows)
-            {
-                var cb = (CheckBox) row.FindControl("chkSelector");
-                if (cb != null)
-                    cb.Checked = checkState;
-            }
-        }
+      
     }
 }

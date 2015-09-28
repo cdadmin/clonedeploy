@@ -12,10 +12,6 @@ namespace BLL
     {
         private readonly DAL.Computer _da = new DAL.Computer();
 
-        public void Test()
-        {
-            Message.Text = "new Message";
-        }
         public bool AddComputer(Models.Computer computer)
         {
             if (_da.Exists(computer))
@@ -91,6 +87,11 @@ namespace BLL
         public void ImportComputers()
         {
             throw new Exception("Not Implemented");
+        }
+
+        public void StartUnicast(Models.Computer computer, string direction)
+        {
+            var tmp = new Workflows.Unicast(computer,direction);
         }
     }
 }

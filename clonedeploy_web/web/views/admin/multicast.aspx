@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/Admin.master" AutoEventWireup="true" CodeFile="multicast.aspx.cs" Inherits="views_admin_multicast" %>
-<%@ MasterType VirtualPath="~/views/admin/admin.master" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
       <li>Multicast Settings</li>
 </asp:Content>

@@ -1,5 +1,4 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/Admin.master" AutoEventWireup="true" CodeFile="client.aspx.cs" Inherits="views_admin_client" %>
-<%@ MasterType VirtualPath="~/views/admin/admin.master" %>
 
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li><a href="<%= ResolveUrl("~/views/admin/client.aspx") %>">Client Settings</a></li>

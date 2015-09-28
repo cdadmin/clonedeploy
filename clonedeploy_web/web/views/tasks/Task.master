@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" MasterPageFile="~/views/Site.master" AutoEventWireup="true" CodeFile="Task.master.cs" Inherits="views.masters.TaskMaster" %>
+﻿<%@ Master Language="C#" MasterPageFile="~/views/Site.master" AutoEventWireup="true" CodeFile="task.master.cs" Inherits="views.masters.TaskMaster" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeaderNav" Runat="Server">
     <script type="text/javascript">

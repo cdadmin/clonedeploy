@@ -121,8 +121,8 @@ namespace views.tasks
 
                 if (bllImage.Check_Checksum(image))
                 {
-                    var unicast = new Unicast {Host = host, Direction = direction};
-                    unicast.Create();
+                    new BLL.Computer().StartUnicast(host,direction);
+                   
                 }
                 else
                 {
@@ -135,8 +135,7 @@ namespace views.tasks
             }
             else
             {
-                var unicast = new Unicast {Host = host, Direction = direction};
-                unicast.Create();
+                new BLL.Computer().StartUnicast(host, direction);
             }
             Session.Remove("hostID");
             Session.Remove("direction");

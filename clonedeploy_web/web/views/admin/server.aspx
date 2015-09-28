@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/Admin.master" AutoEventWireup="true" CodeFile="server.aspx.cs" Inherits="views_admin_server" %>
-<%@ MasterType VirtualPath="~/views/admin/admin.master" %>
+
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li><a href="<%= ResolveUrl("~/views/admin/server.aspx") %>">Server Settings</a></li>
     </asp:Content>

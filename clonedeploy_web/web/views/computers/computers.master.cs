@@ -68,8 +68,7 @@ namespace views.masters
 
                     if (_bllImage.Check_Checksum(image))
                     {
-                        var unicast = new Unicast {Host = Computer, Direction = direction};
-                        unicast.Create();
+                        computerBasePage.BllComputer.StartUnicast(Computer,direction);                      
                     }
                     else
                     {
@@ -81,8 +80,7 @@ namespace views.masters
                     break;
                 case "pull":
                 {
-                    var unicast = new Unicast {Host = Computer, Direction = direction};
-                    unicast.Create();
+                    computerBasePage.BllComputer.StartUnicast(Computer, direction);
                 }
                     break;
             }

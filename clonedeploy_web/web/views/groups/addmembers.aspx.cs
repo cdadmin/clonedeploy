@@ -20,20 +20,10 @@ public partial class views_groups_addmembers : BasePages.Groups
 
     protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
     {
-        var hcb = (CheckBox)gvHosts.HeaderRow.FindControl("chkSelectAll");
-
-        ToggleCheckState(hcb.Checked);
+        ChkAll(gvHosts);
     }
 
-    public string GetSortDirection(string sortExpression)
-    {
-        if (ViewState[sortExpression] == null)
-            ViewState[sortExpression] = "Desc";
-        else
-            ViewState[sortExpression] = ViewState[sortExpression].ToString() == "Desc" ? "Asc" : "Desc";
-
-        return ViewState[sortExpression].ToString();
-    }
+    
 
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
@@ -69,15 +59,7 @@ public partial class views_groups_addmembers : BasePages.Groups
         PopulateGrid();
     }
 
-    private void ToggleCheckState(bool checkState)
-    {
-        foreach (GridViewRow row in gvHosts.Rows)
-        {
-            var cb = (CheckBox)row.FindControl("chkSelector");
-            if (cb != null)
-                cb.Checked = checkState;
-        }
-    }
+   
 
     protected void btnAddSelected_OnClick(object sender, EventArgs e)
     {
