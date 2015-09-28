@@ -17,9 +17,13 @@
  */
 
 using System;
+using System.Globalization;
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace Helpers
@@ -175,6 +179,44 @@ namespace Helpers
             var mac = pxeMac.Remove(0, 3);
             mac = mac.ToUpper().Replace('-', ':');
             return mac;
+        }
+
+        public static void WakeUp(string mac)
+        {
+            var pattern = new Regex("[:]");
+            var wolHostMac = pattern.Replace(mac, "");
+
+            try
+            {
+                var value = long.Parse(wolHostMac, NumberStyles.HexNumber, CultureInfo.CurrentCulture.NumberFormat);
+                var macBytes = BitConverter.GetBytes(value);
+
+                Array.Reverse(macBytes);
+                var macAddress = new byte[6];
+
+                for (var j = 0; j < 6; j++)
+                    macAddress[j] = macBytes[j + 2];
+
+
+                var packet = new byte[17 * 6];
+
+                for (var i = 0; i < 6; i++)
+                    packet[i] = 0xff;
+
+                for (var i = 1; i <= 16; i++)
+                {
+                    for (var j = 0; j < 6; j++)
+                        packet[i * 6 + j] = macAddress[j];
+                }
+
+                var client = new UdpClient();
+                client.Connect(IPAddress.Broadcast, 9);
+                client.Send(packet, packet.Length);
+            }
+            catch
+            {
+                // ignored
+            }
         }
     }
 }

@@ -53,7 +53,7 @@ namespace Tasks
 
 
 
-            BLL.ActiveImagingTask.WakeUp(Host.Mac);
+            Utility.WakeUp(Host.Mac);
             Message.Text = "Successfully Created Task For " + Host.Name;
             CreateHistoryEvents();
         }

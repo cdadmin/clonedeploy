@@ -107,7 +107,7 @@ namespace Tasks
             }
 
             foreach (var host in Hosts)
-                BLL.ActiveImagingTask.WakeUp(host.Mac);
+                Utility.WakeUp(host.Mac);
 
             Message.Text = "Successfully Started Multicast " + Group.Name;
             CreateHistoryEvents();
