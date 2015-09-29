@@ -32,7 +32,7 @@
             </li>
             
              <li id="subnav-server">
-                <a href="<%= ResolveUrl("~/views/global/sysprep.aspx") %>" class="icon-host">
+                <a href="<%= ResolveUrl("~/views/global/sysprep/search.aspx?cat=sub1") %>" class="icon-host">
                     <span class="nav-text">Sysprep Customizer</span>
                 </a>
             </li>

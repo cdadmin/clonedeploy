@@ -91,7 +91,7 @@ namespace BLL
 
         public void StartUnicast(Models.Computer computer, string direction)
         {
-            var tmp = new Workflows.Unicast(computer,direction);
+            new Workflows.Unicast().Run(computer, direction);
         }
     }
 }

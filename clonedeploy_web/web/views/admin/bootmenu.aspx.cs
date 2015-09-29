@@ -31,7 +31,7 @@ namespace views.admin
             }
             catch
             {
-                txtGrubSha.Text = "Coud not contact http://cruciblewds.org to enrypt password.";
+                txtGrubSha.Text = "Coud not contact http://cruciblewds.org to encrypt password.";
             }
         }
 

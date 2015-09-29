@@ -1,0 +1,14 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/views/global/global.master" AutoEventWireup="true" CodeFile="sysprep.master.cs" Inherits="views_global_sysprep_sysprep" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
+     <li ><a href="<%= ResolveUrl("~/views/global/sysprep/search.aspx?cat=sub1") %>">Sysprep</a></li>
+    <asp:ContentPlaceHolder runat="server" ID="BreadcrumbSub2">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="Level2" Runat="Server">
+     <li id="search"><a  href="<%= ResolveUrl("~/views/global/sysprep/search.aspx?cat=sub1") %>"><span class="sub-nav-text">Search Sysprep Customizations</span></a></li>
+    <li id="create"><a href="<%= ResolveUrl("~/views/global/sysprep/create.aspx?cat=sub1")  %>"><span class="sub-nav-text">New Sysprep Customization</span></a></li>
+</asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
+</asp:Content>
+

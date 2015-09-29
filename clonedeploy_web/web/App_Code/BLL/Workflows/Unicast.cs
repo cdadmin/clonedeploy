@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Runtime.Remoting.Messaging;
-using BLL;
-using Global;
 using Helpers;
 using Models;
 using Pxe;
@@ -10,27 +7,19 @@ namespace BLL.Workflows
 {
     public class Unicast
     {
-        public string Direction { get; set; }
-        public Models.Computer Host { get; set; }
+        private string Direction { get; set; }
+        private Models.Computer Host { get; set; }
         private Models.ActiveImagingTask ActiveTask { get; set; }
         private Models.Image Image { get; set; }
         private Models.LinuxProfile ImageProfile { get; set; }
 
-        public Unicast(Models.Computer computer, string direction )
+        public void Run(Models.Computer computer, string direction)
         {
             if (computer == null)
                 return;
 
             Host = computer;
             Direction = direction;
-
-            Run();
-
-        }
-
-        public void Run()
-        {
-           
 
             ActiveTask = new Models.ActiveImagingTask
             {
@@ -42,16 +31,12 @@ namespace BLL.Workflows
 
             Image = new BLL.Image().GetImage(Host.Image);
 
-
-
             ImageProfile = new BLL.LinuxProfile().ReadProfile(Host.ImageProfile);
             if (ImageProfile == null) return;
          
             var bllActiveImagingTask = new BLL.ActiveImagingTask();
             if (!bllActiveImagingTask.AddActiveImagingTask(ActiveTask)) return;
             
-
-
             if (!CreatePxeFile())
             {
                 bllActiveImagingTask.DeleteActiveImagingTask(ActiveTask.Id);
@@ -63,8 +48,6 @@ namespace BLL.Workflows
                  bllActiveImagingTask.DeleteActiveImagingTask(ActiveTask.Id);
                 return;
             }
-
-
 
             Utility.WakeUp(Host.Mac);
             Message.Text = "Successfully Created Task For " + Host.Name;

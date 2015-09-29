@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.UI.WebControls;
-using Helpers;
+using System.Windows.Forms;
+using CheckBox = System.Web.UI.WebControls.CheckBox;
+using Message = Helpers.Message;
 
 namespace BasePages
 {
@@ -59,8 +62,6 @@ namespace BasePages
                 ViewState[sortExpression] = ViewState[sortExpression].ToString() == "Desc" ? "Asc" : "Desc";
 
             return ViewState[sortExpression].ToString();
-        }
-
-        
+        }       
     }
 }

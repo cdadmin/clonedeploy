@@ -56,6 +56,7 @@ namespace views.hosts
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
+
             List<Models.Computer> listHosts = (List<Models.Computer>) gvHosts.DataSource;
             switch (e.SortExpression)
             {
@@ -79,6 +80,7 @@ namespace views.hosts
 
             gvHosts.DataSource = listHosts;
             gvHosts.DataBind();
+
         }
 
         protected void PopulateGrid()
