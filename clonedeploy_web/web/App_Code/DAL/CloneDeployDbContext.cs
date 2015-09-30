@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using System.Web.ModelBinding;
 
 
 namespace DAL
@@ -21,13 +22,16 @@ namespace DAL
         public DbSet<Models.WdsUser> Users { get; set; }
         public DbSet<Models.Port> Ports { get; set; }
         public DbSet<Models.Setting> Settings { get; set; }
-
+        public DbSet<Models.SysprepTag> SysprepTags { get; set; }
         public DbSet<Models.Script> Scripts { get; set; }
         public DbSet<Models.PartitionLayout> PartitionLayouts { get; set; }
         public DbSet<Models.Partition> Partitions { get; set; }
         public DbSet<Models.ImageProfilePartition> ImageProfilePartitions { get; set; }
         public DbSet<Models.ImageProfileScript> ImageProfileScripts { get; set; }
         public DbSet<Models.GroupMembership> GroupMemberships { get; set; }
+        public DbSet<Models.Site> Sites { get; set; }
+        public DbSet<Models.Building> Buildings { get; set; }
+        public DbSet<Models.Room> Rooms { get; set; }
 
     }
 

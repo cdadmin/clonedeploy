@@ -3,7 +3,7 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#logoption').addClass("nav-current");
+            $('#log').addClass("nav-current");
         });
     </script>
     <div class="size-4 column" style="float: right; margin: 0;">

@@ -7,7 +7,7 @@
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#searchhost').addClass("nav-current");
+            $('#search').addClass("nav-current");
         });
     </script>
     <div class="size-7 column">

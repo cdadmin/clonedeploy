@@ -4,7 +4,7 @@
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#importhost').addClass("nav-current");
+            $('#import').addClass("nav-current");
         });
     </script>
     <div class="size-4 column">

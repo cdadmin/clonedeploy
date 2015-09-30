@@ -168,6 +168,7 @@ public partial class views_global_partitions_edit : BasePages.Global
         if (partitionNumber != null)
         {
             partitionNumber.Items.Clear();
+
             if (partitionType.Text == "Logical")
             {
                 for (int i = 5; i <= 10; i++)

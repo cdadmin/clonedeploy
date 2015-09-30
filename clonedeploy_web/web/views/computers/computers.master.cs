@@ -10,15 +10,15 @@ namespace views.masters
 {
     public partial class ComputerMaster : BasePages.MasterBaseMaster
     {
-        private BasePages.Computers computerBasePage { get; set; }
+        private BasePages.Computers ComputerBasePage { get; set; }
         private readonly BLL.Image _bllImage = new BLL.Image();
         public Models.Computer Computer { get; set; }
 
         protected void Page_Load(object sender, EventArgs e)
         {
             
-            computerBasePage = (Page as BasePages.Computers);
-            Computer = computerBasePage.Computer;
+            ComputerBasePage = (Page as BasePages.Computers);
+            Computer = ComputerBasePage.Computer;
             if (Computer == null)
             {
                 Level2.Visible = false;
@@ -58,7 +58,7 @@ namespace views.masters
             switch (direction)
             {
                 case "delete":
-                    if (computerBasePage.BllComputer.DeleteComputer(Computer.Id))
+                    if (ComputerBasePage.BllComputer.DeleteComputer(Computer.Id))
                         Response.Redirect("~/views/computers/search.aspx");
                     break;
                 case "push":
@@ -68,7 +68,7 @@ namespace views.masters
 
                     if (_bllImage.Check_Checksum(image))
                     {
-                        computerBasePage.BllComputer.StartUnicast(Computer,direction);                      
+                        ComputerBasePage.BllComputer.StartUnicast(Computer,direction);                      
                     }
                     else
                     {
@@ -80,7 +80,7 @@ namespace views.masters
                     break;
                 case "pull":
                 {
-                    computerBasePage.BllComputer.StartUnicast(Computer, direction);
+                    ComputerBasePage.BllComputer.StartUnicast(Computer, direction);
                 }
                     break;
             }

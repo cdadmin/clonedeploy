@@ -91,7 +91,30 @@ namespace BLL
 
         public void StartUnicast(Models.Computer computer, string direction)
         {
-            new Workflows.Unicast().Run(computer, direction);
+            switch (new Workflows.Unicast().Run(computer, direction))
+            {
+                case "computer_error":
+                    Message.Text = "The Computer No Longer Exists";
+                    break;
+                case "image_error":
+                    Message.Text = "The Image No Longer Exists";
+                    break;
+                case "profile_error":
+                    Message.Text = "The Image Profile No Longer Exists";
+                    break;
+                case "database_error":
+                    Message.Text = "Could Not Create The Database Entry For This Task";
+                    break;
+                case "pxe_error":
+                    Message.Text = "Could Not Create PXE Boot File";
+                    break;
+                case "arguments_error":
+                    Message.Text = "Could Not Create Task Arguments";
+                    break;
+                case "true" :
+                    Message.Text = "Successfully Started Task For " + computer.Name;
+                    break;
+            }
         }
     }
 }

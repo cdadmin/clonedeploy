@@ -31,20 +31,10 @@ public partial class views_admin_scripts_search : BasePages.Global
 
     protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
     {
-        var hcb = (CheckBox)gvScripts.HeaderRow.FindControl("chkSelectAll");
-
-        ToggleCheckState(hcb.Checked);
+        ChkAll(gvScripts);
     }
 
-    public string GetSortDirection(string sortExpression)
-    {
-        if (ViewState[sortExpression] == null)
-            ViewState[sortExpression] = "Desc";
-        else
-            ViewState[sortExpression] = ViewState[sortExpression].ToString() == "Desc" ? "Asc" : "Desc";
-
-        return ViewState[sortExpression].ToString();
-    }
+    
 
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
@@ -65,13 +55,5 @@ public partial class views_admin_scripts_search : BasePages.Global
         gvScripts.DataSource = listScripts;
         gvScripts.DataBind();
     }
-    private void ToggleCheckState(bool checkState)
-    {
-        foreach (GridViewRow row in gvScripts.Rows)
-        {
-            var cb = (CheckBox)row.FindControl("chkSelector");
-            if (cb != null)
-                cb.Checked = checkState;
-        }
-    }
+    
 }

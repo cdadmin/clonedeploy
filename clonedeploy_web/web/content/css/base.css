@@ -136,7 +136,7 @@ Table.Gridview{border:none;white-space:nowrap; width:100%;}
 .GridviewTable{border:none;}
 .Gridview th{text-align:left;color:White;border:none;background-color:#47a3da;padding: 3px 0 3px 10px;}
 .Gridview th a:link,a:visited{color:White;text-decoration:none;}
-.Gridview td{border:none;padding: 4px 1em 4px 10px;}
+.Gridview td{border:none;padding: 10px 1em 10px 10px;}
 .Gridview tr{color:#666;background-color:white;text-align:left;border-bottom:1px solid #f5f5f5;}
 .Gridview .alt{background:#f8f8f8;}
 .Gridview td a:link, .GridView td a:visited {color:white;text-decoration:none;background:#666666;-webkit-border-radius:5px;-moz-border-radius:3px;-ms-border-radius:3px;-o-border-radius:3px;border-radius:3px;padding:8px 12px;}
@@ -184,6 +184,7 @@ input[type="checkbox"]{display:inline;}
 #settings .ddlist{height:35px;width:100%;font-size:14px;}
 .descbox{height:100px;}
 .descboxboot{height:800px;}
+.sysprepcontent{ height: 300px;}
 .chkboxwidth{width:20px;}
 .small-boot-box{height:200px; }
 .txt-left{ text-align: left;}

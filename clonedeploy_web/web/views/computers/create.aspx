@@ -5,7 +5,7 @@
        
         $(document).ready(function() {
            
-            $('#addhost').addClass("nav-current");
+            $('#new').addClass("nav-current");
            
            $("#form1").validate({
                 rules: {

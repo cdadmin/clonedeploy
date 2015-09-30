@@ -1,15 +1,10 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/sysprep/sysprep.master" AutoEventWireup="true" CodeFile="create.aspx.cs" Inherits="views_global_sysprep_create" ValidateRequestMode="Disabled" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/sysprep/sysprep.master" AutoEventWireup="true" CodeFile="edit.aspx.cs" Inherits="views_global_sysprep_edit" ValidateRequestMode="Disabled" %>
+
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
-    <li>New Sysprep Customization</li>
+        <li><%= SysprepTag.Name %></li>
 </asp:Content>
-
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server" >
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#create').addClass("nav-current");
-        });
-    </script>
     
      <div class="size-4 column">
         Name:
@@ -53,11 +48,9 @@
     <br class="clear" />
 
     <div class="size-5 column">
-         <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Add Sysprep Tag" CssClass="submits" />
+         <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Update Sysprep Tag" CssClass="submits" />
     </div>
    
     <br class="clear"/>
 </asp:Content>
-
-
 

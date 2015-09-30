@@ -12,51 +12,83 @@
     </div>
 </asp:Content>
 <asp:Content runat="server" ID="Breadcrumb" ContentPlaceHolderID="Breadcrumb">
-     <li><a href="<%= ResolveUrl("~/views/computers/search.aspx") %>">Computers</a></li>
+    <li>
+        <a href="<%= ResolveUrl("~/views/computers/search.aspx") %>">Computers</a>
+    </li>
     <asp:ContentPlaceHolder ID="BreadcrumbSub" runat="server">
-        </asp:ContentPlaceHolder>
+    </asp:ContentPlaceHolder>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubNav" Runat="Server">
     <div class="sub-nav-top">
         <div id="Level1" runat="server">
-        <ul>
-                        <li><a id="searchhost"href="<%= ResolveUrl("~/views/computers/search.aspx") %>"><span class="sub-nav-text">Search Computers</span></a></li>
-         <li><a id="addhost" href="<%= ResolveUrl("~/views/computers/create.aspx") %>"><span class="sub-nav-text">New Computer</span></a></li>
+            <ul>
+                <li id="search">
+                    <a href="<%= ResolveUrl("~/views/computers/search.aspx") %>">
+                        <span class="sub-nav-text">Search Computers</span></a>
+                </li>
+                <li id="new">
+                    <a href="<%= ResolveUrl("~/views/computers/create.aspx") %>">
+                        <span class="sub-nav-text">New Computer</span></a>
+                </li>
 
-            <li><a id="importhost" href="<%= ResolveUrl("~/views/computers/import.aspx") %>"> <span class="sub-nav-text">Import Computers</span></a></li>
-       </ul>
+                <li id="import">
+                    <a href="<%= ResolveUrl("~/views/computers/import.aspx") %>">
+                        <span class="sub-nav-text">Import Computers</span></a>
+                </li>
+            </ul>
         </div>
-        
+
         <div id="Level2" runat="server">
-           <div class="indent">
-        <ul>
-        <li><a id="editoption" href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?hostid=<%= Computer.Id %>"><span class="sub-nav-text">Edit</span></a></li>
-        <li><a id="historyoption" href="<%= ResolveUrl("~/views/computers/history.aspx") %>?hostid=<%= Computer.Id %>"><span class="sub-nav-text">History</span></a></li>
-        <li><a id="bootmenuoption" href="<%= ResolveUrl("~/views/computers/bootmenu.aspx") %>?hostid=<%= Computer.Id %>"><span class="sub-nav-text">Boot Menu</span></a></li>
-        <li><a id="logoption" href="<%= ResolveUrl("~/views/computers/log.aspx") %>?hostid=<%= Computer.Id %>"><span class="sub-nav-text">Logs</span></a></li>
-        <li><asp:LinkButton ID="buttonUploadHost" runat="server" OnClick="btnUpload_Click"><span class="sub-nav-text">Upload</span></asp:LinkButton></li>
-        <li><asp:LinkButton ID="buttonDeployHost" runat="server" OnClick="btnDeploy_Click"><span class="sub-nav-text">Deploy</span></asp:LinkButton></li>
-        <li><asp:LinkButton ID="buttonDeleteHost" runat="server" OnClick="btnDelete_Click"><span class="sub-nav-text">Delete</span></asp:LinkButton></li>
-        </ul>
+            <div class="indent">
+                <ul>
+                    <li id="general">
+                        <a href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?hostid=<%= Computer.Id %>">
+                            <span class="sub-nav-text">Edit</span></a>
+                    </li>
+                    <li id="history">
+                        <a href="<%= ResolveUrl("~/views/computers/history.aspx") %>?hostid=<%= Computer.Id %>">
+                            <span class="sub-nav-text">History</span></a>
+                    </li>
+                    <li id="bootmenu">
+                        <a href="<%= ResolveUrl("~/views/computers/bootmenu.aspx") %>?hostid=<%= Computer.Id %>">
+                            <span class="sub-nav-text">Boot Menu</span></a>
+                    </li>
+                    <li id="log">
+                        <a href="<%= ResolveUrl("~/views/computers/log.aspx") %>?hostid=<%= Computer.Id %>">
+                            <span class="sub-nav-text">Logs</span></a>
+                    </li>
+                    <li>
+                        <asp:LinkButton ID="buttonUploadHost" runat="server" OnClick="btnUpload_Click">
+                            <span class="sub-nav-text">Upload</span></asp:LinkButton>
+                    </li>
+                    <li>
+                        <asp:LinkButton ID="buttonDeployHost" runat="server" OnClick="btnDeploy_Click">
+                            <span class="sub-nav-text">Deploy</span></asp:LinkButton>
+                    </li>
+                    <li>
+                        <asp:LinkButton ID="buttonDeleteHost" runat="server" OnClick="btnDelete_Click">
+                            <span class="sub-nav-text">Delete</span></asp:LinkButton>
+                    </li>
+                </ul>
             </div>
-            </div>
+        </div>
     </div>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">
     <div class="content-right">
-    <asp:ContentPlaceHolder ID="SubContent" runat="server">
-    </asp:ContentPlaceHolder>
-        <br class="clear" />
-          <div class="spacer"></div>
-        </div>
+        <asp:ContentPlaceHolder ID="SubContent" runat="server">
+        </asp:ContentPlaceHolder>
+        <br class="clear"/>
+        <div class="spacer"></div>
+    </div>
     <br class="clear"/>
     <div id="confirmbox" class="confirm-box-outer">
         <div class="confirm-box-inner">
             <h4>
                 <asp:Label ID="lblTitle" runat="server" CssClass="modaltitle"></asp:Label>
             </h4>
-         
+
             <div class="confirm-box-btns">
                 <asp:LinkButton ID="buttonConfirm" OnClick="buttonConfirm_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
                 <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no"/>

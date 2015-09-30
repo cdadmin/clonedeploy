@@ -3,7 +3,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent" Runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#bootmenuoption').addClass("nav-current");
+            $('#bootmenu').addClass("nav-current");
         });
     </script>
     <asp:LinkButton ID="buttonShowCustom" runat="server" Text="Custom" OnClick="buttonShowCustom_OnClick" CssClass="submits static-width-nomarg"/>

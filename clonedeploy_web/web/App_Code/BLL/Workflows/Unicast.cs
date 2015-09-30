@@ -13,13 +13,19 @@ namespace BLL.Workflows
         private Models.Image Image { get; set; }
         private Models.LinuxProfile ImageProfile { get; set; }
 
-        public void Run(Models.Computer computer, string direction)
+        public string Run(Models.Computer computer, string direction)
         {
             if (computer == null)
-                return;
+                return "computer_error";
 
             Host = computer;
             Direction = direction;
+
+            Image = new BLL.Image().GetImage(Host.Image);
+            if (Image == null) return "image_error";
+
+            ImageProfile = new BLL.LinuxProfile().ReadProfile(Host.ImageProfile);
+            if (ImageProfile == null) return "profile_error";
 
             ActiveTask = new Models.ActiveImagingTask
             {
@@ -29,29 +35,26 @@ namespace BLL.Workflows
                 ComputerId = Host.Id
             };
 
-            Image = new BLL.Image().GetImage(Host.Image);
-
-            ImageProfile = new BLL.LinuxProfile().ReadProfile(Host.ImageProfile);
-            if (ImageProfile == null) return;
-         
             var bllActiveImagingTask = new BLL.ActiveImagingTask();
-            if (!bllActiveImagingTask.AddActiveImagingTask(ActiveTask)) return;
-            
+            if (!bllActiveImagingTask.AddActiveImagingTask(ActiveTask)) return "database_error";
+
             if (!CreatePxeFile())
             {
                 bllActiveImagingTask.DeleteActiveImagingTask(ActiveTask.Id);
-                return;
+                return "pxe_error";
             }
 
             if (!CreateTaskArguments())
             {
-                 bllActiveImagingTask.DeleteActiveImagingTask(ActiveTask.Id);
-                return;
+                bllActiveImagingTask.DeleteActiveImagingTask(ActiveTask.Id);
+                return "arguments_error";
             }
 
             Utility.WakeUp(Host.Mac);
-            Message.Text = "Successfully Created Task For " + Host.Name;
+
             CreateHistoryEvents();
+
+            return "true";
         }
 
         private void CreateHistoryEvents()
@@ -93,10 +96,10 @@ namespace BLL.Workflows
         {
             string preScripts = null;
             string postScripts = null;
-            foreach(var script in new BLL.ImageProfileScript().SearchImageProfileScripts(ImageProfile.Id))
+            foreach (var script in new BLL.ImageProfileScript().SearchImageProfileScripts(ImageProfile.Id))
             {
-                if(Convert.ToBoolean(script.RunPre))
-                preScripts += script.Id + " ";
+                if (Convert.ToBoolean(script.RunPre))
+                    preScripts += script.Id + " ";
 
                 if (Convert.ToBoolean(script.RunPost))
                     postScripts += script.Id + " ";
@@ -126,18 +129,17 @@ namespace BLL.Workflows
                 storagePath = Settings.SmbPath;
             else
                 storagePath = Direction == "pull" ? Settings.NfsUploadPath : Settings.NfsDeployPath;
-            
+
             ActiveTask.Arguments = "image_name=" + Image.Name + " storage=" + storagePath + " host_id=" + Host.Id +
-                                   " multicast=false" + " pre_scripts=" + preScripts + " post_scripts=" + postScripts + " xfer_mode=" + xferMode +
+                                   " multicast=false" + " pre_scripts=" + preScripts + " post_scripts=" + postScripts +
+                                   " xfer_mode=" + xferMode +
                                    " server_ip=" + Settings.ServerIp + " host_name=" + Host.Name +
                                    " comp_alg=" + Settings.CompressionAlgorithm + " comp_evel=-" +
-                                   Settings.CompressionLevel + " partition_method=" + ImageProfile.PartitionMethod + " " + profileArgs;
-
+                                   Settings.CompressionLevel + " partition_method=" + ImageProfile.PartitionMethod + " " +
+                                   profileArgs;
 
 
             return new BLL.ActiveImagingTask().UpdateActiveImagingTask(ActiveTask);
         }
-
-       
     }
 }

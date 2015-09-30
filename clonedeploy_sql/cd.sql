@@ -36,7 +36,7 @@ CREATE TABLE `active_imaging_tasks` (
   `task_type` varchar(45) DEFAULT NULL,
   `multicast_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`active_task_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,6 +45,7 @@ CREATE TABLE `active_imaging_tasks` (
 
 LOCK TABLES `active_imaging_tasks` WRITE;
 /*!40000 ALTER TABLE `active_imaging_tasks` DISABLE KEYS */;
+INSERT INTO `active_imaging_tasks` VALUES (18,'12','0',0,NULL,NULL,NULL,NULL,NULL,'image_name=abc storage=//192.168.56.1 host_id=12 multicast=false pre_scripts= post_scripts= xfer_mode=smb server_ip=192.168.1.101 host_name=test comp_alg=gzip comp_evel=-1 partition_method= task_completed_action= ','unicast',0);
 /*!40000 ALTER TABLE `active_imaging_tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -135,7 +136,7 @@ CREATE TABLE `buildings` (
   `building_id` int(11) NOT NULL AUTO_INCREMENT,
   `building_name` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`building_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -144,6 +145,7 @@ CREATE TABLE `buildings` (
 
 LOCK TABLES `buildings` WRITE;
 /*!40000 ALTER TABLE `buildings` DISABLE KEYS */;
+INSERT INTO `buildings` VALUES (1,'building1');
 /*!40000 ALTER TABLE `buildings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -444,7 +446,7 @@ CREATE TABLE `computers` (
   `computer_image_profile_id` int(11) DEFAULT NULL,
   `computer_inventory_computer_inventory_id` int(11) NOT NULL,
   PRIMARY KEY (`computer_id`,`computer_inventory_computer_inventory_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -453,7 +455,7 @@ CREATE TABLE `computers` (
 
 LOCK TABLES `computers` WRITE;
 /*!40000 ALTER TABLE `computers` DISABLE KEYS */;
-INSERT INTO `computers` VALUES (11,'host5','11','',0,0,3,0,0),(9,'host1','11111111111111111','',0,0,3,5,0);
+INSERT INTO `computers` VALUES (12,'test','11111111111111111','',0,0,3,7,0);
 /*!40000 ALTER TABLE `computers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -469,7 +471,7 @@ CREATE TABLE `group_membership` (
   `computer_id` int(11) DEFAULT NULL,
   `group_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`group_membership_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -478,7 +480,7 @@ CREATE TABLE `group_membership` (
 
 LOCK TABLES `group_membership` WRITE;
 /*!40000 ALTER TABLE `group_membership` DISABLE KEYS */;
-INSERT INTO `group_membership` VALUES (3,9,1);
+INSERT INTO `group_membership` VALUES (5,9,1);
 /*!40000 ALTER TABLE `group_membership` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -524,7 +526,7 @@ CREATE TABLE `image_profile_partition_layouts` (
   `image_profile_id` int(11) DEFAULT NULL,
   `partition_layout_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`image_profile_partition_layout_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -533,7 +535,7 @@ CREATE TABLE `image_profile_partition_layouts` (
 
 LOCK TABLES `image_profile_partition_layouts` WRITE;
 /*!40000 ALTER TABLE `image_profile_partition_layouts` DISABLE KEYS */;
-INSERT INTO `image_profile_partition_layouts` VALUES (13,1,1);
+INSERT INTO `image_profile_partition_layouts` VALUES (14,7,2),(13,1,1);
 /*!40000 ALTER TABLE `image_profile_partition_layouts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -625,7 +627,7 @@ CREATE TABLE `linux_profiles` (
   `always_expand_partitions` tinyint(4) DEFAULT NULL,
   `custom_partition_script` longtext,
   PRIMARY KEY (`image_profile_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -634,7 +636,7 @@ CREATE TABLE `linux_profiles` (
 
 LOCK TABLES `linux_profiles` WRITE;
 /*!40000 ALTER TABLE `linux_profiles` DISABLE KEYS */;
-INSERT INTO `linux_profiles` VALUES (5,3,'3.12.13-WDS','initrd.gz','profile2','','',0,0,'Reboot',0,0,0,0,0,0,1,NULL,0,0,NULL);
+INSERT INTO `linux_profiles` VALUES (5,3,'3.12.13-WDS','initrd.gz','profile23','','',0,0,'Reboot',0,1,0,0,0,0,1,NULL,0,0,NULL),(6,3,NULL,NULL,'myprofilea','',NULL,0,0,NULL,0,0,0,0,0,0,0,NULL,0,0,NULL),(7,3,NULL,NULL,'adsf','',NULL,0,0,NULL,0,0,0,0,0,0,0,'Custom Layout',0,0,'');
 /*!40000 ALTER TABLE `linux_profiles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -649,7 +651,7 @@ CREATE TABLE `multicast_ports` (
   `multicast_port_id` int(11) NOT NULL AUTO_INCREMENT,
   `multicast_port_number` int(11) NOT NULL,
   PRIMARY KEY (`multicast_port_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -658,7 +660,7 @@ CREATE TABLE `multicast_ports` (
 
 LOCK TABLES `multicast_ports` WRITE;
 /*!40000 ALTER TABLE `multicast_ports` DISABLE KEYS */;
-INSERT INTO `multicast_ports` VALUES (1,8998),(2,63998),(3,98),(4,98);
+INSERT INTO `multicast_ports` VALUES (1,8998),(2,63998),(3,98),(4,98),(5,100);
 /*!40000 ALTER TABLE `multicast_ports` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -715,7 +717,7 @@ CREATE TABLE `partitions` (
 
 LOCK TABLES `partitions` WRITE;
 /*!40000 ALTER TABLE `partitions` DISABLE KEYS */;
-INSERT INTO `partitions` VALUES (20,0,1,'Primary','ntfs',100,'Percent',1),(21,2,7,'Logical','ntfs',100,'MB',0),(23,1,1,'Primary','ntfs',8,'MB',1),(24,2,1,'Primary','ntfs',5,'MB',1);
+INSERT INTO `partitions` VALUES (20,0,1,'Primary','ntfs',100,'Percent',1),(21,2,7,'Logical','ntfs',100,'MB',0),(23,1,1,'Primary','ntfs',8,'MB',1),(24,2,1,'Primary','ntfs',5,'GB',0);
 /*!40000 ALTER TABLE `partitions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -730,7 +732,7 @@ CREATE TABLE `rooms` (
   `room_id` int(11) NOT NULL AUTO_INCREMENT,
   `room_name` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`room_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -739,6 +741,7 @@ CREATE TABLE `rooms` (
 
 LOCK TABLES `rooms` WRITE;
 /*!40000 ALTER TABLE `rooms` DISABLE KEYS */;
+INSERT INTO `rooms` VALUES (2,'room1121-4'),(3,'lab322');
 /*!40000 ALTER TABLE `rooms` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -769,6 +772,58 @@ LOCK TABLES `scripts` WRITE;
 INSERT INTO `scripts` VALUES (3,'Hello','',2,0,'aadsfasdf'),(2,'newscriptz','hello',55,0,'#!/bin/bash\nhello'),(4,'Hello2','aadsf',1,0,'adsfadsf'),(5,'Zello','a',2,0,'afasfdasdfa\nasdf\nas\ndf\nasdf');
 /*!40000 ALTER TABLE `scripts` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `sites`
+--
+
+DROP TABLE IF EXISTS `sites`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sites` (
+  `site_id` int(11) NOT NULL AUTO_INCREMENT,
+  `site_name` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`site_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sites`
+--
+
+LOCK TABLES `sites` WRITE;
+/*!40000 ALTER TABLE `sites` DISABLE KEYS */;
+INSERT INTO `sites` VALUES (7,'newsitegoeshere');
+/*!40000 ALTER TABLE `sites` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sysprep_tags`
+--
+
+DROP TABLE IF EXISTS `sysprep_tags`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sysprep_tags` (
+  `sysprep_tag_id` int(11) NOT NULL AUTO_INCREMENT,
+  `sysprep_tag_name` varchar(45) DEFAULT NULL,
+  `sysprep_tag_open` varchar(45) DEFAULT NULL,
+  `sysprep_tag_close` varchar(45) DEFAULT NULL,
+  `sysprep_tag_description` longtext,
+  `sysprep_tag_contents` longtext,
+  PRIMARY KEY (`sysprep_tag_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sysprep_tags`
+--
+
+LOCK TABLES `sysprep_tags` WRITE;
+/*!40000 ALTER TABLE `sysprep_tags` DISABLE KEYS */;
+INSERT INTO `sysprep_tags` VALUES (1,'newtags','<hostname>','</hostname>','adfef','[host-name]');
+/*!40000 ALTER TABLE `sysprep_tags` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -779,4 +834,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-09-18 16:23:33
+-- Dump completed on 2015-09-30 16:26:25
