@@ -19,7 +19,7 @@
 
     <asp:GridView ID="gvRooms" runat="server" AutoGenerateColumns="false" DataKeyNames="Id" CssClass="Gridview"
                   OnRowEditing="OnRowEditing" OnRowCancelingEdit="OnRowCancelingEdit" ShowFooter="True"
-                  OnRowUpdating="OnRowUpdating" OnRowDeleting="OnRowDeleting" AlternatingRowStyle-CssClass="alt">
+                  OnRowUpdating="OnRowUpdating" OnRowDeleting="OnRowDeleting" OnRowDataBound="gvRooms_OnRowDataBound"  AlternatingRowStyle-CssClass="alt">
         <Columns>
 
             <asp:TemplateField HeaderText="Name" ItemStyle-Width="150">
@@ -31,6 +31,18 @@
                 </EditItemTemplate>
                 <FooterTemplate>
                     <asp:TextBox ID="txtNameAdd" runat="server"></asp:TextBox>
+                </FooterTemplate>
+            </asp:TemplateField>
+            
+            <asp:TemplateField HeaderText="Distribution Point" ItemStyle-Width="150">
+                <ItemTemplate>
+                    <asp:Label ID="lblDp" runat="server" Text='<%# Eval("DpName") %>'></asp:Label>
+                </ItemTemplate>
+                <EditItemTemplate>
+                    <asp:DropDownList ID="ddlDp" runat="server"></asp:DropDownList>
+                </EditItemTemplate>
+                <FooterTemplate>
+                    <asp:DropDownList ID="ddlDpAdd" runat="server"></asp:DropDownList>
                 </FooterTemplate>
             </asp:TemplateField>
 

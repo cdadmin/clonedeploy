@@ -41,6 +41,15 @@ namespace BasePages
             ddlImageProfile.DataBind();
         }
 
+        protected void PopulateDistributionPointsDdl(DropDownList ddlDp)
+        {
+            ddlDp.DataSource =
+                new BLL.DistributionPoint().SearchDistributionPoints("").Select(d => new {d.Id, d.DisplayName});
+            ddlDp.DataValueField = "Id";
+            ddlDp.DataTextField = "DisplayName";
+            ddlDp.DataBind();
+        }
+
 
         public void ChkAll(GridView gridview)
         {

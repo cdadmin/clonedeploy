@@ -117,6 +117,7 @@ namespace CloneDeploy_Proxy_Dhcp.Server
         {
             Trace.TraceInformation("Dhcp Server Starting...");
 
+            
             if (DhcpInterface == null)
             {
                 Trace.TraceInformation("Enumerating Network Interfaces.");
@@ -175,30 +176,36 @@ namespace CloneDeploy_Proxy_Dhcp.Server
                     "Unabled to Set Dhcp Interface Address. Check the networkInterface property of your config file.");
                 throw new InvalidOperationException("Unabled to Set Dhcp Interface Address.");
             }
-
+            
             _mAbort = false;
 
-            _mDhcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            _mDhcpSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);
+           
+            _mDhcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);         
+            _mDhcpSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);          
             _mDhcpSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
 
-            var IOC_IN = 0x80000000;
-            uint IOC_VENDOR = 0x18000000;
-            var SIO_UDP_CONNRESET = IOC_IN | IOC_VENDOR | 12;
-            _mDhcpSocket.IOControl((int) SIO_UDP_CONNRESET, new[] {Convert.ToByte(false)}, null);
+            if (!Environment.OSVersion.ToString().Contains("Unix"))
+            {
+                var IOC_IN = 0x80000000;
+                uint IOC_VENDOR = 0x18000000;
+                var SIO_UDP_CONNRESET = IOC_IN | IOC_VENDOR | 12;
+                _mDhcpSocket.IOControl((int) SIO_UDP_CONNRESET, new[] {Convert.ToByte(false)}, null);
+            }
 
             try
             {
-                _mDhcpSocket.Bind(Environment.OSVersion.ToString().Contains("Unix")
+
+
+                this._mDhcpSocket.Bind(Environment.OSVersion.ToString().Contains("Unix")
                     ? new IPEndPoint(IPAddress.Any, DhcpPort)
-                    : new IPEndPoint(_mDhcpInterfaceAddress, DhcpPort));
+                    : new IPEndPoint(this._mDhcpInterfaceAddress, DhcpPort));
             }
             catch
             {
                 Trace.TraceError("Could Not Bind This Interface To Port 67.  It May Already Be In Use.");
                 return;
             }
-
+            
             Listen();
 
             Trace.TraceInformation("Dhcp Service Running On " + _mDhcpInterfaceAddress + ":67");

@@ -184,14 +184,19 @@ namespace CloneDeploy_Proxy_Dhcp.Server
             this.m_DhcpSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);
             this.m_DhcpSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
 
-            uint IOC_IN = 0x80000000;
-            uint IOC_VENDOR = 0x18000000;
-            uint SIO_UDP_CONNRESET = IOC_IN | IOC_VENDOR | 12;
-            m_DhcpSocket.IOControl((int)SIO_UDP_CONNRESET, new byte[] { Convert.ToByte(false) }, null);   
+            if(!Environment.OSVersion.ToString().Contains("Unix"))
+            {
+                uint IOC_IN = 0x80000000;
+                uint IOC_VENDOR = 0x18000000;
+                uint SIO_UDP_CONNRESET = IOC_IN | IOC_VENDOR | 12;
+                m_DhcpSocket.IOControl((int) SIO_UDP_CONNRESET, new byte[] {Convert.ToByte(false)}, null);
+            }
 
             try
             {
-                this.m_DhcpSocket.Bind(new IPEndPoint(this.m_DhcpInterfaceAddress, DhcpPort));
+                this.m_DhcpSocket.Bind(Environment.OSVersion.ToString().Contains("Unix")
+                    ? new IPEndPoint(IPAddress.Any, DhcpPort)
+                    : new IPEndPoint(this.m_DhcpInterfaceAddress, DhcpPort));
             }
             catch
             {

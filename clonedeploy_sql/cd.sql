@@ -135,8 +135,9 @@ DROP TABLE IF EXISTS `buildings`;
 CREATE TABLE `buildings` (
   `building_id` int(11) NOT NULL AUTO_INCREMENT,
   `building_name` varchar(45) DEFAULT NULL,
+  `building_distribution_point` int(11) DEFAULT '-1',
   PRIMARY KEY (`building_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -145,7 +146,7 @@ CREATE TABLE `buildings` (
 
 LOCK TABLES `buildings` WRITE;
 /*!40000 ALTER TABLE `buildings` DISABLE KEYS */;
-INSERT INTO `buildings` VALUES (1,'building1');
+INSERT INTO `buildings` VALUES (2,'building2',2),(3,'building2',0),(4,'test',2),(5,'building3',2);
 /*!40000 ALTER TABLE `buildings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -446,7 +447,7 @@ CREATE TABLE `computers` (
   `computer_image_profile_id` int(11) DEFAULT NULL,
   `computer_inventory_computer_inventory_id` int(11) NOT NULL,
   PRIMARY KEY (`computer_id`,`computer_inventory_computer_inventory_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -455,8 +456,90 @@ CREATE TABLE `computers` (
 
 LOCK TABLES `computers` WRITE;
 /*!40000 ALTER TABLE `computers` DISABLE KEYS */;
-INSERT INTO `computers` VALUES (12,'test','11111111111111111','',0,0,3,7,0);
+INSERT INTO `computers` VALUES (14,'aaaa','43','',0,0,3,7,0),(12,'test','11111111111111111','',0,0,3,7,0),(13,'abc','1','',0,0,0,0,0),(15,'aaaab','433','',0,0,0,0,0);
 /*!40000 ALTER TABLE `computers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `distribution_points`
+--
+
+DROP TABLE IF EXISTS `distribution_points`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `distribution_points` (
+  `distribution_point_id` int(11) NOT NULL AUTO_INCREMENT,
+  `distribution_point_display_name` varchar(45) DEFAULT NULL,
+  `distribution_point_server` varchar(45) DEFAULT NULL,
+  `distribution_point_protocol` varchar(45) DEFAULT NULL,
+  `distribution_point_share_name` varchar(45) DEFAULT NULL,
+  `distribution_point_domain` varchar(45) DEFAULT NULL,
+  `distribution_point_username` varchar(45) DEFAULT NULL,
+  `distribution_point_password` varchar(45) DEFAULT NULL,
+  `distribution_point_is_primary` tinyint(4) DEFAULT NULL,
+  `distribution_point_physical_path` varchar(255) DEFAULT NULL,
+  `distribution_point_is_backend` tinyint(4) DEFAULT NULL,
+  `distribution_point_backend_server` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`distribution_point_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `distribution_points`
+--
+
+LOCK TABLES `distribution_points` WRITE;
+/*!40000 ALTER TABLE `distribution_points` DISABLE KEYS */;
+INSERT INTO `distribution_points` VALUES (1,'abc123','192.168.1.1','SMB','cd_dp','workgroup','user','pass',0,'',0,''),(2,'asdfsdf','[server-ip]','SMB+HTTP','asdfsdaf','asdf','adsf','aaa',1,'c:\\',1,'');
+/*!40000 ALTER TABLE `distribution_points` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `drivers`
+--
+
+DROP TABLE IF EXISTS `drivers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `drivers` (
+  `driver_id` int(11) NOT NULL AUTO_INCREMENT,
+  `driver_path` varchar(255) DEFAULT NULL,
+  `driver_display_name` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`driver_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `drivers`
+--
+
+LOCK TABLES `drivers` WRITE;
+/*!40000 ALTER TABLE `drivers` DISABLE KEYS */;
+/*!40000 ALTER TABLE `drivers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `files_folders`
+--
+
+DROP TABLE IF EXISTS `files_folders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `files_folders` (
+  `file_folder_id` int(11) NOT NULL AUTO_INCREMENT,
+  `file_folder_display_name` varchar(45) DEFAULT NULL,
+  `file_folder_path` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`file_folder_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `files_folders`
+--
+
+LOCK TABLES `files_folders` WRITE;
+/*!40000 ALTER TABLE `files_folders` DISABLE KEYS */;
+/*!40000 ALTER TABLE `files_folders` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -731,8 +814,9 @@ DROP TABLE IF EXISTS `rooms`;
 CREATE TABLE `rooms` (
   `room_id` int(11) NOT NULL AUTO_INCREMENT,
   `room_name` varchar(45) DEFAULT NULL,
+  `room_distribution_point` int(11) DEFAULT NULL,
   PRIMARY KEY (`room_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -741,7 +825,7 @@ CREATE TABLE `rooms` (
 
 LOCK TABLES `rooms` WRITE;
 /*!40000 ALTER TABLE `rooms` DISABLE KEYS */;
-INSERT INTO `rooms` VALUES (2,'room1121-4'),(3,'lab322');
+INSERT INTO `rooms` VALUES (4,'room1',2);
 /*!40000 ALTER TABLE `rooms` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -783,8 +867,9 @@ DROP TABLE IF EXISTS `sites`;
 CREATE TABLE `sites` (
   `site_id` int(11) NOT NULL AUTO_INCREMENT,
   `site_name` varchar(45) DEFAULT NULL,
+  `site_distribution_point` int(11) DEFAULT NULL,
   PRIMARY KEY (`site_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -793,7 +878,7 @@ CREATE TABLE `sites` (
 
 LOCK TABLES `sites` WRITE;
 /*!40000 ALTER TABLE `sites` DISABLE KEYS */;
-INSERT INTO `sites` VALUES (7,'newsitegoeshere');
+INSERT INTO `sites` VALUES (9,'teset',2),(10,'adsfdf',1);
 /*!40000 ALTER TABLE `sites` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -834,4 +919,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-09-30 16:26:25
+-- Dump completed on 2015-10-02 16:28:31

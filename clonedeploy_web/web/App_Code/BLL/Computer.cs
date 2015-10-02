@@ -66,6 +66,7 @@ namespace BLL
                 Message.Text = "Successfully Update Computer";
         }
 
+    
         public bool ValidateHostData(Models.Computer computer)
         {
             var validated = true;

@@ -52,7 +52,8 @@ public partial class views_global_sites_search : BasePages.Global
         GridViewRow gvRow = (GridViewRow)(sender as Control).Parent.Parent;
         var site = new Models.Site
         {
-            Name = ((TextBox)gvRow.FindControl("txtNameAdd")).Text
+            Name = ((TextBox)gvRow.FindControl("txtNameAdd")).Text,
+            DistributionPoint = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDpAdd")).SelectedValue)
         };
 
         BllSite.AddSite(site);
@@ -72,8 +73,8 @@ public partial class views_global_sites_search : BasePages.Global
         var site = new Models.Site
         {
             Id = Convert.ToInt32(gvSites.DataKeys[e.RowIndex].Values[0]),
-            Name = ((TextBox)gvRow.FindControl("txtName")).Text
-
+            Name = ((TextBox)gvRow.FindControl("txtName")).Text,
+            DistributionPoint = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDp")).SelectedValue)
         };
         BllSite.UpdateSite(site);
 
@@ -93,5 +94,26 @@ public partial class views_global_sites_search : BasePages.Global
         BindGrid();
     }
 
-   
+
+    protected void gvSites_OnRowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        DropDownList ddlDps = null;
+
+        if (e.Row.RowType == DataControlRowType.Footer)
+        {
+            ddlDps = e.Row.FindControl("ddlDpAdd") as DropDownList;
+            PopulateDistributionPointsDdl(ddlDps);
+          
+        }
+
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            ddlDps = e.Row.FindControl("ddlDp") as DropDownList;
+            if (ddlDps != null)
+            {
+                PopulateDistributionPointsDdl(ddlDps);
+                ddlDps.SelectedValue = ((Models.Site)(e.Row.DataItem)).DistributionPoint.ToString();
+            }
+        } 
+    }
 }

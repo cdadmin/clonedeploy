@@ -11,6 +11,11 @@ namespace Models
         [Column("building_id", Order = 1)]
         public int Id { get; set; }
         [Column("building_name", Order = 2)]
-        public string Name { get; set; }  
+        public string Name { get; set; }
+        [Column("building_distribution_point", Order = 3)]
+        public int DistributionPoint { get; set; }
+
+        [NotMapped]
+        public string DpName { get; set; }
     }
 }

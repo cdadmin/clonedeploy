@@ -4,10 +4,6 @@ using System.Web.ModelBinding;
 
 namespace DAL
 {
-    /// <summary>
-    /// Summary description for Entities
-    /// </summary>
-
     public class CloneDeployDbContext : DbContext
     {
         public CloneDeployDbContext() : base("mysql") { }
@@ -32,6 +28,7 @@ namespace DAL
         public DbSet<Models.Site> Sites { get; set; }
         public DbSet<Models.Building> Buildings { get; set; }
         public DbSet<Models.Room> Rooms { get; set; }
+        public DbSet<Models.DistributionPoint> DistributionPoints { get; set; }
 
     }
 

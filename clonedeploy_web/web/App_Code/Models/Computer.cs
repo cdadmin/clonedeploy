@@ -59,8 +59,7 @@ namespace Models
 
         [Column("computer_image_profile_id", Order = 8)]
         public int ImageProfile { get; set; }
-
-       
+   
         [NotMapped]
         public string CustomBootEnabled { get; set; }
 

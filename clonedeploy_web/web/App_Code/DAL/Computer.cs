@@ -80,9 +80,22 @@ namespace DAL
         public List<Models.Computer> Find(string searchString)
         {
             return (from h in _context.Computers
-                where h.Name.Contains(searchString) || h.Mac.Contains(searchString)
-                orderby h.Name
-                select h).ToList();
+             join t in _context.Images on h.Image equals t.Id into joined
+             from p in joined.DefaultIfEmpty()
+             where h.Name.Contains(searchString) || h.Mac.Contains(searchString)
+             select new 
+             {
+                 id = h.Id,
+                 name = h.Name,
+                 mac = h.Mac,
+                 imageName = p.Name
+             }).AsEnumerable().Select(x => new Models.Computer()
+             {
+                 Id = x.id,
+                 Name = x.name,
+                 Mac = x.mac,
+                 ImageName = x.imageName
+             }).ToList();
         }
 
         public Models.Computer GetComputerFromMac(string mac)

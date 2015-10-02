@@ -64,8 +64,26 @@ namespace DAL
 
         public List<Models.Site> Find(string searchString)
         {
+            return (from s in _context.Sites
+                join d in _context.DistributionPoints on s.DistributionPoint equals d.Id into joined
+                from j in joined.DefaultIfEmpty()
+                where s.Name.Contains(searchString)
+                orderby s.Name
+                select new
+                {
+                    id = s.Id,
+                    name = s.Name,
+                    distributionPoint = s.DistributionPoint,
+                    dpName = j.DisplayName
+                }).AsEnumerable().Select(x => new Models.Site()
+                {
+                    Id = x.id,
+                    Name = x.name,
+                    DistributionPoint = x.distributionPoint,
+                    DpName = x.dpName
+                }).ToList();
 
-            return (from s in _context.Sites where s.Name.Contains(searchString) orderby s.Name select s).ToList();
+           
 
         }
 

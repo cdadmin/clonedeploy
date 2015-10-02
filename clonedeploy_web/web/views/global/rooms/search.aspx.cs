@@ -51,7 +51,8 @@ public partial class views_global_rooms_search : BasePages.Global
         GridViewRow gvRow = (GridViewRow)(sender as Control).Parent.Parent;
         var room = new Models.Room
         {
-            Name = ((TextBox)gvRow.FindControl("txtNameAdd")).Text
+            Name = ((TextBox)gvRow.FindControl("txtNameAdd")).Text,
+            DistributionPoint = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDpAdd")).SelectedValue)
         };
 
         BllRoom.AddRoom(room);
@@ -71,7 +72,8 @@ public partial class views_global_rooms_search : BasePages.Global
         var room = new Models.Room
         {
             Id = Convert.ToInt32(gvRooms.DataKeys[e.RowIndex].Values[0]),
-            Name = ((TextBox)gvRow.FindControl("txtName")).Text
+            Name = ((TextBox)gvRow.FindControl("txtName")).Text,
+            DistributionPoint = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDp")).SelectedValue)
 
         };
         BllRoom.UpdateRoom(room);
@@ -90,5 +92,27 @@ public partial class views_global_rooms_search : BasePages.Global
     {
         BllRoom.DeleteRoom(Convert.ToInt32(gvRooms.DataKeys[e.RowIndex].Values[0]));
         BindGrid();
+    }
+
+    protected void gvRooms_OnRowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        DropDownList ddlDps = null;
+
+        if (e.Row.RowType == DataControlRowType.Footer)
+        {
+            ddlDps = e.Row.FindControl("ddlDpAdd") as DropDownList;
+            PopulateDistributionPointsDdl(ddlDps);
+
+        }
+
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            ddlDps = e.Row.FindControl("ddlDp") as DropDownList;
+            if (ddlDps != null)
+            {
+                PopulateDistributionPointsDdl(ddlDps);
+                ddlDps.SelectedValue = ((Models.Room)(e.Row.DataItem)).DistributionPoint.ToString();
+            }
+        } 
     }
 }
