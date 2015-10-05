@@ -1,17 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
-using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Web;
-using Global;
 using Helpers;
-using Models;
-using Newtonsoft.Json;
-using Partition;
-
-
 
 namespace DAL
 {
@@ -44,7 +35,7 @@ namespace DAL
 
 
 
-        public bool Delete(int imageId)
+        public bool Delete(int? imageId)
         {
             try
             {
@@ -76,7 +67,7 @@ namespace DAL
             throw new Exception("Not Implemented");
         }
 
-        public Models.Image Read(int imageId)
+        public Models.Image Read(int? imageId)
         {
             return _context.Images.FirstOrDefault(p => p.Id == imageId);
         }

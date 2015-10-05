@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
+using BasePages;
 using BLL;
-using Global;
-using Models;
+using LinuxProfile = Models.LinuxProfile;
 
-public partial class views_images_profiles_search : BasePages.Images
+public partial class views_images_profiles_search : Images
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -25,7 +23,7 @@ public partial class views_images_profiles_search : BasePages.Images
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvProfiles.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            new BLL.Computer().DeleteComputer(Convert.ToInt32(dataKey.Value));
+            new Computer().DeleteComputer(Convert.ToInt32(dataKey.Value));
         }
 
         PopulateGrid();
@@ -51,7 +49,7 @@ public partial class views_images_profiles_search : BasePages.Images
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        IEnumerable<Models.LinuxProfile> listProfiles = (List<Models.LinuxProfile>)gvProfiles.DataSource;
+        IEnumerable<LinuxProfile> listProfiles = (List<LinuxProfile>)gvProfiles.DataSource;
         switch (e.SortExpression)
         {
             case "Name":

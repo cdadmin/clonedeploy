@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using BLL;
-using Global;
 using Helpers;
 using Models;
 
@@ -574,7 +572,7 @@ namespace Pxe
             return path;
         }
 
-        public string GetHostNonProxyPath(Models.Computer host, bool isActiveOrCustom)
+        public string GetHostNonProxyPath(Computer host, bool isActiveOrCustom)
         {
             var mode = Settings.PxeMode;
             var pxeHostMac = Utility.MacToPxeMac(host.Mac);
@@ -598,7 +596,7 @@ namespace Pxe
             return path;
         }
 
-        public string GetHostProxyPath(Models.Computer host, bool isActiveOrCustom, string proxyType)
+        public string GetHostProxyPath(Computer host, bool isActiveOrCustom, string proxyType)
         {
             var pxeHostMac = Utility.MacToPxeMac(host.Mac);
             string path = null;

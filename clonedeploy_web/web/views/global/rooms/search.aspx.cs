@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Models;
 
 public partial class views_global_rooms_search : BasePages.Global
 {
@@ -33,8 +32,8 @@ public partial class views_global_rooms_search : BasePages.Global
 
         if (gvRooms.Rows.Count == 0)
         {
-            var obj = new List<Models.Room>();
-            obj.Add(new Models.Room());
+            var obj = new List<Room>();
+            obj.Add(new Room());
             gvRooms.DataSource = obj;
             gvRooms.DataBind();
 
@@ -49,7 +48,7 @@ public partial class views_global_rooms_search : BasePages.Global
     protected void Insert(object sender, EventArgs e)
     {
         GridViewRow gvRow = (GridViewRow)(sender as Control).Parent.Parent;
-        var room = new Models.Room
+        var room = new Room
         {
             Name = ((TextBox)gvRow.FindControl("txtNameAdd")).Text,
             DistributionPoint = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDpAdd")).SelectedValue)
@@ -69,7 +68,7 @@ public partial class views_global_rooms_search : BasePages.Global
     protected void OnRowUpdating(object sender, GridViewUpdateEventArgs e)
     {
         GridViewRow gvRow = gvRooms.Rows[e.RowIndex];
-        var room = new Models.Room
+        var room = new Room
         {
             Id = Convert.ToInt32(gvRooms.DataKeys[e.RowIndex].Values[0]),
             Name = ((TextBox)gvRow.FindControl("txtName")).Text,
@@ -111,7 +110,7 @@ public partial class views_global_rooms_search : BasePages.Global
             if (ddlDps != null)
             {
                 PopulateDistributionPointsDdl(ddlDps);
-                ddlDps.SelectedValue = ((Models.Room)(e.Row.DataItem)).DistributionPoint.ToString();
+                ddlDps.SelectedValue = ((Room)(e.Row.DataItem)).DistributionPoint.ToString();
             }
         } 
     }

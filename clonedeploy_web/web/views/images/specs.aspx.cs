@@ -5,15 +5,14 @@ using System.Globalization;
 using System.IO;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Global;
+using BasePages;
 using Helpers;
 using Newtonsoft.Json;
 using Partition;
 
-
 namespace views.images
 {
-    public partial class ImageSpecs : BasePages.Images
+    public partial class ImageSpecs : Images
     {
         protected void btnConfirmChecksum_Click(object sender, EventArgs e)
         {

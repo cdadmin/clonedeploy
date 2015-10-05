@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using BLL.Workflows;
 using DAL;
-using Global;
 using Helpers;
-using Models;
 
 namespace BLL
 {
 
     public class Computer
     {
-        private readonly DAL.Computer _da = new DAL.Computer();
+        private readonly UnitOfWork _unitOfWork = new UnitOfWork();
 
         public bool AddComputer(Models.Computer computer)
         {
-            if (_da.Exists(computer))
+            if (_unitOfWork.Computer.Exists(h => h.Name == computer.Name || h.Mac == computer.Mac))
             {
                 Message.Text = "A Computer With This Name Already Exists";
                 return false;
             }
-            if (_da.Create(computer))
+
+            _unitOfWork.Computer.Insert(computer);
+            if (_unitOfWork.Save())
             {
                 Message.Text = "Successfully Created Computer";
                 return true;
@@ -29,40 +30,46 @@ namespace BLL
                 Message.Text = "Could Not Create Computer";
                 return false;
             }
+
         }
 
         public string TotalCount()
         {
-            return _da.GetTotalCount();
+            return _unitOfWork.Computer.Count();
         }
 
         public string ActiveStatus(string mac)
         {
-            return _da.CheckActive(mac) != null ? "Active" : "Inactive";
+            return _unitOfWork.Computer.CheckActive(mac) != null ? "Active" : "Inactive";
         }
-        public bool DeleteComputer(int computerId)
+
+        public void DeleteComputer(int computerId)
         {
-            return _da.Delete(computerId);
+             _unitOfWork.Computer.Delete(computerId);
+            _unitOfWork.Save();
         }
 
         public Models.Computer GetComputer(int computerId)
         {
-            return _da.Read(computerId);
+            return _unitOfWork.Computer.GetById(computerId);
         }
 
         public Models.Computer GetComputerFromMac(string mac)
         {
-            return _da.GetComputerFromMac(mac);
+            return _unitOfWork.Computer.GetFirstOrDefault(p => p.Mac == mac);
+
         }
 
         public List<Models.Computer> SearchComputers(string searchString)
         {
-            return _da.Find(searchString);
+            return _unitOfWork.Computer.Get(w => w.Name.Contains(searchString), includeProperties:"images");
+            //return _unitOfWork.Computer.Get(searchString);
         }
 
         public void UpdateComputer(Models.Computer computer)
         {
-            if (_da.Update(computer))
+            _unitOfWork.Computer.Update(computer);
+            if(_unitOfWork.Save())
                 Message.Text = "Successfully Update Computer";
         }
 
@@ -92,7 +99,7 @@ namespace BLL
 
         public void StartUnicast(Models.Computer computer, string direction)
         {
-            switch (new Workflows.Unicast().Run(computer, direction))
+            switch (new Unicast().Run(computer, direction))
             {
                 case "computer_error":
                     Message.Text = "The Computer No Longer Exists";

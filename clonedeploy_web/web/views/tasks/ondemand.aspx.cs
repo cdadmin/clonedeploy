@@ -19,10 +19,8 @@
 using System;
 using System.Linq;
 using System.Web;
-using System.Web.UI;
-using Global;
+using BLL;
 using Helpers;
-using Models;
 using Tasks;
 
 namespace views.tasks
@@ -31,7 +29,7 @@ namespace views.tasks
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            var user = new BLL.User().GetUser(HttpContext.Current.User.Identity.Name);
+            var user = new User().GetUser(HttpContext.Current.User.Identity.Name);
 
             if (Settings.OnDemand == "Disabled")
             {
@@ -51,7 +49,7 @@ namespace views.tasks
                 secureMsg.Visible = false;
             }
             if (IsPostBack) return;
-            ddlImage.DataSource = new BLL.Image().SearchImages("").Select(i => i.Name);
+            ddlImage.DataSource = new Image().SearchImages("").Select(i => i.Name);
             ddlImage.DataBind();
             ddlImage.Items.Insert(0, "Select Image");
         }

@@ -1,6 +1,5 @@
 ﻿using System.Data.Entity;
-using System.Web.ModelBinding;
-
+using Models;
 
 namespace DAL
 {
@@ -11,11 +10,11 @@ namespace DAL
         public DbSet<Models.LinuxProfile> LinuxProfiles { get; set; }
         public DbSet<Models.ActiveImagingTask> ActiveImagingTasks { get; set; }
         public DbSet<Models.ActiveMulticastSession> ActiveMulticastSessions { get; set; }
-        public DbSet<Models.BootTemplate> BootTemplates { get; set; }
+        public DbSet<BootTemplate> BootTemplates { get; set; }
         public DbSet<Models.Group> Groups { get; set; }
-        public DbSet<Models.History> History { get; set; }
+        public DbSet<History> History { get; set; }
         public DbSet<Models.Image> Images { get; set; }
-        public DbSet<Models.WdsUser> Users { get; set; }
+        public DbSet<WdsUser> Users { get; set; }
         public DbSet<Models.Port> Ports { get; set; }
         public DbSet<Models.Setting> Settings { get; set; }
         public DbSet<Models.SysprepTag> SysprepTags { get; set; }
@@ -30,6 +29,7 @@ namespace DAL
         public DbSet<Models.Room> Rooms { get; set; }
         public DbSet<Models.DistributionPoint> DistributionPoints { get; set; }
 
+      
     }
 
 }

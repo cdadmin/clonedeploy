@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using Global;
+using BasePages;
 using Models;
 
 namespace views.hosts
 {
-    public partial class HostHistory : BasePages.Computers
+    public partial class HostHistory : Computers
     {
         protected void Page_Load(object sender, EventArgs e)
         {

@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Linq;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using BasePages;
-using BLL;
-using Global;
 using Helpers;
 using Models;
 using Security;
-using Image = Models.Image;
 
 namespace views.hosts
 {
-    public partial class Addhosts : BasePages.Computers
+    public partial class Addhosts : Computers
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -27,7 +21,7 @@ namespace views.hosts
         protected void ButtonAddHost_Click(object sender, EventArgs e)
         {
       
-            var host = new Models.Computer
+            var host = new Computer
             {
                 Name = txtHostName.Text,
                 Mac = Utility.FixMac(txtHostMac.Text),

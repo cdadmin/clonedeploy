@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using BLL;
-using Global;
 using Helpers;
 using Models;
 
@@ -10,7 +8,7 @@ namespace Pxe
     public class CustomBootMenu
     {
         public string FileName { get; set; }
-        public Models.Computer Host { get; set; }
+        public Computer Host { get; set; }
 
         /*public void MoveCustomInactiveToActive()
         {

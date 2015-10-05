@@ -1,24 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using BasePages;
 using BLL;
-using Global;
-using Models;
-using Security;
-
+using Group = Models.Group;
 
 namespace views.groups
 {
-    public partial class GroupEdit : BasePages.Groups
+    public partial class GroupEdit : Groups
     {
-        private readonly BLL.LinuxProfile _bllLinuxProfile = new BLL.LinuxProfile();
+        private readonly LinuxProfile _bllLinuxProfile = new LinuxProfile();
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            var group = new Models.Group
+            var group = new Group
             {
                 Id = Group.Id,
                 Name = txtGroupName.Text,

@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using Models;
+using BasePages;
+using BLL;
 
-public partial class views_images_profiles_scripts : BasePages.Images
+public partial class views_images_profiles_scripts : Images
 {
-    private readonly BLL.ImageProfileScript _bllImageProfileScript = new BLL.ImageProfileScript();
+    private readonly ImageProfileScript _bllImageProfileScript = new ImageProfileScript();
     protected void Page_Load(object sender, EventArgs e)
     {
         if (IsPostBack) return;
@@ -19,7 +18,7 @@ public partial class views_images_profiles_scripts : BasePages.Images
     protected void PopulateGrid()
     {
 
-        gvScripts.DataSource = new BLL.Script().SearchScripts("");
+        gvScripts.DataSource = new Script().SearchScripts("");
         gvScripts.DataBind();
 
         var profileScripts = _bllImageProfileScript.SearchImageProfileScripts(ImageProfile.Id);
@@ -56,7 +55,7 @@ public partial class views_images_profiles_scripts : BasePages.Images
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<Script> listScripts = (List<Script>)gvScripts.DataSource;
+        List<Models.Script> listScripts = (List<Models.Script>)gvScripts.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -86,7 +85,7 @@ public partial class views_images_profiles_scripts : BasePages.Images
             var dataKey = gvScripts.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
 
-            var profileScript = new ImageProfileScript()
+            var profileScript = new Models.ImageProfileScript()
             {
                 ScriptId = Convert.ToInt16(dataKey.Value),
                 ProfileId = ImageProfile.Id,

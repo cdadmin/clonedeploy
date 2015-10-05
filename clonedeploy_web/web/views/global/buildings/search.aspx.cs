@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Models;
 
 public partial class views_global_buildings_search : BasePages.Global
 {
@@ -33,8 +32,8 @@ public partial class views_global_buildings_search : BasePages.Global
 
         if (gvBuildings.Rows.Count == 0)
         {
-            var obj = new List<Models.Building>();
-            obj.Add(new Models.Building());
+            var obj = new List<Building>();
+            obj.Add(new Building());
             gvBuildings.DataSource = obj;
             gvBuildings.DataBind();
 
@@ -49,7 +48,7 @@ public partial class views_global_buildings_search : BasePages.Global
     protected void Insert(object sender, EventArgs e)
     {
         GridViewRow gvRow = (GridViewRow)(sender as Control).Parent.Parent;
-        var building = new Models.Building
+        var building = new Building
         {
             Name = ((TextBox)gvRow.FindControl("txtNameAdd")).Text,
             DistributionPoint = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDpAdd")).SelectedValue)
@@ -69,7 +68,7 @@ public partial class views_global_buildings_search : BasePages.Global
     protected void OnRowUpdating(object sender, GridViewUpdateEventArgs e)
     {
         GridViewRow gvRow = gvBuildings.Rows[e.RowIndex];
-        var building = new Models.Building
+        var building = new Building
         {
             Id = Convert.ToInt32(gvBuildings.DataKeys[e.RowIndex].Values[0]),
             Name = ((TextBox)gvRow.FindControl("txtName")).Text,
@@ -111,7 +110,7 @@ public partial class views_global_buildings_search : BasePages.Global
             if (ddlDps != null)
             {
                 PopulateDistributionPointsDdl(ddlDps);
-                ddlDps.SelectedValue = ((Models.Building)(e.Row.DataItem)).DistributionPoint.ToString();
+                ddlDps.SelectedValue = ((Building)(e.Row.DataItem)).DistributionPoint.ToString();
             }
         } 
     }

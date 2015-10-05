@@ -10,13 +10,13 @@ namespace Helpers
     {
         public void Show()
         {
-            if (string.IsNullOrEmpty(Message.Text)) return;
+            if (string.IsNullOrEmpty(Text)) return;
             const string msgType = "showSuccessToast";
             var page = HttpContext.Current.CurrentHandler as Page;
 
             if (page != null)
                 page.ClientScript.RegisterStartupScript(GetType(), "msgBox",
-                    "$(function() { $().toastmessage('" + msgType + "', " + "\"" + Message.Text + "\"); });", true);
+                    "$(function() { $().toastmessage('" + msgType + "', " + "\"" + Text + "\"); });", true);
             HttpContext.Current.Session.Remove("Message");
         }
         public static string Text

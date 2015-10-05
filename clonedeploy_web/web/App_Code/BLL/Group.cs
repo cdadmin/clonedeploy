@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Global;
 using Helpers;
 using Models;
 using Tasks;
@@ -67,16 +66,16 @@ namespace BLL
 
         public void StartGroupUnicast(Models.Group group)
         {
-            var bllImage = new BLL.Image();
+            var bllImage = new Image();
             var image = bllImage.GetImage(group.Image);
 
             if (bllImage.Check_Checksum(image))
             {
                 var count = 0;
 
-                foreach (var host in new BLL.GroupMembership().GetGroupMembers(group.Id, ""))
+                foreach (var host in new GroupMembership().GetGroupMembers(group.Id, ""))
                 {
-                    new BLL.Computer().StartUnicast(host,"push");
+                    new Computer().StartUnicast(host,"push");
                
                     count++;
                 }

@@ -1,15 +1,13 @@
 ﻿using System;
 using System.IO;
-using System.Web.UI;
-using Global;
+using BasePages;
+using BLL;
 using Helpers;
-using Models;
 using Security;
-
 
 namespace views.groups
 {
-    public partial class GroupImport : BasePages.Groups
+    public partial class GroupImport : Groups
     {
         protected void btnImport_Click(object sender, EventArgs e)
         {
@@ -17,7 +15,7 @@ namespace views.groups
                               "csvupload" + Path.DirectorySeparatorChar + "groups.csv";
             FileUpload.SaveAs(csvFilePath);
             new FileOps().SetUnixPermissions(csvFilePath);
-            new BLL.Group().ImportGroups();
+            new Group().ImportGroups();
         }
 
         protected void Page_Load(object sender, EventArgs e)

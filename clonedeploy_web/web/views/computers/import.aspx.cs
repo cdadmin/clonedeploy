@@ -18,16 +18,14 @@
 
 using System;
 using System.IO;
-using System.Web.UI;
+using BasePages;
 using BLL;
-using Global;
 using Helpers;
-using Models;
 using Security;
 
 namespace views.hosts
 {
-    public partial class HostImport : BasePages.Computers
+    public partial class HostImport : Computers
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -43,7 +41,7 @@ namespace views.hosts
                               "csvupload" + Path.DirectorySeparatorChar + "hosts.csv";
             FileUpload.SaveAs(csvFilePath);
             new FileOps().SetUnixPermissions(csvFilePath);
-            new BLL.Computer().ImportComputers();
+            new Computer().ImportComputers();
            
         }       
     }

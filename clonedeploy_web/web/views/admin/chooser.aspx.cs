@@ -17,15 +17,11 @@
  */
 
 using System;
-using System.IO;
-using System.Web;
-using System.Web.UI;
-using Global;
-using Models;
+using BasePages;
 
 namespace views.admin
 {
-    public partial class AdminChooser : BasePages.Admin
+    public partial class AdminChooser : Admin
     {
         protected void Page_Load(object sender, EventArgs e)
         {

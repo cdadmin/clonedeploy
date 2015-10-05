@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using Models;
+using BLL;
 
 public partial class views_global_search : BasePages.Global
 {
@@ -17,7 +15,7 @@ public partial class views_global_search : BasePages.Global
 
     protected void PopulateGrid()
     {
-        var bllPartitionLayout = new BLL.PartitionLayout();
+        var bllPartitionLayout = new PartitionLayout();
         gvLayout.DataSource = bllPartitionLayout.SearchPartitionLayouts(txtSearch.Text);
         gvLayout.DataBind();
 
@@ -49,7 +47,7 @@ public partial class views_global_search : BasePages.Global
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<PartitionLayout> listLayouts = (List<PartitionLayout>)gvLayout.DataSource;
+        List<Models.PartitionLayout> listLayouts = (List<Models.PartitionLayout>)gvLayout.DataSource;
         switch (e.SortExpression)
         {
             case "Name":

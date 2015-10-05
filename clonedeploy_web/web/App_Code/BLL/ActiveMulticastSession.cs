@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Management;
 using System.Threading;
-using System.Web;
-using Global;
 using Helpers;
 using Pxe;
 
@@ -37,11 +34,11 @@ namespace BLL
         public bool Delete(int multicastId)
         {
             var multicast = _da.Read(multicastId);
-            var computers = new BLL.ActiveImagingTask().GetMulticastComputers(multicastId);
+            var computers = new ActiveImagingTask().GetMulticastComputers(multicastId);
 
             if (_da.Delete(multicastId))
             {
-                new BLL.ActiveImagingTask().DeleteForMulticast(multicastId);
+                new ActiveImagingTask().DeleteForMulticast(multicastId);
 
                 foreach (var computer in computers)
                     new PxeFileOps().CleanPxeBoot(Utility.MacToPxeMac(computer.Mac));

@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using BasePages;
+using BLL;
 
-public partial class views_admin_dp_edit : BasePages.Admin
+public partial class views_admin_dp_edit : Admin
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -14,7 +11,7 @@ public partial class views_admin_dp_edit : BasePages.Admin
 
     protected void buttonUpdateDp_OnClick(object sender, EventArgs e)
     {
-        var bllDistributionPoint = new BLL.DistributionPoint();
+        var bllDistributionPoint = new DistributionPoint();
         var distributionPoint = bllDistributionPoint.GetDistributionPoint(Convert.ToInt32(Request.QueryString["dpid"]));
 
         distributionPoint.DisplayName = txtDisplayName.Text;
@@ -44,7 +41,7 @@ public partial class views_admin_dp_edit : BasePages.Admin
 
     protected void PopulateForm()
     {
-        var bllDistributionPoint = new BLL.DistributionPoint();
+        var bllDistributionPoint = new DistributionPoint();
         var distributionPoint = bllDistributionPoint.GetDistributionPoint(Convert.ToInt32(Request.QueryString["dpid"]));
 
         txtDisplayName.Text = distributionPoint.DisplayName;

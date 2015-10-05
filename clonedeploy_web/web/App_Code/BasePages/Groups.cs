@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using Models;
 
 namespace BasePages
 {
     public class Groups : PageBaseMaster
     {
-        public Models.Group Group { get; set; }
+        public Group Group { get; set; }
         public BLL.Group BllGroup { get; set; }
 
         public Groups() 

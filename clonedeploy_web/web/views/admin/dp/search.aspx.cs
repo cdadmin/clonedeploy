@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
+using BasePages;
 using BLL;
-using Helpers;
 
-public partial class views_admin_dp_search : BasePages.Admin
+public partial class views_admin_dp_search : Admin
 {
-    private readonly BLL.DistributionPoint _bllDistributionPoint = new BLL.DistributionPoint();
+    private readonly DistributionPoint _bllDistributionPoint = new DistributionPoint();
 
     protected void Page_Load(object sender, EventArgs e)
     {

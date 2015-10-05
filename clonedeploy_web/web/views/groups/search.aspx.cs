@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using Global;
-using Models;
-
+using BasePages;
+using BLL;
 
 namespace views.groups
 {
-    public partial class GroupSearch : BasePages.Groups
+    public partial class GroupSearch : Groups
     {
-        private readonly BLL.Group _bllGroup = new BLL.Group();
+        private readonly Group _bllGroup = new Group();
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             foreach (GridViewRow row in gvGroups.Rows)
@@ -32,7 +30,7 @@ namespace views.groups
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
-            List<Group> listGroups = (List<Group>)gvGroups.DataSource;
+            List<Models.Group> listGroups = (List<Models.Group>)gvGroups.DataSource;
             switch (e.SortExpression)
             {
                 case "Name":
@@ -65,7 +63,7 @@ namespace views.groups
                 }
                 else if (lbl != null)
                 {
-                    lbl.Text = new BLL.GroupMembership().GetGroupMemberCount(group.Id);
+                    lbl.Text = new GroupMembership().GetGroupMemberCount(group.Id);
                 }
             }
         }
@@ -101,7 +99,7 @@ namespace views.groups
                 else if (lbl != null)
                 {
 
-                    lbl.Text = new BLL.GroupMembership().GetGroupMemberCount(group.Id);
+                    lbl.Text = new GroupMembership().GetGroupMemberCount(group.Id);
                 }
             }
 

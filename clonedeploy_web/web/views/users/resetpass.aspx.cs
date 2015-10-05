@@ -17,16 +17,14 @@
  */
 
 using System;
-using System.Web;
-using System.Web.UI;
-using Global;
+using BasePages;
+using BLL;
 using Helpers;
-using Models;
 using Security;
 
 namespace views.users
 {
-    public partial class ResetPass : BasePages.Users
+    public partial class ResetPass : Users
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -41,7 +39,7 @@ namespace views.users
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             var user = CloneDeployUser;
-            var bllUser = new BLL.User();
+            var bllUser = new User();
             if (txtUserPwd.Text == txtUserPwdConfirm.Text)
             {
                 user.Password = txtUserPwd.Text;

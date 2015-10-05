@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using Models;
 
 public partial class views_global_sysprep_create : BasePages.Global
 {
@@ -14,7 +10,7 @@ public partial class views_global_sysprep_create : BasePages.Global
 
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
-        var sysPrepTag = new Models.SysprepTag()
+        var sysPrepTag = new SysprepTag()
         {
             Name = txtName.Text,
             OpeningTag = txtOpenTag.Text,

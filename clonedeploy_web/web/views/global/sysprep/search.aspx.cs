@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using Models;
+using BLL;
 
 public partial class views_global_sysprep_search : BasePages.Global
 {
@@ -17,7 +15,7 @@ public partial class views_global_sysprep_search : BasePages.Global
 
     protected void PopulateGrid()
     {
-        var bllSysprepTag = new BLL.SysprepTag();
+        var bllSysprepTag = new SysprepTag();
         gvSysprepTags.DataSource = bllSysprepTag.SearchSysprepTags(txtSearch.Text);
         gvSysprepTags.DataBind();
 
@@ -39,7 +37,7 @@ public partial class views_global_sysprep_search : BasePages.Global
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<SysprepTag> listSysprepTags = (List<SysprepTag>)gvSysprepTags.DataSource;
+        List<Models.SysprepTag> listSysprepTags = (List<Models.SysprepTag>)gvSysprepTags.DataSource;
         switch (e.SortExpression)
         {
             case "Name":

@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web.UI;
-using Global;
+using BasePages;
 using Models;
-using Tasks;
-
 
 namespace views.masters
 {
-    public partial class GroupMaster : BasePages.MasterBaseMaster
+    public partial class GroupMaster : MasterBaseMaster
     {
-        private BasePages.Groups groupBasePage { get; set; }
-        public Models.Group Group { get; set; }
+        private Groups groupBasePage { get; set; }
+        public Group Group { get; set; }
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            groupBasePage = (Page as BasePages.Groups);
+            groupBasePage = (Page as Groups);
             Group = groupBasePage.Group;
             if (Group == null)
             {

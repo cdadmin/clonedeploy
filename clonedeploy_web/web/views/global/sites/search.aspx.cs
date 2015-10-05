@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Models;
@@ -34,8 +32,8 @@ public partial class views_global_sites_search : BasePages.Global
 
         if (gvSites.Rows.Count == 0)
         {
-            var obj = new List<Models.Site>();
-            obj.Add(new Models.Site());
+            var obj = new List<Site>();
+            obj.Add(new Site());
             gvSites.DataSource = obj;
             gvSites.DataBind();
 
@@ -50,7 +48,7 @@ public partial class views_global_sites_search : BasePages.Global
     protected void Insert(object sender, EventArgs e)
     {
         GridViewRow gvRow = (GridViewRow)(sender as Control).Parent.Parent;
-        var site = new Models.Site
+        var site = new Site
         {
             Name = ((TextBox)gvRow.FindControl("txtNameAdd")).Text,
             DistributionPoint = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDpAdd")).SelectedValue)
@@ -70,7 +68,7 @@ public partial class views_global_sites_search : BasePages.Global
     protected void OnRowUpdating(object sender, GridViewUpdateEventArgs e)
     {
         GridViewRow gvRow = gvSites.Rows[e.RowIndex];
-        var site = new Models.Site
+        var site = new Site
         {
             Id = Convert.ToInt32(gvSites.DataKeys[e.RowIndex].Values[0]),
             Name = ((TextBox)gvRow.FindControl("txtName")).Text,
@@ -112,7 +110,7 @@ public partial class views_global_sites_search : BasePages.Global
             if (ddlDps != null)
             {
                 PopulateDistributionPointsDdl(ddlDps);
-                ddlDps.SelectedValue = ((Models.Site)(e.Row.DataItem)).DistributionPoint.ToString();
+                ddlDps.SelectedValue = ((Site)(e.Row.DataItem)).DistributionPoint.ToString();
             }
         } 
     }

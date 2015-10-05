@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Web;
-using Global;
+﻿using System.Collections.Generic;
+using BLL.Workflows;
+using DAL;
 using Helpers;
 using Pxe;
 
@@ -20,11 +11,11 @@ namespace BLL
     public class ActiveImagingTask
     {
         private readonly DAL.ActiveImagingTask _da = new DAL.ActiveImagingTask();
-
+        private readonly UnitOfWork _unitOfWork = new UnitOfWork();
         public bool DeleteActiveImagingTask(int activeImagingTaskId)
         {
             var activeImagingTask = _da.Read(activeImagingTaskId);
-            var computer = new DAL.Computer().Read(activeImagingTask.ComputerId);
+            var computer = _unitOfWork.Computer.GetById(activeImagingTask.ComputerId);
 
             if (_da.Delete(activeImagingTaskId))
             {
@@ -101,7 +92,7 @@ namespace BLL
         }
         public void CancelAll()
         {
-            Workflows.CancelAllImagingTasks.Run();
+            CancelAllImagingTasks.Run();
         }
 
        

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Web;
@@ -100,7 +101,7 @@ namespace Models
 
             var client = new SmtpClient(Settings.SmtpServer, Convert.ToInt16(Settings.SmtpPort))
             {
-                Credentials = new System.Net.NetworkCredential(Settings.SmtpUsername, Settings.SmtpPassword),
+                Credentials = new NetworkCredential(Settings.SmtpUsername, Settings.SmtpPassword),
                 EnableSsl = Settings.SmtpSsl == "Yes"
             };
 

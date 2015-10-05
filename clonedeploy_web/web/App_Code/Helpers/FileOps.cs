@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using Global;
 using Mono.Unix.Native;
 
 namespace Helpers

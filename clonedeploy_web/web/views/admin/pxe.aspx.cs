@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using Global;
+using BasePages;
 using Helpers;
 using Models;
 using Pxe;
+using ActiveImagingTask = BLL.ActiveImagingTask;
 
-public partial class views_admin_pxe : BasePages.Admin
+public partial class views_admin_pxe : Admin
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -117,7 +116,7 @@ public partial class views_admin_pxe : BasePages.Admin
 
     protected bool ValidateSettings()
     {
-        if (new BLL.ActiveImagingTask().ReadAll().Count > 0)
+        if (new ActiveImagingTask().ReadAll().Count > 0)
         {
             Message.Text = "Settings Cannot Be Changed While Tasks Are Active";
             return false;

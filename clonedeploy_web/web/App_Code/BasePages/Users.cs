@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using BLL;
+using Models;
 
 namespace BasePages
 {
     public class Users : PageBaseMaster
     {
-        public Models.WdsUser CloneDeployUser { get; set; }
-        public BLL.User BllUser { get; set; }
+        public WdsUser CloneDeployUser { get; set; }
+        public User BllUser { get; set; }
 
         public Users() 
         {
-            BllUser = new BLL.User();
+            BllUser = new User();
         }
 
         protected override void OnInit(EventArgs e)

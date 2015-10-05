@@ -1,22 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using BLL;
+using BasePages;
 using Models;
-using Image = Models.Image;
 
-public partial class views_masters_Profile : BasePages.MasterBaseMaster
+public partial class views_masters_Profile : MasterBaseMaster
 {
-    private BasePages.Images imageBasePage { get; set; }
-    public Models.LinuxProfile ImageProfile { get; set; }
-    public Models.Image Image { get; set; }
+    private Images imageBasePage { get; set; }
+    public LinuxProfile ImageProfile { get; set; }
+    public Image Image { get; set; }
 
     public void Page_Load(object sender, EventArgs e)
     {
-        imageBasePage = (Page as BasePages.Images);
+        imageBasePage = (Page as Images);
         ImageProfile = imageBasePage.ImageProfile;
         Image = imageBasePage.Image;
 

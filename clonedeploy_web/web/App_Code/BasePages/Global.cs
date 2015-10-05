@@ -1,24 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using Models;
+using Building = BLL.Building;
+using Room = BLL.Room;
+using Site = BLL.Site;
 
 namespace BasePages
 {
     public class Global : PageBaseMaster
     {
-        public Models.SysprepTag SysprepTag { get; set; }
+        public SysprepTag SysprepTag { get; set; }
         public BLL.SysprepTag BllSysprepTag { get; set; }
-        public BLL.Site BllSite { get; set; }
-        public BLL.Room BllRoom { get; set; }
-        public BLL.Building BllBuilding { get; set; }
+        public Site BllSite { get; set; }
+        public Room BllRoom { get; set; }
+        public Building BllBuilding { get; set; }
 
         public Global() 
         {
             BllSysprepTag = new BLL.SysprepTag();
-            BllSite =new BLL.Site();
-            BllRoom = new BLL.Room();
-            BllBuilding = new BLL.Building();
+            BllSite =new Site();
+            BllRoom = new Room();
+            BllBuilding = new Building();
 
         }
 

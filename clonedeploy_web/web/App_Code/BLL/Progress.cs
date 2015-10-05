@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Global;
 using Models;
 
 namespace Tasks

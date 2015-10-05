@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using Global;
+using BasePages;
 using Helpers;
 using Models;
+using GroupMembership = BLL.GroupMembership;
 
-public partial class views_groups_removemembers : BasePages.Groups
+public partial class views_groups_removemembers : Groups
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -46,7 +45,7 @@ public partial class views_groups_removemembers : BasePages.Groups
 
     protected void PopulateGrid()
     {
-        var bllGroupMembership = new BLL.GroupMembership();
+        var bllGroupMembership = new GroupMembership();
         gvHosts.DataSource = bllGroupMembership.GetGroupMembers(Group.Id,txtSearch.Text);
         gvHosts.DataBind();
 
@@ -70,12 +69,12 @@ public partial class views_groups_removemembers : BasePages.Groups
             var dataKey = gvHosts.DataKeys[row.RowIndex];
             if (dataKey != null)
             {
-                var membership = new GroupMembership
+                var membership = new Models.GroupMembership
                 {
                     ComputerId = Convert.ToInt32(dataKey.Value),
                     GroupId = Group.Id
                 };
-                if (new BLL.GroupMembership().DeleteMembership(membership))
+                if (new GroupMembership().DeleteMembership(membership))
                     removedCount++;
             }
         }

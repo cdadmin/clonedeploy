@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using Models;
 
 namespace BasePages
 {
     public class Images : PageBaseMaster
     {
-       public Models.Image Image { get; set; }
+       public Image Image { get; set; }
         public BLL.Image BllImage { get; set; }
-        public Models.LinuxProfile ImageProfile { get; set; }
+        public LinuxProfile ImageProfile { get; set; }
         public BLL.LinuxProfile BllLinuxProfile { get; set; }
 
         public Images() 

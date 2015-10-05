@@ -22,7 +22,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using DAL;
-using Global;
 using Helpers;
 
 namespace Models

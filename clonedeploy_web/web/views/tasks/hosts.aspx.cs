@@ -4,17 +4,14 @@ using System.Data;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BLL;
-using Global;
 using Helpers;
-using Models;
-using Tasks;
-using Image = Models.Image;
+using Image = BLL.Image;
 
 namespace views.tasks
 {
     public partial class TaskUnicast : BasePages.Tasks
     {
-        BLL.Computer _bllComputer = new BLL.Computer();
+        Computer _bllComputer = new Computer();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (IsPostBack) return;
@@ -87,13 +84,13 @@ namespace views.tasks
 
             if (direction == "push")
             {
-                var bllImage = new BLL.Image();
+                var bllImage = new Image();
                 var image = bllImage.GetImage(host.Image);
                 Session["imageID"] = image.Id;
 
                 if (bllImage.Check_Checksum(image))
                 {
-                    new BLL.Computer().StartUnicast(host,direction);
+                    new Computer().StartUnicast(host,direction);
                    
                 }
                 else
@@ -107,7 +104,7 @@ namespace views.tasks
             }
             else
             {
-                new BLL.Computer().StartUnicast(host, direction);
+                new Computer().StartUnicast(host, direction);
             }
             Session.Remove("hostID");
             Session.Remove("direction");

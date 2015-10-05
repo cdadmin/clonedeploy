@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Global;
+using BLL;
 using Helpers;
-using Models;
 
 namespace views.tasks
 {
     public partial class TaskActive : BasePages.Tasks
     {
-        private readonly BLL.ActiveImagingTask _bllActiveImagingTask = new BLL.ActiveImagingTask();
-        private readonly BLL.ActiveMulticastSession _bllActiveMulticastSession = new BLL.ActiveMulticastSession();
+        private readonly ActiveImagingTask _bllActiveImagingTask = new ActiveImagingTask();
+        private readonly ActiveMulticastSession _bllActiveMulticastSession = new ActiveMulticastSession();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (IsPostBack) return;

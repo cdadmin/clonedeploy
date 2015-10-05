@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Linq;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using BasePages;
-using BLL;
-using Global;
 using Helpers;
 using Models;
-using Image = Models.Image;
 
 namespace views.hosts
 {
-    public partial class HostEdit : BasePages.Computers
+    public partial class HostEdit : Computers
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -20,7 +14,7 @@ namespace views.hosts
 
         protected void buttonUpdateHost_Click(object sender, EventArgs e)
         {
-            var host = new Models.Computer
+            var host = new Computer
             {
                 Id = Computer.Id,
                 Name = txtHostName.Text,

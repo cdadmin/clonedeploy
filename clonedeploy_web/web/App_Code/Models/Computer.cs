@@ -22,16 +22,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.Core.Metadata.Edm;
-using System.Data.Entity.Infrastructure;
-using System.IdentityModel.Configuration;
-using System.IO;
-using System.Linq;
-using System.Web;
-using Global;
 
 namespace Models
 {
-    [Table("computers", Schema = "public")]
+    [Table("computers")]
     public class Computer
     {
         [Key]
@@ -54,12 +48,16 @@ namespace Models
         [Column("computer_room_id", Order = 6)]
         public int Room { get; set; }
 
+        [ForeignKey("images")]
         [Column("computer_image_id", Order = 7)]
-        public int Image { get; set; }
+        public int? Image { get; set; }
 
         [Column("computer_image_profile_id", Order = 8)]
         public int ImageProfile { get; set; }
-   
+
+
+        public virtual Models.Image images { get; set; }
+
         [NotMapped]
         public string CustomBootEnabled { get; set; }
 

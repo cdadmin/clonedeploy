@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Web;
 using System.Web.UI;
-using Global;
 using Helpers;
 
 namespace views.masters

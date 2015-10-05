@@ -1,16 +1,14 @@
 ﻿using System;
 using System.IO;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using BLL;
-using Global;
+using BasePages;
 using Helpers;
 using Models;
 using Pxe;
+using Computer = BLL.Computer;
 
 namespace views.hosts
 {
-    public partial class HostBootMenu : BasePages.Computers
+    public partial class HostBootMenu : Computers
     {
       
 
@@ -71,7 +69,7 @@ namespace views.hosts
         protected void DisplayActiveMenu()
         {
             var proxyDhcp = Settings.ProxyDhcp;
-            var isActive = new BLL.Computer().ActiveStatus(Computer.Mac);
+            var isActive = new Computer().ActiveStatus(Computer.Mac);
             var pxeFileOps = new PxeFileOps();
             string path;
 

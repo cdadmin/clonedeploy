@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
+using BasePages;
 using BLL;
-using Global;
-using Models;
 
-public partial class views_images_profiles_partition : BasePages.Images
+public partial class views_images_profiles_partition : Images
 {
-    private readonly BLL.ImageProfilePartition _bllImageProfilePartition = new BLL.ImageProfilePartition();
+    private readonly ImageProfilePartition _bllImageProfilePartition = new ImageProfilePartition();
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
@@ -115,7 +112,7 @@ public partial class views_images_profiles_partition : BasePages.Images
 
     protected void PopulateGrid()
     {
-        gvLayout.DataSource = new BLL.PartitionLayout().SearchPartitionLayouts("");
+        gvLayout.DataSource = new PartitionLayout().SearchPartitionLayouts("");
         gvLayout.DataBind();
     }
 

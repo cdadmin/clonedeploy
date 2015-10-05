@@ -18,15 +18,13 @@
 
 using System;
 using System.IO;
-using System.Web.UI;
-using Global;
+using BasePages;
 using Helpers;
-using Models;
 using Security;
 
 namespace views.users
 {
-    public partial class ImportUser : BasePages.Users
+    public partial class ImportUser : Users
     {
         protected void Page_Load(object sender, EventArgs e)
         {

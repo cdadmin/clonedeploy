@@ -19,15 +19,16 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using Global;
+using BasePages;
+using BLL;
 using Helpers;
 using Models;
+using Group = BLL.Group;
 
 namespace views.users
 {
-    public partial class EditUser : BasePages.Users
+    public partial class EditUser : Users
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -36,8 +37,8 @@ namespace views.users
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            var user = new Models.WdsUser();
-            var bllUser = new BLL.User();
+            var user = new WdsUser();
+            var bllUser = new User();
             
 
             if (bllUser.GetAdminCount() == 1 && ddluserMembership.Text != "Administrator" &&
@@ -111,7 +112,7 @@ namespace views.users
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
        
-            gvGroups.DataSource = new BLL.Group().SearchGroups("%");
+            gvGroups.DataSource = new Group().SearchGroups("%");
             var dataTable = (DataTable) gvGroups.DataSource;
 
             if (dataTable == null) return;
@@ -126,8 +127,8 @@ namespace views.users
         protected void PopulateForm()
         {
          
-            var group = new Group();
-            gvGroups.DataSource = new BLL.Group().SearchGroups("%");
+            var group = new Models.Group();
+            gvGroups.DataSource = new Group().SearchGroups("%");
             gvGroups.DataBind();
 
             if (CloneDeployUser.Membership == "User")

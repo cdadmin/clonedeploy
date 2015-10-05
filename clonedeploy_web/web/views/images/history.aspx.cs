@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using Global;
+using BasePages;
 using Models;
-using Image = Models.Image;
 
 namespace views.images
 {
-    public partial class ImageHistory : BasePages.Images
+    public partial class ImageHistory : Images
     {
         protected void ddlLimit_SelectedIndexChanged(object sender, EventArgs e)
         {

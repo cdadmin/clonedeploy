@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
-using Global;
 using Helpers;
-using Models;
 
 namespace DAL
 {

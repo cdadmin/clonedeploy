@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Web;
 using System.Web.Security;
-using Global;
 using Helpers;
+using Models;
 
 namespace BLL
 {
@@ -13,7 +11,7 @@ namespace BLL
     {
         private readonly DAL.User _da = new DAL.User();
 
-        public bool AddUser(Models.WdsUser user)
+        public bool AddUser(WdsUser user)
         {
             if (_da.Exists(user.Name))
             {
@@ -48,22 +46,22 @@ namespace BLL
             return _da.Delete(userId);
         }
 
-        public Models.WdsUser GetUser(int userId)
+        public WdsUser GetUser(int userId)
         {
             return _da.Read(userId);
         }
 
-        public Models.WdsUser GetUser(string userName)
+        public WdsUser GetUser(string userName)
         {
             return _da.Read(userName);
         }
 
-        public List<Models.WdsUser> SearchUsers(string searchString)
+        public List<WdsUser> SearchUsers(string searchString)
         {
             return _da.Find(searchString);
         }
 
-        public void UpdateUser(Models.WdsUser user, bool updatePassword)
+        public void UpdateUser(WdsUser user, bool updatePassword)
         {
             if (updatePassword)
                 user.Password = CreatePasswordHash(user.Password, user.Salt);
@@ -91,7 +89,7 @@ namespace BLL
         {
             throw new Exception("Not Implemented");
         }
-        public bool ValidateUserData(Models.WdsUser user)
+        public bool ValidateUserData(WdsUser user)
         {
             var validated = true;
             if (string.IsNullOrEmpty(user.Name) || user.Name.Contains(" "))

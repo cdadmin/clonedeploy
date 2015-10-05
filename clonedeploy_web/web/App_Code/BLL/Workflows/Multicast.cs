@@ -22,13 +22,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Web;
-using Global;
 using Helpers;
 using Models;
 using Newtonsoft.Json;
 using Partition;
 using Pxe;
-
+using GroupMembership = BLL.GroupMembership;
 
 namespace Tasks
 {
@@ -43,8 +42,8 @@ namespace Tasks
         }
 
         public string Direction { get; set; }
-        public Models.Group Group { get; set; }
-        public List<Models.Computer> Hosts { get; set; }
+        public Group Group { get; set; }
+        public List<Computer> Hosts { get; set; }
         public bool IsCustom { get; set; }
         public ActiveMulticastSession ActiveMcTask { get; set; }
         private BLL.ActiveMulticastSession _bllActiveMulticastSession = new BLL.ActiveMulticastSession();
@@ -56,7 +55,7 @@ namespace Tasks
                 return;
             }
 
-            Hosts = new BLL.GroupMembership().GetGroupMembers(Group.Id, "");
+            Hosts = new GroupMembership().GetGroupMembers(Group.Id, "");
             if (Hosts.Count < 1)
             {
                 Message.Text = "The Group Does Not Have Any Hosts";

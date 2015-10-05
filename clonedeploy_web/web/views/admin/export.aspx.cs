@@ -17,17 +17,16 @@
  */
 
 using System;
-using System.Web.UI;
-using Global;
-using Models;
+using BasePages;
+using BLL;
 
 namespace views.admin
 {
-    public partial class AdminExport : BasePages.Admin
+    public partial class AdminExport : Admin
     {
         protected void btnExport_Click(object sender, EventArgs e)
         {
-            new BLL.Setting().ExportDatabase();
+            new Setting().ExportDatabase();
         }
     }
 }

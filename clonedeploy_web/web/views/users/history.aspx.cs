@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using Global;
+using BasePages;
 using Models;
 
 namespace views.users
 {
-    public partial class UserHistory : BasePages.Users
+    public partial class UserHistory : Users
     {
         protected void Page_Load(object sender, EventArgs e)
         {

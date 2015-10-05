@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using BasePages;
+using Models;
 
-public partial class views_admin_dp_create : BasePages.Admin
+public partial class views_admin_dp_create : Admin
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -14,7 +11,7 @@ public partial class views_admin_dp_create : BasePages.Admin
 
     protected void buttonAddDp_OnClick(object sender, EventArgs e)
     {
-        var distributionPoint = new Models.DistributionPoint
+        var distributionPoint = new DistributionPoint
         {
             DisplayName = txtDisplayName.Text,
             Server = txtServer.Text,

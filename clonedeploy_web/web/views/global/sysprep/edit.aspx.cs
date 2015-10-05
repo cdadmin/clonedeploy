@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using Models;
 
 public partial class views_global_sysprep_edit : BasePages.Global
@@ -15,7 +10,7 @@ public partial class views_global_sysprep_edit : BasePages.Global
 
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
-        var sysprepTag = new Models.SysprepTag
+        var sysprepTag = new SysprepTag
         {
             Id = SysprepTag.Id,
             Name = txtName.Text,

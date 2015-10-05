@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Web.UI;
-using BLL;
-using Global;
+using BasePages;
 using Helpers;
 using Models;
 
@@ -9,12 +8,12 @@ namespace views.masters
 {
     public partial class UserMaster : MasterPage
     {
-        private BasePages.Users UsersBasePage { get; set; }
-        public Models.WdsUser CloneDeployUser { get; set; }
+        private Users UsersBasePage { get; set; }
+        public WdsUser CloneDeployUser { get; set; }
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            UsersBasePage = (Page as BasePages.Users);
+            UsersBasePage = (Page as Users);
             CloneDeployUser = UsersBasePage.CloneDeployUser;
             if (CloneDeployUser == null)
             {

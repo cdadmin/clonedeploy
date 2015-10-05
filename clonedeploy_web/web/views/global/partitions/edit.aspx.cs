@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Models;
-using Partition = Models.Partition;
 
 public partial class views_global_partitions_edit : BasePages.Global
 {

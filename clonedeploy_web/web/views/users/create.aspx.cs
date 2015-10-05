@@ -19,9 +19,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using Global;
+using BasePages;
+using BLL;
 using Helpers;
 using Models;
 using Security;
@@ -29,7 +29,7 @@ using Group = BLL.Group;
 
 namespace views.users
 {
-    public partial class CreateUser : BasePages.Users
+    public partial class CreateUser : Users
     {
 
         protected void Page_Load(object sender, EventArgs e)
@@ -40,13 +40,13 @@ namespace views.users
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
 
 
-            gvGroups.DataSource = new BLL.Group().SearchGroups("%");
+            gvGroups.DataSource = new Group().SearchGroups("%");
             gvGroups.DataBind();
         }
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            var bllUser = new BLL.User();
+            var bllUser = new User();
             if (txtUserPwd.Text != txtUserPwdConfirm.Text)
             {
                 Message.Text  = "Passwords Did Not Match";
@@ -114,7 +114,7 @@ namespace views.users
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
 
-            gvGroups.DataSource = new BLL.Group().SearchGroups("%");
+            gvGroups.DataSource = new Group().SearchGroups("%");
             var dataTable = (DataTable) gvGroups.DataSource;
 
             if (dataTable == null) return;

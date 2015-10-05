@@ -18,17 +18,15 @@
 
 using System;
 using System.Data;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using Global;
+using BasePages;
+using BLL;
 using Helpers;
 using Models;
-using Security;
 
 namespace views.users
 {
-    public partial class UserSearch : BasePages.Users
+    public partial class UserSearch : Users
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -56,7 +54,7 @@ namespace views.users
                     Message.Text = "Administrators Must Be Changed To A Lower Level User Before They Can Be Deleted";
                     break;
                 }
-                new BLL.User().DeleteUser(user.Id);
+                new User().DeleteUser(user.Id);
             }
 
             PopulateGrid();
@@ -94,7 +92,7 @@ namespace views.users
 
         protected void PopulateGrid()
         {
-            var bllUser = new BLL.User();
+            var bllUser = new User();
             
             gvUsers.DataSource = bllUser.SearchUsers(txtSearch.Text);
             gvUsers.DataBind();

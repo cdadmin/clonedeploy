@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using BLL;
-using Global;
+using BasePages;
 using Helpers;
 using Models;
 
-public partial class views_groups_addmembers : BasePages.Groups
+public partial class views_groups_addmembers : Groups
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -28,7 +25,7 @@ public partial class views_groups_addmembers : BasePages.Groups
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<Models.Computer> listHosts = (List<Models.Computer>)gvHosts.DataSource;
+        List<Computer> listHosts = (List<Computer>)gvHosts.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -71,7 +68,7 @@ public partial class views_groups_addmembers : BasePages.Groups
             var dataKey = gvHosts.DataKeys[row.RowIndex];
             if (dataKey != null)
             {
-                var membership = new Models.GroupMembership
+                var membership = new GroupMembership
                 {
                     ComputerId = Convert.ToInt32(dataKey.Value),
                     GroupId = Group.Id

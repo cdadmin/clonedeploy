@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using Global;
+using BasePages;
 using Helpers;
 using Models;
 
-public partial class views_admin_email : BasePages.Admin
+public partial class views_admin_email : Admin
 {
     protected void Page_Load(object sender, EventArgs e)
     {

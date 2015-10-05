@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Web.UI;
-using Global;
+using BasePages;
 using Helpers;
 using Models;
 using Security;
 
 namespace views.images
 {
-    public partial class ImageCreate : BasePages.Images
+    public partial class ImageCreate : Images
     {
         protected void Page_Load(object sender, EventArgs e)
         {

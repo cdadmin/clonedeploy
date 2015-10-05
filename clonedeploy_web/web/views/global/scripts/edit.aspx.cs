@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using Global;
 using Models;
-using Image = Models.Image;
 
 public partial class views_admin_scripts_edit : BasePages.Global
 {

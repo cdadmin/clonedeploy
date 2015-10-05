@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using Global;
+using BasePages;
+using BLL;
 using Helpers;
-using Models;
 
-public partial class views_admin_client : BasePages.Admin
+public partial class views_admin_client : Admin
 {
    
     protected void Page_Load(object sender, EventArgs e)
@@ -20,12 +15,12 @@ public partial class views_admin_client : BasePages.Admin
         if (IsPostBack) return;
      
         txtQSize.Text = Settings.QueueSize;    
-        txtNFSPath.Text = BLL.Setting.GetValueForAdminView(Settings.NfsUploadPath);   
+        txtNFSPath.Text = Setting.GetValueForAdminView(Settings.NfsUploadPath);   
         ddlCompAlg.SelectedValue = Settings.CompressionAlgorithm;
         ddlCompLevel.SelectedValue = Settings.CompressionLevel;   
         ddlImageXfer.SelectedValue = Settings.ImageTransferMode;  
-        txtNFSDeploy.Text = BLL.Setting.GetValueForAdminView(Settings.NfsDeployPath);       
-        txtSMBPath.Text = BLL.Setting.GetValueForAdminView(Settings.SmbPath);
+        txtNFSDeploy.Text = Setting.GetValueForAdminView(Settings.NfsDeployPath);       
+        txtSMBPath.Text = Setting.GetValueForAdminView(Settings.SmbPath);
         txtSMBUser.Text = Settings.SmbUserName;
         txtSMBPass.Text = Settings.SmbPassword;      
         txtGlobalHostArgs.Text = Settings.GlobalHostArgs;
@@ -38,30 +33,30 @@ public partial class views_admin_client : BasePages.Admin
     {
         if (ValidateSettings())
         {
-            List<Setting> listSettings = new List<Setting>
+            List<Models.Setting> listSettings = new List<Models.Setting>
             {
                
-                    new Setting {Name = "Queue Size", Value = txtQSize.Text},
+                    new Models.Setting {Name = "Queue Size", Value = txtQSize.Text},
                  
-                    new Setting {Name = "Nfs Upload Path", Value = txtNFSPath.Text},
+                    new Models.Setting {Name = "Nfs Upload Path", Value = txtNFSPath.Text},
                   
-                    new Setting {Name = "Compression Algorithm", Value = ddlCompAlg.Text},
-                    new Setting {Name = "Compression Level", Value = ddlCompLevel.Text},
+                    new Models.Setting {Name = "Compression Algorithm", Value = ddlCompAlg.Text},
+                    new Models.Setting {Name = "Compression Level", Value = ddlCompLevel.Text},
                    
-                    new Setting {Name = "Image Transfer Mode", Value = ddlImageXfer.Text},
+                    new Models.Setting {Name = "Image Transfer Mode", Value = ddlImageXfer.Text},
                   
-                    new Setting {Name = "Nfs Deploy Path", Value = txtNFSDeploy.Text},
+                    new Models.Setting {Name = "Nfs Deploy Path", Value = txtNFSDeploy.Text},
                   
-                    new Setting {Name = "SMB Path", Value = txtSMBPath.Text},
-                    new Setting {Name = "SMB User Name", Value = txtSMBUser.Text},
+                    new Models.Setting {Name = "SMB Path", Value = txtSMBPath.Text},
+                    new Models.Setting {Name = "SMB User Name", Value = txtSMBUser.Text},
                     
-                    new Setting {Name = "Global Host Args", Value = txtGlobalHostArgs.Text}
+                    new Models.Setting {Name = "Global Host Args", Value = txtGlobalHostArgs.Text}
                   
             };
 
             if (!string.IsNullOrEmpty(txtSMBPass.Text))
-                listSettings.Add(new Setting { Name = "SMB Password", Value = txtSMBPass.Text });
-            new BLL.Setting().UpdateSetting(listSettings);
+                listSettings.Add(new Models.Setting { Name = "SMB Password", Value = txtSMBPass.Text });
+            new Setting().UpdateSetting(listSettings);
         }
     }
 
@@ -126,7 +121,7 @@ public partial class views_admin_client : BasePages.Admin
 
     protected bool ValidateSettings()
     {
-        if (new BLL.ActiveImagingTask().ReadAll().Count > 0)
+        if (new ActiveImagingTask().ReadAll().Count > 0)
         {
             Message.Text = "Settings Cannot Be Changed While Tasks Are Active";
             return false;

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using Models;
+using BLL;
 
 public partial class views_admin_scripts_search : BasePages.Global
 {
@@ -17,7 +15,7 @@ public partial class views_admin_scripts_search : BasePages.Global
 
     protected void PopulateGrid()
     {
-        var bllScript = new BLL.Script();
+        var bllScript = new Script();
         gvScripts.DataSource = bllScript.SearchScripts(txtSearch.Text);
         gvScripts.DataBind();
 
@@ -39,7 +37,7 @@ public partial class views_admin_scripts_search : BasePages.Global
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<Script> listScripts = (List<Script>)gvScripts.DataSource;
+        List<Models.Script> listScripts = (List<Models.Script>)gvScripts.DataSource;
         switch (e.SortExpression)
         {
             case "Name":

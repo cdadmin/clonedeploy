@@ -1,16 +1,18 @@
 ﻿using System;
+using BasePages;
 using Helpers;
+using Models;
 
 namespace views.masters
 {
-    public partial class ImageMaster : BasePages.MasterBaseMaster
+    public partial class ImageMaster : MasterBaseMaster
     {
-        private BasePages.Images imagesBasePage { get; set; }
-        public Models.Image Image { get; set; }
+        private Images imagesBasePage { get; set; }
+        public Image Image { get; set; }
 
         public void Page_Load(object sender, EventArgs e)
         {
-            imagesBasePage = (Page as BasePages.Images);
+            imagesBasePage = (Page as Images);
             if (imagesBasePage != null) Image = imagesBasePage.Image;
             if (Image == null)
             {

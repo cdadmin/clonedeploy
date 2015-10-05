@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using Global;
+using BasePages;
 using Models;
 
 namespace views.groups
 {
-    public partial class GroupHistory : BasePages.Groups
+    public partial class GroupHistory : Groups
     {
         protected void ddlLimit_SelectedIndexChanged(object sender, EventArgs e)
         {

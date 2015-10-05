@@ -18,15 +18,14 @@
 
 using System;
 using System.IO;
-using System.Web.UI;
-using Global;
+using BasePages;
+using BLL;
 using Helpers;
-using Models;
 using Security;
 
 namespace views.images
 {
-    public partial class ImageImport : BasePages.Images
+    public partial class ImageImport : Images
     {
         protected void btnImport_Click(object sender, EventArgs e)
         {
@@ -34,7 +33,7 @@ namespace views.images
                               "csvupload" + Path.DirectorySeparatorChar + "images.csv";
             FileUpload.SaveAs(csvFilePath);
             new FileOps().SetUnixPermissions(csvFilePath);
-            new BLL.Image().Import();
+            new Image().Import();
         }
 
         protected void Page_Load(object sender, EventArgs e)

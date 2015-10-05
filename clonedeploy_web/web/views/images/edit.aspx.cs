@@ -18,15 +18,12 @@
 
 using System;
 using System.IO;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using Global;
+using BasePages;
 using Helpers;
-using Image = Models.Image;
 
 namespace views.images
 {
-    public partial class ImageEdit : BasePages.Images
+    public partial class ImageEdit : Images
     {
         protected void Page_Load(object sender, EventArgs e)
         {

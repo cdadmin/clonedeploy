@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using System.Web.UI;
-using Global;
+using BasePages;
 using Helpers;
 using Models;
 using Pxe;
@@ -10,7 +9,7 @@ using Security;
 
 namespace views.admin
 {
-    public partial class AdminBootMenu : BasePages.Admin
+    public partial class AdminBootMenu : Admin
     {
         protected void btnDeleteTemplate_Click(object sender, EventArgs e)
         {

@@ -1,15 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using Global;
+using BasePages;
 using Helpers;
-using Models;
 
 namespace views.hosts
 {
-    public partial class HostLog : BasePages.Computers
+    public partial class HostLog : Computers
     {
       
 

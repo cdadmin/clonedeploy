@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using Global;
+using BasePages;
+using BLL;
 using Helpers;
-using Models;
 
-public partial class views_admin_server : BasePages.Admin
+public partial class views_admin_server : Admin
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -19,7 +15,7 @@ public partial class views_admin_server : BasePages.Admin
         txtImagePath.Text = Settings.ImageStorePath;
         txtImageHoldPath.Text = Settings.ImageHoldPath;
         txtTFTPPath.Text = Settings.TftpPath;
-        txtWebService.Text = BLL.Setting.GetValueForAdminView(Settings.WebPath);
+        txtWebService.Text = Setting.GetValueForAdminView(Settings.WebPath);
         ddlHostView.SelectedValue = Settings.DefaultHostView;
 
         //These require pxe boot menu or client iso to be recreated
@@ -33,20 +29,20 @@ public partial class views_admin_server : BasePages.Admin
 
         if (ValidateSettings())
         {
-            List<Setting> listSettings = new List<Setting>
+            List<Models.Setting> listSettings = new List<Models.Setting>
             {
-                new Setting {Name = "Server IP", Value = txtIP.Text},
-                new Setting {Name = "Web Server Port", Value = txtPort.Text},
-                new Setting {Name = "Image Store Path", Value = txtImagePath.Text},
-                new Setting {Name = "Tftp Path", Value = txtTFTPPath.Text},
-                new Setting {Name = "Web Path", Value = txtWebService.Text},
-                new Setting {Name = "Default Host View", Value = ddlHostView.Text},
-                new Setting {Name = "Image Hold Path", Value = txtImageHoldPath.Text}
+                new Models.Setting {Name = "Server IP", Value = txtIP.Text},
+                new Models.Setting {Name = "Web Server Port", Value = txtPort.Text},
+                new Models.Setting {Name = "Image Store Path", Value = txtImagePath.Text},
+                new Models.Setting {Name = "Tftp Path", Value = txtTFTPPath.Text},
+                new Models.Setting {Name = "Web Path", Value = txtWebService.Text},
+                new Models.Setting {Name = "Default Host View", Value = ddlHostView.Text},
+                new Models.Setting {Name = "Image Hold Path", Value = txtImageHoldPath.Text}
             };
 
             var newBootMenu = false;
             var newClientIso = false;
-            if (new BLL.Setting().UpdateSetting(listSettings))
+            if (new Setting().UpdateSetting(listSettings))
             {
 
                 if ((string) ViewState["serverIP"] != txtIP.Text)
@@ -100,7 +96,7 @@ public partial class views_admin_server : BasePages.Admin
 
     protected bool ValidateSettings()
     {
-        if (new BLL.ActiveImagingTask().ReadAll().Count > 0)
+        if (new ActiveImagingTask().ReadAll().Count > 0)
         {
             Message.Text = "Settings Cannot Be Changed While Tasks Are Active";
             return false;

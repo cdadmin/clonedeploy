@@ -1,8 +1,6 @@
-﻿using System;
-using System.DirectoryServices.AccountManagement;
-using System.Threading.Tasks;
+﻿using System.DirectoryServices.AccountManagement;
 using System.Web.Security;
-using Global;
+using BLL;
 using Helpers;
 using Models;
 
@@ -16,7 +14,7 @@ namespace Security
         public string ConsoleLogin(string username, string password, string task, string isWebTask, string ip)
         {
             if (!GlobalLogin(username, password, "Console")) return "false";
-            var wdsuser = new BLL.User().GetUser(username);
+            var wdsuser = new User().GetUser(username);
 
 
 
@@ -62,7 +60,7 @@ namespace Security
         {
             bool validated = false;
             //Check if user exists in CWDS
-            var user = new BLL.User().GetUser(userName);
+            var user = new User().GetUser(userName);
 
             if (user.Id != null)
             {

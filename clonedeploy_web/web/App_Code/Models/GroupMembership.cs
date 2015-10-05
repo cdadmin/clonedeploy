@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using DAL;
-using Global;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models
 {

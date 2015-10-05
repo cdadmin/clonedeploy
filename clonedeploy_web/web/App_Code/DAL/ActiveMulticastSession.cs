@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
-using System.Diagnostics;
 using System.Linq;
-using System.Management;
-using System.Threading;
-using System.Web;
-using Global;
 using Helpers;
-using Models;
-using Pxe;
 
 namespace DAL
 {

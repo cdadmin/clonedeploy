@@ -20,17 +20,16 @@ using System;
 using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Global;
+using BLL;
 using Helpers;
-using Models;
 using Tasks;
-
+using Image = BLL.Image;
 
 namespace views.tasks
 {
     public partial class TaskMulticast : BasePages.Tasks
     {
-        private readonly BLL.Group _bllGroup = new BLL.Group();
+        private readonly Group _bllGroup = new Group();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack) PopulateGrid();
@@ -40,8 +39,8 @@ namespace views.tasks
         {
             var groupId = Convert.ToInt32(Session["groupID"]);
             var isUnicast = Convert.ToInt32(Session["isGroupUnicast"]);
-            var group = new BLL.Group().GetGroup(groupId);
-            var bllImage = new BLL.Image();
+            var group = new Group().GetGroup(groupId);
+            var bllImage = new Image();
             var image = bllImage.GetImage(group.Image);
 
             Session["imageID"] = image.Id;
@@ -50,9 +49,9 @@ namespace views.tasks
                 if (isUnicast == 1)
                 {
                     var count = 0;
-                    foreach (var host in new BLL.GroupMembership().GetGroupMembers(group.Id, ""))
+                    foreach (var host in new GroupMembership().GetGroupMembers(group.Id, ""))
                     {
-                        new BLL.Computer().StartUnicast(host, "push");
+                        new Computer().StartUnicast(host, "push");
                         count++;
                     }
                     Message.Text = "Started " + count + " Tasks";
@@ -90,7 +89,7 @@ namespace views.tasks
                     Session["groupID"] = group.Id;
                     Session["isGroupUnicast"] = 0;
                     lblTitle.Text = "Multicast The Selected Group?";
-                    gvConfirm.DataSource = new List<Group> { group };
+                    gvConfirm.DataSource = new List<Models.Group> { group };
                 }
             }
             gvConfirm.DataBind();
@@ -113,7 +112,7 @@ namespace views.tasks
                     Session["groupID"] = group.Id;
                     Session["isGroupUnicast"] = 1;
                     lblTitle.Text = "Unicast All The Hosts In The Selected Group?";
-                    gvConfirm.DataSource = new List<Group> { group };
+                    gvConfirm.DataSource = new List<Models.Group> { group };
                 }
             }
             gvConfirm.DataBind();
@@ -131,7 +130,7 @@ namespace views.tasks
 
         protected void PopulateGrid()
         {
-            var group = new Group();
+            var group = new Models.Group();
 
             gvGroups.DataSource = _bllGroup.SearchGroups(txtSearch.Text);
 

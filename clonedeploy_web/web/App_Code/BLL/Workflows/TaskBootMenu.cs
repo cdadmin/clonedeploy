@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
 using BLL;
-using Global;
 using Helpers;
-using Models;
 
 namespace Pxe
 {
@@ -150,7 +148,7 @@ namespace Pxe
                 };
 
                 var fileOps = new FileOps();
-                var host = new BLL.Computer().GetComputerFromMac(Utility.PxeMacToMac(PxeHostMac));
+                var host = new Computer().GetComputerFromMac(Utility.PxeMacToMac(PxeHostMac));
                 if (File.Exists(biosPath))
                 {  
                     if (Convert.ToBoolean(Convert.ToInt16(host.CustomBootEnabled)))

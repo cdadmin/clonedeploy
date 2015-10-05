@@ -1,4 +1,5 @@
 ﻿using System.Web;
+using BLL;
 using Models;
 
 namespace Security
@@ -10,7 +11,7 @@ namespace Security
     {
         public bool IsInMembership(string membership)
         {
-            WdsUser user = new BLL.User().GetUser(HttpContext.Current.User.Identity.Name);
+            WdsUser user = new User().GetUser(HttpContext.Current.User.Identity.Name);
             return membership == user.Membership;
         }
     }

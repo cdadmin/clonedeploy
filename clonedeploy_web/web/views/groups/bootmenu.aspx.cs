@@ -1,19 +1,18 @@
 ﻿using System;
 using System.IO;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using BLL;
-using Global;
+using BasePages;
 using Helpers;
 using Models;
 using Pxe;
+using Group = BLL.Group;
+using GroupMembership = BLL.GroupMembership;
 
 namespace views.groups
 {
-    public partial class GroupBootMenu : BasePages.Groups
+    public partial class GroupBootMenu : Groups
     {
-        private readonly BLL.Group _bllGroup = new BLL.Group();
-        private readonly BLL.GroupMembership _bllGroupMembership = new BLL.GroupMembership();
+        private readonly Group _bllGroup = new Group();
+        private readonly GroupMembership _bllGroupMembership = new GroupMembership();
         protected void btnRemoveBootMenu_Click(object sender, EventArgs e)
         {
           

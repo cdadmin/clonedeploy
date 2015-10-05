@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Linq;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using BLL;
-using Global;
+using BasePages;
 using Helpers;
 using Models;
 using Security;
 
-
 namespace views.groups
 {
-    public partial class GroupCreate : BasePages.Groups
+    public partial class GroupCreate : Groups
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -29,7 +24,7 @@ namespace views.groups
 
         protected void Submit_Click(object sender, EventArgs e)
         {
-            var group = new Models.Group();
+            var group = new Group();
 
         
             group.Name = txtGroupName.Text;

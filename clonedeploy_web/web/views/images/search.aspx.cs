@@ -22,16 +22,15 @@ using System.IO;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Global;
+using BasePages;
 using Helpers;
 using Newtonsoft.Json;
 using Partition;
 using Security;
-using Image = Models.Image;
 
 namespace views.images
 {
-    public partial class ImageSearch : BasePages.Images
+    public partial class ImageSearch : Images
     {
         protected void btnHds_Click(object sender, EventArgs e)
         {

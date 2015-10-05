@@ -1,23 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Web.UI;
+using BasePages;
 using BLL;
-using Global;
-using Models;
-using Tasks;
+using Computer = Models.Computer;
 
 namespace views.masters
 {
-    public partial class ComputerMaster : BasePages.MasterBaseMaster
+    public partial class ComputerMaster : MasterBaseMaster
     {
-        private BasePages.Computers ComputerBasePage { get; set; }
-        private readonly BLL.Image _bllImage = new BLL.Image();
-        public Models.Computer Computer { get; set; }
+        private Computers ComputerBasePage { get; set; }
+        private readonly Image _bllImage = new Image();
+        public Computer Computer { get; set; }
 
         protected void Page_Load(object sender, EventArgs e)
         {
             
-            ComputerBasePage = (Page as BasePages.Computers);
+            ComputerBasePage = (Page as Computers);
             Computer = ComputerBasePage.Computer;
             if (Computer == null)
             {
@@ -58,7 +55,7 @@ namespace views.masters
             switch (direction)
             {
                 case "delete":
-                    if (ComputerBasePage.BllComputer.DeleteComputer(Computer.Id))
+                    ComputerBasePage.BllComputer.DeleteComputer(Computer.Id);
                         Response.Redirect("~/views/computers/search.aspx");
                     break;
                 case "push":

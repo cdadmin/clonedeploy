@@ -32,7 +32,7 @@
             <asp:BoundField DataField="Id" HeaderText="hostID" SortExpression="hostID" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"></asp:BoundField>
             <asp:BoundField DataField="Mac" HeaderText="MAC" SortExpression="Mac" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
-            <asp:BoundField DataField="ImageName" HeaderText="Image" SortExpression="Image" ItemStyle-CssClass="width_200 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller"/>
+            <asp:BoundField DataField="images.Name" HeaderText="Image" SortExpression="images.Name" ItemStyle-CssClass="width_200 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller"/>
          
             <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/computers/edit.aspx?hostid={0}" Text="View"/>
         </Columns>

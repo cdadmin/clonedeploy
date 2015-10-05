@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
-using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Web;
-using System.Web.Security;
-using Global;
 using Helpers;
 using Models;
 
@@ -20,7 +15,7 @@ namespace DAL
         {
             return _context.Users.Any(h => h.Name == userName);
         }
-        public bool Create(Models.WdsUser user)
+        public bool Create(WdsUser user)
         {
             try
             {
@@ -72,12 +67,12 @@ namespace DAL
            throw new Exception("Not Implemented");
         }
 
-        public Models.WdsUser Read(int userId)
+        public WdsUser Read(int userId)
         {
             return _context.Users.FirstOrDefault(p => p.Id == userId);
         }
 
-        public Models.WdsUser Read(string userName)
+        public WdsUser Read(string userName)
         {
             return _context.Users.FirstOrDefault(p => p.Name == userName);
         }
@@ -89,7 +84,7 @@ namespace DAL
 
         }
 
-        public bool Update(Models.WdsUser user, bool updatePassword)
+        public bool Update(WdsUser user, bool updatePassword)
         {
 
             try

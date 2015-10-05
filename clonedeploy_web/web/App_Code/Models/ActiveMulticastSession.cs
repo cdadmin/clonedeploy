@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Entity.Infrastructure;
-using System.Diagnostics;
-using System.Linq;
-using System.Management;
-using System.Threading;
-using DAL;
-using Global;
-using Pxe;
 
 namespace Models
 {

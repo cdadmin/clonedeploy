@@ -21,10 +21,10 @@ namespace BLL.Workflows
             Host = computer;
             Direction = direction;
 
-            Image = new BLL.Image().GetImage(Host.Image);
+            Image = new Image().GetImage(Host.Image);
             if (Image == null) return "image_error";
 
-            ImageProfile = new BLL.LinuxProfile().ReadProfile(Host.ImageProfile);
+            ImageProfile = new LinuxProfile().ReadProfile(Host.ImageProfile);
             if (ImageProfile == null) return "profile_error";
 
             ActiveTask = new Models.ActiveImagingTask
@@ -35,7 +35,7 @@ namespace BLL.Workflows
                 ComputerId = Host.Id
             };
 
-            var bllActiveImagingTask = new BLL.ActiveImagingTask();
+            var bllActiveImagingTask = new ActiveImagingTask();
             if (!bllActiveImagingTask.AddActiveImagingTask(ActiveTask)) return "database_error";
 
             if (!CreatePxeFile())
@@ -68,7 +68,7 @@ namespace BLL.Workflows
             };
             history.CreateEvent();
 
-            var image = new BLL.Image().GetImage(Host.Image);
+            var image = new Image().GetImage(Host.Image);
             history.Type = "Image";
             history.Notes = Host.Name;
             history.TypeId = image.Id.ToString();
@@ -96,7 +96,7 @@ namespace BLL.Workflows
         {
             string preScripts = null;
             string postScripts = null;
-            foreach (var script in new BLL.ImageProfileScript().SearchImageProfileScripts(ImageProfile.Id))
+            foreach (var script in new ImageProfileScript().SearchImageProfileScripts(ImageProfile.Id))
             {
                 if (Convert.ToBoolean(script.RunPre))
                     preScripts += script.Id + " ";
@@ -139,7 +139,7 @@ namespace BLL.Workflows
                                    profileArgs;
 
 
-            return new BLL.ActiveImagingTask().UpdateActiveImagingTask(ActiveTask);
+            return new ActiveImagingTask().UpdateActiveImagingTask(ActiveTask);
         }
     }
 }

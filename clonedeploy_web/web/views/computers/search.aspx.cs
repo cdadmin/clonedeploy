@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using BLL;
-using DAL;
-using Global;
+using BasePages;
 using Helpers;
 using Models;
 
 namespace views.hosts
 {
-    public partial class Searchhosts : BasePages.Computers
+    public partial class Searchhosts : Computers
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -40,7 +37,7 @@ namespace views.hosts
         {
             PopulateGrid();
 
-            List<Models.Computer> listHosts = (List<Models.Computer>) gvHosts.DataSource;
+            List<Computer> listHosts = (List<Computer>) gvHosts.DataSource;
             switch (e.SortExpression)
             {
                 case "Name":

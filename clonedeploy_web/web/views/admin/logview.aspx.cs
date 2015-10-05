@@ -19,14 +19,13 @@
 using System;
 using System.IO;
 using System.Web;
-using System.Web.UI;
-using Global;
+using BasePages;
 using Helpers;
 using Security;
 
 namespace views.admin
 {
-    public partial class Logview : BasePages.Admin
+    public partial class Logview : Admin
     {
         protected void btnExportLog_Click(object sender, EventArgs e)
         {

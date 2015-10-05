@@ -7,7 +7,6 @@ using Helpers;
 using Newtonsoft.Json;
 using Partition;
 
-
 namespace BLL
 {
     public class Image
@@ -80,7 +79,7 @@ namespace BLL
 
         }
 
-        public Models.Image GetImage(int imageId)
+        public Models.Image GetImage(int? imageId)
         {
             return _da.Read(imageId);
         }

@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Web;
+using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Windows.Forms;
-using CheckBox = System.Web.UI.WebControls.CheckBox;
-using Message = Helpers.Message;
+using BLL;
+using Helpers;
+using Image = BLL.Image;
 
 namespace BasePages
 {
-    public class PageBaseMaster : System.Web.UI.Page
+    public class PageBaseMaster : Page
     {
         protected override void OnInit(EventArgs e)
         {
@@ -26,7 +24,7 @@ namespace BasePages
 
         protected void PopulateImagesDdl(DropDownList ddlImages)
         {
-            ddlImages.DataSource = new BLL.Image().SearchImages("").Select(i => new { i.Id, i.Name });
+            ddlImages.DataSource = new Image().SearchImages("").Select(i => new { i.Id, i.Name });
             ddlImages.DataValueField = "Id";
             ddlImages.DataTextField = "Name";
             ddlImages.DataBind();
@@ -35,7 +33,7 @@ namespace BasePages
 
         protected void PopulateImageProfilesDdl(DropDownList ddlImageProfile, int value)
         {
-            ddlImageProfile.DataSource = new BLL.LinuxProfile().SearchProfiles(value).Select(i => new { i.Id, i.Name });
+            ddlImageProfile.DataSource = new LinuxProfile().SearchProfiles(value).Select(i => new { i.Id, i.Name });
             ddlImageProfile.DataValueField = "Id";
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();
@@ -44,7 +42,7 @@ namespace BasePages
         protected void PopulateDistributionPointsDdl(DropDownList ddlDp)
         {
             ddlDp.DataSource =
-                new BLL.DistributionPoint().SearchDistributionPoints("").Select(d => new {d.Id, d.DisplayName});
+                new DistributionPoint().SearchDistributionPoints("").Select(d => new {d.Id, d.DisplayName});
             ddlDp.DataValueField = "Id";
             ddlDp.DataTextField = "DisplayName";
             ddlDp.DataBind();

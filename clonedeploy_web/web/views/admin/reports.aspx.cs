@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Web.UI;
-using Security;
+using BasePages;
 
 namespace views.admin
 {
-    public partial class Reports : BasePages.Admin
+    public partial class Reports : Admin
     {
         protected void Page_Load(object sender, EventArgs e)
         {

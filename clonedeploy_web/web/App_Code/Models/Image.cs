@@ -16,18 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/.
  */
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Entity.Infrastructure;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Web;
-using Global;
-using Newtonsoft.Json;
-using Partition;
 
 namespace Models
 {
@@ -37,7 +27,7 @@ namespace Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("image_id", Order = 1)]
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [Column("image_name", Order = 2)]
         public string Name { get; set; }
@@ -66,7 +56,6 @@ namespace Models
         [NotMapped]
         public string ClientSizeCustom { get; set; }
 
-       
 
       
         

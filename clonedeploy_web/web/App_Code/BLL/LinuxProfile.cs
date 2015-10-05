@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
-using DAL;
-using Global;
 using Helpers;
-using Models;
 
 namespace BLL
 {
