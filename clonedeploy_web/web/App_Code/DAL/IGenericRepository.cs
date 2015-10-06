@@ -22,7 +22,7 @@ namespace DAL
 
         void Insert(TEntity entity);
 
-        void Update(TEntity entity);
+        void Update(TEntity entity, object id);
 
         void Delete(object id);
     }

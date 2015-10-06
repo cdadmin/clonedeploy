@@ -62,10 +62,12 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         _dbSet.Add(entity);
     }
 
-    public virtual void Update(TEntity entity)
+    public virtual void Update(TEntity entity, object id)
     {
-        _dbSet.Attach(entity);
-        _context.Entry(entity).State = EntityState.Modified;
+        TEntity entityToUpdate = _dbSet.Find(id);
+        if (entityToUpdate == null) return;
+        _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+        //_context.Entry(entity).State = EntityState.Modified;
     }
 
     public virtual void Delete(object id)

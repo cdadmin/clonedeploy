@@ -45,8 +45,13 @@ namespace BLL
 
         public void DeleteComputer(int computerId)
         {
-             _unitOfWork.Computer.Delete(computerId);
-            _unitOfWork.Save();
+            using (var con = new UnitOfWork())
+            {
+                con.Computer.Delete(computerId);
+                if (con.Save())
+                    Message.Text = "Successfully Deleted Computer";
+            }
+
         }
 
         public Models.Computer GetComputer(int computerId)
@@ -68,7 +73,7 @@ namespace BLL
 
         public void UpdateComputer(Models.Computer computer)
         {
-            _unitOfWork.Computer.Update(computer);
+            _unitOfWork.Computer.Update(computer, computer.Id);
             if(_unitOfWork.Save())
                 Message.Text = "Successfully Update Computer";
         }

@@ -39,7 +39,7 @@ namespace DAL
 
       
 
-        public List<Models.Computer> Get(string searchString)
+        /*public List<Models.Computer> Get(string searchString)
         {
             return (from h in _context.Computers
              join t in _context.Images on h.Image equals t.Id into joined
@@ -58,6 +58,6 @@ namespace DAL
                  Mac = x.mac,
                  ImageName = x.imageName
              }).ToList();
-        }  
+        }  */
     }
 }

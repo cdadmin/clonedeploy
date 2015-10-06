@@ -34,7 +34,7 @@ namespace DAL
             return _context.LinuxProfiles.FirstOrDefault(p => p.Id == id);
         }
 
-        public List<Models.LinuxProfile> Find(int imageId)
+        public List<Models.LinuxProfile> Find(int? imageId)
         {
             return (from p in _context.LinuxProfiles where p.ImageId == imageId orderby p.Name select p).ToList();
         }

@@ -28,7 +28,7 @@ namespace BLL
             return _da.Read(profileId);
         }
 
-        public List<Models.LinuxProfile> SearchProfiles(int imageId)
+        public List<Models.LinuxProfile> SearchProfiles(int? imageId)
         {
             return _da.Find(imageId);
         }
