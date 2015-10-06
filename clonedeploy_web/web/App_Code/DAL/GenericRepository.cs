@@ -16,9 +16,17 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         this._dbSet = context.Set<TEntity>();
     }
 
-    public string Count()
+    public virtual void ExecuteRawSql(string query, params object[] parameters)
     {
-        return _dbSet.Count().ToString();
+        _dbSet.SqlQuery(query, parameters);
+    }
+
+    public string Count(Expression<Func<TEntity, bool>> filter = null)
+    {
+        IQueryable<TEntity> query = _dbSet;
+        if (filter != null)
+            query = query.Where(filter);
+        return query.Count().ToString();
     }
 
     public virtual List<TEntity> Get(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "")
@@ -64,7 +72,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
 
     public virtual void Update(TEntity entity, object id)
     {
-        TEntity entityToUpdate = _dbSet.Find(id);
+        var entityToUpdate = _dbSet.Find(id);
         if (entityToUpdate == null) return;
         _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
         //_context.Entry(entity).State = EntityState.Modified;
@@ -78,5 +86,15 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
             _dbSet.Attach(entityToDelete);
         }
         _dbSet.Remove(entityToDelete);
+    }
+
+    public virtual void DeleteRange(Expression<Func<TEntity, bool>> filter = null)
+    {
+        IQueryable<TEntity> query = _dbSet;
+
+        if (filter != null)
+            query = query.Where(filter);
+
+        _dbSet.RemoveRange(query);
     }
 }

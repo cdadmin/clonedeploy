@@ -1,20 +1,23 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using DAL;
 using Helpers;
 
 namespace BLL
 {
     public class DistributionPoint
     {
-        private readonly DAL.DistributionPoint _da = new DAL.DistributionPoint();
+        private readonly DAL.UnitOfWork _unitOfWork = new UnitOfWork();
 
         public bool AddDistributionPoint(Models.DistributionPoint distributionPoint)
         {
-            if (_da.Exists(distributionPoint.DisplayName))
+            if (_unitOfWork.DistributionPointRepository.Exists(d => d.DisplayName == distributionPoint.DisplayName))
             {
                 Message.Text = "A Distribution Point With This Name Already Exists";
                 return false;
             }
-            if (_da.Create(distributionPoint))
+            _unitOfWork.DistributionPointRepository.Insert(distributionPoint);
+            if (_unitOfWork.Save())
             {
                 Message.Text = "Successfully Created Distribution Point";
                 return true;
@@ -28,27 +31,29 @@ namespace BLL
 
         public string TotalCount()
         {
-            return _da.GetTotalCount();
+            return _unitOfWork.DistributionPointRepository.Count();
         }
 
         public bool DeleteDistributionPoint(int distributionPointId)
         {
-            return _da.Delete(distributionPointId);
+            _unitOfWork.DistributionPointRepository.Delete(distributionPointId);
+            return _unitOfWork.Save();         
         }
 
         public Models.DistributionPoint GetDistributionPoint(int distributionPointId)
         {
-            return _da.Read(distributionPointId);
+            return _unitOfWork.DistributionPointRepository.GetById(distributionPointId);
         }
 
         public List<Models.DistributionPoint> SearchDistributionPoints(string searchString)
         {
-            return _da.Find(searchString);
+            return _unitOfWork.DistributionPointRepository.Get(d => d.DisplayName.Contains(searchString), orderBy: (q => q.OrderBy(d => d.DisplayName)));
         }
 
         public void UpdateDistributionPoint(Models.DistributionPoint distributionPoint)
         {
-            if (_da.Update(distributionPoint))
+            _unitOfWork.DistributionPointRepository.Update(distributionPoint, distributionPoint.Id);
+            if (_unitOfWork.Save())
                 Message.Text = "Successfully Updated Distribution Point";
         }
 

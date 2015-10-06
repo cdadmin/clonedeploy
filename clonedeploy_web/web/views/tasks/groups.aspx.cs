@@ -49,7 +49,7 @@ namespace views.tasks
                 if (isUnicast == 1)
                 {
                     var count = 0;
-                    foreach (var host in new GroupMembership().GetGroupMembers(group.Id, ""))
+                    foreach (var host in new Group().GetGroupMembers(group.Id, ""))
                     {
                         new Computer().StartUnicast(host, "push");
                         count++;

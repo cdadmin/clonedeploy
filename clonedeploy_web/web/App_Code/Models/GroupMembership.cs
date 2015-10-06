@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models
 {
@@ -16,5 +18,6 @@ namespace Models
 
         [Column("group_id", Order = 3)]
         public int GroupId { get; set; }
+
     }
 }

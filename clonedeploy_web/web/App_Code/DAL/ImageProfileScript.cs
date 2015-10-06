@@ -5,39 +5,14 @@ using Helpers;
 
 namespace DAL
 {
-    public class ImageProfileScript
+    public class ImageProfileScriptRepository : GenericRepository<Models.ImageProfileScript>
     {
-        private readonly CloneDeployDbContext _context = new CloneDeployDbContext();
+        private CloneDeployDbContext _context;
 
-        public bool Create(Models.ImageProfileScript imageProfileScript)
+        public ImageProfileScriptRepository(CloneDeployDbContext context)
+            : base(context)
         {
-            try
-            {
-                _context.ImageProfileScripts.Add(imageProfileScript);
-                _context.SaveChanges();
-                return true;
-            }
-            catch (DbUpdateException ex)
-            {
-                Logger.Log(ex.InnerException.InnerException.Message);
-                return false;
-            }
-        }
-
-        public bool Delete(int profileId)
-        {
-            try
-            {
-                _context.ImageProfileScripts.RemoveRange(_context.ImageProfileScripts.Where(x => x.ProfileId == profileId));
-                _context.SaveChanges();
-                _context.SaveChanges();
-                return true;
-            }
-            catch (DbUpdateException ex)
-            {
-                Logger.Log(ex.InnerException.InnerException.Message);
-                return false;
-            }
+            _context = context;
         }
 
         public List<Models.ImageProfileScript> Find(int profileId)

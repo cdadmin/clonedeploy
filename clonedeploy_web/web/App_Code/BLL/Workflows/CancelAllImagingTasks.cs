@@ -68,7 +68,8 @@ namespace BLL.Workflows
                 }
             }
 
-            new DAL.ActiveImagingTask().DeleteAll();
+            var unitOfWork = new DAL.UnitOfWork();
+            unitOfWork.ActiveImagingTaskRepository.DeleteRange();
 
             if (Environment.OSVersion.ToString().Contains("Unix"))
             {

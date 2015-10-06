@@ -6,11 +6,11 @@ using Helpers;
 
 namespace DAL
 {
-    public class Computer : GenericRepository<Models.Computer>
+    public class ComputerRepository : GenericRepository<Models.Computer>
     {
         private CloneDeployDbContext _context;
 
-        public Computer(CloneDeployDbContext context)
+        public ComputerRepository(CloneDeployDbContext context)
             : base(context)
         {
             _context = context;

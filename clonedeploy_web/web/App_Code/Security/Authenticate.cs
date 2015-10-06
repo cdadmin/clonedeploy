@@ -1,5 +1,4 @@
-﻿using System.DirectoryServices.AccountManagement;
-using System.Web.Security;
+﻿using System.Web.Security;
 using BLL;
 using Helpers;
 using Models;
@@ -64,7 +63,9 @@ namespace Security
 
             if (user.Id != null)
             {
+                //FIX ME
                 //Check against AD
+                /*
                 if (!string.IsNullOrEmpty(Settings.AdLoginDomain))
                 {
                     var context = new PrincipalContext(ContextType.Domain, Settings.AdLoginDomain,
@@ -77,7 +78,9 @@ namespace Security
                 {
                     var hash = CreatePasswordHash(password, user.Salt);
                     if (user.Password == hash) validated = true;
-                }
+                }*/
+                var hash = CreatePasswordHash(password, user.Salt);
+                if (user.Password == hash) validated = true;
             }
 
             if (validated)

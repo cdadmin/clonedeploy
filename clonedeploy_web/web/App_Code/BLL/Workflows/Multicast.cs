@@ -55,7 +55,7 @@ namespace Tasks
                 return;
             }
 
-            Hosts = new GroupMembership().GetGroupMembers(Group.Id, "");
+            Hosts = new BLL.Group().GetGroupMembers(Group.Id, "");
             if (Hosts.Count < 1)
             {
                 Message.Text = "The Group Does Not Have Any Hosts";

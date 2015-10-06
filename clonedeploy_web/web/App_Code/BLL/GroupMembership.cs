@@ -1,20 +1,27 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using DAL;
 
 namespace BLL
 {
     public class GroupMembership
     {
-        private readonly DAL.GroupMembership _da = new DAL.GroupMembership();
+        private readonly DAL.UnitOfWork _unitOfWork;
+
+        public GroupMembership()
+        {
+            _unitOfWork = new UnitOfWork();
+        }
 
         public bool AddMembership(Models.GroupMembership groupMembership)
         {
-            var count = 0;
-            if (_da.Exists(groupMembership))
-            {
-               
+
+            if (_unitOfWork.GroupMembershipRepository.Exists(g => g.ComputerId == groupMembership.ComputerId && g.GroupId == groupMembership.GroupId))
+            {           
                 return false;
             }
-            if (_da.Create(groupMembership))
+            _unitOfWork.GroupMembershipRepository.Insert(groupMembership);
+            if (_unitOfWork.Save())
             {
              
                 return true;
@@ -28,18 +35,16 @@ namespace BLL
 
         public string GetGroupMemberCount(int groupId)
         {
-            return _da.GetTotalCount(groupId);
+            return _unitOfWork.GroupMembershipRepository.Count(g => g.GroupId == groupId);
         }
 
 
         public bool DeleteMembership(Models.GroupMembership groupMembership)
         {
-            return _da.Delete(groupMembership);
+            _unitOfWork.GroupMembershipRepository.DeleteRange(g => g.ComputerId == groupMembership.ComputerId && g.GroupId == groupMembership.GroupId);
+            return _unitOfWork.Save();
         }
 
-        public List<Models.Computer> GetGroupMembers(int groupId, string searchString)
-        {
-            return _da.Find(groupId, searchString);
-        }
+      
     }
 }

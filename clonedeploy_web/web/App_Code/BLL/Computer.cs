@@ -13,13 +13,13 @@ namespace BLL
 
         public bool AddComputer(Models.Computer computer)
         {
-            if (_unitOfWork.Computer.Exists(h => h.Name == computer.Name || h.Mac == computer.Mac))
+            if (_unitOfWork.ComputerRepository.Exists(h => h.Name == computer.Name || h.Mac == computer.Mac))
             {
                 Message.Text = "A Computer With This Name Already Exists";
                 return false;
             }
 
-            _unitOfWork.Computer.Insert(computer);
+            _unitOfWork.ComputerRepository.Insert(computer);
             if (_unitOfWork.Save())
             {
                 Message.Text = "Successfully Created Computer";
@@ -35,19 +35,19 @@ namespace BLL
 
         public string TotalCount()
         {
-            return _unitOfWork.Computer.Count();
+            return _unitOfWork.ComputerRepository.Count();
         }
 
         public string ActiveStatus(string mac)
         {
-            return _unitOfWork.Computer.CheckActive(mac) != null ? "Active" : "Inactive";
+            return _unitOfWork.ComputerRepository.CheckActive(mac) != null ? "Active" : "Inactive";
         }
 
         public void DeleteComputer(int computerId)
         {
             using (var con = new UnitOfWork())
             {
-                con.Computer.Delete(computerId);
+                con.ComputerRepository.Delete(computerId);
                 if (con.Save())
                     Message.Text = "Successfully Deleted Computer";
             }
@@ -56,24 +56,34 @@ namespace BLL
 
         public Models.Computer GetComputer(int computerId)
         {
-            return _unitOfWork.Computer.GetById(computerId);
+            return _unitOfWork.ComputerRepository.GetById(computerId);
         }
 
         public Models.Computer GetComputerFromMac(string mac)
         {
-            return _unitOfWork.Computer.GetFirstOrDefault(p => p.Mac == mac);
+            return _unitOfWork.ComputerRepository.GetFirstOrDefault(p => p.Mac == mac);
 
         }
 
         public List<Models.Computer> SearchComputers(string searchString)
         {
-            return _unitOfWork.Computer.Get(w => w.Name.Contains(searchString), includeProperties:"images");
+            return _unitOfWork.ComputerRepository.Get(w => w.Name.Contains(searchString), includeProperties:"images");
             //return _unitOfWork.Computer.Get(searchString);
         }
 
         public void UpdateComputer(Models.Computer computer)
         {
-            _unitOfWork.Computer.Update(computer, computer.Id);
+            var originalComputer = _unitOfWork.ComputerRepository.GetById(computer.Id);
+            if (originalComputer.Name != computer.Name || originalComputer.Mac != computer.Mac)
+            {
+                if (_unitOfWork.ComputerRepository.Exists(h => h.Name == computer.Name || h.Mac == computer.Mac))
+                {
+                    Message.Text = "A Computer With This Name Already Exists";
+                    return;
+                }
+            }
+
+            _unitOfWork.ComputerRepository.Update(computer, computer.Id);
             if(_unitOfWork.Save())
                 Message.Text = "Successfully Update Computer";
         }

@@ -45,11 +45,11 @@ public partial class views_groups_removemembers : Groups
 
     protected void PopulateGrid()
     {
-        var bllGroupMembership = new GroupMembership();
-        gvHosts.DataSource = bllGroupMembership.GetGroupMembers(Group.Id,txtSearch.Text);
+
+        gvHosts.DataSource = BllGroup.GetGroupMembers(Group.Id,txtSearch.Text);
         gvHosts.DataBind();
 
-        lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + bllGroupMembership.GetGroupMemberCount(Group.Id) + " Total Host(s)";
+        //lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + BllGroup.GetGroupMemberCount(Group.Id) + " Total Host(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)

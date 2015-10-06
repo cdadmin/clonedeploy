@@ -58,8 +58,6 @@ namespace Models
         public string ReceiverArguments { get; set; }
 
         [NotMapped] 
-        public List<Computer> Members { get; set; }
-
-       
+        public List<Computer> Members { get; set; }      
     }
 }

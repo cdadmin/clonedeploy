@@ -1,15 +1,22 @@
 ﻿using System.Collections.Generic;
+using DAL;
 using Helpers;
 
 namespace BLL
 {
     public class ImageProfileScript
     {
-        private readonly DAL.ImageProfileScript _da = new DAL.ImageProfileScript();
+        private readonly DAL.UnitOfWork _unitOfWork;
+
+        public ImageProfileScript()
+        {
+            _unitOfWork = new UnitOfWork();
+        }
 
         public bool AddImageProfileScript(Models.ImageProfileScript imageProfileScript)
         {
-            if (_da.Create(imageProfileScript))
+            _unitOfWork.ImageProfileScriptRepository.Insert(imageProfileScript);
+            if (_unitOfWork.Save())
             {
                 Message.Text = "Successfully Added Script";
                 return true;
@@ -23,12 +30,13 @@ namespace BLL
 
         public bool DeleteImageProfileScripts(int profileId)
         {
-            return _da.Delete(profileId);
+            _unitOfWork.ImageProfileScriptRepository.DeleteRange(x => x.ProfileId == profileId);
+            return _unitOfWork.Save();
         }
 
         public List<Models.ImageProfileScript> SearchImageProfileScripts(int profileId)
         {
-            return _da.Find(profileId);
+            return _unitOfWork.ImageProfileScriptRepository.Find(profileId);
         }
     }
 }

@@ -1,26 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using DAL;
 using Helpers;
 using Models;
 using Tasks;
 
 namespace BLL
 {
-    /// <summary>
-    /// Summary description for Group
-    /// </summary>
     public class Group
     {
-        private readonly DAL.Group _da = new DAL.Group();
+        private readonly DAL.UnitOfWork _unitOfWork;
+
+        public Group()
+        {
+            _unitOfWork = new UnitOfWork();
+        }
 
         public bool AddGroup(Models.Group group)
         {
-            if (_da.Exists(group))
+            if (_unitOfWork.GroupRepository.Exists(g => g.Name == group.Name))
             {
                 Message.Text = "A Group With This Name Already Exists";
                 return false;
             }
-            if (_da.Create(group))
+            _unitOfWork.GroupRepository.Insert(group);
+            if (_unitOfWork.Save())
             {
                 Message.Text = "Successfully Created Group";
                 return true;
@@ -34,28 +39,30 @@ namespace BLL
 
         public string TotalCount()
         {
-            return _da.GetTotalCount();
+            return _unitOfWork.GroupRepository.Count();
         }
 
       
         public bool DeleteGroup(int groupId)
         {
-            return _da.Delete(groupId);
+            _unitOfWork.GroupRepository.Delete(groupId);
+            return _unitOfWork.Save();
         }
 
         public Models.Group GetGroup(int groupId)
         {
-            return _da.Read(groupId);
+            return _unitOfWork.GroupRepository.GetById(groupId);
         }
 
         public List<Models.Group> SearchGroups(string searchString)
         {
-            return _da.Find(searchString);
+            return _unitOfWork.GroupRepository.Get(g => g.Name.Contains(searchString));
         }
 
         public void UpdateGroup(Models.Group group)
         {
-            _da.Update(group);
+            _unitOfWork.GroupRepository.Update(group, group.Id);
+            _unitOfWork.Save();
         }
 
         public void StartMulticast(Models.Group group)
@@ -73,7 +80,7 @@ namespace BLL
             {
                 var count = 0;
 
-                foreach (var host in new GroupMembership().GetGroupMembers(group.Id, ""))
+                foreach (var host in GetGroupMembers(group.Id, ""))
                 {
                     new Computer().StartUnicast(host,"push");
                
@@ -107,6 +114,12 @@ namespace BLL
 
 
             return validated;
+        }
+
+        public List<Models.Computer> GetGroupMembers(int groupId, string searchString)
+        {
+            return _unitOfWork.GroupRepository.GetGroupMembers(groupId, searchString);
+
         }
     }
 }

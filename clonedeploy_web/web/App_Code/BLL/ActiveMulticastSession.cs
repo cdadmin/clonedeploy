@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Management;
 using System.Threading;
+using DAL;
 using Helpers;
 using Pxe;
 
@@ -10,16 +12,18 @@ namespace BLL
 {
     public class ActiveMulticastSession
     {
-        private readonly DAL.ActiveMulticastSession _da = new DAL.ActiveMulticastSession();
+
+        private readonly UnitOfWork _unitOfWork = new UnitOfWork();
 
         public bool AddActiveMulticastSession(Models.ActiveMulticastSession activeMulticastSession)
         {
-            if (_da.Exists(activeMulticastSession))
+            if (_unitOfWork.ActiveMulticastSessionRepository.Exists(h => h.Name == activeMulticastSession.Name))
             {
                 Message.Text = "A Multicast Is Already Running For This Group";
                 return false;
             }
-            if (_da.Create(activeMulticastSession))
+            _unitOfWork.ActiveMulticastSessionRepository.Insert(activeMulticastSession);
+            if (_unitOfWork.Save())
             {
                 Message.Text = "Successfully Created Multicast";
                 return true;
@@ -33,10 +37,11 @@ namespace BLL
 
         public bool Delete(int multicastId)
         {
-            var multicast = _da.Read(multicastId);
-            var computers = new ActiveImagingTask().GetMulticastComputers(multicastId);
+            var multicast = _unitOfWork.ActiveMulticastSessionRepository.GetById(multicastId);
+            var computers = _unitOfWork.ActiveImagingTaskRepository.MulticastComputers(multicastId);
 
-            if (_da.Delete(multicastId))
+            _unitOfWork.ActiveMulticastSessionRepository.Delete(multicastId);
+            if (_unitOfWork.Save())
             {
                 new ActiveImagingTask().DeleteForMulticast(multicastId);
 
@@ -78,12 +83,13 @@ namespace BLL
 
         public bool UpdateActiveMulticastSession(Models.ActiveMulticastSession activeMulticastSession)
         {
-            return _da.Update(activeMulticastSession);
+            _unitOfWork.ActiveMulticastSessionRepository.Update(activeMulticastSession, activeMulticastSession.Id);
+            return _unitOfWork.Save();
         }
 
         public List<Models.ActiveMulticastSession> GetAllMulticastSessions()
         {
-            return _da.ReadMulticasts();
+            return _unitOfWork.ActiveMulticastSessionRepository.Get(orderBy: (q => q.OrderBy(t => t.Name)));
         }
 
         public void KillProcess(int pid)

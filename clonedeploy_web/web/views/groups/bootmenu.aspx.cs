@@ -20,7 +20,7 @@ namespace views.groups
             switch (Group.Type)
             {
                 case "standard":
-                    foreach (var host in _bllGroupMembership.GetGroupMembers(Group.Id, ""))
+                    foreach (var host in _bllGroup.GetGroupMembers(Group.Id, ""))
                     {
                         var customBootMenu = new CustomBootMenu {Host = host};
                         customBootMenu.RemoveCustomBootMenu();
@@ -45,7 +45,7 @@ namespace views.groups
             switch (Group.Type)
             {
                 case "standard":
-                    foreach (var host in _bllGroupMembership.GetGroupMembers(Group.Id, ""))
+                    foreach (var host in _bllGroup.GetGroupMembers(Group.Id, ""))
                     {                    
                         var customBootMenu = new CustomBootMenu
                         {

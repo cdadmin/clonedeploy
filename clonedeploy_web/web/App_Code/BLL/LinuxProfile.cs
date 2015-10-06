@@ -1,20 +1,28 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using DAL;
 using Helpers;
 
 namespace BLL
 {
     public class LinuxProfile
     {
-        private readonly DAL.LinuxProfile _da = new DAL.LinuxProfile();
+        private readonly DAL.UnitOfWork _unitOfWork;
+
+        public LinuxProfile()
+        {
+            _unitOfWork = new UnitOfWork();
+        }
 
         public bool AddProfile(Models.LinuxProfile profile)
         {
-            if (_da.Exists(profile))
+            if (_unitOfWork.LinuxProfileRepository.Exists(p => p.Name == profile.Name))
             {
                 Message.Text = "A Profile With This Name Already Exists";
                 return false;
             }
-            if (_da.Create(profile))
+            _unitOfWork.LinuxProfileRepository.Insert(profile);
+            if (_unitOfWork.Save())
             {
                 Message.Text = "Successfully Created Profile";
                 return true;
@@ -25,17 +33,18 @@ namespace BLL
 
         public Models.LinuxProfile ReadProfile(int profileId)
         {
-            return _da.Read(profileId);
+            return _unitOfWork.LinuxProfileRepository.GetById(profileId);
         }
 
         public List<Models.LinuxProfile> SearchProfiles(int? imageId)
         {
-            return _da.Find(imageId);
+            return _unitOfWork.LinuxProfileRepository.Get(p => p.ImageId == imageId,
+                orderBy: (q => q.OrderBy(p => p.Name)));
         }
 
         public void UpdateProfile(Models.LinuxProfile profile)
         {
-            _da.Update(profile);
+            _unitOfWork.LinuxProfileRepository.Update(profile, profile.Id);
         }
     }
 }

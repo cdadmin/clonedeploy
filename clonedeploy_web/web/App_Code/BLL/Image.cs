@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using DAL;
 using Helpers;
 using Newtonsoft.Json;
 using Partition;
@@ -11,16 +12,22 @@ namespace BLL
 {
     public class Image
     {
-        private readonly DAL.Image _da = new DAL.Image();
+        private readonly DAL.UnitOfWork _unitOfWork;
+
+        public Image()
+        {
+            _unitOfWork = new UnitOfWork();
+        }
 
         public bool AddImage(Models.Image image)
         {
-            if (_da.Exists(image))
+            if (_unitOfWork.ImageRepository.Exists(i => i.Name == image.Name))
             {
                 Message.Text = "An Image With This Name Already Exists";
                 return false;
             }
-            if (_da.Create(image))
+            _unitOfWork.ImageRepository.Insert(image);
+            if (_unitOfWork.Save())
             {
                 try
                 {
@@ -51,7 +58,8 @@ namespace BLL
                 return false;
             }
 
-            if (_da.Delete(image.Id))
+            _unitOfWork.ImageRepository.Delete(image.Id);
+            if (_unitOfWork.Save())
             {
                 if (string.IsNullOrEmpty(image.Name)) return false;
                 try
@@ -81,17 +89,18 @@ namespace BLL
 
         public Models.Image GetImage(int? imageId)
         {
-            return _da.Read(imageId);
+            return _unitOfWork.ImageRepository.GetById(imageId);
         }
 
         public List<Models.Image> SearchImages(string searchString)
         {
-            return _da.Find(searchString);
+            return _unitOfWork.ImageRepository.Get(i => i.Name.Contains(searchString));
         }
 
         public bool UpdateImage(Models.Image image, string originalName)
         {
-            if (!_da.Update(image)) return false;
+            _unitOfWork.ImageRepository.Update(image,image.Id);
+            if (!_unitOfWork.Save()) return false;
             if (image.Name.ToLower() == originalName.ToLower()) return true;
             new FileOps().RenameFolder(originalName, image.Name);
             return true;
@@ -176,7 +185,7 @@ namespace BLL
 
         public string TotalCount()
         {
-            return _da.GetTotalCount();
+            return _unitOfWork.ImageRepository.Count();
         }
 
         public void Import()

@@ -1,16 +1,23 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using DAL;
 using Helpers;
 
 namespace BLL
 {
     public class Partition
     {
-        private readonly DAL.Partition _da = new DAL.Partition();
+        private readonly DAL.UnitOfWork _unitOfWork;
+
+        public Partition()
+        {
+            _unitOfWork = new UnitOfWork();
+        }
 
         public bool AddPartition(Models.Partition partition)
         {
-         
-            if (_da.Create(partition))
+            _unitOfWork.PartitionRepository.Insert(partition);
+            if (_unitOfWork.Save())
             {
                 Message.Text = "Successfully Created Partition";
                 return true;
@@ -24,29 +31,32 @@ namespace BLL
 
         public string TotalCount()
         {
-            return _da.GetTotalCount();
+            return _unitOfWork.PartitionRepository.Count();
         }
 
       
         public bool DeletePartition(int partitionId)
         {
-            return _da.Delete(partitionId);
+            _unitOfWork.PartitionRepository.Delete(partitionId);
+            return _unitOfWork.Save();
         }
 
         public Models.Partition GetPartition(int partitionId)
         {
-            return _da.Read(partitionId);
+            return _unitOfWork.PartitionRepository.GetById(partitionId);
         }
 
       
         public List<Models.Partition> SearchPartitions(int layoutId)
         {
-            return _da.Find(layoutId);
+            return _unitOfWork.PartitionRepository.Get(p => p.LayoutId == layoutId,
+                orderBy: (q => q.OrderBy(p => p.Number)));
         }
 
         public void UpdatePartition(Models.Partition partition)
         {
-            if (_da.Update(partition))
+            _unitOfWork.PartitionRepository.Update(partition,partition.Id);
+            if (_unitOfWork.Save())
                 Message.Text = "Successfully Updated Partition";
         }
 

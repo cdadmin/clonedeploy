@@ -55,18 +55,19 @@ namespace Models
         [Column("computer_image_profile_id", Order = 8)]
         public int ImageProfile { get; set; }
 
-
-        public virtual Models.Image images { get; set; }
-
         [NotMapped]
         public string CustomBootEnabled { get; set; }
 
-       
         [NotMapped]
         public string TaskId { get; set; }
 
-        [NotMapped]
-        public string ImageName { get; set; }
+        //Navigation Properties
+        public virtual Models.Image images { get; set; }
+
+
+     
+
+      
 
     }
 }

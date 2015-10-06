@@ -36,7 +36,7 @@
             
             <asp:TemplateField HeaderText="Distribution Point" ItemStyle-Width="150">
                 <ItemTemplate>
-                    <asp:Label ID="lblDp" runat="server" Text='<%# Eval("DpName") %>'></asp:Label>
+                    <asp:Label ID="lblDp" runat="server" Text='<%# Eval("dp.DisplayName") %>'></asp:Label>
                 </ItemTemplate>
                 <EditItemTemplate>
                     <asp:DropDownList ID="ddlDp" runat="server"></asp:DropDownList>

@@ -53,13 +53,6 @@ namespace DAL
             return _context.GroupMemberships.Count(g => g.GroupId == groupId).ToString();            
         }
 
-        public List<Models.Computer> Find(int searchGroupId, string searchString)
-        {
-
-            return (from h in _context.Computers
-                join g in _context.GroupMemberships on h.Id equals g.ComputerId
-                where (g.GroupId == searchGroupId) && (h.Name.Contains(searchString) || h.Mac.Contains(searchString))
-                select h).ToList();
-        }
+     
     }
 }

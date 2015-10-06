@@ -1,15 +1,22 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Helpers;
 
 namespace BLL
 {
     public class ImageProfilePartition
     {
-        private readonly DAL.ImageProfilePartition _da = new DAL.ImageProfilePartition();
+        private readonly DAL.UnitOfWork _unitOfWork;
+
+        public ImageProfilePartition()
+        {
+            _unitOfWork = new DAL.UnitOfWork();
+        }
 
         public bool AddImageProfilePartition(Models.ImageProfilePartition imageProfilePartition)
         {
-            if (_da.Create(imageProfilePartition))
+            _unitOfWork.ImageProfilePartitionRepository.Insert(imageProfilePartition);
+            if (_unitOfWork.Save())
             {
                 Message.Text = "Successfully Added Partition Layout";
                 return true;
@@ -23,12 +30,14 @@ namespace BLL
 
         public bool DeleteImageProfilePartitions(int profileId)
         {
-            return _da.Delete(profileId);
+            _unitOfWork.ImageProfilePartitionRepository.DeleteRange(x => x.ProfileId == profileId);
+            return _unitOfWork.Save();
         }
 
         public List<Models.ImageProfilePartition> SearchImageProfilePartitions(int profileId)
         {
-            return _da.Find(profileId);
+           return _unitOfWork.ImageProfilePartitionRepository.Get(p => p.ProfileId == profileId,
+                orderBy: (q => q.OrderBy(p => p.Id)));
         }
     }
 }
