@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BLL.Workflows;
 using DAL;
 using Helpers;
@@ -36,11 +37,6 @@ namespace BLL
         public string TotalCount()
         {
             return _unitOfWork.ComputerRepository.Count();
-        }
-
-        public string ActiveStatus(string mac)
-        {
-            return _unitOfWork.ComputerRepository.CheckActive(mac) != null ? "Active" : "Inactive";
         }
 
         public void DeleteComputer(int computerId)

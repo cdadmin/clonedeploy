@@ -6,32 +6,32 @@ namespace Helpers
     {
         public static string AdLoginDomain
         {
-            get { return Setting.GetSetting("AD Login Domain"); }
+            get { return Setting.GetSetting("AD Login Domain").Value; }
         }
 
         public static string ClientReceiverArgs
         {
-            get { return Setting.GetSetting("Client Receiver Args"); }
+            get { return Setting.GetSetting("Client Receiver Args").Value; }
         }
 
         public static string CompressionAlgorithm
         {
-            get { return Setting.GetSetting("Compression Algorithm"); }
+            get { return Setting.GetSetting("Compression Algorithm").Value; }
         }
 
         public static string CompressionLevel
         {
-            get { return Setting.GetSetting("Compression Level"); }
+            get { return Setting.GetSetting("Compression Level").Value; }
         }
 
         public static string DebugRequiresLogin
         {
-            get { return Setting.GetSetting("Debug Requires Login"); }
+            get { return Setting.GetSetting("Debug Requires Login").Value; }
         }
 
         public static string DefaultHostView
         {
-            get { return Setting.GetSetting("Default Host View"); }
+            get { return Setting.GetSetting("Default Host View").Value; }
         }
 
         public static string DefaultKernel32
@@ -46,107 +46,107 @@ namespace Helpers
 
         public static string EndPort
         {
-            get { return Setting.GetSetting("Udpcast End Port"); }
+            get { return Setting.GetSetting("Udpcast End Port").Value; }
         }
 
         public static string ForceSsL
         {
-            get { return Setting.GetSetting("Force SSL"); }
+            get { return Setting.GetSetting("Force SSL").Value; }
         }
 
         public static string GlobalHostArgs
         {
-            get { return Setting.GetSetting("Global Host Args"); }
+            get { return Setting.GetSetting("Global Host Args").Value; }
         }
 
         public static string ImageChecksum
         {
-            get { return Setting.GetSetting("Image Checksum"); }
+            get { return Setting.GetSetting("Image Checksum").Value; }
         }
 
         public static string ImageHoldPath
         {
-            get { return Setting.GetSetting("Image Hold Path"); }
+            get { return Setting.GetSetting("Image Hold Path").Value; }
         }
 
         public static string ImageStorePath
         {
-            get { return Setting.GetSetting("Image Store Path"); }
+            get { return Setting.GetSetting("Image Store Path").Value; }
         }
 
         public static string ImageTransferMode
         {
-            get { return Setting.GetSetting("Image Transfer Mode"); }
+            get { return Setting.GetSetting("Image Transfer Mode").Value; }
         }
 
         public static string NfsDeployPath
         {
-            get { return Setting.GetSetting("Nfs Deploy Path"); }
+            get { return Setting.GetSetting("Nfs Deploy Path").Value; }
         }
 
         public static string NfsUploadPath
         {
-            get { return Setting.GetSetting("Nfs Upload Path"); }
+            get { return Setting.GetSetting("Nfs Upload Path").Value; }
         }
 
         public static string OnDemand
         {
-            get { return Setting.GetSetting("On Demand"); }
+            get { return Setting.GetSetting("On Demand").Value; }
         }
 
         public static string OnDemandRequiresLogin
         {
-            get { return Setting.GetSetting("On Demand Requires Login"); }
+            get { return Setting.GetSetting("On Demand Requires Login").Value; }
         }
 
         public static string ProxyBiosFile
         {
-            get { return Setting.GetSetting("Proxy Bios File"); }
+            get { return Setting.GetSetting("Proxy Bios File").Value; }
         }
 
         public static string ProxyDhcp
         {
-            get { return Setting.GetSetting("Proxy Dhcp"); }
+            get { return Setting.GetSetting("Proxy Dhcp").Value; }
         }
 
         public static string ProxyEfi32File
         {
-            get { return Setting.GetSetting("Proxy Efi32 File"); }
+            get { return Setting.GetSetting("Proxy Efi32 File").Value; }
         }
 
         public static string ProxyEfi64File
         {
-            get { return Setting.GetSetting("Proxy Efi64 File"); }
+            get { return Setting.GetSetting("Proxy Efi64 File").Value; }
         }
 
         public static string PxeMode
         {
-            get { return Setting.GetSetting("PXE Mode"); }
+            get { return Setting.GetSetting("PXE Mode").Value; }
         }
 
         public static string QueueSize
         {
-            get { return Setting.GetSetting("Queue Size"); }
+            get { return Setting.GetSetting("Queue Size").Value; }
         }
 
         public static string ReceiverArgs
         {
-            get { return Setting.GetSetting("Receiver Args"); }
+            get { return Setting.GetSetting("Receiver Args").Value; }
         }
 
         public static string RegisterRequiresLogin
         {
-            get { return Setting.GetSetting("Register Requires Login"); }
+            get { return Setting.GetSetting("Register Requires Login").Value; }
         }
 
         public static string SenderArgs
         {
-            get { return Setting.GetSetting("Sender Args"); }
+            get { return Setting.GetSetting("Sender Args").Value; }
         }
 
         public static string ServerIp
         {
-            get { return Setting.GetSetting("Server IP"); }
+            get { return Setting.GetSetting("Server IP").Value; }
         }
 
         public static string ServerIpWithPort
@@ -156,112 +156,112 @@ namespace Helpers
 
         public static string ServerKey
         {
-            get { return Setting.GetSetting("Server Key"); }
+            get { return Setting.GetSetting("Server Key").Value; }
         }
 
         public static string SmbPassword
         {
-            get { return Setting.GetSetting("SMB Password"); }
+            get { return Setting.GetSetting("SMB Password").Value; }
         }
 
         public static string SmbPath
         {
-            get { return Setting.GetSetting("SMB Path"); }
+            get { return Setting.GetSetting("SMB Path").Value; }
         }
 
         public static string SmbUserName
         {
-            get { return Setting.GetSetting("SMB User Name"); }
+            get { return Setting.GetSetting("SMB User Name").Value; }
         }
 
         public static string StartPort
         {
-            get { return Setting.GetSetting("Udpcast Start Port"); }
+            get { return Setting.GetSetting("Udpcast Start Port").Value; }
         }
 
         public static string TftpPath
         {
-            get { return Setting.GetSetting("Tftp Path"); }
+            get { return Setting.GetSetting("Tftp Path").Value; }
         }
 
         public static string WebPath
         {
-            get { return Setting.GetSetting("Web Path"); }
+            get { return Setting.GetSetting("Web Path").Value; }
         }
 
         public static string WebServerPort
         {
-            get { return Setting.GetSetting("Web Server Port"); }
+            get { return Setting.GetSetting("Web Server Port").Value; }
         }
 
         public static string WebTaskRequiresLogin
         {
-            get { return Setting.GetSetting("Web Task Requires Login"); }
+            get { return Setting.GetSetting("Web Task Requires Login").Value; }
         }
 
         public static string SmtpServer
         {
-            get { return Setting.GetSetting("Smtp Server"); }
+            get { return Setting.GetSetting("Smtp Server").Value; }
         }
 
         public static string SmtpPort
         {
-            get { return Setting.GetSetting("Smtp Port"); }
+            get { return Setting.GetSetting("Smtp Port").Value; }
         }
 
         public static string SmtpUsername
         {
-            get { return Setting.GetSetting("Smtp Username"); }
+            get { return Setting.GetSetting("Smtp Username").Value; }
         }
 
         public static string SmtpPassword
         {
-            get { return Setting.GetSetting("Smtp Password"); }
+            get { return Setting.GetSetting("Smtp Password").Value; }
         }
 
         public static string SmtpMailFrom
         {
-            get { return Setting.GetSetting("Smtp Mail From"); }
+            get { return Setting.GetSetting("Smtp Mail From").Value; }
         }
 
         public static string SmtpMailTo
         {
-            get { return Setting.GetSetting("Smtp Mail To"); }
+            get { return Setting.GetSetting("Smtp Mail To").Value; }
         }
 
         public static string SmtpSsl
         {
-            get { return Setting.GetSetting("Smtp Ssl"); }
+            get { return Setting.GetSetting("Smtp Ssl").Value; }
         }
 
         public static string NotifySuccessfulLogin
         {
-            get { return Setting.GetSetting("Notify Successful Login"); }
+            get { return Setting.GetSetting("Notify Successful Login").Value; }
         }
 
         public static string NotifyFailedLogin
         {
-            get { return Setting.GetSetting("Notify Failed Login"); }
+            get { return Setting.GetSetting("Notify Failed Login").Value; }
         }
 
         public static string NotifyTaskStarted
         {
-            get { return Setting.GetSetting("Notify Task Started"); }
+            get { return Setting.GetSetting("Notify Task Started").Value; }
         }
 
         public static string NotifyTaskCompleted
         {
-            get { return Setting.GetSetting("Notify Task Completed"); }
+            get { return Setting.GetSetting("Notify Task Completed").Value; }
         }
 
         public static string NotifyImageApproved
         {
-            get { return Setting.GetSetting("Notify Image Approved"); }
+            get { return Setting.GetSetting("Notify Image Approved").Value; }
         }
 
         public static string NotifyResizeFailed
         {
-            get { return Setting.GetSetting("Notify Resize Failed"); }
+            get { return Setting.GetSetting("Notify Resize Failed").Value; }
         }
     
     }

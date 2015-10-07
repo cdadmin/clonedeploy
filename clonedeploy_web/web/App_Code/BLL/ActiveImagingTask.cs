@@ -12,6 +12,12 @@ namespace BLL
     {
         private readonly UnitOfWork _unitOfWork = new UnitOfWork();
 
+
+        public bool IsComputerActive(int computerId)
+        {
+            return _unitOfWork.ActiveImagingTaskRepository.Exists(a => a.ComputerId == computerId);
+        }
+
         public bool DeleteActiveImagingTask(int activeImagingTaskId)
         {
             var activeImagingTask = _unitOfWork.ActiveImagingTaskRepository.GetById(activeImagingTaskId);

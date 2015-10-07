@@ -11,7 +11,7 @@ namespace Models
         [Column("active_task_id", Order = 1)]
         public int Id { get; set; }
 
-        [ForeignKey("computer")]
+        [ForeignKey("Computer")]
         [Column("computer_id", Order = 2)]
         public int ComputerId { get; set; }
 
@@ -46,6 +46,6 @@ namespace Models
         public int MulticastId { get; set; } 
 
         //Navigation Properties
-        public virtual Models.Computer computer { get; set; }
+        public virtual Models.Computer Computer { get; set; }
     }
 }

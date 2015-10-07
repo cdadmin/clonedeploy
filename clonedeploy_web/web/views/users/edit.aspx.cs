@@ -73,12 +73,12 @@ namespace views.users
                 }
 
                 if ((string.IsNullOrEmpty(txtUserPwd.Text)) && (string.IsNullOrEmpty(txtUserPwdConfirm.Text)))
-                    if (bllUser.ValidateUserData(user)) bllUser.UpdateUser(user, false);
+                    bllUser.UpdateUser(user, false);
                 if (txtUserPwd.Text == txtUserPwdConfirm.Text)
                 {
                     user.Password = txtUserPwd.Text;
                     user.Salt = bllUser.CreateSalt(16);
-                    if (bllUser.ValidateUserData(user)) bllUser.UpdateUser(user, true);
+                    bllUser.UpdateUser(user, true);
                 }
                 else
                     Message.Text = "Passwords Did Not Match";

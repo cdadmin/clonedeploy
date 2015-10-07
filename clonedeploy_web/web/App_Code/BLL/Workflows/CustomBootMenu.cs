@@ -158,13 +158,13 @@ namespace Pxe
             var tftpPath = Settings.TftpPath;
             var mode = Settings.PxeMode;
             var pxeHostMac = Utility.MacToPxeMac(Host.Mac);
-            var isActive = new BLL.Computer().ActiveStatus(Host.Mac);
+            var active = new BLL.ActiveImagingTask().IsComputerActive(Host.Id);
             string path;
             var fileOps = new FileOps();
 
             var proxyDhcp = Settings.ProxyDhcp;
 
-            if (isActive == "Inactive")
+            if (!active)
             {
                 if (proxyDhcp == "Yes")
                 {
@@ -291,13 +291,13 @@ namespace Pxe
         {
             var mode = Settings.PxeMode;
             var pxeHostMac = Utility.MacToPxeMac(Host.Mac);
-            var isActive = new BLL.Computer().ActiveStatus(Host.Mac);
+            var active = new BLL.ActiveImagingTask().IsComputerActive(Host.Id);
             string path;
 
             var proxyDhcp = Settings.ProxyDhcp;
             var tftpPath = Settings.TftpPath;
             var fileOps = new FileOps();
-            if (isActive == "Inactive")
+            if (!active)
             {
                 if (proxyDhcp == "Yes")
                 {

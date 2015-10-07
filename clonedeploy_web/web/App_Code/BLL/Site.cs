@@ -5,51 +5,70 @@ namespace BLL
 {
     public class Site
     {
-        private readonly DAL.Site _da = new DAL.Site();
-
         public bool AddSite(Models.Site site)
         {
-            if (_da.Exists(site.Name))
+            using (var uow = new DAL.UnitOfWork())
             {
-                Message.Text = "A Site With This Name Already Exists";
-                return false;
-            }
-            if (_da.Create(site))
-            {
-                Message.Text = "Successfully Created Site";
-                return true;
-            }
-            else
-            {
-                Message.Text = "Could Not Create Site";
-                return false;
+                if (uow.SiteRepository.Exists(s => s.Name == site.Name))
+                {
+                    Message.Text = "A Site With This Name Already Exists";
+                    return false;
+                }
+                uow.SiteRepository.Insert(site);
+                if (uow.Save())
+                {
+                    Message.Text = "Successfully Created Site";
+                    return true;
+                }
+                else
+                {
+                    Message.Text = "Could Not Create Site";
+                    return false;
+                }
             }
         }
 
         public string TotalCount()
         {
-            return _da.GetTotalCount();
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.SiteRepository.Count();
+            }
         }
 
         public bool DeleteSite(int siteId)
         {
-            return _da.Delete(siteId);
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.SiteRepository.Delete(siteId);
+                return uow.Save();
+            }
         }
 
         public Models.Site GetSite(int siteId)
         {
-            return _da.Read(siteId);
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.SiteRepository.GetById(siteId);
+            }
         }
 
         public List<Models.Site> SearchSites(string searchString)
         {
-            return _da.Find(searchString);
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.SiteRepository.Get(s => s.Name.Contains(searchString), includeProperties: "dp");
+            }
         }
 
         public void UpdateSite(Models.Site site)
         {
-            if (_da.Update(site))
-                Message.Text = "Successfully Updated Site";
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.SiteRepository.Update(site, site.Id);
+                if (uow.Save())
+                    Message.Text = "Successfully Updated Site";
+            }
         }
 
       

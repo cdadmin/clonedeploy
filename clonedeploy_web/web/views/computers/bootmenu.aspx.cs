@@ -69,14 +69,14 @@ namespace views.hosts
         protected void DisplayActiveMenu()
         {
             var proxyDhcp = Settings.ProxyDhcp;
-            var isActive = new Computer().ActiveStatus(Computer.Mac);
+            var active = new BLL.ActiveImagingTask().IsComputerActive(Computer.Id);
             var pxeFileOps = new PxeFileOps();
             string path;
 
             if (proxyDhcp == "Yes")
                 divProxy.Visible = true;
 
-            if (isActive == "Active")
+            if (active)
             {
                 path = proxyDhcp == "Yes"
                     ? pxeFileOps.GetHostProxyPath(Computer, true, ddlProxyMode.Text)

@@ -7,7 +7,7 @@ namespace DAL
 {
     public class ImageProfileScriptRepository : GenericRepository<Models.ImageProfileScript>
     {
-        private CloneDeployDbContext _context;
+        private readonly CloneDeployDbContext _context;
 
         public ImageProfileScriptRepository(CloneDeployDbContext context)
             : base(context)

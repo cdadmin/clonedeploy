@@ -4,7 +4,8 @@ namespace DAL
 {
     public interface IUnitOfWork: IDisposable
     {
-
+        DAL.IGenericRepository<Models.Computer> ComputerRepository { get; }
+        DAL.IGenericRepository<Models.ActiveMulticastSession> ActiveMulticastSessionRepository { get; }
         DAL.IGenericRepository<Models.Building> BuildingRepository { get; }
         DAL.IGenericRepository<Models.Room> RoomRepository { get; }
         DAL.IGenericRepository<Models.DistributionPoint> DistributionPointRepository { get; }
@@ -16,11 +17,13 @@ namespace DAL
         DAL.IGenericRepository<Models.PartitionLayout> PartitionLayoutRepository { get; }
         DAL.IGenericRepository<Models.Port> PortRepository { get; }
         DAL.IGenericRepository<Models.Script> ScriptRepository { get; }
+        DAL.IGenericRepository<Models.Setting> SettingRepository { get; }
+        DAL.IGenericRepository<Models.Site> SiteRepository { get; }
+        DAL.IGenericRepository<Models.SysprepTag> SysprepTagRepository { get; }
+        DAL.IGenericRepository<Models.WdsUser> UserRepository { get; }
         DAL.ImageProfileScriptRepository ImageProfileScriptRepository { get; }
-        DAL.ComputerRepository ComputerRepository { get; }
         DAL.GroupRepository GroupRepository { get; }
         DAL.ActiveImagingTaskRepository ActiveImagingTaskRepository { get; }
-        DAL.ActiveMulticastSessionRepository ActiveMulticastSessionRepository { get; }
         bool Save();
         
     }

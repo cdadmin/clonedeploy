@@ -5,6 +5,8 @@ namespace DAL
     public class UnitOfWork : IUnitOfWork 
     {
         private CloneDeployDbContext _context = new CloneDeployDbContext();
+        private IGenericRepository<Models.Computer> _computerRepository;
+        private IGenericRepository<Models.ActiveMulticastSession> _activeMulticastSessionRepository;
         private IGenericRepository<Models.Building> _buildingRepository;
         private IGenericRepository<Models.DistributionPoint> _distributionPointRepository;
         private IGenericRepository<Models.GroupMembership> _groupMembershipRepository;
@@ -16,11 +18,24 @@ namespace DAL
         private IGenericRepository<Models.Port> _portRepository;
         private IGenericRepository<Models.Room> _roomRepository;
         private IGenericRepository<Models.Script> _scriptRepository;
+        private IGenericRepository<Models.Setting> _settingRepository;
+        private IGenericRepository<Models.Site> _siteRepository;
+        private IGenericRepository<Models.SysprepTag> _sysprepTagRepository;
+        private IGenericRepository<Models.WdsUser> _userRepository;
         private ImageProfileScriptRepository _imageProfileScriptRepository;
-        private ComputerRepository _computerRepository;
         private GroupRepository _groupRepository;
         private ActiveImagingTaskRepository _activeImagingTaskRepository;
-        private ActiveMulticastSessionRepository _activeMulticastSessionRepository;
+
+
+        public IGenericRepository<Models.ActiveMulticastSession> ActiveMulticastSessionRepository
+        {
+            get { return _activeMulticastSessionRepository ?? (_activeMulticastSessionRepository = new GenericRepository<Models.ActiveMulticastSession>(_context)); }
+
+        }
+        public IGenericRepository<Models.Computer> ComputerRepository
+        {
+            get { return _computerRepository ?? (_computerRepository = new GenericRepository<Models.Computer>(_context)); }
+        }
 
         public IGenericRepository<Models.Building> BuildingRepository
         {
@@ -77,14 +92,29 @@ namespace DAL
             get { return _scriptRepository ?? (_scriptRepository = new GenericRepository<Models.Script>(_context)); }
         }
 
+        public IGenericRepository<Models.Setting> SettingRepository
+        {
+            get { return _settingRepository ?? (_settingRepository = new GenericRepository<Models.Setting>(_context)); }
+        }
+
+        public IGenericRepository<Models.Site> SiteRepository
+        {
+            get { return _siteRepository ?? (_siteRepository = new GenericRepository<Models.Site>(_context)); }
+        }
+
+        public IGenericRepository<Models.SysprepTag> SysprepTagRepository
+        {
+            get { return _sysprepTagRepository ?? (_sysprepTagRepository = new GenericRepository<Models.SysprepTag>(_context)); }
+        }
+
+        public IGenericRepository<Models.WdsUser> UserRepository
+        {
+            get { return _userRepository ?? (_userRepository = new GenericRepository<Models.WdsUser>(_context)); }
+        }
+
         public ImageProfileScriptRepository ImageProfileScriptRepository
         {
             get { return _imageProfileScriptRepository ?? (_imageProfileScriptRepository = new ImageProfileScriptRepository(_context)); }
-        }
-
-        public ComputerRepository ComputerRepository
-        {
-            get { return _computerRepository ?? (_computerRepository = new ComputerRepository(_context)); }
         }
 
         public GroupRepository GroupRepository
@@ -95,11 +125,6 @@ namespace DAL
         public ActiveImagingTaskRepository ActiveImagingTaskRepository
         {
             get { return _activeImagingTaskRepository ?? (_activeImagingTaskRepository = new ActiveImagingTaskRepository(_context)); }
-        }
-
-        public ActiveMulticastSessionRepository ActiveMulticastSessionRepository
-        {
-            get { return _activeMulticastSessionRepository ?? (_activeMulticastSessionRepository = new ActiveMulticastSessionRepository(_context)); }
         }
 
         public bool Save()

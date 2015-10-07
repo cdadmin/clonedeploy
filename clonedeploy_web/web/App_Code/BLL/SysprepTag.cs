@@ -1,20 +1,25 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Helpers;
 
 namespace BLL
 {
     public class SysprepTag
     {
-        private readonly DAL.SysprepTag _da = new DAL.SysprepTag();
-
+        private DAL.UnitOfWork _unitOfWork;
+        public SysprepTag()
+        {
+            _unitOfWork = new DAL.UnitOfWork();
+        }
         public bool AddSysprepTag(Models.SysprepTag sysprepTag)
         {
-            if (_da.Exists(sysprepTag.Name))
+            if (_unitOfWork.SysprepTagRepository.Exists(s => s.Name == sysprepTag.Name))
             {
                 Message.Text = "A Sysprep Tag With This Name Already Exists";
                 return false;
             }
-            if (_da.Create(sysprepTag))
+            _unitOfWork.SysprepTagRepository.Insert(sysprepTag);
+            if (_unitOfWork.Save())
             {
                 Message.Text = "Successfully Created Sysprep Tag";
                 return true;
@@ -28,27 +33,32 @@ namespace BLL
 
         public string TotalCount()
         {
-            return _da.GetTotalCount();
+            return _unitOfWork.SysprepTagRepository.Count();
         }
 
         public bool DeleteScript(int sysprepTagId)
         {
-            return _da.Delete(sysprepTagId);
+            _unitOfWork.SysprepTagRepository.Delete(sysprepTagId);
+            return _unitOfWork.Save();
         }
 
         public Models.SysprepTag GetSysprepTag(int sysprepTagId)
         {
-            return _da.Read(sysprepTagId);
+            return _unitOfWork.SysprepTagRepository.GetById(sysprepTagId);
         }
 
         public List<Models.SysprepTag> SearchSysprepTags(string searchString)
         {
-            return _da.Find(searchString);
+            return
+                _unitOfWork.SysprepTagRepository.Get(
+                    s => s.Name.Contains(searchString) || s.OpeningTag.Contains(searchString),
+                    orderBy: (q => q.OrderBy(s => s.OpeningTag)));
         }
 
         public void UpdateSysprepTag(Models.SysprepTag sysprepTag)
         {
-            if (_da.Update(sysprepTag))
+            _unitOfWork.SysprepTagRepository.Update(sysprepTag,sysprepTag.Id);
+            if (_unitOfWork.Save())
                 Message.Text = "Successfully Updated Sysprep Tag";
         }
 

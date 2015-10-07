@@ -26,18 +26,17 @@ public partial class views_admin_server : Admin
 
     protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
     {
-
         if (ValidateSettings())
         {
             List<Models.Setting> listSettings = new List<Models.Setting>
             {
-                new Models.Setting {Name = "Server IP", Value = txtIP.Text},
-                new Models.Setting {Name = "Web Server Port", Value = txtPort.Text},
-                new Models.Setting {Name = "Image Store Path", Value = txtImagePath.Text},
-                new Models.Setting {Name = "Tftp Path", Value = txtTFTPPath.Text},
-                new Models.Setting {Name = "Web Path", Value = txtWebService.Text},
-                new Models.Setting {Name = "Default Host View", Value = ddlHostView.Text},
-                new Models.Setting {Name = "Image Hold Path", Value = txtImageHoldPath.Text}
+                new Models.Setting {Name = "Server IP", Value = txtIP.Text, Id = Setting.GetSetting("Server IP").Id},
+                new Models.Setting {Name = "Web Server Port", Value = txtPort.Text, Id = Setting.GetSetting("Web Server Port").Id},
+                new Models.Setting {Name = "Image Store Path", Value = txtImagePath.Text, Id = Setting.GetSetting("Image Store Path").Id},
+                new Models.Setting {Name = "Tftp Path", Value = txtTFTPPath.Text, Id = Setting.GetSetting("Tftp Path").Id},
+                new Models.Setting {Name = "Web Path", Value = txtWebService.Text, Id = Setting.GetSetting("Web Path").Id},
+                new Models.Setting {Name = "Default Host View", Value = ddlHostView.Text, Id = Setting.GetSetting("Default Host View").Id},
+                new Models.Setting {Name = "Image Hold Path", Value = txtImageHoldPath.Text, Id = Setting.GetSetting("Image Hold path").Id}
             };
 
             var newBootMenu = false;

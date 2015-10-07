@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BLL;
@@ -19,7 +20,14 @@ namespace BasePages
         protected override void OnLoadComplete(EventArgs e)
         {
             base.OnLoadComplete(e);
-            new Message().Show();
+            if (string.IsNullOrEmpty(Message.Text)) return;
+            const string msgType = "showSuccessToast";
+            var page = HttpContext.Current.CurrentHandler as Page;
+
+            if (page != null)
+                page.ClientScript.RegisterStartupScript(GetType(), "msgBox",
+                    "$(function() { $().toastmessage('" + msgType + "', " + "\"" + Message.Text + "\"); });", true);
+            HttpContext.Current.Session.Remove("Message");
         }
 
         protected void PopulateImagesDdl(DropDownList ddlImages)

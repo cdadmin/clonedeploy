@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Web.Security;
+using DAL;
 using Helpers;
 using Models;
 
@@ -9,64 +10,71 @@ namespace BLL
 {
     public class User
     {
-        private readonly DAL.User _da = new DAL.User();
+        private readonly DAL.UnitOfWork _unitOfWork;
+
+        public User()
+        {
+            _unitOfWork = new UnitOfWork();
+        }
 
         public bool AddUser(WdsUser user)
         {
-            if (_da.Exists(user.Name))
+            if (_unitOfWork.UserRepository.Exists(u => u.Name == user.Name))
             {
                 Message.Text = "A User With This Name Already Exists";
                 return false;
             }
             user.Password = CreatePasswordHash(user.Password, user.Salt);
-            if (_da.Create(user))
+            _unitOfWork.UserRepository.Insert(user);
+            if (_unitOfWork.Save())
             {
-                Message.Text = "Successfully Created Computer";
+                Message.Text = "Successfully Created User";
                 return true;
             }
             else
             {
-                Message.Text = "Could Not Create Computer";
+                Message.Text = "Could Not Create User";
                 return false;
             }
         }
 
         public string TotalCount()
         {
-            return _da.GetTotalCount();
+            return _unitOfWork.UserRepository.Count();
         }
 
         public int GetAdminCount()
         {
-            return _da.GetAdminCount();
+            return Convert.ToInt32(_unitOfWork.UserRepository.Count(u => u.Membership == "Administrator"));
         }
       
         public bool DeleteUser(int userId)
         {
-            return _da.Delete(userId);
+            _unitOfWork.UserRepository.Delete(userId);
+            return _unitOfWork.Save();
         }
 
         public WdsUser GetUser(int userId)
         {
-            return _da.Read(userId);
+            return _unitOfWork.UserRepository.GetById(userId);
         }
 
         public WdsUser GetUser(string userName)
         {
-            return _da.Read(userName);
+            return _unitOfWork.UserRepository.GetFirstOrDefault(u => u.Name == userName);
         }
 
         public List<WdsUser> SearchUsers(string searchString)
         {
-            return _da.Find(searchString);
+            return _unitOfWork.UserRepository.Get(u => u.Name.Contains(searchString));
         }
 
         public void UpdateUser(WdsUser user, bool updatePassword)
         {
-            if (updatePassword)
-                user.Password = CreatePasswordHash(user.Password, user.Salt);
+            user.Password = updatePassword ? CreatePasswordHash(user.Password, user.Salt) : _unitOfWork.UserRepository.GetById(user.Id).Password;
 
-            if (_da.Update(user,updatePassword))
+            _unitOfWork.UserRepository.Update(user,user.Id);
+            if (_unitOfWork.Save())
                 Message.Text = "Successfully Updated User";
         }
 
