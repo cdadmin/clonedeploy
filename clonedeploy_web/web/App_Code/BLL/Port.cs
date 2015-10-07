@@ -1,20 +1,28 @@
 ﻿using System;
+using System.Linq;
+using DAL;
 using Helpers;
 
 namespace BLL
 {
     public class Port
     {
-        private readonly DAL.Port _da = new DAL.Port();
+        private readonly DAL.UnitOfWork _unitOfWork;
+
+        public Port()
+        {
+            _unitOfWork = new UnitOfWork();
+        }
 
         public bool AddPort(Models.Port port)
         {
-            return _da.Create(port);
+            _unitOfWork.PortRepository.Insert(port);
+            return _unitOfWork.Save();
         }
 
         public int GetNextPort()
         {
-            var lastPort = _da.GetLastUsedPort();
+            var lastPort = _unitOfWork.PortRepository.GetFirstOrDefault(orderBy: (q => q.OrderByDescending(p => p.Id)));
             var nextPort = new Models.Port();
 
             if (lastPort == null)

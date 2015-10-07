@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using DAL;
 using Helpers;
 
@@ -37,6 +38,7 @@ namespace BLL
         public List<Models.ImageProfileScript> SearchImageProfileScripts(int profileId)
         {
             return _unitOfWork.ImageProfileScriptRepository.Find(profileId);
+            
         }
     }
 }

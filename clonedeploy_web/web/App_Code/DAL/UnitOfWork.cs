@@ -13,6 +13,9 @@ namespace DAL
         private IGenericRepository<Models.LinuxProfile> _linuxProfileRepository;
         private IGenericRepository<Models.Partition> _partitionRepository;
         private IGenericRepository<Models.PartitionLayout> _partitionLayoutRepository;
+        private IGenericRepository<Models.Port> _portRepository;
+        private IGenericRepository<Models.Room> _roomRepository;
+        private IGenericRepository<Models.Script> _scriptRepository;
         private ImageProfileScriptRepository _imageProfileScriptRepository;
         private ComputerRepository _computerRepository;
         private GroupRepository _groupRepository;
@@ -57,6 +60,21 @@ namespace DAL
         public IGenericRepository<Models.PartitionLayout> PartitionLayoutRepository
         {
             get { return _partitionLayoutRepository ?? (_partitionLayoutRepository = new GenericRepository<Models.PartitionLayout>(_context)); }
+        }
+
+        public IGenericRepository<Models.Port> PortRepository
+        {
+            get { return _portRepository ?? (_portRepository = new GenericRepository<Models.Port>(_context)); }
+        }
+
+        public IGenericRepository<Models.Room> RoomRepository
+        {
+            get { return _roomRepository ?? (_roomRepository = new GenericRepository<Models.Room>(_context)); }
+        }
+
+        public IGenericRepository<Models.Script> ScriptRepository
+        {
+            get { return _scriptRepository ?? (_scriptRepository = new GenericRepository<Models.Script>(_context)); }
         }
 
         public ImageProfileScriptRepository ImageProfileScriptRepository

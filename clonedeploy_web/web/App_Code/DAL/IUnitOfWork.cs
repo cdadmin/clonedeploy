@@ -6,6 +6,7 @@ namespace DAL
     {
 
         DAL.IGenericRepository<Models.Building> BuildingRepository { get; }
+        DAL.IGenericRepository<Models.Room> RoomRepository { get; }
         DAL.IGenericRepository<Models.DistributionPoint> DistributionPointRepository { get; }
         DAL.IGenericRepository<Models.GroupMembership> GroupMembershipRepository { get; }
         DAL.IGenericRepository<Models.Image> ImageRepository { get; }
@@ -13,6 +14,8 @@ namespace DAL
         DAL.IGenericRepository<Models.LinuxProfile> LinuxProfileRepository { get; }
         DAL.IGenericRepository<Models.Partition> PartitionRepository { get; }
         DAL.IGenericRepository<Models.PartitionLayout> PartitionLayoutRepository { get; }
+        DAL.IGenericRepository<Models.Port> PortRepository { get; }
+        DAL.IGenericRepository<Models.Script> ScriptRepository { get; }
         DAL.ImageProfileScriptRepository ImageProfileScriptRepository { get; }
         DAL.ComputerRepository ComputerRepository { get; }
         DAL.GroupRepository GroupRepository { get; }

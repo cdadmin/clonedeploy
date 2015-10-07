@@ -17,9 +17,8 @@ namespace DAL
         TEntity GetById(object id);
 
 
-        TEntity GetFirstOrDefault(
-            Expression<Func<TEntity, bool>> filter = null,
-            params Expression<Func<TEntity, object>>[] includes);
+        TEntity GetFirstOrDefault(Expression<Func<TEntity, bool>> filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null);
 
         string Count(Expression<Func<TEntity, bool>> filter = null);
 

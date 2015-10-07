@@ -1,20 +1,27 @@
 ﻿using System.Collections.Generic;
+using DAL;
 using Helpers;
 
 namespace BLL
 {
     public class Script
     {
-        private readonly DAL.Script _da = new DAL.Script();
+        private readonly DAL.UnitOfWork _unitOfWork;
+
+        public Script()
+        {
+            _unitOfWork = new UnitOfWork();
+        }
 
         public bool AddScript(Models.Script script)
         {
-            if (_da.Exists(script.Name))
+            if (_unitOfWork.ScriptRepository.Exists(s => s.Name == script.Name))
             {
                 Message.Text = "A Script With This Name Already Exists";
                 return false;
             }
-            if (_da.Create(script))
+            _unitOfWork.ScriptRepository.Insert(script);
+            if (_unitOfWork.Save())
             {
                 Message.Text = "Successfully Created Script";
                 return true;
@@ -28,27 +35,29 @@ namespace BLL
 
         public string TotalCount()
         {
-            return _da.GetTotalCount();
+            return _unitOfWork.ScriptRepository.Count();
         }
 
         public bool DeleteScript(int scriptId)
         {
-            return _da.Delete(scriptId);
+            _unitOfWork.ScriptRepository.Delete(scriptId);
+            return _unitOfWork.Save();
         }
 
         public Models.Script GetScript(int scriptId)
         {
-            return _da.Read(scriptId);
+            return _unitOfWork.ScriptRepository.GetById(scriptId);
         }
 
         public List<Models.Script> SearchScripts(string searchString)
         {
-            return _da.Find(searchString);
+            return _unitOfWork.ScriptRepository.Get(s => s.Name.Contains(searchString));
         }
 
         public void UpdateScript(Models.Script script)
         {
-            if (_da.Update(script))
+            _unitOfWork.ScriptRepository.Update(script, script.Id);
+            if (_unitOfWork.Save())
                 Message.Text = "Successfully Updated Script";
         }
 

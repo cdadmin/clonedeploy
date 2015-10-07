@@ -50,14 +50,17 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         return _dbSet.Find(id);
     }
 
-    public virtual TEntity GetFirstOrDefault(Expression<Func<TEntity, bool>> filter = null, params Expression<Func<TEntity, object>>[] includes)
+    public virtual TEntity GetFirstOrDefault(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null)
     {
         IQueryable<TEntity> query = _dbSet;
 
-        foreach (Expression<Func<TEntity, object>> include in includes)
-            query = query.Include(include);
+        if (filter != null)
+            query = query.Where(filter);
 
-        return query.FirstOrDefault(filter);
+        if (orderBy != null)
+            query = orderBy(query);
+
+        return query.FirstOrDefault();
     }
 
     public virtual bool Exists(Expression<Func<TEntity, bool>> filter = null)
