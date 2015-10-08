@@ -277,12 +277,12 @@ namespace Pxe
                 };
 
                 history.CreateEvent();
-                Message.Text = "Successfully Removed Custom Boot Menu For This Host";
+                //Message.Text = "Successfully Removed Custom Boot Menu For This Host";
             }
 
             catch (Exception ex)
             {
-                Message.Text = "Could Not Remove Custom Boot Menu.  Check The Exception Log For More Info.";
+                //Message.Text = "Could Not Remove Custom Boot Menu.  Check The Exception Log For More Info.";
                 Logger.Log(ex.Message);
             }
         }
@@ -410,12 +410,12 @@ namespace Pxe
                     TypeId = Host.Id.ToString()
                 };
                 history.CreateEvent();
-                Message.Text = "Successfully Set Custom Boot Menu For This Host";
+                //Message.Text = "Successfully Set Custom Boot Menu For This Host";
             }
 
             catch (Exception ex)
             {
-                Message.Text = "Could Not Set Custom Boot Menu.  Check The Exception Log For More Info.";
+                //Message.Text = "Could Not Set Custom Boot Menu.  Check The Exception Log For More Info.";
                 Logger.Log(ex.Message);
             }
         }

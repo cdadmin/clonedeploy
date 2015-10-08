@@ -4,6 +4,7 @@ using System.Linq;
 using BLL.Workflows;
 using DAL;
 using Helpers;
+using Models;
 
 namespace BLL
 {
@@ -12,26 +13,16 @@ namespace BLL
     {
         private readonly UnitOfWork _unitOfWork = new UnitOfWork();
 
-        public bool AddComputer(Models.Computer computer)
+        public Models.ValidationResult AddComputer(Models.Computer computer)
         {
-            if (_unitOfWork.ComputerRepository.Exists(h => h.Name == computer.Name || h.Mac == computer.Mac))
+            var validationResult = ValidateComputer(computer, true);
+            if (validationResult.IsValid)
             {
-                Message.Text = "A Computer With This Name Already Exists";
-                return false;
+                _unitOfWork.ComputerRepository.Insert(computer);
+                validationResult.IsValid = _unitOfWork.Save();
             }
 
-            _unitOfWork.ComputerRepository.Insert(computer);
-            if (_unitOfWork.Save())
-            {
-                Message.Text = "Successfully Created Computer";
-                return true;
-            }
-            else
-            {
-                Message.Text = "Could Not Create Computer";
-                return false;
-            }
-
+            return validationResult;
         }
 
         public string TotalCount()
@@ -39,15 +30,10 @@ namespace BLL
             return _unitOfWork.ComputerRepository.Count();
         }
 
-        public void DeleteComputer(int computerId)
+        public bool DeleteComputer(int computerId)
         {
-            using (var con = new UnitOfWork())
-            {
-                con.ComputerRepository.Delete(computerId);
-                if (con.Save())
-                    Message.Text = "Successfully Deleted Computer";
-            }
-
+            _unitOfWork.ComputerRepository.Delete(computerId);
+            return _unitOfWork.Save();
         }
 
         public Models.Computer GetComputer(int computerId)
@@ -58,54 +44,73 @@ namespace BLL
         public Models.Computer GetComputerFromMac(string mac)
         {
             return _unitOfWork.ComputerRepository.GetFirstOrDefault(p => p.Mac == mac);
-
         }
 
         public List<Models.Computer> SearchComputers(string searchString)
         {
             return _unitOfWork.ComputerRepository.Get(w => w.Name.Contains(searchString), includeProperties:"images");
-            //return _unitOfWork.Computer.Get(searchString);
         }
 
-        public void UpdateComputer(Models.Computer computer)
+        public Models.ValidationResult UpdateComputer(Models.Computer computer)
         {
-            var originalComputer = _unitOfWork.ComputerRepository.GetById(computer.Id);
-            if (originalComputer.Name != computer.Name || originalComputer.Mac != computer.Mac)
+            var validationResult = ValidateComputer(computer, false);
+            if (validationResult.IsValid)
             {
-                if (_unitOfWork.ComputerRepository.Exists(h => h.Name == computer.Name || h.Mac == computer.Mac))
-                {
-                    Message.Text = "A Computer With This Name Already Exists";
-                    return;
-                }
+                _unitOfWork.ComputerRepository.Update(computer, computer.Id);
+                validationResult.IsValid = _unitOfWork.Save();
             }
 
-            _unitOfWork.ComputerRepository.Update(computer, computer.Id);
-            if(_unitOfWork.Save())
-                Message.Text = "Successfully Update Computer";
+            return validationResult;
         }
 
     
-        public bool ValidateHostData(Models.Computer computer)
+        public Models.ValidationResult ValidateComputer(Models.Computer computer, bool isNewComputer)
         {
-            var validated = true;
-            if (string.IsNullOrEmpty(computer.Name) || computer.Name.Contains(" "))
+            var validationResult = new Models.ValidationResult();
+
+            if (string.IsNullOrEmpty(computer.Name) || !computer.Name.All(c => char.IsLetterOrDigit(c) || c=='_'))
             {
-                validated = false;
-                Message.Text = "Host Name Cannot Be Empty Or Contain Spaces";
+                validationResult.IsValid = false;
+                validationResult.Message = "Computer Name Is Not Valid";
+                return validationResult;
             }
+            
             if (string.IsNullOrEmpty(computer.Mac) || computer.Mac.Contains(" "))
             {
-                validated = false;
-                Message.Text = "Host Mac Cannot Be Empty Or Contain Spaces";
+                validationResult.IsValid = false;
+                validationResult.Message = "Computer Mac Is Not Valid";
+                return validationResult;
             }
 
+            if (isNewComputer)
+            {
+                if (_unitOfWork.ComputerRepository.Exists(h => h.Name == computer.Name || h.Mac == computer.Mac))
+                {
+                    validationResult.IsValid = false;
+                    validationResult.Message = "This Computer Already Exists";
+                    return validationResult;
+                }
+            }
+            else
+            {
+                var originalComputer = _unitOfWork.ComputerRepository.GetById(computer.Id);
+                if (originalComputer.Name != computer.Name || originalComputer.Mac != computer.Mac)
+                {
+                    if (_unitOfWork.ComputerRepository.Exists(h => h.Name == computer.Name || h.Mac == computer.Mac))
+                    {
+                        validationResult.IsValid = false;
+                        validationResult.Message = "This Computer Already Exists";
+                        return validationResult;
+                    }
+                }
+            }
 
-            return validated;
+            return validationResult;
         }
 
         public void ImportComputers()
         {
-            throw new Exception("Not Implemented");
+            throw new NotImplementedException();
         }
 
         public void StartUnicast(Models.Computer computer, string direction)
@@ -113,25 +118,25 @@ namespace BLL
             switch (new Unicast().Run(computer, direction))
             {
                 case "computer_error":
-                    Message.Text = "The Computer No Longer Exists";
+                    //Message.Text = "The Computer No Longer Exists";
                     break;
                 case "image_error":
-                    Message.Text = "The Image No Longer Exists";
+                    //Message.Text = "The Image No Longer Exists";
                     break;
                 case "profile_error":
-                    Message.Text = "The Image Profile No Longer Exists";
+                    //Message.Text = "The Image Profile No Longer Exists";
                     break;
                 case "database_error":
-                    Message.Text = "Could Not Create The Database Entry For This Task";
+                    //Message.Text = "Could Not Create The Database Entry For This Task";
                     break;
                 case "pxe_error":
-                    Message.Text = "Could Not Create PXE Boot File";
+                    //Message.Text = "Could Not Create PXE Boot File";
                     break;
                 case "arguments_error":
-                    Message.Text = "Could Not Create Task Arguments";
+                    //Message.Text = "Could Not Create Task Arguments";
                     break;
                 case "true" :
-                    Message.Text = "Successfully Started Task For " + computer.Name;
+                    //Message.Text = "Successfully Started Task For " + computer.Name;
                     break;
             }
         }

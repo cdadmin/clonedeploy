@@ -36,6 +36,7 @@ namespace BLL.Workflows
             };
 
             var bllActiveImagingTask = new ActiveImagingTask();
+            if (bllActiveImagingTask.IsComputerActive(Host.Id)) return "active";
             if (!bllActiveImagingTask.AddActiveImagingTask(ActiveTask)) return "database_error";
 
             if (!CreatePxeFile())

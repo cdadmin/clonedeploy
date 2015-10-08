@@ -24,8 +24,8 @@ namespace views.hosts
                 Description = txtHostDesc.Text,
             };
 
-
-            if (BllComputer.ValidateHostData(host)) BllComputer.UpdateComputer(host);
+            var result = BllComputer.UpdateComputer(host);
+            EndUserMessage = !result.IsValid ? result.Message : "Successfully Updated Computer";
         }
 
         protected void PopulateForm()

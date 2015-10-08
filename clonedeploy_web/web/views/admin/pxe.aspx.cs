@@ -65,7 +65,7 @@ public partial class views_admin_pxe : Admin
             if (newBootMenu)
             {
 
-                lblTitle.Text = Message.Text;
+                lblTitle.Text = EndUserMessage;
                 lblTitle.Text +=
                     "<br> Your Settings Changes Require A New PXE Boot File Be Created.  <br>Create It Now?";
 
@@ -118,7 +118,7 @@ public partial class views_admin_pxe : Admin
     {
         if (new ActiveImagingTask().ReadAll().Count > 0)
         {
-            Message.Text = "Settings Cannot Be Changed While Tasks Are Active";
+            EndUserMessage = "Settings Cannot Be Changed While Tasks Are Active";
             return false;
         }
 

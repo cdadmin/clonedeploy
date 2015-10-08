@@ -43,7 +43,7 @@ namespace views.users
 
             if (bllUser.GetAdminCount() == 1 && ddluserMembership.Text != "Administrator" &&
                 user.Membership == "Administrator")
-                Message.Text = "There Must Be At Least One Administrator";
+                EndUserMessage = "There Must Be At Least One Administrator";
             else
             {
                 var listGroupManagement = new List<string>();
@@ -81,7 +81,7 @@ namespace views.users
                     bllUser.UpdateUser(user, true);
                 }
                 else
-                    Message.Text = "Passwords Did Not Match";
+                    EndUserMessage = "Passwords Did Not Match";
             }
         }
 

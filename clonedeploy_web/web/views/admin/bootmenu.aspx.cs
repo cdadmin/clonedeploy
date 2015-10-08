@@ -6,6 +6,7 @@ using Helpers;
 using Models;
 using Pxe;
 using Security;
+using BootTemplate = BLL.BootTemplate;
 
 namespace views.admin
 {
@@ -13,10 +14,12 @@ namespace views.admin
     {
         protected void btnDeleteTemplate_Click(object sender, EventArgs e)
         {
-            var template = new BootTemplate {Name = txtModifyTemplate.Text};
+            //FIX ME
+            /*var template = new BootTemplate {Name = txtModifyTemplate.Text};
             template.Delete();
             modifyTemplate.Visible = false;
             showTemplates_Click(sender, e);
+             * */
         }
 
         protected void btnGrubGen_Click(object sender, EventArgs e)
@@ -38,17 +41,19 @@ namespace views.admin
         {
             if (txtNewTemplate.Text != "" && !txtNewTemplate.Text.Contains(" "))
             {
-                var template = new BootTemplate
+                //FIX ME
+               /* var template = new BootTemplate
                 {
                     Name = txtNewTemplate.Text,
                     Content = scriptEditorNewTemplate.Value
                 };
                 template.Create();
+                * */
                 showTemplates_Click(sender, e);
             }
 
-            else
-                Message.Text = "Template Name Cannot Be Empty Or Contain Spaces";
+            //else
+                //Message.Text = "Template Name Cannot Be Empty Or Contain Spaces";
         }
 
         public void btnProxSubmitDefault_Click(object sender, EventArgs e)
@@ -104,12 +109,15 @@ namespace views.admin
 
         protected void btnUpdateTemplate_Click(object sender, EventArgs e)
         {
+            //FIX ME
+            /*
             var template = new BootTemplate
             {
                 Name = txtModifyTemplate.Text,
                 Content = scriptEditorModify.Value
             };
             template.Update();
+             * */
         }
 
         protected void ddlTemplate_SelectedIndexChanged(object sender, EventArgs e)
@@ -258,10 +266,13 @@ namespace views.admin
                     createNewTemplate.Visible = false;
                     bootPasswords.Visible = false;
                     txtModifyTemplate.ReadOnly = true;
+                    //FIX ME
+                    /*
                     var template = new BootTemplate {Name = ddlTemplate.Text};
                     template.Read();
                     txtModifyTemplate.Text = template.Name;
                     scriptEditorModify.Value = template.Content;
+                     * */
                     break;
             }
         }
@@ -340,7 +351,7 @@ namespace views.admin
                 if (path != null)
                 {
                     path = path.Replace(@"\", @"\\");
-                    Message.Text = "Could Not Find " + path;
+                    //Message.Text = "Could Not Find " + path;
                 }
             }
         }
@@ -551,13 +562,13 @@ namespace views.admin
                     }
                     new FileOps().SetUnixPermissions(path);
                 }
-                Message.Text = "Successfully Updated Default Global Boot Menu";
+                //Message.Text = "Successfully Updated Default Global Boot Menu";
             }
 
             catch (Exception ex)
             {
                 
-                    Message.Text = "Could Not Update Default Global Boot Menu.  Check The Exception Log For More Info.";
+                    //Message.Text = "Could Not Update Default Global Boot Menu.  Check The Exception Log For More Info.";
                 Logger.Log(ex.Message);
             }
         }
@@ -650,7 +661,7 @@ namespace views.admin
                 if (path != null)
                 {
                     path = path.Replace(@"\", @"\\");
-                    Message.Text = "Could Not Find " + path;
+                    //Message.Text = "Could Not Find " + path;
                 }
             }
         }
@@ -660,7 +671,8 @@ namespace views.admin
             bootEditor.Visible = false;
             bootTemplates.Visible = true;
 
-            ddlTemplate.DataSource = new BootTemplate().ListAll();
+            //FIX ME
+            //ddlTemplate.DataSource = new BootTemplate().ListAll();
             ddlTemplate.DataBind();
             ddlTemplate.Items.Insert(0, "select template");
             ddlTemplate.Items.Insert(1, "default");

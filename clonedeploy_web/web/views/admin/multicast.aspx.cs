@@ -58,7 +58,7 @@ public partial class views_admin_multicast : Admin
     {
         if (new ActiveImagingTask().ReadAll().Count > 0)
         {
-            Message.Text = "Settings Cannot Be Changed While Tasks Are Active";
+            EndUserMessage = "Settings Cannot Be Changed While Tasks Are Active";
             return false;
         }
 
@@ -84,7 +84,7 @@ public partial class views_admin_multicast : Admin
             {
                 return true;
             }
-            Message.Text = "End Port Must Be At Least 2 More Than Starting Port";
+            EndUserMessage = "End Port Must Be At Least 2 More Than Starting Port";
             return false;
         }
         catch (Exception ex)

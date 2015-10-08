@@ -14,19 +14,16 @@ namespace BLL
             _unitOfWork = new UnitOfWork();
         }
 
-        public bool AddPartitionLayout(Models.PartitionLayout partitionLayout)
+        public Models.ValidationResult AddPartitionLayout(Models.PartitionLayout partitionLayout)
         {
-            _unitOfWork.PartitionLayoutRepository.Insert(partitionLayout);
-            if (_unitOfWork.Save())
+            var validationResult = ValidatePartitionLayout(partitionLayout, true);
+            if (validationResult.IsValid)
             {
-                Message.Text = "Successfully Created Partition Layout";
-                return true;
+                _unitOfWork.PartitionLayoutRepository.Insert(partitionLayout);
+                validationResult.IsValid = _unitOfWork.Save();
             }
-            else
-            {
-                Message.Text = "Could Not Create Partition Layout";
-                return false;
-            }
+
+            return validationResult;
         }
 
         public string TotalCount()
@@ -53,11 +50,59 @@ namespace BLL
                 orderBy: (q => q.OrderBy(p => p.Name)));
         }
 
-        public void UpdatePartitionLayout(Models.PartitionLayout partitionLayout)
+        public Models.ValidationResult UpdatePartitionLayout(Models.PartitionLayout partitionLayout)
         {
-            _unitOfWork.PartitionLayoutRepository.Update(partitionLayout,partitionLayout.Id);
-            if (_unitOfWork.Save())
-                Message.Text = "Successfully Updated Partition Layout";
+            var validationResult = ValidatePartitionLayout(partitionLayout, false);
+            if (validationResult.IsValid)
+            {
+                _unitOfWork.PartitionLayoutRepository.Update(partitionLayout, partitionLayout.Id);
+                validationResult.IsValid = _unitOfWork.Save();
+            }
+
+            return validationResult;         
+        }
+
+        public Models.ValidationResult ValidatePartitionLayout(Models.PartitionLayout partitionLayout, bool isNewPartitionLayout)
+        {
+            var validationResult = new Models.ValidationResult();
+
+            if (string.IsNullOrEmpty(partitionLayout.Name) || partitionLayout.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
+            {
+                validationResult.IsValid = false;
+                validationResult.Message = "Partition Layout Name Is Not Valid";
+                return validationResult;
+            }
+
+            if (isNewPartitionLayout)
+            {
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    if (uow.PartitionLayoutRepository.Exists(h => h.Name == partitionLayout.Name))
+                    {
+                        validationResult.IsValid = false;
+                        validationResult.Message = "This Partition Layout Already Exists";
+                        return validationResult;
+                    }
+                }
+            }
+            else
+            {
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    var originalPartitionLayout = uow.PartitionLayoutRepository.GetById(partitionLayout.Id);
+                    if (originalPartitionLayout.Name != partitionLayout.Name)
+                    {
+                        if (uow.PartitionLayoutRepository.Exists(h => h.Name == partitionLayout.Name))
+                        {
+                            validationResult.IsValid = false;
+                            validationResult.Message = "This Partition Layout Already Exists";
+                            return validationResult;
+                        }
+                    }
+                }
+            }
+
+            return validationResult;
         }
     }
 }

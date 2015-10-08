@@ -79,7 +79,7 @@ public partial class views_groups_removemembers : Groups
             }
         }
 
-        Message.Text = "Successfully Removed " + removedCount + " Members";
+        EndUserMessage = "Successfully Removed " + removedCount + " Members";
 
         PopulateGrid();
 

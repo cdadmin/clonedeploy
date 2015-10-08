@@ -14,21 +14,16 @@ namespace BLL
             _unitOfWork = new UnitOfWork();
         }
 
-        public bool AddProfile(Models.LinuxProfile profile)
+        public Models.ValidationResult AddProfile(Models.LinuxProfile profile)
         {
-            if (_unitOfWork.LinuxProfileRepository.Exists(p => p.Name == profile.Name))
+            var validationResult = ValidateLinuxProfile(profile, true);
+            if (validationResult.IsValid)
             {
-                Message.Text = "A Profile With This Name Already Exists";
-                return false;
+                _unitOfWork.LinuxProfileRepository.Insert(profile);
+                validationResult.IsValid = _unitOfWork.Save();
             }
-            _unitOfWork.LinuxProfileRepository.Insert(profile);
-            if (_unitOfWork.Save())
-            {
-                Message.Text = "Successfully Created Profile";
-                return true;
-            }
-            Message.Text = "Could Not Create Profile";
-            return false;
+
+            return validationResult;
         }
 
         public Models.LinuxProfile ReadProfile(int profileId)
@@ -42,9 +37,60 @@ namespace BLL
                 orderBy: (q => q.OrderBy(p => p.Name)));
         }
 
-        public void UpdateProfile(Models.LinuxProfile profile)
+        public Models.ValidationResult UpdateProfile(Models.LinuxProfile profile)
         {
-            _unitOfWork.LinuxProfileRepository.Update(profile, profile.Id);
+            var validationResult = ValidateLinuxProfile(profile, false);
+            if (validationResult.IsValid)
+            {
+                _unitOfWork.LinuxProfileRepository.Update(profile, profile.Id);
+                validationResult.IsValid = _unitOfWork.Save();
+            }
+
+            return validationResult;
+          
+        }
+
+        public Models.ValidationResult ValidateLinuxProfile(Models.LinuxProfile linuxProfile, bool isNewLinuxProfile)
+        {
+            var validationResult = new Models.ValidationResult();
+
+            if (string.IsNullOrEmpty(linuxProfile.Name) || linuxProfile.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
+            {
+                validationResult.IsValid = false;
+                validationResult.Message = "Linux Profile Name Is Not Valid";
+                return validationResult;
+            }
+
+            if (isNewLinuxProfile)
+            {
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    if (uow.LinuxProfileRepository.Exists(h => h.Name == linuxProfile.Name))
+                    {
+                        validationResult.IsValid = false;
+                        validationResult.Message = "This Linux Profile Already Exists";
+                        return validationResult;
+                    }
+                }
+            }
+            else
+            {
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    var originalLinuxProfile = uow.LinuxProfileRepository.GetById(linuxProfile.Id);
+                    if (originalLinuxProfile.Name != linuxProfile.Name)
+                    {
+                        if (uow.LinuxProfileRepository.Exists(h => h.Name == linuxProfile.Name))
+                        {
+                            validationResult.IsValid = false;
+                            validationResult.Message = "This Linux Profile Already Exists";
+                            return validationResult;
+                        }
+                    }
+                }
+            }
+
+            return validationResult;
         }
     }
 }

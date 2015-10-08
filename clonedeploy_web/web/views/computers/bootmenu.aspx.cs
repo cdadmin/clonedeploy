@@ -4,6 +4,7 @@ using BasePages;
 using Helpers;
 using Models;
 using Pxe;
+using BootTemplate = BLL.BootTemplate;
 using Computer = BLL.Computer;
 
 namespace views.hosts
@@ -14,9 +15,6 @@ namespace views.hosts
 
         protected void Page_Load(object sender, EventArgs e)
         {
-       
-
-
             if (!IsPostBack) DisplayActiveMenu();
         }
 
@@ -59,9 +57,12 @@ namespace views.hosts
                     txtBootMenu.Text = DefaultBootMenu.GetMenuText(ddlProxyMode.Text);
                     break;
                 default:
+                    //FIX ME
+                    /*
                     var template = new BootTemplate { Name = ddlTemplate.Text };
                     template.Read();
                     txtBootMenu.Text = template.Content;
+                     * */
                     break;
             }
         }
@@ -107,12 +108,14 @@ namespace views.hosts
             }
 
             lblFileName1.Text = path;
-            if (path != null) txtBootMenu.Text = File.ReadAllText(path);
+            txtBootMenu.Text = new FileOps().ReadAllText(path);
         }
 
         protected void DisplayCustomMenu()
         {
-            ddlTemplate.DataSource = new BootTemplate().ListAll();
+            //FIX ME
+
+            //ddlTemplate.DataSource = new BootTemplate().ListAll();
             ddlTemplate.DataBind();
             ddlTemplate.Items.Insert(0, "select template");
             ddlTemplate.Items.Insert(1, "default");

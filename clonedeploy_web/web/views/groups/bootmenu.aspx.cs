@@ -4,6 +4,7 @@ using BasePages;
 using Helpers;
 using Models;
 using Pxe;
+using BootTemplate = BLL.BootTemplate;
 using Group = BLL.Group;
 using GroupMembership = BLL.GroupMembership;
 
@@ -88,7 +89,7 @@ namespace views.groups
                     }
                     catch (Exception ex)
                     {
-                        Message.Text = "Could Not Read Default Boot Menu.  Check The Exception Log For More Info";
+                        EndUserMessage = "Could Not Read Default Boot Menu.  Check The Exception Log For More Info";
                         Logger.Log(ex.Message);
                     }
                     break;
@@ -96,16 +97,19 @@ namespace views.groups
                     txtCustomBootMenu.Text = "";
                     break;
                 default:
+                    //FIX ME
+                    /*
                     var template = new BootTemplate {Name = ddlTemplate.Text};
                     template.Read();
-                    txtCustomBootMenu.Text = template.Content;
+                    txtCustomBootMenu.Text = template.Content;*/
                     break;
             }
         }
 
         protected void DisplayCustomBootMenu()
         {
-            ddlTemplate.DataSource = new BootTemplate().ListAll();
+            //FIX ME
+            //ddlTemplate.DataSource = new BootTemplate().ListAll();
             ddlTemplate.DataBind();
             ddlTemplate.Items.Insert(0, "select template");
             ddlTemplate.Items.Insert(1, "default");

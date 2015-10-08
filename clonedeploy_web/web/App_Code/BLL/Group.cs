@@ -17,24 +17,16 @@ namespace BLL
             _unitOfWork = new UnitOfWork();
         }
 
-        public bool AddGroup(Models.Group group)
+        public Models.ValidationResult AddGroup(Models.Group group)
         {
-            if (_unitOfWork.GroupRepository.Exists(g => g.Name == group.Name))
+            var validationResult = ValidateGroup(group, true);
+            if (validationResult.IsValid)
             {
-                Message.Text = "A Group With This Name Already Exists";
-                return false;
+                _unitOfWork.GroupRepository.Insert(group);
+                validationResult.IsValid = _unitOfWork.Save();
             }
-            _unitOfWork.GroupRepository.Insert(group);
-            if (_unitOfWork.Save())
-            {
-                Message.Text = "Successfully Created Group";
-                return true;
-            }
-            else
-            {
-                Message.Text = "Could Not Create Group";
-                return false;
-            }
+
+            return validationResult;
         }
 
         public string TotalCount()
@@ -59,10 +51,16 @@ namespace BLL
             return _unitOfWork.GroupRepository.Get(g => g.Name.Contains(searchString));
         }
 
-        public void UpdateGroup(Models.Group group)
+        public Models.ValidationResult UpdateGroup(Models.Group group)
         {
-            _unitOfWork.GroupRepository.Update(group, group.Id);
-            _unitOfWork.Save();
+            var validationResult = ValidateGroup(group, false);
+            if (validationResult.IsValid)
+            {
+                _unitOfWork.GroupRepository.Update(group, group.Id);
+                validationResult.IsValid = _unitOfWork.Save();
+            }
+
+            return validationResult;
         }
 
         public void StartMulticast(Models.Group group)
@@ -86,7 +84,7 @@ namespace BLL
                
                     count++;
                 }
-                Message.Text = "Started " + count + " Tasks";
+                //Message.Text = "Started " + count + " Tasks";
                 var history = new History
                 {
                     Event = "Unicast",
@@ -102,24 +100,54 @@ namespace BLL
             throw new Exception("Not Implemented");
         }
 
-        public bool ValidateGroupData(Models.Group group)
-        {
-            var validated = true;
-            if (string.IsNullOrEmpty(group.Name) || group.Name.Contains(" "))
-            {
-                validated = false;
-                Message.Text = "Group Name Cannot Be Empty Or Contain Spaces";
-            }
-
-
-
-            return validated;
-        }
+       
 
         public List<Models.Computer> GetGroupMembers(int groupId, string searchString)
         {
             return _unitOfWork.GroupRepository.GetGroupMembers(groupId, searchString);
+        }
 
+        public Models.ValidationResult ValidateGroup(Models.Group group, bool isNewGroup)
+        {
+            var validationResult = new Models.ValidationResult();
+
+            if (string.IsNullOrEmpty(group.Name) || group.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
+            {
+                validationResult.IsValid = false;
+                validationResult.Message = "Group Name Is Not Valid";
+                return validationResult;
+            }
+
+            if (isNewGroup)
+            {
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    if (uow.GroupRepository.Exists(h => h.Name == group.Name))
+                    {
+                        validationResult.IsValid = false;
+                        validationResult.Message = "This Group Already Exists";
+                        return validationResult;
+                    }
+                }
+            }
+            else
+            {
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    var originalGroup = uow.GroupRepository.GetById(group.Id);
+                    if (originalGroup.Name != group.Name)
+                    {
+                        if (uow.GroupRepository.Exists(h => h.Name == group.Name))
+                        {
+                            validationResult.IsValid = false;
+                            validationResult.Message = "This Group Already Exists";
+                            return validationResult;
+                        }
+                    }
+                }
+            }
+
+            return validationResult;
         }
     }
 }

@@ -78,7 +78,7 @@ public partial class views_groups_addmembers : Groups
             }
         }
 
-        Message.Text = "Successfully Added " + addedCount + " New Members" ;
+        EndUserMessage = "Successfully Added " + addedCount + " New Members" ;
 
     }
 }

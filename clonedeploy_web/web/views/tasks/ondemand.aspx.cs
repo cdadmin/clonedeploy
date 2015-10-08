@@ -67,7 +67,7 @@ namespace views.tasks
 
             }
             else
-                Message.Text = "Select An Image";
+                EndUserMessage = "Select An Image";
         }
     }
 }

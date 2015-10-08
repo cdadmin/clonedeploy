@@ -17,7 +17,7 @@ public partial class views_images_profiles_create : Images
             Description = txtProfileDesc.Text,
             ImageId = Image.Id
         };
-        if (BllLinuxProfile.AddProfile(profile))
+        BllLinuxProfile.AddProfile(profile);
             Response.Redirect("~/views/images/profiles/chooser.aspx?imageid=" + profile.ImageId + "&profileid=" + profile.Id + "&cat=profiles");
 
     }

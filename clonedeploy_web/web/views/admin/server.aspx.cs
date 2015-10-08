@@ -68,8 +68,8 @@ public partial class views_admin_server : Admin
 
             if (newBootMenu)
             {
-               
-                lblTitle.Text = Message.Text;
+
+                lblTitle.Text = EndUserMessage;
                 lblTitle.Text +=
                     "<br> Your Settings Changes Require A New PXE Boot File Be Created.  <br>Create It Now?";
                 if (newClientIso)
@@ -97,7 +97,7 @@ public partial class views_admin_server : Admin
     {
         if (new ActiveImagingTask().ReadAll().Count > 0)
         {
-            Message.Text = "Settings Cannot Be Changed While Tasks Are Active";
+            EndUserMessage = "Settings Cannot Be Changed While Tasks Are Active";
             return false;
         }
         if (txtPort.Text != "80" && txtPort.Text != "443" && !string.IsNullOrEmpty(txtPort.Text))

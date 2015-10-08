@@ -148,13 +148,13 @@ namespace Pxe
                 using (var file = new StreamWriter(path))
                 {
                     file.WriteLine(lines);
-                    Message.Text = "Successfully Created Default Boot Menu";
+                    //Message.Text = "Successfully Created Default Boot Menu";
                 }
             }
             catch (Exception ex)
             {
                 Logger.Log(ex.Message);
-                Message.Text = "Could Not Create Boot Menu.  Check The Exception Log For More Info.";
+                //Message.Text = "Could Not Create Boot Menu.  Check The Exception Log For More Info.";
                 return;
             }
             new FileOps().SetUnixPermissions(path);
@@ -227,13 +227,13 @@ namespace Pxe
                 using (var file = new StreamWriter(path))
                 {
                     file.WriteLine(lines);
-                    Message.Text = "Successfully Created Default Boot Menu";
+                    //Message.Text = "Successfully Created Default Boot Menu";
                 }
             }
             catch (Exception ex)
             {
                 Logger.Log(ex.Message);
-                Message.Text = "Could Not Create Boot Menu.  Check The Exception Log For More Info.";
+                //Message.Text = "Could Not Create Boot Menu.  Check The Exception Log For More Info.";
                 return;
             }
             new FileOps().SetUnixPermissions(path);
@@ -336,13 +336,13 @@ namespace Pxe
                 using (var file = new StreamWriter(path))
                 {
                     file.WriteLine(lines);
-                    Message.Text = "Successfully Created Default Boot Menu";
+                    //Message.Text = "Successfully Created Default Boot Menu";
                 }
             }
             catch (Exception ex)
             {
                 Logger.Log(ex.Message);
-                Message.Text = "Could Not Create Boot Menu.  Check The Exception Log For More Info.";
+                //Message.Text = "Could Not Create Boot Menu.  Check The Exception Log For More Info.";
                 return;
             }
             new FileOps().SetUnixPermissions(path);
@@ -357,7 +357,7 @@ namespace Pxe
             }
             catch (Exception ex)
             {
-                Message.Text = "Could Not Read Default Boot Menu.  Check The Exception Log For More Info";
+                //Message.Text = "Could Not Read Default Boot Menu.  Check The Exception Log For More Info";
                 Logger.Log(ex.Message);
                 return "";
             }

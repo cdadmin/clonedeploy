@@ -6,6 +6,25 @@ namespace Helpers
 {
     public class FileOps
     {
+        public string ReadAllText(string path)
+        {
+            string fileText = null;
+
+                try
+                {
+                    fileText = File.ReadAllText(path);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(ex.Message);
+                    throw new Exception("Could Not Read " + Utility.EscapeFilePaths(path));
+                }
+
+
+            return fileText;
+            
+        }
+
         public void DeleteAllFiles(string directoryPath)
         {
             var directories = Directory.GetDirectories(directoryPath);
@@ -32,8 +51,9 @@ namespace Helpers
             }
             catch (Exception ex)
             {
-                Message.Text = "Could Not Remove Custom Boot Menu.  Check The Exception Log For More Info.";
                 Logger.Log(ex.Message);
+                throw new Exception("Could Not Remove Custom Boot Menu.  Check The Exception Log For More Info.");
+             
                 return false;
             }
         }
@@ -77,14 +97,11 @@ namespace Helpers
                 var imagePath = Settings.ImageStorePath;
                 if (Directory.Exists(imagePath + oldName))
                     Directory.Move(imagePath + oldName, imagePath + newName);
-                imagePath = Settings.ImageHoldPath;
-                if (Directory.Exists(imagePath + oldName))
-                    Directory.Move(imagePath + oldName, imagePath + newName);
-                Message.Text += "<br> Successfully Renamed Image Folder";
             }
             catch (Exception ex)
             {
-                Message.Text = "<br>" + ex.Message;
+               Logger.Log(ex.Message);
+               throw;
             }
         }
 
@@ -110,7 +127,8 @@ namespace Helpers
             }
             catch (Exception ex)
             {
-                Message.Text = "Could Not Set Custom Boot Menu.  Check The Exception Log For More Info.";
+                
+                //Message.Text = "Could Not Set Custom Boot Menu.  Check The Exception Log For More Info.";
                 Logger.Log(ex.Message);
                 return false;
             }

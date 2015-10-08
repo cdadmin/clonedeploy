@@ -51,14 +51,14 @@ namespace Tasks
         {
             if (Group.Image == null)
             {
-                Message.Text = "The Groups Current Image No Longer Exists";
+                //Message.Text = "The Groups Current Image No Longer Exists";
                 return;
             }
 
             Hosts = new BLL.Group().GetGroupMembers(Group.Id, "");
             if (Hosts.Count < 1)
             {
-                Message.Text = "The Group Does Not Have Any Hosts";
+                //Message.Text = "The Group Does Not Have Any Hosts";
                 return;
             }
 
@@ -67,40 +67,40 @@ namespace Tasks
             ActiveMcTask.Port = new BLL.Port().GetNextPort();
             if (ActiveMcTask.Port == 0)
             {
-                Message.Text = "Could Not Determine Current Port Base";
+                //Message.Text = "Could Not Determine Current Port Base";
                 return;
             }
            
             if (_bllActiveMulticastSession.AddActiveMulticastSession(ActiveMcTask))
             {
-                Message.Text = "Could Not Create Multicast Database Task";
+                //Message.Text = "Could Not Create Multicast Database Task";
                 return;
             }
 
             if (!CreateHostTask())
             {
-                Message.Text = "Could Not Create Host Database Tasks";
+                //Message.Text = "Could Not Create Host Database Tasks";
                 _bllActiveMulticastSession.Delete(ActiveMcTask.Id);
                 return;
             }
 
             if (!CreatePxeFiles())
             {
-                Message.Text = "Could Not Create Host PXE Files";
+                //Message.Text = "Could Not Create Host PXE Files";
                 _bllActiveMulticastSession.Delete(ActiveMcTask.Id);
                 return;
             }
 
             if (!CreateTaskArguments())
             {
-                Message.Text = "Could Not Create Host Task Arguments";
+                //Message.Text = "Could Not Create Host Task Arguments";
                 _bllActiveMulticastSession.Delete(ActiveMcTask.Id);
                 return;
             }
 
             if (!StartMulticastSender())
             {
-                Message.Text = "Could Not Start The Multicast Sender";
+                //Message.Text = "Could Not Start The Multicast Sender";
                 _bllActiveMulticastSession.Delete(ActiveMcTask.Id);
                 return;
             }
@@ -108,7 +108,7 @@ namespace Tasks
             foreach (var host in Hosts)
                 Utility.WakeUp(host.Mac);
 
-            Message.Text = "Successfully Started Multicast " + Group.Name;
+            //Message.Text = "Successfully Started Multicast " + Group.Name;
             CreateHistoryEvents();
         }
 
@@ -149,6 +149,7 @@ namespace Tasks
                     Type = "multicast",
                   
                 };
+                if (!new BLL.ActiveImagingTask().IsComputerActive(host.Id)) return false;
                 if (!new BLL.ActiveImagingTask().AddActiveImagingTask(activeTask))
                     return false;
                 host.TaskId = activeTask.Id.ToString();
@@ -303,7 +304,7 @@ namespace Tasks
                     partFiles = Directory.GetFiles(imagePath + Path.DirectorySeparatorChar, "*.lz4*");
                     if (partFiles.Length == 0)
                     {
-                        Message.Text = "Image Files Could Not Be Located";
+                        //Message.Text = "Image Files Could Not Be Located";
                         return false;
                     }
                     compAlg = Environment.OSVersion.ToString().Contains("Unix") ? "lz4 -d " : "lz4.exe -d ";
@@ -320,7 +321,7 @@ namespace Tasks
             }
             catch
             {
-                Message.Text = "Image Files Could Not Be Located";
+                //Message.Text = "Image Files Could Not Be Located";
                 return false;
             }
 
@@ -477,7 +478,7 @@ namespace Tasks
             catch (Exception ex)
             {
                 Logger.Log(ex.ToString());
-                Message.Text = "Could Not Start Multicast Sender.  Check The Exception Log For More Info";
+                //Message.Text = "Could Not Start Multicast Sender.  Check The Exception Log For More Info";
                 File.AppendAllText(logPath + "multicast.log",
                     "Could Not Start Session " + Group.Name + " Try Pasting The Command Into A Command Prompt");
                 return false;
@@ -487,7 +488,7 @@ namespace Tasks
 
             if (sender != null && sender.HasExited)
             {
-                Message.Text = "Could Not Start Multicast Sender";
+                //Message.Text = "Could Not Start Multicast Sender";
                 File.AppendAllText(logPath + "multicast.log",
                     "Session " + Group.Name +
                     @" Started And Was Forced To Quit, Try Pasting The Command Into A Command Prompt");
@@ -499,7 +500,7 @@ namespace Tasks
                 if (sender != null) ActiveMcTask.Pid = sender.Id;
                 ActiveMcTask.Name = Group.Name;
                 _bllActiveMulticastSession.AddActiveMulticastSession(ActiveMcTask);
-                Message.Text = "Successfully Started Multicast " + Group.Name;
+                //Message.Text = "Successfully Started Multicast " + Group.Name;
                 return true;
             }
 

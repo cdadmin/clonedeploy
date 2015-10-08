@@ -49,7 +49,7 @@ namespace views.users
             var bllUser = new User();
             if (txtUserPwd.Text != txtUserPwdConfirm.Text)
             {
-                Message.Text  = "Passwords Did Not Match";
+                EndUserMessage = "Passwords Did Not Match";
                 return;
             }
 
@@ -83,7 +83,7 @@ namespace views.users
                 user.DiagAccess = "1";
                 user.DebugAccess = "1";
             }
-            if (bllUser.ValidateUserData(user)) bllUser.AddUser(user);
+            bllUser.AddUser(user);
 
         }
 

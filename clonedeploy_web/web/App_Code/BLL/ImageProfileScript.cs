@@ -17,16 +17,7 @@ namespace BLL
         public bool AddImageProfileScript(Models.ImageProfileScript imageProfileScript)
         {
             _unitOfWork.ImageProfileScriptRepository.Insert(imageProfileScript);
-            if (_unitOfWork.Save())
-            {
-                Message.Text = "Successfully Added Script";
-                return true;
-            }
-            else
-            {
-                Message.Text = "Could Not Add Script";
-                return false;
-            }
+            return _unitOfWork.Save();          
         }
 
         public bool DeleteImageProfileScripts(int profileId)

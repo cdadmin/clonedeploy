@@ -19,18 +19,18 @@ namespace BLL
         {
             if (_unitOfWork.ActiveMulticastSessionRepository.Exists(h => h.Name == activeMulticastSession.Name))
             {
-                Message.Text = "A Multicast Is Already Running For This Group";
+                //Message.Text = "A Multicast Is Already Running For This Group";
                 return false;
             }
             _unitOfWork.ActiveMulticastSessionRepository.Insert(activeMulticastSession);
             if (_unitOfWork.Save())
             {
-                Message.Text = "Successfully Created Multicast";
+                //Message.Text = "Successfully Created Multicast";
                 return true;
             }
             else
             {
-                Message.Text = "Could Not Create Multicast";
+                //Message.Text = "Could Not Create Multicast";
                 return false;
             }
         }
@@ -65,18 +65,18 @@ namespace BLL
                         if (processName == "cmd")
                             KillProcess(Convert.ToInt32(multicast.Pid));
                     }
-                    Message.Text = "Successfully Deleted Task";
+                    //Message.Text = "Successfully Deleted Task";
                 }
                 catch (Exception ex)
                 {
                     Logger.Log(ex.ToString());
-                    Message.Text = "Could Not Kill Process.  Check The Exception Log For More Info";
+                    //Message.Text = "Could Not Kill Process.  Check The Exception Log For More Info";
                 }
                 return true;
             }
             else
             {
-                Message.Text = "Could Not Delete Task";
+                //Message.Text = "Could Not Delete Task";
                 return false;
             }
         }
@@ -110,7 +110,7 @@ namespace BLL
             catch (Exception ex)
             {
                 Logger.Log(ex.ToString());
-                Message.Text = "Could Not Kill Process.  Check The Exception Log For More Info";
+                //Message.Text = "Could Not Kill Process.  Check The Exception Log For More Info";
             }
         }
 
@@ -144,7 +144,7 @@ namespace BLL
             catch (Exception ex)
             {
                 Logger.Log(ex.ToString());
-                Message.Text = "Could Not Kill Process.  Check The Exception Log For More Info";
+                //Message.Text = "Could Not Kill Process.  Check The Exception Log For More Info";
             }
         }
     }

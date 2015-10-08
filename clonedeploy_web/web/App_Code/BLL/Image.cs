@@ -19,42 +19,36 @@ namespace BLL
             _unitOfWork = new UnitOfWork();
         }
 
-        public bool AddImage(Models.Image image)
+        public Models.ValidationResult AddImage(Models.Image image)
         {
-            if (_unitOfWork.ImageRepository.Exists(i => i.Name == image.Name))
+            var validationResult = ValidateImage(image, true);
+            if (validationResult.IsValid)
             {
-                Message.Text = "An Image With This Name Already Exists";
-                return false;
-            }
-            _unitOfWork.ImageRepository.Insert(image);
-            if (_unitOfWork.Save())
-            {
-                try
+                validationResult.IsValid = false;
+                _unitOfWork.ImageRepository.Insert(image);
+                if (_unitOfWork.Save())
                 {
-                    Directory.CreateDirectory(Settings.ImageStorePath + image.Name);
-                    Directory.CreateDirectory(Settings.ImageHoldPath + image.Name);
-                    Message.Text = "Successfully Created Image";
-                    return true;
+                    try
+                    {
+                        Directory.CreateDirectory(Settings.ImageStorePath + image.Name);
+                        validationResult.IsValid = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(ex.Message);
+                        throw;
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Logger.Log(ex.Message);
-                    Message.Text = "Could Not Create Image Directories";
-                    return false;
-                }                    
+
             }
-            else
-            {
-                Message.Text = "Could Not Create Image";
-                return false;
-            }
+            return validationResult;
         }
 
         public bool DeleteImage(Models.Image image)
         {
             if (Convert.ToBoolean(image.Protected))
             {
-                Message.Text = "This Image Is Protected And Cannot Be Deleted";
+                //Message.Text = "This Image Is Protected And Cannot Be Deleted";
                 return false;
             }
 
@@ -74,14 +68,14 @@ namespace BLL
                 catch (Exception ex)
                 {
                     Logger.Log(ex.Message);
-                    Message.Text = "Could Not Delete Image Folder";
+                    //Message.Text = "Could Not Delete Image Folder";
                     return false;
                 }
 
             }
             else
             {
-                Message.Text = "Could Not Delete Image";
+                //Message.Text = "Could Not Delete Image";
                 return false;
             }
 
@@ -97,13 +91,36 @@ namespace BLL
             return _unitOfWork.ImageRepository.Get(i => i.Name.Contains(searchString));
         }
 
-        public bool UpdateImage(Models.Image image, string originalName)
+        public Models.ValidationResult UpdateImage(Models.Image image, string originalName)
         {
-            _unitOfWork.ImageRepository.Update(image,image.Id);
-            if (!_unitOfWork.Save()) return false;
-            if (image.Name.ToLower() == originalName.ToLower()) return true;
-            new FileOps().RenameFolder(originalName, image.Name);
-            return true;
+            var validationResult = ValidateImage(image, false);
+            if (validationResult.IsValid)
+            {
+                validationResult.IsValid = false;
+                _unitOfWork.ImageRepository.Update(image, image.Id);
+                if (_unitOfWork.Save())
+                {
+                    if (image.Name != originalName)
+                    {
+                        try
+                        {
+                            new FileOps().RenameFolder(originalName, image.Name);
+                            validationResult.IsValid = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Log(ex.Message);
+                            throw;
+                        }
+                    }
+                    else
+                    {
+                        validationResult.IsValid = true;
+                    }
+                }
+
+            }
+            return validationResult; 
         }
 
         public string Calculate_Hash(string fileName)
@@ -193,16 +210,47 @@ namespace BLL
             
         }
 
-        public bool ValidateImageData(Models.Image image)
+        public Models.ValidationResult ValidateImage(Models.Image image, bool isNewImage)
         {
-            var validated = true;
-            if (string.IsNullOrEmpty(image.Name) || image.Name.Contains(" "))
+            var validationResult = new Models.ValidationResult();
+
+            if (string.IsNullOrEmpty(image.Name) || image.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {
-                validated = false;
-                Message.Text = "Image Name Cannot Be Empty Or Contain Spaces";
+                validationResult.IsValid = false;
+                validationResult.Message = "Image Name Is Not Valid";
+                return validationResult;
             }
 
-            return validated;
+            if (isNewImage)
+            {
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    if (uow.ImageRepository.Exists(h => h.Name == image.Name))
+                    {
+                        validationResult.IsValid = false;
+                        validationResult.Message = "This Image Already Exists";
+                        return validationResult;
+                    }
+                }
+            }
+            else
+            {
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    var originalImage = uow.ImageRepository.GetById(image.Id);
+                    if (originalImage.Name != image.Name)
+                    {
+                        if (uow.ImageRepository.Exists(h => h.Name == image.Name))
+                        {
+                            validationResult.IsValid = false;
+                            validationResult.Message = "This Image Already Exists";
+                            return validationResult;
+                        }
+                    }
+                }
+            }
+
+            return validationResult;
         }
     }
 }

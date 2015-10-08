@@ -37,6 +37,24 @@
                 </a>
             </li>
             
+            <li id="filesandfolders">
+                <a href="<%= ResolveUrl("~/views/global/filesandfolders/search.aspx") %>" class="icon-host">
+                    <span class="sub-nav-text">Files / Folders</span>
+                </a>
+            </li>
+            
+             <li id="Drivers">
+                <a href="<%= ResolveUrl("~/views/global/drivers/search.aspx") %>" class="icon-host">
+                    <span class="sub-nav-text">Drivers</span>
+                </a>
+            </li>
+            
+            <li id="boottemplates">
+                 <a href="<%= ResolveUrl("~/views/global/boottemplates/search.aspx?cat=sub1") %>">
+                    <span class="sub-nav-text">Boot Menu Templates</span>
+                </a>
+            </li>
+
             <li id="sites">
                 <a href="<%= ResolveUrl("~/views/global/sites/search.aspx") %>" class="icon-host">
                     <span class="sub-nav-text">Sites</span>
@@ -55,17 +73,7 @@
                 </a>
             </li>
             
-             <li id="filesandfolders">
-                <a href="<%= ResolveUrl("~/views/global/filesandfolders/search.aspx") %>" class="icon-host">
-                    <span class="sub-nav-text">Files / Folders</span>
-                </a>
-            </li>
-            
-             <li id="Drivers">
-                <a href="<%= ResolveUrl("~/views/global/drivers/search.aspx") %>" class="icon-host">
-                    <span class="sub-nav-text">Drivers</span>
-                </a>
-            </li>
+             
             
 
         </ul>

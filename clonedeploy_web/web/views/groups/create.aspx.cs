@@ -35,9 +35,9 @@ namespace views.groups
             group.ImageProfile = group.Image == 0 ? 0 : Convert.ToInt32(ddlImageProfile.SelectedValue);
           
             var bllGroup = new BLL.Group();
-            if (bllGroup.ValidateGroupData(group)) bllGroup.AddGroup(group);
+            bllGroup.AddGroup(group);
 
-            if (Message.Text.Contains("Successfully"))
+
                 Response.Redirect("~/views/groups/edit.aspx?groupid=" + group.Id);
 
         }

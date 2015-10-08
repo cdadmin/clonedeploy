@@ -18,8 +18,8 @@ public partial class views_global_sysprep_create : BasePages.Global
             Description = txtSysprepDesc.Text,
             Contents = txtContent.Text
         };
-     
-        if (new BLL.SysprepTag().AddSysprepTag(sysPrepTag))
+
+        new BLL.SysprepTag().AddSysprepTag(sysPrepTag);
             Response.Redirect("~/views/global/sysprep/edit.aspx?cat=sub1&syspreptagid=" + sysPrepTag.Id);
     }
 }

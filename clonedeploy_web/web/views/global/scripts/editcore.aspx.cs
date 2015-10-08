@@ -32,6 +32,6 @@ public partial class views_admin_scripts_editcore : BasePages.Global
 
         var fixedLineEnding = scriptEditor.Value.Replace("\r\n", "\n");
         File.WriteAllText(path, fixedLineEnding);
-        Message.Text = "Successfully Updated " + ddlCoreScripts.Text;
+        EndUserMessage = "Successfully Updated " + ddlCoreScripts.Text;
     }
 }

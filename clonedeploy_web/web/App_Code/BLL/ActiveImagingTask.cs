@@ -26,42 +26,18 @@ namespace BLL
             _unitOfWork.ActiveImagingTaskRepository.Delete(activeImagingTask.Id);
             if (_unitOfWork.Save())
             {
-                if (new PxeFileOps().CleanPxeBoot(Utility.MacToPxeMac(computer.Mac)))
-                {
-                    Message.Text = "Successfully Deleted Task";
-                    return true;
-                }
-                else
-                {
-                    Message.Text = "Could Not Delete Task";
-                    return false;
-                }
+                return new PxeFileOps().CleanPxeBoot(Utility.MacToPxeMac(computer.Mac));
             }
             else
             {
-                Message.Text = "Could Not Delete Task";
                 return false;
             }
         }
 
         public bool AddActiveImagingTask(Models.ActiveImagingTask activeImagingTask)
         {
-            if (_unitOfWork.ActiveImagingTaskRepository.Exists(h => h.ComputerId == activeImagingTask.ComputerId))
-            {
-                Message.Text = "A Task Is Already Running For This Computer";
-                return false;
-            }
             _unitOfWork.ActiveImagingTaskRepository.Insert(activeImagingTask);
-            if (_unitOfWork.Save())
-            {
-                Message.Text = "Successfully Created Task";
-                return true;
-            }
-            else
-            {
-                Message.Text = "Could Not Create Task";
-                return false;
-            }
+            return _unitOfWork.Save();
         }
 
         public void DeleteForMulticast(int multicastId)

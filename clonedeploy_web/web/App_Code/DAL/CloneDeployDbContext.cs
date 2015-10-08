@@ -1,5 +1,6 @@
 ﻿using System.Data.Entity;
 using Models;
+using BootTemplate = BLL.BootTemplate;
 
 namespace DAL
 {
@@ -10,7 +11,7 @@ namespace DAL
         public DbSet<Models.LinuxProfile> LinuxProfiles { get; set; }
         public DbSet<Models.ActiveImagingTask> ActiveImagingTasks { get; set; }
         public DbSet<Models.ActiveMulticastSession> ActiveMulticastSessions { get; set; }
-        public DbSet<BootTemplate> BootTemplates { get; set; }
+        public DbSet<Models.BootTemplate> BootTemplates { get; set; }
         public DbSet<Models.Group> Groups { get; set; }
         public DbSet<History> History { get; set; }
         public DbSet<Models.Image> Images { get; set; }

@@ -11,24 +11,16 @@ namespace BLL
         {
             _unitOfWork = new DAL.UnitOfWork();
         }
-        public bool AddSysprepTag(Models.SysprepTag sysprepTag)
+        public Models.ValidationResult AddSysprepTag(Models.SysprepTag sysprepTag)
         {
-            if (_unitOfWork.SysprepTagRepository.Exists(s => s.Name == sysprepTag.Name))
+            var validationResult = ValidateSysprepTag(sysprepTag, true);
+            if (validationResult.IsValid)
             {
-                Message.Text = "A Sysprep Tag With This Name Already Exists";
-                return false;
+                _unitOfWork.SysprepTagRepository.Insert(sysprepTag);
+                validationResult.IsValid = _unitOfWork.Save();
             }
-            _unitOfWork.SysprepTagRepository.Insert(sysprepTag);
-            if (_unitOfWork.Save())
-            {
-                Message.Text = "Successfully Created Sysprep Tag";
-                return true;
-            }
-            else
-            {
-                Message.Text = "Could Not Create Sysprep Tag";
-                return false;
-            }
+
+            return validationResult;
         }
 
         public string TotalCount()
@@ -55,11 +47,62 @@ namespace BLL
                     orderBy: (q => q.OrderBy(s => s.OpeningTag)));
         }
 
-        public void UpdateSysprepTag(Models.SysprepTag sysprepTag)
+        public Models.ValidationResult UpdateSysprepTag(Models.SysprepTag sysprepTag)
         {
-            _unitOfWork.SysprepTagRepository.Update(sysprepTag,sysprepTag.Id);
-            if (_unitOfWork.Save())
-                Message.Text = "Successfully Updated Sysprep Tag";
+            var validationResult = ValidateSysprepTag(sysprepTag, false);
+            if (validationResult.IsValid)
+            {
+                _unitOfWork.SysprepTagRepository.Update(sysprepTag, sysprepTag.Id);
+                validationResult.IsValid = _unitOfWork.Save();
+            }
+
+            return validationResult;
+
+           
+            
+        }
+
+        public Models.ValidationResult ValidateSysprepTag(Models.SysprepTag sysprepTag, bool isNewSysprepTag)
+        {
+            var validationResult = new Models.ValidationResult();
+
+            if (string.IsNullOrEmpty(sysprepTag.Name) || sysprepTag.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
+            {
+                validationResult.IsValid = false;
+                validationResult.Message = "Sysprep Tag Name Is Not Valid";
+                return validationResult;
+            }
+
+            if (isNewSysprepTag)
+            {
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    if (uow.SysprepTagRepository.Exists(h => h.Name == sysprepTag.Name))
+                    {
+                        validationResult.IsValid = false;
+                        validationResult.Message = "This Sysprep Tag Already Exists";
+                        return validationResult;
+                    }
+                }
+            }
+            else
+            {
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    var originalSysprepTag = uow.SysprepTagRepository.GetById(sysprepTag.Id);
+                    if (originalSysprepTag.Name != sysprepTag.Name)
+                    {
+                        if (uow.SysprepTagRepository.Exists(h => h.Name == sysprepTag.Name))
+                        {
+                            validationResult.IsValid = false;
+                            validationResult.Message = "This Sysprep Tag Already Exists";
+                            return validationResult;
+                        }
+                    }
+                }
+            }
+
+            return validationResult;
         }
 
       

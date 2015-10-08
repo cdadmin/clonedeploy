@@ -1,20 +1,4 @@
-﻿/*  
-    CrucibleWDS A Windows Deployment Solution
-    Copyright (C) 2011  Jon Dolny
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/.
- */
+﻿
 
 using System;
 using System.IO;
@@ -41,12 +25,12 @@ namespace views.images
                 try
                 {
                     Directory.CreateDirectory(Settings.ImageStorePath + currentName);
-                    Message.Text = "Successfully Created Directory In Image Store Path. ";
+                   EndUserMessage = "Successfully Created Directory In Image Store Path. ";
                 }
                 catch (Exception ex)
                 {
                     Logger.Log("Could Not Create Directory In Image Store Path. " + ex.Message);
-                    Message.Text =
+                    EndUserMessage =
                         "Could Not Create Directory In Image Store Path.  Check The Exception Log For More Info. ";
                 }
             }
@@ -56,12 +40,12 @@ namespace views.images
                 try
                 {
                     Directory.CreateDirectory(Settings.ImageHoldPath + currentName);
-                    Message.Text += "Successfully Created Directory In Image Hold Path. ";
+                    EndUserMessage += "Successfully Created Directory In Image Hold Path. ";
                 }
                 catch (Exception ex)
                 {
                     Logger.Log("Could Not Create Directory In Image Hold Path. " + ex.Message);
-                    Message.Text +=
+                    EndUserMessage +=
                         "Could Not Create Directory In Image Hold Path.  Check The Exception Log For More Info. ";
                 }
             }
@@ -80,26 +64,26 @@ namespace views.images
                         {
                             Directory.CreateDirectory(Settings.ImageHoldPath + currentName);
                             // for next upload
-                            Message.Text = "Successfully Moved Image From Hold To Store";
+                            EndUserMessage = "Successfully Moved Image From Hold To Store";
                         }
                         catch (Exception ex)
                         {
                             Logger.Log("Could Not Recreate Directory " + ex.Message);
-                            Message.Text =
+                            EndUserMessage =
                                 "Could Not Recreate Directory,  You Must Create It Before You Can Upload Again";
                         }
                     }
                     catch (Exception ex)
                     {
                         Logger.Log("Could Not Move Image From Hold Path To Store Path " + ex.Message);
-                        Message.Text =
+                        EndUserMessage =
                             "Could Not Move Image From Hold Path To Store Path.  Check The Exception Log For More Info.";
                     }
                 }
             }
 
             if (!needsFixed)
-                Message.Text = "No Fixes Are Needed For This Image";
+                EndUserMessage = "No Fixes Are Needed For This Image";
     }
 
         protected void btnUpdateImage_Click(object sender, EventArgs e)
@@ -113,8 +97,8 @@ namespace views.images
             image.Protected = chkProtected.Checked ? 1 : 0;
             image.IsVisible = chkVisible.Checked ? 1 : 0;
 
-          if (BllImage.ValidateImageData(image))
-                BllImage.UpdateImage(image, currentName);
+
+            BllImage.UpdateImage(image, currentName);
         }
 
         protected void PopulateForm()

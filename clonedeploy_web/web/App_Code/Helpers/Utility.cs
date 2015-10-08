@@ -30,7 +30,12 @@ namespace Helpers
 {
     public class Utility
     {
-      
+
+        public static string EscapeFilePaths(string path)
+        {
+            return path != null ? path.Replace(@"\", @"\\") : string.Empty;
+        }
+
         public static string Decode(string encoded)
         {
             string decoded = null;

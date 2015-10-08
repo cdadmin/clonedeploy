@@ -119,7 +119,7 @@ namespace views.images
                 {
                     var lbl = hdrow.FindControl("lblHDSize") as Label;
                     if (lbl != null) lbl.Text = "N/A";
-                    Message.Text = "";
+                    EndUserMessage = "";
                 }
 
                 try
@@ -148,7 +148,7 @@ namespace views.images
                 {
                     var lblClient = hdrow.FindControl("lblHDSizeClient") as Label;
                     if (lblClient != null) lblClient.Text = "N/A";
-                    Message.Text = "";
+                    EndUserMessage = "";
                 }
             }
         }
@@ -234,7 +234,7 @@ namespace views.images
                 {
                     var lbl = row.FindControl("lblSize") as Label;
                     if (lbl != null) lbl.Text = "N/A";
-                    Message.Text = "";
+                    EndUserMessage = "";
                 }
 
                 try
@@ -255,7 +255,7 @@ namespace views.images
                 {
                     var lblClient = row.FindControl("lblSizeClient") as Label;
                     if (lblClient != null) lblClient.Text = "N/A";
-                    Message.Text = "";
+                    EndUserMessage = "";
                 }
             }
         }

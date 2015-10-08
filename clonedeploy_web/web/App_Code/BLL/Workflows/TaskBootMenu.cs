@@ -16,6 +16,7 @@ namespace Pxe
 
         public bool CreatePxeBoot()
         {
+
             var proxyDhcp = Settings.ProxyDhcp;
             var tftpPath = Settings.TftpPath;
             var webPath = Settings.WebPath;
@@ -157,7 +158,7 @@ namespace Pxe
                     }
                     else
                     {
-                        Message.Text = "The PXE File Already Exists";
+                        //Message.Text = "The PXE File Already Exists";
                         return false;
                     }
                 }
@@ -176,7 +177,7 @@ namespace Pxe
                     }
                     else
                     {
-                        Message.Text = "The PXE File Already Exists";
+                        //Message.Text = "The PXE File Already Exists";
                         return false;
                     }
                 }
@@ -189,7 +190,7 @@ namespace Pxe
                     }
                     else
                     {
-                        Message.Text = "The PXE File Already Exists";
+                        //Message.Text = "The PXE File Already Exists";
                         return false;
                     }
                 }
@@ -208,7 +209,7 @@ namespace Pxe
                     }
                     else
                     {
-                        Message.Text = "The PXE File Already Exists";
+                        //Message.Text = "The PXE File Already Exists";
                         return false;
                     }
                 }
@@ -221,7 +222,7 @@ namespace Pxe
                     }
                     else
                     {
-                        Message.Text = "The PXE File Already Exists";
+                        //Message.Text = "The PXE File Already Exists";
                         return false;
                     }
                 }
@@ -240,7 +241,7 @@ namespace Pxe
                     }
                     else
                     {
-                        Message.Text = "The PXE File Already Exists";
+                        //Message.Text = "The PXE File Already Exists";
                         return false;
                     }
                 }
@@ -259,7 +260,7 @@ namespace Pxe
                     }
                     else
                     {
-                        Message.Text = "The PXE File Already Exists";
+                        //Message.Text = "The PXE File Already Exists";
                         return false;
                     }
                 }
@@ -291,7 +292,7 @@ namespace Pxe
                 catch (Exception ex)
                 {
                     Logger.Log(ex.ToString());
-                    Message.Text = "Could Not Create PXE File";
+                    //Message.Text = "Could Not Create PXE File";
                     return false;
                 }
             }
@@ -382,7 +383,7 @@ namespace Pxe
                     }
                     else
                     {
-                        Message.Text = "The PXE File Already Exists";
+                        //Message.Text = "The PXE File Already Exists";
                         return false;
                     }
                 }
@@ -398,7 +399,7 @@ namespace Pxe
                 catch (Exception ex)
                 {
                     Logger.Log(ex.ToString());
-                    Message.Text = "Could Not Create PXE File";
+                    //Message.Text = "Could Not Create PXE File";
                     return false;
                 }
             }

@@ -6,6 +6,7 @@ using System.Web.Script.Services;
 using System.Web.Services;
 using BLL;
 using Global;
+using Helpers;
 using Models;
 using Partition;
 using Security;
@@ -19,6 +20,8 @@ namespace Services.Client
     [ScriptService]
     public class ClientSvc : WebService
     {
+      
+        /*
         [WebMethod(EnableSession = true)]
         public void AddHost(Models.Computer host)
         {
@@ -87,11 +90,7 @@ namespace Services.Client
             if (Authenticate()) HttpContext.Current.Response.Write(new Global().CheckOut(mac, direction, imgName));
         }
 
-        [WebMethod]
-        public void ClientTest()
-        {
-            if (Authenticate()) HttpContext.Current.Response.Write("true");
-        }
+      
 
         [WebMethod]
         public void ConsoleLogin()
@@ -394,6 +393,6 @@ namespace Services.Client
 
             if (Authenticate())
                 HttpContext.Current.Response.Write(new Upload().UploadFile(fileName, imagePath, fileType, file));
-        }
+        }*/
     }
 }

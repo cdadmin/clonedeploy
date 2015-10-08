@@ -29,8 +29,7 @@ namespace views.images
             };
 
            
-            if (BllImage.ValidateImageData(image)) BllImage.AddImage(image);
-            if (Message.Text.Contains("Successfully"))
+            BllImage.AddImage(image);
                 Response.Redirect("~/views/images/edit.aspx?imageid=" + image.Id);
 
         }

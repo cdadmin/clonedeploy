@@ -39,7 +39,7 @@ namespace Helpers
             }
             catch (Exception ex)
             {
-                Message.Text = ex.Message.Replace("\\", "\\\\");
+                //Message.Text = ex.Message.Replace("\\", "\\\\");
             }
 
             return text;

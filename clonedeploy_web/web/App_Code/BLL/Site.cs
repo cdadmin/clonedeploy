@@ -1,30 +1,23 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Helpers;
 
 namespace BLL
 {
     public class Site
     {
-        public bool AddSite(Models.Site site)
+        public Models.ValidationResult AddSite(Models.Site site)
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                if (uow.SiteRepository.Exists(s => s.Name == site.Name))
+                var validationResult = ValidateSite(site, true);
+                if (validationResult.IsValid)
                 {
-                    Message.Text = "A Site With This Name Already Exists";
-                    return false;
+                    uow.SiteRepository.Insert(site);
+                    validationResult.IsValid = uow.Save();
                 }
-                uow.SiteRepository.Insert(site);
-                if (uow.Save())
-                {
-                    Message.Text = "Successfully Created Site";
-                    return true;
-                }
-                else
-                {
-                    Message.Text = "Could Not Create Site";
-                    return false;
-                }
+
+                return validationResult;
             }
         }
 
@@ -61,14 +54,62 @@ namespace BLL
             }
         }
 
-        public void UpdateSite(Models.Site site)
+        public Models.ValidationResult UpdateSite(Models.Site site)
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                uow.SiteRepository.Update(site, site.Id);
-                if (uow.Save())
-                    Message.Text = "Successfully Updated Site";
+                var validationResult = ValidateSite(site, false);
+                if (validationResult.IsValid)
+                {
+                    uow.SiteRepository.Update(site, site.Id);
+                    validationResult.IsValid = uow.Save();
+                }
+
+                return validationResult;
             }
+        }
+
+        public Models.ValidationResult ValidateSite(Models.Site site, bool isNewSite)
+        {
+            var validationResult = new Models.ValidationResult();
+
+            if (string.IsNullOrEmpty(site.Name) || site.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
+            {
+                validationResult.IsValid = false;
+                validationResult.Message = "Site Name Is Not Valid";
+                return validationResult;
+            }
+
+            if (isNewSite)
+            {
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    if (uow.SiteRepository.Exists(h => h.Name == site.Name))
+                    {
+                        validationResult.IsValid = false;
+                        validationResult.Message = "This Site Already Exists";
+                        return validationResult;
+                    }
+                }
+            }
+            else
+            {
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    var originalSite = uow.SiteRepository.GetById(site.Id);
+                    if (originalSite.Name != site.Name)
+                    {
+                        if (uow.SiteRepository.Exists(h => h.Name == site.Name))
+                        {
+                            validationResult.IsValid = false;
+                            validationResult.Message = "This Site Already Exists";
+                            return validationResult;
+                        }
+                    }
+                }
+            }
+
+            return validationResult;
         }
 
       

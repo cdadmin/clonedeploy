@@ -11,6 +11,12 @@ namespace BasePages
 {
     public class PageBaseMaster : Page
     {
+        public static string EndUserMessage
+        {
+            get { return (string)HttpContext.Current.Session["Message"]; }
+            set { HttpContext.Current.Session["Message"] = value; }
+        }
+
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
@@ -20,13 +26,13 @@ namespace BasePages
         protected override void OnLoadComplete(EventArgs e)
         {
             base.OnLoadComplete(e);
-            if (string.IsNullOrEmpty(Message.Text)) return;
+            if (string.IsNullOrEmpty(EndUserMessage)) return;
             const string msgType = "showSuccessToast";
             var page = HttpContext.Current.CurrentHandler as Page;
 
             if (page != null)
                 page.ClientScript.RegisterStartupScript(GetType(), "msgBox",
-                    "$(function() { $().toastmessage('" + msgType + "', " + "\"" + Message.Text + "\"); });", true);
+                    "$(function() { $().toastmessage('" + msgType + "', " + "\"" + EndUserMessage + "\"); });", true);
             HttpContext.Current.Session.Remove("Message");
         }
 

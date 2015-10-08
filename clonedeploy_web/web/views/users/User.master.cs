@@ -6,7 +6,7 @@ using Models;
 
 namespace views.masters
 {
-    public partial class UserMaster : MasterPage
+    public partial class UserMaster : BasePages.MasterBaseMaster
     {
         private Users UsersBasePage { get; set; }
         public WdsUser CloneDeployUser { get; set; }
@@ -28,7 +28,7 @@ namespace views.masters
         {
             if (UsersBasePage.BllUser.GetAdminCount() == 1 && CloneDeployUser.Membership == "Administrator")
             {
-                Message.Text = "There Must Be At Least One Administrator";
+                //Message.Text = "There Must Be At Least One Administrator";
             }
             else
             {
@@ -42,7 +42,6 @@ namespace views.masters
         protected void OkButton_Click(object sender, EventArgs e)
         {
             UsersBasePage.BllUser.DeleteUser(CloneDeployUser.Id);
-            if (Message.Text.Contains("Successfully"))
                 Response.Redirect("~/views/users/search.aspx");
           
         }       

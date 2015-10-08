@@ -17,16 +17,7 @@ namespace BLL
         public bool AddPartition(Models.Partition partition)
         {
             _unitOfWork.PartitionRepository.Insert(partition);
-            if (_unitOfWork.Save())
-            {
-                Message.Text = "Successfully Created Partition";
-                return true;
-            }
-            else
-            {
-                Message.Text = "Could Not Create Partition";
-                return false;
-            }
+            return _unitOfWork.Save();
         }
 
         public string TotalCount()
@@ -53,11 +44,11 @@ namespace BLL
                 orderBy: (q => q.OrderBy(p => p.Number)));
         }
 
-        public void UpdatePartition(Models.Partition partition)
+        public bool UpdatePartition(Models.Partition partition)
         {
             _unitOfWork.PartitionRepository.Update(partition,partition.Id);
-            if (_unitOfWork.Save())
-                Message.Text = "Successfully Updated Partition";
+            return _unitOfWork.Save();
+              
         }
 
      

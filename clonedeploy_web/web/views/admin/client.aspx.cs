@@ -123,7 +123,7 @@ public partial class views_admin_client : Admin
     {
         if (new ActiveImagingTask().ReadAll().Count > 0)
         {
-            Message.Text = "Settings Cannot Be Changed While Tasks Are Active";
+            //Message.Text = "Settings Cannot Be Changed While Tasks Are Active";
             return false;
         }
 

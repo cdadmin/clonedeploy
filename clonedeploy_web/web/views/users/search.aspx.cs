@@ -51,7 +51,7 @@ namespace views.users
                 }
                 if (user.Membership == "Administrator")
                 {
-                    Message.Text = "Administrators Must Be Changed To A Lower Level User Before They Can Be Deleted";
+                    EndUserMessage = "Administrators Must Be Changed To A Lower Level User Before They Can Be Deleted";
                     break;
                 }
                 new User().DeleteUser(user.Id);

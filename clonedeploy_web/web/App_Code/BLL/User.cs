@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Web.Security;
 using DAL;
@@ -17,25 +18,17 @@ namespace BLL
             _unitOfWork = new UnitOfWork();
         }
 
-        public bool AddUser(WdsUser user)
+        public Models.ValidationResult AddUser(WdsUser user)
         {
-            if (_unitOfWork.UserRepository.Exists(u => u.Name == user.Name))
+            var validationResult = ValidateUser(user, true);
+            if (validationResult.IsValid)
             {
-                Message.Text = "A User With This Name Already Exists";
-                return false;
+                user.Password = CreatePasswordHash(user.Password, user.Salt);
+                _unitOfWork.UserRepository.Insert(user);
+                validationResult.IsValid = _unitOfWork.Save();
             }
-            user.Password = CreatePasswordHash(user.Password, user.Salt);
-            _unitOfWork.UserRepository.Insert(user);
-            if (_unitOfWork.Save())
-            {
-                Message.Text = "Successfully Created User";
-                return true;
-            }
-            else
-            {
-                Message.Text = "Could Not Create User";
-                return false;
-            }
+
+            return validationResult;
         }
 
         public string TotalCount()
@@ -69,13 +62,17 @@ namespace BLL
             return _unitOfWork.UserRepository.Get(u => u.Name.Contains(searchString));
         }
 
-        public void UpdateUser(WdsUser user, bool updatePassword)
+        public Models.ValidationResult UpdateUser(WdsUser user, bool updatePassword)
         {
-            user.Password = updatePassword ? CreatePasswordHash(user.Password, user.Salt) : _unitOfWork.UserRepository.GetById(user.Id).Password;
+            var validationResult = ValidateUser(user, true);
+            if (validationResult.IsValid)
+            {
+                user.Password = updatePassword ? CreatePasswordHash(user.Password, user.Salt) : _unitOfWork.UserRepository.GetById(user.Id).Password;
+                _unitOfWork.UserRepository.Update(user, user.Id);
+                validationResult.IsValid = _unitOfWork.Save();
+            }
 
-            _unitOfWork.UserRepository.Update(user,user.Id);
-            if (_unitOfWork.Save())
-                Message.Text = "Successfully Updated User";
+            return validationResult;
         }
 
         public string CreatePasswordHash(string pwd, string salt)
@@ -97,21 +94,55 @@ namespace BLL
         {
             throw new Exception("Not Implemented");
         }
-        public bool ValidateUserData(WdsUser user)
+
+        public Models.ValidationResult ValidateUser(Models.WdsUser user, bool isNewUser)
         {
-            var validated = true;
-            if (string.IsNullOrEmpty(user.Name) || user.Name.Contains(" "))
+            var validationResult = new Models.ValidationResult();
+
+            if (string.IsNullOrEmpty(user.Name) || user.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {
-                validated = false;
-                Message.Text = "User Name Cannot Be Empty Or Contain Spaces";
-            }
-            if (string.IsNullOrEmpty(user.Password) || user.Password.Contains(" "))
-            {
-                validated = false;
-                Message.Text = "User Password Cannot Be Empty Or Contain Spaces";
+                validationResult.IsValid = false;
+                validationResult.Message = "User Name Is Not Valid";
+                return validationResult;
             }
 
-            return validated;
+            if (isNewUser)
+            {
+                if (string.IsNullOrEmpty(user.Password))
+                {
+                    validationResult.IsValid = false;
+                    validationResult.Message = "Password Is Not Valid";
+                    return validationResult;
+                }
+
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    if (uow.UserRepository.Exists(h => h.Name == user.Name))
+                    {
+                        validationResult.IsValid = false;
+                        validationResult.Message = "This User Already Exists";
+                        return validationResult;
+                    }
+                }
+            }
+            else
+            {
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    var originalUser = uow.UserRepository.GetById(user.Id);
+                    if (originalUser.Name != user.Name)
+                    {
+                        if (uow.UserRepository.Exists(h => h.Name == user.Name))
+                        {
+                            validationResult.IsValid = false;
+                            validationResult.Message = "This User Already Exists";
+                            return validationResult;
+                        }
+                    }
+                }
+            }
+
+            return validationResult;
         }
     }
 }

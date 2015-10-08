@@ -16,16 +16,7 @@ namespace BLL
         public bool AddImageProfilePartition(Models.ImageProfilePartition imageProfilePartition)
         {
             _unitOfWork.ImageProfilePartitionRepository.Insert(imageProfilePartition);
-            if (_unitOfWork.Save())
-            {
-                Message.Text = "Successfully Added Partition Layout";
-                return true;
-            }
-            else
-            {
-                Message.Text = "Could Not Add Partition Layout";
-                return false;
-            }
+            return _unitOfWork.Save();         
         }
 
         public bool DeleteImageProfilePartitions(int profileId)

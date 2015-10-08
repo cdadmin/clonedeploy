@@ -9,24 +9,16 @@ namespace BLL
     {
         private readonly DAL.UnitOfWork _unitOfWork = new UnitOfWork();
 
-        public bool AddDistributionPoint(Models.DistributionPoint distributionPoint)
+        public Models.ValidationResult AddDistributionPoint(Models.DistributionPoint distributionPoint)
         {
-            if (_unitOfWork.DistributionPointRepository.Exists(d => d.DisplayName == distributionPoint.DisplayName))
+            var validationResult = ValidateDistributionPoint(distributionPoint, true);
+            if (validationResult.IsValid)
             {
-                Message.Text = "A Distribution Point With This Name Already Exists";
-                return false;
+                _unitOfWork.DistributionPointRepository.Insert(distributionPoint);
+                validationResult.IsValid = _unitOfWork.Save();
             }
-            _unitOfWork.DistributionPointRepository.Insert(distributionPoint);
-            if (_unitOfWork.Save())
-            {
-                Message.Text = "Successfully Created Distribution Point";
-                return true;
-            }
-            else
-            {
-                Message.Text = "Could Not Create Distribution Point";
-                return false;
-            }
+
+            return validationResult;
         }
 
         public string TotalCount()
@@ -50,13 +42,61 @@ namespace BLL
             return _unitOfWork.DistributionPointRepository.Get(d => d.DisplayName.Contains(searchString), orderBy: (q => q.OrderBy(d => d.DisplayName)));
         }
 
-        public void UpdateDistributionPoint(Models.DistributionPoint distributionPoint)
+        public Models.ValidationResult UpdateDistributionPoint(Models.DistributionPoint distributionPoint)
         {
-            _unitOfWork.DistributionPointRepository.Update(distributionPoint, distributionPoint.Id);
-            if (_unitOfWork.Save())
-                Message.Text = "Successfully Updated Distribution Point";
+            var validationResult = ValidateDistributionPoint(distributionPoint, false);
+            if (validationResult.IsValid)
+            {
+                _unitOfWork.DistributionPointRepository.Update(distributionPoint, distributionPoint.Id);
+                validationResult.IsValid = _unitOfWork.Save();
+            }
+
+            return validationResult;
+
         }
 
+        public Models.ValidationResult ValidateDistributionPoint(Models.DistributionPoint distributionPoint, bool isNewDistributionPoint)
+        {
+            var validationResult = new Models.ValidationResult();
+
+            if (string.IsNullOrEmpty(distributionPoint.DisplayName) || distributionPoint.DisplayName.Contains(" "))
+            {
+                validationResult.IsValid = false;
+                validationResult.Message = "Distribution Point Name Is Not Valid";
+                return validationResult;
+            }
+
+            if (isNewDistributionPoint)
+            {
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    if (uow.DistributionPointRepository.Exists(h => h.DisplayName == distributionPoint.DisplayName))
+                    {
+                        validationResult.IsValid = false;
+                        validationResult.Message = "This Distribution Point Already Exists";
+                        return validationResult;
+                    }
+                }
+            }
+            else
+            {
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    var originalDistributionPoint = uow.DistributionPointRepository.GetById(distributionPoint.Id);
+                    if (originalDistributionPoint.DisplayName != distributionPoint.DisplayName)
+                    {
+                        if (uow.DistributionPointRepository.Exists(h => h.DisplayName == distributionPoint.DisplayName))
+                        {
+                            validationResult.IsValid = false;
+                            validationResult.Message = "This Distribution Point Already Exists";
+                            return validationResult;
+                        }
+                    }
+                }
+            }
+
+            return validationResult;
+        }
       
     }
 }

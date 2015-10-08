@@ -8,25 +8,17 @@ namespace BLL
     {
         private readonly DAL.UnitOfWork _unitOfWork = new UnitOfWork();
 
-        public bool AddBuilding(Models.Building building)
+        public Models.ValidationResult AddBuilding(Models.Building building)
         {
-            if (_unitOfWork.BuildingRepository.Exists(t => t.Name == building.Name))
-            
+            var validationResult = ValidateBuilding(building, true);
+            if (validationResult.IsValid)
             {
-                Message.Text = "A Building With This Name Already Exists";
-                return false;
+                _unitOfWork.BuildingRepository.Insert(building);
+                validationResult.IsValid = _unitOfWork.Save();
             }
-            _unitOfWork.BuildingRepository.Insert(building);
-            if (_unitOfWork.Save())
-            {
-                Message.Text = "Successfully Created Building";
-                return true;
-            }
-            else
-            {
-                Message.Text = "Could Not Create Building";
-                return false;
-            }
+
+            return validationResult;
+          
         }
 
         public string TotalCount()
@@ -50,13 +42,61 @@ namespace BLL
             return _unitOfWork.BuildingRepository.Get(b => b.Name.Contains(searchString), includeProperties: "dp");
         }
 
-        public void UpdateBuilding(Models.Building building)
+        public Models.ValidationResult UpdateBuilding(Models.Building building)
         {
-            _unitOfWork.BuildingRepository.Update(building, building.Id);
-            if (_unitOfWork.Save())
-                Message.Text = "Successfully Updated Building";
+            var validationResult = ValidateBuilding(building, false);
+            if (validationResult.IsValid)
+            {
+                _unitOfWork.BuildingRepository.Update(building, building.Id);
+                validationResult.IsValid = _unitOfWork.Save();
+            }
+
+            return validationResult;
         }
 
+
+        public Models.ValidationResult ValidateBuilding(Models.Building building, bool isNewBuilding)
+        {
+            var validationResult = new Models.ValidationResult();
+
+            if (string.IsNullOrEmpty(building.Name) || building.Name.Contains(" "))
+            {
+                validationResult.IsValid = false;
+                validationResult.Message = "Building Name Is Not Valid";
+                return validationResult;
+            }
+
+            if (isNewBuilding)
+            {
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    if (uow.BuildingRepository.Exists(h => h.Name == building.Name))
+                    {
+                        validationResult.IsValid = false;
+                        validationResult.Message = "This Building Already Exists";
+                        return validationResult;
+                    }
+                }
+            }
+            else
+            {
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    var originalBuilding = uow.BuildingRepository.GetById(building.Id);
+                    if (originalBuilding.Name != building.Name)
+                    {
+                        if (uow.BuildingRepository.Exists(h => h.Name == building.Name))
+                        {
+                            validationResult.IsValid = false;
+                            validationResult.Message = "This Building Already Exists";
+                            return validationResult;
+                        }
+                    }
+                }
+            }
+
+            return validationResult;
+        }
       
     }
 }

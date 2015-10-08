@@ -195,10 +195,11 @@ namespace views.images
             var image = Image;
             image.ClientSizeCustom = "";
            
-
+            //FIX ME
+            /*
             Message.Text = (BllImage.UpdateImage(image,image.Name)
                 ? "Successfully Restored Image Specs.  Reload This Page To View Changes."
-                : "Could Not Restore Image Specs");
+                : "Could Not Restore Image Specs");*/
         }
 
         protected void btnUpdateImageSpecs_Click(object sender, EventArgs e)
@@ -274,9 +275,11 @@ namespace views.images
                 rowCounter++;
             }
             image.ClientSizeCustom = JsonConvert.SerializeObject(specs);
+            //FIX ME
+            /*
             Message.Text = (BllImage.UpdateImage(image,image.Name)
                 ? "Successfully Updated Image Specs"
-                : "Could Not Update Image Specs");
+                : "Could Not Update Image Specs");*/
         }
 
         protected void btnVG_Click(object sender, EventArgs e)

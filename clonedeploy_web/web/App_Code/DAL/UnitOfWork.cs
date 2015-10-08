@@ -22,6 +22,7 @@ namespace DAL
         private IGenericRepository<Models.Site> _siteRepository;
         private IGenericRepository<Models.SysprepTag> _sysprepTagRepository;
         private IGenericRepository<Models.WdsUser> _userRepository;
+        private IGenericRepository<Models.BootTemplate> _bootTemplateRepository;
         private ImageProfileScriptRepository _imageProfileScriptRepository;
         private GroupRepository _groupRepository;
         private ActiveImagingTaskRepository _activeImagingTaskRepository;
@@ -110,6 +111,11 @@ namespace DAL
         public IGenericRepository<Models.WdsUser> UserRepository
         {
             get { return _userRepository ?? (_userRepository = new GenericRepository<Models.WdsUser>(_context)); }
+        }
+
+        public IGenericRepository<Models.BootTemplate> BootTemplateRepository
+        {
+            get { return _bootTemplateRepository ?? (_bootTemplateRepository = new GenericRepository<Models.BootTemplate>(_context)); }
         }
 
         public ImageProfileScriptRepository ImageProfileScriptRepository

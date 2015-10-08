@@ -9,6 +9,7 @@ namespace BasePages
     public class Global : PageBaseMaster
     {
         public SysprepTag SysprepTag { get; set; }
+        public BootTemplate BootTemplate { get; set; }
         public BLL.SysprepTag BllSysprepTag { get; set; }
         public Site BllSite { get; set; }
         public Room BllRoom { get; set; }
@@ -27,6 +28,7 @@ namespace BasePages
         {
             base.OnInit(e);
             SysprepTag = !string.IsNullOrEmpty(Request["syspreptagid"]) ? BllSysprepTag.GetSysprepTag(Convert.ToInt32(Request.QueryString["syspreptagid"])) : null;
+            BootTemplate = !string.IsNullOrEmpty(Request["templateid"]) ? BLL.BootTemplate.GetBootTemplate(Convert.ToInt32(Request.QueryString["templateid"])) : null;
            
         }
     }

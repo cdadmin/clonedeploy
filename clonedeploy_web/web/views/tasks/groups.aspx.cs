@@ -54,7 +54,7 @@ namespace views.tasks
                         new Computer().StartUnicast(host, "push");
                         count++;
                     }
-                    Message.Text = "Started " + count + " Tasks";
+                    EndUserMessage = "Started " + count + " Tasks";
                 }
                 else
                 {

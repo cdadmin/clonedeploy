@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using DAL;
 using Helpers;
 
@@ -13,24 +14,16 @@ namespace BLL
             _unitOfWork = new UnitOfWork();
         }
 
-        public bool AddRoom(Models.Room room)
+        public Models.ValidationResult AddRoom(Models.Room room)
         {
-            if (_unitOfWork.RoomRepository.Exists(r => r.Name == room.Name))
+            var validationResult = ValidateRoom(room, true);
+            if (validationResult.IsValid)
             {
-                Message.Text = "A Room With This Name Already Exists";
-                return false;
+                _unitOfWork.RoomRepository.Insert(room);
+                validationResult.IsValid = _unitOfWork.Save();
             }
-            _unitOfWork.RoomRepository.Insert(room);
-            if (_unitOfWork.Save())
-            {
-                Message.Text = "Successfully Created Room";
-                return true;
-            }
-            else
-            {
-                Message.Text = "Could Not Create Room";
-                return false;
-            }
+
+            return validationResult;
         }
 
         public string TotalCount()
@@ -54,13 +47,60 @@ namespace BLL
             return _unitOfWork.RoomRepository.Get(r => r.Name.Contains(searchString),includeProperties:"dp");
         }
 
-        public void UpdateRoom(Models.Room room)
+        public Models.ValidationResult UpdateRoom(Models.Room room)
         {
-            _unitOfWork.RoomRepository.Update(room, room.Id);
-            if (_unitOfWork.Save())
-                Message.Text = "Successfully Updated Room";
+            var validationResult = ValidateRoom(room, false);
+            if (validationResult.IsValid)
+            {
+                _unitOfWork.RoomRepository.Update(room, room.Id);
+                validationResult.IsValid = _unitOfWork.Save();
+            }
+
+            return validationResult;
         }
 
+        public Models.ValidationResult ValidateRoom(Models.Room room, bool isNewRoom)
+        {
+            var validationResult = new Models.ValidationResult();
+
+            if (string.IsNullOrEmpty(room.Name) || room.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
+            {
+                validationResult.IsValid = false;
+                validationResult.Message = "Room Name Is Not Valid";
+                return validationResult;
+            }
+
+            if (isNewRoom)
+            {
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    if (uow.RoomRepository.Exists(h => h.Name == room.Name))
+                    {
+                        validationResult.IsValid = false;
+                        validationResult.Message = "This Room Already Exists";
+                        return validationResult;
+                    }
+                }
+            }
+            else
+            {
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    var originalRoom = uow.RoomRepository.GetById(room.Id);
+                    if (originalRoom.Name != room.Name)
+                    {
+                        if (uow.RoomRepository.Exists(h => h.Name == room.Name))
+                        {
+                            validationResult.IsValid = false;
+                            validationResult.Message = "This Room Already Exists";
+                            return validationResult;
+                        }
+                    }
+                }
+            }
+
+            return validationResult;
+        }
       
     }
 }

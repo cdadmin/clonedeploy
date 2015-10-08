@@ -26,15 +26,20 @@ namespace views.hosts
                 Name = txtHostName.Text,
                 Mac = Utility.FixMac(txtHostMac.Text),
                 Image = Convert.ToInt32(ddlHostImage.SelectedValue),
+                ImageProfile = Convert.ToInt32(ddlHostImage.SelectedValue) == 0 ? 0 : Convert.ToInt32(ddlImageProfile.SelectedValue),
                 Description = txtHostDesc.Text,
             };
 
-            host.ImageProfile = host.Image == 0 ? 0 : Convert.ToInt32(ddlImageProfile.SelectedValue);
 
-            if (!BllComputer.ValidateHostData(host)) return;
-
-            if (BllComputer.AddComputer(host) && !createAnother.Checked)
-                Response.Redirect("~/views/computers/edit.aspx?hostid=" + host.Id);
+            var result = BllComputer.AddComputer(host);
+            if (!result.IsValid)
+                EndUserMessage = result.Message;
+            else
+            {
+                EndUserMessage = "Successfully Created Computer";
+                if(!createAnother.Checked)
+                     Response.Redirect("~/views/computers/edit.aspx?hostid=" + host.Id);
+            }
         }
 
         protected void PopulateForm()
