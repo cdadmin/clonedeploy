@@ -7,29 +7,31 @@ namespace BLL
 {
     public class ImageProfileScript
     {
-        private readonly DAL.UnitOfWork _unitOfWork;
 
-        public ImageProfileScript()
+        public static bool AddImageProfileScript(Models.ImageProfileScript imageProfileScript)
         {
-            _unitOfWork = new UnitOfWork();
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.ImageProfileScriptRepository.Insert(imageProfileScript);
+                return uow.Save();
+            }
         }
 
-        public bool AddImageProfileScript(Models.ImageProfileScript imageProfileScript)
+        public static bool DeleteImageProfileScripts(int profileId)
         {
-            _unitOfWork.ImageProfileScriptRepository.Insert(imageProfileScript);
-            return _unitOfWork.Save();          
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.ImageProfileScriptRepository.DeleteRange(x => x.ProfileId == profileId);
+                return uow.Save();
+            }
         }
 
-        public bool DeleteImageProfileScripts(int profileId)
+        public static List<Models.ImageProfileScript> SearchImageProfileScripts(int profileId)
         {
-            _unitOfWork.ImageProfileScriptRepository.DeleteRange(x => x.ProfileId == profileId);
-            return _unitOfWork.Save();
-        }
-
-        public List<Models.ImageProfileScript> SearchImageProfileScripts(int profileId)
-        {
-            return _unitOfWork.ImageProfileScriptRepository.Find(profileId);
-            
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ImageProfileScriptRepository.Find(profileId);
+            }
         }
     }
 }

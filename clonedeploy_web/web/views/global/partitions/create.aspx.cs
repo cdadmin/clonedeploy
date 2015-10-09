@@ -19,7 +19,7 @@ public partial class views_global_partitions_create : BasePages.Global
            
         };
 
-        new BLL.PartitionLayout().AddPartitionLayout(layout);
+        BLL.PartitionLayout.AddPartitionLayout(layout);
      
     }
 }

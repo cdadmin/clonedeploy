@@ -44,11 +44,10 @@ public partial class views_groups_addmembers : Groups
 
     protected void PopulateGrid()
     {
-        var bllComputer = new BLL.Computer();
-        gvHosts.DataSource = bllComputer.SearchComputers(txtSearch.Text);
+        gvHosts.DataSource = BLL.Computer.SearchComputers(txtSearch.Text);
         gvHosts.DataBind();
 
-        lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + bllComputer.TotalCount() + " Total Host(s)";
+        lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + BLL.Computer.TotalCount() + " Total Host(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)
@@ -73,7 +72,7 @@ public partial class views_groups_addmembers : Groups
                     ComputerId = Convert.ToInt32(dataKey.Value),
                     GroupId = Group.Id
                 };
-                if (new BLL.GroupMembership().AddMembership(membership))
+                if (BLL.GroupMembership.AddMembership(membership))
                     addedCount++;
             }
         }

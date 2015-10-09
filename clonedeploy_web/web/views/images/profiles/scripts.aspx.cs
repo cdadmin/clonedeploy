@@ -7,7 +7,7 @@ using BLL;
 
 public partial class views_images_profiles_scripts : Images
 {
-    private readonly ImageProfileScript _bllImageProfileScript = new ImageProfileScript();
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (IsPostBack) return;
@@ -18,10 +18,10 @@ public partial class views_images_profiles_scripts : Images
     protected void PopulateGrid()
     {
 
-        gvScripts.DataSource = new Script().SearchScripts("");
+        gvScripts.DataSource = BLL.Script.SearchScripts("");
         gvScripts.DataBind();
 
-        var profileScripts = _bllImageProfileScript.SearchImageProfileScripts(ImageProfile.Id);
+        var profileScripts = BLL.ImageProfileScript.SearchImageProfileScripts(ImageProfile.Id);
         foreach (GridViewRow row in gvScripts.Rows)
         {
             var pre = (CheckBox)row.FindControl("chkPre");
@@ -75,7 +75,7 @@ public partial class views_images_profiles_scripts : Images
 
     protected void btnUpdateScripts_OnClick(object sender, EventArgs e)
     {
-        _bllImageProfileScript.DeleteImageProfileScripts((ImageProfile.Id));
+        BLL.ImageProfileScript.DeleteImageProfileScripts((ImageProfile.Id));
         foreach (GridViewRow row in gvScripts.Rows)
         {
             var pre = (CheckBox)row.FindControl("chkPre");
@@ -92,7 +92,7 @@ public partial class views_images_profiles_scripts : Images
                 RunPre = Convert.ToInt16(pre.Checked),
                 RunPost = Convert.ToInt16(post.Checked)
             };
-            _bllImageProfileScript.AddImageProfileScript(profileScript);
+            BLL.ImageProfileScript.AddImageProfileScript(profileScript);
         }
     }
 }

@@ -10,19 +10,17 @@ namespace Helpers
         {
             string fileText = null;
 
-                try
-                {
-                    fileText = File.ReadAllText(path);
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log(ex.Message);
-                    throw new Exception("Could Not Read " + Utility.EscapeFilePaths(path));
-                }
-
+            try
+            {
+                fileText = File.ReadAllText(path);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+                fileText = "Could Not Read File";
+            }
 
             return fileText;
-            
         }
 
         public void DeleteAllFiles(string directoryPath)

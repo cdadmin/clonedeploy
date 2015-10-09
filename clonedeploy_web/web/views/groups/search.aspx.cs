@@ -9,7 +9,6 @@ namespace views.groups
 {
     public partial class GroupSearch : Groups
     {
-        private readonly Group _bllGroup = new Group();
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             foreach (GridViewRow row in gvGroups.Rows)
@@ -18,7 +17,7 @@ namespace views.groups
                 if (cb == null || !cb.Checked) continue;
                 var dataKey = gvGroups.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
-                _bllGroup.DeleteGroup(Convert.ToInt32(dataKey.Value));
+                BLL.Group.DeleteGroup(Convert.ToInt32(dataKey.Value));
             }
 
 
@@ -52,7 +51,7 @@ namespace views.groups
                 var lbl = row.FindControl("lblCount") as Label;
                 var dataKey = gvGroups.DataKeys[row.RowIndex];
                 if (dataKey != null)
-                    group = _bllGroup.GetGroup(Convert.ToInt32(dataKey.Value));
+                    group = BLL.Group.GetGroup(Convert.ToInt32(dataKey.Value));
                 if (row.Cells[4].Text == "smart")
                 {
                    
@@ -63,7 +62,7 @@ namespace views.groups
                 }
                 else if (lbl != null)
                 {
-                    lbl.Text = new GroupMembership().GetGroupMemberCount(group.Id);
+                    lbl.Text = BLL.GroupMembership.GetGroupMemberCount(group.Id);
                 }
             }
         }
@@ -78,7 +77,7 @@ namespace views.groups
         {
            
 
-            gvGroups.DataSource = _bllGroup.SearchGroups(txtSearch.Text);
+            gvGroups.DataSource = BLL.Group.SearchGroups(txtSearch.Text);
 
             gvGroups.DataBind();
 
@@ -88,7 +87,7 @@ namespace views.groups
                 var lbl = row.FindControl("lblCount") as Label;
                 var dataKey = gvGroups.DataKeys[row.RowIndex];
                 if (dataKey != null)
-                    group = _bllGroup.GetGroup(Convert.ToInt32(dataKey.Value));
+                    group = BLL.Group.GetGroup(Convert.ToInt32(dataKey.Value));
                 
                 if (row.Cells[4].Text == "smart")
                 {
@@ -99,12 +98,12 @@ namespace views.groups
                 else if (lbl != null)
                 {
 
-                    lbl.Text = new GroupMembership().GetGroupMemberCount(group.Id);
+                    lbl.Text = BLL.GroupMembership.GetGroupMemberCount(group.Id);
                 }
             }
 
 
-            lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + _bllGroup.TotalCount() + " Total Group(s)";
+            lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + BLL.Group.TotalCount() + " Total Group(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)

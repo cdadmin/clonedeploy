@@ -26,7 +26,7 @@ namespace views.hosts
                 if (cb == null || !cb.Checked) continue;
                 var dataKey = gvHosts.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
-                BllComputer.DeleteComputer(Convert.ToInt32(dataKey.Value));
+                BLL.Computer.DeleteComputer(Convert.ToInt32(dataKey.Value));
             }
 
             PopulateGrid();
@@ -52,8 +52,8 @@ namespace views.hosts
                     break;
                 case "Image":
                     listHosts = GetSortDirection(e.SortExpression) == "Asc"
-                        ? listHosts.OrderBy(h => h.Image).ToList()
-                        : listHosts.OrderByDescending(h => h.Image).ToList();
+                        ? listHosts.OrderBy(h => h.ImageId).ToList()
+                        : listHosts.OrderByDescending(h => h.ImageId).ToList();
                     break;
             }
 
@@ -65,10 +65,10 @@ namespace views.hosts
 
         protected void PopulateGrid()
         {
-            gvHosts.DataSource = BllComputer.SearchComputers(txtSearch.Text);
+            gvHosts.DataSource = BLL.Computer.SearchComputers(txtSearch.Text);
             gvHosts.DataBind();
 
-            lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + BllComputer.TotalCount() + " Computer(s)";
+            lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + BLL.Computer.TotalCount() + " Computer(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)

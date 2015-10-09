@@ -29,7 +29,7 @@ namespace views.tasks
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            var user = new User().GetUser(HttpContext.Current.User.Identity.Name);
+            var user = BLL.User.GetUser(HttpContext.Current.User.Identity.Name);
 
             if (Settings.OnDemand == "Disabled")
             {
@@ -49,7 +49,7 @@ namespace views.tasks
                 secureMsg.Visible = false;
             }
             if (IsPostBack) return;
-            ddlImage.DataSource = new Image().SearchImages("").Select(i => i.Name);
+            ddlImage.DataSource = BLL.Image.SearchImages("").Select(i => i.Name);
             ddlImage.DataBind();
             ddlImage.Items.Insert(0, "Select Image");
         }

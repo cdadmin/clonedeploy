@@ -27,7 +27,7 @@ public partial class views_global_rooms_search : BasePages.Global
     }
     protected void BindGrid()
     {
-        gvRooms.DataSource = BllRoom.SearchRooms(txtSearch.Text);
+        gvRooms.DataSource = BLL.Room.SearchRooms(txtSearch.Text);
         gvRooms.DataBind();
 
         if (gvRooms.Rows.Count == 0)
@@ -51,10 +51,10 @@ public partial class views_global_rooms_search : BasePages.Global
         var room = new Room
         {
             Name = ((TextBox)gvRow.FindControl("txtNameAdd")).Text,
-            DistributionPoint = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDpAdd")).SelectedValue)
+            DistributionPointId = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDpAdd")).SelectedValue)
         };
 
-        BllRoom.AddRoom(room);
+        BLL.Room.AddRoom(room);
         BindGrid();
     }
 
@@ -72,10 +72,10 @@ public partial class views_global_rooms_search : BasePages.Global
         {
             Id = Convert.ToInt32(gvRooms.DataKeys[e.RowIndex].Values[0]),
             Name = ((TextBox)gvRow.FindControl("txtName")).Text,
-            DistributionPoint = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDp")).SelectedValue)
+            DistributionPointId = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDp")).SelectedValue)
 
         };
-        BllRoom.UpdateRoom(room);
+        BLL.Room.UpdateRoom(room);
 
         gvRooms.EditIndex = -1;
         this.BindGrid();
@@ -89,7 +89,7 @@ public partial class views_global_rooms_search : BasePages.Global
 
     protected void OnRowDeleting(object sender, GridViewDeleteEventArgs e)
     {
-        BllRoom.DeleteRoom(Convert.ToInt32(gvRooms.DataKeys[e.RowIndex].Values[0]));
+        BLL.Room.DeleteRoom(Convert.ToInt32(gvRooms.DataKeys[e.RowIndex].Values[0]));
         BindGrid();
     }
 

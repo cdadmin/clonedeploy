@@ -4,65 +4,79 @@ using Helpers;
 
 namespace BLL
 {
-    public class SysprepTag
+    public static class SysprepTag
     {
-        private DAL.UnitOfWork _unitOfWork;
-        public SysprepTag()
+
+        public static Models.ValidationResult AddSysprepTag(Models.SysprepTag sysprepTag)
         {
-            _unitOfWork = new DAL.UnitOfWork();
-        }
-        public Models.ValidationResult AddSysprepTag(Models.SysprepTag sysprepTag)
-        {
-            var validationResult = ValidateSysprepTag(sysprepTag, true);
-            if (validationResult.IsValid)
+            using (var uow = new DAL.UnitOfWork())
             {
-                _unitOfWork.SysprepTagRepository.Insert(sysprepTag);
-                validationResult.IsValid = _unitOfWork.Save();
+                var validationResult = ValidateSysprepTag(sysprepTag, true);
+                if (validationResult.IsValid)
+                {
+                    uow.SysprepTagRepository.Insert(sysprepTag);
+                    validationResult.IsValid = uow.Save();
+                }
+
+                return validationResult;
+            }
+        }
+
+        public static string TotalCount()
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.SysprepTagRepository.Count();
+            }
+        }
+
+        public static bool DeleteScript(int sysprepTagId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.SysprepTagRepository.Delete(sysprepTagId);
+                return uow.Save();
+            }
+        }
+
+        public static Models.SysprepTag GetSysprepTag(int sysprepTagId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.SysprepTagRepository.GetById(sysprepTagId);
+            }
+        }
+
+        public static List<Models.SysprepTag> SearchSysprepTags(string searchString)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return
+                    uow.SysprepTagRepository.Get(
+                        s => s.Name.Contains(searchString) || s.OpeningTag.Contains(searchString),
+                        orderBy: (q => q.OrderBy(s => s.OpeningTag)));
+            }
+        }
+
+        public static Models.ValidationResult UpdateSysprepTag(Models.SysprepTag sysprepTag)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                var validationResult = ValidateSysprepTag(sysprepTag, false);
+                if (validationResult.IsValid)
+                {
+                    uow.SysprepTagRepository.Update(sysprepTag, sysprepTag.Id);
+                    validationResult.IsValid = uow.Save();
+                }
+
+                return validationResult;
             }
 
-            return validationResult;
+
+
         }
 
-        public string TotalCount()
-        {
-            return _unitOfWork.SysprepTagRepository.Count();
-        }
-
-        public bool DeleteScript(int sysprepTagId)
-        {
-            _unitOfWork.SysprepTagRepository.Delete(sysprepTagId);
-            return _unitOfWork.Save();
-        }
-
-        public Models.SysprepTag GetSysprepTag(int sysprepTagId)
-        {
-            return _unitOfWork.SysprepTagRepository.GetById(sysprepTagId);
-        }
-
-        public List<Models.SysprepTag> SearchSysprepTags(string searchString)
-        {
-            return
-                _unitOfWork.SysprepTagRepository.Get(
-                    s => s.Name.Contains(searchString) || s.OpeningTag.Contains(searchString),
-                    orderBy: (q => q.OrderBy(s => s.OpeningTag)));
-        }
-
-        public Models.ValidationResult UpdateSysprepTag(Models.SysprepTag sysprepTag)
-        {
-            var validationResult = ValidateSysprepTag(sysprepTag, false);
-            if (validationResult.IsValid)
-            {
-                _unitOfWork.SysprepTagRepository.Update(sysprepTag, sysprepTag.Id);
-                validationResult.IsValid = _unitOfWork.Save();
-            }
-
-            return validationResult;
-
-           
-            
-        }
-
-        public Models.ValidationResult ValidateSysprepTag(Models.SysprepTag sysprepTag, bool isNewSysprepTag)
+        public static Models.ValidationResult ValidateSysprepTag(Models.SysprepTag sysprepTag, bool isNewSysprepTag)
         {
             var validationResult = new Models.ValidationResult();
 

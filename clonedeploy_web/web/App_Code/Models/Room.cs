@@ -13,11 +13,10 @@ namespace Models
         public int Id { get; set; }
         [Column("room_name", Order = 2)]
         public string Name { get; set; }
-        [ForeignKey("dp")]
-        [Column("room_distribution_point", Order = 3)]
-        public int DistributionPoint { get; set; }
 
-        //Navigation Properties
-        public virtual Models.DistributionPoint dp { get; set; }
+        [Column("room_distribution_point", Order = 3)]
+        public int DistributionPointId { get; set; }
+
+        public virtual Models.DistributionPoint DistributionPoint { get; set; }
     }
 }

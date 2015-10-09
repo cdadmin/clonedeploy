@@ -7,23 +7,25 @@ namespace BLL
 {
     public class Port
     {
-        private readonly DAL.UnitOfWork _unitOfWork;
-
-        public Port()
+        public static bool AddPort(Models.Port port)
         {
-            _unitOfWork = new UnitOfWork();
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.PortRepository.Insert(port);
+                return uow.Save();
+            }
         }
 
-        public bool AddPort(Models.Port port)
+        public static int GetNextPort()
         {
-            _unitOfWork.PortRepository.Insert(port);
-            return _unitOfWork.Save();
-        }
-
-        public int GetNextPort()
-        {
-            var lastPort = _unitOfWork.PortRepository.GetFirstOrDefault(orderBy: (q => q.OrderByDescending(p => p.Id)));
+            var lastPort = new Models.Port();
             var nextPort = new Models.Port();
+            using (var uow = new DAL.UnitOfWork())
+            {
+                lastPort =
+                    uow.PortRepository.GetFirstOrDefault(orderBy: (q => q.OrderByDescending(p => p.Id)));
+
+            }
 
             if (lastPort == null)
                 nextPort.Number = Convert.ToInt16(Settings.StartPort);

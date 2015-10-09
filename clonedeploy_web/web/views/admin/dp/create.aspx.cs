@@ -26,7 +26,7 @@ public partial class views_admin_dp_create : Admin
             BackendServer = chkBackend.Checked ? txtBackendServer.Text : ""
         };
 
-        new BLL.DistributionPoint().AddDistributionPoint(distributionPoint);
+        BLL.DistributionPoint.AddDistributionPoint(distributionPoint);
     }
 
     protected void chkPrimary_OnCheckedChanged(object sender, EventArgs e)

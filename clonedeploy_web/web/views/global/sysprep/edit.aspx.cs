@@ -20,7 +20,7 @@ public partial class views_global_sysprep_edit : BasePages.Global
             Contents = txtContent.Text        
         };
       
-        BllSysprepTag.UpdateSysprepTag(sysprepTag);
+        BLL.SysprepTag.UpdateSysprepTag(sysprepTag);
     }
 
     protected void PopulateForm()

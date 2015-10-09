@@ -15,7 +15,7 @@ namespace views.groups
                               "csvupload" + Path.DirectorySeparatorChar + "groups.csv";
             FileUpload.SaveAs(csvFilePath);
             new FileOps().SetUnixPermissions(csvFilePath);
-            new Group().ImportGroups();
+            BLL.Group.ImportGroups();
         }
 
         protected void Page_Load(object sender, EventArgs e)

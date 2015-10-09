@@ -34,8 +34,7 @@ namespace views.groups
             group.Type = ddlGroupType.Text;
             group.ImageProfile = group.Image == 0 ? 0 : Convert.ToInt32(ddlImageProfile.SelectedValue);
           
-            var bllGroup = new BLL.Group();
-            bllGroup.AddGroup(group);
+            BLL.Group.AddGroup(group);
 
 
                 Response.Redirect("~/views/groups/edit.aspx?groupid=" + group.Id);

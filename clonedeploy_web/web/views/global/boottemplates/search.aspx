@@ -39,5 +39,19 @@
             No Templates Found
         </EmptyDataTemplate>
     </asp:GridView>
+    <div class="size-4 column">
+    <a class="confirm" href="#">Delete Selected Templates</a>
+        </div>
+    <div id="confirmbox" class="confirm-box-outer">
+        <div class="confirm-box-inner">
+            <h4>
+                <asp:Label ID="lblTitle" runat="server" Text="Delete The Selected Boot Menu Templates?"></asp:Label>
+            </h4>
+            <div class="confirm-box-btns">
+                <asp:LinkButton ID="ConfirmButton" OnClick="ButtonConfirmDelete_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
+                <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no"/>
+            </div>
+        </div>
+    </div>
 </asp:Content>
 

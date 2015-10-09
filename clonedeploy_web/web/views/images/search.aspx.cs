@@ -37,7 +37,7 @@ namespace views.images
             var control = sender as Control;
             if (control == null) return;
             var row = (GridViewRow) control.Parent.Parent;
-            var image = BllImage.GetImage(Convert.ToInt32(row.Cells[0].Text));
+            var image = BLL.Image.GetImage(Convert.ToInt32(row.Cells[0].Text));
 
 
             var gvHDs = (GridView) row.FindControl("gvHDs");
@@ -161,8 +161,8 @@ namespace views.images
                 if (cb == null || !cb.Checked) continue;
                 var dataKey = gvImages.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
-                var image = BllImage.GetImage(Convert.ToInt32(dataKey.Value));
-                BllImage.DeleteImage(image);
+                var image = BLL.Image.GetImage(Convert.ToInt32(dataKey.Value));
+                BLL.Image.DeleteImage(image);
             }
 
             PopulateGrid(true);
@@ -211,9 +211,9 @@ namespace views.images
             if (bind)
             {
                
-                gvImages.DataSource = BllImage.SearchImages(txtSearch.Text);
+                gvImages.DataSource = BLL.Image.SearchImages(txtSearch.Text);
                 gvImages.DataBind();
-                lblTotal.Text = gvImages.Rows.Count + " Result(s) / " + BllImage.TotalCount() + " Total Image(s)";
+                lblTotal.Text = gvImages.Rows.Count + " Result(s) / " + BLL.Image.TotalCount() + " Total Image(s)";
             }
 
             foreach (GridViewRow row in gvImages.Rows)
@@ -241,7 +241,7 @@ namespace views.images
                 {
                     var lblClient = row.FindControl("lblSizeClient") as Label;
                     var imageId = ((HiddenField) row.FindControl("HiddenID")).Value;
-                    var img = BllImage.GetImage(Convert.ToInt32(imageId));
+                    var img = BLL.Image.GetImage(Convert.ToInt32(imageId));
 
                     var calc = new MinimumSize {Image = img};
                     var fltClientSize = calc.Hd(0, "1")/1024f/1024f/1024f;

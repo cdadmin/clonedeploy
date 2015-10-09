@@ -16,10 +16,9 @@ namespace views.images
     {
         protected void btnConfirmChecksum_Click(object sender, EventArgs e)
         {
-            var image = BllImage.GetImage(Image.Id);
-            image.Checksum = (string) (ViewState["checkSum"]);
-            BllImage.UpdateImage(image,image.Name);
-            Response.Redirect("~/views/images/edit.aspx?imageid=" + image.Id, true);
+           
+            BLL.Image.UpdateImage(Image,Image.Name);
+            Response.Redirect("~/views/images/edit.aspx?imageid=" + Image.Id, true);
         }
 
         protected void btnPart_Click(object sender, EventArgs e)
@@ -440,7 +439,7 @@ namespace views.images
                         var fc = new FileChecksum
                         {
                             FileName = Path.GetFileName(file),
-                            Checksum = BllImage.Calculate_Hash(file)
+                            Checksum = BLL.Image.Calculate_Hash(file)
                         };
                         listChecksums.Add(fc);
                     }

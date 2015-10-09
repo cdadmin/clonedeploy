@@ -45,14 +45,14 @@ namespace views.masters
             switch (taskType)
             {
                 case "delete":
-                    if (groupBasePage.BllGroup.DeleteGroup(Group.Id))
+                    if (BLL.Group.DeleteGroup(Group.Id))
                         Response.Redirect("~/views/groups/search.aspx");
                     break;
                 case "unicast":
-                    groupBasePage.BllGroup.StartGroupUnicast(Group);
+                    BLL.Group.StartGroupUnicast(Group);
                     break;
                 case "multicast":
-                    groupBasePage.BllGroup.StartMulticast(Group);
+                    BLL.Group.StartMulticast(Group);
                     break;
 
             }

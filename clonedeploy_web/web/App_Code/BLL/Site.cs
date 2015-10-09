@@ -4,9 +4,9 @@ using Helpers;
 
 namespace BLL
 {
-    public class Site
+    public static class Site
     {
-        public Models.ValidationResult AddSite(Models.Site site)
+        public static Models.ValidationResult AddSite(Models.Site site)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -21,7 +21,7 @@ namespace BLL
             }
         }
 
-        public string TotalCount()
+        public static string TotalCount()
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -29,7 +29,7 @@ namespace BLL
             }
         }
 
-        public bool DeleteSite(int siteId)
+        public static bool DeleteSite(int siteId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -38,7 +38,7 @@ namespace BLL
             }
         }
 
-        public Models.Site GetSite(int siteId)
+        public static Models.Site GetSite(int siteId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -46,15 +46,15 @@ namespace BLL
             }
         }
 
-        public List<Models.Site> SearchSites(string searchString)
+        public static List<Models.Site> SearchSites(string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.SiteRepository.Get(s => s.Name.Contains(searchString), includeProperties: "dp");
+                return uow.SiteRepository.Get(searchString);
             }
         }
 
-        public Models.ValidationResult UpdateSite(Models.Site site)
+        public static Models.ValidationResult UpdateSite(Models.Site site)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -69,7 +69,7 @@ namespace BLL
             }
         }
 
-        public Models.ValidationResult ValidateSite(Models.Site site, bool isNewSite)
+        public static Models.ValidationResult ValidateSite(Models.Site site, bool isNewSite)
         {
             var validationResult = new Models.ValidationResult();
 

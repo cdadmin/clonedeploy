@@ -1,23 +1,4 @@
-﻿/*  
-    CrucibleWDS A Windows Deployment Solution
-    Copyright (C) 2011  Jon Dolny
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/.
- */
-
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -42,17 +23,19 @@ namespace Models
         [Column("computer_description", Order = 4)]
         public string Description { get; set; }
 
-        [Column("computer_building_id", Order = 5)]
-        public int Building { get; set; }
+        [Column("computer_site_id", Order = 6)]
+        public int SiteId { get; set; }
 
-        [Column("computer_room_id", Order = 6)]
-        public int Room { get; set; }
+        [Column("computer_building_id", Order = 7)]
+        public int BuildingId { get; set; }
 
-        [ForeignKey("images")]
-        [Column("computer_image_id", Order = 7)]
-        public int? Image { get; set; }
+        [Column("computer_room_id", Order = 8)]
+        public int RoomId { get; set; }
 
-        [Column("computer_image_profile_id", Order = 8)]
+        [Column("computer_image_id", Order = 9)]
+        public int ImageId { get; set; }
+
+        [Column("computer_image_profile_id", Order = 10)]
         public int ImageProfile { get; set; }
 
         [NotMapped]
@@ -61,8 +44,8 @@ namespace Models
         [NotMapped]
         public string TaskId { get; set; }
 
-        //Navigation Properties
-        public virtual Models.Image images { get; set; }
+        [NotMapped]
+        public virtual Models.Image Image { get; set; }
 
 
 

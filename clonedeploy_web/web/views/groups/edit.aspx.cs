@@ -7,7 +7,6 @@ namespace views.groups
 {
     public partial class GroupEdit : Groups
     {
-        private readonly LinuxProfile _bllLinuxProfile = new LinuxProfile();
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
@@ -24,7 +23,7 @@ namespace views.groups
 
             };
 
-           new BLL.Group().UpdateGroup(group);
+           BLL.Group.UpdateGroup(group);
            
 
         }

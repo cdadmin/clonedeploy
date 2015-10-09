@@ -15,11 +15,10 @@ public partial class views_global_search : BasePages.Global
 
     protected void PopulateGrid()
     {
-        var bllPartitionLayout = new PartitionLayout();
-        gvLayout.DataSource = bllPartitionLayout.SearchPartitionLayouts(txtSearch.Text);
+        gvLayout.DataSource = BLL.PartitionLayout.SearchPartitionLayouts(txtSearch.Text);
         gvLayout.DataBind();
 
-        lblTotal.Text = gvLayout.Rows.Count + " Result(s) / " + bllPartitionLayout.TotalCount() + " Total Partition Layout(s)";
+        lblTotal.Text = gvLayout.Rows.Count + " Result(s) / " + BLL.PartitionLayout.TotalCount() + " Total Partition Layout(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)

@@ -23,7 +23,7 @@ public partial class views_images_profiles_search : Images
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvProfiles.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            new Computer().DeleteComputer(Convert.ToInt32(dataKey.Value));
+            BLL.Computer.DeleteComputer(Convert.ToInt32(dataKey.Value));
         }
 
         PopulateGrid();
@@ -65,7 +65,7 @@ public partial class views_images_profiles_search : Images
 
     protected void PopulateGrid()
     {
-        gvProfiles.DataSource = BllLinuxProfile.SearchProfiles(Image.Id);
+        gvProfiles.DataSource = BLL.LinuxProfile.SearchProfiles(Image.Id);
         gvProfiles.DataBind();
 
     }

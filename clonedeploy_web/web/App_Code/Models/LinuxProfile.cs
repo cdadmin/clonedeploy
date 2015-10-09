@@ -21,7 +21,7 @@ namespace Models
         public string Description { get; set; }
 
         [Column("image_id", Order = 4)]
-        public int? ImageId { get; set; }
+        public int ImageId { get; set; }
 
         [Column("profile_kernel", Order = 5)]
         public string Kernel { get; set; }

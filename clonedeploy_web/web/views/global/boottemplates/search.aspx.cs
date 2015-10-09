@@ -48,4 +48,18 @@ public partial class views_global_boottemplates_search : BasePages.Global
     {
         ChkAll(gvTemplates);
     }
+
+    protected void ButtonConfirmDelete_Click(object sender, EventArgs e)
+    {
+        foreach (GridViewRow row in gvTemplates.Rows)
+        {
+            var cb = (CheckBox)row.FindControl("chkSelector");
+            if (cb == null || !cb.Checked) continue;
+            var dataKey = gvTemplates.DataKeys[row.RowIndex];
+            if (dataKey == null) continue;
+            BLL.BootTemplate.DeleteBootTemplate(Convert.ToInt32(dataKey.Value));
+        }
+
+        PopulateGrid();
+    }
 }

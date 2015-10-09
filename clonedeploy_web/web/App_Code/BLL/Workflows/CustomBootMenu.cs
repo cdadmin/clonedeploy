@@ -158,7 +158,7 @@ namespace Pxe
             var tftpPath = Settings.TftpPath;
             var mode = Settings.PxeMode;
             var pxeHostMac = Utility.MacToPxeMac(Host.Mac);
-            var active = new BLL.ActiveImagingTask().IsComputerActive(Host.Id);
+            var active = BLL.ActiveImagingTask.IsComputerActive(Host.Id);
             string path;
             var fileOps = new FileOps();
 
@@ -267,7 +267,7 @@ namespace Pxe
             try
             {
                 Host.CustomBootEnabled = "0";
-                new BLL.Computer().UpdateComputer(Host);
+                BLL.Computer.UpdateComputer(Host);
                 var history = new History
                 {
                     Event = "Remove Boot Menu",
@@ -291,7 +291,7 @@ namespace Pxe
         {
             var mode = Settings.PxeMode;
             var pxeHostMac = Utility.MacToPxeMac(Host.Mac);
-            var active = new BLL.ActiveImagingTask().IsComputerActive(Host.Id);
+            var active = BLL.ActiveImagingTask.IsComputerActive(Host.Id);
             string path;
 
             var proxyDhcp = Settings.ProxyDhcp;
@@ -401,7 +401,7 @@ namespace Pxe
             try
             {
                 Host.CustomBootEnabled = "1";
-                new BLL.Computer().UpdateComputer(Host);
+                BLL.Computer.UpdateComputer(Host);
                 var history = new History
                 {
                     Event = "Set Boot Menu",

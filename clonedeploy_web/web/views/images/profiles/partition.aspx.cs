@@ -32,7 +32,7 @@ public partial class views_images_profiles_partition : Images
         }
         else if (ddlPartitionMethod.SelectedIndex == 3)
         {
-            _bllImageProfilePartition.DeleteImageProfilePartitions(ImageProfile.Id);
+            BLL.ImageProfilePartition.DeleteImageProfilePartitions(ImageProfile.Id);
             imageProfile.CustomPartitionScript = "";
             foreach (GridViewRow row in gvLayout.Rows)
             {
@@ -45,14 +45,14 @@ public partial class views_images_profiles_partition : Images
                     LayoutId = Convert.ToInt16(dataKey.Value),
                     ProfileId = ImageProfile.Id            
                 };
-                _bllImageProfilePartition.AddImageProfilePartition(profilePartitionLayout);
+                BLL.ImageProfilePartition.AddImageProfilePartition(profilePartitionLayout);
             }
         }
         else
         {
             imageProfile.CustomPartitionScript = "";
         }
-        BllLinuxProfile.UpdateProfile(imageProfile);
+        BLL.LinuxProfile.UpdateProfile(imageProfile);
     }
 
     protected void ddlPartitionMethod_OnSelectedIndexChanged(object sender, EventArgs e)
@@ -73,7 +73,7 @@ public partial class views_images_profiles_partition : Images
             customScript.Visible = false;
             customLayout.Visible = true;
             PopulateGrid();
-            var profilePartitionLayouts = _bllImageProfilePartition.SearchImageProfilePartitions(ImageProfile.Id);
+            var profilePartitionLayouts = BLL.ImageProfilePartition.SearchImageProfilePartitions(ImageProfile.Id);
             foreach (GridViewRow row in gvLayout.Rows)
             {
                 var cb = (CheckBox) row.FindControl("chkSelector");
@@ -112,7 +112,7 @@ public partial class views_images_profiles_partition : Images
 
     protected void PopulateGrid()
     {
-        gvLayout.DataSource = new PartitionLayout().SearchPartitionLayouts("");
+        gvLayout.DataSource = BLL.PartitionLayout.SearchPartitionLayouts("");
         gvLayout.DataBind();
     }
 

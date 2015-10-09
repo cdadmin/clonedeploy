@@ -4,11 +4,12 @@ namespace DAL
 {
     public interface IUnitOfWork: IDisposable
     {
-        DAL.IGenericRepository<Models.Computer> ComputerRepository { get; }
+      
         DAL.IGenericRepository<Models.ActiveMulticastSession> ActiveMulticastSessionRepository { get; }
-        DAL.IGenericRepository<Models.Building> BuildingRepository { get; }
-        DAL.IGenericRepository<Models.Room> RoomRepository { get; }
+       
+        DAL.RoomRepository RoomRepository { get; }
         DAL.IGenericRepository<Models.DistributionPoint> DistributionPointRepository { get; }
+        DAL.IGenericRepository<Models.ComputerBootMenu> ComputerBootMenuRepository { get; }
         DAL.IGenericRepository<Models.GroupMembership> GroupMembershipRepository { get; }
         DAL.IGenericRepository<Models.Image> ImageRepository { get; }
         DAL.IGenericRepository<Models.ImageProfilePartition> ImageProfilePartitionRepository { get; }
@@ -18,10 +19,12 @@ namespace DAL
         DAL.IGenericRepository<Models.Port> PortRepository { get; }
         DAL.IGenericRepository<Models.Script> ScriptRepository { get; }
         DAL.IGenericRepository<Models.Setting> SettingRepository { get; }
-        DAL.IGenericRepository<Models.Site> SiteRepository { get; }
+        DAL.SiteRepository SiteRepository { get; }
         DAL.IGenericRepository<Models.SysprepTag> SysprepTagRepository { get; }
         DAL.IGenericRepository<Models.WdsUser> UserRepository { get; }
         DAL.IGenericRepository<Models.BootTemplate> BootTemplateRepository { get; }
+        DAL.BuildingRepository BuildingRepository { get; }
+        DAL.ComputerRepository ComputerRepository { get; }
         DAL.ImageProfileScriptRepository ImageProfileScriptRepository { get; }
         DAL.GroupRepository GroupRepository { get; }
         DAL.ActiveImagingTaskRepository ActiveImagingTaskRepository { get; }

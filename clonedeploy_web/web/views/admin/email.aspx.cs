@@ -71,7 +71,7 @@ public partial class views_admin_email : Admin
 
 
      
-        new BLL.Setting().UpdateSetting(listSettings);
+        BLL.Setting.UpdateSetting(listSettings);
     }
 
     protected void btnTestMessage_Click(object sender, EventArgs e)

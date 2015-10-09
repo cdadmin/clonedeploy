@@ -5,61 +5,73 @@ using Helpers;
 
 namespace BLL
 {
-    public class Room
+    public static class Room
     {
-        private readonly DAL.UnitOfWork _unitOfWork;
-
-        public Room()
+    
+        public static Models.ValidationResult AddRoom(Models.Room room)
         {
-            _unitOfWork = new UnitOfWork();
-        }
-
-        public Models.ValidationResult AddRoom(Models.Room room)
-        {
-            var validationResult = ValidateRoom(room, true);
-            if (validationResult.IsValid)
+            using (var uow = new DAL.UnitOfWork())
             {
-                _unitOfWork.RoomRepository.Insert(room);
-                validationResult.IsValid = _unitOfWork.Save();
+                var validationResult = ValidateRoom(room, true);
+                if (validationResult.IsValid)
+                {
+                    uow.RoomRepository.Insert(room);
+                    validationResult.IsValid = uow.Save();
+                }
+
+                return validationResult;
             }
-
-            return validationResult;
         }
 
-        public string TotalCount()
+        public static string TotalCount()
         {
-            return _unitOfWork.RoomRepository.Count();
-        }
-
-        public bool DeleteRoom(int roomId)
-        {
-            _unitOfWork.RoomRepository.Delete(roomId);
-            return _unitOfWork.Save();
-        }
-
-        public Models.Room GetRoom(int roomId)
-        {
-            return _unitOfWork.RoomRepository.GetById(roomId);
-        }
-
-        public List<Models.Room> SearchRooms(string searchString)
-        {
-            return _unitOfWork.RoomRepository.Get(r => r.Name.Contains(searchString),includeProperties:"dp");
-        }
-
-        public Models.ValidationResult UpdateRoom(Models.Room room)
-        {
-            var validationResult = ValidateRoom(room, false);
-            if (validationResult.IsValid)
+            using (var uow = new DAL.UnitOfWork())
             {
-                _unitOfWork.RoomRepository.Update(room, room.Id);
-                validationResult.IsValid = _unitOfWork.Save();
+                return uow.RoomRepository.Count();
             }
-
-            return validationResult;
         }
 
-        public Models.ValidationResult ValidateRoom(Models.Room room, bool isNewRoom)
+        public static bool DeleteRoom(int roomId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.RoomRepository.Delete(roomId);
+                return uow.Save();
+            }
+        }
+
+        public static Models.Room GetRoom(int roomId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.RoomRepository.GetById(roomId);
+            }
+        }
+
+        public static List<Models.Room> SearchRooms(string searchString = "")
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.RoomRepository.Get(searchString);
+            }
+        }
+
+        public static Models.ValidationResult UpdateRoom(Models.Room room)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                var validationResult = ValidateRoom(room, false);
+                if (validationResult.IsValid)
+                {
+                    uow.RoomRepository.Update(room, room.Id);
+                    validationResult.IsValid = uow.Save();
+                }
+
+                return validationResult;
+            }
+        }
+
+        public static Models.ValidationResult ValidateRoom(Models.Room room, bool isNewRoom)
         {
             var validationResult = new Models.ValidationResult();
 

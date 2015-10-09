@@ -5,52 +5,57 @@ using Helpers;
 
 namespace BLL
 {
-    public class LinuxProfile
+    public static class LinuxProfile
     {
-        private readonly DAL.UnitOfWork _unitOfWork;
-
-        public LinuxProfile()
+        public static Models.ValidationResult AddProfile(Models.LinuxProfile profile)
         {
-            _unitOfWork = new UnitOfWork();
+            using (var uow = new DAL.UnitOfWork())
+            {
+                var validationResult = ValidateLinuxProfile(profile, true);
+                if (validationResult.IsValid)
+                {
+                    uow.LinuxProfileRepository.Insert(profile);
+                    validationResult.IsValid = uow.Save();
+                }
+
+                return validationResult;
+            }
         }
 
-        public Models.ValidationResult AddProfile(Models.LinuxProfile profile)
+        public static Models.LinuxProfile ReadProfile(int profileId)
         {
-            var validationResult = ValidateLinuxProfile(profile, true);
-            if (validationResult.IsValid)
+            using (var uow = new DAL.UnitOfWork())
             {
-                _unitOfWork.LinuxProfileRepository.Insert(profile);
-                validationResult.IsValid = _unitOfWork.Save();
+                return uow.LinuxProfileRepository.GetById(profileId);
+            }
+        }
+
+        public static List<Models.LinuxProfile> SearchProfiles(int imageId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.LinuxProfileRepository.Get(p => p.ImageId == imageId,
+                    orderBy: (q => q.OrderBy(p => p.Name)));
+            }
+        }
+
+        public static Models.ValidationResult UpdateProfile(Models.LinuxProfile profile)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                var validationResult = ValidateLinuxProfile(profile, false);
+                if (validationResult.IsValid)
+                {
+                    uow.LinuxProfileRepository.Update(profile, profile.Id);
+                    validationResult.IsValid = uow.Save();
+                }
+
+                return validationResult;
             }
 
-            return validationResult;
         }
 
-        public Models.LinuxProfile ReadProfile(int profileId)
-        {
-            return _unitOfWork.LinuxProfileRepository.GetById(profileId);
-        }
-
-        public List<Models.LinuxProfile> SearchProfiles(int? imageId)
-        {
-            return _unitOfWork.LinuxProfileRepository.Get(p => p.ImageId == imageId,
-                orderBy: (q => q.OrderBy(p => p.Name)));
-        }
-
-        public Models.ValidationResult UpdateProfile(Models.LinuxProfile profile)
-        {
-            var validationResult = ValidateLinuxProfile(profile, false);
-            if (validationResult.IsValid)
-            {
-                _unitOfWork.LinuxProfileRepository.Update(profile, profile.Id);
-                validationResult.IsValid = _unitOfWork.Save();
-            }
-
-            return validationResult;
-          
-        }
-
-        public Models.ValidationResult ValidateLinuxProfile(Models.LinuxProfile linuxProfile, bool isNewLinuxProfile)
+        public static Models.ValidationResult ValidateLinuxProfile(Models.LinuxProfile linuxProfile, bool isNewLinuxProfile)
         {
             var validationResult = new Models.ValidationResult();
 

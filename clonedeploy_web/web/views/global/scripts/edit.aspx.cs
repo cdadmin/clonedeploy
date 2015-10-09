@@ -20,7 +20,7 @@ public partial class views_admin_scripts_edit : BasePages.Global
         };
         var fixedLineEnding = scriptEditor.Value.Replace("\r\n", "\n");
         script.Contents = fixedLineEnding;
-        new BLL.Script().UpdateScript(script);
+        BLL.Script.UpdateScript(script);
     }
 
     protected void PopulateForm()
@@ -33,7 +33,7 @@ public partial class views_admin_scripts_edit : BasePages.Global
 
     private Script ReadProfile()
     {
-        return new BLL.Script().GetScript(Convert.ToInt32(Request.QueryString["scriptid"]));
+        return BLL.Script.GetScript(Convert.ToInt32(Request.QueryString["scriptid"]));
 
     }
 }

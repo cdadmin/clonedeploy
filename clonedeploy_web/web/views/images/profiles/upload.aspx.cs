@@ -23,6 +23,6 @@ public partial class views_images_profiles_upload : Images
         imageProfile.SkipShrinkVolumes = Convert.ToInt16(chkUpNoShrink.Checked);
         imageProfile.SkipShrinkLvm = Convert.ToInt16(chkUpNoShrinkLVM.Checked);
         imageProfile.DebugResize = Convert.ToInt16(chkUpDebugResize.Checked);
-        BllLinuxProfile.UpdateProfile(imageProfile);
+        BLL.LinuxProfile.UpdateProfile(imageProfile);
     }
 }

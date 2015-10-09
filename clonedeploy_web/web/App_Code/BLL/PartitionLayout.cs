@@ -7,62 +7,74 @@ namespace BLL
 {
     public class PartitionLayout
     {
-        private readonly DAL.UnitOfWork _unitOfWork;
 
-        public PartitionLayout()
+        public static Models.ValidationResult AddPartitionLayout(Models.PartitionLayout partitionLayout)
         {
-            _unitOfWork = new UnitOfWork();
-        }
-
-        public Models.ValidationResult AddPartitionLayout(Models.PartitionLayout partitionLayout)
-        {
-            var validationResult = ValidatePartitionLayout(partitionLayout, true);
-            if (validationResult.IsValid)
+            using (var uow = new DAL.UnitOfWork())
             {
-                _unitOfWork.PartitionLayoutRepository.Insert(partitionLayout);
-                validationResult.IsValid = _unitOfWork.Save();
+                var validationResult = ValidatePartitionLayout(partitionLayout, true);
+                if (validationResult.IsValid)
+                {
+                    uow.PartitionLayoutRepository.Insert(partitionLayout);
+                    validationResult.IsValid = uow.Save();
+                }
+
+                return validationResult;
             }
-
-            return validationResult;
         }
 
-        public string TotalCount()
+        public static string TotalCount()
         {
-            return _unitOfWork.PartitionLayoutRepository.Count();
-        }
-
-
-        public bool DeletePartitionLayout(int partitionLayoutId)
-        {
-            _unitOfWork.PartitionLayoutRepository.Delete(partitionLayoutId);
-            return _unitOfWork.Save();
-        }
-
-        public Models.PartitionLayout GetPartitionLayout(int partitionLayoutId)
-        {
-            return _unitOfWork.PartitionLayoutRepository.GetById(partitionLayoutId);
-        }
-
-
-        public List<Models.PartitionLayout> SearchPartitionLayouts(string searchString)
-        {
-            return _unitOfWork.PartitionLayoutRepository.Get(p => p.Name.Contains(searchString),
-                orderBy: (q => q.OrderBy(p => p.Name)));
-        }
-
-        public Models.ValidationResult UpdatePartitionLayout(Models.PartitionLayout partitionLayout)
-        {
-            var validationResult = ValidatePartitionLayout(partitionLayout, false);
-            if (validationResult.IsValid)
+            using (var uow = new DAL.UnitOfWork())
             {
-                _unitOfWork.PartitionLayoutRepository.Update(partitionLayout, partitionLayout.Id);
-                validationResult.IsValid = _unitOfWork.Save();
+                return uow.PartitionLayoutRepository.Count();
             }
-
-            return validationResult;         
         }
 
-        public Models.ValidationResult ValidatePartitionLayout(Models.PartitionLayout partitionLayout, bool isNewPartitionLayout)
+
+        public static bool DeletePartitionLayout(int partitionLayoutId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.PartitionLayoutRepository.Delete(partitionLayoutId);
+                return uow.Save();
+            }
+        }
+
+        public static Models.PartitionLayout GetPartitionLayout(int partitionLayoutId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.PartitionLayoutRepository.GetById(partitionLayoutId);
+            }
+        }
+
+
+        public static List<Models.PartitionLayout> SearchPartitionLayouts(string searchString)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.PartitionLayoutRepository.Get(p => p.Name.Contains(searchString),
+                    orderBy: (q => q.OrderBy(p => p.Name)));
+            }
+        }
+
+        public static Models.ValidationResult UpdatePartitionLayout(Models.PartitionLayout partitionLayout)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                var validationResult = ValidatePartitionLayout(partitionLayout, false);
+                if (validationResult.IsValid)
+                {
+                    uow.PartitionLayoutRepository.Update(partitionLayout, partitionLayout.Id);
+                    validationResult.IsValid = uow.Save();
+                }
+
+                return validationResult;
+            }
+        }
+
+        public static Models.ValidationResult ValidatePartitionLayout(Models.PartitionLayout partitionLayout, bool isNewPartitionLayout)
         {
             var validationResult = new Models.ValidationResult();
 

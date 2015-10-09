@@ -13,7 +13,7 @@ namespace Security
         public string ConsoleLogin(string username, string password, string task, string isWebTask, string ip)
         {
             if (!GlobalLogin(username, password, "Console")) return "false";
-            var wdsuser = new User().GetUser(username);
+            var wdsuser = BLL.User.GetUser(username);
 
 
 
@@ -59,7 +59,7 @@ namespace Security
         {
             bool validated = false;
             //Check if user exists in CWDS
-            var user = new User().GetUser(userName);
+            var user = BLL.User.GetUser(userName);
 
             if (user.Id != null)
             {

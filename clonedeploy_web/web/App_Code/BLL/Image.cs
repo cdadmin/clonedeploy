@@ -10,101 +10,22 @@ using Partition;
 
 namespace BLL
 {
-    public class Image
+    public static class Image
     {
-        private readonly DAL.UnitOfWork _unitOfWork;
-
-        public Image()
+        public static Models.ValidationResult AddImage(Models.Image image)
         {
-            _unitOfWork = new UnitOfWork();
-        }
-
-        public Models.ValidationResult AddImage(Models.Image image)
-        {
-            var validationResult = ValidateImage(image, true);
-            if (validationResult.IsValid)
+            using (var uow = new DAL.UnitOfWork())
             {
-                validationResult.IsValid = false;
-                _unitOfWork.ImageRepository.Insert(image);
-                if (_unitOfWork.Save())
+                var validationResult = ValidateImage(image, true);
+                if (validationResult.IsValid)
                 {
-                    try
-                    {
-                        Directory.CreateDirectory(Settings.ImageStorePath + image.Name);
-                        validationResult.IsValid = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Log(ex.Message);
-                        throw;
-                    }
-                }
-
-            }
-            return validationResult;
-        }
-
-        public bool DeleteImage(Models.Image image)
-        {
-            if (Convert.ToBoolean(image.Protected))
-            {
-                //Message.Text = "This Image Is Protected And Cannot Be Deleted";
-                return false;
-            }
-
-            _unitOfWork.ImageRepository.Delete(image.Id);
-            if (_unitOfWork.Save())
-            {
-                if (string.IsNullOrEmpty(image.Name)) return false;
-                try
-                {
-                    if (Directory.Exists(Settings.ImageStorePath + image.Name))
-                        Directory.Delete(Settings.ImageStorePath + image.Name, true);
-
-                    if (Directory.Exists(Settings.ImageHoldPath + image.Name))
-                        Directory.Delete(Settings.ImageHoldPath + image.Name, true);
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log(ex.Message);
-                    //Message.Text = "Could Not Delete Image Folder";
-                    return false;
-                }
-
-            }
-            else
-            {
-                //Message.Text = "Could Not Delete Image";
-                return false;
-            }
-
-        }
-
-        public Models.Image GetImage(int? imageId)
-        {
-            return _unitOfWork.ImageRepository.GetById(imageId);
-        }
-
-        public List<Models.Image> SearchImages(string searchString)
-        {
-            return _unitOfWork.ImageRepository.Get(i => i.Name.Contains(searchString));
-        }
-
-        public Models.ValidationResult UpdateImage(Models.Image image, string originalName)
-        {
-            var validationResult = ValidateImage(image, false);
-            if (validationResult.IsValid)
-            {
-                validationResult.IsValid = false;
-                _unitOfWork.ImageRepository.Update(image, image.Id);
-                if (_unitOfWork.Save())
-                {
-                    if (image.Name != originalName)
+                    validationResult.IsValid = false;
+                    uow.ImageRepository.Insert(image);
+                    if (uow.Save())
                     {
                         try
                         {
-                            new FileOps().RenameFolder(originalName, image.Name);
+                            Directory.CreateDirectory(Settings.ImageStorePath + image.Name);
                             validationResult.IsValid = true;
                         }
                         catch (Exception ex)
@@ -113,17 +34,104 @@ namespace BLL
                             throw;
                         }
                     }
-                    else
-                    {
-                        validationResult.IsValid = true;
-                    }
-                }
 
+                }
+                return validationResult;
             }
-            return validationResult; 
         }
 
-        public string Calculate_Hash(string fileName)
+        public static bool DeleteImage(Models.Image image)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                if (Convert.ToBoolean(image.Protected))
+                {
+                    //Message.Text = "This Image Is Protected And Cannot Be Deleted";
+                    return false;
+                }
+
+                uow.ImageRepository.Delete(image.Id);
+                if (uow.Save())
+                {
+                    if (string.IsNullOrEmpty(image.Name)) return false;
+                    try
+                    {
+                        if (Directory.Exists(Settings.ImageStorePath + image.Name))
+                            Directory.Delete(Settings.ImageStorePath + image.Name, true);
+
+                        if (Directory.Exists(Settings.ImageHoldPath + image.Name))
+                            Directory.Delete(Settings.ImageHoldPath + image.Name, true);
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(ex.Message);
+                        //Message.Text = "Could Not Delete Image Folder";
+                        return false;
+                    }
+
+                }
+                else
+                {
+                    //Message.Text = "Could Not Delete Image";
+                    return false;
+                }
+            }
+
+        }
+
+        public static Models.Image GetImage(int imageId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ImageRepository.GetById(imageId);
+            }
+        }
+
+        public static List<Models.Image> SearchImages(string searchString)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ImageRepository.Get(i => i.Name.Contains(searchString));
+            }
+        }
+
+        public static Models.ValidationResult UpdateImage(Models.Image image, string originalName)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                var validationResult = ValidateImage(image, false);
+                if (validationResult.IsValid)
+                {
+                    validationResult.IsValid = false;
+                    uow.ImageRepository.Update(image, image.Id);
+                    if (uow.Save())
+                    {
+                        if (image.Name != originalName)
+                        {
+                            try
+                            {
+                                new FileOps().RenameFolder(originalName, image.Name);
+                                validationResult.IsValid = true;
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.Log(ex.Message);
+                                throw;
+                            }
+                        }
+                        else
+                        {
+                            validationResult.IsValid = true;
+                        }
+                    }
+
+                }
+                return validationResult;
+            }
+        }
+
+        public static string Calculate_Hash(string fileName)
         {
             long read = 0;
             var r = -1;
@@ -144,7 +152,7 @@ namespace BLL
             return string.Join("", sha.Hash.Select(x => x.ToString("x2")));
         }
 
-        public bool Check_Checksum(Models.Image image)
+        public static bool Check_Checksum(Models.Image image)
         {
             if (Settings.ImageChecksum != "On") return true;
             try
@@ -200,17 +208,20 @@ namespace BLL
             }
         }
 
-        public string TotalCount()
+        public static string TotalCount()
         {
-            return _unitOfWork.ImageRepository.Count();
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ImageRepository.Count();
+            }
         }
 
-        public void Import()
+        public static void Import()
         {
             
         }
 
-        public Models.ValidationResult ValidateImage(Models.Image image, bool isNewImage)
+        public static Models.ValidationResult ValidateImage(Models.Image image, bool isNewImage)
         {
             var validationResult = new Models.ValidationResult();
 

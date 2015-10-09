@@ -1,22 +1,4 @@
-﻿/*  
-    CrucibleWDS A Windows Deployment Solution
-    Copyright (C) 2011  Jon Dolny
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/.
- */
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Web.UI.WebControls;
@@ -37,11 +19,9 @@ namespace views.users
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            var user = new WdsUser();
-            var bllUser = new User();
-            
+            var user = new WdsUser();         
 
-            if (bllUser.GetAdminCount() == 1 && ddluserMembership.Text != "Administrator" &&
+            if (BLL.User.GetAdminCount() == 1 && ddluserMembership.Text != "Administrator" &&
                 user.Membership == "Administrator")
                 EndUserMessage = "There Must Be At Least One Administrator";
             else
@@ -73,12 +53,12 @@ namespace views.users
                 }
 
                 if ((string.IsNullOrEmpty(txtUserPwd.Text)) && (string.IsNullOrEmpty(txtUserPwdConfirm.Text)))
-                    bllUser.UpdateUser(user, false);
+                    BLL.User.UpdateUser(user, false);
                 if (txtUserPwd.Text == txtUserPwdConfirm.Text)
                 {
                     user.Password = txtUserPwd.Text;
-                    user.Salt = bllUser.CreateSalt(16);
-                    bllUser.UpdateUser(user, true);
+                    user.Salt = BLL.User.CreateSalt(16);
+                    BLL.User.UpdateUser(user, true);
                 }
                 else
                     EndUserMessage = "Passwords Did Not Match";
@@ -112,7 +92,7 @@ namespace views.users
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
        
-            gvGroups.DataSource = new Group().SearchGroups("%");
+            gvGroups.DataSource = BLL.Group.SearchGroups("%");
             var dataTable = (DataTable) gvGroups.DataSource;
 
             if (dataTable == null) return;
@@ -128,7 +108,7 @@ namespace views.users
         {
          
             var group = new Models.Group();
-            gvGroups.DataSource = new Group().SearchGroups("%");
+            gvGroups.DataSource = BLL.Group.SearchGroups("%");
             gvGroups.DataBind();
 
             if (CloneDeployUser.Membership == "User")

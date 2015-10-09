@@ -11,7 +11,6 @@ namespace views.tasks
 {
     public partial class TaskUnicast : BasePages.Tasks
     {
-        Computer _bllComputer = new Computer();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (IsPostBack) return;
@@ -28,7 +27,7 @@ namespace views.tasks
                 var dataKey = gvHosts.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var host = _bllComputer.GetComputer(Convert.ToInt32(dataKey.Value));
+                    var host = BLL.Computer.GetComputer(Convert.ToInt32(dataKey.Value));
                     Session["hostID"] = host.Id;
                     Session["direction"] = "push";
                     lblTitle.Text = "Deploy The Selected Host?";
@@ -50,7 +49,7 @@ namespace views.tasks
                 var dataKey = gvHosts.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var host = _bllComputer.GetComputer(Convert.ToInt32(dataKey.Value));
+                    var host = BLL.Computer.GetComputer(Convert.ToInt32(dataKey.Value));
                     Session["hostID"] = host.Id;
                     Session["direction"] = "pull";
                     lblTitle.Text = "Upload The Selected Host?";
@@ -77,20 +76,19 @@ namespace views.tasks
 
         protected void OkButton_Click(object sender, EventArgs e)
         {
-            var host = _bllComputer.GetComputer(Convert.ToInt32(Session["hostID"]));
+            var host = BLL.Computer.GetComputer(Convert.ToInt32(Session["hostID"]));
 
 
             var direction = (string) (Session["direction"]);
 
             if (direction == "push")
             {
-                var bllImage = new Image();
-                var image = bllImage.GetImage(host.Image);
+                var image = BLL.Image.GetImage(host.ImageId);
                 Session["imageID"] = image.Id;
 
-                if (bllImage.Check_Checksum(image))
+                if (BLL.Image.Check_Checksum(image))
                 {
-                    new Computer().StartUnicast(host,direction);
+                    BLL.Computer.StartUnicast(host,direction);
                    
                 }
                 else
@@ -104,7 +102,7 @@ namespace views.tasks
             }
             else
             {
-                new Computer().StartUnicast(host, direction);
+                BLL.Computer.StartUnicast(host, direction);
             }
             Session.Remove("hostID");
             Session.Remove("direction");
@@ -120,11 +118,11 @@ namespace views.tasks
         protected void PopulateGrid()
         {
 
-            gvHosts.DataSource = _bllComputer.SearchComputers(txtSearch.Text);
+            gvHosts.DataSource = BLL.Computer.SearchComputers(txtSearch.Text);
 
             gvHosts.DataBind();
 
-            lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + _bllComputer.TotalCount() + " Total Host(s)";
+            lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + BLL.Computer.TotalCount() + " Total Host(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)

@@ -47,7 +47,7 @@ namespace BLL
             }
         }
 
-        public static List<Models.BootTemplate> SearchBootTemplates(string searchString)
+        public static List<Models.BootTemplate> SearchBootTemplates(string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())
             {

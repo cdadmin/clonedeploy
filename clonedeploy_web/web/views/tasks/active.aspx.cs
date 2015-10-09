@@ -8,17 +8,15 @@ namespace views.tasks
 {
     public partial class TaskActive : BasePages.Tasks
     {
-        private readonly ActiveImagingTask _bllActiveImagingTask = new ActiveImagingTask();
-        private readonly ActiveMulticastSession _bllActiveMulticastSession = new ActiveMulticastSession();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (IsPostBack) return;
             ViewState["clickTracker"] = "1";
-            gvTasks.DataSource = _bllActiveImagingTask.ReadAll();
+            gvTasks.DataSource = BLL.ActiveImagingTask.ReadAll();
             gvTasks.DataBind();
-            gvUcTasks.DataSource = _bllActiveImagingTask.ReadUnicasts();
+            gvUcTasks.DataSource = BLL.ActiveImagingTask.ReadUnicasts();
             gvUcTasks.DataBind();
-            gvMcTasks.DataSource = _bllActiveMulticastSession.GetAllMulticastSessions();
+            gvMcTasks.DataSource = BLL.ActiveMulticastSession.GetAllMulticastSessions();
             gvMcTasks.DataBind();
             GetMcInfo();
         }
@@ -32,12 +30,12 @@ namespace views.tasks
                 var dataKey = gvTasks.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
 
-                    _bllActiveImagingTask.DeleteActiveImagingTask(Convert.ToInt32(dataKey.Value));
+                    BLL.ActiveImagingTask.DeleteActiveImagingTask(Convert.ToInt32(dataKey.Value));
 
             }
-            gvTasks.DataSource = _bllActiveImagingTask.ReadAll();
+            gvTasks.DataSource = BLL.ActiveImagingTask.ReadAll();
             gvTasks.DataBind();
-            gvUcTasks.DataSource = _bllActiveImagingTask.ReadUnicasts();
+            gvUcTasks.DataSource = BLL.ActiveImagingTask.ReadUnicasts();
             gvUcTasks.DataBind();
         }
 
@@ -51,12 +49,12 @@ namespace views.tasks
                 var dataKey = gvMcTasks.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    _bllActiveMulticastSession.Delete(Convert.ToInt32(dataKey.Value));
+                    BLL.ActiveMulticastSession.Delete(Convert.ToInt32(dataKey.Value));
                 }
             }
-            gvMcTasks.DataSource = _bllActiveMulticastSession.GetAllMulticastSessions();
+            gvMcTasks.DataSource = BLL.ActiveMulticastSession.GetAllMulticastSessions();
             gvMcTasks.DataBind();
-            gvTasks.DataSource = _bllActiveImagingTask.ReadAll();
+            gvTasks.DataSource = BLL.ActiveImagingTask.ReadAll();
             gvTasks.DataBind();
         }
 
@@ -78,7 +76,7 @@ namespace views.tasks
                     td.Visible = true;
                     gv.Visible = true;
 
-                    var table = _bllActiveImagingTask.MulticastMemberStatus(Convert.ToInt32(gvRow.Cells[1].Text));
+                    var table = BLL.ActiveImagingTask.MulticastMemberStatus(Convert.ToInt32(gvRow.Cells[1].Text));
                     gv.DataSource = table;
                     gv.DataBind();
                 }
@@ -98,12 +96,12 @@ namespace views.tasks
 
         protected void cancelTasks_Click(object sender, EventArgs e)
         {
-            _bllActiveImagingTask.CancelAll();
-            gvMcTasks.DataSource = _bllActiveMulticastSession.GetAllMulticastSessions();
+            BLL.ActiveImagingTask.CancelAll();
+            gvMcTasks.DataSource = BLL.ActiveMulticastSession.GetAllMulticastSessions();
             gvMcTasks.DataBind();
-            gvUcTasks.DataSource = _bllActiveImagingTask.ReadUnicasts();
+            gvUcTasks.DataSource = BLL.ActiveImagingTask.ReadUnicasts();
             gvUcTasks.DataBind();
-            gvTasks.DataSource = _bllActiveImagingTask.ReadAll();
+            gvTasks.DataSource = BLL.ActiveImagingTask.ReadAll();
             gvTasks.DataBind();
         }
 
@@ -113,7 +111,7 @@ namespace views.tasks
             {
                 try
                 {
-                    var listActive = _bllActiveImagingTask.MulticastProgress(Convert.ToInt32(row.Cells[1].Text));
+                    var listActive = BLL.ActiveImagingTask.MulticastProgress(Convert.ToInt32(row.Cells[1].Text));
                     var lblPartition = row.FindControl("lblPartition") as Label;
                     var lblElapsed = row.FindControl("lblElapsed") as Label;
                     var lblRemaining = row.FindControl("lblRemaining") as Label;
@@ -137,16 +135,16 @@ namespace views.tasks
 
         protected void Timer_Tick(object sender, EventArgs e)
         {
-            gvTasks.DataSource = _bllActiveImagingTask.ReadAll();
+            gvTasks.DataSource = BLL.ActiveImagingTask.ReadAll();
             gvTasks.DataBind();
-            gvUcTasks.DataSource = _bllActiveImagingTask.ReadUnicasts();
+            gvUcTasks.DataSource = BLL.ActiveImagingTask.ReadUnicasts();
             gvUcTasks.DataBind();
             UpdatePanel1.Update();
         }
 
         protected void TimerMC_Tick(object sender, EventArgs e)
         {
-            gvMcTasks.DataSource = _bllActiveMulticastSession.GetAllMulticastSessions();
+            gvMcTasks.DataSource = BLL.ActiveMulticastSession.GetAllMulticastSessions();
             gvMcTasks.DataBind();
             GetMcInfo();
         }

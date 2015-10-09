@@ -27,7 +27,7 @@ namespace Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("image_id", Order = 1)]
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
         [Column("image_name", Order = 2)]
         public string Name { get; set; }

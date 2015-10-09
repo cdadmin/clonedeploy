@@ -12,11 +12,11 @@ namespace Models
         public int Id { get; set; }
         [Column("building_name", Order = 2)]
         public string Name { get; set; }
-        [ForeignKey("dp")]
-        [Column("building_distribution_point", Order = 3)]
-        public int DistributionPoint { get; set; }
 
-        //Navigation Properties
-        public virtual Models.DistributionPoint dp { get; set; }
+        [Column("building_distribution_point", Order = 3)]
+        public int DistributionPointId { get; set; }
+
+        [NotMapped]
+        public virtual Models.DistributionPoint DistributionPoint { get; set; }
     }
 }

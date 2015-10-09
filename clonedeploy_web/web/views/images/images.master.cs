@@ -39,7 +39,7 @@ namespace views.masters
 
         protected void OkButton_Click(object sender, EventArgs e)
         {
-            imagesBasePage.BllImage.DeleteImage(Image);
+            BLL.Image.DeleteImage(Image);
 
                 Response.Redirect("~/views/images/search.aspx");
         }

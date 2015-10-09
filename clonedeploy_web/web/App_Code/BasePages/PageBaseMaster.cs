@@ -38,7 +38,7 @@ namespace BasePages
 
         protected void PopulateImagesDdl(DropDownList ddlImages)
         {
-            ddlImages.DataSource = new Image().SearchImages("").Select(i => new { i.Id, i.Name });
+            ddlImages.DataSource = BLL.Image.SearchImages("").Select(i => new { i.Id, i.Name });
             ddlImages.DataValueField = "Id";
             ddlImages.DataTextField = "Name";
             ddlImages.DataBind();
@@ -47,7 +47,7 @@ namespace BasePages
 
         protected void PopulateImageProfilesDdl(DropDownList ddlImageProfile, int value)
         {
-            ddlImageProfile.DataSource = new LinuxProfile().SearchProfiles(value).Select(i => new { i.Id, i.Name });
+            ddlImageProfile.DataSource = BLL.LinuxProfile.SearchProfiles(value).Select(i => new { i.Id, i.Name });
             ddlImageProfile.DataValueField = "Id";
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();
@@ -57,12 +57,47 @@ namespace BasePages
         protected void PopulateDistributionPointsDdl(DropDownList ddlDp)
         {
             ddlDp.DataSource =
-                new DistributionPoint().SearchDistributionPoints("").Select(d => new {d.Id, d.DisplayName});
+                BLL.DistributionPoint.SearchDistributionPoints("").Select(d => new {d.Id, d.DisplayName});
             ddlDp.DataValueField = "Id";
             ddlDp.DataTextField = "DisplayName";
             ddlDp.DataBind();
         }
 
+        protected void PopulateSitesDdl(DropDownList ddl)
+        {
+            ddl.DataSource = BLL.Site.SearchSites().Select(i => new { i.Id, i.Name });
+            ddl.DataValueField = "Id";
+            ddl.DataTextField = "Name";
+            ddl.DataBind();
+            ddl.Items.Insert(0, new ListItem("Select Site", "-1"));
+        }
+
+        protected void PopulateBuildingsDdl(DropDownList ddl)
+        {
+            ddl.DataSource = BLL.Building.SearchBuildings().Select(i => new { i.Id, i.Name });
+            ddl.DataValueField = "Id";
+            ddl.DataTextField = "Name";
+            ddl.DataBind();
+            ddl.Items.Insert(0, new ListItem("Select Building", "-1"));
+        }
+
+        protected void PopulateRoomsDdl(DropDownList ddl)
+        {
+            ddl.DataSource = BLL.Room.SearchRooms().Select(i => new { i.Id, i.Name });
+            ddl.DataValueField = "Id";
+            ddl.DataTextField = "Name";
+            ddl.DataBind();
+            ddl.Items.Insert(0, new ListItem("Select Room", "-1"));
+        }
+
+        protected void PopulateBootTemplatesDdl(DropDownList ddl)
+        {
+            ddl.DataSource = BLL.BootTemplate.SearchBootTemplates().Select(i => new { i.Id, i.Name });
+            ddl.DataValueField = "Id";
+            ddl.DataTextField = "Name";
+            ddl.DataBind();
+            ddl.Items.Insert(0, new ListItem("No Template", "-1"));
+        }
 
         public void ChkAll(GridView gridview)
         {

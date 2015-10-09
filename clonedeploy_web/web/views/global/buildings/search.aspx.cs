@@ -27,7 +27,7 @@ public partial class views_global_buildings_search : BasePages.Global
     }
     protected void BindGrid()
     {
-        gvBuildings.DataSource = BllBuilding.SearchBuildings(txtSearch.Text);
+        gvBuildings.DataSource = BLL.Building.SearchBuildings(txtSearch.Text);
         gvBuildings.DataBind();
 
         if (gvBuildings.Rows.Count == 0)
@@ -51,10 +51,10 @@ public partial class views_global_buildings_search : BasePages.Global
         var building = new Building
         {
             Name = ((TextBox)gvRow.FindControl("txtNameAdd")).Text,
-            DistributionPoint = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDpAdd")).SelectedValue)
+            DistributionPointId = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDpAdd")).SelectedValue)
         };
 
-        BllBuilding.AddBuilding(building);
+        BLL.Building.AddBuilding(building);
         BindGrid();
     }
 
@@ -72,10 +72,10 @@ public partial class views_global_buildings_search : BasePages.Global
         {
             Id = Convert.ToInt32(gvBuildings.DataKeys[e.RowIndex].Values[0]),
             Name = ((TextBox)gvRow.FindControl("txtName")).Text,
-            DistributionPoint = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDp")).SelectedValue)
+            DistributionPointId = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDp")).SelectedValue)
 
         };
-        BllBuilding.UpdateBuilding(building);
+        BLL.Building.UpdateBuilding(building);
 
         gvBuildings.EditIndex = -1;
         this.BindGrid();
@@ -89,7 +89,7 @@ public partial class views_global_buildings_search : BasePages.Global
 
     protected void OnRowDeleting(object sender, GridViewDeleteEventArgs e)
     {
-        BllBuilding.DeleteBuilding(Convert.ToInt32(gvBuildings.DataKeys[e.RowIndex].Values[0]));
+        BLL.Building.DeleteBuilding(Convert.ToInt32(gvBuildings.DataKeys[e.RowIndex].Values[0]));
         BindGrid();
     }
 
@@ -110,7 +110,7 @@ public partial class views_global_buildings_search : BasePages.Global
             if (ddlDps != null)
             {
                 PopulateDistributionPointsDdl(ddlDps);
-                ddlDps.SelectedValue = ((Building)(e.Row.DataItem)).DistributionPoint.ToString();
+                ddlDps.SelectedValue = ((Building)(e.Row.DataItem)).DistributionPointId.ToString();
             }
         } 
     }

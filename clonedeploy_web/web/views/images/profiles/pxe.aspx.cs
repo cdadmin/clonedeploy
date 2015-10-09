@@ -24,6 +24,6 @@ public partial class views_images_profiles_pxe : Images
         imageProfile.Kernel = ddlKernel.Text;
         imageProfile.BootImage = ddlBootImage.Text;
         imageProfile.KernelArguments = txtKernelArgs.Text;
-        BllLinuxProfile.UpdateProfile(imageProfile);
+        BLL.LinuxProfile.UpdateProfile(imageProfile);
     }
 }

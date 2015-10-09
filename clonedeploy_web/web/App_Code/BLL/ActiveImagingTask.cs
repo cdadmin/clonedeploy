@@ -10,73 +10,103 @@ namespace BLL
 
     public class ActiveImagingTask
     {
-        private readonly UnitOfWork _unitOfWork = new UnitOfWork();
 
-
-        public bool IsComputerActive(int computerId)
+        public static bool IsComputerActive(int computerId)
         {
-            return _unitOfWork.ActiveImagingTaskRepository.Exists(a => a.ComputerId == computerId);
-        }
-
-        public bool DeleteActiveImagingTask(int activeImagingTaskId)
-        {
-            var activeImagingTask = _unitOfWork.ActiveImagingTaskRepository.GetById(activeImagingTaskId);
-            var computer = _unitOfWork.ComputerRepository.GetById(activeImagingTask.ComputerId);
-
-            _unitOfWork.ActiveImagingTaskRepository.Delete(activeImagingTask.Id);
-            if (_unitOfWork.Save())
+            using (var uow = new DAL.UnitOfWork())
             {
-                return new PxeFileOps().CleanPxeBoot(Utility.MacToPxeMac(computer.Mac));
-            }
-            else
-            {
-                return false;
+                return uow.ActiveImagingTaskRepository.Exists(a => a.ComputerId == computerId);
             }
         }
 
-        public bool AddActiveImagingTask(Models.ActiveImagingTask activeImagingTask)
+        public static bool DeleteActiveImagingTask(int activeImagingTaskId)
         {
-            _unitOfWork.ActiveImagingTaskRepository.Insert(activeImagingTask);
-            return _unitOfWork.Save();
+            using (var uow = new DAL.UnitOfWork())
+            {
+                var activeImagingTask = uow.ActiveImagingTaskRepository.GetById(activeImagingTaskId);
+                var computer = uow.ComputerRepository.GetById(activeImagingTask.ComputerId);
+
+                uow.ActiveImagingTaskRepository.Delete(activeImagingTask.Id);
+                if (uow.Save())
+                {
+                    return new PxeFileOps().CleanPxeBoot(Utility.MacToPxeMac(computer.Mac));
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
 
-        public void DeleteForMulticast(int multicastId)
+        public static bool AddActiveImagingTask(Models.ActiveImagingTask activeImagingTask)
         {
-            _unitOfWork.ActiveImagingTaskRepository.DeleteRange(t => t.MulticastId == multicastId);
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.ActiveImagingTaskRepository.Insert(activeImagingTask);
+                return uow.Save();
+            }
         }
 
-        public bool UpdateActiveImagingTask(Models.ActiveImagingTask activeImagingTask)
+        public static void DeleteForMulticast(int multicastId)
         {
-            _unitOfWork.ActiveImagingTaskRepository.Update(activeImagingTask, activeImagingTask.Id);
-            return _unitOfWork.Save();
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.ActiveImagingTaskRepository.DeleteRange(t => t.MulticastId == multicastId);
+            }
         }
 
-        public List<Models.ActiveImagingTask> MulticastMemberStatus(int multicastId)
+        public static bool UpdateActiveImagingTask(Models.ActiveImagingTask activeImagingTask)
         {
-            return _unitOfWork.ActiveImagingTaskRepository.Get(t => t.MulticastId == multicastId, orderBy: q => q.OrderBy(t => t.ComputerId) );
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.ActiveImagingTaskRepository.Update(activeImagingTask, activeImagingTask.Id);
+                return uow.Save();
+            }
         }
 
-        public List<Models.ActiveImagingTask> MulticastProgress(int multicastId)
+        public static List<Models.ActiveImagingTask> MulticastMemberStatus(int multicastId)
         {
-            return _unitOfWork.ActiveImagingTaskRepository.MulticastProgress(multicastId);
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ActiveImagingTaskRepository.Get(t => t.MulticastId == multicastId,
+                    orderBy: q => q.OrderBy(t => t.ComputerId));
+            }
         }
 
-        public List<Models.ActiveImagingTask> ReadAll()
+        public static List<Models.ActiveImagingTask> MulticastProgress(int multicastId)
         {
-            return _unitOfWork.ActiveImagingTaskRepository.Get(orderBy: q => q.OrderBy(t => t.Id));
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ActiveImagingTaskRepository.MulticastProgress(multicastId);
+            }
         }
 
-        public List<Models.ActiveImagingTask> ReadUnicasts()
+        public static List<Models.ActiveImagingTask> ReadAll()
         {
-            return _unitOfWork.ActiveImagingTaskRepository.Get(t => t.Type == "unicast",
-                orderBy: q => q.OrderBy(t => t.ComputerId));
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ActiveImagingTaskRepository.Get(orderBy: q => q.OrderBy(t => t.Id));
+            }
         }
 
-        public List<Models.Computer> GetMulticastComputers(int multicastId)
+        public static List<Models.ActiveImagingTask> ReadUnicasts()
         {
-            return _unitOfWork.ActiveImagingTaskRepository.MulticastComputers(multicastId);
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ActiveImagingTaskRepository.Get(t => t.Type == "unicast",
+                    orderBy: q => q.OrderBy(t => t.ComputerId));
+            }
         }
-        public void CancelAll()
+
+        public static List<Models.Computer> GetMulticastComputers(int multicastId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ActiveImagingTaskRepository.MulticastComputers(multicastId);
+            }
+        }
+
+        public static void CancelAll()
         {
             CancelAllImagingTasks.Run();
         }

@@ -12,8 +12,6 @@ namespace views.groups
 {
     public partial class GroupBootMenu : Groups
     {
-        private readonly Group _bllGroup = new Group();
-        private readonly GroupMembership _bllGroupMembership = new GroupMembership();
         protected void btnRemoveBootMenu_Click(object sender, EventArgs e)
         {
           
@@ -21,7 +19,7 @@ namespace views.groups
             switch (Group.Type)
             {
                 case "standard":
-                    foreach (var host in _bllGroup.GetGroupMembers(Group.Id, ""))
+                    foreach (var host in BLL.Group.GetGroupMembers(Group.Id, ""))
                     {
                         var customBootMenu = new CustomBootMenu {Host = host};
                         customBootMenu.RemoveCustomBootMenu();
@@ -46,7 +44,7 @@ namespace views.groups
             switch (Group.Type)
             {
                 case "standard":
-                    foreach (var host in _bllGroup.GetGroupMembers(Group.Id, ""))
+                    foreach (var host in BLL.Group.GetGroupMembers(Group.Id, ""))
                     {                    
                         var customBootMenu = new CustomBootMenu
                         {

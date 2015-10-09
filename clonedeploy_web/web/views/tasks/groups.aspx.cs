@@ -29,7 +29,6 @@ namespace views.tasks
 {
     public partial class TaskMulticast : BasePages.Tasks
     {
-        private readonly Group _bllGroup = new Group();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack) PopulateGrid();
@@ -39,19 +38,18 @@ namespace views.tasks
         {
             var groupId = Convert.ToInt32(Session["groupID"]);
             var isUnicast = Convert.ToInt32(Session["isGroupUnicast"]);
-            var group = new Group().GetGroup(groupId);
-            var bllImage = new Image();
-            var image = bllImage.GetImage(group.Image);
+            var group = BLL.Group.GetGroup(groupId);
+            var image = BLL.Image.GetImage(group.Image);
 
             Session["imageID"] = image.Id;
-            if (bllImage.Check_Checksum(image))
+            if (BLL.Image.Check_Checksum(image))
             {
                 if (isUnicast == 1)
                 {
                     var count = 0;
-                    foreach (var host in new Group().GetGroupMembers(group.Id, ""))
+                    foreach (var host in BLL.Group.GetGroupMembers(group.Id, ""))
                     {
-                        new Computer().StartUnicast(host, "push");
+                        BLL.Computer.StartUnicast(host, "push");
                         count++;
                     }
                     EndUserMessage = "Started " + count + " Tasks";
@@ -83,7 +81,7 @@ namespace views.tasks
                 var dataKey = gvGroups.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var group = _bllGroup.GetGroup(Convert.ToInt32(dataKey.Value));
+                    var group = BLL.Group.GetGroup(Convert.ToInt32(dataKey.Value));
 
                  
                     Session["groupID"] = group.Id;
@@ -107,7 +105,7 @@ namespace views.tasks
                 var dataKey = gvGroups.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var group = _bllGroup.GetGroup(Convert.ToInt32(dataKey.Value));
+                    var group = BLL.Group.GetGroup(Convert.ToInt32(dataKey.Value));
                   
                     Session["groupID"] = group.Id;
                     Session["isGroupUnicast"] = 1;
@@ -132,11 +130,11 @@ namespace views.tasks
         {
             var group = new Models.Group();
 
-            gvGroups.DataSource = _bllGroup.SearchGroups(txtSearch.Text);
+            gvGroups.DataSource = BLL.Group.SearchGroups(txtSearch.Text);
 
             gvGroups.DataBind();
 
-            lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + _bllGroup.TotalCount() + " Total Group(s)";
+            lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + BLL.Group.TotalCount() + " Total Group(s)";
         }
     }
 }

@@ -18,6 +18,6 @@ public partial class views_images_profiles_general : Images
     {
         var imageProfile = ImageProfile;
         imageProfile.Name = txtProfileName.Text;
-        BllLinuxProfile.UpdateProfile(imageProfile);
+        BLL.LinuxProfile.UpdateProfile(imageProfile);
     }
 }

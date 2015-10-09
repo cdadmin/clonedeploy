@@ -46,6 +46,30 @@
     </div>
     <br class="clear"/>
     
+     <div class="size-4 column">
+        Site:
+    </div>
+    <div class="size-5 column">
+        <asp:DropDownList ID="ddlSite" runat="server" CssClass="ddlist"/>
+    </div>
+
+    <br class="clear"/>
+     <div class="size-4 column">
+        Building:
+    </div>
+    <div class="size-5 column">
+        <asp:DropDownList ID="ddlBuilding" runat="server" CssClass="ddlist"/>
+    </div>
+
+    <br class="clear"/>
+     <div class="size-4 column">
+        Room:
+    </div>
+    <div class="size-5 column">
+        <asp:DropDownList ID="ddlRoom" runat="server" CssClass="ddlist"/>
+    </div>
+
+    <br class="clear"/>
     <div class="size-4 column">
        <asp:LinkButton ID="buttonUpdateHost" runat="server" OnClick="buttonUpdateHost_Click" Text="Update Host" CssClass="submits"/>
     </div>

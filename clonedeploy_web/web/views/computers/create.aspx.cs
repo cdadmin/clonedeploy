@@ -25,13 +25,16 @@ namespace views.hosts
             {
                 Name = txtHostName.Text,
                 Mac = Utility.FixMac(txtHostMac.Text),
-                Image = Convert.ToInt32(ddlHostImage.SelectedValue),
+                ImageId = Convert.ToInt32(ddlHostImage.SelectedValue),
                 ImageProfile = Convert.ToInt32(ddlHostImage.SelectedValue) == -1 ? -1 : Convert.ToInt32(ddlImageProfile.SelectedValue),
                 Description = txtHostDesc.Text,
+                SiteId = Convert.ToInt32(ddlSite.SelectedValue),
+                BuildingId = Convert.ToInt32(ddlBuilding.SelectedValue),
+                RoomId = Convert.ToInt32(ddlRoom.SelectedValue)
             };
 
 
-            var result = BllComputer.AddComputer(host);
+            var result = BLL.Computer.AddComputer(host);
             if (!result.IsValid)
                 EndUserMessage = result.Message;
             else
@@ -45,6 +48,9 @@ namespace views.hosts
         protected void PopulateForm()
         {
             PopulateImagesDdl(ddlHostImage);
+            PopulateSitesDdl(ddlSite);
+            PopulateBuildingsDdl(ddlBuilding);
+            PopulateRoomsDdl(ddlRoom);
         }
 
         protected void ddlHostImage_OnSelectedIndexChanged(object sender, EventArgs e)

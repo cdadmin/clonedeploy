@@ -10,77 +10,88 @@ namespace BLL
 {
     public class Group
     {
-        private readonly DAL.UnitOfWork _unitOfWork;
 
-        public Group()
+        public static Models.ValidationResult AddGroup(Models.Group group)
         {
-            _unitOfWork = new UnitOfWork();
-        }
-
-        public Models.ValidationResult AddGroup(Models.Group group)
-        {
-            var validationResult = ValidateGroup(group, true);
-            if (validationResult.IsValid)
+            using (var uow = new DAL.UnitOfWork())
             {
-                _unitOfWork.GroupRepository.Insert(group);
-                validationResult.IsValid = _unitOfWork.Save();
-            }
+                var validationResult = ValidateGroup(group, true);
+                if (validationResult.IsValid)
+                {
+                    uow.GroupRepository.Insert(group);
+                    validationResult.IsValid = uow.Save();
+                }
 
-            return validationResult;
+                return validationResult;
+            }
         }
 
-        public string TotalCount()
+        public static string TotalCount()
         {
-            return _unitOfWork.GroupRepository.Count();
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.GroupRepository.Count();
+            }
         }
 
       
-        public bool DeleteGroup(int groupId)
+        public static bool DeleteGroup(int groupId)
         {
-            _unitOfWork.GroupRepository.Delete(groupId);
-            return _unitOfWork.Save();
-        }
-
-        public Models.Group GetGroup(int groupId)
-        {
-            return _unitOfWork.GroupRepository.GetById(groupId);
-        }
-
-        public List<Models.Group> SearchGroups(string searchString)
-        {
-            return _unitOfWork.GroupRepository.Get(g => g.Name.Contains(searchString));
-        }
-
-        public Models.ValidationResult UpdateGroup(Models.Group group)
-        {
-            var validationResult = ValidateGroup(group, false);
-            if (validationResult.IsValid)
+            using (var uow = new DAL.UnitOfWork())
             {
-                _unitOfWork.GroupRepository.Update(group, group.Id);
-                validationResult.IsValid = _unitOfWork.Save();
+                uow.GroupRepository.Delete(groupId);
+                return uow.Save();
             }
-
-            return validationResult;
         }
 
-        public void StartMulticast(Models.Group group)
+        public static Models.Group GetGroup(int groupId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.GroupRepository.GetById(groupId);
+            }
+        }
+
+        public static List<Models.Group> SearchGroups(string searchString)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.GroupRepository.Get(g => g.Name.Contains(searchString));
+            }
+        }
+
+        public static Models.ValidationResult UpdateGroup(Models.Group group)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                var validationResult = ValidateGroup(group, false);
+                if (validationResult.IsValid)
+                {
+                    uow.GroupRepository.Update(group, group.Id);
+                    validationResult.IsValid = uow.Save();
+                }
+
+                return validationResult;
+            }
+        }
+
+        public static void StartMulticast(Models.Group group)
         {
             var multicast = new Multicast { Group = group };
             multicast.Create();
         }
 
-        public void StartGroupUnicast(Models.Group group)
+        public static void StartGroupUnicast(Models.Group group)
         {
-            var bllImage = new Image();
-            var image = bllImage.GetImage(group.Image);
+            var image = BLL.Image.GetImage(group.Image);
 
-            if (bllImage.Check_Checksum(image))
+            if (BLL.Image.Check_Checksum(image))
             {
                 var count = 0;
 
                 foreach (var host in GetGroupMembers(group.Id, ""))
                 {
-                    new Computer().StartUnicast(host,"push");
+                    BLL.Computer.StartUnicast(host,"push");
                
                     count++;
                 }
@@ -95,19 +106,22 @@ namespace BLL
             }
         }
 
-        public void ImportGroups()
+        public static void ImportGroups()
         {
             throw new Exception("Not Implemented");
         }
 
        
 
-        public List<Models.Computer> GetGroupMembers(int groupId, string searchString = "")
+        public static List<Models.Computer> GetGroupMembers(int groupId, string searchString = "")
         {
-            return _unitOfWork.GroupRepository.GetGroupMembers(groupId, searchString);
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.GroupRepository.GetGroupMembers(groupId, searchString);
+            }
         }
 
-        public Models.ValidationResult ValidateGroup(Models.Group group, bool isNewGroup)
+        public static Models.ValidationResult ValidateGroup(Models.Group group, bool isNewGroup)
         {
             var validationResult = new Models.ValidationResult();
 

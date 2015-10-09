@@ -41,7 +41,7 @@ public partial class views_admin_server : Admin
 
             var newBootMenu = false;
             var newClientIso = false;
-            if (new Setting().UpdateSetting(listSettings))
+            if (Setting.UpdateSetting(listSettings))
             {
 
                 if ((string) ViewState["serverIP"] != txtIP.Text)
@@ -95,7 +95,7 @@ public partial class views_admin_server : Admin
 
     protected bool ValidateSettings()
     {
-        if (new ActiveImagingTask().ReadAll().Count > 0)
+        if (ActiveImagingTask.ReadAll().Count > 0)
         {
             EndUserMessage = "Settings Cannot Be Changed While Tasks Are Active";
             return false;

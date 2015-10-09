@@ -29,6 +29,7 @@ namespace DAL
         public DbSet<Models.Building> Buildings { get; set; }
         public DbSet<Models.Room> Rooms { get; set; }
         public DbSet<Models.DistributionPoint> DistributionPoints { get; set; }
+        public DbSet<Models.ComputerBootMenu> ComputerBootMenus { get; set; }
 
       
     }

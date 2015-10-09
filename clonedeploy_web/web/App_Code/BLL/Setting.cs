@@ -8,7 +8,7 @@ namespace BLL
     public class Setting
     {
         
-        public bool ExportDatabase()
+        public static bool ExportDatabase()
         {
             throw new Exception("Not Implemented");
         }
@@ -48,7 +48,7 @@ namespace BLL
             }
         }
 
-        public bool UpdateSetting(List<Models.Setting> listSettings)
+        public static bool UpdateSetting(List<Models.Setting> listSettings)
         {
             using (var uow = new DAL.UnitOfWork())
             {

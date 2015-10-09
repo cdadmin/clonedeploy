@@ -46,7 +46,7 @@ namespace Tasks
         public List<Computer> Hosts { get; set; }
         public bool IsCustom { get; set; }
         public ActiveMulticastSession ActiveMcTask { get; set; }
-        private BLL.ActiveMulticastSession _bllActiveMulticastSession = new BLL.ActiveMulticastSession();
+
         public void Create()
         {
             if (Group.Image == null)
@@ -55,7 +55,7 @@ namespace Tasks
                 return;
             }
 
-            Hosts = new BLL.Group().GetGroupMembers(Group.Id);
+            Hosts = BLL.Group.GetGroupMembers(Group.Id);
             if (Hosts.Count < 1)
             {
                 //Message.Text = "The Group Does Not Have Any Hosts";
@@ -64,14 +64,14 @@ namespace Tasks
 
             ActiveMcTask.Name = Group.Name;
             ActiveMcTask.Image = Group.Image.ToString();
-            ActiveMcTask.Port = new BLL.Port().GetNextPort();
+            ActiveMcTask.Port = BLL.Port.GetNextPort();
             if (ActiveMcTask.Port == 0)
             {
                 //Message.Text = "Could Not Determine Current Port Base";
                 return;
             }
            
-            if (_bllActiveMulticastSession.AddActiveMulticastSession(ActiveMcTask))
+            if (BLL.ActiveMulticastSession.AddActiveMulticastSession(ActiveMcTask))
             {
                 //Message.Text = "Could Not Create Multicast Database Task";
                 return;
@@ -80,28 +80,28 @@ namespace Tasks
             if (!CreateHostTask())
             {
                 //Message.Text = "Could Not Create Host Database Tasks";
-                _bllActiveMulticastSession.Delete(ActiveMcTask.Id);
+                BLL.ActiveMulticastSession.Delete(ActiveMcTask.Id);
                 return;
             }
 
             if (!CreatePxeFiles())
             {
                 //Message.Text = "Could Not Create Host PXE Files";
-                _bllActiveMulticastSession.Delete(ActiveMcTask.Id);
+                BLL.ActiveMulticastSession.Delete(ActiveMcTask.Id);
                 return;
             }
 
             if (!CreateTaskArguments())
             {
                 //Message.Text = "Could Not Create Host Task Arguments";
-                _bllActiveMulticastSession.Delete(ActiveMcTask.Id);
+                BLL.ActiveMulticastSession.Delete(ActiveMcTask.Id);
                 return;
             }
 
             if (!StartMulticastSender())
             {
                 //Message.Text = "Could Not Start The Multicast Sender";
-                _bllActiveMulticastSession.Delete(ActiveMcTask.Id);
+                BLL.ActiveMulticastSession.Delete(ActiveMcTask.Id);
                 return;
             }
 
@@ -130,7 +130,7 @@ namespace Tasks
                 history.TypeId = host.Id.ToString();
                 history.CreateEvent();
 
-                var image = new BLL.Image().GetImage(Group.Image);
+                var image = BLL.Image.GetImage(Group.Image);
                 history.Event = "Deploy";
                 history.Type = "Image";
                 history.Notes = Group.Image.ToString();
@@ -149,8 +149,8 @@ namespace Tasks
                     Type = "multicast",
                   
                 };
-                if (!new BLL.ActiveImagingTask().IsComputerActive(host.Id)) return false;
-                if (!new BLL.ActiveImagingTask().AddActiveImagingTask(activeTask))
+                if (!BLL.ActiveImagingTask.IsComputerActive(host.Id)) return false;
+                if (!BLL.ActiveImagingTask.AddActiveImagingTask(activeTask))
                     return false;
                 host.TaskId = activeTask.Id.ToString();
             }
@@ -196,7 +196,7 @@ namespace Tasks
                                        " hostName=" + host.Name + " portBase=" + ActiveMcTask.Port + 
                                        " clientReceiverArgs=" + Settings.ClientReceiverArgs;
 
-                if(!new BLL.ActiveImagingTask().UpdateActiveImagingTask(activeTask))
+                if(!BLL.ActiveImagingTask.UpdateActiveImagingTask(activeTask))
                     return false;
             }
             return true;
@@ -206,7 +206,7 @@ namespace Tasks
         {
             if (IsCustom)
             {
-                ActiveMcTask.Port = new BLL.Port().GetNextPort();
+                ActiveMcTask.Port = BLL.Port.GetNextPort();
                 Group = new Group {Name = ActiveMcTask.Port.ToString()};
             }
             string shell;
@@ -249,7 +249,7 @@ namespace Tasks
 
             //Multicasting currently only supports the first active hd
             //Find First Active HD
-            var image = new BLL.Image().GetImage(Convert.ToInt32(ActiveMcTask.Image));
+            var image = BLL.Image.GetImage(Convert.ToInt32(ActiveMcTask.Image));
             ImagePhysicalSpecs specs;
             if (!string.IsNullOrEmpty(image.ClientSizeCustom))
             {
@@ -499,7 +499,7 @@ namespace Tasks
             {
                 if (sender != null) ActiveMcTask.Pid = sender.Id;
                 ActiveMcTask.Name = Group.Name;
-                _bllActiveMulticastSession.AddActiveMulticastSession(ActiveMcTask);
+                BLL.ActiveMulticastSession.AddActiveMulticastSession(ActiveMcTask);
                 //Message.Text = "Successfully Started Multicast " + Group.Name;
                 return true;
             }
@@ -507,7 +507,7 @@ namespace Tasks
             if (sender != null)
             {
                 ActiveMcTask.Pid = sender.Id;
-                _bllActiveMulticastSession.UpdateActiveMulticastSession(ActiveMcTask);
+                BLL.ActiveMulticastSession.UpdateActiveMulticastSession(ActiveMcTask);
             }
         
            return true;

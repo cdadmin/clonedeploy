@@ -33,7 +33,7 @@ namespace views.images
                               "csvupload" + Path.DirectorySeparatorChar + "images.csv";
             FileUpload.SaveAs(csvFilePath);
             new FileOps().SetUnixPermissions(csvFilePath);
-            new Image().Import();
+            BLL.Image.Import();
         }
 
         protected void Page_Load(object sender, EventArgs e)

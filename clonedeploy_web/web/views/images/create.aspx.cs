@@ -30,7 +30,7 @@ namespace views.images
             };
 
            
-            var result = BllImage.AddImage(image);
+            var result = BLL.Image.AddImage(image);
             if (result.IsValid)
             {
                 EndUserMessage = "Successfully Added Image";

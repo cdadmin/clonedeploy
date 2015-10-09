@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using BLL.Workflows;
-using DAL;
-using Helpers;
-using Models;
 
 namespace BLL
 {
@@ -63,8 +60,7 @@ namespace BLL
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.ComputerRepository.Get(w => w.Name.Contains(searchString),
-                    includeProperties: "images");
+                return uow.ComputerRepository.Get(searchString);
             }
         }
 

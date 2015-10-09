@@ -75,7 +75,7 @@ public partial class views_admin_security : Admin
 
             var newBootMenu = false;
             var newClientIso = false;
-            if (new BLL.Setting().UpdateSetting(listSettings))
+            if (BLL.Setting.UpdateSetting(listSettings))
             {
 
                 if ((string)ViewState["webTaskRequiresLogin"] != ddlWebTasksLogin.Text)
@@ -122,7 +122,7 @@ public partial class views_admin_security : Admin
 
     protected bool ValidateSettings()
     {
-        if (new ActiveImagingTask().ReadAll().Count > 0)
+        if (ActiveImagingTask.ReadAll().Count > 0)
         {
             EndUserMessage = "Settings Cannot Be Changed While Tasks Are Active";
             return false;

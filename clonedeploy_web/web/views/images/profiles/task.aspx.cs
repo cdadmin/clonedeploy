@@ -20,6 +20,6 @@ public partial class views_images_profiles_task : Images
         imageProfile.SkipCore = Convert.ToInt16(chkGlobalNoCore.Checked);
         imageProfile.SkipClock = Convert.ToInt16(chkGlobalNoClock.Checked);
         imageProfile.TaskCompletedAction = ddlTaskComplete.Text;
-        BllLinuxProfile.UpdateProfile(imageProfile);
+        BLL.LinuxProfile.UpdateProfile(imageProfile);
     }
 }

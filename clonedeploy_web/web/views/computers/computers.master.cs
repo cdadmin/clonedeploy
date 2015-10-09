@@ -8,7 +8,6 @@ namespace views.masters
     public partial class ComputerMaster : MasterBaseMaster
     {
         private Computers ComputerBasePage { get; set; }
-        private readonly Image _bllImage = new Image();
         public Computer Computer { get; set; }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -16,13 +15,19 @@ namespace views.masters
             
             ComputerBasePage = (Page as Computers);
             Computer = ComputerBasePage.Computer;
-            if (Computer == null)
+            if (Computer == null) //level 2
             {
                 Level2.Visible = false;
-                return;
+                Level3.Visible = false;
             }
-
-            Level1.Visible = false;
+            else
+            {
+                Level1.Visible = false;
+                if (Request.QueryString["level"] == "3")
+                    Level2.Visible = false;
+            }
+         
+        
         }
 
         protected void btnDelete_Click(object sender, EventArgs e)
@@ -35,7 +40,7 @@ namespace views.masters
 
         protected void btnDeploy_Click(object sender, EventArgs e)
         {
-            var image = _bllImage.GetImage(Computer.Image);
+            var image = BLL.Image.GetImage(Computer.ImageId);
             Session["direction"] = "push";
             lblTitle.Text = "Deploy " + image.Name + " To " + Computer.Name + " ?";
             DisplayConfirm();
@@ -55,17 +60,17 @@ namespace views.masters
             switch (direction)
             {
                 case "delete":
-                    ComputerBasePage.BllComputer.DeleteComputer(Computer.Id);
+                    BLL.Computer.DeleteComputer(Computer.Id);
                         Response.Redirect("~/views/computers/search.aspx");
                     break;
                 case "push":
                 {
-                    var image = _bllImage.GetImage(Computer.Image);
+                    var image = BLL.Image.GetImage(Computer.ImageId);
                     Session["imageID"] = image.Id;
 
-                    if (_bllImage.Check_Checksum(image))
+                    if (BLL.Image.Check_Checksum(image))
                     {
-                        ComputerBasePage.BllComputer.StartUnicast(Computer,direction);                      
+                        BLL.Computer.StartUnicast(Computer,direction);                      
                     }
                     else
                     {
@@ -77,7 +82,7 @@ namespace views.masters
                     break;
                 case "pull":
                 {
-                    ComputerBasePage.BllComputer.StartUnicast(Computer, direction);
+                    BLL.Computer.StartUnicast(Computer, direction);
                 }
                     break;
             }

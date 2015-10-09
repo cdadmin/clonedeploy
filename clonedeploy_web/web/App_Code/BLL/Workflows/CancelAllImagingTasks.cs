@@ -38,7 +38,7 @@ namespace BLL.Workflows
 
                         if (ext == ".custom") continue;
                         var fileName = Path.GetFileNameWithoutExtension(pxeFile);
-                        var host = new Computer().GetComputerFromMac(Utility.PxeMacToMac(fileName));
+                        var host = BLL.Computer.GetComputerFromMac(Utility.PxeMacToMac(fileName));
 
                         var isCustomBootTemplate = Convert.ToBoolean(Convert.ToInt16(host.CustomBootEnabled));
                         if (isCustomBootTemplate)

@@ -5,7 +5,6 @@ using BasePages;
 using Helpers;
 using Models;
 using Pxe;
-using ActiveImagingTask = BLL.ActiveImagingTask;
 
 public partial class views_admin_pxe : Admin
 {
@@ -35,16 +34,16 @@ public partial class views_admin_pxe : Admin
         {
             var listSettings = new List<Setting>
             {
-                new Setting {Name = "PXE Mode", Value = ddlPXEMode.Text},
-                new Setting {Name = "Proxy Dhcp", Value = ddlProxyDHCP.Text},
-                new Setting {Name = "Proxy Bios File", Value = ddlProxyBios.Text},
-                new Setting {Name = "Proxy Efi32 File", Value = ddlProxyEfi32.Text},
-                new Setting {Name = "Proxy Efi64 File", Value = ddlProxyEfi64.Text}
+                new Setting {Name = "PXE Mode", Value = ddlPXEMode.Text, Id = BLL.Setting.GetSetting("PXE Mode").Id},
+                new Setting {Name = "Proxy Dhcp", Value = ddlProxyDHCP.Text,  Id = BLL.Setting.GetSetting("Proxy Dhcp").Id},
+                new Setting {Name = "Proxy Bios File", Value = ddlProxyBios.Text,  Id = BLL.Setting.GetSetting("Proxy Bios File").Id},
+                new Setting {Name = "Proxy Efi32 File", Value = ddlProxyEfi32.Text,  Id = BLL.Setting.GetSetting("Proxy Efi32 File").Id},
+                new Setting {Name = "Proxy Efi64 File", Value = ddlProxyEfi64.Text,  Id = BLL.Setting.GetSetting("Proxy Efi64 File").Id}
             };
 
 
             var newBootMenu = false;
-            if (new BLL.Setting().UpdateSetting(listSettings))
+            if (BLL.Setting.UpdateSetting(listSettings))
             {
                 new PxeFileOps().CopyPxeFiles(ddlPXEMode.Text);
 
@@ -116,7 +115,7 @@ public partial class views_admin_pxe : Admin
 
     protected bool ValidateSettings()
     {
-        if (new ActiveImagingTask().ReadAll().Count > 0)
+        if (BLL.ActiveImagingTask.ReadAll().Count > 0)
         {
             EndUserMessage = "Settings Cannot Be Changed While Tasks Are Active";
             return false;

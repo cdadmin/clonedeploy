@@ -27,7 +27,7 @@ public partial class views_global_sites_search : BasePages.Global
     }
     protected void BindGrid()
     {
-        gvSites.DataSource = BllSite.SearchSites(txtSearch.Text);
+        gvSites.DataSource = BLL.Site.SearchSites(txtSearch.Text);
         gvSites.DataBind();
 
         if (gvSites.Rows.Count == 0)
@@ -51,10 +51,10 @@ public partial class views_global_sites_search : BasePages.Global
         var site = new Site
         {
             Name = ((TextBox)gvRow.FindControl("txtNameAdd")).Text,
-            DistributionPoint = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDpAdd")).SelectedValue)
+            DistributionPointId = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDpAdd")).SelectedValue)
         };
 
-        BllSite.AddSite(site);
+        BLL.Site.AddSite(site);
         BindGrid();
     }
 
@@ -72,9 +72,9 @@ public partial class views_global_sites_search : BasePages.Global
         {
             Id = Convert.ToInt32(gvSites.DataKeys[e.RowIndex].Values[0]),
             Name = ((TextBox)gvRow.FindControl("txtName")).Text,
-            DistributionPoint = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDp")).SelectedValue)
+            DistributionPointId = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDp")).SelectedValue)
         };
-        BllSite.UpdateSite(site);
+        BLL.Site.UpdateSite(site);
 
         gvSites.EditIndex = -1;
         this.BindGrid();
@@ -88,7 +88,7 @@ public partial class views_global_sites_search : BasePages.Global
 
     protected void OnRowDeleting(object sender, GridViewDeleteEventArgs e)
     {
-        BllSite.DeleteSite(Convert.ToInt32(gvSites.DataKeys[e.RowIndex].Values[0]));
+        BLL.Site.DeleteSite(Convert.ToInt32(gvSites.DataKeys[e.RowIndex].Values[0]));
         BindGrid();
     }
 
@@ -110,7 +110,7 @@ public partial class views_global_sites_search : BasePages.Global
             if (ddlDps != null)
             {
                 PopulateDistributionPointsDdl(ddlDps);
-                ddlDps.SelectedValue = ((Site)(e.Row.DataItem)).DistributionPoint.ToString();
+                ddlDps.SelectedValue = ((Site)(e.Row.DataItem)).DistributionPointId.ToString();
             }
         } 
     }

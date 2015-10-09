@@ -40,13 +40,12 @@ namespace views.users
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
 
 
-            gvGroups.DataSource = new Group().SearchGroups("%");
+            gvGroups.DataSource = BLL.Group.SearchGroups("%");
             gvGroups.DataBind();
         }
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            var bllUser = new User();
             if (txtUserPwd.Text != txtUserPwdConfirm.Text)
             {
                 EndUserMessage = "Passwords Did Not Match";
@@ -68,7 +67,7 @@ namespace views.users
                 Name = txtUserName.Text,
                 Password = txtUserPwd.Text,
                 Membership = ddluserMembership.Text,
-                Salt = bllUser.CreateSalt(16)
+                Salt = BLL.User.CreateSalt(16)
             };
 
             if (permissions.Visible)
@@ -83,7 +82,7 @@ namespace views.users
                 user.DiagAccess = "1";
                 user.DebugAccess = "1";
             }
-            bllUser.AddUser(user);
+            BLL.User.AddUser(user);
 
         }
 
@@ -114,7 +113,7 @@ namespace views.users
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
 
-            gvGroups.DataSource = new Group().SearchGroups("%");
+            gvGroups.DataSource = BLL.Group.SearchGroups("%");
             var dataTable = (DataTable) gvGroups.DataSource;
 
             if (dataTable == null) return;

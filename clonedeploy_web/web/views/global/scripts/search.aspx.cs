@@ -15,11 +15,10 @@ public partial class views_admin_scripts_search : BasePages.Global
 
     protected void PopulateGrid()
     {
-        var bllScript = new Script();
-        gvScripts.DataSource = bllScript.SearchScripts(txtSearch.Text);
+        gvScripts.DataSource = BLL.Script.SearchScripts(txtSearch.Text);
         gvScripts.DataBind();
 
-        lblTotal.Text = gvScripts.Rows.Count + " Result(s) / " + bllScript.TotalCount() + " Total Script(s)";
+        lblTotal.Text = gvScripts.Rows.Count + " Result(s) / " + BLL.Script.TotalCount() + " Total Script(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)

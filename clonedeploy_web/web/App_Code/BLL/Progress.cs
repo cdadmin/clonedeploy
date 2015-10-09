@@ -19,7 +19,7 @@ namespace Tasks
                 Rate = values[4],
             };
 
-            new BLL.ActiveImagingTask().UpdateActiveImagingTask(activeTask);
+            BLL.ActiveImagingTask.UpdateActiveImagingTask(activeTask);
         }
 
         public void UpdateProgressPartition(string hostName, string partition)
@@ -32,7 +32,7 @@ namespace Tasks
                 Rate = "",
                 Partition = partition,
             };
-            new BLL.ActiveImagingTask().UpdateActiveImagingTask(activeTask);
+            BLL.ActiveImagingTask.UpdateActiveImagingTask(activeTask);
         }
     }
 }

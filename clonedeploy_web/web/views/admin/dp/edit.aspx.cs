@@ -11,8 +11,7 @@ public partial class views_admin_dp_edit : Admin
 
     protected void buttonUpdateDp_OnClick(object sender, EventArgs e)
     {
-        var bllDistributionPoint = new DistributionPoint();
-        var distributionPoint = bllDistributionPoint.GetDistributionPoint(Convert.ToInt32(Request.QueryString["dpid"]));
+        var distributionPoint = BLL.DistributionPoint.GetDistributionPoint(Convert.ToInt32(Request.QueryString["dpid"]));
 
         distributionPoint.DisplayName = txtDisplayName.Text;
         distributionPoint.Server = txtServer.Text;
@@ -26,7 +25,7 @@ public partial class views_admin_dp_edit : Admin
         distributionPoint.IsBackend = Convert.ToInt16(chkBackend.Checked);
         distributionPoint.BackendServer = chkBackend.Checked ? txtBackendServer.Text : "";
 
-        bllDistributionPoint.UpdateDistributionPoint(distributionPoint);
+        BLL.DistributionPoint.UpdateDistributionPoint(distributionPoint);
     }
 
     protected void chkPrimary_OnCheckedChanged(object sender, EventArgs e)
@@ -41,8 +40,7 @@ public partial class views_admin_dp_edit : Admin
 
     protected void PopulateForm()
     {
-        var bllDistributionPoint = new DistributionPoint();
-        var distributionPoint = bllDistributionPoint.GetDistributionPoint(Convert.ToInt32(Request.QueryString["dpid"]));
+        var distributionPoint = BLL.DistributionPoint.GetDistributionPoint(Convert.ToInt32(Request.QueryString["dpid"]));
 
         txtDisplayName.Text = distributionPoint.DisplayName;
         txtServer.Text = distributionPoint.Server;

@@ -20,6 +20,6 @@ public partial class views_images_profiles_deploy : Images
         imageProfile.SkipExpandVolumes = Convert.ToInt16(chkDownNoExpand.Checked);
         imageProfile.FixBcd = Convert.ToInt16(chkAlignBCD.Checked);
         imageProfile.FixBootloader = Convert.ToInt16(chkRunFixBoot.Checked);
-        BllLinuxProfile.UpdateProfile(imageProfile);
+        BLL.LinuxProfile.UpdateProfile(imageProfile);
     }
 }

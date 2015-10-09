@@ -26,7 +26,7 @@ namespace views.masters
 
         protected void btnDelete_Click(object sender, EventArgs e)
         {
-            if (UsersBasePage.BllUser.GetAdminCount() == 1 && CloneDeployUser.Membership == "Administrator")
+            if (BLL.User.GetAdminCount() == 1 && CloneDeployUser.Membership == "Administrator")
             {
                 //Message.Text = "There Must Be At Least One Administrator";
             }
@@ -41,7 +41,7 @@ namespace views.masters
 
         protected void OkButton_Click(object sender, EventArgs e)
         {
-            UsersBasePage.BllUser.DeleteUser(CloneDeployUser.Id);
+            BLL.User.DeleteUser(CloneDeployUser.Id);
                 Response.Redirect("~/views/users/search.aspx");
           
         }       

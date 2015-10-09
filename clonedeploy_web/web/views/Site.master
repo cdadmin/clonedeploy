@@ -14,7 +14,6 @@
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery.watermark.min.js") %>"></script>
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/classie.js") %>"></script>
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/sha512.js") %>"></script>
-     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery.validate.js") %>"></script>
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/ace/src-noconflict/ace.js")%>" charset="utf-8"></script>
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery.jBreadCrumb.1.1.js")%>" charset="utf-8"></script>
      <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery.easing.1.3.js")%>" charset="utf-8"></script>
@@ -133,14 +132,9 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $(":checkbox").labelauty({ label: false });
-            $(".submits").click(function () {
-                return $('#form1').valid();
-            });
 
             jQuery("#bread-crumb1").jBreadCrumb();
             $('.searchbox').watermark('Search', { useNative: false });
-            $('.label-host-search').watermark('Search For Hosts', { useNative: false });
-            $('.new-template').watermark('New Template Name', { useNative: false });
             $('.txt-generate').watermark('Password', { useNative: false });
             $(".leftmenu").click(function () {
                 

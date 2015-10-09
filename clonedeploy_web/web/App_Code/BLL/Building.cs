@@ -6,56 +6,72 @@ namespace BLL
 {
     public class Building
     {
-        private readonly DAL.UnitOfWork _unitOfWork = new UnitOfWork();
 
-        public Models.ValidationResult AddBuilding(Models.Building building)
+        public static  Models.ValidationResult AddBuilding(Models.Building building)
         {
-            var validationResult = ValidateBuilding(building, true);
-            if (validationResult.IsValid)
+            using (var uow = new DAL.UnitOfWork())
             {
-                _unitOfWork.BuildingRepository.Insert(building);
-                validationResult.IsValid = _unitOfWork.Save();
+                var validationResult = ValidateBuilding(building, true);
+                if (validationResult.IsValid)
+                {
+                    uow.BuildingRepository.Insert(building);
+                    validationResult.IsValid = uow.Save();
+                }
+
+                return validationResult;
             }
 
-            return validationResult;
-          
         }
 
-        public string TotalCount()
+        public static  string TotalCount()
         {
-            return _unitOfWork.BuildingRepository.Count();
-        }
-
-        public bool DeleteBuilding(int buildingId)
-        {
-            _unitOfWork.BuildingRepository.Delete(buildingId);
-            return _unitOfWork.Save();
-        }
-
-        public Models.Building GetBuilding(int buildingId)
-        {
-            return _unitOfWork.BuildingRepository.GetById(buildingId);
-        }
-
-        public List<Models.Building> SearchBuildings(string searchString)
-        {
-            return _unitOfWork.BuildingRepository.Get(b => b.Name.Contains(searchString), includeProperties: "dp");
-        }
-
-        public Models.ValidationResult UpdateBuilding(Models.Building building)
-        {
-            var validationResult = ValidateBuilding(building, false);
-            if (validationResult.IsValid)
+            using (var uow = new DAL.UnitOfWork())
             {
-                _unitOfWork.BuildingRepository.Update(building, building.Id);
-                validationResult.IsValid = _unitOfWork.Save();
+                return uow.BuildingRepository.Count();
             }
-
-            return validationResult;
         }
 
+        public static  bool DeleteBuilding(int buildingId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.BuildingRepository.Delete(buildingId);
+                return uow.Save();
+            }
+        }
 
-        public Models.ValidationResult ValidateBuilding(Models.Building building, bool isNewBuilding)
+        public static  Models.Building GetBuilding(int buildingId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.BuildingRepository.GetById(buildingId);
+            }
+        }
+
+        public static  List<Models.Building> SearchBuildings(string searchString = "")
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.BuildingRepository.Get(searchString);
+            }
+        }
+
+        public static  Models.ValidationResult UpdateBuilding(Models.Building building)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                var validationResult = ValidateBuilding(building, false);
+                if (validationResult.IsValid)
+                {
+                    uow.BuildingRepository.Update(building, building.Id);
+                    validationResult.IsValid = uow.Save();
+                }
+
+                return validationResult;
+            }
+        }
+
+        public static  Models.ValidationResult ValidateBuilding(Models.Building building, bool isNewBuilding)
         {
             var validationResult = new Models.ValidationResult();
 

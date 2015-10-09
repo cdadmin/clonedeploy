@@ -11,78 +11,98 @@ namespace BLL
 {
     public class User
     {
-        private readonly DAL.UnitOfWork _unitOfWork;
 
-        public User()
+        public static Models.ValidationResult AddUser(WdsUser user)
         {
-            _unitOfWork = new UnitOfWork();
-        }
-
-        public Models.ValidationResult AddUser(WdsUser user)
-        {
-            var validationResult = ValidateUser(user, true);
-            if (validationResult.IsValid)
+            using (var uow = new DAL.UnitOfWork())
             {
-                user.Password = CreatePasswordHash(user.Password, user.Salt);
-                _unitOfWork.UserRepository.Insert(user);
-                validationResult.IsValid = _unitOfWork.Save();
+                var validationResult = ValidateUser(user, true);
+                if (validationResult.IsValid)
+                {
+                    user.Password = CreatePasswordHash(user.Password, user.Salt);
+                    uow.UserRepository.Insert(user);
+                    validationResult.IsValid = uow.Save();
+                }
+
+                return validationResult;
             }
-
-            return validationResult;
         }
 
-        public string TotalCount()
+        public static string TotalCount()
         {
-            return _unitOfWork.UserRepository.Count();
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.UserRepository.Count();
+            }
         }
 
-        public int GetAdminCount()
+        public static int GetAdminCount()
         {
-            return Convert.ToInt32(_unitOfWork.UserRepository.Count(u => u.Membership == "Administrator"));
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return Convert.ToInt32(uow.UserRepository.Count(u => u.Membership == "Administrator"));
+            }
         }
       
-        public bool DeleteUser(int userId)
+        public static bool DeleteUser(int userId)
         {
-            _unitOfWork.UserRepository.Delete(userId);
-            return _unitOfWork.Save();
-        }
-
-        public WdsUser GetUser(int userId)
-        {
-            return _unitOfWork.UserRepository.GetById(userId);
-        }
-
-        public WdsUser GetUser(string userName)
-        {
-            return _unitOfWork.UserRepository.GetFirstOrDefault(u => u.Name == userName);
-        }
-
-        public List<WdsUser> SearchUsers(string searchString)
-        {
-            return _unitOfWork.UserRepository.Get(u => u.Name.Contains(searchString));
-        }
-
-        public Models.ValidationResult UpdateUser(WdsUser user, bool updatePassword)
-        {
-            var validationResult = ValidateUser(user, true);
-            if (validationResult.IsValid)
+            using (var uow = new DAL.UnitOfWork())
             {
-                user.Password = updatePassword ? CreatePasswordHash(user.Password, user.Salt) : _unitOfWork.UserRepository.GetById(user.Id).Password;
-                _unitOfWork.UserRepository.Update(user, user.Id);
-                validationResult.IsValid = _unitOfWork.Save();
+                uow.UserRepository.Delete(userId);
+                return uow.Save();
             }
-
-            return validationResult;
         }
 
-        public string CreatePasswordHash(string pwd, string salt)
+        public static WdsUser GetUser(int userId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.UserRepository.GetById(userId);
+            }
+        }
+
+        public static WdsUser GetUser(string userName)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.UserRepository.GetFirstOrDefault(u => u.Name == userName);
+            }
+        }
+
+        public static List<WdsUser> SearchUsers(string searchString)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.UserRepository.Get(u => u.Name.Contains(searchString));
+            }
+        }
+
+        public static Models.ValidationResult UpdateUser(WdsUser user, bool updatePassword)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                var validationResult = ValidateUser(user, true);
+                if (validationResult.IsValid)
+                {
+                    user.Password = updatePassword
+                        ? CreatePasswordHash(user.Password, user.Salt)
+                        : uow.UserRepository.GetById(user.Id).Password;
+                    uow.UserRepository.Update(user, user.Id);
+                    validationResult.IsValid = uow.Save();
+                }
+
+                return validationResult;
+            }
+        }
+
+        public static string CreatePasswordHash(string pwd, string salt)
         {
             var saltAndPwd = string.Concat(pwd, salt);
             var hashedPwd = FormsAuthentication.HashPasswordForStoringInConfigFile(saltAndPwd, "sha1");
             return hashedPwd;
         }
 
-        public string CreateSalt(int byteSize)
+        public static string CreateSalt(int byteSize)
         {
             var rng = new RNGCryptoServiceProvider();
             var buff = new byte[byteSize];
@@ -90,12 +110,12 @@ namespace BLL
             return Convert.ToBase64String(buff);
         }
 
-        public void ImportUsers()
+        public static void ImportUsers()
         {
             throw new Exception("Not Implemented");
         }
 
-        public Models.ValidationResult ValidateUser(Models.WdsUser user, bool isNewUser)
+        public static Models.ValidationResult ValidateUser(Models.WdsUser user, bool isNewUser)
         {
             var validationResult = new Models.ValidationResult();
 

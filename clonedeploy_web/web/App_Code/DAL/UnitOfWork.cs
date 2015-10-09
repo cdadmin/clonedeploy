@@ -5,10 +5,11 @@ namespace DAL
     public class UnitOfWork : IUnitOfWork 
     {
         private CloneDeployDbContext _context = new CloneDeployDbContext();
-        private IGenericRepository<Models.Computer> _computerRepository;
+      
         private IGenericRepository<Models.ActiveMulticastSession> _activeMulticastSessionRepository;
-        private IGenericRepository<Models.Building> _buildingRepository;
+        private BuildingRepository _buildingRepository;
         private IGenericRepository<Models.DistributionPoint> _distributionPointRepository;
+        private IGenericRepository<Models.ComputerBootMenu> _computerBootMenuRepository;
         private IGenericRepository<Models.GroupMembership> _groupMembershipRepository;
         private IGenericRepository<Models.Image> _imageRepository;
         private IGenericRepository<Models.ImageProfilePartition> _imageProfilePartitionRepository;
@@ -16,13 +17,14 @@ namespace DAL
         private IGenericRepository<Models.Partition> _partitionRepository;
         private IGenericRepository<Models.PartitionLayout> _partitionLayoutRepository;
         private IGenericRepository<Models.Port> _portRepository;
-        private IGenericRepository<Models.Room> _roomRepository;
+        private RoomRepository _roomRepository;
         private IGenericRepository<Models.Script> _scriptRepository;
         private IGenericRepository<Models.Setting> _settingRepository;
-        private IGenericRepository<Models.Site> _siteRepository;
+        private SiteRepository _siteRepository;
         private IGenericRepository<Models.SysprepTag> _sysprepTagRepository;
         private IGenericRepository<Models.WdsUser> _userRepository;
         private IGenericRepository<Models.BootTemplate> _bootTemplateRepository;
+        private ComputerRepository _computerRepository;
         private ImageProfileScriptRepository _imageProfileScriptRepository;
         private GroupRepository _groupRepository;
         private ActiveImagingTaskRepository _activeImagingTaskRepository;
@@ -33,14 +35,20 @@ namespace DAL
             get { return _activeMulticastSessionRepository ?? (_activeMulticastSessionRepository = new GenericRepository<Models.ActiveMulticastSession>(_context)); }
 
         }
-        public IGenericRepository<Models.Computer> ComputerRepository
+
+        public IGenericRepository<Models.ComputerBootMenu> ComputerBootMenuRepository
         {
-            get { return _computerRepository ?? (_computerRepository = new GenericRepository<Models.Computer>(_context)); }
+            get { return _computerBootMenuRepository ?? (_computerBootMenuRepository = new GenericRepository<Models.ComputerBootMenu>(_context)); }
+
+        }
+        public ComputerRepository ComputerRepository
+        {
+            get { return _computerRepository ?? (_computerRepository = new ComputerRepository(_context)); }
         }
 
-        public IGenericRepository<Models.Building> BuildingRepository
+        public BuildingRepository BuildingRepository
         {
-            get { return _buildingRepository ?? (_buildingRepository = new GenericRepository<Models.Building>(_context)); }
+            get { return _buildingRepository ?? (_buildingRepository = new BuildingRepository(_context)); }
         }
 
         public IGenericRepository<Models.DistributionPoint> DistributionPointRepository
@@ -83,9 +91,9 @@ namespace DAL
             get { return _portRepository ?? (_portRepository = new GenericRepository<Models.Port>(_context)); }
         }
 
-        public IGenericRepository<Models.Room> RoomRepository
+        public RoomRepository RoomRepository
         {
-            get { return _roomRepository ?? (_roomRepository = new GenericRepository<Models.Room>(_context)); }
+            get { return _roomRepository ?? (_roomRepository = new RoomRepository(_context)); }
         }
 
         public IGenericRepository<Models.Script> ScriptRepository
@@ -98,9 +106,9 @@ namespace DAL
             get { return _settingRepository ?? (_settingRepository = new GenericRepository<Models.Setting>(_context)); }
         }
 
-        public IGenericRepository<Models.Site> SiteRepository
+        public SiteRepository SiteRepository
         {
-            get { return _siteRepository ?? (_siteRepository = new GenericRepository<Models.Site>(_context)); }
+            get { return _siteRepository ?? (_siteRepository = new SiteRepository(_context)); }
         }
 
         public IGenericRepository<Models.SysprepTag> SysprepTagRepository

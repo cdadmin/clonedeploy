@@ -56,7 +56,7 @@ public partial class views_admin_client : Admin
 
             if (!string.IsNullOrEmpty(txtSMBPass.Text))
                 listSettings.Add(new Models.Setting { Name = "SMB Password", Value = txtSMBPass.Text });
-            new Setting().UpdateSetting(listSettings);
+            Setting.UpdateSetting(listSettings);
         }
     }
 
@@ -121,7 +121,7 @@ public partial class views_admin_client : Admin
 
     protected bool ValidateSettings()
     {
-        if (new ActiveImagingTask().ReadAll().Count > 0)
+        if (ActiveImagingTask.ReadAll().Count > 0)
         {
             //Message.Text = "Settings Cannot Be Changed While Tasks Are Active";
             return false;

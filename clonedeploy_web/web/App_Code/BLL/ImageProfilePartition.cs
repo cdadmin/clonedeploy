@@ -6,29 +6,32 @@ namespace BLL
 {
     public class ImageProfilePartition
     {
-        private readonly DAL.UnitOfWork _unitOfWork;
 
-        public ImageProfilePartition()
+        public static bool AddImageProfilePartition(Models.ImageProfilePartition imageProfilePartition)
         {
-            _unitOfWork = new DAL.UnitOfWork();
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.ImageProfilePartitionRepository.Insert(imageProfilePartition);
+                return uow.Save();
+            }
         }
 
-        public bool AddImageProfilePartition(Models.ImageProfilePartition imageProfilePartition)
+        public static bool DeleteImageProfilePartitions(int profileId)
         {
-            _unitOfWork.ImageProfilePartitionRepository.Insert(imageProfilePartition);
-            return _unitOfWork.Save();         
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.ImageProfilePartitionRepository.DeleteRange(x => x.ProfileId == profileId);
+                return uow.Save();
+            }
         }
 
-        public bool DeleteImageProfilePartitions(int profileId)
+        public static List<Models.ImageProfilePartition> SearchImageProfilePartitions(int profileId)
         {
-            _unitOfWork.ImageProfilePartitionRepository.DeleteRange(x => x.ProfileId == profileId);
-            return _unitOfWork.Save();
-        }
-
-        public List<Models.ImageProfilePartition> SearchImageProfilePartitions(int profileId)
-        {
-           return _unitOfWork.ImageProfilePartitionRepository.Get(p => p.ProfileId == profileId,
-                orderBy: (q => q.OrderBy(p => p.Id)));
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ImageProfilePartitionRepository.Get(p => p.ProfileId == profileId,
+                    orderBy: (q => q.OrderBy(p => p.Id)));
+            }
         }
     }
 }

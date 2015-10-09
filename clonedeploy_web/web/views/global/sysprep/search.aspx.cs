@@ -15,11 +15,10 @@ public partial class views_global_sysprep_search : BasePages.Global
 
     protected void PopulateGrid()
     {
-        var bllSysprepTag = new SysprepTag();
-        gvSysprepTags.DataSource = bllSysprepTag.SearchSysprepTags(txtSearch.Text);
+        gvSysprepTags.DataSource = BLL.SysprepTag.SearchSysprepTags(txtSearch.Text);
         gvSysprepTags.DataBind();
 
-        lblTotal.Text = gvSysprepTags.Rows.Count + " Result(s) / " + bllSysprepTag.TotalCount() + " Total Sysprep Tag(s)";
+        lblTotal.Text = gvSysprepTags.Rows.Count + " Result(s) / " + BLL.SysprepTag.TotalCount() + " Total Sysprep Tag(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)

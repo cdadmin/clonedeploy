@@ -39,7 +39,7 @@ namespace views.users
                               "csvupload" + Path.DirectorySeparatorChar + "users.csv";
             FileUpload.SaveAs(csvFilePath);
             new FileOps().SetUnixPermissions(csvFilePath);
-            BllUser.ImportUsers();
+            BLL.User.ImportUsers();
         }        
     }
 }

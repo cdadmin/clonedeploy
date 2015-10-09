@@ -98,7 +98,7 @@ namespace views.images
             image.IsVisible = chkVisible.Checked ? 1 : 0;
 
 
-            BllImage.UpdateImage(image, currentName);
+            BLL.Image.UpdateImage(image, currentName);
         }
 
         protected void PopulateForm()

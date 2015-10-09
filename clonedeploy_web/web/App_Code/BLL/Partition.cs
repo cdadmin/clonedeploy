@@ -7,48 +7,60 @@ namespace BLL
 {
     public class Partition
     {
-        private readonly DAL.UnitOfWork _unitOfWork;
 
-        public Partition()
+        public static bool AddPartition(Models.Partition partition)
         {
-            _unitOfWork = new UnitOfWork();
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.PartitionRepository.Insert(partition);
+                return uow.Save();
+            }
         }
 
-        public bool AddPartition(Models.Partition partition)
+        public static string TotalCount()
         {
-            _unitOfWork.PartitionRepository.Insert(partition);
-            return _unitOfWork.Save();
-        }
-
-        public string TotalCount()
-        {
-            return _unitOfWork.PartitionRepository.Count();
-        }
-
-      
-        public bool DeletePartition(int partitionId)
-        {
-            _unitOfWork.PartitionRepository.Delete(partitionId);
-            return _unitOfWork.Save();
-        }
-
-        public Models.Partition GetPartition(int partitionId)
-        {
-            return _unitOfWork.PartitionRepository.GetById(partitionId);
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.PartitionRepository.Count();
+            }
         }
 
       
-        public List<Models.Partition> SearchPartitions(int layoutId)
+        public static bool DeletePartition(int partitionId)
         {
-            return _unitOfWork.PartitionRepository.Get(p => p.LayoutId == layoutId,
-                orderBy: (q => q.OrderBy(p => p.Number)));
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.PartitionRepository.Delete(partitionId);
+                return uow.Save();
+            }
         }
 
-        public bool UpdatePartition(Models.Partition partition)
+        public static Models.Partition GetPartition(int partitionId)
         {
-            _unitOfWork.PartitionRepository.Update(partition,partition.Id);
-            return _unitOfWork.Save();
-              
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.PartitionRepository.GetById(partitionId);
+            }
+        }
+
+      
+        public static List<Models.Partition> SearchPartitions(int layoutId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.PartitionRepository.Get(p => p.LayoutId == layoutId,
+                    orderBy: (q => q.OrderBy(p => p.Number)));
+            }
+        }
+
+        public static bool UpdatePartition(Models.Partition partition)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.PartitionRepository.Update(partition, partition.Id);
+                return uow.Save();
+            }
+
         }
 
      

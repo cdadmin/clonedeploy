@@ -46,7 +46,7 @@ public partial class views_groups_removemembers : Groups
     protected void PopulateGrid()
     {
 
-        gvHosts.DataSource = BllGroup.GetGroupMembers(Group.Id,txtSearch.Text);
+        gvHosts.DataSource = BLL.Group.GetGroupMembers(Group.Id,txtSearch.Text);
         gvHosts.DataBind();
 
         //lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + BllGroup.GetGroupMemberCount(Group.Id) + " Total Host(s)";
@@ -74,7 +74,7 @@ public partial class views_groups_removemembers : Groups
                     ComputerId = Convert.ToInt32(dataKey.Value),
                     GroupId = Group.Id
                 };
-                if (new GroupMembership().DeleteMembership(membership))
+                if (BLL.GroupMembership.DeleteMembership(membership))
                     removedCount++;
             }
         }

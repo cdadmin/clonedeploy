@@ -13,86 +13,96 @@ namespace BLL
     public class ActiveMulticastSession
     {
 
-        private readonly UnitOfWork _unitOfWork = new UnitOfWork();
-
-        public bool AddActiveMulticastSession(Models.ActiveMulticastSession activeMulticastSession)
+        public static bool AddActiveMulticastSession(Models.ActiveMulticastSession activeMulticastSession)
         {
-            if (_unitOfWork.ActiveMulticastSessionRepository.Exists(h => h.Name == activeMulticastSession.Name))
+            using (var uow = new DAL.UnitOfWork())
             {
-                //Message.Text = "A Multicast Is Already Running For This Group";
-                return false;
-            }
-            _unitOfWork.ActiveMulticastSessionRepository.Insert(activeMulticastSession);
-            if (_unitOfWork.Save())
-            {
-                //Message.Text = "Successfully Created Multicast";
-                return true;
-            }
-            else
-            {
-                //Message.Text = "Could Not Create Multicast";
-                return false;
+                if (uow.ActiveMulticastSessionRepository.Exists(h => h.Name == activeMulticastSession.Name))
+                {
+                    //Message.Text = "A Multicast Is Already Running For This Group";
+                    return false;
+                }
+                uow.ActiveMulticastSessionRepository.Insert(activeMulticastSession);
+                if (uow.Save())
+                {
+                    //Message.Text = "Successfully Created Multicast";
+                    return true;
+                }
+                else
+                {
+                    //Message.Text = "Could Not Create Multicast";
+                    return false;
+                }
             }
         }
 
-        public bool Delete(int multicastId)
+        public static bool Delete(int multicastId)
         {
-            var multicast = _unitOfWork.ActiveMulticastSessionRepository.GetById(multicastId);
-            var computers = _unitOfWork.ActiveImagingTaskRepository.MulticastComputers(multicastId);
-
-            _unitOfWork.ActiveMulticastSessionRepository.Delete(multicastId);
-            if (_unitOfWork.Save())
+            using (var uow = new DAL.UnitOfWork())
             {
-                new ActiveImagingTask().DeleteForMulticast(multicastId);
+                var multicast = uow.ActiveMulticastSessionRepository.GetById(multicastId);
+                var computers = uow.ActiveImagingTaskRepository.MulticastComputers(multicastId);
 
-                foreach (var computer in computers)
-                    new PxeFileOps().CleanPxeBoot(Utility.MacToPxeMac(computer.Mac));
-
-                try
+                uow.ActiveMulticastSessionRepository.Delete(multicastId);
+                if (uow.Save())
                 {
-                    var prs = Process.GetProcessById(Convert.ToInt32(multicast.Pid));
-                    var processName = prs.ProcessName;
-                    if (Environment.OSVersion.ToString().Contains("Unix"))
+                    ActiveImagingTask.DeleteForMulticast(multicastId);
+
+                    foreach (var computer in computers)
+                        new PxeFileOps().CleanPxeBoot(Utility.MacToPxeMac(computer.Mac));
+
+                    try
                     {
-                        while (!prs.HasExited)
+                        var prs = Process.GetProcessById(Convert.ToInt32(multicast.Pid));
+                        var processName = prs.ProcessName;
+                        if (Environment.OSVersion.ToString().Contains("Unix"))
                         {
-                            KillProcessLinux(Convert.ToInt32(multicast.Pid));
-                            Thread.Sleep(1000);
+                            while (!prs.HasExited)
+                            {
+                                KillProcessLinux(Convert.ToInt32(multicast.Pid));
+                                Thread.Sleep(1000);
+                            }
                         }
+                        else
+                        {
+                            if (processName == "cmd")
+                                KillProcess(Convert.ToInt32(multicast.Pid));
+                        }
+                        //Message.Text = "Successfully Deleted Task";
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        if (processName == "cmd")
-                            KillProcess(Convert.ToInt32(multicast.Pid));
+                        Logger.Log(ex.ToString());
+                        //Message.Text = "Could Not Kill Process.  Check The Exception Log For More Info";
                     }
-                    //Message.Text = "Successfully Deleted Task";
+                    return true;
                 }
-                catch (Exception ex)
+                else
                 {
-                    Logger.Log(ex.ToString());
-                    //Message.Text = "Could Not Kill Process.  Check The Exception Log For More Info";
+                    //Message.Text = "Could Not Delete Task";
+                    return false;
                 }
-                return true;
             }
-            else
+        }
+
+        public static bool UpdateActiveMulticastSession(Models.ActiveMulticastSession activeMulticastSession)
+        {
+            using (var uow = new DAL.UnitOfWork())
             {
-                //Message.Text = "Could Not Delete Task";
-                return false;
+                uow.ActiveMulticastSessionRepository.Update(activeMulticastSession, activeMulticastSession.Id);
+                return uow.Save();
             }
         }
 
-        public bool UpdateActiveMulticastSession(Models.ActiveMulticastSession activeMulticastSession)
+        public static List<Models.ActiveMulticastSession> GetAllMulticastSessions()
         {
-            _unitOfWork.ActiveMulticastSessionRepository.Update(activeMulticastSession, activeMulticastSession.Id);
-            return _unitOfWork.Save();
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ActiveMulticastSessionRepository.Get(orderBy: (q => q.OrderBy(t => t.Name)));
+            }
         }
 
-        public List<Models.ActiveMulticastSession> GetAllMulticastSessions()
-        {
-            return _unitOfWork.ActiveMulticastSessionRepository.Get(orderBy: (q => q.OrderBy(t => t.Name)));
-        }
-
-        public void KillProcess(int pid)
+        public static void KillProcess(int pid)
         {
             var searcher =
                 new ManagementObjectSearcher("Select * From Win32_Process Where ParentProcessID=" + pid);
@@ -114,7 +124,7 @@ namespace BLL
             }
         }
 
-        public void KillProcessLinux(int pid)
+        public static void KillProcessLinux(int pid)
         {
             try
             {

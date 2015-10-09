@@ -7,8 +7,6 @@ using BLL;
 
 public partial class views_admin_dp_search : Admin
 {
-    private readonly DistributionPoint _bllDistributionPoint = new DistributionPoint();
-
     protected void Page_Load(object sender, EventArgs e)
     {
         if (IsPostBack) return;
@@ -25,7 +23,7 @@ public partial class views_admin_dp_search : Admin
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvDps.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            _bllDistributionPoint.DeleteDistributionPoint(Convert.ToInt32(dataKey.Value));
+            BLL.DistributionPoint.DeleteDistributionPoint(Convert.ToInt32(dataKey.Value));
         }
 
         PopulateGrid();
@@ -55,10 +53,10 @@ public partial class views_admin_dp_search : Admin
 
     protected void PopulateGrid()
     {
-        gvDps.DataSource = _bllDistributionPoint.SearchDistributionPoints(txtSearch.Text);
+        gvDps.DataSource = BLL.DistributionPoint.SearchDistributionPoints(txtSearch.Text);
         gvDps.DataBind();
 
-        lblTotal.Text = gvDps.Rows.Count + " Result(s) / " + _bllDistributionPoint.TotalCount() + " Distribution Points(s)";
+        lblTotal.Text = gvDps.Rows.Count + " Result(s) / " + BLL.DistributionPoint.TotalCount() + " Distribution Points(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)

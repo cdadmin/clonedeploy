@@ -9,7 +9,7 @@ namespace Pxe
     {
         public bool CleanPxeBoot(string pxeHostMac)
         {
-            var host = new BLL.Computer().GetComputerFromMac(Utility.PxeMacToMac(pxeHostMac));
+            var host = BLL.Computer.GetComputerFromMac(Utility.PxeMacToMac(pxeHostMac));
             var mode = Settings.PxeMode;
             var isCustomBootTemplate = Convert.ToBoolean(Convert.ToInt16(host.CustomBootEnabled));
             var proxyDhcp = Settings.ProxyDhcp;

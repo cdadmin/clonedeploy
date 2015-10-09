@@ -19,24 +19,33 @@ namespace views.hosts
                 Id = Computer.Id,
                 Name = txtHostName.Text,
                 Mac = Utility.FixMac(txtHostMac.Text),
-                Image = Convert.ToInt32(ddlHostImage.SelectedValue),
+                ImageId = Convert.ToInt32(ddlHostImage.SelectedValue),
                 ImageProfile = Convert.ToInt32(ddlHostImage.SelectedValue) == -1 ? -1 : Convert.ToInt32(ddlImageProfile.SelectedValue),
                 Description = txtHostDesc.Text,
+                SiteId = Convert.ToInt32(ddlSite.SelectedValue),
+                BuildingId = Convert.ToInt32(ddlBuilding.SelectedValue),
+                RoomId = Convert.ToInt32(ddlRoom.SelectedValue)
             };
 
-            var result = BllComputer.UpdateComputer(host);
+            var result = BLL.Computer.UpdateComputer(host);
             EndUserMessage = !result.IsValid ? result.Message : "Successfully Updated Computer";
         }
 
         protected void PopulateForm()
         {
             PopulateImagesDdl(ddlHostImage);
+            PopulateSitesDdl(ddlSite);
+            PopulateBuildingsDdl(ddlBuilding);
+            PopulateRoomsDdl(ddlRoom);
             txtHostName.Text = Computer.Name;
             txtHostMac.Text = Computer.Mac;
-            ddlHostImage.SelectedValue = Computer.Image.ToString();        
+            ddlHostImage.SelectedValue = Computer.ImageId.ToString();        
             txtHostDesc.Text = Computer.Description;
             PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlHostImage.SelectedValue));
-            ddlImageProfile.SelectedValue = Computer.ImageProfile.ToString();       
+            ddlImageProfile.SelectedValue = Computer.ImageProfile.ToString();
+            ddlSite.SelectedValue = Computer.SiteId.ToString();
+            ddlBuilding.SelectedValue = Computer.BuildingId.ToString();
+            ddlRoom.SelectedValue = Computer.RoomId.ToString();
         }
 
         protected void ddlHostImage_OnSelectedIndexChanged(object sender, EventArgs e)

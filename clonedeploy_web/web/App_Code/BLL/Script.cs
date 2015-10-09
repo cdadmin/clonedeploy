@@ -7,60 +7,71 @@ namespace BLL
 {
     public class Script
     {
-        private readonly DAL.UnitOfWork _unitOfWork;
 
-        public Script()
+        public static Models.ValidationResult AddScript(Models.Script script)
         {
-            _unitOfWork = new UnitOfWork();
-        }
-
-        public Models.ValidationResult AddScript(Models.Script script)
-        {
-
-            var validationResult = ValidateScript(script, true);
-            if (validationResult.IsValid)
+            using (var uow = new DAL.UnitOfWork())
             {
-                _unitOfWork.ScriptRepository.Insert(script);
-                validationResult.IsValid = _unitOfWork.Save();
+                var validationResult = ValidateScript(script, true);
+                if (validationResult.IsValid)
+                {
+                    uow.ScriptRepository.Insert(script);
+                    validationResult.IsValid = uow.Save();
+                }
+
+                return validationResult;
             }
-
-            return validationResult;
         }
 
-        public string TotalCount()
+        public static string TotalCount()
         {
-            return _unitOfWork.ScriptRepository.Count();
-        }
-
-        public bool DeleteScript(int scriptId)
-        {
-            _unitOfWork.ScriptRepository.Delete(scriptId);
-            return _unitOfWork.Save();
-        }
-
-        public Models.Script GetScript(int scriptId)
-        {
-            return _unitOfWork.ScriptRepository.GetById(scriptId);
-        }
-
-        public List<Models.Script> SearchScripts(string searchString)
-        {
-            return _unitOfWork.ScriptRepository.Get(s => s.Name.Contains(searchString));
-        }
-
-        public Models.ValidationResult UpdateScript(Models.Script script)
-        {
-            var validationResult = ValidateScript(script, false);
-            if (validationResult.IsValid)
+            using (var uow = new DAL.UnitOfWork())
             {
-                _unitOfWork.ScriptRepository.Update(script, script.Id);
-                validationResult.IsValid = _unitOfWork.Save();
+                return uow.ScriptRepository.Count();
             }
-
-            return validationResult;
         }
 
-        public Models.ValidationResult ValidateScript(Models.Script script, bool isNewScript)
+        public static bool DeleteScript(int scriptId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.ScriptRepository.Delete(scriptId);
+                return uow.Save();
+            }
+        }
+
+        public static Models.Script GetScript(int scriptId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ScriptRepository.GetById(scriptId);
+            }
+        }
+
+        public static List<Models.Script> SearchScripts(string searchString)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ScriptRepository.Get(s => s.Name.Contains(searchString));
+            }
+        }
+
+        public static Models.ValidationResult UpdateScript(Models.Script script)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                var validationResult = ValidateScript(script, false);
+                if (validationResult.IsValid)
+                {
+                    uow.ScriptRepository.Update(script, script.Id);
+                    validationResult.IsValid = uow.Save();
+                }
+
+                return validationResult;
+            }
+        }
+
+        public static Models.ValidationResult ValidateScript(Models.Script script, bool isNewScript)
         {
             var validationResult = new Models.ValidationResult();
 

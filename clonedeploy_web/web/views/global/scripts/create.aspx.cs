@@ -18,7 +18,7 @@ public partial class views_admin_scripts_create : BasePages.Global
         };
         var fixedLineEnding = scriptEditor.Value.Replace("\r\n", "\n");
         script.Contents = fixedLineEnding;
-        new BLL.Script().AddScript(script);
+        BLL.Script.AddScript(script);
             //if (script.Create())
                 //Response.Redirect("~/views/computers/edit.aspx?hostid=" + host.Id);
 

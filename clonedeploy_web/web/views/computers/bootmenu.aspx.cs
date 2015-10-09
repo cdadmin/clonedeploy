@@ -1,17 +1,13 @@
 ﻿using System;
-using System.IO;
 using BasePages;
 using Helpers;
-using Models;
 using Pxe;
-using BootTemplate = BLL.BootTemplate;
-using Computer = BLL.Computer;
+
 
 namespace views.hosts
 {
     public partial class HostBootMenu : Computers
     {
-      
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -70,7 +66,7 @@ namespace views.hosts
         protected void DisplayActiveMenu()
         {
             var proxyDhcp = Settings.ProxyDhcp;
-            var active = new BLL.ActiveImagingTask().IsComputerActive(Computer.Id);
+            var active = BLL.ActiveImagingTask.IsComputerActive(Computer.Id);
             var pxeFileOps = new PxeFileOps();
             string path;
 

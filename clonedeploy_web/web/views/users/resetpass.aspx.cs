@@ -39,12 +39,11 @@ namespace views.users
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             var user = CloneDeployUser;
-            var bllUser = new User();
             if (txtUserPwd.Text == txtUserPwdConfirm.Text)
             {
                 user.Password = txtUserPwd.Text;
-                user.Salt = bllUser.CreateSalt(16);
-                bllUser.UpdateUser(user, true);
+                user.Salt = BLL.User.CreateSalt(16);
+                BLL.User.UpdateUser(user, true);
             }
             else
                 EndUserMessage = "Passwords Did Not Match";
