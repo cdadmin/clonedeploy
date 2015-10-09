@@ -102,7 +102,7 @@ namespace BLL
 
        
 
-        public List<Models.Computer> GetGroupMembers(int groupId, string searchString)
+        public List<Models.Computer> GetGroupMembers(int groupId, string searchString = "")
         {
             return _unitOfWork.GroupRepository.GetGroupMembers(groupId, searchString);
         }

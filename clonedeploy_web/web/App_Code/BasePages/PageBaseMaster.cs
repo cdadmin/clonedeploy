@@ -42,7 +42,7 @@ namespace BasePages
             ddlImages.DataValueField = "Id";
             ddlImages.DataTextField = "Name";
             ddlImages.DataBind();
-            ddlImages.Items.Insert(0, new ListItem("Select Image", "0"));
+            ddlImages.Items.Insert(0, new ListItem("Select Image", "-1"));
         }
 
         protected void PopulateImageProfilesDdl(DropDownList ddlImageProfile, int value)
@@ -51,6 +51,7 @@ namespace BasePages
             ddlImageProfile.DataValueField = "Id";
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();
+            ddlImageProfile.Items.Insert(0, new ListItem("Select Profile", "-1"));
         }
 
         protected void PopulateDistributionPointsDdl(DropDownList ddlDp)

@@ -11,60 +11,80 @@ namespace BLL
 
     public class Computer
     {
-        private readonly UnitOfWork _unitOfWork = new UnitOfWork();
-
-        public Models.ValidationResult AddComputer(Models.Computer computer)
+        public static Models.ValidationResult AddComputer(Models.Computer computer)
         {
-            var validationResult = ValidateComputer(computer, true);
-            if (validationResult.IsValid)
+            using (var uow = new DAL.UnitOfWork())
             {
-                _unitOfWork.ComputerRepository.Insert(computer);
-                validationResult.IsValid = _unitOfWork.Save();
+                var validationResult = ValidateComputer(computer, true);
+                if (validationResult.IsValid)
+                {
+                    uow.ComputerRepository.Insert(computer);
+                    validationResult.IsValid = uow.Save();
+                }
+
+                return validationResult;
             }
-
-            return validationResult;
         }
 
-        public string TotalCount()
+        public static string TotalCount()
         {
-            return _unitOfWork.ComputerRepository.Count();
-        }
-
-        public bool DeleteComputer(int computerId)
-        {
-            _unitOfWork.ComputerRepository.Delete(computerId);
-            return _unitOfWork.Save();
-        }
-
-        public Models.Computer GetComputer(int computerId)
-        {
-            return _unitOfWork.ComputerRepository.GetById(computerId);
-        }
-
-        public Models.Computer GetComputerFromMac(string mac)
-        {
-            return _unitOfWork.ComputerRepository.GetFirstOrDefault(p => p.Mac == mac);
-        }
-
-        public List<Models.Computer> SearchComputers(string searchString)
-        {
-            return _unitOfWork.ComputerRepository.Get(w => w.Name.Contains(searchString), includeProperties:"images");
-        }
-
-        public Models.ValidationResult UpdateComputer(Models.Computer computer)
-        {
-            var validationResult = ValidateComputer(computer, false);
-            if (validationResult.IsValid)
+            using (var uow = new DAL.UnitOfWork())
             {
-                _unitOfWork.ComputerRepository.Update(computer, computer.Id);
-                validationResult.IsValid = _unitOfWork.Save();
+                return uow.ComputerRepository.Count();
             }
+        }
 
-            return validationResult;
+        public static bool DeleteComputer(int computerId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.ComputerRepository.Delete(computerId);
+                return uow.Save();
+            }
+        }
+
+        public static Models.Computer GetComputer(int computerId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ComputerRepository.GetById(computerId);
+            }
+        }
+
+        public static Models.Computer GetComputerFromMac(string mac)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ComputerRepository.GetFirstOrDefault(p => p.Mac == mac);
+            }
+        }
+
+        public static List<Models.Computer> SearchComputers(string searchString)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ComputerRepository.Get(w => w.Name.Contains(searchString),
+                    includeProperties: "images");
+            }
+        }
+
+        public static Models.ValidationResult UpdateComputer(Models.Computer computer)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                var validationResult = ValidateComputer(computer, false);
+                if (validationResult.IsValid)
+                {
+                    uow.ComputerRepository.Update(computer, computer.Id);
+                    validationResult.IsValid = uow.Save();
+                }
+
+                return validationResult;
+            }
         }
 
     
-        public Models.ValidationResult ValidateComputer(Models.Computer computer, bool isNewComputer)
+        public static Models.ValidationResult ValidateComputer(Models.Computer computer, bool isNewComputer)
         {
             var validationResult = new Models.ValidationResult();
 
@@ -84,19 +104,9 @@ namespace BLL
 
             if (isNewComputer)
             {
-                if (_unitOfWork.ComputerRepository.Exists(h => h.Name == computer.Name || h.Mac == computer.Mac))
+                using (var uow = new DAL.UnitOfWork())
                 {
-                    validationResult.IsValid = false;
-                    validationResult.Message = "This Computer Already Exists";
-                    return validationResult;
-                }
-            }
-            else
-            {
-                var originalComputer = _unitOfWork.ComputerRepository.GetById(computer.Id);
-                if (originalComputer.Name != computer.Name || originalComputer.Mac != computer.Mac)
-                {
-                    if (_unitOfWork.ComputerRepository.Exists(h => h.Name == computer.Name || h.Mac == computer.Mac))
+                    if (uow.ComputerRepository.Exists(h => h.Name == computer.Name || h.Mac == computer.Mac))
                     {
                         validationResult.IsValid = false;
                         validationResult.Message = "This Computer Already Exists";
@@ -104,16 +114,32 @@ namespace BLL
                     }
                 }
             }
+            else
+            {
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    var originalComputer = uow.ComputerRepository.GetById(computer.Id);
+                    if (originalComputer.Name != computer.Name || originalComputer.Mac != computer.Mac)
+                    {
+                        if (uow.ComputerRepository.Exists(h => h.Name == computer.Name || h.Mac == computer.Mac))
+                        {
+                            validationResult.IsValid = false;
+                            validationResult.Message = "This Computer Already Exists";
+                            return validationResult;
+                        }
+                    }
+                }
+            }
 
             return validationResult;
         }
 
-        public void ImportComputers()
+        public static void ImportComputers()
         {
             throw new NotImplementedException();
         }
 
-        public void StartUnicast(Models.Computer computer, string direction)
+        public static void StartUnicast(Models.Computer computer, string direction)
         {
             switch (new Unicast().Run(computer, direction))
             {

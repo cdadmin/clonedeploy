@@ -10,12 +10,12 @@ namespace views.hosts
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (IsPostBack) return;
-
             if (new Authorize().IsInMembership("User"))
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
-            else
-                PopulateForm();
+
+            if (!IsPostBack) PopulateForm();
+
+
         }
 
         protected void ButtonAddHost_Click(object sender, EventArgs e)
@@ -26,7 +26,7 @@ namespace views.hosts
                 Name = txtHostName.Text,
                 Mac = Utility.FixMac(txtHostMac.Text),
                 Image = Convert.ToInt32(ddlHostImage.SelectedValue),
-                ImageProfile = Convert.ToInt32(ddlHostImage.SelectedValue) == 0 ? 0 : Convert.ToInt32(ddlImageProfile.SelectedValue),
+                ImageProfile = Convert.ToInt32(ddlHostImage.SelectedValue) == -1 ? -1 : Convert.ToInt32(ddlImageProfile.SelectedValue),
                 Description = txtHostDesc.Text,
             };
 

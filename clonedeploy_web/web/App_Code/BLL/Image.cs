@@ -214,7 +214,7 @@ namespace BLL
         {
             var validationResult = new Models.ValidationResult();
 
-            if (string.IsNullOrEmpty(image.Name) || image.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
+            if (string.IsNullOrEmpty(image.Name) || !image.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {
                 validationResult.IsValid = false;
                 validationResult.Message = "Image Name Is Not Valid";

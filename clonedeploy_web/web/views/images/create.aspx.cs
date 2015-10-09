@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Linq.Mapping;
 using BasePages;
 using Helpers;
 using Models;
@@ -29,8 +30,16 @@ namespace views.images
             };
 
            
-            BllImage.AddImage(image);
+            var result = BllImage.AddImage(image);
+            if (result.IsValid)
+            {
+                EndUserMessage = "Successfully Added Image";
                 Response.Redirect("~/views/images/edit.aspx?imageid=" + image.Id);
+            }
+            else
+            {
+                EndUserMessage = result.Message;
+            }
 
         }
     }
