@@ -14,7 +14,7 @@
         Enable Custom Boot Menus:
     </div>
     <div class="size-5 column">
-        <asp:CheckBox ID="chkEnabled" runat="server"></asp:CheckBox>
+        <asp:CheckBox ID="chkEnabled" runat="server" OnCheckedChanged="chkEnabled_OnCheckedChanged" AutoPostBack="True"></asp:CheckBox>
       
     </div>
    
@@ -26,7 +26,7 @@
             </div>
 
             <div class="size-5 column">
-                <asp:DropDownList ID="ddlProxyMode" runat="server" CssClass="ddlist">
+                <asp:DropDownList ID="ddlProxyMode" runat="server" CssClass="ddlist" OnSelectedIndexChanged="ddlProxyMode_OnSelectedIndexChanged" AutoPostBack="True">
                     <asp:ListItem>bios</asp:ListItem>
                     <asp:ListItem>efi32</asp:ListItem>
                     <asp:ListItem>efi64</asp:ListItem>
@@ -70,6 +70,12 @@
             }
 
         </script>
+    </div>
+     <div class="size-4 column">
+        &nbsp;
+    </div>
+    <div class="size-5 column">
+        <asp:LinkButton ID="buttonUpdate" runat="server" OnClick="buttonUpdate_OnClick" Text="Update Menu" CssClass="submits" OnClientClick="update_click()"/>
     </div>
 </asp:Content>
 

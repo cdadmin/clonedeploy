@@ -18,7 +18,7 @@ namespace views.hosts
             {
                 Id = Computer.Id,
                 Name = txtHostName.Text,
-                Mac = Utility.FixMac(txtHostMac.Text),
+                Mac = txtHostMac.Text,
                 ImageId = Convert.ToInt32(ddlHostImage.SelectedValue),
                 ImageProfile = Convert.ToInt32(ddlHostImage.SelectedValue) == -1 ? -1 : Convert.ToInt32(ddlImageProfile.SelectedValue),
                 Description = txtHostDesc.Text,

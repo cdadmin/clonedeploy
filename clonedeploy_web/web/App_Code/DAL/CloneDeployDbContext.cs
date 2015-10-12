@@ -6,7 +6,11 @@ namespace DAL
 {
     public class CloneDeployDbContext : DbContext
     {
-        public CloneDeployDbContext() : base("mysql") { }
+        public CloneDeployDbContext() : base("clonedeploy")
+        {
+          
+
+        }
         public DbSet<Models.Computer> Computers { get; set; }
         public DbSet<Models.LinuxProfile> LinuxProfiles { get; set; }
         public DbSet<Models.ActiveImagingTask> ActiveImagingTasks { get; set; }

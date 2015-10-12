@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BLL.Workflows;
+using Helpers;
 
 namespace BLL
 {
@@ -12,6 +13,7 @@ namespace BLL
         {
             using (var uow = new DAL.UnitOfWork())
             {
+                computer.Mac = Utility.FixMac(computer.Mac);
                 var validationResult = ValidateComputer(computer, true);
                 if (validationResult.IsValid)
                 {
@@ -68,6 +70,7 @@ namespace BLL
         {
             using (var uow = new DAL.UnitOfWork())
             {
+                computer.Mac = Utility.FixMac(computer.Mac);
                 var validationResult = ValidateComputer(computer, false);
                 if (validationResult.IsValid)
                 {
@@ -91,12 +94,14 @@ namespace BLL
                 return validationResult;
             }
             
-            if (string.IsNullOrEmpty(computer.Mac) || computer.Mac.Contains(" "))
+            if (string.IsNullOrEmpty(computer.Mac) || !computer.Mac.All(c => char.IsLetterOrDigit(c) || c == ':' || c == '-')
+                && (computer.Mac.Length == 12 && !computer.Mac.All(char.IsLetterOrDigit)) )
             {
                 validationResult.IsValid = false;
                 validationResult.Message = "Computer Mac Is Not Valid";
                 return validationResult;
             }
+
 
             if (isNewComputer)
             {
@@ -115,9 +120,18 @@ namespace BLL
                 using (var uow = new DAL.UnitOfWork())
                 {
                     var originalComputer = uow.ComputerRepository.GetById(computer.Id);
-                    if (originalComputer.Name != computer.Name || originalComputer.Mac != computer.Mac)
+                    if (originalComputer.Name != computer.Name)
                     {
-                        if (uow.ComputerRepository.Exists(h => h.Name == computer.Name || h.Mac == computer.Mac))
+                        if (uow.ComputerRepository.Exists(h => h.Name == computer.Name))
+                        {
+                            validationResult.IsValid = false;
+                            validationResult.Message = "This Computer Already Exists";
+                            return validationResult;
+                        }
+                    }
+                    else if (originalComputer.Mac != computer.Mac)
+                    {
+                        if (uow.ComputerRepository.Exists(h => h.Mac == computer.Mac))
                         {
                             validationResult.IsValid = false;
                             validationResult.Message = "This Computer Already Exists";

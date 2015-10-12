@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using DAL;
 using Helpers;
 
@@ -6,54 +8,123 @@ namespace BLL
 {
     public class ComputerBootMenu
     {
+        public static bool ToggleComputerBootMenu(Models.Computer computer, bool enable)
+        {
+            computer.CustomBootEnabled = Convert.ToInt16(enable);
+            BLL.Computer.UpdateComputer(computer);
 
-        public static  bool AddComputerBootMenu(Models.ComputerBootMenu computerBootMenu)
+            if(enable)
+            CreateBootFiles(computer);
+
+            return true;
+        }
+        public static Models.ComputerBootMenu GetComputerBootMenu(int computerId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
+                return uow.ComputerBootMenuRepository.GetFirstOrDefault(p => p.ComputerId == computerId);
+            }
+        }
+
+        public static bool UpdateComputerBootMenu(Models.ComputerBootMenu computerBootMenu)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                if (uow.ComputerBootMenuRepository.Exists(x => x.ComputerId == computerBootMenu.ComputerId))
+                {
+                    computerBootMenu.Id =
+                        uow.ComputerBootMenuRepository.GetFirstOrDefault(
+                            x => x.ComputerId == computerBootMenu.ComputerId).Id;
+                    uow.ComputerBootMenuRepository.Update(computerBootMenu, computerBootMenu.Id);
+                }
+                else
                     uow.ComputerBootMenuRepository.Insert(computerBootMenu);
-                    return uow.Save();
-            }
 
+                if (!uow.Save()) return false;
+
+                var computer = BLL.Computer.GetComputer(computerBootMenu.ComputerId);
+                if(Convert.ToBoolean(computer.CustomBootEnabled))
+                    CreateBootFiles(computer);
+                return true;
+            }
         }
 
-        public static  string TotalCount()
+        public static void DeleteBootFiles(Models.Computer computer)
         {
-            using (var uow = new DAL.UnitOfWork())
+            if (BLL.ActiveImagingTask.IsComputerActive(computer.Id)) return; //Files Will Be Processed When task is done
+            var pxeMac = Utility.MacToPxeMac(computer.Mac);
+            List<Tuple<string, string>> list = new List<Tuple<string, string>>
+                {
+                    Tuple.Create("bios", ""),
+                    Tuple.Create("bios", ".ipxe"),
+                    Tuple.Create("efi32", ""),
+                    Tuple.Create("efi32", ".ipxe"),
+                    Tuple.Create("efi64", ""),
+                    Tuple.Create("efi64", ".ipxe"),
+                    Tuple.Create("efi64", ".cfg")
+                };
+            foreach (var tuple in list)
             {
-                return uow.ComputerBootMenuRepository.Count();
+                new FileOps().DeletePath(Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
+                                         Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                                         pxeMac +
+                                         tuple.Item2);
             }
+
+
+            foreach(var ext in new[] {"",".ipxe",".cfg"})
+            new FileOps().DeletePath(Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                       pxeMac + ext);
         }
 
-        public static  bool DeleteComputerBootMenu(int computerBootMenuId)
+        public static void CreateBootFiles(Models.Computer computer)
         {
-            using (var uow = new DAL.UnitOfWork())
+            if (BLL.ActiveImagingTask.IsComputerActive(computer.Id)) return; //Files Will Be Processed When task is done
+            var bootMenu = GetComputerBootMenu(computer.Id);
+            if (bootMenu == null) return;
+            var pxeMac = Utility.MacToPxeMac(computer.Mac);
+            string path;
+
+            if (Settings.ProxyDhcp == "Yes")
             {
-                uow.ComputerBootMenuRepository.Delete(computerBootMenuId);
-                return uow.Save();
+                List<Tuple<string, string, string>> list = new List<Tuple<string, string, string>>
+                {
+                    Tuple.Create("bios", "", bootMenu.BiosMenu),
+                    Tuple.Create("bios", ".ipxe", bootMenu.BiosMenu),
+                    Tuple.Create("efi32", "",bootMenu.Efi32Menu),
+                    Tuple.Create("efi32", ".ipxe", bootMenu.Efi32Menu),
+                    Tuple.Create("efi64", "" , bootMenu.Efi64Menu),
+                    Tuple.Create("efi64", ".ipxe", bootMenu.Efi64Menu),
+                    Tuple.Create("efi64", ".cfg", bootMenu.Efi64Menu)
+                };
+                foreach (var tuple in list)
+                {
+                    path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
+                           Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeMac +
+                           tuple.Item2;
+
+                        if(!string.IsNullOrEmpty(tuple.Item3))
+                        new FileOps().WritePath(path, tuple.Item3);
+
+                    
+                }               
+            }
+            else
+            {
+                var mode = Settings.PxeMode;
+                path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                       pxeMac;
+
+                if (mode.Contains("ipxe"))
+                    path += ".ipxe";
+                else if (mode.Contains("grub"))
+                    path += ".cfg";
+                    
+                if (!string.IsNullOrEmpty(bootMenu.BiosMenu))
+                    new FileOps().WritePath(path, bootMenu.BiosMenu);
+
             }
         }
 
-        public static  Models.ComputerBootMenu GetComputerBootMenu(int computerBootMenuId)
-        {
-            using (var uow = new DAL.UnitOfWork())
-            {
-                return uow.ComputerBootMenuRepository.GetById(computerBootMenuId);
-            }
-        }
-
-        public static  bool UpdateComputerBootMenu(Models.ComputerBootMenu computerBootMenu)
-        {
-            using (var uow = new DAL.UnitOfWork())
-            {
-
-                uow.ComputerBootMenuRepository.Update(computerBootMenu, computerBootMenu.Id);
-                return uow.Save();
-
-            }
-        }
-
-        
-      
     }
 }

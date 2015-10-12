@@ -38,8 +38,10 @@ namespace Models
         [Column("computer_image_profile_id", Order = 10)]
         public int ImageProfile { get; set; }
 
-        [NotMapped]
-        public string CustomBootEnabled { get; set; }
+        [Column("computer_has_custom_menu", Order = 11)]
+        public int CustomBootEnabled { get; set; }
+
+      
 
         [NotMapped]
         public string TaskId { get; set; }

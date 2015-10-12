@@ -1,4 +1,6 @@
 ﻿<%@ Application Language="C#" %>
+<%@ Import Namespace="System.Data.Entity" %>
+<%@ Import Namespace="DAL" %>
 
 <script runat="server">
 

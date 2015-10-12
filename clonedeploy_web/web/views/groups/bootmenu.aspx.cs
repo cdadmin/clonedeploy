@@ -21,8 +21,8 @@ namespace views.groups
                 case "standard":
                     foreach (var host in BLL.Group.GetGroupMembers(Group.Id, ""))
                     {
-                        var customBootMenu = new CustomBootMenu {Host = host};
-                        customBootMenu.RemoveCustomBootMenu();
+                        BLL.ComputerBootMenu.DeleteBootFiles(host);
+                       
                     }
                     break;
                
@@ -45,13 +45,9 @@ namespace views.groups
             {
                 case "standard":
                     foreach (var host in BLL.Group.GetGroupMembers(Group.Id, ""))
-                    {                    
-                        var customBootMenu = new CustomBootMenu
-                        {
-                            Host = host,
-                            FileName = txtCustomBootMenu.Text
-                        };
-                        customBootMenu.SetCustomBootMenu();
+                    {            
+                        BLL.ComputerBootMenu.CreateBootFiles(host);        
+                      
                     }
                     break;
                
