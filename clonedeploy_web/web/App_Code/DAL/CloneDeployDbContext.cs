@@ -34,6 +34,8 @@ namespace DAL
         public DbSet<Models.Room> Rooms { get; set; }
         public DbSet<Models.DistributionPoint> DistributionPoints { get; set; }
         public DbSet<Models.ComputerBootMenu> ComputerBootMenus { get; set; }
+        public DbSet<Models.ComputerLog> ComputerLogs { get; set; }
+        public DbSet<Models.UserRight> UserRight { get; set; }
 
       
     }

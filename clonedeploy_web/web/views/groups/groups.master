@@ -7,7 +7,7 @@
         });
     </script>
     <div class="size-1 column">
-        <h1 class="remove-bottom icon-group-title">Groups</h1>
+        <h1 class="header-title icon-group-title"><span class="header-title-text">Groups</span></h1>
     </div>
     <div class="size-2 column offset-1">
         <div class="nav-btn-round">

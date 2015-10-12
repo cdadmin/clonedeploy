@@ -7,7 +7,7 @@
         });
     </script>
   
-        <h1 class="header-title icon-image-title">Images</h1>
+        <h1 class="header-title icon-image-title"><span class="header-title-text">Images</span></h1>
  
    
 </asp:Content>

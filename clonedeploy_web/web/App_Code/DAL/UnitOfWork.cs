@@ -17,6 +17,8 @@ namespace DAL
         private IGenericRepository<Models.Partition> _partitionRepository;
         private IGenericRepository<Models.PartitionLayout> _partitionLayoutRepository;
         private IGenericRepository<Models.Port> _portRepository;
+        private IGenericRepository<Models.ComputerLog> _computerLogRepository;
+        private IGenericRepository<Models.UserRight> _userRightRepository;
         private RoomRepository _roomRepository;
         private IGenericRepository<Models.Script> _scriptRepository;
         private IGenericRepository<Models.Setting> _settingRepository;
@@ -89,6 +91,16 @@ namespace DAL
         public IGenericRepository<Models.Port> PortRepository
         {
             get { return _portRepository ?? (_portRepository = new GenericRepository<Models.Port>(_context)); }
+        }
+
+        public IGenericRepository<Models.ComputerLog> ComputerLogRepository
+        {
+            get { return _computerLogRepository ?? (_computerLogRepository = new GenericRepository<Models.ComputerLog>(_context)); }
+        }
+
+        public IGenericRepository<Models.UserRight> UserRightRepository
+        {
+            get { return _userRightRepository ?? (_userRightRepository = new GenericRepository<Models.UserRight>(_context)); }
         }
 
         public RoomRepository RoomRepository

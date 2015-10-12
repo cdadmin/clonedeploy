@@ -7,7 +7,7 @@
             $('#nav-settings').addClass("nav-current");
         });
     </script>
-      <h1 class="remove-bottom icon-setting-title">Admin</h1>
+      <h1 class="header-title icon-setting-title"><span class="header-title-text">Admin</span></h1>
 </asp:Content>
 
 <asp:Content runat="server" ID="Breadcrumb" ContentPlaceHolderID="Breadcrumb">
@@ -22,7 +22,7 @@
         <ul>
             <li id="server">
                 <a href="<%= ResolveUrl("~/views/admin/server.aspx") %>">
-                    <span class="sub-nav-text">Server</span>
+                    <span class="nav-text">Server</span>
                 </a>
             </li>
             

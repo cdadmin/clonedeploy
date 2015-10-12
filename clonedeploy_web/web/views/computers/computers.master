@@ -8,7 +8,8 @@
         });
     </script>
     <div class="size-1 column">
-        <h1 class="header-title icon-host-title">Computers</h1>
+        <h1 class="header-title icon-host-title"><span class="header-title-text">Computers</span></h1>
+        
     </div>
 </asp:Content>
 <asp:Content runat="server" ID="Breadcrumb" ContentPlaceHolderID="Breadcrumb">
@@ -24,7 +25,7 @@
             <ul>
                 <li id="search">
                     <a href="<%= ResolveUrl("~/views/computers/search.aspx") %>">
-                        <span class="sub-nav-text">Search Computers</span></a>
+                        <span class="nav-text">Search Computers</span></a>
                 </li>
                 <li id="new">
                     <a href="<%= ResolveUrl("~/views/computers/create.aspx") %>">

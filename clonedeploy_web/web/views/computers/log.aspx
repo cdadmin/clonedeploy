@@ -6,24 +6,38 @@
             $('#log').addClass("nav-current");
         });
     </script>
-    <div class="size-4 column" style="float: right; margin: 0;">
-        <asp:DropDownList ID="ddlLogType" runat="server" CssClass="ddlist" Style="float: right; width: 200px;" AutoPostBack="true" OnSelectedIndexChanged="ddlLogLimit_SelectedIndexChanged">
-            <asp:ListItem>Select A Log</asp:ListItem>
-            <asp:ListItem>Upload</asp:ListItem>
-            <asp:ListItem>Deploy</asp:ListItem>
-        </asp:DropDownList>
-        <br class="clear"/>
-        <asp:DropDownList ID="ddlLogLimit" runat="server" CssClass="ddlist" Style="float: right; width: 75px;" AutoPostBack="true" OnSelectedIndexChanged="ddlLogLimit_SelectedIndexChanged">
-            <asp:ListItem>10</asp:ListItem>
-            <asp:ListItem>25</asp:ListItem>
-            <asp:ListItem>75</asp:ListItem>
-            <asp:ListItem>All</asp:ListItem>
-        </asp:DropDownList>
-        <br class="clear"/>
-        <asp:LinkButton ID="btnExportLog" runat="server" Text="Export Log" CssClass="submits" OnClick="btnExportLog_Click"></asp:LinkButton>
-    </div>
-    <br class="clear"/>
-    <asp:GridView ID="gvHostLog" runat="server" CssClass="Gridview log" ShowHeader="false">
+  
+    <div id="SearchLogs" runat="server">
+    <p class="total">
+        <asp:Label ID="lblTotal" runat="server"></asp:Label>
+    </p>
+    <asp:GridView ID="gvLogs" runat="server" AllowSorting="True" DataKeyNames="Id" OnSorting="gvLogs_OnSorting" AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
+        <Columns>
+          
+            <asp:BoundField DataField="Id" Visible="False"/>
+            <asp:BoundField DataField="LogTime" HeaderText="Time" SortExpression="LogTime" ItemStyle-CssClass="width_200"></asp:BoundField>
+            <asp:BoundField DataField="SubType" HeaderText="Type" SortExpression="SubType" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
+          
+              <asp:TemplateField>
+                <ItemTemplate>
+                    <asp:LinkButton ID="btnView" runat="server" OnClick="btnView_OnClick" Text="View"/>
+                </ItemTemplate>
+            </asp:TemplateField>
+         <asp:TemplateField>
+                <ItemTemplate>
+                    <asp:LinkButton ID="btnExport" runat="server" OnClick="btnExport_OnClick" Text="Export"/>
+                </ItemTemplate>
+            </asp:TemplateField>
+             </Columns>
+        <EmptyDataTemplate>
+            No Logs Found
+        </EmptyDataTemplate>
     </asp:GridView>
+        </div>
+    
+    <div id="ViewLog" runat="server" Visible="False">
+       <asp:GridView ID="gvLogView" runat="server" CssClass="Gridview log" ShowHeader="false">
+    </asp:GridView>
+    </div>
 
 </asp:Content>

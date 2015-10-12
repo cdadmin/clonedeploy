@@ -6,7 +6,7 @@
             $('#nav-global').addClass("nav-current");
         });
     </script>
-      <h1 class="remove-bottom icon-global-title">Global Properties</h1>
+      <h1 class="header-title icon-global-title"><span class="header-title-text">Global Properties</span></h1>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="Breadcrumb" Runat="Server">
      <li><a href="<%= ResolveUrl("~/views/global/chooser.aspx") %>">Global</a></li>

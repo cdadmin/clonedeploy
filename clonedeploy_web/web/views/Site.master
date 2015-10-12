@@ -48,7 +48,7 @@
         </div>
     </div>
    
-    <form id="form1" runat="server" style="height: 100%;overflow-x:hidden;overflow-y:hidden;">
+    <form id="form1" runat="server" style="height: 100%;overflow-x:hidden;overflow-y:auto;">
         
         <div class="container">
 
@@ -61,31 +61,31 @@
                     </li>
                     <li id="nav-hosts">
                         <a href="<%= ResolveUrl("~/views/computers/search.aspx") %>" class="icon-host">
-                            <span class="nav-text">Computers</span></a>
+                            </a>
                     </li>
                     <li id="nav-groups">
                         <a href="<%= ResolveUrl("~/views/groups/search.aspx") %>" class="icon-group">
-                            <span class="nav-text">Groups</span></a>
+                          </a>
                     </li>
                     <li id="nav-images">
                         <a href="<%= ResolveUrl("~/views/images/search.aspx") %>" class="icon-image">
-                            <span class="nav-text">Images</span></a>
+                           </a>
                     </li>
                     <li id="nav-tasks">
                         <a href="<%= ResolveUrl("~/views/tasks/active.aspx") %>" class="icon-task">
-                            <span class="nav-text">Tasks</span></a>
+                           </a>
                     </li>
                     <li id="nav-users">
                         <a href="<%= ResolveUrl("~/views/users/search.aspx") %>" class="icon-user">
-                            <span class="nav-text">Users</span></a>
+                            </a>
                     </li>
                        <li id="nav-global">
                         <a href="<%= ResolveUrl("~/views/global/chooser.aspx") %>" class="icon-global">
-                            <span class="nav-text">Global</span></a>
+                            </a>
                     </li>
                     <li id="nav-settings">
                         <a href="<%= ResolveUrl("~/views/admin/chooser.aspx") %>" class="icon-setting">
-                            <span class="nav-text">Admin</span></a>
+                           </a>
                     </li>
                  
                     <li id="nav-logout">
@@ -136,12 +136,7 @@
             jQuery("#bread-crumb1").jBreadCrumb();
             $('.searchbox').watermark('Search', { useNative: false });
             $('.txt-generate').watermark('Password', { useNative: false });
-            $(".leftmenu").click(function () {
-                
-                $('.nav').css({ "width": "200px" });
-                $('.content_container').css({ "left": "200px" });
-               
-            });
+      
             $(".confirm").click(function () {
                 var menuTop = document.getElementById('confirmbox');
                 classie.toggle(menuTop, 'confirm-box-outer-open');

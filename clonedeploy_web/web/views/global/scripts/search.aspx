@@ -37,7 +37,7 @@
             <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/global/scripts/edit.aspx?cat=sub1&scriptid={0}" Text="View"/>
         </Columns>
         <EmptyDataTemplate>
-            No Hosts Found
+            No Scripts Found
         </EmptyDataTemplate>
     </asp:GridView>
    

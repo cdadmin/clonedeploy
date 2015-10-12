@@ -1,10 +1,10 @@
-.icon-host-title:before{font-family:Flaticon;content:"\e017";font-size: 1.5em;color:#464242;margin-right:-10px;}
-.icon-group-title:before{font-family:Flaticon;content:"\e003";font-size:1.5em;color:#464242;margin-right:-10px;}
-.icon-image-title:before{font-family:Flaticon;content:"\e009";font-size:1.5em;color:#464242;margin-right:-10px;}
-.icon-task-title:before{font-family:Flaticon;content:"\e020";font-size:1.5em;color:#464242;margin-right:-10px;}
-.icon-user-title:before{font-family:Flaticon;content:"\e01f";font-size:1.5em;color:#464242;margin-right:-10px;}
-.icon-setting-title:before{font-family:Flaticon;content:"\e01c";font-size:1.5em;color:#464242;margin-right:-10px;}
-.icon-global-title:before{font-family:Flaticon;content:"\e007";font-size:1.5em;color:#464242;margin-right:-10px;}
+.icon-host-title:before{font-family:Flaticon;content:"\e017";font-size: 1.3em;color:#464242;}
+.icon-group-title:before{font-family:Flaticon;content:"\e003";font-size:1.3em;color:#464242;}
+.icon-image-title:before{font-family:Flaticon;content:"\e009";font-size:1.3em;color:#464242;}
+.icon-task-title:before{font-family:Flaticon;content:"\e020";font-size:1.3em;color:#464242;}
+.icon-user-title:before{font-family:Flaticon;content:"\e01f";font-size:1.3em;color:#464242;}
+.icon-setting-title:before{font-family:Flaticon;content:"\e01c";font-size:1.3em;color:#464242;}
+.icon-global-title:before{font-family:Flaticon;content:"\e007";font-size:1.3em;color:#464242;}
 
 .nav li a.icon-logo:before{font-family:opensans, Calibri, Arial;content:"WDS";font-size:10px;margin-left:50px;}
 .nav li a.icon-host:before,.sub-nav li a.icon-host:before{content:"\e017";font-size:2.0em;margin-left: 5px; margin-top: 30px;}

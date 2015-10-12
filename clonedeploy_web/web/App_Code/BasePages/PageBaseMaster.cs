@@ -119,6 +119,15 @@ namespace BasePages
                 ViewState[sortExpression] = ViewState[sortExpression].ToString() == "Desc" ? "Asc" : "Desc";
 
             return ViewState[sortExpression].ToString();
-        }       
+        }
+
+        public void Export(string fileName, string contents)
+        {
+            HttpContext.Current.Response.ContentType = "application/octet-stream";
+            HttpContext.Current.Response.AppendHeader("Content-Disposition",
+                "attachment; filename=" + fileName);
+            HttpContext.Current.Response.Write(contents);
+            HttpContext.Current.Response.End();
+        }
     }
 }

@@ -7,7 +7,7 @@
         });
     </script>
     <div class="size-1 column">
-        <h1 class="remove-bottom icon-user-title">Users</h1>
+        <h1 class="header-title icon-user-title"><span class="header-title-text">Users</span></h1>
     </div>
   
 </asp:Content>

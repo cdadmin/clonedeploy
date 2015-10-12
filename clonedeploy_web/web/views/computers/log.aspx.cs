@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 using BasePages;
 using Helpers;
 
@@ -8,68 +12,57 @@ namespace views.hosts
 {
     public partial class HostLog : Computers
     {
-      
-
         protected void Page_Load(object sender, EventArgs e)
         {
-         
-           
-            if (!IsPostBack) PopulateLog();
+            if (!IsPostBack) PopulateLogs();
         }
 
-        protected void btnExportLog_Click(object sender, EventArgs e)
+        protected void PopulateLogs()
         {
-            string logType;
-            switch (ddlLogType.Text)
+            gvLogs.DataSource = BLL.ComputerLog.Search(Computer.Id);
+            gvLogs.DataBind();
+        }
+
+        protected void btnExport_OnClick(object sender, EventArgs e)
+        {
+             var control = sender as Control;
+            if (control == null) return;
+            var gvRow = (GridViewRow) control.Parent.Parent;
+            var dataKey = gvLogs.DataKeys[gvRow.RowIndex];
+            if (dataKey == null) return;
+            var log = BLL.ComputerLog.GetComputerLog(Convert.ToInt32(dataKey.Value));
+            Export(Computer.Name + "-" + log.SubType + ".txt", log.Contents);
+        }
+
+        protected void gvLogs_OnSorting(object sender, GridViewSortEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected void btnView_OnClick(object sender, EventArgs e)
+        {
+            var control = sender as Control;
+            if (control == null) return;
+            var gvRow = (GridViewRow)control.Parent.Parent;
+            var dataKey = gvLogs.DataKeys[gvRow.RowIndex];
+            if (dataKey == null) return;
+            var log = BLL.ComputerLog.GetComputerLog(Convert.ToInt32(dataKey.Value));
+
+            SearchLogs.Visible = false;
+            ViewLog.Visible = true;
+
+            // I didn't want a textbox for this, that's why it seems strange.
+            var text = new List<string>();
+            using (var reader = new StringReader(log.Contents))
             {
-                case "Upload":
-                    logType = ".upload";
-                    break;
-                case "Deploy":
-                    logType = ".download";
-                    break;
-                default:
-                    return;
+                string line;
+                while((line = reader.ReadLine()) != null)
+                    text.Add(line);
             }
-            try
-            {
-                var hostLogPath = "hosts" + Path.DirectorySeparatorChar + Computer.Id + logType;
-                var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
-                              Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar;
-                HttpContext.Current.Response.ContentType = "application/octet-stream";
-                HttpContext.Current.Response.AppendHeader("Content-Disposition",
-                    "attachment; filename=" + Computer.Id + logType);
-                HttpContext.Current.Response.TransmitFile(logPath + hostLogPath);
-                HttpContext.Current.Response.End();
-            }
-            catch
-            {
-                // ignored
-            }
-        }
+            gvLogView.DataSource = text;
+            gvLogView.DataBind();
 
-        protected void ddlLogLimit_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            PopulateLog();
-        }
 
-        protected void ddlLogType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            PopulateLog();
-        }
-
-        protected void PopulateLog()
-        {
-            if (!IsPostBack)
-                ddlLogLimit.SelectedValue = "All";
-
-            if (ddlLogType.Text == "Select A Log") return;
-            var logType = ddlLogType.Text == "Upload" ? ".upload" : ".download";
-
-            gvHostLog.DataSource = Logger.ViewLog("hosts" + Path.DirectorySeparatorChar + Computer.Id + logType,
-                ddlLogLimit.Text);
-            gvHostLog.DataBind();
-          
         }
     }
 }
