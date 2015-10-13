@@ -16,6 +16,5 @@ namespace Models
 
         [Column("user_right", Order = 3)]
         public string Right { get; set; }
-
     }
 }

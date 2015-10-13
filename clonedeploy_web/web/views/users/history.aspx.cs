@@ -1,5 +1,6 @@
 ﻿using System;
 using BasePages;
+using Helpers;
 using Models;
 
 namespace views.users
@@ -8,6 +9,7 @@ namespace views.users
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            RequiresAuthorization(Authorizations.Administrator);
             if (!IsPostBack) PopulateHistory();
         }
 

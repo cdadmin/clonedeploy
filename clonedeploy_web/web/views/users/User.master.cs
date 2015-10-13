@@ -15,13 +15,19 @@ namespace views.masters
         {
             UsersBasePage = (Page as Users);
             CloneDeployUser = UsersBasePage.CloneDeployUser;
-            if (CloneDeployUser == null)
+            if (CloneDeployUser == null) //level 2
             {
                 Level2.Visible = false;
-                return;
+                Level3.Visible = false;
+            }
+            else
+            {
+                Level1.Visible = false;
+                if (Request.QueryString["level"] == "3")
+                    Level2.Visible = false;
             }
 
-            Level1.Visible = false;
+          
         }
 
         protected void btnDelete_Click(object sender, EventArgs e)

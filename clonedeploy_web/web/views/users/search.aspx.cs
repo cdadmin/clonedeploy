@@ -12,9 +12,16 @@ namespace views.users
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-        
-            if (IsPostBack) return;
-          
+            if (CloneDeployCurrentUser.Membership != "Administrator")
+            {
+                Session["UserId"] = CloneDeployCurrentUser.Id.ToString();
+                Response.Redirect("~/views/users/resetpass.aspx");
+            }
+
+            //Just In Case
+            RequiresAuthorization(Authorizations.Administrator);
+
+            if (IsPostBack) return;         
             PopulateGrid();
         }
 

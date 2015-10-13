@@ -37,12 +37,14 @@ namespace views.tasks
                 secureMsg.Text = "On Demand Mode Has Been Globally Disabled";
                 secureMsg.Visible = true;
             }
+                //FIX ME
+                /*
             else if (user.OndAccess == "0")
             {
                 secure.Visible = false;
                 secureMsg.Text = "On Demand Mode Has Been Disabled For This Account";
                 secureMsg.Visible = true;
-            }
+            }*/
             else
             {
                 secure.Visible = true;

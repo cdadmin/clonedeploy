@@ -22,8 +22,7 @@ namespace views.groups
         {
            
             if (IsPostBack) return;
-            if (new Authorize().IsInMembership("User"))
-                Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
+           
         }
     }
 }

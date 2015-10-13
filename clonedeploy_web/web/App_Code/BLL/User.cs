@@ -81,7 +81,7 @@ namespace BLL
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                var validationResult = ValidateUser(user, true);
+                var validationResult = ValidateUser(user, false);
                 if (validationResult.IsValid)
                 {
                     user.Password = updatePassword
@@ -119,7 +119,7 @@ namespace BLL
         {
             var validationResult = new Models.ValidationResult();
 
-            if (string.IsNullOrEmpty(user.Name) || user.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
+            if (string.IsNullOrEmpty(user.Name) || !user.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {
                 validationResult.IsValid = false;
                 validationResult.Message = "User Name Is Not Valid";

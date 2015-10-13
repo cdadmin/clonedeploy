@@ -31,8 +31,7 @@ namespace views.hosts
         {
           
             if (IsPostBack) return;
-            if (new Authorize().IsInMembership("User"))
-                Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
+          
         }
 
         protected void ButtonImport_Click(object sender, EventArgs e)

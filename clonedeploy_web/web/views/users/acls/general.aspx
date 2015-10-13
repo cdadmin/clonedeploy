@@ -1,0 +1,214 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/users/acls/acls.master" AutoEventWireup="true" CodeFile="general.aspx.cs" Inherits="views_users_acl" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
+    <li>General</li>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#general').addClass("nav-current");
+        });
+    </script>
+    <div class="size-4 column">&nbsp;</div>
+    <div class="size-10 column">Create</div>
+    <div class="size-10 column">Read</div>
+    <div class="size-10 column">Update</div>
+    <div class="size-10 column">Delete</div>
+    <div class="clear"></div>
+    
+    <div class="size-4 column">
+        Computers
+    </div>
+    
+    <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="ComputerCreate" />
+    </div>
+     <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="ComputerRead"/>
+    </div>
+     <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="ComputerUpdate"/>
+    </div>
+     <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="ComputerDelete"/>
+    </div>
+    <br class="clear"/>
+    <br />
+     <div class="size-4 column">
+        Groups
+    </div>
+    
+    <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="GroupCreate"/>
+    </div>
+     <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="GroupRead"/>
+    </div>
+     <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="GroupUpdate"/>
+    </div>
+     <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="GroupDelete"/>
+    </div>
+    
+    <br class="clear"/>
+    <br />
+     <div class="size-4 column">
+        Images
+    </div>
+    
+    <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="ImageCreate"/>
+    </div>
+     <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="ImageRead"/>
+    </div>
+     <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="ImageUpdate"/>
+    </div>
+     <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="ImageDelete"/>
+    </div>
+    
+     <br class="clear"/>
+    <br />
+     <div class="size-4 column">
+        Image Profiles
+    </div>
+    
+    <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="ProfileCreate"/>
+    </div>
+     <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="ProfileRead"/>
+    </div>
+     <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="ProfileUpdate"/>
+    </div>
+     <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="ProfileDelete"/>
+    </div>
+
+    <br class="clear"/>
+    <br />
+     <div class="size-4 column">
+        Global Properties
+    </div>
+    
+    <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="GlobalCreate"/>
+    </div>
+     <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="GlobalRead"/>
+    </div>
+     <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="GlobalUpdate"/>
+    </div>
+     <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="GlobalDelete"/>
+    </div>
+    
+    <br class="clear"/>
+    <br />
+     <div class="size-4 column">
+        Admin Settings
+    </div>
+    
+    <div class="size-10 column">
+        &nbsp;
+    </div>
+     <div class="size-10 column">
+         &nbsp;
+    </div>
+     <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="AdminUpdate"/>
+    </div>
+     <div class="size-10 column">
+         &nbsp;
+    </div>
+    <br class="clear"/>
+    <br />
+    <hr/>
+    <br/>
+    <div class="size-4 column">
+        &nbsp;
+    </div>
+    <div class="size-10 column">
+        Upload
+    </div>
+    <div class="size-10 column">
+        Deploy
+    </div>
+    <div class="size-10 column">
+        Multicast
+    </div>
+    
+     <br class="clear"/>
+
+     <div class="size-4 column">
+        Imaging Tasks
+    </div>
+    
+    <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="TaskUpload"/>
+    </div>
+     <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="TaskDeploy"/>
+    </div>
+     <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="TaskMulticast"/>
+    </div>
+    
+      <br class="clear"/>
+    
+     <br />
+    <hr/>
+    <br/>
+
+    <br />
+     <div class="size-4 column">
+        &nbsp;
+    </div>
+    <div class="size-10 column">
+        Yes / No
+    </div>
+    <br class="clear"/>
+    <div class="size-4 column">
+        Approve Images
+    </div>
+    
+    <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="ApproveImage"/>
+    </div>
+    
+      <br class="clear"/>
+    <br />
+    <div class="size-4 column">
+        Allow On Demand
+    </div>
+    
+    <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="AllowOnd"/>
+    </div>
+    
+      <br class="clear"/>
+    <br />
+    <div class="size-4 column">
+        Allow Debug
+    </div>
+    
+    <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="AllowDebug"/>
+    </div>
+    
+      <br class="clear"/>
+    <br />
+    <div class="size-4 column">
+        
+    </div>
+   
+      <div class="size-5 column">
+        <asp:LinkButton ID="buttonUpdate" runat="server" OnClick="buttonUpdate_OnClick" Text="Update Access Control" CssClass="submits" />
+    </div>
+</asp:Content>
+

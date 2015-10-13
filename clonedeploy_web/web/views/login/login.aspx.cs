@@ -17,6 +17,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -54,6 +55,14 @@ namespace views.login
             var result = auth.GlobalLogin(CrucibleLogin.UserName, CrucibleLogin.Password, "Web");
             if ((result))
             {
+                var cloneDeployUser = BLL.User.GetUser(CrucibleLogin.UserName);
+                cloneDeployUser.Salt = "";
+                cloneDeployUser.Password = "";
+                Session["CloneDeployUser"] = cloneDeployUser;
+
+                var rights = BLL.UserRight.Get(cloneDeployUser.Id).Select(right => right.Right).ToList();
+                Session["UserRights"] = rights;
+
                 e.Authenticated = true;
             }
             else

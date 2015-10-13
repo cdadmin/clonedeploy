@@ -16,15 +16,15 @@ namespace Security
             var wdsuser = BLL.User.GetUser(username);
 
 
-
-            if ((task == "ond" && wdsuser.OndAccess == "1") || (task == "debug" && wdsuser.DebugAccess == "1") ||
+            //FIX ME
+            /*if ((task == "ond" && wdsuser.OndAccess == "1") || (task == "debug" && wdsuser.DebugAccess == "1") ||
                 (task == "diag" && wdsuser.DiagAccess == "1") || (task == "register") || (isWebTask == "push") ||
                 (isWebTask == "pull"))
             {
                     
                    
                 return "true," + wdsuser.Id + "," + Settings.ServerKey;
-            }
+            }*/
 
 
             return "false";

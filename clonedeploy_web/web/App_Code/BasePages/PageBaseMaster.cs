@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -11,6 +12,9 @@ namespace BasePages
 {
     public class PageBaseMaster : Page
     {
+        public Models.WdsUser CloneDeployCurrentUser;
+        public List<string> CurrentUserRights;
+
         public static string EndUserMessage
         {
             get { return (string)HttpContext.Current.Session["Message"]; }
@@ -20,6 +24,9 @@ namespace BasePages
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
+
+            CloneDeployCurrentUser = (Models.WdsUser) Session["CloneDeployUser"];
+            CurrentUserRights = (List<string>) Session["UserRights"];
 
         }
 
@@ -128,6 +135,19 @@ namespace BasePages
                 "attachment; filename=" + fileName);
             HttpContext.Current.Response.Write(contents);
             HttpContext.Current.Response.End();
+        }
+
+        protected void RequiresAuthorization(string requiredRight)
+        {
+            if (CloneDeployCurrentUser.Membership == "Administrator") return;
+
+            foreach (var right in CurrentUserRights)
+            {
+                if (right == requiredRight)
+                    return;
+            }
+
+            Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
         }
     }
 }

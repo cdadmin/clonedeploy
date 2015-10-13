@@ -56,8 +56,7 @@ namespace views.admin
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!new Authorize().IsInMembership("Administrator"))
-                Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
+           
 
             if (!IsPostBack)
             {

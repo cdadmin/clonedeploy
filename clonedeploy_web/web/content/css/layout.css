@@ -5,7 +5,7 @@
 
 .breadcrumb_container{display: inline;position:relative;float:left;left: 0;right: 0;width:100%;overflow-x:hidden;overflow-y:hidden;top: 0px;border-right: 1px solid #eee;border-bottom: 1px solid #eee;color: black;background: #eee;height: 30px;}
 .spacer{ height: 20px;width: 100%;}
-.sub-nav_container{display: inline;position:relative;float:left;left:0px;width:200px;overflow-x:hidden;overflow-y:auto;top: 0px;border-right: 1px solid #eee;color: black;background: #fff; height:90%}
+.sub-nav_container{display: inline;position:relative;float:left;left:0px;width:195px;overflow-x:hidden;overflow-y:auto;top: 0px;border-right: 1px solid #eee;color: black;background: #fff; height:90%}
 .content-right{display: inline;position:relative;float:left;left:20px;top: 20px;width:1100px;background-color: #fff;overflow-x:hidden;overflow-y:auto;height:90%;padding-right:20px}
 
 .container .column{float:left;display:inline;margin-right:10px;}

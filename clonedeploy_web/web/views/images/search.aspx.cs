@@ -200,8 +200,7 @@ namespace views.images
         protected void Page_Load(object sender, EventArgs e)
         {
             if (IsPostBack) return;
-            if (new Authorize().IsInMembership("User"))
-                Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
+          
 
             PopulateGrid(true);
         }

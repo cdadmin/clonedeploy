@@ -30,6 +30,8 @@ namespace Helpers
 {
     public class Utility
     {
+        
+
 
         public static string EscapeFilePaths(string path)
         {

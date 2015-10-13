@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Activities.Statements;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models
@@ -21,20 +22,6 @@ namespace Models
         public string Salt { get; set; }
 
         [Column("clonedeploy_user_role", Order = 5)]
-        public string Membership { get; set; }
-
-        [NotMapped]
-        public string GroupManagement { get; set; }
-
-        [NotMapped]
-        public string OndAccess { get; set; }
-
-        [NotMapped]
-        public string DebugAccess { get; set; }
-
-        [NotMapped]
-        public string DiagAccess { get; set; }
-        
-        
+        public string Membership { get; set; }        
     }
 }
