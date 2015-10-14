@@ -58,6 +58,23 @@ namespace BLL
             }
         }
 
+        public static List<Models.Computer> SearchComputersForUser(string searchString, int userId)
+        {
+            if(BLL.User.GetUser(userId).Membership == "Administrator")
+                return SearchComputers(searchString);
+
+            var listOfComputers = new List<Models.Computer>();
+
+            var userManagedGroups = BLL.UserGroupManagement.Get(userId);
+            foreach (var managedGroup in userManagedGroups)
+                listOfComputers.AddRange(BLL.Group.GetGroupMembers(managedGroup.GroupId, searchString));
+
+            foreach (var computer in listOfComputers)
+                computer.Image = BLL.Image.GetImage(computer.ImageId);
+
+            return listOfComputers;
+        }
+
         public static List<Models.Computer> SearchComputers(string searchString)
         {
             using (var uow = new DAL.UnitOfWork())

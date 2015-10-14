@@ -36,6 +36,8 @@ namespace DAL
         public DbSet<Models.ComputerBootMenu> ComputerBootMenus { get; set; }
         public DbSet<Models.ComputerLog> ComputerLogs { get; set; }
         public DbSet<Models.UserRight> UserRight { get; set; }
+        public DbSet<Models.UserGroupManagement> UserGroupManagements { get; set; }
+        public DbSet<Models.UserImageManagement> UserImageManagements { get; set; }
 
       
     }

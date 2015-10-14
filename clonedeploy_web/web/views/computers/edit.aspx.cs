@@ -9,6 +9,7 @@ namespace views.hosts
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            RequiresAuthorizationOrManagedGroup(Authorizations.ReadComputer,Computer.Id);
             if (!IsPostBack) PopulateForm();
         }
 

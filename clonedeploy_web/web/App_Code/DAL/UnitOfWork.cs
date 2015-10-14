@@ -19,6 +19,8 @@ namespace DAL
         private IGenericRepository<Models.Port> _portRepository;
         private IGenericRepository<Models.ComputerLog> _computerLogRepository;
         private IGenericRepository<Models.UserRight> _userRightRepository;
+        private IGenericRepository<Models.UserImageManagement> _userImageManagementRepository;
+        private IGenericRepository<Models.UserGroupManagement> _userGroupManagementRepository;
         private RoomRepository _roomRepository;
         private IGenericRepository<Models.Script> _scriptRepository;
         private IGenericRepository<Models.Setting> _settingRepository;
@@ -41,6 +43,18 @@ namespace DAL
         public IGenericRepository<Models.ComputerBootMenu> ComputerBootMenuRepository
         {
             get { return _computerBootMenuRepository ?? (_computerBootMenuRepository = new GenericRepository<Models.ComputerBootMenu>(_context)); }
+
+        }
+
+        public IGenericRepository<Models.UserGroupManagement> UserGroupManagementRepository
+        {
+            get { return _userGroupManagementRepository ?? (_userGroupManagementRepository = new GenericRepository<Models.UserGroupManagement>(_context)); }
+
+        }
+
+        public IGenericRepository<Models.UserImageManagement> UserImageManagementRepository
+        {
+            get { return _userImageManagementRepository ?? (_userImageManagementRepository = new GenericRepository<Models.UserImageManagement>(_context)); }
 
         }
         public ComputerRepository ComputerRepository

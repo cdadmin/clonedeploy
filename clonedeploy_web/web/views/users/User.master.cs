@@ -10,7 +10,7 @@ namespace views.masters
     {
         private Users UsersBasePage { get; set; }
         public WdsUser CloneDeployUser { get; set; }
-
+        
         protected void Page_Load(object sender, EventArgs e)
         {
             UsersBasePage = (Page as Users);
@@ -27,7 +27,9 @@ namespace views.masters
                     Level2.Visible = false;
             }
 
-          
+            if (UsersBasePage.CloneDeployCurrentUser.Membership == "User")
+                Level1.Visible = false;
+
         }
 
         protected void btnDelete_Click(object sender, EventArgs e)

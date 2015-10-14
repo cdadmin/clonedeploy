@@ -13,6 +13,7 @@
 <body>
 <form id="form1" runat="server">
     <div class="loginwrapper">
+        
         <img src="<%= ResolveUrl("~/") %>content/img/logo.png" alt="logo" class="logo"/>
         <asp:Login ID="CrucibleLogin" runat="server" OnAuthenticate="CrucibleLogin_Authenticate" DestinationPageUrl="~/views/dashboard/dash.aspx">
             <LayoutTemplate>
@@ -24,6 +25,7 @@
             </LayoutTemplate>
         </asp:Login>
         <div id="error">
+            <asp:Label runat="server" ID="SessionExpired" Text="Session Has Expired" Visible="False"></asp:Label>
             <asp:Label ID="lblError" Visible="false" runat="server" Text="Your Login Attempt Was Not Successful"></asp:Label>
         </div>
     </div>

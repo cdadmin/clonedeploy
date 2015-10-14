@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BLL;
@@ -25,8 +26,18 @@ namespace BasePages
         {
             base.OnInit(e);
 
-            CloneDeployCurrentUser = (Models.WdsUser) Session["CloneDeployUser"];
-            CurrentUserRights = (List<string>) Session["UserRights"];
+            object currentUser = Session["CloneDeployUser"];
+
+
+            if (currentUser == null )
+            {
+                HttpContext.Current.Session.Abandon();
+                FormsAuthentication.SignOut();
+                Response.Redirect("~/views/login/login.aspx?session=expired", true);
+            }
+
+            CloneDeployCurrentUser = (Models.WdsUser)currentUser;
+
 
         }
 
@@ -139,14 +150,13 @@ namespace BasePages
 
         protected void RequiresAuthorization(string requiredRight)
         {
-            if (CloneDeployCurrentUser.Membership == "Administrator") return;
+            if(!new BLL.Authorize(CloneDeployCurrentUser, requiredRight).Check())
+                Response.Redirect("~/views/dashboard/dash.aspx?access=denied",true);
+        }
 
-            foreach (var right in CurrentUserRights)
-            {
-                if (right == requiredRight)
-                    return;
-            }
-
+        protected void RequiresAuthorizationOrManagedGroup(string requiredRight, int computerId)
+        {
+            if (!new BLL.Authorize(CloneDeployCurrentUser, requiredRight).GroupManagement(computerId))
             Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
         }
     }

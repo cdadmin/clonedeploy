@@ -40,9 +40,9 @@ namespace views.groups
                     break;
                 case "Type":
                     listGroups = GetSortDirection(e.SortExpression) == "Asc" ? listGroups.OrderBy(g => g.Type).ToList() : listGroups.OrderByDescending(g => g.Type).ToList();
-                    break;
-               
+                    break;              
             } 
+
             gvGroups.DataSource = listGroups;
             gvGroups.DataBind();
             foreach (GridViewRow row in gvGroups.Rows)

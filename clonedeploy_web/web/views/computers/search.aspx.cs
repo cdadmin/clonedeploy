@@ -65,7 +65,7 @@ namespace views.hosts
 
         protected void PopulateGrid()
         {
-            gvHosts.DataSource = BLL.Computer.SearchComputers(txtSearch.Text);
+            gvHosts.DataSource = BLL.Computer.SearchComputersForUser(txtSearch.Text,CloneDeployCurrentUser.Id);
             gvHosts.DataBind();
 
             lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + BLL.Computer.TotalCount() + " Computer(s)";

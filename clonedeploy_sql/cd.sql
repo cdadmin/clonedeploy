@@ -230,6 +230,56 @@ LOCK TABLES `client_certificates` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `clonedeploy_user_group_mgmt`
+--
+
+DROP TABLE IF EXISTS `clonedeploy_user_group_mgmt`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `clonedeploy_user_group_mgmt` (
+  `clonedeploy_user_group_mgmt_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `group_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`clonedeploy_user_group_mgmt_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `clonedeploy_user_group_mgmt`
+--
+
+LOCK TABLES `clonedeploy_user_group_mgmt` WRITE;
+/*!40000 ALTER TABLE `clonedeploy_user_group_mgmt` DISABLE KEYS */;
+INSERT INTO `clonedeploy_user_group_mgmt` VALUES (7,4,1),(8,2,1);
+/*!40000 ALTER TABLE `clonedeploy_user_group_mgmt` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `clonedeploy_user_image_mgmt`
+--
+
+DROP TABLE IF EXISTS `clonedeploy_user_image_mgmt`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `clonedeploy_user_image_mgmt` (
+  `clonedeploy_user_image_mgmt_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `image_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`clonedeploy_user_image_mgmt_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `clonedeploy_user_image_mgmt`
+--
+
+LOCK TABLES `clonedeploy_user_image_mgmt` WRITE;
+/*!40000 ALTER TABLE `clonedeploy_user_image_mgmt` DISABLE KEYS */;
+INSERT INTO `clonedeploy_user_image_mgmt` VALUES (4,4,6);
+/*!40000 ALTER TABLE `clonedeploy_user_image_mgmt` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `clonedeploy_user_rights`
 --
 
@@ -241,7 +291,7 @@ CREATE TABLE `clonedeploy_user_rights` (
   `user_id` int(11) DEFAULT NULL,
   `user_right` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`clonedeploy_user_right_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=46 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -250,6 +300,7 @@ CREATE TABLE `clonedeploy_user_rights` (
 
 LOCK TABLES `clonedeploy_user_rights` WRITE;
 /*!40000 ALTER TABLE `clonedeploy_user_rights` DISABLE KEYS */;
+INSERT INTO `clonedeploy_user_rights` VALUES (45,2,'AdminUpdate'),(44,2,'GlobalUpdate'),(43,2,'ProfileUpdate'),(42,2,'GroupDelete'),(41,2,'GroupCreate'),(40,2,'ComputerRead');
 /*!40000 ALTER TABLE `clonedeploy_user_rights` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -267,7 +318,7 @@ CREATE TABLE `clonedeploy_users` (
   `clonedeploy_user_salt` varchar(45) DEFAULT NULL,
   `clonedeploy_user_role` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`clonedeploy_user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -276,7 +327,7 @@ CREATE TABLE `clonedeploy_users` (
 
 LOCK TABLES `clonedeploy_users` WRITE;
 /*!40000 ALTER TABLE `clonedeploy_users` DISABLE KEYS */;
-INSERT INTO `clonedeploy_users` VALUES (1,'clonedeploy','C7C74B503262CAE9982185D3F15F77AE63354700','A+ruRjxCfVfCSy/KZwIIaw==','Administrator'),(2,'test','5F71626C61E6C1492AAE7371F630F4F00D89B05B','frKMAFhwbP08/eYzCP9/lg==','Administrator');
+INSERT INTO `clonedeploy_users` VALUES (1,'clonedeploy','C7C74B503262CAE9982185D3F15F77AE63354700','A+ruRjxCfVfCSy/KZwIIaw==','Administrator'),(2,'test','3A0F18783D0EB520C99F496BD4A429AE4898DA52','Yb5vjY/FzcmCpLcZG8qpwQ==','User'),(3,'abc','1589246206C3576F2D34405DECEAB20526B358D4','JqdjSvBYom3fJn5V1hUT9A==','User'),(4,'gghh','688BB8E2C75D39BFCEA5953A8B09216E62BFCCE5','5nhrEe6Y5FTi6S20j/ksmw==','User');
 /*!40000 ALTER TABLE `clonedeploy_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -552,7 +603,7 @@ CREATE TABLE `computers` (
   `computer_image_profile_id` int(11) DEFAULT '-1',
   `computer_has_custom_menu` tinyint(4) DEFAULT '0',
   PRIMARY KEY (`computer_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -561,7 +612,7 @@ CREATE TABLE `computers` (
 
 LOCK TABLES `computers` WRITE;
 /*!40000 ALTER TABLE `computers` DISABLE KEYS */;
-INSERT INTO `computers` VALUES (24,'mynewhost','84020298484','',-1,0,0,3,6,1),(12,'test987','11111111111111111','',-1,0,0,3,7,0),(13,'abcd','1','',-1,0,0,0,-1,0),(16,'zzzzz','1112223333','',-1,0,0,0,0,0),(17,'cccc','4455666','',-1,0,0,0,0,0),(18,'bbbbb','444343','',-1,0,0,0,0,0),(19,'ddeeff','56789','',-1,0,0,0,0,0),(20,'bbssese','123','',-1,0,0,0,0,0),(21,'asdfer','99403949','',-1,0,0,0,0,0),(22,'8589383984','949039034','',-1,0,0,0,0,0),(25,'abcd','','',-1,0,0,0,0,0),(26,'zzddd','4444646','abc',-1,0,0,3,7,0),(27,'asdfafetee','4455667788','',-1,0,0,3,7,0),(28,'newcomptuer1','89402JSJDF','',-1,0,0,-1,-1,0),(29,'ss','12','',0,0,0,3,6,0),(30,'sitetest','94943','',13,2,4,-1,-1,0);
+INSERT INTO `computers` VALUES (24,'mynewhost','84020298484','',-1,0,0,3,6,1),(12,'test987','11111111111111111','',-1,0,0,3,7,0),(13,'abcd','1','',-1,0,0,0,-1,0),(16,'zzzzz','1112223333','',-1,0,0,0,0,0),(17,'cccc','4455666','',-1,0,0,0,0,0),(18,'bbbbb','444343','',-1,0,0,0,0,0),(19,'ddeeff','56789','',-1,0,0,0,0,0),(20,'bbssese','123','',-1,0,0,0,0,0),(21,'asdfer','99403949','',-1,0,0,0,0,0),(22,'8589383984','949039034','',-1,0,0,0,0,0),(25,'abcd','','',-1,0,0,0,0,0),(26,'zzddd','4444646','abc',-1,0,0,3,7,0),(27,'asdfafetee','4455667788','',-1,0,0,3,7,0),(28,'newcomptuer1','89402JSJDF','',-1,0,0,-1,-1,0),(29,'ss','12','',0,0,0,3,6,0),(30,'sitetest','94943','',13,2,4,-1,-1,0),(31,'myhostskks','94903U094U','',-1,-1,-1,-1,-1,0);
 /*!40000 ALTER TABLE `computers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1024,4 +1075,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-10-12 16:30:45
+-- Dump completed on 2015-10-14 16:31:21

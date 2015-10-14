@@ -118,7 +118,7 @@
         &nbsp;
     </div>
      <div class="size-10 column">
-         &nbsp;
+         <asp:CheckBox runat="server" Id="AdminRead"/>
     </div>
      <div class="size-10 column">
         <asp:CheckBox runat="server" Id="AdminUpdate"/>
@@ -150,13 +150,13 @@
     </div>
     
     <div class="size-10 column">
-        <asp:CheckBox runat="server" Id="TaskUpload"/>
+        <asp:CheckBox runat="server" Id="ImageTaskUpload"/>
     </div>
      <div class="size-10 column">
-        <asp:CheckBox runat="server" Id="TaskDeploy"/>
+        <asp:CheckBox runat="server" Id="ImageTaskDeploy"/>
     </div>
      <div class="size-10 column">
-        <asp:CheckBox runat="server" Id="TaskMulticast"/>
+        <asp:CheckBox runat="server" Id="ImageTaskMulticast"/>
     </div>
     
       <br class="clear"/>

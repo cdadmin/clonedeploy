@@ -10,8 +10,9 @@ namespace views.hosts
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.CreateComputer);
-            if (!IsPostBack) PopulateForm();
+           RequiresAuthorization(Authorizations.CreateComputer);
+
+           if (!IsPostBack) PopulateForm();
         }
 
         protected void ButtonAddHost_Click(object sender, EventArgs e)

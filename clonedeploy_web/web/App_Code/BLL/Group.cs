@@ -52,7 +52,7 @@ namespace BLL
             }
         }
 
-        public static List<Models.Group> SearchGroups(string searchString)
+        public static List<Models.Group> SearchGroups(string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())
             {

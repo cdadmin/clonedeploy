@@ -25,6 +25,8 @@ namespace DAL
         DAL.IGenericRepository<Models.BootTemplate> BootTemplateRepository { get; }
         DAL.IGenericRepository<Models.ComputerLog> ComputerLogRepository { get; }
         DAL.IGenericRepository<Models.UserRight> UserRightRepository { get; }
+        DAL.IGenericRepository<Models.UserGroupManagement> UserGroupManagementRepository { get; }
+        DAL.IGenericRepository<Models.UserImageManagement> UserImageManagementRepository { get; }
         DAL.BuildingRepository BuildingRepository { get; }
         DAL.ComputerRepository ComputerRepository { get; }
         DAL.ImageProfileScriptRepository ImageProfileScriptRepository { get; }

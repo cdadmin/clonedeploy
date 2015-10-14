@@ -17,8 +17,8 @@ public partial class views_users_acl : BasePages.Users
         _listCheckBoxes = new List<CheckBox> {ComputerCreate, ComputerRead, ComputerUpdate, 
             ComputerDelete, ImageCreate,ImageRead,ImageUpdate,ImageDelete,GroupCreate,
             GroupUpdate,GroupRead,GroupDelete,ProfileCreate,ProfileDelete,ProfileRead,ProfileUpdate,
-            GlobalCreate,GlobalDelete,GlobalRead,GlobalUpdate,AdminUpdate,TaskUpload,TaskDeploy,
-            TaskMulticast,ApproveImage,AllowOnd,AllowDebug};
+            GlobalCreate,GlobalDelete,GlobalRead,GlobalUpdate,AdminUpdate,ImageTaskUpload,ImageTaskDeploy,
+            ImageTaskMulticast,ApproveImage,AllowOnd,AllowDebug};
         if (!IsPostBack) PopulateForm();
     }
 

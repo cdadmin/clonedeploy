@@ -88,7 +88,7 @@ namespace BLL
             }
         }
 
-        public static List<Models.Image> SearchImages(string searchString)
+        public static List<Models.Image> SearchImages(string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())
             {

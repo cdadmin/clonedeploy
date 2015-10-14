@@ -8,12 +8,32 @@
             $('#group').addClass("nav-current");
         });
     </script>
-     <div class="size-4 column">
-        Enable Group Based Computer Management
-    </div>
+     
+    <asp:GridView ID="gvGroups" runat="server" AllowSorting="true" AutoGenerateColumns="False" CssClass="Gridview" DataKeyNames="Id" AlternatingRowStyle-CssClass="alt">
+        <Columns>
+            <asp:TemplateField>
+                <HeaderStyle CssClass="chkboxwidth"></HeaderStyle>
+                <ItemStyle CssClass="chkboxwidth"></ItemStyle>
+                <HeaderTemplate>
+                    <asp:CheckBox ID="chkSelectAll" runat="server" AutoPostBack="True" OnCheckedChanged="SelectAll_CheckedChanged"/>
+                </HeaderTemplate>
+                <ItemTemplate>
+                    <asp:CheckBox ID="chkSelector" runat="server"/>
+                </ItemTemplate>
+            </asp:TemplateField>
+            <asp:BoundField DataField="Id" HeaderText="groupID" InsertVisible="False" SortExpression="Id" Visible="False"/>
+            <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"/>
+            <asp:BoundField DataField="Image" HeaderText="Image" SortExpression="Image" HeaderStyle-CssClass="mobi-hide-smallest" ItemStyle-CssClass="width_200 mobi-hide-smallest"/>
+            <asp:BoundField DataField="Type" HeaderText="Type" SortExpression="Type" HeaderStyle-CssClass="mobi-hide-smallest" ItemStyle-CssClass="width_200 mobi-hide-smallest"/>
+         
+        </Columns>
+        <EmptyDataTemplate>
+            No Groups Have Been Created
+        </EmptyDataTemplate>
+    </asp:GridView>
     
-    <div class="size-10 column">
-        <asp:CheckBox runat="server" Id="CheckBox1"/>
+    <div class="size-5 column">
+        <asp:LinkButton ID="buttonUpdate" runat="server" OnClick="buttonUpdate_OnClick" Text="Update Group Management" CssClass="submits" />
     </div>
 </asp:Content>
 
