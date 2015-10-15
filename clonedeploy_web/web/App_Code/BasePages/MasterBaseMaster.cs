@@ -23,5 +23,7 @@ namespace BasePages
                "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
                true);
         }
+
+       
     }
 }

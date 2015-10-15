@@ -9,12 +9,12 @@ namespace views.hosts
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            RequiresAuthorizationOrManagedGroup(Authorizations.ReadComputer,Computer.Id);
             if (!IsPostBack) PopulateForm();
         }
 
         protected void buttonUpdateHost_Click(object sender, EventArgs e)
         {
+            RequiresAuthorization(Authorizations.UpdateComputer);
             var host = new Computer
             {
                 Id = Computer.Id,

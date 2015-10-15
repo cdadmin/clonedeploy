@@ -1,5 +1,6 @@
 ﻿using System;
 using BasePages;
+using Helpers;
 using Models;
 
 namespace views.hosts
@@ -8,7 +9,6 @@ namespace views.hosts
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-          
             if (!IsPostBack) PopulateHistory();
         }
 

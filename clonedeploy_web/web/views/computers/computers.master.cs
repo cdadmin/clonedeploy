@@ -1,6 +1,7 @@
 ﻿using System;
 using BasePages;
 using BLL;
+using Helpers;
 using Computer = Models.Computer;
 
 namespace views.masters
@@ -40,9 +41,8 @@ namespace views.masters
 
         protected void btnDeploy_Click(object sender, EventArgs e)
         {
-            var image = BLL.Image.GetImage(Computer.ImageId);
             Session["direction"] = "push";
-            lblTitle.Text = "Deploy " + image.Name + " To " + Computer.Name + " ?";
+            lblTitle.Text = "Deploy This Computer?";
             DisplayConfirm();
         }
 
@@ -60,18 +60,23 @@ namespace views.masters
             switch (direction)
             {
                 case "delete":
+                    ComputerBasePage.RequiresAuthorization(Authorizations.DeleteComputer);
                     BLL.Computer.DeleteComputer(Computer.Id);
                         Response.Redirect("~/views/computers/search.aspx");
                     break;
                 case "push":
                 {
+                    ComputerBasePage.RequiresAuthorizationOrManagedGroup(Authorizations.ImageDeployTask,Computer.Id);
                     var image = BLL.Image.GetImage(Computer.ImageId);
-                    Session["imageID"] = image.Id;
+                    if (image == null)
+                    {
+                        PageBaseMaster.EndUserMessage = "The Image Does Not Exist";
+                        return;
+                    }
 
                     if (BLL.Image.Check_Checksum(image))
-                    {
                         BLL.Computer.StartUnicast(Computer,direction);                      
-                    }
+                    
                     else
                     {
                         lblIncorrectChecksum.Text =
@@ -82,7 +87,8 @@ namespace views.masters
                     break;
                 case "pull":
                 {
-                    BLL.Computer.StartUnicast(Computer, direction);
+                        ComputerBasePage.RequiresAuthorizationOrManagedGroup(Authorizations.ImageUploadTask, Computer.Id);
+                        BLL.Computer.StartUnicast(Computer, direction);
                 }
                     break;
             }

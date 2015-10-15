@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Helpers;
 using Models;
 
 public partial class views_computers_bootmenu_custom : BasePages.Computers
@@ -56,6 +57,7 @@ public partial class views_computers_bootmenu_custom : BasePages.Computers
 
     protected void buttonUpdate_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.UpdateComputer);
         var bootMenu = BLL.ComputerBootMenu.GetComputerBootMenu(Computer.Id) ?? new ComputerBootMenu();
         bootMenu.ComputerId = Computer.Id;
         if (Helpers.Settings.ProxyDhcp == "Yes")

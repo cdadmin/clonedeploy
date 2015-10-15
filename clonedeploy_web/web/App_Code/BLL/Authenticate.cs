@@ -60,9 +60,8 @@ namespace Security
             bool validated = false;
             //Check if user exists in CWDS
             var user = BLL.User.GetUser(userName);
+            if (user == null) return false;
 
-            if (user.Id != null)
-            {
                 //FIX ME
                 //Check against AD
                 /*
@@ -81,7 +80,7 @@ namespace Security
                 }*/
                 var hash = CreatePasswordHash(password, user.Salt);
                 if (user.Password == hash) validated = true;
-            }
+            
 
             if (validated)
             {

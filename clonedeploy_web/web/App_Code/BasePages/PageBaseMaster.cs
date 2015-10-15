@@ -148,13 +148,13 @@ namespace BasePages
             HttpContext.Current.Response.End();
         }
 
-        protected void RequiresAuthorization(string requiredRight)
+        public void RequiresAuthorization(string requiredRight)
         {
             if(!new BLL.Authorize(CloneDeployCurrentUser, requiredRight).Check())
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied",true);
         }
 
-        protected void RequiresAuthorizationOrManagedGroup(string requiredRight, int computerId)
+        public void RequiresAuthorizationOrManagedGroup(string requiredRight, int computerId)
         {
             if (!new BLL.Authorize(CloneDeployCurrentUser, requiredRight).GroupManagement(computerId))
             Response.Redirect("~/views/dashboard/dash.aspx?access=denied");

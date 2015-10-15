@@ -20,12 +20,17 @@ namespace views.hosts
 
         protected void ButtonConfirmDelete_Click(object sender, EventArgs e)
         {
+            //Gridview is only populated with only allowed computers to view via group management
+            //Don't need to worry about rechecking group management
+            RequiresAuthorization(Authorizations.DeleteComputer);
             foreach (GridViewRow row in gvHosts.Rows)
             {
+               
                 var cb = (CheckBox) row.FindControl("chkSelector");
                 if (cb == null || !cb.Checked) continue;
                 var dataKey = gvHosts.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
+                
                 BLL.Computer.DeleteComputer(Convert.ToInt32(dataKey.Value));
             }
 
