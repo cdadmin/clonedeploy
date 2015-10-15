@@ -64,11 +64,6 @@ namespace Helpers
             get { return Setting.GetSetting("Image Checksum").Value; }
         }
 
-        public static string ImageHoldPath
-        {
-            get { return Setting.GetSetting("Image Hold Path").Value; }
-        }
-
         public static string ImageStorePath
         {
             get { return Setting.GetSetting("Image Store Path").Value; }
@@ -262,6 +257,11 @@ namespace Helpers
         public static string NotifyResizeFailed
         {
             get { return Setting.GetSetting("Notify Resize Failed").Value; }
+        }
+
+        public static string RequireImageApproval
+        {
+            get { return Setting.GetSetting("Require Image Approval").Value; }
         }
     
     }

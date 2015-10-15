@@ -37,82 +37,77 @@ public partial class views_admin_security : Admin
     }
     protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
     {
-        if (ValidateSettings())
+        if (!ValidateSettings()) return;
+        var listSettings = new List<Setting>
         {
-            List<Setting> listSettings = new List<Setting>
-            {
                
-                    new Setting {Name = "AD Login Domain", Value = txtADLogin.Text},
+            new Setting {Name = "AD Login Domain", Value = txtADLogin.Text, Id = BLL.Setting.GetSetting("AD Login Domain").Id},
                    
-                    new Setting {Name = "Image Checksum", Value = ddlImageChecksum.Text},
+            new Setting {Name = "Image Checksum", Value = ddlImageChecksum.Text, Id = BLL.Setting.GetSetting("Image Checksum").Id},
                   
-                    new Setting {Name = "On Demand", Value = ddlOnd.Text},
+            new Setting {Name = "Require Image Approval", Value = chkImageApproval.Checked.ToString(), Id = BLL.Setting.GetSetting("Require Image Approval").Id},
+
+            new Setting {Name = "On Demand", Value = ddlOnd.Text, Id = BLL.Setting.GetSetting("On Demand").Id},
                    
-                    new Setting {Name = "Server Key", Value = txtServerKey.Text},
+            new Setting {Name = "Server Key", Value = txtServerKey.Text, Id = BLL.Setting.GetSetting("Server Key").Id},
                   
-                    new Setting {Name = "Force SSL", Value = ddlSSL.Text},
+            new Setting {Name = "Force SSL", Value = ddlSSL.Text, Id = BLL.Setting.GetSetting("Force SSL").Id},
                    
-                    new Setting {Name = "Web Task Requires Login", Value = ddlWebTasksLogin.Text}
+            new Setting {Name = "Web Task Requires Login", Value = ddlWebTasksLogin.Text, Id = BLL.Setting.GetSetting("Web Task Requires Login").Id}
                    
-            };
+        };
 
         
 
 
-            if (ddlWebTasksLogin.Text == "Yes")
-            {
-                listSettings.Add(new Setting { Name = "On Demand Requires Login", Value = "Yes" });
-                listSettings.Add(new Setting { Name = "Debug Requires Login", Value = "Yes" });
-                listSettings.Add(new Setting { Name = "Register Requires Login", Value = "Yes" });
-            }
-            else
-            {
-                listSettings.Add(new Setting { Name = "On Demand Requires Login", Value = ddlOndLogin.Text });
-                listSettings.Add(new Setting { Name = "Debug Requires Login", Value = ddlDebugLogin.Text });
-                listSettings.Add(new Setting { Name = "Register Requires Login", Value = ddlRegisterLogin.Text });
-            }
+        if (ddlWebTasksLogin.Text == "Yes")
+        {
+            listSettings.Add(new Setting { Name = "On Demand Requires Login", Value = "Yes" });
+            listSettings.Add(new Setting { Name = "Debug Requires Login", Value = "Yes" });
+            listSettings.Add(new Setting { Name = "Register Requires Login", Value = "Yes" });
+        }
+        else
+        {
+            listSettings.Add(new Setting { Name = "On Demand Requires Login", Value = ddlOndLogin.Text });
+            listSettings.Add(new Setting { Name = "Debug Requires Login", Value = ddlDebugLogin.Text });
+            listSettings.Add(new Setting { Name = "Register Requires Login", Value = ddlRegisterLogin.Text });
+        }
 
 
-            var newBootMenu = false;
-            var newClientIso = false;
-            if (BLL.Setting.UpdateSetting(listSettings))
-            {
+        var newBootMenu = false;
+        var newClientIso = false;
+        if (BLL.Setting.UpdateSetting(listSettings))
+        {
 
-                if ((string)ViewState["webTaskRequiresLogin"] != ddlWebTasksLogin.Text)
-                    newBootMenu = true;
+            if ((string)ViewState["webTaskRequiresLogin"] != ddlWebTasksLogin.Text)
+                newBootMenu = true;
               
-                if ((string)ViewState["serverKey"] != txtServerKey.Text)
-                {
-                    newBootMenu = true;
-                    newClientIso = true;
-                }
-
-                if ((string)ViewState["forceSSL"] != ddlSSL.Text)
-                {
-                    newBootMenu = true;
-                    newClientIso = true;
-                }
-
-            }
-
-            if (newBootMenu)
+            if ((string)ViewState["serverKey"] != txtServerKey.Text)
             {
-                lblTitle.Text = EndUserMessage;
-                lblTitle.Text +=
-                    "<br> Your Settings Changes Require A New PXE Boot File Be Created.  <br>Create It Now?";
-                if (newClientIso)
-                {
-                    lblClientISO.Text = "If You Are Using The Client ISO, It Must Also Be Manually Updated.";
-                }
-                ClientScript.RegisterStartupScript(GetType(), "modalscript",
-                    "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
-                    true);
-                Session.Remove("Message");
+                newBootMenu = true;
+                newClientIso = true;
             }
 
-
+            if ((string)ViewState["forceSSL"] != ddlSSL.Text)
+            {
+                newBootMenu = true;
+                newClientIso = true;
+            }
 
         }
+
+        if (!newBootMenu) return;
+        lblTitle.Text = EndUserMessage;
+        lblTitle.Text +=
+            "<br> Your Settings Changes Require A New PXE Boot File Be Created.  <br>Create It Now?";
+        if (newClientIso)
+        {
+            lblClientISO.Text = "If You Are Using The Client ISO, It Must Also Be Manually Updated.";
+        }
+        ClientScript.RegisterStartupScript(GetType(), "modalscript",
+            "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
+            true);
+        Session.Remove("Message");
     }
 
     protected void OkButton_Click(object sender, EventArgs e)

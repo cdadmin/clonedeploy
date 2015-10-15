@@ -80,21 +80,6 @@
         <asp:LinkButton ID="btnUpdateImage" runat="server" OnClick="btnUpdateImage_Click" Text="Update Image" CssClass="submits"/>
     </div>
     <br class="clear"/>
-    <div class="size-5 column" style="margin-left: -15px;">
-        <h3>Image Directory Status:</h3>
-    </div>
-    <br class="clear"/>
-    <div class="size-5 column">
-        <asp:Label ID="lblImageHold" runat="server"></asp:Label><br/>
-        <asp:Label ID="lblImage" runat="server"></asp:Label><br/>
-        <asp:Label ID="lblImageHoldStatus" runat="server"></asp:Label><br/>
-        <asp:Label ID="lblImageStatus" runat="server"></asp:Label>
-        <br class="clear"/>
-
-        <div class="size-5 column">
-            <asp:LinkButton ID="btnFixImage" runat="server" OnClick="btnFixImage_Click" Text="Fix Image Directories" CssClass="submits"/>
-        </div>
-        <br class="clear"/>
-    </div>
+    
 
 </asp:Content>

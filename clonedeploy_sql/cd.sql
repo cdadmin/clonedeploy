@@ -36,7 +36,7 @@ CREATE TABLE `active_imaging_tasks` (
   `task_type` varchar(45) DEFAULT NULL,
   `multicast_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`active_task_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -86,7 +86,7 @@ CREATE TABLE `admin_settings` (
   `admin_setting_value` varchar(255) DEFAULT NULL,
   `admin_setting_category` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`admin_setting_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=52 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,7 +95,7 @@ CREATE TABLE `admin_settings` (
 
 LOCK TABLES `admin_settings` WRITE;
 /*!40000 ALTER TABLE `admin_settings` DISABLE KEYS */;
-INSERT INTO `admin_settings` VALUES (34,'On Demand Requires Login','Yes',''),(33,'Web Task Requires Login','No',''),(32,'Proxy Efi64 File','ipxe_64_efi_snp',NULL),(31,'Proxy Efi32 File','ipxe_32_efi_snp',NULL),(30,'Proxy Bios File','ipxe',NULL),(29,'Proxy Dhcp','Yes',NULL),(28,'Web Server Port','90',NULL),(27,'Image Checksum','On',''),(26,'Server Key Mode','NULL',''),(25,'Global Host Args','',''),(24,'Client Receiver Args','ab',''),(23,'SMB Password','NULL',''),(22,'SMB User Name','abc247',''),(21,'SMB Path','//192.168.56.1',''),(20,'Force SSL','No',''),(19,'Nfs Deploy Path','c:\\/',''),(18,'Image Hold Path','c:\\inetpub\\wwwroot\\clonedeploy\\image_hold\\',NULL),(17,'Udpcast End Port','102',''),(16,'Udpcast Start Port','100',''),(15,'Receiver Args','ad',''),(14,'On Demand','Enabled',''),(13,'Server IP','192.168.1.101',NULL),(12,'Compression Level','1',''),(11,'Compression Algorithm','gzip',''),(10,'Server Key','e991eb3d-2de9-ae19',''),(9,'Default Host View','all',NULL),(8,'Image Transfer Mode','smb',''),(7,'AD Login Domain','',''),(6,'Web Path','http://[server-ip]:90/cruciblewds/service/client.asmx/',NULL),(5,'PXE Mode','pxelinux',NULL),(4,'Tftp Path','C:\\inetpub\\wwwroot\\clonedeploy\\tftpboot\\',NULL),(2,'Image Store Path','c:\\inetpub\\wwwroot\\clonedeploy\\image_store\\',NULL),(3,'Nfs Upload Path','c:\\/',''),(51,'Queue Size','3',''),(1,'Sender Args','asdb',''),(35,'Debug Requires Login','Yes',''),(36,'Register Requires Login','Yes',''),(37,'Smtp Server','abc',''),(38,'Smtp Port','',''),(39,'Smtp Username','',''),(40,'Smtp Password','NULL',''),(41,'Smtp Mail From','',''),(42,'Smtp Mail To','',''),(43,'Smtp Ssl','Yes',''),(44,'Notify Successful Login','0',''),(45,'Notify Failed Login','1',''),(46,'Notify Task Started','0',''),(47,'Notify Task Completed','1',''),(48,'Notify Image Approved','0',''),(49,'Notify Resize Failed','0','');
+INSERT INTO `admin_settings` VALUES (34,'On Demand Requires Login','Yes',''),(33,'Web Task Requires Login','No',''),(32,'Proxy Efi64 File','ipxe_64_efi_snp',NULL),(31,'Proxy Efi32 File','ipxe_32_efi_snp',NULL),(30,'Proxy Bios File','ipxe',NULL),(29,'Proxy Dhcp','Yes',NULL),(28,'Web Server Port','90',NULL),(27,'Image Checksum','On',''),(26,'Server Key Mode','NULL',''),(25,'Global Host Args','',''),(24,'Client Receiver Args','ab',''),(23,'SMB Password','NULL',''),(22,'SMB User Name','abc247',''),(21,'SMB Path','//192.168.56.1',''),(20,'Force SSL','No',''),(19,'Nfs Deploy Path','c:\\/',''),(18,'Image Hold Path','c:\\inetpub\\wwwroot\\clonedeploy\\image_hold\\',NULL),(17,'Udpcast End Port','102',''),(16,'Udpcast Start Port','100',''),(15,'Receiver Args','ad',''),(14,'On Demand','Enabled',''),(13,'Server IP','192.168.1.101',NULL),(12,'Compression Level','1',''),(11,'Compression Algorithm','gzip',''),(10,'Server Key','e991eb3d-2de9-ae19',''),(9,'Default Host View','all',NULL),(8,'Image Transfer Mode','smb',''),(7,'AD Login Domain','',''),(6,'Web Path','http://[server-ip]:90/cruciblewds/service/client.asmx/',NULL),(5,'PXE Mode','pxelinux',NULL),(4,'Tftp Path','C:\\inetpub\\wwwroot\\clonedeploy\\tftpboot\\',NULL),(2,'Image Store Path','c:\\inetpub\\wwwroot\\clonedeploy\\image_store\\',NULL),(3,'Nfs Upload Path','c:\\/',''),(51,'Queue Size','3',''),(1,'Sender Args','asdb',''),(35,'Debug Requires Login','Yes',''),(36,'Register Requires Login','Yes',''),(37,'Smtp Server','abc',''),(38,'Smtp Port','',''),(39,'Smtp Username','',''),(40,'Smtp Password','NULL',''),(41,'Smtp Mail From','',''),(42,'Smtp Mail To','',''),(43,'Smtp Ssl','Yes',''),(44,'Notify Successful Login','0',''),(45,'Notify Failed Login','0',''),(46,'Notify Task Started','0',''),(47,'Notify Task Completed','0',''),(48,'Notify Image Approved','0',''),(49,'Notify Resize Failed','0',''),(52,'Require Image Approval','0',NULL);
 /*!40000 ALTER TABLE `admin_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -266,7 +266,7 @@ CREATE TABLE `clonedeploy_user_image_mgmt` (
   `user_id` int(11) DEFAULT NULL,
   `image_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`clonedeploy_user_image_mgmt_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -275,8 +275,33 @@ CREATE TABLE `clonedeploy_user_image_mgmt` (
 
 LOCK TABLES `clonedeploy_user_image_mgmt` WRITE;
 /*!40000 ALTER TABLE `clonedeploy_user_image_mgmt` DISABLE KEYS */;
-INSERT INTO `clonedeploy_user_image_mgmt` VALUES (4,4,6);
+INSERT INTO `clonedeploy_user_image_mgmt` VALUES (5,2,3),(4,4,6);
 /*!40000 ALTER TABLE `clonedeploy_user_image_mgmt` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `clonedeploy_user_lockouts`
+--
+
+DROP TABLE IF EXISTS `clonedeploy_user_lockouts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `clonedeploy_user_lockouts` (
+  `clonedeploy_user_lockout_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `bad_login_count` int(11) DEFAULT NULL,
+  `locked_until_time_utc` datetime DEFAULT NULL,
+  PRIMARY KEY (`clonedeploy_user_lockout_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `clonedeploy_user_lockouts`
+--
+
+LOCK TABLES `clonedeploy_user_lockouts` WRITE;
+/*!40000 ALTER TABLE `clonedeploy_user_lockouts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `clonedeploy_user_lockouts` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -291,7 +316,7 @@ CREATE TABLE `clonedeploy_user_rights` (
   `user_id` int(11) DEFAULT NULL,
   `user_right` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`clonedeploy_user_right_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=46 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -300,7 +325,7 @@ CREATE TABLE `clonedeploy_user_rights` (
 
 LOCK TABLES `clonedeploy_user_rights` WRITE;
 /*!40000 ALTER TABLE `clonedeploy_user_rights` DISABLE KEYS */;
-INSERT INTO `clonedeploy_user_rights` VALUES (45,2,'AdminUpdate'),(44,2,'GlobalUpdate'),(43,2,'ProfileUpdate'),(42,2,'GroupDelete'),(41,2,'GroupCreate'),(40,2,'ComputerRead');
+INSERT INTO `clonedeploy_user_rights` VALUES (52,2,'AdminUpdate'),(51,2,'GlobalUpdate'),(50,2,'ProfileUpdate'),(46,2,'ComputerRead'),(47,2,'ImageRead'),(48,2,'GroupCreate'),(49,2,'GroupDelete');
 /*!40000 ALTER TABLE `clonedeploy_user_rights` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -602,8 +627,13 @@ CREATE TABLE `computers` (
   `computer_image_id` int(11) DEFAULT '-1',
   `computer_image_profile_id` int(11) DEFAULT '-1',
   `computer_has_custom_menu` tinyint(4) DEFAULT '0',
+  `custom_attr_1` varchar(255) DEFAULT NULL,
+  `custom_attr_2` varchar(255) DEFAULT NULL,
+  `custom_attr_3` varchar(255) DEFAULT NULL,
+  `custom_attr_4` varchar(255) DEFAULT NULL,
+  `custom_attr_5` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`computer_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -612,7 +642,7 @@ CREATE TABLE `computers` (
 
 LOCK TABLES `computers` WRITE;
 /*!40000 ALTER TABLE `computers` DISABLE KEYS */;
-INSERT INTO `computers` VALUES (24,'mynewhost','84020298484','',-1,0,0,3,6,1),(12,'test987','11111111111111111','',-1,0,0,3,7,0),(13,'abcd','1','',-1,0,0,0,-1,0),(16,'zzzzz','1112223333','',-1,0,0,0,0,0),(17,'cccc','4455666','',-1,0,0,0,0,0),(18,'bbbbb','444343','',-1,0,0,0,0,0),(19,'ddeeff','56789','',-1,0,0,0,0,0),(20,'bbssese','123','',-1,0,0,0,0,0),(21,'asdfer','99403949','',-1,0,0,0,0,0),(22,'8589383984','949039034','',-1,0,0,0,0,0),(25,'abcd','','',-1,0,0,0,0,0),(26,'zzddd','4444646','abc',-1,0,0,3,7,0),(27,'asdfafetee','4455667788','',-1,0,0,3,7,0),(28,'newcomptuer1','89402JSJDF','',-1,0,0,-1,-1,0),(29,'ss','12','',0,0,0,3,6,0),(30,'sitetest','94943','',13,2,4,-1,-1,0),(31,'myhostskks','94903U094U','',-1,-1,-1,-1,-1,0);
+INSERT INTO `computers` VALUES (12,'test987','11111111111111111','',-1,-1,-1,3,7,0,NULL,NULL,NULL,NULL,NULL),(13,'abcd','1','',-1,0,0,0,-1,0,NULL,NULL,NULL,NULL,NULL),(16,'zzzzz','1112223333','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(17,'cccc','4455666','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(18,'bbbbb','444343','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(19,'ddeeff','56789','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(20,'bbssese','123','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(21,'asdfer','99403949','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(22,'8589383984','949039034','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(25,'abcd','','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(26,'zzddd','4444646','abc',-1,0,0,3,7,0,NULL,NULL,NULL,NULL,NULL),(28,'newcomptuer1','89402JSJDF','',-1,0,0,-1,-1,0,NULL,NULL,NULL,NULL,NULL),(29,'ss','12','',0,0,0,3,6,0,NULL,NULL,NULL,NULL,NULL),(30,'sitetest','94943','',13,2,4,-1,-1,0,NULL,NULL,NULL,NULL,NULL),(31,'myhostskks','94903U094U','',-1,-1,-1,-1,-1,0,NULL,NULL,NULL,NULL,NULL),(32,'newpc','8580298343','',-1,-1,-1,-1,-1,0,'5','4','0','2','1');
 /*!40000 ALTER TABLE `computers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -822,6 +852,7 @@ CREATE TABLE `images` (
   `image_checksum` text,
   `image_type` varchar(45) DEFAULT NULL,
   `image_environment` varchar(45) DEFAULT NULL,
+  `image_approved` tinyint(4) DEFAULT '0',
   PRIMARY KEY (`image_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -832,7 +863,7 @@ CREATE TABLE `images` (
 
 LOCK TABLES `images` WRITE;
 /*!40000 ALTER TABLE `images` DISABLE KEYS */;
-INSERT INTO `images` VALUES (3,'abc','Linux','abc',1,1,NULL,NULL,NULL),(6,'test','Windows','',0,1,NULL,NULL,NULL);
+INSERT INTO `images` VALUES (3,'abc','Linux','abc',1,1,NULL,NULL,NULL,0),(6,'test','Windows','',0,1,NULL,NULL,NULL,0);
 /*!40000 ALTER TABLE `images` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1075,4 +1106,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-10-14 16:31:21
+-- Dump completed on 2015-10-15 16:29:51

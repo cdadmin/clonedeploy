@@ -56,7 +56,7 @@ namespace BasePages
 
         protected void PopulateImagesDdl(DropDownList ddlImages)
         {
-            ddlImages.DataSource = BLL.Image.SearchImages("").Select(i => new { i.Id, i.Name });
+            ddlImages.DataSource = BLL.Image.SearchImagesForUser(CloneDeployCurrentUser.Id).Select(i => new { i.Id, i.Name });
             ddlImages.DataValueField = "Id";
             ddlImages.DataTextField = "Name";
             ddlImages.DataBind();
@@ -158,6 +158,12 @@ namespace BasePages
         {
             if (!new BLL.Authorize(CloneDeployCurrentUser, requiredRight).GroupManagement(computerId))
             Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
+        }
+
+        public void RequiresAuthorizationOrManagedImage(string requiredRight, int imageId)
+        {
+            if (!new BLL.Authorize(CloneDeployCurrentUser, requiredRight).ImageManagement(imageId))
+                Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Helpers;
 using Models;
 
 namespace BasePages
@@ -11,6 +12,7 @@ namespace BasePages
         {
             base.OnInit(e);
             Group = !string.IsNullOrEmpty(Request["groupid"]) ? BLL.Group.GetGroup(Convert.ToInt32(Request.QueryString["groupid"])) : null;
+            RequiresAuthorization(Authorizations.ReadGroup);
         }
     }
 }

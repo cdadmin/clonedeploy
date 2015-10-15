@@ -1,4 +1,8 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/computers/computers.master" AutoEventWireup="true" Inherits="views.hosts.Addhosts" CodeFile="create.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/computers/computers.master" AutoEventWireup="true" Inherits="views.computers.Addhosts" CodeFile="create.aspx.cs" %>
+
+<asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
+    <li>New</li>
+    </asp:Content>
 
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">     
@@ -11,8 +15,7 @@
         Name:
     </div>
     <div class="size-5 column">
-        <asp:TextBox ID="txtHostName" runat="server" CssClass="textbox" ClientIDMode="Static"></asp:TextBox>
-      
+        <asp:TextBox ID="txtHostName" runat="server" CssClass="textbox"></asp:TextBox>
     </div>
     <br class="clear"/>
     <div class="size-4 column">
@@ -70,6 +73,46 @@
         <asp:DropDownList ID="ddlRoom" runat="server" CssClass="ddlist"/>
     </div>
 
+    <br class="clear"/>
+    
+    <div class="size-4 column">
+        Custom Attribute 1:
+    </div>
+    <div class="size-5 column">
+        <asp:TextBox ID="txtCustom1" runat="server" CssClass="textbox"></asp:TextBox>
+    </div>
+    <br class="clear"/>
+    
+    <div class="size-4 column">
+        Custom Attribute 2:
+    </div>
+    <div class="size-5 column">
+        <asp:TextBox ID="txtCustom2" runat="server" CssClass="textbox"></asp:TextBox>
+    </div>
+    <br class="clear"/>
+    
+    <div class="size-4 column">
+        Custom Attribute 3:
+    </div>
+    <div class="size-5 column">
+        <asp:TextBox ID="txtCustom3" runat="server" CssClass="textbox"></asp:TextBox>
+    </div>
+    <br class="clear"/>
+    
+    <div class="size-4 column">
+         Custom Attribute 4:
+    </div>
+    <div class="size-5 column">
+        <asp:TextBox ID="txtCustom4" runat="server" CssClass="textbox"></asp:TextBox>
+    </div>
+    <br class="clear"/>
+    
+    <div class="size-4 column">
+        Custom Attribute 5:
+    </div>
+    <div class="size-5 column">
+        <asp:TextBox ID="txtCustom5" runat="server" CssClass="textbox"></asp:TextBox>
+    </div>
     <br class="clear"/>
    
     <div class="size-4 column">

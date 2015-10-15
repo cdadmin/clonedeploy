@@ -1,4 +1,5 @@
 ﻿using System;
+using Helpers;
 using Models;
 using Building = BLL.Building;
 using Room = BLL.Room;
@@ -16,7 +17,7 @@ namespace BasePages
             base.OnInit(e);
             SysprepTag = !string.IsNullOrEmpty(Request["syspreptagid"]) ? BLL.SysprepTag.GetSysprepTag(Convert.ToInt32(Request.QueryString["syspreptagid"])) : null;
             BootTemplate = !string.IsNullOrEmpty(Request["templateid"]) ? BLL.BootTemplate.GetBootTemplate(Convert.ToInt32(Request.QueryString["templateid"])) : null;
-           
+            RequiresAuthorization(Authorizations.ReadGlobal);
         }
     }
 }

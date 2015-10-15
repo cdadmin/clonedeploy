@@ -1,5 +1,6 @@
 ﻿using System;
 using BLL;
+using Helpers;
 using Models;
 
 namespace BasePages
@@ -12,6 +13,7 @@ namespace BasePages
         {
             base.OnInit(e);
             CloneDeployUser = !string.IsNullOrEmpty(Request["userid"]) ? BLL.User.GetUser(Convert.ToInt32(Request.QueryString["userid"])) : null;
+            
         }
 
     }

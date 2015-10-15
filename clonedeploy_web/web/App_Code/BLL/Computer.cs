@@ -46,7 +46,10 @@ namespace BLL
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.ComputerRepository.GetById(computerId);
+                var computer = uow.ComputerRepository.GetById(computerId);
+                if (computer != null)
+                    computer.Image = BLL.Image.GetImage(computer.ImageId);
+                return computer;
             }
         }
 
@@ -66,13 +69,18 @@ namespace BLL
             var listOfComputers = new List<Models.Computer>();
 
             var userManagedGroups = BLL.UserGroupManagement.Get(userId);
-            foreach (var managedGroup in userManagedGroups)
-                listOfComputers.AddRange(BLL.Group.GetGroupMembers(managedGroup.GroupId, searchString));
+            if (userManagedGroups.Count == 0)
+                return SearchComputers(searchString);
+            else
+            {
+                foreach (var managedGroup in userManagedGroups)
+                    listOfComputers.AddRange(BLL.Group.GetGroupMembers(managedGroup.GroupId, searchString));
 
-            foreach (var computer in listOfComputers)
-                computer.Image = BLL.Image.GetImage(computer.ImageId);
+                foreach (var computer in listOfComputers)
+                    computer.Image = BLL.Image.GetImage(computer.ImageId);
 
-            return listOfComputers;
+                return listOfComputers;
+            }
         }
 
         public static List<Models.Computer> SearchComputers(string searchString)

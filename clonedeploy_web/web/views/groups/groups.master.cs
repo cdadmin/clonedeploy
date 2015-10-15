@@ -57,9 +57,9 @@ namespace views.masters
 
             }
 
-            lblIncorrectChecksum.Text =
+            PageBaseMaster.EndUserMessage =
                 "This Image Has Not Been Confirmed And Cannot Be Deployed.  <br>Confirm It Now?";
-            DisplayIncorrectChecksum();
+
 
         }
 
@@ -87,11 +87,6 @@ namespace views.masters
             gvConfirm.DataSource = new List<Group> { Group };
             gvConfirm.DataBind();
             DisplayConfirm();
-        }
-
-        protected void OkButtonChecksum_Click(object sender, EventArgs e)
-        {
-            ApproveChecksumRedirect();
         }
     }
 }

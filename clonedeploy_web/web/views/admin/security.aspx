@@ -28,6 +28,15 @@
     </asp:DropDownList>
 </div>
 <br class="clear"/>
+    
+<div class="size-4 column">
+    Require Image Approval:
+</div>
+    <div class="size-setting column">
+        <asp:CheckBox runat="server" Id="chkImageApproval"/>
+    </div>
+    <br class="clear"/>
+    <br/>
 <div class="size-4 column">
     Force SSL:
 </div>

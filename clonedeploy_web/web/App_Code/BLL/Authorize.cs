@@ -41,5 +41,23 @@ namespace BLL
 
             return false;
         }
+
+        public bool ImageManagement(int imageId)
+        {
+            if (_cloneDeployUser.Membership == "Administrator") return true;
+
+            //All user rights don't have the required right.  No need to check group membership.
+            if (_currentUserRights.All(right => right != _requiredRight)) return false;
+
+            var userImageManagements = BLL.UserImageManagement.Get(_cloneDeployUser.Id);
+            if (userImageManagements.Count > 0)
+            {
+                //Group management is in use since at least 1 result was returned.  Now check if allowed
+                var images = BLL.Image.SearchImagesForUser(_cloneDeployUser.Id);
+                return images.Any(x => x.Id == imageId);
+            }
+
+            return false;
+        }
     }
 }

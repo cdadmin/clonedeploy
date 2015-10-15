@@ -12,7 +12,8 @@ namespace Security
     {
         public string ConsoleLogin(string username, string password, string task, string isWebTask, string ip)
         {
-            if (!GlobalLogin(username, password, "Console")) return "false";
+            var validationResult = GlobalLogin(username, password, "Console");
+            if (!validationResult.IsValid) return "false";
             var wdsuser = BLL.User.GetUser(username);
 
 
@@ -42,7 +43,8 @@ namespace Security
             string lines = null;
             var wdsKey = Settings.WebTaskRequiresLogin == "No" ? Settings.ServerKey : "";
             var globalHostArgs = Settings.GlobalHostArgs;
-            if (!GlobalLogin(username, password, "iPXE")) return lines;
+            var validationResult = GlobalLogin(username, password, "iPXE");
+            if (!validationResult.IsValid) return lines;
             lines = "#!ipxe\r\n";
             lines += "kernel " + Settings.WebPath + "IpxeBoot?filename=" + kernel + "&type=kernel" +
                      " initrd=" + bootImage + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" +
@@ -55,12 +57,17 @@ namespace Security
             return lines;
         }
 
-        public bool GlobalLogin(string userName, string password, string loginType)
+        public Models.ValidationResult GlobalLogin(string userName, string password, string loginType)
         {
-            bool validated = false;
+            var validationResult = new Models.ValidationResult
+            {
+                Message = "Login Was Not Successful",
+                IsValid = false
+            };
+
             //Check if user exists in CWDS
             var user = BLL.User.GetUser(userName);
-            if (user == null) return false;
+            if (user == null) return validationResult;
 
                 //FIX ME
                 //Check against AD
@@ -78,12 +85,21 @@ namespace Security
                     var hash = CreatePasswordHash(password, user.Salt);
                     if (user.Password == hash) validated = true;
                 }*/
-                var hash = CreatePasswordHash(password, user.Salt);
-                if (user.Password == hash) validated = true;
+
+            if (BLL.UserLockout.AccountIsLocked(user.Id))
+            {
+                BLL.UserLockout.ProcessBadLogin(user.Id);
+                validationResult.Message = "Account Is Locked";
+                return validationResult;
+            }
+
+            var hash = CreatePasswordHash(password, user.Salt);
+                if (user.Password == hash) validationResult.IsValid = true;
             
 
-            if (validated)
+            if (validationResult.IsValid)
             {
+                BLL.UserLockout.DeleteUserLockouts(user.Id);
                 var history = new History
                 {
                     //Ip = ip,
@@ -101,10 +117,14 @@ namespace Security
                     Body = userName
                 };
                 mail.Send("Successful Login");
-                return true;
+
+                validationResult.Message = "Success";
+                return validationResult;
             }
             else
             {
+                BLL.UserLockout.ProcessBadLogin(user.Id);
+
                 var history = new History
                 {
                     //Ip = ip,
@@ -121,7 +141,7 @@ namespace Security
                     Body = userName
                 };
                 mail.Send("Failed Login");
-                return false;
+                return validationResult;
             }
         }
     }

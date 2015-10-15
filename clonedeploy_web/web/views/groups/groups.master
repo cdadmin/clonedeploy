@@ -9,11 +9,6 @@
     <div class="size-1 column">
         <h1 class="header-title icon-group-title"><span class="header-title-text">Groups</span></h1>
     </div>
-    <div class="size-2 column offset-1">
-        <div class="nav-btn-round">
-          
-        </div>
-    </div>
 </asp:Content>
 <asp:Content runat="server" ID="Breadcrumb" ContentPlaceHolderID="Breadcrumb">
      <li><a href="<%= ResolveUrl("~/views/groups/search.aspx") %>">Computers</a></li>
@@ -94,19 +89,6 @@
                 <asp:LinkButton ID="OkButton" OnClick="btnConfirm_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
                 <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no"/>
             </div>
-        </div>
-    </div>
-    <div id="incorrectChecksum" class="confirm-box-outer">
-        <div class="confirm-box-inner">
-            <h4>
-                <asp:Label ID="lblIncorrectChecksum" runat="server" CssClass="modaltitle"></asp:Label>
-            </h4>
-
-            <div class="confirm-box-btns">
-                <asp:LinkButton ID="LinkButton1" OnClick="OkButtonChecksum_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
-                <asp:LinkButton ID="LinkButton2" runat="server" Text="No" CssClass="confirm_no"/>
-            </div>
-
         </div>
     </div>
 </asp:Content>

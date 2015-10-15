@@ -26,7 +26,7 @@
         </asp:Login>
         <div id="error">
             <asp:Label runat="server" ID="SessionExpired" Text="Session Has Expired" Visible="False"></asp:Label>
-            <asp:Label ID="lblError" Visible="false" runat="server" Text="Your Login Attempt Was Not Successful"></asp:Label>
+            <asp:Label ID="lblError" Visible="false" runat="server"></asp:Label>
         </div>
     </div>
 </form>

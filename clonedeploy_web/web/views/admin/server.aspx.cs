@@ -13,7 +13,6 @@ public partial class views_admin_server : Admin
         txtIP.Text = Settings.ServerIp;
         txtPort.Text = Settings.WebServerPort;
         txtImagePath.Text = Settings.ImageStorePath;
-        txtImageHoldPath.Text = Settings.ImageHoldPath;
         txtTFTPPath.Text = Settings.TftpPath;
         txtWebService.Text = Setting.GetValueForAdminView(Settings.WebPath);
         ddlHostView.SelectedValue = Settings.DefaultHostView;
@@ -26,65 +25,57 @@ public partial class views_admin_server : Admin
 
     protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
     {
-        if (ValidateSettings())
+        if (!ValidateSettings()) return;
+        var listSettings = new List<Models.Setting>
         {
-            List<Models.Setting> listSettings = new List<Models.Setting>
+            new Models.Setting {Name = "Server IP", Value = txtIP.Text, Id = Setting.GetSetting("Server IP").Id},
+            new Models.Setting {Name = "Web Server Port", Value = txtPort.Text, Id = Setting.GetSetting("Web Server Port").Id},
+            new Models.Setting {Name = "Image Store Path", Value = txtImagePath.Text, Id = Setting.GetSetting("Image Store Path").Id},
+            new Models.Setting {Name = "Tftp Path", Value = txtTFTPPath.Text, Id = Setting.GetSetting("Tftp Path").Id},
+            new Models.Setting {Name = "Web Path", Value = txtWebService.Text, Id = Setting.GetSetting("Web Path").Id},
+            new Models.Setting {Name = "Default Host View", Value = ddlHostView.Text, Id = Setting.GetSetting("Default Host View").Id},
+        };
+
+        var newBootMenu = false;
+        var newClientIso = false;
+        if (Setting.UpdateSetting(listSettings))
+        {
+
+            if ((string) ViewState["serverIP"] != txtIP.Text)
             {
-                new Models.Setting {Name = "Server IP", Value = txtIP.Text, Id = Setting.GetSetting("Server IP").Id},
-                new Models.Setting {Name = "Web Server Port", Value = txtPort.Text, Id = Setting.GetSetting("Web Server Port").Id},
-                new Models.Setting {Name = "Image Store Path", Value = txtImagePath.Text, Id = Setting.GetSetting("Image Store Path").Id},
-                new Models.Setting {Name = "Tftp Path", Value = txtTFTPPath.Text, Id = Setting.GetSetting("Tftp Path").Id},
-                new Models.Setting {Name = "Web Path", Value = txtWebService.Text, Id = Setting.GetSetting("Web Path").Id},
-                new Models.Setting {Name = "Default Host View", Value = ddlHostView.Text, Id = Setting.GetSetting("Default Host View").Id},
-                new Models.Setting {Name = "Image Hold Path", Value = txtImageHoldPath.Text, Id = Setting.GetSetting("Image Hold path").Id}
-            };
-
-            var newBootMenu = false;
-            var newClientIso = false;
-            if (Setting.UpdateSetting(listSettings))
+                newBootMenu = true;
+                newClientIso = true;
+            }
+            if ((string) ViewState["serverPort"] != txtPort.Text)
             {
-
-                if ((string) ViewState["serverIP"] != txtIP.Text)
-                {
-                    newBootMenu = true;
-                    newClientIso = true;
-                }
-                if ((string) ViewState["serverPort"] != txtPort.Text)
-                {
-                    newBootMenu = true;
-                    newClientIso = true;
-                }
-
-
-                if ((string) ViewState["webService"] != txtWebService.Text)
-                {
-                    newBootMenu = true;
-                    newClientIso = true;
-                }
-
-
-
+                newBootMenu = true;
+                newClientIso = true;
             }
 
-            if (newBootMenu)
-            {
 
-                lblTitle.Text = EndUserMessage;
-                lblTitle.Text +=
-                    "<br> Your Settings Changes Require A New PXE Boot File Be Created.  <br>Create It Now?";
-                if (newClientIso)
-                {
-                    lblClientISO.Text = "If You Are Using The Client ISO, It Must Also Be Manually Updated.";
-                }
-                ClientScript.RegisterStartupScript(GetType(), "modalscript",
-                    "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
-                    true);
-                Session.Remove("Message");
+            if ((string) ViewState["webService"] != txtWebService.Text)
+            {
+                newBootMenu = true;
+                newClientIso = true;
             }
 
-            
+
 
         }
+
+        if (!newBootMenu) return;
+
+        lblTitle.Text = EndUserMessage;
+        lblTitle.Text +=
+            "<br> Your Settings Changes Require A New PXE Boot File Be Created.  <br>Create It Now?";
+        if (newClientIso)
+        {
+            lblClientISO.Text = "If You Are Using The Client ISO, It Must Also Be Manually Updated.";
+        }
+        ClientScript.RegisterStartupScript(GetType(), "modalscript",
+            "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
+            true);
+        Session.Remove("Message");
     }
 
 
@@ -111,9 +102,6 @@ public partial class views_admin_server : Admin
        
         if (!txtImagePath.Text.Trim().EndsWith(Path.DirectorySeparatorChar.ToString()))
             txtImagePath.Text += Path.DirectorySeparatorChar;
-
-        if (!txtImageHoldPath.Text.Trim().EndsWith(Path.DirectorySeparatorChar.ToString()))
-            txtImageHoldPath.Text += Path.DirectorySeparatorChar;
 
         if (!txtTFTPPath.Text.Trim().EndsWith(Path.DirectorySeparatorChar.ToString()))
             txtTFTPPath.Text += Path.DirectorySeparatorChar;

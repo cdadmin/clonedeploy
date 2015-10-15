@@ -1,7 +1,7 @@
-﻿<%@ Master Language="C#" MasterPageFile="~/views/Site.master" AutoEventWireup="true" CodeFile="computers.master.cs" Inherits="views.masters.ComputerMaster" %>
+﻿<%@ Master Language="C#" MasterPageFile="~/views/Site.master" AutoEventWireup="true" CodeFile="computers.master.cs" Inherits="views.computers.ComputerMaster" %>
 
 
-<asp:Content ID="Content1" ContentPlaceHolderID="HeaderNav" Runat="Server">
+<asp:Content ID="Content1" ContentPlaceHolderID="HeaderNav" runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
             $('#nav-hosts').addClass("nav-current");
@@ -9,7 +9,6 @@
     </script>
     <div class="size-1 column">
         <h1 class="header-title icon-host-title"><span class="header-title-text">Computers</span></h1>
-        
     </div>
 </asp:Content>
 <asp:Content runat="server" ID="Breadcrumb" ContentPlaceHolderID="Breadcrumb">
@@ -19,7 +18,7 @@
     <asp:ContentPlaceHolder ID="BreadcrumbSub" runat="server">
     </asp:ContentPlaceHolder>
 </asp:Content>
-<asp:Content ID="Content2" ContentPlaceHolderID="SubNav" Runat="Server">
+<asp:Content ID="Content2" ContentPlaceHolderID="SubNav" runat="Server">
     <div class="sub-nav-top">
         <div id="Level1" runat="server">
             <ul>
@@ -73,20 +72,17 @@
                 </ul>
             </div>
         </div>
-        
-         <div class="indent">
-            <ul>
-        <asp:ContentPlaceHolder ID="Level3" runat="server">
-        </asp:ContentPlaceHolder>
-                
-        
-                </ul>
-             </div>
 
+        <div class="indent">
+            <ul>
+                <asp:ContentPlaceHolder ID="Level3" runat="server">
+                </asp:ContentPlaceHolder>
+            </ul>
+        </div>
     </div>
 </asp:Content>
 
-<asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">
+<asp:Content ID="Content3" ContentPlaceHolderID="Content" runat="Server">
     <div class="content-right">
         <asp:ContentPlaceHolder ID="SubContent" runat="server">
         </asp:ContentPlaceHolder>
@@ -104,19 +100,6 @@
                 <asp:LinkButton ID="buttonConfirm" OnClick="buttonConfirm_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
                 <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no"/>
             </div>
-        </div>
-    </div>
-    <div id="incorrectChecksum" class="confirm-box-outer">
-        <div class="confirm-box-inner">
-            <h4>
-                <asp:Label ID="lblIncorrectChecksum" runat="server" CssClass="modaltitle"></asp:Label>
-            </h4>
-
-            <div class="confirm-box-btns">
-                <asp:LinkButton ID="buttonConfirmChecksum" OnClick="buttonConfirmChecksum_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
-                <asp:LinkButton ID="LinkButton2" runat="server" Text="No" CssClass="confirm_no"/>
-            </div>
-
         </div>
     </div>
 </asp:Content>

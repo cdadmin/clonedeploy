@@ -40,6 +40,8 @@ namespace BLL
             }
         }
 
+
+
         public static bool DeleteImage(Models.Image image)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -59,8 +61,6 @@ namespace BLL
                         if (Directory.Exists(Settings.ImageStorePath + image.Name))
                             Directory.Delete(Settings.ImageStorePath + image.Name, true);
 
-                        if (Directory.Exists(Settings.ImageHoldPath + image.Name))
-                            Directory.Delete(Settings.ImageHoldPath + image.Name, true);
                         return true;
                     }
                     catch (Exception ex)
@@ -86,6 +86,33 @@ namespace BLL
             {
                 return uow.ImageRepository.GetById(imageId);
             }
+        }
+
+
+        public static List<Models.Image> SearchImagesForUser(int userId, string searchString = "")
+        {
+            if (BLL.User.GetUser(userId).Membership == "Administrator")
+                return SearchImages(searchString);
+
+           
+                var listOfImages = new List<Models.Image>();
+
+                var userManagedImages = BLL.UserImageManagement.Get(userId);
+                if (userManagedImages.Count == 0)
+                    return SearchImages(searchString);
+
+                else
+                {
+                    using (var uow = new DAL.UnitOfWork())
+                    {
+                        listOfImages.AddRange(userManagedImages.Select(managedImage => uow.ImageRepository.GetFirstOrDefault(i => i.Name.Contains(searchString) && i.Id == managedImage.ImageId)));
+                    }
+
+
+                    return listOfImages;
+                }
+
+            
         }
 
         public static List<Models.Image> SearchImages(string searchString = "")
@@ -219,6 +246,37 @@ namespace BLL
         public static void Import()
         {
             
+        }
+
+        public static Models.ValidationResult CheckApprovalAndChecksum(Models.Image image)
+        {
+            var validationResult = new Models.ValidationResult();
+            if (image == null)
+            {
+                validationResult.IsValid = false;
+                validationResult.Message = "Image Does Not Exist";
+                return validationResult;
+            }
+
+            if (Settings.RequireImageApproval == "true")
+            {
+                if (!Convert.ToBoolean(image.Approved))
+                {
+                    validationResult.IsValid = false;
+                    validationResult.Message = "Image Has Not Been Approved";
+                    return validationResult;
+                }
+            }
+
+            if (!Check_Checksum(image))
+            {
+                validationResult.IsValid = false;
+                validationResult.Message = "Image Checksum Does Not Match Original";
+                return validationResult;
+            }
+
+            validationResult.IsValid = true;
+            return validationResult;
         }
 
         public static Models.ValidationResult ValidateImage(Models.Image image, bool isNewImage)

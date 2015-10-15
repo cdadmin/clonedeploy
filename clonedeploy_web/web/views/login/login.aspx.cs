@@ -41,8 +41,8 @@ namespace views.login
             GetIp();
             var auth = new Authenticate();
 
-            var result = auth.GlobalLogin(CrucibleLogin.UserName, CrucibleLogin.Password, "Web");
-            if ((result))
+            var validationResult = auth.GlobalLogin(CrucibleLogin.UserName, CrucibleLogin.Password, "Web");
+            if ((validationResult.IsValid))
             {
                 var cloneDeployUser = BLL.User.GetUser(CrucibleLogin.UserName);
                 cloneDeployUser.Salt = "";
@@ -54,6 +54,7 @@ namespace views.login
             else
             {
                 e.Authenticated = false;
+                lblError.Text = validationResult.Message;
                 lblError.Visible = true;
             }
         }

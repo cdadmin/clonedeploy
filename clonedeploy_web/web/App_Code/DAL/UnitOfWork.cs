@@ -21,6 +21,7 @@ namespace DAL
         private IGenericRepository<Models.UserRight> _userRightRepository;
         private IGenericRepository<Models.UserImageManagement> _userImageManagementRepository;
         private IGenericRepository<Models.UserGroupManagement> _userGroupManagementRepository;
+        private IGenericRepository<Models.UserLockout> _userLockoutRepository;
         private RoomRepository _roomRepository;
         private IGenericRepository<Models.Script> _scriptRepository;
         private IGenericRepository<Models.Setting> _settingRepository;
@@ -33,6 +34,12 @@ namespace DAL
         private GroupRepository _groupRepository;
         private ActiveImagingTaskRepository _activeImagingTaskRepository;
 
+
+        public IGenericRepository<Models.UserLockout> UserLockoutRepository
+        {
+            get { return _userLockoutRepository ?? (_userLockoutRepository = new GenericRepository<Models.UserLockout>(_context)); }
+
+        }
 
         public IGenericRepository<Models.ActiveMulticastSession> ActiveMulticastSessionRepository
         {

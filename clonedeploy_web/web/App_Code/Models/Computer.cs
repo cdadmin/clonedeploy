@@ -41,6 +41,20 @@ namespace Models
         [Column("computer_has_custom_menu", Order = 11)]
         public int CustomBootEnabled { get; set; }
 
+        [Column("custom_attr_1", Order = 12)]
+        public string CustomAttribute1 { get; set; }
+
+        [Column("custom_attr_2", Order = 13)]
+        public string CustomAttribute2 { get; set; }
+
+        [Column("custom_attr_3", Order = 14)]
+        public string CustomAttribute3 { get; set; }
+
+        [Column("custom_attr_4", Order = 15)]
+        public string CustomAttribute4 { get; set; }
+
+        [Column("custom_attr_5", Order = 16)]
+        public string CustomAttribute5 { get; set; }
       
 
         [NotMapped]

@@ -25,7 +25,12 @@ namespace views.hosts
                 Description = txtHostDesc.Text,
                 SiteId = Convert.ToInt32(ddlSite.SelectedValue),
                 BuildingId = Convert.ToInt32(ddlBuilding.SelectedValue),
-                RoomId = Convert.ToInt32(ddlRoom.SelectedValue)
+                RoomId = Convert.ToInt32(ddlRoom.SelectedValue),
+                CustomAttribute1 = txtCustom1.Text,
+                CustomAttribute2 = txtCustom2.Text,
+                CustomAttribute3 = txtCustom3.Text,
+                CustomAttribute4 = txtCustom4.Text,
+                CustomAttribute5 = txtCustom5.Text
             };
 
             var result = BLL.Computer.UpdateComputer(host);
@@ -47,6 +52,11 @@ namespace views.hosts
             ddlSite.SelectedValue = Computer.SiteId.ToString();
             ddlBuilding.SelectedValue = Computer.BuildingId.ToString();
             ddlRoom.SelectedValue = Computer.RoomId.ToString();
+            txtCustom1.Text = Computer.CustomAttribute1;
+            txtCustom2.Text = Computer.CustomAttribute2;
+            txtCustom3.Text = Computer.CustomAttribute3;
+            txtCustom4.Text = Computer.CustomAttribute4;
+            txtCustom5.Text = Computer.CustomAttribute5;
         }
 
         protected void ddlHostImage_OnSelectedIndexChanged(object sender, EventArgs e)

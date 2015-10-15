@@ -2,7 +2,7 @@
 
 
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
-    <li><a href="<%= ResolveUrl("~/views/computers/search.aspx") %>">Search</a></li>
+    <li>Search</li>
     </asp:Content>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">
@@ -19,7 +19,9 @@
     </p>
     <asp:GridView ID="gvHosts" runat="server" AllowSorting="True" DataKeyNames="Id" OnSorting="gridView_Sorting" AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
         <Columns>
+           
             <asp:TemplateField>
+                
                 <HeaderStyle CssClass="chkboxwidth"></HeaderStyle>
                 <ItemStyle CssClass="chkboxwidth"></ItemStyle>
                 <HeaderTemplate>
@@ -29,18 +31,19 @@
                     <asp:CheckBox ID="chkSelector" runat="server"/>
                 </ItemTemplate>
             </asp:TemplateField>
+             <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/computers/edit.aspx?hostid={0}" Text="View" ItemStyle-CssClass="chkboxwidth"/>
             <asp:BoundField DataField="Id" HeaderText="hostID" SortExpression="hostID" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"></asp:BoundField>
             <asp:BoundField DataField="Mac" HeaderText="MAC" SortExpression="Mac" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
             <asp:BoundField DataField="Image.Name" HeaderText="Image" SortExpression="Image.Name" ItemStyle-CssClass="width_200 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller"/>
          
-            <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/computers/edit.aspx?hostid={0}" Text="View"/>
+          
         </Columns>
         <EmptyDataTemplate>
-            No Hosts Found
+            No Computers Found
         </EmptyDataTemplate>
     </asp:GridView>
-    <a class="confirm" href="#">Delete Selected Hosts</a>
+    <a class="confirm left" href="#">Delete Selected Computers</a>
     <div id="confirmbox" class="confirm-box-outer">
         <div class="confirm-box-inner">
             <h4>
