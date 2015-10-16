@@ -4,7 +4,6 @@ using Models;
 
 namespace BLL
 {
-
     public class Authorize
     {
         private readonly WdsUser _cloneDeployUser;
@@ -18,13 +17,13 @@ namespace BLL
             _requiredRight = requiredRight;
         }
 
-        public bool Check()
+        public bool IsAuthorized()
         {
             if (_cloneDeployUser.Membership == "Administrator") return true;
             return _currentUserRights.Any(right => right == _requiredRight);
         }
 
-        public bool GroupManagement(int computerId)
+        public bool ComputerManagement(int computerId)
         {
             if (_cloneDeployUser.Membership == "Administrator") return true;
 
@@ -35,8 +34,25 @@ namespace BLL
             if (userGroupManagements.Count > 0)
             {
                 //Group management is in use since at least 1 result was returned.  Now check if allowed
-                var computers = BLL.Computer.SearchComputersForUser("", _cloneDeployUser.Id);
+                var computers = BLL.Computer.SearchComputersForUser(_cloneDeployUser.Id);
                 return computers.Any(x => x.Id == computerId);
+            }
+
+            return false;
+        }
+
+        public bool GroupManagement(int groupId)
+        {
+            if (_cloneDeployUser.Membership == "Administrator") return true;
+
+            //All user rights don't have the required right.  No need to check group membership.
+            if (_currentUserRights.All(right => right != _requiredRight)) return false;
+
+            var userGroupManagements = BLL.UserGroupManagement.Get(_cloneDeployUser.Id);
+            if (userGroupManagements.Count > 0)
+            {
+                //Group management is in use since at least 1 result was returned.  Now check if allowed
+                return BLL.Group.SearchGroupsForUser(_cloneDeployUser.Id).Any(x => x.Id == groupId);
             }
 
             return false;
@@ -53,8 +69,7 @@ namespace BLL
             if (userImageManagements.Count > 0)
             {
                 //Group management is in use since at least 1 result was returned.  Now check if allowed
-                var images = BLL.Image.SearchImagesForUser(_cloneDeployUser.Id);
-                return images.Any(x => x.Id == imageId);
+                return BLL.Image.SearchImagesForUser(_cloneDeployUser.Id).Any(x => x.Id == imageId);
             }
 
             return false;

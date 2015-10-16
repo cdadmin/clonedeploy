@@ -12,7 +12,10 @@ namespace BasePages
         {
             base.OnInit(e);
             Group = !string.IsNullOrEmpty(Request["groupid"]) ? BLL.Group.GetGroup(Convert.ToInt32(Request.QueryString["groupid"])) : null;
-            RequiresAuthorization(Authorizations.ReadGroup);
+            if (Group == null)
+                RequiresAuthorization(Authorizations.ReadGroup);
+            else
+                RequiresAuthorizationOrManagedGroup(Authorizations.ReadGroup, Group.Id);
         }
     }
 }

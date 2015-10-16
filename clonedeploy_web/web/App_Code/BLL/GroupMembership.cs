@@ -6,7 +6,6 @@ namespace BLL
 {
     public class GroupMembership
     {
-
         public static bool AddMembership(Models.GroupMembership groupMembership)
         {
             using (var uow = new DAL.UnitOfWork())

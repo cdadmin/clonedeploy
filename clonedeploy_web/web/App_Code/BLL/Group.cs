@@ -52,11 +52,38 @@ namespace BLL
             }
         }
 
+        public static List<Models.Group> SearchGroupsForUser(int userId, string searchString = "")
+        {
+            if (BLL.User.GetUser(userId).Membership == "Administrator")
+                return SearchGroups(searchString);
+
+            var userManagedGroups = BLL.UserGroupManagement.Get(userId);
+            if (userManagedGroups.Count == 0)
+                return SearchGroups(searchString);
+
+            else
+            {
+                using (var uow = new DAL.UnitOfWork())
+                {
+                    return userManagedGroups.Select(managedGroup => uow.GroupRepository.GetFirstOrDefault(i => i.Name.Contains(searchString) && i.Id == managedGroup.GroupId)).ToList();
+                }
+            }
+        }
+
         public static List<Models.Group> SearchGroups(string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 return uow.GroupRepository.Get(g => g.Name.Contains(searchString));
+            }
+        }
+
+        public static Models.ValidationResult UpdateSmartMembership(Models.Group group, int userId)
+        {
+            var computers = BLL.Computer.SearchComputersForUser(userId, group.SmartCriteria);
+            foreach (var computer in computers)
+            {
+                
             }
         }
 
@@ -125,7 +152,7 @@ namespace BLL
         {
             var validationResult = new Models.ValidationResult();
 
-            if (string.IsNullOrEmpty(group.Name) || group.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
+            if (string.IsNullOrEmpty(group.Name) || !group.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {
                 validationResult.IsValid = false;
                 validationResult.Message = "Group Name Is Not Valid";

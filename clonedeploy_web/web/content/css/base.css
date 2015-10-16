@@ -188,6 +188,8 @@ input[type="checkbox"]{display:inline;}
 .small-boot-box{height:200px; }
 .txt-left{ text-align: left;}
 .log-view-box{ font-size: 12px !important;height: 900px;}
+.label { font-size: 20px; }
+.inventory-div { font-weight: bold;margin-bottom: 15px;}
 
 /* Buttons
 ================================================== */

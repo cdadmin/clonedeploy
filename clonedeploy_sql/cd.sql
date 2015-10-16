@@ -316,7 +316,7 @@ CREATE TABLE `clonedeploy_user_rights` (
   `user_id` int(11) DEFAULT NULL,
   `user_right` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`clonedeploy_user_right_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=61 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -325,7 +325,7 @@ CREATE TABLE `clonedeploy_user_rights` (
 
 LOCK TABLES `clonedeploy_user_rights` WRITE;
 /*!40000 ALTER TABLE `clonedeploy_user_rights` DISABLE KEYS */;
-INSERT INTO `clonedeploy_user_rights` VALUES (52,2,'AdminUpdate'),(51,2,'GlobalUpdate'),(50,2,'ProfileUpdate'),(46,2,'ComputerRead'),(47,2,'ImageRead'),(48,2,'GroupCreate'),(49,2,'GroupDelete');
+INSERT INTO `clonedeploy_user_rights` VALUES (60,2,'AdminUpdate'),(59,2,'GlobalUpdate'),(53,2,'ComputerRead'),(54,2,'ImageRead'),(55,2,'GroupCreate'),(56,2,'GroupRead'),(57,2,'GroupDelete'),(58,2,'ProfileUpdate');
 /*!40000 ALTER TABLE `clonedeploy_user_rights` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -389,12 +389,10 @@ DROP TABLE IF EXISTS `computer_applications`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `computer_applications` (
-  `computer_applications_id` int(11) NOT NULL AUTO_INCREMENT,
+  `computer_application_id` int(11) NOT NULL AUTO_INCREMENT,
   `computer_id` int(11) NOT NULL,
   `application_id` int(11) NOT NULL,
-  `computers_computer_id` int(11) NOT NULL,
-  `applications_application_id` int(11) NOT NULL,
-  PRIMARY KEY (`computer_applications_id`,`computers_computer_id`,`applications_application_id`)
+  PRIMARY KEY (`computer_application_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -442,14 +440,13 @@ DROP TABLE IF EXISTS `computer_harddrives`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `computer_harddrives` (
-  `computer_harddrives_id` int(11) NOT NULL AUTO_INCREMENT,
+  `computer_harddrive_id` int(11) NOT NULL AUTO_INCREMENT,
   `computer_id` int(11) NOT NULL,
   `model` varchar(255) DEFAULT NULL,
   `serial_number` varchar(255) DEFAULT NULL,
   `capacity` varchar(45) DEFAULT NULL,
   `smart_status` varchar(45) DEFAULT NULL,
-  `computers_computer_id` int(11) NOT NULL,
-  PRIMARY KEY (`computer_harddrives_id`,`computers_computer_id`)
+  PRIMARY KEY (`computer_harddrive_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -472,9 +469,8 @@ DROP TABLE IF EXISTS `computer_inventory`;
 CREATE TABLE `computer_inventory` (
   `computer_inventory_id` int(11) NOT NULL AUTO_INCREMENT,
   `computer_id` int(11) NOT NULL,
-  `last_inventory_update` bigint(32) DEFAULT NULL,
-  `last_checkin` bigint(32) DEFAULT NULL,
-  `last_enrollment` bigint(32) DEFAULT NULL,
+  `last_inventory_update` datetime DEFAULT NULL,
+  `last_checkin` datetime DEFAULT NULL,
   `ip_address` varchar(45) DEFAULT NULL,
   `client_version` varchar(45) DEFAULT NULL,
   `manufacturer` varchar(45) DEFAULT NULL,
@@ -510,14 +506,12 @@ DROP TABLE IF EXISTS `computer_logins`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `computer_logins` (
-  `computer_logins_id` int(11) NOT NULL AUTO_INCREMENT,
+  `computer_login_id` int(11) NOT NULL AUTO_INCREMENT,
   `computer_id` int(11) NOT NULL,
   `computer_user_id` int(11) NOT NULL,
-  `login_time` bigint(32) NOT NULL,
-  `logout_time` bigint(32) NOT NULL,
-  `computers_computer_id` int(11) NOT NULL,
-  `computer_users_computer_users_id` int(11) NOT NULL,
-  PRIMARY KEY (`computer_logins_id`,`computers_computer_id`,`computer_users_computer_users_id`)
+  `login_time_utc` datetime NOT NULL,
+  `logout_time_utc` datetime NOT NULL,
+  PRIMARY KEY (`computer_login_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -566,14 +560,12 @@ DROP TABLE IF EXISTS `computer_printers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `computer_printers` (
-  `computer_printers_id` int(11) NOT NULL AUTO_INCREMENT,
+  `computer_printer_id` int(11) NOT NULL AUTO_INCREMENT,
   `computer_id` int(11) NOT NULL,
   `printer_name` varchar(255) DEFAULT NULL,
   `printer_model` varchar(255) DEFAULT NULL,
   `printer_uri` varchar(255) DEFAULT NULL,
-  `computer_printerscol` varchar(45) DEFAULT NULL,
-  `computers_computer_id` int(11) NOT NULL,
-  PRIMARY KEY (`computer_printers_id`,`computers_computer_id`)
+  PRIMARY KEY (`computer_printer_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -594,9 +586,9 @@ DROP TABLE IF EXISTS `computer_users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `computer_users` (
-  `computer_users_id` int(11) NOT NULL AUTO_INCREMENT,
-  `computer_users_username` varchar(45) NOT NULL,
-  PRIMARY KEY (`computer_users_id`)
+  `computer_user_id` int(11) NOT NULL,
+  `username` varchar(45) NOT NULL,
+  PRIMARY KEY (`computer_user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -764,13 +756,14 @@ CREATE TABLE `groups` (
   `group_id` int(11) NOT NULL AUTO_INCREMENT,
   `group_name` varchar(45) NOT NULL,
   `group_description` longtext,
-  `group_image_id` int(11) DEFAULT NULL,
-  `group_image_profile_id` int(11) DEFAULT NULL,
+  `group_image_id` int(11) DEFAULT '-1',
+  `group_image_profile_id` int(11) DEFAULT '-1',
   `group_type` varchar(45) DEFAULT NULL,
   `group_sender_arguments` longtext,
   `group_receiver_arguments` longtext,
+  `group_smart_criteria` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`group_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -779,7 +772,7 @@ CREATE TABLE `groups` (
 
 LOCK TABLES `groups` WRITE;
 /*!40000 ALTER TABLE `groups` DISABLE KEYS */;
-INSERT INTO `groups` VALUES (1,'Group1_Test26','',3,1,'standard','','');
+INSERT INTO `groups` VALUES (1,'Group1_Test26','',3,-1,'standard','a','b',NULL),(2,'Group1','',-1,-1,'standard','',NULL,NULL),(3,'smart1','',0,0,'smart',NULL,NULL,'lab');
 /*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1106,4 +1099,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-10-15 16:29:51
+-- Dump completed on 2015-10-16 16:31:37

@@ -61,7 +61,7 @@ namespace views.computers
                     break;
                 case "push":
                 {
-                    ComputerBasePage.RequiresAuthorizationOrManagedGroup(Authorizations.ImageDeployTask, Computer.Id);
+                    ComputerBasePage.RequiresAuthorizationOrManagedComputer(Authorizations.ImageDeployTask, Computer.Id);
                     var validation = BLL.Image.CheckApprovalAndChecksum(Computer.Image);
                     if (validation.IsValid)
                         BLL.Computer.StartUnicast(Computer, direction);
@@ -71,7 +71,7 @@ namespace views.computers
                     break;
                 case "pull":
                 {
-                    ComputerBasePage.RequiresAuthorizationOrManagedGroup(Authorizations.ImageUploadTask, Computer.Id);
+                    ComputerBasePage.RequiresAuthorizationOrManagedComputer(Authorizations.ImageUploadTask, Computer.Id);
                     BLL.Computer.StartUnicast(Computer, direction);
                 }
                     break;

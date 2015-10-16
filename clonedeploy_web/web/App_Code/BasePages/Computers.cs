@@ -18,7 +18,7 @@ namespace BasePages
             if (Computer == null)
                 RequiresAuthorization(Authorizations.ReadComputer);
             else
-                RequiresAuthorizationOrManagedGroup(Authorizations.ReadComputer, Computer.Id);
+                RequiresAuthorizationOrManagedComputer(Authorizations.ReadComputer, Computer.Id);
         }
     }
 }

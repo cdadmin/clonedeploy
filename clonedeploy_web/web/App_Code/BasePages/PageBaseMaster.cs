@@ -5,9 +5,6 @@ using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using BLL;
-using Helpers;
-using Image = BLL.Image;
 
 namespace BasePages
 {
@@ -27,7 +24,6 @@ namespace BasePages
             base.OnInit(e);
 
             object currentUser = Session["CloneDeployUser"];
-
 
             if (currentUser == null )
             {
@@ -150,14 +146,20 @@ namespace BasePages
 
         public void RequiresAuthorization(string requiredRight)
         {
-            if(!new BLL.Authorize(CloneDeployCurrentUser, requiredRight).Check())
+            if(!new BLL.Authorize(CloneDeployCurrentUser, requiredRight).IsAuthorized())
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied",true);
         }
 
-        public void RequiresAuthorizationOrManagedGroup(string requiredRight, int computerId)
+        public void RequiresAuthorizationOrManagedComputer(string requiredRight, int computerId)
         {
-            if (!new BLL.Authorize(CloneDeployCurrentUser, requiredRight).GroupManagement(computerId))
+            if (!new BLL.Authorize(CloneDeployCurrentUser, requiredRight).ComputerManagement(computerId))
             Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
+        }
+
+        public void RequiresAuthorizationOrManagedGroup(string requiredRight, int groupId)
+        {
+            if (!new BLL.Authorize(CloneDeployCurrentUser, requiredRight).GroupManagement(groupId))
+                Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
         }
 
         public void RequiresAuthorizationOrManagedImage(string requiredRight, int imageId)

@@ -77,7 +77,7 @@ namespace views.groups
         {
            
 
-            gvGroups.DataSource = BLL.Group.SearchGroups(txtSearch.Text);
+            gvGroups.DataSource = BLL.Group.SearchGroupsForUser(CloneDeployCurrentUser.Id,txtSearch.Text);
 
             gvGroups.DataBind();
 

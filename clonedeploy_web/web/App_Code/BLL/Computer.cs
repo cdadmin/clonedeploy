@@ -61,7 +61,7 @@ namespace BLL
             }
         }
 
-        public static List<Models.Computer> SearchComputersForUser(string searchString, int userId)
+        public static List<Models.Computer> SearchComputersForUser(int userId, string searchString = "")
         {
             if(BLL.User.GetUser(userId).Membership == "Administrator")
                 return SearchComputers(searchString);

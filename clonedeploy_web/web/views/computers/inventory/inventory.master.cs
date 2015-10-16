@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 using BasePages;
 
-public partial class views_computers_bootmenu_bootmenu : BasePages.MasterBaseMaster
+public partial class views_computers_inventory_inventory : MasterBaseMaster
 {
     private Computers computerBasePage { get; set; }
     public Models.Computer Computer { get; set; }
