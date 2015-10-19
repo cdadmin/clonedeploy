@@ -18,7 +18,7 @@ public partial class views_users_acl : BasePages.Users
             ComputerDelete, ImageCreate,ImageRead,ImageUpdate,ImageDelete,GroupCreate,
             GroupUpdate,GroupRead,GroupDelete,ProfileCreate,ProfileDelete,ProfileRead,ProfileUpdate,
             GlobalCreate,GlobalDelete,GlobalRead,GlobalUpdate,AdminUpdate,ImageTaskUpload,ImageTaskDeploy,
-            ImageTaskMulticast,ApproveImage,AllowOnd,AllowDebug};
+            ImageTaskMulticast,ApproveImage,AllowOnd,AllowDebug,SmartCreate,SmartUpdate};
         if (!IsPostBack) PopulateForm();
     }
 

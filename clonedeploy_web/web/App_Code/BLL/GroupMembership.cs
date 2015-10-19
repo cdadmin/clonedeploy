@@ -6,17 +6,15 @@ namespace BLL
 {
     public class GroupMembership
     {
-        public static bool AddMembership(Models.GroupMembership groupMembership)
+        public static bool AddMembership(List<Models.GroupMembership> groupMemberships)
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                if (
-                    uow.GroupMembershipRepository.Exists(
-                        g => g.ComputerId == groupMembership.ComputerId && g.GroupId == groupMembership.GroupId))
+                foreach (var membership in groupMemberships.Where(membership => !uow.GroupMembershipRepository.Exists(
+                    g => g.ComputerId == membership.ComputerId && g.GroupId == membership.GroupId)))
                 {
-                    return false;
+                    uow.GroupMembershipRepository.Insert(membership);
                 }
-                uow.GroupMembershipRepository.Insert(groupMembership);
                 return uow.Save();
             }
         }
@@ -26,6 +24,15 @@ namespace BLL
             using (var uow = new DAL.UnitOfWork())
             {
                 return uow.GroupMembershipRepository.Count(g => g.GroupId == groupId);
+            }
+        }
+
+        public static bool DeleteAllMembershipsForGroup(int groupId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.GroupMembershipRepository.DeleteRange(x => x.GroupId == groupId);
+                return uow.Save();
             }
         }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Helpers;
 
 public partial class views_groups_smartcriteria : BasePages.Groups
 {
@@ -32,6 +33,10 @@ public partial class views_groups_smartcriteria : BasePages.Groups
 
     protected void btnUpdate_OnClick(object sender, EventArgs e)
     {
-        throw new NotImplementedException();
+        RequiresAuthorization(Authorizations.UpdateSmart);
+        var group = Group;
+        group.SmartCriteria = txtContains.Text;
+        BLL.Group.UpdateGroup(group);
+        BLL.Group.UpdateSmartMembership(group);
     }
 }

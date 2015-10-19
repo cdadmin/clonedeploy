@@ -2,7 +2,6 @@
 using BasePages;
 using Helpers;
 using Models;
-using Security;
 
 namespace views.groups
 {
@@ -15,6 +14,8 @@ namespace views.groups
 
         protected void Submit_Click(object sender, EventArgs e)
         {
+            if(ddlGroupType.Text == "smart")
+                RequiresAuthorization(Authorizations.CreateSmart);
             var group = new Models.Group
             {
                 Name = txtGroupName.Text,
@@ -22,7 +23,7 @@ namespace views.groups
                 Type = ddlGroupType.Text,
             };
 
-            var result = BLL.Group.AddGroup(group);
+            var result = BLL.Group.AddGroup(group,CloneDeployCurrentUser.Id);
             if (!result.IsValid)
                 EndUserMessage = result.Message;
             else

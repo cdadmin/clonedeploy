@@ -88,6 +88,18 @@
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="Content" runat="Server">
+    <div class="actions">
+    <div class="nav-btn-square">
+         <asp:LinkButton ID="LinkButton1" runat="server"  Text="Upload" OnClick="btnUpload_Click"></asp:LinkButton>
+        <asp:LinkButton ID="LinkButton2" runat="server" Text="Deploy" OnClick="btnDeploy_Click"></asp:LinkButton>
+      
+          <asp:LinkButton ID="LinkButton3" runat="server" Text="Delete" OnClick="btnDelete_Click"></asp:LinkButton>
+       </div>
+    <div id="actionsd" style="float: right;">
+        <asp:ContentPlaceHolder ID="Actions" runat="server">
+                </asp:ContentPlaceHolder>
+      </div>
+        </div>
     <div class="content-right">
         <asp:ContentPlaceHolder ID="SubContent" runat="server">
         </asp:ContentPlaceHolder>

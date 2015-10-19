@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using Helpers;
 
 namespace DAL
@@ -41,5 +42,20 @@ namespace DAL
                         Image = x.image
                     }).ToList();
         }
+
+        public List<Models.Computer> GetComputersWithoutGroup()
+        {
+            var list = (from c in _context.Computers
+
+            join g in _context.GroupMemberships on c.Id equals g.ComputerId into joined
+
+            from j in joined.DefaultIfEmpty()
+
+            where j == null
+
+            select c).ToList();
+           
+            return list;
+        } 
     }
 }

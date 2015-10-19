@@ -5,12 +5,7 @@ using System.Web;
 using System.Web.Script.Services;
 using System.Web.Services;
 using BLL;
-using Global;
-using Helpers;
-using Models;
-using Partition;
-using Security;
-using Tasks;
+
 
 namespace Services.Client
 {

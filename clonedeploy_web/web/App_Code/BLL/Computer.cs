@@ -107,6 +107,19 @@ namespace BLL
             }
         }
 
+        public static List<Models.Computer> ComputersWithoutGroup()
+        {
+            var listOfComputers = new List<Models.Computer>();
+            using (var uow = new DAL.UnitOfWork())
+            {
+                listOfComputers = uow.ComputerRepository.GetComputersWithoutGroup();
+                
+            }
+            foreach (var computer in listOfComputers)
+                computer.Image = BLL.Image.GetImage(computer.ImageId);
+
+            return listOfComputers;
+        } 
     
         public static Models.ValidationResult ValidateComputer(Models.Computer computer, bool isNewComputer)
         {

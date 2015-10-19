@@ -11,7 +11,7 @@ namespace BLL
     public class Group
     {
 
-        public static Models.ValidationResult AddGroup(Models.Group group)
+        public static Models.ValidationResult AddGroup(Models.Group group, int userId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -20,6 +20,19 @@ namespace BLL
                 {
                     uow.GroupRepository.Insert(group);
                     validationResult.IsValid = uow.Save();
+
+                    //If Group management is being used add this group to the allowed users list 
+                    var userManagedGroups = BLL.UserGroupManagement.Get(userId);
+                    if (userManagedGroups.Count > 0)
+                        BLL.UserGroupManagement.AddUserGroupManagements(
+                            new List<Models.UserGroupManagement>
+                            {
+                                new Models.UserGroupManagement
+                                {
+                                    GroupId = group.Id,
+                                    UserId = userId
+                                }
+                            });
                 }
 
                 return validationResult;
@@ -78,13 +91,12 @@ namespace BLL
             }
         }
 
-        public static Models.ValidationResult UpdateSmartMembership(Models.Group group, int userId)
+        public static bool UpdateSmartMembership(Models.Group group)
         {
-            var computers = BLL.Computer.SearchComputersForUser(userId, group.SmartCriteria);
-            foreach (var computer in computers)
-            {
-                
-            }
+            BLL.GroupMembership.DeleteAllMembershipsForGroup(group.Id);
+            var computers = BLL.Computer.SearchComputers(group.SmartCriteria);
+            var memberships = computers.Select(computer => new Models.GroupMembership {GroupId = @group.Id, ComputerId = computer.Id}).ToList();
+            return BLL.GroupMembership.AddMembership(memberships);
         }
 
         public static Models.ValidationResult UpdateGroup(Models.Group group)

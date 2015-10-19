@@ -53,6 +53,26 @@
     
     <br class="clear"/>
     <br />
+    
+     <div class="size-4 column">
+        Smart Groups
+    </div>
+    
+    <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="SmartCreate"/>
+    </div>
+     <div class="size-10 column">
+        &nbsp;
+    </div>
+     <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="SmartUpdate"/>
+    </div>
+     <div class="size-10 column">
+       &nbsp;
+    </div>
+    
+    <br class="clear"/>
+    <br />
      <div class="size-4 column">
         Images
     </div>

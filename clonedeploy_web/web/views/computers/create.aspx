@@ -3,7 +3,11 @@
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li>New</li>
     </asp:Content>
-
+<asp:Content runat="server" ContentPlaceHolderID="Actions">
+    <div class="tmp" style="float: right;"></div>
+     <asp:LinkButton ID="buttonAddHost" runat="server" OnClick="ButtonAddHost_Click" Text="Add Host" CssClass="submits"/>
+     <asp:LinkButton runat="server" Text="Help"></asp:LinkButton>
+</asp:Content>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">     
         $(document).ready(function() {      
@@ -124,6 +128,6 @@
         &nbsp;
     </div>
     <div class="size-5 column">
-        <asp:LinkButton ID="buttonAddHost" runat="server" OnClick="ButtonAddHost_Click" Text="Add Host" CssClass="submits" ClientIDMode="Static"/>
+       
     </div>
 </asp:Content>

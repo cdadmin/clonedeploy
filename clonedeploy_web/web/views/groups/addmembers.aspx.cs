@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Web.UI.WebControls;
 using BasePages;
 using Helpers;
@@ -44,7 +45,11 @@ public partial class views_groups_addmembers : Groups
 
     protected void PopulateGrid()
     {
-        gvHosts.DataSource = BLL.Computer.SearchComputers(txtSearch.Text);
+      
+        var listOfComputers = BLL.Computer.SearchComputersForUser(CloneDeployCurrentUser.Id, txtSearch.Text);
+        listOfComputers.AddRange(BLL.Computer.ComputersWithoutGroup());
+      
+        gvHosts.DataSource = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList(); ;
         gvHosts.DataBind();
 
         lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + BLL.Computer.TotalCount() + " Total Host(s)";
@@ -59,25 +64,16 @@ public partial class views_groups_addmembers : Groups
 
     protected void btnAddSelected_OnClick(object sender, EventArgs e)
     {
-        var addedCount = 0;
-        foreach (GridViewRow row in gvHosts.Rows)
-        {
-            var cb = (CheckBox)row.FindControl("chkSelector");
-            if (cb == null || !cb.Checked) continue;
-            var dataKey = gvHosts.DataKeys[row.RowIndex];
-            if (dataKey != null)
+        var memberships = (from GridViewRow row in gvHosts.Rows
+            let cb = (CheckBox) row.FindControl("chkSelector")
+            where cb != null && cb.Checked
+            select gvHosts.DataKeys[row.RowIndex]
+            into dataKey
+            where dataKey != null
+            select new Models.GroupMembership
             {
-                var membership = new GroupMembership
-                {
-                    ComputerId = Convert.ToInt32(dataKey.Value),
-                    GroupId = Group.Id
-                };
-                if (BLL.GroupMembership.AddMembership(membership))
-                    addedCount++;
-            }
-        }
-
-        EndUserMessage = "Successfully Added " + addedCount + " New Members" ;
-
+                ComputerId = Convert.ToInt32(dataKey.Value), GroupId = Group.Id
+            }).ToList();
+        EndUserMessage = BLL.GroupMembership.AddMembership(memberships) ? "Successfully Added Group Members" : "Could Not Add Group Members";
     }
 }

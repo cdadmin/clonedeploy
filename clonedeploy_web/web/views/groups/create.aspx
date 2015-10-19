@@ -19,7 +19,7 @@
         Group Type:
     </div>
     <div class="size-5 column">
-        <asp:DropDownList ID="ddlGroupType" runat="server" CssClass="ddlist" AutoPostBack="True" OnSelectedIndexChanged="ddlGroupType_OnSelectedIndexChanged">
+        <asp:DropDownList ID="ddlGroupType" runat="server" CssClass="ddlist" >
             <asp:ListItem>standard</asp:ListItem>
             <asp:ListItem>smart</asp:ListItem>
         </asp:DropDownList>

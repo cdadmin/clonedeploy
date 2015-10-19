@@ -10,6 +10,8 @@ namespace Models
         public Group()
         {
             Members = new List<Computer>();
+            Image = -1;
+            ImageProfile = -1;
         }
 
         [Key]

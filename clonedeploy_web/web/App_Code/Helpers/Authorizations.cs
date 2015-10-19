@@ -47,6 +47,16 @@
             get { return "GroupDelete"; }
         }
 
+        public static string CreateSmart
+        {
+            get { return "SmartCreate"; }
+        }
+
+        public static string UpdateSmart
+        {
+            get { return "SmartUpdate"; }
+        }
+
         public static string CreateImage
         {
             get { return "ImageCreate"; }
