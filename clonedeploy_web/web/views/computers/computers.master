@@ -62,18 +62,7 @@
                         <a href="<%= ResolveUrl("~/views/computers/log.aspx") %>?hostid=<%= Computer.Id %>">
                             <span class="sub-nav-text">Logs</span></a>
                     </li>
-                    <li>
-                        <asp:LinkButton ID="buttonUploadHost" runat="server" OnClick="btnUpload_Click">
-                            <span class="sub-nav-text">Upload</span></asp:LinkButton>
-                    </li>
-                    <li>
-                        <asp:LinkButton ID="buttonDeployHost" runat="server" OnClick="btnDeploy_Click">
-                            <span class="sub-nav-text">Deploy</span></asp:LinkButton>
-                    </li>
-                    <li>
-                        <asp:LinkButton ID="buttonDeleteHost" runat="server" OnClick="btnDelete_Click">
-                            <span class="sub-nav-text">Delete</span></asp:LinkButton>
-                    </li>
+                   
                 </ul>
             </div>
         </div>
@@ -89,17 +78,21 @@
 
 <asp:Content ID="Content3" ContentPlaceHolderID="Content" runat="Server">
     <div class="actions">
-    <div class="nav-btn-square">
-         <asp:LinkButton ID="LinkButton1" runat="server"  Text="Upload" OnClick="btnUpload_Click"></asp:LinkButton>
-        <asp:LinkButton ID="LinkButton2" runat="server" Text="Deploy" OnClick="btnDeploy_Click"></asp:LinkButton>
-      
-          <asp:LinkButton ID="LinkButton3" runat="server" Text="Delete" OnClick="btnDelete_Click"></asp:LinkButton>
-       </div>
-    <div id="actionsd" style="float: right;">
-        <asp:ContentPlaceHolder ID="Actions" runat="server">
-                </asp:ContentPlaceHolder>
-      </div>
+        <div class="nav-btn-round">
+            <asp:ContentPlaceHolder ID="Help" runat="server">
+            </asp:ContentPlaceHolder>
+            <div id="actions_left" runat="server">
+            <asp:LinkButton ID="LinkButton1" runat="server" CssClass="icon upload" data-info="Upload Computer" OnClick="btnUpload_Click"></asp:LinkButton>
+            <asp:LinkButton ID="LinkButton2" runat="server" CssClass="icon deploy" data-info="Deploy Computer" OnClick="btnDeploy_Click"></asp:LinkButton>
+            <asp:LinkButton ID="LinkButton3" runat="server" CssClass="icon delete" data-info="Delete Computer" OnClick="btnDelete_Click"></asp:LinkButton>
+            <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
+            </div>
         </div>
+        <div class="actions-right">
+            <asp:ContentPlaceHolder ID="PageActions" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+    </div>
     <div class="content-right">
         <asp:ContentPlaceHolder ID="SubContent" runat="server">
         </asp:ContentPlaceHolder>

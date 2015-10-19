@@ -4,6 +4,12 @@
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li>Search</li>
     </asp:Content>
+<asp:Content runat="server" ContentPlaceHolderID="Help">
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="icon help" data-info="Help"></a>
+</asp:Content>
+<asp:Content runat="server" ContentPlaceHolderID="PageActions">
+    <a class="confirm left" href="#">Delete Selected Computers</a>
+</asp:Content>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
@@ -14,6 +20,8 @@
         <asp:TextBox ID="txtSearch" runat="server" CssClass="searchbox" OnTextChanged="search_Changed"></asp:TextBox>
     </div>
     <br class="clear"/>
+    
+    <div class="full column">
     <p class="total">
         <asp:Label ID="lblTotal" runat="server"></asp:Label>
     </p>
@@ -43,7 +51,7 @@
             No Computers Found
         </EmptyDataTemplate>
     </asp:GridView>
-    <a class="confirm left" href="#">Delete Selected Computers</a>
+    </div>
     <div id="confirmbox" class="confirm-box-outer">
         <div class="confirm-box-inner">
             <h4>

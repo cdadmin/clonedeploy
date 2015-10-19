@@ -1,7 +1,8 @@
 /* Base
 ================================================== */
 *{margin:0;padding:0;}
-html, body {margin:0;padding:0;height:100%}
+.form{ height: 100%;}
+html, body {margin:0;padding:0;height: 100%;overflow-x: hidden;}
 html,body,div,span,h1,h2,h3,h4,h5,h6,p{margin:0;padding:0;border:0;font-size:100%;font:inherit;}
 body{background:#fff;font-size:14px;font-family:opensans, "Calibri Light", "Helvetica Neue", Helvetica, Arial;color:#444;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;}
 a, a:visited { color: #333; text-decoration: none; outline: 0; }
@@ -30,6 +31,15 @@ ul{ list-style-type: none;}
 	/*url("../fonts/flaticon.woff") format("woff"),*/
 	url("../fonts/flaticon.ttf") format("truetype"),
 	url("../fonts/flaticon.svg") format("svg");
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: "icon2";
+	src: url("../fonts/icon2.eot");
+	src: url("../fonts/icon2.eot#iefix") format("embedded-opentype"),
+	url("../fonts/icon2.ttf") format("truetype"),
+	url("../fonts/icon2.svg") format("svg");
 	font-weight: normal;
 	font-style: normal;
 }
@@ -63,7 +73,7 @@ hr{border:solid #ddd;border-width:1px 0 0;clear:both;margin:10px 0 0px;height:0;
 
 /* Sub Menu Left
 ================================================== */
-.sub-nav-top { margin-top: 0px;}
+.sub-nav-top { margin-top: 0px; }
 .sub-nav-top li a{display:block;height:4.5em;width:200px;line-height:20px;text-align: left;background: #fff;color:#666666;position:relative;-webkit-transition:background .1s ease-in-out;-moz-transition:background .1s ease-in-out;transition:background .1s ease-in-out;}
 .sub-nav-top li a:hover{color:#47a3da;background: #fdfdfd;}
 .sub-nav-top li.nav-current a{color:#47a3da;background: #f9f9f9;}
@@ -79,24 +89,25 @@ hr{border:solid #ddd;border-width:1px 0 0;clear:both;margin:10px 0 0px;height:0;
 
 /* Mobile Menu Top
 ================================================== */
-.nav-bar-mobile {display:none;position: fixed;overflow-y: hidden;top: 0;left: 0;height: 30px;width:100%;list-style-type: none;margin: 0;padding: 0;background: #47a3da;z-index:1001;}
+.nav-bar-mobile {display:none;position: relative;overflow-y: hidden;top: 7px;left: 0;height: 30px;width:100%;list-style-type: none;margin: 0;padding: 0;}
 .mobile-menu-left{float:left;width:50%;}
 .mobile-menu-right{float:right;width:50%;}
 .nav-menu-mobile{background:#47a3da;position:fixed;width:100%;height:300px;left:0;z-index:1000;overflow:hidden;top:-300px;}
 .nav-menu-mobile a{float:left;width:100%;padding:20px 0;text-align:center;font-size:2em;}
 .nav-menu-mobile a:hover{background:#258ecd;}
 .nav-menu-mobile a:active{background:#afdefa;color:#47a3da;}
-.nav-menu-mobile.nav-menu-mobile-open{top:30px;}
+.nav-menu-mobile.nav-menu-mobile-open{top:0px;}
 .nav-menu-mobile-push{overflow-x:hidden;position:relative;left:0;}
 .nav-menu-mobile,.nav-menu-mobile-push{-webkit-transition:all .3s ease;-moz-transition:all .3s ease;transition:all .3s ease;}
 
 /* Sub Menus
 ================================================== */
-.nav-btn-round{float:left;margin-top:0px;margin-right: 40px;}
+.actions-right{ float: right;margin-top: 6px;}
+.nav-btn-round{float:left;margin-top:5px;margin-right: 40px;width: 400px;}
 .nav-btn-square{float:left;background:#fff;margin-bottom: 10px;margin-top:2px;padding-bottom:5px;padding-right:0;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;}
 .nav-btn-round a{display:block;float:left;position:relative;width:2.5em;height:2.5em;background:#fff;border-radius:50%;color:transparent;margin:0 .5em;border:4px solid #47a3da;}
 .nav-btn-square a{display:block;color: white;float:left;position:relative;width:150px;height:35px;background:#666666;margin:0 5px 0 0;font-size: 18px;font-weight: 500;text-align: center;padding-top:5px;}
-.nav-btn-round a:after{content:attr(data-info);color:#47a3da;position:absolute;width:600%;top:120%;text-align:right;right:0;opacity:0;pointer-events:none;}
+.nav-btn-round a:after{content:attr(data-info);color:#666;position:absolute;width: 100px;top:85%;text-align:left;right:0;opacity:0;pointer-events:none;left:0;}
 
 .nav-btn-round a:hover:after,.nav-btn-square a:hover:after{opacity:1;}
 .nav-btn-round a:hover,.nav-btn-square a:hover{background:#47a3da;}
@@ -193,10 +204,10 @@ input[type="checkbox"]{display:inline;}
 
 /* Buttons
 ================================================== */
-a.confirm,a.submits,input[type="submit"]{background:#fff;border:1px solid #aaa;border-top:1px solid #ccc;border-left:1px solid #ccc;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;color:#444;display:inline-block;text-decoration:none;text-shadow:0 1px rgba(255,255,255,.75);cursor:pointer;margin-bottom:3px;line-height:normal;padding:10px 10px; font-size:16px;}
-a.confirm:hover,a.submits:hover,input[type="submit"]:hover,a.boot-active{color:#fff;background:#47a3da;-webkit-transition:background .2s ease-in-out;-moz-transition:background .2s ease-in-out;transition:background .2s ease-in-out;border:1px solid #47a3da;text-shadow:none;}
+a.confirm,a.submits,input[type="submit"]{background:#666;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;color: #fff;display:inline-block;text-decoration:none;cursor:pointer;margin-bottom:3px;line-height:normal;padding:10px 10px; font-size:16px;}
+a.confirm:hover,a.submits:hover,input[type="submit"]:hover,a.boot-active{color:#fff;background:#47a3da;-webkit-transition:background .2s ease-in-out;-moz-transition:background .2s ease-in-out;transition:background .2s ease-in-out;}
 
-a.confirm:active,a.submits:active,input[type="submit"]:active{border:1px solid #47a3da;background:#ccc;}
+a.confirm:active,a.submits:active,input[type="submit"]:active{background:#ccc;}
 a.confirm{float:right; margin-top:20px;}
 a.confirm_yes{width:100px;display:inline-block;background-color:#fff;padding:15px 30px;color:#47a3da;-webkit-border-radius:5px;-moz-border-radius:5px;-ms-border-radius:5px;-o-border-radius:5px;border-radius:5px;text-decoration:none; }
 a.confirm_no{width:100px;display:inline-block;background-color:#fff;padding:15px 30px;color:#47a3da;-webkit-border-radius:5px;-moz-border-radius:5px;-ms-border-radius:5px;-o-border-radius:5px;border-radius:5px;text-decoration:none; }

@@ -18,6 +18,7 @@ namespace views.computers
             {
                 Level2.Visible = false;
                 Level3.Visible = false;
+                actions_left.Visible = false;
             }
             else
             {

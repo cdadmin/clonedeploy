@@ -44,7 +44,7 @@
 
                     <ul>
                         <li id="criteria"><a  href="<%= ResolveUrl("~/views/groups/smartcriteria.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">Smart Criteria</span></a></li>
-                          <li id="removemembers"><a  href="<%= ResolveUrl("~/views/groups/removemembers.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">Current Members</span></a></li>
+                          <li id="removemembers"><a  href="<%= ResolveUrl("~/views/groups/currentmembers.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">Current Members</span></a></li>
                       
                     </ul>
 
@@ -59,9 +59,7 @@
         <li><a id="historyoption" href="<%= ResolveUrl("~/views/groups/history.aspx") %>?groupid=<%= Group.Id %>"> <span class="sub-nav-text">History</span></a></li>
         <li><a id="bootmenuoption" href="<%= ResolveUrl("~/views/groups/bootmenu.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">Boot Menu</span></a></li>
             <li><hr style="margin-right: 10px;"/></li>
-        <li><asp:LinkButton ID="btnMulticast" runat="server" OnClick="btnMulticast_Click"><span class="sub-nav-text">Multicast</span></asp:LinkButton></li>
-        <li><asp:LinkButton ID="btnUnicast" runat="server" OnClick="btnUnicast_Click"><span class="sub-nav-text">Unicast</span></asp:LinkButton></li>
-        <li><asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click"><span class="sub-nav-text">Delete</span></asp:LinkButton></li>
+       
         </ul>
            
             </div>
@@ -69,6 +67,22 @@
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">
+    <div class="actions">
+        <div class="nav-btn-round">
+            <asp:ContentPlaceHolder ID="Help" runat="server">
+            </asp:ContentPlaceHolder>
+            <div id="actions_left" runat="server">
+           <asp:LinkButton ID="btnMulticast" runat="server" OnClick="btnMulticast_Click"><span class="sub-nav-text">Multicast</span></asp:LinkButton>
+       <asp:LinkButton ID="btnUnicast" runat="server" OnClick="btnUnicast_Click"><span class="sub-nav-text">Unicast</span></asp:LinkButton>
+       <asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click"><span class="sub-nav-text">Delete</span></asp:LinkButton>
+            <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
+            </div>
+        </div>
+        <div class="actions-right">
+            <asp:ContentPlaceHolder ID="PageActions" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+    </div>
     <div class="content-right">
     <asp:ContentPlaceHolder ID="SubContent" runat="server">
     </asp:ContentPlaceHolder>

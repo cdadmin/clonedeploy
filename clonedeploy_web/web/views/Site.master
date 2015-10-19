@@ -33,9 +33,10 @@
 <body>
  
     <div class="nav-bar-mobile">
-        <a href="#" id="icon-mobile-nav"></a>
+        <a href="#" class="icon-mobile-nav"></a>
     </div>
     <div class="nav-menu-mobile" id="menu-mobile">
+         <a href="#" class="icon-mobile-nav2"></a>
         <div class="mobile-menu-left">
             <a href="<%= ResolveUrl("~/views/computers/search.aspx") %>">Computers</a>
             <a href="<%= ResolveUrl("~/views/groups/search.aspx") %>">Groups</a>
@@ -48,10 +49,9 @@
         </div>
     </div>
    
-    <form id="form1" runat="server" style="height: 100%;overflow-x:hidden;overflow-y:auto;">
+    <form id="form1" runat="server" class="form">
         
         <div class="container">
-
             <div class="nav" id="navmenu">
                 <ul>
                     <li>
@@ -116,7 +116,7 @@
                     <asp:ContentPlaceHolder ID="SubNav" runat="server">
                     </asp:ContentPlaceHolder>
                   
-                    <div class="spacer"></div>
+                   
                 </div>
 
 
@@ -142,7 +142,12 @@
                 classie.toggle(menuTop, 'confirm-box-outer-open');
             });
 
-            $("#icon-mobile-nav").click(function () {
+            $(".icon-mobile-nav").click(function () {
+                var menuTop = document.getElementById('menu-mobile');
+                classie.toggle(menuTop, 'nav-menu-mobile-open');
+            });
+
+            $(".icon-mobile-nav2").click(function () {
                 var menuTop = document.getElementById('menu-mobile');
                 classie.toggle(menuTop, 'nav-menu-mobile-open');
             });

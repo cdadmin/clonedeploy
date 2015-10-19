@@ -34,7 +34,7 @@
         <li><a id="editoption" href="<%= ResolveUrl("~/views/users/edit.aspx") %>?userid=<%= CloneDeployUser.Id %>"><span class="sub-nav-text">General</span></a></li>
         <li><a id="acloption" href="<%= ResolveUrl("~/views/users/acls/general.aspx") %>?userid=<%= CloneDeployUser.Id %>&level=3"><span class="sub-nav-text">Access Control</span></a></li>
         <li><a id="historyoption" href="<%= ResolveUrl("~/views/users/history.aspx") %>?userid=<%= CloneDeployUser.Id %>"><span class="sub-nav-text">History</span></a></li>
-        <li><asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click"><span class="sub-nav-text">Delete User</span></asp:LinkButton></li>
+       
         </ul>
             </div>
             </div>
@@ -53,6 +53,21 @@
    
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">
+    <div class="actions">
+        <div class="nav-btn-round">
+            <asp:ContentPlaceHolder ID="Help" runat="server">
+            </asp:ContentPlaceHolder>
+            <div id="actions_left" runat="server">
+                 <asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click"><span class="sub-nav-text">Delete User</span></asp:LinkButton>
+        
+            <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
+            </div>
+        </div>
+        <div class="actions-right">
+            <asp:ContentPlaceHolder ID="PageActions" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+    </div>
      <div class="content-right">
     <asp:ContentPlaceHolder ID="SubContent" runat="server">
     </asp:ContentPlaceHolder>

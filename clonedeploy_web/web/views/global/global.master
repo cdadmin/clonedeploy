@@ -89,6 +89,20 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="Content" Runat="Server">
+     <div class="actions">
+        <div class="nav-btn-round">
+            <asp:ContentPlaceHolder ID="Help" runat="server">
+            </asp:ContentPlaceHolder>
+            <div id="actions_left" runat="server">
+           
+            <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
+            </div>
+        </div>
+        <div class="actions-right">
+            <asp:ContentPlaceHolder ID="PageActions" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+    </div>
      <div class="content-right">       
     <asp:ContentPlaceHolder ID="SubContent" runat="server">
     </asp:ContentPlaceHolder>
