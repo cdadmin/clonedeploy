@@ -64,19 +64,20 @@ hr{border:solid #ddd;border-width:1px 0 0;clear:both;margin:10px 0 0px;height:0;
 
 /* Desktop Menu Left
 ================================================== */
-.nav li a{display:block;height:4em;width:200px;line-height:10px;text-align: left;color:#999;position:relative;-webkit-transition:background .1s ease-in-out;-moz-transition:background .1s ease-in-out;transition:background .1s ease-in-out;}
-.nav li a:hover{color:#47a3da;border: none;}
-.nav li:first-child a{color:#47a3da;border: none;background: #ddd;}
+.nav li { display: inline;width: 60px;float: left;margin-top: -9px;}
+.nav li a{display: inline-block; width:60px;text-align: left;color:#999;position:relative;-webkit-transition:background .1s ease-in-out;-moz-transition:background .1s ease-in-out;transition:background .1s ease-in-out;}
+.nav li a:hover{color:#fff;border: none;}
+.nav li:first-child a{color:#47a3da;border: none;background: #555;}
 .nav li.nav-current a{background:#fff;color:#47a3da;border-right:none;}
 .nav li a:before{font-family:Flaticon;speak:none;font-style:normal;font-weight:normal;text-indent:0;position:absolute;top:-5px;left:0;width:100%;height:100%;font-size:1em;-webkit-font-smoothing:antialiased;}
-.nav-text, .sub-nav-text{padding-top:25px;display:inline-block; margin-left:20px}
+.nav-text, .sub-nav-text{padding-top:25px;display:inline-block;margin-left: 30px;font-size: 22px;}
 
 /* Sub Menu Left
 ================================================== */
 .sub-nav-top { margin-top: 0px; }
-.sub-nav-top li a{display:block;height:4.5em;width:200px;line-height:20px;text-align: left;background: #fff;color:#666666;position:relative;-webkit-transition:background .1s ease-in-out;-moz-transition:background .1s ease-in-out;transition:background .1s ease-in-out;}
+.sub-nav-top li a{display:block;height:4.5em;width:100%;line-height:20px;text-align: left;background: #fff;color:#666666;position:relative;-webkit-transition:background .1s ease-in-out;-moz-transition:background .1s ease-in-out;transition:background .1s ease-in-out;}
 .sub-nav-top li a:hover{color:#47a3da;background: #fdfdfd;}
-.sub-nav-top li.nav-current a{color:#47a3da;background: #f9f9f9;}
+.sub-nav-top li.nav-current a{color:#47a3da;background: #ddd;}
 .sub-nav-top li a:before{font-family:Flaticon;speak:none;font-style:normal;font-weight:normal;text-indent:0;position:absolute;left:0;width:100%;height: 100%;-webkit-font-smoothing:antialiased;}
 
 .sub-nav-bottom{ background: #fff; }
@@ -107,7 +108,7 @@ hr{border:solid #ddd;border-width:1px 0 0;clear:both;margin:10px 0 0px;height:0;
 .nav-btn-square{float:left;background:#fff;margin-bottom: 10px;margin-top:2px;padding-bottom:5px;padding-right:0;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;}
 .nav-btn-round a{display:block;float:left;position:relative;width:2.5em;height:2.5em;background:#fff;border-radius:50%;color:transparent;margin:0 .5em;border:4px solid #47a3da;}
 .nav-btn-square a{display:block;color: white;float:left;position:relative;width:150px;height:35px;background:#666666;margin:0 5px 0 0;font-size: 18px;font-weight: 500;text-align: center;padding-top:5px;}
-.nav-btn-round a:after{content:attr(data-info);color:#666;position:absolute;width: 100px;top:85%;text-align:left;right:0;opacity:0;pointer-events:none;left:0;}
+.nav-btn-round a:after{content:attr(data-info);color:#47a3da;position:absolute;width: 100px;top:120%;text-align:left;right:0;opacity:0;pointer-events:none;left:0;}
 
 .nav-btn-round a:hover:after,.nav-btn-square a:hover:after{opacity:1;}
 .nav-btn-round a:hover,.nav-btn-square a:hover{background:#47a3da;}
@@ -204,7 +205,7 @@ input[type="checkbox"]{display:inline;}
 
 /* Buttons
 ================================================== */
-a.confirm,a.submits,input[type="submit"]{background:#666;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;color: #fff;display:inline-block;text-decoration:none;cursor:pointer;margin-bottom:3px;line-height:normal;padding:10px 10px; font-size:16px;}
+a.confirm,a.submits,input[type="submit"]{background:#555;-moz-border-radius:0px;-webkit-border-radius:0px;border-radius:0px;color: #fff;display:inline-block;text-decoration:none;cursor:pointer;margin-bottom:3px;line-height:normal;padding:10px 10px; font-size:16px;border: 1px solid #fff;}
 a.confirm:hover,a.submits:hover,input[type="submit"]:hover,a.boot-active{color:#fff;background:#47a3da;-webkit-transition:background .2s ease-in-out;-moz-transition:background .2s ease-in-out;transition:background .2s ease-in-out;}
 
 a.confirm:active,a.submits:active,input[type="submit"]:active{background:#ccc;}
@@ -212,7 +213,7 @@ a.confirm{float:right; margin-top:20px;}
 a.confirm_yes{width:100px;display:inline-block;background-color:#fff;padding:15px 30px;color:#47a3da;-webkit-border-radius:5px;-moz-border-radius:5px;-ms-border-radius:5px;-o-border-radius:5px;border-radius:5px;text-decoration:none; }
 a.confirm_no{width:100px;display:inline-block;background-color:#fff;padding:15px 30px;color:#47a3da;-webkit-border-radius:5px;-moz-border-radius:5px;-ms-border-radius:5px;-o-border-radius:5px;border-radius:5px;text-decoration:none; }
 a.confirm_yes:link,a.confirm_yes:visited,a.confirm_no:link,a.confirm_no:visited{color:#47a3da;outline:none;font:normal 1em/1em Calibri , Arial;font-size:24px;}
-a.submits{margin-top:0px;float: left;}
+a.submits{margin-top:-3px;float: left;}
 a.left {float:left; margin-top:0;}
 a.right { float: right;}
 a.static-width{ width:100px; text-align:center; margin-right:5px; margin-top:0; }
@@ -230,8 +231,19 @@ a.static-width-nomarg{ width:100px; text-align:center; margin-right:5px; }
 
 /* Misc
 ================================================== */
-.header-title { text-align: left;margin-left:15px;}
-.header-title-text{ margin-top: 20px;font-size: 30px;vertical-align: bottom;}
+.header-title { text-align: left;margin-left:10px;font-size: 40px;float: left;}
+.header-title-text {
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: .3em;
+
+
+    font-size: 24px;
+    color: #47a3da;
+    text-align: center;
+    line-height: 40px;
+
+}
 .denied_text { font-size:20px; color:Red; }
 .total {color:#666; font-size:16px; text-align:right; line-height:1px;margin-bottom: 10px; }
 .container:after{content:"\0020";display:block;height:0;clear:both;visibility:hidden;}

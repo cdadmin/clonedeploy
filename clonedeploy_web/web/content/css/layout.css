@@ -1,11 +1,17 @@
-.container{position:relative;width: 100%;margin:0;padding:0 0 0 40px;height: 100%;overflow-x:hidden;overflow-y:hidden;}
-.header_container{position:relative;float:left;left:1px;background-color:#fff;width:100%;height: 56px;border-bottom: 1px solid #eee;}
-.content_container{position:relative;float:left;left:1px;background-color:#fff;width:calc(100% - 41px);background: #fff;height: 100%;overflow-x:hidden;overflow-y:hidden;}
-.nav{position:fixed;float: left;overflow:hidden;top:0;left:0;height:100%;width:40px;list-style-type:none;margin: 0;padding:0;background:#fff;border-right:1px solid #eee}
-.actions{float:left;background:#fff;width:calc(100% - 236px);height: 55px;margin-top: 1px;}
-.breadcrumb_container{display: inline;position:relative;float:left;left: 0;right: 0;width:100%;overflow-x:hidden;overflow-y:hidden;top: 0px;border-right: 1px solid #eee;border-bottom: 1px solid #eee;color: black;height: 30px;}
-.sub-nav_container{display: inline;position:relative;float:left;left:0px;width:195px;overflow-x:hidden;overflow-y:auto;top: 0px;border-right: 1px solid #eee;color: black;background: #fff; height:100%}
-.content-right{display: inline;position:relative;float:left;padding: 5px 20px 0 20px; top: 0px;width:calc(100% - 236px);background-color: #fff;overflow-x:hidden;overflow-y:visible;height:80%;border-top: 1px solid #eee;}
+.container{position:relative;width:100%;margin:0;padding:0 0 0 0px;height: 100%;overflow-x:hidden;overflow-y:hidden;background: #888;}
+.nav{position:relative;float: left;overflow:hidden;top:0;left:0;height:35px;width:100%;list-style-type:none;margin: 0;padding:0;background:#555;}
+.content_container{position:relative;display: block;background-color:#888;width: 1460px;margin: 0 auto;height: 100%;overflow-x:hidden;overflow-y:hidden;}
+.header_container{position:relative;left:0px;background-color:#555;width:100%;height: 35px;}
+.sub-nav_container{display: inline;position:relative;float:left;left:15px;margin-right: 10px; width:250px;overflow-x:hidden;overflow-y:auto;top:0px;color: black;background: #fff; height:100%}
+.content-right{display: inline;position:relative;float:left; top: -10px;width:calc(100% - 336px);background-color: #888;overflow-x:hidden;overflow-y:hidden;height:100%;left: 20px; }
+.breadcrumb_container{display: inline;position:relative;float:left;right: 0;width:100%;overflow-x:hidden;overflow-y:hidden;top: 0px;border-right: 1px solid #eee;color: black;height: 30px;background: #888;margin-bottom: 10px;}
+.actions{border-bottom: 12px solid #fff;float:left;background:#555;width:100%;height: 55px;}
+.content-right-main{display: inline;position:relative;float:left;width:calc(100% - 20px);background-color: #fff;overflow-x:hidden;overflow-y:visible;height:77%;padding: 20px 0 0 20px; }
+
+
+
+
+
 
 .spacer{ padding-bottom: 10px;}
 .container .column{float:left;display:inline;margin-right:10px;}
@@ -24,21 +30,16 @@
 .container .size-setting.column{width:420px;}
 .container .offset-1{padding-left:200px;}
 
-@media only screen and (min-width: 1501px) and (max-width: 4000px) {
-.content_container{ background: #eee;width: 1501px}
-.content-right{ width: 1265px;}
-.container .full.column{width:1150px;}
-Table.Gridview{width:1150px;margin: auto;}
-}
 
-@media only screen and (min-width: 1251px) (max-width: 1500px) {
-.content_container{ background: #eee;}
+
+@media only screen and (min-width: 1251px) and (max-width: 1420px) {
+.content_container{background: #eee;width: 1300px;}
 .container .full.column{width:1150px;}
 }
 
 
 @media only screen and  (min-width: 1071px) and (max-width: 1250px) {
-.content_container{background: yellow;}
+.content_container{background: yellow;width: 1120px;}
 .container .full.column{width:800px;}
 }
 
@@ -47,7 +48,7 @@ Table.Gridview{width:1150px;margin: auto;}
 .container .full.column{width:700px;}
 .container .size-2.column{width:300px;}
 }
-
+    
 @media only screen and (min-width: 821px) and (max-width: 970px) {
 .content_container{ background: green;}
 .actions { height: 100px;}

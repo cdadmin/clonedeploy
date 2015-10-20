@@ -1,13 +1,12 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/computers/computers.master" AutoEventWireup="true" Inherits="views.hosts.Searchhosts" CodeFile="search.aspx.cs" %>
 
-
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li>Search</li>
     </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="icon help" data-info="Help"></a>
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="icon help" data-info="Help" target="_blank"></a>
 </asp:Content>
-<asp:Content runat="server" ContentPlaceHolderID="PageActions">
+<asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
     <a class="confirm left" href="#">Delete Selected Computers</a>
 </asp:Content>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">

@@ -6,7 +6,7 @@
 <asp:Content runat="server" ContentPlaceHolderID="Help">
      <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="icon help" data-info="Help" target="_blank"></a>
 </asp:Content>
-<asp:Content runat="server" ContentPlaceHolderID="PageActions">
+<asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
      <asp:LinkButton ID="buttonUpdateHost" runat="server" OnClick="buttonUpdateHost_Click" Text="Update Host" CssClass="submits"/>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">

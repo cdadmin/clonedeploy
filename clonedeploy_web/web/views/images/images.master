@@ -1,22 +1,18 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/views/Site.master" AutoEventWireup="true" CodeFile="images.master.cs" Inherits="views.masters.ImageMaster" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="HeaderNav" runat="Server">
+<asp:Content ID="SubNavTitle" ContentPlaceHolderID="HeaderNav" runat="Server">
     <script type="text/javascript">
         $(document).ready(function () {
             $('#nav-images').addClass("nav-current");
         });
     </script>
   
-        <h1 class="header-title icon-image-title"><span class="header-title-text">Images</span></h1>
+        <span class="header-title-text">Images</span> 
  
    
 </asp:Content>
-<asp:Content runat="server" ID="Breadcrumb" ContentPlaceHolderID="Breadcrumb">
-     <li><a href="<%= ResolveUrl("~/views/images/search.aspx") %>">Images</a></li>
-    <asp:ContentPlaceHolder ID="BreadcrumbSub" runat="server">
-        </asp:ContentPlaceHolder>
-</asp:Content>
-<asp:Content ID="Content2" ContentPlaceHolderID="SubNav" runat="Server">
+
+<asp:Content ID="SubNav" ContentPlaceHolderID="SubNav" runat="Server">
 
     <div class="sub-nav-top">
         <div id="Level1" runat="server">
@@ -63,25 +59,30 @@
     </div>
 </asp:Content>
 
-<asp:Content ID="Content3" ContentPlaceHolderID="Content" runat="Server">
-     <div class="actions">
-        <div class="nav-btn-round">
-            <asp:ContentPlaceHolder ID="Help" runat="server">
-            </asp:ContentPlaceHolder>
-            <div id="actions_left" runat="server">
-           <asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click"><span class="sub-nav-text">Delete</span></asp:LinkButton>
+<asp:Content runat="server" ID="Breadcrumb" ContentPlaceHolderID="Breadcrumb">
+     <li><a href="<%= ResolveUrl("~/views/images/search.aspx") %>">Images</a></li>
+    <asp:ContentPlaceHolder ID="BreadcrumbSub" runat="server">
+        </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content runat="server" ID="ActionsLeft" ContentPlaceHolderID="PageActionsLeft">
+    <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
+    <div id="actions_left" runat="server">
+      <asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click"><span class="sub-nav-text">Delete</span></asp:LinkButton>
             <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
-            </div>
-        </div>
-        <div class="actions-right">
-            <asp:ContentPlaceHolder ID="PageActions" runat="server">
-            </asp:ContentPlaceHolder>
-        </div>
     </div>
-    <div class="content-right">
+</asp:Content>
+
+<asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="PageActionsRight">
+    <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content ID="MainContent" ContentPlaceHolderID="Content" runat="Server">
+     
         <asp:ContentPlaceHolder ID="SubContent" runat="server">
         </asp:ContentPlaceHolder>
-    </div>
+
     <div id="confirmbox" class="confirm-box-outer">
         <div class="confirm-box-inner">
             <h4>
