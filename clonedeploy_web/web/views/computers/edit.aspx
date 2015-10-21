@@ -113,9 +113,5 @@
     <div class="size-5 column">
         <asp:TextBox ID="txtCustom5" runat="server" CssClass="textbox"></asp:TextBox>
     </div>
-    <br class="clear"/>
-    <div class="spacer">
-       
-    </div>
 
 </asp:Content>

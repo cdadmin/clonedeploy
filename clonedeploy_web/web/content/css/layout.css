@@ -1,12 +1,12 @@
 .container{position:relative;width:100%;margin:0;padding:0 0 0 0px;height: 100%;overflow-x:hidden;overflow-y:hidden;background: #888;}
-.nav{position:relative;float: left;overflow:hidden;top:0;left:0;height:35px;width:100%;list-style-type:none;margin: 0;padding:0;background:#555;}
+.nav{position:relative;float: left;overflow:hidden;top:0;left:0;height:35px;width:100%;list-style-type:none;margin: 0;padding:0;background:#323232;}
 .content_container{position:relative;display: block;background-color:#888;width: 1460px;margin: 0 auto;height: 100%;overflow-x:hidden;overflow-y:hidden;}
-.header_container{position:relative;left:0px;background-color:#555;width:100%;height: 35px;}
-.sub-nav_container{display: inline;position:relative;float:left;left:15px;margin-right: 10px; width:250px;overflow-x:hidden;overflow-y:auto;top:0px;color: black;background: #fff; height:100%}
+.header_container{position:relative;display: inline-block;text-align: center;left:0px;background-color:#555;width:100%;height: 35px;}
+.sub-nav_container{display: inline;position:relative;float:left;margin-right: 10px; width:250px;overflow-x:hidden;overflow-y:auto;top:-10px;color: black;background: #888; height:100%}
 .content-right{display: inline;position:relative;float:left; top: -10px;width:calc(100% - 336px);background-color: #888;overflow-x:hidden;overflow-y:hidden;height:100%;left: 20px; }
-.breadcrumb_container{display: inline;position:relative;float:left;right: 0;width:100%;overflow-x:hidden;overflow-y:hidden;top: 0px;border-right: 1px solid #eee;color: black;height: 30px;background: #888;margin-bottom: 10px;}
-.actions{border-bottom: 12px solid #fff;float:left;background:#555;width:100%;height: 55px;}
-.content-right-main{display: inline;position:relative;float:left;width:calc(100% - 20px);background-color: #fff;overflow-x:hidden;overflow-y:visible;height:77%;padding: 20px 0 0 20px; }
+.breadcrumb_container{display: inline;position:relative;float:left;right: 0;width:100%;overflow-x:hidden;overflow-y:hidden;top: 0px;border-right: 1px solid #eee;color: black;height: 30px;background: #888; margin-bottom:10px}
+.actions{border-bottom: 12px solid #fafafa;float:left;background:#555;width:100%;height: 55px;}
+.content-right-main{display: inline;position:relative;float:left;width:calc(100% - 20px);background-color: #fafafa;overflow-x:hidden;overflow-y:visible;height:77%;padding: 20px 0 0 20px; }
 
 
 
@@ -33,8 +33,8 @@
 
 
 @media only screen and (min-width: 1251px) and (max-width: 1420px) {
-.content_container{background: #eee;width: 1300px;}
-.container .full.column{width:1150px;}
+.content_container{width: 1300px;}
+.container .full.column{width:900px;}
 }
 
 

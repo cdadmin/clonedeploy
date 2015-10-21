@@ -625,7 +625,7 @@ CREATE TABLE `computers` (
   `custom_attr_4` varchar(255) DEFAULT NULL,
   `custom_attr_5` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`computer_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=35 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -634,7 +634,7 @@ CREATE TABLE `computers` (
 
 LOCK TABLES `computers` WRITE;
 /*!40000 ALTER TABLE `computers` DISABLE KEYS */;
-INSERT INTO `computers` VALUES (12,'test987','11111111111111111','',-1,-1,-1,3,7,0,NULL,NULL,NULL,NULL,NULL),(13,'abcd','1','',-1,0,0,0,-1,0,NULL,NULL,NULL,NULL,NULL),(16,'zzzzz','1112223333','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(17,'cccc','4455666','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(18,'bbbbb','444343','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(19,'ddeeff','56789','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(20,'bbssese','123','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(21,'asdfer','99403949','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(22,'8589383984','949039034','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(25,'abcd','','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(26,'zzddd','4444646','abc',-1,0,0,3,7,0,NULL,NULL,NULL,NULL,NULL),(28,'newcomptuer1','89402JSJDF','',-1,0,0,-1,-1,0,NULL,NULL,NULL,NULL,NULL),(29,'ss','12','',0,0,0,3,6,0,NULL,NULL,NULL,NULL,NULL),(30,'sitetest','94943','',13,2,4,-1,-1,0,NULL,NULL,NULL,NULL,NULL),(31,'myhostskks','94903U094U','',-1,-1,-1,-1,-1,0,NULL,NULL,NULL,NULL,NULL),(32,'newpc','8580298343','',-1,-1,-1,-1,-1,0,'5','4','0','2','1');
+INSERT INTO `computers` VALUES (13,'abcd','1','',-1,0,0,0,-1,0,NULL,NULL,NULL,NULL,NULL),(16,'zzzzz','1112223333','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(17,'cccc','4455666','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(18,'bbbbb','444343','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(19,'ddeeff','56789','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(20,'bbssese','123','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(21,'asdfer','99403949','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(22,'8589383984','949039034','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(25,'abcd','','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(26,'zzddd','4444646','abc',-1,-1,-1,3,7,0,'abc','','','',''),(28,'newcomptuer1','89402JSJDF','',-1,0,0,-1,-1,0,NULL,NULL,NULL,NULL,NULL),(29,'ss','12','',0,0,0,3,6,0,NULL,NULL,NULL,NULL,NULL),(30,'sitetest','94943','',13,2,4,-1,-1,0,NULL,NULL,NULL,NULL,NULL),(31,'myhostskks','94903U094U','',-1,-1,-1,-1,-1,0,NULL,NULL,NULL,NULL,NULL),(32,'newpc','8580298343','',-1,-1,-1,-1,-1,0,'5','4','0','2','1'),(33,'new17','5002048','',-1,-1,-1,-1,-1,0,'','','','',''),(34,'affeetta','645565','',-1,-1,-1,-1,-1,0,'','','','','');
 /*!40000 ALTER TABLE `computers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -721,6 +721,51 @@ LOCK TABLES `files_folders` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `group_computer_properties`
+--
+
+DROP TABLE IF EXISTS `group_computer_properties`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `group_computer_properties` (
+  `group_computer_property_id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) DEFAULT NULL,
+  `image_id` int(11) DEFAULT NULL,
+  `image_profile_id` int(11) DEFAULT NULL,
+  `description` longtext,
+  `site_id` int(11) DEFAULT NULL,
+  `building_id` int(11) DEFAULT NULL,
+  `room_id` int(11) DEFAULT NULL,
+  `custom_attr_1` varchar(255) DEFAULT NULL,
+  `custom_attr_2` varchar(255) DEFAULT NULL,
+  `custom_attr_3` varchar(255) DEFAULT NULL,
+  `custom_attr_4` varchar(255) DEFAULT NULL,
+  `custom_attr_5` varchar(255) DEFAULT NULL,
+  `image_enabled` tinyint(4) DEFAULT NULL,
+  `image_profile_enabled` tinyint(4) DEFAULT NULL,
+  `description_enabled` tinyint(4) DEFAULT NULL,
+  `site_enabled` tinyint(4) DEFAULT NULL,
+  `building_enabled` tinyint(4) DEFAULT NULL,
+  `room_enabled` tinyint(4) DEFAULT NULL,
+  `custom_1_enabled` tinyint(4) DEFAULT NULL,
+  `custom_2_enabled` tinyint(4) DEFAULT NULL,
+  `custom_3_enabled` tinyint(4) DEFAULT NULL,
+  `custom_4_enabled` tinyint(4) DEFAULT NULL,
+  `custom_5_enabled` tinyint(4) DEFAULT NULL,
+  PRIMARY KEY (`group_computer_property_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `group_computer_properties`
+--
+
+LOCK TABLES `group_computer_properties` WRITE;
+/*!40000 ALTER TABLE `group_computer_properties` DISABLE KEYS */;
+/*!40000 ALTER TABLE `group_computer_properties` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `group_membership`
 --
 
@@ -732,7 +777,7 @@ CREATE TABLE `group_membership` (
   `computer_id` int(11) DEFAULT NULL,
   `group_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`group_membership_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -741,7 +786,7 @@ CREATE TABLE `group_membership` (
 
 LOCK TABLES `group_membership` WRITE;
 /*!40000 ALTER TABLE `group_membership` DISABLE KEYS */;
-INSERT INTO `group_membership` VALUES (9,12,1),(10,24,1),(12,20,1),(13,21,1);
+INSERT INTO `group_membership` VALUES (14,13,3),(9,12,1),(10,24,1),(15,21,3),(16,25,3);
 /*!40000 ALTER TABLE `group_membership` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -762,6 +807,7 @@ CREATE TABLE `groups` (
   `group_sender_arguments` longtext,
   `group_receiver_arguments` longtext,
   `group_smart_criteria` varchar(45) DEFAULT NULL,
+  `group_default_properties_enabled` tinyint(4) DEFAULT '0',
   PRIMARY KEY (`group_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -772,7 +818,7 @@ CREATE TABLE `groups` (
 
 LOCK TABLES `groups` WRITE;
 /*!40000 ALTER TABLE `groups` DISABLE KEYS */;
-INSERT INTO `groups` VALUES (1,'Group1_Test26','',3,-1,'standard','a','b',NULL),(2,'Group1','',-1,-1,'standard','',NULL,NULL),(3,'smart1','',0,0,'smart',NULL,NULL,'lab');
+INSERT INTO `groups` VALUES (1,'Group1_Test26','',3,-1,'standard','a','b',NULL,NULL),(2,'Group1','',-1,-1,'standard','',NULL,NULL,NULL),(3,'smart1','',0,0,'smart',NULL,NULL,'a',NULL);
 /*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1099,4 +1145,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-10-16 16:31:37
+-- Dump completed on 2015-10-21 16:26:20

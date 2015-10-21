@@ -5,6 +5,12 @@
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
    <li><a href="<%= ResolveUrl("~/views/groups/edit.aspx") %>?groupid=<%= Group.Id %>" ><%= Group.Name %></a></li>
     </asp:Content>
+<asp:Content runat="server" ContentPlaceHolderID="Help">
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+<asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
+      <asp:LinkButton ID="btnSubmit" runat="server" Text="Update Group" OnClick="btnSubmit_Click" CssClass="submits"/>
+</asp:Content>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
 
     <script type="text/javascript">
@@ -37,14 +43,7 @@
         <asp:TextBox ID="txtGroupDesc" runat="server" CssClass="descbox" TextMode="MultiLine"></asp:TextBox>
     </div>
 
-    <br class="clear"/>
-    <div class="size-4 column">
-        &nbsp;
-    </div>
-    <div class="size-5 column">
-        <asp:LinkButton ID="btnSubmit" runat="server" Text="Update Group" OnClick="btnSubmit_Click" CssClass="submits"/>
-    </div>
-    <br class="clear"/>
+
   
 
 </asp:Content>

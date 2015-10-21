@@ -2,6 +2,9 @@
 
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li><a href="<%= ResolveUrl("~/views/images/create.aspx") %>">New</a></li>
+    <li> My New Long Text 1</li>
+    <li> My New Long Text 2</li>
+     <li> My New Long Text 3</li>
     </asp:Content>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">

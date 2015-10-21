@@ -3,6 +3,14 @@
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li><a href="<%= ResolveUrl("~/views/computers/search.aspx") %>">Search</a></li>
     </asp:Content>
+
+<asp:Content runat="server" ContentPlaceHolderID="Help">
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+<asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
+    <a class="confirm" href="#">Delete Selected Groups</a>
+</asp:Content>
+
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
@@ -43,7 +51,7 @@
             No Groups Found
         </EmptyDataTemplate>
     </asp:GridView>
-    <a class="confirm" href="#">Delete Selected Groups</a>
+   
     <div id="confirmbox" class="confirm-box-outer">
         <div class="confirm-box-inner">
             <h4>

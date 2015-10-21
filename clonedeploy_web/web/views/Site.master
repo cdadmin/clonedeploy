@@ -55,7 +55,7 @@
             <ul>
                 <li>
                     <a href="#" class="leftmenu">
-                        <img alt="logo" src="<%= ResolveUrl("~/") %>content/img/cd.png" style="margin-top: 8px;"/>
+                        <img alt="logo" src="<%= ResolveUrl("~/") %>content/img/cd.png" style="margin-top: 12px; margin-left: 3px;" />
                     </a>
                 </li>
                 <li id="nav-hosts">
@@ -86,13 +86,14 @@
                     <a href="<%= ResolveUrl("~/views/admin/chooser.aspx") %>" class="icon-setting">
                     </a>
                 </li>
-
-                <li id="nav-logout">
-                    <asp:LoginStatus runat="server" CssClass="icon-logout" LogoutText=""/>
+                
+                 <li id="nav-logout" style="float: right; margin: 4px 90px 0 0; font-size: 24px; text-align: right;">
+                    <asp:LinkButton ID="LogOut" runat="server" OnClick="LogOut_OnClick" ></asp:LinkButton>
                 </li>
+               
             </ul>
         </div>
-
+      
 
         <div class="clearfix">
         </div>

@@ -89,12 +89,8 @@
 </asp:Content>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="Content" runat="Server">
-
-
     <asp:ContentPlaceHolder ID="SubContent" runat="server">
     </asp:ContentPlaceHolder>
-    <br class="clear"/>
-    <div class="spacer"></div>
 
     <br class="clear"/>
     <div id="confirmbox" class="confirm-box-outer">

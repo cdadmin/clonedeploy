@@ -11,4 +11,15 @@ public partial class views_groups_properties : BasePages.Groups
     {
 
     }
+
+    protected void ddlHostImage_OnSelectedIndexChanged(object sender, EventArgs e)
+    {
+        throw new NotImplementedException();
+    }
+
+    protected void btnSubmit_OnClick(object sender, EventArgs e)
+    {
+        if (ddlHostImage.Text == "Select Image") return;
+        PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlHostImage.SelectedValue));
+    }
 }

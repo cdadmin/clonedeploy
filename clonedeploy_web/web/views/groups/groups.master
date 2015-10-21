@@ -70,9 +70,9 @@
     <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
     <div id="actions_left" runat="server">
 
-       <asp:LinkButton ID="btnMulticast" runat="server" OnClick="btnMulticast_Click"><span class="sub-nav-text">Multicast</span></asp:LinkButton>
-       <asp:LinkButton ID="btnUnicast" runat="server" OnClick="btnUnicast_Click"><span class="sub-nav-text">Unicast</span></asp:LinkButton>
-       <asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click"><span class="sub-nav-text">Delete</span></asp:LinkButton>
+       <asp:LinkButton ID="btnMulticast" runat="server" OnClick="btnMulticast_Click" CssClass="icon multicast" data-info="Multicast Group"></asp:LinkButton>
+       <asp:LinkButton ID="btnUnicast" runat="server" OnClick="btnUnicast_Click" CssClass="icon unicast" data-info="Unicast Group"></asp:LinkButton>
+       <asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click" CssClass="icon delete" data-info="Delete Group"></asp:LinkButton>
             <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
     </div>
 </asp:Content>
@@ -86,8 +86,6 @@
     
     <asp:ContentPlaceHolder ID="SubContent" runat="server">
     </asp:ContentPlaceHolder>
-        <br class="clear" />
-          <div class="spacer"></div>
 
     <br class="clear"/>
     <div id="confirmbox" class="confirm-box-outer">
