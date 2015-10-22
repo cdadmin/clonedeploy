@@ -12,6 +12,7 @@ namespace Models
             Members = new List<Computer>();
             Image = -1;
             ImageProfile = -1;
+            SetDefaultProperties = 0;
         }
 
         [Key]
@@ -42,6 +43,9 @@ namespace Models
 
         [Column("group_smart_criteria", Order = 9)]
         public string SmartCriteria { get; set; }
+
+        [Column("group_default_properties_enabled", Order = 10)]
+        public int SetDefaultProperties { get; set; }
 
         [NotMapped] 
         public List<Computer> Members { get; set; }      

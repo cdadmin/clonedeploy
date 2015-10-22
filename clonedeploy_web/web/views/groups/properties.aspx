@@ -22,7 +22,7 @@
         Set As Default For New Group Members:
     </div>
     <div class="size-5 column">
-        <asp:CheckBox runat="server" ID="chkDefault"/>
+        <asp:CheckBox runat="server" ID="chkDefault" AutoPostBack="True" OnCheckedChanged="chkDefault_OnCheckedChanged"/>
     </div>
     <br class="clear" />
     <br />

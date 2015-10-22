@@ -39,8 +39,9 @@ namespace DAL
         public DbSet<Models.UserGroupManagement> UserGroupManagements { get; set; }
         public DbSet<Models.UserImageManagement> UserImageManagements { get; set; }
         public DbSet<Models.UserLockout> UserLockouts { get; set; }
+        public DbSet<Models.GroupProperty> GroupProperties { get; set; }
 
-      
+
     }
 
 }

@@ -23,7 +23,7 @@ namespace Models
         [Column("image_profile_id", Order = 4)]
         public int ImageProfileId { get; set; }
 
-        [Column("computer_description", Order = 5)]
+        [Column("description", Order = 5)]
         public string Description { get; set; }
 
         [Column("site_id", Order = 6)]

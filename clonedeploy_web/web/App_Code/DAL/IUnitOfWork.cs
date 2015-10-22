@@ -28,6 +28,7 @@ namespace DAL
         DAL.IGenericRepository<Models.UserGroupManagement> UserGroupManagementRepository { get; }
         DAL.IGenericRepository<Models.UserImageManagement> UserImageManagementRepository { get; }
         DAL.IGenericRepository<Models.UserLockout> UserLockoutRepository { get; }
+        DAL.IGenericRepository<Models.GroupProperty> GroupPropertyRepository { get; }
         DAL.BuildingRepository BuildingRepository { get; }
         DAL.ComputerRepository ComputerRepository { get; }
         DAL.ImageProfileScriptRepository ImageProfileScriptRepository { get; }
