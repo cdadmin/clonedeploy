@@ -95,7 +95,7 @@ CREATE TABLE `admin_settings` (
 
 LOCK TABLES `admin_settings` WRITE;
 /*!40000 ALTER TABLE `admin_settings` DISABLE KEYS */;
-INSERT INTO `admin_settings` VALUES (34,'On Demand Requires Login','Yes',''),(33,'Web Task Requires Login','No',''),(32,'Proxy Efi64 File','ipxe_64_efi_snp',NULL),(31,'Proxy Efi32 File','ipxe_32_efi_snp',NULL),(30,'Proxy Bios File','ipxe',NULL),(29,'Proxy Dhcp','Yes',NULL),(28,'Web Server Port','90',NULL),(27,'Image Checksum','On',''),(26,'Server Key Mode','NULL',''),(25,'Global Host Args','',''),(24,'Client Receiver Args','ab',''),(23,'SMB Password','NULL',''),(22,'SMB User Name','abc247',''),(21,'SMB Path','//192.168.56.1',''),(20,'Force SSL','No',''),(19,'Nfs Deploy Path','c:\\/',''),(18,'Image Hold Path','c:\\inetpub\\wwwroot\\clonedeploy\\image_hold\\',NULL),(17,'Udpcast End Port','102',''),(16,'Udpcast Start Port','100',''),(15,'Receiver Args','ad',''),(14,'On Demand','Enabled',''),(13,'Server IP','192.168.1.101',NULL),(12,'Compression Level','1',''),(11,'Compression Algorithm','gzip',''),(10,'Server Key','e991eb3d-2de9-ae19',''),(9,'Default Host View','all',NULL),(8,'Image Transfer Mode','smb',''),(7,'AD Login Domain','',''),(6,'Web Path','http://[server-ip]:90/cruciblewds/service/client.asmx/',NULL),(5,'PXE Mode','pxelinux',NULL),(4,'Tftp Path','C:\\inetpub\\wwwroot\\clonedeploy\\tftpboot\\',NULL),(2,'Image Store Path','c:\\inetpub\\wwwroot\\clonedeploy\\image_store\\',NULL),(3,'Nfs Upload Path','c:\\/',''),(51,'Queue Size','3',''),(1,'Sender Args','asdb',''),(35,'Debug Requires Login','Yes',''),(36,'Register Requires Login','Yes',''),(37,'Smtp Server','abc',''),(38,'Smtp Port','',''),(39,'Smtp Username','',''),(40,'Smtp Password','NULL',''),(41,'Smtp Mail From','',''),(42,'Smtp Mail To','',''),(43,'Smtp Ssl','Yes',''),(44,'Notify Successful Login','0',''),(45,'Notify Failed Login','0',''),(46,'Notify Task Started','0',''),(47,'Notify Task Completed','0',''),(48,'Notify Image Approved','0',''),(49,'Notify Resize Failed','0',''),(52,'Require Image Approval','0',NULL);
+INSERT INTO `admin_settings` VALUES (34,'On Demand Requires Login','Yes',''),(33,'Web Task Requires Login','No',''),(32,'Proxy Efi64 File','grub_64_efi',NULL),(31,'Proxy Efi32 File','ipxe_32_efi',NULL),(30,'Proxy Bios File','pxelinux',NULL),(29,'Proxy Dhcp','Yes',NULL),(28,'Web Server Port','90',NULL),(27,'Image Checksum','On',''),(26,'Server Key Mode','NULL',''),(25,'Global Host Args','',''),(24,'Client Receiver Args','ab',''),(23,'SMB Password','NULL',''),(22,'SMB User Name','abc247',''),(21,'SMB Path','//192.168.56.1',''),(20,'Force SSL','No',''),(19,'Nfs Deploy Path','c:\\/',''),(18,'Image Hold Path','c:\\inetpub\\wwwroot\\clonedeploy\\image_hold\\',NULL),(17,'Udpcast End Port','102',''),(16,'Udpcast Start Port','100',''),(15,'Receiver Args','ad',''),(14,'On Demand','Enabled',''),(13,'Server IP','192.168.1.101',NULL),(12,'Compression Level','1',''),(11,'Compression Algorithm','gzip',''),(10,'Server Key','e991eb3d-2de9-ae19',''),(9,'Default Host View','all',NULL),(8,'Image Transfer Mode','smb',''),(7,'AD Login Domain','',''),(6,'Web Path','http://[server-ip]:90/cruciblewds/service/client.asmx/',NULL),(5,'PXE Mode','pxelinux',NULL),(4,'Tftp Path','C:\\inetpub\\wwwroot\\clonedeploy\\tftpboot\\',NULL),(2,'Image Store Path','c:\\inetpub\\wwwroot\\clonedeploy\\image_store\\',NULL),(3,'Nfs Upload Path','c:\\/',''),(51,'Queue Size','3',''),(1,'Sender Args','asdb',''),(35,'Debug Requires Login','Yes',''),(36,'Register Requires Login','Yes',''),(37,'Smtp Server','abc',''),(38,'Smtp Port','',''),(39,'Smtp Username','',''),(40,'Smtp Password','NULL',''),(41,'Smtp Mail From','',''),(42,'Smtp Mail To','',''),(43,'Smtp Ssl','Yes',''),(44,'Notify Successful Login','0',''),(45,'Notify Failed Login','0',''),(46,'Notify Task Started','0',''),(47,'Notify Task Completed','0',''),(48,'Notify Image Approved','0',''),(49,'Notify Resize Failed','0',''),(52,'Require Image Approval','0',NULL);
 /*!40000 ALTER TABLE `admin_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -419,7 +419,7 @@ CREATE TABLE `computer_boot_menus` (
   `efi32_menu` longtext,
   `efi64_menu` longtext,
   PRIMARY KEY (`computer_boot_menu_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -428,7 +428,7 @@ CREATE TABLE `computer_boot_menus` (
 
 LOCK TABLES `computer_boot_menus` WRITE;
 /*!40000 ALTER TABLE `computer_boot_menus` DISABLE KEYS */;
-INSERT INTO `computer_boot_menus` VALUES (1,24,'asda\nd\n\nad\nassdsd',NULL,NULL);
+INSERT INTO `computer_boot_menus` VALUES (1,24,'asda\nd\n\nad\nassdsd',NULL,NULL),(2,21,'asda\nd\n\nad\nassdsd',NULL,NULL),(3,29,'asda\nd\n\nad\nassdsd',NULL,NULL),(4,13,'asda\nd\n\nad\nassdsd',NULL,NULL),(5,26,'asda\nd\n\nad\nassdsd',NULL,NULL),(6,16,'asda\nd\n\nad\nassdsd',NULL,NULL),(7,17,'asda\nd\n\nad\nassdsd',NULL,NULL),(8,18,'asda\nd\n\nad\nassdsd',NULL,NULL),(9,19,'asda\nd\n\nad\nassdsd',NULL,NULL),(10,20,'asda\nd\n\nad\nassdsd',NULL,NULL),(11,22,'asda\nd\n\nad\nassdsd',NULL,NULL),(12,25,'asda\nd\n\nad\nassdsd',NULL,NULL),(13,28,'asda\nd\n\nad\nassdsd',NULL,NULL),(14,30,'asda\nd\n\nad\nassdsd',NULL,NULL),(15,31,'asda\nd\n\nad\nassdsd',NULL,NULL),(16,32,'asda\nd\n\nad\nassdsd',NULL,NULL),(17,33,'asda\nd\n\nad\nassdsd',NULL,NULL),(18,34,'asda\nd\n\nad\nassdsd',NULL,NULL);
 /*!40000 ALTER TABLE `computer_boot_menus` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -634,7 +634,7 @@ CREATE TABLE `computers` (
 
 LOCK TABLES `computers` WRITE;
 /*!40000 ALTER TABLE `computers` DISABLE KEYS */;
-INSERT INTO `computers` VALUES (13,'abcd','1','',-1,0,0,0,-1,0,NULL,NULL,NULL,NULL,NULL),(16,'zzzzz','1112223333','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(17,'cccc','4455666','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(18,'bbbbb','444343','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(19,'ddeeff','56789','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(20,'bbssese','123','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(21,'asdfer','99403949','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(22,'8589383984','949039034','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(25,'abcd','','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(26,'zzddd','4444646','abc',-1,-1,-1,3,7,0,'abc','','','',''),(28,'newcomptuer1','89402JSJDF','',-1,0,0,-1,-1,0,NULL,NULL,NULL,NULL,NULL),(29,'ss','12','',0,0,0,3,6,0,NULL,NULL,NULL,NULL,NULL),(30,'sitetest','94943','',13,2,4,-1,-1,0,NULL,NULL,NULL,NULL,NULL),(31,'myhostskks','94903U094U','',-1,-1,-1,-1,-1,0,NULL,NULL,NULL,NULL,NULL),(32,'newpc','8580298343','',-1,-1,-1,-1,-1,0,'5','4','0','2','1'),(33,'new17','5002048','',-1,-1,-1,-1,-1,0,'','','','',''),(34,'affeetta','645565','',-1,-1,-1,-1,-1,0,'','','','','');
+INSERT INTO `computers` VALUES (13,'abcd','1','added via smart',-1,0,0,6,6,1,NULL,NULL,NULL,NULL,NULL),(16,'zzzzz','1112223333','added via smart',-1,0,0,6,6,1,NULL,NULL,NULL,NULL,NULL),(17,'cccc','4455666','added via smart',-1,0,0,6,6,1,NULL,NULL,NULL,NULL,NULL),(18,'bbbbb','444343','added via smart',-1,0,0,6,6,1,NULL,NULL,NULL,NULL,NULL),(19,'ddeeff','56789','added via smart',-1,0,0,6,6,1,NULL,NULL,NULL,NULL,NULL),(20,'bbssese','123','added via smart',-1,0,0,6,6,1,NULL,NULL,NULL,NULL,NULL),(21,'asdfer','99403949','added via smart',-1,-1,-1,6,6,1,NULL,NULL,NULL,NULL,NULL),(22,'8589383984','949039034','added via smart',-1,0,0,6,6,1,NULL,NULL,NULL,NULL,NULL),(25,'abcd','','',-1,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL),(26,'zzddd','4444646','added via smart',-1,-1,4,6,6,1,'abc','','','',''),(28,'newcomptuer1','89402JSJDF','added via smart',-1,0,0,6,6,1,NULL,NULL,NULL,NULL,NULL),(29,'ss','12','added via smart',0,0,4,6,6,1,NULL,NULL,NULL,NULL,NULL),(30,'sitetest','94943','added via smart',13,2,4,6,6,1,NULL,NULL,NULL,NULL,NULL),(31,'myhostskks','94903U094U','added via smart',-1,-1,-1,6,6,1,NULL,NULL,NULL,NULL,NULL),(32,'newpc','8580298343','added via smart',-1,-1,-1,6,6,1,'5','4','0','2','1'),(33,'new17','5002048','added via smart',-1,-1,-1,6,6,1,'','','','',''),(34,'affeetta','645565','added via smart',-1,-1,-1,6,6,1,'','','','','');
 /*!40000 ALTER TABLE `computers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -668,7 +668,7 @@ CREATE TABLE `distribution_points` (
 
 LOCK TABLES `distribution_points` WRITE;
 /*!40000 ALTER TABLE `distribution_points` DISABLE KEYS */;
-INSERT INTO `distribution_points` VALUES (1,'abc123','192.168.1.1','SMB','cd_dp','workgroup','user','pass',0,'',0,''),(2,'asdfsdf','[server-ip]','SMB+HTTP','asdfsdaf','asdf','adsf','aaa',1,'c:\\',1,'');
+INSERT INTO `distribution_points` VALUES (2,'asdfsdf','[server-ip]','SMB+HTTP','asdfsdaf','dom','adsf','aaa',1,'C:\\inetpub\\wwwroot\\clonedeploy\\image_store\\',1,'');
 /*!40000 ALTER TABLE `distribution_points` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -721,6 +721,33 @@ LOCK TABLES `files_folders` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `group_boot_menus`
+--
+
+DROP TABLE IF EXISTS `group_boot_menus`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `group_boot_menus` (
+  `group_boot_menu_id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) DEFAULT NULL,
+  `bios_menu` longtext,
+  `efi32_menu` longtext,
+  `efi64_menu` longtext,
+  PRIMARY KEY (`group_boot_menu_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `group_boot_menus`
+--
+
+LOCK TABLES `group_boot_menus` WRITE;
+/*!40000 ALTER TABLE `group_boot_menus` DISABLE KEYS */;
+INSERT INTO `group_boot_menus` VALUES (1,1,'new group menu',NULL,NULL),(2,3,'asda\nd\n\nad\nassdsd',NULL,NULL);
+/*!40000 ALTER TABLE `group_boot_menus` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `group_computer_properties`
 --
 
@@ -730,30 +757,30 @@ DROP TABLE IF EXISTS `group_computer_properties`;
 CREATE TABLE `group_computer_properties` (
   `group_computer_property_id` int(11) NOT NULL AUTO_INCREMENT,
   `group_id` int(11) DEFAULT NULL,
-  `image_id` int(11) DEFAULT NULL,
-  `image_profile_id` int(11) DEFAULT NULL,
+  `image_id` int(11) DEFAULT '-1',
+  `image_profile_id` int(11) DEFAULT '-1',
   `description` longtext,
-  `site_id` int(11) DEFAULT NULL,
-  `building_id` int(11) DEFAULT NULL,
-  `room_id` int(11) DEFAULT NULL,
+  `site_id` int(11) DEFAULT '-1',
+  `building_id` int(11) DEFAULT '-1',
+  `room_id` int(11) DEFAULT '-1',
   `custom_attr_1` varchar(255) DEFAULT NULL,
   `custom_attr_2` varchar(255) DEFAULT NULL,
   `custom_attr_3` varchar(255) DEFAULT NULL,
   `custom_attr_4` varchar(255) DEFAULT NULL,
   `custom_attr_5` varchar(255) DEFAULT NULL,
-  `image_enabled` tinyint(4) DEFAULT NULL,
-  `image_profile_enabled` tinyint(4) DEFAULT NULL,
-  `description_enabled` tinyint(4) DEFAULT NULL,
-  `site_enabled` tinyint(4) DEFAULT NULL,
-  `building_enabled` tinyint(4) DEFAULT NULL,
-  `room_enabled` tinyint(4) DEFAULT NULL,
-  `custom_1_enabled` tinyint(4) DEFAULT NULL,
-  `custom_2_enabled` tinyint(4) DEFAULT NULL,
-  `custom_3_enabled` tinyint(4) DEFAULT NULL,
-  `custom_4_enabled` tinyint(4) DEFAULT NULL,
-  `custom_5_enabled` tinyint(4) DEFAULT NULL,
+  `image_enabled` tinyint(4) DEFAULT '0',
+  `image_profile_enabled` tinyint(4) DEFAULT '0',
+  `description_enabled` tinyint(4) DEFAULT '0',
+  `site_enabled` tinyint(4) DEFAULT '0',
+  `building_enabled` tinyint(4) DEFAULT '0',
+  `room_enabled` tinyint(4) DEFAULT '0',
+  `custom_1_enabled` tinyint(4) DEFAULT '0',
+  `custom_2_enabled` tinyint(4) DEFAULT '0',
+  `custom_3_enabled` tinyint(4) DEFAULT '0',
+  `custom_4_enabled` tinyint(4) DEFAULT '0',
+  `custom_5_enabled` tinyint(4) DEFAULT '0',
   PRIMARY KEY (`group_computer_property_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -762,6 +789,7 @@ CREATE TABLE `group_computer_properties` (
 
 LOCK TABLES `group_computer_properties` WRITE;
 /*!40000 ALTER TABLE `group_computer_properties` DISABLE KEYS */;
+INSERT INTO `group_computer_properties` VALUES (1,1,6,-1,'',-1,-1,-1,'','','','','',1,1,0,1,1,1,0,0,0,0,0),(2,3,6,-1,'added via smart',-1,-1,-1,'','','','','',1,1,1,0,0,0,0,0,0,0,0);
 /*!40000 ALTER TABLE `group_computer_properties` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -777,7 +805,7 @@ CREATE TABLE `group_membership` (
   `computer_id` int(11) DEFAULT NULL,
   `group_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`group_membership_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -786,7 +814,7 @@ CREATE TABLE `group_membership` (
 
 LOCK TABLES `group_membership` WRITE;
 /*!40000 ALTER TABLE `group_membership` DISABLE KEYS */;
-INSERT INTO `group_membership` VALUES (14,13,3),(9,12,1),(10,24,1),(15,21,3),(16,25,3);
+INSERT INTO `group_membership` VALUES (22,29,3),(9,12,1),(10,24,1),(23,13,3),(19,21,1),(21,21,3),(20,26,3),(24,16,3),(25,17,3),(26,18,3),(27,19,3),(28,20,3),(29,22,3),(30,25,3),(31,28,3),(32,30,3),(33,31,3),(34,32,3),(35,33,3),(36,34,3);
 /*!40000 ALTER TABLE `group_membership` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -808,6 +836,7 @@ CREATE TABLE `groups` (
   `group_receiver_arguments` longtext,
   `group_smart_criteria` varchar(45) DEFAULT NULL,
   `group_default_properties_enabled` tinyint(4) DEFAULT '0',
+  `group_default_bootmenu_enabled` tinyint(4) DEFAULT '0',
   PRIMARY KEY (`group_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -818,7 +847,7 @@ CREATE TABLE `groups` (
 
 LOCK TABLES `groups` WRITE;
 /*!40000 ALTER TABLE `groups` DISABLE KEYS */;
-INSERT INTO `groups` VALUES (1,'Group1_Test26','',3,-1,'standard','a','b',NULL,NULL),(2,'Group1','',-1,-1,'standard','',NULL,NULL,NULL),(3,'smart1','',0,0,'smart',NULL,NULL,'a',NULL);
+INSERT INTO `groups` VALUES (1,'Group1_Test26','',3,-1,'standard','a','b',NULL,1,0),(2,'Group1','',-1,-1,'standard','',NULL,NULL,0,0),(3,'smart1','',0,0,'smart',NULL,NULL,'',0,0);
 /*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -935,6 +964,8 @@ CREATE TABLE `linux_profiles` (
   `force_dynamic_partitions` tinyint(4) DEFAULT NULL,
   `always_expand_partitions` tinyint(4) DEFAULT NULL,
   `custom_partition_script` longtext,
+  `compression_algorithm` varchar(45) DEFAULT NULL,
+  `compression_level` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`image_profile_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -945,7 +976,7 @@ CREATE TABLE `linux_profiles` (
 
 LOCK TABLES `linux_profiles` WRITE;
 /*!40000 ALTER TABLE `linux_profiles` DISABLE KEYS */;
-INSERT INTO `linux_profiles` VALUES (5,3,'3.12.13-WDS','initrd.gz','profile23','','',0,0,'Reboot',0,1,0,0,0,0,1,NULL,0,0,NULL),(6,3,NULL,NULL,'myprofilea','',NULL,0,0,NULL,0,0,0,0,0,0,0,NULL,0,0,NULL),(7,3,NULL,NULL,'adsf','',NULL,0,0,NULL,0,0,0,0,0,0,0,'Custom Layout',0,0,'');
+INSERT INTO `linux_profiles` VALUES (5,3,'3.12.13-WDS','initrd.gz','profile23','','',0,0,'Reboot',0,1,0,0,0,0,1,NULL,0,0,NULL,NULL,NULL),(6,3,NULL,NULL,'myprofilea','',NULL,0,0,NULL,0,0,0,0,0,0,0,NULL,0,0,NULL,NULL,NULL),(7,3,NULL,NULL,'adsf','',NULL,0,0,NULL,0,0,0,0,0,0,0,'Custom Layout',0,0,'',NULL,NULL);
 /*!40000 ALTER TABLE `linux_profiles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1145,4 +1176,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-10-21 16:26:20
+-- Dump completed on 2015-10-22 16:26:18

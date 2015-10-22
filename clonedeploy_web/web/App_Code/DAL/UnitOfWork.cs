@@ -10,6 +10,7 @@ namespace DAL
         private BuildingRepository _buildingRepository;
         private IGenericRepository<Models.DistributionPoint> _distributionPointRepository;
         private IGenericRepository<Models.ComputerBootMenu> _computerBootMenuRepository;
+        private IGenericRepository<Models.GroupBootMenu> _groupBootMenuRepository;
         private IGenericRepository<Models.GroupMembership> _groupMembershipRepository;
         private IGenericRepository<Models.Image> _imageRepository;
         private IGenericRepository<Models.ImageProfilePartition> _imageProfilePartitionRepository;
@@ -34,6 +35,12 @@ namespace DAL
         private ImageProfileScriptRepository _imageProfileScriptRepository;
         private GroupRepository _groupRepository;
         private ActiveImagingTaskRepository _activeImagingTaskRepository;
+
+        public IGenericRepository<Models.GroupBootMenu> GroupBootMenuRepository
+        {
+            get { return _groupBootMenuRepository ?? (_groupBootMenuRepository = new GenericRepository<Models.GroupBootMenu>(_context)); }
+
+        }
 
         public IGenericRepository<Models.GroupProperty> GroupPropertyRepository
         {

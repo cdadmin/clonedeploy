@@ -3,6 +3,15 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li>Security Settings</li>
 </asp:Content>
+
+<asp:Content runat="server" ID="Help" ContentPlaceHolderID="Help">
+      <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+
+<asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
+    <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update Security Settings" OnClick="btnUpdateSettings_OnClick" CssClass="submits"/>
+</asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent" Runat="Server">
     <script type="text/javascript">
     $(document).ready(function() {
@@ -103,15 +112,7 @@
         <asp:ListItem>No</asp:ListItem>
     </asp:DropDownList>
 </div>
-<br class="clear"/>
-          <div class="size-4 column">
-    &nbsp;
-</div>
 
-<div class="size-setting column">
-    <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update Security Settings" OnClick="btnUpdateSettings_OnClick" CssClass="submits"/>
-</div>
-<br class="clear"/>
     
       <div id="confirmbox" class="confirm-box-outer">
     <div class="confirm-box-inner">

@@ -42,6 +42,35 @@
         <asp:CheckBox ID="chkUpDebugResize" runat="server" CssClass="textbox"></asp:CheckBox>
     </div>
     <br class="clear"/>
+    <div class="size-4 column">
+    Compression Algorithm:
+</div>
+<div class="size-setting column">
+    <asp:DropDownList ID="ddlCompAlg" runat="server" CssClass="ddlist">
+        <asp:ListItem>gzip</asp:ListItem>
+        <asp:ListItem>lz4</asp:ListItem>
+         <asp:ListItem>none</asp:ListItem>
+    </asp:DropDownList>
+</div>
+<br class="clear"/>
+<div class="size-4 column">
+    Compression Level:
+</div>
+
+<div class="size-setting column">
+    <asp:DropDownList ID="ddlCompLevel" runat="server" CssClass="ddlist">
+        <asp:ListItem>1</asp:ListItem>
+        <asp:ListItem>2</asp:ListItem>
+        <asp:ListItem>3</asp:ListItem>
+        <asp:ListItem>4</asp:ListItem>
+        <asp:ListItem>5</asp:ListItem>
+        <asp:ListItem>6</asp:ListItem>
+        <asp:ListItem>7</asp:ListItem>
+        <asp:ListItem>8</asp:ListItem>
+        <asp:ListItem>9</asp:ListItem>
+    </asp:DropDownList>
+</div>
+<br class="clear"/>
      <div class="size-4 column">
         &nbsp;
     </div>

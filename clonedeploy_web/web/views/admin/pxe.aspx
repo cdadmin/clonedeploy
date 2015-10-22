@@ -3,6 +3,15 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
      <li><a href="<%= ResolveUrl("~/views/admin/client.aspx") %>">PXE Settings</a></li>
 </asp:Content>
+
+<asp:Content runat="server" ID="Help" ContentPlaceHolderID="Help">
+      <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+
+<asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
+     <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update PXE Settings" OnClick="btnUpdateSettings_OnClick" CssClass="submits"/>
+</asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent" Runat="Server">
      <script type="text/javascript">
     $(document).ready(function() {
@@ -73,17 +82,6 @@
         <asp:ListItem>grub_64_efi</asp:ListItem>
     </asp:DropDownList>
 </div>
-
-<br class="clear"/>
-       <div class="size-4 column">
-    &nbsp;
-</div>
-
-<div class="size-setting column">
-    <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update PXE Settings" OnClick="btnUpdateSettings_OnClick" CssClass="submits"/>
-</div>
-<br class="clear"/>
-    
      <div id="confirmbox" class="confirm-box-outer">
     <div class="confirm-box-inner">
         <h4>

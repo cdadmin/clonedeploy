@@ -12,15 +12,12 @@ public partial class views_admin_server : Admin
         if (IsPostBack) return;
         txtIP.Text = Settings.ServerIp;
         txtPort.Text = Settings.WebServerPort;
-        txtImagePath.Text = Settings.ImageStorePath;
         txtTFTPPath.Text = Settings.TftpPath;
-        txtWebService.Text = Setting.GetValueForAdminView(Settings.WebPath);
         ddlHostView.SelectedValue = Settings.DefaultHostView;
 
         //These require pxe boot menu or client iso to be recreated
         ViewState["serverIP"] = txtIP.Text;
         ViewState["serverPort"] = txtPort.Text;
-        ViewState["webService"] = txtWebService.Text;
     }
 
     protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
@@ -30,9 +27,7 @@ public partial class views_admin_server : Admin
         {
             new Models.Setting {Name = "Server IP", Value = txtIP.Text, Id = Setting.GetSetting("Server IP").Id},
             new Models.Setting {Name = "Web Server Port", Value = txtPort.Text, Id = Setting.GetSetting("Web Server Port").Id},
-            new Models.Setting {Name = "Image Store Path", Value = txtImagePath.Text, Id = Setting.GetSetting("Image Store Path").Id},
             new Models.Setting {Name = "Tftp Path", Value = txtTFTPPath.Text, Id = Setting.GetSetting("Tftp Path").Id},
-            new Models.Setting {Name = "Web Path", Value = txtWebService.Text, Id = Setting.GetSetting("Web Path").Id},
             new Models.Setting {Name = "Default Host View", Value = ddlHostView.Text, Id = Setting.GetSetting("Default Host View").Id},
         };
 
@@ -51,16 +46,6 @@ public partial class views_admin_server : Admin
                 newBootMenu = true;
                 newClientIso = true;
             }
-
-
-            if ((string) ViewState["webService"] != txtWebService.Text)
-            {
-                newBootMenu = true;
-                newClientIso = true;
-            }
-
-
-
         }
 
         if (!newBootMenu) return;
@@ -91,23 +76,9 @@ public partial class views_admin_server : Admin
             EndUserMessage = "Settings Cannot Be Changed While Tasks Are Active";
             return false;
         }
-        if (txtPort.Text != "80" && txtPort.Text != "443" && !string.IsNullOrEmpty(txtPort.Text))
-        {
-            txtWebService.Text = "http://[server-ip]:" + txtPort.Text + "/cruciblewds/service/client.asmx/";
-        }
-        if (txtPort.Text == "80" || txtPort.Text == "443" || string.IsNullOrEmpty(txtPort.Text))
-        {
-            txtWebService.Text = "http://[server-ip]/cruciblewds/service/client.asmx/";
-        }
-       
-        if (!txtImagePath.Text.Trim().EndsWith(Path.DirectorySeparatorChar.ToString()))
-            txtImagePath.Text += Path.DirectorySeparatorChar;
 
         if (!txtTFTPPath.Text.Trim().EndsWith(Path.DirectorySeparatorChar.ToString()))
             txtTFTPPath.Text += Path.DirectorySeparatorChar;
-
-        if (!txtWebService.Text.Trim().EndsWith("/"))
-            txtWebService.Text += ("/");
 
         return true;
     }

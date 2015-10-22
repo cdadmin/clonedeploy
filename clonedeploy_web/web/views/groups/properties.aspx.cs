@@ -91,14 +91,14 @@ public partial class views_groups_properties : BasePages.Groups
 
         if (_groupProperty == null)
         {      
-            EndUserMessage = BLL.GroupProperty.AddGroupProperty(groupProperty) ? "Successfully Updated Group Properties"
-           : "Could Not Update Group Properties";
+            BLL.GroupProperty.AddGroupProperty(groupProperty);
+            EndUserMessage = "Successfully Updated Group Properties";
         }
         else
         {
             groupProperty.Id = _groupProperty.Id;
-            EndUserMessage = BLL.GroupProperty.UpdateGroupProperty(groupProperty) ? "Successfully Updated Group Properties"
-           : "Could Not Update Group Properties";
+            BLL.GroupProperty.UpdateGroupProperty(groupProperty);
+            EndUserMessage = "Successfully Updated Group Properties";
         }
     }
 

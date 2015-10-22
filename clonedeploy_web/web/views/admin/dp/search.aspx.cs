@@ -10,8 +10,6 @@ public partial class views_admin_dp_search : Admin
     protected void Page_Load(object sender, EventArgs e)
     {
         if (IsPostBack) return;
-
-      
         PopulateGrid();
     }
 

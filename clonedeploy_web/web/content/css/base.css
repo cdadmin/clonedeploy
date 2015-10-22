@@ -70,7 +70,7 @@ hr{border:solid #ddd;border-width:1px 0 0;clear:both;margin:10px 0 0px;height:0;
 .nav li:first-child a{color:#47a3da;border: none;background: #323232;}
 .nav li.nav-current a{background:#fff;color:#fff;border-right:none;}
 .nav li a:before{font-family:Flaticon;speak:none;font-style:normal;font-weight:normal;text-indent:0;position:absolute;top:-5px;left:0;width:100%;height:100%;font-size:1em;-webkit-font-smoothing:antialiased;}
-.nav-text, .sub-nav-text{padding-top:25px;display:inline-block;margin-left: 30px;font-size: 22px;}
+.nav-text, .sub-nav-text{padding-top:20px;display:inline-block;margin-left: 20px;font-size: 20px;}
 
 /* Sub Menu Left
 ================================================== */

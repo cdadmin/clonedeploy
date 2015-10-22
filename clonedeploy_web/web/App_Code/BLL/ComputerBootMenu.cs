@@ -40,12 +40,7 @@ namespace BLL
                 else
                     uow.ComputerBootMenuRepository.Insert(computerBootMenu);
 
-                if (!uow.Save()) return false;
-
-                var computer = BLL.Computer.GetComputer(computerBootMenu.ComputerId);
-                if(Convert.ToBoolean(computer.CustomBootEnabled))
-                    CreateBootFiles(computer);
-                return true;
+                return uow.Save();
             }
         }
 

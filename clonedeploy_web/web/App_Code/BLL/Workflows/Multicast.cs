@@ -288,11 +288,11 @@ namespace Tasks
             string imagePath;
             if (activeCounter == 0)
             {
-                imagePath = Settings.ImageStorePath + ActiveMcTask.Image;
+                imagePath = Settings.PrimaryStoragePath + ActiveMcTask.Image;
             }
             else
             {
-                imagePath = Settings.ImageStorePath + ActiveMcTask.Image + Path.DirectorySeparatorChar + "hd" +
+                imagePath = Settings.PrimaryStoragePath + ActiveMcTask.Image + Path.DirectorySeparatorChar + "hd" +
                             (activeCounter + 1);
             }
 

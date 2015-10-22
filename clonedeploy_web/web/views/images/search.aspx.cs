@@ -67,12 +67,12 @@ namespace views.images
                     {
                         if (hdrow.RowIndex.ToString() == "0")
                         {
-                            imagePath = Settings.ImageStorePath + row.Cells[4].Text;
+                            imagePath = Settings.PrimaryStoragePath + row.Cells[4].Text;
                         }
                         else
                         {
                             var selectedHd = (hdrow.RowIndex + 1).ToString();
-                            imagePath = Settings.ImageStorePath + row.Cells[4].Text +
+                            imagePath = Settings.PrimaryStoragePath + row.Cells[4].Text +
                                         Path.DirectorySeparatorChar + "hd" + selectedHd;
                         }
                     }
@@ -192,7 +192,7 @@ namespace views.images
                 try
                 {
                     var lbl = row.FindControl("lblSize") as Label;
-                    var imagePath = Settings.ImageStorePath + row.Cells[4].Text;
+                    var imagePath = Settings.PrimaryStoragePath + row.Cells[4].Text;
 
                     var size = new FileOps().GetDirectorySize(new DirectoryInfo(imagePath))/1024f/1024f/1024f;
                     if (Math.Abs(size) < 0.1f)

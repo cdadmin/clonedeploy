@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using DAL;
-using Helpers;
 
 namespace BLL
 {
@@ -57,6 +57,14 @@ namespace BLL
             }
         }
 
+        public static string GetPrimaryDpPath()
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.DistributionPointRepository.GetFirstOrDefault(x => x.IsPrimary == 1).PhysicalPath;
+            }
+        }
+
         public static Models.ValidationResult UpdateDistributionPoint(Models.DistributionPoint distributionPoint)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -75,6 +83,10 @@ namespace BLL
         public static Models.ValidationResult ValidateDistributionPoint(Models.DistributionPoint distributionPoint, bool isNewDistributionPoint)
         {
             var validationResult = new Models.ValidationResult();
+
+            if(Convert.ToBoolean(distributionPoint.IsPrimary))
+                if (!distributionPoint.PhysicalPath.Trim().EndsWith(Path.DirectorySeparatorChar.ToString()))
+                    distributionPoint.PhysicalPath += Path.DirectorySeparatorChar;
 
             if (string.IsNullOrEmpty(distributionPoint.DisplayName) || distributionPoint.DisplayName.Contains(" "))
             {

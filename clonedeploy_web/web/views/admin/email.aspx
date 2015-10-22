@@ -3,6 +3,15 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li>E-mail Settings</li>
 </asp:Content>
+
+<asp:Content runat="server" ID="Help" ContentPlaceHolderID="Help">
+      <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+
+<asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
+    <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update E-Mail Settings" OnClick="btnUpdateSettings_OnClick" CssClass="submits"/>
+</asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent" Runat="Server">
      <script type="text/javascript">
     $(document).ready(function() {
@@ -114,14 +123,6 @@
     <br class="clear"/>
         <p style="font-size:12px;">You Must Update Settings Before Sending A Test Message</p>
     </div>
-    <br class="clear" />
-       <div class="size-4 column">
-    &nbsp;
-</div>
 
-<div class="size-setting column">
-    <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update E-Mail Settings" OnClick="btnUpdateSettings_OnClick" CssClass="submits"/>
-</div>
-<br class="clear"/>
 </asp:Content>
 

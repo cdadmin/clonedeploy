@@ -7,15 +7,15 @@ namespace BLL
 {
     public static class GroupProperty
     {
-        public static bool AddGroupProperty(Models.GroupProperty groupProperty)
+        public static void AddGroupProperty(Models.GroupProperty groupProperty)
         {
             using (var uow = new DAL.UnitOfWork())
             {
-              
                     uow.GroupPropertyRepository.Insert(groupProperty);
-                    return uow.Save();
-              
+                    uow.Save();  
             }
+
+            UpdateComputerProperties(groupProperty);
         }
 
         public static Models.GroupProperty GetGroupProperty(int groupId)
@@ -26,25 +26,43 @@ namespace BLL
             }
         }
 
-      
-
-        public static bool UpdateGroupProperty(Models.GroupProperty groupProperty)
+        public static void UpdateGroupProperty(Models.GroupProperty groupProperty)
         {
             using (var uow = new DAL.UnitOfWork())
             {
-               
-                    uow.GroupPropertyRepository.Update(groupProperty, groupProperty.Id);
-                   return uow.Save();
-               
+                  uow.GroupPropertyRepository.Update(groupProperty, groupProperty.Id);
+                  uow.Save();
             }
+            UpdateComputerProperties(groupProperty);
         }
 
-        public static bool UpdateComputerProperties(Models.GroupProperty groupProperty)
+        public static void UpdateComputerProperties(Models.GroupProperty groupProperty)
         {
             foreach (var computer in BLL.Group.GetGroupMembers(groupProperty.GroupId))
             {
                 if (Convert.ToBoolean(groupProperty.ImageEnabled))
                     computer.ImageId = groupProperty.ImageId;
+                if (Convert.ToBoolean(groupProperty.ImageProfileEnabled))
+                    computer.ImageProfile = groupProperty.ImageId;
+                if (Convert.ToBoolean(groupProperty.DescriptionEnabled))
+                    computer.Description = groupProperty.Description;
+                if (Convert.ToBoolean(groupProperty.SiteEnabled))
+                    computer.SiteId = groupProperty.SiteId;
+                if (Convert.ToBoolean(groupProperty.BuildingEnabled))
+                    computer.BuildingId = groupProperty.BuildingId;
+                if (Convert.ToBoolean(groupProperty.RoomEnabled))
+                    computer.RoomId = groupProperty.RoomId;
+                if (Convert.ToBoolean(groupProperty.CustomAttribute1Enabled))
+                    computer.CustomAttribute1 = groupProperty.CustomAttribute1;
+                if (Convert.ToBoolean(groupProperty.CustomAttribute1Enabled))
+                    computer.CustomAttribute2 = groupProperty.CustomAttribute2;
+                if (Convert.ToBoolean(groupProperty.CustomAttribute1Enabled))
+                    computer.CustomAttribute3 = groupProperty.CustomAttribute3;
+                if (Convert.ToBoolean(groupProperty.CustomAttribute1Enabled))
+                    computer.CustomAttribute4 = groupProperty.CustomAttribute4;
+                if (Convert.ToBoolean(groupProperty.CustomAttribute1Enabled))
+                    computer.CustomAttribute5 = groupProperty.CustomAttribute5;
+                BLL.Computer.UpdateComputer(computer);
             }
         }
        

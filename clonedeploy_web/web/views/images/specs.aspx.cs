@@ -24,7 +24,7 @@ namespace views.images
         protected void btnPart_Click(object sender, EventArgs e)
         {
        
-            var imagePath = Settings.ImageStorePath + Image.Name;
+            var imagePath = Settings.PrimaryStoragePath + Image.Name;
 
             var selectedHd = (string) (ViewState["selectedHD"]);
             var control = sender as Control;
@@ -370,12 +370,16 @@ namespace views.images
 
             try
             {
-                var specs =
+                /*var specs =
                     JsonConvert.DeserializeObject<ImagePhysicalSpecs>(!string.IsNullOrEmpty(Image.ClientSizeCustom)
                         ? Image.ClientSizeCustom
-                        : Image.ClientSize);
+                        : Image.ClientSize);*/
+                var lines = File.ReadAllLines(Settings.PrimaryStoragePath + "abc\\" + "image.specs");
+                var specs =
+                    JsonConvert.DeserializeObject<ImagePhysicalSpecs>(lines[0]
+                        );
 
-
+                
                 var specslist = new List<HdPhysicalSpecs>();
 
                 foreach (var hd in specs.Hd)
@@ -408,7 +412,7 @@ namespace views.images
             try
             {
                 var listPhysicalImageChecksums = new List<HdChecksum>();
-                var path = Settings.ImageStorePath + Image.Name;
+                var path = Settings.PrimaryStoragePath + Image.Name;
                 var imageChecksum = new HdChecksum
                 {
                     HdNumber = "hd1",

@@ -74,6 +74,12 @@ namespace Models
         [Column("custom_partition_script", Order = 21)]
         public string CustomPartitionScript { get; set; }
 
+        [Column("compression_algorithm", Order = 22)]
+        public string Compression { get; set; }
+
+        [Column("compression_level", Order = 23)]
+        public string CompressionLevel { get; set; }
+
 
    
     }

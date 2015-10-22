@@ -12,7 +12,6 @@ public partial class views_admin_multicast : Admin
         if (IsPostBack) return;
      
         txtSenderArgs.Text = Settings.SenderArgs;  
-        txtRecArgs.Text = Settings.ReceiverArgs;
         txtStartPort.Text = Settings.StartPort;
         txtEndPort.Text = Settings.EndPort;   
         txtRecClientArgs.Text = Settings.ClientReceiverArgs;
@@ -27,17 +26,10 @@ public partial class views_admin_multicast : Admin
         {
             List<Setting> listSettings = new List<Setting>
             {
-               
-             
-                    new Setting {Name = "Sender Args", Value = txtSenderArgs.Text},
-                   
-                    new Setting {Name = "Receiver Args", Value = txtRecArgs.Text},
-                    new Setting {Name = "Udpcast Start Port", Value = txtStartPort.Text},
-                    new Setting {Name = "Udpcast End Port", Value = txtEndPort.Text},
-                   
-                    new Setting {Name = "Client Receiver Args", Value = txtRecClientArgs.Text},
-                   
-                  
+                    new Setting {Name = "Sender Args", Value = txtSenderArgs.Text, Id = BLL.Setting.GetSetting("Sender Args").Id},                
+                    new Setting {Name = "Udpcast Start Port", Value = txtStartPort.Text, Id = BLL.Setting.GetSetting("Udpcast Start Port").Id},
+                    new Setting {Name = "Udpcast End Port", Value = txtEndPort.Text, Id = BLL.Setting.GetSetting("Udpcast End Port").Id},
+                    new Setting {Name = "Client Receiver Args", Value = txtRecClientArgs.Text, Id = BLL.Setting.GetSetting("Client Receiver Args").Id},   
             };
 
             if (BLL.Setting.UpdateSetting(listSettings))

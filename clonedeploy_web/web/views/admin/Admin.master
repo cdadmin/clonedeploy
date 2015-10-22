@@ -56,8 +56,8 @@
                 </a>
             </li>
             
-             <li id="subnav-server">
-                <a href="<%= ResolveUrl("~/views/admin/bootmenu.aspx") %>" class="icon-host">
+             <li id="bootmenu">
+                <a href="<%= ResolveUrl("~/views/admin/bootmenu/defaultmenu.aspx?level=2") %>">
                     <span class="nav-text">Boot Menu</span>
                 </a>
             </li>

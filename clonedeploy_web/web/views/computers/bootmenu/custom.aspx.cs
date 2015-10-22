@@ -82,6 +82,9 @@ public partial class views_computers_bootmenu_custom : BasePages.Computers
         EndUserMessage = BLL.ComputerBootMenu.UpdateComputerBootMenu(bootMenu)
             ? "Successfully Updated Custom Boot Menu"
             : "Could Not Update Custom Boot Menu";
+
+        if(chkEnabled.Checked)
+            BLL.ComputerBootMenu.CreateBootFiles(Computer);
     }
 
     protected void chkEnabled_OnCheckedChanged(object sender, EventArgs e)

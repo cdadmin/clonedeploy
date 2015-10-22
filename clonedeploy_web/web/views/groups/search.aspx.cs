@@ -11,20 +11,19 @@ namespace views.groups
     {
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            foreach (GridViewRow row in gvGroups.Rows)
+            foreach (var dataKey in from GridViewRow row in gvGroups.Rows
+                let cb = (CheckBox) row.FindControl("chkSelector")
+                where cb != null && cb.Checked
+                select gvGroups.DataKeys[row.RowIndex]
+                into dataKey
+                where dataKey != null
+                select dataKey)
             {
-                var cb = (CheckBox) row.FindControl("chkSelector");
-                if (cb == null || !cb.Checked) continue;
-                var dataKey = gvGroups.DataKeys[row.RowIndex];
-                if (dataKey == null) continue;
                 BLL.Group.DeleteGroup(Convert.ToInt32(dataKey.Value));
             }
-
-
             PopulateGrid();
         }
 
-       
 
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
@@ -51,19 +50,9 @@ namespace views.groups
                 var lbl = row.FindControl("lblCount") as Label;
                 var dataKey = gvGroups.DataKeys[row.RowIndex];
                 if (dataKey != null)
-                    group = BLL.Group.GetGroup(Convert.ToInt32(dataKey.Value));
-                if (row.Cells[4].Text == "smart")
-                {
-                   
-                       
-                
-                    //FIX ME
-                    //if (lbl != null) lbl.Text = @group.SearchSmartHosts(@group.Expression).Count.ToString();
-                }
-                else if (lbl != null)
-                {
+                    group = BLL.Group.GetGroup(Convert.ToInt32(dataKey.Value));              
+                if (lbl != null)
                     lbl.Text = BLL.GroupMembership.GetGroupMemberCount(group.Id);
-                }
             }
         }
 
@@ -75,10 +64,7 @@ namespace views.groups
 
         protected void PopulateGrid()
         {
-           
-
             gvGroups.DataSource = BLL.Group.SearchGroupsForUser(CloneDeployCurrentUser.Id,txtSearch.Text);
-
             gvGroups.DataBind();
 
             foreach (GridViewRow row in gvGroups.Rows)
@@ -88,18 +74,9 @@ namespace views.groups
                 var dataKey = gvGroups.DataKeys[row.RowIndex];
                 if (dataKey != null)
                     group = BLL.Group.GetGroup(Convert.ToInt32(dataKey.Value));
-                
-                if (row.Cells[4].Text == "smart")
-                {
-                   
-
-                    //if (lbl != null) lbl.Text = @group.SearchSmartHosts(@group.Expression).Count.ToString();
-                }
-                else if (lbl != null)
-                {
-
+                if (lbl != null)
                     lbl.Text = BLL.GroupMembership.GetGroupMemberCount(group.Id);
-                }
+                
             }
 
 

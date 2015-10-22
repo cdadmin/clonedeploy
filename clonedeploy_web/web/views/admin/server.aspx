@@ -4,6 +4,14 @@
     <li><a href="<%= ResolveUrl("~/views/admin/server.aspx") %>">Server Settings</a></li>
     </asp:Content>
 
+<asp:Content runat="server" ID="Help" ContentPlaceHolderID="Help">
+      <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+
+<asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
+    <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update Server Settings" OnClick="btnUpdateSettings_OnClick" CssClass="submits"/>
+</asp:Content>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="SubContent" Runat="Server">
     <script type="text/javascript">
     $(document).ready(function() {
@@ -24,15 +32,8 @@
 <div class="size-setting column">
     <asp:TextBox ID="txtPort" runat="server" CssClass="textbox"></asp:TextBox>
 </div>
-<br class="clear"/>
-<div class="size-4 column">
-    Image Store Path:
-</div>
-<div class="size-setting column">
-    <asp:TextBox ID="txtImagePath" runat="server" CssClass="textbox"></asp:TextBox>
-</div>
-<br class="clear"/>
 
+<br class="clear"/>
 <div class="size-4 column">
     TFTP Path:
 </div>
@@ -40,13 +41,7 @@
     <asp:TextBox ID="txtTFTPPath" runat="server" CssClass="textbox"></asp:TextBox>
 </div>
 <br class="clear"/>
-<div class="size-4 column">
-    Web Service:
-</div>
-<div class="size-setting column">
-    <asp:TextBox ID="txtWebService" runat="server" CssClass="textbox"></asp:TextBox>
-</div>
-<br class="clear"/>
+
 <div class="size-4 column">
     
      Host View:
@@ -58,15 +53,7 @@
         <asp:ListItem>search</asp:ListItem>
     </asp:DropDownList>
 </div>
-<br class="clear"/>
-    <div class="size-4 column">
-    &nbsp;
-</div>
 
-<div class="size-setting column">
-    <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update Server Settings" OnClick="btnUpdateSettings_OnClick" CssClass="submits"/>
-</div>
-<br class="clear"/>
     </div>
     
       <div id="confirmbox" class="confirm-box-outer">

@@ -64,9 +64,9 @@ namespace Helpers
             get { return Setting.GetSetting("Image Checksum").Value; }
         }
 
-        public static string ImageStorePath
+        public static string PrimaryStoragePath
         {
-            get { return Setting.GetSetting("Image Store Path").Value; }
+            get { return BLL.DistributionPoint.GetPrimaryDpPath(); }
         }
 
         public static string ImageTransferMode

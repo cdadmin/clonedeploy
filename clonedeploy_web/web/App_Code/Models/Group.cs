@@ -13,6 +13,7 @@ namespace Models
             Image = -1;
             ImageProfile = -1;
             SetDefaultProperties = 0;
+            SetDefaultBootMenu = 0;
         }
 
         [Key]
@@ -46,6 +47,9 @@ namespace Models
 
         [Column("group_default_properties_enabled", Order = 10)]
         public int SetDefaultProperties { get; set; }
+
+        [Column("group_default_bootmenu_enabled", Order = 11)]
+        public int SetDefaultBootMenu { get; set; }
 
         [NotMapped] 
         public List<Computer> Members { get; set; }      

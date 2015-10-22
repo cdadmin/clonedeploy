@@ -1,26 +1,78 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/groups/groups.master" AutoEventWireup="true" CodeFile="bootmenu.aspx.cs" Inherits="views.groups.GroupBootMenu" %>
 
-
+    <asp:Content runat="server" ContentPlaceHolderID="Help">
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+<asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
+  <asp:LinkButton ID="buttonUpdate" runat="server" OnClick="buttonUpdate_OnClick" Text="Update Menu" CssClass="submits" OnClientClick="update_click()"/>
+</asp:Content>
+ 
 <asp:Content ID="Content1" ContentPlaceHolderID="SubContent" Runat="Server">
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#bootmenuoption').addClass("nav-current");
         });
     </script>
+    
+    <div class="size-4 column">
+        Set As Default For New Group Members:
+    </div>
+    <div class="size-5 column">
+        <asp:CheckBox ID="chkDefault" runat="server" OnCheckedChanged="chkDefault_OnCheckedChanged" AutoPostBack="True"></asp:CheckBox>
+      
+    </div>
+   
+    <br class="clear"/>
+     <br />
+      <div id="divProxy" runat="server" visible="false">
+            <div class="size-4 column">
+                Select A Menu To Edit:
+            </div>
 
-    <br class="clear"/>
-    <div class="size-4 column" style="float: right; margin: 0;">
-        <asp:DropDownList ID="ddlTemplate" runat="server" CssClass="ddlist" Style="float: right; margin-right: 5px; margin-top: 5px; width: 200px;" OnSelectedIndexChanged="ddlTemplate_SelectedIndexChanged" AutoPostBack="true">
-        </asp:DropDownList>
+            <div class="size-5 column">
+                <asp:DropDownList ID="ddlProxyMode" runat="server" CssClass="ddlist" OnSelectedIndexChanged="ddlProxyMode_OnSelectedIndexChanged" AutoPostBack="True">
+                    <asp:ListItem>bios</asp:ListItem>
+                    <asp:ListItem>efi32</asp:ListItem>
+                    <asp:ListItem>efi64</asp:ListItem>
+                </asp:DropDownList>
+            </div>
+            <br class="clear"/>
+        </div>
+      <div class="size-4 column">
+        Start From Template:
+    </div>
+    <div class="size-5 column">
+        <asp:DropDownList ID="ddlTemplates" runat="server" CssClass="ddlist" OnSelectedIndexChanged="ddlTemplates_OnSelectedIndexChanged" AutoPostBack="True"/>
+      
     </div>
     <br class="clear"/>
-    <div class="size-8 column">
-        <asp:LinkButton ID="btnSetBootMenu" runat="server" Text="Set" OnClick="btnSetBootMenu_Click" CssClass="submits static-width" Style="float: left;"/>
+    
+     <div class="size-4 column">
+        Boot Menu Contents:
     </div>
-    <div class="size-8 column">
-        <asp:LinkButton ID="btnRemoveBootMenu" runat="server" Text="Remove" OnClick="btnRemoveBootMenu_Click" CssClass="submits static-width" Style="float: left;"/>
-    </div>
-    <br class="clear"/>
-    <asp:TextBox ID="txtCustomBootMenu" runat="server" CssClass="descboxboot" Style="font-size: 12px;" TextMode="MultiLine"></asp:TextBox>
+     <div id="aceEditor" runat="server" class="full column">
+        <br class="clear"/>
+        <pre id="editor" class="editor height_600"></pre>
+        <asp:HiddenField ID="scriptEditor" runat="server"/>
 
+
+        <script>
+
+            var editor = ace.edit("editor");
+            editor.session.setValue($('#<%= scriptEditor.ClientID %>').val());
+
+            editor.setTheme("ace/theme/idle_fingers");
+            editor.getSession().setMode("ace/mode/sh");
+            editor.setOption("showPrintMargin", false);
+            editor.session.setUseWrapMode(true);
+            editor.session.setWrapLimitRange(120, 120);
+
+
+            function update_click() {
+                var editor = ace.edit("editor");
+                $('#<%= scriptEditor.ClientID %>').val(editor.session.getValue());
+            }
+
+        </script>
+    </div>
 </asp:Content>

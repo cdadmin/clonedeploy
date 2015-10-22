@@ -25,7 +25,7 @@ namespace BLL
                     {
                         try
                         {
-                            Directory.CreateDirectory(Settings.ImageStorePath + image.Name);
+                            Directory.CreateDirectory(Settings.PrimaryStoragePath + image.Name);
                             validationResult.IsValid = true;
                         }
                         catch (Exception ex)
@@ -58,8 +58,8 @@ namespace BLL
                     if (string.IsNullOrEmpty(image.Name)) return false;
                     try
                     {
-                        if (Directory.Exists(Settings.ImageStorePath + image.Name))
-                            Directory.Delete(Settings.ImageStorePath + image.Name, true);
+                        if (Directory.Exists(Settings.PrimaryStoragePath + image.Name))
+                            Directory.Delete(Settings.PrimaryStoragePath + image.Name, true);
 
                         return true;
                     }
@@ -185,7 +185,7 @@ namespace BLL
             try
             {
                 var listPhysicalImageChecksums = new List<HdChecksum>();
-                var path = Settings.ImageStorePath + image.Name;
+                var path = Settings.PrimaryStoragePath + image.Name;
                 var imageChecksum = new HdChecksum
                 {
                     HdNumber = "hd1",

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Text;
 using Helpers;
+using Pxe;
 
-namespace Pxe
+namespace BLL.Workflows
 {
-    /// <summary>
-    ///     Summary description for DefaultBootMenu
-    /// </summary>
     public class DefaultBootMenu
     {
         public string AddPwd { get; set; }
@@ -24,7 +23,7 @@ namespace Pxe
         {
             var mode = Settings.PxeMode;
 
-            if (Type == "noprox")
+            if (Type == "standard")
             {
                 if (mode.Contains("ipxe"))
                     CreateIpxeMenu();
@@ -46,14 +45,17 @@ namespace Pxe
             var webPath = Settings.WebPath;
             var globalHostArgs = Settings.GlobalHostArgs;
             var wdsKey = Settings.WebTaskRequiresLogin == "No" ? Settings.ServerKey : "";
-            var lines = "insmod password_pbkdf2\r\n";
-            lines += "insmod regexp\r\n";
-            lines += "set default=0\r\n";
-            lines += "set timeout=10\r\n";
-            lines += "set pager=1\r\n";
+
+            var grubMenu = new StringBuilder();
+
+            grubMenu.Append("insmod password_pbkdf2\r\n");
+            grubMenu.Append("insmod regexp\r\n");
+            grubMenu.Append("set default=0\r\n");
+            grubMenu.Append("set timeout=10\r\n");
+            grubMenu.Append("set pager=1\r\n");
             if (!string.IsNullOrEmpty(GrubUserName) && !string.IsNullOrEmpty(GrubPassword))
             {
-                lines += "set superusers=\"" + GrubUserName + "\"\r\n";
+                grubMenu.Append("set superusers=\"" + GrubUserName + "\"\r\n");
                 string sha = null;
                 try
                 {
@@ -66,78 +68,78 @@ namespace Pxe
                 {
                     Logger.Log("Could not generate sha for grub password.  Could not contact http://cruciblewds.org");
                 }
-                lines += "password_pbkdf2 " + GrubUserName + " " + sha + "\r\n";
-                lines += "export superusers\r\n";
-                lines += "\r\n";
+                grubMenu.Append("password_pbkdf2 " + GrubUserName + " " + sha + "\r\n");
+                grubMenu.Append("export superusers\r\n");
+                grubMenu.Append("\r\n");
             }
-            lines += @"regexp -s 1:b1 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
-                     Environment.NewLine;
-            lines += @"regexp -s 2:b2 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
-                     Environment.NewLine;
-            lines += @"regexp -s 3:b3 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
-                     Environment.NewLine;
-            lines += @"regexp -s 4:b4 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
-                     Environment.NewLine;
-            lines += @"regexp -s 5:b5 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
-                     Environment.NewLine;
-            lines += @"regexp -s 6:b6 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
-                     Environment.NewLine;
-            lines += @"mac=01-$b1-$b2-$b3-$b4-$b5-$b6" + Environment.NewLine;
-            lines += "\r\n";
+            grubMenu.Append(@"regexp -s 1:b1 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
+                     Environment.NewLine);
+            grubMenu.Append(@"regexp -s 2:b2 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
+                     Environment.NewLine);
+            grubMenu.Append(@"regexp -s 3:b3 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
+                     Environment.NewLine);
+            grubMenu.Append(@"regexp -s 4:b4 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
+                     Environment.NewLine);
+            grubMenu.Append(@"regexp -s 5:b5 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
+                     Environment.NewLine);
+            grubMenu.Append(@"regexp -s 6:b6 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
+                     Environment.NewLine);
+            grubMenu.Append(@"mac=01-$b1-$b2-$b3-$b4-$b5-$b6" + Environment.NewLine);
+            grubMenu.Append("\r\n");
 
 
-            if (Type == "noprox")
+            if (Type == "standard")
             {
-                lines += "if [ -s /pxelinux.cfg/$mac.cfg ]; then\r\n";
-                lines += "configfile /pxelinux.cfg/$mac.cfg\r\n";
-                lines += "fi\r\n";
+                grubMenu.Append("if [ -s /pxelinux.cfg/$mac.cfg ]; then\r\n");
+                grubMenu.Append("configfile /pxelinux.cfg/$mac.cfg\r\n");
+                grubMenu.Append("fi\r\n");
             }
             else
             {
-                lines += "if [ -s /proxy/efi64/pxelinux.cfg/$mac.cfg ]; then\r\n";
-                lines += "configfile /proxy/efi64/pxelinux.cfg/$mac.cfg\r\n";
-                lines += "fi\r\n";
+                grubMenu.Append("if [ -s /proxy/efi64/pxelinux.cfg/$mac.cfg ]; then\r\n");
+                grubMenu.Append("configfile /proxy/efi64/pxelinux.cfg/$mac.cfg\r\n");
+                grubMenu.Append("fi\r\n");
             }
-            lines += "\r\n";
-            lines += "menuentry \"Boot To Local Machine\" --unrestricted {\r\n";
-            lines += "exit\r\n";
-            lines += "}\r\n";
+            grubMenu.Append("\r\n");
+            grubMenu.Append("menuentry \"Boot To Local Machine\" --unrestricted {\r\n");
+            grubMenu.Append("exit\r\n");
+            grubMenu.Append("}\r\n");
 
-            lines += "\r\n";
+            grubMenu.Append("\r\n");
 
-            lines += "menuentry \"Client Console\" --user {\r\n";
-            lines += "echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes.\r\n";
-            lines += "linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + webPath +
-                     " WDS_KEY=" + wdsKey + " task=debug consoleblank=0 " + globalHostArgs + "\r\n";
-            lines += "initrd /images/" + BootImage + "\r\n";
-            lines += "}\r\n";
+            grubMenu.Append("menuentry \"Client Console\" --user {\r\n");
+            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes.\r\n");
+            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + webPath +
+                     " WDS_KEY=" + wdsKey + " task=debug consoleblank=0 " + globalHostArgs + "\r\n");
+            grubMenu.Append("initrd /images/" + BootImage + "\r\n");
+            grubMenu.Append("}\r\n");
 
-            lines += "\r\n";
+            grubMenu.Append("\r\n");
 
-            lines += "menuentry \"On Demand Imaging\" --user {\r\n";
-            lines += "echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes.\r\n";
-            lines += "linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + webPath +
-                     " WDS_KEY=" + wdsKey + " task=ond consoleblank=0 " + globalHostArgs + "\r\n";
-            lines += "initrd /images/" + BootImage + "\r\n";
-            lines += "}\r\n";
+            grubMenu.Append("menuentry \"On Demand Imaging\" --user {\r\n");
+            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes.\r\n");
+            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + webPath +
+                     " WDS_KEY=" + wdsKey + " task=ond consoleblank=0 " + globalHostArgs + "\r\n");
+            grubMenu.Append("initrd /images/" + BootImage + "\r\n");
+            grubMenu.Append("}\r\n");
 
-            lines += "\r\n";
+            grubMenu.Append("\r\n");
 
-            lines += "menuentry \"Add Host\" --user {\r\n";
-            lines += "echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes.\r\n";
-            lines += "linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + webPath +
-                     " WDS_KEY=" + wdsKey + " task=register consoleblank=0 " + globalHostArgs + "\r\n";
-            lines += "initrd /images/" + BootImage + "\r\n";
-            lines += "}\r\n";
+            grubMenu.Append("menuentry \"Add Host\" --user {\r\n");
+            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes.\r\n");
+            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + webPath +
+                     " WDS_KEY=" + wdsKey + " task=register consoleblank=0 " + globalHostArgs + "\r\n");
+            grubMenu.Append("initrd /images/" + BootImage + "\r\n");
+            grubMenu.Append("}\r\n");
 
-            lines += "\r\n";
+            grubMenu.Append("\r\n");
 
-            lines += "menuentry \"Diagnostics\" --user {\r\n";
-            lines += "echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes.\r\n";
-            lines += "linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + webPath +
-                     " WDS_KEY=" + wdsKey + " task=diag consoleblank=0 " + globalHostArgs + "\r\n";
-            lines += "initrd /images/" + BootImage + "\r\n";
-            lines += "}\r\n";
+            grubMenu.Append("menuentry \"Diagnostics\" --user {\r\n");
+            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes.\r\n");
+            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + webPath +
+                     " WDS_KEY=" + wdsKey + " task=diag consoleblank=0 " + globalHostArgs + "\r\n");
+            grubMenu.Append("initrd /images/" + BootImage + "\r\n");
+            grubMenu.Append("}\r\n");
 
 
             var path = Settings.TftpPath + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
@@ -147,7 +149,7 @@ namespace Pxe
             {
                 using (var file = new StreamWriter(path))
                 {
-                    file.WriteLine(lines);
+                    file.WriteLine(grubMenu);
                     //Message.Text = "Successfully Created Default Boot Menu";
                 }
             }
@@ -212,7 +214,7 @@ namespace Pxe
             lines += "chain --timeout 15000 http://" + Settings.ServerIpWithPort +
                      "/cruciblewds/service/client.asmx/IpxeLogin##params || goto Menu\r\n";
 
-            if (Type == "noprox")
+            if (Type == "standard")
             {
                 path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default.ipxe";
             }
@@ -322,7 +324,7 @@ namespace Pxe
             lines += "TIMEOUT 50";
 
 
-            if (Type == "noprox")
+            if (Type == "standard")
             {
                 path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
             }

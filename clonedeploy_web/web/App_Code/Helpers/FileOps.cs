@@ -92,7 +92,7 @@ namespace Helpers
         {
             try
             {
-                var imagePath = Settings.ImageStorePath;
+                var imagePath = Settings.PrimaryStoragePath;
                 if (Directory.Exists(imagePath + oldName))
                     Directory.Move(imagePath + oldName, imagePath + newName);
             }

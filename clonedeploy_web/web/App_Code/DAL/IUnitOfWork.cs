@@ -10,6 +10,7 @@ namespace DAL
         DAL.RoomRepository RoomRepository { get; }
         DAL.IGenericRepository<Models.DistributionPoint> DistributionPointRepository { get; }
         DAL.IGenericRepository<Models.ComputerBootMenu> ComputerBootMenuRepository { get; }
+        DAL.IGenericRepository<Models.GroupBootMenu> GroupBootMenuRepository { get; }
         DAL.IGenericRepository<Models.GroupMembership> GroupMembershipRepository { get; }
         DAL.IGenericRepository<Models.Image> ImageRepository { get; }
         DAL.IGenericRepository<Models.ImageProfilePartition> ImageProfilePartitionRepository { get; }
