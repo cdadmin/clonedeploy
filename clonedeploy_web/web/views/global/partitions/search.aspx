@@ -4,6 +4,13 @@
     <li>Search</li>
 </asp:Content>
 
+<asp:Content ID="Content2" ContentPlaceHolderID="SubHelp" Runat="Server">
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+<asp:Content ID="Content4" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
+      <a class="confirm" href="#">Delete Selected Layouts</a>
+</asp:Content>
+
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent2" Runat="Server">
      <script type="text/javascript">
         $(document).ready(function() {
@@ -41,5 +48,17 @@
             No Hosts Found
         </EmptyDataTemplate>
     </asp:GridView>
+    
+     <div id="confirmbox" class="confirm-box-outer">
+        <div class="confirm-box-inner">
+            <h4>
+                <asp:Label ID="lblTitle" runat="server" Text="Delete The Selected Partition Layouts?"></asp:Label>
+            </h4>
+            <div class="confirm-box-btns">
+                <asp:LinkButton ID="ConfirmButton" OnClick="ButtonConfirmDelete_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
+                <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no"/>
+            </div>
+        </div>
+    </div>
 </asp:Content>
 

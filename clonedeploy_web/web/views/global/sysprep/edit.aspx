@@ -4,6 +4,14 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
         <li><%= SysprepTag.Name %></li>
 </asp:Content>
+
+<asp:Content ID="Content3" ContentPlaceHolderID="SubHelp" Runat="Server">
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+<asp:Content ID="Content4" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
+      <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Update Sysprep Tag" CssClass="submits" />
+</asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server" >
     
      <div class="size-4 column">
@@ -45,12 +53,6 @@
 
      <asp:TextBox ID="txtContent" runat="server" CssClass="sysprepcontent" TextMode="MultiLine"></asp:TextBox>
 
-    <br class="clear" />
-
-    <div class="size-5 column">
-         <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Update Sysprep Tag" CssClass="submits" />
-    </div>
-   
-    <br class="clear"/>
+    
 </asp:Content>
 

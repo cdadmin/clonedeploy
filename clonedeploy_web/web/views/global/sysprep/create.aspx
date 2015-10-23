@@ -4,6 +4,13 @@
     <li>New Sysprep Customization</li>
 </asp:Content>
 
+<asp:Content ID="Content3" ContentPlaceHolderID="SubHelp" Runat="Server">
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+<asp:Content ID="Content4" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
+      <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Add Sysprep Tag" CssClass="submits" />
+</asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server" >
     <script type="text/javascript">
         $(document).ready(function() {
@@ -50,13 +57,7 @@
 
      <asp:TextBox ID="txtContent" runat="server" CssClass="sysprepcontent" TextMode="MultiLine"></asp:TextBox>
 
-    <br class="clear" />
-
-    <div class="size-5 column">
-         <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Add Sysprep Tag" CssClass="submits" />
-    </div>
-   
-    <br class="clear"/>
+ 
 </asp:Content>
 
 

@@ -3,7 +3,8 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" runat="Server">
     <li>Sites</li>
 </asp:Content>
-<asp:Content ID="Content2" ContentPlaceHolderID="Level2" runat="Server">
+<asp:Content ID="Content2" ContentPlaceHolderID="Help" Runat="Server">
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="icon help" data-info="Help" target="_blank"></a>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">
@@ -19,7 +20,7 @@
 
     <asp:GridView ID="gvSites" runat="server" AutoGenerateColumns="false" DataKeyNames="Id" CssClass="Gridview"
                   OnRowEditing="OnRowEditing" OnRowCancelingEdit="OnRowCancelingEdit" ShowFooter="True"
-                  OnRowUpdating="OnRowUpdating" OnRowDeleting="OnRowDeleting" OnRowDataBound="gvSites_OnRowDataBound" DAlternatingRowStyle-CssClass="alt">
+                  OnRowUpdating="OnRowUpdating" OnRowDeleting="OnRowDeleting" OnRowDataBound="gvSites_OnRowDataBound" AlternatingRowStyle-CssClass="alt">
         <Columns>
 
             <asp:TemplateField HeaderText="Name" ItemStyle-Width="150">

@@ -3,6 +3,14 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
     <li>Search</li>
 </asp:Content>
+
+<asp:Content ID="Content3" ContentPlaceHolderID="SubHelp" Runat="Server">
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+<asp:Content ID="Content4" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
+    <a class="confirm" href="#">Delete Selected Templates</a>
+</asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
@@ -39,9 +47,7 @@
             No Templates Found
         </EmptyDataTemplate>
     </asp:GridView>
-    <div class="size-4 column">
-    <a class="confirm" href="#">Delete Selected Templates</a>
-        </div>
+  
     <div id="confirmbox" class="confirm-box-outer">
         <div class="confirm-box-inner">
             <h4>

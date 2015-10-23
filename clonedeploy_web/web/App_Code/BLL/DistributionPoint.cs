@@ -57,11 +57,11 @@ namespace BLL
             }
         }
 
-        public static string GetPrimaryDpPath()
+        public static Models.DistributionPoint GetPrimaryDistributionPoint()
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.DistributionPointRepository.GetFirstOrDefault(x => x.IsPrimary == 1).PhysicalPath;
+                return uow.DistributionPointRepository.GetFirstOrDefault(x => x.IsPrimary == 1);
             }
         }
 

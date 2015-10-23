@@ -66,23 +66,10 @@ namespace Helpers
 
         public static string PrimaryStoragePath
         {
-            get { return BLL.DistributionPoint.GetPrimaryDpPath(); }
+            get { return BLL.DistributionPoint.GetPrimaryDistributionPoint().PhysicalPath; }
         }
 
-        public static string ImageTransferMode
-        {
-            get { return Setting.GetSetting("Image Transfer Mode").Value; }
-        }
-
-        public static string NfsDeployPath
-        {
-            get { return Setting.GetSetting("Nfs Deploy Path").Value; }
-        }
-
-        public static string NfsUploadPath
-        {
-            get { return Setting.GetSetting("Nfs Upload Path").Value; }
-        }
+      
 
         public static string OnDemand
         {
@@ -124,10 +111,7 @@ namespace Helpers
             get { return Setting.GetSetting("Queue Size").Value; }
         }
 
-        public static string ReceiverArgs
-        {
-            get { return Setting.GetSetting("Receiver Args").Value; }
-        }
+      
 
         public static string RegisterRequiresLogin
         {
@@ -154,20 +138,7 @@ namespace Helpers
             get { return Setting.GetSetting("Server Key").Value; }
         }
 
-        public static string SmbPassword
-        {
-            get { return Setting.GetSetting("SMB Password").Value; }
-        }
-
-        public static string SmbPath
-        {
-            get { return Setting.GetSetting("SMB Path").Value; }
-        }
-
-        public static string SmbUserName
-        {
-            get { return Setting.GetSetting("SMB User Name").Value; }
-        }
+      
 
         public static string StartPort
         {

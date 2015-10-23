@@ -74,4 +74,18 @@ public partial class views_global_search : BasePages.Global
                 cb.Checked = checkState;
         }
     }
+
+    protected void ButtonConfirmDelete_Click(object sender, EventArgs e)
+    {
+        foreach (GridViewRow row in gvLayout.Rows)
+        {
+            var cb = (CheckBox)row.FindControl("chkSelector");
+            if (cb == null || !cb.Checked) continue;
+            var dataKey = gvLayout.DataKeys[row.RowIndex];
+            if (dataKey == null) continue;
+            BLL.PartitionLayout.DeletePartitionLayout(Convert.ToInt32(dataKey.Value));
+        }
+
+        PopulateGrid();
+    }
 }

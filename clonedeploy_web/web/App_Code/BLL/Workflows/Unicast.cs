@@ -123,16 +123,10 @@ namespace BLL.Workflows
                     if (Convert.ToBoolean(ImageProfile.FixBootloader)) profileArgs += "fix_bootloader=true ";
                     break;
             }
-            string storagePath;
-            var xferMode = Settings.ImageTransferMode;
-            if (xferMode == "smb" || xferMode == "smb+http")
-                storagePath = Settings.SmbPath;
-            else
-                storagePath = Direction == "pull" ? Settings.NfsUploadPath : Settings.NfsDeployPath;
-
-            ActiveTask.Arguments = "image_name=" + Image.Name + " storage=" + storagePath + " host_id=" + Host.Id +
+            
+         
+            ActiveTask.Arguments = "image_name=" + Image.Name + " storage=" + BLL.Computer.GetDistributionPoint(Host) + " host_id=" + Host.Id +
                                    " multicast=false" + " pre_scripts=" + preScripts + " post_scripts=" + postScripts +
-                                   " xfer_mode=" + xferMode +
                                    " server_ip=" + Settings.ServerIp + " host_name=" + Host.Name +
                                    " comp_alg=" + Settings.CompressionAlgorithm + " comp_evel=-" +
                                    Settings.CompressionLevel + " partition_method=" + ImageProfile.PartitionMethod + " " +

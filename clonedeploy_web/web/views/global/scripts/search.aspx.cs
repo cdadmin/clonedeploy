@@ -52,5 +52,19 @@ public partial class views_admin_scripts_search : BasePages.Global
         gvScripts.DataSource = listScripts;
         gvScripts.DataBind();
     }
-    
+
+    protected void ButtonConfirmDelete_Click(object sender, EventArgs e)
+    {
+        foreach (GridViewRow row in gvScripts.Rows)
+        {
+            var cb = (CheckBox)row.FindControl("chkSelector");
+            if (cb == null || !cb.Checked) continue;
+            var dataKey = gvScripts.DataKeys[row.RowIndex];
+            if (dataKey == null) continue;
+            BLL.Script.DeleteScript(Convert.ToInt32(dataKey.Value));
+        }
+
+        PopulateGrid();
+    }
+
 }

@@ -42,6 +42,26 @@ namespace BLL
             }
         }
 
+        public static string GetDistributionPoint(Models.Computer computer)
+        {
+            Models.DistributionPoint dp;
+
+            if (computer.RoomId != -1)
+                dp =
+                    DistributionPoint.GetDistributionPoint(Room.GetRoom(computer.RoomId).DistributionPointId);
+            else if (computer.BuildingId != -1)
+                dp =
+                    DistributionPoint.GetDistributionPoint(Building.GetBuilding(computer.BuildingId).DistributionPointId);
+            else if (computer.SiteId != -1)
+                dp =
+                    DistributionPoint.GetDistributionPoint(Site.GetSite(computer.SiteId).DistributionPointId);
+            else
+                dp = DistributionPoint.GetPrimaryDistributionPoint();
+
+
+            return "//" + dp.Server + "/" + dp.ShareName;
+        }
+
         public static Models.Computer GetComputer(int computerId)
         {
             using (var uow = new DAL.UnitOfWork())

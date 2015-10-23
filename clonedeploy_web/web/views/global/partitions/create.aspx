@@ -4,6 +4,13 @@
     <li>New Partition Layout</li>
 </asp:Content>
 
+<asp:Content ID="Content2" ContentPlaceHolderID="SubHelp" Runat="Server">
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+<asp:Content ID="Content4" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
+     <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Add Partition Layout" CssClass="submits" />
+</asp:Content>
+
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent2" Runat="Server">
      <script type="text/javascript">
         $(document).ready(function() {
@@ -48,16 +55,6 @@
 
         </asp:textbox>
     </div>
-    <br class="clear"/>
-
-    <div class="size-4 column">
-        &nbsp;
-    </div>
-
-    <div class="size-5 column">
-         <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Add Partition Layout" CssClass="submits" />
-    </div>
    
-    <br class="clear"/>
 </asp:Content>
 

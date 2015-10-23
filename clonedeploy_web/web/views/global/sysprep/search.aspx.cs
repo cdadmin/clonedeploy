@@ -52,4 +52,18 @@ public partial class views_global_sysprep_search : BasePages.Global
         gvSysprepTags.DataSource = listSysprepTags;
         gvSysprepTags.DataBind();
     }
+
+    protected void ButtonConfirmDelete_Click(object sender, EventArgs e)
+    {
+        foreach (GridViewRow row in gvSysprepTags.Rows)
+        {
+            var cb = (CheckBox)row.FindControl("chkSelector");
+            if (cb == null || !cb.Checked) continue;
+            var dataKey = gvSysprepTags.DataKeys[row.RowIndex];
+            if (dataKey == null) continue;
+            BLL.SysprepTag.DeleteSysprepTag(Convert.ToInt32(dataKey.Value));
+        }
+
+        PopulateGrid();
+    }
 }

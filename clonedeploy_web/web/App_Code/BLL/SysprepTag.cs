@@ -30,7 +30,7 @@ namespace BLL
             }
         }
 
-        public static bool DeleteScript(int sysprepTagId)
+        public static bool DeleteSysprepTag(int sysprepTagId)
         {
             using (var uow = new DAL.UnitOfWork())
             {

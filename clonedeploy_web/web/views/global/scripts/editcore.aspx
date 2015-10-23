@@ -5,11 +5,18 @@
     <li>Edit Core Scripts</li>
 </asp:Content>
 
+<asp:Content ID="Content3" ContentPlaceHolderID="SubHelp" Runat="Server">
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+<asp:Content ID="Content4" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
+      <asp:LinkButton ID="buttonSaveCore" runat="server" Text="Update" OnClick="buttonSaveCore_OnClick" CssClass="submits left static-width" OnClientClick="update_click()"/>
+</asp:Content>
+
 <asp:Content runat="server" ID="Content2" ContentPlaceHolderID="SubContent2">
      <asp:DropDownList runat="server" ID="ddlCoreScripts" OnSelectedIndexChanged="ddlCoreScripts_OnSelectedIndexChanged" AutoPostBack="True" CssClass="ddlist" Style="float: right; margin-right: 5px; margin-top: 5px; width: 200px;">
             </asp:DropDownList>
         <br class="clear"/>
-             <asp:LinkButton ID="buttonSaveCore" runat="server" Text="Update" OnClick="buttonSaveCore_OnClick" CssClass="submits left static-width" OnClientClick="update_click()"/>
+           
         
 
     <div id="aceEditor" runat="server">

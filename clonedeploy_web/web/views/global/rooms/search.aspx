@@ -3,8 +3,11 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li>Rooms</li>
 </asp:Content>
-<asp:Content ID="Content2" ContentPlaceHolderID="Level2" Runat="Server">
+
+<asp:Content ID="Content2" ContentPlaceHolderID="Help" Runat="Server">
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="icon help" data-info="Help" target="_blank"></a>
 </asp:Content>
+
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {

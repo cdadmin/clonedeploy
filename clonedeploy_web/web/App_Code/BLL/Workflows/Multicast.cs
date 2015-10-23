@@ -179,20 +179,16 @@ namespace Tasks
 
         private bool CreateTaskArguments()
         {
-            var xferMode = Settings.ImageTransferMode;
+
             foreach (var host in Hosts)
             {
                 var activeTask = new ActiveImagingTask {Id = Convert.ToInt32(host.TaskId)};
-                string storagePath;
-
-                if (xferMode == "smb" || xferMode == "smb+http")
-                    storagePath = Settings.SmbPath;
-                else
-                    storagePath = Direction == "pull" ? Settings.NfsUploadPath : Settings.NfsDeployPath;
+              
+               
                 //FIX ME
-                activeTask.Arguments = "imgName=" + Group.Image + " storage=" + storagePath +
+                activeTask.Arguments = "imgName=" + Group.Image + " storage=" + BLL.Computer.GetDistributionPoint(host) +
                                        " hostID=" + host.Id + " multicast=true " + " hostScripts=" + /*Group.Scripts +*/
-                                       " xferMode=" + xferMode + " serverIP=" + Settings.ServerIp +
+                                       " serverIP=" + Settings.ServerIp +
                                        " hostName=" + host.Name + " portBase=" + ActiveMcTask.Port + 
                                        " clientReceiverArgs=" + Settings.ClientReceiverArgs;
 
