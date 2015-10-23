@@ -20,6 +20,7 @@ namespace views.masters
                 Level2_Edit.Visible = false;
                 Level2_Smart_Group.Visible = false;
                 Level2_Standard_Group.Visible = false;
+                actions_left.Visible = false;
                 return;
             }
 

@@ -2,8 +2,16 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
       <li><a href="<%= ResolveUrl("~/views/groups/edit.aspx") %>?groupid=<%= Group.Id %>" ><%= Group.Name %></a></li>
-    <li>Multicast Settings</li>
+    <li>Multicast Options</li>
 </asp:Content>
+
+<asp:Content runat="server" ContentPlaceHolderID="Help">
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+<asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
+       <asp:LinkButton ID="Submit" runat="server" OnClick="Submit_OnClick" Text="Update Group" CssClass="submits"/>
+</asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent" Runat="Server">
      <script type="text/javascript">
         $(document).ready(function() {
@@ -41,16 +49,6 @@
     <div class="size-5 column">
         <asp:TextBox ID="txtGroupReceiveArgs" runat="server" CssClass="textbox"></asp:TextBox>
     </div>
-    <br class="clear"/>
-    
-
-   
-    <div class="size-4 column">
-        &nbsp;
-    </div>
-    <div class="size-5 column">
-        <asp:LinkButton ID="Submit" runat="server" OnClick="Submit_OnClick" Text="Update Group" CssClass="submits"/>
-    </div>
-    <br class="clear"/>
+  
 </asp:Content>
 

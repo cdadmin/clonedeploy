@@ -2,12 +2,21 @@
 
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
    <li><a href="<%= ResolveUrl("~/views/images/edit.aspx") %>?imageid=<%= Image.Id %>" ><%= Image.Name %></a></li>
-    </asp:Content>
+   <li>General</li>
+     </asp:Content>
+
+<asp:Content runat="server" ContentPlaceHolderID="Help">
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+
+<asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
+       <asp:LinkButton ID="btnUpdateImage" runat="server" OnClick="btnUpdateImage_Click" Text="Update Image" CssClass="submits"/>
+</asp:Content>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
 
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#editoption').addClass("nav-current");
+            $('#edit').addClass("nav-current");
         });
     </script>
     <div class="size-4 column">
@@ -72,14 +81,7 @@
     <div class="size-5 column">
         <asp:CheckBox ID="chkVisible" runat="server"/>
     </div>
-    <br class="clear"/>
-    <div class="size-4 column">
-        &nbsp;
-    </div>
-    <div class="size-5 column">
-        <asp:LinkButton ID="btnUpdateImage" runat="server" OnClick="btnUpdateImage_Click" Text="Update Image" CssClass="submits"/>
-    </div>
-    <br class="clear"/>
+   
     
 
 </asp:Content>

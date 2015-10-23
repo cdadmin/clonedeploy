@@ -1,15 +1,18 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/images/images.master" AutoEventWireup="true" Inherits="views.images.ImageCreate" CodeFile="create.aspx.cs" %>
 
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
-    <li><a href="<%= ResolveUrl("~/views/images/create.aspx") %>">New</a></li>
-    <li> My New Long Text 1</li>
-    <li> My New Long Text 2</li>
-     <li> My New Long Text 3</li>
+    <li>New</li>
     </asp:Content>
+<asp:Content runat="server" ContentPlaceHolderID="Help">
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+<asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
+    <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_Click" Text="Add Image" CssClass="submits"/>
+</asp:Content>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#createimage').addClass("nav-current");
+            $('#create').addClass("nav-current");
         });
     </script>
     <div class="size-4 column">
@@ -74,10 +77,5 @@
     <div class="size-5 column">
         <asp:CheckBox ID="chkVisible" runat="server"/>
     </div>
-    <br class="clear"/>
-    <div class="size-4 column">
-         <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_Click" Text="Add Image" CssClass="submits"/>
-    </div>
-   
-    <br class="clear"/>
+
 </asp:Content>

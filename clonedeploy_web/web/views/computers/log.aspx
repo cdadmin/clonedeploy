@@ -1,5 +1,10 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/computers/computers.master" AutoEventWireup="true" CodeFile="log.aspx.cs" Inherits="views.hosts.HostLog" %>
 
+<asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
+    <li><a href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?hostid=<%= Computer.Id %>" ><%= Computer.Name %></a></li>
+    <li>Logs</li>
+</asp:Content>
+
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {

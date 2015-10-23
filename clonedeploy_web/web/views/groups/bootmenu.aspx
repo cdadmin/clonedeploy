@@ -1,5 +1,11 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/groups/groups.master" AutoEventWireup="true" CodeFile="bootmenu.aspx.cs" Inherits="views.groups.GroupBootMenu" %>
 
+<asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
+   <li><a href="<%= ResolveUrl("~/views/groups/edit.aspx") %>?groupid=<%= Group.Id %>" ><%= Group.Name %></a></li>
+    <li>Boot Menu</li>
+</asp:Content>
+
+
     <asp:Content runat="server" ContentPlaceHolderID="Help">
      <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="icon help" data-info="Help" target="_blank"></a>
 </asp:Content>
@@ -10,7 +16,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="SubContent" Runat="Server">
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#bootmenuoption').addClass("nav-current");
+            $('#bootmenu').addClass("nav-current");
         });
     </script>
     

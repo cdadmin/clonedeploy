@@ -17,6 +17,7 @@ namespace views.masters
             if (Image == null)
             {
                 Level2.Visible = false;
+                actions_left.Visible = false;
                 return;
             }
 

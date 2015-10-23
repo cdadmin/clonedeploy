@@ -4,6 +4,14 @@
       <li><a href="<%= ResolveUrl("~/views/groups/edit.aspx") %>?groupid=<%= Group.Id %>" ><%= Group.Name %></a></li>
     <li>Smart Criteria</li>
 </asp:Content>
+
+    <asp:Content runat="server" ContentPlaceHolderID="Help">
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+<asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
+   <asp:LinkButton ID="btnUpdate" runat="server" Text="Update Criteria" OnClick="btnUpdate_OnClick" CssClass="submits"/>
+</asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent" Runat="Server">
       <script type="text/javascript">
         $(document).ready(function() {
@@ -35,9 +43,6 @@
             No Computers Found
         </EmptyDataTemplate>
     </asp:GridView>
-    
-     <div class="size-5 column">
-        <asp:LinkButton ID="btnUpdate" runat="server" Text="Update Criteria" OnClick="btnUpdate_OnClick" CssClass="submits"/>
-    </div>
+   
 </asp:Content>
 

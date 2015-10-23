@@ -6,10 +6,7 @@
             $('#nav-images').addClass("nav-current");
         });
     </script>
-  
         <span class="header-title-text">Images</span> 
- 
-   
 </asp:Content>
 
 <asp:Content ID="SubNav" ContentPlaceHolderID="SubNav" runat="Server">
@@ -17,37 +14,38 @@
     <div class="sub-nav-top">
         <div id="Level1" runat="server">
         <ul>
-            <li>
-                <a id="searchimage" href="<%= ResolveUrl("~/views/images/search.aspx") %>"><span class="sub-nav-text">Search Images</span></a>
+            <li id="search">
+                <a  href="<%= ResolveUrl("~/views/images/search.aspx") %>"><span class="sub-nav-text">Search</span></a>
             </li>
-            <li>
-                <a id="createimage" href="<%= ResolveUrl("~/views/images/create.aspx") %>"><span class="sub-nav-text">New Image</span></a>
+            <li id="create">
+                <a  href="<%= ResolveUrl("~/views/images/create.aspx") %>"><span class="sub-nav-text">New</span></a>
+            </li>
+              <li id="import">
+                <a  href="<%= ResolveUrl("~/views/images/import.aspx") %>"><span class="sub-nav-text">Import</span></a>
             </li>
         </ul>
     </div>
     <div id="Level2" runat="server">
-        <asp:Label ID="labelSubTitle" runat="server" CssClass="sub-nav-title"></asp:Label>
-        <div class="indent">
             <ul>
-                <li id="editoption">
+                <li id="edit">
 
-                    <a href="<%= ResolveUrl("~/views/images/edit.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text">Edit</span></a>
+                    <a href="<%= ResolveUrl("~/views/images/edit.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text">General</span></a>
                 </li>
-                <li>
-                    <a id="profileoption" href="<%= ResolveUrl("~/views/images/profiles/search.aspx") %>?imageid=<%= Image.Id %>&cat=profiles"><span class="sub-nav-text">Profiles</span></a>
+                <li id="profile">
+                    <a  href="<%= ResolveUrl("~/views/images/profiles/search.aspx") %>?imageid=<%= Image.Id %>&cat=profiles"><span class="sub-nav-text">Profiles</span></a>
                 </li>
-                <li>
-                    <a id="historyoption" href="<%= ResolveUrl("~/views/images/history.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text">History</span></a>
+                <li id="history">
+                    <a  href="<%= ResolveUrl("~/views/images/history.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text">History</span></a>
                 </li>
-                <li>
-                    <a id="logoption" href="<%= ResolveUrl("~/views/images/specs.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text">Specs</span></a>
+                <li id="specs">
+                    <a  href="<%= ResolveUrl("~/views/images/specs.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text">Specs</span></a>
                 </li>
              
             </ul>
-        </div>
+
     </div>
         
-         <div class="indent">
+
             <ul>
         <asp:ContentPlaceHolder ID="Level3" runat="server">
         </asp:ContentPlaceHolder>
@@ -55,7 +53,7 @@
         <asp:ContentPlaceHolder ID="Level4" runat="server">
         </asp:ContentPlaceHolder>
                 </ul>
-             </div>
+
     </div>
 </asp:Content>
 
@@ -68,7 +66,7 @@
 <asp:Content runat="server" ID="ActionsLeft" ContentPlaceHolderID="PageActionsLeft">
     <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
     <div id="actions_left" runat="server">
-      <asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click"><span class="sub-nav-text">Delete</span></asp:LinkButton>
+      <asp:LinkButton ID="btnDelete" runat="server" CssClass="icon delete" data-info="Delete Image" OnClick="btnDelete_Click"></asp:LinkButton>
             <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
     </div>
 </asp:Content>

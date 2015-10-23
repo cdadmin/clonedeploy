@@ -13,9 +13,9 @@
     <div class="sub-nav-top">
         <div id="Level1" runat="server">
         <ul>
-            <li><a id="searchgroup" href="<%= ResolveUrl("~/views/groups/search.aspx") %>" ><span class="sub-nav-text">Search Groups</span></a></li>
-            <li><a id="creategroup" href="<%= ResolveUrl("~/views/groups/create.aspx") %>" ><span class="sub-nav-text">New Group</span></a></li>          
-            <li><a id="importgroup" href="<%= ResolveUrl("~/views/groups/import.aspx") %>" ><span class="sub-nav-text">Import Groups</span></a></li>
+            <li id="search"><a  href="<%= ResolveUrl("~/views/groups/search.aspx") %>" ><span class="sub-nav-text">Search</span></a></li>
+            <li id="create"><a  href="<%= ResolveUrl("~/views/groups/create.aspx") %>" ><span class="sub-nav-text">New</span></a></li>          
+            <li id="import"><a  href="<%= ResolveUrl("~/views/groups/import.aspx") %>" ><span class="sub-nav-text">Import</span></a></li>
        </ul>
         </div>
         
@@ -37,8 +37,8 @@
               <div id="Level2_Smart_Group" runat="server">
 
                     <ul>
-                        <li id="criteria"><a  href="<%= ResolveUrl("~/views/groups/smartcriteria.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">Smart Criteria</span></a></li>
-                          <li id="removemembers"><a  href="<%= ResolveUrl("~/views/groups/currentmembers.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">Current Members</span></a></li>
+                        <li id="smart"><a  href="<%= ResolveUrl("~/views/groups/smartcriteria.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">Smart Criteria</span></a></li>
+                          <li id="currentmembers"><a  href="<%= ResolveUrl("~/views/groups/currentmembers.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">Current Members</span></a></li>
                       
                     </ul>
 
@@ -48,10 +48,10 @@
         
         <ul>
        
-        <li><a id="multicast" href="<%= ResolveUrl("~/views/groups/multicast.aspx") %>?groupid=<%= Group.Id %>"> <span class="sub-nav-text">Multicast Options</span></a></li>
-             <li><a id="properties" href="<%= ResolveUrl("~/views/groups/properties.aspx") %>?groupid=<%= Group.Id %>"> <span class="sub-nav-text">Computer Properties</span></a></li>
-        <li><a id="historyoption" href="<%= ResolveUrl("~/views/groups/history.aspx") %>?groupid=<%= Group.Id %>"> <span class="sub-nav-text">History</span></a></li>
-        <li><a id="bootmenuoption" href="<%= ResolveUrl("~/views/groups/bootmenu.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">Boot Menu</span></a></li>
+        <li id="multicast"><a  href="<%= ResolveUrl("~/views/groups/multicast.aspx") %>?groupid=<%= Group.Id %>"> <span class="sub-nav-text">Multicast Options</span></a></li>
+             <li id="properties"><a  href="<%= ResolveUrl("~/views/groups/properties.aspx") %>?groupid=<%= Group.Id %>"> <span class="sub-nav-text">Computer Properties</span></a></li>
+        <li id="history"><a  href="<%= ResolveUrl("~/views/groups/history.aspx") %>?groupid=<%= Group.Id %>"> <span class="sub-nav-text">History</span></a></li>
+        <li id="bootmenu"><a  href="<%= ResolveUrl("~/views/groups/bootmenu.aspx") %>?groupid=<%= Group.Id %>"><span class="sub-nav-text">Boot Menu</span></a></li>
 
        
         </ul>

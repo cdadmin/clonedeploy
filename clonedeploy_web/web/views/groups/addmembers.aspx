@@ -4,6 +4,14 @@
    <li><a href="<%= ResolveUrl("~/views/groups/edit.aspx") %>?groupid=<%= Group.Id %>" ><%= Group.Name %></a></li>
     <li>Add Members</li>
 </asp:Content>
+
+<asp:Content runat="server" ContentPlaceHolderID="Help">
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+<asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
+       <asp:LinkButton ID="btnAddSelected" runat="server" OnClick="btnAddSelected_OnClick" Text="Add Selected Computers" CssClass="submits"/>
+</asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent" Runat="Server">
      <script type="text/javascript">
         $(document).ready(function() {
@@ -41,6 +49,6 @@
         </EmptyDataTemplate>
     </asp:GridView>
     
-   <asp:LinkButton ID="btnAddSelected" runat="server" OnClick="btnAddSelected_OnClick" Text="Add Selected Computers" CssClass="submits"/>
+ 
 </asp:Content>
 

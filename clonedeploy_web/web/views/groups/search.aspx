@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/groups/groups.master" AutoEventWireup="true" Inherits="views.groups.GroupSearch" CodeFile="search.aspx.cs" %>
 
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
-    <li><a href="<%= ResolveUrl("~/views/computers/search.aspx") %>">Search</a></li>
+    <li>Search</li>
     </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="Help">
@@ -14,7 +14,7 @@
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#searchgroup').addClass("nav-current");
+            $('#search').addClass("nav-current");
         });
     </script>
     <div class="size-7 column">

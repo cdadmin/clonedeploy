@@ -1,7 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/computers/computers.master" AutoEventWireup="true" CodeFile="edit.aspx.cs" Inherits="views.hosts.HostEdit" %>
 
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
-   <li><a href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?hostid=<%= Computer.Id %>" ><%= Computer.Name %></a></li>
+    <li><a href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?hostid=<%= Computer.Id %>" ><%= Computer.Name %></a></li>
+    <li>General</li>
     </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="Help">
      <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="icon help" data-info="Help" target="_blank"></a>
