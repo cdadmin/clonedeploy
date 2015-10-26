@@ -77,7 +77,7 @@ namespace Partition
                             else
                             {
                                 //if logical partition is not resizable use the partition size created during upload
-                                if (partition.VolumeSize == null)
+                                if (partition.VolumeSize == 0)
                                     ep.MinSizeBlk += partition.Size;
                                 else
                                 {
@@ -130,10 +130,10 @@ namespace Partition
         ///     The newHdSize parameter is arbitrary but is used to determine if the hard being deployed to is the same size that
         ///     the image was created from.
         /// </summary>
-        public long? Hd(int hdNumberToGet, long newHdSize)
+        public long Hd(int hdNumberToGet, long newHdSize)
         {
             var specs = GetImagePhysicalSpecs();
-            long? minHdSizeRequiredBlk = 0;
+            long minHdSizeRequiredBlk = 0;
             var lbsByte = specs.HardDrives[hdNumberToGet].Lbs;
 
             //if hard drive is the same size as original, then no need to calculate.  It will fit.
@@ -168,7 +168,7 @@ namespace Partition
                 helper.IsResizable = false;
             }
 
-            else if (lv.VolumeSize == null)
+            else if (lv.VolumeSize == 0)
             {
                 helper.MinSizeBlk = lv.Size;
                 helper.IsResizable = false;
@@ -219,7 +219,7 @@ namespace Partition
 
             //If partition is not resizable.  Determine partition size.  Also if the partition is less than 2 gigs assume it is that
             // size for a reason, do not resize it even if it is marked as a resizable partition
-            else if ((partition.VolumeSize == null && partition.Type.ToLower() != "extended") ||
+            else if ((partition.VolumeSize == 0 && partition.Type.ToLower() != "extended") ||
                      (partition.Type.ToLower() == "extended" && ep.IsOnlySwap) ||
                      partition.Size*lbsByte <= 2097152000)
             {
@@ -242,8 +242,7 @@ namespace Partition
                 {
                     //The resize value and used_mb value are calculated during upload by two different methods
                     //Use the one that is bigger just in case.
-                    if (partition.UsedMb == null)
-                        partition.UsedMb = 0;
+                  
                     if (partition.VolumeSize > partition.UsedMb)
                         helper.MinSizeBlk = partition.VolumeSize*1024*1024/lbsByte;
                     else
@@ -291,7 +290,7 @@ namespace Partition
                 else
                 {
                     //If logical volume is not resizable use the actual size of the logical volume during upload
-                    if (lv.VolumeSize == null)
+                    if (lv.VolumeSize == 0)
                         vg.MinSizeBlk += lv.Size;
                     else
                     {

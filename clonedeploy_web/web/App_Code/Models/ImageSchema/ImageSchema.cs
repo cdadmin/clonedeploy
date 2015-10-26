@@ -5,7 +5,6 @@ namespace Models.ImageSchema
     public class ImageSchema
     {
         public HardDrive[] HardDrives { get; set; }
-        public string ImageName { get; set; }
     }
 
     public class HardDrive
@@ -29,12 +28,12 @@ namespace Models.ImageSchema
         public string FsType { get; set; }
         public string Guid { get; set; }
         public string Number { get; set; }
-        public long? VolumeSize { get; set; }
+        public long VolumeSize { get; set; }
         public long Size { get; set; }
         public string CustomSize { get; set; }
         public long Start { get; set; }
         public string Type { get; set; }
-        public long? UsedMb { get; set; }
+        public long UsedMb { get; set; }
         public string Uuid { get; set; }
         public VolumeGroup VolumeGroup { get; set; }
     }
@@ -54,11 +53,11 @@ namespace Models.ImageSchema
         public bool Active { get; set; }
         public string FsType { get; set; }
         public string Name { get; set; }
-        public long? VolumeSize { get; set; }
+        public long VolumeSize { get; set; }
         public long Size { get; set; }
         public string CustomSize { get; set; }
         public string Type { get; set; }
-        public long? UsedMb { get; set; }
+        public long UsedMb { get; set; }
         public string Uuid { get; set; }
         public string VolumeGroup { get; set; }
     }
@@ -91,7 +90,7 @@ namespace Models.ImageSchema
     public class PartitionHelper
     {
         public bool IsResizable { get; set; }
-        public long? MinSizeBlk { get; set; }
+        public long MinSizeBlk { get; set; }
         public bool PartitionHasVolumeGroup { get; set; }
         public VolumeGroupHelper Vg { get; set; }
     }
@@ -102,14 +101,14 @@ namespace Models.ImageSchema
         public bool HasLogical { get; set; }
         public bool IsOnlySwap { get; set; }
         public int LogicalCount { get; set; }
-        public long? MinSizeBlk { get; set; }
+        public long MinSizeBlk { get; set; }
     }
 
     public class VolumeGroupHelper
     {
         public long AgreedPvSizeBlk { get; set; }
         public bool HasLv { get; set; }
-        public long? MinSizeBlk { get; set; }
+        public long MinSizeBlk { get; set; }
         public string Name { get; set; }
         public string Pv { get; set; }
     }

@@ -6,11 +6,11 @@ using Models.ImageSchema;
 
 namespace Partition
 {
-    public class CustomComparer : IComparer<string>
+    public class CustomComparer : IComparer<long>
     {
-        public int Compare(string x, string y)
+        public int Compare(long x, long y)
         {
-            return long.Parse(x).CompareTo(long.Parse(y));
+            return x.CompareTo(y);
         }
     }
 
@@ -59,11 +59,11 @@ namespace Partition
                     // ignored
                 }
                 foreach (var p in PrimaryAndExtendedPartitions)
-                    p.Size = (Convert.ToInt64(p.Size)*512/1024/1024).ToString();
+                    p.Size = p.Size*512/1024/1024;
                 foreach (var p in LogicalPartitions)
-                    p.Size = (Convert.ToInt64(p.Size)*512/1024/1024).ToString();
+                    p.Size = p.Size*512/1024/1024;
                 foreach (var p in LogicalVolumes)
-                    p.Size = (Convert.ToInt64(p.Size)*512/1024/1024).ToString();
+                    p.Size = p.Size*512/1024/1024;
             }
 
             //Create Menu
@@ -212,7 +212,7 @@ namespace Partition
 
 
             foreach (var part in from part in Specs.HardDrives[HdNumberToGet].Partitions
-                where part.Active == "1"
+                where part.Active
                 where part.VolumeGroup != null
                 where part.VolumeGroup.LogicalVolumes != null
                 select part)
@@ -275,11 +275,11 @@ namespace Partition
             HdNumberToGet = Convert.ToInt32(HdToGet) - 1;
 
             //Look for first active hd
-            if (Specs.HardDrives[HdNumberToGet].Active != "1")
+            if (!Specs.HardDrives[HdNumberToGet].Active)
             {
                 while (activeCounter <= Specs.HardDrives.Count())
                 {
-                    if (Specs.HardDrives[activeCounter - 1].Active == "1")
+                    if (Specs.HardDrives[activeCounter - 1].Active)
                     {
                         HdNumberToGet = activeCounter - 1;
                     }
@@ -330,7 +330,7 @@ namespace Partition
             {
                 var isError = false;
                 LogicalPartitions.Clear();
-                double totalExtendedPercentage = 0;
+                double ?totalExtendedPercentage = 0;
 
                 var partCounter = -1;
                 foreach (var part in Specs.HardDrives[HdNumberToGet].Partitions)
@@ -377,7 +377,7 @@ namespace Partition
                     }
 
                     totalExtendedPercentage += percentOfExtendedForThisPartition;
-                    clientPartition.Size = tmpClientPartitionSizeBlk.ToString();
+                    clientPartition.Size = tmpClientPartitionSizeBlk;
 
                     LogicalPartitions.Add(clientPartition);
 
@@ -417,8 +417,7 @@ namespace Partition
                                 var partition in LogicalPartitions.Where(partition => partition.PartitionWasResized))
                             {
                                 partition.Size =
-                                    (Convert.ToInt64(partition.Size) + (totalUnallocated/resizablePartsCount))
-                                        .ToString();
+                                    partition.Size + (totalUnallocated/resizablePartsCount);
                             }
                         }
                     }
@@ -455,15 +454,15 @@ namespace Partition
                     while (!singleLvVerified)
                     {
                         percentCounter++;
-                        double totalPvPercentage = 0;
+                        double? totalPvPercentage = 0;
                         LogicalVolumes.Clear();
-                        if (partition.Active != "1")
+                        if (!partition.Active)
                             continue;
 
                         var isError = false;
                         foreach (var lv in partition.VolumeGroup.LogicalVolumes)
                         {
-                            if (lv.Active != "1")
+                            if (!lv.Active)
                                 continue;
 
                             var clientPartitionLv = new ClientLv
@@ -476,7 +475,7 @@ namespace Partition
 
 
                             var helper = minimumSize.LogicalVolum(lv, LbsByte);
-                            var percentOfPvForThisLv = (double) helper.MinSizeBlk/NewHdBlk;
+                            double? percentOfPvForThisLv = (double) helper.MinSizeBlk/NewHdBlk;
                             var tmpClientPartitionSizeLvBlk = helper.MinSizeBlk;
 
                             if (helper.IsResizable)
@@ -503,7 +502,7 @@ namespace Partition
                             }
 
 
-                            clientPartitionLv.Size = tmpClientPartitionSizeLvBlk.ToString("#");
+                            clientPartitionLv.Size = tmpClientPartitionSizeLvBlk;
                             totalPvPercentage += percentOfPvForThisLv;
                             LogicalVolumes.Add(clientPartitionLv);
                         }
@@ -535,9 +534,7 @@ namespace Partition
                                 {
                                     foreach (var lv in LogicalVolumes.Where(lv => lv.PartResized))
                                     {
-                                        lv.Size =
-                                            (Convert.ToInt64(lv.Size) +
-                                             (totalUnallocated/resizablePartsCount)).ToString();
+                                        lv.Size = lv.Size + (totalUnallocated/resizablePartsCount);
                                     }
                                 }
                             }
@@ -583,7 +580,7 @@ namespace Partition
                     if (Convert.ToInt32(originalPartition.Start) < PartitionSectorStart)
                         PartitionSectorStart = Convert.ToInt32(originalPartition.Start);
 
-                    if (originalPartition.Active != "1")
+                    if (!originalPartition.Active)
                         continue;
                     if (originalPartition.Type.ToLower() == "logical")
                         continue;
@@ -603,7 +600,7 @@ namespace Partition
 
                     var helper = minimumSize.Partition(HdNumberToGet, partCounter);
                     var percentOfHdForThisPartition = (double) helper.MinSizeBlk/NewHdBlk;
-                    var tmpClientPartitionSizeBlk = helper.MinSizeBlk;
+                    long tmpClientPartitionSizeBlk = helper.MinSizeBlk;
 
 
                     if (helper.IsResizable)
@@ -645,7 +642,7 @@ namespace Partition
                         VolumeGroups.Add(helper.Vg);
                     }
 
-                    clientPartition.Size = tmpClientPartitionSizeBlk.ToString("#");
+                    clientPartition.Size = tmpClientPartitionSizeBlk;
                     totalHdPercentage += percentOfHdForThisPartition;
                     PrimaryAndExtendedPartitions.Add(clientPartition);
                 }
@@ -682,9 +679,7 @@ namespace Partition
                                 var partition in
                                     PrimaryAndExtendedPartitions.Where(partition => partition.PartitionWasResized))
                             {
-                                partition.Size =
-                                    (Convert.ToInt64(partition.Size) + (totalUnallocated/resizablePartsCount))
-                                        .ToString();
+                                partition.Size = partition.Size + (totalUnallocated/resizablePartsCount);
                                 if (partition.Type.ToLower() == "extended")
                                     Ep.AgreedSizeBlk = Convert.ToInt64(partition.Size);
                                 for (var i = 0; i < VolumeGroups.Count(); i++)

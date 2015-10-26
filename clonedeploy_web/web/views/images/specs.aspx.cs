@@ -77,9 +77,10 @@ namespace views.images
 
             foreach (GridViewRow row in gv.Rows)
             {
+                row.Cells[6].Text = "hi";
                 var gvVg = (GridView) row.FindControl("gvVG");
 
-                if (partitions[row.RowIndex].VolumeGroup.Name != null)
+                if (partitions[row.RowIndex].VolumeGroup != null)
                 {
                     gvVg.DataSource = new List<VolumeGroup> {partitions[row.RowIndex].VolumeGroup};
                     gvVg.DataBind();
@@ -144,6 +145,7 @@ namespace views.images
         {
             gvHDs.DataSource = ImageSchema.GetHardDrivesForGridView(Image);
             gvHDs.DataBind();
+
 
             foreach (var box in (from GridViewRow row in gvHDs.Rows
                 let isActive = ((HiddenField) row.FindControl("HiddenActive")).Value

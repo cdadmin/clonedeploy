@@ -275,7 +275,7 @@ namespace Tasks
             var activeCounter = 0;
             foreach (var hd in specs.HardDrives)
             {
-                if (hd.Active == "1")
+                if (hd.Active)
                 {
                     break;
                 }
@@ -326,7 +326,7 @@ namespace Tasks
             foreach (var part in specs.HardDrives[activeCounter].Partitions)
             {
                 string udpFile = null;
-                if (part.Active != "1") continue;
+                if (!part.Active) continue;
                 if (File.Exists(imagePath + Path.DirectorySeparatorChar + "part" + part.Number + ".ntfs" + compExt))
                     udpFile = imagePath + Path.DirectorySeparatorChar + "part" + part.Number + ".ntfs" + compExt;
                 else if (File.Exists(imagePath + Path.DirectorySeparatorChar + "part" + part.Number + ".fat" + compExt))
@@ -351,7 +351,7 @@ namespace Tasks
                         {
                             foreach (var lv in part.VolumeGroup.LogicalVolumes)
                             {
-                                if (lv.Active != "1") continue;
+                                if (!lv.Active) continue;
                                 if (
                                     File.Exists(imagePath + Path.DirectorySeparatorChar + lv.VolumeGroup + "-" +
                                                 lv.Name + ".ntfs" +

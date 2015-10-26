@@ -13,20 +13,23 @@ namespace BLL
 
     public class ImageSchema
     {
-        public static List<Models.ImageSchema.HardDrive> GetHardDrivesForGridView(Models.Image image)
+        public static List<Models.ImageSchema.GridView.HardDrive> GetHardDrivesForGridView(Models.Image image)
         {
             var imageSchema =
-                JsonConvert.DeserializeObject<Models.ImageSchema.ImageSchema>(FileOps.ReadImageSpecs(image.Name)
+                JsonConvert.DeserializeObject<Models.ImageSchema.GridView.Schema>(FileOps.ReadImageSpecs(image.Name)
                     );
             if (imageSchema == null) return null;
 
-            var hardDrives = new List<Models.ImageSchema.HardDrive>();
+            var hardDrives = new List<Models.ImageSchema.GridView.HardDrive>();
 
             foreach (var harddrive in imageSchema.HardDrives)
             {
-                var logicalBlockSize = Convert.ToInt16(harddrive.Lbs);
-                harddrive.Size = (harddrive.Size*logicalBlockSize/1000/1000/1000);
-                hardDrives.Add(harddrive);
+                var logicalBlockSize = Convert.ToInt64(harddrive.Lbs);
+                harddrive.Size = (Convert.ToInt64(harddrive.Size) * logicalBlockSize / 1000f / 1000f / 1000f).ToString("#.##") + " GB" +
+                          " / " + (Convert.ToInt64(harddrive.Size) * logicalBlockSize / 1024f / 1024f / 1024f).ToString("#.##") +
+                          " GB";
+                hardDrives
+                    .Add(harddrive);
             }
             return hardDrives;
         }

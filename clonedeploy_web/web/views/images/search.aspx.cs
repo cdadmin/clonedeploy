@@ -110,10 +110,10 @@ namespace views.images
                     var lblClient = hdrow.FindControl("lblHDSizeClient") as Label;
 
                     var calc = new MinimumSize {Image = image};
-                    var fltClientSize = calc.Hd(hdrow.RowIndex, "1")/
+                    var fltClientSize = calc.Hd(hdrow.RowIndex, 1)/
                                         1024f/1024f/1024f;
 
-                    if (Math.Abs(fltClientSize) < 0.1f)
+                    if (Math.Abs(Convert.ToDouble(fltClientSize)) < 0.1f)
                     {
                         if (lblClient != null) lblClient.Text = "N/A";
                     }
@@ -121,7 +121,7 @@ namespace views.images
                     {
                         if (lblClient != null)
                         {
-                            lblClient.Text = fltClientSize.ToString("#.##") + " GB";
+                            lblClient.Text = fltClientSize.ToString() + " GB";
                             if (lblClient.Text == " GB")
                                 lblClient.Text = "< .01 GB";
                         }
@@ -216,12 +216,12 @@ namespace views.images
                     var img = BLL.Image.GetImage(Convert.ToInt32(imageId));
 
                     var calc = new MinimumSize {Image = img};
-                    var fltClientSize = calc.Hd(0, "1")/1024f/1024f/1024f;
-                    if (Math.Abs(fltClientSize) < 0.1f)
+                    var fltClientSize = calc.Hd(0, 1)/1024f/1024f/1024f;
+                    if (Math.Abs(Convert.ToDouble(fltClientSize)) < 0.1f)
                     {
                         if (lblClient != null) lblClient.Text = "N/A";
                     }
-                    else if (lblClient != null) lblClient.Text = fltClientSize.ToString("#.##") + " GB";
+                    else if (lblClient != null) lblClient.Text = fltClientSize.ToString() + " GB";
                 }
                 catch
                 {
