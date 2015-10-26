@@ -9,6 +9,7 @@ using Helpers;
 using Newtonsoft.Json;
 using Partition;
 using Security;
+using Models.ImageSchema;
 
 namespace views.images
 {
@@ -23,10 +24,10 @@ namespace views.images
 
 
             var gvHDs = (GridView) row.FindControl("gvHDs");
-            ImagePhysicalSpecs specs;
+            ImageSchema specs;
             try
             {
-                specs = JsonConvert.DeserializeObject<ImagePhysicalSpecs>(image.ClientSize);
+                specs = JsonConvert.DeserializeObject<ImageSchema>(image.ClientSize);
             }
             catch
             {
@@ -34,7 +35,7 @@ namespace views.images
             }
             if (specs == null)
                 return;
-            var specslist = specs.Hd.ToList();
+            var specslist = specs.HardDrives.ToList();
 
 
             var btn = (LinkButton) row.FindControl("btnHDs");

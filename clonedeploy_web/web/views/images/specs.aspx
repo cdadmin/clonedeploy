@@ -7,22 +7,13 @@
     });
 </script>
 
-<asp:Label ID="lblSpecsUnavailable" Visible="false" runat="server"></asp:Label>
-
-<br class="clear"/>
-<div class="column size-1" style="border: 1px solid red; padding: 5px;" id="incorrectChecksum" runat="server" visible="false">
-    <p>The Image Checksum Does Not Match What Was Previously Reported. If You Have Recently Uploaded This Image, You Must Confirm It Before It Can Be Deployed. Otherwise, It May Have Been Tampered With and Should Be Deleted.</p>
-    <asp:LinkButton ID="btnConfirmChecksum" runat="server" OnClick="btnConfirmChecksum_Click" Text="Confirm" CssClass="submits"/>
-    <br class="clear"/>
-</div>
-<br class="clear"/>
 <asp:GridView ID="gvHDs" runat="server" AutoGenerateColumns="false" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
     <Columns>
 
         <asp:TemplateField ShowHeader="False" ItemStyle-CssClass="width_30" HeaderStyle-CssClass="">
             <ItemTemplate>
                 <div style="width: 0">
-                    <asp:LinkButton ID="btnParts" runat="server" CausesValidation="false" CommandName="" Text="+" OnClick="btnParts_Click"></asp:LinkButton>
+                    <asp:LinkButton ID="btnHd" runat="server" CausesValidation="false" CommandName="" Text="+" OnClick="btnHd_Click"></asp:LinkButton>
                 </div>
             </ItemTemplate>
         </asp:TemplateField>
@@ -74,15 +65,15 @@
                                 <asp:BoundField DataField="Start" HeaderText="Start" ItemStyle-CssClass="width_100"></asp:BoundField>
                                 <asp:BoundField DataField="End" HeaderText="End" ItemStyle-CssClass="width_100"></asp:BoundField>
                                 <asp:BoundField DataField="Size" HeaderText="Size" ItemStyle-CssClass="width_100"></asp:BoundField>
-                                <asp:BoundField DataField="Resize" HeaderText="Volume" ItemStyle-CssClass="width_100"></asp:BoundField>
+                                <asp:BoundField DataField="VolumeSize" HeaderText="Volume" ItemStyle-CssClass="width_100"></asp:BoundField>
                                 <asp:BoundField DataField="Type" HeaderText="Type" ItemStyle-CssClass="width_100"></asp:BoundField>
                                 <asp:BoundField DataField="FsType" HeaderText="FS" ItemStyle-CssClass="width_100"></asp:BoundField>
                                 <asp:BoundField DataField="FsId" HeaderText="FSID" ItemStyle-CssClass="width_105"></asp:BoundField>
-                                <asp:BoundField DataField="Used_Mb" HeaderText="Used" ItemStyle-CssClass="width_100"></asp:BoundField>
+                                <asp:BoundField DataField="UsedMb" HeaderText="Used" ItemStyle-CssClass="width_100"></asp:BoundField>
                                 <asp:TemplateField ItemStyle-CssClass="width_100" HeaderText="Custom Size (MB)">
                                     <ItemTemplate>
                                         <div id="settings">
-                                            <asp:TextBox ID="txtCustomSize" runat="server" Text='<%# Bind("Size_Override") %>' CssClass="textbox_specs"/>
+                                            <asp:TextBox ID="txtCustomSize" runat="server" Text='<%# Bind("CustomSize") %>' CssClass="textbox_specs"/>
                                         </div>
                                     </ItemTemplate>
                                 </asp:TemplateField>
@@ -130,7 +121,7 @@
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                         <asp:BoundField DataField="Name" HeaderText="Name" ItemStyle-CssClass="width_100"/>
-                                                        <asp:BoundField DataField="Pv" HeaderText="PV" ItemStyle-CssClass="width_200"/>
+                                                        <asp:BoundField DataField="PhysicalVolume" HeaderText="PV" ItemStyle-CssClass="width_200"/>
                                                         <asp:BoundField DataField="Uuid" HeaderText="UUID" ItemStyle-CssClass="width_200"/>
 
                                                         <asp:TemplateField>
@@ -152,17 +143,17 @@
                                                                                 <asp:BoundField DataField="Name" HeaderText="Name" ItemStyle-CssClass="width_100"></asp:BoundField>
 
                                                                                 <asp:BoundField DataField="Size" HeaderText="Size" ItemStyle-CssClass="width_100"></asp:BoundField>
-                                                                                <asp:BoundField DataField="Resize" HeaderText="Resize" ItemStyle-CssClass="width_100"></asp:BoundField>
+                                                                                <asp:BoundField DataField="VolumeSize" HeaderText="Resize" ItemStyle-CssClass="width_100"></asp:BoundField>
 
                                                                                 <asp:BoundField DataField="FsType" HeaderText="FS" ItemStyle-CssClass="width_100"></asp:BoundField>
                                                                                 <asp:BoundField DataField="Uuid" HeaderText="UUID" ItemStyle-CssClass="width_100"></asp:BoundField>
 
-                                                                                <asp:BoundField DataField="Used_Mb" HeaderText="Used" ItemStyle-CssClass="width_100"></asp:BoundField>
+                                                                                <asp:BoundField DataField="UsedMb" HeaderText="Used" ItemStyle-CssClass="width_100"></asp:BoundField>
 
                                                                                 <asp:TemplateField ItemStyle-CssClass="width_100" HeaderText="Custom Size (MB)">
                                                                                     <ItemTemplate>
                                                                                         <div id="subsettings">
-                                                                                            <asp:TextBox ID="txtCustomSize" runat="server" Text='<%# Bind("Size_Override") %>' CssClass="textbox_specs"/>
+                                                                                            <asp:TextBox ID="txtCustomSize" runat="server" Text='<%# Bind("CustomSize") %>' CssClass="textbox_specs"/>
                                                                                         </div>
                                                                                     </ItemTemplate>
                                                                                 </asp:TemplateField>
@@ -190,10 +181,11 @@
                                                 <asp:GridView ID="gvFiles" AutoGenerateColumns="false" runat="server" CssClass="Gridview gv_parts" ShowHeader="true" Visible="false" AlternatingRowStyle-CssClass="alt">
                                                     <Columns>
 
-                                                        <asp:BoundField DataField="fileName" HeaderText="File Name" ItemStyle-CssClass="width_100"/>
-                                                        <asp:BoundField DataField="serverSize" HeaderText="Server Size" ItemStyle-CssClass="width_200"/>
+                                                        <asp:BoundField DataField="FileName" HeaderText="File Name" ItemStyle-CssClass="width_100"/>
+                                                        <asp:BoundField DataField="FileSize" HeaderText="Server Size" ItemStyle-CssClass="width_200"/>
 
                                                     </Columns>
+                                                    <EmptyDataTemplate>No Image File Found</EmptyDataTemplate>
                                                 </asp:GridView>
                                             </td>
                                         </tr>
@@ -211,11 +203,9 @@
         </asp:TemplateField>
 
     </Columns>
+    <EmptyDataTemplate>
+        No Image Schema Found
+    </EmptyDataTemplate>
 </asp:GridView>
-<div class="full column">
-    <asp:LinkButton ID="btnUpdateSpecs" runat="server" OnClick="btnUpdateImageSpecs_Click" Text="Update Image Specs" CssClass="submits"/>
-    <br class="clear"/>
-    <asp:LinkButton ID="btnRestoreSpecs" runat="server" OnClick="btnRestoreImageSpecs_Click" Text="Restore Image Specs" CssClass="submits"/>
-</div>
-<br class="clear"/>
+
 </asp:Content>

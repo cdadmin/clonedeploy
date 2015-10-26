@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using Models;
+using Models.ImageSchema;
 using Newtonsoft.Json;
 
 namespace Partition
@@ -12,12 +14,12 @@ namespace Partition
         ///     Calculates the minimum block size for an extended partition by determining the minimum size of all logical
         ///     partitions that fall under the extended.  Does not assume that any extended partitions actually exist.
         /// </summary>
-        public ExtendedPartition ExtendedPartition(int hdNumberToGet)
+        public ExtendedPartitionHelper ExtendedPartition(int hdNumberToGet)
         {
             var specs = GetImagePhysicalSpecs();
 
-            var lbsByte = Convert.ToInt32(specs.Hd[hdNumberToGet].Lbs);
-            var ep = new ExtendedPartition
+            var lbsByte = specs.HardDrives[hdNumberToGet].Lbs;
+            var ep = new ExtendedPartitionHelper
             {
                 MinSizeBlk = 0,
                 IsOnlySwap = false,
@@ -31,10 +33,8 @@ namespace Partition
             //And calculate minimum needed extended partition size
 
             string logicalFsType = null;
-            foreach (var part in specs.Hd[hdNumberToGet].Partition)
+            foreach (var part in specs.HardDrives[hdNumberToGet].Partitions.Where(part => part.Active))
             {
-                if (part.Active != "1")
-                    continue;
                 if (part.Type.ToLower() == "extended")
                     hasExtendedPartition = true;
                 if (part.Type.ToLower() != "logical") continue;
@@ -50,10 +50,10 @@ namespace Partition
             if (hasExtendedPartition)
             {
                 var partitionCounter = -1;
-                foreach (var partition in specs.Hd[hdNumberToGet].Partition)
+                foreach (var partition in specs.HardDrives[hdNumberToGet].Partitions)
                 {
                     partitionCounter++;
-                    if (partition.Active != "1")
+                    if (!partition.Active)
                         continue;
                     if (hasLogicalPartition)
                     {
@@ -67,26 +67,26 @@ namespace Partition
                             ep.MinSizeBlk += vg.MinSizeBlk;
 
                             if (vg.MinSizeBlk == 0)
-                                ep.MinSizeBlk += Convert.ToInt64(partition.Size);
+                                ep.MinSizeBlk += partition.Size;
                         }
                         else
                         {
                             //Extended partition size overridden by user
-                            if (!string.IsNullOrEmpty(partition.Size_Override))
-                                ep.MinSizeBlk += Convert.ToInt64(partition.Size_Override);
+                            if (!string.IsNullOrEmpty(partition.CustomSize))
+                                ep.MinSizeBlk += Convert.ToInt64(partition.CustomSize);
                             else
                             {
                                 //if logical partition is not resizable use the partition size created during upload
-                                if (string.IsNullOrEmpty(partition.Resize))
-                                    ep.MinSizeBlk += Convert.ToInt64(partition.Size);
+                                if (partition.VolumeSize == null)
+                                    ep.MinSizeBlk += partition.Size;
                                 else
                                 {
                                     //The resize value and used_mb value are calculated during upload by two different methods
                                     //Use the one that is bigger just in case.
-                                    if (Convert.ToInt64(partition.Resize) > Convert.ToInt64(partition.Used_Mb))
-                                        ep.MinSizeBlk += (Convert.ToInt64(partition.Resize)*1024*1024)/lbsByte;
+                                    if (partition.VolumeSize > partition.UsedMb)
+                                        ep.MinSizeBlk += partition.VolumeSize*1024*1024/lbsByte;
                                     else
-                                        ep.MinSizeBlk += (Convert.ToInt64(partition.Used_Mb)*1024*1024)/lbsByte;
+                                        ep.MinSizeBlk += partition.UsedMb*1024*1024/lbsByte;
                                 }
                             }
                         }
@@ -101,11 +101,11 @@ namespace Partition
                         if (partition.Type.ToLower() != "extended") continue;
 
                         //extended partition size set by user
-                        if (!string.IsNullOrEmpty(partition.Size_Override))
-                            ep.MinSizeBlk = Convert.ToInt64(partition.Size_Override);
+                        if (!string.IsNullOrEmpty(partition.CustomSize))
+                            ep.MinSizeBlk = Convert.ToInt64(partition.CustomSize);
                         else
                         //set arbitary minimum to 100MB
-                            ep.MinSizeBlk = (Convert.ToInt64("100")*1024*1024)/lbsByte;
+                            ep.MinSizeBlk = 100*1024*1024/lbsByte;
 
                         break; //Like the Highlander there can be only one extended partition
                     }
@@ -117,10 +117,10 @@ namespace Partition
             return ep;
         }
 
-        public ImagePhysicalSpecs GetImagePhysicalSpecs()
+        public ImageSchema GetImagePhysicalSpecs()
         {
             return
-                JsonConvert.DeserializeObject<ImagePhysicalSpecs>(!string.IsNullOrEmpty(Image.ClientSizeCustom)
+                JsonConvert.DeserializeObject<ImageSchema>(!string.IsNullOrEmpty(Image.ClientSizeCustom)
                     ? Image.ClientSizeCustom
                     : Image.ClientSize);
         }
@@ -130,19 +130,18 @@ namespace Partition
         ///     The newHdSize parameter is arbitrary but is used to determine if the hard being deployed to is the same size that
         ///     the image was created from.
         /// </summary>
-        public long Hd(int hdNumberToGet, string newHdSize)
+        public long? Hd(int hdNumberToGet, long newHdSize)
         {
             var specs = GetImagePhysicalSpecs();
-
-            long minHdSizeRequiredBlk = 0;
-            var lbsByte = Convert.ToInt32(specs.Hd[hdNumberToGet].Lbs);
+            long? minHdSizeRequiredBlk = 0;
+            var lbsByte = specs.HardDrives[hdNumberToGet].Lbs;
 
             //if hard drive is the same size as original, then no need to calculate.  It will fit.
-            if (Convert.ToInt64(specs.Hd[hdNumberToGet].Size)*lbsByte == Convert.ToInt64(newHdSize))
-                return Convert.ToInt64(newHdSize);
+            if (specs.HardDrives[hdNumberToGet].Size*lbsByte == newHdSize)
+                return newHdSize;
 
             var partitionCounter = -1;
-            foreach (var part in specs.Hd[hdNumberToGet].Partition)
+            foreach (var part in specs.HardDrives[hdNumberToGet].Partitions)
             {
                 partitionCounter++;
                 //Logical partitions are calculated via the extended
@@ -159,19 +158,19 @@ namespace Partition
         ///     Calculates the minimum block size required for a single logical volume, assuming the logical volume cannot have any
         ///     children.
         /// </summary>
-        public PartitionHelper LogicalVolum(LvPhysicalSpecs lv, int lbsByte)
+        public PartitionHelper LogicalVolum(LogicalVolume lv, int lbsByte)
         {
             var helper = new PartitionHelper {MinSizeBlk = 0};
 
-            if (!string.IsNullOrEmpty(lv.Size_Override))
+            if (!string.IsNullOrEmpty(lv.CustomSize))
             {
-                helper.MinSizeBlk = Convert.ToInt64(lv.Size_Override);
+                helper.MinSizeBlk = Convert.ToInt64(lv.CustomSize);
                 helper.IsResizable = false;
             }
 
-            else if (string.IsNullOrEmpty(lv.Resize))
+            else if (lv.VolumeSize == null)
             {
-                helper.MinSizeBlk = (Convert.ToInt64(lv.Size));
+                helper.MinSizeBlk = lv.Size;
                 helper.IsResizable = false;
             }
 
@@ -179,10 +178,10 @@ namespace Partition
             {
                 helper.IsResizable = true;
 
-                if (Convert.ToInt64(lv.Resize) > Convert.ToInt64(lv.Used_Mb))
-                    helper.MinSizeBlk = (Convert.ToInt64(lv.Resize)*1024*1024)/lbsByte;
+                if (lv.VolumeSize > lv.UsedMb)
+                    helper.MinSizeBlk = lv.VolumeSize*1024*1024/lbsByte;
                 else
-                    helper.MinSizeBlk = (Convert.ToInt64(lv.Used_Mb)*1024*1024)/lbsByte;
+                    helper.MinSizeBlk = lv.UsedMb*1024*1024/lbsByte;
             }
 
             return helper;
@@ -196,9 +195,9 @@ namespace Partition
             var specs = GetImagePhysicalSpecs();
             var helper = new PartitionHelper {MinSizeBlk = 0};
             var ep = ExtendedPartition(hdNumberToGet);
-            var partition = specs.Hd[hdNumberToGet].Partition[partNumberToGet];
+            var partition = specs.HardDrives[hdNumberToGet].Partitions[partNumberToGet];
             helper.Vg = VolumeGroup(hdNumberToGet, partNumberToGet);
-            var lbsByte = Convert.ToInt32(specs.Hd[hdNumberToGet].Lbs);
+            var lbsByte = specs.HardDrives[hdNumberToGet].Lbs;
 
 
             //Look if any volume groups are present for this partition.  If so set the resize field to the minimum size
@@ -207,24 +206,24 @@ namespace Partition
             if (helper.Vg.Pv != null)
             {
                 helper.PartitionHasVolumeGroup = true;
-                partition.Resize = (helper.Vg.MinSizeBlk*lbsByte/1024/1024).ToString();
+                partition.VolumeSize = (helper.Vg.MinSizeBlk*lbsByte/1024/1024);
             }
 
 
             //Use partition size that user has set for the partition, if it is set.
-            if (!string.IsNullOrEmpty(partition.Size_Override))
+            if (!string.IsNullOrEmpty(partition.CustomSize))
             {
-                helper.MinSizeBlk = Convert.ToInt64(partition.Size_Override);
+                helper.MinSizeBlk = Convert.ToInt64(partition.CustomSize);
                 helper.IsResizable = false;
             }
 
             //If partition is not resizable.  Determine partition size.  Also if the partition is less than 2 gigs assume it is that
             // size for a reason, do not resize it even if it is marked as a resizable partition
-            else if ((string.IsNullOrEmpty(partition.Resize) && partition.Type.ToLower() != "extended") ||
+            else if ((partition.VolumeSize == null && partition.Type.ToLower() != "extended") ||
                      (partition.Type.ToLower() == "extended" && ep.IsOnlySwap) ||
-                     Convert.ToInt64(partition.Size)*lbsByte <= 2097152000)
+                     partition.Size*lbsByte <= 2097152000)
             {
-                helper.MinSizeBlk = Convert.ToInt64(partition.Size);
+                helper.MinSizeBlk = partition.Size;
                 helper.IsResizable = false;
             }
             //If resizable determine what percent of drive partition was originally and match that to the new drive
@@ -243,12 +242,12 @@ namespace Partition
                 {
                     //The resize value and used_mb value are calculated during upload by two different methods
                     //Use the one that is bigger just in case.
-                    if (string.IsNullOrEmpty(partition.Used_Mb))
-                        partition.Used_Mb = "0";
-                    if (Convert.ToInt64(partition.Resize) > Convert.ToInt64(partition.Used_Mb))
-                        helper.MinSizeBlk = (Convert.ToInt64(partition.Resize)*1024*1024)/lbsByte;
+                    if (partition.UsedMb == null)
+                        partition.UsedMb = 0;
+                    if (partition.VolumeSize > partition.UsedMb)
+                        helper.MinSizeBlk = partition.VolumeSize*1024*1024/lbsByte;
                     else
-                        helper.MinSizeBlk = (Convert.ToInt64(partition.Used_Mb)*1024*1024)/lbsByte;
+                        helper.MinSizeBlk = (partition.UsedMb*1024*1024)/lbsByte;
                 }
             }
 
@@ -259,49 +258,49 @@ namespace Partition
         ///     Calculates the minimum block size required for a volume group by determine the size of each
         ///     logical volume within the volume group.  Does not assume that any volume group actually exists.
         /// </summary>
-        public VolumeGroup VolumeGroup(int hdNumberToGet, int partNumberToGet)
+        public VolumeGroupHelper VolumeGroup(int hdNumberToGet, int partNumberToGet)
         {
             var specs = GetImagePhysicalSpecs();
-            var lbsByte = Convert.ToInt32(specs.Hd[hdNumberToGet].Lbs);
+            var lbsByte = specs.HardDrives[hdNumberToGet].Lbs;
 
-            var vg = new VolumeGroup
+            var vg = new VolumeGroupHelper
             {
                 MinSizeBlk = 0,
                 HasLv = false
             };
 
-            if (specs.Hd[hdNumberToGet].Partition[partNumberToGet].FsId.ToLower() != "8e" &&
-                specs.Hd[hdNumberToGet].Partition[partNumberToGet].FsId.ToLower() != "8e00") return vg;
-            if (specs.Hd[hdNumberToGet].Partition[partNumberToGet].Active != "1")
+            if (specs.HardDrives[hdNumberToGet].Partitions[partNumberToGet].FsId.ToLower() != "8e" &&
+                specs.HardDrives[hdNumberToGet].Partitions[partNumberToGet].FsId.ToLower() != "8e00") return vg;
+            if (!specs.HardDrives[hdNumberToGet].Partitions[partNumberToGet].Active)
                 return vg;
 
             //if part.vg is null, most likely version 2.3.0 beta1 before lvm was added.
-            if (specs.Hd[hdNumberToGet].Partition[partNumberToGet].Vg == null) return vg;
+            if (specs.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup == null) return vg;
             //if vg.name is null partition was uploaded at physical partion level, by using the lvmResize=false flag
-            if (specs.Hd[hdNumberToGet].Partition[partNumberToGet].Vg.Name == null) return vg;
-            vg.Name = specs.Hd[hdNumberToGet].Partition[partNumberToGet].Vg.Name;
-            foreach (var lv in specs.Hd[hdNumberToGet].Partition[partNumberToGet].Vg.Lv)
+            if (specs.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup.Name == null) return vg;
+            vg.Name = specs.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup.Name;
+            foreach (var lv in specs.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup.LogicalVolumes)
             {
-                if (lv.Active != "1")
+                if (!lv.Active)
                     continue;
                 vg.HasLv = true;
-                vg.Pv = specs.Hd[hdNumberToGet].Partition[partNumberToGet].Vg.Pv;
+                vg.Pv = specs.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup.PhysicalVolume;
                 //Logical volume size overridden by user
-                if (!string.IsNullOrEmpty(lv.Size_Override))
-                    vg.MinSizeBlk += Convert.ToInt64(lv.Size_Override);
+                if (!string.IsNullOrEmpty(lv.CustomSize))
+                    vg.MinSizeBlk += Convert.ToInt64(lv.CustomSize);
                 else
                 {
                     //If logical volume is not resizable use the actual size of the logical volume during upload
-                    if (string.IsNullOrEmpty(lv.Resize))
-                        vg.MinSizeBlk += Convert.ToInt64(lv.Size);
+                    if (lv.VolumeSize == null)
+                        vg.MinSizeBlk += lv.Size;
                     else
                     {
                         //The resize value and used_mb value are calculated during upload by two different methods
                         //Use the one that is bigger just in case.
-                        if (Convert.ToInt64(lv.Resize) > Convert.ToInt64(lv.Used_Mb))
-                            vg.MinSizeBlk += (Convert.ToInt64(lv.Resize)*1024*1024)/lbsByte;
+                        if (lv.VolumeSize > lv.UsedMb)
+                            vg.MinSizeBlk += lv.VolumeSize*1024*1024/lbsByte;
                         else
-                            vg.MinSizeBlk += (Convert.ToInt64(lv.Used_Mb)*1024*1024)/lbsByte;
+                            vg.MinSizeBlk += lv.UsedMb*1024*1024/lbsByte;
                     }
                 }
             }
@@ -310,8 +309,8 @@ namespace Partition
 
             //Could Have VG Without LVs
             //Set arbitrary minimum size to 100mb
-            vg.Pv = specs.Hd[hdNumberToGet].Partition[partNumberToGet].Vg.Pv;
-            vg.MinSizeBlk = (Convert.ToInt64("100")*1024*1024)/lbsByte;
+            vg.Pv = specs.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup.PhysicalVolume;
+            vg.MinSizeBlk = 100*1024*1024/lbsByte;
             return vg;
         }
     }

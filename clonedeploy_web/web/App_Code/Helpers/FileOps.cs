@@ -111,6 +111,20 @@ namespace Helpers
                      FilePermissions.S_IRUSR));
         }
 
+        public static string ReadImageSpecs(string imageName)
+        {
+            var path = Settings.PrimaryStoragePath + imageName + Path.DirectorySeparatorChar + "specs";
+            if (File.Exists(path))
+            {
+                using (StreamReader reader = new StreamReader(path))
+                {
+                    return reader.ReadLine() ?? "";
+                }
+            }
+            return "";
+
+        }
+
         public bool WritePath(string path, string contents)
         {
             try

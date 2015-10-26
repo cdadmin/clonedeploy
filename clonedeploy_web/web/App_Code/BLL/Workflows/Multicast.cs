@@ -24,6 +24,7 @@ using System.Threading;
 using System.Web;
 using Helpers;
 using Models;
+using Models.ImageSchema;
 using Newtonsoft.Json;
 using Partition;
 using Pxe;
@@ -246,13 +247,13 @@ namespace Tasks
             //Multicasting currently only supports the first active hd
             //Find First Active HD
             var image = BLL.Image.GetImage(Convert.ToInt32(ActiveMcTask.Image));
-            ImagePhysicalSpecs specs;
+            ImageSchema specs;
             if (!string.IsNullOrEmpty(image.ClientSizeCustom))
             {
-                specs = JsonConvert.DeserializeObject<ImagePhysicalSpecs>(image.ClientSizeCustom);
+                specs = JsonConvert.DeserializeObject<ImageSchema>(image.ClientSizeCustom);
                 try
                 {
-                    specs = JsonConvert.DeserializeObject<ImagePhysicalSpecs>(image.ClientSizeCustom);
+                    specs = JsonConvert.DeserializeObject<ImageSchema>(image.ClientSizeCustom);
                 }
                 catch
                 {
@@ -261,10 +262,10 @@ namespace Tasks
             }
             else
             {
-                specs = JsonConvert.DeserializeObject<ImagePhysicalSpecs>(image.ClientSize);
+                specs = JsonConvert.DeserializeObject<ImageSchema>(image.ClientSize);
                 try
                 {
-                    specs = JsonConvert.DeserializeObject<ImagePhysicalSpecs>(image.ClientSize);
+                    specs = JsonConvert.DeserializeObject<ImageSchema>(image.ClientSize);
                 }
                 catch
                 {
@@ -272,7 +273,7 @@ namespace Tasks
                 }
             }
             var activeCounter = 0;
-            foreach (var hd in specs.Hd)
+            foreach (var hd in specs.HardDrives)
             {
                 if (hd.Active == "1")
                 {
@@ -322,7 +323,7 @@ namespace Tasks
             }
 
             var x = 0;
-            foreach (var part in specs.Hd[activeCounter].Partition)
+            foreach (var part in specs.HardDrives[activeCounter].Partitions)
             {
                 string udpFile = null;
                 if (part.Active != "1") continue;
@@ -344,45 +345,45 @@ namespace Tasks
                 else
                 {
                     //Look for lvm
-                    if (part.Vg != null)
+                    if (part.VolumeGroup != null)
                     {
-                        if (part.Vg.Lv != null)
+                        if (part.VolumeGroup.LogicalVolumes != null)
                         {
-                            foreach (var lv in part.Vg.Lv)
+                            foreach (var lv in part.VolumeGroup.LogicalVolumes)
                             {
                                 if (lv.Active != "1") continue;
                                 if (
-                                    File.Exists(imagePath + Path.DirectorySeparatorChar + lv.Vg + "-" +
+                                    File.Exists(imagePath + Path.DirectorySeparatorChar + lv.VolumeGroup + "-" +
                                                 lv.Name + ".ntfs" +
                                                 compExt))
-                                    udpFile = imagePath + Path.DirectorySeparatorChar + lv.Vg + "-" +
+                                    udpFile = imagePath + Path.DirectorySeparatorChar + lv.VolumeGroup + "-" +
                                               lv.Name + ".ntfs" +
                                               compExt;
                                 else if (
-                                    File.Exists(imagePath + Path.DirectorySeparatorChar + lv.Vg + "-" +
+                                    File.Exists(imagePath + Path.DirectorySeparatorChar + lv.VolumeGroup + "-" +
                                                 lv.Name + ".fat" +
                                                 compExt))
-                                    udpFile = imagePath + Path.DirectorySeparatorChar + lv.Vg + "-" +
+                                    udpFile = imagePath + Path.DirectorySeparatorChar + lv.VolumeGroup + "-" +
                                               lv.Name + ".fat" +
                                               compExt;
                                 else if (
-                                    File.Exists(imagePath + Path.DirectorySeparatorChar + lv.Vg + "-" +
+                                    File.Exists(imagePath + Path.DirectorySeparatorChar + lv.VolumeGroup + "-" +
                                                 lv.Name +
                                                 ".extfs" + compExt))
-                                    udpFile = imagePath + Path.DirectorySeparatorChar + lv.Vg + "-" +
+                                    udpFile = imagePath + Path.DirectorySeparatorChar + lv.VolumeGroup + "-" +
                                               lv.Name +
                                               ".extfs" + compExt;
                                 else if (
-                                    File.Exists(imagePath + Path.DirectorySeparatorChar + lv.Vg + "-" +
+                                    File.Exists(imagePath + Path.DirectorySeparatorChar + lv.VolumeGroup + "-" +
                                                 lv.Name +
                                                 ".hfsp" + compExt))
-                                    udpFile = imagePath + Path.DirectorySeparatorChar + lv.Vg + "-" +
+                                    udpFile = imagePath + Path.DirectorySeparatorChar + lv.VolumeGroup + "-" +
                                               lv.Name +
                                               ".hfsp" + compExt;
                                 else if (
-                                    File.Exists(imagePath + Path.DirectorySeparatorChar + lv.Vg + "-" +
+                                    File.Exists(imagePath + Path.DirectorySeparatorChar + lv.VolumeGroup + "-" +
                                                 lv.Name + ".imager" + compExt))
-                                    udpFile = imagePath + Path.DirectorySeparatorChar + lv.Vg + "-" +
+                                    udpFile = imagePath + Path.DirectorySeparatorChar + lv.VolumeGroup + "-" +
                                               lv.Name + ".imager" + compExt;
                             }
                         }

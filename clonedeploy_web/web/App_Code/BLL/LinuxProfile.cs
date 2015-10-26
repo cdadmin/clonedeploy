@@ -59,7 +59,7 @@ namespace BLL
         {
             var validationResult = new Models.ValidationResult();
 
-            if (string.IsNullOrEmpty(linuxProfile.Name) || linuxProfile.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
+            if (string.IsNullOrEmpty(linuxProfile.Name) || !linuxProfile.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {
                 validationResult.IsValid = false;
                 validationResult.Message = "Linux Profile Name Is Not Valid";

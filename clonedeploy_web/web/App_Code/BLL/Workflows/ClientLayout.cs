@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Models;
+using Models.ImageSchema;
 
 namespace Partition
 {
@@ -20,7 +21,7 @@ namespace Partition
             PrimaryAndExtendedPartitions = new List<ClientPartition>();
             LogicalPartitions = new List<ClientPartition>();
             LogicalVolumes = new List<ClientLv>();
-            VolumeGroups = new List<VolumeGroup>();
+            VolumeGroups = new List<VolumeGroupHelper>();
 
             PartitionLayoutVerified = false;
             PartitionSectorStart = 0;
@@ -28,7 +29,7 @@ namespace Partition
 
         private string BootPart { get; set; }
         public string ClientHd { get; set; }
-        private ExtendedPartition Ep { get; set; }
+        private ExtendedPartitionHelper Ep { get; set; }
         private int HdNumberToGet { get; set; }
         public string HdToGet { get; set; }
         public Image Image { get; set; }
@@ -41,9 +42,9 @@ namespace Partition
         private bool PartitionLayoutVerified { get; set; }
         private int PartitionSectorStart { get; set; }
         private List<ClientPartition> PrimaryAndExtendedPartitions { get; set; }
-        private ImagePhysicalSpecs Specs { get; set; }
+        private ImageSchema Specs { get; set; }
         public string TaskType { get; set; }
-        private List<VolumeGroup> VolumeGroups { get; set; }
+        private List<VolumeGroupHelper> VolumeGroups { get; set; }
 
         private void CreateOutput()
         {
@@ -66,7 +67,7 @@ namespace Partition
             }
 
             //Create Menu
-            if (Specs.Hd[HdNumberToGet].Table.ToLower() == "mbr")
+            if (Specs.HardDrives[HdNumberToGet].Table.ToLower() == "mbr")
             {
                 var counter = 0;
                 var partCount = PrimaryAndExtendedPartitions.Count;
@@ -210,25 +211,25 @@ namespace Partition
             }
 
 
-            foreach (var part in from part in Specs.Hd[HdNumberToGet].Partition
+            foreach (var part in from part in Specs.HardDrives[HdNumberToGet].Partitions
                 where part.Active == "1"
-                where part.Vg != null
-                where part.Vg.Lv != null
+                where part.VolumeGroup != null
+                where part.VolumeGroup.LogicalVolumes != null
                 select part)
             {
                 PartitionLayoutText += "echo \"pvcreate -u " + part.Uuid + " --norestorefile -yf " +
-                                       ClientHd + part.Vg.Pv[part.Vg.Pv.Length - 1] +
+                                       ClientHd + part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] +
                                        "\" >>/tmp/lvmcommands \r\n";
-                PartitionLayoutText += "echo \"vgcreate " + part.Vg.Name + " " + ClientHd +
-                                       part.Vg.Pv[part.Vg.Pv.Length - 1] + " -yf" +
+                PartitionLayoutText += "echo \"vgcreate " + part.VolumeGroup.Name + " " + ClientHd +
+                                       part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] + " -yf" +
                                        "\" >>/tmp/lvmcommands \r\n";
-                PartitionLayoutText += "echo \"" + part.Vg.Uuid + "\" >>/tmp/vg-" + part.Vg.Name +
+                PartitionLayoutText += "echo \"" + part.VolumeGroup.Uuid + "\" >>/tmp/vg-" + part.VolumeGroup.Name +
                                        " \r\n";
-                foreach (var lv in part.Vg.Lv)
+                foreach (var lv in part.VolumeGroup.LogicalVolumes)
                 {
                     foreach (var rlv in LogicalVolumes)
                     {
-                        if (lv.Name != rlv.Name || lv.Vg != rlv.Vg) continue;
+                        if (lv.Name != rlv.Name || lv.VolumeGroup != rlv.Vg) continue;
                         if (TaskType == "debug")
                         {
                             PartitionLayoutText += "echo \"lvcreate -L " +
@@ -247,7 +248,7 @@ namespace Partition
                                                "-" + rlv.Name + "\r\n";
                     }
                 }
-                PartitionLayoutText += "echo \"vgcfgbackup -f /tmp/lvm-" + part.Vg.Name +
+                PartitionLayoutText += "echo \"vgcfgbackup -f /tmp/lvm-" + part.VolumeGroup.Name +
                                        "\" >>/tmp/lvmcommands\r\n";
             }
 
@@ -274,11 +275,11 @@ namespace Partition
             HdNumberToGet = Convert.ToInt32(HdToGet) - 1;
 
             //Look for first active hd
-            if (Specs.Hd[HdNumberToGet].Active != "1")
+            if (Specs.HardDrives[HdNumberToGet].Active != "1")
             {
-                while (activeCounter <= Specs.Hd.Count())
+                while (activeCounter <= Specs.HardDrives.Count())
                 {
-                    if (Specs.Hd[activeCounter - 1].Active == "1")
+                    if (Specs.HardDrives[activeCounter - 1].Active == "1")
                     {
                         HdNumberToGet = activeCounter - 1;
                     }
@@ -286,7 +287,7 @@ namespace Partition
                 }
             }
 
-            LbsByte = Convert.ToInt32(Specs.Hd[HdNumberToGet].Lbs); //logical block size in bytes
+            LbsByte = Convert.ToInt32(Specs.HardDrives[HdNumberToGet].Lbs); //logical block size in bytes
             NewHdBlk = Convert.ToInt64(NewHdSize)/LbsByte; //size of client hard drive in block
 
             //Change the size of the hard drive being to deployed to to 99% of the drive.  Allow for math errors.
@@ -294,8 +295,8 @@ namespace Partition
 
 
             //Find the Boot partition
-            if (Specs.Hd[HdNumberToGet].Boot.Length > 0)
-                BootPart = Specs.Hd[HdNumberToGet].Boot.Substring(Specs.Hd[HdNumberToGet].Boot.Length - 1, 1);
+            if (Specs.HardDrives[HdNumberToGet].Boot.Length > 0)
+                BootPart = Specs.HardDrives[HdNumberToGet].Boot.Substring(Specs.HardDrives[HdNumberToGet].Boot.Length - 1, 1);
 
             if (!PrimaryAndExtendedPartitionLayout())
                 return;
@@ -332,7 +333,7 @@ namespace Partition
                 double totalExtendedPercentage = 0;
 
                 var partCounter = -1;
-                foreach (var part in Specs.Hd[HdNumberToGet].Partition)
+                foreach (var part in Specs.HardDrives[HdNumberToGet].Partitions)
                 {
                     partCounter++;
                     if (part.Type.ToLower() != "logical")
@@ -358,7 +359,7 @@ namespace Partition
                     if (helper.IsResizable)
                     {
                         var percentOfOrigDrive = Convert.ToInt64(part.Size)/
-                                                 (double) (Convert.ToInt64(Specs.Hd[HdNumberToGet].Size));
+                                                 (double) (Convert.ToInt64(Specs.HardDrives[HdNumberToGet].Size));
 
                         tmpClientPartitionSizeBlk = percentOfOrigDrive - (percentCounter/100) <= 0
                             ? Convert.ToInt64(Ep.AgreedSizeBlk*percentOfOrigDrive)
@@ -443,10 +444,10 @@ namespace Partition
             {
                 //Tell the volume group it has a size of the physical volume to work with * 99% to account for errors to allow alittle over
                 volumeGroup.AgreedPvSizeBlk = Convert.ToInt64(volumeGroup.AgreedPvSizeBlk*.99);
-                foreach (var partition in Specs.Hd[HdNumberToGet].Partition)
+                foreach (var partition in Specs.HardDrives[HdNumberToGet].Partitions)
                 {
                     //Find the partition this volume group belongs to
-                    if (Specs.Hd[HdNumberToGet].Name + partition.Number != volumeGroup.Pv) continue;
+                    if (Specs.HardDrives[HdNumberToGet].Name + partition.Number != volumeGroup.Pv) continue;
                     var singleLvVerified = false;
 
                     double percentCounter = -1;
@@ -460,7 +461,7 @@ namespace Partition
                             continue;
 
                         var isError = false;
-                        foreach (var lv in partition.Vg.Lv)
+                        foreach (var lv in partition.VolumeGroup.LogicalVolumes)
                         {
                             if (lv.Active != "1")
                                 continue;
@@ -468,7 +469,7 @@ namespace Partition
                             var clientPartitionLv = new ClientLv
                             {
                                 Name = lv.Name,
-                                Vg = lv.Vg,
+                                Vg = lv.VolumeGroup,
                                 Uuid = lv.Uuid,
                                 FsType = lv.FsType
                             };
@@ -481,7 +482,7 @@ namespace Partition
                             if (helper.IsResizable)
                             {
                                 var percentOfOrigDrive = Convert.ToInt64(lv.Size)/
-                                                         (double) (Convert.ToInt64(Specs.Hd[HdNumberToGet].Size));
+                                                         (double) (Convert.ToInt64(Specs.HardDrives[HdNumberToGet].Size));
                                 if (percentOfOrigDrive - (percentCounter/100) <= 0)
                                     tmpClientPartitionSizeLvBlk =
                                         Convert.ToInt64(volumeGroup.AgreedPvSizeBlk*percentOfOrigDrive);
@@ -571,10 +572,10 @@ namespace Partition
                 PrimaryAndExtendedPartitions.Clear();
                 LogicalPartitions.Clear();
                 VolumeGroups.Clear();
-                PartitionSectorStart = Convert.ToInt32(Specs.Hd[HdNumberToGet].Partition[0].Start);
+                PartitionSectorStart = Convert.ToInt32(Specs.HardDrives[HdNumberToGet].Partitions[0].Start);
                 var partCounter = -1;
 
-                foreach (var originalPartition in Specs.Hd[HdNumberToGet].Partition)
+                foreach (var originalPartition in Specs.HardDrives[HdNumberToGet].Partitions)
                 {
                     partCounter++;
 
@@ -608,7 +609,7 @@ namespace Partition
                     if (helper.IsResizable)
                     {
                         var percentOfOrigDrive = Convert.ToInt64(originalPartition.Size)/
-                                                 (double) (Convert.ToInt64(Specs.Hd[HdNumberToGet].Size));
+                                                 (double) (Convert.ToInt64(Specs.HardDrives[HdNumberToGet].Size));
 
                         //Change the resized partition size based off original percentage and percentCounter loop
                         //This is the active part of the loop that lowers the partition size based on each iteration
@@ -687,7 +688,7 @@ namespace Partition
                                 if (partition.Type.ToLower() == "extended")
                                     Ep.AgreedSizeBlk = Convert.ToInt64(partition.Size);
                                 for (var i = 0; i < VolumeGroups.Count(); i++)
-                                    if (Specs.Hd[HdNumberToGet].Name + partition.Number == VolumeGroups[i].Pv)
+                                    if (Specs.HardDrives[HdNumberToGet].Name + partition.Number == VolumeGroups[i].Pv)
                                         VolumeGroups[i].AgreedPvSizeBlk = Convert.ToInt64(partition.Size);
                             }
                         }
