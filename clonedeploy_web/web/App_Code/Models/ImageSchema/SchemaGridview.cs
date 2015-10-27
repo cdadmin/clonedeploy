@@ -10,7 +10,7 @@
         public bool Active { get; set; }
         public string Boot { get; set; }
         public string Guid { get; set; }
-        public string Lbs { get; set; }
+        public short Lbs { get; set; }
         public string Name { get; set; }
         public Partition[] Partitions { get; set; }
         public string Pbs { get; set; }
@@ -26,12 +26,12 @@
         public string FsType { get; set; }
         public string Guid { get; set; }
         public string Number { get; set; }
-        public long VolumeSize { get; set; }
-        public long Size { get; set; }
+        public string VolumeSize { get; set; }
+        public string Size { get; set; }
         public string CustomSize { get; set; }
         public long Start { get; set; }
         public string Type { get; set; }
-        public long UsedMb { get; set; }
+        public string UsedMb { get; set; }
         public string Uuid { get; set; }
         public VolumeGroup VolumeGroup { get; set; }
     }
@@ -41,7 +41,7 @@
         public LogicalVolume[] LogicalVolumes { get; set; }
         public string Name { get; set; }
         public string PhysicalVolume { get; set; }
-        public long Size { get; set; }
+        public string Size { get; set; }
         public string Type { get; set; }
         public string Uuid { get; set; }
     }
@@ -51,11 +51,11 @@
         public bool Active { get; set; }
         public string FsType { get; set; }
         public string Name { get; set; }
-        public long VolumeSize { get; set; }
-        public long Size { get; set; }
+        public string VolumeSize { get; set; }
+        public string Size { get; set; }
         public string CustomSize { get; set; }
         public string Type { get; set; }
-        public long UsedMb { get; set; }
+        public string UsedMb { get; set; }
         public string Uuid { get; set; }
         public string VolumeGroup { get; set; }
     }

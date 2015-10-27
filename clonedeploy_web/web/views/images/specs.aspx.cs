@@ -77,18 +77,21 @@ namespace views.images
 
             foreach (GridViewRow row in gv.Rows)
             {
-                row.Cells[6].Text = "hi";
+                if (partitions[row.RowIndex].VolumeGroup == null) continue;
+                if (partitions[row.RowIndex].VolumeGroup.Name == null) continue;
                 var gvVg = (GridView) row.FindControl("gvVG");
 
-                if (partitions[row.RowIndex].VolumeGroup != null)
-                {
-                    gvVg.DataSource = new List<VolumeGroup> {partitions[row.RowIndex].VolumeGroup};
-                    gvVg.DataBind();
 
-                    gvVg.Visible = true;
-                    var td = row.FindControl("tdVG");
-                    td.Visible = true;
-                }
+                gvVg.DataSource = new List<Models.ImageSchema.GridView.VolumeGroup>
+                {
+                    partitions[row.RowIndex].VolumeGroup
+                };
+                gvVg.DataBind();
+
+                gvVg.Visible = true;
+                var td = row.FindControl("tdVG");
+                td.Visible = true;
+
                 var isActive = ((HiddenField) row.FindControl("HiddenActivePart")).Value;
                 if (isActive != "1") continue;
                 var box = row.FindControl("chkPartActive") as CheckBox;

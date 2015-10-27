@@ -193,12 +193,12 @@ namespace views.images
                 try
                 {
                     var lbl = row.FindControl("lblSize") as Label;
-                    var imagePath = Settings.PrimaryStoragePath + row.Cells[4].Text;
+                    var imagePath = Settings.PrimaryStoragePath + row.Cells[4].Text + Path.DirectorySeparatorChar + "hd1";
 
                     var size = new FileOps().GetDirectorySize(new DirectoryInfo(imagePath))/1024f/1024f/1024f;
                     if (Math.Abs(size) < 0.1f)
                     {
-                        if (lbl != null) lbl.Text = "N/A";
+                        if (lbl != null) lbl.Text = "< 100M";
                     }
                     else if (lbl != null) lbl.Text = size.ToString("#.##") + " GB";
                 }
