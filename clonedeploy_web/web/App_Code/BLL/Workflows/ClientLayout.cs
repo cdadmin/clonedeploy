@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BLL.ClientPartitioning;
 using Models;
+using Models.ClientPartition;
 using Models.ImageSchema;
+using ClientPartition = Models.ClientPartition.ClientPartition;
 
 namespace Partition
 {
@@ -383,8 +386,8 @@ namespace Partition
 
                     if (helper.PartitionHasVolumeGroup)
                     {
-                        helper.Vg.AgreedPvSizeBlk = tmpClientPartitionSizeBlk;
-                        VolumeGroups.Add(helper.Vg);
+                        helper.VolumeGroupHelper.AgreedPvSizeBlk = tmpClientPartitionSizeBlk;
+                        VolumeGroups.Add(helper.VolumeGroupHelper);
                     }
                 }
 
@@ -638,8 +641,8 @@ namespace Partition
 
                     if (helper.PartitionHasVolumeGroup)
                     {
-                        helper.Vg.AgreedPvSizeBlk = tmpClientPartitionSizeBlk;
-                        VolumeGroups.Add(helper.Vg);
+                        helper.VolumeGroupHelper.AgreedPvSizeBlk = tmpClientPartitionSizeBlk;
+                        VolumeGroups.Add(helper.VolumeGroupHelper);
                     }
 
                     clientPartition.Size = tmpClientPartitionSizeBlk;

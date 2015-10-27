@@ -4,9 +4,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
+using BLL.ClientPartitioning;
 using Helpers;
 using Models.ImageSchema;
 using Newtonsoft.Json;
+using Partition;
 
 namespace BLL
 {
@@ -123,6 +125,34 @@ namespace BLL
             catch
             {
                 return null;
+            }
+        }
+
+        public static string ImageSizeOnServerForGridView(string imageName, string hdNumber)
+        {
+            try
+            {
+                var imagePath = Settings.PrimaryStoragePath + imageName + Path.DirectorySeparatorChar + "hd" + hdNumber;
+                var size = new FileOps().GetDirectorySize(new DirectoryInfo(imagePath)) / 1024f / 1024f / 1024f;
+                return Math.Abs(size) < 0.1f ? "< 100M" : size.ToString("#.##") + " GB";
+            }
+            catch
+            {
+                return "N/A";
+            }
+        }
+
+        public static string MinimumClientSizeForGridView(int imageId, int hdNumber)
+        {
+            try
+            {   
+                var img = BLL.Image.GetImage(Convert.ToInt32(imageId));
+                var fltClientSize = new MinimumSize(img).HardDrive(hdNumber, 1) / 1024f / 1024f / 1024f;
+                return Math.Abs(fltClientSize) < 0.1f ? "< 100M" : fltClientSize.ToString("#.##") + " GB";
+            }
+            catch
+            {
+                return "N/A";
             }
         }
     }
