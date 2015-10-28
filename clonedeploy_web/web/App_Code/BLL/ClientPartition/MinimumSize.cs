@@ -26,10 +26,10 @@ namespace BLL.ClientPartitioning
         ///     Calculates the minimum block size for an extended partition by determining the minimum size of all logical
         ///     partitions that fall under the extended.  Does not assume that any extended partitions actually exist.
         /// </summary>
-        public ExtendedPartitionHelper ExtendedPartition(int hdNumberToGet)
+        public ClientExtendedPartition ExtendedPartition(int hdNumberToGet)
         {
             var lbsByte = ImageSchema.HardDrives[hdNumberToGet].Lbs;
-            var extendedPartitionHelper = new ExtendedPartitionHelper
+            var extendedPartitionHelper = new ClientExtendedPartition
             {
                 MinSizeBlk = 0,
                 IsOnlySwap = false,
@@ -246,11 +246,11 @@ namespace BLL.ClientPartitioning
         ///     Calculates the minimum block size required for a volume group by determine the size of each
         ///     logical volume within the volume group.  Does not assume that any volume group actually exists.
         /// </summary>
-        public VolumeGroupHelper VolumeGroup(int hdNumberToGet, int partNumberToGet)
+        public ClientVolumeGroup VolumeGroup(int hdNumberToGet, int partNumberToGet)
         {
             var lbsByte = ImageSchema.HardDrives[hdNumberToGet].Lbs;
 
-            var volumeGroupHelper = new VolumeGroupHelper
+            var volumeGroupHelper = new ClientVolumeGroup
             {
                 MinSizeBlk = 0,
                 HasLv = false

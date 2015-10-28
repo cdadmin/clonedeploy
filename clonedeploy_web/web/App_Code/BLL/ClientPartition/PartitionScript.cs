@@ -9,13 +9,7 @@ namespace BLL.ClientPartitioning
     {
         private Models.ImageSchema.ImageSchema ImageSchema { get; set; }
         public string ClientHd { get; set; }
-        //private ExtendedPartitionHelper Ep { get; set; }
         private int HdNumberToGet { get; set; }
-        private List<ClientPartition> LogicalPartitions { get; set; }
-        private List<ClientLv> LogicalVolumes { get; set; }
-        public string PartitionLayoutText { get; set; }
-        private int PartitionSectorStart { get; set; }
-        //private List<ClientPartition> PrimaryAndExtendedPartitions { get; set; }
         public string TaskType { get; set; }
 
         public PartitionScript()
@@ -25,23 +19,25 @@ namespace BLL.ClientPartitioning
             //
         }
 
-        public void CreateOutput()
+        public void GeneratePartitionScript()
         {
+            string partitionScript = null;
+            var clientSchema = new BLL.ClientPartitioning.ClientPartition().GenerateClientSchema();
             if (TaskType == "debug")
             {
                 try
                 {
-                    Ep.AgreedSizeBlk = Ep.AgreedSizeBlk * 512 / 1024 / 1024;
+                    clientSchema.ExtendedPartition.AgreedSizeBlk = clientSchema.ExtendedPartition.AgreedSizeBlk * 512 / 1024 / 1024;
                 }
                 catch
                 {
                     // ignored
                 }
-                foreach (var p in PrimaryAndExtendedPartitions)
+                foreach (var p in clientSchema.PrimaryAndExtendedPartitions)
                     p.Size = p.Size * 512 / 1024 / 1024;
-                foreach (var p in LogicalPartitions)
+                foreach (var p in clientSchema.LogicalPartitions)
                     p.Size = p.Size * 512 / 1024 / 1024;
-                foreach (var p in LogicalVolumes)
+                foreach (var p in clientSchema.LogicalVolumes)
                     p.Size = p.Size * 512 / 1024 / 1024;
             }
 
@@ -49,15 +45,15 @@ namespace BLL.ClientPartitioning
             if (ImageSchema.HardDrives[HdNumberToGet].Table.ToLower() == "mbr")
             {
                 var counter = 0;
-                var partCount = PrimaryAndExtendedPartitions.Count;
+                var partCount = clientSchema.PrimaryAndExtendedPartitions.Count;
 
                 string partitionCommands;
-                if (Convert.ToInt32(PrimaryAndExtendedPartitions[0].Start) < 2048)
+                if (Convert.ToInt32(clientSchema.PrimaryAndExtendedPartitions[0].Start) < 2048)
                     partitionCommands = "fdisk -c=dos " + ClientHd + " &>>/tmp/clientlog.log <<FDISK\r\n";
                 else
                     partitionCommands = "fdisk " + ClientHd + " &>>/tmp/clientlog.log <<FDISK\r\n";
 
-                foreach (var part in PrimaryAndExtendedPartitions)
+                foreach (var part in clientSchema.PrimaryAndExtendedPartitions)
                 {
                     counter++;
                     partitionCommands += "n\r\n";
@@ -80,11 +76,11 @@ namespace BLL.ClientPartitioning
                     //}
 
                     if (counter == 1)
-                        partitionCommands += PartitionSectorStart + "\r\n";
+                        partitionCommands += clientSchema.FirstPartitionStartSector + "\r\n";
                     else
                         partitionCommands += "\r\n";
                     if (part.Type == "extended")
-                        partitionCommands += "+" + (Convert.ToInt64(Ep.AgreedSizeBlk) - 1) + "\r\n";
+                        partitionCommands += "+" + (Convert.ToInt64(clientSchema.ExtendedPartition.AgreedSizeBlk) - 1) + "\r\n";
                     else //FDISK seems to include the starting sector in size so we need to subtract 1
                         partitionCommands += "+" + (Convert.ToInt64(part.Size) - 1) + "\r\n";
 
@@ -96,26 +92,26 @@ namespace BLL.ClientPartitioning
                         partitionCommands += part.Number + "\r\n";
                         partitionCommands += part.FsId + "\r\n";
                     }
-                    if ((counter == 1 && part.IsBoot) || PrimaryAndExtendedPartitions.Count == 1)
+                    if ((counter == 1 && part.IsBoot) || clientSchema.PrimaryAndExtendedPartitions.Count == 1)
                         partitionCommands += "a\r\n";
                     if (counter != 1 && part.IsBoot)
                     {
                         partitionCommands += "a\r\n";
                         partitionCommands += part.Number + "\r\n";
                     }
-                    if ((counter != partCount || LogicalPartitions.Count != 0)) continue;
+                    if ((counter != partCount || clientSchema.LogicalPartitions.Count != 0)) continue;
                     partitionCommands += "w\r\n";
                     partitionCommands += "FDISK\r\n";
                 }
 
 
                 var logicalCounter = 0;
-                foreach (var logicalPart in LogicalPartitions)
+                foreach (var logicalPart in clientSchema.LogicalPartitions)
                 {
                     logicalCounter++;
                     partitionCommands += "n\r\n";
 
-                    if (PrimaryAndExtendedPartitions.Count < 4)
+                    if (clientSchema.PrimaryAndExtendedPartitions.Count < 4)
                         partitionCommands += "l\r\n";
 
 
@@ -137,21 +133,21 @@ namespace BLL.ClientPartitioning
                         partitionCommands += "a\r\n";
                         partitionCommands += logicalPart.Number + "\r\n";
                     }
-                    if (logicalCounter != LogicalPartitions.Count) continue;
+                    if (logicalCounter != clientSchema.LogicalPartitions.Count) continue;
                     partitionCommands += "w\r\n";
                     partitionCommands += "FDISK\r\n";
                 }
-                PartitionLayoutText += partitionCommands;
+                partitionScript += partitionCommands;
             }
             else
             {
                 var counter = 0;
-                var partCount = PrimaryAndExtendedPartitions.Count;
+                var partCount = clientSchema.PrimaryAndExtendedPartitions.Count;
 
                 var partitionCommands = "gdisk " + ClientHd + " &>>/tmp/clientlog.log <<GDISK\r\n";
 
                 bool isApple = false;
-                foreach (var part in PrimaryAndExtendedPartitions)
+                foreach (var part in clientSchema.PrimaryAndExtendedPartitions)
                 {
                     if (part.FsType.Contains("hfs"))
                     {
@@ -159,11 +155,11 @@ namespace BLL.ClientPartitioning
                         break;
                     }
                 }
-                if (PartitionSectorStart < 2048 && isApple) //osx cylinder boundary is 8
+                if (clientSchema.FirstPartitionStartSector < 2048 && isApple) //osx cylinder boundary is 8
                 {
                     partitionCommands += "x\r\nl\r\n8\r\nm\r\n";
                 }
-                foreach (var part in PrimaryAndExtendedPartitions)
+                foreach (var part in clientSchema.PrimaryAndExtendedPartitions)
                 {
                     counter++;
 
@@ -171,7 +167,7 @@ namespace BLL.ClientPartitioning
 
                     partitionCommands += part.Number + "\r\n";
                     if (counter == 1)
-                        partitionCommands += PartitionSectorStart + "\r\n";
+                        partitionCommands += clientSchema.FirstPartitionStartSector + "\r\n";
                     else
                         partitionCommands += "\r\n";
                     //GDISK seems to NOT include the starting sector in size so don't subtract 1 like in FDISK
@@ -186,7 +182,7 @@ namespace BLL.ClientPartitioning
                     partitionCommands += "y\r\n";
                     partitionCommands += "GDISK\r\n";
                 }
-                PartitionLayoutText += partitionCommands;
+                partitionScript += partitionCommands;
             }
 
 
@@ -196,38 +192,38 @@ namespace BLL.ClientPartitioning
                                  where part.VolumeGroup.LogicalVolumes != null
                                  select part)
             {
-                PartitionLayoutText += "echo \"pvcreate -u " + part.Uuid + " --norestorefile -yf " +
+                partitionScript += "echo \"pvcreate -u " + part.Uuid + " --norestorefile -yf " +
                                        ClientHd + part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] +
                                        "\" >>/tmp/lvmcommands \r\n";
-                PartitionLayoutText += "echo \"vgcreate " + part.VolumeGroup.Name + " " + ClientHd +
+                partitionScript += "echo \"vgcreate " + part.VolumeGroup.Name + " " + ClientHd +
                                        part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] + " -yf" +
                                        "\" >>/tmp/lvmcommands \r\n";
-                PartitionLayoutText += "echo \"" + part.VolumeGroup.Uuid + "\" >>/tmp/vg-" + part.VolumeGroup.Name +
+                partitionScript += "echo \"" + part.VolumeGroup.Uuid + "\" >>/tmp/vg-" + part.VolumeGroup.Name +
                                        " \r\n";
                 foreach (var lv in part.VolumeGroup.LogicalVolumes)
                 {
-                    foreach (var rlv in LogicalVolumes)
+                    foreach (var rlv in clientSchema.LogicalVolumes)
                     {
                         if (lv.Name != rlv.Name || lv.VolumeGroup != rlv.Vg) continue;
                         if (TaskType == "debug")
                         {
-                            PartitionLayoutText += "echo \"lvcreate -L " +
+                            partitionScript += "echo \"lvcreate -L " +
                                                    rlv.Size + "mb -n " +
                                                    rlv.Name + " " + rlv.Vg +
                                                    "\" >>/tmp/lvmcommands \r\n";
                         }
                         else
                         {
-                            PartitionLayoutText += "echo \"lvcreate -L " +
+                            partitionScript += "echo \"lvcreate -L " +
                                                    ((Convert.ToInt64(rlv.Size) - 8192)) + "s -n " +
                                                    rlv.Name + " " + rlv.Vg +
                                                    "\" >>/tmp/lvmcommands \r\n";
                         }
-                        PartitionLayoutText += "echo \"" + rlv.Uuid + "\" >>/tmp/" + rlv.Vg +
+                        partitionScript += "echo \"" + rlv.Uuid + "\" >>/tmp/" + rlv.Vg +
                                                "-" + rlv.Name + "\r\n";
                     }
                 }
-                PartitionLayoutText += "echo \"vgcfgbackup -f /tmp/lvm-" + part.VolumeGroup.Name +
+                partitionScript += "echo \"vgcfgbackup -f /tmp/lvm-" + part.VolumeGroup.Name +
                                        "\" >>/tmp/lvmcommands\r\n";
             }
 

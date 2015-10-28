@@ -14,7 +14,7 @@
         public string Uuid { get; set; }
     }
 
-    public class ClientLv
+    public class ClientLogicalVolume
     {
         public string FsType { get; set; }
         public string Name { get; set; }
@@ -22,18 +22,18 @@
         public string Uuid { get; set; }
         public string Vg { get; set; }
         public bool SizeIsDynamic { get; set; }
-
     }
 
-    public class PartitionHelper
+    public class ClientVolumeGroup
     {
-        public bool IsDynamicSize { get; set; }
+        public long AgreedPvSizeBlk { get; set; }
+        public bool HasLv { get; set; }
         public long MinSizeBlk { get; set; }
-        public bool PartitionHasVolumeGroup { get; set; }
-        public VolumeGroupHelper VolumeGroupHelper { get; set; }
+        public string Name { get; set; }
+        public string Pv { get; set; }
     }
 
-    public class ExtendedPartitionHelper
+    public class ClientExtendedPartition
     {
         public long AgreedSizeBlk { get; set; }
         public bool HasExtended { get; set; }
@@ -43,12 +43,15 @@
         public long MinSizeBlk { get; set; }
     }
 
-    public class VolumeGroupHelper
+    public class PartitionHelper
     {
-        public long AgreedPvSizeBlk { get; set; }
-        public bool HasLv { get; set; }
+        public bool IsDynamicSize { get; set; }
         public long MinSizeBlk { get; set; }
-        public string Name { get; set; }
-        public string Pv { get; set; }
+        public bool PartitionHasVolumeGroup { get; set; }
+        public ClientVolumeGroup VolumeGroupHelper { get; set; }
     }
+
+   
+
+    
 }
