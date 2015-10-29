@@ -10,115 +10,116 @@ namespace BLL.ClientPartitioning
     /// <summary>
     ///     Calculates the minimum sizes required for various hard drives / partitions for the client imaging process  
     /// </summary>
-    public class MinimumSize
+    public class ClientPartitionHelper
     {
         private Models.Image Image { get; set; }
         private Models.ImageSchema.ImageSchema ImageSchema { get; set; }
 
-        public MinimumSize(Models.Image image)
+        public ClientPartitionHelper(Models.Image image)
         {
             Image = image;
             ImageSchema = JsonConvert.DeserializeObject<Models.ImageSchema.ImageSchema>(FileOps.ReadImageSpecs(Image.Name)
                     );
         }
-       
+
         /// <summary>
         ///     Calculates the minimum block size for an extended partition by determining the minimum size of all logical
         ///     partitions that fall under the extended.  Does not assume that any extended partitions actually exist.
         /// </summary>
-        public ClientExtendedPartition ExtendedPartition(int hdNumberToGet)
+        public ExtendedPartitionHelper ExtendedPartition(int hdNumberToGet)
         {
             var lbsByte = ImageSchema.HardDrives[hdNumberToGet].Lbs;
-            var extendedPartitionHelper = new ClientExtendedPartition
+            var extendedPartitionHelper = new ExtendedPartitionHelper
             {
                 MinSizeBlk = 0,
                 IsOnlySwap = false,
                 LogicalCount = 0,
-                HasExtended = false,
                 HasLogical = false
             };
 
             //Determine if any Extended or Logical Partitions are present.  Needed ahead of time correctly calculate sizes.
             //And calculate minimum needed extended partition size
 
+            bool schemaHasExtendedPartition = false;
             string logicalFsType = null;
             foreach (var part in ImageSchema.HardDrives[hdNumberToGet].Partitions.Where(part => part.Active))
             {
                 if (part.Type.ToLower() == "extended")
-                    extendedPartitionHelper.HasExtended = true;
+                    schemaHasExtendedPartition = true;
                 if (part.Type.ToLower() != "logical") continue;
                 extendedPartitionHelper.LogicalCount++;
                 logicalFsType = part.FsType;
                 extendedPartitionHelper.HasLogical = true;
             }
 
-            if (logicalFsType != null && (extendedPartitionHelper.LogicalCount == 1 && logicalFsType.ToLower() == "swap"))
+            if (!schemaHasExtendedPartition) return null;
+
+            if (logicalFsType != null &&
+                (extendedPartitionHelper.LogicalCount == 1 && logicalFsType.ToLower() == "swap"))
                 extendedPartitionHelper.IsOnlySwap = true;
 
-            if (extendedPartitionHelper.HasExtended)
+            var partitionCounter = -1;
+            foreach (var partition in ImageSchema.HardDrives[hdNumberToGet].Partitions)
             {
-                var partitionCounter = -1;
-                foreach (var partition in ImageSchema.HardDrives[hdNumberToGet].Partitions)
+                partitionCounter++;
+                if (!partition.Active)
+                    continue;
+                if (extendedPartitionHelper.HasLogical)
                 {
-                    partitionCounter++;
-                    if (!partition.Active)
-                        continue;
-                    if (extendedPartitionHelper.HasLogical)
+                    if (partition.Type.ToLower() != "logical") continue;
+
+                    //Check if the logical partition is a physical volume for a volume group
+                    if (partition.FsId.ToLower() == "8e" || partition.FsId.ToLower() == "8e00")
                     {
-                        if (partition.Type.ToLower() != "logical") continue;
+                        //Add to the minimum extended size to the minimum size of the volume group
+                        var volumeGroupHelper = VolumeGroup(hdNumberToGet, partitionCounter);
+                        extendedPartitionHelper.MinSizeBlk += volumeGroupHelper.MinSizeBlk;
 
-                        //Check if the logical partition is a physical volume for a volume group
-                        if (partition.FsId.ToLower() == "8e" || partition.FsId.ToLower() == "8e00")
-                        {
-                            //Add to the minimum extended size to the minimum size of the volume group
-                            var volumeGroupHelper = VolumeGroup(hdNumberToGet, partitionCounter);
-                            extendedPartitionHelper.MinSizeBlk += volumeGroupHelper.MinSizeBlk;
-
-                            if (volumeGroupHelper.MinSizeBlk == 0)
-                                extendedPartitionHelper.MinSizeBlk += partition.Size;
-                        }
+                        if (volumeGroupHelper.MinSizeBlk == 0)
+                            extendedPartitionHelper.MinSizeBlk += partition.Size;
+                    }
+                    else
+                    {
+                        //Extended partition size overridden by user
+                        if (!string.IsNullOrEmpty(partition.CustomSize))
+                            extendedPartitionHelper.MinSizeBlk += Convert.ToInt64(partition.CustomSize);
                         else
                         {
-                            //Extended partition size overridden by user
-                            if (!string.IsNullOrEmpty(partition.CustomSize))
-                                extendedPartitionHelper.MinSizeBlk += Convert.ToInt64(partition.CustomSize);
+                            //if logical partition is not resizable use the partition size created during upload
+                            if (partition.VolumeSize == 0)
+                                extendedPartitionHelper.MinSizeBlk += partition.Size;
                             else
                             {
-                                //if logical partition is not resizable use the partition size created during upload
-                                if (partition.VolumeSize == 0)
-                                    extendedPartitionHelper.MinSizeBlk += partition.Size;
+                                //The resize value and used_mb value are calculated during upload by two different methods
+                                //Use the one that is bigger just in case.
+                                if (partition.VolumeSize > partition.UsedMb)
+                                    extendedPartitionHelper.MinSizeBlk += partition.VolumeSize*1024*1024/lbsByte;
                                 else
-                                {
-                                    //The resize value and used_mb value are calculated during upload by two different methods
-                                    //Use the one that is bigger just in case.
-                                    if (partition.VolumeSize > partition.UsedMb)
-                                        extendedPartitionHelper.MinSizeBlk += partition.VolumeSize*1024*1024/lbsByte;
-                                    else
-                                        extendedPartitionHelper.MinSizeBlk += partition.UsedMb*1024*1024/lbsByte;
-                                }
+                                    extendedPartitionHelper.MinSizeBlk += partition.UsedMb*1024*1024/lbsByte;
                             }
                         }
                     }
-                    //If Hd has extended but no logical, use the extended to calc size
+                }
+                //If Hd has extended but no logical, use the extended to calc size
+                else
+                {
+                    //In this case someone has defined an extended partition but has not created any logical
+                    //This could just be for preperation of leaving room for more logical partition later
+                    //This should be highly unlikely but should account for it anyway.  There is no way of knowing a minimum size required
+                    //while still having the partition be resizable.  So will set minimum sized required to unless user overrides
+                    if (partition.Type.ToLower() != "extended") continue;
+
+                    //extended partition size set by user
+                    if (!string.IsNullOrEmpty(partition.CustomSize))
+                        extendedPartitionHelper.MinSizeBlk = Convert.ToInt64(partition.CustomSize);
                     else
-                    {
-                        //In this case someone has defined an extended partition but has not created any logical
-                        //This could just be for preperation of leaving room for more logical partition later
-                        //This should be highly unlikely but should account for it anyway.  There is no way of knowing a minimum size required
-                        //while still having the partition be resizable.  So will set minimum sized required to unless user overrides
-                        if (partition.Type.ToLower() != "extended") continue;
+                    //set arbitary minimum to 100MB
+                        extendedPartitionHelper.MinSizeBlk = 100*1024*1024/lbsByte;
 
-                        //extended partition size set by user
-                        if (!string.IsNullOrEmpty(partition.CustomSize))
-                            extendedPartitionHelper.MinSizeBlk = Convert.ToInt64(partition.CustomSize);
-                        else
-                        //set arbitary minimum to 100MB
-                            extendedPartitionHelper.MinSizeBlk = 100*1024*1024/lbsByte;
-
-                        break; //Like the Highlander there can be only one extended partition
-                    }
+                    break; //Like the Highlander there can be only one extended partition
                 }
             }
+
             //Logical paritions default to 1MB more than the previous block using fdisk. This needs to be added to extended size so logical parts will fit inside
             long epPadding = (((1048576/lbsByte)*extendedPartitionHelper.LogicalCount) + (1048576/lbsByte));
             extendedPartitionHelper.MinSizeBlk += epPadding;
@@ -246,11 +247,11 @@ namespace BLL.ClientPartitioning
         ///     Calculates the minimum block size required for a volume group by determine the size of each
         ///     logical volume within the volume group.  Does not assume that any volume group actually exists.
         /// </summary>
-        public ClientVolumeGroup VolumeGroup(int hdNumberToGet, int partNumberToGet)
+        public ClientVolumeGroupHelper VolumeGroup(int hdNumberToGet, int partNumberToGet)
         {
             var lbsByte = ImageSchema.HardDrives[hdNumberToGet].Lbs;
 
-            var volumeGroupHelper = new ClientVolumeGroup
+            var volumeGroupHelper = new ClientVolumeGroupHelper
             {
                 MinSizeBlk = 0,
                 HasLv = false

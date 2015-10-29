@@ -24,7 +24,7 @@ namespace BLL.ClientPartitioning
             PrimaryAndExtendedPartitions = new List<Models.ClientPartition.ClientPartition>();
             LogicalPartitions = new List<Models.ClientPartition.ClientPartition>();
             LogicalVolumes = new List<ClientLogicalVolume>();
-            VolumeGroups = new List<ClientVolumeGroup>();
+            VolumeGroupHelpers = new List<ClientVolumeGroupHelper>();
             ImageSchema = JsonConvert.DeserializeObject<Models.ImageSchema.ImageSchema>(FileOps.ReadImageSpecs(Image.Name)
                     );
         }
@@ -40,9 +40,9 @@ namespace BLL.ClientPartitioning
         public int FirstPartitionStartSector { get; set; }
         public List<Models.ClientPartition.ClientPartition> PrimaryAndExtendedPartitions { get; set; }
         public List<Models.ClientPartition.ClientPartition> LogicalPartitions { get; set; }
-        public List<ClientVolumeGroup> VolumeGroups { get; set; }
+        public List<ClientVolumeGroupHelper> VolumeGroupHelpers { get; set; }
         public List<Models.ClientPartition.ClientLogicalVolume> LogicalVolumes { get; set; }
-        public ClientExtendedPartition ExtendedPartition { get; set; }
+        public ExtendedPartitionHelper ExtendedPartitionHelper { get; set; }
 
         /// <summary>
         ///     Generates the partitioning layout used for the client when restoring an image.
@@ -79,11 +79,11 @@ namespace BLL.ClientPartitioning
             if (!PrimaryAndExtendedPartitionLayout())
                 return null;
 
-            if (ExtendedPartition.HasLogical)
+            if (ExtendedPartitionHelper.HasLogical)
                 if (!LogicalPartitionLayout())
                     return null;
 
-            if (VolumeGroups.Any())
+            if (VolumeGroupHelpers.Any())
                 if (!LogicalVolumeLayout())
                     return null;
 
@@ -99,14 +99,13 @@ namespace BLL.ClientPartitioning
 
         private bool PrimaryAndExtendedPartitionLayout()
         {
-            var minimumSize = new MinimumSize(Image);
-            ExtendedPartition = minimumSize.ExtendedPartition(HdNumberToGet);
-            ExtendedPartition.AgreedSizeBlk = 0;
-
 
             //Try to determine a layout for each primary or extended partition that will be able to fit logical partitions
             //or logical volumes in.  Also if the partition is logical and is the physical volume for a volume group determine 
             // a size that will work for all logical volumes
+            ExtendedPartitionHelper = new ClientPartitionHelper(Image).ExtendedPartition(HdNumberToGet);
+            ExtendedPartitionHelper.AgreedSizeBlk = 0;
+
             double percentCounter = -1;
             var partitionLayoutVerified = false;
             while (!partitionLayoutVerified)
@@ -115,7 +114,7 @@ namespace BLL.ClientPartitioning
                 var isError = false;
                 double totalHdPercentage = 0;
                 PrimaryAndExtendedPartitions.Clear();
-                VolumeGroups.Clear();
+                VolumeGroupHelpers.Clear();
                 FirstPartitionStartSector = Convert.ToInt32(ImageSchema.HardDrives[HdNumberToGet].Partitions[0].Start);
                 var partCounter = -1;
 
@@ -145,7 +144,7 @@ namespace BLL.ClientPartitioning
                     };
 
 
-                    var partitionHelper = minimumSize.Partition(HdNumberToGet, partCounter);
+                    var partitionHelper = new ClientPartitionHelper(Image).Partition(HdNumberToGet, partCounter);
                     var percentOfHdForThisPartition = (double)partitionHelper.MinSizeBlk / NewHdBlk;
                     long tmpClientPartitionSizeBlk = partitionHelper.MinSizeBlk;
 
@@ -168,7 +167,7 @@ namespace BLL.ClientPartitioning
                         //Each logical partition requires and extra 1 mb added to the size of the extended partition.
                         if (clientPartition.Type.ToLower() == "extended")
                             percentOfHdForThisPartition = ((double)(tmpClientPartitionSizeBlk) +
-                                                           (((1048576 / LbsByte) * ExtendedPartition.LogicalCount) + (1048576 / LbsByte))) /
+                                                           (((1048576 / LbsByte) * ExtendedPartitionHelper.LogicalCount) + (1048576 / LbsByte))) /
                                                           NewHdBlk;
                         else
                             percentOfHdForThisPartition = (double)(tmpClientPartitionSizeBlk) / NewHdBlk;
@@ -182,12 +181,12 @@ namespace BLL.ClientPartitioning
                     }
 
                     if (clientPartition.Type.ToLower() == "extended")
-                        ExtendedPartition.AgreedSizeBlk = tmpClientPartitionSizeBlk;
+                        ExtendedPartitionHelper.AgreedSizeBlk = tmpClientPartitionSizeBlk;
 
                     if (partitionHelper.PartitionHasVolumeGroup)
                     {
                         partitionHelper.VolumeGroupHelper.AgreedPvSizeBlk = tmpClientPartitionSizeBlk;
-                        VolumeGroups.Add(partitionHelper.VolumeGroupHelper);
+                        VolumeGroupHelpers.Add(partitionHelper.VolumeGroupHelper);
                     }
 
                     clientPartition.Size = tmpClientPartitionSizeBlk;
@@ -229,10 +228,10 @@ namespace BLL.ClientPartitioning
                             {
                                 partition.Size = partition.Size + (totalUnallocated / dynamicPartitionCount);
                                 if (partition.Type.ToLower() == "extended")
-                                    ExtendedPartition.AgreedSizeBlk = Convert.ToInt64(partition.Size);
-                                for (var i = 0; i < VolumeGroups.Count(); i++)
-                                    if (ImageSchema.HardDrives[HdNumberToGet].Name + partition.Number == VolumeGroups[i].Pv)
-                                        VolumeGroups[i].AgreedPvSizeBlk = Convert.ToInt64(partition.Size);
+                                    ExtendedPartitionHelper.AgreedSizeBlk = Convert.ToInt64(partition.Size);
+                                for (var i = 0; i < VolumeGroupHelpers.Count(); i++)
+                                    if (ImageSchema.HardDrives[HdNumberToGet].Name + partition.Number == VolumeGroupHelpers[i].Pv)
+                                        VolumeGroupHelpers[i].AgreedPvSizeBlk = Convert.ToInt64(partition.Size);
                             }
                         }
                     }
@@ -248,7 +247,6 @@ namespace BLL.ClientPartitioning
 
         private bool LogicalPartitionLayout()
         {
-            var minimumSize = new MinimumSize(Image);
             // Try to resize logical to fit inside newly created extended
             double percentCounter = 0;
 
@@ -278,9 +276,9 @@ namespace BLL.ClientPartitioning
                         FsType = part.FsType
                     };
 
-                    var logicalPartitionHelper = minimumSize.Partition(HdNumberToGet, partCounter);
+                    var logicalPartitionHelper = new ClientPartitionHelper(Image).Partition(HdNumberToGet, partCounter);
 
-                    var percentOfExtendedForThisPartition = (double)logicalPartitionHelper.MinSizeBlk / ExtendedPartition.AgreedSizeBlk;
+                    var percentOfExtendedForThisPartition = (double)logicalPartitionHelper.MinSizeBlk / ExtendedPartitionHelper.AgreedSizeBlk;
                     var tmpClientPartitionSizeBlk = logicalPartitionHelper.MinSizeBlk;
 
                     if (logicalPartitionHelper.IsDynamicSize)
@@ -290,11 +288,11 @@ namespace BLL.ClientPartitioning
                                                  (double)(Convert.ToInt64(ImageSchema.HardDrives[HdNumberToGet].Size));
 
                         tmpClientPartitionSizeBlk = percentOfOrigDrive - (percentCounter / 100) <= 0
-                            ? Convert.ToInt64(ExtendedPartition.AgreedSizeBlk * percentOfOrigDrive)
-                            : Convert.ToInt64(ExtendedPartition.AgreedSizeBlk * (percentOfOrigDrive - (percentCounter / 100)));
+                            ? Convert.ToInt64(ExtendedPartitionHelper.AgreedSizeBlk * percentOfOrigDrive)
+                            : Convert.ToInt64(ExtendedPartitionHelper.AgreedSizeBlk * (percentOfOrigDrive - (percentCounter / 100)));
 
                         percentOfExtendedForThisPartition = (double)(tmpClientPartitionSizeBlk) /
-                                                            ExtendedPartition.AgreedSizeBlk;
+                                                            ExtendedPartitionHelper.AgreedSizeBlk;
                     }
 
 
@@ -312,7 +310,7 @@ namespace BLL.ClientPartitioning
                     if (logicalPartitionHelper.PartitionHasVolumeGroup)
                     {
                         logicalPartitionHelper.VolumeGroupHelper.AgreedPvSizeBlk = tmpClientPartitionSizeBlk;
-                        VolumeGroups.Add(logicalPartitionHelper.VolumeGroupHelper);
+                        VolumeGroupHelpers.Add(logicalPartitionHelper.VolumeGroupHelper);
                     }
                 }
 
@@ -338,7 +336,7 @@ namespace BLL.ClientPartitioning
                             if (partition.SizeIsDynamic)
                                 dynamicPartitionCount++;
                         }
-                        var totalUnallocated = ExtendedPartition.AgreedSizeBlk - totalAllocatedBlk;
+                        var totalUnallocated = ExtendedPartitionHelper.AgreedSizeBlk - totalAllocatedBlk;
                         if (dynamicPartitionCount > 0)
                         {
                             foreach (
@@ -364,9 +362,8 @@ namespace BLL.ClientPartitioning
 
         private bool LogicalVolumeLayout()
         {
-            var minimumSize = new MinimumSize(Image);
             //Try to resize lv to fit inside newly created lvm
-            foreach (var volumeGroup in VolumeGroups)
+            foreach (var volumeGroup in VolumeGroupHelpers)
             {
                 //Tell the volume group it has a size of the physical volume to work with * 99% to account for errors to allow alittle over
                 volumeGroup.AgreedPvSizeBlk = Convert.ToInt64(volumeGroup.AgreedPvSizeBlk * .99);
@@ -402,7 +399,7 @@ namespace BLL.ClientPartitioning
                             };
 
 
-                            var logicalVolumeHelper = minimumSize.LogicalVolume(lv, LbsByte);
+                            var logicalVolumeHelper = new ClientPartitionHelper(Image).LogicalVolume(lv, LbsByte);
                             double percentOfPvForThisLv = (double)logicalVolumeHelper.MinSizeBlk / NewHdBlk;
                             var tmpClientPartitionSizeLvBlk = logicalVolumeHelper.MinSizeBlk;
 

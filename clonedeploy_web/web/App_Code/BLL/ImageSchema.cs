@@ -147,7 +147,7 @@ namespace BLL
             try
             {   
                 var img = BLL.Image.GetImage(Convert.ToInt32(imageId));
-                var fltClientSize = new MinimumSize(img).HardDrive(hdNumber, 1) / 1024f / 1024f / 1024f;
+                var fltClientSize = new ClientPartitionHelper(img).HardDrive(hdNumber, 1) / 1024f / 1024f / 1024f;
                 return Math.Abs(fltClientSize) < 0.1f ? "< 100M" : fltClientSize.ToString("#.##") + " GB";
             }
             catch

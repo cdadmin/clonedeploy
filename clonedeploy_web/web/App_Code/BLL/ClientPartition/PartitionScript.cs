@@ -5,14 +5,14 @@ using Models.ClientPartition;
 
 namespace BLL.ClientPartitioning
 {
-    public class PartitionScript
+    public class ClientPartitionScript
     {
         private Models.ImageSchema.ImageSchema ImageSchema { get; set; }
         public string ClientHd { get; set; }
         private int HdNumberToGet { get; set; }
         public string TaskType { get; set; }
 
-        public PartitionScript()
+        public ClientPartitionScript()
         {
             //
             // TODO: Add constructor logic here
@@ -27,7 +27,7 @@ namespace BLL.ClientPartitioning
             {
                 try
                 {
-                    clientSchema.ExtendedPartition.AgreedSizeBlk = clientSchema.ExtendedPartition.AgreedSizeBlk * 512 / 1024 / 1024;
+                    clientSchema.ExtendedPartitionHelper.AgreedSizeBlk = clientSchema.ExtendedPartitionHelper.AgreedSizeBlk * 512 / 1024 / 1024;
                 }
                 catch
                 {
@@ -80,7 +80,7 @@ namespace BLL.ClientPartitioning
                     else
                         partitionCommands += "\r\n";
                     if (part.Type == "extended")
-                        partitionCommands += "+" + (Convert.ToInt64(clientSchema.ExtendedPartition.AgreedSizeBlk) - 1) + "\r\n";
+                        partitionCommands += "+" + (Convert.ToInt64(clientSchema.ExtendedPartitionHelper.AgreedSizeBlk) - 1) + "\r\n";
                     else //FDISK seems to include the starting sector in size so we need to subtract 1
                         partitionCommands += "+" + (Convert.ToInt64(part.Size) - 1) + "\r\n";
 

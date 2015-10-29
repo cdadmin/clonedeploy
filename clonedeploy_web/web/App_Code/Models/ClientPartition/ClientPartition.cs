@@ -24,7 +24,7 @@
         public bool SizeIsDynamic { get; set; }
     }
 
-    public class ClientVolumeGroup
+    public class ClientVolumeGroupHelper
     {
         public long AgreedPvSizeBlk { get; set; }
         public bool HasLv { get; set; }
@@ -33,10 +33,9 @@
         public string Pv { get; set; }
     }
 
-    public class ClientExtendedPartition
+    public class ExtendedPartitionHelper
     {
         public long AgreedSizeBlk { get; set; }
-        public bool HasExtended { get; set; }
         public bool HasLogical { get; set; }
         public bool IsOnlySwap { get; set; }
         public int LogicalCount { get; set; }
@@ -48,10 +47,6 @@
         public bool IsDynamicSize { get; set; }
         public long MinSizeBlk { get; set; }
         public bool PartitionHasVolumeGroup { get; set; }
-        public ClientVolumeGroup VolumeGroupHelper { get; set; }
+        public ClientVolumeGroupHelper VolumeGroupHelper { get; set; }
     }
-
-   
-
-    
 }
