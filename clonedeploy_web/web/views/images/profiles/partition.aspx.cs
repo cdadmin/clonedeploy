@@ -14,9 +14,7 @@ public partial class views_images_profiles_partition : Images
     {
         if (!IsPostBack)
         {
-            ddlPartitionMethod.Text = ImageProfile.PartitionMethod;
-            chkDownForceDynamic.Checked = Convert.ToBoolean(ImageProfile.ForceDynamicPartitions);
-          
+            ddlPartitionMethod.Text = ImageProfile.PartitionMethod;          
             DisplayLayout();
         }
     }
@@ -157,36 +155,7 @@ public partial class views_images_profiles_partition : Images
         }
     }
 
-    protected void btnPart_Click(object sender, EventArgs e)
-    {
-        var selectedHd = (string)(ViewState["selectedHD"]);
-        var control = sender as Control;
-        if (control == null) return;
-        var gvRow = (GridViewRow)control.Parent.Parent;
-        var gv = (GridView)gvRow.FindControl("gvFiles");
-        var selectedPartition = gvRow.Cells[3].Text;
-
-        var btn = (LinkButton)gvRow.FindControl("partClick");
-
-        if (gv.Visible == false)
-        {
-            gv.Visible = true;
-            var td = gvRow.FindControl("tdFile");
-            td.Visible = true;
-            gv.DataSource = ImageSchema.GetPartitionImageFileInfoForGridView(Image, selectedHd,
-                selectedPartition);
-            gv.DataBind();
-            btn.Text = "-";
-        }
-        else
-        {
-            gv.Visible = false;
-            var td = gvRow.FindControl("tdFile");
-            td.Visible = false;
-            btn.Text = "+";
-        }
-    }
-
+    
     protected void btnHd_Click(object sender, EventArgs e)
     {
         var control = sender as Control;

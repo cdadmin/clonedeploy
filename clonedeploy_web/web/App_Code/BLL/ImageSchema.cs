@@ -189,6 +189,11 @@ namespace BLL
                 return "N/A";
             }
         }
+
+        public Models.ImageSchema.GridView.Schema GetImageSchema()
+        {
+            return _imageSchema;
+        }
     }
 }
 

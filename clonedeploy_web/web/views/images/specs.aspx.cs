@@ -77,11 +77,14 @@ namespace views.images
 
             foreach (GridViewRow row in gv.Rows)
             {
+                var isActive = Convert.ToBoolean(((HiddenField)row.FindControl("HiddenActivePart")).Value);
+                if (!isActive) continue;
+                var box = row.FindControl("chkPartActive") as CheckBox;
+                if (box != null) box.Checked = true;
+
                 if (partitions[row.RowIndex].VolumeGroup == null) continue;
                 if (partitions[row.RowIndex].VolumeGroup.Name == null) continue;
                 var gvVg = (GridView) row.FindControl("gvVG");
-
-
                 gvVg.DataSource = new List<Models.ImageSchema.GridView.VolumeGroup>
                 {
                     partitions[row.RowIndex].VolumeGroup
@@ -92,10 +95,7 @@ namespace views.images
                 var td = row.FindControl("tdVG");
                 td.Visible = true;
 
-                var isActive = ((HiddenField) row.FindControl("HiddenActivePart")).Value;
-                if (isActive != "1") continue;
-                var box = row.FindControl("chkPartActive") as CheckBox;
-                if (box != null) box.Checked = true;
+              
             }
         }
 
@@ -131,8 +131,8 @@ namespace views.images
             }
 
             foreach (var box in (from GridViewRow row in gv.Rows
-                let isActive = ((HiddenField) row.FindControl("HiddenActivePart")).Value
-                where isActive == "1"
+                let isActive = Convert.ToBoolean(((HiddenField) row.FindControl("HiddenActivePart")).Value)
+                where isActive
                 select row.FindControl("chkPartActive")).OfType<CheckBox>())
             {
                 box.Checked = true;
@@ -151,12 +151,13 @@ namespace views.images
 
 
             foreach (var box in (from GridViewRow row in gvHDs.Rows
-                let isActive = ((HiddenField) row.FindControl("HiddenActive")).Value
-                where isActive == "1"
+                let isActive = Convert.ToBoolean(((HiddenField) row.FindControl("HiddenActive")).Value)
+                where isActive
                 select row.FindControl("chkHDActive")).OfType<CheckBox>())
             {
                 box.Checked = true;
             }
+
         }
     }
 }

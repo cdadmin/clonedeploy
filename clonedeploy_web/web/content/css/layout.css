@@ -16,7 +16,7 @@
 .spacer{ padding-bottom: 10px;}
 .container .column{float:left;display:inline;margin-right:10px;}
 .row{margin-bottom:20px;}
-.container .full.column{width:990px;}
+.container .full.column{width:990px;overflow-x:scroll;}
 .container .size-1.column{width:500px;}
 .container .size-2.column{width:400px;}
 .container .size-3.column{width:350px;}

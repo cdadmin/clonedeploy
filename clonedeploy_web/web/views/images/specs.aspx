@@ -19,7 +19,7 @@
         </asp:TemplateField>
         <asp:TemplateField>
             <ItemTemplate>
-                <asp:HiddenField ID="HiddenActive" runat="server" Value='<%# Bind("active") %>'/>
+                <asp:HiddenField ID="HiddenActive" runat="server" Value='<%# Bind("Active") %>'/>
             </ItemTemplate>
         </asp:TemplateField>
         <asp:TemplateField ItemStyle-CssClass="width_50" HeaderText="Active">
@@ -53,7 +53,7 @@
                                 </asp:TemplateField>
                                 <asp:TemplateField>
                                     <ItemTemplate>
-                                        <asp:HiddenField ID="HiddenActivePart" runat="server" Value='<%# Bind("active") %>'/>
+                                        <asp:HiddenField ID="HiddenActivePart" runat="server" Value='<%# Bind("Active") %>'/>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                                 <asp:TemplateField ItemStyle-CssClass="width_50" HeaderText="Active">
