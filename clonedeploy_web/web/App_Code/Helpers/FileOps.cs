@@ -110,10 +110,10 @@ namespace Helpers
                     (FilePermissions.S_IWUSR | FilePermissions.S_IRGRP | FilePermissions.S_IROTH |
                      FilePermissions.S_IRUSR));
         }
-
+        
         public static string ReadImageSpecs(string imageName)
         {
-            var path = Settings.PrimaryStoragePath + imageName + Path.DirectorySeparatorChar + "specs";
+            var path = Settings.PrimaryStoragePath + imageName + Path.DirectorySeparatorChar + "schema";
             if (File.Exists(path))
             {
                 using (StreamReader reader = new StreamReader(path))

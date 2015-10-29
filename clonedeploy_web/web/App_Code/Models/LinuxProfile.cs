@@ -80,6 +80,11 @@ namespace Models
         [Column("compression_level", Order = 23)]
         public string CompressionLevel { get; set; }
 
+        [Column("custom_image_schema", Order = 24)]
+        public string CustomSchema { get; set; }
+
+        [NotMapped]
+        public virtual Models.Image Image { get; set; }
 
    
     }

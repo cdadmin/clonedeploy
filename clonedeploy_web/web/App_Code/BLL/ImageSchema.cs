@@ -15,16 +15,58 @@ namespace BLL
 
     public class ImageSchema
     {
-        public static List<Models.ImageSchema.GridView.HardDrive> GetHardDrivesForGridView(Models.Image image)
+        private readonly Models.ImageSchema.GridView.Schema _imageSchema;
+
+        public ImageSchema(Models.LinuxProfile imageProfile, Models.Image image = null)
         {
-            var imageSchema =
-                JsonConvert.DeserializeObject<Models.ImageSchema.GridView.Schema>(FileOps.ReadImageSpecs(image.Name)
-                    );
-            if (imageSchema == null) return null;
+            string schema = null;
+
+            //Only To display the main image specs file when not using a profile.
+            if (image != null)
+            {
+                var path = Settings.PrimaryStoragePath + image.Name + Path.DirectorySeparatorChar + "schema";
+                if (File.Exists(path))
+                {
+                    using (StreamReader reader = new StreamReader(path))
+                    {
+                        schema = reader.ReadLine() ?? "";
+                    }
+                }
+            }
+
+            if (imageProfile != null)
+            {
+                if (!string.IsNullOrEmpty(imageProfile.CustomSchema))
+                {
+                    schema = imageProfile.CustomSchema;
+                }
+                else
+                {
+                    var path = Settings.PrimaryStoragePath + imageProfile.Image.Name + Path.DirectorySeparatorChar +
+                               "schema";
+                    if (File.Exists(path))
+                    {
+                        using (StreamReader reader = new StreamReader(path))
+                        {
+                            schema = reader.ReadLine() ?? "";
+                        }
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(schema))
+            {
+                _imageSchema = JsonConvert.DeserializeObject<Models.ImageSchema.GridView.Schema>(schema);
+            }
+        }
+
+        public List<Models.ImageSchema.GridView.HardDrive> GetHardDrivesForGridView()
+        {
+            if (_imageSchema == null) return null;
 
             var hardDrives = new List<Models.ImageSchema.GridView.HardDrive>();
 
-            foreach (var harddrive in imageSchema.HardDrives)
+            foreach (var harddrive in _imageSchema.HardDrives)
             {
                 harddrive.Size = (Convert.ToInt64(harddrive.Size) * harddrive.Lbs / 1000f / 1000f / 1000f).ToString("#.##") + " GB" +
                           " / " + (Convert.ToInt64(harddrive.Size) * harddrive.Lbs / 1024f / 1024f / 1024f).ToString("#.##") +
@@ -35,15 +77,11 @@ namespace BLL
             return hardDrives;
         }
 
-        public static List<Models.ImageSchema.GridView.Partition> GetPartitionsForGridView(Models.Image image, string selectedHd)
+        public List<Models.ImageSchema.GridView.Partition> GetPartitionsForGridView(string selectedHd)
         {
-            var imageSchema =
-                JsonConvert.DeserializeObject<Models.ImageSchema.GridView.Schema>(FileOps.ReadImageSpecs(image.Name)
-                    );
-
             var partitions = new List<Models.ImageSchema.GridView.Partition>();
 
-            foreach (var hardDrive in imageSchema.HardDrives.Where(x => x.Name == selectedHd))
+            foreach (var hardDrive in _imageSchema.HardDrives.Where(x => x.Name == selectedHd))
             {
                 foreach (var part in hardDrive.Partitions)
                 {
@@ -67,19 +105,15 @@ namespace BLL
             return partitions;
         }
 
-        public static List<Models.ImageSchema.GridView.LogicalVolume> GetLogicalVolumesForGridView(Models.Image image, string selectedHd)
+        public List<Models.ImageSchema.GridView.LogicalVolume> GetLogicalVolumesForGridView(string selectedHd)
         {
-            var imageSchema =
-                JsonConvert.DeserializeObject<Models.ImageSchema.GridView.Schema>(FileOps.ReadImageSpecs(image.Name)
-                    );
-
             var lvList = new List<Models.ImageSchema.GridView.LogicalVolume>();
 
-            foreach (var partition in imageSchema.HardDrives[Convert.ToInt16(selectedHd)].Partitions)
+            foreach (var partition in _imageSchema.HardDrives[Convert.ToInt16(selectedHd)].Partitions)
             {
                 if (partition.VolumeGroup.Name == null) continue;
                 if (partition.VolumeGroup.LogicalVolumes == null) continue;
-                var lbs = imageSchema.HardDrives[Convert.ToInt16(selectedHd)].Lbs;
+                var lbs = _imageSchema.HardDrives[Convert.ToInt16(selectedHd)].Lbs;
                 foreach (var lv in partition.VolumeGroup.LogicalVolumes)
                 {
                     if ((Convert.ToInt64(lv.Size) * lbs ) < 1048576000)

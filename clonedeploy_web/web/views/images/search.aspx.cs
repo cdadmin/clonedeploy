@@ -30,7 +30,7 @@ namespace views.images
                 td.Visible = true;
                 gvHDs.Visible = true;
 
-                gvHDs.DataSource =  BLL.ImageSchema.GetHardDrivesForGridView(BLL.Image.GetImage(Convert.ToInt32(imageId)));
+                gvHDs.DataSource = new BLL.ImageSchema(null, BLL.Image.GetImage(Convert.ToInt32(imageId))).GetHardDrivesForGridView();
                 gvHDs.DataBind();
                 btn.Text = "-";
             }
