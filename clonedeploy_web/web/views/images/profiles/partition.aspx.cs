@@ -298,4 +298,17 @@ public partial class views_images_profiles_partition : Images
             box.Checked = true;
         }
     }
+
+    protected void chkModifySchema_OnCheckedChanged(object sender, EventArgs e)
+    {
+        if (chkModifySchema.Checked)
+        {
+            imageSchema.Visible = true;
+            PopulateHardDrives();
+        }
+        else
+        {
+            imageSchema.Visible = false;
+        }
+    }
 }

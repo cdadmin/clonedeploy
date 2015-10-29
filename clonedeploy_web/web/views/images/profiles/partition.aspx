@@ -30,7 +30,7 @@
         Force Dynamic Partition For Exact Hdd Match
     </div>
     <div class="size-8 column">
-        <asp:CheckBox ID="chkDownForceDynamic" runat="server" CssClass="textbox"></asp:CheckBox>
+        <asp:CheckBox ID="chkDownForceDynamic" runat="server"></asp:CheckBox>
     </div>
     <br class="clear"/>
         
@@ -38,7 +38,7 @@
         Modify The Image Schema
     </div>
     <div class="size-8 column">
-        <asp:CheckBox ID="chkModifySchema" runat="server" CssClass="textbox"></asp:CheckBox>
+        <asp:CheckBox ID="chkModifySchema" runat="server" AutoPostBack="True" OnCheckedChanged="chkModifySchema_OnCheckedChanged"></asp:CheckBox>
     </div>
     <br class="clear"/>
         
@@ -80,13 +80,7 @@
                         <asp:GridView ID="gvParts" AutoGenerateColumns="false" runat="server" CssClass="Gridview gv_parts" ShowHeader="true" Visible="false" AlternatingRowStyle-CssClass="alt">
                             <Columns>
 
-                                <asp:TemplateField ShowHeader="False" ItemStyle-CssClass="width_30" HeaderStyle-CssClass="">
-                                    <ItemTemplate>
-                                        <div style="width: 20px">
-                                            <asp:LinkButton ID="partClick" runat="server" CausesValidation="false" CommandName="" Text="+" OnClick="btnPart_Click"></asp:LinkButton>
-                                        </div>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
+                             
                                 <asp:TemplateField>
                                     <ItemTemplate>
                                         <asp:HiddenField ID="HiddenActivePart" runat="server" Value='<%# Bind("active") %>'/>
@@ -110,6 +104,13 @@
                                     <ItemTemplate>
                                         <div id="settings">
                                             <asp:TextBox ID="txtCustomSize" runat="server" Text='<%# Bind("CustomSize") %>' CssClass="textbox_specs"/>
+                                        </div>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField ItemStyle-CssClass="width_100" HeaderText="Unit">
+                                    <ItemTemplate>
+                                        <div>
+                                            <asp:DropDownList ID="chkUnit" runat="server" CssClass="ddlist"/>
                                         </div>
                                     </ItemTemplate>
                                 </asp:TemplateField>
