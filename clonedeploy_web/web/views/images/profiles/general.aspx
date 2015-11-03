@@ -4,6 +4,14 @@
     <li><a href="<%= ResolveUrl("~/views/images/profiles/chooser.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><%= ImageProfile.Name %></a></li>
     <li>General</li>
 </asp:Content>
+
+<asp:Content runat="server" ContentPlaceHolderID="SubHelp">
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+<asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
+      <asp:LinkButton ID="buttonUpdateGeneral" runat="server" OnClick="buttonUpdateGeneral_OnClick" Text="Update General" CssClass="submits" />
+</asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
@@ -23,13 +31,6 @@
     <div class="size-5 column">
         <asp:TextBox ID="txtProfileDesc" runat="server" CssClass="descbox" TextMode="MultiLine"></asp:TextBox>
     </div>
-    <br class="clear"/>
-    
-    <div class="size-4 column">
-        &nbsp;
-    </div>
-    <div class="size-5 column">
-        <asp:LinkButton ID="buttonUpdateGeneral" runat="server" OnClick="buttonUpdateGeneral_OnClick" Text="Update General" CssClass="submits" OnClientClick="update_click()"/>
-    </div>
+   
 </asp:Content>
 

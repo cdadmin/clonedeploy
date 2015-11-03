@@ -11,15 +11,12 @@ public partial class views_images_profiles_deploy : Images
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (!IsPostBack)
-        {
-            chkDownNoExpand.Checked = Convert.ToBoolean(ImageProfile.SkipExpandVolumes);
-            chkAlignBCD.Checked = Convert.ToBoolean(ImageProfile.FixBcd);
-            chkRunFixBoot.Checked = Convert.ToBoolean(ImageProfile.FixBootloader);
-            ddlPartitionMethod.Text = ImageProfile.PartitionMethod;
-            DisplayLayout();
-        }
-
+        if (IsPostBack) return;
+        chkDownNoExpand.Checked = Convert.ToBoolean(ImageProfile.SkipExpandVolumes);
+        chkAlignBCD.Checked = Convert.ToBoolean(ImageProfile.FixBcd);
+        chkRunFixBoot.Checked = Convert.ToBoolean(ImageProfile.FixBootloader);
+        ddlPartitionMethod.Text = ImageProfile.PartitionMethod;
+        DisplayLayout();
     }
 
     protected void btnUpdateDeploy_OnClick(object sender, EventArgs e)
@@ -158,7 +155,7 @@ public partial class views_images_profiles_deploy : Images
         ViewState["selectedHDName"] = selectedHd;
 
 
-        var partitions = new ImageSchema(ImageProfile).GetPartitionsForGridView(selectedHd);
+        var partitions = new ImageSchema(ImageProfile,"deploy").GetPartitionsForGridView(selectedHd);
         var btn = (LinkButton)gvRow.FindControl("btnHd");
         if (gv.Visible == false)
         {
@@ -217,7 +214,7 @@ public partial class views_images_profiles_deploy : Images
 
             var td = gvRow.FindControl("tdLVS");
             td.Visible = true;
-            gv.DataSource = new ImageSchema(ImageProfile).GetLogicalVolumesForGridView(selectedHd);
+            gv.DataSource = new ImageSchema(ImageProfile,"deploy").GetLogicalVolumesForGridView(selectedHd);
             gv.DataBind();
             btn.Text = "-";
         }
@@ -233,7 +230,7 @@ public partial class views_images_profiles_deploy : Images
 
     protected void PopulateHardDrives()
     {
-        gvHDs.DataSource = new ImageSchema(ImageProfile).GetHardDrivesForGridView();
+        gvHDs.DataSource = new ImageSchema(ImageProfile,"deploy").GetHardDrivesForGridView();
         gvHDs.DataBind();
     }
 
@@ -252,7 +249,7 @@ public partial class views_images_profiles_deploy : Images
 
     protected string SetCustomSchema()
     {
-        var schema = new BLL.ImageSchema(ImageProfile).GetImageSchema();
+        var schema = new BLL.ImageSchema(ImageProfile,"deploy").GetImageSchema();
 
         var rowCounter = 0;
         foreach (GridViewRow row in gvHDs.Rows)

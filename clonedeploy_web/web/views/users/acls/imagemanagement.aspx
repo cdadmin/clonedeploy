@@ -1,6 +1,13 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/users/acls/acls.master" AutoEventWireup="true" CodeFile="imagemanagement.aspx.cs" Inherits="views_users_acls_imagemanagement" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
 </asp:Content>
+<asp:Content runat="server" ContentPlaceHolderID="SubHelp">
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+<asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
+     <asp:LinkButton ID="buttonUpdate" runat="server" OnClick="buttonUpdate_OnClick" Text="Update Image Management" CssClass="submits" />
+</asp:Content>
+
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent2" Runat="Server">
      <script type="text/javascript">
         $(document).ready(function() {
@@ -27,8 +34,5 @@
             No Images Have Been Created
         </EmptyDataTemplate>
     </asp:GridView>
-    
-    <div class="size-5 column">
-        <asp:LinkButton ID="buttonUpdate" runat="server" OnClick="buttonUpdate_OnClick" Text="Update Image Management" CssClass="submits" />
-    </div>
+
 </asp:Content>

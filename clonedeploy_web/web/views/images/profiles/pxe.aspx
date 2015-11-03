@@ -4,6 +4,13 @@
      <li><a href="<%= ResolveUrl("~/views/images/profiles/chooser.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><%= ImageProfile.Name %></a></li>
     <li>PXE Boot Options</li>
 </asp:Content>
+
+<asp:Content runat="server" ContentPlaceHolderID="SubHelp">
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+<asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
+     <asp:LinkButton ID="buttonUpdatePXE" runat="server" OnClick="buttonUpdatePXE_OnClick" Text="Update PXE Boot Options" CssClass="submits"/>
+</asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
      <script type="text/javascript">
         $(document).ready(function() {
@@ -33,14 +40,6 @@
         <asp:TextBox ID="txtKernelArgs" runat="server" CssClass="textbox">
         </asp:TextBox>
     </div>
-    <br class="clear"/>
-    
-    
-    <div class="size-4 column">
-        &nbsp;
-    </div>
-    <div class="size-5 column">
-        <asp:LinkButton ID="buttonUpdatePXE" runat="server" OnClick="buttonUpdatePXE_OnClick" Text="Update PXE Boot Options" CssClass="submits" OnClientClick="update_click()"/>
-    </div>
+  
 </asp:Content>
 

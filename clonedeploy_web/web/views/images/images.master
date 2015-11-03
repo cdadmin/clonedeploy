@@ -38,7 +38,7 @@
                     <a  href="<%= ResolveUrl("~/views/images/history.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text">History</span></a>
                 </li>
                 <li id="specs">
-                    <a  href="<%= ResolveUrl("~/views/images/specs.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text">Specs</span></a>
+                    <a  href="<%= ResolveUrl("~/views/images/schema.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text">Schema</span></a>
                 </li>
              
             </ul>

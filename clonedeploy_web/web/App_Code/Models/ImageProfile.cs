@@ -74,6 +74,12 @@ namespace Models
         [Column("custom_image_schema", Order = 22)]
         public string CustomSchema { get; set; }
 
+        [Column("custom_upload_schema", Order = 23)]
+        public string CustomUploadSchema { get; set; }
+
+        [Column("upload_schema_only", Order = 24)]
+        public int UploadSchemaOnly { get; set; }
+
         [NotMapped]
         public virtual Models.Image Image { get; set; }
 

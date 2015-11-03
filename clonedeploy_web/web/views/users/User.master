@@ -46,7 +46,7 @@
 <asp:Content runat="server" ID="ActionsLeft" ContentPlaceHolderID="PageActionsLeft">
     <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
     <div id="actions_left" runat="server">
-     <asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click"><span class="sub-nav-text">Delete User</span></asp:LinkButton>
+      <asp:LinkButton ID="btnDelete" runat="server" CssClass="icon delete" data-info="Delete User" OnClick="btnDelete_Click"></asp:LinkButton>
             <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
     </div>
 </asp:Content>
@@ -55,7 +55,6 @@
     <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
     </asp:ContentPlaceHolder>
 </asp:Content>
-
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="Content" Runat="Server">
   

@@ -5,6 +5,14 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
     <li>Search</li>
 </asp:Content>
+
+
+<asp:Content runat="server" ContentPlaceHolderID="SubHelp">
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+<asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
+      <a class="confirm" href="#">Delete Selected Profiles</a>
+</asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
@@ -36,7 +44,7 @@
             No Profiles Found
         </EmptyDataTemplate>
     </asp:GridView>
-    <a class="confirm left" href="#">Delete Selected Profiles</a>
+  
     <div id="confirmbox" class="confirm-box-outer">
         <div class="confirm-box-inner">
             <h4>

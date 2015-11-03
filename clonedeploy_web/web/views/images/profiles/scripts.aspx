@@ -4,6 +4,12 @@
       <li><a href="<%= ResolveUrl("~/views/images/profiles/chooser.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><%= ImageProfile.Name %></a></li>
     <li>Scripts</li>
 </asp:Content>
+<asp:Content runat="server" ContentPlaceHolderID="SubHelp">
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+<asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
+    <asp:LinkButton ID="btnUpdateScripts" runat="server" OnClick="btnUpdateScripts_OnClick" Text="Update Script Options" CssClass="submits" />
+</asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
      <script type="text/javascript">
         $(document).ready(function() {
@@ -44,12 +50,6 @@
         </EmptyDataTemplate>
     </asp:GridView>
     
-    <br class="clear"/>
-      <div class="size-4 column">
-        &nbsp;
-    </div>
-    <div class="size-5 column">
-        <asp:LinkButton ID="btnUpdateScripts" runat="server" OnClick="btnUpdateScripts_OnClick" Text="Update Script Options" CssClass="submits" />
-    </div>
+ 
 </asp:Content>
 

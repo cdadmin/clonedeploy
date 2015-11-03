@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Script.Services;
 using System.Web.Services;
 using BLL;
+using BLL.ClientPartitioning;
 
 
 namespace Services.Client
@@ -206,24 +207,24 @@ namespace Services.Client
         {
             HttpContext.Current.Response.Write(new Download().GetOriginalLvm(imgName, clienthd, hdToGet));
         }
+        */
 
         [WebMethod]
-        public void GetPartLayout(string imageId, string hdToGet, string newHdSize, string clientHd, string taskType)
+        public void GetPartLayout(string imageProfileId, string hdToGet, string newHdSize, string clientHd, string taskType)
         {
-            var image = new BLL.Image().GetImage(Convert.ToInt32(imageId));
 
-            var partLayout = new ClientLayout
-            {
-                Image = image,
-                HdToGet = hdToGet,
+            var partLayout = new ClientPartitionScript
+            {   
+                profileId = Convert.ToInt32(imageProfileId),
+                HdNumberToGet = Convert.ToInt16(hdToGet),
                 NewHdSize = newHdSize,
                 ClientHd = clientHd,
                 TaskType = taskType
             };
-            partLayout.GeneratePartitionLayout();
-            HttpContext.Current.Response.Write(partLayout.PartitionLayoutText);
+           
+            HttpContext.Current.Response.Write(partLayout.GeneratePartitionScript());
         }
-
+        /*
         [WebMethod]
         public void GetUtcDateTime()
         {

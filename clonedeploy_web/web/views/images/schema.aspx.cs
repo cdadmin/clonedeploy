@@ -53,7 +53,7 @@ namespace views.images
             ViewState["selectedHDName"] = selectedHd;
 
 
-            var partitions = new ImageSchema(null,Image).GetPartitionsForGridView(selectedHd);
+            var partitions = new ImageSchema(null,null,Image).GetPartitionsForGridView(selectedHd);
             var btn = (LinkButton) gvRow.FindControl("btnHd");
             if (gv.Visible == false)
             {
@@ -114,7 +114,7 @@ namespace views.images
 
                 var td = gvRow.FindControl("tdLVS");
                 td.Visible = true;
-                gv.DataSource = new ImageSchema(null,Image).GetLogicalVolumesForGridView(selectedHd);
+                gv.DataSource = new ImageSchema(null,null,Image).GetLogicalVolumesForGridView(selectedHd);
                 gv.DataBind();
                 btn.Text = "-";
             }
@@ -137,7 +137,7 @@ namespace views.images
 
         protected void PopulateHardDrives()
         {
-            gvHDs.DataSource = new ImageSchema(null,Image).GetHardDrivesForGridView();
+            gvHDs.DataSource = new ImageSchema(null,null,Image).GetHardDrivesForGridView();
             gvHDs.DataBind();
 
 

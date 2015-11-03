@@ -1,5 +1,12 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/users/User.master" AutoEventWireup="true" Inherits="views.users.ResetPass" CodeFile="resetpass.aspx.cs" %>
 
+<asp:Content runat="server" ContentPlaceHolderID="Help">
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+<asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
+         <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_Click" Text="Change Password" CssClass="submits"/>
+
+</asp:Content>
 
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <h4 style="margin-bottom: 20px;">Change Password</h4>
@@ -17,11 +24,5 @@
         <asp:TextBox ID="txtUserPwdConfirm" runat="server" CssClass="textbox" TextMode="Password"></asp:TextBox>
     </div>
     <br class="clear"/>
-    <div class="size-4 column">
-        &nbsp;
-    </div>
-    <div class="size-5 column">
-        <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_Click" Text="Change Password" CssClass="submits"/>
-    </div>
-    <br class="clear"/>
+   
 </asp:Content>

@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using Helpers;
 using Models.ClientPartition;
@@ -12,14 +13,36 @@ namespace BLL.ClientPartitioning
     /// </summary>
     public class ClientPartitionHelper
     {
-        private Models.Image Image { get; set; }
-        private Models.ImageSchema.ImageSchema ImageSchema { get; set; }
+        private readonly Models.ImageSchema.ImageSchema _imageSchema;
 
-        public ClientPartitionHelper(Models.Image image)
+        public ClientPartitionHelper(Models.ImageProfile imageProfile)
         {
-            Image = image;
-            ImageSchema = JsonConvert.DeserializeObject<Models.ImageSchema.ImageSchema>(FileOps.ReadImageSpecs(Image.Name)
-                    );
+            string schema = null;
+     
+            if (imageProfile != null)
+            {
+                if (imageProfile.PartitionMethod == "Dynamic" && !string.IsNullOrEmpty(imageProfile.CustomSchema))
+                {
+                    schema = imageProfile.CustomSchema;
+                }
+                else
+                {
+                    var path = Settings.PrimaryStoragePath + imageProfile.Image.Name + Path.DirectorySeparatorChar +
+                               "schema";
+                    if (File.Exists(path))
+                    {
+                        using (var reader = new StreamReader(path))
+                        {
+                            schema = reader.ReadLine() ?? "";
+                        }
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(schema))
+            {
+                _imageSchema = JsonConvert.DeserializeObject<Models.ImageSchema.ImageSchema>(schema);
+            }
         }
 
         /// <summary>
@@ -28,21 +51,15 @@ namespace BLL.ClientPartitioning
         /// </summary>
         public ExtendedPartitionHelper ExtendedPartition(int hdNumberToGet)
         {
-            var lbsByte = ImageSchema.HardDrives[hdNumberToGet].Lbs;
-            var extendedPartitionHelper = new ExtendedPartitionHelper
-            {
-                MinSizeBlk = 0,
-                IsOnlySwap = false,
-                LogicalCount = 0,
-                HasLogical = false
-            };
+            var lbsByte = _imageSchema.HardDrives[hdNumberToGet].Lbs;
+            var extendedPartitionHelper = new ExtendedPartitionHelper();
 
             //Determine if any Extended or Logical Partitions are present.  Needed ahead of time correctly calculate sizes.
             //And calculate minimum needed extended partition size
 
             bool schemaHasExtendedPartition = false;
             string logicalFsType = null;
-            foreach (var part in ImageSchema.HardDrives[hdNumberToGet].Partitions.Where(part => part.Active))
+            foreach (var part in _imageSchema.HardDrives[hdNumberToGet].Partitions.Where(part => part.Active))
             {
                 if (part.Type.ToLower() == "extended")
                     schemaHasExtendedPartition = true;
@@ -52,14 +69,14 @@ namespace BLL.ClientPartitioning
                 extendedPartitionHelper.HasLogical = true;
             }
 
-            if (!schemaHasExtendedPartition) return null;
+            if (!schemaHasExtendedPartition) return extendedPartitionHelper;
 
             if (logicalFsType != null &&
                 (extendedPartitionHelper.LogicalCount == 1 && logicalFsType.ToLower() == "swap"))
                 extendedPartitionHelper.IsOnlySwap = true;
 
             var partitionCounter = -1;
-            foreach (var partition in ImageSchema.HardDrives[hdNumberToGet].Partitions)
+            foreach (var partition in _imageSchema.HardDrives[hdNumberToGet].Partitions)
             {
                 partitionCounter++;
                 if (!partition.Active)
@@ -137,14 +154,14 @@ namespace BLL.ClientPartitioning
             hdNumberToGet = hdNumberToGet - 1;
 
             long minHdSizeRequiredBlk = 0;
-            var lbsByte = ImageSchema.HardDrives[hdNumberToGet].Lbs;
+            var lbsByte = _imageSchema.HardDrives[hdNumberToGet].Lbs;
 
             //if hard drive is the same size as original, then no need to calculate.  It will fit.
-            if (ImageSchema.HardDrives[hdNumberToGet].Size*lbsByte == newHdSize)
+            if (_imageSchema.HardDrives[hdNumberToGet].Size*lbsByte == newHdSize)
                 return newHdSize;
 
             var partitionCounter = -1;
-            foreach (var partition in ImageSchema.HardDrives[hdNumberToGet].Partitions)
+            foreach (var partition in _imageSchema.HardDrives[hdNumberToGet].Partitions)
             {
                 partitionCounter++;
                 //Logical partitions are calculated via the extended
@@ -186,9 +203,9 @@ namespace BLL.ClientPartitioning
         {
             var partitionHelper = new PartitionHelper {MinSizeBlk = 0};
             var extendedPartitionHelper = ExtendedPartition(hdNumberToGet);
-            var partition = ImageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet];
+            var partition = _imageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet];
             partitionHelper.VolumeGroupHelper = VolumeGroup(hdNumberToGet, partNumberToGet);
-            var lbsByte = ImageSchema.HardDrives[hdNumberToGet].Lbs;
+            var lbsByte = _imageSchema.HardDrives[hdNumberToGet].Lbs;
 
 
             //Look if any volume groups are present for this partition.  If so set the volumesize for the volume group to the minimum size
@@ -249,7 +266,7 @@ namespace BLL.ClientPartitioning
         /// </summary>
         public ClientVolumeGroupHelper VolumeGroup(int hdNumberToGet, int partNumberToGet)
         {
-            var lbsByte = ImageSchema.HardDrives[hdNumberToGet].Lbs;
+            var lbsByte = _imageSchema.HardDrives[hdNumberToGet].Lbs;
 
             var volumeGroupHelper = new ClientVolumeGroupHelper
             {
@@ -257,22 +274,22 @@ namespace BLL.ClientPartitioning
                 HasLv = false
             };
 
-            if (ImageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].FsId.ToLower() != "8e" &&
-                ImageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].FsId.ToLower() != "8e00") return volumeGroupHelper;
-            if (!ImageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].Active)
+            if (_imageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].FsId.ToLower() != "8e" &&
+                _imageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].FsId.ToLower() != "8e00") return volumeGroupHelper;
+            if (!_imageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].Active)
                 return volumeGroupHelper;
 
             //if part.vg is null, most likely version 2.3.0 beta1 before lvm was added.
-            if (ImageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup == null) return volumeGroupHelper;
+            if (_imageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup == null) return volumeGroupHelper;
             //if vg.name is null partition was uploaded at physical partion level, by using the shrink_lvm=false flag
-            if (ImageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup.Name == null) return volumeGroupHelper;
-            volumeGroupHelper.Name = ImageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup.Name;
-            foreach (var logicalVolume in ImageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup.LogicalVolumes)
+            if (_imageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup.Name == null) return volumeGroupHelper;
+            volumeGroupHelper.Name = _imageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup.Name;
+            foreach (var logicalVolume in _imageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup.LogicalVolumes)
             {
                 if (!logicalVolume.Active)
                     continue;
                 volumeGroupHelper.HasLv = true;
-                volumeGroupHelper.Pv = ImageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup.PhysicalVolume;
+                volumeGroupHelper.Pv = _imageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup.PhysicalVolume;
                 //Logical volume size overridden by user
                 if (!string.IsNullOrEmpty(logicalVolume.CustomSize))
                     volumeGroupHelper.MinSizeBlk += Convert.ToInt64(logicalVolume.CustomSize);
@@ -297,9 +314,14 @@ namespace BLL.ClientPartitioning
 
             //Could Have VG Without LVs
             //Set arbitrary minimum size to 100mb
-            volumeGroupHelper.Pv = ImageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup.PhysicalVolume;
+            volumeGroupHelper.Pv = _imageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup.PhysicalVolume;
             volumeGroupHelper.MinSizeBlk = 100*1024*1024/lbsByte;
             return volumeGroupHelper;
+        }
+
+        public Models.ImageSchema.ImageSchema GetImageSchema()
+        {
+            return _imageSchema;
         }
     }
 }

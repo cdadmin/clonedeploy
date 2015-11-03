@@ -7,11 +7,12 @@ namespace BLL.ClientPartitioning
 {
     public class ClientPartitionScript
     {
-        private Models.ImageSchema.ImageSchema ImageSchema { get; set; }
+        public Models.ImageSchema.ImageSchema ImageSchema { get; set; }
         public string ClientHd { get; set; }
-        private int HdNumberToGet { get; set; }
+        public int HdNumberToGet { get; set; }
+        public string NewHdSize { get; set; }
         public string TaskType { get; set; }
-
+        public int profileId { get; set; }
         public ClientPartitionScript()
         {
             //
@@ -19,10 +20,16 @@ namespace BLL.ClientPartitioning
             //
         }
 
-        public void GeneratePartitionScript()
+        public string GeneratePartitionScript()
         {
+            var imageProfile = BLL.LinuxProfile.ReadProfile(profileId);
+            ImageSchema = new ClientPartitionHelper(imageProfile).GetImageSchema();
             string partitionScript = null;
-            var clientSchema = new BLL.ClientPartitioning.ClientPartition().GenerateClientSchema();
+            var clientSchema = new BLL.ClientPartitioning.ClientPartition(HdNumberToGet,NewHdSize,imageProfile).GenerateClientSchema();
+            if (clientSchema == null) return "failed";
+            partitionScript = clientSchema.DebugStatus;
+            if (clientSchema.PrimaryAndExtendedPartitions.Count == 0)
+                return partitionScript;
             if (TaskType == "debug")
             {
                 try
@@ -41,6 +48,7 @@ namespace BLL.ClientPartitioning
                     p.Size = p.Size * 512 / 1024 / 1024;
             }
 
+            HdNumberToGet -= 1;
             //Create Menu
             if (ImageSchema.HardDrives[HdNumberToGet].Table.ToLower() == "mbr")
             {
@@ -236,6 +244,7 @@ namespace BLL.ClientPartitioning
                 PartitionLayoutText += "w\r\nq\r\n";
                 PartitionLayoutText += "FDISK\r\n";
             }*/
+            return partitionScript;
         }
     }
 }

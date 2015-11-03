@@ -17,7 +17,7 @@ namespace BLL
     {
         private readonly Models.ImageSchema.GridView.Schema _imageSchema;
 
-        public ImageSchema(Models.ImageProfile imageProfile, Models.Image image = null)
+        public ImageSchema(Models.ImageProfile imageProfile, string schemaType, Models.Image image = null)
         {
             string schema = null;
 
@@ -36,9 +36,13 @@ namespace BLL
 
             if (imageProfile != null)
             {
-                if (!string.IsNullOrEmpty(imageProfile.CustomSchema))
+                if (!string.IsNullOrEmpty(imageProfile.CustomSchema) && schemaType == "deploy")
                 {
                     schema = imageProfile.CustomSchema;
+                }
+                else if (!string.IsNullOrEmpty(imageProfile.CustomUploadSchema) && schemaType == "upload")
+                {
+                    schema = imageProfile.CustomUploadSchema;
                 }
                 else
                 {
@@ -175,8 +179,9 @@ namespace BLL
             try
             {   
                 var img = BLL.Image.GetImage(Convert.ToInt32(imageId));
-                var fltClientSize = new ClientPartitionHelper(img).HardDrive(hdNumber, 1) / 1024f / 1024f / 1024f;
-                return Math.Abs(fltClientSize) < 0.1f ? "< 100M" : fltClientSize.ToString("#.##") + " GB";
+                //var fltClientSize = new ClientPartitionHelper(img).HardDrive(hdNumber, 1) / 1024f / 1024f / 1024f;
+                //return Math.Abs(fltClientSize) < 0.1f ? "< 100M" : fltClientSize.ToString("#.##") + " GB";
+                return "";
             }
             catch
             {
