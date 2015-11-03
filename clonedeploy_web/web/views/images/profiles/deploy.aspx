@@ -30,14 +30,6 @@
 <br class="clear"/>
 
 <div class="size-9 column">
-    Expand Partitions Without Resizable Volumes
-</div>
-<div class="size-8 column">
-    <asp:CheckBox ID="chkDownExpandNonResizable" runat="server" CssClass="textbox"></asp:CheckBox>
-</div>
-<br class="clear"/>
-
-<div class="size-9 column">
     Align BCD To Partition
 </div>
 <div class="size-8 column">
@@ -95,14 +87,10 @@
                     </div>
                 </ItemTemplate>
             </asp:TemplateField>
-            <asp:TemplateField>
-                <ItemTemplate>
-                    <asp:HiddenField ID="HiddenActive" runat="server" Value='<%# Bind("active") %>'/>
-                </ItemTemplate>
-            </asp:TemplateField>
+          
             <asp:TemplateField ItemStyle-CssClass="width_50" HeaderText="Active">
                 <ItemTemplate>
-                    <asp:CheckBox ID="chkHDActive" runat="server"/>
+                    <asp:CheckBox ID="chkHDActive" runat="server" Checked='<%# Bind("Active") %>'/>
                 </ItemTemplate>
             </asp:TemplateField>
 
@@ -123,14 +111,10 @@
                                 <Columns>
 
 
-                                    <asp:TemplateField>
-                                        <ItemTemplate>
-                                            <asp:HiddenField ID="HiddenActivePart" runat="server" Value='<%# Bind("active") %>'/>
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
+                                   
                                     <asp:TemplateField ItemStyle-CssClass="width_50" HeaderText="Active">
                                         <ItemTemplate>
-                                            <asp:CheckBox ID="chkPartActive" runat="server"/>
+                                            <asp:CheckBox ID="chkPartActive" runat="server" Checked='<%# Bind("Active") %>'/>
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                     <asp:BoundField DataField="Number" HeaderText="#" ItemStyle-CssClass="width_100"></asp:BoundField>
@@ -151,7 +135,7 @@
                                     <asp:TemplateField ItemStyle-CssClass="width_150" HeaderText="Unit">
                                         <ItemTemplate>
                                            
-                                                <asp:DropDownList ID="chkUnit" runat="server" CssClass="ddlist">
+                                                <asp:DropDownList ID="ddlUnit" runat="server" CssClass="ddlist" Text='<%# Bind("CustomSizeUnit") %>'>
                                                     <asp:ListItem>MB</asp:ListItem>
                                                     <asp:ListItem>GB</asp:ListItem>
                                                     <asp:ListItem>%</asp:ListItem>
@@ -163,14 +147,15 @@
                                        <asp:TemplateField ItemStyle-CssClass="width_150" HeaderText="Fixed">
                                         <ItemTemplate>
                                            
-                                                <asp:CheckBox runat="server" id="chkFixed"/>
+                                                <asp:CheckBox runat="server" id="chkFixed" Checked='<%# Bind("ForceFixedSize") %>'/>
                                           
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                     <asp:TemplateField>
                                         <ItemTemplate>
-                                            </td>
+                                            
                                             <tr>
+                                           
                                             <td></td>
                                             <td></td>
                                             <td></td>
@@ -180,8 +165,7 @@
                                             <td></td>
                                             <td></td>
                                             <td></td>
-                                            <td></td>
-                                            <td></td>
+                                          
 
                                             <td>
                                                 <asp:Label ID="Label1" runat="server" Text="UUID" Font-Bold="true"/>
@@ -191,6 +175,8 @@
                                             <td>
                                             <asp:Label ID="Label2" runat="server" Text="GUID" Font-Bold="true"/>
                                             <asp:Label ID="lblGUID" runat="server" Text='<%# Bind("guid") %>'/>
+                                                </td>
+                                                </tr>
                                         </ItemTemplate>
                                     </asp:TemplateField>
 
@@ -220,14 +206,10 @@
                                                                         <td id="tdLVS" runat="server" visible="false" colspan="900">
                                                                             <asp:GridView ID="gvLVS" AutoGenerateColumns="false" runat="server" CssClass="Gridview gv_parts" ShowHeader="true" Visible="false" AlternatingRowStyle-CssClass="alt">
                                                                                 <Columns>
-                                                                                    <asp:TemplateField>
-                                                                                        <ItemTemplate>
-                                                                                            <asp:HiddenField ID="HiddenActivePart" runat="server" Value='<%# Bind("active") %>'/>
-                                                                                        </ItemTemplate>
-                                                                                    </asp:TemplateField>
+                                                                                   
                                                                                     <asp:TemplateField ItemStyle-CssClass="width_50" HeaderText="Active">
                                                                                         <ItemTemplate>
-                                                                                            <asp:CheckBox ID="chkPartActive" runat="server"/>
+                                                                                            <asp:CheckBox ID="chkPartActive" runat="server" Checked='<%# Bind("Active") %>'/>
                                                                                         </ItemTemplate>
                                                                                     </asp:TemplateField>
                                                                                     <asp:BoundField DataField="Name" HeaderText="Name" ItemStyle-CssClass="width_100"></asp:BoundField>

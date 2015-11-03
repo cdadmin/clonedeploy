@@ -4,7 +4,8 @@ using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
 using BLL;
-using LinuxProfile = Models.LinuxProfile;
+using Models;
+
 
 public partial class views_images_profiles_search : Images
 {
@@ -49,7 +50,7 @@ public partial class views_images_profiles_search : Images
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        IEnumerable<LinuxProfile> listProfiles = (List<LinuxProfile>)gvProfiles.DataSource;
+        IEnumerable<ImageProfile> listProfiles = (List<ImageProfile>)gvProfiles.DataSource;
         switch (e.SortExpression)
         {
             case "Name":

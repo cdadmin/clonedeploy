@@ -28,6 +28,38 @@ public partial class views_images_profiles_deploy : Images
         imageProfile.SkipExpandVolumes = Convert.ToInt16(chkDownNoExpand.Checked);
         imageProfile.FixBcd = Convert.ToInt16(chkAlignBCD.Checked);
         imageProfile.FixBootloader = Convert.ToInt16(chkRunFixBoot.Checked);
+        imageProfile.PartitionMethod = ddlPartitionMethod.Text;
+        switch (ddlPartitionMethod.SelectedIndex)
+        {
+            case 1:
+                imageProfile.ForceDynamicPartitions = Convert.ToInt16(chkDownForceDynamic.Checked);
+                imageProfile.CustomSchema = chkModifySchema.Checked ? SetCustomSchema() : "";
+                break;
+            case 2:
+                var fixedLineEnding = scriptEditorText.Value.Replace("\r\n", "\n");
+                imageProfile.CustomPartitionScript = fixedLineEnding;
+                break;
+            case 3:
+                BLL.ImageProfilePartition.DeleteImageProfilePartitions(ImageProfile.Id);
+                imageProfile.CustomPartitionScript = "";
+                foreach (GridViewRow row in gvLayout.Rows)
+                {
+                    var cb = (CheckBox)row.FindControl("chkSelector");
+                    if (cb == null || !cb.Checked) continue;
+                    var dataKey = gvLayout.DataKeys[row.RowIndex];
+                    if (dataKey == null) continue;
+                    var profilePartitionLayout = new Models.ImageProfilePartition()
+                    {
+                        LayoutId = Convert.ToInt16(dataKey.Value),
+                        ProfileId = ImageProfile.Id
+                    };
+                    BLL.ImageProfilePartition.AddImageProfilePartition(profilePartitionLayout);
+                }
+                break;
+            default:
+                imageProfile.CustomPartitionScript = "";
+                break;
+        }
         BLL.LinuxProfile.UpdateProfile(imageProfile);
     }
 
@@ -45,7 +77,7 @@ public partial class views_images_profiles_deploy : Images
                 dynamicPartition.Visible = true;
                 customScript.Visible = false;
                 customLayout.Visible = false;
-
+                chkDownForceDynamic.Checked = Convert.ToBoolean(ImageProfile.ForceDynamicPartitions);
                 if (!string.IsNullOrEmpty(ImageProfile.CustomSchema))
                 {
                     chkModifySchema.Checked = true;
@@ -121,7 +153,7 @@ public partial class views_images_profiles_deploy : Images
         var gvRow = (GridViewRow)control.Parent.Parent;
         var gv = (GridView)gvRow.FindControl("gvParts");
 
-        var selectedHd = gvRow.Cells[3].Text;
+        var selectedHd = gvRow.Cells[2].Text;
         ViewState["selectedHD"] = gvRow.RowIndex.ToString();
         ViewState["selectedHDName"] = selectedHd;
 
@@ -150,11 +182,6 @@ public partial class views_images_profiles_deploy : Images
 
         foreach (GridViewRow row in gv.Rows)
         {
-            var isActive = Convert.ToBoolean(((HiddenField)row.FindControl("HiddenActivePart")).Value);
-            if (!isActive) continue;
-            var box = row.FindControl("chkPartActive") as CheckBox;
-            if (box != null) box.Checked = true;
-
             if (partitions[row.RowIndex].VolumeGroup == null) continue;
             if (partitions[row.RowIndex].VolumeGroup.Name == null) continue;
             var gvVg = (GridView)row.FindControl("gvVG");
@@ -202,29 +229,12 @@ public partial class views_images_profiles_deploy : Images
             td.Visible = false;
             btn.Text = "+";
         }
-
-        foreach (var box in (from GridViewRow row in gv.Rows
-                             let isActive = Convert.ToBoolean(((HiddenField)row.FindControl("HiddenActivePart")).Value)
-                             where isActive
-                             select row.FindControl("chkPartActive")).OfType<CheckBox>())
-        {
-            box.Checked = true;
-        }
     }
 
     protected void PopulateHardDrives()
     {
         gvHDs.DataSource = new ImageSchema(ImageProfile).GetHardDrivesForGridView();
         gvHDs.DataBind();
-
-
-        foreach (var box in (from GridViewRow row in gvHDs.Rows
-                             let isActive = Convert.ToBoolean(((HiddenField)row.FindControl("HiddenActive")).Value)
-                             where isActive
-                             select row.FindControl("chkHDActive")).OfType<CheckBox>())
-        {
-            box.Checked = true;
-        }
     }
 
     protected void chkModifySchema_OnCheckedChanged(object sender, EventArgs e)
@@ -240,7 +250,7 @@ public partial class views_images_profiles_deploy : Images
         }
     }
 
-    protected void btnUpdateImageSpecs_Click(object sender, EventArgs e)
+    protected string SetCustomSchema()
     {
         var schema = new BLL.ImageSchema(ImageProfile).GetImageSchema();
 
@@ -248,7 +258,8 @@ public partial class views_images_profiles_deploy : Images
         foreach (GridViewRow row in gvHDs.Rows)
         {
             var box = row.FindControl("chkHDActive") as CheckBox;
-            schema.HardDrives[rowCounter].Active = box != null && box.Checked;
+            if(box != null)
+            schema.HardDrives[rowCounter].Active = box.Checked;
 
             var gvParts = (GridView)row.FindControl("gvParts");
 
@@ -256,21 +267,20 @@ public partial class views_images_profiles_deploy : Images
             foreach (GridViewRow partRow in gvParts.Rows)
             {
                 var boxPart = partRow.FindControl("chkPartActive") as CheckBox;
-                if (boxPart != null && boxPart.Checked)
-                    schema.HardDrives[rowCounter].Partitions[partCounter].Active = true;
-                else
-                    schema.HardDrives[rowCounter].Partitions[partCounter].Active = false;
+                if (boxPart != null)
+                schema.HardDrives[rowCounter].Partitions[partCounter].Active = boxPart.Checked;
 
                 var txtCustomSize = partRow.FindControl("txtCustomSize") as TextBox;
-                if (txtCustomSize != null && !string.IsNullOrEmpty(txtCustomSize.Text))
-                {
-                    var customSizeBlk =
-                        (Convert.ToInt64(txtCustomSize.Text) * 1024 * 1024 / Convert.ToInt32(schema.HardDrives[rowCounter].Lbs))
-                            .ToString
-                            ();
-                    schema.HardDrives[rowCounter].Partitions[partCounter].CustomSize = customSizeBlk;
-                }
+                if (txtCustomSize != null)
+                    schema.HardDrives[rowCounter].Partitions[partCounter].CustomSize = txtCustomSize.Text;
 
+                var ddlUnit = partRow.FindControl("ddlUnit") as DropDownList;
+                if (ddlUnit != null)
+                    schema.HardDrives[rowCounter].Partitions[partCounter].CustomSizeUnit = ddlUnit.Text;
+
+                var chkFixed = partRow.FindControl("chkFixed") as CheckBox;
+                if (chkFixed != null)
+                    schema.HardDrives[rowCounter].Partitions[partCounter].ForceFixedSize = chkFixed.Checked;
 
                 var gvVg = (GridView)partRow.FindControl("gvVG");
                 foreach (GridViewRow vg in gvVg.Rows)
@@ -279,22 +289,21 @@ public partial class views_images_profiles_deploy : Images
                     var lvCounter = 0;
                     foreach (GridViewRow lv in gvLvs.Rows)
                     {
-                        var boxLv = lv.FindControl("chkPartActive") as CheckBox;
-                        if (boxLv != null && boxLv.Checked)
-                            schema.HardDrives[rowCounter].Partitions[partCounter].VolumeGroup.LogicalVolumes[lvCounter].Active = true;
-                        else
-                            schema.HardDrives[rowCounter].Partitions[partCounter].VolumeGroup.LogicalVolumes[lvCounter].Active = false;
+                        var lvBoxPart = lv.FindControl("chkPartActive") as CheckBox;
+                        if (lvBoxPart != null)
+                            schema.HardDrives[rowCounter].Partitions[partCounter].VolumeGroup.LogicalVolumes[lvCounter].Active = lvBoxPart.Checked;
 
-                        var txtCustomSizeLv = lv.FindControl("txtCustomSize") as TextBox;
-                        if (txtCustomSizeLv != null && !string.IsNullOrEmpty(txtCustomSizeLv.Text))
-                        {
-                            var customSizeBlk =
-                                (Convert.ToInt64(txtCustomSizeLv.Text) * 1024 * 1024 /
-                                 Convert.ToInt32(schema.HardDrives[rowCounter].Lbs))
-                                    .ToString();
-                            schema.HardDrives[rowCounter].Partitions[partCounter].VolumeGroup.LogicalVolumes[lvCounter].CustomSize =
-                                customSizeBlk;
-                        }
+                        var lvTxtCustomSize = lv.FindControl("txtCustomSize") as TextBox;
+                        if (lvTxtCustomSize != null)
+                            schema.HardDrives[rowCounter].Partitions[partCounter].VolumeGroup.LogicalVolumes[lvCounter].CustomSize = lvTxtCustomSize.Text;
+
+                        var lvDdlUnit = lv.FindControl("ddlUnit") as DropDownList;
+                        if (lvDdlUnit != null)
+                            schema.HardDrives[rowCounter].Partitions[partCounter].VolumeGroup.LogicalVolumes[lvCounter].CustomSizeUnit = lvDdlUnit.Text;
+
+                        var lvChkFixed = lv.FindControl("chkFixed") as CheckBox;
+                        if (lvChkFixed != null)
+                            schema.HardDrives[rowCounter].Partitions[partCounter].VolumeGroup.LogicalVolumes[lvCounter].ForceFixedSize = lvChkFixed.Checked;
                         lvCounter++;
                     }
                 }
@@ -302,7 +311,7 @@ public partial class views_images_profiles_deploy : Images
             }
             rowCounter++;
         }
-        ImageProfile.CustomPartitionScript = JsonConvert.SerializeObject(schema);
+        return JsonConvert.SerializeObject(schema);
        
     }
 }

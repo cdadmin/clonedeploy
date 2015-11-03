@@ -14,7 +14,7 @@ namespace DAL
         private IGenericRepository<Models.GroupMembership> _groupMembershipRepository;
         private IGenericRepository<Models.Image> _imageRepository;
         private IGenericRepository<Models.ImageProfilePartition> _imageProfilePartitionRepository;
-        private IGenericRepository<Models.LinuxProfile> _linuxProfileRepository;
+        private IGenericRepository<Models.ImageProfile> _linuxProfileRepository;
         private IGenericRepository<Models.Partition> _partitionRepository;
         private IGenericRepository<Models.PartitionLayout> _partitionLayoutRepository;
         private IGenericRepository<Models.Port> _portRepository;
@@ -107,9 +107,9 @@ namespace DAL
             get { return _imageProfilePartitionRepository ?? (_imageProfilePartitionRepository = new GenericRepository<Models.ImageProfilePartition>(_context)); }
         }
 
-        public IGenericRepository<Models.LinuxProfile> LinuxProfileRepository
+        public IGenericRepository<Models.ImageProfile> LinuxProfileRepository
         {
-            get { return _linuxProfileRepository ?? (_linuxProfileRepository = new GenericRepository<Models.LinuxProfile>(_context)); }
+            get { return _linuxProfileRepository ?? (_linuxProfileRepository = new GenericRepository<Models.ImageProfile>(_context)); }
         }
 
         public IGenericRepository<Models.Partition> PartitionRepository

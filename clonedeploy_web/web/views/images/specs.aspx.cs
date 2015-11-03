@@ -48,7 +48,7 @@ namespace views.images
             var gvRow = (GridViewRow) control.Parent.Parent;
             var gv = (GridView) gvRow.FindControl("gvParts");
 
-            var selectedHd = gvRow.Cells[3].Text;
+            var selectedHd = gvRow.Cells[1].Text;
             ViewState["selectedHD"] = gvRow.RowIndex.ToString();
             ViewState["selectedHDName"] = selectedHd;
 
@@ -77,10 +77,7 @@ namespace views.images
 
             foreach (GridViewRow row in gv.Rows)
             {
-                var isActive = Convert.ToBoolean(((HiddenField)row.FindControl("HiddenActivePart")).Value);
-                if (!isActive) continue;
-                var box = row.FindControl("chkPartActive") as CheckBox;
-                if (box != null) box.Checked = true;
+               
 
                 if (partitions[row.RowIndex].VolumeGroup == null) continue;
                 if (partitions[row.RowIndex].VolumeGroup.Name == null) continue;
@@ -130,13 +127,7 @@ namespace views.images
                 btn.Text = "+";
             }
 
-            foreach (var box in (from GridViewRow row in gv.Rows
-                let isActive = Convert.ToBoolean(((HiddenField) row.FindControl("HiddenActivePart")).Value)
-                where isActive
-                select row.FindControl("chkPartActive")).OfType<CheckBox>())
-            {
-                box.Checked = true;
-            }
+          
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -150,13 +141,7 @@ namespace views.images
             gvHDs.DataBind();
 
 
-            foreach (var box in (from GridViewRow row in gvHDs.Rows
-                let isActive = Convert.ToBoolean(((HiddenField) row.FindControl("HiddenActive")).Value)
-                where isActive
-                select row.FindControl("chkHDActive")).OfType<CheckBox>())
-            {
-                box.Checked = true;
-            }
+          
 
         }
     }

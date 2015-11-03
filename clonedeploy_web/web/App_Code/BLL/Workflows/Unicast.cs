@@ -11,7 +11,7 @@ namespace BLL.Workflows
         private Models.Computer Host { get; set; }
         private Models.ActiveImagingTask ActiveTask { get; set; }
         private Models.Image Image { get; set; }
-        private Models.LinuxProfile ImageProfile { get; set; }
+        private Models.ImageProfile ImageProfile { get; set; }
 
         public string Run(Models.Computer computer, string direction)
         {
@@ -115,7 +115,7 @@ namespace BLL.Workflows
                     if (Convert.ToBoolean(ImageProfile.RemoveGPT)) profileArgs += "remove_gpt_structures=true ";
                     if (Convert.ToBoolean(ImageProfile.SkipShrinkVolumes)) profileArgs += "skip_shrink_volumes=true ";
                     if (Convert.ToBoolean(ImageProfile.SkipShrinkLvm)) profileArgs += "skip_shrink_lvm=true ";
-                    if (Convert.ToBoolean(ImageProfile.DebugResize)) profileArgs += "debug_resize=true ";
+                  
                     break;
                 case "push":
                     if (Convert.ToBoolean(ImageProfile.SkipExpandVolumes)) profileArgs += "skip_expand_volumes=true ";

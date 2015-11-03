@@ -34,6 +34,8 @@
         public string UsedMb { get; set; }
         public string Uuid { get; set; }
         public VolumeGroup VolumeGroup { get; set; }
+        public string CustomSizeUnit { get; set; }
+        public bool ForceFixedSize { get; set; }
     }
 
     public class VolumeGroup
@@ -58,5 +60,7 @@
         public string UsedMb { get; set; }
         public string Uuid { get; set; }
         public string VolumeGroup { get; set; }
+        public string CustomSizeUnit { get; set; }
+        public bool ForceFixedSize { get; set; }
     }
 }

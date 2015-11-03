@@ -7,7 +7,7 @@ namespace BasePages
     public class Profiles : PageBaseMaster
     {
         public Image Image { get; set; }
-        public LinuxProfile ImageProfile { get; set; }
+        public ImageProfile ImageProfile { get; set; }
 
         protected override void OnInit(EventArgs e)
         {

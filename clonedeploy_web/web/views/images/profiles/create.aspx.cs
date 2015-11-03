@@ -11,7 +11,7 @@ public partial class views_images_profiles_create : Images
 
     protected void buttonCreateProfile_OnClick(object sender, EventArgs e)
     {
-        var profile = new LinuxProfile()
+        var profile = new ImageProfile()
         {
             Name = txtProfileName.Text,
             Description = txtProfileDesc.Text,

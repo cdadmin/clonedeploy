@@ -12,7 +12,7 @@ namespace DAL
 
         }
         public DbSet<Models.Computer> Computers { get; set; }
-        public DbSet<Models.LinuxProfile> LinuxProfiles { get; set; }
+        public DbSet<Models.ImageProfile> LinuxProfiles { get; set; }
         public DbSet<Models.ActiveImagingTask> ActiveImagingTasks { get; set; }
         public DbSet<Models.ActiveMulticastSession> ActiveMulticastSessions { get; set; }
         public DbSet<Models.BootTemplate> BootTemplates { get; set; }

@@ -17,7 +17,7 @@ namespace BLL
     {
         private readonly Models.ImageSchema.GridView.Schema _imageSchema;
 
-        public ImageSchema(Models.LinuxProfile imageProfile, Models.Image image = null)
+        public ImageSchema(Models.ImageProfile imageProfile, Models.Image image = null)
         {
             string schema = null;
 
@@ -91,10 +91,7 @@ namespace BLL
                         part.Size = (Convert.ToInt64(part.Size) * hardDrive.Lbs / 1024f / 1024f / 1024f).ToString("#.##") +
                                     " GB";
                     part.UsedMb = part.UsedMb + " MB";
-                    if (!string.IsNullOrEmpty(part.CustomSize))
-                        part.CustomSize =
-                            (Convert.ToInt64(part.CustomSize) * hardDrive.Lbs / 1024f / 1024f).ToString(
-                                CultureInfo.InvariantCulture);
+                    
                   
                     part.VolumeSize = part.VolumeSize + " MB";
                     partitions.Add(part);
@@ -124,10 +121,7 @@ namespace BLL
                             (Convert.ToInt64(lv.Size) * lbs / 1024f / 1024f / 1024f).ToString("#.##") +
                             " GB";
                     lv.UsedMb = lv.UsedMb + " MB";
-                    if (!string.IsNullOrEmpty(lv.CustomSize))
-                        lv.CustomSize =
-                            (Convert.ToInt64(lv.CustomSize) * lbs / 1024f / 1024f).ToString(
-                                CultureInfo.InvariantCulture);
+                   
                    
                         lv.VolumeSize = lv.VolumeSize + " MB";
 

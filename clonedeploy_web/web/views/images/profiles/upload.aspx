@@ -4,6 +4,14 @@
      <li><a href="<%= ResolveUrl("~/views/images/profiles/chooser.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><%= ImageProfile.Name %></a></li>
     <li>Upload Options</li>
 </asp:Content>
+
+<asp:Content runat="server" ContentPlaceHolderID="SubHelp">
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="icon help" data-info="Help" target="_blank"></a>
+</asp:Content>
+<asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
+    <asp:LinkButton ID="btnUpdateUpload" runat="server" OnClick="btnUpdateUpload_OnClick" Text="Update Upload Options" CssClass="submits"/>
+</asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
      <script type="text/javascript">
         $(document).ready(function() {
@@ -34,14 +42,7 @@
         <asp:CheckBox ID="chkUpNoShrinkLVM" runat="server" CssClass="textbox"></asp:CheckBox>
     </div>
     <br class="clear"/>
-    
-    <div class="size-9 column">
-        Calculate Size Debug
-    </div>
-    <div class="size-8 column">
-        <asp:CheckBox ID="chkUpDebugResize" runat="server" CssClass="textbox"></asp:CheckBox>
-    </div>
-    <br class="clear"/>
+  
     <div class="size-4 column">
     Compression Algorithm:
 </div>
@@ -71,11 +72,20 @@
     </asp:DropDownList>
 </div>
 <br class="clear"/>
-     <div class="size-4 column">
-        &nbsp;
+    <div class="size-9 column">
+        Only Upload Schema
     </div>
-    <div class="size-5 column">
-        <asp:LinkButton ID="btnUpdateUpload" runat="server" OnClick="btnUpdateUpload_OnClick" Text="Update Upload Options" CssClass="submits"/>
+    <div class="size-8 column">
+        <asp:CheckBox ID="chkSchemaOnly" runat="server" CssClass="textbox"></asp:CheckBox>
     </div>
+  
+    <br class="clear"/>
+    <div class="size-9 column">
+        Use Custom Upload Schema
+    </div>
+    <div class="size-8 column">
+        <asp:CheckBox ID="chkCustomUpload" runat="server" CssClass="textbox"></asp:CheckBox>
+    </div>
+
 </asp:Content>
 

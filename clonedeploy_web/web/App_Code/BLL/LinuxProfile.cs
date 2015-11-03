@@ -7,7 +7,7 @@ namespace BLL
 {
     public static class LinuxProfile
     {
-        public static Models.ValidationResult AddProfile(Models.LinuxProfile profile)
+        public static Models.ValidationResult AddProfile(Models.ImageProfile profile)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -22,7 +22,7 @@ namespace BLL
             }
         }
 
-        public static Models.LinuxProfile ReadProfile(int profileId)
+        public static Models.ImageProfile ReadProfile(int profileId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -32,7 +32,7 @@ namespace BLL
             }
         }
 
-        public static List<Models.LinuxProfile> SearchProfiles(int imageId)
+        public static List<Models.ImageProfile> SearchProfiles(int imageId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -41,7 +41,7 @@ namespace BLL
             }
         }
 
-        public static Models.ValidationResult UpdateProfile(Models.LinuxProfile profile)
+        public static Models.ValidationResult UpdateProfile(Models.ImageProfile profile)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -57,7 +57,7 @@ namespace BLL
 
         }
 
-        public static Models.ValidationResult ValidateLinuxProfile(Models.LinuxProfile linuxProfile, bool isNewLinuxProfile)
+        public static Models.ValidationResult ValidateLinuxProfile(Models.ImageProfile linuxProfile, bool isNewLinuxProfile)
         {
             var validationResult = new Models.ValidationResult();
 

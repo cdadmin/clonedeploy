@@ -3,11 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models
 {
-    /// <summary>
-    /// Summary description for LinuxProfile
-    /// </summary>
-    [Table("linux_profiles")]
-    public class LinuxProfile
+    [Table("image_profiles")]
+    public class ImageProfile
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -50,37 +47,31 @@ namespace Models
         [Column("skip_lvm_shrink", Order = 13)]
         public int SkipShrinkLvm { get; set; }
 
-        [Column("resize_debug", Order = 14)]
-        public int DebugResize { get; set; }
-
-        [Column("skip_volume_expand", Order = 15)]
+        [Column("skip_volume_expand", Order = 14)]
         public int SkipExpandVolumes { get; set; }
 
-        [Column("fix_bcd", Order = 16)]
+        [Column("fix_bcd", Order = 15)]
         public int FixBcd { get; set; }
 
-        [Column("fix_bootloader", Order = 17)]
+        [Column("fix_bootloader", Order = 16)]
         public int FixBootloader { get; set; }
 
-        [Column("partition_method", Order = 18)]
+        [Column("partition_method", Order = 17)]
         public string PartitionMethod { get; set; }
 
-        [Column("force_dynamic_partitions", Order = 19)]
+        [Column("force_dynamic_partitions", Order = 18)]
         public int ForceDynamicPartitions { get; set; }
 
-        [Column("always_expand_partitions", Order = 20)]
-        public int ForceExpandPartitions { get; set; }
-
-        [Column("custom_partition_script", Order = 21)]
+        [Column("custom_partition_script", Order = 19)]
         public string CustomPartitionScript { get; set; }
 
-        [Column("compression_algorithm", Order = 22)]
+        [Column("compression_algorithm", Order = 20)]
         public string Compression { get; set; }
 
-        [Column("compression_level", Order = 23)]
+        [Column("compression_level", Order = 21)]
         public string CompressionLevel { get; set; }
 
-        [Column("custom_image_schema", Order = 24)]
+        [Column("custom_image_schema", Order = 22)]
         public string CustomSchema { get; set; }
 
         [NotMapped]

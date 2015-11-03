@@ -14,7 +14,7 @@ namespace DAL
         DAL.IGenericRepository<Models.GroupMembership> GroupMembershipRepository { get; }
         DAL.IGenericRepository<Models.Image> ImageRepository { get; }
         DAL.IGenericRepository<Models.ImageProfilePartition> ImageProfilePartitionRepository { get; }
-        DAL.IGenericRepository<Models.LinuxProfile> LinuxProfileRepository { get; }
+        DAL.IGenericRepository<Models.ImageProfile> LinuxProfileRepository { get; }
         DAL.IGenericRepository<Models.Partition> PartitionRepository { get; }
         DAL.IGenericRepository<Models.PartitionLayout> PartitionLayoutRepository { get; }
         DAL.IGenericRepository<Models.Port> PortRepository { get; }
