@@ -17,8 +17,8 @@
         <Columns>
             <asp:BoundField DataField="Id" HeaderText="hostID" InsertVisible="False" ReadOnly="True" SortExpression="Id" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"/>
-            <asp:BoundField DataField="Image" HeaderText="Image" SortExpression="Image" ItemStyle-CssClass="width_200 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller"/>
-            <asp:BoundField DataField="Group" HeaderText="Group" SortExpression="Group" ItemStyle-CssClass="width_200 mobi-hide-small" HeaderStyle-CssClass="mobi-hide-small"/>
+            <asp:BoundField DataField="Image.Name" HeaderText="Image" SortExpression="Image" ItemStyle-CssClass="width_200 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller"/>
+           
             <asp:TemplateField>
                 <ItemTemplate>
                     <asp:LinkButton ID="btnDeploy" runat="server" OnClick="btnDeploy_Click" Text="Deploy"/>
@@ -43,7 +43,7 @@
                 <Columns>
                     <asp:BoundField DataField="Name" HeaderText="Name"/>
                     <asp:BoundField DataField="Mac" HeaderText="MAC" ItemStyle-CssClass="mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
-                    <asp:BoundField DataField="Image" HeaderText="Image"/>
+                    <asp:BoundField DataField="Image.Name" HeaderText="Image"/>
                 </Columns>
             </asp:GridView>
             <div class="confirm-box-btns">

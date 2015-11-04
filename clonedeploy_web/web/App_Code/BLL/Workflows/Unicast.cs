@@ -24,8 +24,10 @@ namespace BLL.Workflows
             Image = BLL.Image.GetImage(Host.ImageId);
             if (Image == null) return "image_error";
 
+
             ImageProfile = BLL.LinuxProfile.ReadProfile(Host.ImageProfile);
             if (ImageProfile == null) return "profile_error";
+
 
             ActiveTask = new Models.ActiveImagingTask
             {

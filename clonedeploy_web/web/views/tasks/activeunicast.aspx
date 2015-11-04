@@ -1,23 +1,25 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/tasks/Task.master" AutoEventWireup="true" Inherits="views.tasks.TaskActive" CodeFile="active.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/tasks/Task.master" AutoEventWireup="true" CodeFile="activeunicast.aspx.cs" Inherits="views_tasks_activeunicast" %>
 
-<asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#taskactive').addClass("nav-current");
-        });
-    </script>
-    <asp:ScriptManager ID="ScriptManager1" runat="server">
+<asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="Help" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="ActionsLeftSub" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content4" ContentPlaceHolderID="SubPageActionsRight" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content5" ContentPlaceHolderID="SubContent" Runat="Server">
+     <asp:ScriptManager ID="ScriptManager1" runat="server">
     </asp:ScriptManager>
-   
-    <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
+      <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
             <asp:Timer ID="Timer" runat="server" Interval="2000" OnTick="Timer_Tick">
             </asp:Timer>
-            <asp:GridView ID="gvTasks" runat="server" AutoGenerateColumns="False" DataKeyNames="Id" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
+            <asp:GridView ID="gvUcTasks" runat="server" AutoGenerateColumns="False" DataKeyNames="Id" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
                 <Columns>
-                    <asp:BoundField DataField="Id" HeaderText="taskID" SortExpression="_taskID" InsertVisible="False" ReadOnly="True" Visible="False"/>
-                    <asp:BoundField DataField="ComputerId" HeaderText="Name" SortExpression="_taskName" ItemStyle-CssClass="width_150"/>
-                    <asp:BoundField DataField="Status" HeaderText="Status" SortExpression="_taskStatus" ItemStyle-CssClass="width_50"/>
+                    <asp:BoundField DataField="Id" HeaderText="taskID" SortExpression="Id" InsertVisible="False" ReadOnly="True" Visible="False"/>
+                    <asp:BoundField DataField="ComputerId" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_150"/>
+                    <asp:BoundField DataField="Status" HeaderText="Status" SortExpression="Status" ItemStyle-CssClass="width_50"/>
                     <asp:BoundField DataField="Partition" HeaderText="Partition" ItemStyle-CssClass="mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller"/>
                     <asp:BoundField DataField="Elapsed" HeaderText="Elapsed" ItemStyle-CssClass="mobi-hide-small" HeaderStyle-CssClass="mobi-hide-small"/>
                     <asp:BoundField DataField="Remaining" HeaderText="Remaining" ItemStyle-CssClass="mobi-hide-small" HeaderStyle-CssClass="mobi-hide-small"/>
@@ -30,10 +32,11 @@
                     </asp:TemplateField>
                 </Columns>
                 <EmptyDataTemplate>
-                    No Active Tasks
+                    No Active Unicasts
                 </EmptyDataTemplate>
             </asp:GridView>
+           
         </ContentTemplate>
     </asp:UpdatePanel>
-    <asp:LinkButton ID="cancelTasks" runat="server" Text="Cancel All Tasks" CssClass="submits" OnClick="cancelTasks_Click"/>
 </asp:Content>
+

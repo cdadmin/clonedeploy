@@ -27,7 +27,8 @@ namespace BLL
             using (var uow = new DAL.UnitOfWork())
             {
                 var imageProfile = uow.LinuxProfileRepository.GetById(profileId);
-                imageProfile.Image = BLL.Image.GetImage(imageProfile.ImageId);
+                if (imageProfile != null)
+                    imageProfile.Image = BLL.Image.GetImage(imageProfile.ImageId);
                 return imageProfile;
             }
         }

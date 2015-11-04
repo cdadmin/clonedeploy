@@ -13,11 +13,11 @@
     <p class="total">
         <asp:Label ID="lblTotal" runat="server"></asp:Label>
     </p>
-    <asp:GridView ID="gvGroups" runat="server" AutoGenerateColumns="False" DataKeyNames="groupID" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
+    <asp:GridView ID="gvGroups" runat="server" AutoGenerateColumns="False" DataKeyNames="Id" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
         <Columns>
-            <asp:BoundField DataField="groupID" HeaderText="groupID" InsertVisible="False" ReadOnly="True" SortExpression="groupID" Visible="False"/>
-            <asp:BoundField DataField="groupName" HeaderText="Name" SortExpression="groupName" ItemStyle-CssClass="width_200"/>
-            <asp:BoundField DataField="groupImage" HeaderText="Image" SortExpression="groupImage" ItemStyle-CssClass="width_200 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller"/>
+            <asp:BoundField DataField="Id" HeaderText="groupID" InsertVisible="False" ReadOnly="True" SortExpression="groupID" Visible="False"/>
+            <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"/>
+           
             <asp:TemplateField ItemStyle-CssClass="width_100">
                 <ItemTemplate>
                     <asp:LinkButton ID="btnMulticast" runat="server" OnClick="btnMulticast_Click" Text="Multicast"/>

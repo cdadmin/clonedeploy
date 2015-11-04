@@ -65,7 +65,10 @@ namespace views.computers
                     ComputerBasePage.RequiresAuthorizationOrManagedComputer(Authorizations.ImageDeployTask, Computer.Id);
                     var validation = BLL.Image.CheckApprovalAndChecksum(Computer.Image);
                     if (validation.IsValid)
-                        BLL.Computer.StartUnicast(Computer, direction);
+                    {
+                        var taskStartResult = BLL.Computer.StartUnicast(Computer, direction);
+                        PageBaseMaster.EndUserMessage = taskStartResult.Message;
+                    }
                     else
                         PageBaseMaster.EndUserMessage = validation.Message;
                 }

@@ -207,32 +207,39 @@ namespace BLL
             throw new NotImplementedException();
         }
 
-        public static void StartUnicast(Models.Computer computer, string direction)
+        public static Models.ValidationResult StartUnicast(Models.Computer computer, string direction)
         {
+            var result = new Models.ValidationResult {IsValid = false};
             switch (new Unicast().Run(computer, direction))
             {
+                case "active":
+                    result.Message = "This Computer Is Already Part Of An Active Task";
+                    break;
+
                 case "computer_error":
-                    //Message.Text = "The Computer No Longer Exists";
+                    result.Message = "The Computer Does Not Exist";
                     break;
                 case "image_error":
-                    //Message.Text = "The Image No Longer Exists";
+                    result.Message = "The Image Does Not Exist";
                     break;
                 case "profile_error":
-                    //Message.Text = "The Image Profile No Longer Exists";
+                    result.Message = "The Image Profile Does Not Exist";
                     break;
                 case "database_error":
-                    //Message.Text = "Could Not Create The Database Entry For This Task";
+                    result.Message = "Could Not Create The Database Entry For This Task";
                     break;
                 case "pxe_error":
-                    //Message.Text = "Could Not Create PXE Boot File";
+                    result.Message = "Could Not Create PXE Boot File";
                     break;
                 case "arguments_error":
-                    //Message.Text = "Could Not Create Task Arguments";
+                    result.Message = "Could Not Create Task Arguments";
                     break;
                 case "true" :
-                    //Message.Text = "Successfully Started Task For " + computer.Name;
+                    result.IsValid = true;
+                    result.Message = "Successfully Started Task For " + computer.Name;
                     break;
             }
+            return result;
         }
     }
 }
