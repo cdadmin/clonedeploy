@@ -58,11 +58,7 @@
                     <asp:Label ID="lblSize" runat="server" CausesValidation="false" CssClass="lbl_file"></asp:Label>
                 </ItemTemplate>
             </asp:TemplateField>
-            <asp:TemplateField ShowHeader="True" HeaderText="Minimum Client Size" ItemStyle-CssClass="mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller">
-                <ItemTemplate>
-                    <asp:Label ID="lblSizeClient" runat="server" CausesValidation="false" CssClass="lbl_file"></asp:Label>
-                </ItemTemplate>
-            </asp:TemplateField>
+         
 
             <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/images/edit.aspx?imageid={0}" Text="View"/>
 
@@ -79,11 +75,7 @@
                                             <asp:Label ID="lblHDSize" runat="server" CausesValidation="false" CssClass="lbl_file"></asp:Label>
                                         </ItemTemplate>
                                     </asp:TemplateField>
-                                    <asp:TemplateField ShowHeader="True" HeaderText="Client Size" ItemStyle-CssClass="mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller">
-                                        <ItemTemplate>
-                                            <asp:Label ID="lblHDSizeClient" runat="server" CausesValidation="false" CssClass="lbl_file"></asp:Label>
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
+                                  
 
                                 </Columns>
                             </asp:GridView>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using BasePages;
 using BLL;
@@ -37,16 +38,7 @@ public partial class views_images_profiles_search : Images
         ToggleCheckState(hcb.Checked);
     }
 
-    public string GetSortDirection(string sortExpression)
-    {
-        if (ViewState[sortExpression] == null)
-            ViewState[sortExpression] = "Desc";
-        else
-            ViewState[sortExpression] = ViewState[sortExpression].ToString() == "Desc" ? "Asc" : "Desc";
-
-        return ViewState[sortExpression].ToString();
-    }
-
+   
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
@@ -68,6 +60,17 @@ public partial class views_images_profiles_search : Images
     {
         gvProfiles.DataSource = BLL.LinuxProfile.SearchProfiles(Image.Id);
         gvProfiles.DataBind();
+            
+        foreach (GridViewRow row in gvProfiles.Rows)
+        {
+            var lblClient = row.FindControl("lblSizeClient") as Label;
+            if (lblClient != null)
+            {
+                var dataKey = gvProfiles.DataKeys[row.RowIndex];
+                if (dataKey == null) continue;
+                lblClient.Text = BLL.ImageSchema.MinimumClientSizeForGridView(Convert.ToInt32(dataKey.Value), 1);
+            }
+        }
 
     }
 
@@ -83,6 +86,45 @@ public partial class views_images_profiles_search : Images
             var cb = (CheckBox)row.FindControl("chkSelector");
             if (cb != null)
                 cb.Checked = checkState;
+        }
+    }
+
+    protected void btnHds_Click(object sender, EventArgs e)
+    {
+        var control = sender as Control;
+        if (control == null) return;
+        var row = (GridViewRow)control.Parent.Parent;
+        var gvHDs = (GridView)row.FindControl("gvHDs");
+        var btn = (LinkButton)row.FindControl("btnHDs");
+
+        if (gvHDs.Visible == false)
+        {
+            var td = row.FindControl("tdHds");
+            td.Visible = true;
+            gvHDs.Visible = true;
+
+            gvHDs.DataSource = new BLL.ImageSchema(null, "deploy", BLL.Image.GetImage(Image.Id)).GetHardDrivesForGridView();
+            gvHDs.DataBind();
+            btn.Text = "-";
+        }
+        else
+        {
+            var td = row.FindControl("tdHds");
+            td.Visible = false;
+            gvHDs.Visible = false;
+            btn.Text = "+";
+        }
+
+        foreach (GridViewRow hdrow in gvHDs.Rows)
+        {
+            var selectedHd = (hdrow.RowIndex + 1);
+            var lblClient = hdrow.FindControl("lblHDSizeClient") as Label;
+            if (lblClient != null)
+            {
+                var dataKey = gvProfiles.DataKeys[row.RowIndex];
+                if (dataKey == null) continue;
+                lblClient.Text = BLL.ImageSchema.MinimumClientSizeForGridView(Convert.ToInt32(dataKey.Value), selectedHd);
+            }
         }
     }
 }

@@ -46,11 +46,8 @@ namespace views.images
             {
                 var selectedHd = (hdrow.RowIndex + 1);
                 var lbl = hdrow.FindControl("lblHDSize") as Label;
-                if (lbl != null) lbl.Text = BLL.ImageSchema.ImageSizeOnServerForGridView(row.Cells[4].Text, selectedHd.ToString());
-
-                var lblClient = hdrow.FindControl("lblHDSizeClient") as Label;
-                if (lblClient != null)
-                    lblClient.Text = BLL.ImageSchema.MinimumClientSizeForGridView(Convert.ToInt32(imageId),selectedHd);                
+                if (lbl != null)
+                    lbl.Text = BLL.ImageSchema.ImageSizeOnServerForGridView(row.Cells[4].Text, selectedHd.ToString());
             }
         }
 
@@ -108,11 +105,6 @@ namespace views.images
             {
                 var lbl = row.FindControl("lblSize") as Label;
                 if (lbl != null) lbl.Text = BLL.ImageSchema.ImageSizeOnServerForGridView(row.Cells[4].Text, "1");
-
-                var lblClient = row.FindControl("lblSizeClient") as Label;
-                var imageId = ((HiddenField)row.FindControl("HiddenID")).Value;
-                if (lblClient != null)
-                    lblClient.Text = BLL.ImageSchema.MinimumClientSizeForGridView(Convert.ToInt32(imageId), 1);
             }
         }
 

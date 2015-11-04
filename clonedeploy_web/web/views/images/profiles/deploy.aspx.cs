@@ -280,6 +280,7 @@ public partial class views_images_profiles_deploy : Images
                     schema.HardDrives[rowCounter].Partitions[partCounter].ForceFixedSize = chkFixed.Checked;
 
                 var gvVg = (GridView)partRow.FindControl("gvVG");
+
                 foreach (GridViewRow vg in gvVg.Rows)
                 {
                     var gvLvs = (GridView)vg.FindControl("gvLVS");
@@ -308,7 +309,7 @@ public partial class views_images_profiles_deploy : Images
             }
             rowCounter++;
         }
-        return JsonConvert.SerializeObject(schema);
+        return JsonConvert.SerializeObject(schema, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
        
     }
 }

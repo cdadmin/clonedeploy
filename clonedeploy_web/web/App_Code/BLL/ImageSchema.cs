@@ -174,14 +174,13 @@ namespace BLL
             }
         }
 
-        public static string MinimumClientSizeForGridView(int imageId, int hdNumber)
+        public static string MinimumClientSizeForGridView(int profileId, int hdNumber)
         {
             try
             {   
-                var img = BLL.Image.GetImage(Convert.ToInt32(imageId));
-                //var fltClientSize = new ClientPartitionHelper(img).HardDrive(hdNumber, 1) / 1024f / 1024f / 1024f;
-                //return Math.Abs(fltClientSize) < 0.1f ? "< 100M" : fltClientSize.ToString("#.##") + " GB";
-                return "";
+                var profile = BLL.LinuxProfile.ReadProfile(profileId);
+                var fltClientSize = new ClientPartitionHelper(profile).HardDrive(hdNumber, 1) / 1024f / 1024f / 1024f;
+                return Math.Abs(fltClientSize) < 0.1f ? "< 100M" : fltClientSize.ToString("#.##") + " GB";
             }
             catch
             {

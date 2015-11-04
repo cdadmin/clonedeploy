@@ -217,7 +217,7 @@ namespace BLL.ClientPartitioning
                     //If totalPercentage is too far below 1 try to increase size of available resizable partitions
                     long totalAllocatedBlk = 0;
                     var dynamicPartitionCount = 0;
-                    if (totalHdPercentage < .99)
+                    if (totalHdPercentage < .98)
                     {
                         foreach (var partition in PrimaryAndExtendedPartitions)
                         {

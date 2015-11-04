@@ -164,6 +164,7 @@ namespace BLL.ClientPartitioning
             foreach (var partition in _imageSchema.HardDrives[hdNumberToGet].Partitions)
             {
                 partitionCounter++;
+                if (!partition.Active) continue;
                 //Logical partitions are calculated via the extended
                 if (partition.Type.ToLower() == "logical") continue;
                 minHdSizeRequiredBlk += this.Partition(hdNumberToGet, partitionCounter).MinSizeBlk;
