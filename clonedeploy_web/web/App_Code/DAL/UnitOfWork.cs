@@ -1,4 +1,5 @@
 ﻿using System;
+using Models;
 
 namespace DAL
 {
@@ -9,11 +10,12 @@ namespace DAL
         private IGenericRepository<Models.ActiveMulticastSession> _activeMulticastSessionRepository;
         private BuildingRepository _buildingRepository;
         private IGenericRepository<Models.DistributionPoint> _distributionPointRepository;
+        private IGenericRepository<Models.FileFolder> _fileFolderRepository;
         private IGenericRepository<Models.ComputerBootMenu> _computerBootMenuRepository;
         private IGenericRepository<Models.GroupBootMenu> _groupBootMenuRepository;
         private IGenericRepository<Models.GroupMembership> _groupMembershipRepository;
         private IGenericRepository<Models.Image> _imageRepository;
-        private IGenericRepository<Models.ImageProfilePartition> _imageProfilePartitionRepository;
+        private IGenericRepository<Models.ImageProfilePartitionLayout> _imageProfilePartitionRepository;
         private IGenericRepository<Models.ImageProfile> _linuxProfileRepository;
         private IGenericRepository<Models.Partition> _partitionRepository;
         private IGenericRepository<Models.PartitionLayout> _partitionLayoutRepository;
@@ -32,13 +34,21 @@ namespace DAL
         private IGenericRepository<Models.WdsUser> _userRepository;
         private IGenericRepository<Models.BootTemplate> _bootTemplateRepository;
         private ComputerRepository _computerRepository;
-        private ImageProfileScriptRepository _imageProfileScriptRepository;
+        private IGenericRepository<Models.ImageProfileScript> _imageProfileScriptRepository;
+        private IGenericRepository<Models.ImageProfileFileFolder> _imageProfileFileFolderRepository;
+        private IGenericRepository<Models.ImageProfileSysprepTag> _imageProfileSysprepRepository;
         private GroupRepository _groupRepository;
         private ActiveImagingTaskRepository _activeImagingTaskRepository;
 
         public IGenericRepository<Models.GroupBootMenu> GroupBootMenuRepository
         {
             get { return _groupBootMenuRepository ?? (_groupBootMenuRepository = new GenericRepository<Models.GroupBootMenu>(_context)); }
+
+        }
+
+        public IGenericRepository<Models.FileFolder> FileFolderRepository
+        {
+            get { return _fileFolderRepository ?? (_fileFolderRepository = new GenericRepository<Models.FileFolder>(_context)); }
 
         }
 
@@ -102,9 +112,9 @@ namespace DAL
             get { return _imageRepository ?? (_imageRepository = new GenericRepository<Models.Image>(_context)); }
         }
 
-        public IGenericRepository<Models.ImageProfilePartition> ImageProfilePartitionRepository
+        public IGenericRepository<Models.ImageProfilePartitionLayout> ImageProfilePartitionRepository
         {
-            get { return _imageProfilePartitionRepository ?? (_imageProfilePartitionRepository = new GenericRepository<Models.ImageProfilePartition>(_context)); }
+            get { return _imageProfilePartitionRepository ?? (_imageProfilePartitionRepository = new GenericRepository<Models.ImageProfilePartitionLayout>(_context)); }
         }
 
         public IGenericRepository<Models.ImageProfile> LinuxProfileRepository
@@ -172,9 +182,19 @@ namespace DAL
             get { return _bootTemplateRepository ?? (_bootTemplateRepository = new GenericRepository<Models.BootTemplate>(_context)); }
         }
 
-        public ImageProfileScriptRepository ImageProfileScriptRepository
+        public IGenericRepository<Models.ImageProfileScript> ImageProfileScriptRepository
         {
-            get { return _imageProfileScriptRepository ?? (_imageProfileScriptRepository = new ImageProfileScriptRepository(_context)); }
+            get { return _imageProfileScriptRepository ?? (_imageProfileScriptRepository = new GenericRepository<Models.ImageProfileScript>(_context)); }
+        }
+
+        public IGenericRepository<Models.ImageProfileFileFolder> ImageProfileFileFolderRepository
+        {
+            get { return _imageProfileFileFolderRepository ?? (_imageProfileFileFolderRepository = new GenericRepository<Models.ImageProfileFileFolder>(_context)); }
+        }
+
+        public IGenericRepository<Models.ImageProfileSysprepTag> ImageProfileSysprepRepository
+        {
+            get { return _imageProfileSysprepRepository ?? (_imageProfileSysprepRepository = new GenericRepository<Models.ImageProfileSysprepTag>(_context)); }
         }
 
         public GroupRepository GroupRepository

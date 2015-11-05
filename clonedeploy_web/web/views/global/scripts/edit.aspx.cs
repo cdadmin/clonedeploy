@@ -15,7 +15,6 @@ public partial class views_admin_scripts_edit : BasePages.Global
         {
             Id = Script.Id,
             Name = txtScriptName.Text,
-            Priority = Convert.ToInt32(txtPriority.Text),
             Description = txtScriptDesc.Text
         };
         var fixedLineEnding = scriptEditor.Value.Replace("\r\n", "\n");
@@ -26,7 +25,6 @@ public partial class views_admin_scripts_edit : BasePages.Global
     protected void PopulateForm()
     {
         txtScriptName.Text = Script.Name;
-        txtPriority.Text = Script.Priority.ToString();
         txtScriptDesc.Text = Script.Description;
         scriptEditor.Value = Script.Contents;
     }

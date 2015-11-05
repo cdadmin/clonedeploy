@@ -15,11 +15,7 @@ namespace Models
         public string Name { get; set; }
         [Column("script_description", Order = 3)]
         public string Description { get; set; }
-        [Column("script_priority", Order = 4)]
-        public int Priority { get; set; }
-        [Column("script_category_id", Order = 5)]
-        public int Category { get; set; }
-        [Column("script_contents", Order = 6)]
+        [Column("script_contents", Order = 4)]
         public string Contents { get; set; }
 
         

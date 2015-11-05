@@ -9,11 +9,12 @@ namespace DAL
        
         DAL.RoomRepository RoomRepository { get; }
         DAL.IGenericRepository<Models.DistributionPoint> DistributionPointRepository { get; }
+        DAL.IGenericRepository<Models.FileFolder> FileFolderRepository { get; }
         DAL.IGenericRepository<Models.ComputerBootMenu> ComputerBootMenuRepository { get; }
         DAL.IGenericRepository<Models.GroupBootMenu> GroupBootMenuRepository { get; }
         DAL.IGenericRepository<Models.GroupMembership> GroupMembershipRepository { get; }
         DAL.IGenericRepository<Models.Image> ImageRepository { get; }
-        DAL.IGenericRepository<Models.ImageProfilePartition> ImageProfilePartitionRepository { get; }
+        DAL.IGenericRepository<Models.ImageProfilePartitionLayout> ImageProfilePartitionRepository { get; }
         DAL.IGenericRepository<Models.ImageProfile> LinuxProfileRepository { get; }
         DAL.IGenericRepository<Models.Partition> PartitionRepository { get; }
         DAL.IGenericRepository<Models.PartitionLayout> PartitionLayoutRepository { get; }
@@ -32,7 +33,9 @@ namespace DAL
         DAL.IGenericRepository<Models.GroupProperty> GroupPropertyRepository { get; }
         DAL.BuildingRepository BuildingRepository { get; }
         DAL.ComputerRepository ComputerRepository { get; }
-        DAL.ImageProfileScriptRepository ImageProfileScriptRepository { get; }
+        DAL.IGenericRepository<Models.ImageProfileScript> ImageProfileScriptRepository { get; }
+        DAL.IGenericRepository<Models.ImageProfileFileFolder> ImageProfileFileFolderRepository { get; }
+        DAL.IGenericRepository<Models.ImageProfileSysprepTag> ImageProfileSysprepRepository { get; }
         DAL.GroupRepository GroupRepository { get; }
         DAL.ActiveImagingTaskRepository ActiveImagingTaskRepository { get; }
         bool Save();

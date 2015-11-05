@@ -210,29 +210,29 @@ namespace BLL
         public static Models.ValidationResult StartUnicast(Models.Computer computer, string direction)
         {
             var result = new Models.ValidationResult {IsValid = false};
-            switch (new Unicast().Run(computer, direction))
+            switch (new Unicast(computer,direction).Start())
             {
                 case "active":
-                    result.Message = "This Computer Is Already Part Of An Active Task";
+                    result.Message = "";
                     break;
 
                 case "computer_error":
-                    result.Message = "The Computer Does Not Exist";
+                    result.Message = "";
                     break;
                 case "image_error":
-                    result.Message = "The Image Does Not Exist";
+                    result.Message = "";
                     break;
                 case "profile_error":
-                    result.Message = "The Image Profile Does Not Exist";
+                    result.Message = "";
                     break;
                 case "database_error":
-                    result.Message = "Could Not Create The Database Entry For This Task";
+                    result.Message = "";
                     break;
                 case "pxe_error":
-                    result.Message = "Could Not Create PXE Boot File";
+                    result.Message = "";
                     break;
                 case "arguments_error":
-                    result.Message = "Could Not Create Task Arguments";
+                    result.Message = "";
                     break;
                 case "true" :
                     result.IsValid = true;

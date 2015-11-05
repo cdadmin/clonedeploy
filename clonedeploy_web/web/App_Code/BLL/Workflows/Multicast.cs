@@ -145,16 +145,7 @@ namespace Tasks
             foreach (var host in Hosts)
             {
                 //FIX ME
-                var menu = new TaskBootMenu
-                {
-                    //Kernel = Group.Kernel,
-                    //BootImage = Group.BootImage,
-                    //Arguments = Group.Args,
-                    PxeHostMac = Utility.MacToPxeMac(host.Mac),
-                    Direction = "push",
-                    IsMulticast = true
-                };
-                if (!menu.CreatePxeBoot())
+                if (!new TaskBootMenu(host,"push").CreatePxeBoot())
                     return false;
             }
             return true;

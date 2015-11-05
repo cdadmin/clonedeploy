@@ -42,10 +42,6 @@ public partial class views_admin_scripts_search : BasePages.Global
             case "Name":
                 listScripts = GetSortDirection(e.SortExpression) == "Asc" ? listScripts.OrderBy(s => s.Name).ToList() : listScripts.OrderByDescending(s => s.Name).ToList();
                 break;
-            case "Priority":
-                listScripts = GetSortDirection(e.SortExpression) == "Asc" ? listScripts.OrderBy(s => s.Priority).ToList() : listScripts.OrderByDescending(s => s.Priority).ToList();
-                break;
-         
         }
 
 

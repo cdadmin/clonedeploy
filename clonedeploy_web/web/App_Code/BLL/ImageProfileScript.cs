@@ -30,7 +30,7 @@ namespace BLL
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.ImageProfileScriptRepository.Find(profileId);
+                return uow.ImageProfileScriptRepository.Get(x => x.ProfileId == profileId, orderBy: q => q.OrderBy(t => t.Priority));
             }
         }
     }

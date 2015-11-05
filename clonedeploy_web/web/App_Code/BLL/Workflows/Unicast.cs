@@ -7,52 +7,51 @@ namespace BLL.Workflows
 {
     public class Unicast
     {
-        private string Direction { get; set; }
-        private Models.Computer Host { get; set; }
-        private Models.ActiveImagingTask ActiveTask { get; set; }
-        private Models.Image Image { get; set; }
-        private Models.ImageProfile ImageProfile { get; set; }
+        private readonly string _direction;
+        private readonly Models.Computer _computer;
+        private Models.ActiveImagingTask _activeTask;
+        private Models.ImageProfile _imageProfile;
 
-        public string Run(Models.Computer computer, string direction)
+        public Unicast(Models.Computer computer, string direction)
         {
-            if (computer == null)
-                return "computer_error";
+            _direction = direction;
+            _computer = computer;
+        }
 
-            Host = computer;
-            Direction = direction;
+        public string Start()
+        {
+            if (_computer == null)
+                return "The Computer Does Not Exist";
 
-            Image = BLL.Image.GetImage(Host.ImageId);
-            if (Image == null) return "image_error";
+            _imageProfile = BLL.LinuxProfile.ReadProfile(_computer.ImageProfile);
+            if (_imageProfile == null) return "The Image Profile Does Not Exist";
 
+            if (_imageProfile.Image == null) return "The Image Does Not Exist";
 
-            ImageProfile = BLL.LinuxProfile.ReadProfile(Host.ImageProfile);
-            if (ImageProfile == null) return "profile_error";
+            if (BLL.ActiveImagingTask.IsComputerActive(_computer.Id)) return "This Computer Is Already Part Of An Active Task";
 
-
-            ActiveTask = new Models.ActiveImagingTask
+            _activeTask = new Models.ActiveImagingTask
             {
-                Status = "0",
                 Type = "unicast",
-                QueuePosition = 0,
-                ComputerId = Host.Id
+                ComputerId = _computer.Id,
+                Direction = _direction
             };
 
-            if (BLL.ActiveImagingTask.IsComputerActive(Host.Id)) return "active";
-            if (!BLL.ActiveImagingTask.AddActiveImagingTask(ActiveTask)) return "database_error";
+            if (!BLL.ActiveImagingTask.AddActiveImagingTask(_activeTask)) return "Could Not Create The Database Entry For This Task";
 
             if (!CreatePxeFile())
             {
-                BLL.ActiveImagingTask.DeleteActiveImagingTask(ActiveTask.Id);
-                return "pxe_error";
+                BLL.ActiveImagingTask.DeleteActiveImagingTask(_activeTask.Id);
+                return "Could Not Create PXE Boot File";
             }
 
             if (!CreateTaskArguments())
             {
-                BLL.ActiveImagingTask.DeleteActiveImagingTask(ActiveTask.Id);
-                return "arguments_error";
+                BLL.ActiveImagingTask.DeleteActiveImagingTask(_activeTask.Id);
+                return "Could Not Create Task Arguments";
             }
 
-            Utility.WakeUp(Host.Mac);
+            Utility.WakeUp(_computer.Mac);
 
             CreateHistoryEvents();
 
@@ -61,44 +60,19 @@ namespace BLL.Workflows
 
         private void CreateHistoryEvents()
         {
-            var history = new History
-            {
-                Type = "Host",
-                Notes = Host.Mac,
-                TypeId = Host.Id.ToString(),
-                Event = Direction == "push" ? "Deploy" : "Upload"
-            };
-            history.CreateEvent();
-
-            var image = BLL.Image.GetImage(Host.ImageId);
-            history.Type = "Image";
-            history.Notes = Host.Name;
-            history.TypeId = image.Id.ToString();
-            history.Event = Direction == "push" ? "Deploy" : "Upload";
-
-            history.CreateEvent();
+          
         }
 
         private bool CreatePxeFile()
         {
-            var taskBootMenu = new TaskBootMenu
-            {
-                Direction = Direction,
-                PxeHostMac = Utility.MacToPxeMac(Host.Mac),
-                Kernel = ImageProfile.Kernel,
-                BootImage = ImageProfile.BootImage,
-                IsMulticast = false,
-                Arguments = ImageProfile.KernelArguments
-            };
-
-            return taskBootMenu.CreatePxeBoot();
+            return new TaskBootMenu(_computer,_direction).CreatePxeBoot();
         }
 
         private bool CreateTaskArguments()
         {
             string preScripts = null;
             string postScripts = null;
-            foreach (var script in BLL.ImageProfileScript.SearchImageProfileScripts(ImageProfile.Id))
+            foreach (var script in BLL.ImageProfileScript.SearchImageProfileScripts(_imageProfile.Id))
             {
                 if (Convert.ToBoolean(script.RunPre))
                     preScripts += script.Id + " ";
@@ -108,34 +82,34 @@ namespace BLL.Workflows
             }
 
             string profileArgs = "";
-            if (Convert.ToBoolean(ImageProfile.SkipCore)) profileArgs += "skip_core_download=true ";
-            if (Convert.ToBoolean(ImageProfile.SkipClock)) profileArgs += "skip_clock=true ";
-            profileArgs += "task_completed_action=" + ImageProfile.TaskCompletedAction + " ";
-            switch (Direction)
+            if (Convert.ToBoolean(_imageProfile.SkipCore)) profileArgs += "skip_core_download=true ";
+            if (Convert.ToBoolean(_imageProfile.SkipClock)) profileArgs += "skip_clock=true ";
+            profileArgs += "task_completed_action=" + _imageProfile.TaskCompletedAction + " ";
+            switch (_direction)
             {
                 case "pull":
-                    if (Convert.ToBoolean(ImageProfile.RemoveGPT)) profileArgs += "remove_gpt_structures=true ";
-                    if (Convert.ToBoolean(ImageProfile.SkipShrinkVolumes)) profileArgs += "skip_shrink_volumes=true ";
-                    if (Convert.ToBoolean(ImageProfile.SkipShrinkLvm)) profileArgs += "skip_shrink_lvm=true ";
+                    if (Convert.ToBoolean(_imageProfile.RemoveGPT)) profileArgs += "remove_gpt_structures=true ";
+                    if (Convert.ToBoolean(_imageProfile.SkipShrinkVolumes)) profileArgs += "skip_shrink_volumes=true ";
+                    if (Convert.ToBoolean(_imageProfile.SkipShrinkLvm)) profileArgs += "skip_shrink_lvm=true ";
                   
                     break;
                 case "push":
-                    if (Convert.ToBoolean(ImageProfile.SkipExpandVolumes)) profileArgs += "skip_expand_volumes=true ";
-                    if (Convert.ToBoolean(ImageProfile.FixBcd)) profileArgs += "fix_bcd=true ";
-                    if (Convert.ToBoolean(ImageProfile.FixBootloader)) profileArgs += "fix_bootloader=true ";
+                    if (Convert.ToBoolean(_imageProfile.SkipExpandVolumes)) profileArgs += "skip_expand_volumes=true ";
+                    if (Convert.ToBoolean(_imageProfile.FixBcd)) profileArgs += "fix_bcd=true ";
+                    if (Convert.ToBoolean(_imageProfile.FixBootloader)) profileArgs += "fix_bootloader=true ";
                     break;
             }
             
          
-            ActiveTask.Arguments = "image_name=" + Image.Name + " storage=" + BLL.Computer.GetDistributionPoint(Host) + " host_id=" + Host.Id +
+            _activeTask.Arguments = "image_name=" + _imageProfile.Image.Name + " storage=" + BLL.Computer.GetDistributionPoint(_computer) + " host_id=" + _computer.Id +
                                    " multicast=false" + " pre_scripts=" + preScripts + " post_scripts=" + postScripts +
-                                   " server_ip=" + Settings.ServerIp + " host_name=" + Host.Name +
+                                   " server_ip=" + Settings.ServerIp + " host_name=" + _computer.Name +
                                    " comp_alg=" + Settings.CompressionAlgorithm + " comp_evel=-" +
-                                   Settings.CompressionLevel + " partition_method=" + ImageProfile.PartitionMethod + " " +
+                                   Settings.CompressionLevel + " partition_method=" + _imageProfile.PartitionMethod + " " +
                                    profileArgs;
 
 
-            return BLL.ActiveImagingTask.UpdateActiveImagingTask(ActiveTask);
+            return BLL.ActiveImagingTask.UpdateActiveImagingTask(_activeTask);
         }
     }
 }

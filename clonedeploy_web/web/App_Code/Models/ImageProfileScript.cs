@@ -21,6 +21,8 @@ namespace Models
         public int RunPre { get; set; }
         [Column("run_post", Order = 5)]
         public int RunPost { get; set; }
+        [Column("priority", Order = 6)]
+        public int Priority { get; set; }
 
     }
 }

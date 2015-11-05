@@ -40,7 +40,14 @@
             </asp:TemplateField>
             <asp:BoundField DataField="Id" HeaderText="hostID" SortExpression="hostID" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"></asp:BoundField>
-            <asp:BoundField DataField="Priority" HeaderText="Priority" SortExpression="Priority" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
+             <asp:TemplateField ItemStyle-CssClass="width_100" HeaderText="Priority" SortExpression="Priority">
+                                        <ItemTemplate>
+                                            <div id="settings">
+                                                <asp:TextBox ID="txtPriority" runat="server" CssClass="textbox_specs"/>
+                                            </div>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+            
           
          
             <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/global/scripts/edit.aspx?cat=sub1&scriptid={0}" Text="View"/>

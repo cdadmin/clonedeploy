@@ -7,7 +7,7 @@ namespace Models
     /// Summary description for ImageProfilePartitions
     /// </summary>
     [Table("image_profile_partition_layouts")]
-    public class ImageProfilePartition
+    public class ImageProfilePartitionLayout
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

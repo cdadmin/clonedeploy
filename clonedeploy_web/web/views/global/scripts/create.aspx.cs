@@ -13,7 +13,6 @@ public partial class views_admin_scripts_create : BasePages.Global
         var script = new Script
         {
             Name = txtScriptName.Text,
-            Priority = Convert.ToInt32(txtPriority.Text),
             Description = txtScriptDesc.Text
         };
         var fixedLineEnding = scriptEditor.Value.Replace("\r\n", "\n");

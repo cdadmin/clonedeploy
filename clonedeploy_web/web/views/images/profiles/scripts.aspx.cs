@@ -15,12 +15,8 @@ public partial class views_images_profiles_scripts : Images
         PopulateGrid();
     }
 
-    protected void PopulateGrid()
+    protected void PopulateProfileScripts()
     {
-
-        gvScripts.DataSource = BLL.Script.SearchScripts("");
-        gvScripts.DataBind();
-
         var profileScripts = BLL.ImageProfileScript.SearchImageProfileScripts(ImageProfile.Id);
         foreach (GridViewRow row in gvScripts.Rows)
         {
@@ -34,24 +30,22 @@ public partial class views_images_profiles_scripts : Images
                 {
                     pre.Checked = Convert.ToBoolean(profileScript.RunPre);
                     post.Checked = Convert.ToBoolean(profileScript.RunPost);
+                    var txtPriority = row.FindControl("txtPriority") as TextBox;
+                    if (txtPriority != null)
+                        txtPriority.Text = profileScript.Priority.ToString();
                 }
             }
         }
+    }
 
+    protected void PopulateGrid()
+    {
+        gvScripts.DataSource = BLL.Script.SearchScripts("");
+        gvScripts.DataBind();
+        PopulateProfileScripts();
     }
 
    
-
-    public string GetSortDirection(string sortExpression)
-    {
-        if (ViewState[sortExpression] == null)
-            ViewState[sortExpression] = "Desc";
-        else
-            ViewState[sortExpression] = ViewState[sortExpression].ToString() == "Desc" ? "Asc" : "Desc";
-
-        return ViewState[sortExpression].ToString();
-    }
-
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
@@ -61,15 +55,11 @@ public partial class views_images_profiles_scripts : Images
             case "Name":
                 listScripts = GetSortDirection(e.SortExpression) == "Asc" ? listScripts.OrderBy(s => s.Name).ToList() : listScripts.OrderByDescending(s => s.Name).ToList();
                 break;
-            case "Priority":
-                listScripts = GetSortDirection(e.SortExpression) == "Asc" ? listScripts.OrderBy(s => s.Priority).ToList() : listScripts.OrderByDescending(s => s.Priority).ToList();
-                break;
-
         }
-
 
         gvScripts.DataSource = listScripts;
         gvScripts.DataBind();
+        PopulateProfileScripts();
     }
    
 
@@ -84,7 +74,7 @@ public partial class views_images_profiles_scripts : Images
             if(!pre.Checked && !post.Checked) continue;
             var dataKey = gvScripts.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-
+           
             var profileScript = new Models.ImageProfileScript()
             {
                 ScriptId = Convert.ToInt16(dataKey.Value),
@@ -92,6 +82,10 @@ public partial class views_images_profiles_scripts : Images
                 RunPre = Convert.ToInt16(pre.Checked),
                 RunPost = Convert.ToInt16(post.Checked)
             };
+            var txtPriority = row.FindControl("txtPriority") as TextBox;
+            if(txtPriority != null)
+                if (!string.IsNullOrEmpty(txtPriority.Text))
+                    profileScript.Priority = Convert.ToInt32(txtPriority.Text);
             BLL.ImageProfileScript.AddImageProfileScript(profileScript);
         }
     }

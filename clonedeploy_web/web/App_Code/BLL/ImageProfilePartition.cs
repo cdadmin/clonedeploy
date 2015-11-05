@@ -7,7 +7,7 @@ namespace BLL
     public class ImageProfilePartition
     {
 
-        public static bool AddImageProfilePartition(Models.ImageProfilePartition imageProfilePartition)
+        public static bool AddImageProfilePartition(Models.ImageProfilePartitionLayout imageProfilePartition)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -25,7 +25,7 @@ namespace BLL
             }
         }
 
-        public static List<Models.ImageProfilePartition> SearchImageProfilePartitions(int profileId)
+        public static List<Models.ImageProfilePartitionLayout> SearchImageProfilePartitions(int profileId)
         {
             using (var uow = new DAL.UnitOfWork())
             {

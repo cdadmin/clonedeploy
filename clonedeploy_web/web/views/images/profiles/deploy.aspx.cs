@@ -45,7 +45,7 @@ public partial class views_images_profiles_deploy : Images
                     if (cb == null || !cb.Checked) continue;
                     var dataKey = gvLayout.DataKeys[row.RowIndex];
                     if (dataKey == null) continue;
-                    var profilePartitionLayout = new Models.ImageProfilePartition()
+                    var profilePartitionLayout = new Models.ImageProfilePartitionLayout()
                     {
                         LayoutId = Convert.ToInt16(dataKey.Value),
                         ProfileId = ImageProfile.Id

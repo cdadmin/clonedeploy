@@ -26,8 +26,10 @@ namespace DAL
         public DbSet<Models.Script> Scripts { get; set; }
         public DbSet<Models.PartitionLayout> PartitionLayouts { get; set; }
         public DbSet<Models.Partition> Partitions { get; set; }
-        public DbSet<Models.ImageProfilePartition> ImageProfilePartitions { get; set; }
+        public DbSet<Models.ImageProfilePartitionLayout> ImageProfilePartitions { get; set; }
         public DbSet<Models.ImageProfileScript> ImageProfileScripts { get; set; }
+        public DbSet<Models.ImageProfileSysprepTag> ImageProfileSysprepTags { get; set; }
+        public DbSet<Models.ImageProfileFileFolder> ImageProfileFilesFolders { get; set; }
         public DbSet<Models.GroupMembership> GroupMemberships { get; set; }
         public DbSet<Models.Site> Sites { get; set; }
         public DbSet<Models.Building> Buildings { get; set; }
@@ -41,6 +43,7 @@ namespace DAL
         public DbSet<Models.UserImageManagement> UserImageManagements { get; set; }
         public DbSet<Models.UserLockout> UserLockouts { get; set; }
         public DbSet<Models.GroupProperty> GroupProperties { get; set; }
+        public DbSet<Models.FileFolder> FilesFolders { get; set; }
 
 
     }

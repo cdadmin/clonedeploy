@@ -26,16 +26,6 @@
     </div>
     <br class="clear"/>
     
-      <div class="size-4 column">
-        Script Priority:
-    </div>
-    <div class="size-5 column">
-        <asp:TextBox ID="txtPriority" runat="server" CssClass="textbox"></asp:TextBox>
-    </div>
-    <br class="clear"/>
-    
-    
-
     <div class="size-4 column">
         Script Description:
     </div>

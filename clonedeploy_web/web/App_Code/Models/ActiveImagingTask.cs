@@ -6,6 +6,11 @@ namespace Models
     [Table("active_imaging_tasks", Schema = "public")]
     public class ActiveImagingTask
     {
+        public ActiveImagingTask()
+        {
+            Status = "0";
+            QueuePosition = 0;
+        }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("active_task_id", Order = 1)]
@@ -44,5 +49,7 @@ namespace Models
         [Column("multicast_id", Order = 12)]
         public int MulticastId { get; set; } 
 
+        [NotMapped]
+        public string Direction { get; set; }
     }
 }
