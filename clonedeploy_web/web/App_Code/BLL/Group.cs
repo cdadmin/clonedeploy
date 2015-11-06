@@ -116,7 +116,7 @@ namespace BLL
 
         public static void StartMulticast(Models.Group group)
         {
-            var multicast = new Multicast { Group = group };
+            var multicast = new Multicast(group);
             multicast.Create();
         }
 

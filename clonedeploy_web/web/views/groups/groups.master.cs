@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using BasePages;
 using Models;
+using Tasks;
 
 namespace views.masters
 {
@@ -53,13 +54,12 @@ namespace views.masters
                     BLL.Group.StartGroupUnicast(Group);
                     break;
                 case "multicast":
-                    BLL.Group.StartMulticast(Group);
+                    PageBaseMaster.EndUserMessage = new Multicast(Group).Create();
                     break;
 
             }
 
-            PageBaseMaster.EndUserMessage =
-                "This Image Has Not Been Confirmed And Cannot Be Deployed.  <br>Confirm It Now?";
+        
 
 
         }

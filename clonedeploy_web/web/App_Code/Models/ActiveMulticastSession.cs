@@ -20,8 +20,8 @@ namespace Models
         [Column("multicast_port", Order = 4)]
         public int Port { get; set; }
 
-        [NotMapped]
-        public string Image { get; set; }
+        //[NotMapped]
+        //public string Image { get; set; }
 
         
     }

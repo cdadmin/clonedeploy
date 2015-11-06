@@ -58,7 +58,7 @@ namespace Models
       
 
         [NotMapped]
-        public string TaskId { get; set; }
+        public virtual Models.ActiveImagingTask ActiveImagingTask { get; set; }
 
         [NotMapped]
         public virtual Models.Image Image { get; set; }

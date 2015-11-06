@@ -38,7 +38,7 @@ namespace views.tasks
                 }
                 else
                 {
-                    var multicast = new Multicast {Group = @group};
+                    var multicast = new Multicast(group);
                     multicast.Create();
                 }
                 Session.Remove("groupID");

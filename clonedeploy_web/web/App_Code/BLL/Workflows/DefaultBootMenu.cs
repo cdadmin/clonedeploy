@@ -19,6 +19,10 @@ namespace BLL.Workflows
         public string OndPwd { get; set; }
         public string Type { get; set; }
 
+        private const string NewLineChar = "\n";
+        private readonly string _webPath = Settings.WebPath;
+        private readonly string _globalHostArgs = Settings.GlobalHostArgs;
+        private readonly string _wdsKey = Settings.WebTaskRequiresLogin == "No" ? Settings.ServerKey : "";
         public void CreateGlobalDefaultBootMenu()
         {
             var mode = Settings.PxeMode;
@@ -42,20 +46,16 @@ namespace BLL.Workflows
 
         private void CreateGrubMenu()
         {
-            var webPath = Settings.WebPath;
-            var globalHostArgs = Settings.GlobalHostArgs;
-            var wdsKey = Settings.WebTaskRequiresLogin == "No" ? Settings.ServerKey : "";
-
             var grubMenu = new StringBuilder();
 
-            grubMenu.Append("insmod password_pbkdf2\r\n");
-            grubMenu.Append("insmod regexp\r\n");
-            grubMenu.Append("set default=0\r\n");
-            grubMenu.Append("set timeout=10\r\n");
-            grubMenu.Append("set pager=1\r\n");
+            grubMenu.Append("insmod password_pbkdf2" + NewLineChar);
+            grubMenu.Append("insmod regexp" + NewLineChar);
+            grubMenu.Append("set default=0" + NewLineChar);
+            grubMenu.Append("set timeout=10" + NewLineChar);
+            grubMenu.Append("set pager=1" + NewLineChar);
             if (!string.IsNullOrEmpty(GrubUserName) && !string.IsNullOrEmpty(GrubPassword))
             {
-                grubMenu.Append("set superusers=\"" + GrubUserName + "\"\r\n");
+                grubMenu.Append("set superusers=\"" + GrubUserName + "\"" + NewLineChar);
                 string sha = null;
                 try
                 {
@@ -68,301 +68,238 @@ namespace BLL.Workflows
                 {
                     Logger.Log("Could not generate sha for grub password.  Could not contact http://cruciblewds.org");
                 }
-                grubMenu.Append("password_pbkdf2 " + GrubUserName + " " + sha + "\r\n");
-                grubMenu.Append("export superusers\r\n");
-                grubMenu.Append("\r\n");
+                grubMenu.Append("password_pbkdf2 " + GrubUserName + " " + sha + "" + NewLineChar);
+                grubMenu.Append("export superusers" + NewLineChar);
+                grubMenu.Append("" + NewLineChar);
             }
             grubMenu.Append(@"regexp -s 1:b1 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
-                     Environment.NewLine);
+                     NewLineChar);
             grubMenu.Append(@"regexp -s 2:b2 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
-                     Environment.NewLine);
+                     NewLineChar);
             grubMenu.Append(@"regexp -s 3:b3 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
-                     Environment.NewLine);
+                     NewLineChar);
             grubMenu.Append(@"regexp -s 4:b4 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
-                     Environment.NewLine);
+                     NewLineChar);
             grubMenu.Append(@"regexp -s 5:b5 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
-                     Environment.NewLine);
+                     NewLineChar);
             grubMenu.Append(@"regexp -s 6:b6 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
-                     Environment.NewLine);
-            grubMenu.Append(@"mac=01-$b1-$b2-$b3-$b4-$b5-$b6" + Environment.NewLine);
-            grubMenu.Append("\r\n");
+                     NewLineChar);
+            grubMenu.Append(@"mac=01-$b1-$b2-$b3-$b4-$b5-$b6" + NewLineChar);
+            grubMenu.Append("" + NewLineChar);
 
 
             if (Type == "standard")
             {
-                grubMenu.Append("if [ -s /pxelinux.cfg/$mac.cfg ]; then\r\n");
-                grubMenu.Append("configfile /pxelinux.cfg/$mac.cfg\r\n");
-                grubMenu.Append("fi\r\n");
+                grubMenu.Append("if [ -s /pxelinux.cfg/$mac.cfg ]; then" + NewLineChar);
+                grubMenu.Append("configfile /pxelinux.cfg/$mac.cfg" + NewLineChar);
+                grubMenu.Append("fi" + NewLineChar);
             }
             else
             {
-                grubMenu.Append("if [ -s /proxy/efi64/pxelinux.cfg/$mac.cfg ]; then\r\n");
-                grubMenu.Append("configfile /proxy/efi64/pxelinux.cfg/$mac.cfg\r\n");
-                grubMenu.Append("fi\r\n");
+                grubMenu.Append("if [ -s /proxy/efi64/pxelinux.cfg/$mac.cfg ]; then" + NewLineChar);
+                grubMenu.Append("configfile /proxy/efi64/pxelinux.cfg/$mac.cfg" + NewLineChar);
+                grubMenu.Append("fi" + NewLineChar);
             }
-            grubMenu.Append("\r\n");
-            grubMenu.Append("menuentry \"Boot To Local Machine\" --unrestricted {\r\n");
-            grubMenu.Append("exit\r\n");
-            grubMenu.Append("}\r\n");
+            grubMenu.Append("" + NewLineChar);
+            grubMenu.Append("menuentry \"Boot To Local Machine\" --unrestricted {" + NewLineChar);
+            grubMenu.Append("exit" + NewLineChar);
+            grubMenu.Append("}" + NewLineChar);
 
-            grubMenu.Append("\r\n");
+            grubMenu.Append("" + NewLineChar);
 
-            grubMenu.Append("menuentry \"Client Console\" --user {\r\n");
-            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes.\r\n");
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + webPath +
-                     " WDS_KEY=" + wdsKey + " task=debug consoleblank=0 " + globalHostArgs + "\r\n");
-            grubMenu.Append("initrd /images/" + BootImage + "\r\n");
-            grubMenu.Append("}\r\n");
+            grubMenu.Append("menuentry \"Client Console\" --user {" + NewLineChar);
+            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." + NewLineChar);
+            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath +
+                     " WDS_KEY=" + _wdsKey + " task=debug consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
+            grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
+            grubMenu.Append("}" + NewLineChar);
 
-            grubMenu.Append("\r\n");
+            grubMenu.Append("" + NewLineChar);
 
-            grubMenu.Append("menuentry \"On Demand Imaging\" --user {\r\n");
-            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes.\r\n");
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + webPath +
-                     " WDS_KEY=" + wdsKey + " task=ond consoleblank=0 " + globalHostArgs + "\r\n");
-            grubMenu.Append("initrd /images/" + BootImage + "\r\n");
-            grubMenu.Append("}\r\n");
+            grubMenu.Append("menuentry \"On Demand Imaging\" --user {" + NewLineChar);
+            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." + NewLineChar);
+            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath +
+                     " WDS_KEY=" + _wdsKey + " task=ond consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
+            grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
+            grubMenu.Append("}" + NewLineChar);
 
-            grubMenu.Append("\r\n");
+            grubMenu.Append("" + NewLineChar);
 
-            grubMenu.Append("menuentry \"Add Host\" --user {\r\n");
-            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes.\r\n");
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + webPath +
-                     " WDS_KEY=" + wdsKey + " task=register consoleblank=0 " + globalHostArgs + "\r\n");
-            grubMenu.Append("initrd /images/" + BootImage + "\r\n");
-            grubMenu.Append("}\r\n");
+            grubMenu.Append("menuentry \"Add Host\" --user {" + NewLineChar);
+            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." + NewLineChar);
+            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath +
+                     " WDS_KEY=" + _wdsKey + " task=register consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
+            grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
+            grubMenu.Append("}" + NewLineChar);
 
-            grubMenu.Append("\r\n");
+            grubMenu.Append("" + NewLineChar);
 
-            grubMenu.Append("menuentry \"Diagnostics\" --user {\r\n");
-            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes.\r\n");
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + webPath +
-                     " WDS_KEY=" + wdsKey + " task=diag consoleblank=0 " + globalHostArgs + "\r\n");
-            grubMenu.Append("initrd /images/" + BootImage + "\r\n");
-            grubMenu.Append("}\r\n");
+            grubMenu.Append("menuentry \"Diagnostics\" --user {" + NewLineChar);
+            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." + NewLineChar);
+            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath +
+                     " WDS_KEY=" + _wdsKey + " task=diag consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
+            grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
+            grubMenu.Append("}" + NewLineChar);
 
 
             var path = Settings.TftpPath + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
 
+            new FileOps().WritePath(path, grubMenu.ToString());
 
-            try
-            {
-                using (var file = new StreamWriter(path))
-                {
-                    file.WriteLine(grubMenu);
-                    //Message.Text = "Successfully Created Default Boot Menu";
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ex.Message);
-                //Message.Text = "Could Not Create Boot Menu.  Check The Exception Log For More Info.";
-                return;
-            }
-            new FileOps().SetUnixPermissions(path);
+        
         }
 
         private void CreateIpxeMenu()
         {
+            var ipxeMenu = new StringBuilder();
+
+            ipxeMenu.Append("#!ipxe" + NewLineChar);
+            ipxeMenu.Append("chain 01-${net0/mac:hexhyp}.ipxe || goto Menu" + NewLineChar);
+            ipxeMenu.Append("" + NewLineChar);
+            ipxeMenu.Append(":Menu" + NewLineChar);
+            ipxeMenu.Append("menu Boot Menu" + NewLineChar);
+            ipxeMenu.Append("item boot Boot To Local Machine" + NewLineChar);
+            ipxeMenu.Append("item console Client Console" + NewLineChar);
+            ipxeMenu.Append("item addhost Add Host" + NewLineChar);
+            ipxeMenu.Append("item ond On Demand" + NewLineChar);
+            ipxeMenu.Append("item diag Diagnostics" + NewLineChar);
+            ipxeMenu.Append("choose --default boot --timeout 5000 target && goto ${target}" + NewLineChar);
+            ipxeMenu.Append("" + NewLineChar);
+
+            ipxeMenu.Append(":boot" + NewLineChar);
+            ipxeMenu.Append("exit" + NewLineChar);
+            ipxeMenu.Append("" + NewLineChar);
+
+            ipxeMenu.Append(":console" + NewLineChar);
+            ipxeMenu.Append("set task debug" + NewLineChar);
+            ipxeMenu.Append("goto login" + NewLineChar);
+            ipxeMenu.Append("" + NewLineChar);
+
+            ipxeMenu.Append(":addhost" + NewLineChar);
+            ipxeMenu.Append("set task register" + NewLineChar);
+            ipxeMenu.Append("goto login" + NewLineChar);
+            ipxeMenu.Append("" + NewLineChar);
+
+            ipxeMenu.Append(":ond" + NewLineChar);
+            ipxeMenu.Append("set task ond" + NewLineChar);
+            ipxeMenu.Append("goto login" + NewLineChar);
+
+            ipxeMenu.Append("" + NewLineChar);
+            ipxeMenu.Append(":diag" + NewLineChar);
+            ipxeMenu.Append("set task diag" + NewLineChar);
+            ipxeMenu.Append("goto login" + NewLineChar);
+            ipxeMenu.Append("" + NewLineChar);
+
+            ipxeMenu.Append(":login" + NewLineChar);
+            ipxeMenu.Append("login" + NewLineChar);
+            ipxeMenu.Append("params" + NewLineChar);
+            ipxeMenu.Append("param uname ${username:uristring}" + NewLineChar);
+            ipxeMenu.Append("param pwd ${password:uristring}" + NewLineChar);
+            ipxeMenu.Append("param kernel " + Kernel + "" + NewLineChar);
+            ipxeMenu.Append("param bootImage " + BootImage + "" + NewLineChar);
+            ipxeMenu.Append("param task " + "${task}" + "" + NewLineChar);
+            ipxeMenu.Append("echo Authenticating" + NewLineChar);
+            ipxeMenu.Append("chain --timeout 15000 http://" + Settings.ServerIpWithPort +
+                     "/cruciblewds/service/client.asmx/IpxeLogin##params || goto Menu" + NewLineChar);
+
             string path;
-            var lines = "#!ipxe\r\n";
-            lines += "chain 01-${net0/mac:hexhyp}.ipxe || goto Menu\r\n";
-            lines += "\r\n";
-            lines += ":Menu\r\n";
-            lines += "menu Boot Menu\r\n";
-            lines += "item boot Boot To Local Machine\r\n";
-            lines += "item console Client Console\r\n";
-            lines += "item addhost Add Host\r\n";
-            lines += "item ond On Demand\r\n";
-            lines += "item diag Diagnostics\r\n";
-            lines += "choose --default boot --timeout 5000 target && goto ${target}\r\n";
-            lines += "\r\n";
-
-            lines += ":boot\r\n";
-            lines += "exit\r\n";
-            lines += "\r\n";
-
-            lines += ":console\r\n";
-            lines += "set task debug\r\n";
-            lines += "goto login\r\n";
-            lines += "\r\n";
-
-            lines += ":addhost\r\n";
-            lines += "set task register\r\n";
-            lines += "goto login\r\n";
-            lines += "\r\n";
-
-            lines += ":ond\r\n";
-            lines += "set task ond\r\n";
-            lines += "goto login\r\n";
-
-            lines += "\r\n";
-            lines += ":diag\r\n";
-            lines += "set task diag\r\n";
-            lines += "goto login\r\n";
-            lines += "\r\n";
-
-            lines += ":login\r\n";
-            lines += "login\r\n";
-            lines += "params\r\n";
-            lines += "param uname ${username:uristring}\r\n";
-            lines += "param pwd ${password:uristring}\r\n";
-            lines += "param kernel " + Kernel + "\r\n";
-            lines += "param bootImage " + BootImage + "\r\n";
-            lines += "param task " + "${task}" + "\r\n";
-            lines += "echo Authenticating\r\n";
-            lines += "chain --timeout 15000 http://" + Settings.ServerIpWithPort +
-                     "/cruciblewds/service/client.asmx/IpxeLogin##params || goto Menu\r\n";
-
             if (Type == "standard")
-            {
                 path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default.ipxe";
-            }
             else
-            {
                 path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + Type +
                        Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default.ipxe";
-            }
 
-            try
-            {
-                using (var file = new StreamWriter(path))
-                {
-                    file.WriteLine(lines);
-                    //Message.Text = "Successfully Created Default Boot Menu";
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ex.Message);
-                //Message.Text = "Could Not Create Boot Menu.  Check The Exception Log For More Info.";
-                return;
-            }
-            new FileOps().SetUnixPermissions(path);
+            new FileOps().WritePath(path, ipxeMenu.ToString());
         }
 
         private void CreateSyslinuxMenu()
         {
-            var webPath = Settings.WebPath;
-            var globalHostArgs = Settings.GlobalHostArgs;
-            var wdsKey = Settings.WebTaskRequiresLogin == "No" ? Settings.ServerKey : "";
+            var sysLinuxMenu = new StringBuilder();
+
+            sysLinuxMenu.Append("DEFAULT vesamenu.c32" + NewLineChar);
+            sysLinuxMenu.Append("MENU TITLE Boot Menu" + NewLineChar);
+            sysLinuxMenu.Append("MENU BACKGROUND bg.png" + NewLineChar);
+            sysLinuxMenu.Append("menu tabmsgrow 22" + NewLineChar);
+            sysLinuxMenu.Append("menu cmdlinerow 22" + NewLineChar);
+            sysLinuxMenu.Append("menu endrow 24" + NewLineChar);
+            sysLinuxMenu.Append("menu color title                1;34;49    #eea0a0ff #cc333355 std" + NewLineChar);
+            sysLinuxMenu.Append("menu color sel                  7;37;40    #ff000000 #bb9999aa all" + NewLineChar);
+            sysLinuxMenu.Append("menu color border               30;44      #ffffffff #00000000 std" + NewLineChar);
+            sysLinuxMenu.Append("menu color pwdheader            31;47      #eeff1010 #20ffffff std" + NewLineChar);
+            sysLinuxMenu.Append("menu color hotkey               35;40      #90ffff00 #00000000 std" + NewLineChar);
+            sysLinuxMenu.Append("menu color hotsel               35;40      #90000000 #bb9999aa all" + NewLineChar);
+            sysLinuxMenu.Append("menu color timeout_msg          35;40      #90ffffff #00000000 none" + NewLineChar);
+            sysLinuxMenu.Append("menu color timeout              31;47      #eeff1010 #00000000 none" + NewLineChar);
+            sysLinuxMenu.Append("NOESCAPE 0" + NewLineChar);
+            sysLinuxMenu.Append("ALLOWOPTIONS 0" + NewLineChar);
+            sysLinuxMenu.Append("" + NewLineChar);
+            sysLinuxMenu.Append("LABEL local" + NewLineChar);
+            sysLinuxMenu.Append("localboot 0" + NewLineChar);
+            sysLinuxMenu.Append("MENU DEFAULT" + NewLineChar);
+            sysLinuxMenu.Append("MENU LABEL Boot To Local Machine" + NewLineChar);
+            sysLinuxMenu.Append("" + NewLineChar);
+
+            sysLinuxMenu.Append("LABEL Client Console" + NewLineChar);
+            if (!string.IsNullOrEmpty(DebugPwd) && DebugPwd != "Error: Empty password")
+                sysLinuxMenu.Append("MENU PASSWD " + DebugPwd + "" + NewLineChar);
+
+            sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
+            sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
+                     " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath + " WDS_KEY=" + _wdsKey +
+                     " task=debug consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
+
+            sysLinuxMenu.Append("MENU LABEL Client Console" + NewLineChar);
+            sysLinuxMenu.Append("" + NewLineChar);
+
+            sysLinuxMenu.Append("LABEL Add Host" + NewLineChar);
+            if (!string.IsNullOrEmpty(AddPwd) && AddPwd != "Error: Empty password")
+                sysLinuxMenu.Append("MENU PASSWD " + AddPwd + "" + NewLineChar);
+
+            sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
+            sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
+                     " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath + " WDS_KEY=" + _wdsKey +
+                     " task=register consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
+
+            sysLinuxMenu.Append("MENU LABEL Add Host" + NewLineChar);
+            sysLinuxMenu.Append("" + NewLineChar);
+
+            sysLinuxMenu.Append("LABEL On Demand" + NewLineChar);
+            if (!string.IsNullOrEmpty(OndPwd) && OndPwd != "Error: Empty password")
+                sysLinuxMenu.Append("MENU PASSWD " + OndPwd + "" + NewLineChar);
+
+            sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
+            sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
+                     " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath + " WDS_KEY=" + _wdsKey +
+                     " task=ond consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
+
+            sysLinuxMenu.Append("MENU LABEL On Demand" + NewLineChar);
+            sysLinuxMenu.Append("" + NewLineChar);
+
+            sysLinuxMenu.Append("LABEL Diagnostics" + NewLineChar);
+            if (!string.IsNullOrEmpty(DiagPwd) && DiagPwd != "Error: Empty password")
+                sysLinuxMenu.Append("MENU PASSWD " + DiagPwd + "" + NewLineChar);
+
+            sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
+            sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
+                     " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath + " WDS_KEY=" + _wdsKey +
+                     " task=diag consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
+
+
+            sysLinuxMenu.Append("MENU LABEL Diagnostics" + NewLineChar);
+            sysLinuxMenu.Append("" + NewLineChar);
+
+            sysLinuxMenu.Append("PROMPT 0" + NewLineChar);
+            sysLinuxMenu.Append("TIMEOUT 50" + NewLineChar);
+
             string path;
 
-            var lines = "DEFAULT vesamenu.c32\r\n";
-            lines += "MENU TITLE Boot Menu\r\n";
-            lines += "MENU BACKGROUND bg.png\r\n";
-            lines += "menu tabmsgrow 22\r\n";
-            lines += "menu cmdlinerow 22\r\n";
-            lines += "menu endrow 24\r\n";
-            lines += "menu color title                1;34;49    #eea0a0ff #cc333355 std\r\n";
-            lines += "menu color sel                  7;37;40    #ff000000 #bb9999aa all\r\n";
-            lines += "menu color border               30;44      #ffffffff #00000000 std\r\n";
-            lines += "menu color pwdheader            31;47      #eeff1010 #20ffffff std\r\n";
-            lines += "menu color hotkey               35;40      #90ffff00 #00000000 std\r\n";
-            lines += "menu color hotsel               35;40      #90000000 #bb9999aa all\r\n";
-            lines += "menu color timeout_msg          35;40      #90ffffff #00000000 none\r\n";
-            lines += "menu color timeout              31;47      #eeff1010 #00000000 none\r\n";
-            lines += "NOESCAPE 0\r\n";
-            lines += "ALLOWOPTIONS 0\r\n";
-            lines += "\r\n";
-            lines += "LABEL local\r\n";
-            lines += "localboot 0\r\n";
-            lines += "MENU DEFAULT\r\n";
-            lines += "MENU LABEL Boot To Local Machine\r\n";
-            lines += "\r\n";
-
-            lines += "LABEL Client Console\r\n";
-            if (!string.IsNullOrEmpty(DebugPwd) && DebugPwd != "Error: Empty password")
-                lines += "MENU PASSWD " + DebugPwd + "\r\n";
-
-            lines += "kernel kernels" + Path.DirectorySeparatorChar + Kernel + "\r\n";
-            lines += "append initrd=images" + Path.DirectorySeparatorChar + BootImage +
-                     " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + webPath + " WDS_KEY=" + wdsKey +
-                     " task=debug consoleblank=0 " + globalHostArgs + "\r\n";
-
-            lines += "MENU LABEL Client Console\r\n";
-            lines += "\r\n";
-
-            lines += "LABEL Add Host\r\n";
-            if (!string.IsNullOrEmpty(AddPwd) && AddPwd != "Error: Empty password")
-                lines += "MENU PASSWD " + AddPwd + "\r\n";
-
-            lines += "kernel kernels" + Path.DirectorySeparatorChar + Kernel + "\r\n";
-            lines += "append initrd=images" + Path.DirectorySeparatorChar + BootImage +
-                     " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + webPath + " WDS_KEY=" + wdsKey +
-                     " task=register consoleblank=0 " + globalHostArgs + "\r\n";
-
-            lines += "MENU LABEL Add Host\r\n";
-            lines += "\r\n";
-
-            lines += "LABEL On Demand\r\n";
-            if (!string.IsNullOrEmpty(OndPwd) && OndPwd != "Error: Empty password")
-                lines += "MENU PASSWD " + OndPwd + "\r\n";
-
-            lines += "kernel kernels" + Path.DirectorySeparatorChar + Kernel + "\r\n";
-            lines += "append initrd=images" + Path.DirectorySeparatorChar + BootImage +
-                     " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + webPath + " WDS_KEY=" + wdsKey +
-                     " task=ond consoleblank=0 " + globalHostArgs + "\r\n";
-
-            lines += "MENU LABEL On Demand\r\n";
-            lines += "\r\n";
-
-            lines += "LABEL Diagnostics\r\n";
-            if (!string.IsNullOrEmpty(DiagPwd) && DiagPwd != "Error: Empty password")
-                lines += "MENU PASSWD " + DiagPwd + "\r\n";
-
-            lines += "kernel kernels" + Path.DirectorySeparatorChar + Kernel + "\r\n";
-            lines += "append initrd=images" + Path.DirectorySeparatorChar + BootImage +
-                     " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + webPath + " WDS_KEY=" + wdsKey +
-                     " task=diag consoleblank=0 " + globalHostArgs + "\r\n";
-
-
-            lines += "MENU LABEL Diagnostics\r\n";
-            lines += "\r\n";
-
-            lines += "PROMPT 0\r\n";
-            lines += "TIMEOUT 50";
-
-
             if (Type == "standard")
-            {
                 path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
-            }
             else
-            {
                 path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + Type +
                        Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
-            }
-            try
-            {
-                using (var file = new StreamWriter(path))
-                {
-                    file.WriteLine(lines);
-                    //Message.Text = "Successfully Created Default Boot Menu";
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ex.Message);
-                //Message.Text = "Could Not Create Boot Menu.  Check The Exception Log For More Info.";
-                return;
-            }
-            new FileOps().SetUnixPermissions(path);
-        }
 
-        public static string GetMenuText(string proxyMode)
-        {
-            var path = new PxeFileOps().GetDefaultMenuPath(proxyMode);
-            try
-            {
-                return File.ReadAllText(path);
-            }
-            catch (Exception ex)
-            {
-                //Message.Text = "Could Not Read Default Boot Menu.  Check The Exception Log For More Info";
-                Logger.Log(ex.Message);
-                return "";
-            }
+            new FileOps().WritePath(path, sysLinuxMenu.ToString());
         }
     }
 }

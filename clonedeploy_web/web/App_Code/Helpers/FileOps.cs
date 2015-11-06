@@ -139,8 +139,6 @@ namespace Helpers
             }
             catch (Exception ex)
             {
-                
-                //Message.Text = "Could Not Set Custom Boot Menu.  Check The Exception Log For More Info.";
                 Logger.Log(ex.Message);
                 return false;
             }

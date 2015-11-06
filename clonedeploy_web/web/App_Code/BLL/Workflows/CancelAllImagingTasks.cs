@@ -80,7 +80,7 @@ namespace BLL.Workflows
                         var killProcInfo = new ProcessStartInfo
                         {
                             FileName = ("killall"),
-                            Arguments = (" udp-sender udp-receiver")
+                            Arguments = (" udp-sender")
                         };
                         Process.Start(killProcInfo);
                     }
@@ -98,23 +98,6 @@ namespace BLL.Workflows
                 for (var x = 1; x < 10; x++)
                 {
                     foreach (var p in Process.GetProcessesByName("udp-sender"))
-                    {
-                        try
-                        {
-                            p.Kill();
-                            p.WaitForExit();
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.Log(ex.ToString());
-                        }
-                    }
-                    Thread.Sleep(200);
-                }
-
-                for (var x = 1; x < 10; x++)
-                {
-                    foreach (var p in Process.GetProcessesByName("udp-receiver"))
                     {
                         try
                         {

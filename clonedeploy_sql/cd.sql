@@ -36,7 +36,7 @@ CREATE TABLE `active_imaging_tasks` (
   `task_type` varchar(45) DEFAULT NULL,
   `multicast_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`active_task_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=47 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,6 +45,7 @@ CREATE TABLE `active_imaging_tasks` (
 
 LOCK TABLES `active_imaging_tasks` WRITE;
 /*!40000 ALTER TABLE `active_imaging_tasks` DISABLE KEYS */;
+INSERT INTO `active_imaging_tasks` VALUES (46,'21','0',0,NULL,NULL,NULL,NULL,NULL,'image_name=image1 storage=//[server-ip]/asdfsdaf host_id=21 multicast=false pre_scripts=27  post_scripts=26  server_ip=192.168.1.101 host_name=asdfer comp_alg=gzip comp_level=-1 partition_method=Dynamic task_completed_action= ','multicast',0);
 /*!40000 ALTER TABLE `active_imaging_tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -56,12 +57,12 @@ DROP TABLE IF EXISTS `active_multicast_sessions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `active_multicast_sessions` (
-  `multicast_session_id` int(11) NOT NULL,
+  `multicast_session_id` int(11) NOT NULL AUTO_INCREMENT,
   `multicast_name` varchar(45) DEFAULT NULL,
   `multicast_pid` int(11) DEFAULT NULL,
   `multicast_port` int(11) DEFAULT NULL,
   PRIMARY KEY (`multicast_session_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,6 +71,7 @@ CREATE TABLE `active_multicast_sessions` (
 
 LOCK TABLES `active_multicast_sessions` WRITE;
 /*!40000 ALTER TABLE `active_multicast_sessions` DISABLE KEYS */;
+INSERT INTO `active_multicast_sessions` VALUES (11,'Group1_Test26',884,134);
 /*!40000 ALTER TABLE `active_multicast_sessions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -95,7 +97,7 @@ CREATE TABLE `admin_settings` (
 
 LOCK TABLES `admin_settings` WRITE;
 /*!40000 ALTER TABLE `admin_settings` DISABLE KEYS */;
-INSERT INTO `admin_settings` VALUES (34,'On Demand Requires Login','Yes',''),(33,'Web Task Requires Login','No',NULL),(32,'Proxy Efi64 File','grub_64_efi',NULL),(31,'Proxy Efi32 File','ipxe_32_efi',NULL),(30,'Proxy Bios File','pxelinux',NULL),(29,'Proxy Dhcp','Yes',NULL),(28,'Web Server Port','90',NULL),(27,'Image Checksum','Off',NULL),(26,'Server Key Mode','NULL',''),(25,'Global Host Args','',''),(24,'Client Receiver Args','ab',''),(23,'SMB Password','NULL',''),(22,'SMB User Name','abc247',''),(21,'SMB Path','//192.168.56.1',''),(20,'Force SSL','No',NULL),(19,'Nfs Deploy Path','c:\\/',''),(18,'Image Hold Path','c:\\inetpub\\wwwroot\\clonedeploy\\image_hold\\',NULL),(17,'Udpcast End Port','102',''),(16,'Udpcast Start Port','100',''),(15,'Receiver Args','ad',''),(14,'On Demand','Enabled',NULL),(13,'Server IP','192.168.1.101',NULL),(12,'Compression Level','1',''),(11,'Compression Algorithm','gzip',''),(10,'Server Key','e991eb3d-2de9-ae19',NULL),(9,'Default Host View','all',NULL),(8,'Image Transfer Mode','smb',''),(7,'AD Login Domain','',NULL),(6,'Web Path','http://[server-ip]:90/cruciblewds/service/client.asmx/',NULL),(5,'PXE Mode','pxelinux',NULL),(4,'Tftp Path','C:\\inetpub\\wwwroot\\clonedeploy\\tftpboot\\',NULL),(2,'Image Store Path','c:\\inetpub\\wwwroot\\clonedeploy\\image_store\\',NULL),(3,'Nfs Upload Path','c:\\/',''),(51,'Queue Size','3',''),(1,'Sender Args','asdb',''),(35,'Debug Requires Login','Yes',''),(36,'Register Requires Login','Yes',''),(37,'Smtp Server','abc',''),(38,'Smtp Port','',''),(39,'Smtp Username','',''),(40,'Smtp Password','NULL',''),(41,'Smtp Mail From','',''),(42,'Smtp Mail To','',''),(43,'Smtp Ssl','Yes',''),(44,'Notify Successful Login','0',''),(45,'Notify Failed Login','0',''),(46,'Notify Task Started','0',''),(47,'Notify Task Completed','0',''),(48,'Notify Image Approved','0',''),(49,'Notify Resize Failed','0',''),(52,'Require Image Approval','False',NULL);
+INSERT INTO `admin_settings` VALUES (34,'On Demand Requires Login','Yes',''),(33,'Web Task Requires Login','No',NULL),(32,'Proxy Efi64 File','grub_64_efi',NULL),(31,'Proxy Efi32 File','ipxe_32_efi',NULL),(30,'Proxy Bios File','pxelinux',NULL),(29,'Proxy Dhcp','No',NULL),(28,'Web Server Port','90',NULL),(27,'Image Checksum','Off',NULL),(26,'Server Key Mode','NULL',''),(25,'Global Host Args','',''),(24,'Client Receiver Args','',NULL),(23,'SMB Password','NULL',''),(22,'SMB User Name','abc247',''),(21,'SMB Path','//192.168.56.1',''),(20,'Force SSL','No',NULL),(19,'Nfs Deploy Path','c:\\/',''),(18,'Image Hold Path','c:\\inetpub\\wwwroot\\clonedeploy\\image_hold\\',NULL),(17,'Udpcast End Port','102',NULL),(16,'Udpcast Start Port','100',NULL),(15,'Receiver Args','ad',''),(14,'On Demand','Enabled',NULL),(13,'Server IP','192.168.1.101',NULL),(12,'Compression Level','1',''),(11,'Compression Algorithm','gzip',''),(10,'Server Key','e991eb3d-2de9-ae19',NULL),(9,'Default Host View','all',NULL),(8,'Image Transfer Mode','smb',''),(7,'AD Login Domain','',NULL),(6,'Web Path','http://[server-ip]:90/cruciblewds/service/client.asmx/',NULL),(5,'PXE Mode','pxelinux',NULL),(4,'Tftp Path','C:\\inetpub\\wwwroot\\clonedeploy\\tftpboot\\',NULL),(2,'Image Store Path','c:\\inetpub\\wwwroot\\clonedeploy\\image_store\\',NULL),(3,'Nfs Upload Path','c:\\/',''),(51,'Queue Size','3',''),(1,'Sender Args','',NULL),(35,'Debug Requires Login','Yes',''),(36,'Register Requires Login','Yes',''),(37,'Smtp Server','abc',''),(38,'Smtp Port','',''),(39,'Smtp Username','',''),(40,'Smtp Password','NULL',''),(41,'Smtp Mail From','',''),(42,'Smtp Mail To','',''),(43,'Smtp Ssl','Yes',''),(44,'Notify Successful Login','0',''),(45,'Notify Failed Login','0',''),(46,'Notify Task Started','0',''),(47,'Notify Task Completed','0',''),(48,'Notify Image Approved','0',''),(49,'Notify Resize Failed','0',''),(52,'Require Image Approval','False',NULL);
 /*!40000 ALTER TABLE `admin_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -802,7 +804,7 @@ CREATE TABLE `groups` (
 
 LOCK TABLES `groups` WRITE;
 /*!40000 ALTER TABLE `groups` DISABLE KEYS */;
-INSERT INTO `groups` VALUES (1,'Group1_Test26','',3,-1,'standard','a','b',NULL,1,1),(2,'Group1','',-1,-1,'standard','',NULL,NULL,0,0),(3,'smart1','',0,0,'smart',NULL,NULL,'',0,0);
+INSERT INTO `groups` VALUES (1,'Group1_Test26','',8,8,'standard','','',NULL,1,1),(2,'Group1','',-1,-1,'standard','',NULL,NULL,0,0),(3,'smart1','',0,0,'smart',NULL,NULL,'',0,0);
 /*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1000,7 +1002,7 @@ CREATE TABLE `multicast_ports` (
   `multicast_port_id` int(11) NOT NULL AUTO_INCREMENT,
   `multicast_port_number` int(11) NOT NULL,
   PRIMARY KEY (`multicast_port_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1009,7 +1011,7 @@ CREATE TABLE `multicast_ports` (
 
 LOCK TABLES `multicast_ports` WRITE;
 /*!40000 ALTER TABLE `multicast_ports` DISABLE KEYS */;
-INSERT INTO `multicast_ports` VALUES (1,8998),(2,63998),(3,98),(4,98),(5,100),(6,102),(7,104);
+INSERT INTO `multicast_ports` VALUES (1,8998),(2,63998),(3,98),(4,98),(5,100),(6,102),(7,104),(8,106),(9,108),(10,110),(11,112),(12,114),(13,116),(14,118),(15,120),(16,122),(17,124),(18,126),(19,128),(20,130),(21,132),(22,134);
 /*!40000 ALTER TABLE `multicast_ports` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1183,4 +1185,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-11-05 16:30:16
+-- Dump completed on 2015-11-06 16:29:42

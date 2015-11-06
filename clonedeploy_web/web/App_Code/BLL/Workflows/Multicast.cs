@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Web;
+using BLL.ClientPartitioning;
 using Helpers;
 using Models;
 using Models.ImageSchema;
@@ -16,83 +17,78 @@ namespace Tasks
 {
     public class Multicast
     {
-        public Multicast()
+        public Multicast(Models.Group group)
         {
-            Hosts = new List<Computer>();
+            Computers = new List<Computer>();
             Direction = "push";
             IsCustom = false;
-            ActiveMcTask = new ActiveMulticastSession();
+            MulticastSession = new ActiveMulticastSession();
+            Group = group;
         }
 
         public string Direction { get; set; }
         public Group Group { get; set; }
-        public List<Computer> Hosts { get; set; }
+        private List<Computer> Computers { get; set; }
         public bool IsCustom { get; set; }
-        public ActiveMulticastSession ActiveMcTask { get; set; }
+        public ActiveMulticastSession MulticastSession { get; set; }
+        private Models.ImageProfile _imageProfile;
 
-        public void Create()
+        public string Create()
         {
-            if (Group.Image == null)
+            _imageProfile = BLL.LinuxProfile.ReadProfile(Group.ImageProfile);
+            if (_imageProfile == null) return "The Image Profile Does Not Exist";
+
+            if (_imageProfile.Image == null) return "The Image Does Not Exist";
+
+            Computers = BLL.Group.GetGroupMembers(Group.Id);
+            if (Computers.Count < 1)
             {
-                //Message.Text = "The Groups Current Image No Longer Exists";
-                return;
+                return "The Group Does Not Have Any Members";
             }
 
-            Hosts = BLL.Group.GetGroupMembers(Group.Id);
-            if (Hosts.Count < 1)
+            MulticastSession.Name = Group.Name;
+            MulticastSession.Port = BLL.Port.GetNextPort();
+            if (MulticastSession.Port == 0)
             {
-                //Message.Text = "The Group Does Not Have Any Hosts";
-                return;
-            }
-
-            ActiveMcTask.Name = Group.Name;
-            ActiveMcTask.Image = Group.Image.ToString();
-            ActiveMcTask.Port = BLL.Port.GetNextPort();
-            if (ActiveMcTask.Port == 0)
-            {
-                //Message.Text = "Could Not Determine Current Port Base";
-                return;
+                return "Could Not Determine Current Port Base";
             }
            
-            if (BLL.ActiveMulticastSession.AddActiveMulticastSession(ActiveMcTask))
+            if (!BLL.ActiveMulticastSession.AddActiveMulticastSession(MulticastSession))
             {
-                //Message.Text = "Could Not Create Multicast Database Task";
-                return;
+                return "Could Not Create Multicast Database Task";
             }
 
-            if (!CreateHostTask())
+            if (!CreateComputerTasks())
             {
-                //Message.Text = "Could Not Create Host Database Tasks";
-                BLL.ActiveMulticastSession.Delete(ActiveMcTask.Id);
-                return;
+                BLL.ActiveMulticastSession.Delete(MulticastSession.Id);
+                return "Could Not Create Host Database Tasks";
             }
 
             if (!CreatePxeFiles())
             {
-                //Message.Text = "Could Not Create Host PXE Files";
-                BLL.ActiveMulticastSession.Delete(ActiveMcTask.Id);
-                return;
+                BLL.ActiveMulticastSession.Delete(MulticastSession.Id);
+                return "Could Not Create Computer Boot Files";
             }
 
             if (!CreateTaskArguments())
             {
-                //Message.Text = "Could Not Create Host Task Arguments";
-                BLL.ActiveMulticastSession.Delete(ActiveMcTask.Id);
-                return;
+                BLL.ActiveMulticastSession.Delete(MulticastSession.Id);
+                return "Could Not Create Host Task Arguments";
             }
 
             if (!StartMulticastSender())
             {
-                //Message.Text = "Could Not Start The Multicast Sender";
-                BLL.ActiveMulticastSession.Delete(ActiveMcTask.Id);
-                return;
+                BLL.ActiveMulticastSession.Delete(MulticastSession.Id);
+                return  "Could Not Start The Multicast Sender";
             }
 
-            foreach (var host in Hosts)
+            foreach (var host in Computers)
                 Utility.WakeUp(host.Mac);
 
-            //Message.Text = "Successfully Started Multicast " + Group.Name;
+           
             CreateHistoryEvents();
+
+            return "Successfully Started Multicast " + Group.Name;
         }
 
         private void CreateHistoryEvents()
@@ -105,7 +101,7 @@ namespace Tasks
             };
             history.CreateEvent();
 
-            foreach (var host in Hosts)
+            foreach (var host in Computers)
             {
                 history.Event = "Deploy";
                 history.Type = "Host";
@@ -122,30 +118,47 @@ namespace Tasks
             }
         }
 
-        private bool CreateHostTask()
+        private bool CreateComputerTasks()
         {
-            foreach (var host in Hosts)
+            var error = false;
+            var activeTaskIds = new List<int>();
+            foreach (var computer in Computers)
             {
+                if (BLL.ActiveImagingTask.IsComputerActive(computer.Id)) return false;
                 var activeTask = new ActiveImagingTask
                 {
-                    Status = "0",
                     Type = "multicast",
-                  
+                    ComputerId = computer.Id,
+                    Direction = "push"
                 };
-                if (!BLL.ActiveImagingTask.IsComputerActive(host.Id)) return false;
-                if (!BLL.ActiveImagingTask.AddActiveImagingTask(activeTask))
-                    return false;
-                host.TaskId = activeTask.Id.ToString();
+
+                if (BLL.ActiveImagingTask.AddActiveImagingTask(activeTask))
+                {
+                    activeTaskIds.Add(activeTask.Id);
+                    computer.ActiveImagingTask = activeTask;
+                }
+                else
+                {
+                    error = true;
+                    break;
+                }
             }
-            return true;
+            if (error)
+            {
+                foreach(var taskId in activeTaskIds)
+                    BLL.ActiveImagingTask.DeleteActiveImagingTask(taskId);
+
+                return false;
+            }
+            else
+                return true;
         }
 
         private bool CreatePxeFiles()
         {
-            foreach (var host in Hosts)
+            foreach (var computer in Computers)
             {
-                //FIX ME
-                if (!new TaskBootMenu(host,"push").CreatePxeBoot())
+                if (!new TaskBootMenu(computer, _imageProfile, "push").CreatePxeBootFiles())
                     return false;
             }
             return true;
@@ -154,19 +167,41 @@ namespace Tasks
         private bool CreateTaskArguments()
         {
 
-            foreach (var host in Hosts)
+            foreach (var computer in Computers)
             {
-                var activeTask = new ActiveImagingTask {Id = Convert.ToInt32(host.TaskId)};
-              
-               
-                //FIX ME
-                activeTask.Arguments = "imgName=" + Group.Image + " storage=" + BLL.Computer.GetDistributionPoint(host) +
-                                       " hostID=" + host.Id + " multicast=true " + " hostScripts=" + /*Group.Scripts +*/
-                                       " serverIP=" + Settings.ServerIp +
-                                       " hostName=" + host.Name + " portBase=" + ActiveMcTask.Port + 
-                                       " clientReceiverArgs=" + Settings.ClientReceiverArgs;
+                string preScripts = null;
+                string postScripts = null;
+                foreach (var script in BLL.ImageProfileScript.SearchImageProfileScripts(_imageProfile.Id))
+                {
+                    if (Convert.ToBoolean(script.RunPre))
+                        preScripts += script.Id + " ";
 
-                if(!BLL.ActiveImagingTask.UpdateActiveImagingTask(activeTask))
+                    if (Convert.ToBoolean(script.RunPost))
+                        postScripts += script.Id + " ";
+                }
+
+                string profileArgs = "";
+                if (Convert.ToBoolean(_imageProfile.SkipCore)) profileArgs += "skip_core_download=true ";
+                if (Convert.ToBoolean(_imageProfile.SkipClock)) profileArgs += "skip_clock=true ";
+                profileArgs += "task_completed_action=" + _imageProfile.TaskCompletedAction + " ";
+
+
+                if (Convert.ToBoolean(_imageProfile.RemoveGPT)) profileArgs += "remove_gpt_structures=true ";
+                if (Convert.ToBoolean(_imageProfile.SkipShrinkVolumes)) profileArgs += "skip_shrink_volumes=true ";
+                if (Convert.ToBoolean(_imageProfile.SkipShrinkLvm)) profileArgs += "skip_shrink_lvm=true ";
+
+                computer.ActiveImagingTask.Arguments = "image_name=" + _imageProfile.Image.Name + " storage=" +
+                                                       BLL.Computer.GetDistributionPoint(computer) + " host_id=" +
+                                                       computer.Id +
+                                                       " multicast=false" + " pre_scripts=" + preScripts +
+                                                       " post_scripts=" + postScripts +
+                                                       " server_ip=" + Settings.ServerIp + " host_name=" + computer.Name +
+                                                       " comp_alg=" + Settings.CompressionAlgorithm + " comp_level=-" +
+                                                       Settings.CompressionLevel + " partition_method=" +
+                                                       _imageProfile.PartitionMethod + " " +
+                                                       profileArgs;
+
+                if (!BLL.ActiveImagingTask.UpdateActiveImagingTask(computer.ActiveImagingTask))
                     return false;
             }
             return true;
@@ -176,8 +211,8 @@ namespace Tasks
         {
             if (IsCustom)
             {
-                ActiveMcTask.Port = BLL.Port.GetNextPort();
-                Group = new Group {Name = ActiveMcTask.Port.ToString()};
+                MulticastSession.Port = BLL.Port.GetNextPort();
+                Group = new Group {Name = MulticastSession.Port.ToString()};
             }
             string shell;
 
@@ -208,7 +243,7 @@ namespace Tasks
                 shell = "cmd.exe";
             }
 
-            var receivers = Hosts.Count;
+            var receivers = Computers.Count;
 
             Process sender;
             var senderInfo = new ProcessStartInfo {FileName = (shell)};
@@ -219,52 +254,22 @@ namespace Tasks
 
             //Multicasting currently only supports the first active hd
             //Find First Active HD
-            var image = BLL.Image.GetImage(Convert.ToInt32(ActiveMcTask.Image));
-            ImageSchema specs;
-            if (!string.IsNullOrEmpty(image.ClientSizeCustom))
-            {
-                specs = JsonConvert.DeserializeObject<ImageSchema>(image.ClientSizeCustom);
-                try
-                {
-                    specs = JsonConvert.DeserializeObject<ImageSchema>(image.ClientSizeCustom);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-            else
-            {
-                specs = JsonConvert.DeserializeObject<ImageSchema>(image.ClientSize);
-                try
-                {
-                    specs = JsonConvert.DeserializeObject<ImageSchema>(image.ClientSize);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
+            var schema = new ClientPartitionHelper(_imageProfile).GetImageSchema();
+          
             var activeCounter = 0;
-            foreach (var hd in specs.HardDrives)
+            foreach (var hd in schema.HardDrives)
             {
                 if (hd.Active)
                 {
+                    activeCounter++;
                     break;
                 }
-                activeCounter++;
+               
             }
 
-            string imagePath;
-            if (activeCounter == 0)
-            {
-                imagePath = Settings.PrimaryStoragePath + ActiveMcTask.Image;
-            }
-            else
-            {
-                imagePath = Settings.PrimaryStoragePath + ActiveMcTask.Image + Path.DirectorySeparatorChar + "hd" +
-                            (activeCounter + 1);
-            }
+            var imagePath = Settings.PrimaryStoragePath + _imageProfile.Image.Name + Path.DirectorySeparatorChar + "hd" +
+                               activeCounter;
+            
 
             try
             {
@@ -296,7 +301,7 @@ namespace Tasks
             }
 
             var x = 0;
-            foreach (var part in specs.HardDrives[activeCounter].Partitions)
+            foreach (var part in schema.HardDrives[activeCounter - 1].Partitions)
             {
                 string udpFile = null;
                 if (!part.Active) continue;
@@ -374,21 +379,21 @@ namespace Tasks
                     {
                         if (x == 1)
                             senderInfo.Arguments = (" -c \"" + compAlg + udpFile + stdout + " | udp-sender" +
-                                                    " --portbase " + ActiveMcTask.Port + " " + senderArgs + " --ttl 32");
+                                                    " --portbase " + MulticastSession.Port + " " + " --ttl 32 " + senderArgs);
                         else
                             senderInfo.Arguments += (" ; " + compAlg + udpFile + stdout + " | udp-sender" +
-                                                     " --portbase " + ActiveMcTask.Port + " " + senderArgs + " --ttl 32");
+                                                     " --portbase " + MulticastSession.Port + " " + " --ttl 32 " + senderArgs);
                     }
                     else
                     {
                         if (x == 1)
                             senderInfo.Arguments = (" /c " + appPath + compAlg + udpFile + stdout + " | " + appPath +
                                                     "udp-sender.exe" +
-                                                    " --portbase " + ActiveMcTask.Port + " " + senderArgs + " --ttl 32");
+                                                    " --portbase " + MulticastSession.Port + " " + " --ttl 32 " + senderArgs);
                         else
                             senderInfo.Arguments += (" & " + appPath + compAlg + udpFile + stdout + " | " + appPath +
                                                      "udp-sender.exe" +
-                                                     " --portbase " + ActiveMcTask.Port + " " + senderArgs + " --ttl 32");
+                                                     " --portbase " + MulticastSession.Port + " " + " --ttl 32 " + senderArgs);
                     }
                 }
                 else
@@ -400,30 +405,30 @@ namespace Tasks
                     {
                         if (x == 1)
                             senderInfo.Arguments = (" -c \"" + compAlg + udpFile + stdout + " | udp-sender" +
-                                                    " --portbase " + ActiveMcTask.Port + " --min-receivers " + receivers +
-                                                    " " +
-                                                    Group.SenderArguments + " --ttl 32");
+                                                    " --portbase " + MulticastSession.Port + " --min-receivers " + receivers +
+                                                    " " + " --ttl 32 " +
+                                                    Group.SenderArguments);
 
                         else
                             senderInfo.Arguments += (" ; " + compAlg + udpFile + stdout + " | udp-sender" +
-                                                     " --portbase " + ActiveMcTask.Port + " --min-receivers " +
-                                                     receivers + " " +
-                                                     Group.SenderArguments + " --ttl 32");
+                                                     " --portbase " + MulticastSession.Port + " --min-receivers " +
+                                                     receivers + " " + " --ttl 32 " +
+                                                     Group.SenderArguments);
                     }
                     else
                     {
                         if (x == 1)
                             senderInfo.Arguments = (" /c " + appPath + compAlg + udpFile + stdout + " | " + appPath +
                                                     "udp-sender.exe" +
-                                                    " --portbase " + ActiveMcTask.Port + " --min-receivers " + receivers +
-                                                    " " +
-                                                    Group.SenderArguments + " --ttl 32");
+                                                    " --portbase " + MulticastSession.Port + " --min-receivers " + receivers +
+                                                    " " + " --ttl 32 " +
+                                                    Group.SenderArguments);
                         else
                             senderInfo.Arguments += (" & " + appPath + compAlg + udpFile + stdout + " | " + appPath +
                                                      "udp-sender.exe" +
-                                                     " --portbase " + ActiveMcTask.Port + " --min-receivers " +
-                                                     receivers + " " +
-                                                     Group.SenderArguments + " --ttl 32");
+                                                     " --portbase " + MulticastSession.Port + " --min-receivers " +
+                                                     receivers + " " + " --ttl 32 " +
+                                                     Group.SenderArguments);
                     }
                 }
             }
@@ -467,17 +472,17 @@ namespace Tasks
 
             if (IsCustom)
             {
-                if (sender != null) ActiveMcTask.Pid = sender.Id;
-                ActiveMcTask.Name = Group.Name;
-                BLL.ActiveMulticastSession.AddActiveMulticastSession(ActiveMcTask);
+                if (sender != null) MulticastSession.Pid = sender.Id;
+                MulticastSession.Name = Group.Name;
+                BLL.ActiveMulticastSession.AddActiveMulticastSession(MulticastSession);
                 //Message.Text = "Successfully Started Multicast " + Group.Name;
                 return true;
             }
 
             if (sender != null)
             {
-                ActiveMcTask.Pid = sender.Id;
-                BLL.ActiveMulticastSession.UpdateActiveMulticastSession(ActiveMcTask);
+                MulticastSession.Pid = sender.Id;
+                BLL.ActiveMulticastSession.UpdateActiveMulticastSession(MulticastSession);
             }
         
            return true;

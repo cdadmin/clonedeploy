@@ -42,13 +42,14 @@ namespace views.tasks
         {
             if (ddlImage.Text != "Select Image")
             {
-                var multicast = new Multicast
+                //FIX ME
+                /*var multicast = new Multicast
                 {
-                    ActiveMcTask = {Image = ddlImage.Text},
+                    //MulticastSession = {Image = ddlImage.Text},
                     IsCustom = true
                 };
                 multicast.StartMulticastSender();
-
+                */
             }
             else
                 EndUserMessage = "Select An Image";

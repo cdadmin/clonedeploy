@@ -12,9 +12,9 @@ namespace Helpers
         {
             try
             {
-                //var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
-                  //            Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar + "exceptions.log";
-                var logPath = @"c:\mount\exceptions.log";
+                var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
+                             Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar + "exceptions.log";
+
                 File.AppendAllText(logPath,
                     DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + ":\t" + message +
                     Environment.NewLine);

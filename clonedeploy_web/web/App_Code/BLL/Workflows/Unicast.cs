@@ -39,7 +39,7 @@ namespace BLL.Workflows
 
             if (!BLL.ActiveImagingTask.AddActiveImagingTask(_activeTask)) return "Could Not Create The Database Entry For This Task";
 
-            if (!CreatePxeFile())
+            if (!new TaskBootMenu(_computer, _imageProfile, _direction).CreatePxeBootFiles())
             {
                 BLL.ActiveImagingTask.DeleteActiveImagingTask(_activeTask.Id);
                 return "Could Not Create PXE Boot File";
@@ -53,20 +53,12 @@ namespace BLL.Workflows
 
             Utility.WakeUp(_computer.Mac);
 
-            CreateHistoryEvents();
+           
 
             return "true";
         }
 
-        private void CreateHistoryEvents()
-        {
-          
-        }
-
-        private bool CreatePxeFile()
-        {
-            return new TaskBootMenu(_computer,_direction).CreatePxeBoot();
-        }
+    
 
         private bool CreateTaskArguments()
         {
@@ -104,7 +96,7 @@ namespace BLL.Workflows
             _activeTask.Arguments = "image_name=" + _imageProfile.Image.Name + " storage=" + BLL.Computer.GetDistributionPoint(_computer) + " host_id=" + _computer.Id +
                                    " multicast=false" + " pre_scripts=" + preScripts + " post_scripts=" + postScripts +
                                    " server_ip=" + Settings.ServerIp + " host_name=" + _computer.Name +
-                                   " comp_alg=" + Settings.CompressionAlgorithm + " comp_evel=-" +
+                                   " comp_alg=" + Settings.CompressionAlgorithm + " comp_level=-" +
                                    Settings.CompressionLevel + " partition_method=" + _imageProfile.PartitionMethod + " " +
                                    profileArgs;
 
