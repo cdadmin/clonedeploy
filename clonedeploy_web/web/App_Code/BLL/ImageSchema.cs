@@ -178,7 +178,7 @@ namespace BLL
         {
             try
             {   
-                var profile = BLL.LinuxProfile.ReadProfile(profileId);
+                var profile = BLL.ImageProfile.ReadProfile(profileId);
                 var fltClientSize = new ClientPartitionHelper(profile).HardDrive(hdNumber, 1) / 1024f / 1024f / 1024f;
                 return Math.Abs(fltClientSize) < 0.1f ? "< 100M" : fltClientSize.ToString("#.##") + " GB";
             }

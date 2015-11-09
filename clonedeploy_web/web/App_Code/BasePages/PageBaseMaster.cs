@@ -61,7 +61,7 @@ namespace BasePages
 
         protected void PopulateImageProfilesDdl(DropDownList ddlImageProfile, int value)
         {
-            ddlImageProfile.DataSource = BLL.LinuxProfile.SearchProfiles(value).Select(i => new { i.Id, i.Name });
+            ddlImageProfile.DataSource = BLL.ImageProfile.SearchProfiles(value).Select(i => new { i.Id, i.Name });
             ddlImageProfile.DataValueField = "Id";
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();

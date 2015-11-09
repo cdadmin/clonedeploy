@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web;
 using BLL;
+using BLL.Workflows;
 using Helpers;
 using Tasks;
 
@@ -11,45 +12,29 @@ namespace views.tasks
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            var user = BLL.User.GetUser(HttpContext.Current.User.Identity.Name);
-
-            if (Settings.OnDemand == "Disabled")
-            {
-                secure.Visible = false;
-                secureMsg.Text = "On Demand Mode Has Been Globally Disabled";
-                secureMsg.Visible = true;
-            }
-                //FIX ME
-                /*
-            else if (user.OndAccess == "0")
-            {
-                secure.Visible = false;
-                secureMsg.Text = "On Demand Mode Has Been Disabled For This Account";
-                secureMsg.Visible = true;
-            }*/
-            else
-            {
-                secure.Visible = true;
-                secureMsg.Visible = false;
-            }
+            RequiresAuthorization(Authorizations.AllowOnd);   
+        
             if (IsPostBack) return;
-            ddlImage.DataSource = BLL.Image.SearchImages("").Select(i => i.Name);
-            ddlImage.DataBind();
-            ddlImage.Items.Insert(0, "Select Image");
+            PopulateForm();
+        }
+
+        protected void PopulateForm()
+        {
+            PopulateImagesDdl(ddlHostImage);
+           
+        }
+
+        protected void ddlHostImage_OnSelectedIndexChanged(object sender, EventArgs e)
+        {
+            PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlHostImage.SelectedValue));
         }
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            if (ddlImage.Text != "Select Image")
+            if (ddlHostImage.Text != "Select Image")
             {
-                //FIX ME
-                /*var multicast = new Multicast
-                {
-                    //MulticastSession = {Image = ddlImage.Text},
-                    IsCustom = true
-                };
-                multicast.StartMulticastSender();
-                */
+                var imageProfile = BLL.ImageProfile.ReadProfile(Convert.ToInt32(ddlImageProfile.SelectedValue));
+                var multicast = new BLL.Workflows.Multicast(null, true, imageProfile).StartMulticastSender();              
             }
             else
                 EndUserMessage = "Select An Image";

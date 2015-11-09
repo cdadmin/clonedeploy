@@ -30,30 +30,30 @@ namespace views.computers
 
         protected void btnDelete_Click(object sender, EventArgs e)
         {
-            lblTitle.Text = "Delete This Host?";
-            Session["direction"] = "delete";
+            lblTitle.Text = "Delete " + Computer.Name + "?";
+            Session["action"] = "delete";
             DisplayConfirm();
         }
 
         protected void btnDeploy_Click(object sender, EventArgs e)
         {
-            Session["direction"] = "push";
-            lblTitle.Text = "Deploy This Computer?";
+            Session["action"] = "push";
+            lblTitle.Text = "Deploy " + Computer.Name + "?";
             DisplayConfirm();
         }
 
         protected void btnUpload_Click(object sender, EventArgs e)
         {
-            Session["direction"] = "pull";
-            lblTitle.Text = "Upload This Computer?";
+            Session["action"] = "pull";
+            lblTitle.Text = "Upload " + Computer.Name + "?";
             DisplayConfirm();
         }
 
         protected void buttonConfirm_Click(object sender, EventArgs e)
         {
-            var direction = (string) (Session["direction"]);
-            Session.Remove("direction");
-            switch (direction)
+            var action = (string)(Session["action"]);
+            Session.Remove("action");
+            switch (action)
             {
                 case "delete":
                     ComputerBasePage.RequiresAuthorization(Authorizations.DeleteComputer);
@@ -63,20 +63,13 @@ namespace views.computers
                 case "push":
                 {
                     ComputerBasePage.RequiresAuthorizationOrManagedComputer(Authorizations.ImageDeployTask, Computer.Id);
-                    var validation = BLL.Image.CheckApprovalAndChecksum(Computer.Image);
-                    if (validation.IsValid)
-                    {
-                        var taskStartResult = BLL.Computer.StartUnicast(Computer, direction);
-                        PageBaseMaster.EndUserMessage = taskStartResult.Message;
-                    }
-                    else
-                        PageBaseMaster.EndUserMessage = validation.Message;
+                    PageBaseMaster.EndUserMessage = new BLL.Workflows.Unicast(Computer, action).Start();
                 }
                     break;
                 case "pull":
                 {
                     ComputerBasePage.RequiresAuthorizationOrManagedComputer(Authorizations.ImageUploadTask, Computer.Id);
-                    BLL.Computer.StartUnicast(Computer, direction);
+                    PageBaseMaster.EndUserMessage = new BLL.Workflows.Unicast(Computer, action).Start();
                 }
                     break;
             }

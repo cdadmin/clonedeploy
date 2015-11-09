@@ -57,7 +57,7 @@ public partial class views_images_profiles_deploy : Images
                 imageProfile.CustomPartitionScript = "";
                 break;
         }
-        BLL.LinuxProfile.UpdateProfile(imageProfile);
+        BLL.ImageProfile.UpdateProfile(imageProfile);
     }
 
 

@@ -23,10 +23,13 @@ namespace BLL.Workflows
             if (_computer == null)
                 return "The Computer Does Not Exist";
 
-            _imageProfile = BLL.LinuxProfile.ReadProfile(_computer.ImageProfile);
+            _imageProfile = BLL.ImageProfile.ReadProfile(_computer.ImageProfile);
             if (_imageProfile == null) return "The Image Profile Does Not Exist";
 
             if (_imageProfile.Image == null) return "The Image Does Not Exist";
+
+            var validation = BLL.Image.CheckApprovalAndChecksum(_imageProfile.Image);
+            if (!validation.IsValid) return validation.Message;
 
             if (BLL.ActiveImagingTask.IsComputerActive(_computer.Id)) return "This Computer Is Already Part Of An Active Task";
 
@@ -53,9 +56,9 @@ namespace BLL.Workflows
 
             Utility.WakeUp(_computer.Mac);
 
-           
 
-            return "true";
+
+            return "Successfully Started Task";
         }
 
     

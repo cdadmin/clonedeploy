@@ -6,12 +6,27 @@
             $('#taskond').addClass("nav-current");
         });
     </script>
-    <asp:Label ID="secureMsg" runat="server" Visible="false"></asp:Label>
-    <div id="secure" runat="server" visible="false">
+
+    <div class="size-4 column">
+        Image:
+    </div>
+         <div class="size-5 column">
+        <asp:DropDownList ID="ddlHostImage" runat="server" CssClass="ddlist" AutoPostBack="true" OnSelectedIndexChanged="ddlHostImage_OnSelectedIndexChanged"/>
+        </div>
+    <br class="clear"/>
+   
+    <div class="size-4 column">
+        Image Profile:
+    </div>
+    <div class="size-5 column">
+        <asp:DropDownList ID="ddlImageProfile" runat="server" CssClass="ddlist"/>
+    </div>
+
+    <br class="clear"/>
+
         <div class="size-4 column">
-            <asp:DropDownList ID="ddlImage" runat="server" CssClass="ddlist">
-            </asp:DropDownList>
+           
             <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_Click" Text="Start Multicast" CssClass="submits"/>
         </div>
-    </div>
+    
 </asp:Content>

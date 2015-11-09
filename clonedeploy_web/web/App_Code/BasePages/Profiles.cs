@@ -13,7 +13,7 @@ namespace BasePages
         {
             base.OnInit(e);
             Image = !string.IsNullOrEmpty(Request["imageid"]) ? BLL.Image.GetImage(Convert.ToInt32(Request.QueryString["imageid"])) : null;
-            ImageProfile = !string.IsNullOrEmpty(Request["profileid"]) ? BLL.LinuxProfile.ReadProfile(Convert.ToInt32(Request.QueryString["profileid"])) : null;
+            ImageProfile = !string.IsNullOrEmpty(Request["profileid"]) ? BLL.ImageProfile.ReadProfile(Convert.ToInt32(Request.QueryString["profileid"])) : null;
             if (Image == null)
                 RequiresAuthorization(Authorizations.ReadImage);
             else

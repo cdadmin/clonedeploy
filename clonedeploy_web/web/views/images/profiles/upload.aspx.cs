@@ -23,7 +23,7 @@ public partial class views_images_profiles_upload : Images
         imageProfile.Compression = ddlCompAlg.Text;
         imageProfile.CompressionLevel = ddlCompLevel.Text;
         imageProfile.UploadSchemaOnly = Convert.ToInt16(chkSchemaOnly.Checked);
-        BLL.LinuxProfile.UpdateProfile(imageProfile);
+        BLL.ImageProfile.UpdateProfile(imageProfile);
     }
 
     protected void chkCustomUpload_OnCheckedChanged(object sender, EventArgs e)

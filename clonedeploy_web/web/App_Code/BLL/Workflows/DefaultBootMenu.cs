@@ -292,7 +292,6 @@ namespace BLL.Workflows
             sysLinuxMenu.Append("TIMEOUT 50" + NewLineChar);
 
             string path;
-
             if (Type == "standard")
                 path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
             else

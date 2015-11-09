@@ -39,6 +39,7 @@ namespace Pxe
                             "IpxeBoot?filename=" + _imageProfile.BootImage + "&type=bootimage" + newLineChar);
             ipxe.Append("boot" + newLineChar);
 
+
             var sysLinux = new StringBuilder();
             sysLinux.Append("DEFAULT clonedeploy" + newLineChar);
             sysLinux.Append("LABEL clonedeploy" + newLineChar);
@@ -48,8 +49,8 @@ namespace Pxe
                                 " consoleblank=0" + " web=" + webPath + " WDS_KEY=" + wdsKey + " " + globalHostArgs +
                                 " " + _imageProfile.KernelArguments + newLineChar);
 
-            var grub = new StringBuilder();
 
+            var grub = new StringBuilder();
             grub.Append("set default=0" + newLineChar);
             grub.Append("set timeout=0" + newLineChar);
             grub.Append("menuentry CloneDeploy --unrestricted {" + newLineChar);

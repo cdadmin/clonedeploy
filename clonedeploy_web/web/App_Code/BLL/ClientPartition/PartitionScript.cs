@@ -22,7 +22,7 @@ namespace BLL.ClientPartitioning
 
         public string GeneratePartitionScript()
         {
-            var imageProfile = BLL.LinuxProfile.ReadProfile(profileId);
+            var imageProfile = BLL.ImageProfile.ReadProfile(profileId);
             ImageSchema = new ClientPartitionHelper(imageProfile).GetImageSchema();
             string partitionScript = null;
             var clientSchema = new BLL.ClientPartitioning.ClientPartition(HdNumberToGet,NewHdSize,imageProfile).GenerateClientSchema();

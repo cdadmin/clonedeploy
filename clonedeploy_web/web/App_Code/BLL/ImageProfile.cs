@@ -5,7 +5,7 @@ using Helpers;
 
 namespace BLL
 {
-    public static class LinuxProfile
+    public static class ImageProfile
     {
         public static Models.ValidationResult AddProfile(Models.ImageProfile profile)
         {

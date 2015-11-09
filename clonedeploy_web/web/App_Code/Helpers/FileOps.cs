@@ -111,19 +111,7 @@ namespace Helpers
                      FilePermissions.S_IRUSR));
         }
         
-        public static string ReadImageSpecs(string imageName)
-        {
-            var path = Settings.PrimaryStoragePath + imageName + Path.DirectorySeparatorChar + "schema";
-            if (File.Exists(path))
-            {
-                using (StreamReader reader = new StreamReader(path))
-                {
-                    return reader.ReadLine() ?? "";
-                }
-            }
-            return "";
-
-        }
+       
 
         public bool WritePath(string path, string contents)
         {
@@ -141,6 +129,18 @@ namespace Helpers
             {
                 Logger.Log(ex.Message);
                 return false;
+            }
+        }
+
+        public static void AppendText(string path, string contents)
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
             }
         }
     }

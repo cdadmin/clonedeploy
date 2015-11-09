@@ -42,7 +42,7 @@ public partial class views_images_profiles_search : Images
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        IEnumerable<ImageProfile> listProfiles = (List<ImageProfile>)gvProfiles.DataSource;
+        var listProfiles = (List<Models.ImageProfile>)gvProfiles.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -58,7 +58,7 @@ public partial class views_images_profiles_search : Images
 
     protected void PopulateGrid()
     {
-        gvProfiles.DataSource = BLL.LinuxProfile.SearchProfiles(Image.Id);
+        gvProfiles.DataSource = BLL.ImageProfile.SearchProfiles(Image.Id);
         gvProfiles.DataBind();
             
         foreach (GridViewRow row in gvProfiles.Rows)
