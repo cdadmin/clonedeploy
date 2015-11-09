@@ -12,16 +12,13 @@ namespace views.tasks
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.AllowOnd);   
-        
-            if (IsPostBack) return;
-            PopulateForm();
+            RequiresAuthorization(Authorizations.AllowOnd);
+            if (!IsPostBack) PopulateForm();
         }
 
         protected void PopulateForm()
         {
             PopulateImagesDdl(ddlHostImage);
-           
         }
 
         protected void ddlHostImage_OnSelectedIndexChanged(object sender, EventArgs e)
@@ -31,13 +28,10 @@ namespace views.tasks
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            if (ddlHostImage.Text != "Select Image")
-            {
-                var imageProfile = BLL.ImageProfile.ReadProfile(Convert.ToInt32(ddlImageProfile.SelectedValue));
-                var multicast = new BLL.Workflows.Multicast(null, true, imageProfile).StartMulticastSender();              
-            }
-            else
-                EndUserMessage = "Select An Image";
+            if (ddlHostImage.Text == "Select Image") return;
+            var imageProfile = BLL.ImageProfile.ReadProfile(Convert.ToInt32(ddlImageProfile.SelectedValue));
+            EndUserMessage = new BLL.Workflows.Multicast(imageProfile, txtClientCount.Text).Create();
+
         }
     }
 }

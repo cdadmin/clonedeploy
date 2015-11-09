@@ -1,14 +1,16 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Net;
 using System.Text;
 using Helpers;
-using Pxe;
 
 namespace BLL.Workflows
 {
     public class DefaultBootMenu
     {
+        private const string NewLineChar = "\n";
+        private readonly string _globalHostArgs = Settings.GlobalHostArgs;
+        private readonly string _wdsKey = Settings.WebTaskRequiresLogin == "No" ? Settings.ServerKey : "";
+        private readonly string _webPath = Settings.WebPath;
         public string AddPwd { get; set; }
         public string BootImage { get; set; }
         public string DebugPwd { get; set; }
@@ -19,10 +21,6 @@ namespace BLL.Workflows
         public string OndPwd { get; set; }
         public string Type { get; set; }
 
-        private const string NewLineChar = "\n";
-        private readonly string _webPath = Settings.WebPath;
-        private readonly string _globalHostArgs = Settings.GlobalHostArgs;
-        private readonly string _wdsKey = Settings.WebTaskRequiresLogin == "No" ? Settings.ServerKey : "";
         public void CreateGlobalDefaultBootMenu()
         {
             var mode = Settings.PxeMode;
@@ -73,17 +71,17 @@ namespace BLL.Workflows
                 grubMenu.Append("" + NewLineChar);
             }
             grubMenu.Append(@"regexp -s 1:b1 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
-                     NewLineChar);
+                            NewLineChar);
             grubMenu.Append(@"regexp -s 2:b2 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
-                     NewLineChar);
+                            NewLineChar);
             grubMenu.Append(@"regexp -s 3:b3 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
-                     NewLineChar);
+                            NewLineChar);
             grubMenu.Append(@"regexp -s 4:b4 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
-                     NewLineChar);
+                            NewLineChar);
             grubMenu.Append(@"regexp -s 5:b5 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
-                     NewLineChar);
+                            NewLineChar);
             grubMenu.Append(@"regexp -s 6:b6 '(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3}):(.{1,3})' $net_default_mac" +
-                     NewLineChar);
+                            NewLineChar);
             grubMenu.Append(@"mac=01-$b1-$b2-$b3-$b4-$b5-$b6" + NewLineChar);
             grubMenu.Append("" + NewLineChar);
 
@@ -108,36 +106,45 @@ namespace BLL.Workflows
             grubMenu.Append("" + NewLineChar);
 
             grubMenu.Append("menuentry \"Client Console\" --user {" + NewLineChar);
-            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." + NewLineChar);
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath +
-                     " WDS_KEY=" + _wdsKey + " task=debug consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
+            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
+                            NewLineChar);
+            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" +
+                            _webPath +
+                            " WDS_KEY=" + _wdsKey + " task=debug consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
             grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
 
             grubMenu.Append("" + NewLineChar);
 
             grubMenu.Append("menuentry \"On Demand Imaging\" --user {" + NewLineChar);
-            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." + NewLineChar);
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath +
-                     " WDS_KEY=" + _wdsKey + " task=ond consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
+            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
+                            NewLineChar);
+            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" +
+                            _webPath +
+                            " WDS_KEY=" + _wdsKey + " task=ond consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
             grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
 
             grubMenu.Append("" + NewLineChar);
 
             grubMenu.Append("menuentry \"Add Host\" --user {" + NewLineChar);
-            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." + NewLineChar);
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath +
-                     " WDS_KEY=" + _wdsKey + " task=register consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
+            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
+                            NewLineChar);
+            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" +
+                            _webPath +
+                            " WDS_KEY=" + _wdsKey + " task=register consoleblank=0 " + _globalHostArgs + "" +
+                            NewLineChar);
             grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
 
             grubMenu.Append("" + NewLineChar);
 
             grubMenu.Append("menuentry \"Diagnostics\" --user {" + NewLineChar);
-            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." + NewLineChar);
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath +
-                     " WDS_KEY=" + _wdsKey + " task=diag consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
+            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
+                            NewLineChar);
+            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" +
+                            _webPath +
+                            " WDS_KEY=" + _wdsKey + " task=diag consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
             grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
 
@@ -145,8 +152,6 @@ namespace BLL.Workflows
             var path = Settings.TftpPath + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
 
             new FileOps().WritePath(path, grubMenu.ToString());
-
-        
         }
 
         private void CreateIpxeMenu()
@@ -200,7 +205,7 @@ namespace BLL.Workflows
             ipxeMenu.Append("param task " + "${task}" + "" + NewLineChar);
             ipxeMenu.Append("echo Authenticating" + NewLineChar);
             ipxeMenu.Append("chain --timeout 15000 http://" + Settings.ServerIpWithPort +
-                     "/cruciblewds/service/client.asmx/IpxeLogin##params || goto Menu" + NewLineChar);
+                            "/cruciblewds/service/client.asmx/IpxeLogin##params || goto Menu" + NewLineChar);
 
             string path;
             if (Type == "standard")
@@ -245,8 +250,9 @@ namespace BLL.Workflows
 
             sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
-                     " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath + " WDS_KEY=" + _wdsKey +
-                     " task=debug consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
+                                " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath + " WDS_KEY=" +
+                                _wdsKey +
+                                " task=debug consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
 
             sysLinuxMenu.Append("MENU LABEL Client Console" + NewLineChar);
             sysLinuxMenu.Append("" + NewLineChar);
@@ -257,8 +263,9 @@ namespace BLL.Workflows
 
             sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
-                     " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath + " WDS_KEY=" + _wdsKey +
-                     " task=register consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
+                                " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath + " WDS_KEY=" +
+                                _wdsKey +
+                                " task=register consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
 
             sysLinuxMenu.Append("MENU LABEL Add Host" + NewLineChar);
             sysLinuxMenu.Append("" + NewLineChar);
@@ -269,8 +276,9 @@ namespace BLL.Workflows
 
             sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
-                     " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath + " WDS_KEY=" + _wdsKey +
-                     " task=ond consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
+                                " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath + " WDS_KEY=" +
+                                _wdsKey +
+                                " task=ond consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
 
             sysLinuxMenu.Append("MENU LABEL On Demand" + NewLineChar);
             sysLinuxMenu.Append("" + NewLineChar);
@@ -281,8 +289,9 @@ namespace BLL.Workflows
 
             sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
-                     " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath + " WDS_KEY=" + _wdsKey +
-                     " task=diag consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
+                                " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath + " WDS_KEY=" +
+                                _wdsKey +
+                                " task=diag consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
 
 
             sysLinuxMenu.Append("MENU LABEL Diagnostics" + NewLineChar);

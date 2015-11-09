@@ -2,6 +2,7 @@
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BLL;
+using BLL.Workflows;
 using Helpers;
 
 namespace views.tasks
@@ -34,7 +35,7 @@ namespace views.tasks
 
         protected void cancelTasks_Click(object sender, EventArgs e)
         {
-            BLL.ActiveImagingTask.CancelAll();     
+            CancelAllImagingTasks.Run();
             gvTasks.DataSource = BLL.ActiveImagingTask.ReadAll();
             gvTasks.DataBind();
         }

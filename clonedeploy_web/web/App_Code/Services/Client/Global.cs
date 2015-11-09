@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using DAL;
 using Global;
+using Helpers;
 using Models;
 using Pxe;
 
@@ -10,6 +11,30 @@ namespace Services.Client
 {
     public class Global
     {
+        public string IsLoginRequired(string task)
+        {
+            switch (task)
+            {
+                case "ond":
+                    return Settings.OnDemandRequiresLogin;
+                case "debug":
+                    return Settings.DebugRequiresLogin;
+
+                case "register":
+                    return Settings.RegisterRequiresLogin;
+
+                case "push":
+                    return Settings.WebTaskRequiresLogin;
+
+                case "pull":
+                    return Settings.WebTaskRequiresLogin;
+
+                default:
+                    return "Yes";
+            }
+        }
+
+        /*
         private readonly CloneDeployDbContext _context = new CloneDeployDbContext();
         public string CheckIn(string mac)
         {
@@ -113,27 +138,7 @@ namespace Services.Client
 
       
 
-        public string IsLoginRequired(string task)
-        {
-            switch (task)
-            {
-                case "ond":
-                    return Settings.OnDemandRequiresLogin;
-                case "debug":
-                    return Settings.DebugRequiresLogin;
-
-                case "register":
-                    return Settings.RegisterRequiresLogin;
-
-                case "push":
-                    return Settings.WebTaskRequiresLogin;
-
-                case "pull":
-                    return Settings.WebTaskRequiresLogin;
-
-                default:
-                    return "Yes";
-            }
-        }
+       
+         * */
     }
 }

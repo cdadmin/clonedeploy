@@ -127,6 +127,15 @@ namespace BLL
             }
         }
 
+        public static IEnumerable<Models.Computer> ComputersWithCustomBootMenu()
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ComputerRepository.Get(x => x.CustomBootEnabled == 1);
+
+            } 
+        }
+
         public static List<Models.Computer> ComputersWithoutGroup()
         {
             var listOfComputers = new List<Models.Computer>();

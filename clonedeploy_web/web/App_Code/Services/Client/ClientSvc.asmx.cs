@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Web;
@@ -6,6 +7,9 @@ using System.Web.Script.Services;
 using System.Web.Services;
 using BLL;
 using BLL.ClientPartitioning;
+using Helpers;
+using Newtonsoft.Json;
+using Security;
 
 
 namespace Services.Client
@@ -16,7 +20,84 @@ namespace Services.Client
     [ScriptService]
     public class ClientSvc : WebService
     {
-      
+        [WebMethod]
+        public void GetPartLayout(string imageProfileId, string hdToGet, string newHdSize, string clientHd, string taskType)
+        {
+
+            var partLayout = new ClientPartitionScript
+            {
+                profileId = Convert.ToInt32(imageProfileId),
+                HdNumberToGet = Convert.ToInt16(hdToGet),
+                NewHdSize = newHdSize,
+                ClientHd = clientHd,
+                TaskType = taskType
+            };
+
+            HttpContext.Current.Response.Write(partLayout.GeneratePartitionScript());
+        }
+
+        [WebMethod]
+        public void GetUtcDateTime()
+        {
+            HttpContext.Current.Response.Write(DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"));
+        }
+
+        [WebMethod]
+        public void GetLocalDateTime()
+        {
+            HttpContext.Current.Response.Write(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        }
+
+        [WebMethod]
+        public void IsLoginRequired(string task)
+        {
+            HttpContext.Current.Response.Write(new Global().IsLoginRequired(task));
+        }
+
+        [WebMethod]
+        public void ConsoleLogin()
+        {
+            var ip = Utility.Decode(HttpContext.Current.Request.Form["clientIP"]);
+            var username = Utility.Decode(HttpContext.Current.Request.Form["username"]);
+            var password = Utility.Decode(HttpContext.Current.Request.Form["password"]);
+            var task = Utility.Decode(HttpContext.Current.Request.Form["task"]);
+            var isWebTask = Utility.Decode(HttpContext.Current.Request.Form["isWebTask"]);
+
+            HttpContext.Current.Response.Write(new Authenticate().ConsoleLogin(username, password, task, isWebTask, ip));
+        }
+
+        [WebMethod]
+        public void DownloadCoreScripts()
+        {
+            var scriptName = HttpContext.Current.Request.Form["scriptName"];
+
+           
+            var scriptPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
+                             Path.DirectorySeparatorChar + "clientscripts" + Path.DirectorySeparatorChar + "core" +
+                             Path.DirectorySeparatorChar;
+
+
+            if (File.Exists(scriptPath + scriptName))
+            {
+                HttpContext.Current.Response.ContentType = "application/octet-stream";
+                HttpContext.Current.Response.AppendHeader("Content-Disposition",
+                    "attachment; filename=" + scriptName);
+                HttpContext.Current.Response.TransmitFile(scriptPath + scriptName);
+                HttpContext.Current.Response.End();
+            }
+            else
+                HttpContext.Current.Response.StatusCode = 420;
+        }
+
+        [WebMethod]
+        public void Test()
+        {
+            var list = new Dictionary<string,string>();
+            list.Add("name","jon");
+            list.Add("pass","none");
+            HttpContext.Current.Response.Write(JsonConvert.SerializeObject(list));
+        }
+
         /*
         [WebMethod(EnableSession = true)]
         public void AddHost(Models.Computer host)
@@ -88,17 +169,7 @@ namespace Services.Client
 
       
 
-        [WebMethod]
-        public void ConsoleLogin()
-        {
-            var ip = Utility.Decode(HttpContext.Current.Request.Form["clientIP"]);
-            var username = Utility.Decode(HttpContext.Current.Request.Form["username"]);
-            var password = Utility.Decode(HttpContext.Current.Request.Form["password"]);
-            var task = Utility.Decode(HttpContext.Current.Request.Form["task"]);
-            var isWebTask = Utility.Decode(HttpContext.Current.Request.Form["isWebTask"]);
-
-            HttpContext.Current.Response.Write(new Authenticate().ConsoleLogin(username, password, task, isWebTask, ip));
-        }
+       
 
         [WebMethod]
         public void CreateDirectory()
@@ -190,11 +261,7 @@ namespace Services.Client
             HttpContext.Current.Response.Write(new Download().GetHdParameter(imgName, hdToGet, partNumber, paramName));
         }
 
-        [WebMethod]
-        public void GetLocalDateTime()
-        {
-            HttpContext.Current.Response.Write(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-        }
+       
 
         [WebMethod]
         public void GetMinHdSize(string imgName, string hdToGet, string newHdSize)
@@ -207,32 +274,10 @@ namespace Services.Client
         {
             HttpContext.Current.Response.Write(new Download().GetOriginalLvm(imgName, clienthd, hdToGet));
         }
-        */
-
-        [WebMethod]
-        public void GetPartLayout(string imageProfileId, string hdToGet, string newHdSize, string clientHd, string taskType)
-        {
-
-            var partLayout = new ClientPartitionScript
-            {   
-                profileId = Convert.ToInt32(imageProfileId),
-                HdNumberToGet = Convert.ToInt16(hdToGet),
-                NewHdSize = newHdSize,
-                ClientHd = clientHd,
-                TaskType = taskType
-            };
-           
-            HttpContext.Current.Response.Write(partLayout.GeneratePartitionScript());
-        }
-        /*
-        [WebMethod]
-        public void GetUtcDateTime()
-        {
-            HttpContext.Current.Response.Write(DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"));
-        }
+        
 
       
-
+        
         [WebMethod]
         public void ImageSize()
         {
@@ -283,11 +328,7 @@ namespace Services.Client
             HttpContext.Current.Response.Write(new Authenticate().IpxeLogin(username, password, kernel, bootImage, task));
         }
 
-        [WebMethod]
-        public void IsLoginRequired(string task)
-        {
-            HttpContext.Current.Response.Write(new Global().IsLoginRequired(task));
-        }
+       
 
         [WebMethod]
         public void ListImages()

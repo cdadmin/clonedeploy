@@ -79,7 +79,6 @@ namespace DAL
             var entityToUpdate = _dbSet.Find(id);
             if (entityToUpdate == null) return;
             _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
-            //_context.Entry(entity).State = EntityState.Modified;
         }
 
         public virtual void Delete(object id)

@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using BLL;
 using Helpers;
 
-namespace Pxe
+namespace BLL.Workflows
 {
     public class TaskBootMenu
     {
         private readonly Models.Computer _computer;
         private readonly string _direction;
         private readonly Models.ImageProfile _imageProfile;
-        public TaskBootMenu(Models.Computer computer, Models.ImageProfile imageProfile,string direction)
+
+        public TaskBootMenu(Models.Computer computer, Models.ImageProfile imageProfile, string direction)
         {
             _computer = computer;
             _direction = direction;
@@ -20,23 +20,23 @@ namespace Pxe
         }
 
         public bool CreatePxeBootFiles()
-        {    
+        {
             var pxeHostMac = Utility.MacToPxeMac(_computer.Mac);
             var webPath = Settings.WebPath;
             var globalHostArgs = Settings.GlobalHostArgs;
             var wdsKey = Settings.WebTaskRequiresLogin == "No" ? Settings.ServerKey : "";
             const string newLineChar = "\n";
-           
+
 
             var ipxe = new StringBuilder();
             ipxe.Append("#!ipxe" + newLineChar);
             ipxe.Append("kernel " + webPath + "IpxeBoot?filename=" + _imageProfile.Kernel +
-                            "&type=kernel" + " initrd=" + _imageProfile.BootImage +
-                            " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp imgDirection=" + _direction +
-                            " consoleblank=0" + " web=" + webPath + " WDS_KEY=" + wdsKey + " " + globalHostArgs +
-                            " " + _imageProfile.KernelArguments + newLineChar);
+                        "&type=kernel" + " initrd=" + _imageProfile.BootImage +
+                        " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp task=" + _direction +
+                        " consoleblank=0" + " web=" + webPath + " WDS_KEY=" + wdsKey + " " + globalHostArgs +
+                        " " + _imageProfile.KernelArguments + newLineChar);
             ipxe.Append("imgfetch --name " + _imageProfile.BootImage + " " + webPath +
-                            "IpxeBoot?filename=" + _imageProfile.BootImage + "&type=bootimage" + newLineChar);
+                        "IpxeBoot?filename=" + _imageProfile.BootImage + "&type=bootimage" + newLineChar);
             ipxe.Append("boot" + newLineChar);
 
 
@@ -45,9 +45,9 @@ namespace Pxe
             sysLinux.Append("LABEL clonedeploy" + newLineChar);
             sysLinux.Append("KERNEL kernels" + Path.DirectorySeparatorChar + _imageProfile.Kernel + newLineChar);
             sysLinux.Append("APPEND initrd=images" + Path.DirectorySeparatorChar + _imageProfile.BootImage +
-                                " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp imgDirection=" + _direction +
-                                " consoleblank=0" + " web=" + webPath + " WDS_KEY=" + wdsKey + " " + globalHostArgs +
-                                " " + _imageProfile.KernelArguments + newLineChar);
+                            " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp task=" + _direction +
+                            " consoleblank=0" + " web=" + webPath + " WDS_KEY=" + wdsKey + " " + globalHostArgs +
+                            " " + _imageProfile.KernelArguments + newLineChar);
 
 
             var grub = new StringBuilder();
@@ -57,23 +57,23 @@ namespace Pxe
             grub.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
                         newLineChar);
             grub.Append("linux /kernels/" + _imageProfile.Kernel +
-                        " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp imgDirection=" +
+                        " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp task=" +
                         _direction + " consoleblank=0" + " web=" + webPath + " WDS_KEY=" +
                         wdsKey + " " +
                         globalHostArgs + " " + _imageProfile.KernelArguments + newLineChar);
             grub.Append("initrd /images/" + _imageProfile.BootImage + newLineChar);
             grub.Append("}" + newLineChar);
 
-            List<Tuple<string, string, string>> list = new List<Tuple<string, string, string>>
-                {
-                    Tuple.Create("bios", "", sysLinux.ToString()),
-                    Tuple.Create("bios", ".ipxe", ipxe.ToString()),
-                    Tuple.Create("efi32", "",sysLinux.ToString()),
-                    Tuple.Create("efi32", ".ipxe", ipxe.ToString()),
-                    Tuple.Create("efi64", "" , sysLinux.ToString()),
-                    Tuple.Create("efi64", ".ipxe", ipxe.ToString()),
-                    Tuple.Create("efi64", ".cfg", grub.ToString())
-                };
+            var list = new List<Tuple<string, string, string>>
+            {
+                Tuple.Create("bios", "", sysLinux.ToString()),
+                Tuple.Create("bios", ".ipxe", ipxe.ToString()),
+                Tuple.Create("efi32", "", sysLinux.ToString()),
+                Tuple.Create("efi32", ".ipxe", ipxe.ToString()),
+                Tuple.Create("efi64", "", sysLinux.ToString()),
+                Tuple.Create("efi64", ".ipxe", ipxe.ToString()),
+                Tuple.Create("efi64", ".cfg", grub.ToString())
+            };
 
             //In proxy mode all boot files are created regardless of the pxe mode, this way computers can be customized
             //to use a specific boot file without affecting all others, using the proxydhcp reservations file.
@@ -82,12 +82,12 @@ namespace Pxe
                 foreach (var bootMenu in list)
                 {
                     var path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + bootMenu.Item1 +
-                          Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeHostMac +
-                          bootMenu.Item2;
+                               Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeHostMac +
+                               bootMenu.Item2;
 
                     if (!new FileOps().WritePath(path, bootMenu.Item3))
                         return false;
-                }      
+                }
             }
             //When not using proxy dhcp, only one boot file is created
             else
@@ -112,7 +112,7 @@ namespace Pxe
                 }
 
                 if (!new FileOps().WritePath(path, fileContents))
-                    return false;            
+                    return false;
             }
 
             return true;

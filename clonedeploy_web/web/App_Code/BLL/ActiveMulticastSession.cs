@@ -102,6 +102,15 @@ namespace BLL
             }
         }
 
+        public static void DeleteAll()
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.ActiveMulticastSessionRepository.DeleteRange();
+                uow.Save();
+            }
+        }
+
         public static void KillProcess(int pid)
         {
             var searcher =

@@ -7,76 +7,97 @@ using System.Threading;
 using System.Web;
 using BLL.ClientPartitioning;
 using Helpers;
-using Pxe;
 
 namespace BLL.Workflows
 {
     public class Multicast
     {
-        public Multicast(Models.Group group, bool isOnDemand = false, Models.ImageProfile imageProfile = null)
+        private readonly string _clientCount;
+        private readonly bool _isOnDemand;
+        private readonly Models.ActiveMulticastSession _multicastSession;
+        private List<Models.Computer> _computers;
+        private Models.Group _group;
+        private Models.ImageProfile _imageProfile;
+
+        //Constructor For Starting Multicast For Group
+        public Multicast(Models.Group group)
         {
             _computers = new List<Models.Computer>();
             _multicastSession = new Models.ActiveMulticastSession();
+            _isOnDemand = false;
             _group = group;
-            _isOnDemand = isOnDemand;
-            //This is only set for an on demand multicast
-            if (imageProfile != null)
-                _imageProfile = imageProfile;
         }
 
-        private Models.Group _group;
-        private List<Models.Computer> _computers;
-        private readonly bool _isOnDemand;
-        private readonly Models.ActiveMulticastSession _multicastSession;
-        private Models.ImageProfile _imageProfile;
+        //Constructor For Starting Multicast For On Demand
+        public Multicast(Models.ImageProfile imageProfile, string clientCount)
+        {
+            _multicastSession = new Models.ActiveMulticastSession();
+            _isOnDemand = true;
+            _imageProfile = imageProfile;
+            _clientCount = clientCount;
+            _group = new Models.Group{ImageProfile = _imageProfile.Id};
+        }
 
         public string Create()
         {
-            _imageProfile = BLL.ImageProfile.ReadProfile(_group.ImageProfile);
+            _imageProfile = ImageProfile.ReadProfile(_group.ImageProfile);
             if (_imageProfile == null) return "The Image Profile Does Not Exist";
 
             if (_imageProfile.Image == null) return "The Image Does Not Exist";
 
-            _computers = BLL.Group.GetGroupMembers(_group.Id);
-            if (_computers.Count < 1)
-            {
-                return "The _group Does Not Have Any Members";
-            }
-
-            _multicastSession.Name = _group.Name;
-            _multicastSession.Port = BLL.Port.GetNextPort();
+            _multicastSession.Port = Port.GetNextPort();
             if (_multicastSession.Port == 0)
             {
                 return "Could Not Determine Current Port Base";
             }
-           
-            if (!BLL.ActiveMulticastSession.AddActiveMulticastSession(_multicastSession))
+
+
+            //End of the road for starting an on demand multicast
+            if (_isOnDemand)
+            {
+                _multicastSession.Name = _group.Name;
+                _group.Name =_multicastSession.Port.ToString();
+                if (!StartMulticastSender())
+                    return "Could Not Start The Multicast Application";
+                else
+                    return "Successfully Started Multicast " + _group.Name;
+            }
+
+            //Continue On If multicast is for a group
+            _multicastSession.Name = _group.Name;
+            _computers = Group.GetGroupMembers(_group.Id);
+            if (_computers.Count < 1)
+            {
+                return "The group Does Not Have Any Members";
+            }
+
+            if (!ActiveMulticastSession.AddActiveMulticastSession(_multicastSession))
             {
                 return "Could Not Create Multicast Database Task";
             }
 
             if (!CreateComputerTasks())
             {
-                BLL.ActiveMulticastSession.Delete(_multicastSession.Id);
+                ActiveMulticastSession.Delete(_multicastSession.Id);
                 return "Could Not Create Host Database Tasks";
             }
 
             if (!CreatePxeFiles())
             {
-                BLL.ActiveMulticastSession.Delete(_multicastSession.Id);
+                ActiveMulticastSession.Delete(_multicastSession.Id);
                 return "Could Not Create Computer Boot Files";
             }
 
             if (!CreateTaskArguments())
             {
-                BLL.ActiveMulticastSession.Delete(_multicastSession.Id);
+                ActiveMulticastSession.Delete(_multicastSession.Id);
                 return "Could Not Create Host Task Arguments";
             }
 
             if (!StartMulticastSender())
             {
-                BLL.ActiveMulticastSession.Delete(_multicastSession.Id);
-                return  "Could Not Start The Multicast Sender";
+                ActiveMulticastSession.Delete(_multicastSession.Id);
+                return "Could Not Start The Multicast Application";
             }
 
             foreach (var host in _computers)
@@ -85,15 +106,13 @@ namespace BLL.Workflows
             return "Successfully Started Multicast " + _group.Name;
         }
 
-     
-
         private bool CreateComputerTasks()
         {
             var error = false;
             var activeTaskIds = new List<int>();
             foreach (var computer in _computers)
             {
-                if (BLL.ActiveImagingTask.IsComputerActive(computer.Id)) return false;
+                if (ActiveImagingTask.IsComputerActive(computer.Id)) return false;
                 var activeTask = new Models.ActiveImagingTask
                 {
                     Type = "multicast",
@@ -101,7 +120,7 @@ namespace BLL.Workflows
                     Direction = "push"
                 };
 
-                if (BLL.ActiveImagingTask.AddActiveImagingTask(activeTask))
+                if (ActiveImagingTask.AddActiveImagingTask(activeTask))
                 {
                     activeTaskIds.Add(activeTask.Id);
                     computer.ActiveImagingTask = activeTask;
@@ -114,13 +133,12 @@ namespace BLL.Workflows
             }
             if (error)
             {
-                foreach(var taskId in activeTaskIds)
-                    BLL.ActiveImagingTask.DeleteActiveImagingTask(taskId);
+                foreach (var taskId in activeTaskIds)
+                    ActiveImagingTask.DeleteActiveImagingTask(taskId);
 
                 return false;
             }
-            else
-                return true;
+            return true;
         }
 
         private bool CreatePxeFiles()
@@ -135,42 +153,11 @@ namespace BLL.Workflows
 
         private bool CreateTaskArguments()
         {
-
             foreach (var computer in _computers)
             {
-                string preScripts = null;
-                string postScripts = null;
-                foreach (var script in BLL.ImageProfileScript.SearchImageProfileScripts(_imageProfile.Id))
-                {
-                    if (Convert.ToBoolean(script.RunPre))
-                        preScripts += script.Id + " ";
-
-                    if (Convert.ToBoolean(script.RunPost))
-                        postScripts += script.Id + " ";
-                }
-
-                string profileArgs = "";
-                if (Convert.ToBoolean(_imageProfile.SkipCore)) profileArgs += "skip_core_download=true ";
-                if (Convert.ToBoolean(_imageProfile.SkipClock)) profileArgs += "skip_clock=true ";
-                profileArgs += "task_completed_action=" + _imageProfile.TaskCompletedAction + " ";
-
-
-                if (Convert.ToBoolean(_imageProfile.RemoveGPT)) profileArgs += "remove_gpt_structures=true ";
-                if (Convert.ToBoolean(_imageProfile.SkipShrinkVolumes)) profileArgs += "skip_shrink_volumes=true ";
-                if (Convert.ToBoolean(_imageProfile.SkipShrinkLvm)) profileArgs += "skip_shrink_lvm=true ";
-
-                computer.ActiveImagingTask.Arguments = "image_name=" + _imageProfile.Image.Name + " storage=" +
-                                                       BLL.Computer.GetDistributionPoint(computer) + " host_id=" +
-                                                       computer.Id +
-                                                       " multicast=false" + " pre_scripts=" + preScripts +
-                                                       " post_scripts=" + postScripts +
-                                                       " server_ip=" + Settings.ServerIp + " host_name=" + computer.Name +
-                                                       " comp_alg=" + Settings.CompressionAlgorithm + " comp_level=-" +
-                                                       Settings.CompressionLevel + " partition_method=" +
-                                                       _imageProfile.PartitionMethod + " " +
-                                                       profileArgs;
-
-                if (!BLL.ActiveImagingTask.UpdateActiveImagingTask(computer.ActiveImagingTask))
+                computer.ActiveImagingTask.Arguments =
+                    new CreateTaskArguments(computer, _imageProfile, "multicast").Run();
+                if (!ActiveImagingTask.UpdateActiveImagingTask(computer.ActiveImagingTask))
                     return false;
             }
             return true;
@@ -178,7 +165,7 @@ namespace BLL.Workflows
 
         private string GenerateProcessArguments()
         {
-            bool isUnix = Environment.OSVersion.ToString().Contains("Unix");
+            var isUnix = Environment.OSVersion.ToString().Contains("Unix");
             //Multicasting currently only supports the first active hd
             //Find First Active HD
             var schema = new ClientPartitionHelper(_imageProfile).GetImageSchema();
@@ -191,11 +178,10 @@ namespace BLL.Workflows
                     activeCounter++;
                     break;
                 }
-
             }
 
             var imagePath = Settings.PrimaryStoragePath + _imageProfile.Image.Name + Path.DirectorySeparatorChar + "hd" +
-                               activeCounter;
+                            activeCounter;
 
             string processArguments = null;
             var x = 0;
@@ -203,9 +189,8 @@ namespace BLL.Workflows
             {
                 if (!part.Active) continue;
                 string imageFile = null;
-                foreach (var ext in new[] { ".ntfs", ".fat", ".extfs", ".hfsp", ".imager" })
+                foreach (var ext in new[] {".ntfs", ".fat", ".extfs", ".hfsp", ".imager"})
                 {
-
                     imageFile =
                         Directory.GetFiles(
                             imagePath + Path.DirectorySeparatorChar, "part" + part.Number + ext + ".*")
@@ -221,7 +206,7 @@ namespace BLL.Workflows
                         imageFile =
                             Directory.GetFiles(
                                 imagePath + imagePath + Path.DirectorySeparatorChar, lv.VolumeGroup + "-" +
-                                lv.Name + ext + ".*")
+                                                                                     lv.Name + ext + ".*")
                                 .FirstOrDefault();
                     }
                 }
@@ -234,15 +219,18 @@ namespace BLL.Workflows
                 string senderArgs;
                 if (_isOnDemand)
                 {
-                    _multicastSession.Port = BLL.Port.GetNextPort();
-                    _group = new Models.Group { Name = _multicastSession.Port.ToString() };
                     senderArgs = Settings.SenderArgs;
-                    minReceivers = "";
+                    if (!string.IsNullOrEmpty(_clientCount))
+                        minReceivers = " --min-receivers " + _clientCount;
+                    else
+                        minReceivers = "";
                 }
                 else
                 {
-                    senderArgs = string.IsNullOrEmpty(_group.SenderArguments) ? Settings.SenderArgs : _group.SenderArguments;
-                    minReceivers = " --min-receivers " + _computers.Count; ;
+                    senderArgs = string.IsNullOrEmpty(_group.SenderArguments)
+                        ? Settings.SenderArgs
+                        : _group.SenderArguments;
+                    minReceivers = " --min-receivers " + _computers.Count;
                 }
 
                 string compAlg;
@@ -267,23 +255,21 @@ namespace BLL.Workflows
 
                 if (isUnix)
                 {
-                    string prefix = null;
-                    prefix = x == 1 ? " -c \"" : " ; ";
+                    var prefix = x == 1 ? " -c \"" : " ; ";
                     processArguments += (prefix + compAlg + imageFile + stdout + " | udp-sender" +
-                                            " --portbase " + _multicastSession.Port + minReceivers + " " + " --ttl 32 " +
-                                            senderArgs);
+                                         " --portbase " + _multicastSession.Port + minReceivers + " " + " --ttl 32 " +
+                                         senderArgs);
                 }
                 else
                 {
-                    var appPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
-                          Path.DirectorySeparatorChar + "apps" + Path.DirectorySeparatorChar;
+                    var appPath = HttpContext.Current.Server.MapPath("~") + "data" +
+                                  Path.DirectorySeparatorChar + "apps" + Path.DirectorySeparatorChar;
 
-                    string prefix = null;
-                    prefix = x == 1 ? " /c " : " & ";
+                    var prefix = x == 1 ? " /c " : " & ";
                     processArguments += (prefix + appPath + compAlg + imageFile + stdout + " | " + appPath +
-                                            "udp-sender.exe" +
-                                            " --portbase " + _multicastSession.Port + minReceivers + " " + " --ttl 32 " +
-                                            senderArgs);
+                                         "udp-sender.exe" +
+                                         " --portbase " + _multicastSession.Port + minReceivers + " " + " --ttl 32 " +
+                                         senderArgs);
                 }
             }
 
@@ -293,10 +279,10 @@ namespace BLL.Workflows
             return processArguments;
         }
 
-        public bool StartMulticastSender()
+        private bool StartMulticastSender()
         {
-            bool isUnix = Environment.OSVersion.ToString().Contains("Unix");
-         
+            var isUnix = Environment.OSVersion.ToString().Contains("Unix");
+
             string shell;
             if (isUnix)
             {
@@ -321,16 +307,18 @@ namespace BLL.Workflows
 
             var processArguments = GenerateProcessArguments();
             if (processArguments == null) return false;
-            var senderInfo = new ProcessStartInfo { FileName = shell, Arguments = processArguments};
+            var senderInfo = new ProcessStartInfo {FileName = shell, Arguments = processArguments};
 
             var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
-                          Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar;
+                          Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar + "multicast.log";
 
-            var log = ("\r\n" + DateTime.Now.ToString("MM.dd.yy hh:mm") + " Starting Multicast Session " +
-                       _group.Name +
-                       " With The Following Command:\r\n\r\n" + senderInfo.FileName + senderInfo.Arguments +
-                       "\r\n\r\n");
-            File.AppendAllText(logPath + "multicast.log", log);
+            var logText = (Environment.NewLine + DateTime.Now.ToString("MM-dd-yy hh:mm") +
+                           " Starting Multicast Session " +
+                           _group.Name +
+                           " With The Following Command:" + Environment.NewLine + senderInfo.FileName +
+                           senderInfo.Arguments
+                           + Environment.NewLine);
+            File.AppendAllText(logPath, logText);
 
 
             Process sender;
@@ -341,19 +329,19 @@ namespace BLL.Workflows
             catch (Exception ex)
             {
                 Logger.Log(ex.ToString());
-                File.AppendAllText(logPath + "multicast.log",
+                File.AppendAllText(logPath,
                     "Could Not Start Session " + _group.Name + " Try Pasting The Command Into A Command Prompt");
                 return false;
             }
 
             Thread.Sleep(2000);
 
+            if (sender == null) return false;
 
             if (sender.HasExited)
             {
-                File.AppendAllText(logPath + "multicast.log",
-                    "Session " + _group.Name +
-                    @" Started And Was Forced To Quit, Try Pasting The Command Into A Command Prompt");
+                File.AppendAllText(logPath,
+                    "Session " + _group.Name + " Started And Was Forced To Quit, Try Running The Command Manually");
                 return false;
             }
 
@@ -361,17 +349,15 @@ namespace BLL.Workflows
             {
                 _multicastSession.Pid = sender.Id;
                 _multicastSession.Name = _group.Name;
-                BLL.ActiveMulticastSession.AddActiveMulticastSession(_multicastSession);
+                ActiveMulticastSession.AddActiveMulticastSession(_multicastSession);
             }
             else
             {
                 _multicastSession.Pid = sender.Id;
-                BLL.ActiveMulticastSession.UpdateActiveMulticastSession(_multicastSession);
+                ActiveMulticastSession.UpdateActiveMulticastSession(_multicastSession);
             }
-        
+
             return true;
         }
-
-
     }
 }

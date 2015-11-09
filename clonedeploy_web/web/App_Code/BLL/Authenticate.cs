@@ -1,7 +1,9 @@
-﻿using System.Web.Security;
+﻿using System.Collections.Generic;
+using System.Web.Security;
 using BLL;
 using Helpers;
 using Models;
+using Newtonsoft.Json;
 
 namespace Security
 {
@@ -15,7 +17,11 @@ namespace Security
             var validationResult = GlobalLogin(username, password, "Console");
             if (!validationResult.IsValid) return "false";
             var wdsuser = BLL.User.GetUser(username);
-
+            var result = new Dictionary<string, string> ();
+            result.Add("valid","true");
+            result.Add("user_id",wdsuser.Id.ToString());
+            result.Add("cd_key",Settings.ServerKey);
+            return JsonConvert.SerializeObject(result);
 
             //FIX ME
             /*if ((task == "ond" && wdsuser.OndAccess == "1") || (task == "debug" && wdsuser.DebugAccess == "1") ||

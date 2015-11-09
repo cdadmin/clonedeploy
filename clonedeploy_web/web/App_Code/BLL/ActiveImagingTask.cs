@@ -52,6 +52,7 @@ namespace BLL
             using (var uow = new DAL.UnitOfWork())
             {
                 uow.ActiveImagingTaskRepository.DeleteRange(t => t.MulticastId == multicastId);
+                uow.Save();
             }
         }
 
@@ -106,11 +107,13 @@ namespace BLL
             }
         }
 
-        public static void CancelAll()
+        public static void DeleteAll()
         {
-            CancelAllImagingTasks.Run();
-        }
-
-       
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.ActiveImagingTaskRepository.DeleteRange();
+                uow.Save();
+            }
+        } 
     }
 }
