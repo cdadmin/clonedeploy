@@ -62,15 +62,15 @@ public partial class views_admin_security : Admin
 
         if (ddlWebTasksLogin.Text == "Yes")
         {
-            listSettings.Add(new Setting { Name = "On Demand Requires Login", Value = "Yes" });
-            listSettings.Add(new Setting { Name = "Debug Requires Login", Value = "Yes" });
-            listSettings.Add(new Setting { Name = "Register Requires Login", Value = "Yes" });
+            listSettings.Add(new Setting { Name = "On Demand Requires Login", Value = "Yes", Id = BLL.Setting.GetSetting("On Demand Requires Login").Id });
+            listSettings.Add(new Setting { Name = "Debug Requires Login", Value = "Yes", Id = BLL.Setting.GetSetting("Debug Requires Login").Id } );
+            listSettings.Add(new Setting { Name = "Register Requires Login", Value = "Yes", Id = BLL.Setting.GetSetting("Register Requires Login").Id } );
         }
         else
         {
-            listSettings.Add(new Setting { Name = "On Demand Requires Login", Value = ddlOndLogin.Text });
-            listSettings.Add(new Setting { Name = "Debug Requires Login", Value = ddlDebugLogin.Text });
-            listSettings.Add(new Setting { Name = "Register Requires Login", Value = ddlRegisterLogin.Text });
+            listSettings.Add(new Setting { Name = "On Demand Requires Login", Value = ddlOndLogin.Text, Id = BLL.Setting.GetSetting("On Demand Requires Login").Id });
+            listSettings.Add(new Setting { Name = "Debug Requires Login", Value = ddlDebugLogin.Text, Id = BLL.Setting.GetSetting("Debug Requires Login").Id });
+            listSettings.Add(new Setting { Name = "Register Requires Login", Value = ddlRegisterLogin.Text, Id = BLL.Setting.GetSetting("Register Requires Login").Id });
         }
 
 

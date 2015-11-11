@@ -12,15 +12,24 @@ namespace Security
     /// </summary>
     public class Authenticate
     {
-        public string ConsoleLogin(string username, string password, string task, string isWebTask, string ip)
+        public string ConsoleLogin(string username, string password, string task, string ip)
         {
             var validationResult = GlobalLogin(username, password, "Console");
-            if (!validationResult.IsValid) return "false";
-            var wdsuser = BLL.User.GetUser(username);
-            var result = new Dictionary<string, string> ();
-            result.Add("valid","true");
-            result.Add("user_id",wdsuser.Id.ToString());
-            result.Add("cd_key",Settings.ServerKey);
+            var result = new Dictionary<string, string>();
+            if (!validationResult.IsValid)
+            {
+                result.Add("valid", "false");
+                result.Add("user_id", "");
+                result.Add("user_token", "");
+            }
+            else
+            {
+                var wdsuser = BLL.User.GetUser(username);
+                result.Add("valid", "true");
+                result.Add("user_id", wdsuser.Id.ToString());
+                result.Add("user_token", Settings.ServerKey);
+            }
+         
             return JsonConvert.SerializeObject(result);
 
             //FIX ME

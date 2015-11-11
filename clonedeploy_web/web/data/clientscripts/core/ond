@@ -1,62 +1,35 @@
 #!/bin/sh
-#  
-#    CrucibleWDS A Windows Deployment Solution
-#    Copyright (C) 2011  Jon Dolny
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/.
-#
-# 	Some code snippets have been used from the Fog Project
 
 . functions
+. cd_helpers
 
-clear
 
-while [ "$taskType" = "" ]; do
-	echo "1 Deploy"
-	echo "2 Upload"
-	echo "3 Multicast"
-	echo
-	echo -n " ...... Select A Task Type: "
-	read taskType
-done
+taskType=$(dialog --title "Clone Deploy" --menu "Select A Task" 10 30 3 1 Deploy 2 Upload 3 Multicast --stdout)
+
 
 if [ "$taskType" != "1" ] && [ "$taskType" != "2" ] && [ "$taskType" != "3" ]; then
 	error "Could Not Determine Task Type"
 fi
 
-clear
+
 
 if [ "$taskType" = "1" ]; then
-	imageList
+	#imageList
+	imagelist="1 \"image1\" 2 \"image 2\""
+	taskType=$(dialog --title "Clone Deploy" --menu "Select An Image" 10 30 3 "$imagelist" --stdout)
+	echo $imagelist
 	ond_HostInfo "push"
 	unicastInfo="${unicastInfo} multicast=false imgDirection=push"
 	
 elif [ "$taskType" = "2" ]; then
-	while [ "$isNewImage" = "" ]; do
-		echo "1 New Image"
-		echo "2 Existing Image"
-		echo
-		echo -n " ...... New Or Existing Image?: "
-		read isNewImage
-	done
-	
-	if [ "$isNewImage" != "1" ] && [ "$isNewImage" != "2" ]; then
+	uploadType=$(dialog --title "Clone Deploy" --menu "Select A Task" 10 30 3 1 "Upload New Image" 2 "Upload Existing Image" --stdout)
+		
+	if [ "$uploadType" != "1" ] && [ "$uploadType" != "2" ]; then
 		error "Could Not Determine If This Is A New Or Existing Image"
 	fi
 
-	if [ "$isNewImage" = "1" ]; then
-		clear
+	if [ "$uploadType" = "1" ]; then
+		imgName=$(dialog --title "Clone Deploy" --inputbox "Enter An Image Name" 8 50 --stdout)
 		echo -n " ...... Enter An Image Name: "
 		read imgName
 		echo

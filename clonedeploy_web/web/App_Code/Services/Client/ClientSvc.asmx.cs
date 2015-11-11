@@ -20,6 +20,25 @@ namespace Services.Client
     [ScriptService]
     public class ClientSvc : WebService
     {
+        private bool Authorize()
+        {
+            var userToken = Utility.Decode(HttpContext.Current.Request.Headers["Authorization"]);
+            if (Settings.ServerKey == null || userToken == null)
+            {
+                HttpContext.Current.Response.StatusCode = 403;
+                return false;
+            }
+            if (userToken != Settings.ServerKey)
+            {
+                HttpContext.Current.Response.StatusCode = 403;
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
         [WebMethod]
         public void GetPartLayout(string imageProfileId, string hdToGet, string newHdSize, string clientHd, string taskType)
         {
@@ -61,21 +80,17 @@ namespace Services.Client
             var username = Utility.Decode(HttpContext.Current.Request.Form["username"]);
             var password = Utility.Decode(HttpContext.Current.Request.Form["password"]);
             var task = Utility.Decode(HttpContext.Current.Request.Form["task"]);
-            var isWebTask = Utility.Decode(HttpContext.Current.Request.Form["isWebTask"]);
 
-            HttpContext.Current.Response.Write(new Authenticate().ConsoleLogin(username, password, task, isWebTask, ip));
+            HttpContext.Current.Response.Write(new Authenticate().ConsoleLogin(username, password, task, ip));
         }
 
         [WebMethod]
-        public void DownloadCoreScripts()
+        public void DownloadCoreScripts(string scriptName)
         {
-            var scriptName = HttpContext.Current.Request.Form["scriptName"];
-
-           
+            if (!Authorize()) return;
             var scriptPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
                              Path.DirectorySeparatorChar + "clientscripts" + Path.DirectorySeparatorChar + "core" +
                              Path.DirectorySeparatorChar;
-
 
             if (File.Exists(scriptPath + scriptName))
             {
@@ -98,14 +113,24 @@ namespace Services.Client
             HttpContext.Current.Response.Write(JsonConvert.SerializeObject(list));
         }
 
-        /*
-        [WebMethod(EnableSession = true)]
-        public void AddHost(Models.Computer host)
+        [WebMethod]
+        public void AddComputer(string name, string mac, string imageId, string imageProfileId)
         {
-            if (!Authenticate()) return;
-            new BLL.Computer().AddComputer(host);
-            HttpContext.Current.Response.Write(Message.Text);
+            if (!Authorize()) return;
+            var computer = new Models.Computer
+            {
+                Name = name,
+                Mac = mac,
+                ImageId = Convert.ToInt32(imageId),
+                ImageProfile = Convert.ToInt32(imageProfileId)
+
+            };
+            var result = BLL.Computer.AddComputer(computer);          
+            HttpContext.Current.Response.Write(JsonConvert.SerializeObject(result));
         }
+
+        /*
+      
 
         [WebMethod(EnableSession = true)]
         public void AddImage(Models.Image image)

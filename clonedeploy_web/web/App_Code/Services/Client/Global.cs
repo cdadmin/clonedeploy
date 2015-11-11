@@ -19,13 +19,10 @@ namespace Services.Client
                     return Settings.OnDemandRequiresLogin;
                 case "debug":
                     return Settings.DebugRequiresLogin;
-
                 case "register":
                     return Settings.RegisterRequiresLogin;
-
                 case "push":
                     return Settings.WebTaskRequiresLogin;
-
                 case "pull":
                     return Settings.WebTaskRequiresLogin;
 

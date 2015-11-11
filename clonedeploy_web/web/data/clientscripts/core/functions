@@ -18,16 +18,6 @@
 #
 # 	Some code snippets have been used from the Fog Project
 
-if [ -a "/tmp/WDS_KEY" ]; then
-	WDS_KEY=$(cat /tmp/WDS_KEY)
-fi
-
-if [ -n "$wds_if" ]; then
-	mac=`cat /sys/class/net/$wds_if/address`
-else
-	mac=`cat /sys/class/net/eth0/address`
-fi
-
 
 function backupBCD()
 {
