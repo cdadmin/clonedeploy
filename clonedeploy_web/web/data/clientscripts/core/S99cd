@@ -1,0 +1,155 @@
+#!/bin/sh
+#
+#
+# rc.single     This file is executed by init when it goes into runlevel
+#               1, which is the administrative state. It kills all
+#               deamons and then puts the system into single user mode.
+#               Note that the file systems are kept mounted.
+#
+# Author:       Miquel van Smoorenburg, <miquels@drinkel.nl.mugnet.org>
+#               Modified for RHS Linux by Damien Neil
+#				Modified for Clone Deploy
+. /bin/cd_helpers
+export startedFromInit="true"
+SetCurlCommand
+
+echo 3 > /proc/sys/kernel/printk
+
+function StartNetwork()
+{
+	if [ -z "$net_if" ]; then
+		export net_if=eth0
+	fi
+	export mac=`cat /sys/class/net/$net_if/address`
+	
+	echo " ** Starting Network On Interace $net_if ** "
+	echo
+	echo "auto lo" > /etc/network/interfaces
+	echo "iface lo inet loopback" >> /etc/network/interfaces
+	echo "auto $net_if" >> /etc/network/interfaces
+	echo "iface $net_if inet dhcp" >> /etc/network/interfaces
+	ifup $net_if
+	ifdown $net_if
+	ifup $net_if
+	ifup lo
+	
+	clientIP=`ifconfig | grep $net_if -A2 | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'`
+}
+
+function CheckDownload()
+{
+	if [ "$dl_result" != "200" ]; then
+		echo " ...... Could Not Download Script $1 "
+		echo " ...... Response Code: $dl_result "
+		cat /tmp/clientscriptdlerror
+		sleep 60
+		reboot -f
+	fi
+}
+
+if [ -n "$keymap" ]; then
+	loadkeys $keymap
+fi
+
+ClearAndMoveDown
+if [ "$reset_network" = "1" ]; then
+	echo " ** Reset Network Level 1 ** "
+	echo " Disconnect and Reconnect Your USB Nic "
+	echo " Press Any Key When Done "
+	read key_pressed
+elif [ "$reset_network" = "2" ]; then
+	echo " ** Reset Network Level 2 ** ";
+	echo " Disconnect and Reconnect Your USB Nic ";
+	echo " Waiting 30 Seconds Before Auto Continue ";
+	sleep 30
+fi
+
+StartNetwork
+
+#Set hardware clock
+if [ "$skip_clock" != "true" ]; then	
+	localDateTime=`$curlCommand ${web}GetLocalDateTime $curlEnd`
+	hwclock --localtime --set --date "$localDateTime"
+	
+	utcDateTime=`$curlCommand ${web}GetUtcDateTime $curlEnd`
+	date -s "$utcDateTime" &>> /dev/null
+fi
+
+loginRequired=`$curlCommand --data "task=$task" "${web}IsLoginRequired" $curlClose`
+if [ "$loginRequired" != "No" ]; then
+	ClearAndMoveDown
+	loginCount=1
+	echo " IP Address: $clientIP"
+	echo " ** You Must Be Logged In To Continue ** "
+	echo
+	while [ "$loginCount" -le "2" ]; do	
+		echo -n "Username: "
+		read username
+		echo -n "Password: "
+		stty -echo
+		read password
+		stty echo
+		echo
+		loginResult=`$curlCommand -Fusername="$(echo -n $username | base64)" -Fpassword="$(echo -n $password | base64)" -FclientIP="$(echo -n $clientIP | base64)" -Ftask="$(echo -n $task | base64)" "${web}ConsoleLogin" $curlClose`
+		if [ "`ParseJSON "$loginResult" .valid`" != "true" ]; then
+			if [ "$loginCount" = "2" ]; then
+				echo
+				echo " ...... Incorrect Login....Rebooting"
+				sleep 10
+				reboot -f
+			else
+				echo
+				echo " ...... Incorrect Login"
+				echo
+			fi
+		else
+			echo
+			echo " ...... Login Successful"
+			echo			
+			export USER_TOKEN=`ParseJSON "$loginResult" .user_token`
+			break
+		fi
+		loginCount=$(( $loginCount + 1 ))
+	done
+fi
+
+if [ "$skip_core_download" != "true" ]; then
+	ClearAndMoveDown
+	SetCurlAuth
+	echo " ** Downloading Core Scripts ** "
+
+	for scriptName in functions ond pull push register reporter; do
+		dl_result=`$curlAuth --data "scriptName=$scriptName" ${web}DownloadCoreScripts -o /bin/$scriptName -w %{http_code} --connect-timeout 10 --stderr /tmp/clientscriptdlerror`
+		CheckDownload $scriptName
+	done
+	
+	echo " ...... Complete"
+	echo
+	sleep 2
+fi
+
+if [ "$task" = "push" ]; then	
+	/bin/push
+
+elif [ "$task" = "pull" ]; then	
+	/bin/pull
+
+elif [ "$task" = "register" ]; then
+	/bin/register
+
+elif [ "$task" = "ond" ]; then
+	/bin/ond
+
+elif [ "$task" = "diag" ]; then
+	/bin/diag
+	
+elif [ "$task" = "debug" ]; then
+	echo " ** Debug Mode ** "
+else
+	ClearAndMoveDown
+	echo " ** No Task Selected....Rebooting ** "
+	sleep 10
+	reboot -f
+fi
+
+

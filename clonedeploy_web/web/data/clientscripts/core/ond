@@ -3,8 +3,11 @@
 . functions
 . cd_helpers
 
+if [ "$startedFromInit" != "true" ]; then
+	error "Script Cannot Be Started This Way, Exports Are Not Set."
+fi
 
-taskType=$(dialog --title "Clone Deploy" --menu "Select A Task" 10 30 3 1 Deploy 2 Upload 3 Multicast --stdout)
+taskType=$(dialog --backtitle "Clone Deploy" --title "Select A Task" --clear --menu "" 10 30 3 1 Deploy 2 Upload 3 Multicast --stdout)
 
 
 if [ "$taskType" != "1" ] && [ "$taskType" != "2" ] && [ "$taskType" != "3" ]; then
@@ -14,42 +17,41 @@ fi
 
 
 if [ "$taskType" = "1" ]; then
-	#imageList
-	imagelist="1 \"image1\" 2 \"image 2\""
-	taskType=$(dialog --title "Clone Deploy" --menu "Select An Image" 10 30 3 "$imagelist" --stdout)
-	echo $imagelist
+	imageList=`$curlCommand --data "userId=0" "${web}ListImages" $curlClose`
+	imageId=$(dialog --backtitle "Clone Deploy" --title "Select An Image" --clear --menu "" 10 30 3 `ParseJSON "$imageList" .Images[]` --stdout)
+	imageProfileList=`$curlCommand --data "imageId=$imageId" "${web}ListImageProfiles" $curlClose`
+	if [ "`ParseJSON "$imageProfileList" .Count`" = "1" ]; then
+		imageProfileId=`ParseJSON "$imageProfileList" .FirstProfileId`
+	else
+		imageProfileId=$(dialog --backtitle "Clone Deploy" --title "Select An Image Profile" --clear --menu "" 10 30 3 `ParseJSON "$imageProfileList" .ImageProfiles[]` --stdout)
+	fi
+	
 	ond_HostInfo "push"
 	unicastInfo="${unicastInfo} multicast=false imgDirection=push"
 	
 elif [ "$taskType" = "2" ]; then
-	uploadType=$(dialog --title "Clone Deploy" --menu "Select A Task" 10 30 3 1 "Upload New Image" 2 "Upload Existing Image" --stdout)
+	uploadType=$(dialog --backtitle "Clone Deploy" --title "Select An Upload Type" --menu "" 10 30 3 1 "Upload New Image" 2 "Upload Existing Image" --stdout)
 		
 	if [ "$uploadType" != "1" ] && [ "$uploadType" != "2" ]; then
 		error "Could Not Determine If This Is A New Or Existing Image"
 	fi
 
 	if [ "$uploadType" = "1" ]; then
-		imgName=$(dialog --title "Clone Deploy" --inputbox "Enter An Image Name" 8 50 --stdout)
-		echo -n " ...... Enter An Image Name: "
-		read imgName
-		echo
-		
-		clear
-		echo " ** Creating Image ** "
-		addImageResult=`curl -sSkX POST -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -H "Content-type: application/json; charset=UTF-8" -d '{"image":{"Name":"'"${imgName}"'","OS":"'""'","Description":"","Protected":"0","IsVisible":"1","ClientSize":""} }' ${web}AddImage --connect-timeout 10 --stderr -`
-		
-		arr=$(echo $addImageResult | tr "," "\n");
-			i=0;
-			for x in $arr; do
-   				imageID[i]=$x;
-				i=$(( $i + 1 ))
-			done		
-		echo " ...... $addImageResult"
-		echo
+		imageName=$(dialog --backtitle "Clone Deploy" --title "Enter An Image Name" --inputbox "" 8 50 --stdout)
+
+		addImageResult=`$curlAuth --data "name=$imageName" ${web}AddImage $curlClose`
+		if [ "`ParseJSON "$addImageResult" .IsValid`" = "true" ]; then
+			imageId=`ParseJSON "$addImageResult" .Message`
+			echo $imageId
+			sleep 5
+		else
+			error "`ParseJSON "$addImageResult" .Message`"
+		fi
 		ond_HostInfo "pull"
 		unicastInfo="${unicastInfo} imageID=${imageID[0]} imgDirection=pull"
 	else
-		imageList
+		imagelist=`$curlCommand --data "userId=0" "${web}ListImages" $curlClose`
+		imageID=$(dialog --backtitle "Clone Deploy" --title "Select An Image" --clear --menu "" 10 30 3 `ParseJSON "$imagelist" .Images[]` --stdout)
 		ond_HostInfo "pull"
 		unicastInfo="${unicastInfo} imgDirection=pull"
 		

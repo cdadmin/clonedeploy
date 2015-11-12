@@ -1,1 +1,1 @@
-﻿<%@ WebService Language="C#" CodeBehind="~/App_Code/Services/Client/ClientSvc.asmx.cs" Class="Services.Client.ClientSvc" %>
+﻿<%@ WebService Language="C#" CodeBehind="~/App_Code/Service/Client/Client.cs" Class="Service.Client.Client" %>

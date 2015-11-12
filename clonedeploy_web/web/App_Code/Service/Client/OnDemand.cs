@@ -4,11 +4,55 @@ using System.Linq;
 using BLL;
 using Global;
 using Models;
+using Newtonsoft.Json;
 
-namespace Services.Client
+namespace Service.Client
 {
     public class OnDemand
     {
+        public string ImageList(int userId = 0)
+        {
+            var imageList = new Services.Client.ImageList { Images = new List<string>() };
+
+            foreach (var image in BLL.Image.GetOnDemandImageList(userId))
+                imageList.Images.Add(image.Id + " " + image.Name);
+
+            return JsonConvert.SerializeObject(imageList);
+        }
+
+        public string ImageProfileList(int imageId)
+        {
+            var imageProfileList = new Services.Client.ImageProfileList { ImageProfiles = new List<string>() };
+
+            int profileCounter = 0;
+            foreach (var imageProfile in BLL.ImageProfile.SearchProfiles(Convert.ToInt32(imageId)))
+            {
+                profileCounter++;
+                imageProfileList.ImageProfiles.Add(imageProfile.Id + " " + imageProfile.Name);
+                if (profileCounter == 1)
+                    imageProfileList.FirstProfileId = imageProfile.Id.ToString();
+            }
+
+            imageProfileList.Count = profileCounter.ToString();
+
+            return JsonConvert.SerializeObject(imageProfileList);
+        }
+
+        public string AddImage(string imageName)
+        {
+            var image = new Models.Image()
+            {
+                Name = imageName
+
+            };
+            var result = BLL.Image.AddImage(image);
+            if (result.IsValid)
+                result.Message = image.Id.ToString();
+
+            return JsonConvert.SerializeObject(result);
+        }
+
+        /*
         public string GetCustomMulticastInfo(string mac, string mcTaskName)
         {
             Models.ActiveMulticastSession mcTask;
@@ -98,19 +142,7 @@ namespace Services.Client
 
             return result;
         }
-
-        public string GetImageListing()
-        {
-            string result = null;
-            /*
-            using (var db = new DB())
-            {
-                var images = from i in db.Images where i.IsVisible == 1 orderby i.Name select i;
-                 foreach (var image in images)
-                    result += image.Id  + " " + image.Name + ",";
-            }
-         */
-            return result;
-        }
+        */
+      
     }
 }

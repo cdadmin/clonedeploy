@@ -111,8 +111,32 @@ namespace BLL
 
                     return listOfImages;
                 }
+ 
+        }
 
-            
+
+        public static List<Models.Image> GetOnDemandImageList(int userId = 0)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                if (userId == 0)
+                    return uow.ImageRepository.Get(i => i.IsVisible == 1, orderBy: (q => q.OrderBy(p => p.Name)));
+                else
+                {
+                    if (BLL.User.GetUser(userId).Membership == "Administrator")
+                        return uow.ImageRepository.Get(i => i.IsVisible == 1, orderBy: (q => q.OrderBy(p => p.Name)));
+
+                    var userManagedImages = BLL.UserImageManagement.Get(userId);
+                    if (userManagedImages.Count == 0)
+                        return uow.ImageRepository.Get(i => i.IsVisible == 1, orderBy: (q => q.OrderBy(p => p.Name)));
+                    else
+                    {
+                         var listOfImages = new List<Models.Image>();
+                         listOfImages.AddRange(userManagedImages.Select(managedImage => uow.ImageRepository.GetFirstOrDefault(i => i.IsVisible == 1 && i.Id == managedImage.ImageId)));
+                        return listOfImages;
+                    }
+                }
+            }
         }
 
         public static List<Models.Image> SearchImages(string searchString = "")

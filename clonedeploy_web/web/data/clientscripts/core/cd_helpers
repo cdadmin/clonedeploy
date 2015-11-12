@@ -1,0 +1,31 @@
+#!/bin/sh
+
+function SetCurlCommand()
+{
+	export curlCommand="curl -sSk"
+	export curlEnd=" --connect-timeout 10 --stderr -"
+}
+
+function SetCurlAuth()
+{
+	export curlAuth="curl -sSk -H Authorization:$(echo -n "$USER_TOKEN" | base64)"
+}
+
+function ClearAndMoveDown()
+{
+	clear
+	local line=0
+	while [ "$line" -le "6" ]; do
+		line=$(( $line + 1 ))
+		echo
+	done
+}
+
+function ParseJSON()
+{
+	echo `echo "$1" | jq "$2" -r`
+}
+
+
+
+

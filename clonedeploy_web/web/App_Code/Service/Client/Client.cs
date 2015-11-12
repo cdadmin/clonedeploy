@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Web;
 using System.Web.Script.Services;
 using System.Web.Services;
@@ -12,13 +13,13 @@ using Newtonsoft.Json;
 using Security;
 
 
-namespace Services.Client
+namespace Service.Client
 {
-    [WebService(Namespace = "http://localhost/cruciblewds/ClientSvc.asmx")]
+    [WebService(Namespace = "http://localhost/clonedeploy/Client.asmx")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [ToolboxItem(false)]
     [ScriptService]
-    public class ClientSvc : WebService
+    public class Client : WebService
     {
         private bool Authorize()
         {
@@ -70,7 +71,7 @@ namespace Services.Client
         [WebMethod]
         public void IsLoginRequired(string task)
         {
-            HttpContext.Current.Response.Write(new Global().IsLoginRequired(task));
+            HttpContext.Current.Response.Write(new Service.Client.Global().IsLoginRequired(task));
         }
 
         [WebMethod]
@@ -105,28 +106,29 @@ namespace Services.Client
         }
 
         [WebMethod]
-        public void Test()
+        public void AddComputer(string name, string mac, string imageId, string imageProfileId)
         {
-            var list = new Dictionary<string,string>();
-            list.Add("name","jon");
-            list.Add("pass","none");
-            HttpContext.Current.Response.Write(JsonConvert.SerializeObject(list));
+            if (!Authorize()) return;        
+            HttpContext.Current.Response.Write(new Service.Client.Global().AddComputer(name,mac,imageId,imageProfileId));
         }
 
         [WebMethod]
-        public void AddComputer(string name, string mac, string imageId, string imageProfileId)
+        public void AddImage(string name)
         {
-            if (!Authorize()) return;
-            var computer = new Models.Computer
-            {
-                Name = name,
-                Mac = mac,
-                ImageId = Convert.ToInt32(imageId),
-                ImageProfile = Convert.ToInt32(imageProfileId)
+            if (!Authorize()) return;      
+            HttpContext.Current.Response.Write(new Service.Client.OnDemand().AddImage(name));
+        }
 
-            };
-            var result = BLL.Computer.AddComputer(computer);          
-            HttpContext.Current.Response.Write(JsonConvert.SerializeObject(result));
+        [WebMethod]
+        public void ListImages(string userId)
+        {
+            HttpContext.Current.Response.Write(new Service.Client.OnDemand().ImageList(Convert.ToInt32(userId)));
+        }
+
+        [WebMethod]
+        public void ListImageProfiles(string imageId)
+        {
+            HttpContext.Current.Response.Write(new Service.Client.OnDemand().ImageProfileList(Convert.ToInt32(imageId)));
         }
 
         /*
@@ -355,11 +357,7 @@ namespace Services.Client
 
        
 
-        [WebMethod]
-        public void ListImages()
-        {
-            if (Authenticate()) HttpContext.Current.Response.Write(new OnDemand().GetImageListing());
-        }
+       
 
         [WebMethod]
         public void McCheckOut()

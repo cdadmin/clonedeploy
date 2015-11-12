@@ -5,12 +5,27 @@ using DAL;
 using Global;
 using Helpers;
 using Models;
+using Newtonsoft.Json;
 using Pxe;
 
-namespace Services.Client
+namespace Service.Client
 {
     public class Global
     {
+        public string AddComputer(string name, string mac, string imageId, string imageProfileId)
+        {
+            var computer = new Models.Computer
+            {
+                Name = name,
+                Mac = mac,
+                ImageId = Convert.ToInt32(imageId),
+                ImageProfile = Convert.ToInt32(imageProfileId)
+
+            };
+            var result = BLL.Computer.AddComputer(computer);
+            return JsonConvert.SerializeObject(result);
+        }
+
         public string IsLoginRequired(string task)
         {
             switch (task)
