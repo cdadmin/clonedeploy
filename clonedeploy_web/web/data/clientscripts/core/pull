@@ -1,24 +1,5 @@
 #!/bin/sh
 
-#  
-#    CrucibleWDS A Windows Deployment Solution
-#    Copyright (C) 2011  Jon Dolny
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/.
-#
-# 	Some code snippets have been used from the Fog Project
-
 . functions
 
 isond="$1"
@@ -36,11 +17,9 @@ if [ "$imageProtected" = "1" ]; then
 	error "This Image Is Protected And Cannot Be Overwritten"
 fi
 
-if [ "$xferMode" = "nfs" ] || [ "$xferMode" = "nfs+http" ]; then
-	mountNFS
-elif [ "$xferMode" = "smb" ] || [ "$xferMode" = "smb+http" ]; then
-	mountSMB
-fi
+
+mountSMB
+
 
 getHD
 echo
@@ -57,48 +36,100 @@ if [ "$delImageStat" != "true" ]; then
 	error "Could Not Clear Image Directory. $delImageStat"
 fi
 
-if [ "$sizeDebug" = "true" ]; then
-	calcSizeDebug
-else
-	calcSize
-fi
+
+calcSize
+
 
 hdPass=0
 for hd in $disks; do
 	hdPass=$(( $hdPass + 1 ))
 
-	if [ "$hdPass" = "1" ]; then
-		imgPath=$imgName
-	else
-		clear
-		imgPath=$imgName/hd$hdPass
-	fi
+	imgPath=$imgName/hd$hdPass
+	
 		
-	checkUpGPT
+	log " ** Checking For Partition Table Types Before Upload ** "
+	upGPT=`gdisk -l $hd <<< "q" 2>> /tmp/clientlog.log | grep 'GPT:' | awk '{$1=""; print $0}' | sed 's/^ //'`
+	if [ "$upGPT" = "present" ]; then
+		usingGPT=true
+		upMBR=`gdisk -l $hd <<< "q" 2>> /tmp/clientlog.log | grep 'MBR:' | awk '{$1=""; print $0}' | sed 's/^ //'`
+		if [ "$upMBR" = "MBR only" ]; then
+			error "This Hard Drive Appears To Have Both GPT And MBR.  CrucibleWDS Does Not Know What To Use.  You Must First Convert The Drive To One Or The Other Before Uploading"
+		fi
+	elif [ "$upGPT" = "damaged" ]; then
+		error "The GPT Table Is Damaged And Cannot Be Saved.  You Must Fix This Before Uploading This Image"
+	fi
+	log " ...... upGPT: $upGPT upMBR: $upMBR" 
 	
 	
 	log " ** Determining Partition Count ** " "display" 
-	getPartCountUpload
+	#Manually specifying partitions is only valid for the first hd
+	if [ "$hdPass" = "1" ]; then
+		if [ -n "$parts" ]; then
+			log " ...... Partitions Overridden By User, User Specified $parts" "display"
+		else
+			parts=$(partinfo --parts $hd 2>> /tmp/clientlog.log)
+		fi
+	else
+		parts=$(partinfo --parts $hd 2>> /tmp/clientlog.log)
+	fi
+	
+	partCount=0	
+	for part in $parts; do
+		partCount=$(( $partCount + 1 ))
+	done
+	
+	sleep 2
+	
+	if [ "$partCount" = "0" ]; then
+		error "Unable To Determine Partition Count Or There Are No Partitions On This Drive"
+	fi	
 	log " ...... Found $partCount Partition(s)" "display"
 	echo
 		
 		
-	#Create Directory On Server for Next Hard Drive
-	if [ "$hdPass" != "1" ]; then
-		log " ** Creating Directory For Hard Drive ** "
-		createDirStat=`curl -sSk -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -FimgName="$(echo -n $imgName | base64)" -FdirName="$(echo -n $hdPass | base64)" "${web}CreateDirectory" --connect-timeout 10 --stderr -`
-		log  " ...... $createDirStat"
-		if [ ! "$createDirStat" = "true" ]; then
-			error "Could Not Create Directory For This Hard Drive. $createDirStat"
-		fi
+	mkdir $imgPath
+	
+	
+	log " ** Saving MBR / GPT ** " "display"	
+
+	if [ "$usingGPT" = "true" ]; then
+		checkPartStart=$(gdisk $hd -l | awk '/^ / {print $2+0}' | grep -vw "0" | sort -n | head -n1)
+	else
+		checkPartStart=$(parted -s $hd unit s print all | awk -F' ' '{print $2+0}' | grep -vw "0" | sort -n | head -n1)
 	fi
+
+	toSave=$(( $checkPartStart - 1 ))
+		
+	log " ...... drive: $drive checkPartStart: $checkPartStart toSave: $toSave "
+		
 	
+		dd if=$hd of=/images/$imgPath/table count=$toSave bs=512 &>> /tmp/clientlog.log 
+		if [ -s "/images/$imgPath/table" ]; then
+			log " ...... Success" "display"
+		else
+			error "Could Not Save MBR /GPT .  Check Permissions."
+		fi
 	
-	backupMBR
 	echo
 	sleep 5
 	
-	backupBCD
+	for part in $parts; do
+		local fsType=`blkid -po udev $part | grep FS_TYPE | awk -F'=' '{print $2}'`
+		if [ "$fsType" = "ntfs" ]; then
+			ntfs-3g -o force,rw $part /mnt/ntfs 2> /dev/null				
+				if [ -f "/mnt/ntfs/Boot/BCD" ]; then
+					log " ** Original BCD ** "
+					reged -x /mnt/ntfs/Boot/BCD . Objects /tmp/regbcd >>/dev/null
+					cat /tmp/regbcd >> /tmp/clientlog.log
+	
+					
+						cp /mnt/ntfs/Boot/BCD /images/$imgPath/BCD
+						cp /mnt/ntfs/bootmgr /images/$imgPath/bootmgr
+						
+				fi
+			umount /mnt/ntfs
+		fi
+	done
 	
 	pullGlobal
 	

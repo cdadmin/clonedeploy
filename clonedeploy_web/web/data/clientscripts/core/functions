@@ -2,57 +2,11 @@
 
 function backupBCD()
 {
-	for part in $parts; do
-		local fsType=`blkid -po udev $part | grep FS_TYPE | awk -F'=' '{print $2}'`
-		if [ "$fsType" = "ntfs" ]; then
-			ntfs-3g -o force,rw $part /mnt/ntfs 2> /dev/null				
-				if [ -f "/mnt/ntfs/Boot/BCD" ]; then
-					log " ** Original BCD ** "
-					reged -x /mnt/ntfs/Boot/BCD . Objects /tmp/regbcd >>/dev/null
-					cat /tmp/regbcd >> /tmp/clientlog.log
 	
-					if [ "$xferMode" = "nfs" ] || [ "$xferMode" = "nfs+http" ] || [ "$xferMode" = "smb" ] || [ "$xferMode" = "smb+http" ]; then
-						cp /mnt/ntfs/Boot/BCD /images/$imgPath/BCD
-						cp /mnt/ntfs/bootmgr /images/$imgPath/bootmgr
-					else
-						bcdCopyResult=`curl -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -Ffile=@/mnt/ntfs/Boot/BCD -FfileName="$(echo -n BCD | base64)" -FimagePath="$(echo -n $imgPath | base64)" -FfileType="$(echo -n mbr | base64)" -sSk "${web}Upload" --stderr -`
-					fi			
-				fi
-			umount /mnt/ntfs
-		fi
-	done
 }
 function backupMBR()
 {
-	log " ** Saving MBR / GPT ** " "display"	
 
-	if [ "$usingGPT" = "true" ]; then
-		checkPartStart=$(gdisk $hd -l | awk '/^ / {print $2+0}' | grep -vw "0" | sort -n | head -n1)
-	else
-		checkPartStart=$(parted -s $hd unit s print all | awk -F' ' '{print $2+0}' | grep -vw "0" | sort -n | head -n1)
-	fi
-
-	toSave=$(( $checkPartStart - 1 ))
-		
-	log " ...... drive: $drive checkPartStart: $checkPartStart toSave: $toSave "
-		
-	if [ "$xferMode" = "nfs" ] || [ "$xferMode" = "nfs+http" ] || [ "$xferMode" = "smb" ] || [ "$xferMode" = "smb+http" ]; then
-		dd if=$hd of=/images/$imgPath/table count=$toSave bs=512 &>> /tmp/clientlog.log 
-		if [ -s "/images/$imgPath/table" ]; then
-			log " ...... Success" "display"
-		else
-			error "Could Not Save MBR /GPT .  Check Permissions."
-		fi
-	else
-		dd if=$hd of=/tmp/table count=$toSave bs=512 &>> /tmp/clientlog.log
-		mbrResult=`curl -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -Ffile=@/tmp/table -FfileName="$(echo -n table | base64)" -FimagePath="$(echo -n $imgPath | base64)" -FfileType="$(echo -n mbr | base64)" -sSk "${web}Upload" --stderr -`
-		log " ...... mbrResult: $mbrResult"
-		if [ "$mbrResult" = "true" ]; then
-			log " ...... Success" "display"
-		else
-			error "Could Not Save Partition Layout.  Check Permissions."
-		fi
-	fi			
 }
 
 function calcSize()
@@ -438,18 +392,7 @@ function checkout()
 
 function checkUpGPT()
 {
-	log " ** Checking For Partition Table Types Before Upload ** "
-	upGPT=`gdisk -l $hd <<< "q" 2>> /tmp/clientlog.log | grep 'GPT:' | awk '{$1=""; print $0}' | sed 's/^ //'`
-	if [ "$upGPT" = "present" ]; then
-		usingGPT=true
-		upMBR=`gdisk -l $hd <<< "q" 2>> /tmp/clientlog.log | grep 'MBR:' | awk '{$1=""; print $0}' | sed 's/^ //'`
-		if [ "$upMBR" = "MBR only" ]; then
-			error "This Hard Drive Appears To Have Both GPT And MBR.  CrucibleWDS Does Not Know What To Use.  You Must First Convert The Drive To One Or The Other Before Uploading"
-		fi
-	elif [ "$upGPT" = "damaged" ]; then
-		error "The GPT Table Is Damaged And Cannot Be Saved.  You Must Fix This Before Uploading This Image"
-	fi
-	log " ...... upGPT: $upGPT upMBR: $upMBR" 
+	
 }
 
 function clearMBR()
@@ -797,27 +740,7 @@ function getHD()
 
 function getPartCountUpload()
 {
-	#Manually specifying partitions is only valid for the first hd
-	if [ "$hdPass" = "1" ]; then
-		if [ -n "$parts" ]; then
-			log " ...... Partitions Overridden By User, User Specified $parts" "display"
-		else
-			parts=$(partinfo --parts $hd 2>> /tmp/clientlog.log)
-		fi
-	else
-		parts=$(partinfo --parts $hd 2>> /tmp/clientlog.log)
-	fi
 	
-	partCount=0	
-	for part in $parts; do
-		partCount=$(( $partCount + 1 ))
-	done
-	
-	sleep 2
-	
-	if [ "$partCount" = "0" ]; then
-		error "Unable To Determine Partition Count Or There Are No Partitions On This Drive"
-	fi	
 }
 
 function getPartCountCalcSize()
@@ -854,42 +777,7 @@ function getPartCountDeploy()
 	fi
 }
 
-function imageList()
-{
-	while [ "$imageID" = "" ]; do
-		if [ "$imageID" = "" ]; then
-			clear
-			
-			images=`curl -sSk -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" "${web}ListImages" --connect-timeout 10 --stderr -`
-			i=0
-			OLDIFS=$IFS;
-			IFS=',';
-			for image in $images; do
-				i=$((i+1));
-				echo $image;
-				if [ "$i" = "20" ]; then
-					echo
-					echo -n " ...... Select An Image ID (Enter For More): "
-					read imageID;
-					if [ -n "$imageID" ]; then
-						break
-					fi
-					clear
-					i=0
-				fi
-			done
-			IFS=$OLDIFS
-			echo
-			if [ -n "$imageID" ]; then
-				break
-			fi
-		
-			echo -n " ...... Select An Image ID (Enter To Repeat Listing): "
-			read imageID	
-		fi		
-		echo
-	done
-}
+
 function log()
 {
 	echo "" >> /tmp/clientlog.log
@@ -907,27 +795,6 @@ function logBootArgs()
 	uname -a >> /tmp/clientlog.log
 }
 
-function mountNFS()
-{
-	log " ** Mounting NFS Share **" "display"
-	
-	mkdir /images &>> /tmp/clientlog.log
-	mount -o nolock,proto=tcp $storage /images 2>/tmp/mntstat
-	if [ ! $? = "0" ]; then
-		errormsg=$(cat /tmp/mntstat)
-		error "$errormsg"
-	else
-		log " ...... Success" "display"
-
-		cd /images/$imgName;
-		if [ ! $? = "0" ]; then
-			error "Could Not Change Directory To /images/$imgName Check Permissions"
-		fi
-	fi
-	
-	echo
-	sleep 2
-}
 
 function mountSMB()
 {
@@ -1397,11 +1264,9 @@ function restoreMBR()
 {
 	log " ** Restoring MBR / GPT On $hd ** " "display"
 
-		if [ "$xferMode" = "nfs" ] || [ "$xferMode" = "smb" ]; then
+
 			dd if=/images/$imgPath/table of=$hd &>>/tmp/clientlog.log				
-		else		
-			curl -sSk -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -FimgName="$(echo -n $imgPath | base64)" -FpartName="$(echo -n table | base64)" "${web}DownloadImage" --connect-timeout 10 | dd of=$hd &>>/tmp/clientlog.log
-		fi
+		
 	
 	#Sometimes restoring results in damaged GPT.
 	isDamaged=`gdisk -l $hd <<< "2" 2>>/tmp/clientlog.log | grep 'GPT:' | awk '{$1=""; print $0}' | sed 's/^ //'`
@@ -1571,13 +1436,10 @@ function downloadImage()
 
 			touch /tmp/clone.progress
 			
-			if [ "$xferMode" = "nfs" ] || [ "$xferMode" = "smb" ]; then
+
 				log "reporter $hostName $web & $partCompAlg /images/$imgPath/$unesLV.$fsType.$partCompExt | partclone.$fsType -B -r -o /dev/mapper/$lv"
 				reporter $hostName $web & $partCompAlg /images/$imgPath/$unesLV.$fsType.$partCompExt | partclone.$fsType -B -r -o /dev/mapper/$lv		
-			else
-				log "reporter $hostName $web & curl -sSk -H \"Authorization: \"$(echo -n \"$WDS_KEY\" | base64)\"\" -FimgName=\"$(echo -n $imgPath | base64)\" -FpartName=\"$(echo -n $unesLV.$fsType.$partCompExt | base64)\" \"${web}DownloadImage\" | $partCompAlg | partclone.$fsType -B -r -o /dev/mapper/$lv"
-				reporter $hostName $web & curl -sSk -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -FimgName="$(echo -n $imgPath | base64)" -FpartName="$(echo -n $unesLV.$fsType.$partCompExt | base64)" "${web}DownloadImage" | $partCompAlg | partclone.$fsType -B -r -o /dev/mapper/$lv	
-			fi
+			
 			
 		fi
 
@@ -1614,13 +1476,10 @@ function downloadImage()
 
 			touch /tmp/clone.progress
 			
-			if [ "$xferMode" = "nfs" ] || [ "$xferMode" = "smb" ]; then
+
 				log "reporter $hostName $web & $partCompAlg /images/$imgPath/part$x.$fsType.$partCompExt | partclone.$fsType -B -r -o $hd$x"
 				reporter $hostName $web & $partCompAlg /images/$imgPath/part$x.$fsType.$partCompExt | partclone.$fsType -B -r -o $hd$x			
-			else
-				log "reporter $hostName $web & curl -sSk -H \"Authorization: \"$(echo -n \"$WDS_KEY\" | base64)\"\" -FimgName=\"$(echo -n $imgPath | base64)\" -FpartName=\"$(echo -n part$x.$fsType.$partCompExt | base64)\" \"${web}DownloadImage\" | $partCompAlg | partclone.$fsType -B -r -o $hd$x"
-				reporter $hostName $web & curl -sSk -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -FimgName="$(echo -n $imgPath | base64)" -FpartName="$(echo -n part$x.$fsType.$partCompExt | base64)" "${web}DownloadImage" | $partCompAlg | partclone.$fsType -B -r -o $hd$x		
-			fi
+		
 			
 		fi
 
@@ -1712,32 +1571,18 @@ function uploadImage()
 		
 		if [ "$isLVM" = "true" ]; then
 			unesImageOut=$(echo $partNumber | sed 's/--/-/g')
-			if [ "$xferMode" = "nfs" ] || [ "$xferMode" = "nfs+http" ] || [ "$xferMode" = "smb" ] || [ "$xferMode" = "smb+http" ]; then	
+		
 				log " ...... reporter $hostName $web & partclone.$partCloneType -B -c -s $part | $compBinary $compLevel -c > /images/$imgPath/$unesImageOut.$partCloneType.$compExt"		
 				reporter $hostName $web & partclone.$partCloneType -B -c -s $part | $compBinary $compLevel -c > /images/$imgPath/$unesImageOut.$partCloneType.$compExt
 			
-			else
-				log " ...... reporter $hostName $web & partclone.$partCloneType -B -c -s $part | udp-sender --no-progress --min-receivers 1 --pointopoint --nokbd --ttl 32 --portbase $portBase --start-timeout 30"
-				reporter $hostName $web & partclone.$partCloneType -B -c -s $part | udp-sender --no-progress --min-receivers 1 --pointopoint --nokbd --ttl 32 --portbase $portBase --start-timeout 30 &
-				udpPID=$!
-				receiverStat=`curl -sSk -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -FimgPath="$(echo -n $imgPath/$unesImageOut.$partCloneType | base64)" -FportBase="$(echo -n $portBase | base64)" "${web}StartReceiver" --connect-timeout 10 --stderr -`
-				log " ...... $receiverStat"
-				wait $udpPID			
-			fi
+			
 		else
 		
-			if [ "$xferMode" = "nfs" ] || [ "$xferMode" = "nfs+http" ] || [ "$xferMode" = "smb" ] || [ "$xferMode" = "smb+http" ]; then	
+		
 				log " ...... reporter $hostName $web & partclone.$partCloneType -B -c -s $hd$partNumber | $compBinary $compLevel -c > /images/$imgPath/part$partNumber.$partCloneType.$compExt"		
 				reporter $hostName $web & partclone.$partCloneType -B -c -s $hd$partNumber | $compBinary $compLevel -c > /images/$imgPath/part$partNumber.$partCloneType.$compExt
 			
-			else
-				log " ...... reporter $hostName $web & partclone.$partCloneType -B -c -s $hd$partNumber | udp-sender --no-progress --min-receivers 1 --pointopoint --nokbd --ttl 32 --portbase $portBase --start-timeout 30"
-				reporter $hostName $web & partclone.$partCloneType -B -c -s $hd$partNumber | udp-sender --no-progress --min-receivers 1 --pointopoint --nokbd --ttl 32 --portbase $portBase --start-timeout 30 &
-				udpPID=$!
-				receiverStat=`curl -sSk -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -FimgPath="$(echo -n $imgPath/part$partNumber.$partCloneType | base64)" -FportBase="$(echo -n $portBase | base64)" "${web}StartReceiver" --connect-timeout 10 --stderr -`
-				log " ...... $receiverStat"
-				wait $udpPID			
-			fi
+			
 		fi
 		rm /tmp/clone.progress
 		cat /var/log/partclone.log >> /tmp/clientlog.log
