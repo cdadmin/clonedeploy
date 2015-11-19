@@ -136,6 +136,7 @@
                                         <ItemTemplate>
                                            
                                                 <asp:DropDownList ID="ddlUnit" runat="server" CssClass="ddlist" Text='<%# Bind("CustomSizeUnit") %>'>
+                                                     <asp:ListItem></asp:ListItem>
                                                     <asp:ListItem>MB</asp:ListItem>
                                                     <asp:ListItem>GB</asp:ListItem>
                                                     <asp:ListItem>%</asp:ListItem>
@@ -229,7 +230,26 @@
                                                                                             </div>
                                                                                         </ItemTemplate>
                                                                                     </asp:TemplateField>
-
+                                                                                       <asp:TemplateField ItemStyle-CssClass="width_150" HeaderText="Unit">
+                                        <ItemTemplate>
+                                           
+                                                <asp:DropDownList ID="ddlUnit" runat="server" CssClass="ddlist" Text='<%# Bind("CustomSizeUnit") %>'>
+                                                     <asp:ListItem></asp:ListItem>
+                                                    <asp:ListItem>MB</asp:ListItem>
+                                                    <asp:ListItem>GB</asp:ListItem>
+                                                    <asp:ListItem>%</asp:ListItem>
+                                                    <asp:ListItem>Fill</asp:ListItem>
+                                                </asp:DropDownList>
+                                          
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                       <asp:TemplateField ItemStyle-CssClass="width_150" HeaderText="Fixed">
+                                        <ItemTemplate>
+                                           
+                                                <asp:CheckBox runat="server" id="chkFixed" Checked='<%# Bind("ForceFixedSize") %>'/>
+                                          
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
                                                                                 </Columns>
                                                                             </asp:GridView>
                                                                         </td>

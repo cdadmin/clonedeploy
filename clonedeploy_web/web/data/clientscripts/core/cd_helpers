@@ -4,6 +4,7 @@ function SetCurlCommand()
 {
 	export curlCommand="curl -sSk"
 	export curlEnd=" --connect-timeout 10 --stderr -"
+	export curlEndRedirect=" --connect-timeout 10 --stderr - >> /tmp/clientlog.log"
 }
 
 function SetCurlAuth()

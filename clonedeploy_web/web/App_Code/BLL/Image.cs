@@ -25,7 +25,7 @@ namespace BLL
                     {
                         try
                         {
-                            Directory.CreateDirectory(Settings.PrimaryStoragePath + image.Name);
+                            Directory.CreateDirectory(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name);
                             validationResult.IsValid = true;
                         }
                         catch (Exception ex)
@@ -58,8 +58,8 @@ namespace BLL
                     if (string.IsNullOrEmpty(image.Name)) return false;
                     try
                     {
-                        if (Directory.Exists(Settings.PrimaryStoragePath + image.Name))
-                            Directory.Delete(Settings.PrimaryStoragePath + image.Name, true);
+                        if (Directory.Exists(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name))
+                            Directory.Delete(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name, true);
 
                         return true;
                     }

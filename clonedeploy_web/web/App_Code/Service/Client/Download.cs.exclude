@@ -509,21 +509,7 @@ namespace Services.Client
             return result;
         }
 
-        public string InSlot(string mac)
-        {
-            CloneDeployDbContext context = new CloneDeployDbContext();
-
-                var q = (from h in context.Computers
-                         join t in context.ActiveImagingTasks on h.Id equals t.ComputerId
-                         where (h.Mac.ToLower() == mac.ToLower())
-                         select t).FirstOrDefault();
-                q.Status = "3";
-                return new BLL.ActiveImagingTask().UpdateActiveImagingTask(q) ? "Success" : "";
-
-            
-
-           
-        }
+      
 
         public string ModifyKnownLayout(string layout, string clientHd)
         {

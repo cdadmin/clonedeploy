@@ -24,7 +24,7 @@ namespace BLL
             //Only To display the main image specs file when not using a profile.
             if (image != null)
             {
-                var path = Settings.PrimaryStoragePath + image.Name + Path.DirectorySeparatorChar + "schema";
+                var path = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name + Path.DirectorySeparatorChar + "schema";
                 if (File.Exists(path))
                 {
                     using (StreamReader reader = new StreamReader(path))
@@ -46,7 +46,7 @@ namespace BLL
                 }
                 else
                 {
-                    var path = Settings.PrimaryStoragePath + imageProfile.Image.Name + Path.DirectorySeparatorChar +
+                    var path = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + imageProfile.Image.Name + Path.DirectorySeparatorChar +
                                "schema";
                     if (File.Exists(path))
                     {
@@ -141,7 +141,7 @@ namespace BLL
             {
                 var imageFile =
                     Directory.GetFiles(
-                        Settings.PrimaryStoragePath + image.Name + Path.DirectorySeparatorChar + "hd" + (Convert.ToInt16(selectedHd) + 1) +
+                        Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name + Path.DirectorySeparatorChar + "hd" + (Convert.ToInt16(selectedHd) + 1) +
                         Path.DirectorySeparatorChar,
                         "part" + selectedPartition + ".*").FirstOrDefault();
 
@@ -164,7 +164,7 @@ namespace BLL
         {
             try
             {
-                var imagePath = Settings.PrimaryStoragePath + imageName + Path.DirectorySeparatorChar + "hd" + hdNumber;
+                var imagePath = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + imageName + Path.DirectorySeparatorChar + "hd" + hdNumber;
                 var size = new FileOps().GetDirectorySize(new DirectoryInfo(imagePath)) / 1024f / 1024f / 1024f;
                 return Math.Abs(size) < 0.1f ? "< 100M" : size.ToString("#.##") + " GB";
             }

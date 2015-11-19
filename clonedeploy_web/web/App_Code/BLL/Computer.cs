@@ -42,7 +42,7 @@ namespace BLL
             }
         }
 
-        public static string GetDistributionPoint(Models.Computer computer)
+        public static Models.DistributionPoint GetDistributionPoint(Models.Computer computer)
         {
             Models.DistributionPoint dp;
 
@@ -59,7 +59,7 @@ namespace BLL
                 dp = DistributionPoint.GetPrimaryDistributionPoint();
 
 
-            return "//" + dp.Server + "/" + dp.ShareName;
+            return dp;
         }
 
         public static Models.Computer GetComputer(int computerId)

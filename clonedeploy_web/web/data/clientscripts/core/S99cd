@@ -75,7 +75,7 @@ if [ "$skip_clock" != "true" ]; then
 	date -s "$utcDateTime" &>> /dev/null
 fi
 
-loginRequired=`$curlCommand --data "task=$task" "${web}IsLoginRequired" $curlClose`
+loginRequired=`$curlCommand --data "task=$task" "${web}IsLoginRequired" $curlEnd`
 if [ "$loginRequired" != "No" ]; then
 	ClearAndMoveDown
 	loginCount=1

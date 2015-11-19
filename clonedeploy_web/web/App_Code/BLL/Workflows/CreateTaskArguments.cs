@@ -50,13 +50,14 @@ namespace BLL.Workflows
             AppendString("computer_id=" + _computer.Id);
             AppendString("image_name=" + _imageProfile.Image.Name);
             AppendString("profile_id=" + _imageProfile.Id);
-            AppendString("storage=" + Computer.GetDistributionPoint(_computer));
+            AppendString("dp_id=" + Computer.GetDistributionPoint(_computer).Id);
             AppendString("server_ip=" + Settings.ServerIp);
             AppendString(_direction == "multicast" ? "multicast=true" : "multicast=false");
             AppendString("pre_scripts=" + preScripts);
             AppendString("post_scripts=" + postScripts);
             AppendString("file_copy=" + filesFolders);
             AppendString("syprep_tags=" + sysprepTags);
+            AppendString("image_type=" + _imageProfile.Image.Type);
             if (Convert.ToBoolean(_imageProfile.SkipCore))
                 AppendString("skip_core_download=true");
             if (Convert.ToBoolean(_imageProfile.SkipClock))
@@ -70,9 +71,9 @@ namespace BLL.Workflows
                     if (Convert.ToBoolean(_imageProfile.SkipShrinkVolumes)) AppendString("skip_shrink_volumes=true");
                     if (Convert.ToBoolean(_imageProfile.SkipShrinkLvm)) AppendString("skip_shrink_lvm=true");
                     AppendString("compression_algorithm=" + _imageProfile.Compression);
-                    AppendString("comperssion_level=" + _imageProfile.CompressionLevel);
+                    AppendString("compression_level=-" + _imageProfile.CompressionLevel);
                     if (Convert.ToBoolean(_imageProfile.UploadSchemaOnly)) AppendString("upload_schema_only=true");
-                    if (Convert.ToBoolean(_imageProfile.CustomUploadSchema))
+                    if (!string.IsNullOrEmpty(_imageProfile.CustomUploadSchema))
                         AppendString("custom_upload_schema=true");
 
                     break;

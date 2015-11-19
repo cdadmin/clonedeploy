@@ -27,7 +27,7 @@ namespace BLL.ClientPartitioning
                 }
                 else
                 {
-                    var path = Settings.PrimaryStoragePath + imageProfile.Image.Name + Path.DirectorySeparatorChar +
+                    var path = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + imageProfile.Image.Name + Path.DirectorySeparatorChar +
                                "schema";
                     if (File.Exists(path))
                     {

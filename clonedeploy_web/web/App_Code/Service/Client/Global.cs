@@ -7,6 +7,7 @@ using Helpers;
 using Models;
 using Newtonsoft.Json;
 using Pxe;
+using Services.Client;
 
 namespace Service.Client
 {
@@ -46,31 +47,72 @@ namespace Service.Client
             }
         }
 
-        /*
-        private readonly CloneDeployDbContext _context = new CloneDeployDbContext();
-        public string CheckIn(string mac)
+
+        public string CheckIn(string computerMac)
         {
-            using (var db = new DB())
+            var checkIn = new Services.Client.CheckIn();
+
+            var computer = BLL.Computer.GetComputerFromMac(computerMac);
+            if (computer == null)
             {
-                if (!_context.Computers.Any(h => h.Mac.ToLower() == mac.ToLower()))
-                    return "checkInResult=\"The Host Was Not Found In The Database\"";
-
-                var task = (from h in _context.Computers
-                    join t in db.ActiveTasks on h.Id equals t.ComputerId
-                    where (h.Mac.ToLower() == mac.ToLower())
-                    select t).FirstOrDefault();
-
-                if (task == null)
-                    return "checkInResult=\"A Task Is Not Running For This Host\"";
-
-                task.Status = "1";
-                new BLL.ActiveImagingTask().UpdateActiveImagingTask(task);
-
-                return "checkInResult=Success " + task.Arguments;
-
+                checkIn.Result = "false";
+                checkIn.Message = "This Computer Was Not Found";
+                return JsonConvert.SerializeObject(checkIn);
             }
-          
+
+            var computerTask = BLL.ActiveImagingTask.GetTask(computer.Id);
+            if (computerTask == null)
+            {
+                checkIn.Result = "false";
+                checkIn.Message = "An Active Task Was Not Found For This Computer";
+                return JsonConvert.SerializeObject(checkIn);
+            }
+
+            computerTask.Status = "1";
+            if (BLL.ActiveImagingTask.UpdateActiveImagingTask(computerTask))
+            {
+                checkIn.Result = "true";
+                checkIn.TaskArguments = computerTask.Arguments;
+                return JsonConvert.SerializeObject(checkIn);
+            }
+            else
+            {
+                checkIn.Result = "false";
+                checkIn.Message = "Could Not Update Task Status";
+                return JsonConvert.SerializeObject(checkIn);
+            }
+
+
         }
+
+        public string DistributionPoint(int dpId)
+        {
+            var smb = new Services.Client.SMB();
+            var dp = BLL.DistributionPoint.GetDistributionPoint(dpId);
+            smb.SharePath = "//" + ParameterReplace.Between(dp.Server) + "/" + dp.ShareName;
+            smb.Domain = dp.Domain;
+            smb.Username = dp.Username;
+            smb.Password = dp.Password;
+            return JsonConvert.SerializeObject(smb);
+
+
+        }
+
+        public void ChangeStatusInProgress(int computerId)
+        {
+            var computerTask = BLL.ActiveImagingTask.GetTask(computerId);
+            computerTask.Status = "3";
+            BLL.ActiveImagingTask.UpdateActiveImagingTask(computerTask);
+        }
+
+        public void DeleteImage(int imageId)
+        {
+            var image = BLL.Image.GetImage(imageId);
+            BLL.Image.DeleteImage(image);
+
+        }
+        /*
+       
 
         public string CheckOut(string mac, string direction, string imgName)
         {

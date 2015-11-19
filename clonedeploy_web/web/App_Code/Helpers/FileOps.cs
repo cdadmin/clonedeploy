@@ -93,8 +93,8 @@ namespace Helpers
             try
             {
                 var imagePath = Settings.PrimaryStoragePath;
-                if (Directory.Exists(imagePath + oldName))
-                    Directory.Move(imagePath + oldName, imagePath + newName);
+                if (Directory.Exists(imagePath + "images" + Path.DirectorySeparatorChar + oldName))
+                    Directory.Move(imagePath + "images" + Path.DirectorySeparatorChar + oldName, imagePath + "images" + Path.DirectorySeparatorChar + newName);
             }
             catch (Exception ex)
             {

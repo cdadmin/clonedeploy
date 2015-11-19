@@ -18,4 +18,19 @@ namespace Services.Client
         
     }
 
+    public class CheckIn
+    {
+        public string Result { get; set; }
+        public string Message { get; set; }
+        public string TaskArguments { get; set; }
+    }
+
+    public class SMB
+    {
+        public string SharePath { get; set; }
+        public string Domain { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
+
 }

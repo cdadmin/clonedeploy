@@ -131,17 +131,34 @@ namespace Service.Client
             HttpContext.Current.Response.Write(new Service.Client.OnDemand().ImageProfileList(Convert.ToInt32(imageId)));
         }
 
+        [WebMethod]
+        public void CheckIn(string computerMac)
+        {
+           HttpContext.Current.Response.Write(new Service.Client.Global().CheckIn(computerMac));
+        }
+
+        [WebMethod]
+        public void DistributionPoint(string dpId)
+        {
+            HttpContext.Current.Response.Write(new Global().DistributionPoint(Convert.ToInt32(dpId)));
+        }
+
+        [WebMethod]
+        public void UpdateStatusInProgress(int computerId)
+        {
+            new Global().ChangeStatusInProgress(computerId);
+
+        }
+
+        [WebMethod]
+        public void DeleteImage(string imageId)
+        {
+            new Global().DeleteImage(Convert.ToInt32(imageId));
+        }
         /*
       
 
-        [WebMethod(EnableSession = true)]
-        public void AddImage(Models.Image image)
-        {
-            if (!Authenticate()) return;
-            new BLL.Image().AddImage(image);
-            HttpContext.Current.Response.Write(image.Id + "," + Message.Text);
-        }
-
+     
         [WebMethod]
         public void AlignBcdToPartition()
         {
@@ -177,12 +194,7 @@ namespace Service.Client
             //HttpContext.Current.Response.Write(HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"]);
         }
 
-        [WebMethod]
-        public void CheckIn()
-        {
-            var mac = Utility.Decode(HttpContext.Current.Request.Form["mac"]);
-            if (Authenticate()) HttpContext.Current.Response.Write(new Global().CheckIn(mac));
-        }
+        
 
         [WebMethod]
         public void CheckOut()
@@ -214,13 +226,7 @@ namespace Service.Client
             HttpContext.Current.Response.Write(new Download().CurrentQueuePosition(mac));
         }
 
-        [WebMethod]
-        public void DeleteImage()
-        {
-            var imageName = Utility.Decode(HttpContext.Current.Request.Form["imgName"]);
-
-            if (Authenticate()) HttpContext.Current.Response.Write(new Upload().DeleteImage(imageName));
-        }
+      
 
         [WebMethod]
         public void DownloadCoreScripts()
@@ -401,12 +407,7 @@ namespace Service.Client
             HttpContext.Current.Response.Write(new Download().QueueStatus());
         }
 
-        [WebMethod]
-        public void SmbCredentials()
-        {
-            var credential = Utility.Decode(HttpContext.Current.Request.Form["credential"]);
-            if (Authenticate()) HttpContext.Current.Response.Write(new Global().GetSmbCredentials(credential));
-        }
+     
 
         [WebMethod]
         public void StartReceiver()

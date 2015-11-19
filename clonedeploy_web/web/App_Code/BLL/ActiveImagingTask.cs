@@ -107,6 +107,13 @@ namespace BLL
             }
         }
 
+        public static Models.ActiveImagingTask GetTask(int computerId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ActiveImagingTaskRepository.GetFirstOrDefault(x => x.ComputerId == computerId);
+            }
+        }
         public static void DeleteAll()
         {
             using (var uow = new DAL.UnitOfWork())
