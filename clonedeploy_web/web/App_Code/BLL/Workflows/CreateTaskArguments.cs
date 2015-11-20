@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using Helpers;
 
@@ -74,7 +75,49 @@ namespace BLL.Workflows
                     AppendString("compression_level=-" + _imageProfile.CompressionLevel);
                     if (Convert.ToBoolean(_imageProfile.UploadSchemaOnly)) AppendString("upload_schema_only=true");
                     if (!string.IsNullOrEmpty(_imageProfile.CustomUploadSchema))
+                    {
                         AppendString("custom_upload_schema=true");
+                        var customUploadSchema = new BLL.ImageSchema(_imageProfile,"upload").GetImageSchema();
+                        var customHardDrives = new StringBuilder();
+                        customHardDrives.Append("custom_hard_drives=\"");
+                        var customPartitions = new StringBuilder();
+                        customPartitions.Append("custom_partitions=\"");
+                        var customFixedPartitions = new StringBuilder();
+                        customFixedPartitions.Append("custom_fixed_partitions=\"");
+                        var customLogicalVolumes = new StringBuilder();
+                        customLogicalVolumes.Append("custom_logical_volumes=\"");
+                        var customFixedLogicalVolumes = new StringBuilder();
+                        customFixedLogicalVolumes.Append("custom_fixed_logical_volumes=\"");
+                        foreach (var hd in customUploadSchema.HardDrives.Where(x => x.Active))
+                        {
+                            customHardDrives.Append(hd.Name + " ");
+                            foreach (var partition in hd.Partitions.Where(x => x.Active))
+                            {
+                                customPartitions.Append(hd.Name + partition.Number + " ");
+                                if (partition.ForceFixedSize)
+                                    customFixedPartitions.Append(hd.Name + partition.Number + " ");
+
+                                if (partition.VolumeGroup.LogicalVolumes != null)
+                                {
+                                    foreach (
+                                        var logicalVolume in partition.VolumeGroup.LogicalVolumes.Where(x => x.Active))
+                                    {
+                                        var vgName = partition.VolumeGroup.Name.Replace("-", "--");
+                                        var lvName = logicalVolume.Name.Replace("-", "--");
+                                        customLogicalVolumes.Append(vgName + "-" + lvName + " ");
+                                        if (logicalVolume.ForceFixedSize)
+                                            customFixedLogicalVolumes.Append(vgName + "-" + lvName + " ");
+                                    }
+                                }
+                            }
+                        }
+                        customHardDrives.Append("\"");
+                        customPartitions.Append("\"");
+                        customFixedPartitions.Append("\"");
+                        AppendString(customHardDrives.ToString());
+                        AppendString(customPartitions.ToString());
+                        AppendString(customFixedPartitions.ToString());
+                    }
 
                     break;
                 case "push":

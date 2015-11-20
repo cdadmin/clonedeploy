@@ -151,9 +151,9 @@ namespace Service.Client
         }
 
         [WebMethod]
-        public void DeleteImage(string imageId)
+        public void DeleteImage(string profileId)
         {
-            new Global().DeleteImage(Convert.ToInt32(imageId));
+            new Global().DeleteImage(Convert.ToInt32(profileId));
         }
         /*
       

@@ -154,7 +154,7 @@ function checkout()
 	if [ "$shutdown" = "poweroff" ]; then
 		poweroff;
 	elif [ "$shutdown" = "noshut" ]; then
-		return 0;
+		/bin/bash
 	else
 		reboot -f
 	fi
@@ -302,16 +302,16 @@ function expandFS()
 	fi
 	
 	if [ "$noResize" != "true" ]; then
-	log " shrunkParts: $shrunkParts"
-	if [[ "$shrunkParts" != *"$1"* ]] && [ "$imgDirection" = "pull" ]; then
-		return 0;
+	
+	
+	if [ "$task" = "push" ]; then #If task is pull we already know the volumes that were shrunk and only they get expanded
+		x=`echo $1 | awk -F $hd ' {print $2}'`
+		pMBSize=$(parted -s $hd unit MB print all | grep " $x " -m 1 | awk -F' ' '{print $4}' | sed 's/MB//g')
+		if [ "$pMBSize" -le "2000" ]; then #partition smaller than 2GB probably that way for a reason, leave it alone.
+			return 0
+		fi
 	fi
 	
-	x=`echo $1 | awk -F $hd ' {print $2}'`
-	pMBSize=$(parted -s $hd unit MB print all | grep " $x " -m 1 | awk -F' ' '{print $4}' | sed 's/MB//g')
-	if [ "$pMBSize" -le "2000" ]; then #partition smaller than 2GB probably that way for a reason, leave it alone.
-		return 0
-	fi
 	if [ "$fsType" = "ext2" ] || [ "$fsType" = "ext3" ] || [ "$fsType" = "ext4" ]; then
 		log " ** Expanding EXT Volume On $1 ** " "display"
 		partprobe &>/dev/null;
@@ -424,11 +424,11 @@ function getHD()
 	blockdev --report &>> /tmp/clientlog.log
 	fdisk -l &>> /tmp/clientlog.log
 	
-	if [ -z "$hard_drives" ]; then
-		hard_drives=`lsblk -ipdno KNAME`
-		
+	if [ -n "$custom_hard_drives" ]; then
+		hard_drives="$custom_hard_drives"
+		log " ...... HD Overridden By User, User Specified $hard_drives" "display"		
 	else
-		log " ...... HD Overridden By User, User Specified $hard_drives" "display"
+		hard_drives=`lsblk -ipdno KNAME`	
 	fi
 	
 	hdCount=0
@@ -888,7 +888,7 @@ function restoreMBR()
 	log " ** Restoring MBR / GPT On $hd ** " "display"
 
 
-			dd if=/images/$imgPath/table of=$hd &>>/tmp/clientlog.log				
+	dd if=/images/$imgPath/table of=$hd &>>/tmp/clientlog.log				
 		
 	
 	#Sometimes restoring results in damaged GPT.

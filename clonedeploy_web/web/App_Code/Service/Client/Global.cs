@@ -105,11 +105,19 @@ namespace Service.Client
             BLL.ActiveImagingTask.UpdateActiveImagingTask(computerTask);
         }
 
-        public void DeleteImage(int imageId)
+        public void DeleteImage(int profileId)
         {
-            var image = BLL.Image.GetImage(imageId);
-            BLL.Image.DeleteImage(image);
-
+            var image = BLL.ImageProfile.ReadProfile(profileId).Image;
+            try
+            {
+                if (Directory.Exists(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name))
+                    Directory.Delete(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name, true);
+                Directory.CreateDirectory(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+            }
         }
         /*
        
