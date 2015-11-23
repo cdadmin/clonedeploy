@@ -426,7 +426,7 @@ function getHD()
 	
 	if [ -n "$custom_hard_drives" ]; then
 		hard_drives="$custom_hard_drives"
-		log " ...... HD Overridden By User, User Specified $hard_drives" "display"		
+		log " ...... Hard Drive(s) Set By Image Profile: $hard_drives" "display"		
 	else
 		hard_drives=`lsblk -ipdno KNAME`	
 	fi

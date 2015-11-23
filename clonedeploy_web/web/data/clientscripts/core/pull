@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 . functions
 
@@ -6,428 +6,447 @@ isond="$1"
 taskArgs="$2"
 logBootArgs
 
-function GetLogicalVolumes()
+function get_logical_volumes()
 {
-	if [ -n "$custom_logical_volumes" ]; then
-		lvmLVS=`echo "$custom_logical_volumes" | grep "$lvmVG"`
-		#escaped on server
-		log " ...... Logical Volumes Overridden By User, User Specified $lvmLVS" "display"		
-	else
-		tmpLvmLVS=$(lvs | grep "$lvmVG" | awk '/^ / {print $1}')	
-		#Escape - in vg or lv
-		esVG=$(echo $lvmVG | sed 's/-/--/g')
-		for lv in $tmpLvmLVS; do
-			esLV=$(echo $lv | sed 's/-/--/g')
-			lvmLVS="$lvmLVS $esVG-$esLV"
-		done
-		
-	fi
-									
-	lvmLVSCount=0
-	for lv in $lvmLVS; do
-		lvmLVSCount=$(( $lvmLVSCount + 1 ))
-	done
+  if [ -n "$custom_logical_volumes" ]; then
+    lvmLVS=`echo "$custom_logical_volumes" | grep "$lvmVG"`
+    #escaped on server
+    log " ...... Logical Volumes Overridden By User, User Specified $lvmLVS" "display"    
+  else
+    tmpLvmLVS=$(lvs | grep "$lvmVG" | awk '/^ / {print $1}')  
+    #Escape - in vg or lv
+    esVG=$(echo $lvmVG | sed 's/-/--/g')
+    for lv in $tmpLvmLVS; do
+      esLV=$(echo $lv | sed 's/-/--/g')
+      lvmLVS="$lvmLVS $esVG-$esLV"
+    done
+    
+  fi
+                  
+  lvmLVSCount=0
+  for lv in $lvmLVS; do
+    lvmLVSCount=$(( $lvmLVSCount + 1 ))
+  done
 }
 
-function GetPartitions()
+################################################################
+#  Get partition list for current hard drive
+#  Global Get:
+#    custom_partitions
+#	 hd
+#  Global Set:
+#    partitions
+#    partition_count  
+#  Arguments:
+#    display_onscreen - true|false - output log info to screen
+################################################################
+function get_partitions()
 {
-	partitions=""
-	log " ** Determining Partition Count On $hd ** " "display"
-	if [ -n "$custom_partitions" ]; then
-		for tmpPart in $custom_partitions; do
-			echo "$tmpPart" | grep $hd
-			if [ "$?" = "0" ]; then
-				partitions="$partitions $tmpPart"
-			fi
-		done
-		log " ...... Partitions Overridden By User, User Specified $partitions" "display"		
-	else
-		partitions=$(lsblk -ipno KNAME | grep "$hd" | grep -vw "$hd" 2>> /tmp/clientlog.log)	
-	fi
-		
-	partCount=0	
-	for part in $partitions; do
-		partCount=$(( $partCount + 1 ))
-	done
-	
-	sleep 2
-	
-	if [ "$partCount" = "0" ]; then
-		error "Unable To Determine Partition Count Or There Are No Partitions On This Drive"
-	fi	
-	log " ...... Found $partCount Partition(s)" "display"
-	echo
+  local display_onscreen="$1"
+  local partition
+  
+  if [ "$display_onscreen" = "true" ]; then
+    log " ** Determining Partition Count On $hd ** " "display"
+  fi
+  
+  partitions=""
+  if [ -n "$custom_partitions" ]; then
+    for partition in $custom_partitions; do
+      echo "$partition" | grep $hd
+      if [ "$?" = "0" ]; then
+        partitions="$partitions $partition"
+      fi
+    done
+	if [ "$display_onscreen" = "true" ]; then
+	  log " ...... Partitions Set By Image Profile: $partitions" "display"
+    fi
+  else
+    partitions=$(lsblk -ipno KNAME | grep "$hd" | grep -vw "$hd" 2>> /tmp/clientlog.log)  
+  fi
+    
+  partition_count=0  
+  for partition in $partitions; do
+    partition_count=$(( $partition_count + 1 ))
+  done
+  
+  if [ "$partition_count" = "0" ]; then
+    error "Unable To Determine Partition Count Or There Are No Partitions On This Drive"
+  fi
+  
+  if [ "$display_onscreen" = "true" ]; then
+    log " ...... Found $partition_count Partition(s)" "display"
+  fi
 }
 
 function shrinkFS()
 {
 
-		if [ "$fsType" = "ext2" ] || [ "$fsType" = "ext3" ] || [ "$fsType" = "ext4" ]; then
-			newextsize="";
-			log " ...... Shrinking EXT Volume On $1 (This May Take A Few Minutes) " "display"
-			e2fsck -fp $1 &> /dev/null
-			extfssize=`resize2fs -P $1 2>/dev/null | awk -F': ' '{print $2}'`;
-			fsblksize=`dumpe2fs -h $1 2>/dev/null | grep "^Block size:" | awk '{print $3}'`;
-			minpartsize=`expr $extfssize '*' $fsblksize`;
-			newextsize=`expr $minpartsize '*' 103 '/' 100 '/' 1024 '/' 1024`; 
-	
-			resize2fs $1 ${newextsize}M &>> /tmp/clientlog.log
-			
-			if [ ! "$?" = "0" ]; then
-				log "Warning, EXT File System Did Not Shrink Properly. " "display"
-			else
-				shrunkVolumes="$shrunkVolumes $1 "
-				log " ...... Success" "display"
-			fi
+    if [ "$fsType" = "ext2" ] || [ "$fsType" = "ext3" ] || [ "$fsType" = "ext4" ]; then
+      newextsize="";
+      log " ...... Shrinking EXT Volume On $1 (This May Take A Few Minutes) " "display"
+      e2fsck -fp $1 &> /dev/null
+      extfssize=`resize2fs -P $1 2>/dev/null | awk -F': ' '{print $2}'`;
+      fsblksize=`dumpe2fs -h $1 2>/dev/null | grep "^Block size:" | awk '{print $3}'`;
+      minpartsize=`expr $extfssize '*' $fsblksize`;
+      newextsize=`expr $minpartsize '*' 103 '/' 100 '/' 1024 '/' 1024`; 
+  
+      resize2fs $1 ${newextsize}M &>> /tmp/clientlog.log
+      
+      if [ ! "$?" = "0" ]; then
+        log "Warning, EXT File System Did Not Shrink Properly. " "display"
+      else
+        shrunkVolumes="$shrunkVolumes $1 "
+        log " ...... Success" "display"
+      fi
 
-			log " ...... extfssize: $extfssize fsblksize: $fsblksize minpartsize: $minpartsize"
+      log " ...... extfssize: $extfssize fsblksize: $fsblksize minpartsize: $minpartsize"
 
-		elif [ "$fsType" = "ntfs" ]; then
-			if [ "$image_type" = "file" ]; then #If we are doing a file based clone, the volume does not need to be shrunk
-				return 0
-			fi
-			log " ...... Shrinking NTFS Volume On $1 (This May Take A Few Minutes) " "display"
-			fsCheck=`ntfsresize -i $1 | grep "chkdsk /f"`
-			if [ "$?" = "0" ]; then
-				error "$fsCheck"
-			fi
-			
-			ntfsfix -b -d $1 &>>/tmp/clientlog.log
-			ntfssize=`ntfsresize -f -i -P $1 | grep "bytes or" | cut -d" " -f8`;
-			newntfssize=`expr $ntfssize '*' 103 '/' 100`
+    elif [ "$fsType" = "ntfs" ]; then
+      if [ "$image_type" = "file" ]; then #If we are doing a file based clone, the volume does not need to be shrunk
+        return 0
+      fi
+      log " ...... Shrinking NTFS Volume On $1 (This May Take A Few Minutes) " "display"
+      fsCheck=`ntfsresize -i $1 | grep "chkdsk /f"`
+      if [ "$?" = "0" ]; then
+        error "$fsCheck"
+      fi
+      
+      ntfsfix -b -d $1 &>>/tmp/clientlog.log
+      ntfssize=`ntfsresize -f -i -P $1 | grep "bytes or" | cut -d" " -f8`;
+      newntfssize=`expr $ntfssize '*' 103 '/' 100`
 
-			ntfsresize -f -s ${newntfssize}M $1 &>> /tmp/clientlog.log << CONFIRM 
+      ntfsresize -f -s ${newntfssize}M $1 &>> /tmp/clientlog.log << CONFIRM 
 y
 CONFIRM
-			if [ ! "$?" = "0" ]; then
-				log "Warning, NTFS File System Did Not Shrink Properly. " "display"
-			else
-				shrunkVolumes="$shrunkVolumes $1 "
-				log " ...... Success" "display"
-			fi
-			log " ...... ntfssize: $ntfssize"
-			
-			ntfsfix -b -d $1 &>>/tmp/clientlog.log
-		fi
-	
+      if [ ! "$?" = "0" ]; then
+        log "Warning, NTFS File System Did Not Shrink Properly. " "display"
+      else
+        shrunkVolumes="$shrunkVolumes $1 "
+        log " ...... Success" "display"
+      fi
+      log " ...... ntfssize: $ntfssize"
+      
+      ntfsfix -b -d $1 &>>/tmp/clientlog.log
+    fi
+  
 }
 
 function calcSize()
 {
-	log " ** Resizing Volumes And Calculating Image Schema ** " "display"
-	sleep 1
-	mkdir /mnt/ntfs 2>> /tmp/clientlog.log
-	
-	hdCounter=0
-	imageDetails="{\"harddrives\": [ "
-	for hd in $hard_drives; do
-		hdCounter=$(( $hdCounter + 1 ))
-		drive="";lbs="";pbs="";dsize="";hboot="";upGPT="";upMBR="";ptType="";hdGUID="";
-		drive=$(echo $hd | cut -d "/" -f 3)
-		lbs=$(cat /sys/block/$drive/queue/logical_block_size)
-		pbs=$(cat /sys/block/$drive/queue/physical_block_size)
-		dsize=$(cat /sys/block/$drive/size)
-		hboot=$(sfdisk $hd -l | grep "*" | grep "dev" | cut -d" " -f1)
-		upGPT=`gdisk -l $hd <<< "q" 2>> /tmp/clientlog.log | grep 'GPT:' | awk '{$1=""; print $0}' | sed 's/^ //'`
-		if [ "$upGPT" = "present" ]; then
-			upMBR=`gdisk -l $hd <<< "q" 2>> /tmp/clientlog.log| grep 'MBR:' | awk '{$1=""; print $0}' | sed 's/^ //'`
-			ptType="gpt"
-			hdGUID=`gdisk -l $hd | grep GUID | awk -F': ' '{print $2}'`
-			if [ "$upMBR" = "MBR only" ]; then
-				error "This Hard Drive Appears To Have Both GPT And MBR.  CrucibleWDS Does Not Know What To Use.  You Must First Convert The Drive To One Or The Other Before Uploading"
-			fi
-		else
-			ptType="mbr"
-		fi
-		stringHD="{\"name\":\"$hd\",\"size\":\"$dsize\",\"table\":\"$ptType\",\"boot\":\"$hboot\",\"lbs\":\"$lbs\",\"pbs\":\"$pbs\",\"guid\":\"$hdGUID\",\"active\":\"true\",\"partitions\": [ "
-		
-		GetPartitions
-		
-		counter=0
-		for part in $partitions; do
-			counter=$(( $counter + 1 ))
-			fsType="";pUUID="";pGUID="";partCloneType="";pused="";pstart="";pend="";psize="";ptype="";
-			x=`echo $part | awk -F $hd ' {print $2}'`
-			fsType=`blkid -po udev $hd$x | grep FS_TYPE | awk -F'=' '{print $2}'`
-			pUUID=`blkid -po udev $hd$x | grep ID_FS_UUID= | awk -F'=' '{print $2}'`
-			
-			if [ "$ptType" = "gpt" ]; then
-				pGUID=`sgdisk $hd -i$x | grep "unique GUID" | awk -F ' ' '{print $4}'`
-			fi
-			
-			#In addition to setting partclone type, clean filesystems for better compatibility moving forward
-			if [ "$fsType" = "ntfs" ]; then
-				ntfsfix -b -d $hd$x &>/dev/null
-				ntfs-3g -o force,rw,remove_hiberfile $hd$x /mnt/ntfs 2> /dev/null				
-				umount /mnt/ntfs
-				partCloneType="ntfs"
-					
-			elif [ "$fsType" = "ext2" ] || [ "$fsType" = "ext3" ] || [ "$fsType" = "ext4" ]; then
-				e2fsck -fp $hd$x &> /dev/null
-				partCloneType="extfs"
-			elif [ "$fsType" = "xfs" ]; then
-				partCloneType="xfs"
-			else
-				partCloneType="imager"
-			fi
-					
-			pstart=$(parted -s $hd unit s print all | grep " $x " -m 1 | awk -F' ' '{print $2}' | sed 's/s//g')
-			pend=$(parted -s $hd unit s print all | grep " $x " -m 1 | awk -F' ' '{print $3}' | sed 's/s//g')
-			psize=$(parted -s $hd unit s print all | grep " $x " -m 1 | awk -F' ' '{print $4}' | sed 's/s//g')
-			pMBSize=$(parted -s $hd unit MB print all | grep " $x " -m 1 | awk -F' ' '{print $4}' | sed 's/MB//g')
-			#GPT does not have a concept of partition type only mbr has primary, extended, or logical
-			if [ "$ptType" = "mbr" ]; then
-				ptype=$(parted -s $hd unit s print all | grep " $x " -m 1| awk -F' ' '{print $5}')
-				fsid=$(sfdisk -c $hd $x 2>> /tmp/clientlog.log)
-			else
-				fsid=$(gdisk $hd -l | grep " $x " | awk '/^ / {print $6}')
-			fi
-						
-			if [ "$skip_shrink_volumes" != "true" ] && [ "$upload_schema_only" != "true" ] && [ "$pMBSize" -gt "5000" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
-				if [ "$fsType" = "ext2" ] || [ "$fsType" = "ext3" ] || [ "$fsType" = "ext4" ] || [ "$fsType" = "ntfs" ]; then
-					if [[ ! "$custom_fixed_partitions" == *"$hd$x"* ]]; then
-						shrinkFS $hd$x			
-					fi
-				fi
-			fi
+  log " ** Resizing Volumes And Calculating Image Schema ** " "display"
+  sleep 1
+  mkdir /mnt/ntfs 2>> /tmp/clientlog.log
+  
+  hdCounter=0
+  imageDetails="{\"harddrives\": [ "
+  for hd in $hard_drives; do
+    hdCounter=$(( $hdCounter + 1 ))
+    drive="";lbs="";pbs="";dsize="";hboot="";upGPT="";upMBR="";ptType="";hdGUID="";
+    drive=$(echo $hd | cut -d "/" -f 3)
+    lbs=$(cat /sys/block/$drive/queue/logical_block_size)
+    pbs=$(cat /sys/block/$drive/queue/physical_block_size)
+    dsize=$(cat /sys/block/$drive/size)
+    hboot=$(sfdisk $hd -l | grep "*" | grep "dev" | cut -d" " -f1)
+    upGPT=`gdisk -l $hd <<< "q" 2>> /tmp/clientlog.log | grep 'GPT:' | awk '{$1=""; print $0}' | sed 's/^ //'`
+    if [ "$upGPT" = "present" ]; then
+      upMBR=`gdisk -l $hd <<< "q" 2>> /tmp/clientlog.log| grep 'MBR:' | awk '{$1=""; print $0}' | sed 's/^ //'`
+      ptType="gpt"
+      hdGUID=`gdisk -l $hd | grep GUID | awk -F': ' '{print $2}'`
+      if [ "$upMBR" = "MBR only" ]; then
+        error "This Hard Drive Appears To Have Both GPT And MBR.  CrucibleWDS Does Not Know What To Use.  You Must First Convert The Drive To One Or The Other Before Uploading"
+      fi
+    else
+      ptType="mbr"
+    fi
+    stringHD="{\"name\":\"$hd\",\"size\":\"$dsize\",\"table\":\"$ptType\",\"boot\":\"$hboot\",\"lbs\":\"$lbs\",\"pbs\":\"$pbs\",\"guid\":\"$hdGUID\",\"active\":\"true\",\"partitions\": [ "
+    
+    get_partitions "false"
+    
+    counter=0
+    for part in $partitions; do
+      counter=$(( $counter + 1 ))
+      fsType="";pUUID="";pGUID="";partCloneType="";pused="";pstart="";pend="";psize="";ptype="";
+      x=`echo $part | awk -F $hd ' {print $2}'`
+      fsType=`blkid -po udev $hd$x | grep FS_TYPE | awk -F'=' '{print $2}'`
+      pUUID=`blkid -po udev $hd$x | grep ID_FS_UUID= | awk -F'=' '{print $2}'`
+      
+      if [ "$ptType" = "gpt" ]; then
+        pGUID=`sgdisk $hd -i$x | grep "unique GUID" | awk -F ' ' '{print $4}'`
+      fi
+      
+      #In addition to setting partclone type, clean filesystems for better compatibility moving forward
+      if [ "$fsType" = "ntfs" ]; then
+        ntfsfix -b -d $hd$x &>/dev/null
+        ntfs-3g -o force,rw,remove_hiberfile $hd$x /mnt/ntfs 2> /dev/null        
+        umount /mnt/ntfs
+        partCloneType="ntfs"
+          
+      elif [ "$fsType" = "ext2" ] || [ "$fsType" = "ext3" ] || [ "$fsType" = "ext4" ]; then
+        e2fsck -fp $hd$x &> /dev/null
+        partCloneType="extfs"
+      elif [ "$fsType" = "xfs" ]; then
+        partCloneType="xfs"
+      else
+        partCloneType="imager"
+      fi
+          
+      pstart=$(parted -s $hd unit s print all | grep " $x " -m 1 | awk -F' ' '{print $2}' | sed 's/s//g')
+      pend=$(parted -s $hd unit s print all | grep " $x " -m 1 | awk -F' ' '{print $3}' | sed 's/s//g')
+      psize=$(parted -s $hd unit s print all | grep " $x " -m 1 | awk -F' ' '{print $4}' | sed 's/s//g')
+      pMBSize=$(parted -s $hd unit MB print all | grep " $x " -m 1 | awk -F' ' '{print $4}' | sed 's/MB//g')
+      #GPT does not have a concept of partition type only mbr has primary, extended, or logical
+      if [ "$ptType" = "mbr" ]; then
+        ptype=$(parted -s $hd unit s print all | grep " $x " -m 1| awk -F' ' '{print $5}')
+        fsid=$(sfdisk -c $hd $x 2>> /tmp/clientlog.log)
+      else
+        fsid=$(gdisk $hd -l | grep " $x " | awk '/^ / {print $6}')
+      fi
+            
+      if [ "$skip_shrink_volumes" != "true" ] && [ "$upload_schema_only" != "true" ] && [ "$pMBSize" -gt "5000" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
+        if [ "$fsType" = "ext2" ] || [ "$fsType" = "ext3" ] || [ "$fsType" = "ext4" ] || [ "$fsType" = "ntfs" ]; then
+          if [[ ! "$custom_fixed_partitions" == *"$hd$x"* ]]; then
+            shrinkFS $hd$x      
+          fi
+        fi
+      fi
 
-			partclone.$partCloneType -SIic -s $hd$x -O /dev/null >& /tmp/$x.size
-			log "$hd$x Volume Size"
-			cat /tmp/$x.size | grep volume_size >> /tmp/clientlog.log
-			cat /tmp/$x.size | grep used_size >> /tmp/clientlog.log
-			volume_size=`cat /tmp/$x.size | grep volume_size | cut -d"," -f 1 | cut -d ":" -f 2` #sed 's/ *$//'
-			pused=`cat /tmp/$x.size | grep used_size | cut -d"," -f 2 | cut -d ":" -f 2` #sed 's/ *$//'
-			
-			stringPart="{\"number\":\"$x\",\"start\":\"$pstart\",\"end\":\"$pend\",\"size\":\"$psize\",\"volumesize\":\"$volume_size\",\"type\":\"$ptype\",\"usedmb\":\"$pused\",\"fstype\":\"$fsType\",\"fsid\":\"$fsid\",\"uuid\":\"$pUUID\",\"guid\":\"$pGUID\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\",\"volumegroup\": { "
-			
-			#experimental lvm support
-			if [ "$lvmResize" != "false" ]; then
-				if [ "$fsid" = "8e" ] || [ "$fsid" = "8E00" ]; then
-					vgscan &>> /tmp/clientlog.log		
-					lvmVG=$(pvs | grep $part | awk '/^ / {print $2}')
-					if [ "$?" = "0" ]; then
-						lvmExists=true
-						log " ** Displaying LVM Information ** "
-						pvdisplay &>>/tmp/clientlog.log
-						vgdisplay &>>/tmp/clientlog.log
-						lvdisplay &>>/tmp/clientlog.log
-					fi
-					vgchange -a y "$lvmVG"
-					lvmVGUUID=$(vgs -v  2>/dev/null | grep "$lvmVG" | awk '/^ / {print $9}')
-					lvmVGSize=$(vgs 2>/dev/null --units s | grep "$lvmVG" | awk '/^ /  {print $6}' | sed 's/S$//')
-					stringVG="\"name\":\"$lvmVG\",\"size\":\"$lvmVGSize\",\"type\":\"vg\",\"physicalvolume\":\"$part\",\"uuid\":\"$lvmVGUUID\",\"logicalvolumes\": [ "
-				
-					GetLogicalVolumes
-					
-					lvCounter=0
-					for logical_volume in $lvmLVS; do
-						lvHD="/dev/mapper/$logical_volume"
-						lvCounter=$(( $lvCounter + 1 ))
-						fsType=`blkid -po udev "$lvHD" | grep FS_TYPE | awk -F'=' '{print $2}'`
-						lvUUID=`lvs -v 2>/dev/null | grep "$lvmVG" | grep "$logical_volume" | awk '/^ / {print $10}'`
-						lvSize=`lvs --units s | grep "$lvmVG" | grep "$logical_volume" | awk '/^ / {print $4}' | sed 's/S$//'`
-						#In addition to setting partclone type, clean filesystems for better compatibility moving forward
-						if [ "$fsType" = "ntfs" ]; then
-							ntfsfix -b -d "$lvHD" &>/dev/null
-							ntfs-3g -o force,rw,remove_hiberfile "$lvHD" /mnt/ntfs 2> /dev/null
-							umount /mnt/ntfs
-							partCloneType="ntfs"
-					
-						elif [ "$fsType" = "ext2" ] || [ "$fsType" = "ext3" ] || [ "$fsType" = "ext4" ]; then
-							e2fsck -fp "$lvHD" &> /dev/null
-							partCloneType="extfs"
-						elif [ "$fsType" = "xfs" ]; then
-							partCloneType="xfs"
-						else
-							partCloneType="imager"
-						fi
-					
-						
-						if [ "$skip_shrink_volumes" != "true" ] && [ "$upload_schema_only" != "true" ] && [ "$skip_shrink_lvm" != "true" ] && [ "$pMBSize" -gt "5000" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
-							if [ "$fsType" = "ext2" ] || [ "$fsType" = "ext3" ] || [ "$fsType" = "ext4" ] || [ "$fsType" = "ntfs" ]; then
-								shrinkFS $lvHD			
-							fi
-						fi
-						
-						partclone.$partCloneType -SIic -s "$lvHD" -O /dev/null >& /tmp/lv$lvCounter.size
-						log "$lvHD Volume Size"
-						cat /tmp/lv$lvCounter.size | grep volume_size >> /tmp/clientlog.log
-						cat /tmp/lv$lvCounter.size | grep used_size >> /tmp/clientlog.log
-						lv_volume_size=`cat /tmp/lv$lvCounter.size | grep volume_size | cut -d"," -f 1 | cut -d ":" -f 2` #sed 's/ *$//'
-						lvused=`cat /tmp/lv$lvCounter.size | grep used_size | cut -d"," -f 2 | cut -d ":" -f 2` #sed 's/ *$//'
-					
-						
-						stringLV="{\"name\":\"$logical_volume\",\"size\":\"$lvSize\",\"volumesize\":\"$lv_volume_size\",\"type\":\"lv\",\"volumegroup\":\"$lvmVG\",\"usedmb\":\"$lvused\",\"fstype\":\"$fsType\",\"uuid\":\"$lvUUID\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\"}"
-						if [ "$lvCounter" = "$lvmLVSCount" ]; then
-							stringLV="$stringLV] } }"
-						else
-							stringLV="$stringLV,"
-						fi
-					
-						stringAllLVS=$stringAllLVS$stringLV
-					
-					done
-				
-					stringVGSLVS=$stringVG$stringAllLVS
-				
-					if [ "$counter" = "$partCount" ]; then
-						stringAllParts="$stringAllParts$stringPart$stringVGSLVS] }"
-					else
-						stringAllParts="$stringAllParts$stringPart$stringVGSLVS,"
-					fi
-				else
-					stringPart="$stringPart} }"
-				
-					if [ "$counter" = "$partCount" ]; then
-						stringAllParts="$stringAllParts$stringPart] }"
-					else
-						stringAllParts="$stringAllParts$stringPart,"
-					fi
-				
-				fi
-			
-			else
-				stringPart="$stringPart} }"
-				
-				if [ "$counter" = "$partCount" ]; then
-					stringAllParts="$stringAllParts$stringPart] }"
-				else
-					stringAllParts="$stringAllParts$stringPart,"
-				fi
-			fi
-			
-		done
-		
-		stringAllHds=$stringAllHds$stringHD$stringAllParts
-		if [ "$hdCounter" = "$hdCount" ]; then
-			stringAllHds="$stringAllHds] }" 
-		else
-			stringAllHds="$stringAllHds,"
-		fi
-		
-		stringAllParts=""
-	done
-	
-	imageDetails=$imageDetails$stringAllHds
-	
-	log " ...... imageDetails: $imageDetails"	
-	log " ...... Complete" "display"
-	echo
-	sleep 2 
-	
-	echo $imageDetails > /storage/images/$image_name/schema			
+      partclone.$partCloneType -SIic -s $hd$x -O /dev/null >& /tmp/$x.size
+      log "$hd$x Volume Size"
+      cat /tmp/$x.size | grep volume_size >> /tmp/clientlog.log
+      cat /tmp/$x.size | grep used_size >> /tmp/clientlog.log
+      volume_size=`cat /tmp/$x.size | grep volume_size | cut -d"," -f 1 | cut -d ":" -f 2` #sed 's/ *$//'
+      pused=`cat /tmp/$x.size | grep used_size | cut -d"," -f 2 | cut -d ":" -f 2` #sed 's/ *$//'
+      
+      stringPart="{\"number\":\"$x\",\"start\":\"$pstart\",\"end\":\"$pend\",\"size\":\"$psize\",\"volumesize\":\"$volume_size\",\"type\":\"$ptype\",\"usedmb\":\"$pused\",\"fstype\":\"$fsType\",\"fsid\":\"$fsid\",\"uuid\":\"$pUUID\",\"guid\":\"$pGUID\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\",\"volumegroup\": { "
+      
+      #experimental lvm support
+      if [ "$lvmResize" != "false" ]; then
+        if [ "$fsid" = "8e" ] || [ "$fsid" = "8E00" ]; then
+          vgscan &>> /tmp/clientlog.log    
+          lvmVG=$(pvs | grep $part | awk '/^ / {print $2}')
+          if [ "$?" = "0" ]; then
+            lvmExists=true
+            log " ** Displaying LVM Information ** "
+            pvdisplay &>>/tmp/clientlog.log
+            vgdisplay &>>/tmp/clientlog.log
+            lvdisplay &>>/tmp/clientlog.log
+          fi
+          vgchange -a y "$lvmVG"
+          lvmVGUUID=$(vgs -v  2>/dev/null | grep "$lvmVG" | awk '/^ / {print $9}')
+          lvmVGSize=$(vgs 2>/dev/null --units s | grep "$lvmVG" | awk '/^ /  {print $6}' | sed 's/S$//')
+          stringVG="\"name\":\"$lvmVG\",\"size\":\"$lvmVGSize\",\"type\":\"vg\",\"physicalvolume\":\"$part\",\"uuid\":\"$lvmVGUUID\",\"logicalvolumes\": [ "
+        
+          get_logical_volumes
+          
+          lvCounter=0
+          for logical_volume in $lvmLVS; do
+            lvHD="/dev/mapper/$logical_volume"
+            lvCounter=$(( $lvCounter + 1 ))
+            fsType=`blkid -po udev "$lvHD" | grep FS_TYPE | awk -F'=' '{print $2}'`
+            lvUUID=`lvs -v 2>/dev/null | grep "$lvmVG" | grep "$logical_volume" | awk '/^ / {print $10}'`
+            lvSize=`lvs --units s | grep "$lvmVG" | grep "$logical_volume" | awk '/^ / {print $4}' | sed 's/S$//'`
+            #In addition to setting partclone type, clean filesystems for better compatibility moving forward
+            if [ "$fsType" = "ntfs" ]; then
+              ntfsfix -b -d "$lvHD" &>/dev/null
+              ntfs-3g -o force,rw,remove_hiberfile "$lvHD" /mnt/ntfs 2> /dev/null
+              umount /mnt/ntfs
+              partCloneType="ntfs"
+          
+            elif [ "$fsType" = "ext2" ] || [ "$fsType" = "ext3" ] || [ "$fsType" = "ext4" ]; then
+              e2fsck -fp "$lvHD" &> /dev/null
+              partCloneType="extfs"
+            elif [ "$fsType" = "xfs" ]; then
+              partCloneType="xfs"
+            else
+              partCloneType="imager"
+            fi
+          
+            
+            if [ "$skip_shrink_volumes" != "true" ] && [ "$upload_schema_only" != "true" ] && [ "$skip_shrink_lvm" != "true" ] && [ "$pMBSize" -gt "5000" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
+              if [ "$fsType" = "ext2" ] || [ "$fsType" = "ext3" ] || [ "$fsType" = "ext4" ] || [ "$fsType" = "ntfs" ]; then
+                shrinkFS $lvHD      
+              fi
+            fi
+            
+            partclone.$partCloneType -SIic -s "$lvHD" -O /dev/null >& /tmp/lv$lvCounter.size
+            log "$lvHD Volume Size"
+            cat /tmp/lv$lvCounter.size | grep volume_size >> /tmp/clientlog.log
+            cat /tmp/lv$lvCounter.size | grep used_size >> /tmp/clientlog.log
+            lv_volume_size=`cat /tmp/lv$lvCounter.size | grep volume_size | cut -d"," -f 1 | cut -d ":" -f 2` #sed 's/ *$//'
+            lvused=`cat /tmp/lv$lvCounter.size | grep used_size | cut -d"," -f 2 | cut -d ":" -f 2` #sed 's/ *$//'
+          
+            
+            stringLV="{\"name\":\"$logical_volume\",\"size\":\"$lvSize\",\"volumesize\":\"$lv_volume_size\",\"type\":\"lv\",\"volumegroup\":\"$lvmVG\",\"usedmb\":\"$lvused\",\"fstype\":\"$fsType\",\"uuid\":\"$lvUUID\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\"}"
+            if [ "$lvCounter" = "$lvmLVSCount" ]; then
+              stringLV="$stringLV] } }"
+            else
+              stringLV="$stringLV,"
+            fi
+          
+            stringAllLVS=$stringAllLVS$stringLV
+          
+          done
+        
+          stringVGSLVS=$stringVG$stringAllLVS
+        
+          if [ "$counter" = "$partition_count" ]; then
+            stringAllParts="$stringAllParts$stringPart$stringVGSLVS] }"
+          else
+            stringAllParts="$stringAllParts$stringPart$stringVGSLVS,"
+          fi
+        else
+          stringPart="$stringPart} }"
+        
+          if [ "$counter" = "$partition_count" ]; then
+            stringAllParts="$stringAllParts$stringPart] }"
+          else
+            stringAllParts="$stringAllParts$stringPart,"
+          fi
+        
+        fi
+      
+      else
+        stringPart="$stringPart} }"
+        
+        if [ "$counter" = "$partition_count" ]; then
+          stringAllParts="$stringAllParts$stringPart] }"
+        else
+          stringAllParts="$stringAllParts$stringPart,"
+        fi
+      fi
+      
+    done
+    
+    stringAllHds=$stringAllHds$stringHD$stringAllParts
+    if [ "$hdCounter" = "$hdCount" ]; then
+      stringAllHds="$stringAllHds] }" 
+    else
+      stringAllHds="$stringAllHds,"
+    fi
+    
+    stringAllParts=""
+  done
+  
+  imageDetails=$imageDetails$stringAllHds
+  
+  log " ...... imageDetails: $imageDetails"  
+  log " ...... Complete" "display"
+  echo
+  sleep 2 
+  
+  echo $imageDetails > /storage/images/$image_name/schema      
 }
 
 function uploadImage()
 {
-	isLVM="$1"
-	ClearAndMoveDown
-	for part in $partitions; do
-		log " ** Starting Image Upload For Partition $part ** " "display" 
-		sleep 7
-		echo
-		
-		if [ "$compression_algorithm" = "lz4" ]; then
-			compExt="lz4"
-			compBinary="lz4"
-		elif [ "$compression_algorithm" = "gzip" ]; then
-			compExt="gz"
-			compBinary="gzip"			
-		else
-			error "Could Not Determine Current Compression Algorithm $compAlg"
-		fi
+  isLVM="$1"
+  ClearAndMoveDown
+  for part in $partitions; do
+    log " ** Starting Image Upload For Partition $part ** " "display" 
+    sleep 7
+    echo
+    
+    if [ "$compression_algorithm" = "lz4" ]; then
+      compExt="lz4"
+      compBinary="lz4"
+    elif [ "$compression_algorithm" = "gzip" ]; then
+      compExt="gz"
+      compBinary="gzip"      
+    else
+      error "Could Not Determine Current Compression Algorithm $compAlg"
+    fi
 
-		if [ "$isLVM" = "true" ]; then
-			partNumber=`echo $part | sed 's/\/dev\/mapper\///g'`
-		else
-			partNumber=`echo $part | awk -F $hd ' {print $2}'`		
-		fi
-		
-	    upPart=`curl -sSk "${web}UpdateProgressPartition?hostName=$hostName&partition=$part" --connect-timeout 10 --stderr -`		
-		fsType=`blkid -po udev $part | grep FS_TYPE | awk -F'=' '{print $2}'`
+    if [ "$isLVM" = "true" ]; then
+      partNumber=`echo $part | sed 's/\/dev\/mapper\///g'`
+    else
+      partNumber=`echo $part | awk -F $hd ' {print $2}'`    
+    fi
+    
+      upPart=`curl -sSk "${web}UpdateProgressPartition?hostName=$hostName&partition=$part" --connect-timeout 10 --stderr -`    
+    fsType=`blkid -po udev $part | grep FS_TYPE | awk -F'=' '{print $2}'`
 
-		log " ...... partNumber: $partNumber fsType: $fsType"
-		
-		if [ "$fsType" = "ntfs" ]; then		
-			partCloneType="ntfs"
-		
-		elif [ "$fsType" = "vfat" ]; then
-			partCloneType="fat"
-			
-		elif [ "$fsType" = "ext2" ] || [ "$fsType" = "ext3" ] || [ "$fsType" = "ext4" ]; then
-			partCloneType="extfs"
+    log " ...... partNumber: $partNumber fsType: $fsType"
+    
+    if [ "$fsType" = "ntfs" ]; then    
+      partCloneType="ntfs"
+    
+    elif [ "$fsType" = "vfat" ]; then
+      partCloneType="fat"
+      
+    elif [ "$fsType" = "ext2" ] || [ "$fsType" = "ext3" ] || [ "$fsType" = "ext4" ]; then
+      partCloneType="extfs"
 
-		elif [ "$fsType" = "hfsplus" ]; then
-			partCloneType="hfsp"
-			#I don't know why but partclone.hfsp used with lz4 results in a corrupted image file, always use gzip with hfs
-			compBinary="gzip"
-			compExt="gz"
-		
-		elif [ "$fsType" = "xfs" ]; then
-			partCloneType="xfs"
-			
-		elif [ "$fsType" = "swap" ]; then
-			log " ...... $part Is A Swap Partition.  Skipping." "display"
-			sleep 2
-			ClearAndMoveDown
-			continue	
-		else
-			if [ "$isLVM" != "true" ]; then
-				fsid=$(sfdisk -c $hd $partNumber 2>> /tmp/clientlog.log)
-				gfsid=$(gdisk $hd -l | grep " $partNumber " | awk '/^ / {print $6}')
-			
-				if [ "$fsid" = "8e" ] || [ "$gfsid" = "8E00" ]; then
-					if [ "$lvmResize" != "false" ]; then
-						log " ...... $part Is An LVM Physical Partition.  Skipping." "display"
-						log " ...... Logical Volumes Will Be Uploaded Last." "display"
-						sleep 5
-						ClearAndMoveDown
-						continue
-					fi
-				fi
-				
-				if [ "$fsid" = "5" ] || [ "$fsid" = "f" ] ; then
-						log " ...... $part Is An Extended Partition.  Skipping." "display"
-						sleep 2
-						ClearAndMoveDown
-						continue
-				fi
-			fi
-			
-			partCloneType="imager"
-		fi
-		
-		touch /tmp/clone.progress
-		
-		if [ "$isLVM" = "true" ]; then
-			unesImageOut=$(echo $partNumber | sed 's/--/-/g')
-		
-				log " ...... reporter $hostName $web & partclone.$partCloneType -B -c -s $part | $compBinary $compression_level -c > $imgPath/$unesImageOut.$partCloneType.$compExt"		
-				reporter $hostName $web & partclone.$partCloneType -B -c -s $part | $compBinary $compression_level -c > $imgPath/$unesImageOut.$partCloneType.$compExt
-		else
-				
-				log " ...... reporter $hostName $web & partclone.$partCloneType -B -c -s $hd$partNumber | $compBinary $compression_level -c > $imgPath/part$partNumber.$partCloneType.$compExt"		
-				reporter $hostName $web & partclone.$partCloneType -B -c -s $hd$partNumber | $compBinary $compression_level -c > $imgPath/part$partNumber.$partCloneType.$compExt
-			
-			
-		fi
-		rm /tmp/clone.progress
-		cat /var/log/partclone.log >> /tmp/clientlog.log
-		ClearAndMoveDown
-	done
+    elif [ "$fsType" = "hfsplus" ]; then
+      partCloneType="hfsp"
+      #I don't know why but partclone.hfsp used with lz4 results in a corrupted image file, always use gzip with hfs
+      compBinary="gzip"
+      compExt="gz"
+    
+    elif [ "$fsType" = "xfs" ]; then
+      partCloneType="xfs"
+      
+    elif [ "$fsType" = "swap" ]; then
+      log " ...... $part Is A Swap Partition.  Skipping." "display"
+      sleep 2
+      ClearAndMoveDown
+      continue  
+    else
+      if [ "$isLVM" != "true" ]; then
+        fsid=$(sfdisk -c $hd $partNumber 2>> /tmp/clientlog.log)
+        gfsid=$(gdisk $hd -l | grep " $partNumber " | awk '/^ / {print $6}')
+      
+        if [ "$fsid" = "8e" ] || [ "$gfsid" = "8E00" ]; then
+          if [ "$lvmResize" != "false" ]; then
+            log " ...... $part Is An LVM Physical Partition.  Skipping." "display"
+            log " ...... Logical Volumes Will Be Uploaded Last." "display"
+            sleep 5
+            ClearAndMoveDown
+            continue
+          fi
+        fi
+        
+        if [ "$fsid" = "5" ] || [ "$fsid" = "f" ] ; then
+            log " ...... $part Is An Extended Partition.  Skipping." "display"
+            sleep 2
+            ClearAndMoveDown
+            continue
+        fi
+      fi
+      
+      partCloneType="imager"
+    fi
+    
+    touch /tmp/clone.progress
+    
+    if [ "$isLVM" = "true" ]; then
+      unesImageOut=$(echo $partNumber | sed 's/--/-/g')
+    
+        log " ...... reporter $hostName $web & partclone.$partCloneType -B -c -s $part | $compBinary $compression_level -c > $imgPath/$unesImageOut.$partCloneType.$compExt"    
+        reporter $hostName $web & partclone.$partCloneType -B -c -s $part | $compBinary $compression_level -c > $imgPath/$unesImageOut.$partCloneType.$compExt
+    else
+        
+        log " ...... reporter $hostName $web & partclone.$partCloneType -B -c -s $hd$partNumber | $compBinary $compression_level -c > $imgPath/part$partNumber.$partCloneType.$compExt"    
+        reporter $hostName $web & partclone.$partCloneType -B -c -s $hd$partNumber | $compBinary $compression_level -c > $imgPath/part$partNumber.$partCloneType.$compExt
+      
+      
+    fi
+    rm /tmp/clone.progress
+    cat /var/log/partclone.log >> /tmp/clientlog.log
+    ClearAndMoveDown
+  done
 }
 
-
-#Main
+function main()
+{
 if [ "$isond" = "true" ]; then
-	log " ** Using On Demand Mode ** "
-	for arg in "$taskArgs"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
+  log " ** Using On Demand Mode ** "
+  for arg in "$taskArgs"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
 else
-	checkin
+  checkin
 fi
 
 if [ "$imageProtected" = "1" ]; then
-	error "This Image Is Protected And Cannot Be Overwritten"
+  error "This Image Is Protected And Cannot Be Overwritten"
 fi
 
 
@@ -439,149 +458,151 @@ echo
 sleep 2
 
 if [ "$isond" != "true" ]; then
-	log " ** Updating Client Status To In-Progress ** "
-	`$curlAuth --data "computerId=$computer_id" "${web}UpdateStatusInProgress" $curlEndRedirect`
+  log " ** Updating Client Status To In-Progress ** "
+  `$curlAuth --data "computerId=$computer_id" "${web}UpdateStatusInProgress" $curlEndRedirect`
 fi
 
 log " ** Removing All Files For Existing Image: $image_name ** "
-	`$curlAuth --data "profileId=$profile_id" "${web}DeleteImage" $curlEndRedirect`
+  `$curlAuth --data "profileId=$profile_id" "${web}DeleteImage" $curlEndRedirect`
 
 
 calcSize
 if [ "$upload_schema_only" = "true" ]; then
-	checkout
+  checkout
 fi
 
 hdPass=0
 for hd in $hard_drives; do
-	hdPass=$(( $hdPass + 1 ))
+  hdPass=$(( $hdPass + 1 ))
 
-	imgPath=/storage/images/$image_name/hd$hdPass
-			
-	log " ** Checking For Partition Table Types Before Upload On $hd ** "
-	upGPT=`gdisk -l $hd <<< "q" 2>> /tmp/clientlog.log | grep 'GPT:' | awk '{$1=""; print $0}' | sed 's/^ //'`
-	if [ "$upGPT" = "present" ]; then
-		usingGPT=true
-		upMBR=`gdisk -l $hd <<< "q" 2>> /tmp/clientlog.log | grep 'MBR:' | awk '{$1=""; print $0}' | sed 's/^ //'`
-		if [ "$upMBR" = "MBR only" ]; then
-			error "This Hard Drive Appears To Have Both GPT And MBR.  CrucibleWDS Does Not Know What To Use.  You Must First Convert The Drive To One Or The Other Before Uploading"
-		fi
-	elif [ "$upGPT" = "damaged" ]; then
-		error "The GPT Table Is Damaged And Cannot Be Saved.  You Must Fix This Before Uploading This Image"
-	fi
-	log " ...... upGPT: $upGPT upMBR: $upMBR" 
-	
-	
-	GetPartitions
-		
-		
-	mkdir $imgPath 2>> /tmp/clientlog.log
-	
-	
-	log " ** Saving MBR / GPT On $hd ** " "display"	
+  imgPath=/storage/images/$image_name/hd$hdPass
+      
+  log " ** Checking For Partition Table Types Before Upload On $hd ** "
+  upGPT=`gdisk -l $hd <<< "q" 2>> /tmp/clientlog.log | grep 'GPT:' | awk '{$1=""; print $0}' | sed 's/^ //'`
+  if [ "$upGPT" = "present" ]; then
+    usingGPT=true
+    upMBR=`gdisk -l $hd <<< "q" 2>> /tmp/clientlog.log | grep 'MBR:' | awk '{$1=""; print $0}' | sed 's/^ //'`
+    if [ "$upMBR" = "MBR only" ]; then
+      error "This Hard Drive Appears To Have Both GPT And MBR.  CrucibleWDS Does Not Know What To Use.  You Must First Convert The Drive To One Or The Other Before Uploading"
+    fi
+  elif [ "$upGPT" = "damaged" ]; then
+    error "The GPT Table Is Damaged And Cannot Be Saved.  You Must Fix This Before Uploading This Image"
+  fi
+  log " ...... upGPT: $upGPT upMBR: $upMBR" 
+  
+  
+  get_partitions "true"
+    
+    
+  mkdir $imgPath 2>> /tmp/clientlog.log
+  
+  
+  log " ** Saving MBR / GPT On $hd ** " "display"  
 
-	if [ "$usingGPT" = "true" ]; then
-		checkPartStart=$(gdisk $hd -l | awk '/^ / {print $2+0}' | grep -vw "0" | sort -n | head -n1)
-	else
-		checkPartStart=$(parted -s $hd unit s print all | awk -F' ' '{print $2+0}' | grep -vw "0" | sort -n | head -n1)
-	fi
+  if [ "$usingGPT" = "true" ]; then
+    checkPartStart=$(gdisk $hd -l | awk '/^ / {print $2+0}' | grep -vw "0" | sort -n | head -n1)
+  else
+    checkPartStart=$(parted -s $hd unit s print all | awk -F' ' '{print $2+0}' | grep -vw "0" | sort -n | head -n1)
+  fi
 
-	toSave=$(( $checkPartStart - 1 ))
-		
-	log " ...... drive: $drive checkPartStart: $checkPartStart toSave: $toSave "
-		
-		dd if=$hd of=$imgPath/table count=$toSave bs=512 &>> /tmp/clientlog.log 
-		if [ -s "$imgPath/table" ]; then
-			log " ...... Success" "display"
-		else
-			error "Could Not Save MBR /GPT .  Check Permissions."
-		fi
-	
-	echo
-	sleep 5
-	
-	for part in $partitions; do
-		fsType=`blkid -po udev $part | grep FS_TYPE | awk -F'=' '{print $2}'`
-		if [ "$fsType" = "ntfs" ]; then
-			ntfs-3g -o force,rw $part /mnt/ntfs 2> /dev/null				
-				if [ -f "/mnt/ntfs/Boot/BCD" ]; then
-					log " ** Original BCD ** "
-					reged -x /mnt/ntfs/Boot/BCD . Objects /tmp/regbcd >>/dev/null
-					cat /tmp/regbcd >> /tmp/clientlog.log
-					
-						cp /mnt/ntfs/Boot/BCD $imgPath/BCD
-						cp /mnt/ntfs/bootmgr $imgPath/bootmgr
-						
-				fi
-			umount /mnt/ntfs
-		fi
-	done
-	
-	mkdir -p /mnt/ntfs 2>> /tmp/clientlog.log
-	
-	for part in $partitions; do
-	    partNumber=`echo $part | awk -F $hd ' {print $2}'`
-		fsType=`blkid -po udev $part | grep FS_TYPE | awk -F'=' '{print $2}'`
-		
-		
-		if [ "$fsType" = "ntfs" ]; then
-			log " ** Clearing Mounted Devices On $part ** "
-			ntfs-3g -o force,rw $part /mnt/ntfs &>>/tmp/clientlog.log
-			reged -e /mnt/ntfs/Windows/System32/config/SYSTEM &>>/tmp/clientlog.log <<MOUNT
+  toSave=$(( $checkPartStart - 1 ))
+    
+  log " ...... drive: $drive checkPartStart: $checkPartStart toSave: $toSave "
+    
+    dd if=$hd of=$imgPath/table count=$toSave bs=512 &>> /tmp/clientlog.log 
+    if [ -s "$imgPath/table" ]; then
+      log " ...... Success" "display"
+    else
+      error "Could Not Save MBR /GPT .  Check Permissions."
+    fi
+  
+  echo
+  sleep 5
+  
+  for part in $partitions; do
+    fsType=`blkid -po udev $part | grep FS_TYPE | awk -F'=' '{print $2}'`
+    if [ "$fsType" = "ntfs" ]; then
+      ntfs-3g -o force,rw $part /mnt/ntfs 2> /dev/null        
+        if [ -f "/mnt/ntfs/Boot/BCD" ]; then
+          log " ** Original BCD ** "
+          reged -x /mnt/ntfs/Boot/BCD . Objects /tmp/regbcd >>/dev/null
+          cat /tmp/regbcd >> /tmp/clientlog.log
+          
+            cp /mnt/ntfs/Boot/BCD $imgPath/BCD
+            cp /mnt/ntfs/bootmgr $imgPath/bootmgr
+            
+        fi
+      umount /mnt/ntfs
+    fi
+  done
+  
+  mkdir -p /mnt/ntfs 2>> /tmp/clientlog.log
+  
+  for part in $partitions; do
+      partNumber=`echo $part | awk -F $hd ' {print $2}'`
+    fsType=`blkid -po udev $part | grep FS_TYPE | awk -F'=' '{print $2}'`
+    
+    
+    if [ "$fsType" = "ntfs" ]; then
+      log " ** Clearing Mounted Devices On $part ** "
+      ntfs-3g -o force,rw $part /mnt/ntfs &>>/tmp/clientlog.log
+      reged -e /mnt/ntfs/Windows/System32/config/SYSTEM &>>/tmp/clientlog.log <<MOUNT
 cd \MountedDevices
 delallv
 q
 y
 MOUNT
-			umount /mnt/ntfs &> /dev/null
-		fi
-	done
-		log " ...... Complete"
-		
-		
-	uploadImage
-	ClearAndMoveDown
-	
-	if [ "$lvmExists" = "true" ]; then
-			lvmVGS=$(pvs --noheadings | grep $hd | awk '/^ / {print $2}')
-		if [ "$?" != "0" ]; then
-			return 0
-		fi
-	
-		for VG in $lvmVGS; do
-			partitions=""
-			lvmLVS=$(lvs --noheadings | grep $VG | awk '/^ / {print $1}')
-		
-			for logical_volume in $lvmLVS; do
-				esVG=$(echo $lvmVG | sed 's/-/--/g')
-				esLV=$(echo $logical_volume | sed 's/-/--/g')
-				lvHD="/dev/mapper/$esVG-$esLV"
-			
-				partitions="$partitions $lvHD "
-				lvOut="$esVG-$esLV"
-				fsType=`blkid -po udev "$lvHD" | grep FS_TYPE | awk -F'=' '{print $2}'`
-				shrinkFS $lvHD
-			done
-		
-			uploadImage "true"
-	
-			ClearAndMoveDown
-		
-			
-		done
-	fi
+      umount /mnt/ntfs &> /dev/null
+    fi
+  done
+    log " ...... Complete"
+    
+    
+  uploadImage
+  ClearAndMoveDown
+  
+  if [ "$lvmExists" = "true" ]; then
+      lvmVGS=$(pvs --noheadings | grep $hd | awk '/^ / {print $2}')
+    if [ "$?" != "0" ]; then
+      return 0
+    fi
+  
+    for VG in $lvmVGS; do
+      partitions=""
+      lvmLVS=$(lvs --noheadings | grep $VG | awk '/^ / {print $1}')
+    
+      for logical_volume in $lvmLVS; do
+        esVG=$(echo $lvmVG | sed 's/-/--/g')
+        esLV=$(echo $logical_volume | sed 's/-/--/g')
+        lvHD="/dev/mapper/$esVG-$esLV"
+      
+        partitions="$partitions $lvHD "
+        lvOut="$esVG-$esLV"
+        fsType=`blkid -po udev "$lvHD" | grep FS_TYPE | awk -F'=' '{print $2}'`
+        shrinkFS $lvHD
+      done
+    
+      uploadImage "true"
+  
+      ClearAndMoveDown
+    
+      
+    done
+  fi
 done
 
-	log " shrunkVolumes: $shrunkVolumes"
-	for part in $shrunkVolumes; do
-		fsType=`blkid -po udev $part | grep FS_TYPE | awk -F'=' '{print $2}'`
-		expandFS $part
-	done
+  log " shrunkVolumes: $shrunkVolumes"
+  for part in $shrunkVolumes; do
+    fsType=`blkid -po udev $part | grep FS_TYPE | awk -F'=' '{print $2}'`
+    expandFS $part
+  done
 
-	if [ -n "$hostScripts" ]; then
-		runScripts
-	fi
-	
+  if [ -n "$hostScripts" ]; then
+    runScripts
+  fi
+  
 checkout
+}
 
-	
+main "$@"
+  
