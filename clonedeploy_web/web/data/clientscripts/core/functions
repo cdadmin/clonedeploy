@@ -431,15 +431,15 @@ function getHD()
 		hard_drives=`lsblk -ipdno KNAME`	
 	fi
 	
-	hdCount=0
+	hard_drive_count=0
 	for hdd in $hard_drives; do	
-		hdCount=$(( $hdCount + 1 ))
+		hard_drive_count=$(( $hard_drive_count + 1 ))
 	done
 		
 	log " ...... Found $hdCount Drive(s)" "display"
 	log " ...... Drive(s): $hard_drives" "display"
 	
-	if [ "$hdCount" = "0" ]; then
+	if [ "$hard_drive_count" = "0" ]; then
 		error "Could Not Find A Hard Drive Attached To This Computer.  Try A Different Kernel."
 	fi
 	sleep 2
