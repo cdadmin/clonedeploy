@@ -3,6 +3,16 @@
 . functions
 . cd_helpers
 
+function ond_HostInfo()
+{
+	unicastInfo=`curl -sSk -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -Fdirection="$(echo -n $1 | base64)" -FimageID="$(echo -n $imageID | base64)" -Fmac="$(echo -n $mac | base64)" "${web}UcInfo" --connect-timeout 10 --stderr -`
+	if [[ $unicastInfo == *"Client Error:"* ]]; then
+		error "$unicastInfo"
+	fi
+	for arg in "$unicastInfo"; do case "$arg" in *=*) eval "$arg";; esac; done
+	
+}
+
 if [ "$startedFromInit" != "true" ]; then
 	error "Script Cannot Be Started This Way, Exports Are Not Set."
 fi

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Web;
 using DAL;
 using Global;
 using Helpers;
@@ -119,64 +120,56 @@ namespace Service.Client
                 Logger.Log(ex.Message);
             }
         }
-        /*
-       
-
-        public string CheckOut(string mac, string direction, string imgName)
+        
+        public void CheckOut(string mac)
         {
-            string result = null;
-          
+            var computer = BLL.Computer.GetComputerFromMac(mac);
+            var computerTask = BLL.ActiveImagingTask.GetTask(computer.Id);
+            BLL.ActiveImagingTask.DeleteActiveImagingTask(computerTask.Id);    
+        }
+
+        public void UploadLog(int computerId, string logContents, string subType)
+        {
+            var computerLog = new Models.ComputerLog
+            {
+                ComputerId = computerId,
+                Contents = logContents,
+                Type = "image",
+                SubType = subType
+            };
+            BLL.ComputerLog.AddComputerLog(computerLog);
+        }
+
+        public string UploadFile(string fileName, string imagePath, string fileType, HttpFileCollection files)
+        {
+
             try
             {
-                using (var db = new DB())
-                {
-                    var task = (from h in _context.Computers
-                                join t in db.ActiveTasks on h.Id equals t.ComputerId
-                                where (h.Mac.ToLower() == mac.ToLower())
-                                select t).FirstOrDefault();
-                    db.ActiveTasks.Remove(task);
-                    db.SaveChanges();
-                }
-                var pxeHostMac = "01-" + mac.ToLower().Replace(':', '-');
-                new PxeFileOps().CleanPxeBoot(pxeHostMac);
+                string fullPath;
 
-                if (direction == "pull")
+               
+            
+
+                if (files.Count == 1 && files[0].ContentLength > 0 && !string.IsNullOrEmpty(fileName))
                 {
-                    var xferMode = Settings.ImageTransferMode;
-                    if (xferMode != "udp+http" && xferMode != "smb" && xferMode != "smb+http")
-                    {
-                        new FileOps().MoveFolder(Settings.ImageHoldPath + imgName,
-                            Settings.ImageStorePath + imgName);
-                        if ((Directory.Exists(Settings.ImageStorePath + imgName)) &&
-                            (!Directory.Exists(Settings.ImageHoldPath + imgName)))
-                        {
-                            try
-                            {
-                                Directory.CreateDirectory(Settings.ImageHoldPath + imgName);
-                                // for next upload
-                                result = "Success";
-                            }
-                            catch (Exception ex)
-                            {
-                                Logger.Log(ex.Message);
-                                result =
-                                    "Could Not Recreate Directory,  You Must Create It Before You Can Upload Again";
-                            }
-                        }
-                        else
-                            result = "Could Not Move Image From Hold To Store.  You Must Do It Manually.";
-                    }
+                    var binaryWriteArray = new
+                        byte[files[0].InputStream.Length];
+                    files[0].InputStream.Read(binaryWriteArray, 0, (int)files[0].InputStream.Length);
+
+                    var str = System.Text.Encoding.Default.GetString(binaryWriteArray);
+
+                 
                 }
+                return "File Was Not Posted Successfully";
             }
             catch (Exception ex)
             {
-                result = "Could Not Check Out.  Check The Exception Log For More Info";
-                Logger.Log(ex.ToString());
+                Logger.Log(ex.Message);
+                return "Check The Exception Log For More Info";
             }
-
-            return result;
         }
 
+        /*
         public string GetSmbCredentials(string credential)
         {
             var xferMode = Settings.ImageTransferMode;

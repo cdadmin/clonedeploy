@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+CLIENT_LOG="/tmp/clientlog.log"
 
 function SetCurlCommand()
 {
@@ -27,6 +28,248 @@ function ParseJSON()
 	echo `echo "$1" | jq "$2" -r`
 }
 
+
+function checkin()
+{	
+	log " ** Looking For Active Task ** " "display"
+	checkInStatus=`$curlAuth --data "computerMac=$mac" "${web}CheckIn" $curlEnd`
+	if [ ! "$?" = "0" ]; then
+		error "$checkInStatus"
+	else
+		if [ "`ParseJSON "$checkInStatus" .Result`" != "true" ]; then
+			error "`ParseJSON "$checkInStatus" .Message`"
+		else
+			sleep 1
+			for arg in "`ParseJSON "$checkInStatus" .TaskArguments`"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
+			log " ...... Success" "display"
+		fi
+	fi
+	
+	echo
+	sleep 2
+}
+
+function checkout()
+{
+	echo
+	log " ** Closing Active Task ** " "display"
+	cd /
+	sleep 10
+	umount /images &> /dev/null
+	sleep 2
+	if [ "$multicast" = "true" ]; then
+	mccheckoutResult=`curl -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -sSk -FportBase="$(echo -n $portBase | base64)" "${web}McCheckOut" --connect-timeout 10 --stderr -`
+		log " ...... $mccheckoutResult"
+	fi
+	
+		if [ "$hostID" = "" ]; then
+			hostID="ondemand"
+			saveLocation="logs"
+		else
+			saveLocation="host"
+		fi
+		
+		if [ "$task" = "pull" ]; then
+			logName=$hostID.upload
+		else
+			logName=$hostID.download
+		fi
+	
+		checkout_status=`$curlAuth --data "computerMac=$mac" "${web}CheckOut" $curlEnd`
+
+
+			log " ...... $checkout_status" "display"
+			cat /tmp/clientlog.log | grep -v "percent completed" > /tmp/cleanedlog.log
+			log_status=`$curlAuth --data "computerId=$computer_id&logContents=$(cat /tmp/cleanedlog.log)&subType=$task" "${web}UploadLog" $curlEnd`
+			
+			echo
+		
+		
+		sleep 1;
+	if [ "$shutdown" = "poweroff" ]; then
+		poweroff;
+	elif [ "$shutdown" = "noshut" ]; then
+		/bin/bash
+	else
+		reboot -f
+	fi
+	
+}
+
+
+
+
+function error()
+{
+	echo
+	log " ** An Error Has Occurred ** " "display"
+	log " ...... $1" "display"
+	echo
+	echo " ** Rebooting In One Minute ** "
+	
+	if [ "$hostID" = "" ]; then
+			hostID="ondemand"
+			saveLocation="logs"
+	else
+			saveLocation="host"
+	fi
+		
+	if [ "$imgDirection" = "pull" ]; then
+		logName=$hostID.upload
+	else
+		logName=$hostID.download
+	fi
+	
+	cat /tmp/clientlog.log | grep -v "percent completed" > /tmp/cleanedlog.log
+		log_status=`$curlAuth -F "computerId=$computer_id" -F "logContents=$(cat /tmp/cleanedlog.log | base64)"  -F "subType=$task" "${web}UploadLog" $curlEnd`
+	sleep 60
+	if [ "$shutdown" = "poweroff" ]; then
+		poweroff;
+	elif [ "$shutdown" = "noshut" ]; then
+		/bin/bash;
+	else
+		reboot -f
+	fi 
+}
+
+function expandFS()
+{
+	#Always fix ntfs partitions even not being resized
+	if [ "$fsType" = "ntfs" ]; then
+		ntfsfix -b -d $1 &>>/tmp/clientlog.log
+	fi
+	
+	if [ "$noResize" != "true" ]; then
+	
+	
+	if [ "$task" = "push" ]; then #If task is pull we already know the volumes that were shrunk and only they get expanded
+		x=`echo $1 | awk -F $hd ' {print $2}'`
+		pMBSize=$(parted -s $hd unit MB print all | grep " $x " -m 1 | awk -F' ' '{print $4}' | sed 's/MB//g')
+		if [ "$pMBSize" -le "2000" ]; then #partition smaller than 2GB probably that way for a reason, leave it alone.
+			return 0
+		fi
+	fi
+	
+	if [ "$fsType" = "ext2" ] || [ "$fsType" = "ext3" ] || [ "$fsType" = "ext4" ]; then
+		log " ** Expanding EXT Volume On $1 ** " "display"
+		partprobe &>/dev/null;
+		sleep 5
+
+		resize2fs $1 &>/dev/null
+		
+		if [ ! "$?" = "0" ]; then
+			log "Warning, EXT File System Did Not Resize Properly.  Check Your Disk Size After Booting" "display"
+		else
+			log " ...... Success" "display"
+		fi
+		echo
+		e2fsck -fp $1 &>/dev/null
+	
+	elif [ "$fsType" = "ntfs" ]; then
+		volumeSize=`ntfsresize -f -i -P $1 | grep -i "current volume size:" | cut -d " " -f4`
+		deviceSize=`ntfsresize -f -i -P $1 | grep -i "current device size:" | cut -d " " -f4`
+		volumeMargin=$(( $deviceSize - $volumeSize ))
+		log " volumeMargin: $volumeMargin"
+		if [ "$volumeMargin" -lt "104857600" ]; then
+			return 0
+		fi
+		log " ** Expanding NTFS Volume on $1 ** " "display"
+
+		partprobe &>/dev/null;
+		sleep 5
+			
+		#Found That expanding all the way sometimes corrupted the filesystem
+		deviceSize=$(( $deviceSize - 10485760 )) #Don't expand too far
+		log "Expanding NTFS Volume To: $deviceSize"
+		ntfsresize -f -b -s $deviceSize $1 &>> /tmp/clientlog.log << CONFIRM
+y
+CONFIRM
+
+		if [ ! "$?" = "0" ]; then
+			log "Warning, NTFS File System Did Not Resize Properly.  Check Your Disk Size After Booting To Windows" "display"
+		else
+			log " ...... Success" "display"
+		fi
+	
+		echo 
+		ntfsfix -b -d $1 &>>/tmp/clientlog.log
+	fi
+fi
+}
+
+function get_hard_drives()
+{
+	log " ** Looking For Hard Drive(s) ** " "display"
+	log " ...... Displaying Available Devices "
+	blockdev --report &>> /tmp/clientlog.log
+	fdisk -l &>> /tmp/clientlog.log
+	
+	if [ -n "$custom_hard_drives" ]; then
+		hard_drives="$custom_hard_drives"
+		log " ...... Hard Drive(s) Set By Image Profile: $hard_drives" "display"		
+	else
+		hard_drives=`lsblk -ipdno KNAME`	
+	fi
+	
+	hard_drive_count=0
+	for hdd in $hard_drives; do	
+		hard_drive_count=$(( $hard_drive_count + 1 ))
+	done
+		
+	log " ...... Found $hdCount Drive(s)" "display"
+	log " ...... Drive(s): $hard_drives" "display"
+	
+	if [ "$hard_drive_count" = "0" ]; then
+		error "Could Not Find A Hard Drive Attached To This Computer.  Try A Different Kernel."
+	fi
+	sleep 2
+}
+
+function log()
+{
+	echo "" >> /tmp/clientlog.log
+	if [ "$2" = "display" ]; then
+		echo "$1" | tee -a /tmp/clientlog.log
+	else
+		echo "$1" >> /tmp/clientlog.log
+	fi
+}
+
+function log_boot_args()
+{
+	log " ** Displaying Boot Arguments ** "
+	log "$(cat /proc/cmdline) MAC: $mac"
+	uname -a >> /tmp/clientlog.log
+}
+
+
+function mount_smb()
+{
+	log " ** Mounting SMB Share **" "display"
+	mkdir /storage &>> /tmp/clientlog.log
+	smbInfo=`$curlAuth --data "dpId=$dp_id" "${web}DistributionPoint" $curlEndRedirect`
+	for smbVersion in 3.0 2.1 2.0 1.0; do	
+		mount -t cifs "`ParseJSON "$smbInfo" .SharePath`" /storage -o user="`ParseJSON "$smbInfo" .Username`",pass="`ParseJSON "$smbInfo" .Password`",dom="`ParseJSON "$smbInfo" .Domain`",vers=$smbVersion 2>/tmp/mntstat
+		if [ ! $? = "0" ]; then
+			cat /tmp/mntstat >> /tmp/clientlog.log
+			errormsg=$(cat /tmp/mntstat)
+			
+		else
+			log " ...... Success" "display"
+
+			cd /storage/images/$imgName;
+			if [ ! $? = "0" ]; then
+				error "Could Not Change Directory To /images/$imgName Check Permissions"
+			fi
+			break
+		fi
+		if [ "$smbVersion" = "1.0" ]; then
+			error "SMB 1.0 Is Not Supported"
+		fi
+	done
+	echo
+	sleep 2
+}
 
 
 

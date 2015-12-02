@@ -1,5 +1,811 @@
 #!/bin/sh
 
+function downloadImage()
+{	
+	isLVM="$1"
+	clear
+	
+	if [ "$isLVM" = "true" ]; then
+		for lv in $parts; do
+		unesLV=$(echo $lv | sed 's/--/-/g')
+		log " ** Starting Image Download For Partition $unesLV ** " "display"
+		sleep 7
+		echo
+		
+		upPart=`curl -sSk "${web}UpdateProgressPartition?hostName=$hostName&partition=$unesLV" --connect-timeout 10 --stderr -`
+		
+		fsType=`ls /images/$imgPath | grep $unesLV | grep -o '\.[a-z]*\.' | sed 's/\.//g'`
+		isGzip=`ls /images/$imgPath | grep $unesLV | grep -i .gz`
+		isLz4=`ls /images/$imgPath | grep $unesLV | grep -i .lz4`
+		
+		log " ...... fsType: $fsType isGzip: $isGzip isLz4: $isLz4"
+		
+		if [ -n "$isGzip" ]; then
+			partCompAlg="/usr/bin/gzip -c -d"
+			partCompExt="gz"
+		elif [ -n "$isLz4" ]; then
+			partCompAlg="lz4 -d"
+			partCompExt="lz4"
+		else
+			error "Could Not Determine Compression Algorithm For Partition"
+		fi
+		
+		if [ -n "$fsType" ]; then
+
+			touch /tmp/clone.progress
+			
+
+				log "reporter $hostName $web & $partCompAlg /images/$imgPath/$unesLV.$fsType.$partCompExt | partclone.$fsType -B -r -o /dev/mapper/$lv"
+				reporter $hostName $web & $partCompAlg /images/$imgPath/$unesLV.$fsType.$partCompExt | partclone.$fsType -B -r -o /dev/mapper/$lv		
+			
+			
+		fi
+
+		rm /tmp/clone.progress
+		cat /var/log/partclone.log >> /tmp/clientlog.log
+		clear
+	done
+	else
+	
+	for x in $parts; do
+		log " ** Starting Image Download For Partition $hd$x ** " "display"
+		sleep 7
+		echo
+		
+		upPart=`curl -sSk "${web}UpdateProgressPartition?hostName=$hostName&partition=$hd$x" --connect-timeout 10 --stderr -`
+		
+		fsType=`ls /images/$imgPath | grep part$x | grep -o '\.[a-z]*\.' | sed 's/\.//g'`
+		isGzip=`ls /images/$imgPath | grep part$x | grep -i .gz`
+		isLz4=`ls /images/$imgPath | grep part$x | grep -i .lz4`
+		
+		log " ...... fsType: $fsType isGzip: $isGzip isLz4: $isLz4"
+		
+		if [ -n "$isGzip" ]; then
+			partCompAlg="/usr/bin/gzip -c -d"
+			partCompExt="gz"
+		elif [ -n "$isLz4" ]; then
+			partCompAlg="lz4 -d"
+			partCompExt="lz4"
+		else
+			error "Could Not Determine Compression Algorithm For Partition"
+		fi
+		
+		if [ -n "$fsType" ]; then
+
+			touch /tmp/clone.progress
+			
+
+				log "reporter $hostName $web & $partCompAlg /images/$imgPath/part$x.$fsType.$partCompExt | partclone.$fsType -B -r -o $hd$x"
+				reporter $hostName $web & $partCompAlg /images/$imgPath/part$x.$fsType.$partCompExt | partclone.$fsType -B -r -o $hd$x			
+		
+			
+		fi
+
+		rm /tmp/clone.progress
+		cat /var/log/partclone.log >> /tmp/clientlog.log
+		clear
+	done
+	fi
+}
+
+function restoreMBR()
+{
+	log " ** Restoring MBR / GPT On $hd ** " "display"
+
+
+	dd if=/images/$imgPath/table of=$hd &>>/tmp/clientlog.log				
+		
+	
+	#Sometimes restoring results in damaged GPT.
+	isDamaged=`gdisk -l $hd <<< "2" 2>>/tmp/clientlog.log | grep 'GPT:' | awk '{$1=""; print $0}' | sed 's/^ //'`
+	if [ "$isDamaged" = "damaged" ]; then
+		gdisk $hd << eof >> /tmp/clientlog.log
+2
+w
+y
+eof
+
+	fi
+	
+	hybridCheck=`gdisk -l $hd <<< "q" 2>> /tmp/clientlog.log| grep 'MBR:' | awk '{$1=""; print $0}' | sed 's/^ //'`
+	if [ "$hybridCheck" = "hybrid" ]; then
+		usingHybrid="true"
+	fi
+	
+	log " ...... Complete" "display"
+	echo 
+	partprobe &>/dev/null
+	sleep 2
+}
+
+function restoreGrubLegacy()
+{
+	#Grub Legacy does not seem to restore properly, it must be reinstalled
+	#Does not seem to affect Grub2
+	log " ** Checking If Grub Is Required ** "
+	dd if=$hd of=/tmp/grubcheck bs=512 count=1 2> /dev/null
+	strings /tmp/grubcheck | grep -i "grub"
+	if [ "$?" = "0" ]; then
+		log " ...... Grub Is Required, Searching For Boot Files "
+		if [ -n "$grubRoot" ]; then
+			log " ...... Grub Root Overridden By User $grubRoot "
+			grubHD=$(echo $grubRoot | cut -d"," -f1)
+			grubHD="$grubHD)"
+		else
+			grub --batch <<eof>> /tmp/grubroot
+find /grub/menu.lst
+find /boot/grub/menu.lst
+eof
+			cat /tmp/grubroot >>/tmp/clientlog.log
+			grubHdPass=$(( $hdPass - 1 ))
+			grubRoot=$(cat /tmp/grubroot | grep -i "hd$grubHdPass")
+			grubHD=$(echo $grubRoot | cut -d"," -f1)
+			grubHD="$grubHD)"
+		fi
+			log "grubHdPass: $grubHdPass grubRoot: $grubRoot grubHD: $grubHD hdPass: $hdPass"
+		
+		if [ -n "$grubRoot" ]; then
+			log " ...... Found Legacy Grub On $grubRoot "
+			log " ...... Restoring Grub Legacy "
+			grub --batch <<eof>> /tmp/clientlog.log
+root $grubRoot
+setup $grubHD
+eof
+		else
+			log " ...... Could Not Find Boot Files For Grub Legacy.  This Is Normal If Grub2 Is Being Used."
+			log " Otherwise, You Need To Manually Set Grub Root Using The Host Argument grubRoot="
+		fi
+	else
+		log " ...... Grub Is Not Required"
+	fi
+}
+
+
+function pushGlobal()
+{
+	local partitionsCreated
+	local createDynamic
+	
+	tableType=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=table&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
+	if [ "$tableType" = "gpt" ]; then
+		usingGPT=true
+	fi
+	clearMBR
+	restoreMBR
+	
+	
+	if [ -n "$customPartition" ]; then
+		echo "$customPartition" | dos2unix >> /tmp/newPartLayout
+		cat /tmp/newPartLayout >> /tmp/clientlog.log
+		
+		deleteAllPartitions $hd
+		bash /tmp/newPartLayout
+		partprobe &>/dev/null
+	
+	
+	elif [ "$minSizeResult" = "true" ]; then
+		log " ** Creating Dynamic Partition Table On $hd ** " "display"
+	
+		curl -sSkL "${web}GetPartLayout?imgName=$imgName&hdToGet=$hdToGet&newHDSize=$newHDSize&clientHD=$hd&taskType=deploy" --connect-timeout 10 --stderr - | dos2unix > /tmp/newPartLayout
+		cat /tmp/newPartLayout >> /tmp/clientlog.log
+		
+		originalPartCount=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=partCount&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
+		partCreatedCounter=0
+		if [ "$usingGPT" = "true" ]; then
+			while [ "$partitionsCreated" != "true" ]; do		
+				deleteAllPartitions $hd
+				bash /tmp/newPartLayout
+				partprobe &>/dev/null
+				gptPartCount=$(gdisk -l $hd 2> /dev/null| awk '/^ / {print $1}' | grep -vi mbr | grep -vi gpt | grep -vi bsd | grep -vi apm -c)
+				if [ "$gptPartCount" = "$originalPartCount" ]; then
+					partitionsCreated=true
+					log " ...... Success" "display"
+				else
+					partCreatedCounter=$(( $partCreatedCounter + 1 ))
+					log " ...... Could Not Create Partition Layout.  Retrying Attempt $partCreatedCounter"
+					if [ "$partCreatedCounter" -gt "10" ]; then
+						createDynamic="false"
+					fi
+				fi
+			done
+		else
+			deleteAllPartitions $hd
+			bash /tmp/newPartLayout
+			partprobe &>/dev/null
+			mbrPartCount=$(fdisk -l 2>/dev/null | grep $hd | grep -v ${hd}: -c)
+			if [ "$mbrPartCount" != "$originalPartCount" ]; then
+				createDynamic="false"
+			fi
+		fi
+	fi
+	
+	
+	
+	log " ** New Partition Table Is ** "
+	if [ "$usingGPT" = "true" ]; then
+		gdisk -l $hd &>>/tmp/clientlog.log
+	else
+		fdisk -l &>>/tmp/clientlog.log
+	fi
+	
+	if [ "$minSizeResult" = "true" ] && [ "$createDynamic" = "false" ]; then
+		log " ...... Creation Of Dynamic Partitions Failed, Attempting Fall-back Method: Original"
+		originalHDSize=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=originalHDSize&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
+		drive=$(echo $hd | cut -d "/" -f 3)
+		lbs=$(cat /sys/block/$drive/queue/logical_block_size)
+		dsize=$(cat /sys/block/$drive/size)
+		thisHDSize=`expr $dsize '*' $lbs`;
+		log " ...... Original HD Size: $originalHDSize This HD Size: $thisHDSize"
+		if [ "$thisHDSize" -ge "$originalHDSize" ]; then
+			log " ...... Original MBR / GPT Appears To Work With This Drive, Continuing"
+			clearMBR
+			restoreMBR
+		else
+			log " ...... Fall-back Method: Original Failed.  Attempting Known Partition Layout Method"
+			isKnownLayout=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=isKnownLayout&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
+			log " ...... isKnownLayout: $isKnownLayout"
+			if [ "$isKnownLayout" = "false" ]; then
+				error "Could Not Determine Any Partition Layout That Works With This Drive"
+			else
+				clearMBR
+				restoreMBR
+				log " ...... Appears To Be A Standard $isKnownLayout Image, Continuing"
+				log " ...... Modifying Layout To Fit This Drive"
+				curl -sSkL "${web}ModifyKnownLayout?clientHD=$hd&layout=$isKnownLayout" --connect-timeout 10 --stderr - | dos2unix > /tmp/knownPartLayout
+				cat /tmp/knownPartLayout >> /tmp/clientlog.log
+				bash /tmp/knownPartLayout
+				partprobe &>/dev/null
+			fi
+		fi
+		
+		log " ** New Partition Table After Fall-Back Method Is* "
+		if [ "$usingGPT" = "true" ]; then
+			gdisk -l $hd &>>/tmp/clientlog.log
+		else
+			fdisk -l &>>/tmp/clientlog.log
+		fi
+	fi
+	
+	if [ "$usingHybrid" = "true" ]; then
+		recreateHybrid
+	fi
+	
+	if [ "$multicast" = "true" ]; then
+		multicast
+	else
+		downloadImage
+	fi
+	
+	for part in $parts; do
+		fsType=`blkid -po udev $hd$part | grep FS_TYPE | awk -F'=' '{print $2}'`
+		expandFS $hd$part
+	done
+
+	
+	#Search For A Swap Partition
+	log " ** Searching For A Swap Partition ** "
+	searchSwapParts=$(partinfo --parts $hd 2>> /tmp/clientlog.log)
+	for part in $searchSwapParts; do
+		x=`echo $part | awk -F $hd ' {print $2}'`
+		isSwap=`blkid -po udev $part | grep swap`
+		if [ "$?" = "0" ]; then
+			log " ...... Found Swap On $part"
+			log "$isSwap"
+			swapUUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=uuid&hdToGet=$hdToGet&partNumber=$x" --connect-timeout 10 --stderr -`
+			mkswap $part -U $swapUUID &>> /tmp/clientlog.log
+		else
+			isSwap=$(fdisk -l 2>/dev/null | grep $part | grep -i swap)
+			if [ "$?" = "0" ]; then
+				log " ...... Found Swap On $part"
+				log "$isSwap"
+				swapUUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=uuid&hdToGet=$hdToGet&partNumber=$x" --connect-timeout 10 --stderr -`
+				mkswap $part -U $swapUUID &>> /tmp/clientlog.log
+			else
+				isSwap=$(gdisk -l $hd 2> /dev/null | grep " $x " | grep -i swap)
+				if [ "$?" = "0" ]; then
+					log " ...... Found Swap On $part"
+					log "$isSwap"
+					swapUUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=uuid&hdToGet=$hdToGet&partNumber=$x" --connect-timeout 10 --stderr -`
+					mkswap $part -U $swapUUID &>> /tmp/clientlog.log
+				else
+					log " ...... $part Is Not Swap"
+				fi
+			fi
+		fi
+	done
+	
+	if [ "$usingGPT" = "true" ]; then
+		log " ** Restoring GUID's ** "
+		hdgptGUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=HDguid&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
+		log " ...... hd $hd hdgptGUID: $hdgptGUID "
+		sgdisk $hd -U$hdgptGUID &>> /tmp/clientlog.log
+		for part in $parts; do
+			gptGUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=guid&hdToGet=$hdToGet&partNumber=$part" --connect-timeout 10 --stderr -`
+			log " ...... part $part gptGUID: $gptGUID "
+			sgdisk $hd -u$part:$gptGUID &>> /tmp/clientlog.log
+		done
+	fi
+}
+
+function pushLVM()
+{
+	log " ** Checking For LVM To Restore ** "
+	if [ "$minSizeResult" = "original" ] || [ "$createDynamic" = "false" ]; then
+		curl -sSkL "${web}GetOriginalLvm?imgName=$imgName&hdToGet=$hdToGet&clientHD=$hd" --connect-timeout 10 --stderr - | dos2unix > /tmp/lvmcommands
+		cat /tmp/lvmcommands >> /tmp/clientlog.log
+	fi
+	if [ -s "/tmp/lvmcommands" ]; then
+		lvmVGS=$(vgs --noheadings | awk '/^ / {print $1}')
+		for VG in $lvmVGS; do
+			vgremove $VG -fy
+		done
+	
+		lvmPVS=$(pvs --noheadings | grep $hd | awk '/^ / {print $1}')
+		for PV in $lvmPVS; do
+			pvremove $PV -fy
+		done
+	
+		bash /tmp/lvmcommands &>>/tmp/clientlog.log
+		vgscan
+		
+		lvmVGS=$(vgs --noheadings | awk '/^ / {print $1}')
+		for VG in $lvmVGS; do
+			lvmLVS=$(lvs | grep "$VG" | awk '/^ / {print $1}')
+			vgUUID=$(vgs -v  2>/dev/null | grep "$VG" | awk '/^ / {print $9}')
+			sed -i "s/$vgUUID/$(cat /tmp/vg-$VG)/g" /tmp/lvm-$VG 
+			for logical_volume in $lvmLVS; do		
+				lvUUID=`lvs -v 2>/dev/null | grep "$lvmVG" | grep "$logical_volume" | awk '/^ / {print $10}'`
+				sed -i "s/$lvUUID/$(cat /tmp/$VG-$logical_volume)/g" /tmp/lvm-$VG 
+			done
+			vgcfgrestore $VG -f /tmp/lvm-$VG
+		done
+					
+	else
+		return 0
+
+	fi
+	
+	log " ** Determining Number Of LV's To Restore ** "
+
+	parts=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=lvmactiveParts&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
+	
+	partCount=0
+	for part in $parts; do
+		partCount=$(( $partCount + 1 ))
+	done
+	
+	log " ...... lvmpartCount: $partCount lvmparts: $parts"
+	
+	if [ "$partCount" = "0" ]; then
+		log "Did not find any LVs to restore"
+		return 0
+	fi
+	
+	
+	if [ "$multicast" = "true" ]; then
+		multicast "true"
+	else
+		downloadImage "true"
+	fi
+	
+	for part in $parts; do
+		lvHD="/dev/mapper/$part"
+		fsType=`blkid -po udev $lvHD | grep FS_TYPE | awk -F'=' '{print $2}'`
+		expandFS $lvHD
+	done
+
+	
+	#Search For A Swap Partition
+	log " ** Searching For A Swap Partition ** "
+	
+	swapResult=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=lvmswap&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
+		
+	if [ -n "$swapResult" ]; then
+		arrayS=$(echo $swapResult | tr "," "\n");
+		i=0;
+		for x in $arrayS; do
+   			swapArray[i]=$x;
+			i=$(( $i + 1 ))
+		done
+
+		log " ...... Found Swap On /dev/mapper/${swapArray[0]}"
+		log "${swapArray[1]}"
+		mkswap /dev/mapper/${swapArray[0]} -U ${swapArray[1]} &> /tmp/makeswap
+		cat /tmp/makeswap >>/tmp/clientlog.log
+		mkswapResult=$(cat /tmp/makeswap | grep "parsing UUID failed")
+		if [ "$?" = "0" ]; then
+			log " ...... Swap Creation Failed, Creating Swap With New UUID "
+			mkswap /dev/mapper/${swapArray[0]} &>> /tmp/clientlog.log
+		fi
+	else
+		log " ...... No Swap Found"
+	fi
+
+	
+	
+}
+
+
+
+function recreateHybrid()
+{
+	#Fix Me
+	#Hybrid gpt is rare, this is a basic way to recreate it, and will not work in some situations
+	#This only creates the first 3 gpt partitions it finds
+gdisk $hd << eof >> /tmp/clientlog.log
+r
+h
+2 3 4 5 6 7 8 9 10
+y
+
+n
+
+n
+
+n
+
+n
+
+w
+y
+eof
+
+	hboot=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=boot&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
+	hbootPart=`echo $hboot | awk -f $hd ' {print $2}'`
+fdisk $hd << eof >> /tmp/clientlog.log
+x
+M
+r
+a
+$hbootPart
+w
+q
+eof
+}
+
+function runScripts()
+{
+	
+	mkdir /scripts
+	log " ** Running Script(s) ** " "display"
+	sleep 1
+	cd /scripts
+	arr=$(echo "$hostScripts" | tr "," "\n");
+	for script in $arr; do
+	
+		curl -sSk -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -FscriptName="$script" "${web}DownloadCustomScripts" -o /scripts/"$script" --connect-timeout 10 --stderr - >> /tmp/clientlog.log
+		log " ...... Running $script" "display"
+		sleep 1
+		chmod +x "$script"
+		./$script "$hd" "$taskArgs"
+		sleep 1
+		echo
+	done
+}
+
+function multicast()
+{		
+	isLVM="$1"
+	clear
+	
+	if [ "$isLVM" = "true" ]; then
+		for lv in $parts; do
+			unesLV=$(echo $lv | sed 's/--/-/g')
+			log " ** Starting Image Download For Partition $lv ** " "display"
+			sleep 7
+			echo
+		
+			upPart=`curl -sSk "${web}UpdateProgressPartition?hostName=$hostName&partition=$unesLV" --connect-timeout 10 --stderr -`
+			fsType=`ls /images/$imgPath | grep $unesLV | grep -o '\.[a-z]*\.' | sed 's/\.//g'`
+
+			log "fsType: $fsType"
+			if [ -n "$fsType" ]; then
+		
+				touch /tmp/clone.progress
+				log "reporter $hostName $web & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$fsType -B -r -o /dev/mapper/$lv"
+				reporter $hostName $web & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$fsType -B -r -o /dev/mapper/$lv			
+			fi
+
+			rm /tmp/clone.progress
+		
+			rm /tmp/clone.progress
+			cat /var/log/partclone.log >> /tmp/clientlog.log
+		
+			clear
+		done
+	
+	else
+		#Hard drive passes other than the first are not implemented yet.
+		log " ** Joining Multicast Session ** " "display"
+		echo
+		for x in $parts; do
+			log " ** Starting Image Download For Partition $x ** " "display"
+			sleep 7
+			echo
+
+			upPart=`curl -sSk "${web}UpdateProgressPartition?hostName=$hostName&partition=$hd$x" --connect-timeout 10 --stderr -`	
+			fsType=`ls /images/$imgPath | grep part$x | grep -o '\.[a-z]*\.' | sed 's/\.//g'`
+			log "fsType: $fsType"
+			if [ -n "$fsType" ]; then
+			
+				touch /tmp/clone.progress
+				log "reporter $hostName $web & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$fsType -B -r -o $hd$x"
+				reporter $hostName $web & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$fsType -B -r -o $hd$x
+			
+			fi
+
+			rm /tmp/clone.progress
+		
+			rm /tmp/clone.progress
+			cat /var/log/partclone.log >> /tmp/clientlog.log
+		
+			clear
+		done
+	fi
+}
+
+function getPartCountDeploy()
+{
+	log " ** Determining Number Of Partitions To Restore ** "
+
+	parts=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=activeParts&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
+	
+	partCount=0
+	for part in $parts; do
+		partCount=$(( $partCount + 1 ))
+	done
+	
+	log " ...... partCount: $partCount parts: $parts"
+	
+	if [ "$partCount" = "0" ]; then
+		log "Warning: Could Not Determine The Number Of Partitions To Restore"
+	fi
+}
+
+function fixBCD()
+{
+	windowsPart="";bcdPart="";
+	#FIX ME
+	#If more than one partition has winload.exe only the first one found is used.
+	log " ** Fixing BCD ** " "display"
+	mkdir /mnt/ntfs
+	
+	for x in $parts; do
+		ntfs-3g -o force,rw,remove_hiberfile $hd$x /mnt/ntfs 2> /dev/null
+		if [ -f "/mnt/ntfs/Windows/System32/winload.exe" ] || [ -f "/mnt/ntfs/Windows/system32/winload.exe" ]; then
+			log " ...... Found Windows Partition On $hd$x" "display"
+			windowsPart=$hd$x		
+			partitionOffset=$(parted -s $hd unit b print all | grep " $x " -m 1 | awk -F' ' '{print $2}' | sed 's/B//g')			
+		fi
+		
+		if [ -f "/mnt/ntfs/Boot/BCD" ]; then
+			log " ...... Found BCD Partition On $hd$x" "display"
+			bcdPart=$hd$x
+			reged -x /mnt/ntfs/Boot/BCD . Objects /tmp/regbcd >> /dev/null
+			originalBCD=`cat /tmp/regbcd`
+		fi
+		umount /mnt/ntfs
+	done;
+	
+	if [ -n "$windowsPart" ] && [ -n "$bcdPart" ]; then
+		modifiedBCD=`curl -sSk -Fbcd="$(echo -n "$originalBCD" | base64)" -FoffsetBytes="$(echo -n "$partitionOffset" | base64)" "${web}AlignBcdToPartition" --connect-timeout 10 --stderr -`
+		echo $modifiedBCD | base64 -d >>/tmp/modifiedbcd
+		log " ** New BCD Is ** "
+		cat /tmp/modifiedbcd >> /tmp/clientlog.log
+		
+		ntfs-3g -o force,rw,remove_hiberfile $bcdPart /mnt/ntfs 2> /dev/null
+		reged -I -C /mnt/ntfs/Boot/BCD . /tmp/modifiedbcd >> /tmp/clientlog.log
+		umount /mnt/ntfs
+		log " ...... Success" "display"
+		
+	else
+		log " ...... Could Not Verify Windows Partition Or BCD Partition.  BCD Has Not Been Changed" "display"
+		log " ...... windowsPart: $windowsPart bcdPart: $bcdPart" 
+	fi	
+}
+
+function fixNTFSGeo()
+{
+	#Fix Me
+	if [ -z "$hboot" ]; then
+		hboot=$(sfdisk $hd -l | grep "*" | grep "dev" | cut -d" " -f1)
+	fi
+		log " ...... hboot: $hboot"
+
+		log " ** Fixing NTFS Geometry ** " "display"
+		partclone.ntfsfixboot -p $hboot >> /tmp/clientlog.log
+		partclone.ntfsfixboot -w $hboot >> /tmp/clientlog.log
+		echo
+
+}
+
+function clearMBR()
+{
+	log " ** Clearing MBR / GPT ** "
+	sgdisk -Z $hd &>>/tmp/clientlog.log
+	dd if=/dev/zero of=$hd bs=512 count=2047 &>>/tmp/clientlog.log
+	partprobe &> /dev/null
+}
+
+#Only when restoring partitions without without restoring the boot partition.  I have no idea why you would want to do this but people are trying
+function createNewBCD()
+{
+	if [ -z "$hboot" ]; then
+		hboot=$(sfdisk $hd -l | grep "*" | grep "dev" | cut -d" " -f1)
+	fi
+	
+	mkdir /mnt/ntfs 2>> /tmp/clientlog.log
+
+
+		local fsType=`blkid -po udev $hboot | grep FS_TYPE | awk -F'=' '{print $2}'`
+		if [ "$fsType" = "ntfs" ]; then
+			ntfs-3g -o force,rw $hboot /mnt/ntfs				
+				if [ -f "/mnt/ntfs/Boot/BCD" ]; then
+					return 0
+				else
+					mkdir /mnt/ntfs/Boot
+					#chmod 777 /mnt/ntfs/Boot
+					if [ "$xferMode" = "nfs" ] || [ "$xferMode" = "smb" ]; then
+						cp /images/$imgPath/BCD /mnt/ntfs/Boot/
+						cp /images/$imgPath/bootmgr /mnt/ntfs/
+					else
+						#Fix Me - Need to add download method for bcd
+						return 0
+					fi
+				fi
+			umount /mnt/ntfs
+		fi
+}
+
+function deleteAllPartitions()
+{
+	#Delete all partitions but keep boot record intact
+	log " ** Deleting Existing Partitions ** "
+	if [ "$usingGPT" = "true" ]; then
+	gptPartCount=$(gdisk -l $1 2> /dev/null| awk '/^ / {print $1}' | grep -vi mbr | grep -vi gpt | grep -vi bsd | grep -vi apm -c)
+	deleteCounter=0
+		while [ "$gptPartCount" -gt "0" ]; do
+			deleteCounter=$(( $deleteCounter + 1 ))
+			echo "gdisk $1 &>/dev/null <<GDISK" > /tmp/partitionDelete
+			for part_num in $(gdisk -l $1 2> /dev/null | awk '/^ / {print $1}' | grep -vi mbr | grep -vi gpt | grep -vi bsd | grep -vi apm); do			
+				echo d >> /tmp/partitionDelete
+				echo "$part_num" >> /tmp/partitionDelete
+			done
+			
+			echo w >> /tmp/partitionDelete
+			echo y >> /tmp/partitionDelete
+			echo y >> /tmp/partitionDelete
+			echo q >> /tmp/partitionDelete
+			echo GDISK >> /tmp/partitionDelete
+			cat /tmp/partitionDelete >> /tmp/clientlog.log
+			bash /tmp/partitionDelete
+			
+			gdisk $1 &>/dev/null <<GDISK
+d
+$part_num
+w
+y
+y
+q
+GDISK
+			gptPartCount=$(gdisk -l $1 2> /dev/null | awk '/^ / {print $1}' | grep -vi mbr | grep -vi gpt | grep -vi bsd | grep -vi apm -c)
+			if [ "$deleteCounter" -gt "1000" ]; then
+				log " ...... Partitions Still Exist"
+				gdisk -l $1 &>>/tmp/clientlog.log
+				error "Could Not Delete GPT Partitions"
+				
+			fi
+		done		
+	else
+		mbrPartCount=$(fdisk -l 2>/dev/null | grep $hd | grep -v ${hd}: -c)
+		log "$mbrPartCount"
+		deleteCounter=0
+		while [ "$mbrPartCount" -gt "0" ]; do
+			deleteCounter=$(( $deleteCounter + 1 ))
+			fdisk $1 &>/dev/null <<FDISK
+d
+
+
+w
+FDISK
+			mbrPartCount=$(fdisk -l 2>/dev/null | grep $hd | grep -v ${hd}: -c)
+			if [ "$deleteCounter" -gt "1000" ]; then
+				log " ...... Partitions Still Exist"
+				fdisk -l &>>/tmp/clientlog.log
+				error "Could Not Delete MBR Partitions"			
+			fi
+		done
+	fi
+}
+
+function changeHostName()
+{
+	if [ -n "$hostName" ]; then
+		mkdir -p /win
+		
+		for x in $parts; do		
+			fsType=`ls /images/$imgPath | grep part$x | grep -o '\.[a-z]*\.' | sed 's/\.//g'`
+		
+			if [ "$fsType" = "ntfs" ]; then
+				log " ** Changing Host Name On $hd$x ** " "display"
+				sleep 1
+		
+				ntfs-3g -o force,rw,remove_hiberfile $hd$x /win &>/dev/null
+				if [ "$?" = "0" ]; then
+					#Win 8
+					if [ -f "/win/Windows/System32/Sysprep/unattend.xml" ]; then
+						log " ...... Found Answer File, Changing Host Name" "display"
+						rm /win/Windows/System32/Sysprep/unattend.xml
+						cd /win/Windows/Panther
+						cat unattend.xml | sed -e s/CrucibleWDS/$hostName/ > unattend.tmp
+						mv unattend.tmp unattend.xml
+					#Win 7 and Vista
+					elif [ -f "/win/Windows/System32/sysprep/unattend.xml" ]; then
+						log " ...... Found Answer File, Changing Host Name" "display"
+						rm /win/Windows/System32/sysprep/unattend.xml
+						cd /win/Windows/Panther
+						cat unattend.xml | sed -e s/CrucibleWDS/$hostName/ > unattend.tmp
+						mv unattend.tmp unattend.xml
+					#Win XP
+					elif [ -f "/win/Sysprep/sysprep.inf" ]; then
+						log " ...... Found Answer File, Changing Host Name" "display"
+						cd /win/Sysprep
+						cat sysprep.inf | sed -e s/CrucibleWDS/$hostName/ > sysprep.tmp
+						mv sysprep.tmp sysprep.inf
+					else
+						log " ...... Could Not Find Answer File, Attempting Registry Change" "display"
+						root="/win/Windows/System32/config/SYSTEM"
+						hnkey1="\ControlSet001\Services\Tcpip\Parameters\NV Hostname"
+						hnkey2="\ControlSet001\Control\ComputerName\ComputerName\ComputerName"
+						changename
+					
+						hnkey1="\ControlSet001\Services\Tcpip\Parameters\Hostname"
+						hnkey1="\ControlSet001\Services\Tcpip\Parameters\HostName"
+						changename
+						
+						hnkey1="\ControlSet001\Services\Tcpip\Parameters\NV HostName"
+						hnkey2="\ControlSet001\Control\ComputerName\ComputerName\ComputerName"
+						changename		
+
+						root="/win/Windows/System32/config/SYSTEM"
+						hnkey1="\ControlSet001\services\Tcpip\Parameters\NV Hostname"
+						hnkey2="\ControlSet001\Control\ComputerName\ComputerName\ComputerName"
+						changename		
+
+						root="/win/Windows/System32/config/SYSTEM"
+						hnkey1="\ControlSet001\services\Tcpip\Parameters\NV Hostname"
+						hnkey2="\ControlSet001\Control\ComputerName\ComputerName\ComputerName"
+						changename		
+
+						root="/win/WINDOWS/system32/config/system"
+						hnkey1="\ControlSet001\Services\Tcpip\Parameters\NV Hostname"
+						hnkey2="\ControlSet001\Control\ComputerName\ComputerName\ComputerName"
+						changename
+					fi
+					echo
+					cd /
+					umount /win	
+				fi
+			fi
+		done
+	else
+		log " ...... Could Not Determine The Host Name Of This Machine.  Host Name Has Not Been Changed."
+	fi
+}
+
+function changename()
+{
+	reged -e "$root" &>/dev/null  <<EOFN 
+ed $hnkey1
+$hostName
+ed $hnkey2
+$hostName
+q
+y
+EOFN
+
+}
+
 . functions
 
 isond="$1"

@@ -25,7 +25,8 @@ namespace Helpers
             string decoded = null;
             try
             {
-                var dBytes = Convert.FromBase64String(encoded);
+                var normalizeEnding = encoded.Replace("\r\n", "\n");
+                var dBytes = Convert.FromBase64String(normalizeEnding);
                 decoded = Encoding.UTF8.GetString(dBytes);
             }
             catch (Exception ex)

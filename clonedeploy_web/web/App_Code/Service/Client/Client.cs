@@ -155,6 +155,23 @@ namespace Service.Client
         {
             new Global().DeleteImage(Convert.ToInt32(profileId));
         }
+
+
+        [WebMethod]
+        public void CheckOut(string computerMac)
+        {
+            new Service.Client.Global().CheckOut(computerMac);
+        }
+
+        [WebMethod]
+        public void UploadLog()
+        {
+            var computerId = Utility.Decode(HttpContext.Current.Request.Form["computerId"]);
+            var logContents = Utility.Decode(HttpContext.Current.Request.Form["logContents"]);
+            var subType = Utility.Decode(HttpContext.Current.Request.Form["subType"]);
+            new Global().UploadLog(Convert.ToInt32(computerId), logContents, subType);
+        }
+
         /*
       
 
@@ -444,16 +461,8 @@ namespace Service.Client
             progress.UpdateProgressPartition(hostName, partition);
         }
 
-        [WebMethod]
-        public void Upload()
-        {
-            var fileName = Utility.Decode(HttpContext.Current.Request.Form["fileName"]);
-            var imagePath = Utility.Decode(HttpContext.Current.Request.Form["imagePath"]);
-            var fileType = Utility.Decode(HttpContext.Current.Request.Form["fileType"]);
-            var file = HttpContext.Current.Request.Files;
-
-            if (Authenticate())
-                HttpContext.Current.Response.Write(new Upload().UploadFile(fileName, imagePath, fileType, file));
-        }*/
+      
+         
+        */
     }
 }

@@ -195,58 +195,6 @@ namespace Services.Client
             return result;
         }
 
-        public string UploadFile(string fileName, string imagePath, string fileType, HttpFileCollection files)
-        {
-            try
-            {
-                string fullPath;
-
-                switch (fileType)
-                {
-                    case "mbr":
-                        imagePath = imagePath.Replace('/', Path.DirectorySeparatorChar);
-                        if (Settings.ImageTransferMode == "udp+http")
-                            fullPath = Settings.ImageStorePath + imagePath + Path.DirectorySeparatorChar +
-                                       fileName;
-                        else
-                            fullPath = Settings.ImageHoldPath + imagePath + Path.DirectorySeparatorChar +
-                                       fileName;
-                        break;
-                    case "log":
-                        if (imagePath == "host")
-                            fullPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
-                                       Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar + "hosts" +
-                                       Path.DirectorySeparatorChar + fileName;
-                        else
-                            fullPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
-                                       Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar + fileName;
-                        break;
-                    default:
-                        return "File Type Not Specified";
-                }
-
-                if (files.Count == 1 && files[0].ContentLength > 0 && !string.IsNullOrEmpty(fileName))
-                {
-                    var binaryWriteArray = new
-                        byte[files[0].InputStream.Length];
-                    files[0].InputStream.Read(binaryWriteArray, 0, (int) files[0].InputStream.Length);
-                    var objfilestream = new FileStream(fullPath, FileMode.Create, FileAccess.ReadWrite);
-                    objfilestream.Write(binaryWriteArray, 0, binaryWriteArray.Length);
-                    objfilestream.Close();
-                    if (File.Exists(fullPath))
-                    {
-                        var file = new FileInfo(fullPath);
-                        return file.Length > 0 ? "true" : "File Has No Size";
-                    }
-                    return "File Could Not Be Created";
-                }
-                return "File Was Not Posted Successfully";
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ex.Message);
-                return "Check The Exception Log For More Info";
-            }
-        }
+       
     }
 }
