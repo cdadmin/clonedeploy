@@ -100,20 +100,15 @@
         <div class="content_container">
           
             <br class="clear;"/>
-            <div class="sub-nav_container">
-                <div class="header_container">
-                    <asp:ContentPlaceHolder ID="HeaderNav" runat="server">
-                    </asp:ContentPlaceHolder>
-                </div>
-
-                <asp:ContentPlaceHolder ID="SubNav" runat="server">
-                </asp:ContentPlaceHolder>
-
-
-            </div>
+         
 
             <div class="content-right">
-                  <div class="module breadcrumb_container">
+                
+                <div class="info">
+                    
+                </div>
+
+                     <div class="module breadcrumb_container">
                 <div id="bread-crumb1" class="breadCrumb module">
                     <ul>
                         <asp:ContentPlaceHolder ID="Breadcrumb" runat="server">
@@ -123,7 +118,26 @@
                 </div>
             </div>
 
-                <div class="actions">
+                <div class="horizontal-nav">
+                    
+                         <asp:ContentPlaceHolder ID="SubNav" runat="server">
+                </asp:ContentPlaceHolder>
+                </div>
+
+                <div class="content-right-main">
+                    
+                <asp:ContentPlaceHolder ID="Content" runat="server">
+                </asp:ContentPlaceHolder>
+                    </div>
+            </div>
+            
+               <div class="sub-nav_container">
+                       <div class="header_container">
+                    <asp:ContentPlaceHolder ID="HeaderNav" runat="server">
+                    </asp:ContentPlaceHolder>
+
+                    </div>
+                     <div class="actions">
                     <div class="nav-btn-round">
                            <asp:ContentPlaceHolder ID="PageActionsLeft" runat="server">
                             </asp:ContentPlaceHolder>
@@ -134,13 +148,8 @@
                         </asp:ContentPlaceHolder>
                     </div>
                 </div>
-                
-                <div class="content-right-main">
-                <asp:ContentPlaceHolder ID="Content" runat="server">
-                </asp:ContentPlaceHolder>
-                    </div>
+            
             </div>
-
         </div>
     </div>
 

@@ -306,7 +306,7 @@ function calcSize()
       #GPT does not have a concept of partition type only mbr has primary, extended, or logical
       if [ "$layout_type" = "mbr" ]; then
         partition_type=$(parted -s $hard_drive unit s print all | grep " $partition_number " -m 1| awk -F' ' '{print $5}')
-        fsid=$(sfdisk -c $hard_drive $partition_number 2>> $CLIENT_LOG)
+        fsid=$(sfdisk --part-type $hard_drive $partition_number 2>> $CLIENT_LOG)
       else
         fsid=$(gdisk $hard_drive -l | grep " $partition_number " | awk '/^ / {print $6}')
       fi
@@ -527,7 +527,7 @@ function uploadImage()
       continue  
     else
       if [ "$is_logical_volume" != "true" ]; then
-        mbr_filesystem_id=$(sfdisk -c $hard_drive $partition_number 2>> $CLIENT_LOG)
+        mbr_filesystem_id=$(sfdisk --part-type $hard_drive $partition_number 2>> $CLIENT_LOG)
         gpt_filesystem_id=$(gdisk $hard_drive -l | grep " $partition_number " | awk '/^ / {print $6}')
       
         if [ "$mbr_filesystem_id" = "8e" ] || [ "$gpt_filesystem_id" = "8E00" ]; then
@@ -577,14 +577,13 @@ function main()
 
   get_hard_drives
 
-  error "Testing log upload"
   if [ "$is_ondemand" != "true" ]; then
     log " ** Updating Client Status To In-Progress ** "
-    `$curlAuth --data "computerId=$computer_id" "${web}UpdateStatusInProgress" $curlEndRedirect`
+    $curlAuth --data "computerId=$computer_id" "${web}UpdateStatusInProgress" $curlEnd
   fi
 
   log " ** Removing All Files For Existing Image: $image_name ** "
-    `$curlAuth --data "profileId=$profile_id" "${web}DeleteImage" $curlEndRedirect`
+    $curlAuth --data "profileId=$profile_id" "${web}DeleteImage" $curlEnd
 
   calcSize
   if [ "$upload_schema_only" = "true" ]; then

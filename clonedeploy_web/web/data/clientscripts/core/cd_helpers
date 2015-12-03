@@ -62,30 +62,20 @@ function checkout()
 		log " ...... $mccheckoutResult"
 	fi
 	
-		if [ "$hostID" = "" ]; then
-			hostID="ondemand"
-			saveLocation="logs"
-		else
-			saveLocation="host"
-		fi
+	cat /tmp/clientlog.log | grep -v "percent completed" > /tmp/cleanedlog.log
+	if [ "$is_ondemand" = "true" ]; then
+	  log_status=$($curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/cleanedlog.log | base64)"  -F subType="$(echo -n $task | base64)" "${web}UploadLog" $curlEnd)
+	fi
+	checkout_status=`$curlAuth --data "computerMac=$mac" "${web}CheckOut" $curlEnd`
+	log " ...... $checkout_status" "display"
 		
-		if [ "$task" = "pull" ]; then
-			logName=$hostID.upload
-		else
-			logName=$hostID.download
-		fi
-	
-		checkout_status=`$curlAuth --data "computerMac=$mac" "${web}CheckOut" $curlEnd`
-
-
-			log " ...... $checkout_status" "display"
-			cat /tmp/clientlog.log | grep -v "percent completed" > /tmp/cleanedlog.log
-			log_status=`$curlAuth --data "computerId=$computer_id&logContents=$(cat /tmp/cleanedlog.log)&subType=$task" "${web}UploadLog" $curlEnd`
+	$curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/cleanedlog.log | base64)"  -F subType="$(echo -n $task | base64)" "${web}UploadLog" $curlEnd
 			
-			echo
+	echo
 		
 		
-		sleep 1;
+	sleep 1;
+	
 	if [ "$shutdown" = "poweroff" ]; then
 		poweroff;
 	elif [ "$shutdown" = "noshut" ]; then
@@ -121,7 +111,7 @@ function error()
 	fi
 	
 	cat /tmp/clientlog.log | grep -v "percent completed" > /tmp/cleanedlog.log
-		log_status=`$curlAuth -F "computerId=$computer_id" -F "logContents=$(cat /tmp/cleanedlog.log | base64)"  -F "subType=$task" "${web}UploadLog" $curlEnd`
+	$curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/cleanedlog.log | base64)"  -F subType="$(echo -n $task | base64)" "${web}UploadLog" $curlEnd
 	sleep 60
 	if [ "$shutdown" = "poweroff" ]; then
 		poweroff;
@@ -247,9 +237,9 @@ function mount_smb()
 {
 	log " ** Mounting SMB Share **" "display"
 	mkdir /storage &>> /tmp/clientlog.log
-	smbInfo=`$curlAuth --data "dpId=$dp_id" "${web}DistributionPoint" $curlEndRedirect`
+	smbInfo=$($curlAuth --data "dpId=$dp_id" "${web}DistributionPoint" $curlEnd)
 	for smbVersion in 3.0 2.1 2.0 1.0; do	
-		mount -t cifs "`ParseJSON "$smbInfo" .SharePath`" /storage -o user="`ParseJSON "$smbInfo" .Username`",pass="`ParseJSON "$smbInfo" .Password`",dom="`ParseJSON "$smbInfo" .Domain`",vers=$smbVersion 2>/tmp/mntstat
+		mount -t cifs "$(ParseJSON "$smbInfo" .SharePath)" /storage -o user="$(ParseJSON "$smbInfo" .Username)",pass="$(ParseJSON "$smbInfo" .Password)",dom="$(ParseJSON "$smbInfo" .Domain)",vers=$smbVersion 2>/tmp/mntstat
 		if [ ! $? = "0" ]; then
 			cat /tmp/mntstat >> /tmp/clientlog.log
 			errormsg=$(cat /tmp/mntstat)
