@@ -60,7 +60,7 @@
         if (_breadCrumbElements.length > 0) 
         {
             jQuery(_breadCrumbElements[_breadCrumbElements.length - 1]).addClass('last');
-            //jQuery(_breadCrumbElements[0]).addClass('first');
+            jQuery(_breadCrumbElements[0]).addClass('first');
             
             //If the breadcrumb object length is long enough, compress.
             

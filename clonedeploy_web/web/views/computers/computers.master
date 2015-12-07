@@ -73,12 +73,12 @@
 </asp:Content>
 
 <asp:Content runat="server" ID="ActionsLeft" ContentPlaceHolderID="PageActionsLeft">
-    <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
+    
     <div id="actions_left" runat="server">
 
-        <asp:LinkButton ID="LinkButton1" runat="server" CssClass="icon upload" data-info="Upload Computer" OnClick="btnUpload_Click"></asp:LinkButton>
-        <asp:LinkButton ID="LinkButton2" runat="server" CssClass="icon deploy" data-info="Deploy Computer" OnClick="btnDeploy_Click"></asp:LinkButton>
-        <asp:LinkButton ID="LinkButton3" runat="server" CssClass="icon delete" data-info="Delete Computer" OnClick="btnDelete_Click"></asp:LinkButton>
+        <asp:LinkButton ID="LinkButton1" runat="server" CssClass="icon upload" OnClick="btnUpload_Click"></asp:LinkButton>
+        <asp:LinkButton ID="LinkButton2" runat="server" CssClass="icon deploy" OnClick="btnDeploy_Click"></asp:LinkButton>
+        <asp:LinkButton ID="LinkButton3" runat="server" CssClass="icon delete" OnClick="btnDelete_Click"></asp:LinkButton>
         <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
     </div>
 </asp:Content>
@@ -86,6 +86,7 @@
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="PageActionsRight">
     <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
     </asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
 </asp:Content>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="Content" runat="Server">

@@ -33,18 +33,18 @@
 	padding: 0;
 	float: left;
 	display: block;
-	height: 21px;
+	height: 51px;
 	overflow: hidden;
 	width: 100%;
 	padding:5px;
 
-	background:#f2f2ee;
+	background:#fff;
 }
 .breadCrumb ul
 {
 	margin: 0;
 	padding: 0;
-	height: 21px;
+	height: 51px;
 	display: block;
 }
 .breadCrumb ul li
@@ -52,7 +52,7 @@
 	display: block;
 	float: left;
 	position: relative;
-	height: 21px;
+	height: 51px;
 	overflow: hidden;
 	line-height: 19px;
 	margin: 0px 6px 0px 0;
@@ -76,24 +76,29 @@
 {
 	display: block;
 	position: relative;
-	height: 21px;
-	line-height: 19px;
+	height: 51px;
+	line-height: 21px;
 	overflow: hidden;
 	float: left;
     color: #47a3da;
     font-size: 18px;
-    text-decoration: underline;
     
 }
+
+
 .breadCrumb ul li.first a
 {
-	height: 16px !important;
-	text-indent:-1000em;
-	width:16px;
-	padding: 0;
-	margin-top: 2px;
-	overflow: hidden;
-	background:url(../img/IconHome.gif) no-repeat 0 0;
+ font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: .3em;
+
+
+    font-size: 26px;
+    color: #1a5e7f;
+    text-align: center;
+    line-height: 21px;
+
+
 }
 .breadCrumb ul li.first a:hover
 {

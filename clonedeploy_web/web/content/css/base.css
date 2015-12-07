@@ -74,10 +74,10 @@ hr{border:solid #ddd;border-width:1px 0 0;clear:both;margin:10px 0 0px;height:0;
 
 /* Sub Menu Left
 ================================================== */
-.sub-nav-top li{ margin-top: 0px;display: inline;width: 100px;float: left; }
-.sub-nav-top li a{ display:inline-block;height:2.5em;width:100%;line-height:20px;text-align: center;color:#c94121;position:relative;-webkit-transition:background .1s ease-in-out;-moz-transition:background .1s ease-in-out;transition:background .1s ease-in-out;}
-.sub-nav-top li a:hover{color:#47a3da;background: #eee;}
-.sub-nav-top li.nav-current a{color:#c94121;background: #fff;}
+
+.sub-nav-top li{ margin-top: 0px;display: inline-block;padding: 0 10px 0 10px;border-right: 1px solid #666;}
+.sub-nav-top li a{ display:inline-block;height:1.5em;width:100%;line-height:20px;color:#c94121;position:relative;-webkit-transition:background .1s ease-in-out;-moz-transition:background .1s ease-in-out;transition:background .1s ease-in-out;}
+.sub-nav-top li.nav-current a{color:#666;}
 
 
 .sub-nav-bottom{ background: #fff; }
@@ -116,12 +116,12 @@ hr{border:solid #ddd;border-width:1px 0 0;clear:both;margin:10px 0 0px;height:0;
 
 /* Sub Menus
 ================================================== */
-.actions-right{ float: right;margin-top: 5px;margin-right: 20px;}
-.nav-btn-round{float:left;margin-top:5px;margin-right: 40px;width: 400px;}
+.actions-right{ }
+.nav-btn-round{}
 .nav-btn-square{float:left;background:#fff;margin-bottom: 10px;margin-top:2px;padding-bottom:5px;padding-right:0;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;}
 .nav-btn-round a{display:block;float:left;position:relative;width:2.5em;height:2.5em;background:#fff;border-radius:50%;color:transparent;margin:0 .5em;border:4px solid #47a3da;}
 .nav-btn-square a{display:block;color: white;float:left;position:relative;width:150px;height:35px;background:#666666;margin:0 5px 0 0;font-size: 18px;font-weight: 500;text-align: center;padding-top:5px;}
-.nav-btn-round a:after{content:attr(data-info);color:#47a3da;position:absolute;width: 200px;top:120%;text-align:left;right:0;opacity:0;pointer-events:none;left:0;}
+
 
 .nav-btn-round a:hover:after,.nav-btn-square a:hover:after{opacity:1;}
 .nav-btn-round a:hover,.nav-btn-square a:hover{background:#47a3da;}
@@ -158,7 +158,7 @@ hr{border:solid #ddd;border-width:1px 0 0;clear:both;margin:10px 0 0px;height:0;
 table{margin-bottom:30px;margin-top:0px;}
 Table.Gridview{border:none;white-space:nowrap; width:100%;}
 .GridviewTable{border:none;}
-.Gridview th{text-align:left;color:White;border:none;background-color:#8b8b8b;padding: 3px 0 3px 10px;}
+.Gridview th{text-align:left;color:White;border:none;background-color:#666;padding: 3px 0 3px 10px;}
 .Gridview th a:link,a:visited{color:White;text-decoration:none;}
 .Gridview td{border:none;padding: 5px 10px 5px 10px;}
 .Gridview tr{color:#666;background-color:white;text-align:left;border-bottom:1px solid #f5f5f5;}
@@ -218,7 +218,7 @@ input[type="checkbox"]{display:inline;}
 
 /* Buttons
 ================================================== */
-a.confirm,a.submits,input[type="submit"]{background:#c94121;-moz-border-radius:0px;-webkit-border-radius:0px;border-radius:0px;color: #fff;display:inline-block;text-decoration:none;cursor:pointer;margin-bottom:3px;line-height:normal;padding:10px 10px; font-size:16px;border: 1px solid #fff;}
+a.confirm,a.submits,input[type="submit"]{background:#c94121;-moz-border-radius:0px;-webkit-border-radius:0px;border-radius:0px;color: #fff;display:inline-block;text-decoration:none;cursor:pointer;margin-bottom:3px;line-height:normal;padding:10px 10px; font-size:16px;border: 1px solid #fff;width: 200px;}
 a.confirm:hover,a.submits:hover,input[type="submit"]:hover,a.boot-active{color:#fff;background:#47a3da;-webkit-transition:background .2s ease-in-out;-moz-transition:background .2s ease-in-out;transition:background .2s ease-in-out;}
 
 a.confirm:active,a.submits:active,input[type="submit"]:active{background:#ccc;}
@@ -231,6 +231,7 @@ a.left {float:left;}
 a.right { float: right;}
 a.static-width{ width:100px; text-align:center; margin-right:5px; margin-top:0; }
 a.static-width-nomarg{ width:100px; text-align:center; margin-right:5px; }
+a.actions { width: 200px;text-align: center;float: right;}
 
 /* Toast Notifications
 ================================================== */

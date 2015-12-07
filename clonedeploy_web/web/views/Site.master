@@ -93,22 +93,18 @@
                
             </ul>
         </div>
-      
+     
 
         <div class="clearfix">
         </div>
         <div class="content_container">
-          
+       
             <br class="clear;"/>
          
 
             <div class="content-right">
-                
-                <div class="info">
-                    
-                </div>
-
-                     <div class="module breadcrumb_container">
+                    <div class="nav2">
+                           <div class="module breadcrumb_container">
                 <div id="bread-crumb1" class="breadCrumb module">
                     <ul>
                         <asp:ContentPlaceHolder ID="Breadcrumb" runat="server">
@@ -117,12 +113,14 @@
 
                 </div>
             </div>
-
-                <div class="horizontal-nav">
-                    
-                         <asp:ContentPlaceHolder ID="SubNav" runat="server">
+              <asp:ContentPlaceHolder ID="SubNav" runat="server">
                 </asp:ContentPlaceHolder>
-                </div>
+      </div>
+              
+
+                  
+
+               
 
                 <div class="content-right-main">
                     
@@ -132,22 +130,23 @@
             </div>
             
                <div class="sub-nav_container">
-                       <div class="header_container">
+                       <div class="header_container" style="display: none;">
                     <asp:ContentPlaceHolder ID="HeaderNav" runat="server">
                     </asp:ContentPlaceHolder>
 
                     </div>
-                     <div class="actions">
-                    <div class="nav-btn-round">
+                  
+                  
                            <asp:ContentPlaceHolder ID="PageActionsLeft" runat="server">
                             </asp:ContentPlaceHolder>
                       
-                    </div>
+                   
                     <div class="actions-right">
                         <asp:ContentPlaceHolder ID="PageActionsRight" runat="server">
                         </asp:ContentPlaceHolder>
                     </div>
-                </div>
+                 
+               
             
             </div>
         </div>
