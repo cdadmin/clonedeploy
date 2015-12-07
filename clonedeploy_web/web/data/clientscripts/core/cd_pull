@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. cd_helpers
+. /bin/cd_global_functions
 
 function clear_mounted_devices()
 {
@@ -474,7 +474,8 @@ function uploadImage()
   local mbr_filesystem_id
   local gpt_filesystem_id
   local output_name
-
+  local wim_arguments
+  export image_type="file"
   if [ "$compression_algorithm" = "lz4" ]; then
       compression_extension="lz4"
       compression_binary="lz4"
@@ -486,7 +487,8 @@ function uploadImage()
   fi
    
   for partition in $partitions; do 
-    ClearAndMoveDown
+    clear_and_move_down
+	wim_arguments=""
     log " ** Starting Image Upload For Partition $partition ** " "display" 
     sleep 7
     echo
@@ -504,6 +506,7 @@ function uploadImage()
     
     if [ "$filesystem_type" = "ntfs" ]; then    
       partclone_type="ntfs"
+	  wim_arguments=" --pipable"
       save_bcd_store
 	  clear_mounted_devices
     elif [ "$filesystem_type" = "vfat" ]; then
@@ -511,7 +514,7 @@ function uploadImage()
       
     elif [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ]; then
       partclone_type="extfs"
-
+      wim_arguments=" --pipable --unix-data"
     elif [ "$filesystem_type" = "hfsplus" ]; then
       partclone_type="hfsp"
       #I don't know why but partclone.hfsp used with lz4 results in a corrupted image file, always use gzip with hfs
@@ -520,7 +523,7 @@ function uploadImage()
     
     elif [ "$filesystem_type" = "xfs" ]; then
       partclone_type="xfs"
-      
+      wim_arguments=" --pipable --unix-data"
     elif [ "$filesystem_type" = "swap" ]; then
       log " ...... $partition Is A Swap Partition.  Skipping." "display"
       sleep 2
@@ -548,13 +551,28 @@ function uploadImage()
 	  output_name=part$partition_number
 	fi
   
-	touch /tmp/clone.progress
-	
-    log " ...... reporter $computer_name $web & partclone.$partclone_type -B -c -s $partition | $compression_binary $compression_level -c > $image_path/$output_name.$partclone_type.$compression_extension"    
-    
-	reporter $computer_name $web & partclone.$partclone_type -B -c -s $partition | $compression_binary $compression_level -c > $image_path/$output_name.$partclone_type.$compression_extension     
-    rm /tmp/clone.progress
-    cat /var/log/partclone.log >> $CLIENT_LOG
+   
+	  
+    if [ "$image_type" = "file" ] && [ -n "$wim_arguments" ]; then
+	  mkdir -p /mnt/wimsource 2>> $CLIENT_LOG
+	  if [ "$filesystem_type" = "ntfs" ]; then
+	    ntfs-3g -o force,rw $partition /mnt/wimsource 2> /dev/null        
+	  else
+	    mount $partition /mnt/wimsource 2> /dev/null
+      fi
+	  
+	  log " ...... wimcapture /mnt/wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments"
+	  wimcapture /mnt/wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments
+	  umount /mnt/wimsource
+	  
+	 else
+	  touch /tmp/clone.progress
+	  log " ...... cd_reporter $computer_name $web & partclone.$partclone_type -B -c -s $partition | $compression_binary $compression_level -c > $image_path/$output_name.$partclone_type.$compression_extension"    
+	  cd_reporter $computer_name $web & partclone.$partclone_type -B -c -s $partition | $compression_binary $compression_level -c > $image_path/$output_name.$partclone_type.$compression_extension     
+      rm /tmp/clone.progress
+      cat /var/log/partclone.log >> $CLIENT_LOG
+	  
+	fi
   done
 }
 

@@ -1,19 +1,19 @@
 #!/bin/bash
 CLIENT_LOG="/tmp/clientlog.log"
 
-function SetCurlCommand()
+function set_curl_command()
 {
 	export curlCommand="curl -sSk"
 	export curlEnd=" --connect-timeout 10 --stderr -"
 	export curlEndRedirect=" --connect-timeout 10 --stderr - >> /tmp/clientlog.log"
 }
 
-function SetCurlAuth()
+function set_curl_auth()
 {
 	export curlAuth="curl -sSk -H Authorization:$(echo -n "$USER_TOKEN" | base64)"
 }
 
-function ClearAndMoveDown()
+function clear_and_move_down()
 {
 	clear
 	local line=0
@@ -23,7 +23,7 @@ function ClearAndMoveDown()
 	done
 }
 
-function ParseJSON()
+function parse_json()
 {
 	echo `echo "$1" | jq "$2" -r`
 }
@@ -36,11 +36,11 @@ function checkin()
 	if [ ! "$?" = "0" ]; then
 		error "$checkInStatus"
 	else
-		if [ "`ParseJSON "$checkInStatus" .Result`" != "true" ]; then
-			error "`ParseJSON "$checkInStatus" .Message`"
+		if [ "`parse_json "$checkInStatus" .Result`" != "true" ]; then
+			error "`parse_json "$checkInStatus" .Message`"
 		else
 			sleep 1
-			for arg in "`ParseJSON "$checkInStatus" .TaskArguments`"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
+			for arg in "`parse_json "$checkInStatus" .TaskArguments`"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
 			log " ...... Success" "display"
 		fi
 	fi
@@ -239,7 +239,7 @@ function mount_smb()
 	mkdir /storage &>> /tmp/clientlog.log
 	smbInfo=$($curlAuth --data "dpId=$dp_id" "${web}DistributionPoint" $curlEnd)
 	for smbVersion in 3.0 2.1 2.0 1.0; do	
-		mount -t cifs "$(ParseJSON "$smbInfo" .SharePath)" /storage -o user="$(ParseJSON "$smbInfo" .Username)",pass="$(ParseJSON "$smbInfo" .Password)",dom="$(ParseJSON "$smbInfo" .Domain)",vers=$smbVersion 2>/tmp/mntstat
+		mount -t cifs "$(parse_json "$smbInfo" .SharePath)" /storage -o user="$(parse_json "$smbInfo" .Username)",pass="$(parse_json "$smbInfo" .Password)",dom="$(parse_json "$smbInfo" .Domain)",vers=$smbVersion 2>/tmp/mntstat
 		if [ ! $? = "0" ]; then
 			cat /tmp/mntstat >> /tmp/clientlog.log
 			errormsg=$(cat /tmp/mntstat)

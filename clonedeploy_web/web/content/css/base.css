@@ -75,7 +75,7 @@ hr{border:solid #ddd;border-width:1px 0 0;clear:both;margin:10px 0 0px;height:0;
 /* Sub Menu Left
 ================================================== */
 
-.sub-nav-top li{ margin-top: 0px;display: inline-block;padding: 0 10px 0 10px;border-right: 1px solid #666;}
+.sub-nav-top li{ margin-top: 0px;display: inline-block;padding: 0 10px 0 10px;border-right: 1px solid #eee; }
 .sub-nav-top li a{ display:inline-block;height:1.5em;width:100%;line-height:20px;color:#c94121;position:relative;-webkit-transition:background .1s ease-in-out;-moz-transition:background .1s ease-in-out;transition:background .1s ease-in-out;}
 .sub-nav-top li.nav-current a{color:#666;}
 

@@ -76,9 +76,9 @@
     
     <div id="actions_left" runat="server">
 
-        <asp:LinkButton ID="LinkButton1" runat="server" CssClass="icon upload" OnClick="btnUpload_Click"></asp:LinkButton>
-        <asp:LinkButton ID="LinkButton2" runat="server" CssClass="icon deploy" OnClick="btnDeploy_Click"></asp:LinkButton>
-        <asp:LinkButton ID="LinkButton3" runat="server" CssClass="icon delete" OnClick="btnDelete_Click"></asp:LinkButton>
+        <asp:LinkButton ID="LinkButton1" runat="server" CssClass="submits actions" OnClick="btnUpload_Click" Text="Upload"></asp:LinkButton>
+        <asp:LinkButton ID="LinkButton2" runat="server" CssClass="submits actions" OnClick="btnDeploy_Click" Text="Deploy"></asp:LinkButton>
+        <asp:LinkButton ID="LinkButton3" runat="server" CssClass="submits actions" OnClick="btnDelete_Click" Text="Delete"></asp:LinkButton>
         <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
     </div>
 </asp:Content>

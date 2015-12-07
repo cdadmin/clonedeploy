@@ -9,18 +9,19 @@
 # Author:       Miquel van Smoorenburg, <miquels@drinkel.nl.mugnet.org>
 #               Modified for RHS Linux by Damien Neil
 #				Modified for Clone Deploy
-. /bin/cd_helpers
-export startedFromInit="true"
-SetCurlCommand
+. /bin/cd_global_functions
+
+export started_from_init="true"
+set_curl_command
 
 echo 3 > /proc/sys/kernel/printk
 
-function StartNetwork()
+function start_network()
 {
 	if [ -z "$net_if" ]; then
 		export net_if=eth0
 	fi
-	export mac=`cat /sys/class/net/$net_if/address`
+	export mac=$(cat /sys/class/net/$net_if/address)
 	
 	echo " ** Starting Network On Interace $net_if ** "
 	echo
@@ -33,10 +34,10 @@ function StartNetwork()
 	ifup $net_if
 	ifup lo
 	
-	clientIP=`ifconfig | grep $net_if -A2 | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'`
+	clientIP=$(ifconfig | grep $net_if -A2 | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}')
 }
 
-function CheckDownload()
+function check_download()
 {
 	if [ "$dl_result" != "200" ]; then
 		echo " ...... Could Not Download Script $1 "
@@ -51,7 +52,7 @@ if [ -n "$keymap" ]; then
 	loadkeys $keymap
 fi
 
-ClearAndMoveDown
+clear_and_move_down
 if [ "$reset_network" = "1" ]; then
 	echo " ** Reset Network Level 1 ** "
 	echo " Disconnect and Reconnect Your USB Nic "
@@ -64,20 +65,20 @@ elif [ "$reset_network" = "2" ]; then
 	sleep 30
 fi
 
-StartNetwork
+start_network
 
 #Set hardware clock
 if [ "$skip_clock" != "true" ]; then	
-	localDateTime=`$curlCommand ${web}GetLocalDateTime $curlEnd`
+	localDateTime=$($curlCommand ${web}GetLocalDateTime $curlEnd)
 	hwclock --localtime --set --date "$localDateTime"
 	
-	utcDateTime=`$curlCommand ${web}GetUtcDateTime $curlEnd`
+	utcDateTime=$($curlCommand ${web}GetUtcDateTime $curlEnd)
 	date -s "$utcDateTime" &>> /dev/null
 fi
 
-loginRequired=`$curlCommand --data "task=$task" "${web}IsLoginRequired" $curlEnd`
+loginRequired=$($curlCommand --data "task=$task" "${web}IsLoginRequired" $curlEnd)
 if [ "$loginRequired" != "No" ]; then
-	ClearAndMoveDown
+	clear_and_move_down
 	loginCount=1
 	echo " IP Address: $clientIP"
 	echo " ** You Must Be Logged In To Continue ** "
@@ -90,8 +91,8 @@ if [ "$loginRequired" != "No" ]; then
 		read password
 		stty echo
 		echo
-		loginResult=`$curlCommand -Fusername="$(echo -n $username | base64)" -Fpassword="$(echo -n $password | base64)" -FclientIP="$(echo -n $clientIP | base64)" -Ftask="$(echo -n $task | base64)" "${web}ConsoleLogin" $curlClose`
-		if [ "`ParseJSON "$loginResult" .valid`" != "true" ]; then
+		loginResult=$($curlCommand -Fusername="$(echo -n $username | base64)" -Fpassword="$(echo -n $password | base64)" -FclientIP="$(echo -n $clientIP | base64)" -Ftask="$(echo -n $task | base64)" "${web}ConsoleLogin" $curlClose)
+		if [ "$(parse_json "$loginResult" .valid)" != "true" ]; then
 			if [ "$loginCount" = "2" ]; then
 				echo
 				echo " ...... Incorrect Login....Rebooting"
@@ -106,7 +107,7 @@ if [ "$loginRequired" != "No" ]; then
 			echo
 			echo " ...... Login Successful"
 			echo			
-			export USER_TOKEN=`ParseJSON "$loginResult" .user_token`
+			export USER_TOKEN=$(parse_json "$loginResult" .user_token)
 			break
 		fi
 		loginCount=$(( $loginCount + 1 ))
@@ -114,13 +115,13 @@ if [ "$loginRequired" != "No" ]; then
 fi
 
 if [ "$skip_core_download" != "true" ]; then
-	ClearAndMoveDown
-	SetCurlAuth
+	clear_and_move_down
+	set_curl_auth
 	echo " ** Downloading Core Scripts ** "
 
-	for scriptName in functions ond pull push register reporter; do
-		dl_result=`$curlAuth --data "scriptName=$scriptName" ${web}DownloadCoreScripts -o /bin/$scriptName -w %{http_code} --connect-timeout 10 --stderr /tmp/clientscriptdlerror`
-		CheckDownload $scriptName
+	for script_name in cd_global_functions cd_ond cd_pull cd_push cd_register cd_reporter; do
+		dl_result=$($curlAuth --data "scriptName=$script_name" ${web}DownloadCoreScripts -o /bin/$script_name -w %{http_code} --connect-timeout 10 --stderr /tmp/clientscriptdlerror)
+		check_download $scriptName
 	done
 	
 	echo " ...... Complete"
@@ -129,24 +130,24 @@ if [ "$skip_core_download" != "true" ]; then
 fi
 
 if [ "$task" = "push" ]; then	
-	/bin/push
+	/bin/cd_push
 
 elif [ "$task" = "pull" ]; then	
-	/bin/pull
+	/bin/cd_pull
 
 elif [ "$task" = "register" ]; then
-	/bin/register
+	/bin/cd_register
 
 elif [ "$task" = "ond" ]; then
-	/bin/ond
+	/bin/cd_ond
 
 elif [ "$task" = "diag" ]; then
-	/bin/diag
+	/bin/cd_diag
 	
 elif [ "$task" = "debug" ]; then
 	echo " ** Debug Mode ** "
 else
-	ClearAndMoveDown
+	clear_and_move_down
 	echo " ** No Task Selected....Rebooting ** "
 	sleep 10
 	reboot -f
