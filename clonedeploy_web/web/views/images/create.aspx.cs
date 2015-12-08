@@ -25,7 +25,8 @@ namespace views.images
                 Os = ddlImageOS.Text,
                 Description = txtImageDesc.Text,
                 Protected = chkProtected.Checked ? 1 : 0,
-                IsVisible = chkVisible.Checked ? 1 : 0
+                IsVisible = chkVisible.Checked ? 1 : 0,
+                Type = ddlImageType.Text
             };
 
            

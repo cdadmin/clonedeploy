@@ -14,6 +14,7 @@ public partial class views_admin_server : Admin
         txtPort.Text = Settings.WebServerPort;
         txtTFTPPath.Text = Settings.TftpPath;
         ddlHostView.SelectedValue = Settings.DefaultHostView;
+        txtWebService.Text = Settings.WebPath;
 
         //These require pxe boot menu or client iso to be recreated
         ViewState["serverIP"] = txtIP.Text;
@@ -29,6 +30,7 @@ public partial class views_admin_server : Admin
             new Models.Setting {Name = "Web Server Port", Value = txtPort.Text, Id = Setting.GetSetting("Web Server Port").Id},
             new Models.Setting {Name = "Tftp Path", Value = txtTFTPPath.Text, Id = Setting.GetSetting("Tftp Path").Id},
             new Models.Setting {Name = "Default Host View", Value = ddlHostView.Text, Id = Setting.GetSetting("Default Host View").Id},
+            new Models.Setting {Name = "Web Path", Value = txtWebService.Text, Id = Setting.GetSetting("Web Path").Id}
         };
 
         var newBootMenu = false;

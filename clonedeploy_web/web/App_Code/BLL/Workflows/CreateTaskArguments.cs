@@ -114,9 +114,13 @@ namespace BLL.Workflows
                         customHardDrives.Append("\"");
                         customPartitions.Append("\"");
                         customFixedPartitions.Append("\"");
+                        customLogicalVolumes.Append("\"");
+                        customFixedLogicalVolumes.Append("\"");
                         AppendString(customHardDrives.ToString());
                         AppendString(customPartitions.ToString());
                         AppendString(customFixedPartitions.ToString());
+                        AppendString(customLogicalVolumes.ToString());
+                        AppendString(customFixedLogicalVolumes.ToString());
                     }
 
                     break;

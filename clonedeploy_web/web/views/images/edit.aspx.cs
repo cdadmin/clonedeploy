@@ -25,7 +25,7 @@ namespace views.images
             image.Description = txtImageDesc.Text;
             image.Protected = chkProtected.Checked ? 1 : 0;
             image.IsVisible = chkVisible.Checked ? 1 : 0;
-
+            image.Type = ddlImageType.Text;
 
             BLL.Image.UpdateImage(image, currentName);
         }

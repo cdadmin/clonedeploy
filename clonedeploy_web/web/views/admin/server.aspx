@@ -5,7 +5,7 @@
     </asp:Content>
 
 <asp:Content runat="server" ID="Help" ContentPlaceHolderID="Help">
-      <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="icon help" data-info="Help" target="_blank"></a>
+      <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits actions" target="_blank">Help</a>
 </asp:Content>
 
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
@@ -32,6 +32,15 @@
 <div class="size-setting column">
     <asp:TextBox ID="txtPort" runat="server" CssClass="textbox"></asp:TextBox>
 </div>
+
+    <br class="clear"/>
+<div class="size-4 column">
+    Web Service:
+</div>
+<div class="size-setting column">
+    <asp:TextBox ID="txtWebService" runat="server" CssClass="textbox"></asp:TextBox>
+</div>
+
 
 <br class="clear"/>
 <div class="size-4 column">

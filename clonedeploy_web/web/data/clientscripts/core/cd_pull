@@ -199,7 +199,7 @@ function shrinkFS()
 	local ntfs_volume_size_bytes
 	local new_ntfs_size
     elif [ "$filesystem_type" = "ntfs" ]; then
-      if [ "$image_type" = "file" ]; then #If we are doing a file based clone, the volume does not need to be shrunk
+      if [ "$image_type" = "File" ]; then #If we are doing a file based clone, the volume does not need to be shrunk
         return 0
       fi
       log " ...... Shrinking NTFS Volume On $volume_to_shrink (This May Take A Few Minutes) " "display"
@@ -314,7 +314,9 @@ function calcSize()
       if [ "$skip_shrink_volumes" != "true" ] && [ "$upload_schema_only" != "true" ] && [ "$pMBSize" -gt "5000" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
         if [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ] || [ "$filesystem_type" = "ntfs" ]; then
           if [[ ! "$custom_fixed_partitions" == *"$hard_drive$partition_number"* ]]; then
-            shrinkFS $hard_drive$partition_number      
+		    if [ "$image_type" != "File" ]; then
+              shrinkFS $hard_drive$partition_number
+            fi			  
           fi
         fi
       fi
@@ -375,7 +377,11 @@ function calcSize()
             
             if [ "$skip_shrink_volumes" != "true" ] && [ "$upload_schema_only" != "true" ] && [ "$skip_shrink_lvm" != "true" ] && [ "$pMBSize" -gt "5000" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
               if [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ] || [ "$filesystem_type" = "ntfs" ]; then
-                shrinkFS $logical_volume_device      
+			    if [[ ! "$custom_fixed_logical_volumes" == *"$logical_volume_device"* ]]; then
+				  if [ "$image_type" != "File" ]; then
+                    shrinkFS $logical_volume_device      
+				  fi
+				fi
               fi
             fi
             
@@ -475,7 +481,7 @@ function uploadImage()
   local gpt_filesystem_id
   local output_name
   local wim_arguments
-  export image_type="file"
+
   if [ "$compression_algorithm" = "lz4" ]; then
       compression_extension="lz4"
       compression_binary="lz4"
@@ -553,7 +559,7 @@ function uploadImage()
   
    
 	  
-    if [ "$image_type" = "file" ] && [ -n "$wim_arguments" ]; then
+    if [ "$image_type" = "File" ] && [ -n "$wim_arguments" ]; then
 	  mkdir -p /mnt/wimsource 2>> $CLIENT_LOG
 	  if [ "$filesystem_type" = "ntfs" ]; then
 	    ntfs-3g -o force,rw $partition /mnt/wimsource 2> /dev/null        
@@ -562,7 +568,7 @@ function uploadImage()
       fi
 	  
 	  log " ...... wimcapture /mnt/wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments"
-	  wimcapture /mnt/wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments
+	  wimcapture /mnt/wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG
 	  umount /mnt/wimsource
 	  
 	 else
@@ -608,6 +614,10 @@ function main()
     checkout
   fi
 
+  if [ "$image_type" = "File" ]; then
+    export WIMLIB_IMAGEX_USE_UTF8=1
+  fi
+  
   current_hd_number=0
   for hard_drive in $hard_drives; do
     current_hd_number=$(( $current_hd_number + 1 ))
