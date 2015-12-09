@@ -188,7 +188,7 @@ function shrinkFS()
       
       if [ ! "$?" = "0" ]; then
         log "Warning, EXT File System Did Not Shrink Properly. " "display"
-      else
+      else   
         shrunk_volumes="$shrunk_volumes $volume_to_shrink "
         log " ...... Success" "display"
       fi
@@ -218,7 +218,7 @@ CONFIRM
       if [ ! "$?" = "0" ]; then
         log "Warning, NTFS File System Did Not Shrink Properly. " "display"
       else
-        shrunk_volumes"$shrunk_volumes $volume_to_shrink "
+        shrunk_volumes="$shrunk_volumes $volume_to_shrink "
         log " ...... Success" "display"
       fi
       log " ...... ntfssize: $ntfssize"
@@ -352,10 +352,16 @@ function calcSize()
           
           logical_volume_counter=0
           for logical_volume in $logical_volumes; do
-            logical_volume_device="/dev/mapper/$escaped_volume_group-$logical_volume"
+		    if [ -n "$custom_logical_volumes" ]; then
+              logical_volume_device="/dev/mapper/$logical_volume"
+			else
+			    logical_volume_device="/dev/mapper/$escaped_volume_group-$logical_volume"
+			fi
             logical_volume_counter=$(( $logical_volume_counter + 1 ))
             filesystem_type=`blkid -po udev "$logical_volume_device" | grep FS_TYPE | awk -F'=' '{print $2}'`
             logical_volume_uuid=`lvs --noheadings -v 2>/dev/null | grep "$volume_group" | grep "$logical_volume" | awk '/^ / {print $10}'`
+			
+			
             logical_volume_size=`lvs --noheadings --units s | grep "$volume_group" | grep "$logical_volume" | awk '/^ / {print $4}' | sed 's/S$//'`
 
             #In addition to setting partclone type, clean filesystems for better compatibility moving forward
@@ -640,7 +646,11 @@ function main()
 		get_logical_volumes
         escaped_volume_group=$(echo $volume_group | sed 's/-/--/g')
 		for lv in $logical_volumes; do
-		  lvs_to_upload="$lvs_to_upload /dev/mapper/$escaped_volume_group-$lv "
+		  if [ -n "$custom_logical_volumes" ]; then
+		    lvs_to_upload="$lvs_to_upload /dev/mapper/$lv "
+		  else
+		    lvs_to_upload="$lvs_to_upload /dev/mapper/$escaped_volume_group-$lv "
+		  fi
 		done
 	  done
       
