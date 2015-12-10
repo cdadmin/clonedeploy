@@ -1,14 +1,24 @@
-#!/bin/sh
+#!/bin/bash
 
-hostName=$1
-web=$2
+. /bin/cd_global_functions
 
+computer_id=$1
+reporter_type=$2
+
+if [ "$reporter_type" = "partclone" ]; then
 while [ -f "/tmp/clone.progress" ]; do
         progress="/tmp/clone.progress"
         post=`tail -n 1 $progress`
-		
-        result=`curl -sSkX POST -H "Content-type: application/json; charset=UTF-8" -d '{"progress":{"HostName":"'"$hostName"'","Progress":"'"$post"'"} }' ${web}UpdateProgress --connect-timeout 2 --stderr -`
-        
-        sleep 2
+		result=$($curlAuth --data "computerId=$computer_id&progress=$post&progressType=partclone" "${web}UpdateProgress" $curlEnd)        
+        sleep 5
 done
+	
+else
+	while [ -f "/tmp/wim.progress" ]; do
+        progress="/tmp/wim.progress"
+        post=`tail -n 1 $progress`
+		result=$($curlAuth --data "computerId=$computer_id&progress=$post&progressType=wim" "${web}UpdateProgress" $curlEnd)        
+        sleep 5
+done
+fi
 

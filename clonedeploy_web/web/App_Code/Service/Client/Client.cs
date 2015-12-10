@@ -172,6 +172,18 @@ namespace Service.Client
             new Global().UploadLog(Convert.ToInt32(computerId), logContents, subType);
         }
 
+        [WebMethod]
+        public void UpdateProgress(string computerId, string progress, string progressType)
+        {
+            new Service.Client.Global().UpdateProgress(Convert.ToInt32(computerId), progress, progressType);
+        }
+
+        [WebMethod]
+        public void UpdateProgressPartition(string computerId, string partition)
+        {
+            new Service.Client.Global().UpdateProgressPartition(Convert.ToInt32(computerId), partition);
+        }
+
         /*
       
 
@@ -448,11 +460,7 @@ namespace Service.Client
                     imageId));
         }
 
-        [WebMethod(EnableSession = true)]
-        public void UpdateProgress(TaskProgress progress)
-        {
-            progress.UpdateProgress();
-        }
+      
 
         [WebMethod]
         public void UpdateProgressPartition(string hostName, string partition)

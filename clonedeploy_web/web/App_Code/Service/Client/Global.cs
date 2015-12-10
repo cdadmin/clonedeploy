@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Windows.Forms;
 using DAL;
 using Global;
 using Helpers;
@@ -26,6 +27,39 @@ namespace Service.Client
             };
             var result = BLL.Computer.AddComputer(computer);
             return JsonConvert.SerializeObject(result);
+        }
+
+        public void UpdateProgress(int computerId, string progress, string progressType)
+        {
+            var task = BLL.ActiveImagingTask.GetTask(computerId);
+            if (progressType == "wim")
+            {
+                task.Elapsed = progress;
+                task.Remaining = "";
+                task.Completed = "";
+                task.Rate = "";
+            }
+            else
+            {
+                var values = progress.Split('*').ToList();
+                task.Elapsed = values[1];
+                task.Remaining = values[2];
+                task.Completed = values[3];
+                task.Rate = values[4];
+            }
+
+            BLL.ActiveImagingTask.UpdateActiveImagingTask(task);
+        }
+
+        public void UpdateProgressPartition(int computerId, string partition)
+        {
+            var task = BLL.ActiveImagingTask.GetTask(computerId);
+            task.Partition = partition;
+            task.Elapsed = "Please Wait...";
+            task.Remaining = "";
+            task.Completed = "";
+            task.Rate = "";
+            BLL.ActiveImagingTask.UpdateActiveImagingTask(task);
         }
 
         public string IsLoginRequired(string task)
