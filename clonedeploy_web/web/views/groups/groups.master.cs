@@ -20,8 +20,7 @@ namespace views.masters
             {
                 Level2.Visible = false;
                 Level2_Edit.Visible = false;
-                Level2_Smart_Group.Visible = false;
-                Level2_Standard_Group.Visible = false;
+
                 actions_left.Visible = false;
                 return;
             }
@@ -30,13 +29,13 @@ namespace views.masters
             Level1.Visible = false;
             if (Group.Type == "standard")
             {
-                Level2_Standard_Group.Visible = true;
-                Level2_Smart_Group.Visible = false;
+                addmembers.Visible = true;
+                removemembers.Visible = true;
             }
             else
             {
-                Level2_Standard_Group.Visible = false;
-                Level2_Smart_Group.Visible = true;
+                smart.Visible = true;
+                currentmembers.Visible = true;
             }
 
         }

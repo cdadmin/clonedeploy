@@ -2,36 +2,41 @@
 
 . /bin/cd_global_functions
 
-function clear_mounted_devices()
+################################################################
+#  Run Various Tasks On NTFS Partitions.
+#  Clear mounted devices in registry
+#  Save a copy of the BCD store
+#  Global Get:
+#    partition
+#	  image_path
+#  Global Set:
+#    none
+#  Arguments:
+#    none
+################################################################
+function ntfs_tasks()
 {
-   log " ** Clearing Mounted Devices On $partition ** "
-      ntfs-3g -o force,rw $partition /mnt/ntfs &>>$CLIENT_LOG
-      reged -e /mnt/ntfs/Windows/System32/config/SYSTEM &>>$CLIENT_LOG <<MOUNT
+  mkdir -p /mnt/ntfs 2>> /dev/null
+  log " ** Clearing Mounted Devices On $partition ** "
+  ntfs-3g -o force,rw,remove_hiberfile $partition /mnt/ntfs 2> $CLIENT_LOG
+  reged -e /mnt/ntfs/Windows/System32/config/SYSTEM &>>$CLIENT_LOG <<MOUNT
 cd \MountedDevices
 delallv
 q
 y
 MOUNT
-      umount /mnt/ntfs &> /dev/null
-    
+  log " ...... Complete"
   
-    log " ...... Complete"
-}
-
-function save_bcd_store()
-{
-  mkdir -p /mnt/ntfs 2>> $CLIENT_LOG
-  ntfs-3g -o force,rw $partition /mnt/ntfs 2> /dev/null        
   if [ -f "/mnt/ntfs/Boot/BCD" ]; then
-    log " ** Original BCD ** "
+    log " ** Saving Original BCD ** "
     reged -x /mnt/ntfs/Boot/BCD . Objects /tmp/regbcd >>/dev/null
-    cat /tmp/regbcd >> $CLIENT_LOG
-          
+    cat /tmp/regbcd >> $CLIENT_LOG         
     cp /mnt/ntfs/Boot/BCD $image_path/BCD
-    cp /mnt/ntfs/bootmgr $image_path/bootmgr
-            
+    cp /mnt/ntfs/bootmgr $image_path/bootmgr           
   fi
-      umount /mnt/ntfs
+  log " ...... Complete"
+    
+  umount /mnt/ntfs &> /dev/null
 }
 
 function save_mbr_gpt()
@@ -167,7 +172,7 @@ function get_partitions()
 #    volume_to_shrink - The partition or logical volume that
 #      contains the volume to shrink
 ################################################################
-function shrinkFS()
+function shrink_volume()
 {
 	local volume_to_shrink="$1"
 	
@@ -240,15 +245,18 @@ CONFIRM
 #    volume_to_shrink - The partition or logical volume that
 #      contains the volume to shrink
 ################################################################
-function calcSize()
+function create_image_schema()
 {
-  log " ** Resizing Volumes And Calculating Image Schema ** " "display"
+  log " ** Creating Image Schema ** " "display"
   sleep 1
-  mkdir /mnt/ntfs 2>> $CLIENT_LOG
   
   hard_drive_counter=0
   image_schema="{\"harddrives\": [ "
   for hard_drive in $hard_drives; do
+    if [ "$remove_gpt_structures" = "true" ]; then
+	  sgdisk -z $hard_drive
+	fi
+	
     hard_drive_counter=$(( $hard_drive_counter + 1 ))
     drive_name="";logical_block_size="";physical_block_size="";hard_drive_size_bytes="";boot_partition="";gpt_status="";mbr_status="";layout_type="";hard_drive_guid="";
     drive_name=$(echo $hard_drive | cut -d "/" -f 3)
@@ -286,8 +294,7 @@ function calcSize()
       #In addition to setting partclone type, clean filesystems for better compatibility moving forward
       if [ "$filesystem_type" = "ntfs" ]; then
         ntfsfix -b -d $hard_drive$partition_number &>/dev/null
-        ntfs-3g -o force,rw,remove_hiberfile $hard_drive$partition_number /mnt/ntfs 2> /dev/null        
-        umount /mnt/ntfs
+        ntfs_tasks
         partclone_type="ntfs"
           
       elif [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ]; then
@@ -315,7 +322,7 @@ function calcSize()
         if [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ] || [ "$filesystem_type" = "ntfs" ]; then
           if [[ ! "$custom_fixed_partitions" == *"$hard_drive$partition_number"* ]]; then
 		    if [ "$image_type" != "File" ]; then
-              shrinkFS $hard_drive$partition_number
+              shrink_volume $hard_drive$partition_number
             fi			  
           fi
         fi
@@ -387,7 +394,7 @@ function calcSize()
               if [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ] || [ "$filesystem_type" = "ntfs" ]; then
 			    if [[ ! "$custom_fixed_logical_volumes" == *"$logical_volume_device"* ]]; then
 				  if [ "$image_type" != "File" ]; then
-                    shrinkFS $logical_volume_device      
+                    shrink_volume $logical_volume_device      
 				  fi
 				fi
               fi
@@ -475,11 +482,11 @@ function calcSize()
 #  Global Set:
 #    none
 #  Arguments:
-#    is_logical_volume - true|false
+#    upload_type - physical | lvm
 ################################################################
-function uploadImage()
+function upload_image()
 {
-  local is_logical_volume="$1"
+  local upload_type="$1"
   local partition
   local compression_extension
   local compression_binary
@@ -490,6 +497,7 @@ function uploadImage()
   local output_name
   local wim_arguments
   local partclone_out
+  
   if [ "$compression_algorithm" = "lz4" ]; then
       compression_extension="lz4"
 	  partclone_out="|"
@@ -516,13 +524,12 @@ function uploadImage()
     sleep 7
     echo
     
-    if [ "$is_logical_volume" = "true" ]; then
+    if [ "$upload_type" = "lvm" ]; then
       partition_number=`echo $partition | sed 's/\/dev\/mapper\///g'`
     else
       partition_number=`echo $partition | awk -F $hard_drive ' {print $2}'`    
     fi
 
-   
     filesystem_type=`blkid -po udev $partition | grep FS_TYPE | awk -F'=' '{print $2}'`
 
     log " ...... partition_number: $partition_number filesystem_type: $filesystem_type"
@@ -530,8 +537,7 @@ function uploadImage()
     if [ "$filesystem_type" = "ntfs" ]; then    
       partclone_type="ntfs"
 	  wim_arguments=" --pipable"
-      save_bcd_store
-	  clear_mounted_devices
+      
     elif [ "$filesystem_type" = "vfat" ]; then
       partclone_type="fat"
       
@@ -554,7 +560,7 @@ function uploadImage()
       sleep 2
       continue  
     else
-      if [ "$is_logical_volume" != "true" ]; then
+      if [ "$upload_type" = "physical" ]; then
         mbr_filesystem_id=$(sfdisk --part-type $hard_drive $partition_number 2>> $CLIENT_LOG)
         gpt_filesystem_id=$(gdisk $hard_drive -l | grep " $partition_number " | awk '/^ / {print $6}')
       
@@ -570,7 +576,7 @@ function uploadImage()
       partclone_type="imager"
     fi
     
-    if [ "$is_logical_volume" = "true" ]; then
+    if [ "$upload_type" = "lvm" ]; then
       output_name=$(echo $partition_number | sed 's/--/-/g')
 	else
 	  output_name=part$partition_number
@@ -587,7 +593,7 @@ function uploadImage()
       fi
 	  
 	  touch /tmp/wim.progress
-	  log " ...... wimcapture /mnt/wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments"
+	  log " ...... cd_reporter $computer_id & wimcapture /mnt/wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
 	  cd_reporter $computer_id wim & wimcapture /mnt/wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress
 	  rm /tmp/wim.progress
 	  umount /mnt/wimsource
@@ -599,6 +605,7 @@ function uploadImage()
       rm /tmp/clone.progress
       cat /var/log/partclone.log >> $CLIENT_LOG
 	  
+	  killall cd_reporter
 	fi
   done
 }
@@ -630,7 +637,7 @@ function main()
   log " ** Removing All Files For Existing Image: $image_name ** "
     $curlAuth --data "profileId=$profile_id" "${web}DeleteImage" $curlEnd
 
-  calcSize
+  create_image_schema
   if [ "$upload_schema_only" = "true" ]; then
     checkout
   fi
@@ -650,7 +657,7 @@ function main()
   
     get_partitions "true"
     
-    uploadImage
+    upload_image "physical"
 
     if [ "$lvmExists" = "true" ]; then
 	  for partition in $partitions; do
@@ -670,7 +677,7 @@ function main()
 	  done
       
 	  partitions=$lvs_to_upload     
-      uploadImage "true"     
+      upload_image "lvm"     
     fi
 
   done
@@ -678,12 +685,10 @@ function main()
   log " shrunk_volumes: $shrunk_volumes"
   for shrunk_volume in $shrunk_volumes; do
     filesystem_type=`blkid -po udev $shrunk_volume | grep FS_TYPE | awk -F'=' '{print $2}'`
-    expandFS $shrunk_volume
+    expand_volume $shrunk_volume
   done
 
-  if [ -n "$hostScripts" ]; then
-    runScripts
-  fi
+  #TODO: Run custom scripts
   
 checkout
 }

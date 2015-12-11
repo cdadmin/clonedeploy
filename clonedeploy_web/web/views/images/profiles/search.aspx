@@ -8,7 +8,7 @@
 
 
 <asp:Content runat="server" ContentPlaceHolderID="SubHelp">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="icon help" data-info="Help" target="_blank"></a>
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits actions"  target="_blank">Help</a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
       <a class="confirm" href="#">Delete Selected Profiles</a>

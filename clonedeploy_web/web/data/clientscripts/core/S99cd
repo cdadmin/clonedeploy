@@ -7,8 +7,8 @@
 #               Note that the file systems are kept mounted.
 #
 # Author:       Miquel van Smoorenburg, <miquels@drinkel.nl.mugnet.org>
-#               Modified for RHS Linux by Damien Neil
-#				Modified for Clone Deploy
+#                   Modified for RHS Linux by Damien Neil
+#				     Modified for Clone Deploy
 . /bin/cd_global_functions
 
 export started_from_init="true"

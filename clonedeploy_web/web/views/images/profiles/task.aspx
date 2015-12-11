@@ -6,10 +6,10 @@
     <li>Task Options</li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubHelp">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="icon help" data-info="Help" target="_blank"></a>
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits actions" target="_blank">Help</a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
-    <asp:LinkButton ID="btnUpdateTask" runat="server" OnClick="btnUpdateTask_OnClick" Text="Update Task Options" CssClass="submits"/>
+    <asp:LinkButton ID="btnUpdateTask" runat="server" OnClick="btnUpdateTask_OnClick" Text="Update Task Options" CssClass="submits actions"/>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
      <script type="text/javascript">

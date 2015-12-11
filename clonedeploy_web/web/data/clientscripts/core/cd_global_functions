@@ -76,9 +76,9 @@ function checkout()
 		
 	sleep 1;
 	
-	if [ "$shutdown" = "poweroff" ]; then
+	if [ "$task_completed_action" = "Power Off" ]; then
 		poweroff;
-	elif [ "$shutdown" = "noshut" ]; then
+	elif [ "$task_completed_action" = "Exit To Shell" ]; then
 		/bin/bash
 	else
 		reboot -f
@@ -113,16 +113,16 @@ function error()
 	cat /tmp/clientlog.log | grep -v "percent completed" > /tmp/cleanedlog.log
 	$curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/cleanedlog.log | base64)"  -F subType="$(echo -n $task | base64)" "${web}UploadLog" $curlEnd
 	sleep 60
-	if [ "$shutdown" = "poweroff" ]; then
+	if [ "$task_completed_action" = "Power Off" ]; then
 		poweroff;
-	elif [ "$shutdown" = "noshut" ]; then
+	elif [ "$task_completed_action" = "Exit To Shell" ]; then
 		/bin/bash;
 	else
 		reboot -f
 	fi 
 }
 
-function expandFS()
+function expand_volume()
 {
 	#Always fix ntfs partitions even not being resized
 	if [ "$filesystem_type" = "ntfs" ]; then

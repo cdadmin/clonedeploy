@@ -6,19 +6,19 @@ computer_id=$1
 reporter_type=$2
 
 if [ "$reporter_type" = "partclone" ]; then
-while [ -f "/tmp/clone.progress" ]; do
-        progress="/tmp/clone.progress"
-        post=`tail -n 1 $progress`
-		result=$($curlAuth --data "computerId=$computer_id&progress=$post&progressType=partclone" "${web}UpdateProgress" $curlEnd)        
-        sleep 5
-done
-	
+  while [ -f "/tmp/clone.progress" ]; do
+    post=$(tail -n 1 /tmp/clone.progress)
+	result=$($curlAuth --data "computerId=$computer_id&progress=$post&progressType=partclone" "${web}UpdateProgress" $curlEnd)        
+     sleep 2
+  done	
 else
-	while [ -f "/tmp/wim.progress" ]; do
-        progress="/tmp/wim.progress"
-        post=`tail -n 1 $progress`
-		result=$($curlAuth --data "computerId=$computer_id&progress=$post&progressType=wim" "${web}UpdateProgress" $curlEnd)        
-        sleep 5
-done
+  while [ -f "/tmp/wim.progress" ]; do
+    post=$(cat /tmp/wim.progress | dos2unix | sed -e 's/    /\n/g' | sed -e 's/done)/)\n/g' | tail -n 1)
+	  if [ -z "$post" ]; then
+	    post="Please Wait.  Making WIM Pipable."
+	  fi
+    result=$($curlAuth --data "computerId=$computer_id&progress=$post&progressType=wim" "${web}UpdateProgress" $curlEnd)        
+    sleep 2
+  done
 fi
 
