@@ -20,7 +20,7 @@
             <asp:ListItem>All</asp:ListItem>
         </asp:DropDownList>
         <br class="clear"/>
-        <asp:LinkButton ID="btnExportLog" runat="server" Text="Export Log" CssClass="submits" OnClick="btnExportLog_Click"></asp:LinkButton>
+        <asp:LinkButton ID="btnExportLog" runat="server" Text="Export Log" CssClass="submits actions" OnClick="btnExportLog_Click"></asp:LinkButton>
     </div>
     <br class="clear"/>
     <asp:GridView ID="GridView1" runat="server" CssClass="Gridview log" ShowHeader="false">

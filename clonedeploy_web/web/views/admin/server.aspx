@@ -9,7 +9,7 @@
 </asp:Content>
 
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
-    <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update Server Settings" OnClick="btnUpdateSettings_OnClick" CssClass="submits"/>
+    <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update Server Settings" OnClick="btnUpdateSettings_OnClick" CssClass="submits actions"/>
 </asp:Content>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="SubContent" Runat="Server">

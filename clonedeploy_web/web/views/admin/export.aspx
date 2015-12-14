@@ -7,6 +7,6 @@
         });
     </script>
     <div class="size-4 column">
-        <asp:LinkButton ID="btnExport" runat="server" Text="Export Database" OnClick="btnExport_Click" CssClass="submits"/>
+        <asp:LinkButton ID="btnExport" runat="server" Text="Export Database" OnClick="btnExport_Click" CssClass="submits actions"/>
     </div>
 </asp:Content>
