@@ -21,7 +21,6 @@
     </div>
     <br class="clear"/>
     
-    <div class="full column">
     <p class="total">
         <asp:Label ID="lblTotal" runat="server"></asp:Label>
     </p>
@@ -51,7 +50,7 @@
             No Computers Found
         </EmptyDataTemplate>
     </asp:GridView>
-    </div>
+
     <div id="confirmbox" class="confirm-box-outer">
         <div class="confirm-box-inner">
             <h4>

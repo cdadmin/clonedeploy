@@ -97,21 +97,13 @@ function error()
 	echo
 	echo " ** Rebooting In One Minute ** "
 	
-	if [ "$hostID" = "" ]; then
-			hostID="ondemand"
-			saveLocation="logs"
-	else
-			saveLocation="host"
+	if [ -z "$computer_id"  ]; then
+			computer_id="-1"
 	fi
 		
-	if [ "$imgDirection" = "pull" ]; then
-		logName=$hostID.upload
-	else
-		logName=$hostID.download
-	fi
 	
 	cat /tmp/clientlog.log | grep -v "percent completed" > /tmp/cleanedlog.log
-	$curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/cleanedlog.log | base64)"  -F subType="$(echo -n $task | base64)" "${web}UploadLog" $curlEnd
+	$curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/cleanedlog.log | base64)"  -F subType="$(echo -n $task | base64)"  -F mac="$(echo -n $mac | base64)" "${web}UploadLog" $curlEnd
 	sleep 60
 	if [ "$task_completed_action" = "Power Off" ]; then
 		poweroff;

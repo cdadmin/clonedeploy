@@ -25,7 +25,7 @@ public partial class views_images_profiles_search : Images
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvProfiles.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            BLL.Computer.DeleteComputer(Convert.ToInt32(dataKey.Value));
+            BLL.ImageProfile.DeleteProfile(Convert.ToInt32(dataKey.Value));
         }
 
         PopulateGrid();
@@ -126,5 +126,21 @@ public partial class views_images_profiles_search : Images
                 lblClient.Text = BLL.ImageSchema.MinimumClientSizeForGridView(Convert.ToInt32(dataKey.Value), selectedHd);
             }
         }
+    }
+
+    protected void profileClone_OnClick(object sender, EventArgs e)
+    {
+        var control = sender as Control;
+        if (control != null)
+        {
+            var gvRow = (GridViewRow)control.Parent.Parent;
+            var dataKey = gvProfiles.DataKeys[gvRow.RowIndex];
+            if (dataKey != null)
+            {
+                var imageProfile = BLL.ImageProfile.ReadProfile(Convert.ToInt32(dataKey.Value));
+                BLL.ImageProfile.CloneProfile(imageProfile);
+            }
+        }
+        PopulateGrid();
     }
 }

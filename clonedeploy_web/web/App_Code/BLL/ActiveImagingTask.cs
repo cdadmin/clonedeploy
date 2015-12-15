@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BLL.Workflows;
 using DAL;
@@ -121,6 +122,47 @@ namespace BLL
                 uow.ActiveImagingTaskRepository.DeleteRange();
                 uow.Save();
             }
-        } 
+        }
+
+        public static int GetCurrentQueue()
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return
+                    Convert.ToInt32(uow.ActiveImagingTaskRepository.Count(x => x.Status == "3" && x.Type == "unicast"));
+
+            }
+        }
+
+        public static Models.ActiveImagingTask GetLastQueuedTask()
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return
+                    uow.ActiveImagingTaskRepository.Get(x => x.Status == "2" && x.Type == "unicast",
+                        orderBy: q => q.OrderByDescending(t => t.QueuePosition)).FirstOrDefault();
+            }
+        }
+
+        public static string GetQueuePosition(int computerId)
+        {
+            var computerTask = GetTask(computerId);
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return
+                    uow.ActiveImagingTaskRepository.Count(
+                        x => x.Status == "2" && x.QueuePosition < computerTask.QueuePosition);
+            }
+        }
+
+        public static Models.ActiveImagingTask GetNextComputerInQueue()
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return
+                    uow.ActiveImagingTaskRepository.Get(x => x.Status == "2" && x.Type == "unicast",
+                        orderBy: q => q.OrderBy(t => t.QueuePosition)).FirstOrDefault();
+            }
+        }
     }
 }

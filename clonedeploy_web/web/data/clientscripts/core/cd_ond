@@ -1,23 +1,12 @@
-#!/bin/sh
+#!/bin/bash
 
-. functions
-. cd_helpers
+. /bin/cd_global_functions
 
-function ond_HostInfo()
-{
-	unicastInfo=`curl -sSk -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -Fdirection="$(echo -n $1 | base64)" -FimageID="$(echo -n $imageID | base64)" -Fmac="$(echo -n $mac | base64)" "${web}UcInfo" --connect-timeout 10 --stderr -`
-	if [[ $unicastInfo == *"Client Error:"* ]]; then
-		error "$unicastInfo"
-	fi
-	for arg in "$unicastInfo"; do case "$arg" in *=*) eval "$arg";; esac; done
-	
-}
-
-if [ "$startedFromInit" != "true" ]; then
+if [ "$started_from_init" != "true" ]; then
 	error "Script Cannot Be Started This Way, Exports Are Not Set."
 fi
 
-taskType=$(dialog --backtitle "Clone Deploy" --title "Select A Task" --clear --menu "" 10 30 3 1 Deploy 2 Upload 3 Multicast --stdout)
+taskType=$(dialog --backtitle "Clone Deploy" --title "Select A Task" --clear --menu "" 20 60 15 1 Deploy 2 Upload 3 Multicast --stdout)
 
 
 if [ "$taskType" != "1" ] && [ "$taskType" != "2" ] && [ "$taskType" != "3" ]; then
@@ -27,46 +16,30 @@ fi
 
 
 if [ "$taskType" = "1" ]; then
-	imageList=`$curlCommand --data "userId=0" "${web}ListImages" $curlClose`
-	imageId=$(dialog --backtitle "Clone Deploy" --title "Select An Image" --clear --menu "" 10 30 3 `ParseJSON "$imageList" .Images[]` --stdout)
-	imageProfileList=`$curlCommand --data "imageId=$imageId" "${web}ListImageProfiles" $curlClose`
-	if [ "`ParseJSON "$imageProfileList" .Count`" = "1" ]; then
-		imageProfileId=`ParseJSON "$imageProfileList" .FirstProfileId`
+	imageList=`$curlCommand --data "userId=0" "${web}ListImages" $curlEnd`
+	imageId=$(dialog --backtitle "Clone Deploy" --title "Select An Image" --clear --menu "" 20 60 15 `parse_json "$imageList" .Images[]` --stdout)
+	imageProfileList=`$curlCommand --data "imageId=$imageId" "${web}ListImageProfiles" $curlEnd`
+	if [ "`parse_json "$imageProfileList" .Count`" = "1" ]; then
+		imageProfileId=`parse_json "$imageProfileList" .FirstProfileId`
 	else
-		imageProfileId=$(dialog --backtitle "Clone Deploy" --title "Select An Image Profile" --clear --menu "" 10 30 3 `ParseJSON "$imageProfileList" .ImageProfiles[]` --stdout)
+		imageProfileId=$(dialog --backtitle "Clone Deploy" --title "Select An Image Profile" --clear --menu "" 20 60 15 `parse_json "$imageProfileList" .ImageProfiles[]` --stdout)
 	fi
 	
 	ond_HostInfo "push"
 	unicastInfo="${unicastInfo} multicast=false imgDirection=push"
 	
 elif [ "$taskType" = "2" ]; then
-	uploadType=$(dialog --backtitle "Clone Deploy" --title "Select An Upload Type" --menu "" 10 30 3 1 "Upload New Image" 2 "Upload Existing Image" --stdout)
+  image_list=`$curlCommand --data "userId=0" "${web}ListImages" $curlEnd`
+  image_id=$(dialog --backtitle "Clone Deploy" --title "Select An Image" --clear --menu "" 20 60 15 `parse_json "$image_list" .Images[]` --stdout)
+  profile_list=`$curlCommand --data "imageId=$image_id" "${web}ListImageProfiles" $curlEnd`
+  if [ "$(parse_json "$profile_list" .Count)" = "1" ]; then
+    image_profile_id=`parse_json "$profile_list" .FirstProfileId`
+  else
+    image_profile_id=$(dialog --backtitle "Clone Deploy" --title "Select An Image Profile" --clear --menu "" 20 60 15 `parse_json "$profile_list" .ImageProfiles[]` --stdout)
+  fi
+  ondemand_arguments=$($curlAuth --data "mac=$mac&profileId=$image_profile_id&taskType=pull" "${web}OnDemandTaskArgs" $curlEnd)
+  ondemand_arguments="${ondemand_arguments} task=pull"
 		
-	if [ "$uploadType" != "1" ] && [ "$uploadType" != "2" ]; then
-		error "Could Not Determine If This Is A New Or Existing Image"
-	fi
-
-	if [ "$uploadType" = "1" ]; then
-		imageName=$(dialog --backtitle "Clone Deploy" --title "Enter An Image Name" --inputbox "" 8 50 --stdout)
-
-		addImageResult=`$curlAuth --data "name=$imageName" ${web}AddImage $curlClose`
-		if [ "`ParseJSON "$addImageResult" .IsValid`" = "true" ]; then
-			imageId=`ParseJSON "$addImageResult" .Message`
-			echo $imageId
-			sleep 5
-		else
-			error "`ParseJSON "$addImageResult" .Message`"
-		fi
-		ond_HostInfo "pull"
-		unicastInfo="${unicastInfo} imageID=${imageID[0]} imgDirection=pull"
-	else
-		imagelist=`$curlCommand --data "userId=0" "${web}ListImages" $curlClose`
-		imageID=$(dialog --backtitle "Clone Deploy" --title "Select An Image" --clear --menu "" 10 30 3 `ParseJSON "$imagelist" .Images[]` --stdout)
-		ond_HostInfo "pull"
-		unicastInfo="${unicastInfo} imgDirection=pull"
-		
-	fi
-	
 elif [ "$taskType" = "3" ]; then
 	while [ "$sessionID" = "" ]; do
 		if [ "$sessionID" = "" ]; then
@@ -108,8 +81,9 @@ else
 	error "An Error Occurred Or No Task Was Selected"
 fi
 
+ clear_and_move_down
 if [ "$taskType" = "2" ]; then
-	/bin/pull "true" "$unicastInfo"
+	/bin/cd_pull "true" "$ondemand_arguments"
 else
 	if [ "$hostName" = "" ] || [ "$hostName" = "null" ]; then
 		echo "This Computer Was Not Found In The Database, Enter A Name For It Now:"
@@ -119,5 +93,5 @@ else
 		echo 
 		unicastInfo="${unicastInfo} hostName=$hostName"
 	fi
-	/bin/push "true" "$unicastInfo"
+	/bin/cd_push "true" "$unicastInfo"
 fi

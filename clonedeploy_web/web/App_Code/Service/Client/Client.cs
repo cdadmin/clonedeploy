@@ -184,6 +184,18 @@ namespace Service.Client
             new Service.Client.Global().UpdateProgressPartition(Convert.ToInt32(computerId), partition);
         }
 
+        [WebMethod]
+        public void OnDemandTaskArgs(string mac, string profileId, string taskType)
+        {
+            HttpContext.Current.Response.Write(new Service.Client.Global().OnDemandTaskArguments(mac, Convert.ToInt32(profileId), taskType));
+        }
+
+        [WebMethod]
+        public void CheckQueue(string computerId)
+        {
+            HttpContext.Current.Response.Write(new Service.Client.Global().CheckQueue(Convert.ToInt32(computerId)));
+        }
+
         /*
       
 
@@ -196,11 +208,7 @@ namespace Service.Client
             HttpContext.Current.Response.Write(new Download().AlignBcdToPartition(bcd,offsetBytes));
         }
 
-        [WebMethod]
-        public void AmINext()
-        {
-            HttpContext.Current.Response.Write(new Download().AmINext());
-        }
+      
 
         private bool Authenticate()
         {
@@ -225,15 +233,7 @@ namespace Service.Client
 
         
 
-        [WebMethod]
-        public void CheckOut()
-        {
-            var imgName = Utility.Decode(HttpContext.Current.Request.Form["imgName"]);
-            var direction = Utility.Decode(HttpContext.Current.Request.Form["direction"]);
-            var mac = Utility.Decode(HttpContext.Current.Request.Form["mac"]);
-
-            if (Authenticate()) HttpContext.Current.Response.Write(new Global().CheckOut(mac, direction, imgName));
-        }
+      
 
       
 
@@ -248,12 +248,7 @@ namespace Service.Client
             if (Authenticate()) HttpContext.Current.Response.Write(new Upload().CreateDirectory(imageName, dirName));
         }
 
-        [WebMethod]
-        public void CurrentQueuePosition()
-        {
-            var mac = Utility.Decode(HttpContext.Current.Request.Form["mac"]);
-            HttpContext.Current.Response.Write(new Download().CurrentQueuePosition(mac));
-        }
+       
 
       
 
@@ -350,12 +345,7 @@ namespace Service.Client
             if (Authenticate()) HttpContext.Current.Response.Write(new Upload().AddNewImageSpecs(imagename, imagesize));
         }
 
-        [WebMethod]
-        public void InSlot()
-        {
-            var mac = Utility.Decode(HttpContext.Current.Request.Form["mac"]);
-            if (Authenticate()) HttpContext.Current.Response.Write(new Download().InSlot(mac));
-        }
+       
 
         [WebMethod]
         public void IpxeBoot(string filename, string type)
@@ -423,51 +413,19 @@ namespace Service.Client
             HttpContext.Current.Response.Write(new Download().ModifyKnownLayout(layout, clientHd));
         }
 
-        [WebMethod]
-        public void QueuePosition()
-        {
-            var mac = Utility.Decode(HttpContext.Current.Request.Form["mac"]);
-            HttpContext.Current.Response.Write(new Download().QueuePosition(mac));
-        }
+      
 
-        [WebMethod]
-        public void QueueStatus()
-        {
-            HttpContext.Current.Response.Write(new Download().QueueStatus());
-        }
+       
 
      
 
-        [WebMethod]
-        public void StartReceiver()
-        {
-            var imagePath = Utility.Decode(HttpContext.Current.Request.Form["imgPath"]);
-            var port = Utility.Decode(HttpContext.Current.Request.Form["portBase"]);
+       
 
-            if (Authenticate()) HttpContext.Current.Response.Write(new Upload().StartReceiver(imagePath, port));
-        }
-
-        [WebMethod]
-        public void UcInfo()
-        {
-            var direction = Utility.Decode(HttpContext.Current.Request.Form["direction"]);
-            var mac = Utility.Decode(HttpContext.Current.Request.Form["mac"]);
-            var imageId = Utility.Decode(HttpContext.Current.Request.Form["imageID"]);
-
-
-            if (Authenticate())
-                HttpContext.Current.Response.Write(new OnDemand().GetCustomUnicastInfo(direction, mac,
-                    imageId));
-        }
+       
 
       
 
-        [WebMethod]
-        public void UpdateProgressPartition(string hostName, string partition)
-        {
-            var progress = new TaskProgress();
-            progress.UpdateProgressPartition(hostName, partition);
-        }
+      
 
       
          

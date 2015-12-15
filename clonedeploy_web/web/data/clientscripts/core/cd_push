@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+. /bin/cd_global_functions
 
 function downloadImage()
 {	
@@ -806,88 +808,37 @@ EOFN
 
 }
 
-. functions
+function main()
+{
 
-isond="$1"
-taskArgs="$2"
-logBootArgs
+  log_boot_args
 
-if [ "$isond" = "true" ]; then
-	log " ** Using On Demand Mode ** "
-	for arg in "$taskArgs"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
-else
-	checkin
-
-	if [ "$multicast" = "false" ]; then
-		
-		log " ** Checking Current Queue ** " "display"
-		queueResult=`curl -sSk "${web}QueueStatus" --connect-timeout 10 --stderr -`
-		if [ ! "$?" = "0" ]; then
-			error "Could Not Determine Current Queue Availability $queueResult"
-		else
-			arr=$(echo $queueResult | tr "," "\n")
-			i=0
-			for x in $arr; do
-				array[i]=$x
-				i=$(( $i + 1 ))
-			done
-
-			slotsInUse=${array[0]}
-			totalSlots=${array[1]}
-		fi
-	
-		log " ...... $slotsInUse Of $totalSlots In Use" "display"
-		echo
-		if [ "$slotsInUse" -ge "$totalSlots" ]; then
-			startPosition=`curl -sSk -Fmac="$(echo -n $mac | base64)" "${web}QueuePosition" --connect-timeout 10 --stderr -`
-			log " ...... Queue Is Full, Waiting For An Available Slot" "display"
-			sleep 2
-			while true; do
-				queuePosition=`curl -sSk -Fmac="$(echo -n $mac | base64)" "${web}CurrentQueuePosition" --connect-timeout 10 --stderr -`
-				echo " ...... Current Position: $queuePosition"
-				queueCount=`curl -sSk "${web}QueueStatus" --connect-timeout 10 --stderr -`
-				arr=$(echo $queueCount | tr "," "\n");
-				i=0;
-				for x in $arr; do
-					array[i]=$x;
-					i=$(( $i + 1 ))
-				done
-
-				slotsInUse=${array[0]}
-				totalSlots=${array[1]}
-				
-					if [ "$slotsInUse" -ge "$totalSlots" ]; then
-					log " ...... No Slots Available" "display"
-				else
-					aminext=`curl -sSk "${web}AmINext" --connect-timeout 10 --stderr -`
-					if [ "$aminext" = "$startPosition" ]; then
-						inActiveSlot=`curl -sSk -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -Fmac="$(echo -n $mac | base64)" "${web}InSlot" --connect-timeout 10 --stderr -`
-						break;
-					fi
-				fi
-				sleep 5
-				
-				clear
-			done
-		else
-			inActiveSlot=`curl -sSk -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -Fmac="$(echo -n $mac | base64)" "${web}InSlot" --connect-timeout 10 --stderr -`	
-		fi
+  if [ "$is_ondemand" = "true" ]; then
+    log " ** Using On Demand Mode ** "
+	for arg in "$ondemand_arguments"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
+  else
+    checkin
+	if [ "$multicast" = "true" ]; then
+	  $curlAuth --data "computerId=$computer_id" "${web}UpdateStatusInProgress" $curlEnd
 	else
-		inActiveSlot=`curl -sSk -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -Fmac="$(echo -n $mac | base64)" "${web}InSlot" --connect-timeout 10 --stderr -`
-	fi
-fi
+	  log " ** Checking Current Queue ** " "display"	
+      while true; do
+	    queue_result=$($curlAuth --data "computerId=$computer_id" "${web}CheckQueue" $curlEnd)
+		if [ "$queue_result" = "true" ]; then
+		  break
+		else
+		  echo "** Queue Is Full, Waiting For Open Slot ** "
+		  echo " ...... Current Position $queue_result"
+		fi
+      done
+	fi	  		
+  fi
 
-sleep 2
+  sleep 2
 
-if [ "$xferMode" = "nfs" ]; then
-	mountNFS
-elif [ "$xferMode" = "smb" ]; then
-	mountSMB
-else
-	getFileNames
-fi
+  mount_smb
 
-getHD
+  get_hard_drives
 echo
 sleep 2
 
@@ -974,3 +925,9 @@ for hd in $disks; do
 
 done
 checkout
+}
+
+is_ondemand="$1"
+ondemand_arguments="$2"
+main "$@"
+

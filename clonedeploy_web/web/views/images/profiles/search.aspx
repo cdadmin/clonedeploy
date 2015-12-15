@@ -51,6 +51,11 @@
                 </ItemTemplate>
             </asp:TemplateField>
             <asp:HyperLinkField DataNavigateUrlFields="Id,ImageId" DataNavigateUrlFormatString="~/views/images/profiles/chooser.aspx?imageid={1}&profileid={0}&cat=profiles" Text="View"/>
+               <asp:TemplateField ShowHeader="False">
+                <ItemTemplate>
+                    <asp:LinkButton runat="server" Id="profileClone" Text="Clone"  OnClick="profileClone_OnClick"></asp:LinkButton>
+                </ItemTemplate>
+            </asp:TemplateField>
           <asp:TemplateField>
                 <ItemTemplate>
                     <tr>
@@ -82,7 +87,7 @@
     <div id="confirmbox" class="confirm-box-outer">
         <div class="confirm-box-inner">
             <h4>
-                <asp:Label ID="lblTitle" runat="server" Text="Delete The Selected Hosts?"></asp:Label>
+                <asp:Label ID="lblTitle" runat="server" Text="Delete The Selected Profiles?"></asp:Label>
             </h4>
             <div class="confirm-box-btns">
                 <asp:LinkButton ID="ConfirmButton" OnClick="ButtonConfirmDelete_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>

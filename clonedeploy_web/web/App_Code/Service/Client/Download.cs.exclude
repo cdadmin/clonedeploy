@@ -72,27 +72,8 @@ namespace Services.Client
             return Utility.Encode(bcd);
         }
 
-        public string AmINext()
-        {
-            using (var db = new DB())
-            {
-                return (from a in db.ActiveTasks where a.Type == "unicast" && a.Status == "2" orderby a.QueuePosition select a.QueuePosition).FirstOrDefault().ToString();
-            }
-        }
 
-        public string CurrentQueuePosition(string mac)
-        {
-            CloneDeployDbContext context = new CloneDeployDbContext();
-            using (var db = new DB())
-            {
-                var currentPosition =(from h in context.Computers 
-                           join t in db.ActiveTasks on h.Id equals t.ComputerId
-                           where (h.Mac.ToLower() == mac.ToLower())
-                           select t.QueuePosition).FirstOrDefault();
-                int intCurrentPosition = Convert.ToInt16(currentPosition);
-                return db.ActiveTasks.Count(t => t.QueuePosition < intCurrentPosition).ToString();
-            }
-        }
+      
 
         public string GetFileNames(string imageName)
         {
@@ -666,41 +647,8 @@ namespace Services.Client
             return result;
         }
 
-        public string QueuePosition(string mac)
-        {
-            CloneDeployDbContext context = new CloneDeployDbContext();
-            string result;
+       
 
-                var maxQueuePosition = (from t in context.ActiveImagingTasks
-                                        where t.Status == "2" && t.Type == "unicast"
-                                        orderby t.QueuePosition descending
-                                        select t.QueuePosition).FirstOrDefault();
-
-
-                var q = (from h in context.Computers
-                         join t in context.ActiveImagingTasks on h.Id equals t.ComputerId
-                         where (h.Mac.ToLower() == mac.ToLower())
-                         select t).FirstOrDefault();
-                q.Status = "2";
-                q.QueuePosition = (Convert.ToInt16(maxQueuePosition) + 1);
-                result = q.QueuePosition.ToString();
-            new BLL.ActiveImagingTask().UpdateActiveImagingTask(q);
-            
-
-            return result;
-        }
-
-        public string QueueStatus()
-        {
-    
-            string result;
-
-            using (var db = new DB())
-            {
-                result = db.ActiveTasks.Count(t => t.Status == "3" && t.Type == "unicast").ToString();
-            }
-
-            return result + "," + Settings.QueueSize;
-        }
+       
     }
 }

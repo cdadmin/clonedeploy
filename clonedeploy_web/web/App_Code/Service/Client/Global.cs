@@ -164,14 +164,29 @@ namespace Service.Client
 
         public void UploadLog(int computerId, string logContents, string subType)
         {
-            var computerLog = new Models.ComputerLog
+            if (computerId == -1)
             {
-                ComputerId = computerId,
-                Contents = logContents,
-                Type = "image",
-                SubType = subType
-            };
-            BLL.ComputerLog.AddComputerLog(computerLog);
+                return;
+            }
+            else
+            {
+                var computerLog = new Models.ComputerLog
+                {
+                    ComputerId = computerId,
+                    Contents = logContents,
+                    Type = "image",
+                    SubType = subType
+                };
+                BLL.ComputerLog.AddComputerLog(computerLog);
+            }
+        }
+
+        public string OnDemandTaskArguments(string mac, int profileId, string taskType)
+        {
+            var computer = BLL.Computer.GetComputerFromMac(mac);
+            var imageProfile = BLL.ImageProfile.ReadProfile(profileId);
+            return new BLL.Workflows.CreateTaskArguments(computer, imageProfile, taskType).Run();
+            
         }
 
         public string UploadFile(string fileName, string imagePath, string fileType, HttpFileCollection files)
@@ -203,6 +218,69 @@ namespace Service.Client
             }
         }
 
+        public string CheckQueue(int computerId)
+        {
+            //Check if already part of the queue
+            var thisComputerTask = BLL.ActiveImagingTask.GetTask(computerId);
+            if (thisComputerTask.Status == "2")
+            {
+                //Check if the queue is open yet
+                var inUse = BLL.ActiveImagingTask.GetCurrentQueue();
+                var totalCapacity = Convert.ToInt32(Settings.QueueSize);
+                if (inUse < totalCapacity)
+                {
+                    //queue is open, is this computer next
+                    var firstTaskInQueue = BLL.ActiveImagingTask.GetNextComputerInQueue();
+                    if (firstTaskInQueue.ComputerId == computerId)
+                    {
+                        ChangeStatusInProgress(computerId);
+                        return "true";
+                    }
+                    else
+                    {
+                        //not time for this computer yet
+                        var queuePosition = BLL.ActiveImagingTask.GetQueuePosition(computerId);
+                        return "false" + queuePosition;
+                    }
+                }
+                else
+                {
+                    //queue not open yet
+                    var queuePosition = BLL.ActiveImagingTask.GetQueuePosition(computerId);
+                    return "false" + queuePosition;
+                }
+            }
+            else
+            {
+                //New computer checking queue for the first time
+
+                var inUse = BLL.ActiveImagingTask.GetCurrentQueue();
+                var totalCapacity = Convert.ToInt32(Settings.QueueSize);
+                if (inUse < totalCapacity)
+                {
+                    ChangeStatusInProgress(computerId);
+
+                    return "true";
+
+                }
+                else
+                {
+                    //place into queue
+                    var lastQueuedTask = BLL.ActiveImagingTask.GetLastQueuedTask();
+                    if (lastQueuedTask == null)
+                        thisComputerTask.QueuePosition = 1;
+                    else
+                        thisComputerTask.QueuePosition = lastQueuedTask.QueuePosition + 1;
+                    thisComputerTask.Status = "2";
+                    BLL.ActiveImagingTask.UpdateActiveImagingTask(thisComputerTask);
+
+                    var queuePosition = BLL.ActiveImagingTask.GetQueuePosition(computerId);
+                    return "false" + queuePosition;
+
+                }
+            }
+
+        }
         /*
         public string GetSmbCredentials(string credential)
         {

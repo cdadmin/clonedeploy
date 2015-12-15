@@ -241,6 +241,7 @@ CONFIRM
 #	 image_type
 #  Global Set:
 #    shrunk_volumes
+#    hd_has_lvm
 #  Arguments:
 #    volume_to_shrink - The partition or logical volume that
 #      contains the volume to shrink
@@ -344,7 +345,7 @@ function create_image_schema()
           volume_group=$(pvs --noheadings | grep $partition | awk '/^ / {print $2}')
 		  escaped_volume_group=$(echo $volume_group | sed 's/-/--/g')
           if [ "$?" = "0" ]; then
-            lvmExists=true
+            hd_has_lvm="true"
             log " ** Displaying LVM Information ** "
             pvdisplay &>>$CLIENT_LOG
             vgdisplay &>>$CLIENT_LOG
@@ -590,15 +591,13 @@ function upload_image()
 	    ntfs-3g -o force,rw $partition /mnt/wimsource 2> /dev/null        
 	  else
 	    mount $partition /mnt/wimsource 2> /dev/null
-      fi
-	  
+      fi 	  
 	  touch /tmp/wim.progress
 	  log " ...... cd_reporter $computer_id & wimcapture /mnt/wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
 	  cd_reporter $computer_id wim & wimcapture /mnt/wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress
 	  rm /tmp/wim.progress
 	  umount /mnt/wimsource
-	  
-	 else
+    else
 	  touch /tmp/clone.progress
 	  log " ...... cd_reporter $computer_id & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension"    
 	  cd_reporter $computer_id partclone & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension     
@@ -659,7 +658,7 @@ function main()
     
     upload_image "physical"
 
-    if [ "$lvmExists" = "true" ]; then
+    if [ "$hd_has_lvm" = "true" ]; then
 	  for partition in $partitions; do
 	    volume_group=$(pvs --noheadings | grep $partition | awk '/^ / {print $2}')
 		if [ -z "$volume_group" ]; then

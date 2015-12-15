@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using DAL;
 using Helpers;
+using Models;
 using Newtonsoft.Json;
 using Partition;
 
@@ -14,30 +15,35 @@ namespace BLL
     {
         public static Models.ValidationResult AddImage(Models.Image image)
         {
+            var validationResult = ValidateImage(image, true);
             using (var uow = new DAL.UnitOfWork())
             {
-                var validationResult = ValidateImage(image, true);
                 if (validationResult.IsValid)
                 {
                     validationResult.IsValid = false;
                     uow.ImageRepository.Insert(image);
                     if (uow.Save())
                     {
-                        try
-                        {
-                            Directory.CreateDirectory(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name);
-                            validationResult.IsValid = true;
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.Log(ex.Message);
-                            throw;
-                        }
+                        validationResult.IsValid = true;
                     }
 
                 }
-                return validationResult;
+               
             }
+            if (validationResult.IsValid)
+            {
+                try
+                {
+                    Directory.CreateDirectory(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name);
+                    BLL.ImageProfile.SeedDefaultLinuxProfile(image.Id);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(ex.Message);
+                    throw;
+                }                
+            }
+            return validationResult;
         }
 
 

@@ -47,11 +47,19 @@ namespace BLL.Workflows
             foreach (var fileFolder in ImageProfileFileFolder.SearchImageProfileFileFolders(_imageProfile.Id))
                 filesFolders += fileFolder.Id + " ";
 
-            AppendString("computer_name=" + _computer.Name);
-            AppendString("computer_id=" + _computer.Id);
+            //Support For on demand 
+            if (_computer != null)
+            {
+                AppendString("computer_name=" + _computer.Name);
+                AppendString("computer_id=" + _computer.Id);
+                AppendString("dp_id=" + Computer.GetDistributionPoint(_computer).Id);
+            }
+            else
+            {
+                AppendString("dp_id=" + DistributionPoint.GetPrimaryDistributionPoint().Id);
+            }
             AppendString("image_name=" + _imageProfile.Image.Name);
-            AppendString("profile_id=" + _imageProfile.Id);
-            AppendString("dp_id=" + Computer.GetDistributionPoint(_computer).Id);
+            AppendString("profile_id=" + _imageProfile.Id);       
             AppendString("server_ip=" + Settings.ServerIp);
             AppendString(_direction == "multicast" ? "multicast=true" : "multicast=false");
             AppendString("pre_scripts=" + preScripts);

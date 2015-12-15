@@ -16,7 +16,7 @@ namespace BLL.Workflows
         private readonly bool _isOnDemand;
         private readonly Models.ActiveMulticastSession _multicastSession;
         private List<Models.Computer> _computers;
-        private Models.Group _group;
+        private readonly Models.Group _group;
         private Models.ImageProfile _imageProfile;
 
         //Constructor For Starting Multicast For Group
@@ -189,7 +189,7 @@ namespace BLL.Workflows
             {
                 if (!part.Active) continue;
                 string imageFile = null;
-                foreach (var ext in new[] {".ntfs", ".fat", ".extfs", ".hfsp", ".imager"})
+                foreach (var ext in new[] {".ntfs", ".fat", ".extfs", ".hfsp", ".imager", ".xfs"})
                 {
                     imageFile =
                         Directory.GetFiles(
@@ -245,7 +245,7 @@ namespace BLL.Workflows
                         compAlg = isUnix ? "gzip -c -d " : "gzip.exe -c -d ";
                         stdout = "";
                         break;
-                    case ".none":
+                    case ".uncp":
                         compAlg = isUnix ? "cat " : "type ";
                         stdout = "";
                         break;
