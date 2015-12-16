@@ -139,12 +139,12 @@ find /grub/menu.lst
 find /boot/grub/menu.lst
 eof
 			cat /tmp/grubroot >>/tmp/clientlog.log
-			grubHdPass=$(( $hdPass - 1 ))
+			grubHdPass=$(( $current_hd_number - 1 ))
 			grubRoot=$(cat /tmp/grubroot | grep -i "hd$grubHdPass")
 			grubHD=$(echo $grubRoot | cut -d"," -f1)
 			grubHD="$grubHD)"
 		fi
-			log "grubHdPass: $grubHdPass grubRoot: $grubRoot grubHD: $grubHD hdPass: $hdPass"
+			log "grubHdPass: $grubHdPass grubRoot: $grubRoot grubHD: $grubHD current_hd_number: $current_hd_number"
 		
 		if [ -n "$grubRoot" ]; then
 			log " ...... Found Legacy Grub On $grubRoot "
@@ -842,15 +842,17 @@ function main()
 echo
 sleep 2
 
-hdPass=0
+imaged_schema_drives=""
+current_hd_number=0
 for hd in $disks; do
-	hdPass=$(( $hdPass + 1 ))
+	current_hd_number=$(( $current_hd_number + 1 ))
 	
 	drive=$(echo $hd | cut -d "/" -f 3)
 	lbs=$(cat /sys/block/$drive/queue/logical_block_size)
 	dsize=$(cat /sys/block/$drive/size)
 	newHDSize=`expr $lbs '*' $dsize`
-	minHDSizeResult=`curl -sSkL "${web}GetMinHdSize?imgName=$imgName&hdToGet=$hdPass&newHdSize=$newHDSize" --connect-timeout 10 --stderr -`
+	hd_schema=$($curlAuth --data "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$newHDSize&imageSchemaDrives=$imaged_schema_drives" "${web}CheckHdRequirements" $curlEnd)
+	#minHDSizeResult=`curl -sSkL "${web}GetMinHdSize?imgName=$imgName&hdToGet=$current_hd_number&newHdSize=$newHDSize" --connect-timeout 10 --stderr -`
 
 	log " ** Using HD $hd ** "
 	log " ...... minHDSizeResult: $minHDSizeResult" 

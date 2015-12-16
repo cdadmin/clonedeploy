@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Helpers;
@@ -318,6 +319,34 @@ namespace BLL.ClientPartitioning
             volumeGroupHelper.Pv = _imageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup.PhysicalVolume;
             volumeGroupHelper.MinSizeBlk = 100*1024*1024/lbsByte;
             return volumeGroupHelper;
+        }
+
+        public int NextActiveHardDrive(List<int> schemaImagedDrives, int clientHdNumber )
+        {
+
+            //Image schema collection starts at 0 not 1
+            var schemaHdNumber = clientHdNumber - 1;
+
+            //Look for first active hard drive image
+            if (_imageSchema.HardDrives[schemaHdNumber].Active)
+            {
+                return schemaHdNumber;
+            }
+            else
+            {
+                var hardDriveCounter = 0;
+                while (hardDriveCounter <= _imageSchema.HardDrives.Count())
+                {
+                    if (_imageSchema.HardDrives[hardDriveCounter].Active && !schemaImagedDrives.Contains(hardDriveCounter))
+                    {
+                        return hardDriveCounter;
+                    }
+
+                    hardDriveCounter++;
+                }
+
+                return -1;
+            }
         }
 
         public Models.ImageSchema.ImageSchema GetImageSchema()

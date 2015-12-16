@@ -196,6 +196,12 @@ namespace Service.Client
             HttpContext.Current.Response.Write(new Service.Client.Global().CheckQueue(Convert.ToInt32(computerId)));
         }
 
+        [WebMethod]
+        public void CheckHdRequirements(string profileId, string clientHdNumber, string newHdSize, string schemaHds)
+        {
+            HttpContext.Current.Response.Write(new Service.Client.Global().CheckHdRequirements(Convert.ToInt32(profileId),Convert.ToInt32(clientHdNumber),newHdSize,schemaHds));
+        }
+
         /*
       
 
@@ -320,11 +326,7 @@ namespace Service.Client
 
        
 
-        [WebMethod]
-        public void GetMinHdSize(string imgName, string hdToGet, string newHdSize)
-        {
-            HttpContext.Current.Response.Write(new Download().GetMinHdSize(imgName, hdToGet, newHdSize));
-        }
+     
 
         [WebMethod]
         public void GetOriginalLvm(string imgName, string hdToGet, string clienthd)

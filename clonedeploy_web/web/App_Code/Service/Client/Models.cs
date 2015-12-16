@@ -33,4 +33,12 @@ namespace Services.Client
         public string Password { get; set; }
     }
 
+    public class HdRequirement
+    {
+        public string IsValid { get; set; }
+        public string Message { get; set; }
+        public string MinimumSizeBytes { get; set; }
+        public int SchemaHdNumber { get; set; }
+    }
+
 }

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Windows.Forms;
+using BLL.ClientPartitioning;
 using DAL;
 using Global;
 using Helpers;
@@ -279,6 +281,62 @@ namespace Service.Client
 
                 }
             }
+
+        }
+
+        public string CheckHdRequirements(int profileId, int clientHdNumber, string newHdSize, string imageSchemaDrives)
+        {
+            var result = new Services.Client.HdRequirement();
+
+            var imageProfile = BLL.ImageProfile.ReadProfile(profileId);
+            var imageSchema = new ClientPartitionHelper(imageProfile).GetImageSchema();
+
+            if (clientHdNumber > imageSchema.HardDrives.Count())
+            {
+                result.IsValid = "false";
+                result.Message = "No Image Exists To Download To This Hard Drive.  There Are More" +
+                                 "Hard Drive's Than The Original Image";
+
+                return JsonConvert.SerializeObject(result);
+            }
+
+            var listSchemaDrives = new List<int>();
+            if(!string.IsNullOrEmpty(imageSchemaDrives))
+                listSchemaDrives.AddRange(imageSchemaDrives.Split(null).Select(hd => Convert.ToInt32(hd)));         
+            result.SchemaHdNumber = new ClientPartitionHelper(imageProfile).NextActiveHardDrive(listSchemaDrives,clientHdNumber);
+            
+            if (result.SchemaHdNumber == -1)
+            {
+                result.IsValid = "false";
+                result.Message = "Not Active Hard Drive Images Were Found To Deploy.";
+                return JsonConvert.SerializeObject(result);
+            }
+
+            var newHdBytes = Convert.ToInt64(newHdSize);
+            var minimumSize = new ClientPartitionHelper(imageProfile).HardDrive(result.SchemaHdNumber + 1,newHdBytes);
+           
+           
+            if (minimumSize > newHdBytes)
+            {
+                Logger.Log("Error:  " + newHdBytes / 1024 / 1024 +
+                           " MB Is Less Than The Minimum Required HD Size For This Image(" +
+                           minimumSize / 1024 / 1024 + " MB)");
+
+                result.IsValid = "false";
+                result.Message = newHdBytes/1024/1024 +
+                                 " MB Is Less Than The Minimum Required HD Size For This Image(" +
+                                 minimumSize/1024/1024 + " MB)";
+                return JsonConvert.SerializeObject(result);
+            }
+            if (minimumSize == newHdBytes)
+            {
+                result.IsValid = "original";
+                return JsonConvert.SerializeObject(result);
+            }
+
+            result.IsValid = "true";
+
+            return JsonConvert.SerializeObject(result);
 
         }
         /*
