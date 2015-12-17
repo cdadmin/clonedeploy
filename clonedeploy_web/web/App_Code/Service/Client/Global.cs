@@ -222,6 +222,8 @@ namespace Service.Client
 
         public string CheckQueue(int computerId)
         {
+            var queueStatus = new Services.Client.QueueStatus();
+
             //Check if already part of the queue
             var thisComputerTask = BLL.ActiveImagingTask.GetTask(computerId);
             if (thisComputerTask.Status == "2")
@@ -236,20 +238,24 @@ namespace Service.Client
                     if (firstTaskInQueue.ComputerId == computerId)
                     {
                         ChangeStatusInProgress(computerId);
-                        return "true";
+                        queueStatus.Result = "true";
+                        queueStatus.Position = "0";
+                        return JsonConvert.SerializeObject(queueStatus);
                     }
                     else
                     {
                         //not time for this computer yet
-                        var queuePosition = BLL.ActiveImagingTask.GetQueuePosition(computerId);
-                        return "false" + queuePosition;
+                        queueStatus.Result = "false";
+                        queueStatus.Position = BLL.ActiveImagingTask.GetQueuePosition(computerId); 
+                        return JsonConvert.SerializeObject(queueStatus);
                     }
                 }
                 else
                 {
                     //queue not open yet
-                    var queuePosition = BLL.ActiveImagingTask.GetQueuePosition(computerId);
-                    return "false" + queuePosition;
+                    queueStatus.Result = "false";
+                    queueStatus.Position = BLL.ActiveImagingTask.GetQueuePosition(computerId);
+                    return JsonConvert.SerializeObject(queueStatus);
                 }
             }
             else
@@ -262,7 +268,9 @@ namespace Service.Client
                 {
                     ChangeStatusInProgress(computerId);
 
-                    return "true";
+                    queueStatus.Result = "true";
+                    queueStatus.Position = "0";
+                    return JsonConvert.SerializeObject(queueStatus);
 
                 }
                 else
@@ -276,8 +284,9 @@ namespace Service.Client
                     thisComputerTask.Status = "2";
                     BLL.ActiveImagingTask.UpdateActiveImagingTask(thisComputerTask);
 
-                    var queuePosition = BLL.ActiveImagingTask.GetQueuePosition(computerId);
-                    return "false" + queuePosition;
+                    queueStatus.Result = "false";
+                    queueStatus.Position = BLL.ActiveImagingTask.GetQueuePosition(computerId);
+                    return JsonConvert.SerializeObject(queueStatus);
 
                 }
             }
@@ -286,10 +295,11 @@ namespace Service.Client
 
         public string CheckHdRequirements(int profileId, int clientHdNumber, string newHdSize, string imageSchemaDrives)
         {
-            var result = new Services.Client.HdRequirement();
-
+            var result = new Services.Client.HardDriveSchema();
+            
             var imageProfile = BLL.ImageProfile.ReadProfile(profileId);
-            var imageSchema = new ClientPartitionHelper(imageProfile).GetImageSchema();
+            var partitionHelper = new ClientPartitionHelper(imageProfile);
+            var imageSchema = partitionHelper.GetImageSchema();
 
             if (clientHdNumber > imageSchema.HardDrives.Count())
             {
@@ -303,7 +313,7 @@ namespace Service.Client
             var listSchemaDrives = new List<int>();
             if(!string.IsNullOrEmpty(imageSchemaDrives))
                 listSchemaDrives.AddRange(imageSchemaDrives.Split(null).Select(hd => Convert.ToInt32(hd)));         
-            result.SchemaHdNumber = new ClientPartitionHelper(imageProfile).NextActiveHardDrive(listSchemaDrives,clientHdNumber);
+            result.SchemaHdNumber = partitionHelper.NextActiveHardDrive(listSchemaDrives,clientHdNumber);
             
             if (result.SchemaHdNumber == -1)
             {
@@ -313,7 +323,7 @@ namespace Service.Client
             }
 
             var newHdBytes = Convert.ToInt64(newHdSize);
-            var minimumSize = new ClientPartitionHelper(imageProfile).HardDrive(result.SchemaHdNumber + 1,newHdBytes);
+            var minimumSize = partitionHelper.HardDrive(result.SchemaHdNumber + 1,newHdBytes);
            
            
             if (minimumSize > newHdBytes)
@@ -331,11 +341,17 @@ namespace Service.Client
             if (minimumSize == newHdBytes)
             {
                 result.IsValid = "original";
+                result.PhysicalPartitions = partitionHelper.GetActivePartitions(result.SchemaHdNumber, imageProfile);
+                result.PhysicalPartitionCount = partitionHelper.GetActivePartitionCount(result.SchemaHdNumber);
+                result.PartitionType = imageSchema.HardDrives[result.SchemaHdNumber].Table;
                 return JsonConvert.SerializeObject(result);
             }
 
             result.IsValid = "true";
-
+            result.PhysicalPartitions = partitionHelper.GetActivePartitions(result.SchemaHdNumber, imageProfile);
+            result.PhysicalPartitionCount = partitionHelper.GetActivePartitionCount(result.SchemaHdNumber);
+            result.PartitionType = imageSchema.HardDrives[result.SchemaHdNumber].Table;
+            result.BootPartition = imageSchema.HardDrives[result.SchemaHdNumber].Boot;
             return JsonConvert.SerializeObject(result);
 
         }

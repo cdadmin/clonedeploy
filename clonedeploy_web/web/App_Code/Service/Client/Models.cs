@@ -33,12 +33,45 @@ namespace Services.Client
         public string Password { get; set; }
     }
 
-    public class HdRequirement
+    public class QueueStatus
+    {
+        public string Result { get; set; }
+        public string Position { get; set; }
+    }
+
+    public class HardDriveSchema
     {
         public string IsValid { get; set; }
         public string Message { get; set; }
         public string MinimumSizeBytes { get; set; }
         public int SchemaHdNumber { get; set; }
+        public List<PhysicalPartition> PhysicalPartitions { get; set; }
+        public VolumeGroup VolumeGroup { get; set; }
+        public int PhysicalPartitionCount { get; set; }
+        public string PartitionType { get; set; }
+        public string BootPartition { get; set; }
+
     }
 
+
+    public class PhysicalPartition
+    {
+        public string Number { get; set; }
+        public string PartcloneFileSystem { get; set; }
+        public string Compression { get; set; }
+        public string FileSystem { get; set; }
+        public string Uuid { get; set; }
+        public string Guid { get; set; }
+        public string Type { get; set; }
+    }
+
+    public class VolumeGroup
+    {
+        public List<LogicalVolume> LogicalVolumes { get; set; } 
+    }
+
+    public class LogicalVolume
+    {
+        
+    }
 }

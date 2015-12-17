@@ -49,43 +49,46 @@ function downloadImage()
 	done
 	else
 	
-	for x in $parts; do
-		log " ** Starting Image Download For Partition $hd$x ** " "display"
+	local array_index=0
+	while [  "$array_index" -lt "$(parse_json "$hd_schema" .PhysicalPartitionCount)" ]; do
+	  current_partition="$(parse_json "$hd_schema" .PhysicalPartitions[$array_index])"
+		log "$current_partition" "display"
+		log " ** Starting Image Download For Partition $hd$(parse_json "$current_partition" .Number) ** " "display"
 		sleep 7
 		echo
 		
-		upPart=`curl -sSk "${web}UpdateProgressPartition?hostName=$hostName&partition=$hd$x" --connect-timeout 10 --stderr -`
+		upPart=`curl -sSk "${web}UpdateProgressPartition?hostName=$hostName&partition=$hd$partition_number" --connect-timeout 10 --stderr -`
 		
-		fsType=`ls /images/$imgPath | grep part$x | grep -o '\.[a-z]*\.' | sed 's/\.//g'`
-		isGzip=`ls /images/$imgPath | grep part$x | grep -i .gz`
-		isLz4=`ls /images/$imgPath | grep part$x | grep -i .lz4`
 		
-		log " ...... fsType: $fsType isGzip: $isGzip isLz4: $isLz4"
-		
-		if [ -n "$isGzip" ]; then
-			partCompAlg="/usr/bin/gzip -c -d"
+		if [ "$(parse_json "$current_partition" .Compression)" = "gz" ]; then
+		partCompAlg="/usr/bin/gzip -c -d"
 			partCompExt="gz"
-		elif [ -n "$isLz4" ]; then
+		
+		elif [ "$(parse_json "$current_partition" .Compression)" = "lz4" ]; then
 			partCompAlg="lz4 -d"
 			partCompExt="lz4"
 		else
-			error "Could Not Determine Compression Algorithm For Partition"
+		error "Could Not Determine Compression Algorithm For Partition"
 		fi
 		
-		if [ -n "$fsType" ]; then
+
+		
+
 
 			touch /tmp/clone.progress
 			
 
-				log "reporter $hostName $web & $partCompAlg /images/$imgPath/part$x.$fsType.$partCompExt | partclone.$fsType -B -r -o $hd$x"
-				reporter $hostName $web & $partCompAlg /images/$imgPath/part$x.$fsType.$partCompExt | partclone.$fsType -B -r -o $hd$x			
+				log "reporter $hostName $web & $partCompAlg $image_path/part$(parse_json "$current_partition" .Number).$(parse_json "$current_partition" .FileSystem).$partCompExt | partclone.$(parse_json "$current_partition" .FileSystem) -B -r -o $hd$x"
+				reporter $hostName $web & $partCompAlg $image_path/part$(parse_json "$current_partition" .Number).$(parse_json "$current_partition" .FileSystem).$partCompExt | partclone.$(parse_json "$current_partition" .FileSystem) -B -r -o $hd$x			
 		
 			
-		fi
+		
 
 		rm /tmp/clone.progress
 		cat /var/log/partclone.log >> /tmp/clientlog.log
 		clear
+		
+		array_index=$(( $array_index + 1))
 	done
 	fi
 }
@@ -95,7 +98,7 @@ function restoreMBR()
 	log " ** Restoring MBR / GPT On $hd ** " "display"
 
 
-	dd if=/images/$imgPath/table of=$hd &>>/tmp/clientlog.log				
+	dd if=$image_path/table of=$hd &>>/tmp/clientlog.log				
 		
 	
 	#Sometimes restoring results in damaged GPT.
@@ -168,10 +171,7 @@ function pushGlobal()
 	local partitionsCreated
 	local createDynamic
 	
-	tableType=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=table&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
-	if [ "$tableType" = "gpt" ]; then
-		usingGPT=true
-	fi
+	
 	clearMBR
 	restoreMBR
 	
@@ -185,28 +185,28 @@ function pushGlobal()
 		partprobe &>/dev/null
 	
 	
-	elif [ "$minSizeResult" = "true" ]; then
+	elif [ "$(parse_json "$hd_schema" .IsValid)" = "true" ] || [ "$force_dynamic_partitions" = "true" ]; then
 		log " ** Creating Dynamic Partition Table On $hd ** " "display"
 	
 		curl -sSkL "${web}GetPartLayout?imgName=$imgName&hdToGet=$hdToGet&newHDSize=$newHDSize&clientHD=$hd&taskType=deploy" --connect-timeout 10 --stderr - | dos2unix > /tmp/newPartLayout
 		cat /tmp/newPartLayout >> /tmp/clientlog.log
 		
-		originalPartCount=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=partCount&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
+		
 		partCreatedCounter=0
-		if [ "$usingGPT" = "true" ]; then
+		if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
 			while [ "$partitionsCreated" != "true" ]; do		
 				deleteAllPartitions $hd
 				bash /tmp/newPartLayout
 				partprobe &>/dev/null
 				gptPartCount=$(gdisk -l $hd 2> /dev/null| awk '/^ / {print $1}' | grep -vi mbr | grep -vi gpt | grep -vi bsd | grep -vi apm -c)
-				if [ "$gptPartCount" = "$originalPartCount" ]; then
+				if [ "$gptPartCount" = "$(parse_json "$hd_schema" .PhysicalPartitionCount)" ]; then
 					partitionsCreated=true
 					log " ...... Success" "display"
 				else
 					partCreatedCounter=$(( $partCreatedCounter + 1 ))
 					log " ...... Could Not Create Partition Layout.  Retrying Attempt $partCreatedCounter"
 					if [ "$partCreatedCounter" -gt "10" ]; then
-						createDynamic="false"
+						error "Could Not Create Partition Layout"
 					fi
 				fi
 			done
@@ -215,8 +215,8 @@ function pushGlobal()
 			bash /tmp/newPartLayout
 			partprobe &>/dev/null
 			mbrPartCount=$(fdisk -l 2>/dev/null | grep $hd | grep -v ${hd}: -c)
-			if [ "$mbrPartCount" != "$originalPartCount" ]; then
-				createDynamic="false"
+			if [ "$mbrPartCount" != "$(parse_json "$hd_schema" .PhysicalPartitionCount)" ]; then
+				error "Could Not Create Partition Layout"
 			fi
 		fi
 	fi
@@ -224,49 +224,12 @@ function pushGlobal()
 	
 	
 	log " ** New Partition Table Is ** "
-	if [ "$usingGPT" = "true" ]; then
+	if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
 		gdisk -l $hd &>>/tmp/clientlog.log
 	else
 		fdisk -l &>>/tmp/clientlog.log
 	fi
 	
-	if [ "$minSizeResult" = "true" ] && [ "$createDynamic" = "false" ]; then
-		log " ...... Creation Of Dynamic Partitions Failed, Attempting Fall-back Method: Original"
-		originalHDSize=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=originalHDSize&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
-		drive=$(echo $hd | cut -d "/" -f 3)
-		lbs=$(cat /sys/block/$drive/queue/logical_block_size)
-		dsize=$(cat /sys/block/$drive/size)
-		thisHDSize=`expr $dsize '*' $lbs`;
-		log " ...... Original HD Size: $originalHDSize This HD Size: $thisHDSize"
-		if [ "$thisHDSize" -ge "$originalHDSize" ]; then
-			log " ...... Original MBR / GPT Appears To Work With This Drive, Continuing"
-			clearMBR
-			restoreMBR
-		else
-			log " ...... Fall-back Method: Original Failed.  Attempting Known Partition Layout Method"
-			isKnownLayout=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=isKnownLayout&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
-			log " ...... isKnownLayout: $isKnownLayout"
-			if [ "$isKnownLayout" = "false" ]; then
-				error "Could Not Determine Any Partition Layout That Works With This Drive"
-			else
-				clearMBR
-				restoreMBR
-				log " ...... Appears To Be A Standard $isKnownLayout Image, Continuing"
-				log " ...... Modifying Layout To Fit This Drive"
-				curl -sSkL "${web}ModifyKnownLayout?clientHD=$hd&layout=$isKnownLayout" --connect-timeout 10 --stderr - | dos2unix > /tmp/knownPartLayout
-				cat /tmp/knownPartLayout >> /tmp/clientlog.log
-				bash /tmp/knownPartLayout
-				partprobe &>/dev/null
-			fi
-		fi
-		
-		log " ** New Partition Table After Fall-Back Method Is* "
-		if [ "$usingGPT" = "true" ]; then
-			gdisk -l $hd &>>/tmp/clientlog.log
-		else
-			fdisk -l &>>/tmp/clientlog.log
-		fi
-	fi
 	
 	if [ "$usingHybrid" = "true" ]; then
 		recreateHybrid
@@ -316,7 +279,7 @@ function pushGlobal()
 		fi
 	done
 	
-	if [ "$usingGPT" = "true" ]; then
+	if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
 		log " ** Restoring GUID's ** "
 		hdgptGUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=HDguid&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
 		log " ...... hd $hd hdgptGUID: $hdgptGUID "
@@ -546,24 +509,6 @@ function multicast()
 	fi
 }
 
-function getPartCountDeploy()
-{
-	log " ** Determining Number Of Partitions To Restore ** "
-
-	parts=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=activeParts&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
-	
-	partCount=0
-	for part in $parts; do
-		partCount=$(( $partCount + 1 ))
-	done
-	
-	log " ...... partCount: $partCount parts: $parts"
-	
-	if [ "$partCount" = "0" ]; then
-		log "Warning: Could Not Determine The Number Of Partitions To Restore"
-	fi
-}
-
 function fixBCD()
 {
 	windowsPart="";bcdPart="";
@@ -663,7 +608,7 @@ function deleteAllPartitions()
 {
 	#Delete all partitions but keep boot record intact
 	log " ** Deleting Existing Partitions ** "
-	if [ "$usingGPT" = "true" ]; then
+	if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
 	gptPartCount=$(gdisk -l $1 2> /dev/null| awk '/^ / {print $1}' | grep -vi mbr | grep -vi gpt | grep -vi bsd | grep -vi apm -c)
 	deleteCounter=0
 		while [ "$gptPartCount" -gt "0" ]; do
@@ -823,12 +768,12 @@ function main()
 	else
 	  log " ** Checking Current Queue ** " "display"	
       while true; do
-	    queue_result=$($curlAuth --data "computerId=$computer_id" "${web}CheckQueue" $curlEnd)
-		if [ "$queue_result" = "true" ]; then
+	    queue_status=$($curlAuth --data "computerId=$computer_id" "${web}CheckQueue" $curlEnd)
+		if [ "$(parse_json "$queue_status" .Result)" = "true" ]; then
 		  break
 		else
 		  echo "** Queue Is Full, Waiting For Open Slot ** "
-		  echo " ...... Current Position $queue_result"
+		  echo " ...... Current Position $(parse_json "$queue_status" .Position)"
 		fi
       done
 	fi	  		
@@ -844,62 +789,33 @@ sleep 2
 
 imaged_schema_drives=""
 current_hd_number=0
-for hd in $disks; do
+for hd in $hard_drives; do
 	current_hd_number=$(( $current_hd_number + 1 ))
 	
 	drive=$(echo $hd | cut -d "/" -f 3)
 	lbs=$(cat /sys/block/$drive/queue/logical_block_size)
 	dsize=$(cat /sys/block/$drive/size)
 	newHDSize=`expr $lbs '*' $dsize`
-	hd_schema=$($curlAuth --data "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$newHDSize&imageSchemaDrives=$imaged_schema_drives" "${web}CheckHdRequirements" $curlEnd)
-	#minHDSizeResult=`curl -sSkL "${web}GetMinHdSize?imgName=$imgName&hdToGet=$current_hd_number&newHdSize=$newHDSize" --connect-timeout 10 --stderr -`
-
-	log " ** Using HD $hd ** "
-	log " ...... minHDSizeResult: $minHDSizeResult" 
-	arrMinSize=$(echo $minHDSizeResult | tr "," "\n")
-	i=0
-	for z in $arrMinSize; do
-		Array[i]=$z
-		i=$(( $i + 1 ))
-	done
-
-	minSizeResult=${Array[0]}
-	hdToGet=${Array[1]}
-	
-	
-	if [ "$minSizeResult" = "true" ]; then
-		log " ...... HD Meets The Minimum Sized Required"
-		
-	elif [ "$minSizeResult" = "notexist" ]; then
-		log " ...... No Image Exists To Download To This HD.  There Are More HD's Than The Original Image"
-		continue
-	
-	elif [ "$minSizeResult" = "notactive" ]; then
-		log " ...... No Active HD's To Download To This HD"
-		continue
-	elif [ "$minSizeResult" = "original" ]; then
+	hd_schema=$($curlAuth --data "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$newHDSize&schemaHds=$imaged_schema_drives" "${web}CheckHdRequirements" $curlEnd)
+	log "$hd_schema"
+	if [ "$(parse_json "$hd_schema" .IsValid)" = "true" ]; then
+		log " ...... HD Meets The Minimum Sized Required"		
+	elif [ "$(parse_json "$hd_schema" .IsValid)" = "false" ]; then
+		log " ...... $(parse_json "$hd_schema" .Message)" "display"
+		sleep 10
+		continue		
+	elif [ "$(parse_json "$hd_schema" .IsValid)" = "original" ]; then
 		log " ...... HD Matches Original Size Of Image, Dynamic Partition Layout Will Not Be Used"
-		if [ "$forceDynamicPartitions" = "true" ]; then
-			log " ...... Dynamic Partitions Enforced By User"
-			minSizeResult="true"
-		fi
-		
-	elif [ "$minSizeResult" = "false" ]; then
-		error "This Hard Drive Is Smaller Than Minimum Size Required For This Image"
-	
+		if [ "$force_dynamic_partitions" = "true" ]; then
+			log " ...... Dynamic Partitions Enforced Via Image Profile"
+		fi		
 	else
 		error "Unknown Error Occurred While Determining Minimum HD Size Required.  Check The Exception Log"
 	fi
 	
-	if [ "$hdToGet" = "1" ]; then
-		imgPath=$imgName
-	else
-		clear
-		imgPath=$imgName/hd$hdToGet
-	fi
-	
-	getPartCountDeploy
-	
+	image_hd_to_use=$(( $(parse_json "$hd_schema" .SchemaHdNumber) + 1 ))
+	image_path=/storage/images/$image_name/hd$image_hd_to_use
+		
 	pushGlobal
 	
 	pushLVM
@@ -923,7 +839,7 @@ for hd in $disks; do
 		break
 	fi
 
-	
+	imaged_schema_drives="$imaged_schema_drives $(parse_json "$hd_schema" .SchemaHdNumber) "
 
 done
 checkout

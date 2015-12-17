@@ -66,8 +66,8 @@ function save_mbr_gpt()
     
   log " ...... drive: $drive checkPartStart: $checkPartStart toSave: $toSave "
     
-    dd if=$hard_drive of=$imgPath/table count=$toSave bs=512 &>> $CLIENT_LOG 
-    if [ -s "$imgPath/table" ]; then
+    dd if=$hard_drive of=$image_path/table count=$toSave bs=512 &>> $CLIENT_LOG 
+    if [ -s "$image_path/table" ]; then
       log " ...... Success" "display"
     else
       error "Could Not Save MBR /GPT .  Check Permissions."
@@ -501,11 +501,11 @@ function upload_image()
   
   if [ "$compression_algorithm" = "lz4" ]; then
       compression_extension="lz4"
-	  partclone_out="|"
+	  partclone_out=" | "
 	  compression_out="lz4 $compression_level -c >"
     elif [ "$compression_algorithm" = "gzip" ]; then
       compression_extension="gz"
-	   partclone_out="|"
+	   partclone_out=" | "
 	   compression_out="gzip $compression_level -c >"
 	elif [ "$compression_algorithm" = "none" ]; then
 	  compression_extension="uncp"
@@ -594,17 +594,17 @@ function upload_image()
       fi 	  
 	  touch /tmp/wim.progress
 	  log " ...... cd_reporter $computer_id & wimcapture /mnt/wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
-	  cd_reporter $computer_id wim & wimcapture /mnt/wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress
+	  eval "cd_reporter $computer_id wim & wimcapture /mnt/wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
 	  rm /tmp/wim.progress
 	  umount /mnt/wimsource
     else
 	  touch /tmp/clone.progress
-	  log " ...... cd_reporter $computer_id & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension"    
-	  cd_reporter $computer_id partclone & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension     
+	  log " ...... cd_reporter $computer_id partclone & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension"    
+	  eval "cd_reporter $computer_id partclone & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension"
       rm /tmp/clone.progress
       cat /var/log/partclone.log >> $CLIENT_LOG
 	  
-	  killall cd_reporter
+	  killall cd_reporter 2>/dev/null
 	fi
   done
 }

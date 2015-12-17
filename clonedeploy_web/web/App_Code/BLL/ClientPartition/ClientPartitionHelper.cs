@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using Helpers;
 using Models.ClientPartition;
 using Models.ImageSchema;
@@ -347,6 +348,56 @@ namespace BLL.ClientPartitioning
 
                 return -1;
             }
+        }
+
+        public List<Services.Client.PhysicalPartition> GetActivePartitions(int schemaHdNumber, Models.ImageProfile imageProfile)
+        {
+            var listPhysicalPartition = new List<Services.Client.PhysicalPartition>();
+            var imagePath = Settings.PrimaryStoragePath + Path.DirectorySeparatorChar + "images" + Path.DirectorySeparatorChar + imageProfile.Image.Name + Path.DirectorySeparatorChar + "hd" +
+                           (schemaHdNumber + 1);
+            foreach (var partition in _imageSchema.HardDrives[schemaHdNumber].Partitions.Where(partition => partition.Active))
+            {
+                var physicalPartition = new Services.Client.PhysicalPartition();
+                physicalPartition.Number = partition.Number;
+                physicalPartition.Guid = partition.Guid;
+                physicalPartition.Uuid = partition.Uuid;
+                physicalPartition.FileSystem = partition.FsType;
+                physicalPartition.Type = partition.Type;
+                string imageFile = null;
+                foreach (var ext in new[] {"ntfs", "fat", "extfs", "hfsp", "imager", "xfs"})
+                {
+                    imageFile =
+                        Directory.GetFiles(
+                            imagePath + Path.DirectorySeparatorChar, "part" + partition.Number + "." + ext + ".*")
+                            .FirstOrDefault();
+                    physicalPartition.PartcloneFileSystem = ext;
+                    if (imageFile != null) break;
+                }
+                switch (Path.GetExtension(imageFile))
+                {
+                    case ".lz4":
+                        physicalPartition.Compression = "lz4";
+                        break;
+                    case ".gz":
+                        physicalPartition.Compression = "gz";
+                        break;
+                    case ".uncp":
+                        physicalPartition.Compression = "uncp";
+                        break;
+                    default:
+                        physicalPartition.Compression = "null";
+                        break;
+                }
+                listPhysicalPartition.Add(physicalPartition);
+                
+            }
+
+            return listPhysicalPartition;
+        }
+
+        public int GetActivePartitionCount(int schemaHdNumber)
+        {
+            return _imageSchema.HardDrives[schemaHdNumber].Partitions.Count(partition => partition.Active);
         }
 
         public Models.ImageSchema.ImageSchema GetImageSchema()
