@@ -2,6 +2,59 @@
 
 . /bin/cd_global_functions
 
+function hard_drive_ops()
+{
+get_hard_drives
+echo
+sleep 2
+
+imaged_schema_drives=""
+current_hd_number=0
+for hd in $hard_drives; do
+	current_hd_number=$(( $current_hd_number + 1 ))
+	
+	drive=$(echo $hd | cut -d "/" -f 3)
+	lbs=$(cat /sys/block/$drive/queue/logical_block_size)
+	dsize=$(cat /sys/block/$drive/size)
+	newHDSize=`expr $lbs '*' $dsize`
+	log "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$newHDSize&schemaHds=$imaged_schema_drives"
+	hd_schema=$($curlAuth --data "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$newHDSize&schemaHds=$(remove_whitespace $imaged_schema_drives)" "${web}CheckHdRequirements" $curlEnd)
+	log "$hd_schema"
+	if [ "$(parse_json "$hd_schema" .IsValid)" = "true" ]; then
+		log " ...... HD Meets The Minimum Sized Required"		
+	elif [ "$(parse_json "$hd_schema" .IsValid)" = "false" ]; then
+		log " ...... $(parse_json "$hd_schema" .Message)" "display"
+		sleep 10
+		continue		
+	elif [ "$(parse_json "$hd_schema" .IsValid)" = "original" ]; then
+		log " ...... HD Matches Original Size Of Image, Dynamic Partition Layout Will Not Be Used"
+		if [ "$force_dynamic_partitions" = "true" ]; then
+			log " ...... Dynamic Partitions Enforced Via Image Profile"
+		fi		
+	else
+		error "Unknown Error Occurred While Determining Minimum HD Size Required.  Check The Exception Log"
+	fi
+	
+	image_hd_to_use=$(( $(parse_json "$hd_schema" .SchemaHdNumber) + 1 ))
+	image_path=/storage/images/$image_name/hd$image_hd_to_use
+		
+	pushGlobal
+		
+	restoreGrubLegacy
+	if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
+		log " ** Restoring GUID ** "
+		hdgptGUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=HDguid&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
+		log " ...... hd $hd hdgptGUID: $hdgptGUID "
+		sgdisk $hd -U$hdgptGUID &>> /tmp/clientlog.log
+	
+	fi
+	
+	imaged_schema_drives="$imaged_schema_drives $(parse_json "$hd_schema" .SchemaHdNumber) "
+
+done
+}
+
+
 function downloadImage()
 {	
 	isLVM="$1"
@@ -49,10 +102,24 @@ function downloadImage()
 	done
 	else
 	
-	local array_index=0
-	while [  "$array_index" -lt "$(parse_json "$hd_schema" .PhysicalPartitionCount)" ]; do
+	local array_index=-1
+	while [  "$(( $array_index + 1 ))" -lt "$(parse_json "$hd_schema" .PhysicalPartitionCount)" ]; do
+	array_index=$(( $array_index + 1))
+	  clear_and_move_down
 	  current_partition="$(parse_json "$hd_schema" .PhysicalPartitions[$array_index])"
-		log "$current_partition" "display"
+		log "$current_partition"
+		
+		if [ -n "$(parse_json "$current_partition" .VolumeGroup)" ] && [ "$(parse_json "$current_partition" .VolumeGroup)" != "null" ]; then
+			echo "lvm"
+		fi
+		
+		if [ "$(parse_json "$current_partition" .FileSystem)" = "swap" ]; then
+			log "Creating Swap On $hd$(parse_json "$current_partition" .Number)"
+			log "$(parse_json "$current_partition" .Uuid)"
+			mkswap $hd$(parse_json "$current_partition" .Number) -U $(parse_json "$current_partition" .Uuid) &>> /tmp/clientlog.log	
+			continue
+		fi
+		
 		log " ** Starting Image Download For Partition $hd$(parse_json "$current_partition" .Number) ** " "display"
 		sleep 7
 		echo
@@ -78,78 +145,49 @@ function downloadImage()
 			touch /tmp/clone.progress
 			
 
-				log "reporter $hostName $web & $partCompAlg $image_path/part$(parse_json "$current_partition" .Number).$(parse_json "$current_partition" .FileSystem).$partCompExt | partclone.$(parse_json "$current_partition" .FileSystem) -B -r -o $hd$x"
-				reporter $hostName $web & $partCompAlg $image_path/part$(parse_json "$current_partition" .Number).$(parse_json "$current_partition" .FileSystem).$partCompExt | partclone.$(parse_json "$current_partition" .FileSystem) -B -r -o $hd$x			
+				log "cd_reporter $computer_id partclone & $partCompAlg $image_path/part$(parse_json "$current_partition" .Number).$(parse_json "$current_partition" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_partition" .PartcloneFileSystem) -B -r -o $hd$(parse_json "$current_partition" .Number)"
+				cd_reporter $computer_id partclone & $partCompAlg $image_path/part$(parse_json "$current_partition" .Number).$(parse_json "$current_partition" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_partition" .PartcloneFileSystem) -B -r -o $hd$(parse_json "$current_partition" .Number)
 		
 			
 		
 
 		rm /tmp/clone.progress
 		cat /var/log/partclone.log >> /tmp/clientlog.log
-		clear
+
 		
-		for part in $parts; do
-		fsType=`blkid -po udev $hd$part | grep FS_TYPE | awk -F'=' '{print $2}'`
-		expandFS $hd$part
+
+			
 		
-		done
-		
-		#Search For A Swap Partition
-	log " ** Searching For A Swap Partition ** "
-	searchSwapParts=$(partinfo --parts $hd 2>> /tmp/clientlog.log)
-	for part in $searchSwapParts; do
-		x=`echo $part | awk -F $hd ' {print $2}'`
-		isSwap=`blkid -po udev $part | grep swap`
-		if [ "$?" = "0" ]; then
-			log " ...... Found Swap On $part"
-			log "$isSwap"
-			swapUUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=uuid&hdToGet=$hdToGet&partNumber=$x" --connect-timeout 10 --stderr -`
-			mkswap $part -U $swapUUID &>> /tmp/clientlog.log
-		else
-			isSwap=$(fdisk -l 2>/dev/null | grep $part | grep -i swap)
-			if [ "$?" = "0" ]; then
-				log " ...... Found Swap On $part"
-				log "$isSwap"
-				swapUUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=uuid&hdToGet=$hdToGet&partNumber=$x" --connect-timeout 10 --stderr -`
-				mkswap $part -U $swapUUID &>> /tmp/clientlog.log
-			else
-				isSwap=$(gdisk -l $hd 2> /dev/null | grep " $x " | grep -i swap)
-				if [ "$?" = "0" ]; then
-					log " ...... Found Swap On $part"
-					log "$isSwap"
-					swapUUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=uuid&hdToGet=$hdToGet&partNumber=$x" --connect-timeout 10 --stderr -`
-					mkswap $part -U $swapUUID &>> /tmp/clientlog.log
-				else
-					log " ...... $part Is Not Swap"
-				fi
-			fi
+		pMBSize=$(parted -s $hd unit MB print all | grep " $$(parse_json "$current_partition" .Number) " -m 1 | awk -F' ' '{print $4}' | sed 's/MB//g')
+		if [ "$pMBSize" -gt "2000" ]; then
+			expand_volume $hd$part $(parse_json "$current_partition" .FileSystem)
 		fi
-	done
+		
+		
+		
 	
 	if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
-		log " ** Restoring GUID's ** "
-		hdgptGUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=HDguid&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
-		log " ...... hd $hd hdgptGUID: $hdgptGUID "
-		sgdisk $hd -U$hdgptGUID &>> /tmp/clientlog.log
-		for part in $parts; do
-			gptGUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=guid&hdToGet=$hdToGet&partNumber=$part" --connect-timeout 10 --stderr -`
+		log " ** Restoring GUID ** "
+	
+
 			log " ...... part $part gptGUID: $gptGUID "
-			sgdisk $hd -u$part:$gptGUID &>> /tmp/clientlog.log
-		done
+			sgdisk $hd -u$(parse_json "$current_partition" .Number):$(parse_json "$current_partition" .Guid) &>> /tmp/clientlog.log
+
 	fi
 		
-		fixNTFSGeo
-	
-		createNewBCD
-	
-		fixBCD
-	
+		if [ "$(parse_json "$hd_schema" .Boot)" = "$(parse_json "$current_partition" .Number)" ]; then
+			fixNTFSGeo $hd$(parse_json "$current_partition" .Number)
+		fi
+		
+		if [ "$(parse_json "$current_partition" .FileSystem)" = "ntfs" ] && [ "$skip_fix_bcd" != "true" ]; then
+			fixBCD
+		fi
 		changeHostName
 	
-		array_index=$(( $array_index + 1))
+		
 	done
 	
-	restoreGrubLegacy
+	
 	fi
 }
 
@@ -526,14 +564,15 @@ function multicast()
 
 function fixBCD()
 {
+	local partition=$1
 	windowsPart="";bcdPart="";
 	#FIX ME
 	#If more than one partition has winload.exe only the first one found is used.
 	log " ** Fixing BCD ** " "display"
 	mkdir /mnt/ntfs
 	
-	for x in $parts; do
-		ntfs-3g -o force,rw,remove_hiberfile $hd$x /mnt/ntfs 2> /dev/null
+
+		ntfs-3g -o force,rw,remove_hiberfile $partition /mnt/ntfs 2> /dev/null
 		if [ -f "/mnt/ntfs/Windows/System32/winload.exe" ] || [ -f "/mnt/ntfs/Windows/system32/winload.exe" ]; then
 			log " ...... Found Windows Partition On $hd$x" "display"
 			windowsPart=$hd$x		
@@ -547,7 +586,7 @@ function fixBCD()
 			originalBCD=`cat /tmp/regbcd`
 		fi
 		umount /mnt/ntfs
-	done;
+
 	
 	if [ -n "$windowsPart" ] && [ -n "$bcdPart" ]; then
 		modifiedBCD=`curl -sSk -Fbcd="$(echo -n "$originalBCD" | base64)" -FoffsetBytes="$(echo -n "$partitionOffset" | base64)" "${web}AlignBcdToPartition" --connect-timeout 10 --stderr -`
@@ -568,17 +607,14 @@ function fixBCD()
 
 function fixNTFSGeo()
 {
-	#Fix Me
-	if [ -z "$hboot" ]; then
-		hboot=$(sfdisk $hd -l | grep "*" | grep "dev" | cut -d" " -f1)
-	fi
+	local partition=$1
+
 		log " ...... hboot: $hboot"
 
 		log " ** Fixing NTFS Geometry ** " "display"
-		partclone.ntfsfixboot -p $hboot >> /tmp/clientlog.log
-		partclone.ntfsfixboot -w $hboot >> /tmp/clientlog.log
-		echo
-
+		partclone.ntfsfixboot -p $partition >> /tmp/clientlog.log
+		partclone.ntfsfixboot -w $partition >> /tmp/clientlog.log
+		
 }
 
 function clearMBR()
@@ -589,35 +625,6 @@ function clearMBR()
 	partprobe &> /dev/null
 }
 
-#Only when restoring partitions without without restoring the boot partition.  I have no idea why you would want to do this but people are trying
-function createNewBCD()
-{
-	if [ -z "$hboot" ]; then
-		hboot=$(sfdisk $hd -l | grep "*" | grep "dev" | cut -d" " -f1)
-	fi
-	
-	mkdir /mnt/ntfs 2>> /tmp/clientlog.log
-
-
-		local fsType=`blkid -po udev $hboot | grep FS_TYPE | awk -F'=' '{print $2}'`
-		if [ "$fsType" = "ntfs" ]; then
-			ntfs-3g -o force,rw $hboot /mnt/ntfs				
-				if [ -f "/mnt/ntfs/Boot/BCD" ]; then
-					return 0
-				else
-					mkdir /mnt/ntfs/Boot
-					#chmod 777 /mnt/ntfs/Boot
-					if [ "$xferMode" = "nfs" ] || [ "$xferMode" = "smb" ]; then
-						cp /images/$imgPath/BCD /mnt/ntfs/Boot/
-						cp /images/$imgPath/bootmgr /mnt/ntfs/
-					else
-						#Fix Me - Need to add download method for bcd
-						return 0
-					fi
-				fi
-			umount /mnt/ntfs
-		fi
-}
 
 function deleteAllPartitions()
 {
@@ -682,14 +689,13 @@ FDISK
 
 function changeHostName()
 {
+	local partition=$1
 	if [ -n "$hostName" ]; then
 		mkdir -p /win
 		
-		for x in $parts; do		
-			fsType=`ls /images/$imgPath | grep part$x | grep -o '\.[a-z]*\.' | sed 's/\.//g'`
 		
 			if [ "$fsType" = "ntfs" ]; then
-				log " ** Changing Host Name On $hd$x ** " "display"
+				log " ** Changing Host Name On $partition ** " "display"
 				sleep 1
 		
 				ntfs-3g -o force,rw,remove_hiberfile $hd$x /win &>/dev/null
@@ -749,7 +755,7 @@ function changeHostName()
 					umount /win	
 				fi
 			fi
-		done
+		
 	else
 		log " ...... Could Not Determine The Host Name Of This Machine.  Host Name Has Not Been Changed."
 	fi
@@ -798,60 +804,13 @@ function main()
 
   mount_smb
 
-  get_hard_drives
-echo
-sleep 2
+  hard_drive_ops
 
-imaged_schema_drives=""
-current_hd_number=0
-for hd in $hard_drives; do
-	current_hd_number=$(( $current_hd_number + 1 ))
-	
-	drive=$(echo $hd | cut -d "/" -f 3)
-	lbs=$(cat /sys/block/$drive/queue/logical_block_size)
-	dsize=$(cat /sys/block/$drive/size)
-	newHDSize=`expr $lbs '*' $dsize`
-	hd_schema=$($curlAuth --data "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$newHDSize&schemaHds=$imaged_schema_drives" "${web}CheckHdRequirements" $curlEnd)
-	log "$hd_schema"
-	if [ "$(parse_json "$hd_schema" .IsValid)" = "true" ]; then
-		log " ...... HD Meets The Minimum Sized Required"		
-	elif [ "$(parse_json "$hd_schema" .IsValid)" = "false" ]; then
-		log " ...... $(parse_json "$hd_schema" .Message)" "display"
-		sleep 10
-		continue		
-	elif [ "$(parse_json "$hd_schema" .IsValid)" = "original" ]; then
-		log " ...... HD Matches Original Size Of Image, Dynamic Partition Layout Will Not Be Used"
-		if [ "$force_dynamic_partitions" = "true" ]; then
-			log " ...... Dynamic Partitions Enforced Via Image Profile"
-		fi		
-	else
-		error "Unknown Error Occurred While Determining Minimum HD Size Required.  Check The Exception Log"
-	fi
-	
-	image_hd_to_use=$(( $(parse_json "$hd_schema" .SchemaHdNumber) + 1 ))
-	image_path=/storage/images/$image_name/hd$image_hd_to_use
-		
-	pushGlobal
-	
-	pushLVM
-		
-	
-
-	
-	
-	if [ -n "$hostScripts" ]; then
+  if [ -n "$hostScripts" ]; then
 		runScripts
-	fi
+  fi
 	
-	#Multicast for multiple hard drives is not supported yet
-	if [ "$multicast" = "true" ]; then
-		break
-	fi
-
-	imaged_schema_drives="$imaged_schema_drives $(parse_json "$hd_schema" .SchemaHdNumber) "
-
-done
-checkout
+  checkout
 }
 
 is_ondemand="$1"

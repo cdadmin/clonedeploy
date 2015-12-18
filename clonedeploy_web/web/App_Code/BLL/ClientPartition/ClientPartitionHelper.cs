@@ -5,8 +5,9 @@ using System.Linq;
 using System.Security.Policy;
 using Helpers;
 using Models.ClientPartition;
-using Models.ImageSchema;
 using Newtonsoft.Json;
+using Services.Client;
+using LogicalVolume = Models.ImageSchema.LogicalVolume;
 
 namespace BLL.ClientPartitioning
 {
@@ -232,7 +233,7 @@ namespace BLL.ClientPartitioning
             // size for a reason, do not resize it even if it is marked as a resizable partition
             else if ((partition.VolumeSize == 0 && partition.Type.ToLower() != "extended") ||
                      (partition.Type.ToLower() == "extended" && extendedPartitionHelper.IsOnlySwap) ||
-                     partition.Size*lbsByte <= 2097152000)
+                     partition.Size*lbsByte <= 2097152000 || partition.FsType == "swap")
             {
                 partitionHelper.MinSizeBlk = partition.Size;
                 partitionHelper.IsDynamicSize = false;
@@ -363,6 +364,7 @@ namespace BLL.ClientPartitioning
                 physicalPartition.Uuid = partition.Uuid;
                 physicalPartition.FileSystem = partition.FsType;
                 physicalPartition.Type = partition.Type;
+             
                 string imageFile = null;
                 foreach (var ext in new[] {"ntfs", "fat", "extfs", "hfsp", "imager", "xfs"})
                 {
@@ -387,6 +389,53 @@ namespace BLL.ClientPartitioning
                     default:
                         physicalPartition.Compression = "null";
                         break;
+                }
+
+                if (partition.VolumeGroup.Name != null)
+                {
+                    physicalPartition.VolumeGroup = new Services.Client.VolumeGroup();
+                    physicalPartition.VolumeGroup.Name = partition.VolumeGroup.Name;
+                    var listLogicalVolumes = new List<Services.Client.LogicalVolume>();
+                    var logicalVolumeCounter = 0;
+                    foreach (var logicalVolume in partition.VolumeGroup.LogicalVolumes.Where(x => x.Active))
+                    {
+                        logicalVolumeCounter++;
+                        var clientLogicalVolume = new Services.Client.LogicalVolume();
+                        clientLogicalVolume.Name = logicalVolume.Name;
+                        clientLogicalVolume.FileSystem = logicalVolume.FsType;
+                        clientLogicalVolume.Uuid = logicalVolume.Uuid;
+
+
+                        foreach (var ext in new[] {"ntfs", "fat", "extfs", "hfsp", "imager", "xfs"})
+                        {
+                            imageFile =
+                                Directory.GetFiles(
+                                    imagePath + Path.DirectorySeparatorChar,
+                                    partition.VolumeGroup.Name + "-" + logicalVolume.Name +"." + ext + ".*")
+                                    .FirstOrDefault();
+                            clientLogicalVolume.PartcloneFileSystem = ext;
+                            if (imageFile != null) break;
+                        }
+                        switch (Path.GetExtension(imageFile))
+                        {
+                            case ".lz4":
+                                clientLogicalVolume.Compression = "lz4";
+                                break;
+                            case ".gz":
+                                clientLogicalVolume.Compression = "gz";
+                                break;
+                            case ".uncp":
+                                clientLogicalVolume.Compression = "uncp";
+                                break;
+                            default:
+                                clientLogicalVolume.Compression = "null";
+                                break;
+                        }
+
+                        listLogicalVolumes.Add(clientLogicalVolume);
+                    }
+                    physicalPartition.VolumeGroup.LogicalVolumeCount = logicalVolumeCounter;
+                    physicalPartition.VolumeGroup.LogicalVolumes = listLogicalVolumes;
                 }
                 listPhysicalPartition.Add(physicalPartition);
                 

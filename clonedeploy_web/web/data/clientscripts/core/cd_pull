@@ -264,7 +264,7 @@ function create_image_schema()
     logical_block_size=$(cat /sys/block/$drive_name/queue/logical_block_size)
     physical_block_size=$(cat /sys/block/$drive_name/queue/physical_block_size)
     hard_drive_size_bytes=$(cat /sys/block/$drive_name/size)
-    boot_partition=$(sfdisk $hard_drive -l | grep "*" | grep "dev" | cut -d" " -f1)
+    boot_partition=$(sfdisk $hard_drive -l | grep "*" | grep "dev" | cut -d" " -f1 | sed "s~$hard_drive~~g")
     gpt_status=`gdisk -l $hard_drive <<< "q" 2>> $CLIENT_LOG | grep 'GPT:' | awk '{$1=""; print $0}' | sed 's/^ //'`
     if [ "$gpt_status" = "present" ]; then
       mbr_status=`gdisk -l $hard_drive <<< "q" 2>> $CLIENT_LOG| grep 'MBR:' | awk '{$1=""; print $0}' | sed 's/^ //'`
@@ -284,7 +284,7 @@ function create_image_schema()
     for partition in $partitions; do
       partition_counter=$(( $partition_counter + 1 ))
       filesystem_type="";partition_uuid="";partition_guid="";partclone_type="";partition_used_mb="";partition_start="";partition_end="";partition_size="";partition_type="";partition_number="";
-      partition_number=`echo $partition | awk -F $hard_drive ' {print $2}'`
+      partition_number=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
       filesystem_type=`blkid -po udev $hard_drive$partition_number | grep FS_TYPE | awk -F'=' '{print $2}'`
       partition_uuid=`blkid -po udev $hard_drive$partition_number | grep ID_FS_UUID= | awk -F'=' '{print $2}'`
       
@@ -314,7 +314,7 @@ function create_image_schema()
       #GPT does not have a concept of partition type only mbr has primary, extended, or logical
       if [ "$layout_type" = "mbr" ]; then
         partition_type=$(parted -s $hard_drive unit s print all | grep " $partition_number " -m 1| awk -F' ' '{print $5}')
-        fsid=$(sfdisk --part-type $hard_drive $partition_number 2>> $CLIENT_LOG)
+        fsid=$(sfdisk --part-type $hard_drive $partition_number | sed 's/ //g' 2>> $CLIENT_LOG)
       else
         fsid=$(gdisk $hard_drive -l | grep " $partition_number " | awk '/^ / {print $6}')
       fi
@@ -684,7 +684,7 @@ function main()
   log " shrunk_volumes: $shrunk_volumes"
   for shrunk_volume in $shrunk_volumes; do
     filesystem_type=`blkid -po udev $shrunk_volume | grep FS_TYPE | awk -F'=' '{print $2}'`
-    expand_volume $shrunk_volume
+    expand_volume $shrunk_volume $filesystem_type
   done
 
   #TODO: Run custom scripts

@@ -43,14 +43,12 @@ namespace Services.Client
     {
         public string IsValid { get; set; }
         public string Message { get; set; }
-        public string MinimumSizeBytes { get; set; }
         public int SchemaHdNumber { get; set; }
-        public List<PhysicalPartition> PhysicalPartitions { get; set; }
-        public VolumeGroup VolumeGroup { get; set; }
         public int PhysicalPartitionCount { get; set; }
         public string PartitionType { get; set; }
         public string BootPartition { get; set; }
-
+        public string Guid { get; set; }
+        public List<PhysicalPartition> PhysicalPartitions { get; set; }
     }
 
 
@@ -63,15 +61,22 @@ namespace Services.Client
         public string Uuid { get; set; }
         public string Guid { get; set; }
         public string Type { get; set; }
+        public VolumeGroup VolumeGroup { get; set; }
     }
 
     public class VolumeGroup
     {
+        public string Name { get; set; }
+        public int LogicalVolumeCount { get; set; }
         public List<LogicalVolume> LogicalVolumes { get; set; } 
     }
 
     public class LogicalVolume
     {
-        
+        public string Name { get; set; }
+        public string PartcloneFileSystem { get; set; }
+        public string Compression { get; set; }
+        public string FileSystem { get; set; }
+        public string Uuid { get; set; }
     }
 }

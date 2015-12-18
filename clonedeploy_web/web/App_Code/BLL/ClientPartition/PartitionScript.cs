@@ -27,11 +27,13 @@ namespace BLL.ClientPartitioning
             string partitionScript = null;
             var clientSchema = new BLL.ClientPartitioning.ClientPartition(HdNumberToGet,NewHdSize,imageProfile).GenerateClientSchema();
             if (clientSchema == null) return "failed";
-            partitionScript = clientSchema.DebugStatus;
-            if (clientSchema.PrimaryAndExtendedPartitions.Count == 0)
-                return partitionScript;
+            
+           
             if (TaskType == "debug")
             {
+                partitionScript = clientSchema.DebugStatus;
+                if (clientSchema.PrimaryAndExtendedPartitions.Count == 0)
+                    return partitionScript;
                 try
                 {
                     clientSchema.ExtendedPartitionHelper.AgreedSizeBlk = clientSchema.ExtendedPartitionHelper.AgreedSizeBlk * 512 / 1024 / 1024;

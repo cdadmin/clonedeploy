@@ -312,7 +312,7 @@ namespace Service.Client
 
             var listSchemaDrives = new List<int>();
             if(!string.IsNullOrEmpty(imageSchemaDrives))
-                listSchemaDrives.AddRange(imageSchemaDrives.Split(null).Select(hd => Convert.ToInt32(hd)));         
+                listSchemaDrives.AddRange(imageSchemaDrives.Split(' ').Select(hd => Convert.ToInt32(hd)));         
             result.SchemaHdNumber = partitionHelper.NextActiveHardDrive(listSchemaDrives,clientHdNumber);
             
             if (result.SchemaHdNumber == -1)

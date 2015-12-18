@@ -28,6 +28,12 @@ function parse_json()
 	echo `echo "$1" | jq "$2" -r`
 }
 
+function remove_whitespace() {
+    local var="$*"
+    var="${var#"${var%%[![:space:]]*}"}"   # remove leading whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"   # remove trailing whitespace characters
+    echo -n "$var"
+}
 
 function checkin()
 {	
@@ -116,23 +122,20 @@ function error()
 
 function expand_volume()
 {
+
+	local partition="$1"
+	local filesystem="$2"
 	#Always fix ntfs partitions even not being resized
-	if [ "$filesystem_type" = "ntfs" ]; then
+	if [ "$filesystem" = "ntfs" ]; then
 		ntfsfix -b -d $1 &>>/tmp/clientlog.log
 	fi
 	
 	if [ "$noResize" != "true" ]; then
 	
 	
-	if [ "$task" = "push" ]; then #If task is pull we already know the volumes that were shrunk and only they get expanded
-		x=`echo $1 | awk -F $hd ' {print $2}'`
-		pMBSize=$(parted -s $hd unit MB print all | grep " $x " -m 1 | awk -F' ' '{print $4}' | sed 's/MB//g')
-		if [ "$pMBSize" -le "2000" ]; then #partition smaller than 2GB probably that way for a reason, leave it alone.
-			return 0
-		fi
-	fi
 	
-	if [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ]; then
+	
+	if [ "$filesystem" = "ext2" ] || [ "$filesystem" = "ext3" ] || [ "$filesystem" = "ext4" ]; then
 		log " ** Expanding EXT Volume On $1 ** " "display"
 		partprobe &>/dev/null;
 		sleep 5
@@ -147,7 +150,7 @@ function expand_volume()
 		echo
 		e2fsck -fp $1 &>/dev/null
 	
-	elif [ "$filesystem_type" = "ntfs" ]; then
+	elif [ "$filesystem" = "ntfs" ]; then
 		volumeSize=`ntfsresize -f -i -P $1 | grep -i "current volume size:" | cut -d " " -f4`
 		deviceSize=`ntfsresize -f -i -P $1 | grep -i "current device size:" | cut -d " " -f4`
 		volumeMargin=$(( $deviceSize - $volumeSize ))
