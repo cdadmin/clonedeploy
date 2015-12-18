@@ -88,8 +88,68 @@ function downloadImage()
 		cat /var/log/partclone.log >> /tmp/clientlog.log
 		clear
 		
+		for part in $parts; do
+		fsType=`blkid -po udev $hd$part | grep FS_TYPE | awk -F'=' '{print $2}'`
+		expandFS $hd$part
+		
+		done
+		
+		#Search For A Swap Partition
+	log " ** Searching For A Swap Partition ** "
+	searchSwapParts=$(partinfo --parts $hd 2>> /tmp/clientlog.log)
+	for part in $searchSwapParts; do
+		x=`echo $part | awk -F $hd ' {print $2}'`
+		isSwap=`blkid -po udev $part | grep swap`
+		if [ "$?" = "0" ]; then
+			log " ...... Found Swap On $part"
+			log "$isSwap"
+			swapUUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=uuid&hdToGet=$hdToGet&partNumber=$x" --connect-timeout 10 --stderr -`
+			mkswap $part -U $swapUUID &>> /tmp/clientlog.log
+		else
+			isSwap=$(fdisk -l 2>/dev/null | grep $part | grep -i swap)
+			if [ "$?" = "0" ]; then
+				log " ...... Found Swap On $part"
+				log "$isSwap"
+				swapUUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=uuid&hdToGet=$hdToGet&partNumber=$x" --connect-timeout 10 --stderr -`
+				mkswap $part -U $swapUUID &>> /tmp/clientlog.log
+			else
+				isSwap=$(gdisk -l $hd 2> /dev/null | grep " $x " | grep -i swap)
+				if [ "$?" = "0" ]; then
+					log " ...... Found Swap On $part"
+					log "$isSwap"
+					swapUUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=uuid&hdToGet=$hdToGet&partNumber=$x" --connect-timeout 10 --stderr -`
+					mkswap $part -U $swapUUID &>> /tmp/clientlog.log
+				else
+					log " ...... $part Is Not Swap"
+				fi
+			fi
+		fi
+	done
+	
+	if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
+		log " ** Restoring GUID's ** "
+		hdgptGUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=HDguid&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
+		log " ...... hd $hd hdgptGUID: $hdgptGUID "
+		sgdisk $hd -U$hdgptGUID &>> /tmp/clientlog.log
+		for part in $parts; do
+			gptGUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=guid&hdToGet=$hdToGet&partNumber=$part" --connect-timeout 10 --stderr -`
+			log " ...... part $part gptGUID: $gptGUID "
+			sgdisk $hd -u$part:$gptGUID &>> /tmp/clientlog.log
+		done
+	fi
+		
+		fixNTFSGeo
+	
+		createNewBCD
+	
+		fixBCD
+	
+		changeHostName
+	
 		array_index=$(( $array_index + 1))
 	done
+	
+	restoreGrubLegacy
 	fi
 }
 
@@ -241,55 +301,10 @@ function pushGlobal()
 		downloadImage
 	fi
 	
-	for part in $parts; do
-		fsType=`blkid -po udev $hd$part | grep FS_TYPE | awk -F'=' '{print $2}'`
-		expandFS $hd$part
-	done
+	
 
 	
-	#Search For A Swap Partition
-	log " ** Searching For A Swap Partition ** "
-	searchSwapParts=$(partinfo --parts $hd 2>> /tmp/clientlog.log)
-	for part in $searchSwapParts; do
-		x=`echo $part | awk -F $hd ' {print $2}'`
-		isSwap=`blkid -po udev $part | grep swap`
-		if [ "$?" = "0" ]; then
-			log " ...... Found Swap On $part"
-			log "$isSwap"
-			swapUUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=uuid&hdToGet=$hdToGet&partNumber=$x" --connect-timeout 10 --stderr -`
-			mkswap $part -U $swapUUID &>> /tmp/clientlog.log
-		else
-			isSwap=$(fdisk -l 2>/dev/null | grep $part | grep -i swap)
-			if [ "$?" = "0" ]; then
-				log " ...... Found Swap On $part"
-				log "$isSwap"
-				swapUUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=uuid&hdToGet=$hdToGet&partNumber=$x" --connect-timeout 10 --stderr -`
-				mkswap $part -U $swapUUID &>> /tmp/clientlog.log
-			else
-				isSwap=$(gdisk -l $hd 2> /dev/null | grep " $x " | grep -i swap)
-				if [ "$?" = "0" ]; then
-					log " ...... Found Swap On $part"
-					log "$isSwap"
-					swapUUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=uuid&hdToGet=$hdToGet&partNumber=$x" --connect-timeout 10 --stderr -`
-					mkswap $part -U $swapUUID &>> /tmp/clientlog.log
-				else
-					log " ...... $part Is Not Swap"
-				fi
-			fi
-		fi
-	done
 	
-	if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
-		log " ** Restoring GUID's ** "
-		hdgptGUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=HDguid&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
-		log " ...... hd $hd hdgptGUID: $hdgptGUID "
-		sgdisk $hd -U$hdgptGUID &>> /tmp/clientlog.log
-		for part in $parts; do
-			gptGUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=guid&hdToGet=$hdToGet&partNumber=$part" --connect-timeout 10 --stderr -`
-			log " ...... part $part gptGUID: $gptGUID "
-			sgdisk $hd -u$part:$gptGUID &>> /tmp/clientlog.log
-		done
-	fi
 }
 
 function pushLVM()
@@ -820,15 +835,9 @@ for hd in $hard_drives; do
 	
 	pushLVM
 		
-	fixNTFSGeo
 	
-	createNewBCD
-	
-	fixBCD
-	
-	changeHostName
 
-	restoreGrubLegacy
+	
 	
 	if [ -n "$hostScripts" ]; then
 		runScripts
