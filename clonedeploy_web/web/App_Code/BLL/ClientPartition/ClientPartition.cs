@@ -109,16 +109,16 @@ namespace BLL.ClientPartitioning
             //or logical volumes in.  Also if the partition is logical and is the physical volume for a volume group determine 
             // a size that will work for all logical volumes
             ExtendedPartitionHelper = new ClientPartitionHelper(_imageProfile).ExtendedPartition(HdNumberToGet);
-
+            var upSizeLock = new Dictionary<string, long>();
 
             double percentCounter = -1;
             var partitionLayoutVerified = false;
-            bool increasePartitionFits = false;
             while (!partitionLayoutVerified)
             {
                 percentCounter++;
                 var isError = false;
                 double totalHdPercentage = 0;
+               
                 PrimaryAndExtendedPartitions.Clear();
                 VolumeGroupHelpers.Clear();
                 FirstPartitionStartSector = Convert.ToInt32(_imageSchema.HardDrives[HdNumberToGet].Partitions[0].Start);
@@ -166,26 +166,34 @@ namespace BLL.ClientPartitioning
 
                         //If a partition's used space is almost maxed out to the size of the partition this can cause
                         //problems with calculations. 
-                        if (Convert.ToInt64(NewHdBlk*percentOfOrigDrive) < partitionHelper.MinSizeBlk)
-                        {
-                            //This will never work because each loop only gets smaller
-                            if (!increasePartitionFits)
-                            {
-                                tmpClientPartitionSizeBlk =
-                                    Convert.ToInt64((NewHdBlk*(percentOfOrigDrive + (percentCounter/100))));
-                                if (partitionHelper.MinSizeBlk < tmpClientPartitionSizeBlk)
-                                    increasePartitionFits = true;
-                            }
-                        }
+
+                        if (upSizeLock.ContainsKey(schemaPartition.Number))                       
+                            tmpClientPartitionSizeBlk = upSizeLock[schemaPartition.Number];
+                                               
                         else
                         {
 
 
-                            tmpClientPartitionSizeBlk = percentOfOrigDrive - (percentCounter/100) <= 0
-                                ? Convert.ToInt64(NewHdBlk*(percentOfOrigDrive))
-                                : Convert.ToInt64((NewHdBlk*(percentOfOrigDrive - (percentCounter/100))));
-                        }
+                            if (Convert.ToInt64(NewHdBlk*percentOfOrigDrive) < partitionHelper.MinSizeBlk)
+                            {
+                                
+                                //This will never work because each loop only gets smaller
 
+                                tmpClientPartitionSizeBlk =
+                                    Convert.ToInt64((NewHdBlk*(percentOfOrigDrive + (percentCounter/100))));
+                                if (partitionHelper.MinSizeBlk < tmpClientPartitionSizeBlk)
+                                    upSizeLock.Add(schemaPartition.Number, tmpClientPartitionSizeBlk);
+
+                            }
+                            else
+                            {
+
+
+                                tmpClientPartitionSizeBlk = percentOfOrigDrive - (percentCounter/100) <= 0
+                                    ? Convert.ToInt64(NewHdBlk*(percentOfOrigDrive))
+                                    : Convert.ToInt64((NewHdBlk*(percentOfOrigDrive - (percentCounter/100))));
+                            }
+                        }
                         //Add the percent of this partition used to the total percent used to make sure we don't go over
                         //100% of the size of the new drive.
 
@@ -276,7 +284,7 @@ namespace BLL.ClientPartitioning
         {
             // Try to resize logical to fit inside newly created extended
             double percentCounter = -1;
-
+            var upSizeLock = new Dictionary<string, long>();
             var logicalPartLayoutVerified = false;
             while (!logicalPartLayoutVerified)
             {
@@ -309,31 +317,39 @@ namespace BLL.ClientPartitioning
                     var percentOfExtendedForThisPartition = (double)logicalPartitionHelper.MinSizeBlk / ExtendedPartitionHelper.AgreedSizeBlk;
                     var tmpClientPartitionSizeBlk = logicalPartitionHelper.MinSizeBlk;
 
-                    if (logicalPartitionHelper.IsDynamicSize)
+                    if (upSizeLock.ContainsKey(part.Number))
+                        tmpClientPartitionSizeBlk = upSizeLock[part.Number];
+                    else
                     {
-                        clientPartition.SizeIsDynamic = true;
-                        var percentOfOrigDrive = Convert.ToInt64(part.Size) /
-                                                 (double)(Convert.ToInt64(_imageSchema.HardDrives[HdNumberToGet].Size));
-
-                        if (Convert.ToInt64(NewHdBlk*percentOfOrigDrive) < logicalPartitionHelper.MinSizeBlk)
+                        if (logicalPartitionHelper.IsDynamicSize)
                         {
-                            //This will never work because each loop only gets smaller
-                            tmpClientPartitionSizeBlk =
-                                Convert.ToInt64((NewHdBlk*(percentOfOrigDrive + (percentCounter/100))));
-                        }
-                        else
-                        {
+                            clientPartition.SizeIsDynamic = true;
+                            var percentOfOrigDrive = Convert.ToInt64(part.Size)/
+                                                     (double)
+                                                         (Convert.ToInt64(_imageSchema.HardDrives[HdNumberToGet].Size));
+
+                            if (Convert.ToInt64(NewHdBlk*percentOfOrigDrive) < logicalPartitionHelper.MinSizeBlk)
+                            {
+                                //This will never work because each loop only gets smaller
+                                tmpClientPartitionSizeBlk =
+                                    Convert.ToInt64((NewHdBlk*(percentOfOrigDrive + (percentCounter/100))));
+                                
+                                if (logicalPartitionHelper.MinSizeBlk < tmpClientPartitionSizeBlk)
+                                    upSizeLock.Add(part.Number, tmpClientPartitionSizeBlk);
+                            }
+                            else
+                            {
 
 
-                            tmpClientPartitionSizeBlk = percentOfOrigDrive - (percentCounter/100) <= 0
-                                ? Convert.ToInt64(NewHdBlk*percentOfOrigDrive)
-                                : Convert.ToInt64(NewHdBlk*(percentOfOrigDrive - (percentCounter/100)));
+                                tmpClientPartitionSizeBlk = percentOfOrigDrive - (percentCounter/100) <= 0
+                                    ? Convert.ToInt64(NewHdBlk*percentOfOrigDrive)
+                                    : Convert.ToInt64(NewHdBlk*(percentOfOrigDrive - (percentCounter/100)));
 
-                            percentOfExtendedForThisPartition = (double) (tmpClientPartitionSizeBlk)/
-                                                                ExtendedPartitionHelper.AgreedSizeBlk;
+                                percentOfExtendedForThisPartition = (double) (tmpClientPartitionSizeBlk)/
+                                                                    ExtendedPartitionHelper.AgreedSizeBlk;
+                            }
                         }
                     }
-
 
                     if (logicalPartitionHelper.MinSizeBlk > tmpClientPartitionSizeBlk)
                     {
@@ -404,6 +420,7 @@ namespace BLL.ClientPartitioning
 
         private bool LogicalVolumeLayout()
         {
+            var upSizeLock = new Dictionary<string, long>();
             //Try to resize lv to fit inside newly created lvm
             foreach (var volumeGroup in VolumeGroupHelpers)
             {
@@ -445,21 +462,40 @@ namespace BLL.ClientPartitioning
                             double percentOfPvForThisLv = (double)logicalVolumeHelper.MinSizeBlk / NewHdBlk;
                             var tmpClientPartitionSizeLvBlk = logicalVolumeHelper.MinSizeBlk;
 
-                            if (logicalVolumeHelper.IsDynamicSize)
+                            if (upSizeLock.ContainsKey(lv.Name))
+                                tmpClientPartitionSizeLvBlk = upSizeLock[lv.Name];
+                            else
                             {
-                                clientPartitionLv.SizeIsDynamic = true;
-                                var percentOfOrigDrive = Convert.ToInt64(lv.Size) /
-                                                         (double)(Convert.ToInt64(_imageSchema.HardDrives[HdNumberToGet].Size));
-                                if (percentOfOrigDrive - (percentCounter / 100) <= 0)
-                                    tmpClientPartitionSizeLvBlk =
-                                        Convert.ToInt64(NewHdBlk * percentOfOrigDrive);
-                                else
-                                    tmpClientPartitionSizeLvBlk =
-                                        Convert.ToInt64(NewHdBlk *
-                                                        (percentOfOrigDrive - (percentCounter / 100)));
+                                if (logicalVolumeHelper.IsDynamicSize)
+                                {
+                                    clientPartitionLv.SizeIsDynamic = true;
+                                    var percentOfOrigDrive = Convert.ToInt64(lv.Size)/
+                                                             (double)
+                                                                 (Convert.ToInt64(
+                                                                     _imageSchema.HardDrives[HdNumberToGet].Size));
 
-                                percentOfPvForThisLv = (double)(tmpClientPartitionSizeLvBlk) /
-                                                       volumeGroup.AgreedPvSizeBlk;
+                                    if (Convert.ToInt64(NewHdBlk*percentOfOrigDrive) < logicalVolumeHelper.MinSizeBlk)
+                                    {
+                                        //This will never work because each loop only gets smaller
+                                        tmpClientPartitionSizeLvBlk =
+                                            Convert.ToInt64((NewHdBlk*(percentOfOrigDrive + (percentCounter/100))));
+
+                                        if (logicalVolumeHelper.MinSizeBlk < tmpClientPartitionSizeLvBlk)
+                                            upSizeLock.Add(lv.Name, tmpClientPartitionSizeLvBlk);
+                                    }
+                                    else
+                                    {
+                                        if (percentOfOrigDrive - (percentCounter/100) <= 0)
+                                            tmpClientPartitionSizeLvBlk =
+                                                Convert.ToInt64(NewHdBlk*percentOfOrigDrive);
+                                        else
+                                            tmpClientPartitionSizeLvBlk =
+                                                Convert.ToInt64(NewHdBlk*
+                                                                (percentOfOrigDrive - (percentCounter/100)));
+                                    }
+                                    percentOfPvForThisLv = (double) (tmpClientPartitionSizeLvBlk)/
+                                                           volumeGroup.AgreedPvSizeBlk;
+                                }
                             }
 
 
