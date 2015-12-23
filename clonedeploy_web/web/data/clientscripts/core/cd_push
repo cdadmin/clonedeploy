@@ -20,25 +20,17 @@ for hd in $hard_drives; do
 	log "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$newHDSize&schemaHds=$imaged_schema_drives"
 	hd_schema=$($curlAuth --data "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$newHDSize&schemaHds=$(remove_whitespace $imaged_schema_drives)" "${web}CheckHdRequirements" $curlEnd)
 	log "$hd_schema"
-	if [ "$(parse_json "$hd_schema" .IsValid)" = "true" ]; then
-		log " ...... HD Meets The Minimum Sized Required"		
-	elif [ "$(parse_json "$hd_schema" .IsValid)" = "false" ]; then
-		log " ...... $(parse_json "$hd_schema" .Message)" "display"
-		sleep 10
-		continue		
-	elif [ "$(parse_json "$hd_schema" .IsValid)" = "original" ]; then
-		log " ...... HD Matches Original Size Of Image, Dynamic Partition Layout Will Not Be Used"
-		if [ "$force_dynamic_partitions" = "true" ]; then
-			log " ...... Dynamic Partitions Enforced Via Image Profile"
-		fi		
-	else
-		error "Unknown Error Occurred While Determining Minimum HD Size Required.  Check The Exception Log"
-	fi
 	
 	image_hd_to_use=$(( $(parse_json "$hd_schema" .SchemaHdNumber) + 1 ))
 	image_path=/storage/images/$image_name/hd$image_hd_to_use
-		
-	pushGlobal
+	
+	setup_partitions
+	
+	if [ "$multicast" = "true" ]; then
+		multicast
+	else
+		downloadImage
+	fi
 		
 	restoreGrubLegacy
 	if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
@@ -264,29 +256,31 @@ eof
 }
 
 
-function pushGlobal()
+function setup_partitions()
 {
 	local partitionsCreated
 	local createDynamic
 	
+	if [ "$(parse_json "$hd_schema" .IsValid)" = "true" ]; then
+		log " ...... HD Meets The Minimum Sized Required"		
+	elif [ "$(parse_json "$hd_schema" .IsValid)" = "false" ]; then
+		log " ...... $(parse_json "$hd_schema" .Message)" "display"
+		sleep 10
+		continue		
+	elif [ "$(parse_json "$hd_schema" .IsValid)" = "original" ]; then
+		log " ...... HD Matches Original Size Of Image, Dynamic Partition Layout Will Not Be Used"
+	else
+		error "Unknown Error Occurred While Determining Minimum HD Size Required.  Check The Exception Log"
+	fi
 	
 	clearMBR
 	restoreMBR
-	
-	
-	if [ -n "$customPartition" ]; then
-		echo "$customPartition" | dos2unix >> /tmp/newPartLayout
-		cat /tmp/newPartLayout >> /tmp/clientlog.log
 		
-		deleteAllPartitions $hd
-		bash /tmp/newPartLayout
-		partprobe &>/dev/null
 	
+	if [ "$(parse_json "$hd_schema" .IsValid)" = "true" ] || [ "$force_dynamic_partitions" = "true" ] || [ "$partition_method" = "script" ] || [ "$partition_method" = "layout" ]; then
+		log " ** Creating Partition Table On $hd ** " "display"
 	
-	elif [ "$(parse_json "$hd_schema" .IsValid)" = "true" ] || [ "$force_dynamic_partitions" = "true" ]; then
-		log " ** Creating Dynamic Partition Table On $hd ** " "display"
-	
-		curl -sSkL "${web}GetPartLayout?imgName=$imgName&hdToGet=$hdToGet&newHDSize=$newHDSize&clientHD=$hd&taskType=deploy" --connect-timeout 10 --stderr - | dos2unix > /tmp/newPartLayout
+		$curlAuth --data "imageProfileId=$profile_id&hdToGet=$image_hd_to_use&newHDSize=$newHDSize&clientHD=$hd&taskType=deploy" "${web}GetPartLayout" $curlEnd | dos2unix > /tmp/newPartLayout
 		cat /tmp/newPartLayout >> /tmp/clientlog.log
 		
 		
@@ -333,11 +327,7 @@ function pushGlobal()
 		recreateHybrid
 	fi
 	
-	if [ "$multicast" = "true" ]; then
-		multicast
-	else
-		downloadImage
-	fi
+	
 	
 	
 

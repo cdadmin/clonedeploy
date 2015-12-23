@@ -133,11 +133,33 @@ namespace BLL.Workflows
 
                     break;
                 case "push":
+                    if (Convert.ToBoolean(_imageProfile.SkipExpandVolumes)) AppendString("skip_expand_volumes=true");
+                    if (Convert.ToBoolean(_imageProfile.FixBcd)) AppendString("fix_bcd=true");
+                    if (Convert.ToBoolean(_imageProfile.FixBootloader)) AppendString("fix_bootloader=true");
+                    if (Convert.ToBoolean(_imageProfile.ForceDynamicPartitions)) AppendString("force_dynamic_partitions=true");
+                    switch (_imageProfile.PartitionMethod)
+                    {
+                        case "Use Original MBR / GPT":
+                            AppendString("partition_method=original");
+                            break;
+                        case "Dynamic":
+                            AppendString("partition_method=dynamic");
+                            break;
+                        case "Custom Script":
+                            AppendString("partition_method=script");
+                            break;
+                        case "Custom Layout":
+                            AppendString("partition_method=layout");
+                            break;
+                    }
+
+                    break;
+                    
                 case "multicast":
                     if (Convert.ToBoolean(_imageProfile.SkipExpandVolumes)) AppendString("skip_expand_volumes=true");
                     if (Convert.ToBoolean(_imageProfile.FixBcd)) AppendString("fix_bcd=true");
                     if (Convert.ToBoolean(_imageProfile.FixBootloader)) AppendString("fix_bootloader=true");
-                    AppendString("partition_method=" + _imageProfile.PartitionMethod);
+                    if (Convert.ToBoolean(_imageProfile.ForceDynamicPartitions)) AppendString("force_dynamic_partitions=true");
                     break;
             }
 

@@ -111,11 +111,13 @@ namespace BLL.ClientPartitioning
             ExtendedPartitionHelper = new ClientPartitionHelper(_imageProfile).ExtendedPartition(HdNumberToGet);
             var upSizeLock = new Dictionary<string, long>();
 
-            double percentCounter = -1;
+            double percentCounter = -.1;
             var partitionLayoutVerified = false;
             while (!partitionLayoutVerified)
             {
-                percentCounter++;
+                //percentCounter++;
+
+                percentCounter += .1;
                 var isError = false;
                 double totalHdPercentage = 0;
                
@@ -150,12 +152,12 @@ namespace BLL.ClientPartitioning
                     };
 
 
-                    var partitionHelper = new ClientPartitionHelper(_imageProfile).Partition(HdNumberToGet, partCounter);
+                    var partitionHelper = new ClientPartitionHelper(_imageProfile).Partition(HdNumberToGet, partCounter, Convert.ToInt64(_newHdSize));
                     var percentOfHdForThisPartition = (double)partitionHelper.MinSizeBlk / NewHdBlk;
                     long tmpClientPartitionSizeBlk = partitionHelper.MinSizeBlk;
 
 
-                    if (partitionHelper.IsDynamicSize)
+                    if (partitionHelper.IsDynamicSize && !schemaPartition.ForceFixedSize)
                     {
                         clientPartition.SizeIsDynamic = true;
                         var percentOfOrigDrive = Convert.ToInt64(schemaPartition.Size) /
@@ -167,6 +169,7 @@ namespace BLL.ClientPartitioning
                         //If a partition's used space is almost maxed out to the size of the partition this can cause
                         //problems with calculations. 
 
+
                         if (upSizeLock.ContainsKey(schemaPartition.Number))                       
                             tmpClientPartitionSizeBlk = upSizeLock[schemaPartition.Number];
                                                
@@ -176,7 +179,7 @@ namespace BLL.ClientPartitioning
 
                             if (Convert.ToInt64(NewHdBlk*percentOfOrigDrive) < partitionHelper.MinSizeBlk)
                             {
-                                
+                               
                                 //This will never work because each loop only gets smaller
 
                                 tmpClientPartitionSizeBlk =
@@ -231,7 +234,10 @@ namespace BLL.ClientPartitioning
                
                 //Could not determine a partition layout that works with this hard drive
                 if (isError && percentCounter > 99)
+                {
+
                     return false;
+                }
 
                 //This partition size doesn't work, continuation of break from earlier
                 if (isError)
@@ -274,7 +280,9 @@ namespace BLL.ClientPartitioning
 
                 //Theoretically should never hit this, but added to prevent infinite loop
                 if (percentCounter > 100)
+                {
                     return false;
+                }
             }
 
             return true;
@@ -312,7 +320,7 @@ namespace BLL.ClientPartitioning
                         FsType = part.FsType
                     };
 
-                    var logicalPartitionHelper = new ClientPartitionHelper(_imageProfile).Partition(HdNumberToGet, partCounter);
+                    var logicalPartitionHelper = new ClientPartitionHelper(_imageProfile).Partition(HdNumberToGet, partCounter, Convert.ToInt64(_newHdSize));
 
                     var percentOfExtendedForThisPartition = (double)logicalPartitionHelper.MinSizeBlk / ExtendedPartitionHelper.AgreedSizeBlk;
                     var tmpClientPartitionSizeBlk = logicalPartitionHelper.MinSizeBlk;
@@ -371,7 +379,11 @@ namespace BLL.ClientPartitioning
 
                 //Could not determine a partition layout that works with this hard drive
                 if (isError && percentCounter > 99)
+                {
+                    Logger.Log(JsonConvert.SerializeObject(PrimaryAndExtendedPartitions));
+                    Logger.Log(JsonConvert.SerializeObject(LogicalPartitions));
                     return false;
+                }
 
                 //This partition size doesn't work, continuation of break from earlier
                 if (isError)
@@ -411,6 +423,7 @@ namespace BLL.ClientPartitioning
                 //Theoretically should never hit this, but added to prevent infinite loop
                 if (percentCounter > 100)
                 {
+
                     return false;
                 }
             }

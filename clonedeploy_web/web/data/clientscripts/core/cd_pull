@@ -335,7 +335,11 @@ function create_image_schema()
       cat /tmp/$partition_number.size | grep used_size >> $CLIENT_LOG
       volume_size=`cat /tmp/$partition_number.size | grep volume_size | cut -d"," -f 1 | cut -d ":" -f 2` #sed 's/ *$//'
       partition_used_mb=`cat /tmp/$partition_number.size | grep used_size | cut -d"," -f 2 | cut -d ":" -f 2` #sed 's/ *$//'
-      
+      volume_size=$(( $volume_size * 1000 * 1000 ))
+	  volume_size=$(( $volume_size / 1024 / 1024 ))
+	  volume_used_mb=$(( $volume_used_mb * 1000 * 1000 ))
+	  volume_used_mb=$(( $volume_used_mb / 1024 / 1024 ))
+	  
       partition_json="{\"number\":\"$partition_number\",\"start\":\"$partition_start\",\"end\":\"$partition_end\",\"size\":\"$partition_size\",\"volumesize\":\"$volume_size\",\"type\":\"$partition_type\",\"usedmb\":\"$partition_used_mb\",\"fsType\":\"$filesystem_type\",\"fsid\":\"$fsid\",\"uuid\":\"$partition_uuid\",\"guid\":\"$partition_guid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\",\"volumegroup\": { "
       
       #experimental lvm support
@@ -407,8 +411,10 @@ function create_image_schema()
             cat /tmp/lv$logical_volume_counter.size | grep used_size >> $CLIENT_LOG
             lv_volume_size=`cat /tmp/lv$logical_volume_counter.size | grep volume_size | cut -d"," -f 1 | cut -d ":" -f 2` #sed 's/ *$//'
             lv_used_mb=`cat /tmp/lv$logical_volume_counter.size | grep used_size | cut -d"," -f 2 | cut -d ":" -f 2` #sed 's/ *$//'
-          
-            
+            lv_volume_size=$(( $lv_volume_size * 1000 * 1000 ))
+	        lv_volume_size=$(( $lv_volume_size / 1024 / 1024 ))
+            lv_used_mb=$(( $lv_used_mb * 1000 * 1000 ))
+	        lv_used_mb=$(( $lv_used_mb / 1024 / 1024 ))
             logical_volume_json="{\"name\":\"$volume_name\",\"size\":\"$logical_volume_size\",\"volumesize\":\"$lv_volume_size\",\"type\":\"lv\",\"volumegroup\":\"$volume_group\",\"usedmb\":\"$lv_used_mb\",\"fstype\":\"$filesystem_type\",\"uuid\":\"$logical_volume_uuid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\"}"
             if [ "$logical_volume_counter" = "$logical_volume_count" ]; then
               logical_volume_json="$logical_volume_json] } }"

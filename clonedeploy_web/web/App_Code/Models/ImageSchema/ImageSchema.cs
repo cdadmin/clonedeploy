@@ -35,6 +35,8 @@ namespace Models.ImageSchema
         public string Type { get; set; }
         public long UsedMb { get; set; }
         public string Uuid { get; set; }
+        public bool ForceFixedSize { get; set; }
+        public string CustomSizeUnit { get; set; }
         public VolumeGroup VolumeGroup { get; set; }
     }
 
@@ -60,6 +62,8 @@ namespace Models.ImageSchema
         public long UsedMb { get; set; }
         public string Uuid { get; set; }
         public string VolumeGroup { get; set; }
+        public bool ForceFixedSize { get; set; }
+        public string CustomSizeUnit { get; set; }
     }
 
     public class ImageFileInfo
