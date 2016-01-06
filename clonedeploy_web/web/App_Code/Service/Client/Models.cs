@@ -48,6 +48,7 @@ namespace Services.Client
         public string PartitionType { get; set; }
         public string BootPartition { get; set; }
         public string Guid { get; set; }
+        public string UsesLvm { get; set; }
         public List<PhysicalPartition> PhysicalPartitions { get; set; }
     }
 

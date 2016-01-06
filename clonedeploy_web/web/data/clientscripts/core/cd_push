@@ -24,7 +24,7 @@ for hd in $hard_drives; do
 	image_hd_to_use=$(( $(parse_json "$hd_schema" .SchemaHdNumber) + 1 ))
 	image_path=/storage/images/$image_name/hd$image_hd_to_use
 	
-	setup_partitions
+	setup_hd_partitions
 	
 	if [ "$multicast" = "true" ]; then
 		multicast
@@ -47,52 +47,62 @@ done
 }
 
 
-function downloadImage()
-{	
-	isLVM="$1"
-	clear
+function download_lvm()
+{
+  local array_index=-1
+  local volume_group="$(parse_json "$current_partition" .VolumeGroup.Name)"
+  while [  "$(( $array_index + 1 ))" -lt "$(parse_json "$current_partition" .VolumeGroup.LogicalVolumeCount)" ]; do
+  array_index=$(( $array_index + 1))
+	  clear_and_move_down
+    current_logical_volume="$(parse_json "$current_partition" .VolumeGroup.LogicalVolumes[$array_index])"
+	unescaped_lv_name=$(echo $(parse_json "$current_logical_volume" .Name) | sed 's/--/-/g')
 	
-	if [ "$isLVM" = "true" ]; then
-		for lv in $parts; do
-		unesLV=$(echo $lv | sed 's/--/-/g')
-		log " ** Starting Image Download For Partition $unesLV ** " "display"
+	if [ "$(parse_json "$current_logical_volume" .FileSystem)" = "swap" ]; then
+			log "Creating Swap On $volume_group-$unescaped_lv_name"
+			log "$(parse_json "$current_logical_volume" .Uuid)"
+			mkswap /dev/mapper/$volume_group-$unescaped_lv_name -U $(parse_json "$current_logical_volume" .Uuid) &>> /tmp/clientlog.log	
+			continue
+		fi
+		
+		log " ** Starting Image Download For $volume_group-$unescaped_lv_name ** " "display"
 		sleep 7
 		echo
 		
-		upPart=`curl -sSk "${web}UpdateProgressPartition?hostName=$hostName&partition=$unesLV" --connect-timeout 10 --stderr -`
+		upPart=`curl -sSk "${web}UpdateProgressPartition?hostName=$hostName&partition=$unescaped_lv_name" --connect-timeout 10 --stderr -`
 		
-		fsType=`ls /images/$imgPath | grep $unesLV | grep -o '\.[a-z]*\.' | sed 's/\.//g'`
-		isGzip=`ls /images/$imgPath | grep $unesLV | grep -i .gz`
-		isLz4=`ls /images/$imgPath | grep $unesLV | grep -i .lz4`
+		if [ "$(parse_json "$current_logical_volume" .Compression)" = "gz" ]; then
+		partCompAlg="/usr/bin/gzip -c -d"
+		partCompExt="gz"
 		
-		log " ...... fsType: $fsType isGzip: $isGzip isLz4: $isLz4"
-		
-		if [ -n "$isGzip" ]; then
-			partCompAlg="/usr/bin/gzip -c -d"
-			partCompExt="gz"
-		elif [ -n "$isLz4" ]; then
+		elif [ "$(parse_json "$current_logical_volume" .Compression)" = "lz4" ]; then
 			partCompAlg="lz4 -d"
 			partCompExt="lz4"
 		else
-			error "Could Not Determine Compression Algorithm For Partition"
+		error "Could Not Determine Compression Algorithm For Partition"
 		fi
 		
-		if [ -n "$fsType" ]; then
-
-			touch /tmp/clone.progress
+	
+		
+		touch /tmp/clone.progress
 			
 
-				log "reporter $hostName $web & $partCompAlg /images/$imgPath/$unesLV.$fsType.$partCompExt | partclone.$fsType -B -r -o /dev/mapper/$lv"
-				reporter $hostName $web & $partCompAlg /images/$imgPath/$unesLV.$fsType.$partCompExt | partclone.$fsType -B -r -o /dev/mapper/$lv		
+				log "cd_reporter $computer_id partclone & $partCompAlg $image_path/$volume_group-$unescaped_lv_name.$(parse_json "$current_logical_volume" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_logical_volume" .PartcloneFileSystem) -B -r -o /dev/mapper/$volume_group-$unescaped_lv_name"
+				cd_reporter $computer_id partclone & $partCompAlg $image_path/$volume_group-$unescaped_lv_name.$(parse_json "$current_logical_volume" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_logical_volume" .PartcloneFileSystem) -B -r -o /dev/mapper/$volume_group-$unescaped_lv_name
+		
 			
-			
-		fi
+		
 
 		rm /tmp/clone.progress
 		cat /var/log/partclone.log >> /tmp/clientlog.log
+
+	
 		clear
 	done
-	else
+}
+
+function downloadImage()
+{	
+	
 	
 	local array_index=-1
 	while [  "$(( $array_index + 1 ))" -lt "$(parse_json "$hd_schema" .PhysicalPartitionCount)" ]; do
@@ -102,7 +112,8 @@ function downloadImage()
 		log "$current_partition"
 		
 		if [ -n "$(parse_json "$current_partition" .VolumeGroup)" ] && [ "$(parse_json "$current_partition" .VolumeGroup)" != "null" ]; then
-			echo "lvm"
+			download_lvm
+			continue
 		fi
 		
 		if [ "$(parse_json "$current_partition" .FileSystem)" = "swap" ]; then
@@ -180,7 +191,7 @@ function downloadImage()
 	done
 	
 	
-	fi
+
 }
 
 function restoreMBR()
@@ -215,8 +226,7 @@ eof
 
 function restoreGrubLegacy()
 {
-	#Grub Legacy does not seem to restore properly, it must be reinstalled
-	#Does not seem to affect Grub2
+
 	log " ** Checking If Grub Is Required ** "
 	dd if=$hd of=/tmp/grubcheck bs=512 count=1 2> /dev/null
 	strings /tmp/grubcheck | grep -i "grub"
@@ -256,7 +266,7 @@ eof
 }
 
 
-function setup_partitions()
+function setup_hd_partitions()
 {
 	local partitionsCreated
 	local createDynamic
@@ -327,9 +337,44 @@ function setup_partitions()
 		recreateHybrid
 	fi
 	
+	if [ "$(parse_json "$hd_schema" .UsesLvm)" = "true" ]; then
+	if [ "$(parse_json "$hd_schema" .IsValid)" = "original" ]; then
+		log "Creating Original LVM"
+		$curlAuth --data "profileId=$profile_id&clientHd=$hd&hdToGet=$image_hd_to_use" "${web}GetOriginalLvm" $curlEnd | dos2unix > /tmp/lvmcommands
+		cat /tmp/lvmcommands >> /tmp/clientlog.log
+	fi
+	if [ -s "/tmp/lvmcommands" ]; then
+	  dmsetup remove_all
+		lvmVGS=$(vgs --noheadings | awk '/^ / {print $1}')
+		for VG in $lvmVGS; do
+			vgremove $VG -fy
+		done
 	
+		lvmPVS=$(pvs --noheadings | grep $hd | awk '/^ / {print $1}')
+		for PV in $lvmPVS; do
+			pvremove $PV -fy
+		done
 	
-	
+		bash /tmp/lvmcommands &>>/tmp/clientlog.log
+		vgscan
+		
+		lvmVGS=$(vgs --noheadings | awk '/^ / {print $1}')
+		for VG in $lvmVGS; do
+			lvmLVS=$(lvs | grep "$VG" | awk '/^ / {print $1}')
+			vgUUID=$(vgs -v  2>/dev/null | grep "$VG" | awk '/^ / {print $9}')
+			sed -i "s/$vgUUID/$(cat /tmp/vg-$VG)/g" /tmp/lvm-$VG 
+			for logical_volume in $lvmLVS; do		
+				lvUUID=`lvs -v 2>/dev/null | grep "$lvmVG" | grep "$logical_volume" | awk '/^ / {print $10}'`
+				sed -i "s/$lvUUID/$(cat /tmp/$VG-$logical_volume)/g" /tmp/lvm-$VG 
+			done
+			vgcfgrestore $VG -f /tmp/lvm-$VG
+		done
+					
+	else
+		return 0
+
+	fi
+	fi
 
 	
 	

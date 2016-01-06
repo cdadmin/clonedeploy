@@ -202,6 +202,11 @@ namespace Service.Client
             HttpContext.Current.Response.Write(new Service.Client.Global().CheckHdRequirements(Convert.ToInt32(profileId),Convert.ToInt32(clientHdNumber),newHdSize,schemaHds));
         }
 
+        [WebMethod]
+        public void GetOriginalLvm(string profileId, string clientHd, string hdToGet)
+        {
+            HttpContext.Current.Response.Write(new Service.Client.Global().GetOriginalLvm(Convert.ToInt32(profileId), clientHd, hdToGet));
+        }
         /*
       
 

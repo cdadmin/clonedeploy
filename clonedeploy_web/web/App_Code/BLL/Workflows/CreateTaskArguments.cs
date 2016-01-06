@@ -142,37 +142,30 @@ namespace BLL.Workflows
                 AppendString("skip_clock=true");
             AppendString("task_completed_action=" + _imageProfile.TaskCompletedAction);
 
-            switch (_direction)
+            if (_direction == "pull")
             {
-                case "pull":
-                    if (Convert.ToBoolean(_imageProfile.RemoveGPT)) AppendString("remove_gpt_structures=true");
-                    if (Convert.ToBoolean(_imageProfile.SkipShrinkVolumes)) AppendString("skip_shrink_volumes=true");
-                    if (Convert.ToBoolean(_imageProfile.SkipShrinkLvm)) AppendString("skip_shrink_lvm=true");
-                    AppendString("compression_algorithm=" + _imageProfile.Compression);
-                    AppendString("compression_level=-" + _imageProfile.CompressionLevel);
-                    if (Convert.ToBoolean(_imageProfile.UploadSchemaOnly)) AppendString("upload_schema_only=true");
-                    if (!string.IsNullOrEmpty(_imageProfile.CustomUploadSchema))
-                    {
-                        AppendString("custom_upload_schema=true");
-                      
-                    }
 
-                    break;
-                case "push":
-                    if (Convert.ToBoolean(_imageProfile.SkipExpandVolumes)) AppendString("skip_expand_volumes=true");
-                    if (Convert.ToBoolean(_imageProfile.FixBcd)) AppendString("fix_bcd=true");
-                    if (Convert.ToBoolean(_imageProfile.FixBootloader)) AppendString("fix_bootloader=true");
-                    if (Convert.ToBoolean(_imageProfile.ForceDynamicPartitions)) AppendString("force_dynamic_partitions=true");
-                    AppendString(SetPartitionMethod());
-
-                    break;
-                    
-                case "multicast":
-                    if (Convert.ToBoolean(_imageProfile.SkipExpandVolumes)) AppendString("skip_expand_volumes=true");
-                    if (Convert.ToBoolean(_imageProfile.FixBcd)) AppendString("fix_bcd=true");
-                    if (Convert.ToBoolean(_imageProfile.FixBootloader)) AppendString("fix_bootloader=true");
-                    if (Convert.ToBoolean(_imageProfile.ForceDynamicPartitions)) AppendString("force_dynamic_partitions=true");
-                    break;
+                if (Convert.ToBoolean(_imageProfile.RemoveGPT)) AppendString("remove_gpt_structures=true");
+                if (Convert.ToBoolean(_imageProfile.SkipShrinkVolumes)) AppendString("skip_shrink_volumes=true");
+                if (Convert.ToBoolean(_imageProfile.SkipShrinkLvm)) AppendString("skip_shrink_lvm=true");
+                AppendString("compression_algorithm=" + _imageProfile.Compression);
+                AppendString("compression_level=-" + _imageProfile.CompressionLevel);
+                if (Convert.ToBoolean(_imageProfile.UploadSchemaOnly)) AppendString("upload_schema_only=true");
+                if (!string.IsNullOrEmpty(_imageProfile.CustomUploadSchema))
+                {
+                    AppendString("custom_upload_schema=true");
+                    SetCustomSchema("push");
+                }
+            }
+            else // push or multicast
+            {
+                if (Convert.ToBoolean(_imageProfile.SkipExpandVolumes)) AppendString("skip_expand_volumes=true");
+                if (Convert.ToBoolean(_imageProfile.FixBcd)) AppendString("fix_bcd=true");
+                if (Convert.ToBoolean(_imageProfile.FixBootloader)) AppendString("fix_bootloader=true");
+                if (Convert.ToBoolean(_imageProfile.ForceDynamicPartitions))
+                    AppendString("force_dynamic_partitions=true");
+                AppendString(SetPartitionMethod());
+                if (!string.IsNullOrEmpty(_imageProfile.CustomSchema)) SetCustomSchema("push");
             }
 
             return _activeTaskArguments.ToString();

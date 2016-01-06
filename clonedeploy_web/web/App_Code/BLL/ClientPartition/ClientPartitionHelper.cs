@@ -494,6 +494,15 @@ namespace BLL.ClientPartitioning
             return _imageSchema.HardDrives[schemaHdNumber].Partitions.Count(partition => partition.Active);
         }
 
+        public string CheckForLvm(int schemaHdNumber)
+        {
+            return (from part in _imageSchema.HardDrives[schemaHdNumber].Partitions
+                where part.Active
+                where part.VolumeGroup != null
+                where part.VolumeGroup.LogicalVolumes != null
+                select part).Any() ? "true" : "false";
+        }
+
         public Models.ImageSchema.ImageSchema GetImageSchema()
         {
             return _imageSchema;

@@ -291,12 +291,12 @@ namespace BLL.ClientPartitioning
         private bool LogicalPartitionLayout()
         {
             // Try to resize logical to fit inside newly created extended
-            double percentCounter = -1;
+            double percentCounter = -.1;
             var upSizeLock = new Dictionary<string, long>();
             var logicalPartLayoutVerified = false;
             while (!logicalPartLayoutVerified)
             {
-                percentCounter++;
+                percentCounter += .1;
                 var isError = false;
                 LogicalPartitions.Clear();
                 double totalExtendedPercentage = 0;
@@ -445,12 +445,12 @@ namespace BLL.ClientPartitioning
                     if (_imageSchema.HardDrives[HdNumberToGet].Name + partition.Number != volumeGroup.Pv) continue;
                     var singleLvVerified = false;
 
-                    double percentCounter = -1;
+                    double percentCounter = -.1;
 
                   
                     while (!singleLvVerified)
                     {
-                        percentCounter++;
+                        percentCounter += .1;
                         double totalPvPercentage = 0;
                         LogicalVolumes.Clear();
                         if (!partition.Active)

@@ -344,6 +344,8 @@ namespace Service.Client
                 result.PhysicalPartitions = partitionHelper.GetActivePartitions(result.SchemaHdNumber, imageProfile);
                 result.PhysicalPartitionCount = partitionHelper.GetActivePartitionCount(result.SchemaHdNumber);
                 result.PartitionType = imageSchema.HardDrives[result.SchemaHdNumber].Table;
+                result.BootPartition = imageSchema.HardDrives[result.SchemaHdNumber].Boot;
+                result.UsesLvm = partitionHelper.CheckForLvm(result.SchemaHdNumber);
                 return JsonConvert.SerializeObject(result);
             }
 
@@ -352,8 +354,42 @@ namespace Service.Client
             result.PhysicalPartitionCount = partitionHelper.GetActivePartitionCount(result.SchemaHdNumber);
             result.PartitionType = imageSchema.HardDrives[result.SchemaHdNumber].Table;
             result.BootPartition = imageSchema.HardDrives[result.SchemaHdNumber].Boot;
+            result.UsesLvm = partitionHelper.CheckForLvm(result.SchemaHdNumber);
             return JsonConvert.SerializeObject(result);
 
+        }
+
+        public string GetOriginalLvm(int profileId, string clientHd, string hdToGet)
+        {
+            string result = null;
+
+            var imageProfile = BLL.ImageProfile.ReadProfile(profileId);
+            var hdNumberToGet = Convert.ToInt32(hdToGet) - 1;
+            var partitionHelper = new ClientPartitionHelper(imageProfile);
+            var imageSchema = partitionHelper.GetImageSchema();
+            foreach (var part in from part in imageSchema.HardDrives[hdNumberToGet].Partitions
+                                 where part.Active
+                                 where part.VolumeGroup != null
+                                 where part.VolumeGroup.LogicalVolumes != null
+                                 select part)
+            {
+                result = "pvcreate -u " + part.Uuid + " --norestorefile -yf " +
+                         clientHd + part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] + "\r\n";
+                result += "vgcreate " + part.VolumeGroup.Name + " " + clientHd +
+                          part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] + " -yf" + "\r\n";
+                result += "echo \"" + part.VolumeGroup.Uuid + "\" >>/tmp/vg-" + part.VolumeGroup.Name +
+                          "\r\n";
+                foreach (var lv in part.VolumeGroup.LogicalVolumes.Where(lv => lv.Active))
+                {
+                    result += "lvcreate -L " + lv.Size + "s -n " + lv.Name + " " +
+                              lv.VolumeGroup + "\r\n";
+                    result += "echo \"" + lv.Uuid + "\" >>/tmp/" + lv.VolumeGroup + "-" +
+                              lv.Name + "\r\n";
+                }
+                result += "vgcfgbackup -f /tmp/lvm-" + part.VolumeGroup.Name + "\r\n";
+            }
+
+            return result;
         }
         /*
         public string GetSmbCredentials(string credential)
