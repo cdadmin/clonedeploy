@@ -391,31 +391,10 @@ namespace Service.Client
 
             return result;
         }
-        /*
-        public string GetSmbCredentials(string credential)
+
+        public string CheckForCancelledTask(int computerId)
         {
-            var xferMode = Settings.ImageTransferMode;
-            if (xferMode != "smb" && xferMode != "smb+http")
-            {
-                Logger.Log("An Attempt Was Made To Access SMB Credentials But Current Image Transfer Mode Is Not SMB");
-                return "";
-            }
-
-
-            switch (credential)
-            {
-                case "username":
-                    return Settings.SmbUserName;
-                case "password":
-                    return Settings.SmbPassword;
-            }
-
-            return "";
+            return BLL.ActiveImagingTask.IsComputerActive(computerId) ? "false" : "true";
         }
-
-      
-
-       
-         * */
     }
 }

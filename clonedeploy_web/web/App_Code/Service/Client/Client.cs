@@ -207,6 +207,12 @@ namespace Service.Client
         {
             HttpContext.Current.Response.Write(new Service.Client.Global().GetOriginalLvm(Convert.ToInt32(profileId), clientHd, hdToGet));
         }
+
+        [WebMethod]
+        public void CheckForCancelledTask(string computerId)
+        {
+            HttpContext.Current.Response.Write(new Service.Client.Global().CheckForCancelledTask(Convert.ToInt32(computerId)));
+        }
         /*
       
 

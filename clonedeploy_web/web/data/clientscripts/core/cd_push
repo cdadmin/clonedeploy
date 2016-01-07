@@ -2,7 +2,7 @@
 
 . /bin/cd_global_functions
 
-function hard_drive_ops()
+function process_hard_drives()
 {
 get_hard_drives
 echo
@@ -24,15 +24,12 @@ for hd in $hard_drives; do
 	image_hd_to_use=$(( $(parse_json "$hd_schema" .SchemaHdNumber) + 1 ))
 	image_path=/storage/images/$image_name/hd$image_hd_to_use
 	
-	setup_hd_partitions
+	create_partition_layout
 	
-	if [ "$multicast" = "true" ]; then
-		multicast
-	else
-		downloadImage
-	fi
-		
-	restoreGrubLegacy
+	process_partitions
+	
+	update_grub
+	
 	if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
 		log " ** Restoring GUID ** "
 		hdgptGUID=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=HDguid&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
@@ -47,7 +44,7 @@ done
 }
 
 
-function download_lvm()
+function process_lvm()
 {
   local array_index=-1
   local volume_group="$(parse_json "$current_partition" .VolumeGroup.Name)"
@@ -60,47 +57,26 @@ function download_lvm()
 	if [ "$(parse_json "$current_logical_volume" .FileSystem)" = "swap" ]; then
 			log "Creating Swap On $volume_group-$unescaped_lv_name"
 			log "$(parse_json "$current_logical_volume" .Uuid)"
-			mkswap /dev/mapper/$volume_group-$unescaped_lv_name -U $(parse_json "$current_logical_volume" .Uuid) &>> /tmp/clientlog.log	
+			mkswap /dev/mapper/$volume_group-$unescaped_lv_name -U $(parse_json "$current_logical_volume" .Uuid) &>> /tmp/makeswap
+			cat /tmp/makeswap >>/tmp/clientlog.log
+			mkswapResult=$(cat /tmp/makeswap | grep "parsing UUID failed")
+			if [ "$?" = "0" ]; then
+				log " ...... Swap Creation Failed, Creating Swap With New UUID "
+				mkswap /dev/mapper/$volume_group-$unescaped_lv_name &>> /tmp/clientlog.log
+			fi
 			continue
-		fi
+	fi
+				
+		download_image "$current_logical_volume" "$volume_group-$unescaped_lv_name"
 		
-		log " ** Starting Image Download For $volume_group-$unescaped_lv_name ** " "display"
-		sleep 7
-		echo
 		
-		upPart=`curl -sSk "${web}UpdateProgressPartition?hostName=$hostName&partition=$unescaped_lv_name" --connect-timeout 10 --stderr -`
-		
-		if [ "$(parse_json "$current_logical_volume" .Compression)" = "gz" ]; then
-		partCompAlg="/usr/bin/gzip -c -d"
-		partCompExt="gz"
-		
-		elif [ "$(parse_json "$current_logical_volume" .Compression)" = "lz4" ]; then
-			partCompAlg="lz4 -d"
-			partCompExt="lz4"
-		else
-		error "Could Not Determine Compression Algorithm For Partition"
-		fi
-		
-	
-		
-		touch /tmp/clone.progress
-			
-
-				log "cd_reporter $computer_id partclone & $partCompAlg $image_path/$volume_group-$unescaped_lv_name.$(parse_json "$current_logical_volume" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_logical_volume" .PartcloneFileSystem) -B -r -o /dev/mapper/$volume_group-$unescaped_lv_name"
-				cd_reporter $computer_id partclone & $partCompAlg $image_path/$volume_group-$unescaped_lv_name.$(parse_json "$current_logical_volume" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_logical_volume" .PartcloneFileSystem) -B -r -o /dev/mapper/$volume_group-$unescaped_lv_name
-		
-			
-		
-
-		rm /tmp/clone.progress
-		cat /var/log/partclone.log >> /tmp/clientlog.log
 
 	
 		clear
 	done
 }
 
-function downloadImage()
+function process_partitions()
 {	
 	
 	
@@ -112,7 +88,7 @@ function downloadImage()
 		log "$current_partition"
 		
 		if [ -n "$(parse_json "$current_partition" .VolumeGroup)" ] && [ "$(parse_json "$current_partition" .VolumeGroup)" != "null" ]; then
-			download_lvm
+			process_lvm
 			continue
 		fi
 		
@@ -122,48 +98,12 @@ function downloadImage()
 			mkswap $hd$(parse_json "$current_partition" .Number) -U $(parse_json "$current_partition" .Uuid) &>> /tmp/clientlog.log	
 			continue
 		fi
-		
-		log " ** Starting Image Download For Partition $hd$(parse_json "$current_partition" .Number) ** " "display"
-		sleep 7
-		echo
-		
-		upPart=`curl -sSk "${web}UpdateProgressPartition?hostName=$hostName&partition=$hd$partition_number" --connect-timeout 10 --stderr -`
-		
-		
-		if [ "$(parse_json "$current_partition" .Compression)" = "gz" ]; then
-		partCompAlg="/usr/bin/gzip -c -d"
-			partCompExt="gz"
-		
-		elif [ "$(parse_json "$current_partition" .Compression)" = "lz4" ]; then
-			partCompAlg="lz4 -d"
-			partCompExt="lz4"
-		else
-		error "Could Not Determine Compression Algorithm For Partition"
-		fi
-		
-
-		
-
-
-			touch /tmp/clone.progress
 			
-
-				log "cd_reporter $computer_id partclone & $partCompAlg $image_path/part$(parse_json "$current_partition" .Number).$(parse_json "$current_partition" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_partition" .PartcloneFileSystem) -B -r -o $hd$(parse_json "$current_partition" .Number)"
-				cd_reporter $computer_id partclone & $partCompAlg $image_path/part$(parse_json "$current_partition" .Number).$(parse_json "$current_partition" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_partition" .PartcloneFileSystem) -B -r -o $hd$(parse_json "$current_partition" .Number)
+		download_image "$current_partition" part
 		
-			
-		
-
-		rm /tmp/clone.progress
-		cat /var/log/partclone.log >> /tmp/clientlog.log
-
-		
-
-			
-		
-		pMBSize=$(parted -s $hd unit MB print all | grep " $$(parse_json "$current_partition" .Number) " -m 1 | awk -F' ' '{print $4}' | sed 's/MB//g')
+		pMBSize=$(parted -s $hd unit MB print all | grep " $(parse_json "$current_partition" .Number) " -m 1 | awk -F' ' '{print $4}' | sed 's/MB//g')
 		if [ "$pMBSize" -gt "2000" ]; then
-			expand_volume $hd$part $(parse_json "$current_partition" .FileSystem)
+			expand_volume $hd$(parse_json "$current_partition" .Number) $(parse_json "$current_partition" .FileSystem)
 		fi
 		
 		
@@ -178,14 +118,14 @@ function downloadImage()
 
 	fi
 		
-		if [ "$(parse_json "$hd_schema" .Boot)" = "$(parse_json "$current_partition" .Number)" ]; then
-			fixNTFSGeo $hd$(parse_json "$current_partition" .Number)
+		if [ "$(parse_json "$hd_schema" .Boot)" = "$(parse_json "$current_partition" .Number)" ] && [ "$(parse_json "$current_partition" .FileSystem)" = "ntfs" ]; then
+			fix_ntfs_boot $hd$(parse_json "$current_partition" .Number)
 		fi
 		
 		if [ "$(parse_json "$current_partition" .FileSystem)" = "ntfs" ] && [ "$skip_fix_bcd" != "true" ]; then
-			fixBCD
+			update_bcd
 		fi
-		changeHostName
+		change_computer_name
 	
 		
 	done
@@ -194,7 +134,61 @@ function downloadImage()
 
 }
 
-function restoreMBR()
+function download_image()
+{
+  local current_object="$1"
+  local file_name_prefix="$2"
+  local destination=""
+  
+  
+  if [ "$file_name_prefix" != "part" ]; then
+	destination="/dev/mapper/$file_name_prefix"
+  else
+    destination=$hd$(parse_json "$current_object" .Number)
+	file_name_prefix=part"$(parse_json "$current_object" .Number)"
+  fi
+  
+  
+   log " ** Starting Image Download For $destination ** " "display" 
+	if [ -n "$computer_id" ]; then    
+	  null=$($curlAuth --data "computerId=$computer_id&partition=$destination" "${web}UpdateProgressPartition" $curlEnd)
+    fi
+    sleep 7
+    echo
+	
+  if [ "$(parse_json "$current_object" .Compression)" = "gz" ]; then
+		partCompAlg="/usr/bin/gzip -c -d"
+			partCompExt="gz"
+		
+		elif [ "$(parse_json "$current_object" .Compression)" = "lz4" ]; then
+			partCompAlg="lz4 -d"
+			partCompExt="lz4"
+		else
+		error "Could Not Determine Compression Algorithm For Partition"
+		fi
+		
+
+		
+
+
+			touch /tmp/clone.progress
+			
+            if [ "$multicast" = "true" ]; then
+			  	log "cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$(parse_json "$current_partition" .PartcloneFileSystem) -B -r -o $hd$(parse_json "$current_partition" .Number)"
+				cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$(parse_json "$current_partition" .PartcloneFileSystem) -B -r -o $hd$(parse_json "$current_partition" .Number)
+			else
+				log "cd_reporter $computer_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
+				cd_reporter $computer_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
+		    fi
+			
+		
+
+		rm /tmp/clone.progress
+		cat /var/log/partclone.log >> /tmp/clientlog.log
+
+}
+
+function restore_mbr_gpt()
 {
 	log " ** Restoring MBR / GPT On $hd ** " "display"
 
@@ -224,7 +218,7 @@ eof
 	sleep 2
 }
 
-function restoreGrubLegacy()
+function update_grub()
 {
 
 	log " ** Checking If Grub Is Required ** "
@@ -266,7 +260,7 @@ eof
 }
 
 
-function setup_hd_partitions()
+function create_partition_layout()
 {
 	local partitionsCreated
 	local createDynamic
@@ -283,8 +277,8 @@ function setup_hd_partitions()
 		error "Unknown Error Occurred While Determining Minimum HD Size Required.  Check The Exception Log"
 	fi
 	
-	clearMBR
-	restoreMBR
+	erase_mbr_gpt
+	restore_mbr_gpt
 		
 	
 	if [ "$(parse_json "$hd_schema" .IsValid)" = "true" ] || [ "$force_dynamic_partitions" = "true" ] || [ "$partition_method" = "script" ] || [ "$partition_method" = "layout" ]; then
@@ -297,7 +291,7 @@ function setup_hd_partitions()
 		partCreatedCounter=0
 		if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
 			while [ "$partitionsCreated" != "true" ]; do		
-				deleteAllPartitions $hd
+				delete_all_partitions $hd
 				bash /tmp/newPartLayout
 				partprobe &>/dev/null
 				gptPartCount=$(gdisk -l $hd 2> /dev/null| awk '/^ / {print $1}' | grep -vi mbr | grep -vi gpt | grep -vi bsd | grep -vi apm -c)
@@ -313,7 +307,7 @@ function setup_hd_partitions()
 				fi
 			done
 		else
-			deleteAllPartitions $hd
+			delete_all_partitions $hd
 			bash /tmp/newPartLayout
 			partprobe &>/dev/null
 			mbrPartCount=$(fdisk -l 2>/dev/null | grep $hd | grep -v ${hd}: -c)
@@ -334,7 +328,7 @@ function setup_hd_partitions()
 	
 	
 	if [ "$usingHybrid" = "true" ]; then
-		recreateHybrid
+		create_hybrid_gpt
 	fi
 	
 	if [ "$(parse_json "$hd_schema" .UsesLvm)" = "true" ]; then
@@ -380,107 +374,7 @@ function setup_hd_partitions()
 	
 }
 
-function pushLVM()
-{
-	log " ** Checking For LVM To Restore ** "
-	if [ "$minSizeResult" = "original" ] || [ "$createDynamic" = "false" ]; then
-		curl -sSkL "${web}GetOriginalLvm?imgName=$imgName&hdToGet=$hdToGet&clientHD=$hd" --connect-timeout 10 --stderr - | dos2unix > /tmp/lvmcommands
-		cat /tmp/lvmcommands >> /tmp/clientlog.log
-	fi
-	if [ -s "/tmp/lvmcommands" ]; then
-		lvmVGS=$(vgs --noheadings | awk '/^ / {print $1}')
-		for VG in $lvmVGS; do
-			vgremove $VG -fy
-		done
-	
-		lvmPVS=$(pvs --noheadings | grep $hd | awk '/^ / {print $1}')
-		for PV in $lvmPVS; do
-			pvremove $PV -fy
-		done
-	
-		bash /tmp/lvmcommands &>>/tmp/clientlog.log
-		vgscan
-		
-		lvmVGS=$(vgs --noheadings | awk '/^ / {print $1}')
-		for VG in $lvmVGS; do
-			lvmLVS=$(lvs | grep "$VG" | awk '/^ / {print $1}')
-			vgUUID=$(vgs -v  2>/dev/null | grep "$VG" | awk '/^ / {print $9}')
-			sed -i "s/$vgUUID/$(cat /tmp/vg-$VG)/g" /tmp/lvm-$VG 
-			for logical_volume in $lvmLVS; do		
-				lvUUID=`lvs -v 2>/dev/null | grep "$lvmVG" | grep "$logical_volume" | awk '/^ / {print $10}'`
-				sed -i "s/$lvUUID/$(cat /tmp/$VG-$logical_volume)/g" /tmp/lvm-$VG 
-			done
-			vgcfgrestore $VG -f /tmp/lvm-$VG
-		done
-					
-	else
-		return 0
-
-	fi
-	
-	log " ** Determining Number Of LV's To Restore ** "
-
-	parts=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=lvmactiveParts&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
-	
-	partCount=0
-	for part in $parts; do
-		partCount=$(( $partCount + 1 ))
-	done
-	
-	log " ...... lvmpartCount: $partCount lvmparts: $parts"
-	
-	if [ "$partCount" = "0" ]; then
-		log "Did not find any LVs to restore"
-		return 0
-	fi
-	
-	
-	if [ "$multicast" = "true" ]; then
-		multicast "true"
-	else
-		downloadImage "true"
-	fi
-	
-	for part in $parts; do
-		lvHD="/dev/mapper/$part"
-		fsType=`blkid -po udev $lvHD | grep FS_TYPE | awk -F'=' '{print $2}'`
-		expandFS $lvHD
-	done
-
-	
-	#Search For A Swap Partition
-	log " ** Searching For A Swap Partition ** "
-	
-	swapResult=`curl -sSkL "${web}GetHdParameter?imgName=$imgName&paramName=lvmswap&hdToGet=$hdToGet&partNumber=0" --connect-timeout 10 --stderr -`
-		
-	if [ -n "$swapResult" ]; then
-		arrayS=$(echo $swapResult | tr "," "\n");
-		i=0;
-		for x in $arrayS; do
-   			swapArray[i]=$x;
-			i=$(( $i + 1 ))
-		done
-
-		log " ...... Found Swap On /dev/mapper/${swapArray[0]}"
-		log "${swapArray[1]}"
-		mkswap /dev/mapper/${swapArray[0]} -U ${swapArray[1]} &> /tmp/makeswap
-		cat /tmp/makeswap >>/tmp/clientlog.log
-		mkswapResult=$(cat /tmp/makeswap | grep "parsing UUID failed")
-		if [ "$?" = "0" ]; then
-			log " ...... Swap Creation Failed, Creating Swap With New UUID "
-			mkswap /dev/mapper/${swapArray[0]} &>> /tmp/clientlog.log
-		fi
-	else
-		log " ...... No Swap Found"
-	fi
-
-	
-	
-}
-
-
-
-function recreateHybrid()
+function create_hybrid_gpt()
 {
 	#Fix Me
 	#Hybrid gpt is rare, this is a basic way to recreate it, and will not work in some situations
@@ -516,7 +410,7 @@ q
 eof
 }
 
-function runScripts()
+function process_scripts()
 {
 	
 	mkdir /scripts
@@ -536,68 +430,9 @@ function runScripts()
 	done
 }
 
-function multicast()
-{		
-	isLVM="$1"
-	clear
-	
-	if [ "$isLVM" = "true" ]; then
-		for lv in $parts; do
-			unesLV=$(echo $lv | sed 's/--/-/g')
-			log " ** Starting Image Download For Partition $lv ** " "display"
-			sleep 7
-			echo
-		
-			upPart=`curl -sSk "${web}UpdateProgressPartition?hostName=$hostName&partition=$unesLV" --connect-timeout 10 --stderr -`
-			fsType=`ls /images/$imgPath | grep $unesLV | grep -o '\.[a-z]*\.' | sed 's/\.//g'`
 
-			log "fsType: $fsType"
-			if [ -n "$fsType" ]; then
-		
-				touch /tmp/clone.progress
-				log "reporter $hostName $web & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$fsType -B -r -o /dev/mapper/$lv"
-				reporter $hostName $web & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$fsType -B -r -o /dev/mapper/$lv			
-			fi
 
-			rm /tmp/clone.progress
-		
-			rm /tmp/clone.progress
-			cat /var/log/partclone.log >> /tmp/clientlog.log
-		
-			clear
-		done
-	
-	else
-		#Hard drive passes other than the first are not implemented yet.
-		log " ** Joining Multicast Session ** " "display"
-		echo
-		for x in $parts; do
-			log " ** Starting Image Download For Partition $x ** " "display"
-			sleep 7
-			echo
-
-			upPart=`curl -sSk "${web}UpdateProgressPartition?hostName=$hostName&partition=$hd$x" --connect-timeout 10 --stderr -`	
-			fsType=`ls /images/$imgPath | grep part$x | grep -o '\.[a-z]*\.' | sed 's/\.//g'`
-			log "fsType: $fsType"
-			if [ -n "$fsType" ]; then
-			
-				touch /tmp/clone.progress
-				log "reporter $hostName $web & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$fsType -B -r -o $hd$x"
-				reporter $hostName $web & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$fsType -B -r -o $hd$x
-			
-			fi
-
-			rm /tmp/clone.progress
-		
-			rm /tmp/clone.progress
-			cat /var/log/partclone.log >> /tmp/clientlog.log
-		
-			clear
-		done
-	fi
-}
-
-function fixBCD()
+function update_bcd()
 {
 	local partition=$1
 	windowsPart="";bcdPart="";
@@ -640,7 +475,7 @@ function fixBCD()
 	fi	
 }
 
-function fixNTFSGeo()
+function fix_ntfs_boot()
 {
 	local partition=$1
 
@@ -652,7 +487,7 @@ function fixNTFSGeo()
 		
 }
 
-function clearMBR()
+function erase_mbr_gpt()
 {
 	log " ** Clearing MBR / GPT ** "
 	sgdisk -Z $hd &>>/tmp/clientlog.log
@@ -661,7 +496,7 @@ function clearMBR()
 }
 
 
-function deleteAllPartitions()
+function delete_all_partitions()
 {
 	#Delete all partitions but keep boot record intact
 	log " ** Deleting Existing Partitions ** "
@@ -722,7 +557,7 @@ FDISK
 	fi
 }
 
-function changeHostName()
+function change_computer_name()
 {
 	local partition=$1
 	if [ -n "$hostName" ]; then
@@ -760,30 +595,30 @@ function changeHostName()
 						root="/win/Windows/System32/config/SYSTEM"
 						hnkey1="\ControlSet001\Services\Tcpip\Parameters\NV Hostname"
 						hnkey2="\ControlSet001\Control\ComputerName\ComputerName\ComputerName"
-						changename
+						update_registry_key
 					
 						hnkey1="\ControlSet001\Services\Tcpip\Parameters\Hostname"
 						hnkey1="\ControlSet001\Services\Tcpip\Parameters\HostName"
-						changename
+						update_registry_key
 						
 						hnkey1="\ControlSet001\Services\Tcpip\Parameters\NV HostName"
 						hnkey2="\ControlSet001\Control\ComputerName\ComputerName\ComputerName"
-						changename		
+						update_registry_key		
 
 						root="/win/Windows/System32/config/SYSTEM"
 						hnkey1="\ControlSet001\services\Tcpip\Parameters\NV Hostname"
 						hnkey2="\ControlSet001\Control\ComputerName\ComputerName\ComputerName"
-						changename		
+						update_registry_key		
 
 						root="/win/Windows/System32/config/SYSTEM"
 						hnkey1="\ControlSet001\services\Tcpip\Parameters\NV Hostname"
 						hnkey2="\ControlSet001\Control\ComputerName\ComputerName\ComputerName"
-						changename		
+						update_registry_key		
 
 						root="/win/WINDOWS/system32/config/system"
 						hnkey1="\ControlSet001\Services\Tcpip\Parameters\NV Hostname"
 						hnkey2="\ControlSet001\Control\ComputerName\ComputerName\ComputerName"
-						changename
+						update_registry_key
 					fi
 					echo
 					cd /
@@ -796,7 +631,7 @@ function changeHostName()
 	fi
 }
 
-function changename()
+function update_registry_key()
 {
 	reged -e "$root" &>/dev/null  <<EOFN 
 ed $hnkey1
@@ -819,6 +654,7 @@ function main()
 	for arg in "$ondemand_arguments"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
   else
     checkin
+	cd_reporter $computer_id wim true &
 	if [ "$multicast" = "true" ]; then
 	  $curlAuth --data "computerId=$computer_id" "${web}UpdateStatusInProgress" $curlEnd
 	else
@@ -830,6 +666,7 @@ function main()
 		else
 		  echo "** Queue Is Full, Waiting For Open Slot ** "
 		  echo " ...... Current Position $(parse_json "$queue_status" .Position)"
+		  sleep 5
 		fi
       done
 	fi	  		
@@ -839,10 +676,10 @@ function main()
 
   mount_smb
 
-  hard_drive_ops
+  process_hard_drives
 
   if [ -n "$hostScripts" ]; then
-		runScripts
+		process_scripts
   fi
 	
   checkout

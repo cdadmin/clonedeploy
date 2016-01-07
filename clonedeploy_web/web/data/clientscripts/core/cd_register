@@ -1,9 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
-. functions
-. cd_helpers
-dialog --title hi --yesno 10 10 10
-ClearAndMoveDown
+. /bin/cd_global_functions
+
+clear_and_move_down
 echo " ** Computer Registration ** "
 echo
 
@@ -21,15 +20,15 @@ while [ "$isError" != "false" ]; do
 		continue
 	fi
 	echo
-		registerResult=`$curlAuth --data "name=$name&mac=$mac&imageId=3&imageProfileId=3" ${web}AddComputer $curlClose`
+		registerResult=$($curlAuth --data "name=$name&mac=$mac&imageId=3&imageProfileId=3" ${web}AddComputer $curlClose)
 		if [ ! "$?" = "0" ]; then
 			echo " ...... Could Not Register Computer: $registerResult"
 		else
-			if [ "`ParseJSON "$registerResult" .IsValid`" = "true" ]; then
+			if [ "$(parse_json "$registerResult" .IsValid)" = "true" ]; then
 				echo " ...... Success"
 				isError="false"
 			else
-				echo " ...... `ParseJSON "$registerResult" .Message`"
+				echo " ...... $(parse_json "$registerResult" .Message)"
 				isError="true"
 			fi
 			echo

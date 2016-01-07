@@ -18,7 +18,7 @@ function ntfs_tasks()
 {
   mkdir -p /mnt/ntfs 2>> /dev/null
   log " ** Clearing Mounted Devices On $partition ** "
-  ntfs-3g -o force,rw,remove_hiberfile $partition /mnt/ntfs 2> $CLIENT_LOG
+  ntfs-3g -o force,rw,remove_hiberfile $partition /mnt/ntfs 2>> $CLIENT_LOG
   reged -e /mnt/ntfs/Windows/System32/config/SYSTEM &>>$CLIENT_LOG <<MOUNT
 cd \MountedDevices
 delallv
@@ -32,7 +32,9 @@ MOUNT
     reged -x /mnt/ntfs/Boot/BCD . Objects /tmp/regbcd >>/dev/null
     cat /tmp/regbcd >> $CLIENT_LOG         
     cp /mnt/ntfs/Boot/BCD $image_path/BCD
-    cp /mnt/ntfs/bootmgr $image_path/bootmgr           
+    cp /mnt/ntfs/bootmgr $image_path/bootmgr
+	echo $image_path
+	sleep 30
   fi
   log " ...... Complete"
     
@@ -295,7 +297,6 @@ function create_image_schema()
       #In addition to setting partclone type, clean filesystems for better compatibility moving forward
       if [ "$filesystem_type" = "ntfs" ]; then
         ntfsfix -b -d $hard_drive$partition_number &>/dev/null
-        ntfs_tasks
         partclone_type="ntfs"
           
       elif [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ]; then
@@ -334,13 +335,13 @@ function create_image_schema()
       cat /tmp/$partition_number.size | grep volume_size >> $CLIENT_LOG
       cat /tmp/$partition_number.size | grep used_size >> $CLIENT_LOG
       volume_size=`cat /tmp/$partition_number.size | grep volume_size | cut -d"," -f 1 | cut -d ":" -f 2` #sed 's/ *$//'
-      partition_used_mb=`cat /tmp/$partition_number.size | grep used_size | cut -d"," -f 2 | cut -d ":" -f 2` #sed 's/ *$//'
+      volume_used_mb=`cat /tmp/$partition_number.size | grep used_size | cut -d"," -f 2 | cut -d ":" -f 2` #sed 's/ *$//'
       volume_size=$(( $volume_size * 1000 * 1000 ))
 	  volume_size=$(( $volume_size / 1024 / 1024 ))
 	  volume_used_mb=$(( $volume_used_mb * 1000 * 1000 ))
 	  volume_used_mb=$(( $volume_used_mb / 1024 / 1024 ))
 	  
-      partition_json="{\"number\":\"$partition_number\",\"start\":\"$partition_start\",\"end\":\"$partition_end\",\"size\":\"$partition_size\",\"volumesize\":\"$volume_size\",\"type\":\"$partition_type\",\"usedmb\":\"$partition_used_mb\",\"fsType\":\"$filesystem_type\",\"fsid\":\"$fsid\",\"uuid\":\"$partition_uuid\",\"guid\":\"$partition_guid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\",\"volumegroup\": { "
+      partition_json="{\"number\":\"$partition_number\",\"start\":\"$partition_start\",\"end\":\"$partition_end\",\"size\":\"$partition_size\",\"volumesize\":\"$volume_size\",\"type\":\"$partition_type\",\"usedmb\":\"$volume_used_mb\",\"fsType\":\"$filesystem_type\",\"fsid\":\"$fsid\",\"uuid\":\"$partition_uuid\",\"guid\":\"$partition_guid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\",\"volumegroup\": { "
       
       #experimental lvm support
       if [ "$lvmResize" != "false" ]; then
@@ -544,7 +545,7 @@ function upload_image()
     if [ "$filesystem_type" = "ntfs" ]; then    
       partclone_type="ntfs"
 	  wim_arguments=" --pipable"
-      
+      ntfs_tasks
     elif [ "$filesystem_type" = "vfat" ]; then
       partclone_type="fat"
       

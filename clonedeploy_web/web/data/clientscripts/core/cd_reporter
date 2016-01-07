@@ -4,7 +4,17 @@
 
 computer_id=$1
 reporter_type=$2
+cancel_test=$3
 
+if [ "$cancel_test" = "true" ]; then
+  while true; do
+    result=$($curlAuth --data "computerId=$computer_id" "${web}CheckForCancelledTask" $curlEnd)
+    if [ "$result" = "true" ]; then
+      error "Task Has Been Cancelled"
+    fi
+    sleep 30
+  done
+fi
 if [ "$reporter_type" = "partclone" ]; then
   while [ -f "/tmp/clone.progress" ]; do
     post=$(tail -n 1 /tmp/clone.progress)

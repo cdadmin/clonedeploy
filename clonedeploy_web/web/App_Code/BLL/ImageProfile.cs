@@ -129,7 +129,7 @@ namespace BLL
             imageProfile.PartitionMethod = "Dynamic";
             imageProfile.Compression = "lz4";
             imageProfile.CompressionLevel = "1";
-
+            imageProfile.TaskCompletedAction = "Reboot";
             AddProfile(imageProfile);
         }
 
