@@ -213,6 +213,14 @@ namespace Service.Client
         {
             HttpContext.Current.Response.Write(new Service.Client.Global().CheckForCancelledTask(Convert.ToInt32(computerId)));
         }
+
+        [WebMethod]
+        public void UpdateBcd()
+        {
+            var bcd = Utility.Decode(HttpContext.Current.Request.Form["bcd"]);
+            var offsetBytes = Utility.Decode(HttpContext.Current.Request.Form["offsetBytes"]);
+            HttpContext.Current.Response.Write(new Global().UpdateBcd(bcd, Convert.ToInt64(offsetBytes)));
+        }
         /*
       
 

@@ -59,11 +59,10 @@ namespace BLL.ClientPartitioning
                 var partCount = clientSchema.PrimaryAndExtendedPartitions.Count;
 
                 string partitionCommands;
+                partitionCommands = "fdisk " + ClientHd + " &>>/tmp/clientlog.log <<FDISK\r\n";
                 if (Convert.ToInt32(clientSchema.PrimaryAndExtendedPartitions[0].Start) < 2048)
-                    partitionCommands = "fdisk -c=dos " + ClientHd + " &>>/tmp/clientlog.log <<FDISK\r\n";
-                else
-                    partitionCommands = "fdisk " + ClientHd + " &>>/tmp/clientlog.log <<FDISK\r\n";
-
+                    partitionCommands += "c\r\n";
+               
                 foreach (var part in clientSchema.PrimaryAndExtendedPartitions)
                 {
                     counter++;
@@ -77,14 +76,8 @@ namespace BLL.ClientPartitioning
                             partitionCommands += "e\r\n";
                             break;
                     }
-                    //if (PrimaryAndExtendedPartitions.Count == 1)
-                    //{
-                    //partitionCommands += "1" + "\r\n";
-                    //}
-                    //else
-                    //{
+
                     partitionCommands += part.Number + "\r\n";
-                    //}
 
                     if (counter == 1)
                         partitionCommands += clientSchema.FirstPartitionStartSector + "\r\n";
@@ -238,15 +231,7 @@ namespace BLL.ClientPartitioning
                                        "\" >>/tmp/lvmcommands\r\n";
             }
 
-            //If mbr / gpt is hybrid, set the boot flag
-            /*if (!string.IsNullOrEmpty(BootPart))
-            {
-                PartitionLayoutText += "fdisk " + ClientHd + " &>>/tmp/clientlog.log <<FDISK\r\n";
-                PartitionLayoutText += "x\r\nM\r\nr\r\na\r\n";
-                PartitionLayoutText += BootPart + "\r\n";
-                PartitionLayoutText += "w\r\nq\r\n";
-                PartitionLayoutText += "FDISK\r\n";
-            }*/
+         
             return partitionScript;
         }
     }

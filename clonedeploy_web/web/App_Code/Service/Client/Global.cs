@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Windows.Forms;
 using BLL.ClientPartitioning;
@@ -395,6 +397,60 @@ namespace Service.Client
         public string CheckForCancelledTask(int computerId)
         {
             return BLL.ActiveImagingTask.IsComputerActive(computerId) ? "false" : "true";
+        }
+
+        public string UpdateBcd(string bcd, long newOffsetBytes)
+        {
+            var newOffsetHex = newOffsetBytes.ToString("X16").Reverse().ToList();
+            StringBuilder output = new StringBuilder();
+
+            for (int i = 0; i < newOffsetHex.Count; i++)
+            {
+                if (i % 2 == 0)
+                {
+                    if ((i + 1) < newOffsetHex.Count)
+                    {
+                        output.Append(newOffsetHex[i + 1]);
+                    }
+                    output.Append(newOffsetHex[i]);
+
+                    if (i + 2 != newOffsetHex.Count)
+                        output.Append(",");
+                }
+            }
+            string newOffsetHexReversed = output.ToString();
+
+            List<string> guids = new List<string>();
+            RegFileObject regfile = new RegFileObject(bcd);
+            foreach (var reg in regfile.RegValues)
+            {
+                var tmp = reg;
+                foreach (var abc in tmp.Value.Values)
+                {
+                    if (abc.Value.ToLower().Contains("winload.exe"))
+                    {
+                        var matches = Regex.Matches(reg.Key, @"\{(.*?)\}");
+                        guids.AddRange(from Match m in matches select m.Groups[1].Value);
+                    }
+                }
+            }
+
+            guids = guids.Distinct().ToList();
+            foreach (var guid in guids)
+            {
+                var regBinary =
+                    regfile.RegValues[@".\Objects\{" + guid + @"}\Elements\11000001"]["Element"]
+                        .Value;
+                var regBinarySplit = regBinary.Split(',');
+                var originalOffsetHex = regBinarySplit[32] + "," + regBinarySplit[33] + "," + regBinarySplit[34] + "," + regBinarySplit[35] + "," +
+                               regBinarySplit[36] + "," + regBinarySplit[37] + "," + regBinarySplit[38] + "," + regBinarySplit[39];
+
+                var regex = new Regex(originalOffsetHex, RegexOptions.IgnoreCase);
+                bcd = regex.Replace(bcd, newOffsetHexReversed);
+
+            }
+
+            return Utility.Encode(bcd);
         }
     }
 }

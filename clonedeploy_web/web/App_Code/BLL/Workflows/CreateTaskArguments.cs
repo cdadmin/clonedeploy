@@ -41,9 +41,9 @@ namespace BLL.Workflows
             }
         }
 
-        private void SetCustomSchema(string taskDirection)
+        private void SetCustomSchema(string taskType)
         {
-            var customUploadSchema = new BLL.ImageSchema(_imageProfile, "upload").GetImageSchema();
+            var customSchema = new BLL.ImageSchema(_imageProfile, taskType).GetImageSchema();
             var customHardDrives = new StringBuilder();
             customHardDrives.Append("custom_hard_drives=\"");
             var customPartitions = new StringBuilder();
@@ -54,7 +54,7 @@ namespace BLL.Workflows
             customLogicalVolumes.Append("custom_logical_volumes=\"");
             var customFixedLogicalVolumes = new StringBuilder();
             customFixedLogicalVolumes.Append("custom_fixed_logical_volumes=\"");
-            foreach (var hd in customUploadSchema.HardDrives.Where(x => x.Active))
+            foreach (var hd in customSchema.HardDrives.Where(x => x.Active))
             {
                 customHardDrives.Append(hd.Name + " ");
                 foreach (var partition in hd.Partitions.Where(x => x.Active))
@@ -154,7 +154,7 @@ namespace BLL.Workflows
                 if (!string.IsNullOrEmpty(_imageProfile.CustomUploadSchema))
                 {
                     AppendString("custom_upload_schema=true");
-                    SetCustomSchema("push");
+                    SetCustomSchema("upload");
                 }
             }
             else // push or multicast
@@ -165,7 +165,7 @@ namespace BLL.Workflows
                 if (Convert.ToBoolean(_imageProfile.ForceDynamicPartitions))
                     AppendString("force_dynamic_partitions=true");
                 AppendString(SetPartitionMethod());
-                if (!string.IsNullOrEmpty(_imageProfile.CustomSchema)) SetCustomSchema("push");
+                if (!string.IsNullOrEmpty(_imageProfile.CustomSchema)) SetCustomSchema("deploy");
             }
 
             return _activeTaskArguments.ToString();
