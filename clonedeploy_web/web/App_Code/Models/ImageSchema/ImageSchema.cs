@@ -13,11 +13,11 @@ namespace Models.ImageSchema
         public string Boot { get; set; }
         public string Guid { get; set; }
         public short Lbs { get; set; }
-        public string Name { get; set; }
-        public Partition[] Partitions { get; set; }
+        public string Name { get; set; }    
         public short Pbs { get; set; }
         public long Size { get; set; }
         public string Table { get; set; }
+        public Partition[] Partitions { get; set; }
     }
 
     public class Partition
@@ -37,17 +37,18 @@ namespace Models.ImageSchema
         public string Uuid { get; set; }
         public bool ForceFixedSize { get; set; }
         public string CustomSizeUnit { get; set; }
+        public string Prefix { get; set; }
         public VolumeGroup VolumeGroup { get; set; }
     }
 
     public class VolumeGroup
-    {
-        public LogicalVolume[] LogicalVolumes { get; set; }
+    {   
         public string Name { get; set; }
         public string PhysicalVolume { get; set; }
         public long Size { get; set; }
         public string Type { get; set; }
         public string Uuid { get; set; }
+        public LogicalVolume[] LogicalVolumes { get; set; }
     }
 
     public class LogicalVolume

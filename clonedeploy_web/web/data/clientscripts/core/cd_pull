@@ -342,7 +342,7 @@ function create_image_schema()
 	  volume_used_mb=$(( $volume_used_mb * 1000 * 1000 ))
 	  volume_used_mb=$(( $volume_used_mb / 1024 / 1024 ))
 	  
-      partition_json="{\"number\":\"$partition_number\",\"start\":\"$partition_start\",\"end\":\"$partition_end\",\"size\":\"$partition_size\",\"volumesize\":\"$volume_size\",\"type\":\"$partition_type\",\"usedmb\":\"$volume_used_mb\",\"fsType\":\"$filesystem_type\",\"fsid\":\"$fsid\",\"uuid\":\"$partition_uuid\",\"guid\":\"$partition_guid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\",\"volumegroup\": { "
+      partition_json="{\"number\":\"$partition_number\",\"start\":\"$partition_start\",\"end\":\"$partition_end\",\"size\":\"$partition_size\",\"volumesize\":\"$volume_size\",\"type\":\"$partition_type\",\"usedmb\":\"$volume_used_mb\",\"fsType\":\"$filesystem_type\",\"fsid\":\"$fsid\",\"uuid\":\"$partition_uuid\",\"guid\":\"$partition_guid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\",\"prefix\":\"$partition_prefix\",\"volumegroup\": { "
       
       #experimental lvm support
       if [ "$lvmResize" != "false" ]; then

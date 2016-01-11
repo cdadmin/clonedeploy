@@ -62,6 +62,7 @@ namespace Services.Client
         public string Uuid { get; set; }
         public string Guid { get; set; }
         public string Type { get; set; }
+        public string Prefix { get; set; }
         public VolumeGroup VolumeGroup { get; set; }
     }
 

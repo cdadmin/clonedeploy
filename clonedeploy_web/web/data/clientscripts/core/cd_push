@@ -4,41 +4,43 @@
 
 function process_hard_drives()
 {
-get_hard_drives
-echo
-sleep 2
+  local drive_name
+  local lbs
+  local drive_size_block
+  
+  get_hard_drives
 
-imaged_schema_drives=""
-current_hd_number=0
-for hd in $hard_drives; do
-	current_hd_number=$(( $current_hd_number + 1 ))
+  imaged_schema_drives=""
+  current_hd_number=0
+  for hard_drive in $hard_drives; do
+    current_hd_number=$(( $current_hd_number + 1 ))
 	
-	drive=$(echo $hd | cut -d "/" -f 3)
-	lbs=$(cat /sys/block/$drive/queue/logical_block_size)
-	dsize=$(cat /sys/block/$drive/size)
-	newHDSize=`expr $lbs '*' $dsize`
-	log "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$newHDSize&schemaHds=$imaged_schema_drives"
-	hd_schema=$($curlAuth --data "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$newHDSize&schemaHds=$(remove_whitespace $imaged_schema_drives)" "${web}CheckHdRequirements" $curlEnd)
-	log "$hd_schema"
+    drive_name=$(echo $hard_drive | cut -d "/" -f 3)
+    lbs=$(cat /sys/block/$drive_name/queue/logical_block_size)
+    drive_size_block=$(cat /sys/block/$drive_name/size)
+    drive_size_bytes=$(expr $lbs '*' $drive_size_block)
 	
-	image_hd_to_use=$(( $(parse_json "$hd_schema" .SchemaHdNumber) + 1 ))
-	image_path=/storage/images/$image_name/hd$image_hd_to_use
+    log "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$drive_size_bytes&schemaHds=$imaged_schema_drives"
+    hd_schema=$($curlAuth --data "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$drive_size_bytes&schemaHds=$(remove_whitespace $imaged_schema_drives)" "${web}CheckHdRequirements" $curlEnd)
+    log "$hd_schema"
 	
-	create_partition_layout
+    image_hd_to_use=$(( $(parse_json "$hd_schema" .SchemaHdNumber) + 1 ))
+    image_path=/storage/images/$image_name/hd$image_hd_to_use
 	
-	process_partitions
+    create_partition_layout
 	
-	update_bcd
+    process_partitions
 	
-	update_grub
+    update_bcd
 	
-	if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
-		log " ** Restoring GUID ** "
-		sgdisk $hd -U$(parse_json "$hd_schema" .Guid) &>> /tmp/clientlog.log	
+    update_grub
+	
+    if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
+	  log " ** Restoring GUID ** "
+	  sgdisk $hard_drive -U$(parse_json "$hd_schema" .Guid) &>> $CLIENT_LOG	
 	fi
 	
-	imaged_schema_drives="$imaged_schema_drives $(parse_json "$hd_schema" .SchemaHdNumber) "
-
+    imaged_schema_drives="$imaged_schema_drives $(parse_json "$hd_schema" .SchemaHdNumber) "
 done
 }
 
@@ -47,176 +49,158 @@ function process_lvm()
 {
   local array_index=-1
   local volume_group="$(parse_json "$current_partition" .VolumeGroup.Name)"
+  local make_swap_result
+  local current_logical_volume
+  local volume_group
+  local unescaped_lv_name
+  
   while [  "$(( $array_index + 1 ))" -lt "$(parse_json "$current_partition" .VolumeGroup.LogicalVolumeCount)" ]; do
-  array_index=$(( $array_index + 1))
-	  clear_and_move_down
+    array_index=$(( $array_index + 1))
+    clear_and_move_down
     current_logical_volume="$(parse_json "$current_partition" .VolumeGroup.LogicalVolumes[$array_index])"
-	unescaped_lv_name=$(echo $(parse_json "$current_logical_volume" .Name) | sed 's/--/-/g')
+    unescaped_lv_name=$(echo $(parse_json "$current_logical_volume" .Name) | sed 's/--/-/g')
 	
 	if [ "$(parse_json "$current_logical_volume" .FileSystem)" = "swap" ]; then
-			log "Creating Swap On $volume_group-$unescaped_lv_name"
-			log "$(parse_json "$current_logical_volume" .Uuid)"
-			mkswap /dev/mapper/$volume_group-$unescaped_lv_name -U $(parse_json "$current_logical_volume" .Uuid) &>> /tmp/makeswap
-			cat /tmp/makeswap >>/tmp/clientlog.log
-			mkswapResult=$(cat /tmp/makeswap | grep "parsing UUID failed")
-			if [ "$?" = "0" ]; then
-				log " ...... Swap Creation Failed, Creating Swap With New UUID "
-				mkswap /dev/mapper/$volume_group-$unescaped_lv_name &>> /tmp/clientlog.log
-			fi
-			continue
-	fi
+      log "Creating Swap On $volume_group-$unescaped_lv_name"
+      log "$(parse_json "$current_logical_volume" .Uuid)"
+      mkswap /dev/mapper/$volume_group-$unescaped_lv_name -U $(parse_json "$current_logical_volume" .Uuid) &>> /tmp/makeswap
+      cat /tmp/makeswap >>$CLIENT_LOG
+      make_swap_result=$(cat /tmp/makeswap | grep "parsing UUID failed")
+      if [ "$?" = "0" ]; then
+        log " ...... Swap Creation Failed, Creating Swap With New UUID "
+        mkswap /dev/mapper/$volume_group-$unescaped_lv_name &>> $CLIENT_LOG
+      fi
+      continue
+    fi
 				
-		download_image "$current_logical_volume" "$volume_group-$unescaped_lv_name"
+    download_image "$current_logical_volume" "$volume_group-$unescaped_lv_name"
 		
-		
-
-	
-		clear
-	done
+    clear
+  done
 }
 
 function process_partitions()
-{	
-	
-	local array_index=-1
-	while [  "$(( $array_index + 1 ))" -lt "$(parse_json "$hd_schema" .PhysicalPartitionCount)" ]; do
-	array_index=$(( $array_index + 1))
-	  clear_and_move_down
-	  current_partition="$(parse_json "$hd_schema" .PhysicalPartitions[$array_index])"
-		log "$current_partition"
+{
+  local partition_size_mb
+  local array_index=-1
+  while [  "$(( $array_index + 1 ))" -lt "$(parse_json "$hd_schema" .PhysicalPartitionCount)" ]; do
+    array_index=$(( $array_index + 1))
+    clear_and_move_down
+    current_partition="$(parse_json "$hd_schema" .PhysicalPartitions[$array_index])"
+    log "$current_partition"
 		
-		if [ -n "$(parse_json "$current_partition" .VolumeGroup)" ] && [ "$(parse_json "$current_partition" .VolumeGroup)" != "null" ]; then
-			process_lvm
-			continue
-		fi
+    if [ -n "$(parse_json "$current_partition" .VolumeGroup)" ] && [ "$(parse_json "$current_partition" .VolumeGroup)" != "null" ]; then
+      process_lvm
+      continue
+    fi
 		
-		if [ "$(parse_json "$current_partition" .FileSystem)" = "swap" ]; then
-			log "Creating Swap On $hd$(parse_json "$current_partition" .Number)"
-			log "$(parse_json "$current_partition" .Uuid)"
-			mkswap $hd$(parse_json "$current_partition" .Number) -U $(parse_json "$current_partition" .Uuid) &>> /tmp/clientlog.log	
-			continue
-		fi
+    if [ "$(parse_json "$current_partition" .FileSystem)" = "swap" ]; then
+      log "Creating Swap On $hard_drive$(parse_json "$current_partition" .Number)"
+      log "$(parse_json "$current_partition" .Uuid)"
+      mkswap $hard_drive$(parse_json "$current_partition" .Number) -U $(parse_json "$current_partition" .Uuid) &>> $CLIENT_LOG	
+      continue
+    fi
 			
-		download_image "$current_partition" part
+    download_image "$current_partition" part
 		
-		pMBSize=$(parted -s $hd unit MB print all | grep " $(parse_json "$current_partition" .Number) " -m 1 | awk -F' ' '{print $4}' | sed 's/MB//g')
-		if [ "$pMBSize" -gt "2000" ]; then
-			expand_volume ${hd}$(parse_json "$current_partition" .Number) $(parse_json "$current_partition" .FileSystem)
-		fi
-		
-		
-		
-	
-	if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
-		log " ** Restoring GUID ** "
-	
-
-			log " ...... part $part gptGUID: $gptGUID "
-			sgdisk $hd -u$(parse_json "$current_partition" .Number):$(parse_json "$current_partition" .Guid) &>> /tmp/clientlog.log
-
+    partition_size_mb=$(parted -s $hard_drive unit MB print all | grep " $(parse_json "$current_partition" .Number) " -m 1 | awk -F' ' '{print $4}' | sed 's/MB//g')
+    if [ "$partition_size_mb" -gt "2000" ]; then
+      expand_volume ${hard_drive}$(parse_json "$current_partition" .Number) $(parse_json "$current_partition" .FileSystem)
 	fi
 		
-		if [ "$(parse_json "$hd_schema" .BootPartition)" = "$(parse_json "$current_partition" .Number)" ] && [ "$(parse_json "$current_partition" .FileSystem)" = "ntfs" ]; then
-			fix_ntfs_boot ${hd}$(parse_json "$current_partition" .Number)
-		fi
+    if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
+      log " ** Restoring GUID ** "
+      log " ...... part $part gptGUID: $gptGUID "
+      sgdisk $hard_drive -u$(parse_json "$current_partition" .Number):$(parse_json "$current_partition" .Guid) &>> $CLIENT_LOG
+    fi
+		
+    if [ "$(parse_json "$hd_schema" .BootPartition)" = "$(parse_json "$current_partition" .Number)" ] && [ "$(parse_json "$current_partition" .FileSystem)" = "ntfs" ]; then
+      fix_ntfs_boot ${hard_drive}$(parse_json "$current_partition" .Number)
+    fi
 			
-		change_computer_name
+    change_computer_name
 	
-	done
-	
-	
-
+  done
 }
 
 function download_image()
 {
   local current_object="$1"
   local file_name_prefix="$2"
-  local destination=""
-  
-  
+  local destination
+    
   if [ "$file_name_prefix" != "part" ]; then
-	destination="/dev/mapper/$file_name_prefix"
+    destination="/dev/mapper/$file_name_prefix"
   else
-    destination=$hd$(parse_json "$current_object" .Number)
-	file_name_prefix=part"$(parse_json "$current_object" .Number)"
+    destination=${hard_drive}$(parse_json "$current_object" .Number)
+    file_name_prefix=part"$(parse_json "$current_object" .Number)"
   fi
   
-  
-   log " ** Starting Image Download For $destination ** " "display" 
-	if [ -n "$computer_id" ]; then    
-	  null=$($curlAuth --data "computerId=$computer_id&partition=$destination" "${web}UpdateProgressPartition" $curlEnd)
-    fi
-    sleep 7
-    echo
+  log " ** Starting Image Download For $destination ** " "display" 
+  if [ -n "$computer_id" ]; then    
+    null=$($curlAuth --data "computerId=$computer_id&partition=$destination" "${web}UpdateProgressPartition" $curlEnd)
+  fi
+  sleep 7
+  echo
 	
   if [ "$(parse_json "$current_object" .Compression)" = "gz" ]; then
-		partCompAlg="/usr/bin/gzip -c -d"
-			partCompExt="gz"
+    partCompAlg="/usr/bin/gzip -c -d"
+    partCompExt="gz"
+  elif [ "$(parse_json "$current_object" .Compression)" = "lz4" ]; then
+    partCompAlg="lz4 -d"
+    partCompExt="lz4"
+  else
+    error "Could Not Determine Compression Algorithm For Partition"
+  fi
 		
-		elif [ "$(parse_json "$current_object" .Compression)" = "lz4" ]; then
-			partCompAlg="lz4 -d"
-			partCompExt="lz4"
-		else
-		error "Could Not Determine Compression Algorithm For Partition"
-		fi
-		
-
-		
-
-
-			touch /tmp/clone.progress
+  touch /tmp/clone.progress
 			
-            if [ "$multicast" = "true" ]; then
-			  	log "cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$(parse_json "$current_partition" .PartcloneFileSystem) -B -r -o $hd$(parse_json "$current_partition" .Number)"
-				cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$(parse_json "$current_partition" .PartcloneFileSystem) -B -r -o $hd$(parse_json "$current_partition" .Number)
-			else
-				log "cd_reporter $computer_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
-				cd_reporter $computer_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
-		    fi
+  if [ "$multicast" = "true" ]; then
+    log "cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$(parse_json "$current_partition" .PartcloneFileSystem) -B -r -o $hard_drive$(parse_json "$current_partition" .Number)"
+    cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$(parse_json "$current_partition" .PartcloneFileSystem) -B -r -o $hard_drive$(parse_json "$current_partition" .Number)
+  else
+    log "cd_reporter $computer_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
+    cd_reporter $computer_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
+  fi
 			
-		
-
-		rm /tmp/clone.progress
-		cat /var/log/partclone.log >> /tmp/clientlog.log
-
+  rm /tmp/clone.progress
+  cat /var/log/partclone.log >> $CLIENT_LOG
 }
 
 function restore_mbr_gpt()
 {
-	log " ** Restoring MBR / GPT On $hd ** " "display"
-
-
-	dd if=$image_path/table of=$hd &>>/tmp/clientlog.log				
+  local gpt_status
+  local hybrid_status
+  
+  log " ** Restoring MBR / GPT On $hard_drive ** " "display"
+  dd if=$image_path/table of=$hard_drive &>>$CLIENT_LOG				
 		
-	
-	#Sometimes restoring results in damaged GPT.
-	isDamaged=`gdisk -l $hd <<< "2" 2>>/tmp/clientlog.log | grep 'GPT:' | awk '{$1=""; print $0}' | sed 's/^ //'`
-	if [ "$isDamaged" = "damaged" ]; then
-		gdisk $hd << eof >> /tmp/clientlog.log
+  #Sometimes restoring results in damaged GPT.
+  gpt_status=$(gdisk -l $hard_drive <<< "2" 2>>$CLIENT_LOG | grep 'GPT:' | awk '{$1=""; print $0}' | sed 's/^ //')
+  if [ "$gpt_status" = "damaged" ]; then
+    gdisk $hard_drive << eof >> $CLIENT_LOG
 2
 w
 y
 eof
-
-	fi
+  fi
 	
-	hybridCheck=`gdisk -l $hd <<< "q" 2>> /tmp/clientlog.log| grep 'MBR:' | awk '{$1=""; print $0}' | sed 's/^ //'`
-	if [ "$hybridCheck" = "hybrid" ]; then
-		usingHybrid="true"
-	fi
+  hybrid_status=$(gdisk -l $hard_drive <<< "q" 2>> $CLIENT_LOG| grep 'MBR:' | awk '{$1=""; print $0}' | sed 's/^ //')
+  if [ "$hybrid_status" = "hybrid" ]; then
+    gpt_is_hybrid="true"
+  fi
 	
-	log " ...... Complete" "display"
-	echo 
-	partprobe &>/dev/null
-	sleep 2
+  log " ...... Complete" "display"
+  echo 
+  partprobe &>/dev/null
+  sleep 2
 }
 
 function update_grub()
 {
 
 	log " ** Checking If Grub Is Required ** "
-	dd if=$hd of=/tmp/grubcheck bs=512 count=1 2> /dev/null
+	dd if=$hard_drive of=/tmp/grubcheck bs=512 count=1 2> /dev/null
 	strings /tmp/grubcheck | grep -i "grub"
 	if [ "$?" = "0" ]; then
 		log " ...... Grub Is Required, Searching For Boot Files "
@@ -229,9 +213,9 @@ function update_grub()
 find /grub/menu.lst
 find /boot/grub/menu.lst
 eof
-			cat /tmp/grubroot >>/tmp/clientlog.log
+			cat /tmp/grubroot >>$CLIENT_LOG
 			grubHdPass=$(( $current_hd_number - 1 ))
-			grubRoot=$(cat /tmp/grubroot | grep -i "hd$grubHdPass")
+			grubRoot=$(cat /tmp/grubroot | grep -i "$hard_drive$grubHdPass")
 			grubHD=$(echo $grubRoot | cut -d"," -f1)
 			grubHD="$grubHD)"
 		fi
@@ -240,7 +224,7 @@ eof
 		if [ -n "$grubRoot" ]; then
 			log " ...... Found Legacy Grub On $grubRoot "
 			log " ...... Restoring Grub Legacy "
-			grub --batch <<eof>> /tmp/clientlog.log
+			grub --batch <<eof>> $CLIENT_LOG
 root $grubRoot
 setup $grubHD
 eof
@@ -256,124 +240,120 @@ eof
 
 function create_partition_layout()
 {
-	local partitionsCreated
-	local createDynamic
+  local layout_created_successfully
+  local layout_failed_counter
+  local gpt_partition_count
+  local mbr_partition_count
+  local preexisting_volume_groups
+  local preexisting_physical_volumes
+  local new_volume_groups
+  local new_logical_volumes
+  local volume_group_uuid
+  local logical_volume_uuid
+  
+  if [ "$(parse_json "$hd_schema" .IsValid)" = "true" ]; then
+    log " ...... HD Meets The Minimum Sized Required"		
+  elif [ "$(parse_json "$hd_schema" .IsValid)" = "false" ]; then
+    log " ...... $(parse_json "$hd_schema" .Message)" "display"
+    sleep 10
+    continue		
+  elif [ "$(parse_json "$hd_schema" .IsValid)" = "original" ]; then
+    log " ...... HD Matches Original Size Of Image, Dynamic Partition Layout Will Not Be Used"
+  else
+    error "Unknown Error Occurred While Determining Minimum HD Size Required.  Check The Exception Log"
+  fi
 	
-	if [ "$(parse_json "$hd_schema" .IsValid)" = "true" ]; then
-		log " ...... HD Meets The Minimum Sized Required"		
-	elif [ "$(parse_json "$hd_schema" .IsValid)" = "false" ]; then
-		log " ...... $(parse_json "$hd_schema" .Message)" "display"
-		sleep 10
-		continue		
-	elif [ "$(parse_json "$hd_schema" .IsValid)" = "original" ]; then
-		log " ...... HD Matches Original Size Of Image, Dynamic Partition Layout Will Not Be Used"
-	else
-		error "Unknown Error Occurred While Determining Minimum HD Size Required.  Check The Exception Log"
-	fi
-	
-	erase_mbr_gpt
-	restore_mbr_gpt
+  erase_mbr_gpt
+  restore_mbr_gpt
 		
-	
-	if [ "$(parse_json "$hd_schema" .IsValid)" = "true" ] || [ "$force_dynamic_partitions" = "true" ] || [ "$partition_method" = "script" ] || [ "$partition_method" = "layout" ]; then
-		log " ** Creating Partition Table On $hd ** " "display"
-	
-		$curlAuth --data "imageProfileId=$profile_id&hdToGet=$image_hd_to_use&newHDSize=$newHDSize&clientHD=$hd&taskType=deploy" "${web}GetPartLayout" $curlEnd | dos2unix > /tmp/newPartLayout
-		cat /tmp/newPartLayout >> /tmp/clientlog.log
+  if [ "$(parse_json "$hd_schema" .IsValid)" = "true" ] || [ "$force_dynamic_partitions" = "true" ] || [ "$partition_method" = "script" ] || [ "$partition_method" = "layout" ]; then
+    log " ** Creating Partition Table On $hard_drive ** " "display"
+    $curlAuth --data "imageProfileId=$profile_id&hdToGet=$image_hd_to_use&newHDSize=$drive_size_bytes&clientHD=$hard_drive&taskType=deploy" "${web}GetPartLayout" $curlEnd | dos2unix > /tmp/newPartLayout
+    cat /tmp/newPartLayout >> $CLIENT_LOG
 		
+    layout_failed_counter=0
+    if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
+      while [ "$layout_created_successfully" != "true" ]; do		
+        delete_all_partitions $hard_drive
+        bash /tmp/newPartLayout
+        partprobe &>/dev/null
+        gpt_partition_count=$(gdisk -l $hard_drive 2> /dev/null| awk '/^ / {print $1}' | grep -vi mbr | grep -vi gpt | grep -vi bsd | grep -vi apm -c)
+        if [ "$gpt_partition_count" = "$(parse_json "$hd_schema" .PhysicalPartitionCount)" ]; then
+          layout_created_successfully="true"
+          log " ...... Success" "display"
+        else
+          layout_failed_counter=$(( $partCreatedCounter + 1 ))
+          log " ...... Could Not Create Partition Layout.  Retrying Attempt $layout_failed_counter"
+          if [ "$layout_failed_counter" -gt "10" ]; then
+            error "Could Not Create Partition Layout"
+          fi
+        fi
+      done
+    else
+      delete_all_partitions $hard_drive
+      bash /tmp/newPartLayout
+      partprobe &>/dev/null
+      mbr_partition_count=$(fdisk -l 2>/dev/null | grep $hard_drive | grep -v ${hard_drive}: -c)
+      if [ "$mbr_partition_count" != "$(parse_json "$hd_schema" .PhysicalPartitionCount)" ]; then
+        error "Could Not Create Partition Layout"
+      fi
+    fi
+  fi
+	
+  log " ** New Partition Table Is ** "
+  if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
+    gdisk -l $hard_drive &>>$CLIENT_LOG
+  else
+    fdisk -l &>>$CLIENT_LOG
+  fi
+	
+  if [ "$gpt_is_hybrid" = "true" ]; then
+    create_hybrid_gpt
+  fi
+	
+  if [ "$(parse_json "$hd_schema" .UsesLvm)" = "true" ]; then
+    if [ "$(parse_json "$hd_schema" .IsValid)" = "original" ]; then
+      log "Creating Original LVM"
+      $curlAuth --data "profileId=$profile_id&clientHd=$hard_drive&hdToGet=$image_hd_to_use" "${web}GetOriginalLvm" $curlEnd | dos2unix > /tmp/lvmcommands
+      cat /tmp/lvmcommands >> $CLIENT_LOG
+    fi
+	
+    if [ -s "/tmp/lvmcommands" ]; then
+      dmsetup remove_all
+      preexisting_volume_groups=$(vgs --noheadings | awk '/^ / {print $1}')
+      for vg in $preexisting_volume_groups; do
+        vgremove $vg -fy
+      done
+	
+      preexisting_physical_volumes=$(pvs --noheadings | grep $hard_drive | awk '/^ / {print $1}')
+      for pv in $preexisting_physical_volumes; do
+        pvremove $pv -fy
+      done
+	
+      bash /tmp/lvmcommands &>>$CLIENT_LOG
+      vgscan
 		
-		partCreatedCounter=0
-		if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
-			while [ "$partitionsCreated" != "true" ]; do		
-				delete_all_partitions $hd
-				bash /tmp/newPartLayout
-				partprobe &>/dev/null
-				gptPartCount=$(gdisk -l $hd 2> /dev/null| awk '/^ / {print $1}' | grep -vi mbr | grep -vi gpt | grep -vi bsd | grep -vi apm -c)
-				if [ "$gptPartCount" = "$(parse_json "$hd_schema" .PhysicalPartitionCount)" ]; then
-					partitionsCreated=true
-					log " ...... Success" "display"
-				else
-					partCreatedCounter=$(( $partCreatedCounter + 1 ))
-					log " ...... Could Not Create Partition Layout.  Retrying Attempt $partCreatedCounter"
-					if [ "$partCreatedCounter" -gt "10" ]; then
-						error "Could Not Create Partition Layout"
-					fi
-				fi
-			done
-		else
-			delete_all_partitions $hd
-			bash /tmp/newPartLayout
-			partprobe &>/dev/null
-			mbrPartCount=$(fdisk -l 2>/dev/null | grep $hd | grep -v ${hd}: -c)
-			if [ "$mbrPartCount" != "$(parse_json "$hd_schema" .PhysicalPartitionCount)" ]; then
-				error "Could Not Create Partition Layout"
-			fi
-		fi
-	fi
-	
-	
-	
-	log " ** New Partition Table Is ** "
-	if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
-		gdisk -l $hd &>>/tmp/clientlog.log
-	else
-		fdisk -l &>>/tmp/clientlog.log
-	fi
-	
-	
-	if [ "$usingHybrid" = "true" ]; then
-		create_hybrid_gpt
-	fi
-	
-	if [ "$(parse_json "$hd_schema" .UsesLvm)" = "true" ]; then
-	if [ "$(parse_json "$hd_schema" .IsValid)" = "original" ]; then
-		log "Creating Original LVM"
-		$curlAuth --data "profileId=$profile_id&clientHd=$hd&hdToGet=$image_hd_to_use" "${web}GetOriginalLvm" $curlEnd | dos2unix > /tmp/lvmcommands
-		cat /tmp/lvmcommands >> /tmp/clientlog.log
-	fi
-	if [ -s "/tmp/lvmcommands" ]; then
-	  dmsetup remove_all
-		lvmVGS=$(vgs --noheadings | awk '/^ / {print $1}')
-		for VG in $lvmVGS; do
-			vgremove $VG -fy
-		done
-	
-		lvmPVS=$(pvs --noheadings | grep $hd | awk '/^ / {print $1}')
-		for PV in $lvmPVS; do
-			pvremove $PV -fy
-		done
-	
-		bash /tmp/lvmcommands &>>/tmp/clientlog.log
-		vgscan
-		
-		lvmVGS=$(vgs --noheadings | awk '/^ / {print $1}')
-		for VG in $lvmVGS; do
-			lvmLVS=$(lvs | grep "$VG" | awk '/^ / {print $1}')
-			vgUUID=$(vgs -v  2>/dev/null | grep "$VG" | awk '/^ / {print $9}')
-			sed -i "s/$vgUUID/$(cat /tmp/vg-$VG)/g" /tmp/lvm-$VG 
-			for logical_volume in $lvmLVS; do		
-				lvUUID=`lvs -v 2>/dev/null | grep "$lvmVG" | grep "$logical_volume" | awk '/^ / {print $10}'`
-				sed -i "s/$lvUUID/$(cat /tmp/$VG-$logical_volume)/g" /tmp/lvm-$VG 
-			done
-			vgcfgrestore $VG -f /tmp/lvm-$VG
-		done
-					
-	else
-		return 0
-
-	fi
-	fi
-
-	
-	
+      new_volume_groups=$(vgs --noheadings | awk '/^ / {print $1}')
+      for vg in $new_volume_groups; do
+        new_logical_volumes=$(lvs | grep "$vg" | awk '/^ / {print $1}')
+        volume_group_uuid=$(vgs -v  2>/dev/null | grep "$vg" | awk '/^ / {print $9}')
+        sed -i "s/$volume_group_uuid/$(cat /tmp/vg-$vg)/g" /tmp/lvm-$vg 
+        for logical_volume in $new_logical_volumes; do		
+          logical_volume_uuid=$(lvs -v 2>/dev/null | grep "$vg" | grep "$logical_volume" | awk '/^ / {print $10}')
+          sed -i "s/$logical_volume_uuid/$(cat /tmp/$vg-$logical_volume)/g" /tmp/lvm-$vg 
+        done
+        vgcfgrestore $vg -f /tmp/lvm-$vg
+      done			
+    else
+      return 0
+    fi
+  fi
 }
 
 function create_hybrid_gpt()
 {
-	#Fix Me
-	#Hybrid gpt is rare, this is a basic way to recreate it, and will not work in some situations
-	#This only creates the first 3 gpt partitions it finds
-gdisk $hd << eof >> /tmp/clientlog.log
+  #Fix Me. Very generic way of creating hybrid.  May not work in many situations.
+  gdisk $hard_drive << eof >> $CLIENT_LOG
 r
 h
 2 3 4 5 6 7 8 9 10
@@ -391,7 +371,7 @@ w
 y
 eof
 
-fdisk $hd << eof >> /tmp/clientlog.log
+  fdisk $hard_drive << eof >> $CLIENT_LOG
 x
 M
 r
@@ -412,11 +392,11 @@ function process_scripts()
 	arr=$(echo "$hostScripts" | tr "," "\n");
 	for script in $arr; do
 	
-		curl -sSk -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -FscriptName="$script" "${web}DownloadCustomScripts" -o /scripts/"$script" --connect-timeout 10 --stderr - >> /tmp/clientlog.log
+		curl -sSk -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -FscriptName="$script" "${web}DownloadCustomScripts" -o /scripts/"$script" --connect-timeout 10 --stderr - >> $CLIENT_LOG
 		log " ...... Running $script" "display"
 		sleep 1
 		chmod +x "$script"
-		./$script "$hd" "$taskArgs"
+		./$script "$hard_drive" "$taskArgs"
 		sleep 1
 		echo
 	done
@@ -426,57 +406,52 @@ function process_scripts()
 
 function update_bcd()
 {
-	if [ "$skip_fix_bcd" = "true" ]; then
-	  log "BCD Update Has Been Skipped Via Image Profile"
-	  return 0
-	fi
-local array_index=-1
-	while [  "$(( $array_index + 1 ))" -lt "$(parse_json "$hd_schema" .PhysicalPartitionCount)" ]; do
-	array_index=$(( $array_index + 1))
-	  clear_and_move_down
-	  current_partition="$(parse_json "$hd_schema" .PhysicalPartitions[$array_index])"
-	   if [ "$(parse_json "$current_partition" .FileSystem)" != "ntfs" ]; then
-			continue
-	   fi
+  #Fix Me.  Function is run once against each hard drive.  If hard drive is dual boot of multiple version of Windows, this will fail.
+  if [ "$skip_fix_bcd" = "true" ]; then
+    log "BCD Update Has Been Skipped Via Image Profile"
+    return 0
+  fi
 
-	#FIX ME
-	#If more than one partition has winload.exe only the first one found is used.
-	log " ** Fixing BCD ** " "display"
-	mkdir /mnt/ntfs
-	
+  local array_index=-1
+  while [  "$(( $array_index + 1 ))" -lt "$(parse_json "$hd_schema" .PhysicalPartitionCount)" ]; do
+    array_index=$(( $array_index + 1))
+    clear_and_move_down
+    current_partition="$(parse_json "$hd_schema" .PhysicalPartitions[$array_index])"
+    if [ "$(parse_json "$current_partition" .FileSystem)" != "ntfs" ]; then
+      continue
+    fi
 
-		ntfs-3g -o force,rw,remove_hiberfile ${hd}$(parse_json "$current_partition" .Number) /mnt/ntfs 2> /dev/null
-		if [ -f "/mnt/ntfs/Windows/System32/winload.exe" ] || [ -f "/mnt/ntfs/Windows/system32/winload.exe" ]; then
-			log " ...... Found Windows Partition On ${hd}$(parse_json "$current_partition" .Number)" "display"
-			windowsPart=${hd}$(parse_json "$current_partition" .Number)	
-			partitionOffset=$(parted -s $hd unit b print all | grep " $(parse_json "$current_partition" .Number) " -m 1 | awk -F' ' '{print $2}' | sed 's/B//g')			
-		fi
+    log " ** Fixing BCD ** " "display"
+    mkdir /mnt/ntfs
+    ntfs-3g -o force,rw,remove_hiberfile ${hard_drive}$(parse_json "$current_partition" .Number) /mnt/ntfs 2> /dev/null
+    if [ -f "/mnt/ntfs/Windows/System32/winload.exe" ] || [ -f "/mnt/ntfs/Windows/system32/winload.exe" ]; then
+      log " ...... Found Windows Partition On ${hard_drive}$(parse_json "$current_partition" .Number)" "display"
+      windowsPart=${hard_drive}$(parse_json "$current_partition" .Number)	
+      partitionOffset=$(parted -s $hard_drive unit b print all | grep " $(parse_json "$current_partition" .Number) " -m 1 | awk -F' ' '{print $2}' | sed 's/B//g')			
+    fi
 		
-		if [ -f "/mnt/ntfs/Boot/BCD" ]; then
-			log " ...... Found BCD Partition On${hd}$(parse_json "$current_partition" .Number)" "display"
-			bcdPart=${hd}$(parse_json "$current_partition" .Number)
-			reged -x /mnt/ntfs/Boot/BCD . Objects /tmp/regbcd >> /dev/null
-			originalBCD=$(cat /tmp/regbcd)
-		fi
-		umount /mnt/ntfs
-
-	
-	if [ -n "$windowsPart" ] && [ -n "$bcdPart" ]; then
-		modifiedBCD=$($curlAuth -F bcd="$(echo -n "$originalBCD" | base64)" -F offsetBytes="$(echo -n "$partitionOffset" | base64)" "${web}UpdateBcd" $curlEnd)
-		echo $modifiedBCD | base64 -d >>/tmp/modifiedbcd
-		log " ** New BCD Is ** "
-		cat /tmp/modifiedbcd >> /tmp/clientlog.log
-		
-		ntfs-3g -o force,rw,remove_hiberfile $bcdPart /mnt/ntfs 2> /dev/null
-		reged -I -C /mnt/ntfs/Boot/BCD . /tmp/modifiedbcd >> /tmp/clientlog.log
-		umount /mnt/ntfs
-		log " ...... Success" "display"
-		
-	else
-		log " ...... Could Not Verify Windows Partition Or BCD Partition.  BCD Has Not Been Changed" "display"
-		log " ...... windowsPart: $windowsPart bcdPart: $bcdPart" 
-	fi	
-	done
+    if [ -f "/mnt/ntfs/Boot/BCD" ]; then
+      log " ...... Found BCD Partition On${hard_drive}$(parse_json "$current_partition" .Number)" "display"
+      bcdPart=${hard_drive}$(parse_json "$current_partition" .Number)
+      reged -x /mnt/ntfs/Boot/BCD . Objects /tmp/regbcd >> /dev/null
+      originalBCD=$(cat /tmp/regbcd)
+    fi
+    umount /mnt/ntfs
+  done
+  
+   if [ -n "$windowsPart" ] && [ -n "$bcdPart" ]; then
+    modifiedBCD=$($curlAuth -F bcd="$(echo -n "$originalBCD" | base64)" -F offsetBytes="$(echo -n "$partitionOffset" | base64)" "${web}UpdateBcd" $curlEnd)
+    echo $modifiedBCD | base64 -d >>/tmp/modifiedbcd
+    log " ** New BCD Is ** "
+    cat /tmp/modifiedbcd >> $CLIENT_LOG	
+    ntfs-3g -o force,rw,remove_hiberfile $bcdPart /mnt/ntfs 2> /dev/null
+    reged -I -C /mnt/ntfs/Boot/BCD . /tmp/modifiedbcd >> $CLIENT_LOG
+    umount /mnt/ntfs
+    log " ...... Success" "display"
+  else
+    log " ...... Could Not Verify Windows Partition Or BCD Partition.  BCD Has Not Been Changed" "display"
+    log " ...... windowsPart: $windowsPart bcdPart: $bcdPart" 
+  fi	
 }
 
 function fix_ntfs_boot()
@@ -486,16 +461,16 @@ function fix_ntfs_boot()
 
 
 		log " ** Fixing NTFS Geometry ** " "display"
-		partclone.ntfsfixboot -p $partition >> /tmp/clientlog.log
-		partclone.ntfsfixboot -w $partition >> /tmp/clientlog.log
+		partclone.ntfsfixboot -p $partition >> $CLIENT_LOG
+		partclone.ntfsfixboot -w $partition >> $CLIENT_LOG
 		
 }
 
 function erase_mbr_gpt()
 {
 	log " ** Clearing MBR / GPT ** "
-	sgdisk -Z $hd &>>/tmp/clientlog.log
-	dd if=/dev/zero of=$hd bs=512 count=2047 &>>/tmp/clientlog.log
+	sgdisk -Z $hard_drive &>>$CLIENT_LOG
+	dd if=/dev/zero of=$hard_drive bs=512 count=2047 &>>$CLIENT_LOG
 	partprobe &> /dev/null
 }
 
@@ -520,7 +495,7 @@ function delete_all_partitions()
 			echo y >> /tmp/partitionDelete
 			echo q >> /tmp/partitionDelete
 			echo GDISK >> /tmp/partitionDelete
-			cat /tmp/partitionDelete >> /tmp/clientlog.log
+			cat /tmp/partitionDelete >> $CLIENT_LOG
 			bash /tmp/partitionDelete
 			
 			gdisk $1 &>/dev/null <<GDISK
@@ -534,13 +509,13 @@ GDISK
 			gptPartCount=$(gdisk -l $1 2> /dev/null | awk '/^ / {print $1}' | grep -vi mbr | grep -vi gpt | grep -vi bsd | grep -vi apm -c)
 			if [ "$deleteCounter" -gt "1000" ]; then
 				log " ...... Partitions Still Exist"
-				gdisk -l $1 &>>/tmp/clientlog.log
+				gdisk -l $1 &>>$CLIENT_LOG
 				error "Could Not Delete GPT Partitions"
 				
 			fi
 		done		
 	else
-		mbrPartCount=$(fdisk -l 2>/dev/null | grep $hd | grep -v ${hd}: -c)
+		mbrPartCount=$(fdisk -l 2>/dev/null | grep $hard_drive | grep -v ${hard_drive}: -c)
 		log "$mbrPartCount"
 		deleteCounter=0
 		while [ "$mbrPartCount" -gt "0" ]; do
@@ -551,10 +526,10 @@ d
 
 w
 FDISK
-			mbrPartCount=$(fdisk -l 2>/dev/null | grep $hd | grep -v ${hd}: -c)
+			mbrPartCount=$(fdisk -l 2>/dev/null | grep $hard_drive | grep -v ${hard_drive}: -c)
 			if [ "$deleteCounter" -gt "1000" ]; then
 				log " ...... Partitions Still Exist"
-				fdisk -l &>>/tmp/clientlog.log
+				fdisk -l &>>$CLIENT_LOG
 				error "Could Not Delete MBR Partitions"			
 			fi
 		done
@@ -572,7 +547,7 @@ function change_computer_name()
 				log " ** Changing Host Name On $partition ** " "display"
 				sleep 1
 		
-				ntfs-3g -o force,rw,remove_hiberfile $hd$x /win &>/dev/null
+				ntfs-3g -o force,rw,remove_hiberfile $hard_drive$x /win &>/dev/null
 				if [ "$?" = "0" ]; then
 					#Win 8
 					if [ -f "/win/Windows/System32/Sysprep/unattend.xml" ]; then
