@@ -219,7 +219,39 @@ namespace Service.Client
         {
             var bcd = Utility.Decode(HttpContext.Current.Request.Form["bcd"]);
             var offsetBytes = Utility.Decode(HttpContext.Current.Request.Form["offsetBytes"]);
-            HttpContext.Current.Response.Write(new Global().UpdateBcd(bcd, Convert.ToInt64(offsetBytes)));
+            HttpContext.Current.Response.Write(new BLL.Bcd().UpdateEntry(bcd, Convert.ToInt64(offsetBytes)));
+        }
+
+        [WebMethod]
+        public void IpxeBoot(string filename, string type)
+        {
+            if (type == "kernel")
+            {
+                var path = Settings.TftpPath + "kernels" + Path.DirectorySeparatorChar;
+                HttpContext.Current.Response.ContentType = "application/octet-stream";
+                HttpContext.Current.Response.AppendHeader("Content-Disposition", "inline; filename=" + filename);
+                HttpContext.Current.Response.TransmitFile(path + filename);
+                HttpContext.Current.Response.End();
+            }
+            else
+            {
+                var path = Settings.TftpPath + "images" + Path.DirectorySeparatorChar;
+                HttpContext.Current.Response.ContentType = "application/x-gzip";
+                HttpContext.Current.Response.AppendHeader("Content-Disposition", "inline; filename=" + filename);
+                HttpContext.Current.Response.TransmitFile(path + filename);
+                HttpContext.Current.Response.End();
+            }
+        }
+        [WebMethod]
+        public void IpxeLogin()
+        {
+            var username = HttpContext.Current.Request.Form["uname"];
+            var password = HttpContext.Current.Request.Form["pwd"];
+            var kernel = HttpContext.Current.Request.Form["kernel"];
+            var bootImage = HttpContext.Current.Request.Form["bootImage"];
+            var task = HttpContext.Current.Request.Form["task"];
+
+            HttpContext.Current.Response.Write(new Authenticate().IpxeLogin(username, password, kernel, bootImage, task));
         }
         /*
       

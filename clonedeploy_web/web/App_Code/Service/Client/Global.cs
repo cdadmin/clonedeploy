@@ -348,6 +348,7 @@ namespace Service.Client
                 result.PartitionType = imageSchema.HardDrives[result.SchemaHdNumber].Table;
                 result.BootPartition = imageSchema.HardDrives[result.SchemaHdNumber].Boot;
                 result.UsesLvm = partitionHelper.CheckForLvm(result.SchemaHdNumber);
+                result.Guid = imageSchema.HardDrives[result.SchemaHdNumber].Guid;
                 return JsonConvert.SerializeObject(result);
             }
 
@@ -357,6 +358,7 @@ namespace Service.Client
             result.PartitionType = imageSchema.HardDrives[result.SchemaHdNumber].Table;
             result.BootPartition = imageSchema.HardDrives[result.SchemaHdNumber].Boot;
             result.UsesLvm = partitionHelper.CheckForLvm(result.SchemaHdNumber);
+            result.Guid = imageSchema.HardDrives[result.SchemaHdNumber].Guid;
             return JsonConvert.SerializeObject(result);
 
         }
@@ -399,58 +401,6 @@ namespace Service.Client
             return BLL.ActiveImagingTask.IsComputerActive(computerId) ? "false" : "true";
         }
 
-        public string UpdateBcd(string bcd, long newOffsetBytes)
-        {
-            var newOffsetHex = newOffsetBytes.ToString("X16").Reverse().ToList();
-            StringBuilder output = new StringBuilder();
-
-            for (int i = 0; i < newOffsetHex.Count; i++)
-            {
-                if (i % 2 == 0)
-                {
-                    if ((i + 1) < newOffsetHex.Count)
-                    {
-                        output.Append(newOffsetHex[i + 1]);
-                    }
-                    output.Append(newOffsetHex[i]);
-
-                    if (i + 2 != newOffsetHex.Count)
-                        output.Append(",");
-                }
-            }
-            string newOffsetHexReversed = output.ToString();
-
-            List<string> guids = new List<string>();
-            RegFileObject regfile = new RegFileObject(bcd);
-            foreach (var reg in regfile.RegValues)
-            {
-                var tmp = reg;
-                foreach (var abc in tmp.Value.Values)
-                {
-                    if (abc.Value.ToLower().Contains("winload.exe"))
-                    {
-                        var matches = Regex.Matches(reg.Key, @"\{(.*?)\}");
-                        guids.AddRange(from Match m in matches select m.Groups[1].Value);
-                    }
-                }
-            }
-
-            guids = guids.Distinct().ToList();
-            foreach (var guid in guids)
-            {
-                var regBinary =
-                    regfile.RegValues[@".\Objects\{" + guid + @"}\Elements\11000001"]["Element"]
-                        .Value;
-                var regBinarySplit = regBinary.Split(',');
-                var originalOffsetHex = regBinarySplit[32] + "," + regBinarySplit[33] + "," + regBinarySplit[34] + "," + regBinarySplit[35] + "," +
-                               regBinarySplit[36] + "," + regBinarySplit[37] + "," + regBinarySplit[38] + "," + regBinarySplit[39];
-
-                var regex = new Regex(originalOffsetHex, RegexOptions.IgnoreCase);
-                bcd = regex.Replace(bcd, newOffsetHexReversed);
-
-            }
-
-            return Utility.Encode(bcd);
-        }
+       
     }
 }

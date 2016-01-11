@@ -31,7 +31,10 @@ function process_hard_drives()
 	
     process_partitions
 	
-    update_bcd
+	#Only update BCD for mbr.  EFI BCD is based on GUID's which are restored to the partitions, keeping the BCD intact.
+	if [ "$(parse_json "$hd_schema" .PartitionType)" = "mbr" ]; then
+      update_bcd
+	fi
 	
     update_grub
 	
@@ -407,6 +410,12 @@ function process_scripts()
 function update_bcd()
 {
   #Fix Me.  Function is run once against each hard drive.  If hard drive is dual boot of multiple version of Windows, this will fail.
+  local windows_partition
+  local windows_partition_offset
+  local bcd_partition
+  local original_bcd
+  local updated_bcd
+  
   if [ "$skip_fix_bcd" = "true" ]; then
     log "BCD Update Has Been Skipped Via Image Profile"
     return 0
@@ -421,59 +430,55 @@ function update_bcd()
       continue
     fi
 
-    log " ** Fixing BCD ** " "display"
+    log " ** Updating BCD ** " "display"
     mkdir /mnt/ntfs
     ntfs-3g -o force,rw,remove_hiberfile ${hard_drive}$(parse_json "$current_partition" .Number) /mnt/ntfs 2> /dev/null
     if [ -f "/mnt/ntfs/Windows/System32/winload.exe" ] || [ -f "/mnt/ntfs/Windows/system32/winload.exe" ]; then
       log " ...... Found Windows Partition On ${hard_drive}$(parse_json "$current_partition" .Number)" "display"
-      windowsPart=${hard_drive}$(parse_json "$current_partition" .Number)	
-      partitionOffset=$(parted -s $hard_drive unit b print all | grep " $(parse_json "$current_partition" .Number) " -m 1 | awk -F' ' '{print $2}' | sed 's/B//g')			
+      windows_partition=${hard_drive}$(parse_json "$current_partition" .Number)	
+      windows_partition_offset=$(parted -s $hard_drive unit b print all | grep " $(parse_json "$current_partition" .Number) " -m 1 | awk -F' ' '{print $2}' | sed 's/B//g')			
     fi
 		
     if [ -f "/mnt/ntfs/Boot/BCD" ]; then
       log " ...... Found BCD Partition On${hard_drive}$(parse_json "$current_partition" .Number)" "display"
-      bcdPart=${hard_drive}$(parse_json "$current_partition" .Number)
+      bcd_partition=${hard_drive}$(parse_json "$current_partition" .Number)
       reged -x /mnt/ntfs/Boot/BCD . Objects /tmp/regbcd >> /dev/null
-      originalBCD=$(cat /tmp/regbcd)
+      original_bcd=$(cat /tmp/regbcd)
     fi
     umount /mnt/ntfs
   done
   
-   if [ -n "$windowsPart" ] && [ -n "$bcdPart" ]; then
-    modifiedBCD=$($curlAuth -F bcd="$(echo -n "$originalBCD" | base64)" -F offsetBytes="$(echo -n "$partitionOffset" | base64)" "${web}UpdateBcd" $curlEnd)
-    echo $modifiedBCD | base64 -d >>/tmp/modifiedbcd
-    log " ** New BCD Is ** "
-    cat /tmp/modifiedbcd >> $CLIENT_LOG	
-    ntfs-3g -o force,rw,remove_hiberfile $bcdPart /mnt/ntfs 2> /dev/null
-    reged -I -C /mnt/ntfs/Boot/BCD . /tmp/modifiedbcd >> $CLIENT_LOG
+   if [ -n "$windows_partition" ] && [ -n "$bcd_partition" ]; then
+    updated_bcd=$($curlAuth -F bcd="$(echo -n "$original_bcd" | base64)" -F offsetBytes="$(echo -n "$windows_partition_offset" | base64)" "${web}UpdateBcd" $curlEnd)
+    echo $updated_bcd | base64 -d >>/tmp/updatedbcd
+    log " ** Updated BCD Is ** "
+    cat /tmp/updatedbcd >> $CLIENT_LOG	
+    ntfs-3g -o force,rw,remove_hiberfile $bcd_partition /mnt/ntfs 2> /dev/null
+    reged -I -C /mnt/ntfs/Boot/BCD . /tmp/updatedbcd >> $CLIENT_LOG
     umount /mnt/ntfs
     log " ...... Success" "display"
   else
     log " ...... Could Not Verify Windows Partition Or BCD Partition.  BCD Has Not Been Changed" "display"
-    log " ...... windowsPart: $windowsPart bcdPart: $bcdPart" 
+    log " ...... windows_partition: $windows_partition bcd_partition: $bcd_partition" 
   fi	
 }
 
 function fix_ntfs_boot()
 {
-	local partition=$1
-
-
-
-		log " ** Fixing NTFS Geometry ** " "display"
-		partclone.ntfsfixboot -p $partition >> $CLIENT_LOG
-		partclone.ntfsfixboot -w $partition >> $CLIENT_LOG
+  local partition=$1
+  log " ** Fixing NTFS Geometry ** " "display"
+  partclone.ntfsfixboot -p $partition >> $CLIENT_LOG
+  partclone.ntfsfixboot -w $partition >> $CLIENT_LOG
 		
 }
 
 function erase_mbr_gpt()
 {
-	log " ** Clearing MBR / GPT ** "
-	sgdisk -Z $hard_drive &>>$CLIENT_LOG
-	dd if=/dev/zero of=$hard_drive bs=512 count=2047 &>>$CLIENT_LOG
-	partprobe &> /dev/null
+  log " ** Clearing MBR / GPT ** "
+  sgdisk -Z $hard_drive &>>$CLIENT_LOG
+  dd if=/dev/zero of=$hard_drive bs=512 count=2047 &>>$CLIENT_LOG
+  partprobe &> /dev/null
 }
-
 
 function delete_all_partitions()
 {
