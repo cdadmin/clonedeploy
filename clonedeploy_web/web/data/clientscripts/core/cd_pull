@@ -253,6 +253,9 @@ function create_image_schema()
   log " ** Creating Image Schema ** " "display"
   sleep 1
   
+  #Only used on EFI systems.
+  mount -t efivarfs none /sys/firmware/efi/efivars
+  
   hard_drive_counter=0
   image_schema="{\"harddrives\": [ "
   for hard_drive in $hard_drives; do
@@ -272,6 +275,8 @@ function create_image_schema()
       mbr_status=`gdisk -l $hard_drive <<< "q" 2>> $CLIENT_LOG| grep 'MBR:' | awk '{$1=""; print $0}' | sed 's/^ //'`
       layout_type="gpt"
       hard_drive_guid=`gdisk -l $hard_drive | grep GUID | awk -F': ' '{print $2}'`
+	  log "Current NVRAM Entries"
+	  efibootmgr -v &>> $CLIENT_LOG
       if [ "$mbr_status" = "MBR only" ]; then
         error "This Hard Drive Appears To Have Both GPT And MBR.  CrucibleWDS Does Not Know What To Use.  You Must First Convert The Drive To One Or The Other Before Uploading"
       fi
@@ -319,6 +324,9 @@ function create_image_schema()
         fsid=$(sfdisk --part-type $hard_drive $partition_number | sed 's/ //g' 2>> $CLIENT_LOG)
       else
         fsid=$(gdisk $hard_drive -l | grep " $partition_number " | awk '/^ / {print $6}')
+        #find any matching boot entry in the nvram for this partition.  Find them all incase of multiboot systems	
+		efi_bootloader=$(efibootmgr -v | grep -i "$partition_guid" | grep -o "File(.*)" | cut -d "(" -f2 | cut -d ")" -f1 | uniq)
+
       fi
             
       if [ "$skip_shrink_volumes" != "true" ] && [ "$upload_schema_only" != "true" ] && [ "$partition_size_bytes" -gt "5368709120" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
@@ -342,7 +350,7 @@ function create_image_schema()
 	  volume_used_mb=$(( $volume_used_mb * 1000 * 1000 ))
 	  volume_used_mb=$(( $volume_used_mb / 1024 / 1024 ))
 	  
-      partition_json="{\"number\":\"$partition_number\",\"start\":\"$partition_start\",\"end\":\"$partition_end\",\"size\":\"$partition_size\",\"volumesize\":\"$volume_size\",\"type\":\"$partition_type\",\"usedmb\":\"$volume_used_mb\",\"fsType\":\"$filesystem_type\",\"fsid\":\"$fsid\",\"uuid\":\"$partition_uuid\",\"guid\":\"$partition_guid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\",\"prefix\":\"$partition_prefix\",\"volumegroup\": { "
+      partition_json="{\"number\":\"$partition_number\",\"start\":\"$partition_start\",\"end\":\"$partition_end\",\"size\":\"$partition_size\",\"volumesize\":\"$volume_size\",\"type\":\"$partition_type\",\"usedmb\":\"$volume_used_mb\",\"fsType\":\"$filesystem_type\",\"fsid\":\"$fsid\",\"uuid\":\"$partition_uuid\",\"guid\":\"$partition_guid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\",\"prefix\":\"$partition_prefix\",\"efibootloader\":\"$efi_bootloader\",\"volumegroup\": { "
       
       #experimental lvm support
       if [ "$lvmResize" != "false" ]; then

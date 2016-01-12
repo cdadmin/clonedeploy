@@ -63,6 +63,7 @@ namespace Services.Client
         public string Guid { get; set; }
         public string Type { get; set; }
         public string Prefix { get; set; }
+        public string EfiBootLoader { get; set; }
         public VolumeGroup VolumeGroup { get; set; }
     }
 

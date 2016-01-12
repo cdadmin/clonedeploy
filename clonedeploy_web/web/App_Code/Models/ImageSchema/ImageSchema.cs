@@ -38,6 +38,7 @@ namespace Models.ImageSchema
         public bool ForceFixedSize { get; set; }
         public string CustomSizeUnit { get; set; }
         public string Prefix { get; set; }
+        public string EfiBootLoader { get; set; }
         public VolumeGroup VolumeGroup { get; set; }
     }
 

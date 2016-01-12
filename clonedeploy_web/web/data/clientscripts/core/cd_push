@@ -26,12 +26,14 @@ function process_hard_drives()
 	
     image_hd_to_use=$(( $(parse_json "$hd_schema" .SchemaHdNumber) + 1 ))
     image_path=/storage/images/$image_name/hd$image_hd_to_use
-	
+	update_efi_nvram
+	/bin/bash
     create_partition_layout
 	
     process_partitions
 	
-	#Only update BCD for mbr.  EFI BCD is based on GUID's which are restored to the partitions, keeping the BCD intact.
+	#Only update BCD for mbr.  EFI BCD is based on GUID's not offsets which are restored to the partitions, keeping the BCD intact.
+	#In the future if I decided to randomize guid's the BCD for efi will also need updated
 	if [ "$(parse_json "$hd_schema" .PartitionType)" = "mbr" ]; then
       update_bcd
 	fi
@@ -40,7 +42,10 @@ function process_hard_drives()
 	
     if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
 	  log " ** Restoring GUID ** "
-	  sgdisk $hard_drive -U$(parse_json "$hd_schema" .Guid) &>> $CLIENT_LOG	
+	  sgdisk $hard_drive -U$(parse_json "$hd_schema" .Guid) &>> $CLIENT_LOG
+	  
+	  #hard drive and partition guids must be restored prior to updating nvram
+	  update_efi_nvram
 	fi
 	
     imaged_schema_drives="$imaged_schema_drives $(parse_json "$hd_schema" .SchemaHdNumber) "
@@ -406,6 +411,67 @@ function process_scripts()
 }
 
 
+function update_efi_nvram()
+{
+  log "Updating NVRAM"
+  gdisk -l $hard_drive | grep EF00
+  if [ "$?" != "0" ]; then
+    log "No EFI System Partition Found."
+	gdisk -l $hard_drive >> $CLIENT_LOG
+	return 1;
+  fi
+  
+  mount -t efivarfs none /sys/firmware/efi/efivars
+  
+  log "Existing NVRAM"
+  efibootmgr -v &>> $CLIENT_LOG
+  if [ "$?" != "0"]; then
+    log "EFI Variables Are Not Available"
+	return 1
+  fi
+  
+  boot_entries_to_delete=$(efibootmgr -v | grep "File(" | cut -d "*" -f1 | sed 's/Boot//g')
+ 
+  local array_index=-1
+  while [  "$(( $array_index + 1 ))" -lt "$(parse_json "$hd_schema" .PhysicalPartitionCount)" ]; do
+    array_index=$(( $array_index + 1))
+    clear_and_move_down
+    current_partition="$(parse_json "$hd_schema" .PhysicalPartitions[$array_index])"
+	existing_bootloader=$(efibootmgr -v | grep -i "$(parse_json "$current_partition" .Guid)" | grep -o "File(.*)" | cut -d "(" -f2 | cut -d ")" -f1 | uniq)
+	boot_number=$(efibootmgr -v | grep -i "$(parse_json "$current_partition" .Guid)" | cut -d "*" -f1 | sed 's/Boot//g')
+	log "$(parse_json "$current_partition" .Number)" "$existing_bootloader" "$boot_number"
+	if [ -n "$existing_bootloader" ] && [ "$existing_bootloader" = "$(parse_json "$current_partition" .EfiBootLoader)" ]; then
+	  log "NVRAM Entry Already Exists"
+	  #This partition already has a matching entry in the nvram
+	  #Don't delete it.
+	  boot_entries_to_delete=$(echo $boot_entries_to_delete | sed 's/$boot_number//g')
+	elif [ -n "$existing_bootloader" ]; then
+	  log "Updating NVRAM Entry"
+	  #Partition has entry in nvram but bootloader doesn't match
+	  #Update it and don't delete
+	  efibootmgr -B -b $boot_number
+	  efibootmgr -c -d $hard_drive -p "$(parse_json "$current_partition" .Number)" -L "$(parse_json "$current_partition" .EfiBootLoader)" -l "$(parse_json "$current_partition" .EfiBootLoader)"
+	  boot_entries_to_delete=$(echo $boot_entries_to_delete | sed 's/$boot_number//g')
+	else
+	  #Partition Does not exist in the nvram
+	  #Check if it should
+	  if [ -n "$(parse_json "$current_partition" .EfiBootLoader)" ] && [ "$(parse_json "$current_partition" .EfiBootLoader)" != "null" ]; then
+	     log "Creating New NVRAM Entry"
+	    #Entry needs added
+	    efibootmgr -c -d $hard_drive -p "$(parse_json "$current_partition" .Number)" -L "$(parse_json "$current_partition" .EfiBootLoader)" -l "$(parse_json "$current_partition" .EfiBootLoader)"
+	  fi
+	fi
+  done
+  
+  #Delete remaining boot entries
+   for efi_boot in $boot_entries_to_delete; do
+    efibootmgr -B -b $efi_boot
+  done	
+  
+  log "Updated NVRAM"
+  efibootmgr -v &>> $CLIENT_LOG
+  
+}
 
 function update_bcd()
 {

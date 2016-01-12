@@ -409,7 +409,7 @@ namespace BLL.ClientPartitioning
                 physicalPartition.Uuid = partition.Uuid;
                 physicalPartition.FileSystem = partition.FsType;
                 physicalPartition.Type = partition.Type;
-             
+                physicalPartition.EfiBootLoader = partition.EfiBootLoader;
                 string imageFile = null;
                 foreach (var ext in new[] {"ntfs", "fat", "extfs", "hfsp", "imager", "xfs"})
                 {
