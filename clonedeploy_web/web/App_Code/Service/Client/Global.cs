@@ -325,7 +325,7 @@ namespace Service.Client
             }
 
             var newHdBytes = Convert.ToInt64(newHdSize);
-            var minimumSize = partitionHelper.HardDrive(result.SchemaHdNumber + 1,newHdBytes);
+            var minimumSize = partitionHelper.HardDrive(result.SchemaHdNumber,newHdBytes);
            
            
             if (minimumSize > newHdBytes)

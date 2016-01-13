@@ -51,7 +51,6 @@ namespace BLL.ClientPartitioning
                     p.Size = p.Size * 512 / 1024 / 1024;
             }
 
-            HdNumberToGet -= 1;
             //Create Menu
             if (ImageSchema.HardDrives[HdNumberToGet].Table.ToLower() == "mbr")
             {

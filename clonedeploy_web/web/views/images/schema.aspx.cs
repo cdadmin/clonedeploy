@@ -18,7 +18,7 @@ namespace views.images
             if (control == null) return;
             var gvRow = (GridViewRow) control.Parent.Parent;
             var gv = (GridView) gvRow.FindControl("gvFiles");
-            var selectedPartition = gvRow.Cells[3].Text;
+            var selectedPartition = gvRow.Cells[2].Text;
 
             var btn = (LinkButton) gvRow.FindControl("partClick");
 

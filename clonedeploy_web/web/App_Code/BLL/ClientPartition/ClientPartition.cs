@@ -55,7 +55,7 @@ namespace BLL.ClientPartitioning
         public ClientPartition GenerateClientSchema()
         {
             var activeCounter = _hdToGet;
-            HdNumberToGet = _hdToGet - 1;
+            HdNumberToGet = _hdToGet;
 
             //Look for first active hd
             if (!_imageSchema.HardDrives[HdNumberToGet].Active)

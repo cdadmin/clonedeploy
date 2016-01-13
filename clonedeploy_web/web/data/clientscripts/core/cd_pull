@@ -328,11 +328,11 @@ function create_image_schema()
 		efi_bootloader=$(efibootmgr -v | grep -i "$partition_guid" | grep -o "File(.*)" | cut -d "(" -f2 | cut -d ")" -f1 | uniq | sed 's/\\/\\\\/g')
 
       fi
-            
-      if [ "$skip_shrink_volumes" != "true" ] || [ "$upload_schema_only" != "true" ] || [ "$partition_size_bytes" -gt "5368709120" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
+
+      if [ "$skip_shrink_volumes" != "true" ] && [ "$upload_schema_only" != "true" ]; then 
         if [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ] || [ "$filesystem_type" = "ntfs" ]; then
           if [[ ! "$custom_fixed_partitions" == *"$hard_drive$partition_number"* ]]; then
-		    if [ "$image_type" != "File" ]; then
+		    if [ "$image_type" = "Block" ] &&  [ "$partition_size_bytes" -gt "5368709120" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
               shrink_volume $hard_drive$partition_number
             fi			  
           fi
@@ -367,7 +367,7 @@ function create_image_schema()
           fi
           vgchange -a y "$volume_group"
           lvmVGUUID=$(vgs --noheadings -v  2>/dev/null | grep "$volume_group" | awk '/^ / {print $9}')
-          lvmVGSize=$(vgs --noheadings 2>/dev/null --units s | grep "$volume_group" | awk '/^ /  {print $6}' | sed 's/S$//')
+          lvmVGSize=$(vgs --noheadings 2>/dev/null --units s | grep "$volume_group" | awk '/^ /  {print $6}' | sed 's/S//')
           volume_group_json="\"name\":\"$volume_group\",\"size\":\"$lvmVGSize\",\"type\":\"vg\",\"physicalvolume\":\"$partition\",\"uuid\":\"$lvmVGUUID\",\"logicalvolumes\": [ "
         
           get_logical_volumes
@@ -384,9 +384,8 @@ function create_image_schema()
             logical_volume_counter=$(( $logical_volume_counter + 1 ))
             filesystem_type=`blkid -po udev "$logical_volume_device" | grep FS_TYPE | awk -F'=' '{print $2}'`
             logical_volume_uuid=`lvs --noheadings -v 2>/dev/null | grep "$volume_group" | grep "$volume_name" | awk '/^ / {print $10}'`
-			
-			
-            logical_volume_size=`lvs --noheadings --units s | grep "$volume_group" | grep "$volume_name" | awk '/^ / {print $4}' | sed 's/S$//'`
+            logical_volume_size_block=`lvs --noheadings --units s | grep "$volume_group" | grep "$volume_name" | awk '/^ / {print $4}' | sed 's/S//'`
+			logical_volume_size_bytes=`lvs --noheadings --units b | grep "$volume_group" | grep "$volume_name" | awk '/^ / {print $4}' | sed 's/B//'`
 
             #In addition to setting partclone type, clean filesystems for better compatibility moving forward
             if [ "$filesystem_type" = "ntfs" ]; then
@@ -405,10 +404,10 @@ function create_image_schema()
             fi
           
             
-            if [ "$upload_schema_only" != "true" ] && [ "$skip_shrink_lvm" != "true" ] && [ "$pMBSize" -gt "5000" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
+            if [ "$upload_schema_only" != "true" ] && [ "$skip_shrink_lvm" != "true" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
               if [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ] || [ "$filesystem_type" = "ntfs" ]; then
 			    if [[ ! "$custom_fixed_logical_volumes" == *"$logical_volume_device"* ]]; then
-				  if [ "$image_type" != "File" ]; then
+				  if [ "$image_type" = "Block" ] && [ "$logical_volume_size_bytes" -gt "5368709120" ]; then
                     shrink_volume $logical_volume_device      
 				  fi
 				fi
@@ -425,7 +424,7 @@ function create_image_schema()
 	        lv_volume_size=$(( $lv_volume_size / 1024 / 1024 ))
             lv_used_mb=$(( $lv_used_mb * 1000 * 1000 ))
 	        lv_used_mb=$(( $lv_used_mb / 1024 / 1024 ))
-            logical_volume_json="{\"name\":\"$volume_name\",\"size\":\"$logical_volume_size\",\"volumesize\":\"$lv_volume_size\",\"type\":\"lv\",\"volumegroup\":\"$volume_group\",\"usedmb\":\"$lv_used_mb\",\"fstype\":\"$filesystem_type\",\"uuid\":\"$logical_volume_uuid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\"}"
+            logical_volume_json="{\"name\":\"$volume_name\",\"size\":\"$logical_volume_size_block\",\"volumesize\":\"$lv_volume_size\",\"type\":\"lv\",\"volumegroup\":\"$volume_group\",\"usedmb\":\"$lv_used_mb\",\"fstype\":\"$filesystem_type\",\"uuid\":\"$logical_volume_uuid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\"}"
             if [ "$logical_volume_counter" = "$logical_volume_count" ]; then
               logical_volume_json="$logical_volume_json] } }"
             else
@@ -620,7 +619,7 @@ function upload_image()
       rm /tmp/clone.progress
       cat /var/log/partclone.log >> $CLIENT_LOG
 	  
-	  killall cd_reporter 2>/dev/null
+	  killall cd_reporter &>/dev/null
 	fi
   done
 }

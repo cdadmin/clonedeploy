@@ -141,7 +141,7 @@ namespace BLL
             {
                 var imageFile =
                     Directory.GetFiles(
-                        Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name + Path.DirectorySeparatorChar + "hd" + (Convert.ToInt16(selectedHd) + 1) +
+                        Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name + Path.DirectorySeparatorChar + "hd" + selectedHd +
                         Path.DirectorySeparatorChar,
                         "part" + selectedPartition + ".*").FirstOrDefault();
 

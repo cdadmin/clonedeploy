@@ -165,9 +165,6 @@ namespace BLL.ClientPartitioning
         /// </summary>
         public long HardDrive(int hdNumberToGet, long newHdSize = 0)
         {
-            //For CloneDeploy We refer to each hard drive as hd1, hd2, etc.  Starting at 1, the collections start at 0
-            hdNumberToGet = hdNumberToGet - 1;
-
             long minHdSizeRequiredBlk = 0;
             var lbsByte = _imageSchema.HardDrives[hdNumberToGet].Lbs;
 
@@ -274,11 +271,11 @@ namespace BLL.ClientPartitioning
                 partitionHelper.IsDynamicSize = false;
             }
 
-            //If partition is not resizable.  Determine partition size.  Also if the partition is less than 2 gigs assume it is that
+            //If partition is not resizable.  Determine partition size.  Also if the partition is less than 5 gigs assume it is that
             // size for a reason, do not resize it even if it is marked as a resizable partition
             else if ((partition.VolumeSize == 0 && partition.Type.ToLower() != "extended") ||
                      (partition.Type.ToLower() == "extended" && extendedPartitionHelper.IsOnlySwap) ||
-                     partition.Size*lbsByte <= 2097152000 || partition.FsType == "swap")
+                     partition.Size * lbsByte <= 5368709120 || partition.FsType == "swap")
             {
                 partitionHelper.MinSizeBlk = partition.Size;
                 partitionHelper.IsDynamicSize = false;
@@ -371,13 +368,12 @@ namespace BLL.ClientPartitioning
         public int NextActiveHardDrive(List<int> schemaImagedDrives, int clientHdNumber )
         {
 
-            //Image schema collection starts at 0 not 1
-            var schemaHdNumber = clientHdNumber - 1;
+        
 
             //Look for first active hard drive image
-            if (_imageSchema.HardDrives[schemaHdNumber].Active)
+            if (_imageSchema.HardDrives[clientHdNumber].Active)
             {
-                return schemaHdNumber;
+                return clientHdNumber;
             }
             else
             {
@@ -400,7 +396,7 @@ namespace BLL.ClientPartitioning
         {
             var listPhysicalPartition = new List<Services.Client.PhysicalPartition>();
             var imagePath = Settings.PrimaryStoragePath + Path.DirectorySeparatorChar + "images" + Path.DirectorySeparatorChar + imageProfile.Image.Name + Path.DirectorySeparatorChar + "hd" +
-                           (schemaHdNumber + 1);
+                           schemaHdNumber;
             foreach (var partition in _imageSchema.HardDrives[schemaHdNumber].Partitions.Where(partition => partition.Active))
             {
                 var physicalPartition = new Services.Client.PhysicalPartition();

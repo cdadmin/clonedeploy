@@ -61,7 +61,7 @@ function checkout()
 	log " ** Closing Active Task ** " "display"
 	cd /
 	sleep 10
-	umount /images &> /dev/null
+	umount /storage &> /dev/null
 	sleep 2
 	if [ "$multicast" = "true" ]; then
 	mccheckoutResult=`curl -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -sSk -FportBase="$(echo -n $portBase | base64)" "${web}McCheckOut" --connect-timeout 10 --stderr -`

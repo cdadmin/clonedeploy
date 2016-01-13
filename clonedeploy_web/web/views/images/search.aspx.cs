@@ -44,7 +44,7 @@ namespace views.images
 
             foreach (GridViewRow hdrow in gvHDs.Rows)
             {
-                var selectedHd = (hdrow.RowIndex + 1);
+                var selectedHd = hdrow.RowIndex;
                 var lbl = hdrow.FindControl("lblHDSize") as Label;
                 if (lbl != null)
                     lbl.Text = BLL.ImageSchema.ImageSizeOnServerForGridView(row.Cells[4].Text, selectedHd.ToString());
@@ -104,7 +104,7 @@ namespace views.images
             foreach (GridViewRow row in gvImages.Rows)
             {
                 var lbl = row.FindControl("lblSize") as Label;
-                if (lbl != null) lbl.Text = BLL.ImageSchema.ImageSizeOnServerForGridView(row.Cells[4].Text, "1");
+                if (lbl != null) lbl.Text = BLL.ImageSchema.ImageSizeOnServerForGridView(row.Cells[4].Text, "0");
             }
         }
 
