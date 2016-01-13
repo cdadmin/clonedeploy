@@ -325,11 +325,11 @@ function create_image_schema()
       else
         fsid=$(gdisk $hard_drive -l | grep " $partition_number " | awk '/^ / {print $6}')
         #find any matching boot entry in the nvram for this partition.  Find them all incase of multiboot systems	
-		efi_bootloader=$(efibootmgr -v | grep -i "$partition_guid" | grep -o "File(.*)" | cut -d "(" -f2 | cut -d ")" -f1 | uniq)
+		efi_bootloader=$(efibootmgr -v | grep -i "$partition_guid" | grep -o "File(.*)" | cut -d "(" -f2 | cut -d ")" -f1 | uniq | sed 's/\\/\\\\/g')
 
       fi
             
-      if [ "$skip_shrink_volumes" != "true" ] && [ "$upload_schema_only" != "true" ] && [ "$partition_size_bytes" -gt "5368709120" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
+      if [ "$skip_shrink_volumes" != "true" ] || [ "$upload_schema_only" != "true" ] || [ "$partition_size_bytes" -gt "5368709120" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
         if [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ] || [ "$filesystem_type" = "ntfs" ]; then
           if [[ ! "$custom_fixed_partitions" == *"$hard_drive$partition_number"* ]]; then
 		    if [ "$image_type" != "File" ]; then
@@ -405,7 +405,7 @@ function create_image_schema()
             fi
           
             
-            if [ "$skip_shrink_volumes" != "true" ] && [ "$upload_schema_only" != "true" ] && [ "$skip_shrink_lvm" != "true" ] && [ "$pMBSize" -gt "5000" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
+            if [ "$upload_schema_only" != "true" ] && [ "$skip_shrink_lvm" != "true" ] && [ "$pMBSize" -gt "5000" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
               if [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ] || [ "$filesystem_type" = "ntfs" ]; then
 			    if [[ ! "$custom_fixed_logical_volumes" == *"$logical_volume_device"* ]]; then
 				  if [ "$image_type" != "File" ]; then
@@ -661,7 +661,7 @@ function main()
     export WIMLIB_IMAGEX_USE_UTF8=1
   fi
   
-  current_hd_number=0
+  current_hd_number=-1
   for hard_drive in $hard_drives; do
     current_hd_number=$(( $current_hd_number + 1 ))
 

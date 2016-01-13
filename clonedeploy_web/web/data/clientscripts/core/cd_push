@@ -11,7 +11,7 @@ function process_hard_drives()
   get_hard_drives
 
   imaged_schema_drives=""
-  current_hd_number=0
+  current_hd_number=-1
   for hard_drive in $hard_drives; do
     current_hd_number=$(( $current_hd_number + 1 ))
 	
@@ -26,8 +26,7 @@ function process_hard_drives()
 	
     image_hd_to_use=$(( $(parse_json "$hd_schema" .SchemaHdNumber) + 1 ))
     image_path=/storage/images/$image_name/hd$image_hd_to_use
-	update_efi_nvram
-	/bin/bash
+	
     create_partition_layout
 	
     process_partitions
@@ -548,28 +547,30 @@ function erase_mbr_gpt()
 
 function delete_all_partitions()
 {
-	#Delete all partitions but keep boot record intact
-	log " ** Deleting Existing Partitions ** "
-	if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
-	gptPartCount=$(gdisk -l $1 2> /dev/null| awk '/^ / {print $1}' | grep -vi mbr | grep -vi gpt | grep -vi bsd | grep -vi apm -c)
-	deleteCounter=0
-		while [ "$gptPartCount" -gt "0" ]; do
-			deleteCounter=$(( $deleteCounter + 1 ))
-			echo "gdisk $1 &>/dev/null <<GDISK" > /tmp/partitionDelete
-			for part_num in $(gdisk -l $1 2> /dev/null | awk '/^ / {print $1}' | grep -vi mbr | grep -vi gpt | grep -vi bsd | grep -vi apm); do			
-				echo d >> /tmp/partitionDelete
-				echo "$part_num" >> /tmp/partitionDelete
-			done
+  local partition_count
+  local delete_counter
+  #Delete all partitions but keep boot record intact
+  log " ** Deleting Existing Partitions ** "
+  if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
+    partition_count=$(gdisk -l $1 2> /dev/null| awk '/^ / {print $1}' | grep -vi mbr | grep -vi gpt | grep -vi bsd | grep -vi apm -c)
+    delete_counter=0
+    while [ "$partition_count" -gt "0" ]; do
+      delete_counter=$(( $delete_counter + 1 ))
+      echo "gdisk $1 &>/dev/null <<GDISK" > /tmp/partition_delete
+      for part_num in $(gdisk -l $1 2> /dev/null | awk '/^ / {print $1}' | grep -vi mbr | grep -vi gpt | grep -vi bsd | grep -vi apm); do			
+        echo d >> /tmp/partition_delete
+        echo "$part_num" >> /tmp/partition_delete
+      done
 			
-			echo w >> /tmp/partitionDelete
-			echo y >> /tmp/partitionDelete
-			echo y >> /tmp/partitionDelete
-			echo q >> /tmp/partitionDelete
-			echo GDISK >> /tmp/partitionDelete
-			cat /tmp/partitionDelete >> $CLIENT_LOG
-			bash /tmp/partitionDelete
+      echo w >> /tmp/partition_delete
+      echo y >> /tmp/partition_delete
+      echo y >> /tmp/partition_delete
+      echo q >> /tmp/partition_delete
+      echo GDISK >> /tmp/partition_delete
+      cat /tmp/partition_delete >> $CLIENT_LOG
+      bash /tmp/partition_delete
 			
-			gdisk $1 &>/dev/null <<GDISK
+      gdisk $1 &>/dev/null <<GDISK
 d
 $part_num
 w
@@ -577,34 +578,33 @@ y
 y
 q
 GDISK
-			gptPartCount=$(gdisk -l $1 2> /dev/null | awk '/^ / {print $1}' | grep -vi mbr | grep -vi gpt | grep -vi bsd | grep -vi apm -c)
-			if [ "$deleteCounter" -gt "1000" ]; then
-				log " ...... Partitions Still Exist"
-				gdisk -l $1 &>>$CLIENT_LOG
-				error "Could Not Delete GPT Partitions"
-				
-			fi
-		done		
-	else
-		mbrPartCount=$(fdisk -l 2>/dev/null | grep $hard_drive | grep -v ${hard_drive}: -c)
-		log "$mbrPartCount"
-		deleteCounter=0
-		while [ "$mbrPartCount" -gt "0" ]; do
-			deleteCounter=$(( $deleteCounter + 1 ))
-			fdisk $1 &>/dev/null <<FDISK
+			
+      partition_count=$(gdisk -l $1 2> /dev/null | awk '/^ / {print $1}' | grep -vi mbr | grep -vi gpt | grep -vi bsd | grep -vi apm -c)
+      if [ "$delete_counter" -gt "1000" ]; then
+        log " ...... Partitions Still Exist"
+        gdisk -l $1 &>>$CLIENT_LOG
+        error "Could Not Delete GPT Partitions"
+      fi
+    done		
+  else #mbr
+    partition_count=$(fdisk -l 2>/dev/null | grep $hard_drive | grep -v ${hard_drive}: -c)
+    delete_counter=0
+    while [ "$partition_count" -gt "0" ]; do
+      delete_counter=$(( $delete_counter + 1 ))
+      fdisk $1 &>/dev/null <<FDISK
 d
 
 
 w
 FDISK
-			mbrPartCount=$(fdisk -l 2>/dev/null | grep $hard_drive | grep -v ${hard_drive}: -c)
-			if [ "$deleteCounter" -gt "1000" ]; then
-				log " ...... Partitions Still Exist"
-				fdisk -l &>>$CLIENT_LOG
-				error "Could Not Delete MBR Partitions"			
-			fi
-		done
-	fi
+      partition_count=$(fdisk -l 2>/dev/null | grep $hard_drive | grep -v ${hard_drive}: -c)
+      if [ "$delete_counter" -gt "1000" ]; then
+        log " ...... Partitions Still Exist"
+        fdisk -l &>>$CLIENT_LOG
+        error "Could Not Delete MBR Partitions"			
+      fi
+    done
+  fi
 }
 
 function change_computer_name()
