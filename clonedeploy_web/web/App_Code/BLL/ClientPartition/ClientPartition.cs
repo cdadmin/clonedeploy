@@ -157,7 +157,7 @@ namespace BLL.ClientPartitioning
                     long tmpClientPartitionSizeBlk = partitionHelper.MinSizeBlk;
 
 
-                    if (partitionHelper.IsDynamicSize && !schemaPartition.ForceFixedSize)
+                    if (partitionHelper.IsDynamicSize)
                     {
                         clientPartition.SizeIsDynamic = true;
                         var percentOfOrigDrive = Convert.ToInt64(schemaPartition.Size) /

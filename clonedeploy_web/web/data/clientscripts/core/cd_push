@@ -95,11 +95,6 @@ function process_partitions()
     clear_and_move_down
     current_partition="$(parse_json "$hd_schema" .PhysicalPartitions[$array_index])"
     log "$current_partition"
-
-	if [ "$(parse_json "$current_partition" .FileSystem)" = "ntfs" ] && [ -n "$computer_name" ]; then
-      change_computer_name ${hard_drive}$(parse_json "$current_partition" .Number)
-	  continue
-	fi
 	
     if [ -n "$(parse_json "$current_partition" .VolumeGroup)" ] && [ "$(parse_json "$current_partition" .VolumeGroup)" != "null" ]; then
       process_lvm
@@ -115,10 +110,19 @@ function process_partitions()
 			
     download_image "$current_partition" part
 		
-    partition_size_mb=$(parted -s $hard_drive unit MB print all | grep " $(parse_json "$current_partition" .Number) " -m 1 | awk -F' ' '{print $4}' | sed 's/MB//g')
-    if [ "$partition_size_mb" -gt "2000" ]; then
-      expand_volume ${hard_drive}$(parse_json "$current_partition" .Number) $(parse_json "$current_partition" .FileSystem)
-	fi
+    
+	partition_size_bytes=$(parted -s $hard_drive unit b print all | grep " $(parse_json "$current_partition" .Number) " -m 1 | awk -F' ' '{print $4}' | sed 's/B//g')
+
+	
+	 if [ "$skip_expand_volumes" != "true" ]; then 
+             
+			  
+				  if [ "$image_type" = "Block" ] && [ "$partition_size_bytes" -gt "5368709120" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
+                     expand_volume ${hard_drive}$(parse_json "$current_partition" .Number) $(parse_json "$current_partition" .FileSystem)  
+				  fi
+				
+              
+            fi
 		
     if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
       log " ** Restoring GUID ** "
@@ -416,6 +420,10 @@ function process_scripts()
 	done
 }
 
+function get_partitions()
+{
+
+}
 
 function update_efi_nvram()
 {
@@ -427,7 +435,7 @@ function update_efi_nvram()
 	return 1;
   fi
   
-  mount -t efivarfs none /sys/firmware/efi/efivars
+  mount -t efivarfs none /sys/firmware/efi/efivars &>>$CLIENT_LOG
   
   log "Existing NVRAM"
   efibootmgr -v &>> $CLIENT_LOG
@@ -615,59 +623,35 @@ FDISK
 }
 
 function change_computer_name()
-{
-  #test command
-  #tags need escaped, string to replace does not
-  perl -0777 -i -pe "s/(\<ComputerName\>).*(\<\/ComputerName\>)/\$1$computer_name\$2/s" filename
-  
+{  
   local partition="$1"
   log " ** Changing Computer Name On $partition ** " "display"
   mkdir /mnt/ntfs		
   ntfs-3g -o force,rw,remove_hiberfile $partition /mnt/ntfs &>/dev/null
-  if [ "$?" = "0" ]; then
-  #Win 8
+  if [ "$?" != "0" ]; then
+    log "Could Not Mount NTFS To Change Computer Name"
+	return 1
+  fi
+  
   if [ -f "/mnt/ntfs/Windows/Panther/unattend.xml" ]; then
     log " ...... Found Answer File, Changing Host Name" "display"
-						rm /mnt/ntfs/Windows/System32/Sysprep/unattend.xml
-						cd /mnt/ntfs/Windows/Panther
-						cat unattend.xml | sed -e s/CrucibleWDS/$computer_name/ > unattend.tmp
-						mv unattend.tmp unattend.xml
-					#Win 7 and Vista
-					elif [ -f "/mnt/ntfs/Windows/System32/sysprep/unattend.xml" ]; then
-						log " ...... Found Answer File, Changing Host Name" "display"
-						rm /mnt/ntfs/Windows/System32/sysprep/unattend.xml
-						cd /mnt/ntfs/Windows/Panther
-						cat unattend.xml | sed -e s/CrucibleWDS/$computer_name/ > unattend.tmp
-						mv unattend.tmp unattend.xml
-					#Win XP
-					elif [ -f "/mnt/ntfs/Sysprep/sysprep.inf" ]; then
-						log " ...... Found Answer File, Changing Host Name" "display"
-						cd /mnt/ntfs/Sysprep
-						cat sysprep.inf | sed -e s/CrucibleWDS/$computer_name/ > sysprep.tmp
-						mv sysprep.tmp sysprep.inf
-					else
-						log " ...... Could Not Find Answer File, Attempting Registry Change" "display"
-						update_registry_key "/mnt/ntfs/Windows/System32/config/SYSTEM" "\ControlSet001\Services\Tcpip\Parameters\NV Hostname" "$computer_name"
-						update_registry_key "/mnt/ntfs/Windows/System32/config/SYSTEM" "\ControlSet001\Control\ComputerName\ComputerName\ComputerName" "$computer_name"				
-						update_registry_key "/mnt/ntfs/Windows/System32/config/SYSTEM" "\ControlSet001\Services\Tcpip\Parameters\Hostname" "$computer_name"
-						update_registry_key "/mnt/ntfs/Windows/System32/config/SYSTEM" "\ControlSet001\Services\Tcpip\Parameters\HostName" "$computer_name"				
-						update_registry_key "/mnt/ntfs/Windows/System32/config/SYSTEM" "\ControlSet001\Services\Tcpip\Parameters\NV HostName" "$computer_name"
-						update_registry_key "/mnt/ntfs/Windows/System32/config/SYSTEM" "\ControlSet001\services\Tcpip\Parameters\NV Hostname" "$computer_name"					
-						update_registry_key "/mnt/ntfs/WINDOWS/system32/config/system" "\ControlSet001\Services\Tcpip\Parameters\NV Hostname" "$computer_name"
-						update_registry_key "/mnt/ntfs/WINDOWS/system32/config/system" "\ControlSet001\Control\ComputerName\ComputerName\ComputerName" "$computer_name"
-
-					
-
-			
-					fi
-					echo
-					cd /
-					umount /mnt/ntfs
-				fi
-			
-		
-	
-	
+    perl -0777 -i -pe "s/(\<ComputerName\>).*(\<\/ComputerName\>)/\$1$computer_name\$2/s" /mnt/ntfs/Windows/Panther/unattend.xml
+  elif [ -f "/mnt/ntfs/Sysprep/sysprep.inf" ]; then
+    log " ...... Found Answer File, Changing Host Name" "display"
+    sed -i "s/^ComputerName=.*$/ComputerName=$computer_name\r/" /mnt/ntfs/Sysprep/sysprep.inf
+  else
+    log " ...... Could Not Find Answer File, Attempting Registry Change" "display"
+	#Editing the registry is case sensitive, these are all the variations I have found so far.
+    update_registry_key "/mnt/ntfs/Windows/System32/config/SYSTEM" "\ControlSet001\Services\Tcpip\Parameters\NV Hostname" "$computer_name"
+    update_registry_key "/mnt/ntfs/Windows/System32/config/SYSTEM" "\ControlSet001\Control\ComputerName\ComputerName\ComputerName" "$computer_name"				
+    update_registry_key "/mnt/ntfs/Windows/System32/config/SYSTEM" "\ControlSet001\Services\Tcpip\Parameters\Hostname" "$computer_name"
+    update_registry_key "/mnt/ntfs/Windows/System32/config/SYSTEM" "\ControlSet001\Services\Tcpip\Parameters\HostName" "$computer_name"				
+    update_registry_key "/mnt/ntfs/Windows/System32/config/SYSTEM" "\ControlSet001\Services\Tcpip\Parameters\NV HostName" "$computer_name"
+    update_registry_key "/mnt/ntfs/Windows/System32/config/SYSTEM" "\ControlSet001\services\Tcpip\Parameters\NV Hostname" "$computer_name"					
+    update_registry_key "/mnt/ntfs/WINDOWS/system32/config/system" "\ControlSet001\Services\Tcpip\Parameters\NV Hostname" "$computer_name"
+    update_registry_key "/mnt/ntfs/WINDOWS/system32/config/system" "\ControlSet001\Control\ComputerName\ComputerName\ComputerName" "$computer_name"
+  fi
+  umount /mnt/ntfs	
 }
 
 function update_registry_key()

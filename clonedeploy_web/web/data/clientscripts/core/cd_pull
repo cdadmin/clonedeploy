@@ -254,7 +254,7 @@ function create_image_schema()
   sleep 1
   
   #Only used on EFI systems.
-  mount -t efivarfs none /sys/firmware/efi/efivars
+  mount -t efivarfs none /sys/firmware/efi/efivars &>>$CLIENT_LOG
   
   hard_drive_counter=0
   image_schema="{\"harddrives\": [ "

@@ -125,15 +125,6 @@ function expand_volume()
 
 	local partition="$1"
 	local filesystem="$2"
-	#Always fix ntfs partitions even not being resized
-	if [ "$filesystem" = "ntfs" ]; then
-		ntfsfix -b -d $1 &>>/tmp/clientlog.log
-	fi
-	
-	if [ "$noResize" != "true" ]; then
-	
-	
-	
 	
 	if [ "$filesystem" = "ext2" ] || [ "$filesystem" = "ext3" ] || [ "$filesystem" = "ext4" ]; then
 		log " ** Expanding EXT Volume On $1 ** " "display"
@@ -151,6 +142,7 @@ function expand_volume()
 		e2fsck -fp $1 &>/dev/null
 	
 	elif [ "$filesystem" = "ntfs" ]; then
+	  ntfsfix -b -d $1 &>>/tmp/clientlog.log
 		volumeSize=`ntfsresize -f -i -P $1 | grep -i "current volume size:" | cut -d " " -f4`
 		deviceSize=`ntfsresize -f -i -P $1 | grep -i "current device size:" | cut -d " " -f4`
 		volumeMargin=$(( $deviceSize - $volumeSize ))
@@ -179,7 +171,7 @@ CONFIRM
 		echo 
 		ntfsfix -b -d $1 &>>/tmp/clientlog.log
 	fi
-fi
+
 }
 
 function get_hard_drives()

@@ -93,6 +93,7 @@ namespace BLL.ClientPartitioning
                     if (partition.ForceFixedSize)
                     {
                         extendedPartitionHelper.MinSizeBlk = partition.Size;
+                        
                         return extendedPartitionHelper;                       
                     }
                 }
