@@ -40,7 +40,7 @@ function process_hard_drives()
     update_grub
 	
     if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
-	  log " ** Restoring GUID ** "
+	  log " ** Restoring GUID On $hard_drive ** "
 	  sgdisk $hard_drive -U$(parse_json "$hd_schema" .Guid) &>> $CLIENT_LOG
 	  
 	  #hard drive and partition guids must be restored prior to updating nvram
@@ -112,20 +112,14 @@ function process_partitions()
 		
     
 	partition_size_bytes=$(parted -s $hard_drive unit b print all | grep " $(parse_json "$current_partition" .Number) " -m 1 | awk -F' ' '{print $4}' | sed 's/B//g')
-
-	
-	 if [ "$skip_expand_volumes" != "true" ]; then 
-             
-			  
-				  if [ "$image_type" = "Block" ] && [ "$partition_size_bytes" -gt "5368709120" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
-                     expand_volume ${hard_drive}$(parse_json "$current_partition" .Number) $(parse_json "$current_partition" .FileSystem)  
-				  fi
-				
-              
-            fi
+    if [ "$skip_expand_volumes" != "true" ]; then 
+      if [ "$image_type" = "Block" ] && [ "$partition_size_bytes" -gt "5368709120" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
+        expand_volume ${hard_drive}$(parse_json "$current_partition" .Number) $(parse_json "$current_partition" .FileSystem)  
+      fi
+    fi
 		
     if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
-      log " ** Restoring GUID ** "
+      log " ** Restoring GUID On ${hard_drive}$(parse_json "$current_partition" .Number) ** "
       log " ...... part $part gptGUID: $gptGUID "
       sgdisk $hard_drive -u$(parse_json "$current_partition" .Number):$(parse_json "$current_partition" .Guid) &>> $CLIENT_LOG
     fi
@@ -161,16 +155,21 @@ function download_image()
   sleep 7
   echo
 	
-  if [ "$(parse_json "$current_object" .Compression)" = "gz" ]; then
-    partCompAlg="/usr/bin/gzip -c -d"
-    partCompExt="gz"
-  elif [ "$(parse_json "$current_object" .Compression)" = "lz4" ]; then
-    partCompAlg="lz4 -d"
-    partCompExt="lz4"
-  else
-    error "Could Not Determine Compression Algorithm For Partition"
-  fi
-		
+  if [ "$(parse_json "$current_object" .ImageType)" = "Block" ]; then
+    if [ "$(parse_json "$current_object" .Compression)" = "gz" ]; then
+      partCompAlg="/usr/bin/gzip -c -d"
+      partCompExt="gz"
+    elif [ "$(parse_json "$current_object" .Compression)" = "lz4" ]; then
+      partCompAlg="lz4 -d"
+      partCompExt="lz4"
+    elif [ "$(parse_json "$current_object" .Compression)" = "uncp" ]; then
+      #TODO: finish implementing no compression
+      partCompAlg="lz4 -d"
+      partCompExt="lz4"
+    else
+      error "Could Not Determine Compression Algorithm For Partition"
+    fi
+  fi		
   touch /tmp/clone.progress
 			
   if [ "$multicast" = "true" ]; then
@@ -287,12 +286,14 @@ function create_partition_layout()
   if [ "$(parse_json "$hd_schema" .IsValid)" = "true" ] || [ "$force_dynamic_partitions" = "true" ] || [ "$partition_method" = "script" ] || [ "$partition_method" = "layout" ]; then
     log " ** Creating Partition Table On $hard_drive ** " "display"
     $curlAuth --data "imageProfileId=$profile_id&hdToGet=$image_hd_to_use&newHDSize=$drive_size_bytes&clientHD=$hard_drive&taskType=deploy" "${web}GetPartLayout" $curlEnd | dos2unix > /tmp/newPartLayout
-    cat /tmp/newPartLayout >> $CLIENT_LOG
+	
 		
     layout_failed_counter=0
     if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
       while [ "$layout_created_successfully" != "true" ]; do		
         delete_all_partitions $hard_drive
+		log " ** Partition Creation Script ** "
+        cat /tmp/newPartLayout >> $CLIENT_LOG
         bash /tmp/newPartLayout
         partprobe &>/dev/null
         gpt_partition_count=$(gdisk -l $hard_drive 2> /dev/null| awk '/^ / {print $1}' | grep -vi mbr | grep -vi gpt | grep -vi bsd | grep -vi apm -c)
@@ -309,6 +310,8 @@ function create_partition_layout()
       done
     else
       delete_all_partitions $hard_drive
+	  log " ** Partition Creation Script ** "
+      cat /tmp/newPartLayout >> $CLIENT_LOG
       bash /tmp/newPartLayout
       partprobe &>/dev/null
       mbr_partition_count=$(fdisk -l 2>/dev/null | grep $hard_drive | grep -v ${hard_drive}: -c)
@@ -422,7 +425,7 @@ function process_scripts()
 
 function get_partitions()
 {
-
+	echo "del"
 }
 
 function update_efi_nvram()
@@ -665,7 +668,6 @@ $value
 q
 y
 EOFN
-
 }
 
 function main()

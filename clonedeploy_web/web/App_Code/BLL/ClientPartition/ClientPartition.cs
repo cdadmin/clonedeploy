@@ -21,7 +21,7 @@ namespace BLL.ClientPartitioning
         public ClientPartition(int hdToGet,string newHdSize, Models.ImageProfile imageProfile)
         {
             _hdToGet = hdToGet;
-            _newHdSize = newHdSize;
+            _newHdSize = Convert.ToInt64(newHdSize);
             _imageProfile = imageProfile;
             PrimaryAndExtendedPartitions = new List<Models.ClientPartition.ClientPartition>();
             LogicalPartitions = new List<Models.ClientPartition.ClientPartition>();
@@ -36,7 +36,7 @@ namespace BLL.ClientPartitioning
 
         private readonly int _hdToGet;
         private readonly Models.ImageProfile _imageProfile;
-        private string _newHdSize;
+        private long _newHdSize;
 
         private int LbsByte { get; set; }    
         private long NewHdBlk { get; set; }
@@ -73,10 +73,6 @@ namespace BLL.ClientPartitioning
             LbsByte = Convert.ToInt32(_imageSchema.HardDrives[HdNumberToGet].Lbs); //logical block size in bytes
             NewHdBlk = Convert.ToInt64(_newHdSize) / LbsByte; //size of client hard drive in block
 
-            //Change the size of the hard drive being to deployed to to 99% of the drive.  Allow for math errors.
-            //_newHdSize = (Convert.ToInt64(_newHdSize) * .99).ToString("#");
-
-
             //Find the Boot partition
             if (_imageSchema.HardDrives[HdNumberToGet].Boot.Length > 0)
                 BootPart = _imageSchema.HardDrives[HdNumberToGet].Boot.Substring(_imageSchema.HardDrives[HdNumberToGet].Boot.Length - 1, 1);
@@ -108,7 +104,7 @@ namespace BLL.ClientPartitioning
             //Try to determine a layout for each primary or extended partition that will be able to fit logical partitions
             //or logical volumes in.  Also if the partition is logical and is the physical volume for a volume group determine 
             // a size that will work for all logical volumes
-            ExtendedPartitionHelper = new ClientPartitionHelper(_imageProfile).ExtendedPartition(HdNumberToGet);
+            ExtendedPartitionHelper = new ClientPartitionHelper(_imageProfile).ExtendedPartition(HdNumberToGet,_newHdSize);
             var upSizeLock = new Dictionary<string, long>();
 
             double percentCounter = -.1;
@@ -152,7 +148,7 @@ namespace BLL.ClientPartitioning
                     };
 
 
-                    var partitionHelper = new ClientPartitionHelper(_imageProfile).Partition(HdNumberToGet, partCounter, Convert.ToInt64(_newHdSize));
+                    var partitionHelper = new ClientPartitionHelper(_imageProfile).Partition(HdNumberToGet, partCounter, _newHdSize);
                     var percentOfHdForThisPartition = (double)partitionHelper.MinSizeBlk / NewHdBlk;
                     long tmpClientPartitionSizeBlk = partitionHelper.MinSizeBlk;
 
@@ -320,7 +316,7 @@ namespace BLL.ClientPartitioning
                         FsType = part.FsType
                     };
 
-                    var logicalPartitionHelper = new ClientPartitionHelper(_imageProfile).Partition(HdNumberToGet, partCounter, Convert.ToInt64(_newHdSize));
+                    var logicalPartitionHelper = new ClientPartitionHelper(_imageProfile).Partition(HdNumberToGet, partCounter, _newHdSize);
 
                     var percentOfExtendedForThisPartition = (double)logicalPartitionHelper.MinSizeBlk / ExtendedPartitionHelper.AgreedSizeBlk;
                     var tmpClientPartitionSizeBlk = logicalPartitionHelper.MinSizeBlk;
@@ -438,7 +434,7 @@ namespace BLL.ClientPartitioning
             foreach (var volumeGroup in VolumeGroupHelpers)
             {
                 //Tell the volume group it has a size of the physical volume to work with * 99% to account for errors to allow alittle over
-                volumeGroup.AgreedPvSizeBlk = Convert.ToInt64(volumeGroup.AgreedPvSizeBlk * .99);
+                //volumeGroup.AgreedPvSizeBlk = Convert.ToInt64(volumeGroup.AgreedPvSizeBlk * .99);
                 foreach (var partition in _imageSchema.HardDrives[HdNumberToGet].Partitions)
                 {
                     //Find the partition this volume group belongs to
@@ -471,8 +467,8 @@ namespace BLL.ClientPartitioning
                             };
 
 
-                            var logicalVolumeHelper = new ClientPartitionHelper(_imageProfile).LogicalVolume(lv, LbsByte);
-                            double percentOfPvForThisLv = (double)logicalVolumeHelper.MinSizeBlk / NewHdBlk;
+                            var logicalVolumeHelper = new ClientPartitionHelper(_imageProfile).LogicalVolume(lv, LbsByte,_newHdSize);
+                            double percentOfPvForThisLv = (double)logicalVolumeHelper.MinSizeBlk / volumeGroup.AgreedPvSizeBlk;
                             var tmpClientPartitionSizeLvBlk = logicalVolumeHelper.MinSizeBlk;
 
                             if (upSizeLock.ContainsKey(lv.Name))

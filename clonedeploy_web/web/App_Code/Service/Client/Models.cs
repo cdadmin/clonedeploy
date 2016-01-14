@@ -64,6 +64,7 @@ namespace Services.Client
         public string Type { get; set; }
         public string Prefix { get; set; }
         public string EfiBootLoader { get; set; }
+        public string ImageType { get; set; }
         public VolumeGroup VolumeGroup { get; set; }
     }
 
@@ -81,5 +82,6 @@ namespace Services.Client
         public string Compression { get; set; }
         public string FileSystem { get; set; }
         public string Uuid { get; set; }
+        public string ImageType { get; set; }
     }
 }
