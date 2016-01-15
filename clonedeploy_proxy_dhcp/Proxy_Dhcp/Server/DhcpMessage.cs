@@ -108,6 +108,7 @@ namespace CloneDeploy_Proxy_Dhcp.Server
         AutoConfig = 0x74,
         ClientSystemArch = 0x5D,
         PxePath = 0xD2,
+        PathPrefix = 0xD2,
         End = 0xFF
     }
 

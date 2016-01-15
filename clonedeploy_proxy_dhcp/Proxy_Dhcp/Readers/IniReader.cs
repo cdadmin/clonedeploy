@@ -26,6 +26,9 @@ namespace CloneDeploy_Proxy_Dhcp.Readers
                         writer.WriteLine("bios-bootfile=");
                         writer.WriteLine("efi32-bootfile=");
                         writer.WriteLine("efi64-bootfile=");
+                        writer.WriteLine("syslinux-bios-path-prefix=");
+                        writer.WriteLine("syslinux-efi32-path-prefix=");
+                        writer.WriteLine("syslinux-efi64-path-prefix =");
                         writer.WriteLine("apple-mode=disabled");
                         writer.WriteLine("apple-boot-file=");
                         writer.WriteLine("apple-root-path=");

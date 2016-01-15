@@ -511,6 +511,7 @@ namespace CloneDeploy_Proxy_Dhcp.Server
                 response.OptionOrdering = paramList;
             }
 
+
             response.AddOption(DhcpOption.DhcpAddress, this._mDhcpInterfaceAddress.GetAddressBytes());
 
             try
