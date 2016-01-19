@@ -132,16 +132,6 @@ namespace Helpers
             }
         }
 
-        public static void AppendText(string path, string contents)
-        {
-            try
-            {
-
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ex.Message);
-            }
-        }
+       
     }
 }

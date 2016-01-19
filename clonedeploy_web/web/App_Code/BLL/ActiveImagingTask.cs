@@ -4,7 +4,6 @@ using System.Linq;
 using BLL.Workflows;
 using DAL;
 using Helpers;
-using Pxe;
 
 namespace BLL
 {
@@ -30,7 +29,8 @@ namespace BLL
                 uow.ActiveImagingTaskRepository.Delete(activeImagingTask.Id);
                 if (uow.Save())
                 {
-                    return new PxeFileOps().CleanPxeBoot(Utility.MacToPxeMac(computer.Mac));
+                    new BLL.Workflows.CleanTaskBootFiles(computer).CleanPxeBoot();
+                    return true;
                 }
                 else
                 {

@@ -35,15 +35,15 @@
     <asp:DropDownList ID="ddlPXEMode" runat="server" CssClass="ddlist">
         <asp:ListItem>pxelinux</asp:ListItem>
         <asp:ListItem>ipxe</asp:ListItem>
-        <asp:ListItem>syslinux_32_efi</asp:ListItem>
-        <asp:ListItem>syslinux_64_efi</asp:ListItem>
-        <asp:ListItem>ipxe_32_efi</asp:ListItem>
-        <asp:ListItem>ipxe_64_efi</asp:ListItem>
-        <asp:ListItem>ipxe_32_efi_snp</asp:ListItem>
-        <asp:ListItem>ipxe_64_efi_snp</asp:ListItem>
-        <asp:ListItem>ipxe_32_efi_snp_only</asp:ListItem>
-        <asp:ListItem>ipxe_64_efi_snponly</asp:ListItem>
-        <asp:ListItem>grub_64_efi</asp:ListItem>
+        <asp:ListItem>syslinux_efi32</asp:ListItem>
+        <asp:ListItem>syslinux_efi64</asp:ListItem>
+        <asp:ListItem>ipxe_efi32</asp:ListItem>
+        <asp:ListItem>ipxe_efi64</asp:ListItem>
+        <asp:ListItem>ipxe_efi_snp32</asp:ListItem>
+        <asp:ListItem>ipxe_efi_snp64</asp:ListItem>
+        <asp:ListItem>ipxe_efi_snponly32</asp:ListItem>
+        <asp:ListItem>ipxe_efi_snponly64</asp:ListItem>
+        <asp:ListItem>grub</asp:ListItem>
     </asp:DropDownList>
 </div>
 <br class="clear"/>
@@ -63,10 +63,10 @@
 </div>
 <div class="size-setting column">
     <asp:DropDownList ID="ddlProxyEfi32" runat="server" CssClass="ddlist">
-        <asp:ListItem>syslinux_32_efi</asp:ListItem>
-        <asp:ListItem>ipxe_32_efi</asp:ListItem>
-        <asp:ListItem>ipxe_32_efi_snp</asp:ListItem>
-        <asp:ListItem>ipxe_32_efi_snponly</asp:ListItem>
+        <asp:ListItem>syslinux</asp:ListItem>
+        <asp:ListItem>ipxe_efi</asp:ListItem>
+        <asp:ListItem>ipxe_snp</asp:ListItem>
+        <asp:ListItem>ipxe_snponly</asp:ListItem>
     </asp:DropDownList>
 </div>
 <br class="clear"/>
@@ -75,11 +75,11 @@
 </div>
 <div class="size-setting column">
     <asp:DropDownList ID="ddlProxyEfi64" runat="server" CssClass="ddlist">
-        <asp:ListItem>syslinux_64_efi</asp:ListItem>
-        <asp:ListItem>ipxe_64_efi</asp:ListItem>
-        <asp:ListItem>ipxe_64_efi_snp</asp:ListItem>
-        <asp:ListItem>ipxe_64_efi_snponly</asp:ListItem>
-        <asp:ListItem>grub_64_efi</asp:ListItem>
+        <asp:ListItem>syslinux</asp:ListItem>
+        <asp:ListItem>ipxe_efi</asp:ListItem>
+        <asp:ListItem>ipxe_snp</asp:ListItem>
+        <asp:ListItem>ipxe_snponly</asp:ListItem>
+        <asp:ListItem>grub</asp:ListItem>
     </asp:DropDownList>
 </div>
      <div id="confirmbox" class="confirm-box-outer">

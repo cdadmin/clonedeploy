@@ -1,6 +1,5 @@
 ﻿using System;
 using Helpers;
-using Pxe;
 
 public partial class views_computers_bootmenu_active : BasePages.Computers
 {
@@ -18,7 +17,6 @@ public partial class views_computers_bootmenu_active : BasePages.Computers
     {
         var proxyDhcp = Settings.ProxyDhcp;
         var active = BLL.ActiveImagingTask.IsComputerActive(Computer.Id);
-        var pxeFileOps = new PxeFileOps();
         string path;
 
         if (proxyDhcp == "Yes")
@@ -27,8 +25,8 @@ public partial class views_computers_bootmenu_active : BasePages.Computers
         if (active)
         {
             path = proxyDhcp == "Yes"
-                ? pxeFileOps.GetHostProxyPath(Computer, true, ddlProxyMode.Text)
-                : pxeFileOps.GetHostNonProxyPath(Computer, true);
+                ? BLL.ComputerBootMenu.GetHostProxyPath(Computer, true, ddlProxyMode.Text)
+                : BLL.ComputerBootMenu.GetHostNonProxyPath(Computer, true);
             lblActiveBoot.Text = "Active Task Found <br> Displaying Task Boot Menu";
         }
         else
@@ -36,8 +34,8 @@ public partial class views_computers_bootmenu_active : BasePages.Computers
             if (Convert.ToBoolean(Convert.ToInt16(Computer.CustomBootEnabled)))
             {
                 path = proxyDhcp == "Yes"
-                    ? pxeFileOps.GetHostProxyPath(Computer, true, ddlProxyMode.Text)
-                    : pxeFileOps.GetHostNonProxyPath(Computer, true);
+                    ? BLL.ComputerBootMenu.GetHostProxyPath(Computer, true, ddlProxyMode.Text)
+                    : BLL.ComputerBootMenu.GetHostNonProxyPath(Computer, true);
 
                 lblActiveBoot.Text =
                     "No Active Task Found <br> Custom Boot Menu Found <br> Displaying Custom Boot Menu";
@@ -46,8 +44,8 @@ public partial class views_computers_bootmenu_active : BasePages.Computers
             else //Not Active, display default global boot menu
             {
                 path = proxyDhcp == "Yes"
-                    ? pxeFileOps.GetHostProxyPath(Computer, false, ddlProxyMode.Text)
-                    : pxeFileOps.GetHostNonProxyPath(Computer, false);
+                    ? BLL.ComputerBootMenu.GetHostProxyPath(Computer, false, ddlProxyMode.Text)
+                    : BLL.ComputerBootMenu.GetHostNonProxyPath(Computer, false);
 
                 lblActiveBoot.Text =
                     "No Active Task Found <br> No Custom Boot Menu Found <br> Displaying Global Default Boot Menu";

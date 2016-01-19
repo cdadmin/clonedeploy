@@ -100,11 +100,22 @@ function process_partitions()
       process_lvm
       continue
     fi
-		
+	
+	get_partitions_according_to_mbr_gpt
+	partition_counter=0
+	for partition in $mbr_gpt_partitions; do
+      partition_counter=$(( $partition_counter + 1 ))
+      partition_number=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
+	   if [ "$(parse_json "$hd_schema" .Number)" = "$partition_number" ]; then
+	     partition_prefix=$(echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[0-9]*//g')
+	   else
+         partition_prefix=""
+	done
+	
     if [ "$(parse_json "$current_partition" .FileSystem)" = "swap" ]; then
-      log "Creating Swap On $hard_drive$(parse_json "$current_partition" .Number)"
+      log "Creating Swap On $hard_drive${partition_prefix}$(parse_json "$current_partition" .Number)"
       log "$(parse_json "$current_partition" .Uuid)"
-      mkswap $hard_drive$(parse_json "$current_partition" .Number) -U $(parse_json "$current_partition" .Uuid) &>> $CLIENT_LOG	
+      mkswap ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number) -U $(parse_json "$current_partition" .Uuid) &>> $CLIENT_LOG	
       continue
     fi
 			
@@ -114,7 +125,7 @@ function process_partitions()
 	partition_size_bytes=$(parted -s $hard_drive unit b print all | grep " $(parse_json "$current_partition" .Number) " -m 1 | awk -F' ' '{print $4}' | sed 's/B//g')
     if [ "$skip_expand_volumes" != "true" ]; then 
       if [ "$image_type" = "Block" ] && [ "$partition_size_bytes" -gt "5368709120" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
-        expand_volume ${hard_drive}$(parse_json "$current_partition" .Number) $(parse_json "$current_partition" .FileSystem)  
+        expand_volume ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number) $(parse_json "$current_partition" .FileSystem)  
       fi
     fi
 		
@@ -125,12 +136,12 @@ function process_partitions()
     fi
 		
     if [ "$(parse_json "$hd_schema" .BootPartition)" = "$(parse_json "$current_partition" .Number)" ] && [ "$(parse_json "$current_partition" .FileSystem)" = "ntfs" ]; then
-      fix_ntfs_boot ${hard_drive}$(parse_json "$current_partition" .Number)
+      fix_ntfs_boot ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)
     fi
 	
 	#Todo: Add support for linux change name
 	if [ "$(parse_json "$current_partition" .FileSystem)" = "ntfs" ] && [ -n "$computer_name" ]; then
-      change_computer_name ${hard_drive}$(parse_json "$current_partition" .Number)
+      change_computer_name ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)
 	fi
   done
 }
@@ -144,7 +155,7 @@ function download_image()
   if [ "$file_name_prefix" != "part" ]; then
     destination="/dev/mapper/$file_name_prefix"
   else
-    destination=${hard_drive}$(parse_json "$current_object" .Number)
+    destination=${hard_drive}${partition_prefix}$(parse_json "$current_object" .Number)
     file_name_prefix=part"$(parse_json "$current_object" .Number)"
   fi
   
@@ -169,12 +180,16 @@ function download_image()
     else
       error "Could Not Determine Compression Algorithm For Partition"
     fi
-  fi		
+  		
   touch /tmp/clone.progress
 			
   if [ "$multicast" = "true" ]; then
-    log "cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$(parse_json "$current_partition" .PartcloneFileSystem) -B -r -o $hard_drive$(parse_json "$current_partition" .Number)"
-    cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$(parse_json "$current_partition" .PartcloneFileSystem) -B -r -o $hard_drive$(parse_json "$current_partition" .Number)
+    if [ "$decompress_multicast_on_client" = "true"]; then
+	  #Todo: add decompress multicast on clientHD
+	else
+      log "cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
+      cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
+    fi
   else
     log "cd_reporter $computer_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
     cd_reporter $computer_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
@@ -182,6 +197,9 @@ function download_image()
 			
   rm /tmp/clone.progress
   cat /var/log/partclone.log >> $CLIENT_LOG
+  else
+  #todo: add wim imaging
+  fi 
 }
 
 function restore_mbr_gpt()
@@ -423,9 +441,21 @@ function process_scripts()
 	done
 }
 
-function get_partitions()
+function get_partitions_according_to_mbr_gpt()
 {
-	echo "del"
+  mbr_gpt_partitions=""
+  if [ -n "$custom_partitions" ]; then
+    for partition in $custom_partitions; do
+      echo "$partition" | grep $hard_drive
+      if [ "$?" = "0" ]; then
+        mbr_gpt_partitions="$mbr_gpt_partitions $partition"
+      fi
+    done
+	  log " ...... Partitions Set By Image Profile: $mbr_gpt_partitions" "display"
+    
+  else
+    mbr_gpt_partitions=$(lsblk -ipno KNAME | grep "$hard_drive" | grep -vw "$hard_drive" 2>> $CLIENT_LOG)  
+  fi
 }
 
 function update_efi_nvram()
@@ -515,16 +545,16 @@ function update_bcd()
 
     log " ** Updating BCD ** " "display"
     mkdir /mnt/ntfs
-    ntfs-3g -o force,rw,remove_hiberfile ${hard_drive}$(parse_json "$current_partition" .Number) /mnt/ntfs 2> /dev/null
+    ntfs-3g -o force,rw,remove_hiberfile ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number) /mnt/ntfs 2> /dev/null
     if [ -f "/mnt/ntfs/Windows/System32/winload.exe" ] || [ -f "/mnt/ntfs/Windows/system32/winload.exe" ]; then
-      log " ...... Found Windows Partition On ${hard_drive}$(parse_json "$current_partition" .Number)" "display"
-      windows_partition=${hard_drive}$(parse_json "$current_partition" .Number)	
+      log " ...... Found Windows Partition On ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)" "display"
+      windows_partition=${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)	
       windows_partition_offset=$(parted -s $hard_drive unit b print all | grep " $(parse_json "$current_partition" .Number) " -m 1 | awk -F' ' '{print $2}' | sed 's/B//g')			
     fi
 		
     if [ -f "/mnt/ntfs/Boot/BCD" ]; then
-      log " ...... Found BCD Partition On${hard_drive}$(parse_json "$current_partition" .Number)" "display"
-      bcd_partition=${hard_drive}$(parse_json "$current_partition" .Number)
+      log " ...... Found BCD Partition On${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)" "display"
+      bcd_partition=${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)
       reged -x /mnt/ntfs/Boot/BCD . Objects /tmp/regbcd >> /dev/null
       original_bcd=$(cat /tmp/regbcd)
     fi

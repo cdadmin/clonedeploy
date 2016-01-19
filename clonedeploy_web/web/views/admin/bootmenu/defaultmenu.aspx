@@ -80,6 +80,18 @@
             </div>
             <br class="clear"/>
         </div>
+        <div id="ipxePassBoxes" runat="server" visible="false" style="margin-top: 0;">
+            <br/>
+            <h4>Boot Menu Passwords - Optional</h4>
+            <div class="size-4 column">
+                iPXE Requires Login?:
+            </div>
+            <div class="size-5 column">
+                <asp:CheckBox ID="chkIpxeLogin" runat="server"></asp:CheckBox>
+            </div>
+            <br class="clear"/>
+           
+        </div>
         <div id="grubPassBoxes" runat="server" visible="false" style="margin-top: 0;">
             <br/>
             <h4>Boot Menu Passwords - Optional</h4>
@@ -201,6 +213,18 @@
             <asp:TextBox ID="txtProxDiagPwd" runat="server" CssClass="textbox" type="password"></asp:TextBox>
         </div>
         <br class="clear"/>
+    </div>
+     <div id="ipxeProxyPasses" runat="server" visible="false" style="margin-top: 0;">
+        <br/>
+        <h4>iPXE Boot Menu</h4>
+        <div class="size-4 column">
+            iPXE Requires Login?
+        </div>
+        <div class="size-5 column">
+            <asp:CheckBox ID="chkIpxeProxy" runat="server"></asp:CheckBox>
+        </div>
+        <br class="clear"/>
+      
     </div>
     <div id="grubProxyPasses" runat="server" visible="false" style="margin-top: 0;">
         <br/>

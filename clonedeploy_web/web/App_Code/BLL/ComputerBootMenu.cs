@@ -121,5 +121,94 @@ namespace BLL
             }
         }
 
+        public static string GetHostNonProxyPath(Models.Computer host, bool isActiveOrCustom)
+        {
+            var mode = Settings.PxeMode;
+            var pxeHostMac = Utility.MacToPxeMac(host.Mac);
+            string path;
+
+            var fileName = isActiveOrCustom ? pxeHostMac : "default";
+
+            if (mode.Contains("ipxe"))
+                path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                       fileName + ".ipxe";
+            else if (mode.Contains("grub"))
+            {
+                fileName = isActiveOrCustom ? pxeHostMac : "grub";
+                path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                       fileName + ".cfg";
+            }
+            else
+                path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                       fileName;
+
+            return path;
+        }
+
+        public static string GetHostProxyPath(Models.Computer host, bool isActiveOrCustom, string proxyType)
+        {
+            var pxeHostMac = Utility.MacToPxeMac(host.Mac);
+            string path = null;
+
+
+            var biosFile = Settings.ProxyBiosFile;
+            var efi32File = Settings.ProxyEfi32File;
+            var efi64File = Settings.ProxyEfi64File;
+
+            var fileName = isActiveOrCustom ? pxeHostMac : "default";
+            switch (proxyType)
+            {
+                case "bios":
+                    if (biosFile.Contains("ipxe"))
+                    {
+                        path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar +
+                               proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
+                               Path.DirectorySeparatorChar + fileName + ".ipxe";
+                    }
+                    else
+                        path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar +
+                               proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
+                               Path.DirectorySeparatorChar + fileName;
+                    break;
+                case "efi32":
+                    if (efi32File.Contains("ipxe"))
+                        path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar +
+                               proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
+                               Path.DirectorySeparatorChar + fileName + ".ipxe";
+                    else
+                        path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar +
+                               proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
+                               Path.DirectorySeparatorChar + fileName;
+                    break;
+                case "efi64":
+                    if (efi64File.Contains("ipxe"))
+                        path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar +
+                               proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
+                               Path.DirectorySeparatorChar + fileName + ".ipxe";
+                    else if (efi64File.Contains("grub"))
+                    {
+                        if (isActiveOrCustom)
+                        {
+                            path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar +
+                              proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
+                              Path.DirectorySeparatorChar + pxeHostMac + ".cfg";
+
+                        }
+                        else
+                        {
+                            path = Settings.TftpPath + "grub" +
+                                  Path.DirectorySeparatorChar + "grub.cfg";
+                        }
+                    }
+                    else
+                        path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar +
+                               proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
+                               Path.DirectorySeparatorChar + fileName;
+                    break;
+            }
+
+            return path;
+        }
+
     }
 }

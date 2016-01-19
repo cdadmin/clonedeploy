@@ -12,7 +12,6 @@ using Global;
 using Helpers;
 using Models;
 using Newtonsoft.Json;
-using Pxe;
 using Services.Client;
 
 namespace Service.Client

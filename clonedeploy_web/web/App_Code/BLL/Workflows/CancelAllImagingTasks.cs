@@ -88,7 +88,7 @@ namespace BLL.Workflows
             //Recreate any custom boot menu's that were just deleted
             foreach (var computer in BLL.Computer.ComputersWithCustomBootMenu())
             {
-                BLL.ComputerBootMenu.ToggleComputerBootMenu(computer, true);
+                BLL.ComputerBootMenu.CreateBootFiles(computer);
             }
             return true;
         }        

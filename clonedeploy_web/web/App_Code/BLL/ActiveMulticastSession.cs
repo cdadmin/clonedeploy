@@ -6,7 +6,6 @@ using System.Management;
 using System.Threading;
 using DAL;
 using Helpers;
-using Pxe;
 
 namespace BLL
 {
@@ -49,7 +48,7 @@ namespace BLL
                     ActiveImagingTask.DeleteForMulticast(multicastId);
 
                     foreach (var computer in computers)
-                        new PxeFileOps().CleanPxeBoot(Utility.MacToPxeMac(computer.Mac));
+                        new BLL.Workflows.CleanTaskBootFiles(computer).CleanPxeBoot();
 
                     try
                     {

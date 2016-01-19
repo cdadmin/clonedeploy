@@ -2,7 +2,6 @@
 using System.Web.UI;
 using BLL.Workflows;
 using Helpers;
-using Pxe;
 
 public partial class views_admin_bootmenu_defaultmenu : Page
 {
@@ -22,9 +21,9 @@ public partial class views_admin_bootmenu_defaultmenu : Page
             var efi32File = Settings.ProxyEfi32File;
             var efi64File = Settings.ProxyEfi64File;
             if (biosFile.Contains("linux") || efi32File.Contains("linux") || efi64File.Contains("linux"))
-            {
                 proxyPassBoxes.Visible = true;
-            }
+            if (biosFile.Contains("ipxe") || efi32File.Contains("ipxe") || efi64File.Contains("ipxe"))
+                ipxeProxyPasses.Visible = true;
             if (efi64File.Contains("grub"))
                 grubProxyPasses.Visible = true;
             try
@@ -94,11 +93,13 @@ public partial class views_admin_bootmenu_defaultmenu : Page
             {
                 passboxes.Visible = false;
                 grubPassBoxes.Visible = false;
+                ipxePassBoxes.Visible = true;
             }
             else if (pxeMode.Contains("grub"))
             {
                 passboxes.Visible = false;
                 grubPassBoxes.Visible = true;
+                ipxePassBoxes.Visible = false;
             }
             try
             {
