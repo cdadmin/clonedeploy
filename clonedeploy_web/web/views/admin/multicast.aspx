@@ -47,6 +47,17 @@
 <div class="size-setting column">
     <asp:TextBox ID="txtEndPort" runat="server" CssClass="textbox"></asp:TextBox>
 </div>
+    <br class="clear"/>
+<div class="size-4 column">
+    Decompress Image:
+</div>
+<div class="size-setting column">
+    <asp:DropDownList ID="ddlDecompress" runat="server" CssClass="ddlist">
+        <asp:ListItem>client</asp:ListItem>
+        <asp:ListItem>server</asp:ListItem>
+    </asp:DropDownList>
+</div>
+
 
 </asp:Content>
 

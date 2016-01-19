@@ -56,18 +56,18 @@ namespace Security
         public string IpxeLogin(string username, string password, string kernel, string bootImage, string task)
         {
             //fix me
-            string lines = null;
+            var newLineChar = "\n";
             var wdsKey = Settings.WebTaskRequiresLogin == "No" ? Settings.ServerKey : "";
             var globalHostArgs = Settings.GlobalHostArgs;
             var validationResult = GlobalLogin(username, password, "iPXE");
-            //if (!validationResult.IsValid) return lines;
-            lines = "#!ipxe\r\n";
+            if (!validationResult.IsValid) return "goto Menu";
+            var lines = "#!ipxe" + newLineChar;
             lines += "kernel " + Settings.WebPath + "IpxeBoot?filename=" + kernel + "&type=kernel" +
-                     " initrd=" + "rootfs.ext2.xz " + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
+                     " initrd=" + bootImage + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
                      Settings.WebPath + " WDS_KEY=" + wdsKey + " task=" + task + " consoleblank=0 " +
-                     globalHostArgs + "\r\n";
+                     globalHostArgs + newLineChar;
             lines += "imgfetch --name " + bootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
-                     bootImage + "&type=bootimage" + "\r\n";
+                     bootImage + "&type=bootimage" + newLineChar;
             lines += "boot";
 
             return lines;

@@ -256,9 +256,19 @@ namespace BLL.Workflows
                 if (isUnix)
                 {
                     var prefix = x == 1 ? " -c \"" : " ; ";
-                    processArguments += (prefix + compAlg + imageFile + stdout + " | udp-sender" +
-                                         " --portbase " + _multicastSession.Port + minReceivers + " " + " --ttl 32 " +
-                                         senderArgs);
+                    if (Settings.MulticastDecompression == "server")
+                    {
+                        processArguments += (prefix + compAlg + imageFile + stdout + " | udp-sender" +
+                                             " --portbase " + _multicastSession.Port + minReceivers + " " + " --ttl 32 " +
+                                             senderArgs);
+                    }
+                    else
+                    {
+                        processArguments += (prefix + " udp-sender" + " --file " + imageFile +
+                                             " --portbase " + _multicastSession.Port + minReceivers + " " + " --ttl 32 " +
+                                             senderArgs);
+                    }
+
                 }
                 else
                 {
@@ -266,10 +276,20 @@ namespace BLL.Workflows
                                   Path.DirectorySeparatorChar + "apps" + Path.DirectorySeparatorChar;
 
                     var prefix = x == 1 ? " /c " : " & ";
-                    processArguments += (prefix + appPath + compAlg + imageFile + stdout + " | " + appPath +
-                                         "udp-sender.exe" +
-                                         " --portbase " + _multicastSession.Port + minReceivers + " " + " --ttl 32 " +
-                                         senderArgs);
+                    if (Settings.MulticastDecompression == "server")
+                    {
+                        processArguments += (prefix + appPath + compAlg + imageFile + stdout + " | " + appPath +
+                                             "udp-sender.exe" +
+                                             " --portbase " + _multicastSession.Port + minReceivers + " " + " --ttl 32 " +
+                                             senderArgs);
+                    }
+                    else
+                    {
+                        processArguments += (prefix + appPath +
+                                             "udp-sender.exe" + " --file " + imageFile +
+                                             " --portbase " + _multicastSession.Port + minReceivers + " " + " --ttl 32 " +
+                                             senderArgs);
+                    }
                 }
             }
 

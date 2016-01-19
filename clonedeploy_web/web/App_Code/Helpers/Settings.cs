@@ -234,6 +234,16 @@ namespace Helpers
         {
             get { return Setting.GetSetting("Require Image Approval").Value; }
         }
+
+        public static string MulticastDecompression
+        {
+            get { return Setting.GetSetting("Multicast Decompression").Value; }
+        }
+
+        public static string IpxeRequiresLogin
+        {
+            get { return Setting.GetSetting("Ipxe Requires Login").Value; }
+        }
     
     }
 }

@@ -17,13 +17,14 @@ namespace BLL.ClientPartitioning
     public class ClientPartitionHelper
     {
         private readonly Models.ImageSchema.ImageSchema _imageSchema;
-
+        private readonly Models.ImageProfile _imageProfile;
         public ClientPartitionHelper(Models.ImageProfile imageProfile)
         {
             string schema = null;
      
             if (imageProfile != null)
             {
+                _imageProfile = imageProfile;
                 if (imageProfile.PartitionMethod == "Dynamic" && !string.IsNullOrEmpty(imageProfile.CustomSchema))
                 {
                     schema = imageProfile.CustomSchema;
@@ -253,7 +254,8 @@ namespace BLL.ClientPartitioning
            
             partitionHelper.VolumeGroupHelper = VolumeGroup(hdNumberToGet, partNumberToGet, newHdSize);
             var lbsByte = _imageSchema.HardDrives[hdNumberToGet].Lbs;
-
+            var imagePath = Settings.PrimaryStoragePath + Path.DirectorySeparatorChar + "images" + Path.DirectorySeparatorChar + _imageProfile.Image.Name + Path.DirectorySeparatorChar + "hd" +
+                           hdNumberToGet;
             
             //Look if any volume groups are present for this partition.  If so set the volumesize for the volume group to the minimum size
             //required for the volume group.  Volume groups are always treated as resizable even if none of the individual 
@@ -313,13 +315,28 @@ namespace BLL.ClientPartitioning
                 }
                 else
                 {
-                    //The resize value and used_mb value are calculated during upload by two different methods
-                    //Use the one that is bigger just in case.
-                  
-                    if (partition.VolumeSize > partition.UsedMb)
-                        partitionHelper.MinSizeBlk = partition.VolumeSize*1024*1024/lbsByte;
-                    else
+                    string imageFile = null;
+                    foreach (var ext in new[] {"ntfs", "fat", "extfs", "hfsp", "imager", "xfs"})
+                    {
+                        imageFile =
+                            Directory.GetFiles(
+                                imagePath + Path.DirectorySeparatorChar, "part" + partition.Number + "." + ext + ".*")
+                                .FirstOrDefault();
+
+                        if (imageFile != null) break;
+                    }
+                    if (Path.GetExtension(imageFile) == ".wim")
                         partitionHelper.MinSizeBlk = (partition.UsedMb*1024*1024)/lbsByte;
+                    else
+                    {
+
+                        //The resize value and used_mb value are calculated during upload by two different methods
+                        //Use the one that is bigger just in case.
+                        if (partition.VolumeSize > partition.UsedMb)
+                            partitionHelper.MinSizeBlk = partition.VolumeSize*1024*1024/lbsByte;
+                        else
+                            partitionHelper.MinSizeBlk = (partition.UsedMb*1024*1024)/lbsByte;
+                    }
                 }
             }
 
@@ -520,7 +537,7 @@ namespace BLL.ClientPartitioning
                                 clientLogicalVolume.ImageType = "Block";
                                 break;
                             case ".wim":
-                                physicalPartition.ImageType = "File";
+                                clientLogicalVolume.ImageType = "File";
                                 break;
                         }
 

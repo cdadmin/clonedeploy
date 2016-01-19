@@ -106,10 +106,11 @@ function process_partitions()
 	for partition in $mbr_gpt_partitions; do
       partition_counter=$(( $partition_counter + 1 ))
       partition_number=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
-	   if [ "$(parse_json "$hd_schema" .Number)" = "$partition_number" ]; then
-	     partition_prefix=$(echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[0-9]*//g')
-	   else
-         partition_prefix=""
+      if [ "$(parse_json "$hd_schema" .Number)" = "$partition_number" ]; then
+	    partition_prefix=$(echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[0-9]*//g')
+	  else
+        partition_prefix=""
+      fi
 	done
 	
     if [ "$(parse_json "$current_partition" .FileSystem)" = "swap" ]; then
@@ -185,7 +186,8 @@ function download_image()
 			
   if [ "$multicast" = "true" ]; then
     if [ "$decompress_multicast_on_client" = "true"]; then
-	  #Todo: add decompress multicast on clientHD
+	    log "cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
+      cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
 	else
       log "cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
       cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
@@ -197,8 +199,11 @@ function download_image()
 			
   rm /tmp/clone.progress
   cat /var/log/partclone.log >> $CLIENT_LOG
-  else
-  #todo: add wim imaging
+  else # ImageType = File
+    if [ "$(parse_json "$current_object" .FileSystem)" = "ntfs" ]; then
+	  mkfs.ntfs -f $destination
+	  cd_reporter $computer_id wim & wimapply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination 2>> $CLIENT_LOG | tee /tmp/wim.progress
+	fi
   fi 
 }
 

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.UI;
+using BLL;
 using BLL.Workflows;
 using Helpers;
 
@@ -23,7 +25,10 @@ public partial class views_admin_bootmenu_defaultmenu : Page
             if (biosFile.Contains("linux") || efi32File.Contains("linux") || efi64File.Contains("linux"))
                 proxyPassBoxes.Visible = true;
             if (biosFile.Contains("ipxe") || efi32File.Contains("ipxe") || efi64File.Contains("ipxe"))
+            {
                 ipxeProxyPasses.Visible = true;
+                chkIpxeProxy.Checked = Convert.ToBoolean(Settings.IpxeRequiresLogin);
+            }
             if (efi64File.Contains("grub"))
                 grubProxyPasses.Visible = true;
             try
@@ -94,6 +99,7 @@ public partial class views_admin_bootmenu_defaultmenu : Page
                 passboxes.Visible = false;
                 grubPassBoxes.Visible = false;
                 ipxePassBoxes.Visible = true;
+                chkIpxeLogin.Checked = Convert.ToBoolean(Settings.IpxeRequiresLogin);
             }
             else if (pxeMode.Contains("grub"))
             {
@@ -168,6 +174,18 @@ public partial class views_admin_bootmenu_defaultmenu : Page
         defaultBootMenu.BootImage = ddlEfi64BootImage.SelectedValue;
         defaultBootMenu.Type = "efi64";
         defaultBootMenu.CreateGlobalDefaultBootMenu();
+
+        var listSettings = new List<Models.Setting>
+        {
+            new Models.Setting
+            {
+                Name = "Ipxe Requires Login",
+                Value = chkIpxeProxy.Checked.ToString(),
+                Id = Setting.GetSetting("Ipxe Requires Login").Id
+            },
+        };
+
+        Setting.UpdateSetting(listSettings);
     }
 
     protected void CreateStandardMenu()
@@ -190,5 +208,17 @@ public partial class views_admin_bootmenu_defaultmenu : Page
         defaultBootMenu.BootImage = ddlHostBootImage.SelectedValue;
         defaultBootMenu.Type = "standard";
         defaultBootMenu.CreateGlobalDefaultBootMenu();
+
+        var listSettings = new List<Models.Setting>
+        {
+            new Models.Setting
+            {
+                Name = "Ipxe Requires Login",
+                Value = chkIpxeLogin.Checked.ToString(),
+                Id = Setting.GetSetting("Ipxe Requires Login").Id
+            },
+        };
+
+        Setting.UpdateSetting(listSettings);
     }
 }

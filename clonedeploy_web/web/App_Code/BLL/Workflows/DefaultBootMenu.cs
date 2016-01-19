@@ -108,7 +108,7 @@ namespace BLL.Workflows
             grubMenu.Append("menuentry \"Client Console\" --user {" + NewLineChar);
             grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
                             NewLineChar);
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" +
+            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
                             _webPath +
                             " WDS_KEY=" + _wdsKey + " task=debug consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
             grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
@@ -119,7 +119,7 @@ namespace BLL.Workflows
             grubMenu.Append("menuentry \"On Demand Imaging\" --user {" + NewLineChar);
             grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
                             NewLineChar);
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" +
+            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
                             _webPath +
                             " WDS_KEY=" + _wdsKey + " task=ond consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
             grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
@@ -130,7 +130,7 @@ namespace BLL.Workflows
             grubMenu.Append("menuentry \"Add Host\" --user {" + NewLineChar);
             grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
                             NewLineChar);
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" +
+            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
                             _webPath +
                             " WDS_KEY=" + _wdsKey + " task=register consoleblank=0 " + _globalHostArgs + "" +
                             NewLineChar);
@@ -142,7 +142,7 @@ namespace BLL.Workflows
             grubMenu.Append("menuentry \"Diagnostics\" --user {" + NewLineChar);
             grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
                             NewLineChar);
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" +
+            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
                             _webPath +
                             " WDS_KEY=" + _wdsKey + " task=diag consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
             grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
@@ -158,54 +158,106 @@ namespace BLL.Workflows
         {
             var ipxeMenu = new StringBuilder();
 
+
             ipxeMenu.Append("#!ipxe" + NewLineChar);
             ipxeMenu.Append("chain 01-${net0/mac:hexhyp}.ipxe || goto Menu" + NewLineChar);
             ipxeMenu.Append("" + NewLineChar);
             ipxeMenu.Append(":Menu" + NewLineChar);
             ipxeMenu.Append("menu Boot Menu" + NewLineChar);
-            ipxeMenu.Append("item boot Boot To Local Machine" + NewLineChar);
+            ipxeMenu.Append("item bootLocal Boot To Local Machine" + NewLineChar);
             ipxeMenu.Append("item console Client Console" + NewLineChar);
-            ipxeMenu.Append("item addhost Add Host" + NewLineChar);
+            ipxeMenu.Append("item register Add Host" + NewLineChar);
             ipxeMenu.Append("item ond On Demand" + NewLineChar);
             ipxeMenu.Append("item diag Diagnostics" + NewLineChar);
             ipxeMenu.Append("choose --default boot --timeout 5000 target && goto ${target}" + NewLineChar);
             ipxeMenu.Append("" + NewLineChar);
 
-            ipxeMenu.Append(":boot" + NewLineChar);
-            ipxeMenu.Append("exit" + NewLineChar);
-            ipxeMenu.Append("" + NewLineChar);
+            if (Settings.IpxeRequiresLogin == "True")
+            {
+                ipxeMenu.Append(":bootLocal" + NewLineChar);
+                ipxeMenu.Append("exit" + NewLineChar);
+                ipxeMenu.Append("" + NewLineChar);
 
-            ipxeMenu.Append(":console" + NewLineChar);
-            ipxeMenu.Append("set task debug" + NewLineChar);
-            ipxeMenu.Append("goto login" + NewLineChar);
-            ipxeMenu.Append("" + NewLineChar);
+                ipxeMenu.Append(":console" + NewLineChar);
+                ipxeMenu.Append("set task debug" + NewLineChar);
+                ipxeMenu.Append("goto login" + NewLineChar);
+                ipxeMenu.Append("" + NewLineChar);
 
-            ipxeMenu.Append(":addhost" + NewLineChar);
-            ipxeMenu.Append("set task register" + NewLineChar);
-            ipxeMenu.Append("goto login" + NewLineChar);
-            ipxeMenu.Append("" + NewLineChar);
+                ipxeMenu.Append(":register" + NewLineChar);
+                ipxeMenu.Append("set task register" + NewLineChar);
+                ipxeMenu.Append("goto login" + NewLineChar);
+                ipxeMenu.Append("" + NewLineChar);
 
-            ipxeMenu.Append(":ond" + NewLineChar);
-            ipxeMenu.Append("set task ond" + NewLineChar);
-            ipxeMenu.Append("goto login" + NewLineChar);
+                ipxeMenu.Append(":ond" + NewLineChar);
+                ipxeMenu.Append("set task ond" + NewLineChar);
+                ipxeMenu.Append("goto login" + NewLineChar);
 
-            ipxeMenu.Append("" + NewLineChar);
-            ipxeMenu.Append(":diag" + NewLineChar);
-            ipxeMenu.Append("set task diag" + NewLineChar);
-            ipxeMenu.Append("goto login" + NewLineChar);
-            ipxeMenu.Append("" + NewLineChar);
+                ipxeMenu.Append("" + NewLineChar);
+                ipxeMenu.Append(":diag" + NewLineChar);
+                ipxeMenu.Append("set task diag" + NewLineChar);
+                ipxeMenu.Append("goto login" + NewLineChar);
+                ipxeMenu.Append("" + NewLineChar);
 
-            ipxeMenu.Append(":login" + NewLineChar);
-            ipxeMenu.Append("login" + NewLineChar);
-            ipxeMenu.Append("params" + NewLineChar);
-            ipxeMenu.Append("param uname ${username:uristring}" + NewLineChar);
-            ipxeMenu.Append("param pwd ${password:uristring}" + NewLineChar);
-            ipxeMenu.Append("param kernel " + Kernel + "" + NewLineChar);
-            ipxeMenu.Append("param bootImage " + BootImage + "" + NewLineChar);
-            ipxeMenu.Append("param task " + "${task}" + "" + NewLineChar);
-            ipxeMenu.Append("echo Authenticating" + NewLineChar);
-            ipxeMenu.Append("chain --timeout 15000 http://" + Settings.ServerIpWithPort +
-                            "/cruciblewds/service/client.asmx/IpxeLogin##params || goto Menu" + NewLineChar);
+                ipxeMenu.Append(":login" + NewLineChar);
+                ipxeMenu.Append("login" + NewLineChar);
+                ipxeMenu.Append("params" + NewLineChar);
+                ipxeMenu.Append("param uname ${username:uristring}" + NewLineChar);
+                ipxeMenu.Append("param pwd ${password:uristring}" + NewLineChar);
+                ipxeMenu.Append("param kernel " + Kernel + "" + NewLineChar);
+                ipxeMenu.Append("param bootImage " + BootImage + "" + NewLineChar);
+                ipxeMenu.Append("param task " + "${task}" + "" + NewLineChar);
+                ipxeMenu.Append("echo Authenticating" + NewLineChar);
+                ipxeMenu.Append("chain --timeout 15000 " + Settings.WebPath + "IpxeLogin##params || goto Menu" +
+                                NewLineChar);
+            }
+            else
+            {
+                ipxeMenu.Append(":bootLocal" + NewLineChar);
+                ipxeMenu.Append("exit" + NewLineChar);
+                ipxeMenu.Append("" + NewLineChar);
+
+                ipxeMenu.Append(":console" + NewLineChar);
+                ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + Kernel + "&type=kernel" +
+                                " initrd=" + BootImage + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
+                                Settings.WebPath + " WDS_KEY=" + _wdsKey + " task=debug" + " consoleblank=0 " +
+                                _globalHostArgs + NewLineChar);
+                ipxeMenu.Append("imgfetch --name " + BootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
+                                BootImage + "&type=bootimage" + NewLineChar);
+                ipxeMenu.Append("boot" + NewLineChar);
+                ipxeMenu.Append("" + NewLineChar);
+
+                ipxeMenu.Append(":register" + NewLineChar);
+                ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + Kernel + "&type=kernel" +
+                                " initrd=" + BootImage + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
+                                Settings.WebPath + " WDS_KEY=" + _wdsKey + " task=register" + " consoleblank=0 " +
+                                _globalHostArgs + NewLineChar);
+                ipxeMenu.Append("imgfetch --name " + BootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
+                                BootImage + "&type=bootimage" + NewLineChar);
+                ipxeMenu.Append("boot" + NewLineChar);
+                ipxeMenu.Append("" + NewLineChar);
+
+                ipxeMenu.Append(":ond" + NewLineChar);
+                ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + Kernel + "&type=kernel" +
+                                " initrd=" + BootImage + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
+                                Settings.WebPath + " WDS_KEY=" + _wdsKey + " task=ond" + " consoleblank=0 " +
+                                _globalHostArgs + NewLineChar);
+                ipxeMenu.Append("imgfetch --name " + BootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
+                                BootImage + "&type=bootimage" + NewLineChar);
+                ipxeMenu.Append("boot" + NewLineChar);
+                ipxeMenu.Append("" + NewLineChar);
+
+                ipxeMenu.Append(":diag" + NewLineChar);
+                ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + Kernel + "&type=kernel" +
+                                " initrd=" + BootImage + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
+                                Settings.WebPath + " WDS_KEY=" + _wdsKey + " task=diag" + " consoleblank=0 " +
+                                _globalHostArgs + NewLineChar);
+                ipxeMenu.Append("imgfetch --name " + BootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
+                                BootImage + "&type=bootimage" + NewLineChar);
+                ipxeMenu.Append("boot" + NewLineChar);
+                ipxeMenu.Append("" + NewLineChar);
+
+
+            }
 
             string path;
             if (Type == "standard")
@@ -250,7 +302,7 @@ namespace BLL.Workflows
 
             sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
-                                " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath + " WDS_KEY=" +
+                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " WDS_KEY=" +
                                 _wdsKey +
                                 " task=debug consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
 
@@ -263,7 +315,7 @@ namespace BLL.Workflows
 
             sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
-                                " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath + " WDS_KEY=" +
+                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " WDS_KEY=" +
                                 _wdsKey +
                                 " task=register consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
 
@@ -276,7 +328,7 @@ namespace BLL.Workflows
 
             sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
-                                " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath + " WDS_KEY=" +
+                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " WDS_KEY=" +
                                 _wdsKey +
                                 " task=ond consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
 
@@ -289,7 +341,7 @@ namespace BLL.Workflows
 
             sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
-                                " root=/dev/ram0 rw ramdisk_size=127000 ip=dhcp " + " web=" + _webPath + " WDS_KEY=" +
+                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " WDS_KEY=" +
                                 _wdsKey +
                                 " task=diag consoleblank=0 " + _globalHostArgs + "" + NewLineChar);
 

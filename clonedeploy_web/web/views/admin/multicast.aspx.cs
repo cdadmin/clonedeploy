@@ -15,6 +15,7 @@ public partial class views_admin_multicast : Admin
         txtStartPort.Text = Settings.StartPort;
         txtEndPort.Text = Settings.EndPort;   
         txtRecClientArgs.Text = Settings.ClientReceiverArgs;
+        ddlDecompress.Text = Settings.MulticastDecompression;
       
         ViewState["startPort"] = txtStartPort.Text;
         ViewState["endPort"] = txtEndPort.Text;
@@ -26,10 +27,36 @@ public partial class views_admin_multicast : Admin
         {
             List<Setting> listSettings = new List<Setting>
             {
-                    new Setting {Name = "Sender Args", Value = txtSenderArgs.Text, Id = BLL.Setting.GetSetting("Sender Args").Id},                
-                    new Setting {Name = "Udpcast Start Port", Value = txtStartPort.Text, Id = BLL.Setting.GetSetting("Udpcast Start Port").Id},
-                    new Setting {Name = "Udpcast End Port", Value = txtEndPort.Text, Id = BLL.Setting.GetSetting("Udpcast End Port").Id},
-                    new Setting {Name = "Client Receiver Args", Value = txtRecClientArgs.Text, Id = BLL.Setting.GetSetting("Client Receiver Args").Id},   
+                new Setting
+                {
+                    Name = "Sender Args",
+                    Value = txtSenderArgs.Text,
+                    Id = BLL.Setting.GetSetting("Sender Args").Id
+                },
+                new Setting
+                {
+                    Name = "Udpcast Start Port",
+                    Value = txtStartPort.Text,
+                    Id = BLL.Setting.GetSetting("Udpcast Start Port").Id
+                },
+                new Setting
+                {
+                    Name = "Udpcast End Port",
+                    Value = txtEndPort.Text,
+                    Id = BLL.Setting.GetSetting("Udpcast End Port").Id
+                },
+                new Setting
+                {
+                    Name = "Client Receiver Args",
+                    Value = txtRecClientArgs.Text,
+                    Id = BLL.Setting.GetSetting("Client Receiver Args").Id
+                },
+                new Setting
+                {
+                    Name = "Multicast Decompression",
+                    Value = ddlDecompress.Text,
+                    Id = BLL.Setting.GetSetting("Multicast Decompression").Id
+                },
             };
 
             if (BLL.Setting.UpdateSetting(listSettings))
