@@ -216,39 +216,6 @@ namespace BLL
             throw new NotImplementedException();
         }
 
-        public static Models.ValidationResult StartUnicast(Models.Computer computer, string direction)
-        {
-            var result = new Models.ValidationResult {IsValid = false};
-            switch (new Unicast(computer,direction).Start())
-            {
-                case "active":
-                    result.Message = "";
-                    break;
-
-                case "computer_error":
-                    result.Message = "";
-                    break;
-                case "image_error":
-                    result.Message = "";
-                    break;
-                case "profile_error":
-                    result.Message = "";
-                    break;
-                case "database_error":
-                    result.Message = "";
-                    break;
-                case "pxe_error":
-                    result.Message = "";
-                    break;
-                case "arguments_error":
-                    result.Message = "";
-                    break;
-                case "true" :
-                    result.IsValid = true;
-                    result.Message = "Successfully Started Task For " + computer.Name;
-                    break;
-            }
-            return result;
-        }
+       
     }
 }

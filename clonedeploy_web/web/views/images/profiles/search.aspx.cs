@@ -68,7 +68,7 @@ public partial class views_images_profiles_search : Images
             {
                 var dataKey = gvProfiles.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
-                lblClient.Text = BLL.ImageSchema.MinimumClientSizeForGridView(Convert.ToInt32(dataKey.Value), 1);
+                lblClient.Text = BLL.ImageSchema.MinimumClientSizeForGridView(Convert.ToInt32(dataKey.Value), 0);
             }
         }
 
@@ -117,7 +117,7 @@ public partial class views_images_profiles_search : Images
 
         foreach (GridViewRow hdrow in gvHDs.Rows)
         {
-            var selectedHd = (hdrow.RowIndex + 1);
+            var selectedHd = (hdrow.RowIndex);
             var lblClient = hdrow.FindControl("lblHDSizeClient") as Label;
             if (lblClient != null)
             {

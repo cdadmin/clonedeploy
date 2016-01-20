@@ -88,8 +88,7 @@ namespace views.tasks
 
                 if (BLL.Image.Check_Checksum(image))
                 {
-                    BLL.Computer.StartUnicast(host,direction);
-                   
+                    EndUserMessage = new BLL.Workflows.Unicast(host,direction).Start();               
                 }
                 else
                 {
@@ -102,7 +101,7 @@ namespace views.tasks
             }
             else
             {
-                BLL.Computer.StartUnicast(host, direction);
+                EndUserMessage = new BLL.Workflows.Unicast(host,direction).Start();
             }
             Session.Remove("hostID");
             Session.Remove("direction");

@@ -13,13 +13,7 @@ namespace BLL.ClientPartitioning
         public string NewHdSize { get; set; }
         public string TaskType { get; set; }
         public int profileId { get; set; }
-        public ClientPartitionScript()
-        {
-            //
-            // TODO: Add constructor logic here
-            //
-        }
-
+       
         public string GeneratePartitionScript()
         {
             var imageProfile = BLL.ImageProfile.ReadProfile(profileId);

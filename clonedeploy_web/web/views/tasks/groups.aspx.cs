@@ -32,7 +32,7 @@ namespace views.tasks
                     var count = 0;
                     foreach (var host in BLL.Group.GetGroupMembers(group.Id, ""))
                     {
-                        BLL.Computer.StartUnicast(host, "push");
+                        new BLL.Workflows.Unicast(host, "push").Start();
                         count++;
                     }
                     EndUserMessage = "Started " + count + " Tasks";

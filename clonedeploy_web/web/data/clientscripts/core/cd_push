@@ -188,11 +188,11 @@ function download_image()
     if [ "$decompress_multicast_on_client" = "true"]; then
 	    log "cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
       cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
-	else
+	else #dcompress on server
       log "cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
       cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
     fi
-  else
+  else #unicast
     log "cd_reporter $computer_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
     cd_reporter $computer_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
   fi
@@ -309,7 +309,9 @@ function create_partition_layout()
   if [ "$(parse_json "$hd_schema" .IsValid)" = "true" ] || [ "$force_dynamic_partitions" = "true" ] || [ "$partition_method" = "script" ] || [ "$partition_method" = "layout" ]; then
     log " ** Creating Partition Table On $hard_drive ** " "display"
     $curlAuth --data "imageProfileId=$profile_id&hdToGet=$image_hd_to_use&newHDSize=$drive_size_bytes&clientHD=$hard_drive&taskType=deploy" "${web}GetPartLayout" $curlEnd | dos2unix > /tmp/newPartLayout
-	
+	if [ "$(cat /tmp/newPartLayout)" = "failed" ]; then
+	  error "Could Not Dynamically Create Partition Layout"
+	fi
 		
     layout_failed_counter=0
     if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then

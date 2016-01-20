@@ -38,8 +38,7 @@ namespace BLL
             {
                 var setting = uow.SettingRepository.GetFirstOrDefault(s => s.Name == settingName);
                 //Handle replacement of [server-ip] placeholder as well as ip addresses on different ports
-                if (setting.Name != "Web Path" && setting.Name != "Nfs Upload Path" && setting.Name != "Nfs Deploy Path" &&
-                    setting.Name != "SMB Path") return setting;
+                if (setting.Name != "Web Path") return setting;
                 if (setting.Value.Contains("[server-ip]"))
                 {
                     setting.Value = setting.Value.Replace("[server-ip]", GetSetting("Server IP").Value);

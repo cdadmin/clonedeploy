@@ -131,8 +131,7 @@ namespace BLL
 
                 foreach (var host in GetGroupMembers(group.Id, ""))
                 {
-                    BLL.Computer.StartUnicast(host,"push");
-               
+                    new BLL.Workflows.Unicast(host, "push").Start();
                     count++;
                 }
                 //Message.Text = "Started " + count + " Tasks";
