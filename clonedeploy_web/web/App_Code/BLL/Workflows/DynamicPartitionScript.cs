@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using Models.ClientPartition;
+using BLL.DynamicClientPartition;
 
-namespace BLL.ClientPartitioning
+namespace BLL.Workflows
 {
     public class ClientPartitionScript
     {
@@ -20,7 +19,7 @@ namespace BLL.ClientPartitioning
             ImageSchema = new ClientPartitionHelper(imageProfile).GetImageSchema();
             string partitionScript = null;
           
-            var clientSchema = new BLL.ClientPartitioning.ClientPartition(HdNumberToGet,NewHdSize,imageProfile).GenerateClientSchema();
+            var clientSchema = new ClientPartition(HdNumberToGet,NewHdSize,imageProfile).GenerateClientSchema();
             if (clientSchema == null) return "failed";
             
            

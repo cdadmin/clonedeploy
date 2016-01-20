@@ -200,10 +200,16 @@ function download_image()
   rm /tmp/clone.progress
   cat /var/log/partclone.log >> $CLIENT_LOG
   else # ImageType = File
-    if [ "$(parse_json "$current_object" .FileSystem)" = "ntfs" ]; then
-	  mkfs.ntfs -f $destination
-	  cd_reporter $computer_id wim & wimapply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination 2>> $CLIENT_LOG | tee /tmp/wim.progress
+    export WIMLIB_IMAGEX_USE_UTF8=1
+    log " ** Creating $(parse_json "$current_object" .FileSystem) Filesystem On $destination ** "
+    if [ "$(parse_json "$current_object" .FileSystem)" = "ntfs" ] || [ "$(parse_json "$current_object" .FileSystem)" = "xfs" ]; then  
+	  log "mkfs.$(parse_json "$current_object" .FileSystem) -f $destination"
+	  mkfs.$(parse_json "$current_object" .FileSystem) -f $destination &>> $CLIENT_LOG
+	else #ext filesystems
+	   log "mkfs.$(parse_json "$current_object" .FileSystem) -F $destination"
+	  mkfs.$(parse_json "$current_object" .FileSystem) -F $destination &>> $CLIENT_LOG
 	fi
+	  cd_reporter $computer_id wim & wimapply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination 2>> $CLIENT_LOG | tee /tmp/wim.progress
   fi 
 }
 

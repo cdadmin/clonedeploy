@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Windows.Forms;
-using BLL.ClientPartitioning;
+using BLL.DynamicClientPartition;
 using DAL;
 using Global;
 using Helpers;

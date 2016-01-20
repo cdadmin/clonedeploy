@@ -7,7 +7,7 @@ using System.Web;
 using System.Web.Script.Services;
 using System.Web.Services;
 using BLL;
-using BLL.ClientPartitioning;
+using BLL.Workflows;
 using Helpers;
 using Newtonsoft.Json;
 using Security;

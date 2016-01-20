@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Web;
-using BLL.ClientPartitioning;
+using BLL.DynamicClientPartition;
 using Helpers;
 
 namespace BLL.Workflows

@@ -4,7 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
-using BLL.ClientPartitioning;
+using BLL.DynamicClientPartition;
 using Helpers;
 using Models.ImageSchema;
 using Newtonsoft.Json;
@@ -15,7 +15,7 @@ namespace BLL
 
     public class ImageSchema
     {
-        private readonly Models.ImageSchema.GridView.Schema _imageSchema;
+        private readonly Models.ImageSchema.GridView.ImageSchemaGridView _imageSchema;
 
         public ImageSchema(Models.ImageProfile imageProfile, string schemaType, Models.Image image = null)
         {
@@ -60,7 +60,7 @@ namespace BLL
 
             if (!string.IsNullOrEmpty(schema))
             {
-                _imageSchema = JsonConvert.DeserializeObject<Models.ImageSchema.GridView.Schema>(schema);
+                _imageSchema = JsonConvert.DeserializeObject<Models.ImageSchema.GridView.ImageSchemaGridView>(schema);
             }
         }
 
@@ -188,7 +188,7 @@ namespace BLL
             }
         }
 
-        public Models.ImageSchema.GridView.Schema GetImageSchema()
+        public Models.ImageSchema.GridView.ImageSchemaGridView GetImageSchema()
         {
             return _imageSchema;
         }

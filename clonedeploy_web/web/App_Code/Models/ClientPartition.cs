@@ -1,4 +1,4 @@
-﻿namespace Models.ClientPartition
+﻿namespace Models
 {
     public class ClientPartition
     {

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Helpers;
-using Models.ClientPartition;
+using Models;
 using Newtonsoft.Json;
 
-namespace BLL.ClientPartitioning
+namespace BLL.DynamicClientPartition
 {
     public class CustomComparer : IComparer<long>
     {
@@ -23,8 +22,8 @@ namespace BLL.ClientPartitioning
             _hdToGet = hdToGet;
             _newHdSize = Convert.ToInt64(newHdSize);
             _imageProfile = imageProfile;
-            PrimaryAndExtendedPartitions = new List<Models.ClientPartition.ClientPartition>();
-            LogicalPartitions = new List<Models.ClientPartition.ClientPartition>();
+            PrimaryAndExtendedPartitions = new List<Models.ClientPartition>();
+            LogicalPartitions = new List<Models.ClientPartition>();
             LogicalVolumes = new List<ClientLogicalVolume>();
             VolumeGroupHelpers = new List<ClientVolumeGroupHelper>();
             _imageSchema = new ClientPartitionHelper(_imageProfile).GetImageSchema();
@@ -36,18 +35,18 @@ namespace BLL.ClientPartitioning
 
         private readonly int _hdToGet;
         private readonly Models.ImageProfile _imageProfile;
-        private long _newHdSize;
+        private readonly long _newHdSize;
 
         private int LbsByte { get; set; }    
         private long NewHdBlk { get; set; }
        
 
         public int FirstPartitionStartSector { get; set; }
-        public List<Models.ClientPartition.ClientPartition> PrimaryAndExtendedPartitions { get; set; }
-        public List<Models.ClientPartition.ClientPartition> LogicalPartitions { get; set; }
-        public List<ClientVolumeGroupHelper> VolumeGroupHelpers { get; set; }
-        public List<Models.ClientPartition.ClientLogicalVolume> LogicalVolumes { get; set; }
-        public ExtendedPartitionHelper ExtendedPartitionHelper { get; set; }
+        public List<Models.ClientPartition> PrimaryAndExtendedPartitions { get; set; }
+        public List<Models.ClientPartition> LogicalPartitions { get; set; }
+        public List<Models.ClientVolumeGroupHelper> VolumeGroupHelpers { get; set; }
+        public List<Models.ClientLogicalVolume> LogicalVolumes { get; set; }
+        public Models.ExtendedPartitionHelper ExtendedPartitionHelper { get; set; }
         public string DebugStatus { get; set; }
         /// <summary>
         ///     Generates the partitioning layout used for the client when restoring an image.
@@ -135,7 +134,7 @@ namespace BLL.ClientPartitioning
                     if (schemaPartition.Type.ToLower() == "logical")
                         continue;
 
-                    var clientPartition = new Models.ClientPartition.ClientPartition
+                    var clientPartition = new Models.ClientPartition
                     {
                         IsBoot = BootPart == schemaPartition.Number,
                         Number = schemaPartition.Number,
@@ -304,7 +303,7 @@ namespace BLL.ClientPartitioning
                     if (part.Type.ToLower() != "logical")
                         continue;
 
-                    var clientPartition = new Models.ClientPartition.ClientPartition
+                    var clientPartition = new Models.ClientPartition
                     {
                         IsBoot = BootPart == part.Number,
                         Number = part.Number,

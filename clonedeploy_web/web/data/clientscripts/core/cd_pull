@@ -30,11 +30,7 @@ MOUNT
   if [ -f "/mnt/ntfs/Boot/BCD" ]; then
     log " ** Saving Original BCD ** "
     reged -x /mnt/ntfs/Boot/BCD . Objects /tmp/regbcd >>/dev/null
-    cat /tmp/regbcd >> $CLIENT_LOG         
-    cp /mnt/ntfs/Boot/BCD $image_path/BCD
-    cp /mnt/ntfs/bootmgr $image_path/bootmgr
-	echo $image_path
-	sleep 30
+    cat /tmp/regbcd >> $CLIENT_LOG
   fi
   log " ...... Complete"
     
@@ -391,7 +387,7 @@ function create_image_schema()
             if [ "$filesystem_type" = "ntfs" ]; then
               ntfsfix -b -d "$logical_volume_device" &>/dev/null
               ntfs-3g -o force,rw,remove_hiberfile "$logical_volume_device" /mnt/ntfs 2> /dev/null
-              umount /mnt/ntfs
+              umount /mnt/ntfs &> /dev/null
               partclone_type="ntfs"
           
             elif [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ]; then
@@ -614,7 +610,7 @@ function upload_image()
 	  log " ...... cd_reporter $computer_id & wimcapture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
 	  eval "cd_reporter $computer_id wim & wimcapture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
 	  rm /tmp/wim.progress
-	  umount /mnt/wimsource
+	  umount /mnt/wimsource &> /dev/null
     else
 	  touch /tmp/clone.progress
 	  log " ...... cd_reporter $computer_id partclone & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension"    

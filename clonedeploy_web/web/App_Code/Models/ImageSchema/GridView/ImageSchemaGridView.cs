@@ -2,7 +2,7 @@
 
 namespace Models.ImageSchema.GridView
 {
-    public class Schema
+    public class ImageSchemaGridView
     {
         public HardDrive[] HardDrives { get; set; }
     }
