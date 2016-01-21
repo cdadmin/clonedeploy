@@ -98,7 +98,7 @@
             <asp:BoundField DataField="Name" HeaderText="Name" ItemStyle-CssClass="width_100"></asp:BoundField>
             <asp:TemplateField ItemStyle-CssClass="width_50" HeaderText="Destination">
                 <ItemTemplate>
-                    <asp:TextBox ID="txtDestination" runat="server" Text='<%# Bind("Active") %>'/>
+                    <asp:TextBox ID="txtDestination" runat="server" Text='<%# Bind("Destination") %>'/>
                 </ItemTemplate>
             </asp:TemplateField>
             <asp:BoundField DataField="Size" HeaderText="Size (Reported / Usable)" ItemStyle-CssClass="width_200"></asp:BoundField>

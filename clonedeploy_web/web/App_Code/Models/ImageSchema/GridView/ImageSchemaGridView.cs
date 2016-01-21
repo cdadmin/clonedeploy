@@ -17,6 +17,7 @@ namespace Models.ImageSchema.GridView
         public string Pbs { get; set; }
         public string Size { get; set; }
         public string Table { get; set; }
+        public string Destination { get; set; }
         public Partition[] Partitions { get; set; }
     }
 

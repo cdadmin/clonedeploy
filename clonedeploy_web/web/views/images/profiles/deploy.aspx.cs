@@ -258,8 +258,11 @@ public partial class views_images_profiles_deploy : Images
             if(box != null)
             schema.HardDrives[rowCounter].Active = box.Checked;
 
-            var gvParts = (GridView)row.FindControl("gvParts");
+            var txtDestination = row.FindControl("txtDestination") as TextBox;
+            if(txtDestination != null)
+                schema.HardDrives[rowCounter].Destination = txtDestination.Text;
 
+            var gvParts = (GridView)row.FindControl("gvParts");
             var partCounter = 0;
             foreach (GridViewRow partRow in gvParts.Rows)
             {

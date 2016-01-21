@@ -17,6 +17,7 @@ namespace Models.ImageSchema
         public short Pbs { get; set; }
         public long Size { get; set; }
         public string Table { get; set; }
+        public string Destination { get; set; }
         public Partition[] Partitions { get; set; }
     }
 

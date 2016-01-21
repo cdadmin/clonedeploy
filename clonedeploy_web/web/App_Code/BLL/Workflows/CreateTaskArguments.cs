@@ -41,9 +41,9 @@ namespace BLL.Workflows
             }
         }
 
-        private void SetCustomSchema(string taskType)
+        private void SetCustomSchemaUpload()
         {
-            var customSchema = new BLL.ImageSchema(_imageProfile, taskType).GetImageSchema();
+            var customSchema = new BLL.ImageSchema(_imageProfile, "upload").GetImageSchema();
             var customHardDrives = new StringBuilder();
             customHardDrives.Append("custom_hard_drives=\"");
             var customPartitions = new StringBuilder();
@@ -59,9 +59,9 @@ namespace BLL.Workflows
                 customHardDrives.Append(hd.Name + " ");
                 foreach (var partition in hd.Partitions.Where(x => x.Active))
                 {
-                    customPartitions.Append(hd.Name + partition.Number + " ");
+                    customPartitions.Append(hd.Name + partition.Prefix + partition.Number + " ");
                     if (partition.ForceFixedSize)
-                        customFixedPartitions.Append(hd.Name + partition.Number + " ");
+                        customFixedPartitions.Append(hd.Name + partition.Prefix + partition.Number + " ");
 
                     if (partition.VolumeGroup.LogicalVolumes != null)
                     {
@@ -87,6 +87,19 @@ namespace BLL.Workflows
             AppendString(customFixedPartitions.ToString());
             AppendString(customLogicalVolumes.ToString());
             AppendString(customFixedLogicalVolumes.ToString());
+        }
+
+        private void SetCustomSchemaDeploy()
+        {
+            var customSchema = new BLL.ImageSchema(_imageProfile, "deploy").GetImageSchema();
+            var customHardDrives = new StringBuilder();
+            customHardDrives.Append("custom_hard_drives=\"");
+                    
+            foreach (var hd in customSchema.HardDrives.Where(x => x.Active && !string.IsNullOrEmpty(x.Destination)))          
+                customHardDrives.Append(hd.Name + " ");
+                         
+            customHardDrives.Append("\"");
+            AppendString(customHardDrives.ToString());
         }
 
         private void AppendString(string value)
@@ -116,17 +129,13 @@ namespace BLL.Workflows
             foreach (var fileFolder in ImageProfileFileFolder.SearchImageProfileFileFolders(_imageProfile.Id))
                 filesFolders += fileFolder.Id + " ";
 
-            //Support For on demand 
+            //On demand computer may be null if not registered
             if (_computer != null)
             {
                 AppendString("computer_name=" + _computer.Name);
                 AppendString("computer_id=" + _computer.Id);
-                AppendString("dp_id=" + Computer.GetDistributionPoint(_computer).Id);
             }
-            else
-            {
-                AppendString("dp_id=" + DistributionPoint.GetPrimaryDistributionPoint().Id);
-            }
+
             AppendString("image_name=" + _imageProfile.Image.Name);
             AppendString("profile_id=" + _imageProfile.Id);       
             AppendString("server_ip=" + Settings.ServerIp);
@@ -134,8 +143,8 @@ namespace BLL.Workflows
             AppendString("pre_scripts=" + preScripts);
             AppendString("post_scripts=" + postScripts);
             AppendString("file_copy=" + filesFolders);
-            AppendString("syprep_tags=" + sysprepTags);
-            AppendString("image_type=" + _imageProfile.Image.Type);
+            AppendString("sysprep_tags=" + sysprepTags);
+            
             if (Convert.ToBoolean(_imageProfile.SkipCore))
                 AppendString("skip_core_download=true");
             if (Convert.ToBoolean(_imageProfile.SkipClock))
@@ -144,7 +153,10 @@ namespace BLL.Workflows
 
             if (_direction == "pull")
             {
-
+                //Upload currently only support going to the primary distribution point
+                AppendString("dp_id=" + DistributionPoint.GetPrimaryDistributionPoint().Id);
+                
+                AppendString("image_type=" + _imageProfile.Image.Type);
                 if (Convert.ToBoolean(_imageProfile.RemoveGPT)) AppendString("remove_gpt_structures=true");
                 if (Convert.ToBoolean(_imageProfile.SkipShrinkVolumes)) AppendString("skip_shrink_volumes=true");
                 if (Convert.ToBoolean(_imageProfile.SkipShrinkLvm)) AppendString("skip_shrink_lvm=true");
@@ -154,11 +166,17 @@ namespace BLL.Workflows
                 if (!string.IsNullOrEmpty(_imageProfile.CustomUploadSchema))
                 {
                     AppendString("custom_upload_schema=true");
-                    SetCustomSchema("upload");
+                    SetCustomSchemaUpload();
                 }
             }
             else // push or multicast
             {
+                //Support For on demand 
+                if (_computer != null)
+                    AppendString("dp_id=" + Computer.GetDistributionPoint(_computer).Id);              
+                else           
+                    AppendString("dp_id=" + DistributionPoint.GetPrimaryDistributionPoint().Id);
+                
                 if (Convert.ToBoolean(_imageProfile.SkipExpandVolumes)) AppendString("skip_expand_volumes=true");
                 if (Convert.ToBoolean(_imageProfile.FixBcd)) AppendString("fix_bcd=true");
                 if (Convert.ToBoolean(_imageProfile.FixBootloader)) AppendString("fix_bootloader=true");
@@ -166,7 +184,7 @@ namespace BLL.Workflows
                 if (Convert.ToBoolean(_imageProfile.ForceDynamicPartitions))
                     AppendString("force_dynamic_partitions=true");
                 AppendString(SetPartitionMethod());
-                if (!string.IsNullOrEmpty(_imageProfile.CustomSchema)) SetCustomSchema("deploy");
+                if (!string.IsNullOrEmpty(_imageProfile.CustomSchema)) SetCustomSchemaDeploy();
             }
 
             return _activeTaskArguments.ToString();

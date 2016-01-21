@@ -15,6 +15,10 @@ function process_hard_drives()
   for hard_drive in $hard_drives; do
     current_hd_number=$(( $current_hd_number + 1 ))
 	
+	if [ -n "$pre_scripts" ]; then
+	  process_scripts
+	fi
+	
     drive_name=$(echo $hard_drive | cut -d "/" -f 3)
     lbs=$(cat /sys/block/$drive_name/queue/logical_block_size)
     drive_size_block=$(cat /sys/block/$drive_name/size)
@@ -48,6 +52,14 @@ function process_hard_drives()
 	fi
 	
     imaged_schema_drives="$imaged_schema_drives $(parse_json "$hd_schema" .SchemaHdNumber) "
+	
+	if [ -n "$file_copy" ]; then
+	  process_file_copy
+	fi
+	
+	if [ -n "$post_scripts" ]; then
+	  process_scripts
+	fi
 done
 }
 
@@ -122,10 +134,9 @@ function process_partitions()
 			
     download_image "$current_partition" part
 		
-    
 	partition_size_bytes=$(parted -s $hard_drive unit b print all | grep " $(parse_json "$current_partition" .Number) " -m 1 | awk -F' ' '{print $4}' | sed 's/B//g')
     if [ "$skip_expand_volumes" != "true" ]; then 
-      if [ "$image_type" = "Block" ] && [ "$partition_size_bytes" -gt "5368709120" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
+      if [ "$(parse_json "$current_object" .ImageType)" = "Block" ] && [ "$partition_size_bytes" -gt "5368709120" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
         expand_volume ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number) $(parse_json "$current_partition" .FileSystem)  
       fi
     fi
@@ -143,6 +154,10 @@ function process_partitions()
 	#Todo: Add support for linux change name
 	if [ "$(parse_json "$current_partition" .FileSystem)" = "ntfs" ] && [ -n "$computer_name" ]; then
       change_computer_name ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)
+	fi
+	
+	if [ "$(parse_json "$current_partition" .FileSystem)" = "ntfs" ] && [ -n "$sysprep_tags" ]; then
+      process_sysprep_tags
 	fi
   done
 }
@@ -457,18 +472,7 @@ function process_scripts()
 function get_partitions_according_to_mbr_gpt()
 {
   mbr_gpt_partitions=""
-  if [ -n "$custom_partitions" ]; then
-    for partition in $custom_partitions; do
-      echo "$partition" | grep $hard_drive
-      if [ "$?" = "0" ]; then
-        mbr_gpt_partitions="$mbr_gpt_partitions $partition"
-      fi
-    done
-	  log " ...... Partitions Set By Image Profile: $mbr_gpt_partitions" "display"
-    
-  else
-    mbr_gpt_partitions=$(lsblk -ipno KNAME | grep "$hard_drive" | grep -vw "$hard_drive" 2>> $CLIENT_LOG)  
-  fi
+  mbr_gpt_partitions=$(lsblk -ipno KNAME | grep "$hard_drive" | grep -vw "$hard_drive" 2>> $CLIENT_LOG)  
 }
 
 function update_efi_nvram()
@@ -745,10 +749,6 @@ function main()
   mount_smb
 
   process_hard_drives
-
-  if [ -n "$hostScripts" ]; then
-		process_scripts
-  fi
 	
   checkout
 }

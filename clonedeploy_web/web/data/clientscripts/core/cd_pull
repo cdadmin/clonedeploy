@@ -599,8 +599,7 @@ function upload_image()
     if [ "$image_type" = "File" ] && [ -n "$wim_arguments" ]; then
 	  
 	  if [ "$filesystem_type" = "ntfs" ]; then
-	    wimsource="$partition"
-	    ntfs-3g -o force,rw $partition /mnt/wimsource 2> /dev/null        
+	    wimsource="$partition"   
 	  else
 	    mkdir -p /mnt/wimsource 2>> $CLIENT_LOG
 	    mount $partition /mnt/wimsource 2> /dev/null
@@ -623,42 +622,8 @@ function upload_image()
   done
 }
 
-function main()
+function process_hard_drives()
 {
-  log_boot_args
-  
-  if [ "$is_ondemand" = "true" ]; then
-    log " ** On Demand Enabled ** "
-    for arg in "$ondemand_arguments"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
-  else
-    checkin
-  fi
-
-  if [ "$imageProtected" = "1" ]; then
-    error "This Image Is Protected And Cannot Be Overwritten"
-  fi
-
-  mount_smb
-
-  get_hard_drives
-
-  if [ "$is_ondemand" != "true" ]; then
-    log " ** Updating Client Status To In-Progress ** "
-    $curlAuth --data "computerId=$computer_id" "${web}UpdateStatusInProgress" $curlEnd
-  fi
-
-  log " ** Removing All Files For Existing Image: $image_name ** "
-    $curlAuth --data "profileId=$profile_id" "${web}DeleteImage" $curlEnd
-
-  create_image_schema
-  if [ "$upload_schema_only" = "true" ]; then
-    checkout
-  fi
-
-  if [ "$image_type" = "File" ]; then
-    export WIMLIB_IMAGEX_USE_UTF8=1
-  fi
-  
   current_hd_number=-1
   for hard_drive in $hard_drives; do
     current_hd_number=$(( $current_hd_number + 1 ))
@@ -700,8 +665,45 @@ function main()
     filesystem_type=`blkid -po udev $shrunk_volume | grep FS_TYPE | awk -F'=' '{print $2}'`
     expand_volume $shrunk_volume $filesystem_type
   done
+}
 
-  #TODO: Run custom scripts
+function main()
+{
+  log_boot_args
+  
+  if [ "$is_ondemand" = "true" ]; then
+    log " ** On Demand Enabled ** "
+    for arg in "$ondemand_arguments"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
+  else
+    checkin
+  fi
+
+  if [ "$imageProtected" = "1" ]; then
+    error "This Image Is Protected And Cannot Be Overwritten"
+  fi
+
+  mount_smb
+
+  get_hard_drives
+
+  if [ "$is_ondemand" != "true" ]; then
+    log " ** Updating Client Status To In-Progress ** "
+    $curlAuth --data "computerId=$computer_id" "${web}UpdateStatusInProgress" $curlEnd
+  fi
+
+  log " ** Removing All Files For Existing Image: $image_name ** "
+    $curlAuth --data "profileId=$profile_id" "${web}DeleteImage" $curlEnd
+
+  create_image_schema
+  if [ "$upload_schema_only" = "true" ]; then
+    checkout
+  fi
+
+  if [ "$image_type" = "File" ]; then
+    export WIMLIB_IMAGEX_USE_UTF8=1
+  fi
+  
+  process_hard_drives
   
 checkout
 }
