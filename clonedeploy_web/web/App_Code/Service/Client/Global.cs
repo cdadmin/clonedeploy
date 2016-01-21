@@ -13,6 +13,7 @@ using Helpers;
 using Models;
 using Newtonsoft.Json;
 using Services.Client;
+using ImageProfileFileFolder = BLL.ImageProfileFileFolder;
 
 namespace Service.Client
 {
@@ -192,35 +193,6 @@ namespace Service.Client
             
         }
 
-        public string UploadFile(string fileName, string imagePath, string fileType, HttpFileCollection files)
-        {
-
-            try
-            {
-                string fullPath;
-
-               
-            
-
-                if (files.Count == 1 && files[0].ContentLength > 0 && !string.IsNullOrEmpty(fileName))
-                {
-                    var binaryWriteArray = new
-                        byte[files[0].InputStream.Length];
-                    files[0].InputStream.Read(binaryWriteArray, 0, (int)files[0].InputStream.Length);
-
-                    var str = System.Text.Encoding.Default.GetString(binaryWriteArray);
-
-                 
-                }
-                return "File Was Not Posted Successfully";
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ex.Message);
-                return "Check The Exception Log For More Info";
-            }
-        }
-
         public string CheckQueue(int computerId)
         {
             var queueStatus = new Services.Client.QueueStatus();
@@ -398,6 +370,41 @@ namespace Service.Client
         public string CheckForCancelledTask(int computerId)
         {
             return BLL.ActiveImagingTask.IsComputerActive(computerId) ? "false" : "true";
+        }
+
+        public string GetCustomScript(int scriptId)
+        {
+            var script = BLL.Script.GetScript(scriptId);
+            return script.Contents;
+        }
+
+        public string GetSysprepTag(int tagId)
+        {
+            var tag = BLL.SysprepTag.GetSysprepTag(tagId);
+            tag.OpeningTag = Utility.EscapeCharacter(tag.OpeningTag, new[] {">", "<"});
+            tag.ClosingTag = Utility.EscapeCharacter(tag.ClosingTag, new[] {">", "<", "/"});
+            return JsonConvert.SerializeObject(tag);
+        }
+
+        public string GetFileCopySchema(int profileId)
+        {
+            var fileFolderSchema = new Services.Client.FileFolderCopySchema() {FilesAndFolders = new List<FileFolderCopy>()};
+            var counter = 0;
+            foreach (var profileFileFolder in ImageProfileFileFolder.SearchImageProfileFileFolders(profileId))
+            {
+                counter++;
+                var fileFolder = BLL.FileFolder.GetFileFolder(profileFileFolder.FileFolderId);
+
+                var clientFileFolder = new Services.Client.FileFolderCopy();
+                clientFileFolder.SourcePath = fileFolder.Path;
+                clientFileFolder.DestinationFolder = profileFileFolder.DestinationFolder;
+                clientFileFolder.DestinationPartition = profileFileFolder.DestinationPartition;
+                clientFileFolder.FolderCopyType = profileFileFolder.FolderCopyType;
+
+                fileFolderSchema.FilesAndFolders.Add(clientFileFolder);
+            }
+            fileFolderSchema.Count = counter.ToString();
+            return JsonConvert.SerializeObject(fileFolderSchema);
         }
 
        

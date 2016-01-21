@@ -115,19 +115,22 @@ namespace BLL.Workflows
             foreach (var script in ImageProfileScript.SearchImageProfileScripts(_imageProfile.Id))
             {
                 if (Convert.ToBoolean(script.RunPre))
-                    preScripts += script.Id + " ";
+                    preScripts += script.ScriptId + " ";
 
                 if (Convert.ToBoolean(script.RunPost))
-                    postScripts += script.Id + " ";
+                    postScripts += script.ScriptId + " ";
             }
 
             string sysprepTags = null;
             foreach (var sysprepTag in ImageProfileSysprepTag.SearchImageProfileSysprepTags(_imageProfile.Id))
-                sysprepTags += sysprepTag.Id + " ";
+                sysprepTags += sysprepTag.SysprepId + " ";
 
-            string filesFolders = null;
+            var areFilesToCopy = false;
             foreach (var fileFolder in ImageProfileFileFolder.SearchImageProfileFileFolders(_imageProfile.Id))
-                filesFolders += fileFolder.Id + " ";
+            {
+                areFilesToCopy = true;
+                break;
+            }
 
             //On demand computer may be null if not registered
             if (_computer != null)
@@ -142,7 +145,7 @@ namespace BLL.Workflows
             AppendString(_direction == "multicast" ? "multicast=true" : "multicast=false");
             AppendString("pre_scripts=" + preScripts);
             AppendString("post_scripts=" + postScripts);
-            AppendString("file_copy=" + filesFolders);
+            AppendString("file_copy=" + areFilesToCopy);
             AppendString("sysprep_tags=" + sysprepTags);
             
             if (Convert.ToBoolean(_imageProfile.SkipCore))

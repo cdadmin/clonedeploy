@@ -84,4 +84,18 @@ namespace Services.Client
         public string Uuid { get; set; }
         public string ImageType { get; set; }
     }
+
+    public class FileFolderCopySchema
+    {
+        public string Count { get; set; }
+        public List<FileFolderCopy> FilesAndFolders { get; set; } 
+    }
+
+    public class FileFolderCopy
+    {
+        public string SourcePath { get; set; }
+        public string DestinationFolder { get; set; }
+        public string DestinationPartition { get; set; }
+        public string FolderCopyType { get; set; }
+    }
 }

@@ -310,7 +310,7 @@ namespace BLL.DynamicClientPartition
                 volumeGroupHelper.HasLv = true;
                 volumeGroupHelper.Pv = _imageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup.PhysicalVolume;
 
-                var logicalVolumeHelper = LogicalVolume(logicalVolume, lbsByte, newHdSize);
+                var logicalVolumeHelper = LogicalVolume(logicalVolume, lbsByte, newHdSize,hdNumberToGet);
                 volumeGroupHelper.MinSizeBlk += logicalVolumeHelper.MinSizeBlk;
 
 
@@ -329,7 +329,7 @@ namespace BLL.DynamicClientPartition
         ///     Calculates the minimum block size required for a single logical volume, assuming the logical volume cannot have any
         ///     children.
         /// </summary>
-        public PartitionHelper LogicalVolume(Models.ImageSchema.LogicalVolume lv, int lbsByte, long newHdSize)
+        public PartitionHelper LogicalVolume(Models.ImageSchema.LogicalVolume lv, int lbsByte, long newHdSize, int hdNumberToGet)
         {
             var logicalVolumeHelper = new PartitionHelper {MinSizeBlk = 0};
             if (lv.ForceFixedSize)
@@ -358,7 +358,22 @@ namespace BLL.DynamicClientPartition
             }
             else
             {
+                var imagePath = Settings.PrimaryStoragePath + Path.DirectorySeparatorChar + "images" + Path.DirectorySeparatorChar + _imageProfile.Image.Name + Path.DirectorySeparatorChar + "hd" +
+                          hdNumberToGet;
                 logicalVolumeHelper.IsDynamicSize = true;
+                string imageFile = null;
+                foreach (var ext in new[] { "ntfs", "fat", "extfs", "hfsp", "imager", "xfs" })
+                {
+                    imageFile =
+                               Directory.GetFiles(
+                                   imagePath + Path.DirectorySeparatorChar,
+                                   lv.VolumeGroup + "-" + lv.Name + "." + ext + ".*")
+                                   .FirstOrDefault();
+
+                    if (imageFile != null) break;
+                }
+                if (Path.GetExtension(imageFile) == ".wim")
+                    logicalVolumeHelper.MinSizeBlk = (lv.UsedMb * 1024 * 1024) / lbsByte;
                 if (lv.VolumeSize > lv.UsedMb)
                     logicalVolumeHelper.MinSizeBlk = lv.VolumeSize*1024*1024/lbsByte;
                 else

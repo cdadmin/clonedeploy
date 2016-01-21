@@ -253,6 +253,27 @@ namespace Service.Client
 
             HttpContext.Current.Response.Write(new Authenticate().IpxeLogin(username, password, kernel, bootImage, task));
         }
+
+        [WebMethod]
+        public void GetCustomScript(int scriptId)
+        {
+            HttpContext.Current.Response.Write(new Global().GetCustomScript(scriptId));
+
+        }
+
+        [WebMethod]
+        public void GetSysprepTag(int tagId)
+        {
+            HttpContext.Current.Response.Write(new Global().GetSysprepTag(tagId));
+
+        }
+
+        [WebMethod]
+        public void GetFileCopySchema(int profileId)
+        {
+            HttpContext.Current.Response.Write(new Global().GetFileCopySchema(profileId));
+
+        }
         /*
       
 

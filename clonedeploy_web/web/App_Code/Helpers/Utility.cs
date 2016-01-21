@@ -12,8 +12,17 @@ namespace Helpers
 {
     public class Utility
     {
-        
 
+        public static string EscapeCharacter(string str, string[] charArray)
+        {
+            string escapedString = null;
+            foreach (var c in charArray)
+            {
+                escapedString = str.Replace(c, "\\" + c);
+                str = escapedString;
+            }
+            return escapedString;
+        }
 
         public static string EscapeFilePaths(string path)
         {

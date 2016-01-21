@@ -466,7 +466,7 @@ namespace BLL.DynamicClientPartition
                             };
 
 
-                            var logicalVolumeHelper = new ClientPartitionHelper(_imageProfile).LogicalVolume(lv, LbsByte,_newHdSize);
+                            var logicalVolumeHelper = new ClientPartitionHelper(_imageProfile).LogicalVolume(lv, LbsByte,_newHdSize,HdNumberToGet);
                             double percentOfPvForThisLv = (double)logicalVolumeHelper.MinSizeBlk / volumeGroup.AgreedPvSizeBlk;
                             var tmpClientPartitionSizeLvBlk = logicalVolumeHelper.MinSizeBlk;
 

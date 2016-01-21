@@ -16,5 +16,11 @@ namespace Models
         public int FileFolderId { get; set; }
         [Column("priority", Order = 4)]
         public int Priority { get; set; }
+        [Column("destination_partition", Order = 5)]
+        public string DestinationPartition { get; set; }
+        [Column("destination_folder", Order = 6)]
+        public string DestinationFolder { get; set; }
+        [Column("folder_copy_type", Order = 7)]
+        public string FolderCopyType { get; set; }
     }
 }

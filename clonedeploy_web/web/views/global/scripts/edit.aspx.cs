@@ -19,7 +19,13 @@ public partial class views_admin_scripts_edit : BasePages.Global
         };
         var fixedLineEnding = scriptEditor.Value.Replace("\r\n", "\n");
         script.Contents = fixedLineEnding;
-        BLL.Script.UpdateScript(script);
+        var result = BLL.Script.UpdateScript(script);
+        if (result.IsValid)
+            EndUserMessage = "Successfully Updated Script";
+        else
+        
+            EndUserMessage = result.Message;
+
     }
 
     protected void PopulateForm()
