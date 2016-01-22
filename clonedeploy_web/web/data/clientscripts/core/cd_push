@@ -199,8 +199,8 @@ function download_image()
       partCompExt="lz4"
     elif [ "$(parse_json "$current_object" .Compression)" = "uncp" ]; then
       #TODO: finish implementing no compression
-      partCompAlg="lz4 -d"
-      partCompExt="lz4"
+      partCompAlg=""
+      partCompExt=""
     else
       error "Could Not Determine Compression Algorithm For Partition"
     fi
@@ -209,11 +209,11 @@ function download_image()
 			
   if [ "$multicast" = "true" ]; then
     if [ "$decompress_multicast_on_client" = "true"]; then
-	    log "cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
-      cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
+	    log "cd_reporter $computer_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
+      cd_reporter $computer_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
 	else #dcompress on server
-      log "cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
-      cd_reporter $computer_id partclone & udp-receiver --portbase $portBase --no-progress --mcast-rdv-address $serverIP $clientReceiverArgs | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
+      log "cd_reporter $computer_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
+      cd_reporter $computer_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
     fi
   else #unicast
     log "cd_reporter $computer_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
@@ -232,7 +232,11 @@ function download_image()
 	   log "mkfs.$(parse_json "$current_object" .FileSystem) -F $destination"
 	  mkfs.$(parse_json "$current_object" .FileSystem) -F $destination &>> $CLIENT_LOG
 	fi
+	if [ "$multicast" = "true" ]; then
+	  cd_reporter $computer_id wim & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 $destination 2>> $CLIENT_LOG | tee /tmp/wim.progress
+	else
 	  cd_reporter $computer_id wim & wimapply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination 2>> $CLIENT_LOG | tee /tmp/wim.progress
+	fi
   fi 
 }
 

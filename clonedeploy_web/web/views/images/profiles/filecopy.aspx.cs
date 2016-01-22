@@ -25,11 +25,19 @@ public partial class views_images_profiles_filecopy : Images
             {
                 if (profileFile.FileFolderId == Convert.ToInt16(dataKey.Value))
                 {
-
                     enabled.Checked = true;
                     var txtPriority = row.FindControl("txtPriority") as TextBox;
                     if (txtPriority != null)
                         txtPriority.Text = profileFile.Priority.ToString();
+                    var txtPartition = row.FindControl("txtPartition") as TextBox;
+                    if (txtPartition != null)
+                        txtPartition.Text = profileFile.DestinationPartition;
+                    var txtPath = row.FindControl("txtPath") as TextBox;
+                    if (txtPath != null)
+                        txtPath.Text = profileFile.DestinationFolder;
+                    var ddlFolderMode = row.FindControl("ddlFolderMode") as DropDownList;
+                    if (ddlFolderMode != null)
+                        ddlFolderMode.Text = profileFile.FolderCopyType;
                 }
             }
         }
@@ -80,6 +88,15 @@ public partial class views_images_profiles_filecopy : Images
             if (txtPriority != null)
                 if (!string.IsNullOrEmpty(txtPriority.Text))
                     profileFileFolder.Priority = Convert.ToInt32(txtPriority.Text);
+            var txtPartition = row.FindControl("txtPartition") as TextBox;
+            if (txtPartition != null)
+                profileFileFolder.DestinationPartition = txtPartition.Text;
+            var txtPath = row.FindControl("txtPath") as TextBox;
+            if (txtPath != null)
+                profileFileFolder.DestinationFolder = txtPath.Text;
+            var ddlFolderMode = row.FindControl("ddlFolderMode") as DropDownList;
+            if (ddlFolderMode != null)
+                profileFileFolder.FolderCopyType = ddlFolderMode.Text;
             BLL.ImageProfileFileFolder.AddImageProfileFileFolder(profileFileFolder);
         }
     }

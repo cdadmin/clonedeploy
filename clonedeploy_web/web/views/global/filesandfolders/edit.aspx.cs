@@ -26,14 +26,7 @@ public partial class views_global_filesandfolders_edit : BasePages.Global
         fileFolder.Path = txtPath.Text;
         fileFolder.Type = ddlType.Text;
 
-        if (fileFolder.Path.Trim().EndsWith("/") || fileFolder.Path.Trim().EndsWith(@"\"))
-        {
-            char[] toRemove = { '/', '\\' };
-            string trimmed = fileFolder.Path.TrimEnd(toRemove);
-            fileFolder.Path = trimmed;
-        }
-      
-
+        
         var result = BLL.FileFolder.UpdateFileFolder(FileFolder);
         EndUserMessage = !result.IsValid ? result.Message : "Successfully Updated File / Folder";
 

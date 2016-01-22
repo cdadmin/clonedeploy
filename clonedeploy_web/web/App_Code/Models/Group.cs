@@ -36,19 +36,13 @@ namespace Models
         [Column("group_type", Order = 6)]
         public string Type { get; set; }
 
-        [Column("group_sender_arguments", Order = 7)]
-        public string SenderArguments { get; set; }
-
-        [Column("group_receiver_arguments", Order = 8)]
-        public string ReceiverArguments { get; set; }
-
-        [Column("group_smart_criteria", Order = 9)]
+        [Column("group_smart_criteria", Order = 7)]
         public string SmartCriteria { get; set; }
 
-        [Column("group_default_properties_enabled", Order = 10)]
+        [Column("group_default_properties_enabled", Order = 8)]
         public int SetDefaultProperties { get; set; }
 
-        [Column("group_default_bootmenu_enabled", Order = 11)]
+        [Column("group_default_bootmenu_enabled", Order = 9)]
         public int SetDefaultBootMenu { get; set; }
 
         [NotMapped] 

@@ -295,18 +295,12 @@ function process_file_copy()
 	  if [ "$(parse_json "$current_object" .Number)" = "$(parse_json "$current_file" .DestinationPartition)" ]; then
 	    log "Copying /storage/resources/$(parse_json "$current_file" .SourcePath)"
 		if [ "$(parse_json "$current_object" .FileSystem)" = "ntfs" ]; then
-          mkdir /mnt/ntfs &> /dev/null
-		  ntfs-3g -o force,rw,remove_hiberfile ${hard_drive}${partition_prefix}$(parse_json "$current_object" .Number) /mnt/ntfs &>/dev/null
+          mkdir /mnt/fs &> /dev/null
+		  ntfs-3g -o force,rw,remove_hiberfile ${hard_drive}${partition_prefix}$(parse_json "$current_object" .Number) /mnt/fs &>/dev/null
           if [ "$?" != "0" ]; then
             log "Could Not Mount NTFS"
 	        return 1
           fi
-		  
-		  if [ -d "/storage/resources/$(parse_json "$current_file" .SourcePath)" ]; then
-		    cp -R "/storage/resources/$(parse_json "$current_file" .SourcePath)" "/mnt/ntfs/$(parse_json "$current_file" .DestinationFolder)"
-		  else
-            cp "/storage/resources/$(parse_json "$current_file" .SourcePath)" "/mnt/ntfs/$(parse_json "$current_file" .DestinationFolder)"
-		  fi
 		else # only ext or xfs
 		  mkdir /mnt/fs &> /dev/null
 		  mount ${hard_drive}${partition_prefix}$(parse_json "$current_object" .Number) /mnt/fs
@@ -315,9 +309,43 @@ function process_file_copy()
 	         return 1
            fi
 		fi
+		  if [ -d "/storage/resources/$(parse_json "$current_file" .SourcePath)" ]; then
+		    if [ "$(parse_json "$current_file" .FolderCopyType)" = "Folder" ]; then
+		      cp -R "/storage/resources/$(parse_json "$current_file" .SourcePath)" "/mnt/fs/$(parse_json "$current_file" .DestinationFolder)/"
+			else #FolderCopyType = contents
+			  cp -R "/storage/resources/$(parse_json "$current_file" .SourcePath)/." "/mnt/fs/$(parse_json "$current_file" .DestinationFolder)/"
+			fi		
+		  else
+            cp "/storage/resources/$(parse_json "$current_file" .SourcePath)" "/mnt/fs/$(parse_json "$current_file" .DestinationFolder)/"
+		  fi
 	  fi
 	else # object_type = lvm
-	
+	  if [ "$object_type" = "$(parse_json "$current_file" .DestinationPartition)" ]; then
+	    log "Copying /storage/resources/$(parse_json "$current_file" .SourcePath)"
+		if [ "$(parse_json "$current_object" .FileSystem)" = "ntfs" ]; then
+          mkdir /mnt/fs &> /dev/null
+		  ntfs-3g -o force,rw,remove_hiberfile /dev/mapper/$object_type /mnt/fs &>/dev/null
+          if [ "$?" != "0" ]; then
+            log "Could Not Mount NTFS"
+	        return 1
+          fi
+		else # only ext or xfs
+		  mkdir /mnt/fs &> /dev/null
+		  mount /dev/mapper/$object_type /mnt/fs
+		   if [ "$?" != "0" ]; then
+             log "Could Not Mount Filesystem"
+	         return 1
+           fi
+		fi
+		  if [ -d "/storage/resources/$(parse_json "$current_file" .SourcePath)" ]; then
+		    if [ "$(parse_json "$current_file" .FolderCopyType)" = "Folder" ]; then
+		      cp -R "/storage/resources/$(parse_json "$current_file" .SourcePath)" "/mnt/fs/$(parse_json "$current_file" .DestinationFolder)/"
+			else #FolderCopyType = contents
+			  cp -R "/storage/resources/$(parse_json "$current_file" .SourcePath)/." "/mnt/fs/$(parse_json "$current_file" .DestinationFolder)/"
+			fi		
+		  else
+            cp "/storage/resources/$(parse_json "$current_file" .SourcePath)" "/mnt/fs/$(parse_json "$current_file" .DestinationFolder)/"
+		  fi
 	fi
   done
 }

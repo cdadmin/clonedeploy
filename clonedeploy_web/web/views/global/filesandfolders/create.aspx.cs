@@ -21,12 +21,6 @@ public partial class views_global_filesandfolders_create : BasePages.Global
             Type = ddlType.Text
         };
 
-        if (fileFolder.Path.Trim().EndsWith("/") || fileFolder.Path.Trim().EndsWith(@"\"))
-        {
-            char[] toRemove = { '/', '\\'};
-            string trimmed = fileFolder.Path.TrimEnd(toRemove);
-            fileFolder.Path = trimmed;
-        }
         var result = BLL.FileFolder.AddFileFolder(fileFolder);
         if (!result.IsValid)
             EndUserMessage = result.Message;

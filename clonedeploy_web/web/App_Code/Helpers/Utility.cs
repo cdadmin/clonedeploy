@@ -29,6 +29,11 @@ namespace Helpers
             return path != null ? path.Replace(@"\", @"\\") : string.Empty;
         }
 
+        public static string WindowsToUnixFilePath(string path)
+        {
+            return path != null ? path.Replace("\\", "/") : string.Empty;
+        }
+
         public static string Decode(string encoded)
         {
             string decoded = null;

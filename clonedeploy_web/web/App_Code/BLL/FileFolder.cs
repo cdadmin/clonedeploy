@@ -83,6 +83,22 @@ namespace BLL
                 return validationResult;
             }
 
+            if (fileFolder.Path.Trim().EndsWith("/") || fileFolder.Path.Trim().EndsWith(@"\"))
+            {
+                char[] toRemove = { '/', '\\' };
+                string trimmed = fileFolder.Path.TrimEnd(toRemove);
+                fileFolder.Path = trimmed;
+            }
+
+            if (fileFolder.Path.Trim().StartsWith("/") || fileFolder.Path.Trim().StartsWith(@"\"))
+            {
+                char[] toRemove = { '/', '\\' };
+                string trimmed = fileFolder.Path.TrimStart(toRemove);
+                fileFolder.Path = trimmed;
+            }
+
+            fileFolder.Path = Utility.WindowsToUnixFilePath(fileFolder.Path);
+
             if (isNewTemplate)
             {
                 using (var uow = new DAL.UnitOfWork())

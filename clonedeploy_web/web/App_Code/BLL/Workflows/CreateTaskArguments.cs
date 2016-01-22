@@ -188,6 +188,11 @@ namespace BLL.Workflows
                     AppendString("force_dynamic_partitions=true");
                 AppendString(SetPartitionMethod());
                 if (!string.IsNullOrEmpty(_imageProfile.CustomSchema)) SetCustomSchemaDeploy();
+                if (_direction == "multicast")
+                {
+                    AppendString("client_receiver_args=" + _imageProfile.ReceiverArguments);
+                    AppendString("multicast_port=" + BLL.Port.GetNextPort());
+                }
             }
 
             return _activeTaskArguments.ToString();

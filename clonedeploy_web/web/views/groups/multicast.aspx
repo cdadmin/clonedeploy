@@ -36,19 +36,7 @@
     
     <br class="clear"/>
   
-    <div class="size-4 column">
-        Sender Arguments:
-    </div>
-    <div class="size-5 column">
-        <asp:TextBox ID="txtGroupSenderArgs" runat="server" CssClass="textbox"></asp:TextBox>
-    </div>
-    <br class="clear"/>
-     <div class="size-4 column">
-        Receiver Arguments:
-    </div>
-    <div class="size-5 column">
-        <asp:TextBox ID="txtGroupReceiveArgs" runat="server" CssClass="textbox"></asp:TextBox>
-    </div>
+ 
   
 </asp:Content>
 
