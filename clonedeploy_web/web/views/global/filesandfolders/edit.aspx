@@ -37,21 +37,14 @@
         Type:
     </div>
     <div class="size-5 column">
-        <asp:DropDownList ID="ddlType" runat="server" CssClass="ddlist" AutoPostBack="True" OnSelectedIndexChanged="txtType_OnSelectedIndexChanged">
+        <asp:DropDownList ID="ddlType" runat="server" CssClass="ddlist" >
             <asp:ListItem>File</asp:ListItem>
              <asp:ListItem>Folder</asp:ListItem>
         </asp:DropDownList>
     </div>
     <br class="clear"/>
     
-    <div id="displayCheckBox" runat="server" Visible="False">
-     <div class="size-4 column">
-        Copy Folder Contents Only:
-    </div>
-    <div class="size-5 column">
-        <asp:CheckBox ID="chkContentsOnly" runat="server" ></asp:CheckBox>
-    </div>
-    <br class="clear"/>
+  
     </div>
 </asp:Content>
 

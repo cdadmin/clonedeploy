@@ -19,8 +19,7 @@ namespace Models
         [Column("file_folder_type", Order = 4)]
         public string Type { get; set; }
 
-        [Column("copy_folder_contents_only", Order = 5)]
-        public int ContentsOnly { get; set; }
+        
 
        
     }
