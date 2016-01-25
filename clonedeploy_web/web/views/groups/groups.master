@@ -1,15 +1,11 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/views/Site.master" AutoEventWireup="true" CodeFile="groups.master.cs" Inherits="views.masters.GroupMaster" %>
 
-<asp:Content ID="SubNavTitle" ContentPlaceHolderID="HeaderNav" Runat="Server">
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#nav-groups').addClass("nav-current");
-        });
-    </script>
-    <span class="header-title-text">Groups</span> 
-</asp:Content>
-
 <asp:Content ID="SubNav" ContentPlaceHolderID="SubNav" Runat="Server">
+     <script type="text/javascript">
+         $(document).ready(function () {
+             $('#nav-groups').addClass("nav-current");
+         });
+    </script>
     <div class="sub-nav-top">
         <div id="Level1" runat="server">
         <ul>
@@ -57,21 +53,20 @@
         </asp:ContentPlaceHolder>
 </asp:Content>
 
-<asp:Content runat="server" ID="ActionsLeft" ContentPlaceHolderID="PageActionsLeft">
-     <div id="actions_left" runat="server">
+
+
+<asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="PageActions">
+    <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
+    </asp:ContentPlaceHolder>
+    
+    <div id="actions_left" runat="server">
 
        <asp:LinkButton ID="btnMulticast" runat="server" OnClick="btnMulticast_Click" CssClass="submits actions" Text="Multicast Group"></asp:LinkButton>
        <asp:LinkButton ID="btnUnicast" runat="server" OnClick="btnUnicast_Click" CssClass="submits actions" Text="Unicast Group"></asp:LinkButton>
        <asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click" CssClass="submits actions" Text="Delete Group"></asp:LinkButton>
             <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
     </div>
-   
-   
-</asp:Content>
 
-<asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="PageActionsRight">
-    <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
-    </asp:ContentPlaceHolder>
      <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
 </asp:Content>
 

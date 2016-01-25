@@ -34,11 +34,6 @@ namespace views.computers
             Export(Computer.Name + "-" + log.SubType + ".txt", log.Contents);
         }
 
-        protected void gvLogs_OnSorting(object sender, GridViewSortEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         protected void btnView_OnClick(object sender, EventArgs e)
         {
             var control = sender as Control;

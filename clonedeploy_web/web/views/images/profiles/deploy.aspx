@@ -75,7 +75,6 @@
 </div>
 <br class="clear"/>
 
-<div class="full column">
 <div id="imageSchema" runat="server">
     <asp:GridView ID="gvHDs" runat="server" AutoGenerateColumns="false" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
         <Columns>
@@ -290,7 +289,7 @@
         </EmptyDataTemplate>
     </asp:GridView>
 </div>
-    </div>
+
 </div>
 
 <div id="customScript" runat="server">

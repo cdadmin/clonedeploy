@@ -55,7 +55,7 @@
             <ul>
                 <li>
                     <a href="#" class="leftmenu">
-                        <img alt="logo" src="<%= ResolveUrl("~/") %>content/img/cd.png" style="margin-top: 12px; margin-left: 3px;" />
+                        <img alt="logo" src="<%= ResolveUrl("~/") %>content/img/cd.png" style="margin-top: 7px; margin-left: 3px; opacity: 0.7"/>
                     </a>
                 </li>
                 <li id="nav-hosts">
@@ -86,72 +86,49 @@
                     <a href="<%= ResolveUrl("~/views/admin/chooser.aspx") %>" class="icon-setting">
                     </a>
                 </li>
-                
-                 <li id="nav-logout" style="float: right; margin: 4px 90px 0 0; font-size: 24px; text-align: right;">
-                    <asp:LinkButton ID="LogOut" runat="server" OnClick="LogOut_OnClick" ></asp:LinkButton>
+
+                <li id="nav-logout" style="float: right; margin: 4px 90px 0 0; font-size: 24px; text-align: right;">
+                    <asp:LinkButton ID="LogOut" runat="server" OnClick="LogOut_OnClick"></asp:LinkButton>
                 </li>
-               
+
             </ul>
         </div>
-     
 
-        <div class="clearfix">
-        </div>
         <div class="content_container">
-       
             <br class="clear;"/>
-         
+            <div class="content-wrapper">
+                <div class="content-header">
+                    <div class="module breadcrumb_container">
+                        <div id="bread-crumb1" class="breadCrumb module">
+                            <ul>
+                                <asp:ContentPlaceHolder ID="Breadcrumb" runat="server">
+                                </asp:ContentPlaceHolder>
+                            </ul>
 
-            <div class="content-right">
-                    <div class="nav2">
-                           <div class="module breadcrumb_container">
-                <div id="bread-crumb1" class="breadCrumb module">
-                    <ul>
-                        <asp:ContentPlaceHolder ID="Breadcrumb" runat="server">
+                        </div>
+                    </div>
+
+                    <div class="sub-nav">
+                        <asp:ContentPlaceHolder ID="SubNav" runat="server">
                         </asp:ContentPlaceHolder>
-                    </ul>
-
+                    </div>
+                </div>
+                <div class="content-main">
+                    <div class="size-fullgrid column">
+                        <asp:ContentPlaceHolder ID="Content" runat="server">
+                        </asp:ContentPlaceHolder>
+                    </div>
+                    
                 </div>
             </div>
-              <asp:ContentPlaceHolder ID="SubNav" runat="server">
-                </asp:ContentPlaceHolder>
-      </div>
-              
+            <div class="actions_container">
 
-                  
-
-               
-
-                <div class="content-right-main">
-                    
-                <asp:ContentPlaceHolder ID="Content" runat="server">
-                </asp:ContentPlaceHolder>
-                    </div>
-            </div>
-            
-               <div class="sub-nav_container">
-                       <div class="header_container" style="display: none;">
-                    <asp:ContentPlaceHolder ID="HeaderNav" runat="server">
+                    <asp:ContentPlaceHolder ID="PageActions" runat="server">
                     </asp:ContentPlaceHolder>
-
-                    </div>
-                  
-                  
-                           <asp:ContentPlaceHolder ID="PageActionsLeft" runat="server">
-                            </asp:ContentPlaceHolder>
-                      
-                   
-                    <div class="actions-right">
-                        <asp:ContentPlaceHolder ID="PageActionsRight" runat="server">
-                        </asp:ContentPlaceHolder>
-                    </div>
-                 
-               
-            
+                
             </div>
         </div>
     </div>
-
 </form>
 
 <script type="text/javascript">

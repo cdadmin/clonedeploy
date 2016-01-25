@@ -1,23 +1,14 @@
 .container{position:relative;width:100%;margin:0;padding:0 0 0 0px;height: 100%;overflow-x:hidden;overflow-y:hidden;background: #fff;}
-.nav{position:relative;float: left;overflow:hidden;top:0;left:0;height:35px;width:100%;list-style-type:none;margin: 0;padding:0;background:#55739a;}
-.nav2{position:relative;float: left;overflow:hidden;top:0;left:0;height:65px;width:100%;list-style-type:none;margin: 0;padding:0;background:#fff;}
-
 .content_container{position:relative;display: block;background-color:#fff;width: 1460px;margin: 0 auto;height: 100%;overflow-x:hidden;overflow-y:hidden;}
-.header_container{position:relative;display: inline-block;text-align: center;left:0px;background-color:#fff;width:100%;height: 35px;border-bottom: 1px solid #eee;}
-.sub-nav_container{display: inline;position:relative;float: left; width:250px;overflow-x:hidden;overflow-y:auto;top:0px;margin-left: 25px;color: black;background: #fff; height:100%}
-.content-right{display: inline;position:relative;float:left; top: -20px;width:calc(100% - 336px);background-color: #fff;border-bottom: 1px solid #eee; overflow-x:hidden;overflow-y:hidden;height:100%;left: 20px; }
-.breadcrumb_container{display: inline;position:relative;float:left;right: 0;width:100%;overflow-x:hidden;overflow-y:hidden;top: 0px;border-right: 1px solid #eee;color: black;height: 30px;background: #fff;margin-bottom: 10px;margin-left: 10px;margin-right: -30px;}
+.nav{position:relative;float: left;overflow:hidden;top:0;left:0;height:35px;width:100%;list-style-type:none;margin: 0;padding:0;background:#47a3da;}
+.content-wrapper{display: inline;position:relative;float:left; top: -20px;width:calc(100% - 241px);background-color: #fff;border-bottom: 1px solid #eee; overflow-x:hidden;overflow-y:hidden;height:100%;margin-left: 10px; }
+.content-header{position:relative;float: left;overflow:hidden;top:0;left:0;height:75px;width:100%;list-style-type:none;margin: 0;padding:0;background:#fff;border-bottom: 1px solid #eee;padding-bottom: 5px;}
+.breadcrumb_container{display: inline;position:relative;float:left;right: 0;width:100%;overflow-x:hidden;overflow-y:hidden;top: 0px;color: black;height: 30px;background: #fff;margin-bottom: 20px;margin-left: -5px;}
+.content-main{top: 0px; display: inline;position:relative;float:left;width: 100%;background-color: #fff;overflow-x:hidden;overflow-y:visible;height: 80%;padding: 20px 0 0 0;}
+.actions_container{display: inline;position:relative;float: left; width:230px;overflow-x:hidden;overflow-y:auto;top:0px;color: black;background:#fff;height: 100%;border-left: 1px solid #eee;}
+.help_pos{ position: absolute;bottom: 40px;width: 200px;}
 
-.content-right-main{top: 10px; display: inline;position:relative;float:left;width:calc(100% - 20px);background-color: #fff;overflow-x:hidden;overflow-y:visible;height:77%;padding: 20px 0 0 20px;}
-.actions_top{ height: 100px;}
-
-
-
-
-
-.spacer{ padding-bottom: 10px;}
 .container .column{float:left;display:inline;margin-right:10px;}
-.row{margin-bottom:20px;}
 .container .full.column{width:990px;overflow-x:scroll;}
 .container .size-1.column{width:500px;}
 .container .size-2.column{width:400px;}
@@ -31,7 +22,7 @@
 .container .size-10.column { width: 100px;}
 .container .size-setting.column{width:420px;}
 .container .offset-1{padding-left:200px;}
-.container .size-fullgrid.column{ width:calc(100% - 20px);}
+.container .size-fullgrid.column{ width:calc(100% - 5px);overflow-x: auto;}
 
 
 
@@ -90,7 +81,7 @@
 .container{width:440px;margin:0 auto;padding-left: 0;}
 .content_container{ width: 440px;overflow-y: hidden;height: auto; }
 .content-right{ width: 440px;padding: 0;overflow-y: hidden;height: auto;}
-.sub-nav_container{width: 100%;height: 100%;}
+
 .container .column{margin-left:0;}
 .container .full.column{width:440px; }
 .container .size-1.column{width:440px;}
@@ -113,7 +104,7 @@ Table.gv-confirm{width:440px;}
 .mobi-hide-small{display:none;}
 .mobi-hide-smaller{display:none;}
 
-.sub-nav-top li a{ width:100%}
+
 }
 
 
@@ -122,8 +113,8 @@ Table.gv-confirm{width:440px;}
 .container{width:300px;margin:0 auto;padding-left: 0;}
 .content_container{ width: 300px;overflow-y: hidden;height: auto; }
 .content-right{ width: 300px;padding: 0;overflow-y: hidden;height: auto;}
-.sub-nav_container{width: 100%;height: 100%;margin: 0;padding: 0;}
-.sub-nav-top li a{ width: 100%;text-align: center;padding: 0;margin: 0;}
+
+
 .actions { height: 150px;width: 300px;}
 .nav-btn-round { width: 440px;}
 

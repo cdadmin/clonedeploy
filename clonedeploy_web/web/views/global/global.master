@@ -1,15 +1,11 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/views/Site.master" AutoEventWireup="true" CodeFile="global.master.cs" Inherits="views_global_global" %>
 
-<asp:Content ID="SubNavTitle" ContentPlaceHolderID="HeaderNav" Runat="Server">
+<asp:Content ID="SubNav" ContentPlaceHolderID="SubNav" Runat="Server">
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#nav-global').addClass("nav-current");
         });
     </script>
-     <span class="header-title-text">Properties</span> 
-</asp:Content>
-
-<asp:Content ID="SubNav" ContentPlaceHolderID="SubNav" Runat="Server">
        <div class="sub-nav-top">
         <div id="Level1" runat="server">
         <ul>
@@ -84,16 +80,14 @@
         </asp:ContentPlaceHolder>
 </asp:Content>
 
-<asp:Content runat="server" ID="ActionsLeft" ContentPlaceHolderID="PageActionsLeft">
-    <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
-    <div id="actions_left" runat="server">
-       <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
-    </div>
-</asp:Content>
 
-<asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="PageActionsRight">
+<asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="PageActions">
     <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
     </asp:ContentPlaceHolder>
+     <div id="actions_left" runat="server">
+       <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
+    </div>
+      <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
 </asp:Content>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="Content" Runat="Server">
