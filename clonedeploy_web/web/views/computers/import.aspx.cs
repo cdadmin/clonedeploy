@@ -5,9 +5,9 @@ using BLL;
 using Helpers;
 using Security;
 
-namespace views.hosts
+namespace views.computers
 {
-    public partial class HostImport : Computers
+    public partial class ComputerImport : Computers
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -19,7 +19,7 @@ namespace views.hosts
         protected void ButtonImport_Click(object sender, EventArgs e)
         {
             var csvFilePath = Server.MapPath("~") + Path.DirectorySeparatorChar + "data" + Path.DirectorySeparatorChar +
-                              "csvupload" + Path.DirectorySeparatorChar + "hosts.csv";
+                              "csvupload" + Path.DirectorySeparatorChar + "computers.csv";
             FileUpload.SaveAs(csvFilePath);
             new FileOps().SetUnixPermissions(csvFilePath);
             BLL.Computer.ImportComputers();

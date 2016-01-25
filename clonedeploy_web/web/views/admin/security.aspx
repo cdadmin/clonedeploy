@@ -94,7 +94,7 @@
 </div>
 <br class="clear"/>
 <div class="size-4 column">
-    Add Host Requires Login:
+    Add Computer Requires Login:
 </div>
 <div class="size-setting column">
     <asp:DropDownList ID="ddlRegisterLogin" runat="server" CssClass="ddlist">

@@ -109,13 +109,13 @@ public partial class views_admin_bootmenu_defaultmenu : Page
             }
             try
             {
-                ddlHostKernel.DataSource = Utility.GetKernels();
-                ddlHostKernel.DataBind();
-                var itemKernel = ddlHostKernel.Items.FindByText(Settings.DefaultKernel32);
+                ddlComputerKernel.DataSource = Utility.GetKernels();
+                ddlComputerKernel.DataBind();
+                var itemKernel = ddlComputerKernel.Items.FindByText(Settings.DefaultKernel32);
                 if (itemKernel != null)
-                    ddlHostKernel.SelectedValue = Settings.DefaultKernel32;
+                    ddlComputerKernel.SelectedValue = Settings.DefaultKernel32;
                 else
-                    ddlHostKernel.Items.Insert(0, "Select Kernel");
+                    ddlComputerKernel.Items.Insert(0, "Select Kernel");
             }
             catch
             {
@@ -123,13 +123,13 @@ public partial class views_admin_bootmenu_defaultmenu : Page
             }
             try
             {
-                ddlHostBootImage.DataSource = Utility.GetBootImages();
-                ddlHostBootImage.DataBind();
-                var itemBootImage = ddlHostBootImage.Items.FindByText("initrd.gz");
+                ddlComputerBootImage.DataSource = Utility.GetBootImages();
+                ddlComputerBootImage.DataBind();
+                var itemBootImage = ddlComputerBootImage.Items.FindByText("initrd.gz");
                 if (itemBootImage != null)
-                    ddlHostBootImage.SelectedValue = "initrd.gz";
+                    ddlComputerBootImage.SelectedValue = "initrd.gz";
                 else
-                    ddlHostBootImage.Items.Insert(0, "Select Boot Image");
+                    ddlComputerBootImage.Items.Insert(0, "Select Boot Image");
             }
             catch
             {
@@ -153,7 +153,7 @@ public partial class views_admin_bootmenu_defaultmenu : Page
         var defaultBootMenu = new BLL.Workflows.DefaultBootMenu
         {
             DebugPwd = consoleSha.Value,
-            AddPwd = addhostSha.Value,
+            AddPwd = addcomputerSha.Value,
             OndPwd = ondsha.Value,
             DiagPwd = diagsha.Value,
             GrubUserName = txtGrubProxyUsername.Text,
@@ -200,12 +200,12 @@ public partial class views_admin_bootmenu_defaultmenu : Page
         else
         {
             defaultBootMenu.DebugPwd = consoleSha.Value;
-            defaultBootMenu.AddPwd = addhostSha.Value;
+            defaultBootMenu.AddPwd = addcomputerSha.Value;
             defaultBootMenu.OndPwd = ondsha.Value;
             defaultBootMenu.DiagPwd = diagsha.Value;
         }
-        defaultBootMenu.Kernel = ddlHostKernel.SelectedValue;
-        defaultBootMenu.BootImage = ddlHostBootImage.SelectedValue;
+        defaultBootMenu.Kernel = ddlComputerKernel.SelectedValue;
+        defaultBootMenu.BootImage = ddlComputerBootImage.SelectedValue;
         defaultBootMenu.Type = "standard";
         defaultBootMenu.CreateGlobalDefaultBootMenu();
 

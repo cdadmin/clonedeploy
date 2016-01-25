@@ -21,9 +21,9 @@ namespace BLL.Workflows
 
         public bool CreatePxeBootFiles()
         {
-            var pxeHostMac = Utility.MacToPxeMac(_computer.Mac);
+            var pxeComputerMac = Utility.MacToPxeMac(_computer.Mac);
             var webPath = Settings.WebPath;
-            var globalHostArgs = Settings.GlobalHostArgs;
+            var globalComputerArgs = Settings.GlobalComputerArgs;
             var wdsKey = Settings.WebTaskRequiresLogin == "No" ? Settings.ServerKey : "";
             const string newLineChar = "\n";
 
@@ -33,7 +33,7 @@ namespace BLL.Workflows
             ipxe.Append("kernel " + webPath + "IpxeBoot?filename=" + _imageProfile.Kernel +
                         "&type=kernel" + " initrd=" + _imageProfile.BootImage +
                         " root=/dev/ram0 rw ramdisk_size=127000 task=" + _direction +
-                        " consoleblank=0" + " web=" + webPath + " WDS_KEY=" + wdsKey + " " + globalHostArgs +
+                        " consoleblank=0" + " web=" + webPath + " WDS_KEY=" + wdsKey + " " + globalComputerArgs +
                         " " + _imageProfile.KernelArguments + newLineChar);
             ipxe.Append("imgfetch --name " + _imageProfile.BootImage + " " + webPath +
                         "IpxeBoot?filename=" + _imageProfile.BootImage + "&type=bootimage" + newLineChar);
@@ -46,7 +46,7 @@ namespace BLL.Workflows
             sysLinux.Append("KERNEL kernels" + Path.DirectorySeparatorChar + _imageProfile.Kernel + newLineChar);
             sysLinux.Append("APPEND initrd=images" + Path.DirectorySeparatorChar + _imageProfile.BootImage +
                             " root=/dev/ram0 rw ramdisk_size=127000 task=" + _direction +
-                            " consoleblank=0" + " web=" + webPath + " WDS_KEY=" + wdsKey + " " + globalHostArgs +
+                            " consoleblank=0" + " web=" + webPath + " WDS_KEY=" + wdsKey + " " + globalComputerArgs +
                             " " + _imageProfile.KernelArguments + newLineChar);
 
 
@@ -60,7 +60,7 @@ namespace BLL.Workflows
                         " root=/dev/ram0 rw ramdisk_size=127000 task=" +
                         _direction + " consoleblank=0" + " web=" + webPath + " WDS_KEY=" +
                         wdsKey + " " +
-                        globalHostArgs + " " + _imageProfile.KernelArguments + newLineChar);
+                        globalComputerArgs + " " + _imageProfile.KernelArguments + newLineChar);
             grub.Append("initrd /images/" + _imageProfile.BootImage + newLineChar);
             grub.Append("}" + newLineChar);
 
@@ -82,7 +82,7 @@ namespace BLL.Workflows
                 foreach (var bootMenu in list)
                 {
                     var path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + bootMenu.Item1 +
-                               Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeHostMac +
+                               Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeComputerMac +
                                bootMenu.Item2;
 
                     if (!new FileOps().WritePath(path, bootMenu.Item3))
@@ -93,7 +93,7 @@ namespace BLL.Workflows
             else
             {
                 var mode = Settings.PxeMode;
-                var path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeHostMac;
+                var path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeComputerMac;
                 string fileContents = null;
                 if (mode == "pxelinux" || mode == "syslinux_32_efi" || mode == "syslinux_64_efi")
                 {

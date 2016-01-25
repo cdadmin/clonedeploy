@@ -18,17 +18,17 @@ namespace views.tasks
 
         protected void PopulateForm()
         {
-            PopulateImagesDdl(ddlHostImage);
+            PopulateImagesDdl(ddlComputerImage);
         }
 
-        protected void ddlHostImage_OnSelectedIndexChanged(object sender, EventArgs e)
+        protected void ddlComputerImage_OnSelectedIndexChanged(object sender, EventArgs e)
         {
-            PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlHostImage.SelectedValue));
+            PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlComputerImage.SelectedValue));
         }
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            if (ddlHostImage.Text == "Select Image") return;
+            if (ddlComputerImage.Text == "Select Image") return;
             var imageProfile = BLL.ImageProfile.ReadProfile(Convert.ToInt32(ddlImageProfile.SelectedValue));
             EndUserMessage = new BLL.Workflows.Multicast(imageProfile, txtClientCount.Text).Create();
 

@@ -14,7 +14,7 @@ namespace BLL
             using (var uow = new DAL.UnitOfWork())
             {
                 computer.Mac = Utility.FixMac(computer.Mac);
-                var validationResult = ValidateComputer(computer, true);
+                var validationResult = ValidateComputer(computer, "new");
                 if (validationResult.IsValid)
                 {
                     uow.ComputerRepository.Insert(computer);
@@ -33,13 +33,22 @@ namespace BLL
             }
         }
 
-        public static bool DeleteComputer(int computerId)
-        {
+        public static Models.ValidationResult DeleteComputer(Models.Computer computer)
+        {        
             using (var uow = new DAL.UnitOfWork())
             {
-                uow.ComputerRepository.Delete(computerId);
-                return uow.Save();
+                var validationResult = ValidateComputer(computer, "delete");
+                if (validationResult.IsValid)
+                {
+                    BLL.GroupMembership.DeleteComputerMemberships(computer.Id);
+                    BLL.ComputerBootMenu.DeleteComputerBootMenus(computer.Id);
+                    BLL.ComputerLog.DeleteComputerLogs(computer.Id);
+                    uow.ComputerRepository.Delete(computer.Id);
+                    validationResult.IsValid = uow.Save();
+                }
+                return validationResult;
             }
+
         }
 
         public static Models.DistributionPoint GetDistributionPoint(Models.Computer computer)
@@ -116,7 +125,7 @@ namespace BLL
             using (var uow = new DAL.UnitOfWork())
             {
                 computer.Mac = Utility.FixMac(computer.Mac);
-                var validationResult = ValidateComputer(computer, false);
+                var validationResult = ValidateComputer(computer, "update");
                 if (validationResult.IsValid)
                 {
                     uow.ComputerRepository.Update(computer, computer.Id);
@@ -138,7 +147,7 @@ namespace BLL
 
         public static List<Models.Computer> ComputersWithoutGroup()
         {
-            var listOfComputers = new List<Models.Computer>();
+            List<Models.Computer> listOfComputers;
             using (var uow = new DAL.UnitOfWork())
             {
                 listOfComputers = uow.ComputerRepository.GetComputersWithoutGroup();
@@ -150,64 +159,72 @@ namespace BLL
             return listOfComputers;
         } 
     
-        public static Models.ValidationResult ValidateComputer(Models.Computer computer, bool isNewComputer)
+        public static Models.ValidationResult ValidateComputer(Models.Computer computer, string type)
         {
-            var validationResult = new Models.ValidationResult();
-
-            if (string.IsNullOrEmpty(computer.Name) || !computer.Name.All(c => char.IsLetterOrDigit(c) || c=='_'))
+            var validationResult = new Models.ValidationResult {IsValid = false};
+            if (type == "new" || type == "update")
             {
-                validationResult.IsValid = false;
-                validationResult.Message = "Computer Name Is Not Valid";
-                return validationResult;
-            }
-            
-            if (string.IsNullOrEmpty(computer.Mac) || !computer.Mac.All(c => char.IsLetterOrDigit(c) || c == ':' || c == '-')
-                && (computer.Mac.Length == 12 && !computer.Mac.All(char.IsLetterOrDigit)) )
-            {
-                validationResult.IsValid = false;
-                validationResult.Message = "Computer Mac Is Not Valid";
-                return validationResult;
-            }
-
-
-            if (isNewComputer)
-            {
-                using (var uow = new DAL.UnitOfWork())
+                if (string.IsNullOrEmpty(computer.Name) || !computer.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
                 {
-                    if (uow.ComputerRepository.Exists(h => h.Name == computer.Name || h.Mac == computer.Mac))
-                    {
-                        validationResult.IsValid = false;
-                        validationResult.Message = "This Computer Already Exists";
-                        return validationResult;
-                    }
+                    validationResult.Message = "Computer Name Is Not Valid";
+                    return validationResult;
                 }
-            }
-            else
-            {
-                using (var uow = new DAL.UnitOfWork())
+
+                if (string.IsNullOrEmpty(computer.Mac) ||
+                    !computer.Mac.All(c => char.IsLetterOrDigit(c) || c == ':' || c == '-')
+                    && (computer.Mac.Length == 12 && !computer.Mac.All(char.IsLetterOrDigit)))
                 {
-                    var originalComputer = uow.ComputerRepository.GetById(computer.Id);
-                    if (originalComputer.Name != computer.Name)
+                    validationResult.Message = "Computer Mac Is Not Valid";
+                    return validationResult;
+                }
+
+                if (type == "new")
+                {
+                    using (var uow = new DAL.UnitOfWork())
                     {
-                        if (uow.ComputerRepository.Exists(h => h.Name == computer.Name))
+                        if (uow.ComputerRepository.Exists(h => h.Name == computer.Name || h.Mac == computer.Mac))
                         {
-                            validationResult.IsValid = false;
-                            validationResult.Message = "This Computer Already Exists";
-                            return validationResult;
-                        }
-                    }
-                    else if (originalComputer.Mac != computer.Mac)
-                    {
-                        if (uow.ComputerRepository.Exists(h => h.Mac == computer.Mac))
-                        {
-                            validationResult.IsValid = false;
                             validationResult.Message = "This Computer Already Exists";
                             return validationResult;
                         }
                     }
                 }
+                else
+                {
+                    using (var uow = new DAL.UnitOfWork())
+                    {
+                        var originalComputer = uow.ComputerRepository.GetById(computer.Id);
+                        if (originalComputer.Name != computer.Name)
+                        {
+                            if (uow.ComputerRepository.Exists(h => h.Name == computer.Name))
+                            {
+                                validationResult.Message = "This Computer Already Exists";
+                                return validationResult;
+                            }
+                        }
+                        else if (originalComputer.Mac != computer.Mac)
+                        {
+                            if (uow.ComputerRepository.Exists(h => h.Mac == computer.Mac))
+                            {
+                                validationResult.Message = "This Computer Already Exists";
+                                return validationResult;
+                            }
+                        }
+                    }
+                }
             }
 
+            if (type == "delete")
+            {
+                if (BLL.ActiveImagingTask.IsComputerActive(computer.Id))
+                {
+                    validationResult.Message = "A Computer Cannot Be Deleted While It Has An Active Task";
+                    return validationResult;
+                }
+
+            }
+
+            validationResult.IsValid = true;
             return validationResult;
         }
 

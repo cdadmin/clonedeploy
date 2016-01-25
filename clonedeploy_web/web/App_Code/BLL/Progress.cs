@@ -11,7 +11,7 @@ namespace Tasks
 
      
 
-        public void UpdateProgressPartition(string hostName, string partition)
+        public void UpdateProgressPartition(string computerName, string partition)
         {
             var activeTask = new ActiveImagingTask
             {

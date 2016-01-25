@@ -3,9 +3,9 @@ using BasePages;
 using Helpers;
 using Models;
 
-namespace views.hosts
+namespace views.computers
 {
-    public partial class HostHistory : Computers
+    public partial class ComputerHistory : Computers
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -20,7 +20,7 @@ namespace views.hosts
         protected void PopulateHistory()
         {
             if (!IsPostBack) ddlLimit.SelectedValue = "10";
-            var history = new History {Type = "Host", TypeId = Computer.Id.ToString(), Limit = ddlLimit.Text};
+            var history = new History {Type = "Computer", TypeId = Computer.Id.ToString(), Limit = ddlLimit.Text};
             gvHistory.DataSource = history.Read();
             gvHistory.DataBind();
           

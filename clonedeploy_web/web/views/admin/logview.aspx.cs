@@ -13,12 +13,12 @@ namespace views.admin
         {
             try
             {
-                var hostLogPath = ddlLog.Text;
+                var computerLogPath = ddlLog.Text;
                 var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
                               Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar;
                 HttpContext.Current.Response.ContentType = "application/octet-stream";
                 HttpContext.Current.Response.AppendHeader("Content-Disposition", "attachment; filename=" + ddlLog.Text);
-                HttpContext.Current.Response.TransmitFile(logPath + hostLogPath);
+                HttpContext.Current.Response.TransmitFile(logPath + computerLogPath);
                 HttpContext.Current.Response.End();
             }
             catch

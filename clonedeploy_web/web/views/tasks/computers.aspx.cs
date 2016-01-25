@@ -14,7 +14,7 @@ namespace views.tasks
         protected void Page_Load(object sender, EventArgs e)
         {
             if (IsPostBack) return;
-            if (Settings.DefaultHostView == "all")
+            if (Settings.DefaultComputerView == "all")
                 PopulateGrid();
         }
 
@@ -24,14 +24,14 @@ namespace views.tasks
             if (control != null)
             {
                 var gvRow = (GridViewRow) control.Parent.Parent;
-                var dataKey = gvHosts.DataKeys[gvRow.RowIndex];
+                var dataKey = gvComputers.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var host = BLL.Computer.GetComputer(Convert.ToInt32(dataKey.Value));
-                    Session["hostID"] = host.Id;
+                    var computer = BLL.Computer.GetComputer(Convert.ToInt32(dataKey.Value));
+                    Session["computerID"] = computer.Id;
                     Session["direction"] = "push";
-                    lblTitle.Text = "Deploy The Selected Host?";
-                    gvConfirm.DataSource = new List<Models.Computer> { host };
+                    lblTitle.Text = "Deploy The Selected Computer?";
+                    gvConfirm.DataSource = new List<Models.Computer> { computer };
                 }
             }
             gvConfirm.DataBind();
@@ -46,14 +46,14 @@ namespace views.tasks
             if (control != null)
             {
                 var gvRow = (GridViewRow) control.Parent.Parent;
-                var dataKey = gvHosts.DataKeys[gvRow.RowIndex];
+                var dataKey = gvComputers.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var host = BLL.Computer.GetComputer(Convert.ToInt32(dataKey.Value));
-                    Session["hostID"] = host.Id;
+                    var computer = BLL.Computer.GetComputer(Convert.ToInt32(dataKey.Value));
+                    Session["computerID"] = computer.Id;
                     Session["direction"] = "pull";
-                    lblTitle.Text = "Upload The Selected Host?";
-                    gvConfirm.DataSource = new List<Models.Computer> { host };
+                    lblTitle.Text = "Upload The Selected Computer?";
+                    gvConfirm.DataSource = new List<Models.Computer> { computer };
                 }
             }
             gvConfirm.DataBind();
@@ -66,29 +66,29 @@ namespace views.tasks
         {
             PopulateGrid();
 
-            var dataTable = gvHosts.DataSource as DataTable;
+            var dataTable = gvComputers.DataSource as DataTable;
 
             if (dataTable == null) return;
             var dataView = new DataView(dataTable) {Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression)};
-            gvHosts.DataSource = dataView;
-            gvHosts.DataBind();
+            gvComputers.DataSource = dataView;
+            gvComputers.DataBind();
         }
 
         protected void OkButton_Click(object sender, EventArgs e)
         {
-            var host = BLL.Computer.GetComputer(Convert.ToInt32(Session["hostID"]));
+            var computer = BLL.Computer.GetComputer(Convert.ToInt32(Session["computerID"]));
 
 
             var direction = (string) (Session["direction"]);
 
             if (direction == "push")
             {
-                var image = BLL.Image.GetImage(host.ImageId);
+                var image = BLL.Image.GetImage(computer.ImageId);
                 Session["imageID"] = image.Id;
 
                 if (BLL.Image.Check_Checksum(image))
                 {
-                    EndUserMessage = new BLL.Workflows.Unicast(host,direction).Start();               
+                    EndUserMessage = new BLL.Workflows.Unicast(computer,direction).Start();               
                 }
                 else
                 {
@@ -101,9 +101,9 @@ namespace views.tasks
             }
             else
             {
-                EndUserMessage = new BLL.Workflows.Unicast(host,direction).Start();
+                EndUserMessage = new BLL.Workflows.Unicast(computer,direction).Start();
             }
-            Session.Remove("hostID");
+            Session.Remove("computerID");
             Session.Remove("direction");
         }
 
@@ -117,11 +117,11 @@ namespace views.tasks
         protected void PopulateGrid()
         {
 
-            gvHosts.DataSource = BLL.Computer.SearchComputers(txtSearch.Text);
+            gvComputers.DataSource = BLL.Computer.SearchComputers(txtSearch.Text);
 
-            gvHosts.DataBind();
+            gvComputers.DataBind();
 
-            lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + BLL.Computer.TotalCount() + " Total Host(s)";
+            lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + BLL.Computer.TotalCount() + " Total Computer(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)

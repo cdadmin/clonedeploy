@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/computers/computers.master" AutoEventWireup="true" Inherits="views.computers.Addhosts" CodeFile="create.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/computers/computers.master" AutoEventWireup="true" Inherits="views.computers.Addcomputers" CodeFile="create.aspx.cs" %>
 
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li>New</li>
@@ -7,7 +7,7 @@
      <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits actions" target="_blank">Help</a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-     <asp:LinkButton ID="buttonAddHost" runat="server" OnClick="ButtonAddHost_Click" Text="Add Computer" CssClass="submits actions"/>
+     <asp:LinkButton ID="buttonAddComputer" runat="server" OnClick="ButtonAddComputer_Click" Text="Add Computer" CssClass="submits actions"/>
 </asp:Content>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">     
@@ -20,21 +20,21 @@
         Name:
     </div>
     <div class="size-5 column">
-        <asp:TextBox ID="txtHostName" runat="server" CssClass="textbox"></asp:TextBox>
+        <asp:TextBox ID="txtComputerName" runat="server" CssClass="textbox"></asp:TextBox>
     </div>
     <br class="clear"/>
     <div class="size-4 column">
         MAC Address:
     </div>
     <div class="size-5 column">
-        <asp:TextBox ID="txtHostMac" runat="server" CssClass="textbox" MaxLength="17"></asp:TextBox>
+        <asp:TextBox ID="txtComputerMac" runat="server" CssClass="textbox" MaxLength="17"></asp:TextBox>
     </div>
     <br class="clear"/>
     <div class="size-4 column">
         Image:
     </div>
     <div class="size-5 column">
-        <asp:DropDownList ID="ddlHostImage" runat="server" CssClass="ddlist" AutoPostBack="true" OnSelectedIndexChanged="ddlHostImage_OnSelectedIndexChanged"/>
+        <asp:DropDownList ID="ddlComputerImage" runat="server" CssClass="ddlist" AutoPostBack="true" OnSelectedIndexChanged="ddlComputerImage_OnSelectedIndexChanged"/>
     </div>
     <br class="clear"/>
    
@@ -51,7 +51,7 @@
         Description:
     </div>
     <div class="size-5 column">
-        <asp:TextBox ID="txtHostDesc" runat="server" CssClass="descbox" TextMode="MultiLine"></asp:TextBox>
+        <asp:TextBox ID="txtComputerDesc" runat="server" CssClass="descbox" TextMode="MultiLine"></asp:TextBox>
     </div>
     <br class="clear"/>
    

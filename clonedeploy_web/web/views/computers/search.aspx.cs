@@ -6,15 +6,15 @@ using BasePages;
 using Helpers;
 using Models;
 
-namespace views.hosts
+namespace views.computers
 {
-    public partial class Searchhosts : Computers
+    public partial class Searchcomputers : Computers
     {
         protected void Page_Load(object sender, EventArgs e)
         {
             if (IsPostBack) return;
 
-            if (Settings.DefaultHostView == "all")
+            if (Settings.DefaultComputerView == "all")
                 PopulateGrid();
         }
 
@@ -23,17 +23,20 @@ namespace views.hosts
             //Gridview is only populated with only allowed computers to view via group management
             //Don't need to worry about rechecking group management
             RequiresAuthorization(Authorizations.DeleteComputer);
-            foreach (GridViewRow row in gvHosts.Rows)
+            var deletedCount = 0;
+            foreach (GridViewRow row in gvComputers.Rows)
             {
                
                 var cb = (CheckBox) row.FindControl("chkSelector");
                 if (cb == null || !cb.Checked) continue;
-                var dataKey = gvHosts.DataKeys[row.RowIndex];
+                var dataKey = gvComputers.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
                 
-                BLL.Computer.DeleteComputer(Convert.ToInt32(dataKey.Value));
-            }
+                if(BLL.Computer.DeleteComputer(BLL.Computer.GetComputer(Convert.ToInt32(dataKey.Value))).IsValid)
+                    deletedCount++;
 
+            }
+            EndUserMessage = "Deleted " + deletedCount + " Computer(s)";
             PopulateGrid();
         }
 
@@ -42,38 +45,39 @@ namespace views.hosts
         {
             PopulateGrid();
 
-            List<Computer> listHosts = (List<Computer>) gvHosts.DataSource;
+            List<Computer> listComputers = (List<Computer>) gvComputers.DataSource;
             switch (e.SortExpression)
             {
                 case "Name":
-                    listHosts = GetSortDirection(e.SortExpression) == "Asc"
-                        ? listHosts.OrderBy(h => h.Name).ToList()
-                        : listHosts.OrderByDescending(h => h.Name).ToList();
+                    listComputers = GetSortDirection(e.SortExpression) == "Asc"
+                        ? listComputers.OrderBy(h => h.Name).ToList()
+                        : listComputers.OrderByDescending(h => h.Name).ToList();
                     break;
                 case "Mac":
-                    listHosts = GetSortDirection(e.SortExpression) == "Asc"
-                        ? listHosts.OrderBy(h => h.Mac).ToList()
-                        : listHosts.OrderByDescending(h => h.Mac).ToList();
+                    listComputers = GetSortDirection(e.SortExpression) == "Asc"
+                        ? listComputers.OrderBy(h => h.Mac).ToList()
+                        : listComputers.OrderByDescending(h => h.Mac).ToList();
                     break;
                 case "Image":
-                    listHosts = GetSortDirection(e.SortExpression) == "Asc"
-                        ? listHosts.OrderBy(h => h.ImageId).ToList()
-                        : listHosts.OrderByDescending(h => h.ImageId).ToList();
+                    listComputers = GetSortDirection(e.SortExpression) == "Asc"
+                        ? listComputers.OrderBy(h => h.ImageId).ToList()
+                        : listComputers.OrderByDescending(h => h.ImageId).ToList();
                     break;
             }
 
 
-            gvHosts.DataSource = listHosts;
-            gvHosts.DataBind();
+            gvComputers.DataSource = listComputers;
+            gvComputers.DataBind();
 
         }
 
         protected void PopulateGrid()
         {
-            gvHosts.DataSource = BLL.Computer.SearchComputersForUser(CloneDeployCurrentUser.Id,txtSearch.Text);
-            gvHosts.DataBind();
+           
+            gvComputers.DataSource = BLL.Computer.SearchComputersForUser(CloneDeployCurrentUser.Id,txtSearch.Text);
+            gvComputers.DataBind();
 
-            lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + BLL.Computer.TotalCount() + " Computer(s)";
+            lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + BLL.Computer.TotalCount() + " Computer(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)
@@ -83,7 +87,7 @@ namespace views.hosts
 
         protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
         {
-            ChkAll(gvHosts);
+            ChkAll(gvComputers);
         }
     }
 }

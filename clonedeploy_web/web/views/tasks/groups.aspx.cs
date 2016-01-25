@@ -30,9 +30,9 @@ namespace views.tasks
                 if (isUnicast == 1)
                 {
                     var count = 0;
-                    foreach (var host in BLL.Group.GetGroupMembers(group.Id, ""))
+                    foreach (var computer in BLL.Group.GetGroupMembers(group.Id, ""))
                     {
-                        new BLL.Workflows.Unicast(host, "push").Start();
+                        new BLL.Workflows.Unicast(computer, "push").Start();
                         count++;
                     }
                     EndUserMessage = "Started " + count + " Tasks";
@@ -92,7 +92,7 @@ namespace views.tasks
                   
                     Session["groupID"] = group.Id;
                     Session["isGroupUnicast"] = 1;
-                    lblTitle.Text = "Unicast All The Hosts In The Selected Group?";
+                    lblTitle.Text = "Unicast All The Computers In The Selected Group?";
                     gvConfirm.DataSource = new List<Models.Group> { group };
                 }
             }

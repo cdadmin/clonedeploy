@@ -18,7 +18,7 @@
              <li><a href="<%= ResolveUrl("~/views/tasks/activeunicast.aspx") %>" ><span class="sub-nav-text">Active Unicasts</span></a></li>
             <li><a href="<%= ResolveUrl("~/views/tasks/activemulticast.aspx") %>" ><span class="sub-nav-text">Active Multicasts</span></a></li>
              <li><a href="<%= ResolveUrl("~/views/tasks/active.aspx") %>" ><span class="sub-nav-text">All Active Tasks</span></a></li>
-            <li><a href="<%= ResolveUrl("~/views/tasks/hosts.aspx") %>" ><span class="sub-nav-text">Start Computer Task</span></a></li>
+            <li><a href="<%= ResolveUrl("~/views/tasks/computers.aspx") %>" ><span class="sub-nav-text">Start Computer Task</span></a></li>
             <li><a href="<%= ResolveUrl("~/views/tasks/groups.aspx") %>" ><span class="sub-nav-text">Start Group Task</span></a></li>
             <li><a href="<%= ResolveUrl("~/views/tasks/ondemand.aspx") %>"><span class="sub-nav-text">Start On Demand Multicast</span></a></li>
        </ul>

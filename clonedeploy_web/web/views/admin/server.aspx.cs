@@ -13,7 +13,7 @@ public partial class views_admin_server : Admin
         txtIP.Text = Settings.ServerIp;
         txtPort.Text = Settings.WebServerPort;
         txtTFTPPath.Text = Settings.TftpPath;
-        ddlHostView.SelectedValue = Settings.DefaultHostView;
+        ddlComputerView.SelectedValue = Settings.DefaultComputerView;
         txtWebService.Text = Settings.WebPath;
 
         //These require pxe boot menu or client iso to be recreated
@@ -29,7 +29,7 @@ public partial class views_admin_server : Admin
             new Models.Setting {Name = "Server IP", Value = txtIP.Text, Id = Setting.GetSetting("Server IP").Id},
             new Models.Setting {Name = "Web Server Port", Value = txtPort.Text, Id = Setting.GetSetting("Web Server Port").Id},
             new Models.Setting {Name = "Tftp Path", Value = txtTFTPPath.Text, Id = Setting.GetSetting("Tftp Path").Id},
-            new Models.Setting {Name = "Default Host View", Value = ddlHostView.Text, Id = Setting.GetSetting("Default Host View").Id},
+            new Models.Setting {Name = "Default Computer View", Value = ddlComputerView.Text, Id = Setting.GetSetting("Default Computer View").Id},
             new Models.Setting {Name = "Web Path", Value = txtWebService.Text, Id = Setting.GetSetting("Web Path").Id}
         };
 

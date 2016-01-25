@@ -57,14 +57,14 @@ namespace Service.Client
         public string GetCustomMulticastInfo(string mac, string mcTaskName)
         {
             Models.ActiveMulticastSession mcTask;
-            var host = new BLL.Computer().GetComputerFromMac(mac.ToLower());
+            var computer = new BLL.Computer().GetComputerFromMac(mac.ToLower());
   
             using (var db = new DB())
             {
                 mcTask = db.ActiveMcTasks.FirstOrDefault(t => t.Name == mcTaskName);
             }
 
-            return "portBase=" + mcTask.Port + " imgName=" + mcTask.Image + " hostName=" + host.Name;
+            return "portBase=" + mcTask.Port + " imgName=" + mcTask.Image + " computerName=" + computer.Name;
         }
 
         public string GetCustomMulticastSessions()
@@ -106,7 +106,7 @@ namespace Service.Client
             var image = new BLL.Image().GetImage(Convert.ToInt32(imageId));
 
 
-            var host = new BLL.Computer().GetComputerFromMac(mac.ToLower());
+            var computer = new BLL.Computer().GetComputerFromMac(mac.ToLower());
 
             if (direction == "push")
             {
@@ -130,8 +130,8 @@ namespace Service.Client
             }
 
             //FIX ME
-            result = "imgName=" + image.Name + " hostName=" + host.Name +
-                     //" hostScripts=" + "\"" + host.Scripts + "\" " + host.Args + " storage=" +
+            result = "imgName=" + image.Name + " computerName=" + computer.Name +
+                     //" computerScripts=" + "\"" + computer.Scripts + "\" " + computer.Args + " storage=" +
                      storage + " serverIP=" + serverIp + " xferMode=" + xferMode + " compAlg=" + compAlg +
                      " compLevel=-" + compLevel + " imageProtected=" + image.Protected;
 

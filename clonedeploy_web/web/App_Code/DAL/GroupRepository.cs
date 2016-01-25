@@ -28,11 +28,7 @@ namespace DAL
         }
 
    
-        public List<Models.Computer> SearchSmartHosts(string searchString)
-        {
-         
-            return new List<Models.Computer>();
-        }
+       
 
         public List<Models.Computer> GetGroupMembers(int searchGroupId, string searchString)
         {

@@ -8,9 +8,9 @@ using System.Web.UI.WebControls;
 using BasePages;
 using Helpers;
 
-namespace views.hosts
+namespace views.computers
 {
-    public partial class HostLog : Computers
+    public partial class ComputerLog : Computers
     {
         protected void Page_Load(object sender, EventArgs e)
         {

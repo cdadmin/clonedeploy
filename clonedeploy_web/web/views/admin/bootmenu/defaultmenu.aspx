@@ -17,14 +17,14 @@
 
     function get_shas() {
         $('#<%= consoleSha.ClientID %>').val(syslinux_sha512(document.getElementById('<%= txtDebugPwd.ClientID %>').value));
-        $('#<%= addhostSha.ClientID %>').val(syslinux_sha512(document.getElementById('<%= txtAddPwd.ClientID %>').value));
+        $('#<%= addcomputerSha.ClientID %>').val(syslinux_sha512(document.getElementById('<%= txtAddPwd.ClientID %>').value));
         $('#<%= ondsha.ClientID %>').val(syslinux_sha512(document.getElementById('<%= txtOndPwd.ClientID %>').value));
         $('#<%= diagsha.ClientID %>').val(syslinux_sha512(document.getElementById('<%= txtdiagPwd.ClientID %>').value));
     }
 </script>
 
 <asp:HiddenField ID="consoleSha" runat="server"/>
-<asp:HiddenField ID="addhostSha" runat="server"/>
+<asp:HiddenField ID="addcomputerSha" runat="server"/>
 <asp:HiddenField ID="ondsha" runat="server"/>
 <asp:HiddenField ID="diagsha" runat="server"/>
 
@@ -36,7 +36,7 @@
             Kernel:
         </div>
         <div class="size-5 column">
-            <asp:DropDownList ID="ddlHostKernel" runat="server" CssClass="ddlist">
+            <asp:DropDownList ID="ddlComputerKernel" runat="server" CssClass="ddlist">
             </asp:DropDownList>
         </div>
         <br class="clear"/>
@@ -44,7 +44,7 @@
             Boot Image:
         </div>
         <div class="size-5 column">
-            <asp:DropDownList ID="ddlHostBootImage" runat="server" CssClass="ddlist">
+            <asp:DropDownList ID="ddlComputerBootImage" runat="server" CssClass="ddlist">
             </asp:DropDownList>
         </div>
         <br class="clear"/>
@@ -59,7 +59,7 @@
             </div>
             <br class="clear"/>
             <div class="size-4 column">
-                Add Host Password:
+                Add Computer Password:
             </div>
             <div class="size-5 column">
                 <asp:TextBox ID="txtAddPwd" runat="server" CssClass="textbox" type="password"></asp:TextBox>
@@ -193,7 +193,7 @@
         </div>
         <br class="clear"/>
         <div class="size-4 column">
-            Add Host Password:
+            Add Computer Password:
         </div>
         <div class="size-5 column">
             <asp:TextBox ID="txtProxAddPwd" runat="server" CssClass="textbox" type="password"></asp:TextBox>

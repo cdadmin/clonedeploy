@@ -30,7 +30,7 @@
         Image:
     </div>
     <div class="size-5 column">
-        <asp:DropDownList ID="ddlHostImage" runat="server" CssClass="ddlist" AutoPostBack="true" OnSelectedIndexChanged="ddlHostImage_OnSelectedIndexChanged"/>
+        <asp:DropDownList ID="ddlComputerImage" runat="server" CssClass="ddlist" AutoPostBack="true" OnSelectedIndexChanged="ddlComputerImage_OnSelectedIndexChanged"/>
    </div>
     <div class="size-4 column">
         <asp:CheckBox runat="server" Id="chkImage"/>
@@ -48,10 +48,10 @@
     </div>
     <br class="clear"/>
     <div class="size-4 column">
-        Host Description:
+        Computer Description:
     </div>
     <div class="size-5 column">
-        <asp:TextBox ID="txtHostDesc" runat="server" CssClass="descbox" TextMode="MultiLine"></asp:TextBox>
+        <asp:TextBox ID="txtComputerDesc" runat="server" CssClass="descbox" TextMode="MultiLine"></asp:TextBox>
     </div>
     <div class="size-4 column">
         <asp:CheckBox runat="server" Id="chkDescription"/>

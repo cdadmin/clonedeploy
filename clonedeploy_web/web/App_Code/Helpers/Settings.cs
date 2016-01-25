@@ -29,9 +29,9 @@ namespace Helpers
             get { return Setting.GetSetting("Debug Requires Login").Value; }
         }
 
-        public static string DefaultHostView
+        public static string DefaultComputerView
         {
-            get { return Setting.GetSetting("Default Host View").Value; }
+            get { return Setting.GetSetting("Default Computer View").Value; }
         }
 
         public static string DefaultKernel32
@@ -54,9 +54,9 @@ namespace Helpers
             get { return Setting.GetSetting("Force SSL").Value; }
         }
 
-        public static string GlobalHostArgs
+        public static string GlobalComputerArgs
         {
-            get { return Setting.GetSetting("Global Host Args").Value; }
+            get { return Setting.GetSetting("Global Computer Args").Value; }
         }
 
         public static string ImageChecksum

@@ -12,13 +12,13 @@ public partial class views_groups_removemembers : Groups
     protected void Page_Load(object sender, EventArgs e)
     {
         if (IsPostBack) return;
-        if (Settings.DefaultHostView == "all")
+        if (Settings.DefaultComputerView == "all")
             PopulateGrid();
     }
 
     protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
     {
-        ChkAll(gvHosts);
+        ChkAll(gvComputers);
     }
 
     
@@ -26,30 +26,30 @@ public partial class views_groups_removemembers : Groups
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<Computer> listHosts = (List<Computer>)gvHosts.DataSource;
+        List<Computer> listComputers = (List<Computer>)gvComputers.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
-                listHosts = GetSortDirection(e.SortExpression) == "Asc" ? listHosts.OrderBy(h => h.Name).ToList() : listHosts.OrderByDescending(h => h.Name).ToList();
+                listComputers = GetSortDirection(e.SortExpression) == "Asc" ? listComputers.OrderBy(h => h.Name).ToList() : listComputers.OrderByDescending(h => h.Name).ToList();
                 break;
             case "Mac":
-                listHosts = GetSortDirection(e.SortExpression) == "Asc" ? listHosts.OrderBy(h => h.Mac).ToList() : listHosts.OrderByDescending(h => h.Mac).ToList();
+                listComputers = GetSortDirection(e.SortExpression) == "Asc" ? listComputers.OrderBy(h => h.Mac).ToList() : listComputers.OrderByDescending(h => h.Mac).ToList();
                 break;
           
         }
 
 
-        gvHosts.DataSource = listHosts;
-        gvHosts.DataBind();
+        gvComputers.DataSource = listComputers;
+        gvComputers.DataBind();
     }
 
     protected void PopulateGrid()
     {
 
-        gvHosts.DataSource = BLL.Group.GetGroupMembers(Group.Id,txtSearch.Text);
-        gvHosts.DataBind();
+        gvComputers.DataSource = BLL.Group.GetGroupMembers(Group.Id,txtSearch.Text);
+        gvComputers.DataBind();
 
-        //lblTotal.Text = gvHosts.Rows.Count + " Result(s) / " + BllGroup.GetGroupMemberCount(Group.Id) + " Total Host(s)";
+        //lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + BllGroup.GetGroupMemberCount(Group.Id) + " Total Computer(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)
@@ -62,11 +62,11 @@ public partial class views_groups_removemembers : Groups
     protected void btnRemoveSelected_OnClick(object sender, EventArgs e)
     {
         var removedCount = 0;
-        foreach (GridViewRow row in gvHosts.Rows)
+        foreach (GridViewRow row in gvComputers.Rows)
         {
             var cb = (CheckBox)row.FindControl("chkSelector");
             if (cb == null || !cb.Checked) continue;
-            var dataKey = gvHosts.DataKeys[row.RowIndex];
+            var dataKey = gvComputers.DataKeys[row.RowIndex];
             if (dataKey != null)
             {
                 var membership = new Models.GroupMembership

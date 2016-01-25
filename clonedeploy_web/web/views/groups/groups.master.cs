@@ -84,7 +84,7 @@ namespace views.masters
         protected void btnUnicast_Click(object sender, EventArgs e)
         {
             Session["taskType"] = "unicast";
-            lblTitle.Text = "Unicast All The Hosts In The Selected Group?";
+            lblTitle.Text = "Unicast All The Computers In The Selected Group?";
             gvConfirm.DataSource = new List<Group> { Group };
             gvConfirm.DataBind();
             DisplayConfirm();

@@ -54,11 +54,11 @@
 	position: relative;
 	height: 51px;
 	overflow: hidden;
-	line-height: 19px;
+	line-height: 21px;
 	margin: 0px 6px 0px 0;
 	padding: 0px 10px 0px 0;
 	font-size: 18px;
-	background: url(../img/Chevron.gif) no-repeat 100% 0;
+	background: url(../img/Chevron.gif) no-repeat 100% 1px;
 }
 .breadCrumb ul li div.chevronOverlay
 {

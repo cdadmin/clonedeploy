@@ -13,7 +13,7 @@ public partial class views_admin_client : Admin
         if (IsPostBack) return;
      
         txtQSize.Text = Settings.QueueSize;        
-        txtGlobalHostArgs.Text = Settings.GlobalHostArgs;  
+        txtGlobalComputerArgs.Text = Settings.GlobalComputerArgs;  
     }
 
     protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
@@ -23,7 +23,7 @@ public partial class views_admin_client : Admin
             List<Models.Setting> listSettings = new List<Models.Setting>
             {              
                     new Models.Setting {Name = "Queue Size", Value = txtQSize.Text, Id = Setting.GetSetting("Queue Size").Id},
-                    new Models.Setting {Name = "Global Host Args", Value = txtGlobalHostArgs.Text, Id = Setting.GetSetting("Global Host Args").Id}                
+                    new Models.Setting {Name = "Global Computer Args", Value = txtGlobalComputerArgs.Text, Id = Setting.GetSetting("Global Computer Args").Id}                
             };
 
          

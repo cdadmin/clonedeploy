@@ -33,7 +33,7 @@
         public DataTable LastUnicasts()
         {
             var table = new DataTable();
-            table.Columns.Add("Host");
+            table.Columns.Add("Computer");
             table.Columns.Add("Date");
             using (var db = new DB())
             {
@@ -41,8 +41,8 @@
                 foreach (var history in histories)
                 {
                     var row = table.NewRow();
-                    var host = new BLL.Computer().GetComputer(Convert.ToInt16(history.TypeId));
-                    row["Host"] = host.Name;
+                    var computer = new BLL.Computer().GetComputer(Convert.ToInt16(history.TypeId));
+                    row["Computer"] = computer.Name;
                     row["Date"] = history.EventDate;
                     table.Rows.Add(row);
 
@@ -104,16 +104,16 @@
         public DataTable TopFiveUnicast()
         {
             var table = new DataTable();
-            table.Columns.Add("Host");
+            table.Columns.Add("Computer");
             table.Columns.Add("Count");
             using (var db = new DB())
             {
-                var histories = (from h in db.History where h.Event == "Deploy" && h.Type == "Host" group h by h.TypeId into hgroup select new { groupCount = hgroup.Count(), hgroup.Key }).OrderByDescending(x => x.groupCount).Take(5);
+                var histories = (from h in db.History where h.Event == "Deploy" && h.Type == "Computer" group h by h.TypeId into hgroup select new { groupCount = hgroup.Count(), hgroup.Key }).OrderByDescending(x => x.groupCount).Take(5);
                 foreach (var history in histories)
                 {
                     var row = table.NewRow();
-                    var host = new BLL.Computer().GetComputer(Convert.ToInt32(history.Key));
-                    row["Host"] = host.Name;
+                    var computer = new BLL.Computer().GetComputer(Convert.ToInt32(history.Key));
+                    row["Computer"] = computer.Name;
                     row["Count"] = history.groupCount;
                     table.Rows.Add(row);
 

@@ -58,14 +58,14 @@ namespace Security
             //fix me
             var newLineChar = "\n";
             var wdsKey = Settings.WebTaskRequiresLogin == "No" ? Settings.ServerKey : "";
-            var globalHostArgs = Settings.GlobalHostArgs;
+            var globalComputerArgs = Settings.GlobalComputerArgs;
             var validationResult = GlobalLogin(username, password, "iPXE");
             if (!validationResult.IsValid) return "goto Menu";
             var lines = "#!ipxe" + newLineChar;
             lines += "kernel " + Settings.WebPath + "IpxeBoot?filename=" + kernel + "&type=kernel" +
                      " initrd=" + bootImage + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
                      Settings.WebPath + " WDS_KEY=" + wdsKey + " task=" + task + " consoleblank=0 " +
-                     globalHostArgs + newLineChar;
+                     globalComputerArgs + newLineChar;
             lines += "imgfetch --name " + bootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
                      bootImage + "&type=bootimage" + newLineChar;
             lines += "boot";

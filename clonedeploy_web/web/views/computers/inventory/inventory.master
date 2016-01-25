@@ -1,18 +1,18 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/views/computers/computers.master" AutoEventWireup="true" CodeFile="inventory.master.cs" Inherits="views_computers_inventory_inventory" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
-     <li><a href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?hostid=<%= Computer.Id %>" ><%= Computer.Name %></a></li>
+     <li><a href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?computerid=<%= Computer.Id %>" ><%= Computer.Name %></a></li>
     <li>Inventory</li>
      <asp:ContentPlaceHolder runat="server" ID="BreadcrumbSub2">
     </asp:ContentPlaceHolder>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="Level3" Runat="Server">
-     <li id="general"><a href="<%= ResolveUrl("~/views/computers/inventory/general.aspx?level=3")  %>&hostid=<%= Computer.Id %>"><span class="sub-nav-text">General</span></a></li>
-     <li id="hardware"><a  href="<%= ResolveUrl("~/views/computers/inventory/hardware.aspx?level=3") %>&hostid=<%= Computer.Id %>"><span class="sub-nav-text">Hardware</span></a></li>
-    <li id="os"><a href="<%= ResolveUrl("~/views/computers/inventory/os.aspx?level=3")  %>&hostid=<%= Computer.Id %>"><span class="sub-nav-text">Operating System</span></a></li>
-    <li id="applications"><a href="<%= ResolveUrl("~/views/computers/inventory/applications.aspx?level=3")  %>&hostid=<%= Computer.Id %>"><span class="sub-nav-text">Applications</span></a></li>
-    <li id="printers"><a href="<%= ResolveUrl("~/views/computers/inventory/printers.aspx?level=3")  %>&hostid=<%= Computer.Id %>"><span class="sub-nav-text">Printers</span></a></li>
-     <li id="logins"><a href="<%= ResolveUrl("~/views/computers/inventory/userlogins.aspx?level=3")  %>&hostid=<%= Computer.Id %>"><span class="sub-nav-text">User Logins</span></a></li>
+     <li id="general"><a href="<%= ResolveUrl("~/views/computers/inventory/general.aspx?level=3")  %>&computerid=<%= Computer.Id %>"><span class="sub-nav-text">General</span></a></li>
+     <li id="hardware"><a  href="<%= ResolveUrl("~/views/computers/inventory/hardware.aspx?level=3") %>&computerid=<%= Computer.Id %>"><span class="sub-nav-text">Hardware</span></a></li>
+    <li id="os"><a href="<%= ResolveUrl("~/views/computers/inventory/os.aspx?level=3")  %>&computerid=<%= Computer.Id %>"><span class="sub-nav-text">Operating System</span></a></li>
+    <li id="applications"><a href="<%= ResolveUrl("~/views/computers/inventory/applications.aspx?level=3")  %>&computerid=<%= Computer.Id %>"><span class="sub-nav-text">Applications</span></a></li>
+    <li id="printers"><a href="<%= ResolveUrl("~/views/computers/inventory/printers.aspx?level=3")  %>&computerid=<%= Computer.Id %>"><span class="sub-nav-text">Printers</span></a></li>
+     <li id="logins"><a href="<%= ResolveUrl("~/views/computers/inventory/userlogins.aspx?level=3")  %>&computerid=<%= Computer.Id %>"><span class="sub-nav-text">User Logins</span></a></li>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
       <asp:ContentPlaceHolder runat="server" ID="SubContent2">

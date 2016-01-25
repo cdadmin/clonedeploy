@@ -46,5 +46,14 @@ namespace BLL
                 return uow.ComputerLogRepository.Get(x => x.ComputerId == computerId, orderBy:(q => q.OrderByDescending(x => x.LogTime)));
             }
         }
+
+        public static bool DeleteComputerLogs(int computerId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.ComputerLogRepository.DeleteRange(x => x.ComputerId == computerId);
+                return uow.Save();
+            }
+        }
     }
 }

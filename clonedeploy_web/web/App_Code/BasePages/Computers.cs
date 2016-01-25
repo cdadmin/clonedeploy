@@ -12,8 +12,8 @@ namespace BasePages
         {
 
             base.OnInit(e);
-            Computer = !string.IsNullOrEmpty(Request.QueryString["hostid"])
-                ? BLL.Computer.GetComputer(Convert.ToInt32(Request.QueryString["hostid"]))
+            Computer = !string.IsNullOrEmpty(Request.QueryString["computerid"])
+                ? BLL.Computer.GetComputer(Convert.ToInt32(Request.QueryString["computerid"]))
                 : null;
             if (Computer == null)
                 RequiresAuthorization(Authorizations.ReadComputer);

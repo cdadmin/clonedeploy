@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/tasks/Task.master" AutoEventWireup="true" Inherits="views.tasks.TaskUnicast" CodeFile="hosts.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/tasks/Task.master" AutoEventWireup="true" Inherits="views.tasks.TaskUnicast" CodeFile="computers.aspx.cs" %>
 
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">
@@ -13,9 +13,9 @@
     <p class="total">
         <asp:Label ID="lblTotal" runat="server"></asp:Label>
     </p>
-    <asp:GridView ID="gvHosts" runat="server" AutoGenerateColumns="False" DataKeyNames="Id" CssClass="Gridview" AllowSorting="True" OnSorting="gridView_Sorting" AlternatingRowStyle-CssClass="alt">
+    <asp:GridView ID="gvComputers" runat="server" AutoGenerateColumns="False" DataKeyNames="Id" CssClass="Gridview" AllowSorting="True" OnSorting="gridView_Sorting" AlternatingRowStyle-CssClass="alt">
         <Columns>
-            <asp:BoundField DataField="Id" HeaderText="hostID" InsertVisible="False" ReadOnly="True" SortExpression="Id" Visible="False"/>
+            <asp:BoundField DataField="Id" HeaderText="computerID" InsertVisible="False" ReadOnly="True" SortExpression="Id" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"/>
             <asp:BoundField DataField="Image.Name" HeaderText="Image" SortExpression="Image" ItemStyle-CssClass="width_200 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller"/>
            
@@ -31,7 +31,7 @@
             </asp:TemplateField>
         </Columns>
         <EmptyDataTemplate>
-            No Hosts Found
+            No Computers Found
         </EmptyDataTemplate>
     </asp:GridView>
     <div id="confirmbox" class="confirm-box-outer">

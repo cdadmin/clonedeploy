@@ -5,7 +5,7 @@ using Models;
 
 namespace views.computers
 {
-    public partial class Addhosts : Computers
+    public partial class Addcomputers : Computers
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -14,18 +14,18 @@ namespace views.computers
             if (!IsPostBack) PopulateForm();
         }
 
-        protected void ButtonAddHost_Click(object sender, EventArgs e)
+        protected void ButtonAddComputer_Click(object sender, EventArgs e)
         {
-            var host = new Computer
+            var computer = new Computer
             {
-                Name = txtHostName.Text,
-                Mac = txtHostMac.Text,
-                ImageId = Convert.ToInt32(ddlHostImage.SelectedValue),
+                Name = txtComputerName.Text,
+                Mac = txtComputerMac.Text,
+                ImageId = Convert.ToInt32(ddlComputerImage.SelectedValue),
                 ImageProfile =
-                    Convert.ToInt32(ddlHostImage.SelectedValue) == -1
+                    Convert.ToInt32(ddlComputerImage.SelectedValue) == -1
                         ? -1
                         : Convert.ToInt32(ddlImageProfile.SelectedValue),
-                Description = txtHostDesc.Text,
+                Description = txtComputerDesc.Text,
                 SiteId = Convert.ToInt32(ddlSite.SelectedValue),
                 BuildingId = Convert.ToInt32(ddlBuilding.SelectedValue),
                 RoomId = Convert.ToInt32(ddlRoom.SelectedValue),
@@ -38,28 +38,28 @@ namespace views.computers
             };
 
 
-            var result = BLL.Computer.AddComputer(host);
+            var result = BLL.Computer.AddComputer(computer);
             if (!result.IsValid)
                 EndUserMessage = result.Message;
             else
             {
                 EndUserMessage = "Successfully Created Computer";
                 if (!createAnother.Checked)
-                    Response.Redirect("~/views/computers/edit.aspx?hostid=" + host.Id);
+                    Response.Redirect("~/views/computers/edit.aspx?computerid=" + computer.Id);
             }
         }
 
         protected void PopulateForm()
         {
-            PopulateImagesDdl(ddlHostImage);
+            PopulateImagesDdl(ddlComputerImage);
             PopulateSitesDdl(ddlSite);
             PopulateBuildingsDdl(ddlBuilding);
             PopulateRoomsDdl(ddlRoom);
         }
 
-        protected void ddlHostImage_OnSelectedIndexChanged(object sender, EventArgs e)
+        protected void ddlComputerImage_OnSelectedIndexChanged(object sender, EventArgs e)
         {
-            PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlHostImage.SelectedValue));
+            PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlComputerImage.SelectedValue));
         }
     }
 }

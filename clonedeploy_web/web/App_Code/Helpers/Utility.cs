@@ -187,11 +187,11 @@ namespace Helpers
         public static void WakeUp(string mac)
         {
             var pattern = new Regex("[:]");
-            var wolHostMac = pattern.Replace(mac, "");
+            var wolComputerMac = pattern.Replace(mac, "");
 
             try
             {
-                var value = long.Parse(wolHostMac, NumberStyles.HexNumber, CultureInfo.CurrentCulture.NumberFormat);
+                var value = long.Parse(wolComputerMac, NumberStyles.HexNumber, CultureInfo.CurrentCulture.NumberFormat);
                 var macBytes = BitConverter.GetBytes(value);
 
                 Array.Reverse(macBytes);

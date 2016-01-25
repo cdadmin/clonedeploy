@@ -3,26 +3,26 @@ using BasePages;
 using Helpers;
 using Models;
 
-namespace views.hosts
+namespace views.computers
 {
-    public partial class HostEdit : Computers
+    public partial class ComputerEdit : Computers
     {
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack) PopulateForm();
         }
 
-        protected void buttonUpdateHost_Click(object sender, EventArgs e)
+        protected void buttonUpdateComputer_Click(object sender, EventArgs e)
         {
             RequiresAuthorization(Authorizations.UpdateComputer);
-            var host = new Computer
+            var computer = new Computer
             {
                 Id = Computer.Id,
-                Name = txtHostName.Text,
-                Mac = txtHostMac.Text,
-                ImageId = Convert.ToInt32(ddlHostImage.SelectedValue),
-                ImageProfile = Convert.ToInt32(ddlHostImage.SelectedValue) == -1 ? -1 : Convert.ToInt32(ddlImageProfile.SelectedValue),
-                Description = txtHostDesc.Text,
+                Name = txtComputerName.Text,
+                Mac = txtComputerMac.Text,
+                ImageId = Convert.ToInt32(ddlComputerImage.SelectedValue),
+                ImageProfile = Convert.ToInt32(ddlComputerImage.SelectedValue) == -1 ? -1 : Convert.ToInt32(ddlImageProfile.SelectedValue),
+                Description = txtComputerDesc.Text,
                 SiteId = Convert.ToInt32(ddlSite.SelectedValue),
                 BuildingId = Convert.ToInt32(ddlBuilding.SelectedValue),
                 RoomId = Convert.ToInt32(ddlRoom.SelectedValue),
@@ -33,21 +33,21 @@ namespace views.hosts
                 CustomAttribute5 = txtCustom5.Text
             };
 
-            var result = BLL.Computer.UpdateComputer(host);
+            var result = BLL.Computer.UpdateComputer(computer);
             EndUserMessage = !result.IsValid ? result.Message : "Successfully Updated Computer";
         }
 
         protected void PopulateForm()
         {
-            PopulateImagesDdl(ddlHostImage);
+            PopulateImagesDdl(ddlComputerImage);
             PopulateSitesDdl(ddlSite);
             PopulateBuildingsDdl(ddlBuilding);
             PopulateRoomsDdl(ddlRoom);
-            txtHostName.Text = Computer.Name;
-            txtHostMac.Text = Computer.Mac;
-            ddlHostImage.SelectedValue = Computer.ImageId.ToString();        
-            txtHostDesc.Text = Computer.Description;
-            PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlHostImage.SelectedValue));
+            txtComputerName.Text = Computer.Name;
+            txtComputerMac.Text = Computer.Mac;
+            ddlComputerImage.SelectedValue = Computer.ImageId.ToString();        
+            txtComputerDesc.Text = Computer.Description;
+            PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlComputerImage.SelectedValue));
             ddlImageProfile.SelectedValue = Computer.ImageProfile.ToString();
             ddlSite.SelectedValue = Computer.SiteId.ToString();
             ddlBuilding.SelectedValue = Computer.BuildingId.ToString();
@@ -59,10 +59,10 @@ namespace views.hosts
             txtCustom5.Text = Computer.CustomAttribute5;
         }
 
-        protected void ddlHostImage_OnSelectedIndexChanged(object sender, EventArgs e)
+        protected void ddlComputerImage_OnSelectedIndexChanged(object sender, EventArgs e)
         {           
-            if (ddlHostImage.Text == "Select Image") return;
-            PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlHostImage.SelectedValue));
+            if (ddlComputerImage.Text == "Select Image") return;
+            PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlComputerImage.SelectedValue));
         }
     }
 }

@@ -116,8 +116,6 @@ hr{border:solid #ddd;border-width:1px 0 0;clear:both;margin:10px 0 0px;height:0;
 
 /* Sub Menus
 ================================================== */
-.actions-right{ }
-.nav-btn-round{}
 .nav-btn-square{float:left;background:#fff;margin-bottom: 10px;margin-top:2px;padding-bottom:5px;padding-right:0;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;}
 .nav-btn-round a{display:block;float:left;position:relative;width:2.5em;height:2.5em;background:#fff;border-radius:50%;color:transparent;margin:0 .5em;border:4px solid #47a3da;}
 .nav-btn-square a{display:block;color: white;float:left;position:relative;width:150px;height:35px;background:#666666;margin:0 5px 0 0;font-size: 18px;font-weight: 500;text-align: center;padding-top:5px;}
@@ -181,8 +179,8 @@ Table.gv_vg{margin-left:30px;border-left:2px solid #e8e8e8;border-bottom:2px sol
 .hdlist td{padding:0;}
 
 .width_300{width:300px;}
-.width_200{width:200px;}
-.width_150{width:150px;}
+.width_200{width:200px !important;}
+.width_150{width: 150px;}
 .width_105{width:105px;}
 .width_50{width:50px;}
 .width_30{width:20px;}
@@ -190,6 +188,7 @@ Table.gv_vg{margin-left:30px;border-left:2px solid #e8e8e8;border-bottom:2px sol
 .height_800{ height: 800px;}
 .height_600{ height: 600px;}
 .height_400{ height: 400px;}
+.inline { display: inline !important;}
 
 /* #Forms
 ================================================== */
@@ -218,7 +217,7 @@ input[type="checkbox"]{display:inline;}
 
 /* Buttons
 ================================================== */
-a.confirm,a.submits,input[type="submit"]{text-align: center;background:#c94121;-moz-border-radius:0px;-webkit-border-radius:0px;border-radius:0px;color: #fff;display:inline-block;text-decoration:none;cursor:pointer;margin-bottom:3px;line-height:normal;padding:10px 10px; font-size:16px;border: 1px solid #fff;width: 200px;}
+a.confirm,a.submits,input[type="submit"]{text-align: center;background:#666;-moz-border-radius:0px;-webkit-border-radius:0px;border-radius:0px;color: #fff;display:inline-block;text-decoration:none;cursor:pointer;margin-bottom:3px;line-height:normal;padding:15px 10px; font-size:16px;border: 1px solid #fff;width: 200px;}
 a.confirm:hover,a.submits:hover,input[type="submit"]:hover,a.boot-active{color:#fff;background:#47a3da;-webkit-transition:background .2s ease-in-out;-moz-transition:background .2s ease-in-out;transition:background .2s ease-in-out;}
 
 a.confirm:active,a.submits:active,input[type="submit"]:active{background:#ccc;}

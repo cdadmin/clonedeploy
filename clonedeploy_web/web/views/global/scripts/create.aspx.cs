@@ -19,7 +19,7 @@ public partial class views_admin_scripts_create : BasePages.Global
         script.Contents = fixedLineEnding;
         BLL.Script.AddScript(script);
             //if (script.Create())
-                //Response.Redirect("~/views/computers/edit.aspx?hostid=" + host.Id);
+                //Response.Redirect("~/views/computers/edit.aspx?computerid=" + computer.Id);
 
    }
 }

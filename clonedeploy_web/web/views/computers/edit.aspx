@@ -1,14 +1,14 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/computers/computers.master" AutoEventWireup="true" CodeFile="edit.aspx.cs" Inherits="views.hosts.HostEdit" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/computers/computers.master" AutoEventWireup="true" CodeFile="edit.aspx.cs" Inherits="views.computers.ComputerEdit" %>
 
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
-    <li><a href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?hostid=<%= Computer.Id %>" ><%= Computer.Name %></a></li>
+    <li><a href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?computerid=<%= Computer.Id %>" ><%= Computer.Name %></a></li>
     <li>General</li>
     </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="Help">
      <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits actions" target="_blank">Help</a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-     <asp:LinkButton ID="buttonUpdateHost" runat="server" OnClick="buttonUpdateHost_Click" Text="Update Computer" CssClass="submits actions"></asp:LinkButton>
+     <asp:LinkButton ID="buttonUpdateComputer" runat="server" OnClick="buttonUpdateComputer_Click" Text="Update Computer" CssClass="submits actions"></asp:LinkButton>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
     <script type="text/javascript">
@@ -20,21 +20,21 @@
         Name:
     </div>
     <div class="size-5 column">
-        <asp:TextBox ID="txtHostName" runat="server" CssClass="textbox"></asp:TextBox>
+        <asp:TextBox ID="txtComputerName" runat="server" CssClass="textbox"></asp:TextBox>
     </div>
     <br class="clear"/>
     <div class="size-4 column">
         Primary MAC Address:
     </div>
     <div class="size-5 column">
-        <asp:TextBox ID="txtHostMac" runat="server" CssClass="textbox" MaxLength="17"></asp:TextBox>
+        <asp:TextBox ID="txtComputerMac" runat="server" CssClass="textbox" MaxLength="17"></asp:TextBox>
     </div>
     <br class="clear"/>
     <div class="size-4 column">
         Image:
     </div>
     <div class="size-5 column">
-        <asp:DropDownList ID="ddlHostImage" runat="server" CssClass="ddlist" AutoPostBack="true" OnSelectedIndexChanged="ddlHostImage_OnSelectedIndexChanged"/>
+        <asp:DropDownList ID="ddlComputerImage" runat="server" CssClass="ddlist" AutoPostBack="true" OnSelectedIndexChanged="ddlComputerImage_OnSelectedIndexChanged"/>
     </div>
     <br class="clear"/>
    
@@ -46,10 +46,10 @@
     </div>
     <br class="clear"/>
     <div class="size-4 column">
-        Host Description:
+        Computer Description:
     </div>
     <div class="size-5 column">
-        <asp:TextBox ID="txtHostDesc" runat="server" CssClass="descbox" TextMode="MultiLine"></asp:TextBox>
+        <asp:TextBox ID="txtComputerDesc" runat="server" CssClass="descbox" TextMode="MultiLine"></asp:TextBox>
     </div>
     <br class="clear"/>
     

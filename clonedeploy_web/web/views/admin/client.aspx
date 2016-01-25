@@ -31,10 +31,10 @@
 
 
 <div class="size-4 column">
-    Global Host Arguments:
+    Global Computer Arguments:
 </div>
 <div class="size-setting column">
-    <asp:TextBox ID="txtGlobalHostArgs" runat="server" CssClass="textbox"></asp:TextBox>
+    <asp:TextBox ID="txtGlobalComputerArgs" runat="server" CssClass="textbox"></asp:TextBox>
 </div>
     </div>
 </asp:Content>

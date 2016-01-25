@@ -25,8 +25,8 @@ public partial class views_computers_bootmenu_active : BasePages.Computers
         if (active)
         {
             path = proxyDhcp == "Yes"
-                ? BLL.ComputerBootMenu.GetHostProxyPath(Computer, true, ddlProxyMode.Text)
-                : BLL.ComputerBootMenu.GetHostNonProxyPath(Computer, true);
+                ? BLL.ComputerBootMenu.GetComputerProxyPath(Computer, true, ddlProxyMode.Text)
+                : BLL.ComputerBootMenu.GetComputerNonProxyPath(Computer, true);
             lblActiveBoot.Text = "Active Task Found <br> Displaying Task Boot Menu";
         }
         else
@@ -34,8 +34,8 @@ public partial class views_computers_bootmenu_active : BasePages.Computers
             if (Convert.ToBoolean(Convert.ToInt16(Computer.CustomBootEnabled)))
             {
                 path = proxyDhcp == "Yes"
-                    ? BLL.ComputerBootMenu.GetHostProxyPath(Computer, true, ddlProxyMode.Text)
-                    : BLL.ComputerBootMenu.GetHostNonProxyPath(Computer, true);
+                    ? BLL.ComputerBootMenu.GetComputerProxyPath(Computer, true, ddlProxyMode.Text)
+                    : BLL.ComputerBootMenu.GetComputerNonProxyPath(Computer, true);
 
                 lblActiveBoot.Text =
                     "No Active Task Found <br> Custom Boot Menu Found <br> Displaying Custom Boot Menu";
@@ -44,8 +44,8 @@ public partial class views_computers_bootmenu_active : BasePages.Computers
             else //Not Active, display default global boot menu
             {
                 path = proxyDhcp == "Yes"
-                    ? BLL.ComputerBootMenu.GetHostProxyPath(Computer, false, ddlProxyMode.Text)
-                    : BLL.ComputerBootMenu.GetHostNonProxyPath(Computer, false);
+                    ? BLL.ComputerBootMenu.GetComputerProxyPath(Computer, false, ddlProxyMode.Text)
+                    : BLL.ComputerBootMenu.GetComputerNonProxyPath(Computer, false);
 
                 lblActiveBoot.Text =
                     "No Active Task Found <br> No Custom Boot Menu Found <br> Displaying Global Default Boot Menu";

@@ -79,7 +79,7 @@ namespace BLL.Workflows
             if (!CreateComputerTasks())
             {
                 ActiveMulticastSession.Delete(_multicastSession.Id);
-                return "Could Not Create Host Database Tasks";
+                return "Could Not Create Computer Database Tasks";
             }
 
             if (!CreatePxeFiles())
@@ -91,7 +91,7 @@ namespace BLL.Workflows
             if (!CreateTaskArguments())
             {
                 ActiveMulticastSession.Delete(_multicastSession.Id);
-                return "Could Not Create Host Task Arguments";
+                return "Could Not Create Computer Task Arguments";
             }
 
             if (!StartMulticastSender())
@@ -100,8 +100,8 @@ namespace BLL.Workflows
                 return "Could Not Start The Multicast Application";
             }
 
-            foreach (var host in _computers)
-                Utility.WakeUp(host.Mac);
+            foreach (var computer in _computers)
+                Utility.WakeUp(computer.Mac);
 
             return "Successfully Started Multicast " + _group.Name;
         }

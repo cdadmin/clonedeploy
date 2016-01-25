@@ -53,11 +53,11 @@
 
 <div class="size-4 column">
     
-     Host View:
+     Computer View:
 </div>
 <div class="size-setting column ddl">
  
-    <asp:DropDownList ID="ddlHostView" runat="server" CssClass="ddlist" ClientIDMode="Static">
+    <asp:DropDownList ID="ddlComputerView" runat="server" CssClass="ddlist" ClientIDMode="Static">
         <asp:ListItem>all</asp:ListItem>
         <asp:ListItem>search</asp:ListItem>
     </asp:DropDownList>

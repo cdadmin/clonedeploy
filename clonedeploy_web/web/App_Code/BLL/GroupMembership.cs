@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Web.ModelBinding;
 using DAL;
 
 namespace BLL
@@ -43,6 +44,15 @@ namespace BLL
             {
                 uow.GroupMembershipRepository.DeleteRange(
                     g => g.ComputerId == groupMembership.ComputerId && g.GroupId == groupMembership.GroupId);
+                return uow.Save();
+            }
+        }
+
+        public static bool DeleteComputerMemberships(int computerId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.GroupMembershipRepository.DeleteRange(x => x.ComputerId == computerId);
                 return uow.Save();
             }
         }

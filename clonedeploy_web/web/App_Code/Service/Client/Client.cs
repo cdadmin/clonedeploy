@@ -90,8 +90,7 @@ namespace Service.Client
         {
             if (!Authorize()) return;
             var scriptPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
-                             Path.DirectorySeparatorChar + "clientscripts" + Path.DirectorySeparatorChar + "core" +
-                             Path.DirectorySeparatorChar;
+                             Path.DirectorySeparatorChar + "clientscripts" + Path.DirectorySeparatorChar;
 
             if (File.Exists(scriptPath + scriptName))
             {
@@ -330,27 +329,7 @@ namespace Service.Client
 
       
 
-        [WebMethod]
-        public void DownloadCoreScripts()
-        {
-            var scriptName = HttpContext.Current.Request.Form["scriptName"];
-
-            if (!Authenticate()) return;
-
-            var scriptPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
-                             Path.DirectorySeparatorChar + "clientscripts" + Path.DirectorySeparatorChar + "core" +
-                             Path.DirectorySeparatorChar;
-            if (File.Exists(scriptPath + scriptName))
-            {
-                HttpContext.Current.Response.ContentType = "application/octet-stream";
-                HttpContext.Current.Response.AppendHeader("Content-Disposition",
-                    "attachment; filename=" + scriptName);
-                HttpContext.Current.Response.TransmitFile(scriptPath + scriptName);
-                HttpContext.Current.Response.End();
-            }
-            else
-                HttpContext.Current.Response.StatusCode = 420;
-        }
+     
 
         [WebMethod]
         public void DownloadCustomScripts()

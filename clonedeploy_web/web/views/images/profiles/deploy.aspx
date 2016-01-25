@@ -333,7 +333,7 @@
                     <asp:CheckBox ID="chkSelector" runat="server"/>
                 </ItemTemplate>
             </asp:TemplateField>
-            <asp:BoundField DataField="Id" HeaderText="hostID" SortExpression="hostID" Visible="False"/>
+            <asp:BoundField DataField="Id" HeaderText="computerID" SortExpression="computerID" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"></asp:BoundField>
             <asp:BoundField DataField="Table" HeaderText="Table" SortExpression="Table" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
             <asp:BoundField DataField="ImageEnvironment" HeaderText="Environment" SortExpression="ImageEnvironment" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
@@ -342,7 +342,7 @@
             <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/global/partitions/edit.aspx?cat=sub1&layoutid={0}" Text="View"/>
         </Columns>
         <EmptyDataTemplate>
-            No Hosts Found
+            No Computers Found
         </EmptyDataTemplate>
     </asp:GridView>
 </div>

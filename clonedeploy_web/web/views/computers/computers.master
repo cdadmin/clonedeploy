@@ -3,7 +3,7 @@
 <asp:Content ID="SubNavTitle" ContentPlaceHolderID="HeaderNav" runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#nav-hosts').addClass("nav-current");
+            $('#nav-computers').addClass("nav-current");
         });
     </script>
     <span class="header-title-text">Computers</span> 
@@ -33,24 +33,24 @@
             <div class="indent">
                 <ul>
                     <li id="general">
-                        <a href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?hostid=<%= Computer.Id %>">
+                        <a href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?computerid=<%= Computer.Id %>">
                             <span class="sub-nav-text">General</span></a>
                     </li>
 
                     <li id="inventory">
-                        <a href="<%= ResolveUrl("~/views/computers/inventory/general.aspx?level=3") %>&hostid=<%= Computer.Id %>">
+                        <a href="<%= ResolveUrl("~/views/computers/inventory/general.aspx?level=3") %>&computerid=<%= Computer.Id %>">
                             <span class="sub-nav-text">Inventory</span></a>
                     </li>
                     <li id="history">
-                        <a href="<%= ResolveUrl("~/views/computers/history.aspx") %>?hostid=<%= Computer.Id %>">
+                        <a href="<%= ResolveUrl("~/views/computers/history.aspx") %>?computerid=<%= Computer.Id %>">
                             <span class="sub-nav-text">History</span></a>
                     </li>
                     <li id="bootmenu">
-                        <a href="<%= ResolveUrl("~/views/computers/bootmenu/active.aspx?level=3") %>&hostid=<%= Computer.Id %>">
+                        <a href="<%= ResolveUrl("~/views/computers/bootmenu/active.aspx?level=3") %>&computerid=<%= Computer.Id %>">
                             <span class="sub-nav-text">Boot Menu</span></a>
                     </li>
                     <li id="log">
-                        <a href="<%= ResolveUrl("~/views/computers/log.aspx") %>?hostid=<%= Computer.Id %>">
+                        <a href="<%= ResolveUrl("~/views/computers/log.aspx") %>?computerid=<%= Computer.Id %>">
                             <span class="sub-nav-text">Logs</span></a>
                     </li>
 
@@ -72,22 +72,27 @@
     </asp:ContentPlaceHolder>
 </asp:Content>
 
-<asp:Content runat="server" ID="ActionsLeft" ContentPlaceHolderID="PageActionsLeft">
-    
-    <div id="actions_left" runat="server">
 
-        <asp:LinkButton ID="LinkButton1" runat="server" CssClass="submits actions" OnClick="btnUpload_Click" Text="Upload"></asp:LinkButton>
-        <asp:LinkButton ID="LinkButton2" runat="server" CssClass="submits actions" OnClick="btnDeploy_Click" Text="Deploy"></asp:LinkButton>
-        <asp:LinkButton ID="LinkButton3" runat="server" CssClass="submits actions" OnClick="btnDelete_Click" Text="Delete"></asp:LinkButton>
-        <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
+<asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="PageActionsRight">
+    
+    <div class="actions_top">
+      <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
+    </asp:ContentPlaceHolder>
+    </div>
+     <div id="actions_left" runat="server">
+      
+ 
+        <asp:LinkButton ID="LinkButton1" runat="server" CssClass="submits actions" OnClick="btnUpload_Click" Text="Upload Computer"></asp:LinkButton>
+        <asp:LinkButton ID="LinkButton2" runat="server" CssClass="submits actions" OnClick="btnDeploy_Click" Text="Deploy Computer"></asp:LinkButton>
+        <asp:LinkButton ID="LinkButton3" runat="server" CssClass="submits actions" OnClick="btnDelete_Click" Text="Delete Computer"></asp:LinkButton>
+        <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
+       
     </div>
 </asp:Content>
 
-<asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="PageActionsRight">
-    <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
-    </asp:ContentPlaceHolder>
-    <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
-</asp:Content>
+
+
+
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="Content" runat="Server">
     <asp:ContentPlaceHolder ID="SubContent" runat="server">
