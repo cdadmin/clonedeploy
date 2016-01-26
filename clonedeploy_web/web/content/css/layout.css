@@ -4,7 +4,7 @@
 .content-wrapper{display: inline;position:relative;float:left; top: -20px;width:calc(100% - 241px);background-color: #fff;border-bottom: 1px solid #eee; overflow-x:hidden;overflow-y:hidden;height:100%;margin-left: 10px; }
 .content-header{position:relative;float: left;overflow:hidden;top:0;left:0;height:75px;width:100%;list-style-type:none;margin: 0;padding:0;background:#fff;border-bottom: 1px solid #eee;padding-bottom: 5px;}
 .breadcrumb_container{display: inline;position:relative;float:left;right: 0;width:100%;overflow-x:hidden;overflow-y:hidden;top: 0px;color: black;height: 30px;background: #fff;margin-bottom: 20px;margin-left: -5px;}
-.content-main{top: 0px; display: inline;position:relative;float:left;width: 100%;background-color: #fff;overflow-x:hidden;overflow-y:visible;height: 80%;padding: 20px 0 0 0;}
+.content-main{top: 0px; display: inline;position:relative;float:left;width: 100%;background-color: #fff;overflow-x:hidden;overflow-y:visible;height:calc(100% - 140px);padding: 20px 0 0 0;}
 .actions_container{display: inline;position:relative;float: left; width:230px;overflow-x:hidden;overflow-y:auto;top:0px;color: black;background:#fff;height: 100%;border-left: 1px solid #eee;}
 .help_pos{ position: absolute;bottom: 40px;width: 200px;}
 

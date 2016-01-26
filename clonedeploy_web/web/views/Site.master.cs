@@ -29,7 +29,6 @@ namespace views.masters
         public void Page_Load(object sender, EventArgs e)
         {
             LogOut.Text = HttpContext.Current.User.Identity.Name;
-            Page.MaintainScrollPositionOnPostBack = true;
         }
 
         protected void LogOut_OnClick(object sender, EventArgs e)

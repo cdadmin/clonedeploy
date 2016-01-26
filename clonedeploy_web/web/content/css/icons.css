@@ -1,11 +1,3 @@
-.icon-host-title:before{font-family:Flaticon;content:"\e017";font-size: 1.3em;color:#464242;}
-.icon-group-title:before{font-family:Flaticon;content:"\e003";font-size:1.3em;color:#464242;}
-.icon-image-title:before{font-family:Flaticon;content:"\e009";font-size:1.3em;color:#464242;}
-.icon-task-title:before{font-family:Flaticon;content:"\e020";font-size:1.3em;color:#464242;}
-.icon-user-title:before{font-family:Flaticon;content:"\e01f";font-size:1.3em;color:#464242;}
-.icon-setting-title:before{font-family:Flaticon;content:"\e01c";font-size:1.3em;color:#464242;}
-.icon-global-title:before{font-family:Flaticon;content:"\e007";font-size:1.3em;color:#464242;}
-
 .nav li a.icon-logo:before{font-family:opensans, Calibri, Arial;content:"WDS";font-size:10px;margin-left:50px;}
 .nav li a.icon-host:before,.sub-nav li a.icon-host:before{content:"\e017";font-size:2.0em;margin-left: 5px; }
 .nav li a.icon-group:before{content:"\e003";font-size:2.0em;margin-left: 5px;}
@@ -15,33 +7,4 @@
 .nav li a.icon-setting:before{content:"\e01c";font-size:2.0em;margin-left: 5px;}
 .nav li a.icon-global:before{content:"\e007";font-size:2.0em;margin-left: 5px;}
 .nav li a.icon-logout:before{content:"\e01a";font-size:2.0em;margin-left: 5px;}
-.image-icon:before{content:"\e009";font-size:26px;margin-left: 5px;margin-top: 25px;}
-.computer:before{content:"\e017";font-size:2.0em;margin: 30px 0 0 5px;}
-.export:before{content:"\e008";font-size:22px;margin-top:3px;}
-.reports:before{content:"\e00c";font-size:22px;margin-top:3px;}
-.global:before{content:"\e007";font-size:30px;margin-top:-1px;margin-left:-1px;}
-.global-large:before{ font-size: 40px;}
-.import:before{content:"\e00f";font-size:28px;}
-.search-icon:before{content:"\e012";font-size:24px;margin: 25px 0 0 5px;}
-.upload:before{content:"\e01d";font-size:24px;}
-.deploy:before{content:"\e006";font-size:24px;}
-.edit:before{content:"\e018";font-size: 24px;margin-left: 5px; margin-top: 30px;}
-.delete:before{content:"\e005";font-size:32px;margin:-4px -2px 0 0;}
-.logs:before{content:"\e015";font-size:26px;margin:30px 0 0 5px;}
-.history:before{content:"\e00b";font-size:26px;margin-top: 30px;margin-left: 8px;}
-.boot:before{content:"\e011";font-size:24px;margin:2px -1px 0 0;}
-.create-icon:before{content:"\e019";font-size: 26px; margin:25px 0 0 5px;}
-.active:before{content:"\e01b";font-size:24px;margin:2px 0 0 -2px;}
-.unicast:before{content:"\e01e";font-size:22px;margin-top:2px;}
-.multicast:before{content:"\e004";font-size:26px;margin-top:1px;}
-.ond:before{content:"\e013";font-size:28px;margin-left:2px;}
-.options:before{content:"\e604";font-size:28px;margin-right:-10px;}
-.security:before{content:"\e603";font-size:28px;margin-right:-10px;}
-.scripteditor1:before{content:"\e600";font-size:28px;margin-right:-10px;}
-.scripteditor2:before{content:"\e601";font-size:28px;margin-right:-10px;}
-.scripteditor3:before{content:"\e602";font-size:28px;margin-right:-10px;}
 .help:before{ font-family: "icon2";content:"\e001";font-size:26px;margin-top: 1px;color: #666;}
-.icon-mobile-nav:before{content:"\e014";font-size:48px;line-height:.5;color: #666;}
-.icon-mobile-nav{font-family: 'Flaticon';position: absolute;top: 0;speak:none;font-size:2em;text-decoration:none;color: #666;line-height:2;-webkit-font-smoothing: antialiased;}
-.icon-mobile-nav2:before{content:"\e014";color: #fff;font-size:48px;line-height: 0;float: left;}
-.icon-mobile-nav2{font-family: 'Flaticon';top: 0;speak:none;font-size:2em;text-decoration:none;line-height:0;-webkit-font-smoothing: antialiased;}

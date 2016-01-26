@@ -7,7 +7,7 @@
      <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits help" target="_blank"></a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-    <a class="confirm green" href="#">Delete Selected Computers</a>
+    <a class="confirm actions green" href="#">Delete Selected Computers</a>
 </asp:Content>
 
 

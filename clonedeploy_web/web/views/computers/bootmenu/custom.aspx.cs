@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using Helpers;
 using Models;
 
@@ -22,7 +16,7 @@ public partial class views_computers_bootmenu_custom : BasePages.Computers
         var bootMenu = BLL.ComputerBootMenu.GetComputerBootMenu(Computer.Id);
         
 
-        if (Helpers.Settings.ProxyDhcp == "Yes")
+        if (Settings.ProxyDhcp == "Yes")
         {
             divProxy.Visible = true;
             if(bootMenu == null) return;
@@ -60,7 +54,7 @@ public partial class views_computers_bootmenu_custom : BasePages.Computers
         RequiresAuthorization(Authorizations.UpdateComputer);
         var bootMenu = BLL.ComputerBootMenu.GetComputerBootMenu(Computer.Id) ?? new ComputerBootMenu();
         bootMenu.ComputerId = Computer.Id;
-        if (Helpers.Settings.ProxyDhcp == "Yes")
+        if (Settings.ProxyDhcp == "Yes")
         {
             switch (ddlProxyMode.Text)
             {

@@ -61,19 +61,19 @@
             
             
              <li id="subnav-server">
-                <a href="<%= ResolveUrl("~/views/admin/logview.aspx") %>" class="icon-host">
+                <a href="<%= ResolveUrl("~/views/admin/logview.aspx") %>" >
                     <span class="nav-text">Logs</span>
                 </a>
             </li>
             
              <li id="subnav-server">
-                <a href="<%= ResolveUrl("~/views/admin/export.aspx") %>" class="icon-host">
+                <a href="<%= ResolveUrl("~/views/admin/export.aspx") %>" >
                     <span class="nav-text">Export</span>
                 </a>
             </li>
             
              <li id="subnav-server">
-                <a href="<%= ResolveUrl("~/views/admin/reports.aspx") %>" class="icon-host">
+                <a href="<%= ResolveUrl("~/views/admin/reports.aspx") %>" >
                     <span class="nav-text">Reports</span>
                 </a>
             </li>
