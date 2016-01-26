@@ -108,7 +108,7 @@ namespace BLL.Workflows
             _activeTaskArguments.Append(" ");
         }
 
-        public string Run()
+        public string Run(string multicastPort = "")
         {
             string preScripts = null;
             string postScripts = null;
@@ -125,12 +125,7 @@ namespace BLL.Workflows
             foreach (var sysprepTag in ImageProfileSysprepTag.SearchImageProfileSysprepTags(_imageProfile.Id))
                 sysprepTags += sysprepTag.SysprepId + " ";
 
-            var areFilesToCopy = false;
-            foreach (var fileFolder in ImageProfileFileFolder.SearchImageProfileFileFolders(_imageProfile.Id))
-            {
-                areFilesToCopy = true;
-                break;
-            }
+            var areFilesToCopy = ImageProfileFileFolder.SearchImageProfileFileFolders(_imageProfile.Id).Any();
 
             //On demand computer may be null if not registered
             if (_computer != null)
@@ -191,7 +186,7 @@ namespace BLL.Workflows
                 if (_direction == "multicast")
                 {
                     AppendString("client_receiver_args=" + _imageProfile.ReceiverArguments);
-                    AppendString("multicast_port=" + BLL.Port.GetNextPort());
+                    AppendString("multicast_port=" + multicastPort);
                 }
             }
 

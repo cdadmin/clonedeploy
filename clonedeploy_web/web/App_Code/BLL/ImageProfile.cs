@@ -67,6 +67,15 @@ namespace BLL
 
         }
 
+        public static bool DeleteImage(int imageId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.LinuxProfileRepository.DeleteRange(x => x.ImageId == imageId);
+                return uow.Save();
+            }
+        }
+
         public static Models.ValidationResult ValidateLinuxProfile(Models.ImageProfile linuxProfile, bool isNewLinuxProfile)
         {
             var validationResult = new Models.ValidationResult();

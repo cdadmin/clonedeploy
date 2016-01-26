@@ -49,7 +49,7 @@ public partial class views_groups_removemembers : Groups
         gvComputers.DataSource = BLL.Group.GetGroupMembers(Group.Id,txtSearch.Text);
         gvComputers.DataBind();
 
-        //lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + BllGroup.GetGroupMemberCount(Group.Id) + " Total Computer(s)";
+        lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + BLL.GroupMembership.GetGroupMemberCount(Group.Id) + " Total Computer(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)

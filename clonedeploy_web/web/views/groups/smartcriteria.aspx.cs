@@ -36,7 +36,8 @@ public partial class views_groups_smartcriteria : BasePages.Groups
         RequiresAuthorization(Authorizations.UpdateSmart);
         var group = Group;
         group.SmartCriteria = txtContains.Text;
-        BLL.Group.UpdateGroup(group);
+        var result = BLL.Group.UpdateGroup(group);
+        EndUserMessage = result.IsValid ? "Successfully Updated Smart Criteria" : result.Message;
         BLL.Group.UpdateSmartMembership(group);
     }
 }

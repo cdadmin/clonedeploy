@@ -128,7 +128,6 @@ namespace BLL
             catch (Exception ex)
             {
                 Logger.Log(ex.ToString());
-                //Message.Text = "Could Not Kill Process.  Check The Exception Log For More Info";
             }
         }
 
@@ -162,7 +161,6 @@ namespace BLL
             catch (Exception ex)
             {
                 Logger.Log(ex.ToString());
-                //Message.Text = "Could Not Kill Process.  Check The Exception Log For More Info";
             }
         }
     }

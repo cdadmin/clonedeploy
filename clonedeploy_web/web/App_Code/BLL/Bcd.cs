@@ -9,14 +9,15 @@ namespace BLL
 {
     public class Bcd
     {
-        //http://www.geoffchappell.com/notes/windows/boot/bcd/objects.htm
-        //None of these are used but may be handy in the future
+        /*http://www.geoffchappell.com/notes/windows/boot/bcd/objects.htm
+        None of these are used but may be handy in the future
         private const string BOOT_MGR = "9dea862c-5cdd-4e70-acc1-f32b344d4795";
         private const string FWBOOT_MGR = "a5a30fa2-3d06-4e9f-b5f4-a01df9d1fcba";
         private const string MEM_DIAG = "2721d73-1db4-4c62-bf78-c548a880142d";
         private const string RESUME = "147aa509-0358-4473-b83b-d950dda00615";
         private const string NTLDR = "466f5a88-0af2-4f76-9038-095b170dc21c";
         private const string CURRENT = "fa926493-6f1c-4193-a414-58f0b2456d1e";
+        */
 
         public string UpdateEntry(string bcd, long newOffsetBytes)
         {

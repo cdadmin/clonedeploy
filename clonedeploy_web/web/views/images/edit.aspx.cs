@@ -27,7 +27,8 @@ namespace views.images
             image.IsVisible = chkVisible.Checked ? 1 : 0;
             image.Type = ddlImageType.Text;
 
-            BLL.Image.UpdateImage(image, currentName);
+            var result = BLL.Image.UpdateImage(image, currentName);
+            EndUserMessage = result.IsValid ? "Successfully Updated Image" : result.Message;
         }
 
         protected void PopulateForm()

@@ -49,12 +49,18 @@ namespace BLL
         }
 
       
-        public static bool DeleteGroup(int groupId)
+        public static Models.ValidationResult DeleteGroup(int groupId)
         {
+            var result = new ValidationResult();
             using (var uow = new DAL.UnitOfWork())
             {
+                BLL.GroupMembership.DeleteAllMembershipsForGroup(groupId);
+                BLL.UserGroupManagement.DeleteGroup(groupId);
+                BLL.GroupBootMenu.DeleteGroup(groupId);
+                BLL.GroupProperty.DeleteGroup(groupId);
                 uow.GroupRepository.Delete(groupId);
-                return uow.Save();
+                result.IsValid = uow.Save();
+                return result;
             }
         }
 
@@ -62,7 +68,10 @@ namespace BLL
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.GroupRepository.GetById(groupId);
+                var group = uow.GroupRepository.GetById(groupId);
+                if (group != null)
+                    group.Image = BLL.Image.GetImage(group.ImageId);
+                return group;
             }
         }
 
@@ -79,7 +88,11 @@ namespace BLL
             {
                 using (var uow = new DAL.UnitOfWork())
                 {
-                    return userManagedGroups.Select(managedGroup => uow.GroupRepository.GetFirstOrDefault(i => i.Name.Contains(searchString) && i.Id == managedGroup.GroupId)).ToList();
+                    var listOfGroups = userManagedGroups.Select(managedGroup => uow.GroupRepository.GetFirstOrDefault(i => i.Name.Contains(searchString) && i.Id == managedGroup.GroupId)).ToList();
+                    foreach (var group in listOfGroups)
+                        group.Image = BLL.Image.GetImage(group.ImageId);
+                    return listOfGroups;
+                    
                 }
             }
         }
@@ -88,7 +101,10 @@ namespace BLL
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.GroupRepository.Get(g => g.Name.Contains(searchString));
+                var listOfGroups = uow.GroupRepository.Get(g => g.Name.Contains(searchString));
+                foreach (var group in listOfGroups)
+                    group.Image = BLL.Image.GetImage(group.ImageId);
+                return listOfGroups;
             }
         }
 
@@ -115,34 +131,15 @@ namespace BLL
             }
         }
 
-        public static void StartMulticast(Models.Group group)
+        public static int StartGroupUnicast(Models.Group group)
         {
-            var multicast = new Multicast(group);
-            multicast.Create();
-        }
-
-        public static void StartGroupUnicast(Models.Group group)
-        {
-            var image = BLL.Image.GetImage(group.Image);
-
-            if (BLL.Image.Check_Checksum(image))
+            var count = 0;
+            foreach (var computer in GetGroupMembers(group.Id))
             {
-                var count = 0;
-
-                foreach (var computer in GetGroupMembers(group.Id, ""))
-                {
-                    new BLL.Workflows.Unicast(computer, "push").Start();
-                    count++;
-                }
-                //Message.Text = "Started " + count + " Tasks";
-                var history = new History
-                {
-                    Event = "Unicast",
-                    Type = "Group",
-                    TypeId = group.Id.ToString()
-                };
-                history.CreateEvent();
+                if(new BLL.Workflows.Unicast(computer, "push").Start() == "true")
+                count++;
             }
+            return count;
         }
 
         public static void ImportGroups()
@@ -150,14 +147,19 @@ namespace BLL
             throw new Exception("Not Implemented");
         }
 
-       
-
         public static List<Models.Computer> GetGroupMembers(int groupId, string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 return uow.GroupRepository.GetGroupMembers(groupId, searchString);
             }
+        }
+
+        public static void UpdateAllSmartGroupsMembers()
+        {
+            var groups = SearchGroups();
+            foreach (var group in groups.Where(x => x.Type == "smart"))
+                UpdateSmartMembership(group);
         }
 
         public static Models.ValidationResult ValidateGroup(Models.Group group, bool isNewGroup)

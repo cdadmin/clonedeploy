@@ -48,40 +48,47 @@ namespace BLL
 
 
 
-        public static bool DeleteImage(Models.Image image)
+        public static Models.ValidationResult DeleteImage(Models.Image image)
         {
+            var result = new Models.ValidationResult(){IsValid = false};
             using (var uow = new DAL.UnitOfWork())
             {
                 if (Convert.ToBoolean(image.Protected))
                 {
-                    //Message.Text = "This Image Is Protected And Cannot Be Deleted";
-                    return false;
+                    result.Message = "This Image Is Protected And Cannot Be Deleted";
+                    result.IsValid = false;
+                    return result;
                 }
 
                 uow.ImageRepository.Delete(image.Id);
                 if (uow.Save())
                 {
-                    if (string.IsNullOrEmpty(image.Name)) return false;
+                    if (string.IsNullOrEmpty(image.Name)) return result;
+                    BLL.UserImageManagement.DeleteImage(image.Id);
+                    BLL.ImageProfile.DeleteImage(image.Id);
                     try
                     {
                         if (Directory.Exists(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name))
                             Directory.Delete(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name, true);
 
-                        return true;
+                        result.IsValid = true;
                     }
                     catch (Exception ex)
                     {
                         Logger.Log(ex.Message);
-                        //Message.Text = "Could Not Delete Image Folder";
-                        return false;
+                        result.Message = "Could Not Delete Image Folder";
+                        result.IsValid = false;
+
                     }
 
                 }
                 else
                 {
-                    //Message.Text = "Could Not Delete Image";
-                    return false;
+                    result.Message = "Could Not Delete Image";
+                    result.IsValid = false;
                 }
+                return result;
+                
             }
 
         }

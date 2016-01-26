@@ -10,8 +10,8 @@ namespace Models
         public Group()
         {
             Members = new List<Computer>();
-            Image = -1;
-            ImageProfile = -1;
+            ImageId = -1;
+            ImageProfileId = -1;
             SetDefaultProperties = 0;
             SetDefaultBootMenu = 0;
         }
@@ -28,10 +28,10 @@ namespace Models
         public string Description { get; set; }
 
         [Column("group_image_id", Order = 4)]
-        public int Image { get; set; }
+        public int ImageId { get; set; }
 
         [Column("group_image_profile_id", Order = 5)]
-        public int ImageProfile { get; set; }
+        public int ImageProfileId { get; set; }
 
         [Column("group_type", Order = 6)]
         public string Type { get; set; }
@@ -46,6 +46,9 @@ namespace Models
         public int SetDefaultBootMenu { get; set; }
 
         [NotMapped] 
-        public List<Computer> Members { get; set; }      
+        public List<Computer> Members { get; set; }
+
+        [NotMapped]
+        public virtual Models.Image Image { get; set; }
     }
 }

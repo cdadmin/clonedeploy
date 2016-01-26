@@ -26,7 +26,7 @@ namespace Service.Client
                 Name = name,
                 Mac = mac,
                 ImageId = Convert.ToInt32(imageId),
-                ImageProfile = Convert.ToInt32(imageProfileId)
+                ImageProfileId = Convert.ToInt32(imageProfileId)
 
             };
             var result = BLL.Computer.AddComputer(computer);

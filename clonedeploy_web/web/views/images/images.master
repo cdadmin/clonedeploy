@@ -69,7 +69,9 @@
       <asp:LinkButton ID="btnDelete" runat="server" CssClass="submits actions" OnClick="btnDelete_Click">Delete</asp:LinkButton>
             <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
     </div>
+    <div class="help_pos">
      <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
+        </div>
 </asp:Content>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="Content" runat="Server">

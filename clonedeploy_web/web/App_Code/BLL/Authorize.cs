@@ -37,8 +37,10 @@ namespace BLL
                 var computers = BLL.Computer.SearchComputersForUser(_cloneDeployUser.Id);
                 return computers.Any(x => x.Id == computerId);
             }
-
-            return false;
+            else //Group management is not in use, use the global rights for the user
+            {
+                return IsAuthorized();
+            }
         }
 
         public bool GroupManagement(int groupId)
@@ -54,8 +56,10 @@ namespace BLL
                 //Group management is in use since at least 1 result was returned.  Now check if allowed
                 return BLL.Group.SearchGroupsForUser(_cloneDeployUser.Id).Any(x => x.Id == groupId);
             }
-
-            return false;
+            else //Group management is not in use, use the global rights for the user
+            {
+                return IsAuthorized();
+            }
         }
 
         public bool ImageManagement(int imageId)
@@ -68,11 +72,13 @@ namespace BLL
             var userImageManagements = BLL.UserImageManagement.Get(_cloneDeployUser.Id);
             if (userImageManagements.Count > 0)
             {
-                //Group management is in use since at least 1 result was returned.  Now check if allowed
+                //Image management is in use since at least 1 result was returned.  Now check if allowed
                 return BLL.Image.SearchImagesForUser(_cloneDeployUser.Id).Any(x => x.Id == imageId);
             }
-
-            return false;
+            else //Image management is not in use, use the global rights for the user
+            {
+                return IsAuthorized();
+            }
         }
     }
 }

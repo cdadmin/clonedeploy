@@ -43,9 +43,9 @@ namespace DAL
                     }).ToList();
         }
 
-        public List<Models.Computer> GetComputersWithoutGroup()
+        public List<Models.Computer> GetComputersWithoutGroup(string searchString)
         {
-            var list = (from c in _context.Computers
+            var list = (from c in _context.Computers.Where(x => x.Name.Contains(searchString))
 
             join g in _context.GroupMemberships on c.Id equals g.ComputerId into joined
 

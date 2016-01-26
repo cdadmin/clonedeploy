@@ -21,7 +21,7 @@ namespace BLL.Workflows
             if (_computer == null)
                 return "The Computer Does Not Exist";
 
-            _imageProfile = ImageProfile.ReadProfile(_computer.ImageProfile);
+            _imageProfile = ImageProfile.ReadProfile(_computer.ImageProfileId);
             if (_imageProfile == null) return "The Image Profile Does Not Exist";
 
             if (_imageProfile.Image == null) return "The Image Does Not Exist";
@@ -57,7 +57,7 @@ namespace BLL.Workflows
 
             Utility.WakeUp(_computer.Mac);
 
-            return "Successfully Started Task";
+            return "true";
         }
     }
 }

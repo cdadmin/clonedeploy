@@ -25,6 +25,15 @@ namespace BLL
             }
         }
 
+        public static bool DeleteGroup(int groupId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                uow.UserGroupManagementRepository.DeleteRange(x => x.GroupId == groupId);
+                return uow.Save();
+            }
+        }
+
         public static List<Models.UserGroupManagement> Get(int userId)
         {
             using (var uow = new DAL.UnitOfWork())

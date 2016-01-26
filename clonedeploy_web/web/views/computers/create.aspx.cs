@@ -21,7 +21,7 @@ namespace views.computers
                 Name = txtComputerName.Text,
                 Mac = txtComputerMac.Text,
                 ImageId = Convert.ToInt32(ddlComputerImage.SelectedValue),
-                ImageProfile =
+                ImageProfileId =
                     Convert.ToInt32(ddlComputerImage.SelectedValue) == -1
                         ? -1
                         : Convert.ToInt32(ddlImageProfile.SelectedValue),

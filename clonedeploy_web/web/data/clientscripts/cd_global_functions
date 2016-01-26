@@ -346,6 +346,7 @@ function process_file_copy()
 		  else
             cp "/storage/resources/$(parse_json "$current_file" .SourcePath)" "/mnt/fs/$(parse_json "$current_file" .DestinationFolder)/"
 		  fi
+		fi
 	fi
   done
 }

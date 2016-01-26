@@ -208,7 +208,7 @@ function download_image()
   touch /tmp/clone.progress
 			
   if [ "$multicast" = "true" ]; then
-    if [ "$decompress_multicast_on_client" = "true"]; then
+    if [ "$decompress_multicast_on_client" = "true" ]; then
 	    log "cd_reporter $computer_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
       cd_reporter $computer_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
 	else #dcompress on server
@@ -233,8 +233,10 @@ function download_image()
 	  mkfs.$(parse_json "$current_object" .FileSystem) -F $destination &>> $CLIENT_LOG
 	fi
 	if [ "$multicast" = "true" ]; then
+	  log "cd_reporter $computer_id wim & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 $destination"
 	  cd_reporter $computer_id wim & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 $destination 2>> $CLIENT_LOG | tee /tmp/wim.progress
 	else
+	  log "cd_reporter $computer_id wim & wimapply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination"
 	  cd_reporter $computer_id wim & wimapply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination 2>> $CLIENT_LOG | tee /tmp/wim.progress
 	fi
   fi 

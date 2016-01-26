@@ -17,7 +17,8 @@ namespace views.groups
                 Description = txtGroupDesc.Text,
             };
 
-           BLL.Group.UpdateGroup(group);         
+            var result = BLL.Group.UpdateGroup(group);
+            EndUserMessage = !result.IsValid ? result.Message : "Successfully Updated Group";              
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -31,10 +32,6 @@ namespace views.groups
             txtGroupName.Text = Group.Name;
             txtGroupDesc.Text = Group.Description;
             ddlGroupType.Text = Group.Type;
-        }
-
-      
-
-        
+        }   
     }
 }

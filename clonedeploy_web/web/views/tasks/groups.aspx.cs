@@ -22,7 +22,7 @@ namespace views.tasks
             var groupId = Convert.ToInt32(Session["groupID"]);
             var isUnicast = Convert.ToInt32(Session["isGroupUnicast"]);
             var group = BLL.Group.GetGroup(groupId);
-            var image = BLL.Image.GetImage(group.Image);
+            var image = BLL.Image.GetImage(group.ImageId);
 
             Session["imageID"] = image.Id;
             if (BLL.Image.Check_Checksum(image))

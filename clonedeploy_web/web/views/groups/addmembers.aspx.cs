@@ -45,11 +45,12 @@ public partial class views_groups_addmembers : Groups
 
     protected void PopulateGrid()
     {
-      
         var listOfComputers = BLL.Computer.SearchComputersForUser(CloneDeployCurrentUser.Id, txtSearch.Text);
-        listOfComputers.AddRange(BLL.Computer.ComputersWithoutGroup());
+        
+        //If a user is using a managed group they can also see computers without any group, to add in.
+        listOfComputers.AddRange(BLL.Computer.ComputersWithoutGroup(txtSearch.Text));
       
-        gvComputers.DataSource = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList(); ;
+        gvComputers.DataSource = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
         gvComputers.DataBind();
 
         lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + BLL.Computer.TotalCount() + " Total Computer(s)";

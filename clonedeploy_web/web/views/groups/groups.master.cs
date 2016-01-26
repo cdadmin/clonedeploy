@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using BasePages;
 using BLL.Workflows;
+using Helpers;
 using Models;
 using Tasks;
 
@@ -18,13 +19,10 @@ namespace views.masters
             Group = groupBasePage.Group;
             if (Group == null)
             {
-                Level2.Visible = false;
                 Level2_Edit.Visible = false;
-
                 actions_left.Visible = false;
                 return;
             }
-
 
             Level1.Visible = false;
             if (Group.Type == "standard")
@@ -47,13 +45,23 @@ namespace views.masters
             switch (taskType)
             {
                 case "delete":
-                    if (BLL.Group.DeleteGroup(Group.Id))
+                    groupBasePage.RequiresAuthorizationOrManagedGroup(Authorizations.DeleteGroup,Group.Id);
+                    var result = BLL.Group.DeleteGroup(Group.Id);
+                    if (result.IsValid)
+                    {
+                        PageBaseMaster.EndUserMessage = "Successfully Deleted Group";
                         Response.Redirect("~/views/groups/search.aspx");
+                    }
+                    else
+                        PageBaseMaster.EndUserMessage = result.Message;
                     break;
                 case "unicast":
-                    BLL.Group.StartGroupUnicast(Group);
+                    groupBasePage.RequiresAuthorizationOrManagedGroup(Authorizations.ImageDeployTask,Group.Id);
+                    var successCount = BLL.Group.StartGroupUnicast(Group);
+                    PageBaseMaster.EndUserMessage = "Succssfully Started " + successCount + " Tasks";
                     break;
                 case "multicast":
+                    groupBasePage.RequiresAuthorizationOrManagedGroup(Authorizations.ImageMulticastTask, Group.Id);
                     PageBaseMaster.EndUserMessage = new Multicast(Group).Create();
                     break;
 

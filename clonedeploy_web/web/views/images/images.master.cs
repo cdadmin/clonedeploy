@@ -40,9 +40,16 @@ namespace views.masters
 
         protected void OkButton_Click(object sender, EventArgs e)
         {
-            BLL.Image.DeleteImage(Image);
-
+            var result = BLL.Image.DeleteImage(Image);
+            if (result.IsValid)
+            {
+                PageBaseMaster.EndUserMessage = "Successfully Deleted Image";
                 Response.Redirect("~/views/images/search.aspx");
+            }
+            else
+            {
+                PageBaseMaster.EndUserMessage = result.Message;
+            }
         }
     }
 }

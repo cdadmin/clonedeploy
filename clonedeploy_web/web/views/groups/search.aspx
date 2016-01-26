@@ -5,11 +5,11 @@
     </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-    <a class="confirm" href="#">Delete Selected Groups</a>
+    <a class="confirm actions green" href="#">Delete Selected Groups</a>
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits actions" target="_blank">Help</a>
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits help" target="_blank"></a>
 </asp:Content>
 
 
@@ -19,13 +19,14 @@
             $('#search').addClass("nav-current");
         });
     </script>
+    <p class="total">
+        <asp:Label ID="lblTotal" runat="server"></asp:Label>
+    </p>
     <div class="size-7 column">
         <asp:TextBox ID="txtSearch" runat="server" CssClass="searchbox" OnTextChanged="search_Changed"></asp:TextBox>
     </div>
     <br class="clear"/>
-    <p class="total">
-        <asp:Label ID="lblTotal" runat="server"></asp:Label>
-    </p>
+    
     <asp:GridView ID="gvGroups" runat="server" AllowSorting="true" AutoGenerateColumns="False" OnSorting="gridView_Sorting" CssClass="Gridview" DataKeyNames="Id" AlternatingRowStyle-CssClass="alt">
         <Columns>
             <asp:TemplateField>
@@ -40,7 +41,7 @@
             </asp:TemplateField>
             <asp:BoundField DataField="Id" HeaderText="groupID" InsertVisible="False" SortExpression="Id" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"/>
-            <asp:BoundField DataField="Image" HeaderText="Image" SortExpression="Image" HeaderStyle-CssClass="mobi-hide-smallest" ItemStyle-CssClass="width_200 mobi-hide-smallest"/>
+            <asp:BoundField DataField="Image.Name" HeaderText="Multicast Image" SortExpression="Image.Name" ItemStyle-CssClass="width_200 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller"/>
             <asp:BoundField DataField="Type" HeaderText="Type" SortExpression="Type" HeaderStyle-CssClass="mobi-hide-smallest" ItemStyle-CssClass="width_200 mobi-hide-smallest"/>
             <asp:TemplateField ShowHeader="True" HeaderText="Members">
                 <ItemTemplate>

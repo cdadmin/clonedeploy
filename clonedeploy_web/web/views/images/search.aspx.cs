@@ -53,6 +53,7 @@ namespace views.images
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
+            var deleteCount = 0;
             foreach (GridViewRow row in gvImages.Rows)
             {
                 var cb = (CheckBox) row.FindControl("chkSelector");
@@ -60,8 +61,9 @@ namespace views.images
                 var dataKey = gvImages.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
                 var image = BLL.Image.GetImage(Convert.ToInt32(dataKey.Value));
-                BLL.Image.DeleteImage(image);
+                if (BLL.Image.DeleteImage(image).IsValid) deleteCount++;
             }
+            EndUserMessage = "Successfully Deleted " + deleteCount + " Images";
 
             PopulateGrid();
         }

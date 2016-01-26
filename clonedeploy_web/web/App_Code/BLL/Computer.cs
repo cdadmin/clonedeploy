@@ -19,6 +19,8 @@ namespace BLL
                 {
                     uow.ComputerRepository.Insert(computer);
                     validationResult.IsValid = uow.Save();
+                    if(validationResult.IsValid) BLL.Group.UpdateAllSmartGroupsMembers();
+
                 }
 
                 return validationResult;
@@ -130,6 +132,7 @@ namespace BLL
                 {
                     uow.ComputerRepository.Update(computer, computer.Id);
                     validationResult.IsValid = uow.Save();
+                    if (validationResult.IsValid) BLL.Group.UpdateAllSmartGroupsMembers();
                 }
 
                 return validationResult;
@@ -145,26 +148,26 @@ namespace BLL
             } 
         }
 
-        public static List<Models.Computer> ComputersWithoutGroup()
+        public static List<Models.Computer> ComputersWithoutGroup(string searchString)
         {
             List<Models.Computer> listOfComputers;
             using (var uow = new DAL.UnitOfWork())
             {
-                listOfComputers = uow.ComputerRepository.GetComputersWithoutGroup();
+                listOfComputers = uow.ComputerRepository.GetComputersWithoutGroup(searchString);
                 
             }
             foreach (var computer in listOfComputers)
                 computer.Image = BLL.Image.GetImage(computer.ImageId);
 
             return listOfComputers;
-        } 
-    
+        }
+
         public static Models.ValidationResult ValidateComputer(Models.Computer computer, string type)
         {
             var validationResult = new Models.ValidationResult {IsValid = false};
             if (type == "new" || type == "update")
             {
-                if (string.IsNullOrEmpty(computer.Name) || !computer.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
+                if (string.IsNullOrEmpty(computer.Name) || computer.Name.Any(c => c == ' '))
                 {
                     validationResult.Message = "Computer Name Is Not Valid";
                     return validationResult;

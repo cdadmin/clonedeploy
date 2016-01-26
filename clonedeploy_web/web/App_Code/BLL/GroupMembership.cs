@@ -9,15 +9,32 @@ namespace BLL
     {
         public static bool AddMembership(List<Models.GroupMembership> groupMemberships)
         {
+            var group = new Models.Group();
+            var result = false;
             using (var uow = new DAL.UnitOfWork())
             {
                 foreach (var membership in groupMemberships.Where(membership => !uow.GroupMembershipRepository.Exists(
                     g => g.ComputerId == membership.ComputerId && g.GroupId == membership.GroupId)))
                 {
                     uow.GroupMembershipRepository.Insert(membership);
+                    group = BLL.Group.GetGroup(membership.GroupId);
                 }
-                return uow.Save();
+                result = uow.Save();
             }
+
+            if (group.SetDefaultProperties == 1)
+            {
+                var groupProperty = BLL.GroupProperty.GetGroupProperty(group.Id);
+                BLL.GroupProperty.UpdateComputerProperties(groupProperty);
+            }
+
+            if (group.SetDefaultBootMenu == 1)
+            {
+                var groupBootMenu = BLL.GroupBootMenu.GetGroupBootMenu(group.Id);
+                BLL.GroupBootMenu.UpdateGroupMemberBootMenus(groupBootMenu);
+            }
+
+            return result;
         }
 
         public static string GetGroupMemberCount(int groupId)

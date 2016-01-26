@@ -21,7 +21,7 @@ namespace views.computers
                 Name = txtComputerName.Text,
                 Mac = txtComputerMac.Text,
                 ImageId = Convert.ToInt32(ddlComputerImage.SelectedValue),
-                ImageProfile = Convert.ToInt32(ddlComputerImage.SelectedValue) == -1 ? -1 : Convert.ToInt32(ddlImageProfile.SelectedValue),
+                ImageProfileId = Convert.ToInt32(ddlComputerImage.SelectedValue) == -1 ? -1 : Convert.ToInt32(ddlImageProfile.SelectedValue),
                 Description = txtComputerDesc.Text,
                 SiteId = Convert.ToInt32(ddlSite.SelectedValue),
                 BuildingId = Convert.ToInt32(ddlBuilding.SelectedValue),
@@ -48,7 +48,7 @@ namespace views.computers
             ddlComputerImage.SelectedValue = Computer.ImageId.ToString();        
             txtComputerDesc.Text = Computer.Description;
             PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlComputerImage.SelectedValue));
-            ddlImageProfile.SelectedValue = Computer.ImageProfile.ToString();
+            ddlImageProfile.SelectedValue = Computer.ImageProfileId.ToString();
             ddlSite.SelectedValue = Computer.SiteId.ToString();
             ddlBuilding.SelectedValue = Computer.BuildingId.ToString();
             ddlRoom.SelectedValue = Computer.RoomId.ToString();

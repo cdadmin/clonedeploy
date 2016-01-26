@@ -7,10 +7,10 @@
 
 
     <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits actions" target="_blank">Help</a>
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits help" target="_blank"></a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-  <asp:LinkButton ID="buttonUpdate" runat="server" OnClick="buttonUpdate_OnClick" Text="Update Menu" CssClass="submits actions" OnClientClick="update_click()"/>
+  <asp:LinkButton ID="buttonUpdate" runat="server" OnClick="buttonUpdate_OnClick" Text="Update Menu" CssClass="submits actions green" OnClientClick="update_click()"/>
 </asp:Content>
  
 <asp:Content ID="Content1" ContentPlaceHolderID="SubContent" Runat="Server">
