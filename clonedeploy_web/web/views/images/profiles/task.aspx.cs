@@ -20,6 +20,7 @@ public partial class views_images_profiles_task : Images
         imageProfile.SkipCore = Convert.ToInt16(chkGlobalNoCore.Checked);
         imageProfile.SkipClock = Convert.ToInt16(chkGlobalNoClock.Checked);
         imageProfile.TaskCompletedAction = ddlTaskComplete.Text;
-        BLL.ImageProfile.UpdateProfile(imageProfile);
+        var result = BLL.ImageProfile.UpdateProfile(imageProfile);
+        EndUserMessage = result.IsValid ? "Successfully Updated Image Profile" : result.Message;
     }
 }

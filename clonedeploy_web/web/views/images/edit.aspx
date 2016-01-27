@@ -27,17 +27,7 @@
     </div>
     <br class="clear"/>
     
-      <div class="size-4 column">
-        Image OS:
-    </div>
-    <div class="size-5 column">
-        <asp:DropDownList ID="ddlImageOS" runat="server" CssClass="ddlist">
-            <asp:ListItem>Windows</asp:ListItem>
-            <asp:ListItem>Linux</asp:ListItem>
-            <asp:ListItem>Mac</asp:ListItem>
-        </asp:DropDownList>
-    </div>
-    <br class="clear"/>
+    
     
      <div class="size-4 column">
         Image Type:
@@ -50,16 +40,7 @@
     </div>
     <br class="clear"/>
     
-    <div class="size-4 column">
-        Image Environment:
-    </div>
-    <div class="size-5 column">
-        <asp:DropDownList ID="ddlImageEnvironment" runat="server" CssClass="ddlist">
-            <asp:ListItem>Linux</asp:ListItem>
-            <asp:ListItem>Windows</asp:ListItem>
-        </asp:DropDownList>
-    </div>
-    <br class="clear"/>
+   
 
     <div class="size-4 column">
         Image Description:
@@ -75,6 +56,7 @@
         <asp:CheckBox ID="chkProtected" runat="server"/>
     </div>
     <br class="clear"/>
+    <br />
     <div class="size-4 column">
         Visible In On Demand:
     </div>

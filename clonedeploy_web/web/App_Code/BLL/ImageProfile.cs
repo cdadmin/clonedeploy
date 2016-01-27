@@ -11,10 +11,10 @@ namespace BLL
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                var validationResult = ValidateLinuxProfile(profile, true);
+                var validationResult = ValidateImageProfile(profile, true);
                 if (validationResult.IsValid)
                 {
-                    uow.LinuxProfileRepository.Insert(profile);
+                    uow.ImageProfileRepository.Insert(profile);
                     validationResult.IsValid = uow.Save();
                 }
 
@@ -26,7 +26,7 @@ namespace BLL
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                var imageProfile = uow.LinuxProfileRepository.GetById(profileId);
+                var imageProfile = uow.ImageProfileRepository.GetById(profileId);
                 if (imageProfile != null)
                     imageProfile.Image = BLL.Image.GetImage(imageProfile.ImageId);
                 return imageProfile;
@@ -37,7 +37,7 @@ namespace BLL
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                uow.LinuxProfileRepository.Delete(profileId);
+                uow.ImageProfileRepository.Delete(profileId);
                 return uow.Save();
             }
         }
@@ -46,7 +46,7 @@ namespace BLL
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.LinuxProfileRepository.Get(p => p.ImageId == imageId,
+                return uow.ImageProfileRepository.Get(p => p.ImageId == imageId,
                     orderBy: (q => q.OrderBy(p => p.Name)));
             }
         }
@@ -55,10 +55,10 @@ namespace BLL
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                var validationResult = ValidateLinuxProfile(profile, false);
+                var validationResult = ValidateImageProfile(profile, false);
                 if (validationResult.IsValid)
                 {
-                    uow.LinuxProfileRepository.Update(profile, profile.Id);
+                    uow.ImageProfileRepository.Update(profile, profile.Id);
                     validationResult.IsValid = uow.Save();
                 }
 
@@ -71,30 +71,30 @@ namespace BLL
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                uow.LinuxProfileRepository.DeleteRange(x => x.ImageId == imageId);
+                uow.ImageProfileRepository.DeleteRange(x => x.ImageId == imageId);
                 return uow.Save();
             }
         }
 
-        public static Models.ValidationResult ValidateLinuxProfile(Models.ImageProfile linuxProfile, bool isNewLinuxProfile)
+        public static Models.ValidationResult ValidateImageProfile(Models.ImageProfile imageProfile, bool isNewImageProfile)
         {
             var validationResult = new Models.ValidationResult();
 
-            if (string.IsNullOrEmpty(linuxProfile.Name) || !linuxProfile.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
+            if (string.IsNullOrEmpty(imageProfile.Name) || !imageProfile.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {
                 validationResult.IsValid = false;
-                validationResult.Message = "Linux Profile Name Is Not Valid";
+                validationResult.Message = "Image Profile Name Is Not Valid";
                 return validationResult;
             }
 
-            if (isNewLinuxProfile)
+            if (isNewImageProfile)
             {
                 using (var uow = new DAL.UnitOfWork())
                 {
-                    if (uow.LinuxProfileRepository.Exists(h => h.Name == linuxProfile.Name))
+                    if (uow.ImageProfileRepository.Exists(h => h.Name == imageProfile.Name))
                     {
                         validationResult.IsValid = false;
-                        validationResult.Message = "This Linux Profile Already Exists";
+                        validationResult.Message = "This Image Profile Already Exists";
                         return validationResult;
                     }
                 }
@@ -103,13 +103,13 @@ namespace BLL
             {
                 using (var uow = new DAL.UnitOfWork())
                 {
-                    var originalLinuxProfile = uow.LinuxProfileRepository.GetById(linuxProfile.Id);
-                    if (originalLinuxProfile.Name != linuxProfile.Name)
+                    var originalImageProfile = uow.ImageProfileRepository.GetById(imageProfile.Id);
+                    if (originalImageProfile.Name != imageProfile.Name)
                     {
-                        if (uow.LinuxProfileRepository.Exists(h => h.Name == linuxProfile.Name))
+                        if (uow.ImageProfileRepository.Exists(h => h.Name == imageProfile.Name))
                         {
                             validationResult.IsValid = false;
-                            validationResult.Message = "This Linux Profile Already Exists";
+                            validationResult.Message = "This Image Profile Already Exists";
                             return validationResult;
                         }
                     }
@@ -119,7 +119,7 @@ namespace BLL
             return validationResult;
         }
 
-        public static void SeedDefaultLinuxProfile(int imageId)
+        public static void SeedDefaultImageProfile(int imageId)
         {
             var imageProfile = new Models.ImageProfile();
             imageProfile.ImageId = imageId;
@@ -150,7 +150,7 @@ namespace BLL
                 for (int c = 1; c <= 100; c++)
                 {
                     var newProfileName = imageProfile.Name + "_" + c;
-                    if (uow.LinuxProfileRepository.Exists(h => h.Name == newProfileName))
+                    if (uow.ImageProfileRepository.Exists(h => h.Name == newProfileName))
                         continue;
 
                     var clonedProfile = imageProfile;

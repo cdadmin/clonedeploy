@@ -29,8 +29,8 @@
      <li id="pxe"><a  href="<%= ResolveUrl("~/views/images/profiles/pxe.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">PXE Boot Options</span></a></li>
      <li id="task"><a  href="<%= ResolveUrl("~/views/images/profiles/task.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Task Options</span></a></li>
     <li id="upload"><a  href="<%= ResolveUrl("~/views/images/profiles/upload.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Upload Options</span></a></li>
-    <li><a id="deploy"href="<%= ResolveUrl("~/views/images/profiles/deploy.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Deploy Options</span></a></li>
-    <li><a id="multicast"href="<%= ResolveUrl("~/views/images/profiles/multicast.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Multicast Options</span></a></li>
+    <li id="deploy"><a href="<%= ResolveUrl("~/views/images/profiles/deploy.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Deploy Options</span></a></li>
+    <li id="multicast"><a href="<%= ResolveUrl("~/views/images/profiles/multicast.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Multicast Options</span></a></li>
     <li id="scripts"><a href="<%= ResolveUrl("~/views/images/profiles/scripts.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Scripts</span></a></li>
      <li id="sysprep"><a href="<%= ResolveUrl("~/views/images/profiles/sysprep.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Sysprep</span></a></li>
     <li  id="filecopy"><a href="<%= ResolveUrl("~/views/images/profiles/filecopy.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">File Copy</span></a></li>

@@ -6,10 +6,10 @@
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="SubHelp">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits actions" target="_blank">Help</a>
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits help" target="_blank"></a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
-     <asp:LinkButton ID="buttonUpdatePXE" runat="server" OnClick="buttonUpdatePXE_OnClick" Text="Update PXE Boot Options" CssClass="submits actions"/>
+     <asp:LinkButton ID="buttonUpdatePXE" runat="server" OnClick="buttonUpdatePXE_OnClick" Text="Update PXE Boot Options" CssClass="submits actions green"/>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
      <script type="text/javascript">

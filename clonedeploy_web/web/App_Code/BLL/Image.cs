@@ -32,10 +32,11 @@ namespace BLL
             }
             if (validationResult.IsValid)
             {
+                BLL.ImageProfile.SeedDefaultImageProfile(image.Id);
                 try
                 {
                     Directory.CreateDirectory(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name);
-                    BLL.ImageProfile.SeedDefaultLinuxProfile(image.Id);
+                    
                 }
                 catch (Exception ex)
                 {

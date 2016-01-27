@@ -57,7 +57,8 @@ public partial class views_images_profiles_deploy : Images
                 imageProfile.CustomPartitionScript = "";
                 break;
         }
-        BLL.ImageProfile.UpdateProfile(imageProfile);
+        var result = BLL.ImageProfile.UpdateProfile(imageProfile);
+        EndUserMessage = result.IsValid ? "Successfully Updated Image Profile" : result.Message;
     }
 
 

@@ -49,19 +49,19 @@ namespace views.computers
             switch (e.SortExpression)
             {
                 case "Name":
-                    listComputers = GetSortDirection(e.SortExpression) == "Asc"
-                        ? listComputers.OrderBy(h => h.Name).ToList()
-                        : listComputers.OrderByDescending(h => h.Name).ToList();
+                    listComputers = GetSortDirection(e.SortExpression) == "Desc"
+                        ? listComputers.OrderByDescending(h => h.Name).ToList()
+                        : listComputers.OrderBy(h => h.Name).ToList();
                     break;
                 case "Mac":
-                    listComputers = GetSortDirection(e.SortExpression) == "Asc"
-                        ? listComputers.OrderBy(h => h.Mac).ToList()
-                        : listComputers.OrderByDescending(h => h.Mac).ToList();
+                    listComputers = GetSortDirection(e.SortExpression) == "Desc"
+                        ? listComputers.OrderByDescending(h => h.Mac).ToList()
+                        : listComputers.OrderBy(h => h.Mac).ToList();
                     break;
                 case "Image":
-                    listComputers = GetSortDirection(e.SortExpression) == "Asc"
-                        ? listComputers.OrderBy(h => h.ImageId).ToList()
-                        : listComputers.OrderByDescending(h => h.ImageId).ToList();
+                    listComputers = GetSortDirection(e.SortExpression) == "Desc"
+                        ? listComputers.OrderByDescending(h => h.ImageId).ToList()
+                        : listComputers.OrderBy(h => h.ImageId).ToList();
                     break;
             }
 

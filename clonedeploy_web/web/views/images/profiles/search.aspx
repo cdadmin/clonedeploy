@@ -8,10 +8,10 @@
 
 
 <asp:Content runat="server" ContentPlaceHolderID="SubHelp">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits actions"  target="_blank">Help</a>
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits help"  target="_blank"></a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
-      <a class="confirm" href="#">Delete Selected Profiles</a>
+      <a class="confirm actions green" href="#">Delete Selected Profiles</a>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
     <script type="text/javascript">
@@ -42,6 +42,13 @@
                     <asp:CheckBox ID="chkSelector" runat="server"/>
                 </ItemTemplate>
             </asp:TemplateField>
+             <asp:HyperLinkField DataNavigateUrlFields="Id,ImageId" DataNavigateUrlFormatString="~/views/images/profiles/general.aspx?imageid={1}&profileid={0}&cat=profiles" Text="View" ItemStyle-CssClass="chkboxwidth"/>
+               <asp:TemplateField ShowHeader="False">
+                   <ItemStyle CssClass="chkboxwidth"></ItemStyle>
+                <ItemTemplate>
+                    <asp:LinkButton runat="server" Id="profileClone" Text="Clone"  OnClick="profileClone_OnClick"></asp:LinkButton>
+                </ItemTemplate>
+            </asp:TemplateField>
             <asp:BoundField DataField="Id" HeaderText="ID" SortExpression="ID" Visible="False"/>
             <asp:BoundField DataField="ImageId" HeaderText="ImageID" SortExpression="ImageID" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"></asp:BoundField>
@@ -50,12 +57,7 @@
                     <asp:Label ID="lblSizeClient" runat="server" CausesValidation="false" CssClass="lbl_file"></asp:Label>
                 </ItemTemplate>
             </asp:TemplateField>
-            <asp:HyperLinkField DataNavigateUrlFields="Id,ImageId" DataNavigateUrlFormatString="~/views/images/profiles/chooser.aspx?imageid={1}&profileid={0}&cat=profiles" Text="View"/>
-               <asp:TemplateField ShowHeader="False">
-                <ItemTemplate>
-                    <asp:LinkButton runat="server" Id="profileClone" Text="Clone"  OnClick="profileClone_OnClick"></asp:LinkButton>
-                </ItemTemplate>
-            </asp:TemplateField>
+           
           <asp:TemplateField>
                 <ItemTemplate>
                     <tr>

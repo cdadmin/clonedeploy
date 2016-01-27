@@ -23,7 +23,10 @@ namespace views.masters
 
             Level1.Visible = false;
             if (Request.QueryString["cat"] == "profiles")
+            {
                 Level2.Visible = false;
+                btnDelete.Visible = false;
+            }
             if (string.IsNullOrEmpty(Request.QueryString["profileid"]))
                 Level4.Visible = false;
             else

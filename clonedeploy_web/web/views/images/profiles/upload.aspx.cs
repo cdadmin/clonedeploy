@@ -23,7 +23,8 @@ public partial class views_images_profiles_upload : Images
         imageProfile.Compression = ddlCompAlg.Text;
         imageProfile.CompressionLevel = ddlCompLevel.Text;
         imageProfile.UploadSchemaOnly = Convert.ToInt16(chkSchemaOnly.Checked);
-        BLL.ImageProfile.UpdateProfile(imageProfile);
+        var result = BLL.ImageProfile.UpdateProfile(imageProfile);
+        EndUserMessage = result.IsValid ? "Successfully Updated Image Profile" : result.Message;
     }
 
     protected void chkCustomUpload_OnCheckedChanged(object sender, EventArgs e)

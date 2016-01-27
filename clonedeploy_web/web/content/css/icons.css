@@ -7,4 +7,4 @@
 .nav li a.icon-setting:before{content:"\e01c";font-size:2.0em;margin-left: 5px;}
 .nav li a.icon-global:before{content:"\e007";font-size:2.0em;margin-left: 5px;}
 .nav li a.icon-logout:before{content:"\e01a";font-size:2.0em;margin-left: 5px;}
-.help:before{ font-family: "icon2";content:"\e001";font-size:26px;margin-top: 1px;color: #666;}
+.help:before{ font-family: "icon2";content:"\e001";font-size:40px;margin-top: 1px;color: #666;}

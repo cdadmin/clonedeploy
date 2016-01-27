@@ -46,7 +46,7 @@
                     <asp:CheckBox ID="chkSelector" runat="server"/>
                 </ItemTemplate>
             </asp:TemplateField>
-
+            <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/images/edit.aspx?imageid={0}" Text="View" ItemStyle-CssClass="chkboxwidth"/>
             <asp:TemplateField>
                 <ItemTemplate>
                     <asp:HiddenField ID="HiddenID" runat="server" Value='<%# Bind("Id") %>'/>
@@ -61,7 +61,7 @@
             </asp:TemplateField>
          
 
-            <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/images/edit.aspx?imageid={0}" Text="View"/>
+            
 
 
             <asp:TemplateField>

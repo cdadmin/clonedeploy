@@ -17,8 +17,16 @@ public partial class views_images_profiles_create : Images
             Description = txtProfileDesc.Text,
             ImageId = Image.Id
         };
-        BLL.ImageProfile.AddProfile(profile);
-            Response.Redirect("~/views/images/profiles/chooser.aspx?imageid=" + profile.ImageId + "&profileid=" + profile.Id + "&cat=profiles");
-
+        var result = BLL.ImageProfile.AddProfile(profile);
+        if (result.IsValid)
+        {
+            EndUserMessage = "Successfully Created Image Profile";
+            Response.Redirect("~/views/images/profiles/general.aspx?imageid=" + profile.ImageId + "&profileid=" +
+                              profile.Id + "&cat=profiles");
+        }
+        else
+        {
+            EndUserMessage = result.Message;
+        }
     }
 }

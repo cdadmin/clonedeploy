@@ -37,7 +37,6 @@ namespace views.images
 
             txtImageName.Text = Image.Name;
             txtImageDesc.Text = Image.Description;
-            ddlImageOS.Text = Image.Os;
             ddlImageType.Text = Image.Type;
             if (Image.Protected == 1)
                 chkProtected.Checked = true;
