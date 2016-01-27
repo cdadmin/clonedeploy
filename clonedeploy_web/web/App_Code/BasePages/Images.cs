@@ -16,7 +16,7 @@ namespace BasePages
             Image = !string.IsNullOrEmpty(Request["imageid"]) ? BLL.Image.GetImage(Convert.ToInt32(Request.QueryString["imageid"])) : null;
             ImageProfile = !string.IsNullOrEmpty(Request["profileid"]) ? BLL.ImageProfile.ReadProfile(Convert.ToInt32(Request.QueryString["profileid"])) : null;
             if (Image == null)
-                RequiresAuthorization(Authorizations.ReadImage);
+                RequiresAuthorization(Authorizations.SearchImage);
             else
                 RequiresAuthorizationOrManagedImage(Authorizations.ReadImage, Image.Id);
         }

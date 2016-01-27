@@ -65,13 +65,16 @@ public partial class views_images_profiles_scripts : Images
 
     protected void btnUpdateScripts_OnClick(object sender, EventArgs e)
     {
-        BLL.ImageProfileScript.DeleteImageProfileScripts((ImageProfile.Id));
+        var deleteResult = BLL.ImageProfileScript.DeleteImageProfileScripts((ImageProfile.Id));
+        var checkedCount = 0;
         foreach (GridViewRow row in gvScripts.Rows)
         {
             var pre = (CheckBox)row.FindControl("chkPre");
             var post = (CheckBox)row.FindControl("chkPost");
             if (pre == null || post == null) continue;
-            if(!pre.Checked && !post.Checked) continue;
+            if (!pre.Checked && !post.Checked) continue;
+            checkedCount++;
+
             var dataKey = gvScripts.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
            
@@ -86,7 +89,13 @@ public partial class views_images_profiles_scripts : Images
             if(txtPriority != null)
                 if (!string.IsNullOrEmpty(txtPriority.Text))
                     profileScript.Priority = Convert.ToInt32(txtPriority.Text);
-            BLL.ImageProfileScript.AddImageProfileScript(profileScript);
+            EndUserMessage = BLL.ImageProfileScript.AddImageProfileScript(profileScript)
+                ? "Successfully Updated Image Profile"
+                : "Could Not Update Image Profile";
+        }
+        if (checkedCount == 0)
+        {
+            EndUserMessage = deleteResult ? "Successfully Updated Image Profile" : "Could Not Update Image Profile";
         }
     }
 }

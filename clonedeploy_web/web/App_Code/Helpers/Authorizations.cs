@@ -27,6 +27,11 @@
             get { return "ComputerDelete"; }
         }
 
+        public static string SearchComputer
+        {
+            get { return "ComputerSearch"; }
+        }
+
         public static string CreateGroup
         {
             get { return "GroupCreate"; }
@@ -45,6 +50,11 @@
         public static string DeleteGroup
         {
             get { return "GroupDelete"; }
+        }
+
+        public static string SearchGroup
+        {
+            get { return "GroupSearch"; }
         }
 
         public static string CreateSmart
@@ -77,6 +87,11 @@
             get { return "ImageDelete"; }
         }
 
+        public static string SearchImage
+        {
+            get { return "ImageSearch"; }
+        }
+
         public static string CreateProfile
         {
             get { return "ProfileCreate"; }
@@ -95,6 +110,11 @@
         public static string DeleteProfile
         {
             get { return "ProfileDelete"; }
+        }
+
+        public static string SearchProfile
+        {
+            get { return "ProfileSearch"; }
         }
 
         public static string CreateGlobal

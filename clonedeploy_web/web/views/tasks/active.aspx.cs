@@ -15,6 +15,7 @@ namespace views.tasks
             ViewState["clickTracker"] = "1";
             gvTasks.DataSource = BLL.ActiveImagingTask.ReadAll();
             gvTasks.DataBind();
+            lblTotal.Text = BLL.ActiveImagingTask.AllActiveCount() + " Total Tasks(s)";
         }
 
         protected void btnCancel_Click(object sender, EventArgs e)
@@ -45,6 +46,7 @@ namespace views.tasks
         {
             gvTasks.DataSource = BLL.ActiveImagingTask.ReadAll();
             gvTasks.DataBind();
+            lblTotal.Text = BLL.ActiveImagingTask.AllActiveCount() + " Total Tasks(s)";
             UpdatePanel1.Update();
         }
 

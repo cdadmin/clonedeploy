@@ -128,11 +128,6 @@ namespace Helpers
             get { return Setting.GetSetting("Server IP").Value; }
         }
 
-        public static string ServerIpWithPort
-        {
-            get { return Setting.GetServerIpWithPort(); }
-        }
-
         public static string ServerKey
         {
             get { return Setting.GetSetting("Server Key").Value; }

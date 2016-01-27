@@ -79,7 +79,7 @@ namespace BLL.Workflows
             if (!CreateComputerTasks())
             {
                 ActiveMulticastSession.Delete(_multicastSession.Id);
-                return "Could Not Create Computer Database Tasks";
+                return "Could Not Create Computer Database Tasks.  A Computer May Have An Existing Task.";
             }
 
             if (!CreatePxeFiles())

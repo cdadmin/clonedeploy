@@ -7,31 +7,32 @@
             $('#nav-users').addClass("nav-current");
         });
     </script>
-     <div class="sub-nav-top">
+
         <div id="Level1" runat="server">
         <ul>
-       <li><a id="createuser" href="<%= ResolveUrl("~/views/users/create.aspx") %>"><span class="sub-nav-text">New User</span></a></li>
-       <li>     <a id="searchuser" href="<%= ResolveUrl("~/views/users/search.aspx") %>"><span class="sub-nav-text">Search Users</span></a></li>
-           <li> <a id="importuser" href="<%= ResolveUrl("~/views/users/import.aspx") %>"><span class="sub-nav-text">Import Users</span></a></li>
+                <li id="searchuser">     <a  href="<%= ResolveUrl("~/views/users/search.aspx") %>"><span class="sub-nav-text">Search Users</span></a></li>
+       <li id="createuser"><a  href="<%= ResolveUrl("~/views/users/create.aspx") %>"><span class="sub-nav-text">New User</span></a></li>
+   
+           <li id="importuser"> <a  href="<%= ResolveUrl("~/views/users/import.aspx") %>"><span class="sub-nav-text">Import Users</span></a></li>
        </ul>
         </div>
         
         <div id="Level2" runat="server">
-           <div class="indent">
+
         <ul>
-        <li><a id="editoption" href="<%= ResolveUrl("~/views/users/edit.aspx") %>?userid=<%= CloneDeployUser.Id %>"><span class="sub-nav-text">General</span></a></li>
-        <li><a id="acloption" href="<%= ResolveUrl("~/views/users/acls/general.aspx") %>?userid=<%= CloneDeployUser.Id %>&level=3"><span class="sub-nav-text">Access Control</span></a></li>
-        <li><a id="historyoption" href="<%= ResolveUrl("~/views/users/history.aspx") %>?userid=<%= CloneDeployUser.Id %>"><span class="sub-nav-text">History</span></a></li>
+        <li id="editoption"><a  href="<%= ResolveUrl("~/views/users/edit.aspx") %>?userid=<%= CloneDeployUser.Id %>"><span class="sub-nav-text">General</span></a></li>
+        <li id="acloption"><a  href="<%= ResolveUrl("~/views/users/acls/general.aspx") %>?userid=<%= CloneDeployUser.Id %>&level=3"><span class="sub-nav-text">Access Control</span></a></li>
+        <li id="historyoption"><a  href="<%= ResolveUrl("~/views/users/history.aspx") %>?userid=<%= CloneDeployUser.Id %>"><span class="sub-nav-text">History</span></a></li>
        
         </ul>
-            </div>
+           
             </div>
 
             <ul>
         <asp:ContentPlaceHolder ID="Level3" runat="server">
         </asp:ContentPlaceHolder>
                 </ul>
-    </div>
+
 </asp:Content>
 
 <asp:Content runat="server" ID="Breadcrumb" ContentPlaceHolderID="Breadcrumb">
@@ -48,7 +49,9 @@
       <asp:LinkButton ID="btnDelete" runat="server" CssClass="submits actions" Text="Delete User" OnClick="btnDelete_Click"></asp:LinkButton>
             <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
     </div>
+    <div class="help_pos">
      <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
+        </div>
 </asp:Content>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="Content" Runat="Server">

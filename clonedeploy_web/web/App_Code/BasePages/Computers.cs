@@ -16,7 +16,7 @@ namespace BasePages
                 ? BLL.Computer.GetComputer(Convert.ToInt32(Request.QueryString["computerid"]))
                 : null;
             if (Computer == null)
-                RequiresAuthorization(Authorizations.ReadComputer);
+                RequiresAuthorization(Authorizations.SearchComputer);
             else
                 RequiresAuthorizationOrManagedComputer(Authorizations.ReadComputer, Computer.Id);
         }

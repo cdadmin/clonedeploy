@@ -13,7 +13,7 @@ namespace BasePages
             base.OnInit(e);
             Group = !string.IsNullOrEmpty(Request["groupid"]) ? BLL.Group.GetGroup(Convert.ToInt32(Request.QueryString["groupid"])) : null;
             if (Group == null)
-                RequiresAuthorization(Authorizations.ReadGroup);
+                RequiresAuthorization(Authorizations.SearchGroup);
             else
                 RequiresAuthorizationOrManagedGroup(Authorizations.ReadGroup, Group.Id);
         }

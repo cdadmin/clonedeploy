@@ -61,7 +61,7 @@ h4{font-size:21px;line-height:30px;margin-bottom:4px;}
 h5{font-size:17px;line-height:24px;}
 h6{font-size:14px;line-height:21px;}
 hr{border:solid #ddd;border-width:1px 0 0;clear:both;margin:10px 0 0px;height:0;}
-
+.smalltext{ font-size: 12px;}
 /* Desktop Menu Top
 ================================================== */
 .nav li { display: inline;width: 60px;float: left;margin-top: -9px;}
@@ -70,7 +70,7 @@ hr{border:solid #ddd;border-width:1px 0 0;clear:both;margin:10px 0 0px;height:0;
 .nav li:first-child a{color:#47a3da;border: none;background: #47a3da;}
 .nav li.nav-current a{background:#fff;color:#444;border-right:none;}
 .nav li a:before{font-family:Flaticon;speak:none;font-style:normal;font-weight:normal;text-indent:0;position:absolute;top:-5px;left:0;width:100%;height:100%;font-size:1em;-webkit-font-smoothing:antialiased;}
-.nav-text, .sub-nav-text{padding-top:0px;display:inline-block;margin-left: 0px;font-size: 18px; }
+.nav-text, .sub-nav-text{padding-top:0px;display:inline-block;margin-left: 0px;font-size: 16px; }
 
 /* Sub Menu 
 ================================================== */
@@ -78,6 +78,7 @@ hr{border:solid #ddd;border-width:1px 0 0;clear:both;margin:10px 0 0px;height:0;
 .sub-nav li{ margin-top: 0px;display: inline-block;padding: 0 10px 0 10px;border-right: 1px solid #eee;}
 .sub-nav li a{ font-weight: 500; display:inline-block;height:1.5em;width:100%;line-height:20px;color:#c94121;position:relative;-webkit-transition:background .1s ease-in-out;-moz-transition:background .1s ease-in-out;transition:background .1s ease-in-out;margin-bottom: 5px;}
 .sub-nav li.nav-current a{color:#333;font-weight: 700;}
+.sub-nav li a:hover{ color: #47a3da;}
 
 /* Mobile Menu Top
 ================================================== */
@@ -116,11 +117,13 @@ Table.Gridview{border:none;white-space:nowrap; width:100%;}
 .Gridview td a:link, .GridView td a:visited {color:white;text-decoration:none;background:#c94121;-webkit-border-radius:5px;-moz-border-radius:3px;-ms-border-radius:3px;-o-border-radius:3px;border-radius:3px;padding:5px 10px;}
 .Gridview a:visited {background:#c94121;color: #fff; }
 
+.extraPad td { padding: 10px;}
+
 Table.log{white-space:normal; word-wrap:break-word;max-width: 900px;}
 .log tr {border:none; }
 .log td {padding:2px;max-width: 900px; }
 
-Table.gv-confirm { width:600px; }
+Table.gv-confirm { width:600px;margin-top: -20px;margin-bottom: 5px;}
 Table.gv_members{margin-left:15px;border-left:2px solid #e8e8e8;border-bottom:2px solid #e8e8e8; margin-top:-5px; width:780px;}
 Table.gv_parts{margin-left:15px;border-left:2px solid #e8e8e8;border-bottom:2px solid #e8e8e8; margin-top:-5px; width:1000px; padding:0;}
 .gv_parts th {background-color:#eee; color:#47a3da;}
@@ -136,7 +139,7 @@ Table.gv_vg{margin-left:30px;border-left:2px solid #e8e8e8;border-bottom:2px sol
 .width_105{width:105px;}
 .width_50{width:50px;}
 .width_30{width:20px;}
-
+.width_100{ width: 100px;}
 .height_800{ height: 800px;}
 .height_600{ height: 600px;}
 .height_400{ height: 400px;}

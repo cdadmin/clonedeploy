@@ -57,7 +57,7 @@ namespace BLL.Workflows
 
             Utility.WakeUp(_computer.Mac);
 
-            return "true";
+            return "Successfully Started Task For " + _computer.Name;
         }
     }
 }

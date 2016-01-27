@@ -10,19 +10,19 @@
     <div class="sub-nav-top">
         <div id="Level1" runat="server">
         <ul>
-             <li><a href="<%= ResolveUrl("~/views/tasks/activeunicast.aspx") %>" ><span class="sub-nav-text">Active Unicasts</span></a></li>
-            <li><a href="<%= ResolveUrl("~/views/tasks/activemulticast.aspx") %>" ><span class="sub-nav-text">Active Multicasts</span></a></li>
-             <li><a href="<%= ResolveUrl("~/views/tasks/active.aspx") %>" ><span class="sub-nav-text">All Active Tasks</span></a></li>
-            <li><a href="<%= ResolveUrl("~/views/tasks/computers.aspx") %>" ><span class="sub-nav-text">Start Computer Task</span></a></li>
-            <li><a href="<%= ResolveUrl("~/views/tasks/groups.aspx") %>" ><span class="sub-nav-text">Start Group Task</span></a></li>
-            <li><a href="<%= ResolveUrl("~/views/tasks/ondemand.aspx") %>"><span class="sub-nav-text">Start On Demand Multicast</span></a></li>
+             <li id="unicast"><a href="<%= ResolveUrl("~/views/tasks/activeunicast.aspx") %>" ><span class="sub-nav-text">Active Unicasts</span></a></li>
+            <li id="multicast"><a href="<%= ResolveUrl("~/views/tasks/activemulticast.aspx") %>" ><span class="sub-nav-text">Active Multicasts</span></a></li>
+             <li id="all"><a href="<%= ResolveUrl("~/views/tasks/active.aspx") %>" ><span class="sub-nav-text">All Active Tasks</span></a></li>
+            <li id="computer"><a href="<%= ResolveUrl("~/views/tasks/computers.aspx") %>" ><span class="sub-nav-text">Start Computer Task</span></a></li>
+            <li id="group"><a href="<%= ResolveUrl("~/views/tasks/groups.aspx") %>" ><span class="sub-nav-text">Start Group Task</span></a></li>
+            <li id="ond"><a href="<%= ResolveUrl("~/views/tasks/ondemand.aspx") %>"><span class="sub-nav-text">Start On Demand Multicast</span></a></li>
        </ul>
         </div>
     </div>
 </asp:Content>
 
 <asp:Content runat="server" ID="Breadcrumb" ContentPlaceHolderID="Breadcrumb">
-     <li><a href="<%= ResolveUrl("~/views/users/search.aspx") %>">Users</a></li>
+     <li><a href="<%= ResolveUrl("~/views/tasks/active.aspx") %>">Tasks</a></li>
     <asp:ContentPlaceHolder ID="BreadcrumbSub" runat="server">
         </asp:ContentPlaceHolder>
 </asp:Content>
@@ -34,8 +34,9 @@
     <div id="actions_left" runat="server">
             <asp:ContentPlaceHolder ID="ActionsLeftSub" runat="server"></asp:ContentPlaceHolder>
     </div>
+    <div class="help_pos">
      <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
-    
+    </div>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">  

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Web;
 using BasePages;
 using BLL;
 using Helpers;
@@ -54,10 +55,10 @@ public partial class views_admin_server : Admin
 
         lblTitle.Text = EndUserMessage;
         lblTitle.Text +=
-            "<br> Your Settings Changes Require A New PXE Boot File Be Created.  <br>Create It Now?";
+            "Your Settings Changes Require A New PXE Boot File Be Created.  <br>Go There Now?";
         if (newClientIso)
         {
-            lblClientISO.Text = "If You Are Using The Client ISO, It Must Also Be Manually Updated.";
+            lblClientISO.Text = "The Client ISO Must Also Be Updated.";
         }
         ClientScript.RegisterStartupScript(GetType(), "modalscript",
             "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
@@ -68,7 +69,7 @@ public partial class views_admin_server : Admin
 
     protected void OkButton_Click(object sender, EventArgs e)
     {
-        Response.Redirect("~/views/admin/bootmenu.aspx?defaultmenu=true");
+        Response.Redirect("~/views/admin/bootmenu/defaultmenu.aspx");
     }
 
     protected bool ValidateSettings()
@@ -79,6 +80,17 @@ public partial class views_admin_server : Admin
             return false;
         }
 
+        if (!chkOverride.Checked)
+        {
+            if (txtPort.Text != "80" && txtPort.Text != "443" && !string.IsNullOrEmpty(txtPort.Text))
+            {
+                txtWebService.Text = "http://[server-ip]:" + txtPort.Text + "/clonedeploy/service/client.asmx/";
+            }
+            if (txtPort.Text == "80" || txtPort.Text == "443" || string.IsNullOrEmpty(txtPort.Text))
+            {
+                txtWebService.Text = "http://[server-ip]/clonedeploy/service/client.asmx/";
+            }
+        }
         if (!txtTFTPPath.Text.Trim().EndsWith(Path.DirectorySeparatorChar.ToString()))
             txtTFTPPath.Text += Path.DirectorySeparatorChar;
 

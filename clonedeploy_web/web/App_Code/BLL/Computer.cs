@@ -35,6 +35,28 @@ namespace BLL
             }
         }
 
+        public static string ComputerCountUser(int userId)
+        {
+            if (BLL.User.GetUser(userId).Membership == "Administrator")
+                return TotalCount();
+
+            var userManagedGroups = BLL.UserGroupManagement.Get(userId);
+
+            //If count is zero image management is not being used return total count
+            if (userManagedGroups.Count == 0)
+                return TotalCount();
+            else
+            {
+                var computerCount = 0;
+                foreach (var managedGroup in userManagedGroups)
+                {
+                    computerCount += Convert.ToInt32(BLL.GroupMembership.GetGroupMemberCount(managedGroup.GroupId));
+                }
+                return computerCount.ToString();
+            }
+        }
+
+
         public static Models.ValidationResult DeleteComputer(Models.Computer computer)
         {        
             using (var uow = new DAL.UnitOfWork())
@@ -55,20 +77,32 @@ namespace BLL
 
         public static Models.DistributionPoint GetDistributionPoint(Models.Computer computer)
         {
-            Models.DistributionPoint dp;
+            Models.DistributionPoint dp = null;
 
             if (computer.RoomId != -1)
+            {
+                var room = BLL.Room.GetRoom(computer.RoomId);
+                if(room != null)
                 dp =
-                    DistributionPoint.GetDistributionPoint(Room.GetRoom(computer.RoomId).DistributionPointId);
+                    DistributionPoint.GetDistributionPoint(room.DistributionPointId);
+            }
             else if (computer.BuildingId != -1)
+            {
+                var building = BLL.Building.GetBuilding(computer.BuildingId);
+                if (building != null)
                 dp =
-                    DistributionPoint.GetDistributionPoint(Building.GetBuilding(computer.BuildingId).DistributionPointId);
+                    DistributionPoint.GetDistributionPoint(building.DistributionPointId);
+            }
             else if (computer.SiteId != -1)
+            {
+                var site = BLL.Site.GetSite(computer.SiteId);
+                if (site != null)
                 dp =
-                    DistributionPoint.GetDistributionPoint(Site.GetSite(computer.SiteId).DistributionPointId);
-            else
+                    DistributionPoint.GetDistributionPoint(site.DistributionPointId);
+            }
+            
+            if(dp == null)
                 dp = DistributionPoint.GetPrimaryDistributionPoint();
-
 
             return dp;
         }
@@ -105,7 +139,9 @@ namespace BLL
             else
             {
                 foreach (var managedGroup in userManagedGroups)
+                {
                     listOfComputers.AddRange(BLL.Group.GetGroupMembers(managedGroup.GroupId, searchString));
+                }
 
                 foreach (var computer in listOfComputers)
                     computer.Image = BLL.Image.GetImage(computer.ImageId);

@@ -85,7 +85,7 @@ namespace views.groups
             }
 
 
-            lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + BLL.Group.TotalCount() + " Total Group(s)";
+            lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + BLL.Group.GroupCountUser(CloneDeployCurrentUser.Id) + " Total Group(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)

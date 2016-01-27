@@ -1,33 +1,50 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/tasks/Task.master" AutoEventWireup="true" Inherits="views.tasks.TaskMulticast" CodeFile="groups.aspx.cs" %>
 
+<asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
+     <li>Start Group Task</li>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="Help" Runat="Server">
+    <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits help" target="_blank"></a>
+</asp:Content>
+
+<asp:Content ID="Content4" ContentPlaceHolderID="SubPageActionsRight" Runat="Server">
+</asp:Content>
+
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#taskmulticast').addClass("nav-current");
+            $('#group').addClass("nav-current");
         });
     </script>
+    <p class="total">
+        <asp:Label ID="lblTotal" runat="server"></asp:Label>
+    </p>
     <div class="size-7 column">
         <asp:TextBox ID="txtSearch" runat="server" CssClass="searchbox"></asp:TextBox>
     </div>
     <br class="clear"/>
-    <p class="total">
-        <asp:Label ID="lblTotal" runat="server"></asp:Label>
-    </p>
-    <asp:GridView ID="gvGroups" runat="server" AutoGenerateColumns="False" DataKeyNames="Id" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
+    
+    <asp:GridView ID="gvGroups" runat="server" AutoGenerateColumns="False" DataKeyNames="Id" CssClass="Gridview extraPad" AlternatingRowStyle-CssClass="alt">
         <Columns>
-            <asp:BoundField DataField="Id" HeaderText="groupID" InsertVisible="False" ReadOnly="True" SortExpression="groupID" Visible="False"/>
-            <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"/>
-           
-            <asp:TemplateField ItemStyle-CssClass="width_100">
-                <ItemTemplate>
+               <asp:TemplateField ItemStyle-CssClass="chkboxwidth">
+                <ItemTemplate >
                     <asp:LinkButton ID="btnMulticast" runat="server" OnClick="btnMulticast_Click" Text="Multicast"/>
+
+                </ItemTemplate>
+            </asp:TemplateField>
+             <asp:TemplateField ItemStyle-CssClass="chkboxwidth">
+                <ItemTemplate>
                     <asp:LinkButton ID="btnUnicast" runat="server" OnClick="btnUnicast_Click" Text="Unicast"/>
                 </ItemTemplate>
             </asp:TemplateField>
-            <asp:TemplateField ItemStyle-CssClass="width_100">
+            <asp:BoundField DataField="Id" HeaderText="groupID" InsertVisible="False" ReadOnly="True" SortExpression="groupID" Visible="False"/>
+            <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"/>
+             <asp:TemplateField ItemStyle-CssClass="width_250">
                 <ItemTemplate>
                 </ItemTemplate>
             </asp:TemplateField>
+         
+
         </Columns>
     </asp:GridView>
     <div id="confirmbox" class="confirm-box-outer">
@@ -35,12 +52,7 @@
             <h4>
                 <asp:Label ID="lblTitle" runat="server" CssClass="modaltitle"></asp:Label>
             </h4>
-            <asp:GridView ID="gvConfirm" runat="server" CssClass="Gridview gv-confirm" AutoGenerateColumns="false">
-                <Columns>
-                    <asp:BoundField DataField="_groupname" HeaderText="Name" ItemStyle-CssClass="width_200"/>
-                    <asp:BoundField DataField="_groupimage" HeaderText="Image" ItemStyle-CssClass="width_200"/>
-                </Columns>
-            </asp:GridView>
+          
             <div class="confirm-box-btns">
                 <asp:LinkButton ID="OkButton" OnClick="btnConfirm_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
                 <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no"/>

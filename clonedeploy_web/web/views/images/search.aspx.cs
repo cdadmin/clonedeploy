@@ -47,7 +47,7 @@ namespace views.images
                 var selectedHd = hdrow.RowIndex;
                 var lbl = hdrow.FindControl("lblHDSize") as Label;
                 if (lbl != null)
-                    lbl.Text = BLL.ImageSchema.ImageSizeOnServerForGridView(row.Cells[4].Text, selectedHd.ToString());
+                    lbl.Text = BLL.ImageSchema.ImageSizeOnServerForGridView(row.Cells[5].Text, selectedHd.ToString());
             }
         }
 
@@ -97,7 +97,7 @@ namespace views.images
         {
             gvImages.DataSource = BLL.Image.SearchImagesForUser(CloneDeployCurrentUser.Id, txtSearch.Text);
             gvImages.DataBind();
-            lblTotal.Text = gvImages.Rows.Count + " Result(s) / " + BLL.Image.TotalCount() + " Total Image(s)";
+            lblTotal.Text = gvImages.Rows.Count + " Result(s) / " + BLL.Image.ImageCountUser(CloneDeployCurrentUser.Id) + " Total Image(s)";
             PopulateSizes();
         }
 
@@ -106,7 +106,7 @@ namespace views.images
             foreach (GridViewRow row in gvImages.Rows)
             {
                 var lbl = row.FindControl("lblSize") as Label;
-                if (lbl != null) lbl.Text = BLL.ImageSchema.ImageSizeOnServerForGridView(row.Cells[4].Text, "0");
+                if (lbl != null) lbl.Text = BLL.ImageSchema.ImageSizeOnServerForGridView(row.Cells[5].Text, "0");
             }
         }
 

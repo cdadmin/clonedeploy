@@ -5,10 +5,10 @@
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="SubHelp">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits actions" target="_blank">Help</a>
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits help" target="_blank"></a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
-     <asp:LinkButton ID="buttonUpdate" runat="server" OnClick="buttonUpdate_OnClick" Text="Update Access Control" CssClass="submits actions" />
+     <asp:LinkButton ID="buttonUpdate" runat="server" OnClick="buttonUpdate_OnClick" Text="Update Access Control" CssClass="submits actions green" />
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
@@ -22,6 +22,7 @@
     <div class="size-10 column">Read</div>
     <div class="size-10 column">Update</div>
     <div class="size-10 column">Delete</div>
+    <div class="size-10 column">Search</div>
     <div class="clear"></div>
     
     <div class="size-4 column">
@@ -40,6 +41,9 @@
      <div class="size-10 column">
         <asp:CheckBox runat="server" Id="ComputerDelete"/>
     </div>
+     <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="ComputerSearch"/>
+    </div>
     <br class="clear"/>
     <br />
      <div class="size-4 column">
@@ -57,6 +61,9 @@
     </div>
      <div class="size-10 column">
         <asp:CheckBox runat="server" Id="GroupDelete"/>
+    </div>
+    <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="GroupSearch"/>
     </div>
     
     <br class="clear"/>
@@ -97,6 +104,9 @@
      <div class="size-10 column">
         <asp:CheckBox runat="server" Id="ImageDelete"/>
     </div>
+     <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="ImageSearch"/>
+    </div>
     
      <br class="clear"/>
     <br />
@@ -115,6 +125,9 @@
     </div>
      <div class="size-10 column">
         <asp:CheckBox runat="server" Id="ProfileDelete"/>
+    </div>
+      <div class="size-10 column">
+        <asp:CheckBox runat="server" Id="ProfileSearch"/>
     </div>
 
     <br class="clear"/>

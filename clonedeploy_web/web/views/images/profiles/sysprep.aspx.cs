@@ -62,12 +62,14 @@ public partial class views_images_profiles_sysprep : Images
 
     protected void btnUpdateSysprep_OnClick(object sender, EventArgs e)
     {
-        BLL.ImageProfileSysprepTag.DeleteImageProfileSysprepTags(ImageProfile.Id);
+        var deleteResult = BLL.ImageProfileSysprepTag.DeleteImageProfileSysprepTags(ImageProfile.Id);
+        var checkedCount = 0;
         foreach (GridViewRow row in gvSysprep.Rows)
         {
             var enabled = (CheckBox)row.FindControl("chkEnabled");
             if (enabled == null ) continue;
             if (!enabled.Checked) continue;
+            checkedCount++;
             var dataKey = gvSysprep.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
 
@@ -80,7 +82,12 @@ public partial class views_images_profiles_sysprep : Images
             if (txtPriority != null)
                 if (!string.IsNullOrEmpty(txtPriority.Text))
                     profileSysPrep.Priority = Convert.ToInt32(txtPriority.Text);
-            BLL.ImageProfileSysprepTag.AddImageProfileSysprepTag(profileSysPrep);
+            
+            EndUserMessage = BLL.ImageProfileSysprepTag.AddImageProfileSysprepTag(profileSysPrep) ? "Successfully Updated Image Profile" : "Could Not Update Image Profile";
+        }
+        if (checkedCount == 0)
+        {
+            EndUserMessage = deleteResult ? "Successfully Updated Image Profile" : "Could Not Update Image Profile";
         }
     }
 }

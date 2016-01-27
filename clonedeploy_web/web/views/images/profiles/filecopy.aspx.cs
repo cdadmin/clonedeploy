@@ -70,12 +70,14 @@ public partial class views_images_profiles_filecopy : Images
 
     protected void btnUpdateFile_OnClick(object sender, EventArgs e)
     {
-        BLL.ImageProfileFileFolder.DeleteImageProfileFileFolders(ImageProfile.Id);
+        var deleteResult = BLL.ImageProfileFileFolder.DeleteImageProfileFileFolders(ImageProfile.Id);
+        var checkedCount = 0;
         foreach (GridViewRow row in gvFile.Rows)
         {
             var enabled = (CheckBox)row.FindControl("chkEnabled");
             if (enabled == null) continue;
             if (!enabled.Checked) continue;
+            checkedCount++;
             var dataKey = gvFile.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
 
@@ -97,7 +99,11 @@ public partial class views_images_profiles_filecopy : Images
             var ddlFolderMode = row.FindControl("ddlFolderMode") as DropDownList;
             if (ddlFolderMode != null)
                 profileFileFolder.FolderCopyType = ddlFolderMode.Text;
-            BLL.ImageProfileFileFolder.AddImageProfileFileFolder(profileFileFolder);
+            EndUserMessage = BLL.ImageProfileFileFolder.AddImageProfileFileFolder(profileFileFolder) ? "Successfully Updated Image Profile" : "Could Not Update Image Profile";
+        }
+        if (checkedCount == 0)
+        {
+            EndUserMessage = deleteResult ? "Successfully Updated Image Profile" : "Could Not Update Image Profile";
         }
     }
 }

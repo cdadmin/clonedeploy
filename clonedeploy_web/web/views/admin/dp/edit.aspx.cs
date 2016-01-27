@@ -25,7 +25,8 @@ public partial class views_admin_dp_edit : Admin
         distributionPoint.IsBackend = Convert.ToInt16(chkBackend.Checked);
         distributionPoint.BackendServer = chkBackend.Checked ? txtBackendServer.Text : "";
 
-        BLL.DistributionPoint.UpdateDistributionPoint(distributionPoint);
+        var result = BLL.DistributionPoint.UpdateDistributionPoint(distributionPoint);
+        EndUserMessage = result.IsValid ? "Successfully Updated Distribution Point" : result.Message;
     }
 
     protected void chkPrimary_OnCheckedChanged(object sender, EventArgs e)

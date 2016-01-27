@@ -10,12 +10,12 @@
         <div id="Level1" runat="server">
         <ul>
            
-            
+            <!--Todo: Finish custom partition layouts
              <li id="partitionlayouts">
                 <a href="<%= ResolveUrl("~/views/global/partitions/search.aspx?cat=sub1") %>" >
                     <span class="sub-nav-text">Partition Layouts</span>
                 </a>
-            </li>
+            </li>-->
             
              <li id="scripts">
                 <a href="<%= ResolveUrl("~/views/global/scripts/search.aspx?cat=sub1") %>" >

@@ -73,11 +73,11 @@ namespace views.computers
 
         protected void PopulateGrid()
         {
-           
-            gvComputers.DataSource = BLL.Computer.SearchComputersForUser(CloneDeployCurrentUser.Id,txtSearch.Text);
+            var listOfComputers = BLL.Computer.SearchComputersForUser(CloneDeployCurrentUser.Id, txtSearch.Text);
+            gvComputers.DataSource = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
             gvComputers.DataBind();
 
-            lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + BLL.Computer.TotalCount() + " Computer(s)";
+            lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + BLL.Computer.ComputerCountUser(CloneDeployCurrentUser.Id) + " Computer(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)

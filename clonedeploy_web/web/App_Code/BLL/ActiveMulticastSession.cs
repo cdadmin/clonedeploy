@@ -101,6 +101,14 @@ namespace BLL
             }
         }
 
+        public static string ActiveCount()
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ActiveMulticastSessionRepository.Count();
+            }
+        }
+
         public static void DeleteAll()
         {
             using (var uow = new DAL.UnitOfWork())

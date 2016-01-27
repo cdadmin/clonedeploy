@@ -13,12 +13,14 @@ public partial class views_tasks_activeunicast : System.Web.UI.Page
         ViewState["clickTracker"] = "1";
         gvUcTasks.DataSource = BLL.ActiveImagingTask.ReadUnicasts();
         gvUcTasks.DataBind();
+        lblTotal.Text = BLL.ActiveImagingTask.ActiveUnicastCount() + " Total Unicast(s)";
 
     }
     protected void Timer_Tick(object sender, EventArgs e)
     {
         gvUcTasks.DataSource = BLL.ActiveImagingTask.ReadUnicasts();
         gvUcTasks.DataBind();
+        lblTotal.Text = BLL.ActiveImagingTask.ActiveUnicastCount() + " Total Unicast(s)";
         UpdatePanel1.Update();
     }
 

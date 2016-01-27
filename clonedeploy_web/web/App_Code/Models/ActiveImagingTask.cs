@@ -51,5 +51,8 @@ namespace Models
 
         [NotMapped]
         public string Direction { get; set; }
+
+        [NotMapped]
+        public virtual Models.Computer Computer { get; set; }
     }
 }

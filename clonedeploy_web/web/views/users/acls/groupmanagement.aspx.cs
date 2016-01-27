@@ -60,6 +60,9 @@ public partial class views_users_acls_groupmanagement : BasePages.Users
         }
 
         BLL.UserGroupManagement.DeleteUserGroupManagements(CloneDeployUser.Id);
-        BLL.UserGroupManagement.AddUserGroupManagements(list);
+        EndUserMessage = BLL.UserGroupManagement.AddUserGroupManagements(list)
+            ? "Successfully Updated Group Management"
+            : "Could Not Update Group Management";
+
     }
 }

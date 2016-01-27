@@ -70,8 +70,13 @@ namespace BLL
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.ActiveImagingTaskRepository.Get(t => t.MulticastId == multicastId,
+                var activeImagingTasks = uow.ActiveImagingTaskRepository.Get(t => t.MulticastId == multicastId,
                     orderBy: q => q.OrderBy(t => t.ComputerId));
+                foreach (var task in activeImagingTasks)
+                {
+                    task.Computer = BLL.Computer.GetComputer(task.ComputerId);
+                }
+                return activeImagingTasks;
             }
         }
 
@@ -87,7 +92,28 @@ namespace BLL
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.ActiveImagingTaskRepository.Get(orderBy: q => q.OrderBy(t => t.Id));
+                var activeImagingTasks = uow.ActiveImagingTaskRepository.Get(orderBy: q => q.OrderBy(t => t.Id));
+                foreach (var task in activeImagingTasks)
+                {
+                    task.Computer = BLL.Computer.GetComputer(task.ComputerId);
+                }
+                return activeImagingTasks;
+            }
+        }
+
+        public static string ActiveUnicastCount()
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ActiveImagingTaskRepository.Count(t => t.Type == "unicast");
+            }
+        }
+
+        public static string AllActiveCount()
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ActiveImagingTaskRepository.Count();
             }
         }
 
@@ -95,8 +121,13 @@ namespace BLL
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.ActiveImagingTaskRepository.Get(t => t.Type == "unicast",
+                var activeImagingTasks = uow.ActiveImagingTaskRepository.Get(t => t.Type == "unicast",
                     orderBy: q => q.OrderBy(t => t.ComputerId));
+                foreach (var task in activeImagingTasks)
+                {
+                    task.Computer = BLL.Computer.GetComputer(task.ComputerId);
+                }
+                return activeImagingTasks;
             }
         }
 

@@ -15,15 +15,17 @@ public partial class views_admin_dp_search : Admin
 
     protected void ButtonConfirmDelete_Click(object sender, EventArgs e)
     {
+        var deletedCount = 0;
         foreach (GridViewRow row in gvDps.Rows)
         {
             var cb = (CheckBox)row.FindControl("chkSelector");
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvDps.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            BLL.DistributionPoint.DeleteDistributionPoint(Convert.ToInt32(dataKey.Value));
+            if (BLL.DistributionPoint.DeleteDistributionPoint(Convert.ToInt32(dataKey.Value)))
+                deletedCount++;
         }
-
+        EndUserMessage = "Successfully Deleted " + deletedCount + " Distribution Points";
         PopulateGrid();
     }
 

@@ -60,6 +60,9 @@ public partial class views_users_acls_imagemanagement : BasePages.Users
         }
 
         BLL.UserImageManagement.DeleteUserImageManagements(CloneDeployUser.Id);
-        BLL.UserImageManagement.AddUserImageManagements(list);
+        EndUserMessage = BLL.UserImageManagement.AddUserImageManagements(list)
+            ? "Successfully Updated Image Management"
+            : "Could Not Update Image Management";
+
     }
 }

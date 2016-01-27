@@ -48,6 +48,18 @@ namespace BLL
             }
         }
 
+        public static string GroupCountUser(int userId)
+        {
+            if (BLL.User.GetUser(userId).Membership == "Administrator")
+                return TotalCount();
+
+            var userManagedGroups = BLL.UserGroupManagement.Get(userId);
+
+            //If count is zero image management is not being used return total count
+            return userManagedGroups.Count == 0 ? TotalCount() : userManagedGroups.Count.ToString();
+        }
+
+
       
         public static Models.ValidationResult DeleteGroup(int groupId)
         {

@@ -1,27 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Helpers;
 
-/// <summary>
-/// Summary description for ParameterReplace
-/// </summary>
-public class ParameterReplace
+namespace Helpers
 {
-
-    public static string Between(string parameter)
+    /// <summary>
+    /// Summary description for ParameterReplace
+    /// </summary>
+    public class ParameterReplace
     {
-        int start = parameter.IndexOf("[", StringComparison.Ordinal);
-        int to = parameter.IndexOf("]", start + "[".Length, StringComparison.Ordinal);
-        if (start < 0 || to < 0) return parameter;
-        string s = parameter.Substring(
-                       start + "[".Length,
-                       to - start - "[".Length);
-        if (s == "server-ip")
+
+        public static string Between(string parameter)
         {
-            return Settings.ServerIp;
+            int start = parameter.IndexOf("[", StringComparison.Ordinal);
+            int to = parameter.IndexOf("]", start + "[".Length, StringComparison.Ordinal);
+            if (start < 0 || to < 0) return parameter;
+            string s = parameter.Substring(
+                start + "[".Length,
+                to - start - "[".Length);
+            if (s == "server-ip")
+            {
+                return parameter.Replace("[server-ip]", Settings.ServerIp);
+            }
+            return s;
         }
-        return s;
     }
 }

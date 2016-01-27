@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BLL;
@@ -116,12 +117,11 @@ namespace views.tasks
 
         protected void PopulateGrid()
         {
-
-            gvComputers.DataSource = BLL.Computer.SearchComputers(txtSearch.Text);
-
+            var listOfComputers = BLL.Computer.SearchComputersForUser(CloneDeployCurrentUser.Id, txtSearch.Text);
+            gvComputers.DataSource = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
             gvComputers.DataBind();
 
-            lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + BLL.Computer.TotalCount() + " Total Computer(s)";
+            lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + BLL.Computer.ComputerCountUser(CloneDeployCurrentUser.Id) + " Total Computer(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)

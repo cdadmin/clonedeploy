@@ -37,7 +37,7 @@ namespace views.masters
         {
             if (BLL.User.GetAdminCount() == 1 && CloneDeployUser.Membership == "Administrator")
             {
-                //Message.Text = "There Must Be At Least One Administrator";
+                PageBaseMaster.EndUserMessage = "There Must Be At Least One Administrator";
             }
             else
             {
@@ -50,9 +50,16 @@ namespace views.masters
 
         protected void OkButton_Click(object sender, EventArgs e)
         {
-            BLL.User.DeleteUser(CloneDeployUser.Id);
+            if (BLL.User.DeleteUser(CloneDeployUser.Id))
+            {
+                PageBaseMaster.EndUserMessage = "Successfully Deleted User";
                 Response.Redirect("~/views/users/search.aspx");
-          
+            }
+            else
+            {
+                PageBaseMaster.EndUserMessage = "Could Not Delete User";
+            }
+
         }       
     }
 }

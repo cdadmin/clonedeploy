@@ -1,16 +1,22 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/dp/dp.master" AutoEventWireup="true" CodeFile="create.aspx.cs" Inherits="views_admin_dp_create" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
+    <li>New</li>
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="SubHelp">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits actions" target="_blank">Help</a>
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits help" target="_blank"></a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
-     <asp:LinkButton ID="buttonAddDp" runat="server" OnClick="buttonAddDp_OnClick" Text="Add Distribution Point" CssClass="submits actions" />
+     <asp:LinkButton ID="buttonAddDp" runat="server" OnClick="buttonAddDp_OnClick" Text="Add Distribution Point" CssClass="submits actions green" />
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
+     <script type="text/javascript">
+        $(document).ready(function() {
+            $('#create').addClass("nav-current");
+        });
+    </script>
      <div class="size-4 column">
         Display Name:
     </div>
@@ -32,7 +38,6 @@
     <div class="size-5 column">
         <asp:DropDownList ID="ddlProtocol" runat="server" CssClass="ddlist">
         <asp:ListItem>SMB</asp:ListItem>
-            <asp:ListItem>SMB+HTTP</asp:ListItem>
             </asp:DropDownList>
     </div>
     <br class="clear"/>
@@ -85,7 +90,7 @@
      <div class="size-4 column">
         Physical Path:
     </div>
-    <div class="size-5 column">
+    <div class="size-1 column">
         <asp:TextBox ID="txtPhysicalPath" runat="server" CssClass="textbox"/>
     </div>
 

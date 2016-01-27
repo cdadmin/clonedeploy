@@ -2,7 +2,7 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
     <li>
-        <a href="<%= ResolveUrl("~/views/images/profiles/chooser.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><%= ImageProfile.Name %></a>
+        <a href="<%= ResolveUrl("~/views/images/profiles/general.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><%= ImageProfile.Name %></a>
     </li>
     <li>Deploy Options</li>
 </asp:Content>
@@ -52,7 +52,6 @@
         <asp:ListItem>Use Original MBR / GPT</asp:ListItem>
         <asp:ListItem>Dynamic</asp:ListItem>
         <asp:ListItem>Custom Script</asp:ListItem>
-        <asp:ListItem>Custom Layout</asp:ListItem>
     </asp:dropdownlist>
 </div>
 <br class="clear"/>
@@ -121,7 +120,7 @@
                                             <asp:CheckBox ID="chkPartActive" runat="server" Checked='<%# Bind("Active") %>'/>
                                         </ItemTemplate>
                                     </asp:TemplateField>
-                                    <asp:BoundField DataField="Prefix" HeaderText="Pre" ItemStyle-CssClass="width_100"></asp:BoundField>
+                                  
                                     <asp:BoundField DataField="Number" HeaderText="#" ItemStyle-CssClass="width_100"></asp:BoundField>
 
                                     <asp:BoundField DataField="Size" HeaderText="Size" ItemStyle-CssClass="width_100"></asp:BoundField>

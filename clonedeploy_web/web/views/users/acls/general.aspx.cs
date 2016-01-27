@@ -15,8 +15,8 @@ public partial class views_users_acl : BasePages.Users
         RequiresAuthorization(Authorizations.Administrator);
 
         _listCheckBoxes = new List<CheckBox> {ComputerCreate, ComputerRead, ComputerUpdate, 
-            ComputerDelete, ImageCreate,ImageRead,ImageUpdate,ImageDelete,GroupCreate,
-            GroupUpdate,GroupRead,GroupDelete,ProfileCreate,ProfileDelete,ProfileRead,ProfileUpdate,
+            ComputerDelete,ComputerSearch, ImageCreate,ImageRead,ImageUpdate,ImageDelete,ImageSearch,GroupCreate,
+            GroupUpdate,GroupRead,GroupDelete,GroupSearch,ProfileCreate,ProfileDelete,ProfileRead,ProfileUpdate,ProfileSearch,
             GlobalCreate,GlobalDelete,GlobalRead,GlobalUpdate,AdminUpdate,ImageTaskUpload,ImageTaskDeploy,
             ImageTaskMulticast,ApproveImage,AllowOnd,AllowDebug,SmartCreate,SmartUpdate};
         if (!IsPostBack) PopulateForm();
@@ -37,6 +37,8 @@ public partial class views_users_acl : BasePages.Users
     {
         BLL.UserRight.DeleteUserRights(CloneDeployUser.Id);
         var listOfRights = _listCheckBoxes.Where(x => x.Checked).Select(box => new Models.UserRight {UserId = CloneDeployUser.Id, Right = box.ID}).ToList();
-        BLL.UserRight.AddUserRights(listOfRights);
+        EndUserMessage = BLL.UserRight.AddUserRights(listOfRights)
+            ? "Successfully Updated User ACLs"
+            : "Could Not Update User ACLs";
     }
 }

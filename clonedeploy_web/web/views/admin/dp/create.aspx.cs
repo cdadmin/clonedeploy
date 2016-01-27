@@ -26,7 +26,18 @@ public partial class views_admin_dp_create : Admin
             BackendServer = chkBackend.Checked ? txtBackendServer.Text : ""
         };
 
-        BLL.DistributionPoint.AddDistributionPoint(distributionPoint);
+        var result = BLL.DistributionPoint.AddDistributionPoint(distributionPoint);
+        if (result.IsValid)
+        {
+            EndUserMessage = "Successfully Created Distribution Point";
+            Response.Redirect("~/views/admin/dp/edit.aspx?level=2&dpid=" + distributionPoint.Id);
+            
+        }
+        else
+        {
+            EndUserMessage = result.Message;
+        }
+
     }
 
     protected void chkPrimary_OnCheckedChanged(object sender, EventArgs e)

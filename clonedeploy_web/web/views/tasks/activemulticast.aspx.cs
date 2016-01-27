@@ -14,6 +14,7 @@ public partial class views_tasks_activemulticast : System.Web.UI.Page
         ViewState["clickTracker"] = "1";
         gvMcTasks.DataSource = BLL.ActiveMulticastSession.GetAllMulticastSessions();
         gvMcTasks.DataBind();
+        lblTotal.Text = BLL.ActiveMulticastSession.ActiveCount() + " Total Multicast(s)";
         GetMcInfo();
     }
 
@@ -21,6 +22,7 @@ public partial class views_tasks_activemulticast : System.Web.UI.Page
     {
         gvMcTasks.DataSource = BLL.ActiveMulticastSession.GetAllMulticastSessions();
         gvMcTasks.DataBind();
+        lblTotal.Text = BLL.ActiveMulticastSession.ActiveCount() + " Total Multicast(s)";
         GetMcInfo();
     }
 
@@ -59,9 +61,14 @@ public partial class views_tasks_activemulticast : System.Web.UI.Page
                 td.Visible = true;
                 gv.Visible = true;
 
-                var table = BLL.ActiveImagingTask.MulticastMemberStatus(Convert.ToInt32(gvRow.Cells[1].Text));
-                gv.DataSource = table;
-                gv.DataBind();
+                var dataKey = gvMcTasks.DataKeys[gvRow.RowIndex];
+                if (dataKey != null)
+                {
+                    var table = BLL.ActiveImagingTask.MulticastMemberStatus(Convert.ToInt32(dataKey.Value));
+                    gv.DataSource = table;
+                    gv.DataBind();
+                }
+
             }
             else
             {

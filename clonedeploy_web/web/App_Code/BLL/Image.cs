@@ -102,6 +102,16 @@ namespace BLL
             }
         }
 
+        public static string ImageCountUser(int userId)
+        {
+            if (BLL.User.GetUser(userId).Membership == "Administrator")
+                return TotalCount();
+
+            var userManagedImages = BLL.UserImageManagement.Get(userId);
+            
+            //If count is zero image management is not being used return total count
+            return userManagedImages.Count == 0 ? TotalCount() : userManagedImages.Count.ToString();
+        }
 
         public static List<Models.Image> SearchImagesForUser(int userId, string searchString = "")
         {
