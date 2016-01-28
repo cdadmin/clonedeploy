@@ -18,7 +18,7 @@
     <p class="total">
         <asp:Label ID="lblTotal" runat="server"></asp:Label>
     </p>
-    <asp:GridView ID="gvLogs" runat="server" DataKeyNames="Id"  AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
+    <asp:GridView ID="gvLogs" runat="server" DataKeyNames="Id"  AutoGenerateColumns="False" CssClass="Gridview extraPad" AlternatingRowStyle-CssClass="alt">
         <Columns>
                
             <asp:TemplateField>

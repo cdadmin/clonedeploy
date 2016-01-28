@@ -279,6 +279,7 @@ function process_sysprep_tags()
   else
     log " ...... Could Not Find Answer File"
   fi
+  umount /mnt/ntfs
 }
 
 function process_file_copy()
@@ -348,6 +349,7 @@ function process_file_copy()
 		  fi
 		fi
 	fi
+	umount /mnt/fs
   done
 }
 

@@ -96,7 +96,7 @@ namespace BLL.Workflows
             customHardDrives.Append("custom_hard_drives=\"");
                     
             foreach (var hd in customSchema.HardDrives.Where(x => x.Active && !string.IsNullOrEmpty(x.Destination)))          
-                customHardDrives.Append(hd.Name + " ");
+                customHardDrives.Append(hd.Destination + " ");
                          
             customHardDrives.Append("\"");
             AppendString(customHardDrives.ToString());

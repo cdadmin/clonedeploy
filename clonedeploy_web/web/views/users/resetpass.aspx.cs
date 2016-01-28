@@ -22,7 +22,7 @@ namespace views.users
             if (txtUserPwd.Text == txtUserPwdConfirm.Text && !string.IsNullOrEmpty(txtUserPwd.Text))
             {
                 user.Password = txtUserPwd.Text;
-                user.Salt = BLL.User.CreateSalt(16);
+                user.Salt = Helpers.Utility.CreateSalt(64);
                 var result = BLL.User.UpdateUser(user, true);
                 EndUserMessage = !result.IsValid ? result.Message : "Successfully Changed Password";
                 

@@ -22,6 +22,9 @@ namespace views.masters
             }
 
             Level1.Visible = false;
+            if (Settings.RequireImageApproval.ToLower() == "true" && Image.Approved != 1)
+                approve.Visible = true;
+
             if (Request.QueryString["cat"] == "profiles")
             {
                 Level2.Visible = false;
@@ -39,6 +42,15 @@ namespace views.masters
         {
             lblTitle.Text = "Delete This Image?";
             DisplayConfirm();
+        }
+
+        protected void btnApprove_Click(object sender, EventArgs e)
+        {
+            imagesBasePage.RequiresAuthorizationOrManagedImage(Authorizations.ApproveImage,Image.Id);
+            Image.Approved = 1;
+            PageBaseMaster.EndUserMessage = BLL.Image.UpdateImage(Image, Image.Name).IsValid
+                ? "Successfully Approved Image"
+                : "Could Not Approve Image";
         }
 
         protected void OkButton_Click(object sender, EventArgs e)

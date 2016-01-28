@@ -84,6 +84,14 @@ namespace BLL
         {
             var validationResult = new Models.ValidationResult();
 
+            var primaryDp = GetPrimaryDistributionPoint();
+            if (primaryDp != null && Convert.ToBoolean(distributionPoint.IsPrimary))
+            {
+                validationResult.IsValid = false;
+                validationResult.Message = "There Can Only Be One Primary Distribution Point";
+                return validationResult;
+            }
+
             if(Convert.ToBoolean(distributionPoint.IsPrimary))
                 if (!distributionPoint.PhysicalPath.Trim().EndsWith(Path.DirectorySeparatorChar.ToString()))
                     distributionPoint.PhysicalPath += Path.DirectorySeparatorChar;

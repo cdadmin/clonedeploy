@@ -11,18 +11,16 @@ public partial class views_images_profiles_create : Images
 
     protected void buttonCreateProfile_OnClick(object sender, EventArgs e)
     {
-        var profile = new ImageProfile()
-        {
-            Name = txtProfileName.Text,
-            Description = txtProfileDesc.Text,
-            ImageId = Image.Id
-        };
-        var result = BLL.ImageProfile.AddProfile(profile);
+        var defaultProfile = BLL.ImageProfile.SeedDefaultImageProfile();
+        defaultProfile.ImageId = Image.Id;
+        defaultProfile.Name = txtProfileName.Text;
+        defaultProfile.Description = txtProfileDesc.Text;
+        var result = BLL.ImageProfile.AddProfile(defaultProfile);
         if (result.IsValid)
         {
             EndUserMessage = "Successfully Created Image Profile";
-            Response.Redirect("~/views/images/profiles/general.aspx?imageid=" + profile.ImageId + "&profileid=" +
-                              profile.Id + "&cat=profiles");
+            Response.Redirect("~/views/images/profiles/general.aspx?imageid=" + defaultProfile.ImageId + "&profileid=" +
+                              defaultProfile.Id + "&cat=profiles");
         }
         else
         {

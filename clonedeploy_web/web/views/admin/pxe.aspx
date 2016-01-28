@@ -1,15 +1,15 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/Admin.master" AutoEventWireup="true" CodeFile="pxe.aspx.cs" Inherits="views_admin_pxe" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
-     <li><a href="<%= ResolveUrl("~/views/admin/client.aspx") %>">PXE Settings</a></li>
+     <li>PXE Settings</li>
 </asp:Content>
 
 <asp:Content runat="server" ID="Help" ContentPlaceHolderID="Help">
-      <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits actions" target="_blank">Help</a>
+      <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits help" target="_blank"></a>
 </asp:Content>
 
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
-     <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update PXE Settings" OnClick="btnUpdateSettings_OnClick" CssClass="submits actions"/>
+     <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update PXE Settings" OnClick="btnUpdateSettings_OnClick" CssClass="submits actions green"/>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent" Runat="Server">
@@ -91,10 +91,9 @@
         <div class="confirm-box-btns">
             <asp:LinkButton ID="OkButton" OnClick="OkButton_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
             <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no"/>
-            <h5 style="color: white;">
-                <asp:Label ID="lblClientISO" runat="server" CssClass="modaltitle"></asp:Label>
-            </h5>
-        </div>
+            
+              
+            </div>
     </div>
 
 </div>

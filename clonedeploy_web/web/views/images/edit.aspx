@@ -33,7 +33,7 @@
         Image Type:
     </div>
     <div class="size-5 column">
-        <asp:DropDownList ID="ddlImageType" runat="server" CssClass="ddlist">
+        <asp:DropDownList ID="ddlImageType" runat="server" CssClass="ddlist" >
             <asp:ListItem>Block</asp:ListItem>
             <asp:ListItem>File</asp:ListItem>
         </asp:DropDownList>

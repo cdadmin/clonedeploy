@@ -59,10 +59,7 @@ namespace Helpers
             get { return Setting.GetSetting("Global Computer Args").Value; }
         }
 
-        public static string ImageChecksum
-        {
-            get { return Setting.GetSetting("Image Checksum").Value; }
-        }
+        
 
         public static string PrimaryStoragePath
         {

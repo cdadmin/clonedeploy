@@ -34,6 +34,23 @@ namespace Helpers
             return path != null ? path.Replace("\\", "/") : string.Empty;
         }
 
+        public static string CreatePasswordHash(string pwd, string salt)
+        {
+            var saltAndPwd = string.Concat(pwd, salt);
+            HashAlgorithm hash = new SHA256Managed();
+            byte[] plainTextBytes = System.Text.Encoding.UTF8.GetBytes(saltAndPwd);
+            byte[] hashBytes = hash.ComputeHash(plainTextBytes);
+            return Convert.ToBase64String(hashBytes);
+        }
+
+        public static string CreateSalt(int byteSize)
+        {
+            var rng = new RNGCryptoServiceProvider();
+            var buff = new byte[byteSize];
+            rng.GetBytes(buff);
+            return Convert.ToBase64String(buff);
+        }
+
         public static string Decode(string encoded)
         {
             string decoded = null;
@@ -90,15 +107,7 @@ namespace Helpers
 
         public static string GenerateKey()
         {
-            var timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff");
-            string key;
-            using (var md5 = MD5.Create())
-            {
-                var hash = md5.ComputeHash(Encoding.Default.GetBytes(timestamp));
-                key = new Guid(hash).ToString();
-            }
-
-            return key.Substring(0, 18);
+            return Guid.NewGuid().ToString();
         }
 
         public static string[] GetBootImages()

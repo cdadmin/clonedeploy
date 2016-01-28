@@ -31,7 +31,7 @@ namespace views.users
                 Name = txtUserName.Text,
                 Password = txtUserPwd.Text,
                 Membership = ddluserMembership.Text,
-                Salt = BLL.User.CreateSalt(16)
+                Salt = Helpers.Utility.CreateSalt(64)
             };
 
             var result = BLL.User.AddUser(user);

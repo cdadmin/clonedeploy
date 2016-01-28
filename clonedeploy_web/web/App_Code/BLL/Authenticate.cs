@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.DirectoryServices.AccountManagement;
 using System.Web.Security;
 using BLL;
 using Helpers;
@@ -31,27 +33,9 @@ namespace Security
             }
          
             return JsonConvert.SerializeObject(result);
-
-            //FIX ME
-            /*if ((task == "ond" && wdsuser.OndAccess == "1") || (task == "debug" && wdsuser.DebugAccess == "1") ||
-                (task == "diag" && wdsuser.DiagAccess == "1") || (task == "register") || (isWebTask == "push") ||
-                (isWebTask == "pull"))
-            {
-                    
-                   
-                return "true," + wdsuser.Id + "," + Settings.ServerKey;
-            }*/
-
-
-            return "false";
         }
 
-        private string CreatePasswordHash(string pwd, string salt)
-        {
-            var saltAndPwd = string.Concat(pwd, salt);
-            var hashedPwd = FormsAuthentication.HashPasswordForStoringInConfigFile(saltAndPwd, "sha1");
-            return hashedPwd;
-        }
+       
 
         public string IpxeLogin(string username, string password, string kernel, string bootImage, string task)
         {
@@ -75,6 +59,8 @@ namespace Security
 
         public Models.ValidationResult GlobalLogin(string userName, string password, string loginType)
         {
+            var tmp = Helpers.Utility.CreatePasswordHash("password", "salt");
+
             var validationResult = new Models.ValidationResult
             {
                 Message = "Login Was Not Successful",
@@ -85,23 +71,6 @@ namespace Security
             var user = BLL.User.GetUser(userName);
             if (user == null) return validationResult;
 
-                //FIX ME
-                //Check against AD
-                /*
-                if (!string.IsNullOrEmpty(Settings.AdLoginDomain))
-                {
-                    var context = new PrincipalContext(ContextType.Domain, Settings.AdLoginDomain,
-                        userName, password);
-                    var adUser = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, userName);
-                    if (adUser != null) validated = true;
-                }
-                //Check against local DB
-                else
-                {
-                    var hash = CreatePasswordHash(password, user.Salt);
-                    if (user.Password == hash) validated = true;
-                }*/
-
             if (BLL.UserLockout.AccountIsLocked(user.Id))
             {
                 BLL.UserLockout.ProcessBadLogin(user.Id);
@@ -109,10 +78,31 @@ namespace Security
                 return validationResult;
             }
 
-            var hash = CreatePasswordHash(password, user.Salt);
-                if (user.Password == hash) validationResult.IsValid = true;
-            
+            //Check against AD
+            if (!string.IsNullOrEmpty(Settings.AdLoginDomain))
+            {
+                try
+                {
+                    var context = new PrincipalContext(ContextType.Domain, Settings.AdLoginDomain,
+                        userName, password);
+                    var adUser = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, userName);
+                    if (adUser != null) validationResult.IsValid = true;
+                }
+                catch (Exception)
+                {
+                    //Fallback to local db in case ad auth isn't working
+                    var hash = Helpers.Utility.CreatePasswordHash(password, user.Salt);
+                    if (user.Password == hash) validationResult.IsValid = true;
 
+                }
+            }
+            //Check against local DB
+            else
+            {
+                var hash = Helpers.Utility.CreatePasswordHash(password, user.Salt);
+                if (user.Password == hash) validationResult.IsValid = true;
+            }
+           
             if (validationResult.IsValid)
             {
                 BLL.UserLockout.DeleteUserLockouts(user.Id);

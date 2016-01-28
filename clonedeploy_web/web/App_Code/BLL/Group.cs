@@ -143,12 +143,12 @@ namespace BLL
             }
         }
 
-        public static int StartGroupUnicast(Models.Group group)
+        public static int StartGroupUnicast(Models.Group group, int userId)
         {
             var count = 0;
             foreach (var computer in GetGroupMembers(group.Id))
             {
-                if(new BLL.Workflows.Unicast(computer, "push").Start() == "true")
+                if(new BLL.Workflows.Unicast(computer, "push",userId).Start() == "true")
                 count++;
             }
             return count;

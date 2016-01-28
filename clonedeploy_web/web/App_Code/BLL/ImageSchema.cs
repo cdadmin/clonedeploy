@@ -8,7 +8,7 @@ using BLL.DynamicClientPartition;
 using Helpers;
 using Models.ImageSchema;
 using Newtonsoft.Json;
-using Partition;
+
 
 namespace BLL
 {

@@ -109,7 +109,7 @@
             <asp:GridView ID="gvConfirm" runat="server" CssClass="Gridview gv-confirm" AutoGenerateColumns="false">
                 <Columns>
                     <asp:BoundField DataField="Name" HeaderText="Name" ItemStyle-CssClass="width_200"/>
-                    <asp:BoundField DataField="Image" HeaderText="Image" ItemStyle-CssClass="width_200"/>
+                    <asp:BoundField DataField="Image.Name" HeaderText="Image" ItemStyle-CssClass="width_200"/>
                 </Columns>
             </asp:GridView>
             <div class="confirm-box-btns">

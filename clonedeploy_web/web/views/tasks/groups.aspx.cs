@@ -25,17 +25,12 @@ namespace views.tasks
 
             if (isUnicast == 1)
             {
-                var count = 0;
-                foreach (var computer in BLL.Group.GetGroupMembers(group.Id))
-                {
-                    if(new BLL.Workflows.Unicast(computer, "push").Start().Contains("Successfully"))
-                    count++;
-                }
-                EndUserMessage = "Started " + count + " Tasks";
+                var successCount = BLL.Group.StartGroupUnicast(group, CloneDeployCurrentUser.Id);
+                EndUserMessage = "Started " + successCount + " Tasks";
             }
             else
             {
-                EndUserMessage = new BLL.Workflows.Multicast(group).Create();
+                EndUserMessage = new BLL.Workflows.Multicast(group,CloneDeployCurrentUser.Id).Create();
             }
             Session.Remove("groupID");
             Session.Remove("isGroupUnicast");

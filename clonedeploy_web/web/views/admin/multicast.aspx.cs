@@ -61,13 +61,18 @@ public partial class views_admin_multicast : Admin
 
             if (BLL.Setting.UpdateSetting(listSettings))
             {
-                if ((string)(ViewState["startPort"]) != txtStartPort.Text)
+                EndUserMessage = "Successfully Updated Settings";
+                if ((string) (ViewState["startPort"]) != txtStartPort.Text)
                 {
                     var startPort = Convert.ToInt32(txtStartPort.Text);
                     startPort = startPort - 2;
-                    var port = new Port { Number = startPort };
+                    var port = new Port {Number = startPort};
                     BLL.Port.AddPort(port);
                 }
+            }
+            else
+            {
+                EndUserMessage = "Could Not Update Settings";
             }
         }
 

@@ -139,8 +139,9 @@ function process_partitions()
     download_image "$current_partition" part
 		
 	partition_size_bytes=$(parted -s $hard_drive unit b print all | grep " $(parse_json "$current_partition" .Number) " -m 1 | awk -F' ' '{print $4}' | sed 's/B//g')
+
     if [ "$skip_expand_volumes" != "true" ]; then 
-      if [ "$(parse_json "$current_object" .ImageType)" = "Block" ] && [ "$partition_size_bytes" -gt "5368709120" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
+      if [ "$(parse_json "$current_partition" .ImageType)" = "Block" ] && [ "$partition_size_bytes" -gt "5368709120" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
         expand_volume ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number) $(parse_json "$current_partition" .FileSystem)  
       fi
     fi
@@ -233,11 +234,11 @@ function download_image()
 	  mkfs.$(parse_json "$current_object" .FileSystem) -F $destination &>> $CLIENT_LOG
 	fi
 	if [ "$multicast" = "true" ]; then
-	  log "cd_reporter $computer_id wim & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 $destination"
-	  cd_reporter $computer_id wim & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 $destination 2>> $CLIENT_LOG | tee /tmp/wim.progress
+	  log "cd_reporter $computer_id wimdown & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 $destination"
+	  cd_reporter $computer_id wimdown & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 $destination 2>> $CLIENT_LOG | tee /tmp/wim.progress
 	else
-	  log "cd_reporter $computer_id wim & wimapply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination"
-	  cd_reporter $computer_id wim & wimapply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination 2>> $CLIENT_LOG | tee /tmp/wim.progress
+	  log "cd_reporter $computer_id wimdown & wimapply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination"
+	  cd_reporter $computer_id wimdown & wimapply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination 2>> $CLIENT_LOG | tee /tmp/wim.progress
 	fi
   fi 
 }
@@ -554,9 +555,10 @@ function update_bcd()
       continue
     fi
 
+	umount /mnt/ntfs
     log " ** Updating BCD ** " "display"
     mkdir /mnt/ntfs
-    ntfs-3g -o force,rw,remove_hiberfile ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number) /mnt/ntfs 2> /dev/null
+    ntfs-3g -o force,rw,remove_hiberfile ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number) /mnt/ntfs 2>> $CLIENT_LOG
     if [ -f "/mnt/ntfs/Windows/System32/winload.exe" ] || [ -f "/mnt/ntfs/Windows/system32/winload.exe" ]; then
       log " ...... Found Windows Partition On ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)" "display"
       windows_partition=${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)	
@@ -577,7 +579,7 @@ function update_bcd()
     echo $updated_bcd | base64 -d >>/tmp/updatedbcd
     log " ** Updated BCD Is ** "
     cat /tmp/updatedbcd >> $CLIENT_LOG	
-    ntfs-3g -o force,rw,remove_hiberfile $bcd_partition /mnt/ntfs 2> /dev/null
+    ntfs-3g -o force,rw,remove_hiberfile $bcd_partition /mnt/ntfs 2>> $CLIENT_LOG
     reged -I -C /mnt/ntfs/Boot/BCD . /tmp/updatedbcd >> $CLIENT_LOG
     umount /mnt/ntfs
     log " ...... Success" "display"
@@ -671,7 +673,7 @@ function change_computer_name()
   local partition="$1"
   log " ** Changing Computer Name On $partition ** " "display"
   mkdir /mnt/ntfs		
-  ntfs-3g -o force,rw,remove_hiberfile $partition /mnt/ntfs &>/dev/null
+  ntfs-3g -o force,rw,remove_hiberfile $partition /mnt/ntfs 2>> $CLIENT_LOG
   if [ "$?" != "0" ]; then
     log "Could Not Mount NTFS To Change Computer Name"
 	return 1

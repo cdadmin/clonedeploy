@@ -69,13 +69,13 @@ namespace views.computers
                 case "push":
                 {
                     ComputerBasePage.RequiresAuthorizationOrManagedComputer(Authorizations.ImageDeployTask, Computer.Id);
-                    PageBaseMaster.EndUserMessage = new BLL.Workflows.Unicast(Computer, action).Start();
+                    PageBaseMaster.EndUserMessage = new BLL.Workflows.Unicast(Computer, action,ComputerBasePage.CloneDeployCurrentUser.Id).Start();
                 }
                     break;
                 case "pull":
                 {
                     ComputerBasePage.RequiresAuthorizationOrManagedComputer(Authorizations.ImageUploadTask, Computer.Id);
-                    PageBaseMaster.EndUserMessage = new BLL.Workflows.Unicast(Computer, action).Start();
+                    PageBaseMaster.EndUserMessage = new BLL.Workflows.Unicast(Computer, action,ComputerBasePage.CloneDeployCurrentUser.Id).Start();
                 }
                     break;
             }

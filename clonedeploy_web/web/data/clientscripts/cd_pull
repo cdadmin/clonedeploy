@@ -606,8 +606,8 @@ function upload_image()
 		wimsource="/mnt/wimsource"
       fi 	  
 	  touch /tmp/wim.progress
-	  log " ...... cd_reporter $computer_id & wimcapture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
-	  eval "cd_reporter $computer_id wim & wimcapture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
+	  log " ...... cd_reporter $computer_id wimup & wimcapture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
+	  eval "cd_reporter $computer_id wimup & wimcapture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
 	  rm /tmp/wim.progress
 	  umount /mnt/wimsource &> /dev/null
     else

@@ -91,7 +91,7 @@ namespace BLL
             {
                 using (var uow = new DAL.UnitOfWork())
                 {
-                    if (uow.ImageProfileRepository.Exists(h => h.Name == imageProfile.Name))
+                    if (uow.ImageProfileRepository.Exists(h => h.Name == imageProfile.Name && h.ImageId == imageProfile.ImageId))
                     {
                         validationResult.IsValid = false;
                         validationResult.Message = "This Image Profile Already Exists";
@@ -106,7 +106,7 @@ namespace BLL
                     var originalImageProfile = uow.ImageProfileRepository.GetById(imageProfile.Id);
                     if (originalImageProfile.Name != imageProfile.Name)
                     {
-                        if (uow.ImageProfileRepository.Exists(h => h.Name == imageProfile.Name))
+                        if (uow.ImageProfileRepository.Exists(h => h.Name == imageProfile.Name && h.ImageId == imageProfile.ImageId))
                         {
                             validationResult.IsValid = false;
                             validationResult.Message = "This Image Profile Already Exists";
@@ -119,10 +119,9 @@ namespace BLL
             return validationResult;
         }
 
-        public static void SeedDefaultImageProfile(int imageId)
+        public static Models.ImageProfile SeedDefaultImageProfile()
         {
             var imageProfile = new Models.ImageProfile();
-            imageProfile.ImageId = imageId;
             imageProfile.Kernel = Settings.DefaultKernel32;
             imageProfile.BootImage = "initrd.xz";
             imageProfile.Name = "default";
@@ -139,7 +138,7 @@ namespace BLL
             imageProfile.Compression = "lz4";
             imageProfile.CompressionLevel = "1";
             imageProfile.TaskCompletedAction = "Reboot";
-            AddProfile(imageProfile);
+            return imageProfile;
         }
 
         public static void CloneProfile(Models.ImageProfile imageProfile)

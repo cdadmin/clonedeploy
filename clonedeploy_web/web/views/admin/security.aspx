@@ -5,11 +5,11 @@
 </asp:Content>
 
 <asp:Content runat="server" ID="Help" ContentPlaceHolderID="Help">
-      <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits actions" target="_blank">Help</a>
+      <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits help" target="_blank"></a>
 </asp:Content>
 
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
-    <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update Security Settings" OnClick="btnUpdateSettings_OnClick" CssClass="submits actions"/>
+    <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update Security Settings" OnClick="btnUpdateSettings_OnClick" CssClass="submits actions green"/>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent" Runat="Server">
@@ -27,16 +27,7 @@
 </div>
 <br class="clear"/>
 
-<div class="size-4 column">
-    Image Checksum:
-</div>
-<div class="size-setting column">
-    <asp:DropDownList ID="ddlImageChecksum" runat="server" CssClass="ddlist">
-        <asp:ListItem>On</asp:ListItem>
-        <asp:ListItem>Off</asp:ListItem>
-    </asp:DropDownList>
-</div>
-<br class="clear"/>
+
     
 <div class="size-4 column">
     Require Image Approval:
@@ -123,9 +114,9 @@
         <div class="confirm-box-btns">
             <asp:LinkButton ID="OkButton" OnClick="OkButton_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
             <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no"/>
-            <h5 style="color: white;">
-                <asp:Label ID="lblClientISO" runat="server" CssClass="modaltitle"></asp:Label>
-            </h5>
+            <br/>
+                <asp:Label ID="lblClientISO" runat="server" CssClass="smalltext"></asp:Label>
+            
         </div>
     </div>
 

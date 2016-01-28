@@ -43,7 +43,9 @@ namespace views.images
             if (Image.IsVisible == 1)
                 chkVisible.Checked = true;
 
-           
+            //Image types can't be changed after they are created
+            ddlImageType.Enabled = false;
+
         }
     }
 }

@@ -18,24 +18,28 @@ namespace BLL.Workflows
         private List<Models.Computer> _computers;
         private readonly Models.Group _group;
         private Models.ImageProfile _imageProfile;
+        private readonly int _userId;
 
         //Constructor For Starting Multicast For Group
-        public Multicast(Models.Group group)
+        public Multicast(Models.Group group,int userId)
         {
             _computers = new List<Models.Computer>();
             _multicastSession = new Models.ActiveMulticastSession();
             _isOnDemand = false;
             _group = group;
+            _userId = userId;
+
         }
 
         //Constructor For Starting Multicast For On Demand
-        public Multicast(Models.ImageProfile imageProfile, string clientCount)
+        public Multicast(Models.ImageProfile imageProfile, string clientCount, int userId)
         {
             _multicastSession = new Models.ActiveMulticastSession();
             _isOnDemand = true;
             _imageProfile = imageProfile;
             _clientCount = clientCount;
             _group = new Models.Group{ImageProfileId = _imageProfile.Id};
+            _userId = userId;
         }
 
         public string Create()
@@ -45,13 +49,19 @@ namespace BLL.Workflows
 
             if (_imageProfile.Image == null) return "The Image Does Not Exist";
 
+            var validation = Image.CheckApprovalAndChecksum(_imageProfile.Image);
+            if (!validation.IsValid) return validation.Message;
+
             _multicastSession.Port = Port.GetNextPort();
             if (_multicastSession.Port == 0)
             {
                 return "Could Not Determine Current Port Base";
             }
 
+            var dp = BLL.DistributionPoint.GetPrimaryDistributionPoint();
+            if (dp == null) return "Could Not Find A Primary Distribution Point";
 
+            _multicastSession.UserId = _userId;
             //End of the road for starting an on demand multicast
             if (_isOnDemand)
             {
@@ -118,7 +128,8 @@ namespace BLL.Workflows
                     Type = "multicast",
                     ComputerId = computer.Id,
                     Direction = "push",
-                    MulticastId = _multicastSession.Id
+                    MulticastId = _multicastSession.Id,
+                    UserId = _userId
                     
                 };
 
@@ -168,142 +179,171 @@ namespace BLL.Workflows
         private string GenerateProcessArguments()
         {
             var isUnix = Environment.OSVersion.ToString().Contains("Unix");
-            //Todo:Multicasting currently only supports the first active hd
-            //Find First Active HD
+
             var schema = new ClientPartitionHelper(_imageProfile).GetImageSchema();
 
-            var activeCounter = -1;
+            var schemaCounter = -1;
+            var multicastHdCounter = 0;
+            string processArguments = null;
             foreach (var hd in schema.HardDrives)
             {
-                activeCounter++;
-                if (hd.Active)
+                schemaCounter++;
+                if (!hd.Active) continue;
+                multicastHdCounter++;
+
+                var imagePath = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar +
+                                _imageProfile.Image.Name + Path.DirectorySeparatorChar + "hd" +
+                                schemaCounter;
+
+                var x = 0;
+                foreach (var part in schema.HardDrives[schemaCounter].Partitions)
                 {
-
-                    break;
-                }
-            }
-
-            var imagePath = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + _imageProfile.Image.Name + Path.DirectorySeparatorChar + "hd" +
-                            activeCounter;
-
-            string processArguments = null;
-            var x = 0;
-            foreach (var part in schema.HardDrives[activeCounter].Partitions)
-            {
-                if (!part.Active) continue;
-                string imageFile = null;
-                foreach (var ext in new[] {".ntfs", ".fat", ".extfs", ".hfsp", ".imager", ".xfs"})
-                {
-                    imageFile =
-                        Directory.GetFiles(
-                            imagePath + Path.DirectorySeparatorChar, "part" + part.Number + ext + ".*")
-                            .FirstOrDefault();
-
-                    if (imageFile != null) break;
-
-                    //Look for lvm
-                    if (part.VolumeGroup == null) continue;
-                    if (part.VolumeGroup.LogicalVolumes == null) continue;
-                    foreach (var lv in part.VolumeGroup.LogicalVolumes.Where(lv => lv.Active))
+                    if (!part.Active) continue;
+                    string imageFile = null;
+                    foreach (var ext in new[] {".ntfs", ".fat", ".extfs", ".hfsp", ".imager", ".xfs"})
                     {
-                        imageFile =
-                            Directory.GetFiles(
-                                imagePath + imagePath + Path.DirectorySeparatorChar, lv.VolumeGroup + "-" +
-                                                                                     lv.Name + ext + ".*")
-                                .FirstOrDefault();
-                    }
-                }
+                        try
+                        {
+                            imageFile =
+                         Directory.GetFiles(
+                             imagePath + Path.DirectorySeparatorChar, "part" + part.Number + ext + ".*")
+                             .FirstOrDefault();
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Log(ex.Message);
+                            return null;
 
-                if (imageFile == null)
-                    continue;
-                x++;
+                        }
+                     
 
-                string minReceivers;
-                string senderArgs;
-                if (_isOnDemand)
-                {
-                    senderArgs = Settings.SenderArgs;
-                    if (!string.IsNullOrEmpty(_clientCount))
-                        minReceivers = " --min-receivers " + _clientCount;
-                    else
-                        minReceivers = "";
-                }
-                else
-                {
-                    senderArgs = string.IsNullOrEmpty(_imageProfile.SenderArguments)
-                        ? Settings.SenderArgs
-                        : _imageProfile.SenderArguments;
-                    minReceivers = " --min-receivers " + _computers.Count;
-                }
+                        if (imageFile != null) break;
 
-                string compAlg;
-                string stdout = "";
-                switch (Path.GetExtension(imageFile))
-                {
-                    case ".lz4":
-                        compAlg = isUnix ? "lz4 -d " : "lz4.exe -d ";
-                        stdout = " - ";
-                        break;
-                    case ".gz":
-                        compAlg = isUnix ? "gzip -c -d " : "gzip.exe -c -d ";
-                        stdout = "";
-                        break;
-                    case ".uncp":
-                        compAlg = "none";
-                        break;
-                    case ".wim":
-                        compAlg = "none";
-                        break;
-                    default:
-                        return null;
-                }
-
-                if (isUnix)
-                {
-                    var prefix = x == 1 ? " -c \"" : " ; ";
-
-                    if (compAlg == "none" || Settings.MulticastDecompression == "client")
-                    {
-                        processArguments += (prefix + " udp-sender" + " --file " + imageFile +
-                                             " --portbase " + _multicastSession.Port + minReceivers + " " + " --ttl 32 " +
-                                             senderArgs);
+                        //Look for lvm
+                        if (part.VolumeGroup == null) continue;
+                        if (part.VolumeGroup.LogicalVolumes == null) continue;
+                        foreach (var lv in part.VolumeGroup.LogicalVolumes.Where(lv => lv.Active))
+                        {
+                            try
+                            {
+                                imageFile =
+                             Directory.GetFiles(
+                                 imagePath + imagePath + Path.DirectorySeparatorChar, lv.VolumeGroup + "-" +
+                                                                                      lv.Name + ext + ".*")
+                                 .FirstOrDefault();
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.Log(ex.Message);
+                                return null;
+                            }
+                         
+                        }
                     }
 
-                    else 
-                    {
-                        processArguments += (prefix + compAlg + imageFile + stdout + " | udp-sender" +
-                                             " --portbase " + _multicastSession.Port + minReceivers + " " + " --ttl 32 " +
-                                             senderArgs);
-                    }
-                }
-                else
-                {
-                    var appPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
-                                  Path.DirectorySeparatorChar + "apps" + Path.DirectorySeparatorChar;
+                    if (imageFile == null)
+                        continue;
+                    x++;
 
-                    var prefix = x == 1 ? " /c " : " & ";
-
-                    if (compAlg == "none" || Settings.MulticastDecompression == "client")
+                    string minReceivers;
+                    string senderArgs;
+                    if (_isOnDemand)
                     {
-                        processArguments += (prefix + appPath +
-                                             "udp-sender.exe" + " --file " + imageFile +
-                                             " --portbase " + _multicastSession.Port + minReceivers + " " + " --ttl 32 " +
-                                             senderArgs);
+                        senderArgs = Settings.SenderArgs;
+                        if (!string.IsNullOrEmpty(_clientCount))
+                            minReceivers = " --min-receivers " + _clientCount;
+                        else
+                            minReceivers = "";
                     }
                     else
                     {
-                        processArguments += (prefix + appPath + compAlg + imageFile + stdout + " | " + appPath +
-                                             "udp-sender.exe" +
-                                             " --portbase " + _multicastSession.Port + minReceivers + " " + " --ttl 32 " +
-                                             senderArgs);
+                        senderArgs = string.IsNullOrEmpty(_imageProfile.SenderArguments)
+                            ? Settings.SenderArgs
+                            : _imageProfile.SenderArguments;
+                        minReceivers = " --min-receivers " + _computers.Count;
                     }
-                   
+
+                    string compAlg;
+                    string stdout = "";
+                    switch (Path.GetExtension(imageFile))
+                    {
+                        case ".lz4":
+                            compAlg = isUnix ? "lz4 -d " : "lz4.exe -d ";
+                            stdout = " - ";
+                            break;
+                        case ".gz":
+                            compAlg = isUnix ? "gzip -c -d " : "gzip.exe -c -d ";
+                            stdout = "";
+                            break;
+                        case ".uncp":
+                            compAlg = "none";
+                            break;
+                        case ".wim":
+                            compAlg = "none";
+                            break;
+                        default:
+                            return null;
+                    }
+
+                    if (isUnix)
+                    {
+                        string prefix = null;
+                        if(multicastHdCounter == 1)
+                            prefix = x == 1 ? " -c \"" : " ; ";
+                        else
+                            prefix = " ; ";
+
+
+                        if (compAlg == "none" || Settings.MulticastDecompression == "client")
+                        {
+                            processArguments += (prefix + " udp-sender" + " --file " + imageFile +
+                                                 " --portbase " + _multicastSession.Port + minReceivers + " " +
+                                                 " --ttl 32 " +
+                                                 senderArgs);
+                        }
+
+                        else
+                        {
+                            processArguments += (prefix + compAlg + imageFile + stdout + " | udp-sender" +
+                                                 " --portbase " + _multicastSession.Port + minReceivers + " " +
+                                                 " --ttl 32 " +
+                                                 senderArgs);
+                        }
+                    }
+                    else
+                    {
+                        var appPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
+                                      Path.DirectorySeparatorChar + "apps" + Path.DirectorySeparatorChar;
+
+                        string prefix = null;
+                        if (multicastHdCounter == 1)
+                            prefix = x == 1 ? " /c " : " & ";
+                        else
+                            prefix = " & ";
+                       
+
+                        if (compAlg == "none" || Settings.MulticastDecompression == "client")
+                        {
+                            processArguments += (prefix + appPath +
+                                                 "udp-sender.exe" + " --file " + imageFile +
+                                                 " --portbase " + _multicastSession.Port + minReceivers + " " +
+                                                 " --ttl 32 " +
+                                                 senderArgs);
+                        }
+                        else
+                        {
+                            processArguments += (prefix + appPath + compAlg + imageFile + stdout + " | " + appPath +
+                                                 "udp-sender.exe" +
+                                                 " --portbase " + _multicastSession.Port + minReceivers + " " +
+                                                 " --ttl 32 " +
+                                                 senderArgs);
+                        }
+
+                    }
                 }
             }
-
             if (isUnix)
                 processArguments += "\"";
-
             return processArguments;
         }
 

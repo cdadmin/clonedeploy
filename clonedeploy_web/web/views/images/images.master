@@ -67,8 +67,12 @@
     </asp:ContentPlaceHolder>
     <div id="actions_left" runat="server">
       <asp:LinkButton ID="btnDelete" runat="server" CssClass="submits actions" OnClick="btnDelete_Click">Delete Image</asp:LinkButton>
+         <div id="approve" runat="server" Visible="False">
+         <asp:LinkButton ID="btnApproveImage" runat="server" CssClass="submits actions" OnClick="btnApprove_Click">Approve Image</asp:LinkButton>
+    </div>
             <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
     </div>
+   
     <div class="help_pos">
      <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
         </div>

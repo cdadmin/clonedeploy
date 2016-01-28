@@ -19,7 +19,7 @@ namespace BLL
                 var validationResult = ValidateUser(user, true);
                 if (validationResult.IsValid)
                 {
-                    user.Password = CreatePasswordHash(user.Password, user.Salt);
+                    user.Password = Helpers.Utility.CreatePasswordHash(user.Password, user.Salt);
                     uow.UserRepository.Insert(user);
                     validationResult.IsValid = uow.Save();
                 }
@@ -85,7 +85,7 @@ namespace BLL
                 if (validationResult.IsValid)
                 {
                     user.Password = updatePassword
-                        ? CreatePasswordHash(user.Password, user.Salt)
+                        ? Helpers.Utility.CreatePasswordHash(user.Password, user.Salt)
                         : uow.UserRepository.GetById(user.Id).Password;
                     uow.UserRepository.Update(user, user.Id);
                     validationResult.IsValid = uow.Save();
@@ -95,20 +95,7 @@ namespace BLL
             }
         }
 
-        public static string CreatePasswordHash(string pwd, string salt)
-        {
-            var saltAndPwd = string.Concat(pwd, salt);
-            var hashedPwd = FormsAuthentication.HashPasswordForStoringInConfigFile(saltAndPwd, "sha1");
-            return hashedPwd;
-        }
-
-        public static string CreateSalt(int byteSize)
-        {
-            var rng = new RNGCryptoServiceProvider();
-            var buff = new byte[byteSize];
-            rng.GetBytes(buff);
-            return Convert.ToBase64String(buff);
-        }
+       
 
         public static void ImportUsers()
         {

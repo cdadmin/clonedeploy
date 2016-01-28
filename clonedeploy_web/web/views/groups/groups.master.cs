@@ -57,12 +57,12 @@ namespace views.masters
                     break;
                 case "unicast":
                     groupBasePage.RequiresAuthorizationOrManagedGroup(Authorizations.ImageDeployTask,Group.Id);
-                    var successCount = BLL.Group.StartGroupUnicast(Group);
+                    var successCount = BLL.Group.StartGroupUnicast(Group,groupBasePage.CloneDeployCurrentUser.Id);
                     PageBaseMaster.EndUserMessage = "Succssfully Started " + successCount + " Tasks";
                     break;
                 case "multicast":
                     groupBasePage.RequiresAuthorizationOrManagedGroup(Authorizations.ImageMulticastTask, Group.Id);
-                    PageBaseMaster.EndUserMessage = new Multicast(Group).Create();
+                    PageBaseMaster.EndUserMessage = new Multicast(Group,groupBasePage.CloneDeployCurrentUser.Id).Create();
                     break;
 
             }

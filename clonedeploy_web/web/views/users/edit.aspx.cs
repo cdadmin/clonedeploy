@@ -42,7 +42,7 @@ namespace views.users
             updatedUser.Name = txtUserName.Text;
             updatedUser.Membership = ddluserMembership.Text;
             updatedUser.Password = txtUserPwd.Text;
-            updatedUser.Salt = BLL.User.CreateSalt(16);
+            updatedUser.Salt = Helpers.Utility.CreateSalt(64);
 
             var result = BLL.User.UpdateUser(updatedUser, updatePassword);
             EndUserMessage = !result.IsValid ? result.Message : "Successfully Updated User";

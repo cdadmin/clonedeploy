@@ -26,8 +26,8 @@ public partial class views_admin_client : Admin
                     new Models.Setting {Name = "Global Computer Args", Value = txtGlobalComputerArgs.Text, Id = Setting.GetSetting("Global Computer Args").Id}                
             };
 
-         
-            Setting.UpdateSetting(listSettings);
+
+            EndUserMessage = Setting.UpdateSetting(listSettings) ? "Successfully Updated Settings" : "Could Not Update Settings";
         }
     }
 
@@ -35,7 +35,7 @@ public partial class views_admin_client : Admin
     {
         if (ActiveImagingTask.ReadAll().Count > 0)
         {
-            //Message.Text = "Settings Cannot Be Changed While Tasks Are Active";
+            EndUserMessage = "Settings Cannot Be Changed While Tasks Are Active";
             return false;
         }
         return true;

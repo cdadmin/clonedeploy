@@ -85,24 +85,13 @@ namespace views.tasks
             if (direction == "push")
             {
                 var image = BLL.Image.GetImage(computer.ImageId);
-                Session["imageID"] = image.Id;
-
-                if (BLL.Image.Check_Checksum(image))
-                {
-                    EndUserMessage = new BLL.Workflows.Unicast(computer,direction).Start();               
-                }
-                else
-                {
-                    lblIncorrectChecksum.Text =
-                        "This Image Has Not Been Confirmed And Cannot Be Deployed.  <br>Confirm It Now?";
-                    ClientScript.RegisterStartupScript(GetType(), "modalscript",
-                        "$(function() {  var menuTop = document.getElementById('incorrectChecksum'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
-                        true);
-                }
+                Session["imageID"] = image.Id;        
+                EndUserMessage = new BLL.Workflows.Unicast(computer,direction,CloneDeployCurrentUser.Id).Start();               
+             
             }
             else
             {
-                EndUserMessage = new BLL.Workflows.Unicast(computer,direction).Start();
+                EndUserMessage = new BLL.Workflows.Unicast(computer,direction,CloneDeployCurrentUser.Id).Start();
             }
             Session.Remove("computerID");
             Session.Remove("direction");

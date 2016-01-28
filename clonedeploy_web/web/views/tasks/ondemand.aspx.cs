@@ -30,7 +30,7 @@ namespace views.tasks
         {
             if (ddlComputerImage.Text == "Select Image") return;
             var imageProfile = BLL.ImageProfile.ReadProfile(Convert.ToInt32(ddlImageProfile.SelectedValue));
-            EndUserMessage = new BLL.Workflows.Multicast(imageProfile, txtClientCount.Text).Create();
+            EndUserMessage = new BLL.Workflows.Multicast(imageProfile, txtClientCount.Text,CloneDeployCurrentUser.Id).Create();
 
         }
     }

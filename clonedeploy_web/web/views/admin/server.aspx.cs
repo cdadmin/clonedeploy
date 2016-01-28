@@ -20,6 +20,7 @@ public partial class views_admin_server : Admin
         //These require pxe boot menu or client iso to be recreated
         ViewState["serverIP"] = txtIP.Text;
         ViewState["serverPort"] = txtPort.Text;
+        ViewState["servicePath"] = txtWebService.Text;
     }
 
     protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
@@ -38,7 +39,7 @@ public partial class views_admin_server : Admin
         var newClientIso = false;
         if (Setting.UpdateSetting(listSettings))
         {
-
+            EndUserMessage = "Successfully Updated Settings";
             if ((string) ViewState["serverIP"] != txtIP.Text)
             {
                 newBootMenu = true;
@@ -49,12 +50,21 @@ public partial class views_admin_server : Admin
                 newBootMenu = true;
                 newClientIso = true;
             }
+            if ((string)ViewState["servicePath"] != txtWebService.Text)
+            {
+                newBootMenu = true;
+                newClientIso = true;
+            }
+        }
+        else
+        {
+            EndUserMessage = "Could Not Update Settings";
         }
 
         if (!newBootMenu) return;
 
-        lblTitle.Text = EndUserMessage;
-        lblTitle.Text +=
+
+        lblTitle.Text =
             "Your Settings Changes Require A New PXE Boot File Be Created.  <br>Go There Now?";
         if (newClientIso)
         {
@@ -69,7 +79,7 @@ public partial class views_admin_server : Admin
 
     protected void OkButton_Click(object sender, EventArgs e)
     {
-        Response.Redirect("~/views/admin/bootmenu/defaultmenu.aspx");
+        Response.Redirect("~/views/admin/bootmenu/defaultmenu.aspx?level=2");
     }
 
     protected bool ValidateSettings()

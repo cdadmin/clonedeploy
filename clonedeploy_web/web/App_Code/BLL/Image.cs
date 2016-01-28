@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using DAL;
 using Helpers;
-using Models;
-using Newtonsoft.Json;
-using Partition;
+
 
 namespace BLL
 {
@@ -32,7 +29,10 @@ namespace BLL
             }
             if (validationResult.IsValid)
             {
-                BLL.ImageProfile.SeedDefaultImageProfile(image.Id);
+                var defaultProfile = BLL.ImageProfile.SeedDefaultImageProfile();
+                defaultProfile.ImageId = image.Id;
+                BLL.ImageProfile.AddProfile(defaultProfile);
+
                 try
                 {
                     Directory.CreateDirectory(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name);
@@ -227,61 +227,7 @@ namespace BLL
             return string.Join("", sha.Hash.Select(x => x.ToString("x2")));
         }
 
-        public static bool Check_Checksum(Models.Image image)
-        {
-            if (Settings.ImageChecksum != "On") return true;
-            try
-            {
-                var listPhysicalImageChecksums = new List<HdChecksum>();
-                var path = Settings.PrimaryStoragePath + image.Name;
-                var imageChecksum = new HdChecksum
-                {
-                    HdNumber = "hd1",
-                    Path = path
-                };
-                listPhysicalImageChecksums.Add(imageChecksum);
-                for (var x = 2; ; x++)
-                {
-                    imageChecksum = new HdChecksum();
-                    var subdir = path + Path.DirectorySeparatorChar + "hd" + x;
-                    if (Directory.Exists(subdir))
-                    {
-                        imageChecksum.HdNumber = "hd" + x;
-                        imageChecksum.Path = subdir;
-                        listPhysicalImageChecksums.Add(imageChecksum);
-                    }
-                    else
-                        break;
-                }
-
-                foreach (var hd in listPhysicalImageChecksums)
-                {
-                    var listChecksums = new List<FileChecksum>();
-
-                    var files = Directory.GetFiles(hd.Path, "*.*");
-                    foreach (var file in files)
-                    {
-                        var fc = new FileChecksum
-                        {
-                            FileName = Path.GetFileName(file),
-                            Checksum = Calculate_Hash(file)
-                        };
-                        listChecksums.Add(fc);
-                    }
-                    hd.Path = string.Empty;
-                    hd.Fc = listChecksums.ToArray();
-                }
-
-
-                var physicalImageJson = JsonConvert.SerializeObject(listPhysicalImageChecksums);
-                return physicalImageJson == image.Checksum;
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ex.Message);
-                return false;
-            }
-        }
+        
 
         public static string TotalCount()
         {
@@ -306,7 +252,7 @@ namespace BLL
                 return validationResult;
             }
 
-            if (Settings.RequireImageApproval == "true")
+            if (Settings.RequireImageApproval.ToLower() == "true")
             {
                 if (!Convert.ToBoolean(image.Approved))
                 {
@@ -316,12 +262,7 @@ namespace BLL
                 }
             }
 
-            if (!Check_Checksum(image))
-            {
-                validationResult.IsValid = false;
-                validationResult.Message = "Image Checksum Does Not Match Original";
-                return validationResult;
-            }
+          
 
             validationResult.IsValid = true;
             return validationResult;

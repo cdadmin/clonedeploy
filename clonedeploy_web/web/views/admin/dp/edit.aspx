@@ -33,7 +33,6 @@
     <div class="size-5 column">
         <asp:DropDownList ID="ddlProtocol" runat="server" CssClass="ddlist">
         <asp:ListItem>SMB</asp:ListItem>
-            <asp:ListItem>SMB+HTTP</asp:ListItem>
             </asp:DropDownList>
     </div>
     <br class="clear"/>
