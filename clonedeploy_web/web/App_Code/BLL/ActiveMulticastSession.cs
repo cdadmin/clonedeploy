@@ -93,19 +93,27 @@ namespace BLL
             }
         }
 
-        public static List<Models.ActiveMulticastSession> GetAllMulticastSessions()
+        public static List<Models.ActiveMulticastSession> GetAllMulticastSessions(int userId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
+                if(BLL.User.IsAdmin(userId))
                 return uow.ActiveMulticastSessionRepository.Get(orderBy: (q => q.OrderBy(t => t.Name)));
+                else
+                {
+                    return uow.ActiveMulticastSessionRepository.Get(x => x.UserId == userId, orderBy: (q => q.OrderBy(t => t.Name)));
+                }
             }
         }
 
-        public static string ActiveCount()
+        public static string ActiveCount(int userId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.ActiveMulticastSessionRepository.Count();
+                return BLL.User.IsAdmin(userId)
+                    ? uow.ActiveMulticastSessionRepository.Count()
+                    : uow.ActiveMulticastSessionRepository.Count(x => x.UserId == userId);
+
             }
         }
 

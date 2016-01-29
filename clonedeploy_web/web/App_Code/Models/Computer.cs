@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.Core.Metadata.Edm;
+using CsvHelper.Configuration;
 
 namespace Models
 {
@@ -61,12 +62,20 @@ namespace Models
 
         [NotMapped]
         public virtual Models.Image Image { get; set; }
+    }
 
-
-
-     
-
-      
-
+    public sealed class ComputerCsvMap : CsvClassMap<Models.Computer>
+    {
+        public ComputerCsvMap()
+        {
+            Map(m => m.Name).Name("Name");
+            Map(m => m.Mac).Name("Mac");
+            Map(m => m.Description).Name("Description");
+            Map(m => m.CustomAttribute1).Name("CustomAttribute1");
+            Map(m => m.CustomAttribute2).Name("CustomAttribute2");
+            Map(m => m.CustomAttribute3).Name("CustomAttribute3");
+            Map(m => m.CustomAttribute4).Name("CustomAttribute4");
+            Map(m => m.CustomAttribute5).Name("CustomAttribute5");
+        }
     }
 }

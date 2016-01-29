@@ -7,7 +7,7 @@ namespace BasePages
 {
     public class Users : PageBaseMaster
     {
-        public WdsUser CloneDeployUser { get; set; }
+        public CloneDeployUser CloneDeployUser { get; set; }
 
         protected override void OnInit(EventArgs e)
         {

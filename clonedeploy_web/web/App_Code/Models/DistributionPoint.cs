@@ -23,7 +23,7 @@ namespace Models
         public string Domain { get; set; }
         [Column("distribution_point_username", Order = 7)]
         public string Username { get; set; }
-        [Column("distribution_point_password", Order = 8)]
+        [Column("distribution_point_password_encrypted", Order = 8)]
         public string Password { get; set; }
         [Column("distribution_point_is_Primary", Order = 9)]
         public int IsPrimary { get; set; }

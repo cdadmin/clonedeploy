@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using BLL;
-using Global;
 using Helpers;
 using Models;
 using Newtonsoft.Json;

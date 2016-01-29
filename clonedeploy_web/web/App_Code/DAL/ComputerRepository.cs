@@ -17,12 +17,7 @@ namespace DAL
             _context = context;
         }
 
-        public void Import()
-        {
-            throw new Exception("Not Implemented");
-        }
-
-        public List<Models.Computer> Get(string searchString)
+        public List<Models.Computer> Search(string searchString)
         {
             return (from h in _context.Computers
                     join t in _context.Images on h.ImageId equals t.Id into joined

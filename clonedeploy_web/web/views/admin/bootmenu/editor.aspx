@@ -3,15 +3,15 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubHelp" Runat="Server">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits actions" target="_blank">Help</a>
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits help" target="_blank"></a>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
-    <asp:LinkButton ID="btnSaveEditor" runat="server" Text="Save Changes" OnClick="saveEditor_Click" CssClass="submits actions"  OnClientClick="update_click()"/>
+    <asp:LinkButton ID="btnSaveEditor" runat="server" Text="Save Changes" OnClick="saveEditor_Click" CssClass="submits actions green"  OnClientClick="update_click()"/>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="SubContent2" Runat="Server">
         <script type="text/javascript">
             $(document).ready(function() {
-                $('#edit').addClass("boot-active");
+                $('#edit').addClass("nav-current");
             });
 
             function generate_sha() {
@@ -56,11 +56,11 @@
             <br class="clear"/>
         </div>
        
-        <div class="full column">
+
             <asp:Label ID="lblFileName1" runat="server"></asp:Label>
-        </div>
+
         <br class="clear"/>
-        <pre id="editor" class="editor height_800"></pre>
+        <pre id="editor" class="editor height_1200"></pre>
         <asp:HiddenField ID="scriptEditorText" runat="server"/>
 
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using CsvHelper;
 using Helpers;
 
 
@@ -237,9 +238,29 @@ namespace BLL
             }
         }
 
-        public static void Import()
+        public static int ImportCsv(string path)
         {
-            
+            var importCounter = 0;
+            using (var csv = new CsvReader(new StreamReader(path)))
+            {
+                csv.Configuration.RegisterClassMap<Models.ImageCsvMap>();
+                var records = csv.GetRecords<Models.Image>();
+                foreach (var image in records)
+                {
+                    if (AddImage(image).IsValid)
+                        importCounter++;
+                }
+            }
+            return importCounter;
+        }
+
+        public static void ExportCsv(string path)
+        {
+            using (var csv = new CsvWriter(new StreamWriter(path)))
+            {
+                csv.Configuration.RegisterClassMap<Models.ImageCsvMap>();
+                csv.WriteRecords(SearchImages());
+            }
         }
 
         public static Models.ValidationResult CheckApprovalAndChecksum(Models.Image image)

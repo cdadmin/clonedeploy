@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/scripts/scripts.master" AutoEventWireup="true" CodeFile="edit.aspx.cs" Inherits="views_admin_scripts_edit" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/scripts/scripts.master" AutoEventWireup="true" CodeFile="edit.aspx.cs" Inherits="views_admin_scripts_edit" ValidateRequestMode="Disabled"%>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
     <li><%= Script.Name %></li>

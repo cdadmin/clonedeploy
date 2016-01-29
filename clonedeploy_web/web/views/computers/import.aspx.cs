@@ -19,11 +19,12 @@ namespace views.computers
         protected void ButtonImport_Click(object sender, EventArgs e)
         {
             var csvFilePath = Server.MapPath("~") + Path.DirectorySeparatorChar + "data" + Path.DirectorySeparatorChar +
-                              "csvupload" + Path.DirectorySeparatorChar + "computers.csv";
+                              "imports" + Path.DirectorySeparatorChar + "computers.csv";
             FileUpload.SaveAs(csvFilePath);
             new FileOps().SetUnixPermissions(csvFilePath);
-            BLL.Computer.ImportComputers();
-           
+            var successCount = BLL.Computer.ImportCsv(csvFilePath);
+            EndUserMessage = "Successfully Imported " + successCount + " Computers";
+
         }       
     }
 }

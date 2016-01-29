@@ -8,8 +8,9 @@ namespace BLL
     public class DistributionPoint
     {
 
-        public static Models.ValidationResult AddDistributionPoint(Models.DistributionPoint distributionPoint)
+        public static Models.ValidationResult AddDistributionPoint(Models.DistributionPoint distributionPoint)       
         {
+
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateDistributionPoint(distributionPoint, true);
@@ -84,13 +85,7 @@ namespace BLL
         {
             var validationResult = new Models.ValidationResult();
 
-            var primaryDp = GetPrimaryDistributionPoint();
-            if (primaryDp != null && Convert.ToBoolean(distributionPoint.IsPrimary))
-            {
-                validationResult.IsValid = false;
-                validationResult.Message = "There Can Only Be One Primary Distribution Point";
-                return validationResult;
-            }
+            
 
             if(Convert.ToBoolean(distributionPoint.IsPrimary))
                 if (!distributionPoint.PhysicalPath.Trim().EndsWith(Path.DirectorySeparatorChar.ToString()))
@@ -105,6 +100,14 @@ namespace BLL
 
             if (isNewDistributionPoint)
             {
+                var primaryDp = GetPrimaryDistributionPoint();
+                if (primaryDp != null && Convert.ToBoolean(distributionPoint.IsPrimary))
+                {
+                    validationResult.IsValid = false;
+                    validationResult.Message = "There Can Only Be One Primary Distribution Point";
+                    return validationResult;
+                }
+
                 using (var uow = new DAL.UnitOfWork())
                 {
                     if (uow.DistributionPointRepository.Exists(h => h.DisplayName == distributionPoint.DisplayName))

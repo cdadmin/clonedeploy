@@ -19,7 +19,7 @@ public partial class views_admin_dp_create : Admin
             ShareName = txtShareName.Text,
             Domain = txtDomain.Text,
             Username = txtUsername.Text,
-            Password = txtPassword.Text,
+            Password = new Helpers.Encryption().EncryptText(txtPassword.Text),
             IsPrimary = Convert.ToInt16(chkPrimary.Checked),
             PhysicalPath = chkPrimary.Checked ? txtPhysicalPath.Text : "",           
             IsBackend = Convert.ToInt16(chkBackend.Checked),

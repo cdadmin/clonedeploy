@@ -9,7 +9,7 @@ namespace views.masters
     public partial class UserMaster : BasePages.MasterBaseMaster
     {
         private Users UsersBasePage { get; set; }
-        public WdsUser CloneDeployUser { get; set; }
+        public CloneDeployUser CloneDeployUser { get; set; }
         
         protected void Page_Load(object sender, EventArgs e)
         {

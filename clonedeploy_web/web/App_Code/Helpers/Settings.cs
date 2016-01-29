@@ -14,16 +14,6 @@ namespace Helpers
             get { return Setting.GetSetting("Client Receiver Args").Value; }
         }
 
-        public static string CompressionAlgorithm
-        {
-            get { return Setting.GetSetting("Compression Algorithm").Value; }
-        }
-
-        public static string CompressionLevel
-        {
-            get { return Setting.GetSetting("Compression Level").Value; }
-        }
-
         public static string DebugRequiresLogin
         {
             get { return Setting.GetSetting("Debug Requires Login").Value; }
@@ -174,7 +164,7 @@ namespace Helpers
 
         public static string SmtpPassword
         {
-            get { return Setting.GetSetting("Smtp Password").Value; }
+            get { return Setting.GetSetting("Smtp Password Encrypted").Value; }
         }
 
         public static string SmtpMailFrom
@@ -192,35 +182,12 @@ namespace Helpers
             get { return Setting.GetSetting("Smtp Ssl").Value; }
         }
 
-        public static string NotifySuccessfulLogin
+        public static string SmtpEnabled
         {
-            get { return Setting.GetSetting("Notify Successful Login").Value; }
+            get { return Setting.GetSetting("Smtp Enabled").Value; }
         }
 
-        public static string NotifyFailedLogin
-        {
-            get { return Setting.GetSetting("Notify Failed Login").Value; }
-        }
-
-        public static string NotifyTaskStarted
-        {
-            get { return Setting.GetSetting("Notify Task Started").Value; }
-        }
-
-        public static string NotifyTaskCompleted
-        {
-            get { return Setting.GetSetting("Notify Task Completed").Value; }
-        }
-
-        public static string NotifyImageApproved
-        {
-            get { return Setting.GetSetting("Notify Image Approved").Value; }
-        }
-
-        public static string NotifyResizeFailed
-        {
-            get { return Setting.GetSetting("Notify Resize Failed").Value; }
-        }
+      
 
         public static string RequireImageApproval
         {

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using BLL.Workflows;
+using CsvHelper;
 using Helpers;
 
 namespace BLL
@@ -162,7 +165,7 @@ namespace BLL
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.ComputerRepository.Get(searchString);
+                return uow.ComputerRepository.Search(searchString);
             }
         }
 
@@ -190,6 +193,31 @@ namespace BLL
                 return uow.ComputerRepository.Get(x => x.CustomBootEnabled == 1);
 
             } 
+        }
+
+        public static int ImportCsv(string path)
+        {
+            var importCounter = 0;
+            using (var csv = new CsvReader(new StreamReader(path)))
+            {
+                csv.Configuration.RegisterClassMap<Models.ComputerCsvMap>();
+                var records = csv.GetRecords<Models.Computer>();
+                foreach (var computer in records)
+                {
+                    if (AddComputer(computer).IsValid)
+                        importCounter++;
+                }
+            }
+            return importCounter;
+        }
+
+        public static void ExportCsv(string path)
+        {
+            using (var csv = new CsvWriter(new StreamWriter(path)))
+            {
+                csv.Configuration.RegisterClassMap<Models.ComputerCsvMap>();
+                csv.WriteRecords(GetAll());
+            }
         }
 
         public static List<Models.Computer> ComputersWithoutGroup(string searchString)

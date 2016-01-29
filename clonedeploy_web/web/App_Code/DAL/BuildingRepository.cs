@@ -16,10 +16,6 @@ namespace DAL
             _context = context;
         }
 
-        public void Import()
-        {
-            throw new Exception("Not Implemented");
-        }
 
         public List<Models.Building> Get(string searchString)
         {

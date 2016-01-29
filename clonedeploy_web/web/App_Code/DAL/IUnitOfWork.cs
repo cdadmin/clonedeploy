@@ -23,7 +23,7 @@ namespace DAL
         DAL.IGenericRepository<Models.Setting> SettingRepository { get; }
         DAL.SiteRepository SiteRepository { get; }
         DAL.IGenericRepository<Models.SysprepTag> SysprepTagRepository { get; }
-        DAL.IGenericRepository<Models.WdsUser> UserRepository { get; }
+        DAL.IGenericRepository<Models.CloneDeployUser> UserRepository { get; }
         DAL.IGenericRepository<Models.BootTemplate> BootTemplateRepository { get; }
         DAL.IGenericRepository<Models.ComputerLog> ComputerLogRepository { get; }
         DAL.IGenericRepository<Models.UserRight> UserRightRepository { get; }

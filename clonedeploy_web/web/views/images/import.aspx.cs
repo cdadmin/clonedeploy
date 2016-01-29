@@ -9,19 +9,22 @@ namespace views.images
 {
     public partial class ImageImport : Images
     {
-        protected void btnImport_Click(object sender, EventArgs e)
-        {
-            var csvFilePath = Server.MapPath("~") + Path.DirectorySeparatorChar + "data" + Path.DirectorySeparatorChar +
-                              "csvupload" + Path.DirectorySeparatorChar + "images.csv";
-            FileUpload.SaveAs(csvFilePath);
-            new FileOps().SetUnixPermissions(csvFilePath);
-            BLL.Image.Import();
-        }
-
         protected void Page_Load(object sender, EventArgs e)
         {
+            RequiresAuthorization(Authorizations.CreateImage);
             if (IsPostBack) return;
-          
+
         }
+
+        protected void ButtonImport_Click(object sender, EventArgs e)
+        {
+            var csvFilePath = Server.MapPath("~") + Path.DirectorySeparatorChar + "data" + Path.DirectorySeparatorChar +
+                              "imports" + Path.DirectorySeparatorChar + "images.csv";
+            FileUpload.SaveAs(csvFilePath);
+            new FileOps().SetUnixPermissions(csvFilePath);
+            var successCount = BLL.Image.ImportCsv(csvFilePath);
+            EndUserMessage = "Successfully Imported " + successCount + " Images";
+
+        }       
     }
 }

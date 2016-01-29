@@ -29,20 +29,12 @@ namespace Helpers
         {
             if (limit == "All")
                 limit = "9999";
-            var text = new List<string>();
+         
             var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
                           Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar;
 
-            try
-            {
-                text = File.ReadLines(logPath + log).Reverse().Take(Convert.ToInt16(limit)).Reverse().ToList();
-            }
-            catch (Exception ex)
-            {
-                //Message.Text = ex.Message.Replace("\\", "\\\\");
-            }
+            return File.ReadLines(logPath + log).Reverse().Take(Convert.ToInt16(limit)).Reverse().ToList();
 
-            return text;
         }
     }
 }

@@ -117,13 +117,7 @@ namespace Security
                 };
                 //history.CreateEvent();
 
-                var mail = new Mail
-                {
-                    Subject = "Successful " + loginType+ " Login",
-                    Body = userName
-                };
-                mail.Send("Successful Login");
-
+               
                 validationResult.Message = "Success";
                 return validationResult;
             }
@@ -141,12 +135,7 @@ namespace Security
                 };
                 //history.CreateEvent();
 
-                var mail = new Mail
-                {
-                    Subject = "Failed " + loginType + " Login",
-                    Body = userName
-                };
-                mail.Send("Failed Login");
+              
                 return validationResult;
             }
         }

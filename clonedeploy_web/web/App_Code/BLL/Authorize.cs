@@ -6,11 +6,11 @@ namespace BLL
 {
     public class Authorize
     {
-        private readonly WdsUser _cloneDeployUser;
+        private readonly CloneDeployUser _cloneDeployUser;
         private readonly List<string> _currentUserRights;
         private readonly string _requiredRight;
 
-        public Authorize(WdsUser user, string requiredRight )
+        public Authorize(CloneDeployUser user, string requiredRight )
         {
             _cloneDeployUser = user;
             _currentUserRights = BLL.UserRight.Get(_cloneDeployUser.Id).Select(right => right.Right).ToList();

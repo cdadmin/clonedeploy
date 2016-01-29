@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using CsvHelper.Configuration;
 
 namespace Models
 {
@@ -50,5 +51,16 @@ namespace Models
 
         [NotMapped]
         public virtual Models.Image Image { get; set; }
+    }
+
+    public sealed class GroupCsvMap : CsvClassMap<Models.Group>
+    {
+        public GroupCsvMap()
+        {
+            Map(m => m.Name).Name("Name");
+            Map(m => m.Description).Name("Description");
+            Map(m => m.Type).Name("Type");
+            Map(m => m.SmartCriteria).Name("SmartCriteria");
+        }
     }
 }

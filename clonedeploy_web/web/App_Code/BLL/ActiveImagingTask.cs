@@ -88,11 +88,15 @@ namespace BLL
             }
         }
 
-        public static List<Models.ActiveImagingTask> ReadAll()
+        public static List<Models.ActiveImagingTask> ReadAll(int userId)
         {
+
             using (var uow = new DAL.UnitOfWork())
             {
-                var activeImagingTasks = uow.ActiveImagingTaskRepository.Get(orderBy: q => q.OrderBy(t => t.Id));
+                //Admins see all tasks
+                var activeImagingTasks = BLL.User.IsAdmin(userId)
+                    ? uow.ActiveImagingTaskRepository.Get(orderBy: q => q.OrderBy(t => t.Id))
+                    : uow.ActiveImagingTaskRepository.Get(x => x.UserId == userId, orderBy: q => q.OrderBy(t => t.Id));
                 foreach (var task in activeImagingTasks)
                 {
                     task.Computer = BLL.Computer.GetComputer(task.ComputerId);
@@ -101,28 +105,50 @@ namespace BLL
             }
         }
 
-        public static string ActiveUnicastCount()
+        public static string ActiveUnicastCount(int userId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.ActiveImagingTaskRepository.Count(t => t.Type == "unicast");
+                return BLL.User.IsAdmin(userId)
+                    ? uow.ActiveImagingTaskRepository.Count(t => t.Type == "unicast")
+                    : uow.ActiveImagingTaskRepository.Count(t => t.Type == "unicast" && t.UserId == userId);
             }
         }
 
-        public static string AllActiveCount()
+        public static string AllActiveCount(int userId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.ActiveImagingTaskRepository.Count();
+                return BLL.User.IsAdmin(userId)
+                    ? uow.ActiveImagingTaskRepository.Count()
+                    : uow.ActiveImagingTaskRepository.Count(x => x.UserId == userId);
             }
         }
 
-        public static List<Models.ActiveImagingTask> ReadUnicasts()
+        public static int AllActiveCountAdmin()
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                var activeImagingTasks = uow.ActiveImagingTaskRepository.Get(t => t.Type == "unicast",
-                    orderBy: q => q.OrderBy(t => t.ComputerId));
+                return Convert.ToInt32(uow.ActiveImagingTaskRepository.Count());
+            }
+        }
+
+        public static List<Models.ActiveImagingTask> ReadUnicasts(int userId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                //Admins see all tasks
+                List<Models.ActiveImagingTask> activeImagingTasks;
+                if (BLL.User.IsAdmin(userId))
+                {
+                    activeImagingTasks = uow.ActiveImagingTaskRepository.Get(t => t.Type == "unicast",
+                        orderBy: q => q.OrderBy(t => t.ComputerId));
+                }
+                else
+                {
+                    activeImagingTasks = uow.ActiveImagingTaskRepository.Get(t => t.Type == "unicast" && t.UserId == userId,
+                        orderBy: q => q.OrderBy(t => t.ComputerId));
+                }
                 foreach (var task in activeImagingTasks)
                 {
                     task.Computer = BLL.Computer.GetComputer(task.ComputerId);

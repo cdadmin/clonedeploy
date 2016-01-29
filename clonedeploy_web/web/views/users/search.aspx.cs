@@ -69,7 +69,7 @@ namespace views.users
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
-            List<Models.WdsUser> listUsers = (List<Models.WdsUser>)gvUsers.DataSource;
+            List<Models.CloneDeployUser> listUsers = (List<Models.CloneDeployUser>)gvUsers.DataSource;
             switch (e.SortExpression)
             {
                 case "Name":

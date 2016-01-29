@@ -19,7 +19,7 @@ namespace DAL
         public DbSet<Models.Group> Groups { get; set; }
         public DbSet<History> History { get; set; }
         public DbSet<Models.Image> Images { get; set; }
-        public DbSet<WdsUser> Users { get; set; }
+        public DbSet<CloneDeployUser> Users { get; set; }
         public DbSet<Models.Port> Ports { get; set; }
         public DbSet<Models.Setting> Settings { get; set; }
         public DbSet<Models.SysprepTag> SysprepTags { get; set; }

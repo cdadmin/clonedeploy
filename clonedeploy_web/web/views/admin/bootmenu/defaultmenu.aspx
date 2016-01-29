@@ -3,18 +3,25 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubHelp" Runat="Server">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits actions" target="_blank">Help</a>
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits help" target="_blank"></a>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
-    <asp:LinkButton ID="btnSubmitDefault" runat="server" Text="Create Boot Files" OnClick="btnSubmit_Click" CssClass="submits actions" OnClientClick="get_shas();"/>
+    <asp:LinkButton ID="btnSubmitDefault" runat="server" Text="Create Boot Files" OnClick="btnSubmit_Click" CssClass="submits actions green" OnClientClick="get_shas();"/>
+    <asp:LinkButton ID="btnSubmitDefaultProxy" runat="server" Text="Create Boot Files" OnClick="btnSubmit_Click" CssClass="submits actions green" OnClientClick="get_shas_proxy();"/>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="SubContent2" Runat="Server">
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#default').addClass("boot-active");
+        $('#default').addClass("nav-current");
     });
 
+    function get_shas_proxy() {
+        $('#<%= consoleShaProxy.ClientID %>').val(syslinux_sha512(document.getElementById('<%= txtProxDebugPwd.ClientID %>').value));
+        $('#<%= addcomputerShaProxy.ClientID %>').val(syslinux_sha512(document.getElementById('<%= txtProxAddPwd.ClientID %>').value));
+        $('#<%= ondshaProxy.ClientID %>').val(syslinux_sha512(document.getElementById('<%= txtProxOndPwd.ClientID %>').value));
+        $('#<%= diagshaProxy.ClientID %>').val(syslinux_sha512(document.getElementById('<%= txtProxDiagPwd.ClientID %>').value));  
+    }
     function get_shas() {
         $('#<%= consoleSha.ClientID %>').val(syslinux_sha512(document.getElementById('<%= txtDebugPwd.ClientID %>').value));
         $('#<%= addcomputerSha.ClientID %>').val(syslinux_sha512(document.getElementById('<%= txtAddPwd.ClientID %>').value));
@@ -27,6 +34,11 @@
 <asp:HiddenField ID="addcomputerSha" runat="server"/>
 <asp:HiddenField ID="ondsha" runat="server"/>
 <asp:HiddenField ID="diagsha" runat="server"/>
+<asp:HiddenField ID="consoleShaProxy" runat="server"/>
+<asp:HiddenField ID="addcomputerShaProxy" runat="server"/>
+<asp:HiddenField ID="ondshaProxy" runat="server"/>
+<asp:HiddenField ID="diagshaProxy" runat="server"/>
+
 
 
 <div id="divStandardMode" runat="server" visible="false">

@@ -164,7 +164,7 @@ namespace Helpers
         public static string[] GetScripts(string type)
         {
             var scriptPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
-                             Path.DirectorySeparatorChar + "clientscripts" + Path.DirectorySeparatorChar + type +Path.DirectorySeparatorChar;
+                             Path.DirectorySeparatorChar + "clientscripts" + Path.DirectorySeparatorChar;
             string[] scriptFiles = null;
             try
             {

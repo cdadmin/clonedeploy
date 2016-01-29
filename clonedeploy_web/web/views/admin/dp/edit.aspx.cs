@@ -19,7 +19,9 @@ public partial class views_admin_dp_edit : Admin
         distributionPoint.ShareName = txtShareName.Text;
         distributionPoint.Domain = txtDomain.Text;
         distributionPoint.Username = txtUsername.Text;
-        distributionPoint.Password = !string.IsNullOrEmpty(txtPassword.Text) ? txtPassword.Text : distributionPoint.Password;
+        distributionPoint.Password = !string.IsNullOrEmpty(txtPassword.Text)
+            ? new Helpers.Encryption().EncryptText(txtPassword.Text)
+            : distributionPoint.Password;
         distributionPoint.IsPrimary = Convert.ToInt16(chkPrimary.Checked);
         distributionPoint.PhysicalPath = chkPrimary.Checked ? txtPhysicalPath.Text : "";
         distributionPoint.IsBackend = Convert.ToInt16(chkBackend.Checked);

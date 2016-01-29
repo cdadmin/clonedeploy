@@ -48,9 +48,9 @@ namespace Helpers
         public void Send(string notificationType)
         {
             //Mail not enabled
-            if (string.IsNullOrEmpty(Settings.SmtpServer)) return;
+            if (Settings.SmtpEnabled == "0") return;
 
-            switch (notificationType)
+            /*switch (notificationType)
             {
                 case "Successful Login":
                     if (Settings.NotifySuccessfulLogin != "1")
@@ -76,7 +76,7 @@ namespace Helpers
                     if (Settings.NotifyResizeFailed != "1")
                         return;
                     break;
-            }
+            }*/
 
             Task.Factory.StartNew(SendMailAsync);
         }
@@ -90,7 +90,7 @@ namespace Helpers
 
             var client = new SmtpClient(Settings.SmtpServer, Convert.ToInt16(Settings.SmtpPort))
             {
-                Credentials = new NetworkCredential(Settings.SmtpUsername, Settings.SmtpPassword),
+                Credentials = new NetworkCredential(Settings.SmtpUsername, new Helpers.Encryption().DecryptText(Settings.SmtpPassword)),
                 EnableSsl = Settings.SmtpSsl == "Yes"
             };
 

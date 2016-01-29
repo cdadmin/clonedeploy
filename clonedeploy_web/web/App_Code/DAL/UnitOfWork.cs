@@ -31,7 +31,7 @@ namespace DAL
         private IGenericRepository<Models.Setting> _settingRepository;
         private SiteRepository _siteRepository;
         private IGenericRepository<Models.SysprepTag> _sysprepTagRepository;
-        private IGenericRepository<Models.WdsUser> _userRepository;
+        private IGenericRepository<Models.CloneDeployUser> _userRepository;
         private IGenericRepository<Models.BootTemplate> _bootTemplateRepository;
         private ComputerRepository _computerRepository;
         private IGenericRepository<Models.ImageProfileScript> _imageProfileScriptRepository;
@@ -172,9 +172,9 @@ namespace DAL
             get { return _sysprepTagRepository ?? (_sysprepTagRepository = new GenericRepository<Models.SysprepTag>(_context)); }
         }
 
-        public IGenericRepository<Models.WdsUser> UserRepository
+        public IGenericRepository<Models.CloneDeployUser> UserRepository
         {
-            get { return _userRepository ?? (_userRepository = new GenericRepository<Models.WdsUser>(_context)); }
+            get { return _userRepository ?? (_userRepository = new GenericRepository<Models.CloneDeployUser>(_context)); }
         }
 
         public IGenericRepository<Models.BootTemplate> BootTemplateRepository

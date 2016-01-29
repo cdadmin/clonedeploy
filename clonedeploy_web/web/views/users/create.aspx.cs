@@ -26,7 +26,7 @@ namespace views.users
                 return;
             }
   
-            var user = new WdsUser
+            var user = new CloneDeployUser
             {
                 Name = txtUserName.Text,
                 Password = txtUserPwd.Text,

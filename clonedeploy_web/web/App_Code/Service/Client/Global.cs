@@ -8,7 +8,6 @@ using System.Web;
 using System.Windows.Forms;
 using BLL.DynamicClientPartition;
 using DAL;
-using Global;
 using Helpers;
 using Models;
 using Newtonsoft.Json;
@@ -131,7 +130,7 @@ namespace Service.Client
             smb.SharePath = "//" + ParameterReplace.Between(dp.Server) + "/" + dp.ShareName;
             smb.Domain = dp.Domain;
             smb.Username = dp.Username;
-            smb.Password = dp.Password;
+            smb.Password = new Helpers.Encryption().DecryptText(dp.Password);
             return JsonConvert.SerializeObject(smb);
 
 

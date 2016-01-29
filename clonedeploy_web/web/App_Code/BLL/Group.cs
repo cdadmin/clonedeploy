@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using BLL.Workflows;
+using CsvHelper;
 using DAL;
 using Helpers;
 using Models;
@@ -154,9 +156,29 @@ namespace BLL
             return count;
         }
 
-        public static void ImportGroups()
+        public static int ImportCsv(string path, int userId)
         {
-            throw new Exception("Not Implemented");
+            var importCounter = 0;
+            using (var csv = new CsvReader(new StreamReader(path)))
+            {
+                csv.Configuration.RegisterClassMap<Models.GroupCsvMap>();
+                var records = csv.GetRecords<Models.Group>();
+                foreach (var group in records)
+                {
+                    if (AddGroup(group,userId).IsValid)
+                        importCounter++;
+                }
+            }
+            return importCounter;
+        }
+
+        public static void ExportCsv(string path)
+        {
+            using (var csv = new CsvWriter(new StreamWriter(path)))
+            {
+                csv.Configuration.RegisterClassMap<Models.GroupCsvMap>();
+                csv.WriteRecords(SearchGroups());
+            }
         }
 
         public static List<Models.Computer> GetGroupMembers(int groupId, string searchString = "")

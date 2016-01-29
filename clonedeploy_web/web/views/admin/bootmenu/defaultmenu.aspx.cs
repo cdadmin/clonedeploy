@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.UI;
+using BasePages;
 using BLL;
 using BLL.Workflows;
 using Helpers;
 
-public partial class views_admin_bootmenu_defaultmenu : Page
+public partial class views_admin_bootmenu_defaultmenu : Admin
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -19,6 +20,8 @@ public partial class views_admin_bootmenu_defaultmenu : Page
         if (proxyDhcp == "Yes")
         {
             divProxyDHCP.Visible = true;
+            btnSubmitDefaultProxy.Visible = true;
+            btnSubmitDefault.Visible = false;
             var biosFile = Settings.ProxyBiosFile;
             var efi32File = Settings.ProxyEfi32File;
             var efi64File = Settings.ProxyEfi64File;
@@ -91,6 +94,8 @@ public partial class views_admin_bootmenu_defaultmenu : Page
         }
         else
         {
+            btnSubmitDefaultProxy.Visible = false;
+            btnSubmitDefault.Visible = true;
             bootPasswords.Visible = true;
             divStandardMode.Visible = true;
             var pxeMode = Settings.PxeMode;
@@ -146,16 +151,29 @@ public partial class views_admin_bootmenu_defaultmenu : Page
             CreateProxyMenu();
         else
             CreateStandardMenu();
+        EndUserMessage = "Complete";
     }
 
     protected void CreateProxyMenu()
     {
+        var listSettings = new List<Models.Setting>
+        {
+            new Models.Setting
+            {
+                Name = "Ipxe Requires Login",
+                Value = chkIpxeProxy.Checked.ToString(),
+                Id = Setting.GetSetting("Ipxe Requires Login").Id
+            },
+        };
+
+        Setting.UpdateSetting(listSettings);
+
         var defaultBootMenu = new BLL.Workflows.DefaultBootMenu
         {
-            DebugPwd = consoleSha.Value,
-            AddPwd = addcomputerSha.Value,
-            OndPwd = ondsha.Value,
-            DiagPwd = diagsha.Value,
+            DebugPwd = consoleShaProxy.Value,
+            AddPwd = addcomputerShaProxy.Value,
+            OndPwd = ondshaProxy.Value,
+            DiagPwd = diagshaProxy.Value,
             GrubUserName = txtGrubProxyUsername.Text,
             GrubPassword = txtGrubProxyPassword.Text,
         };
@@ -175,21 +193,23 @@ public partial class views_admin_bootmenu_defaultmenu : Page
         defaultBootMenu.Type = "efi64";
         defaultBootMenu.CreateGlobalDefaultBootMenu();
 
+        
+    }
+
+    protected void CreateStandardMenu()
+    {
         var listSettings = new List<Models.Setting>
         {
             new Models.Setting
             {
                 Name = "Ipxe Requires Login",
-                Value = chkIpxeProxy.Checked.ToString(),
+                Value = chkIpxeLogin.Checked.ToString(),
                 Id = Setting.GetSetting("Ipxe Requires Login").Id
             },
         };
 
         Setting.UpdateSetting(listSettings);
-    }
 
-    protected void CreateStandardMenu()
-    {
         var defaultBootMenu = new BLL.Workflows.DefaultBootMenu();
         var pxeMode = Settings.PxeMode;
         if (pxeMode.Contains("grub"))
@@ -209,16 +229,6 @@ public partial class views_admin_bootmenu_defaultmenu : Page
         defaultBootMenu.Type = "standard";
         defaultBootMenu.CreateGlobalDefaultBootMenu();
 
-        var listSettings = new List<Models.Setting>
-        {
-            new Models.Setting
-            {
-                Name = "Ipxe Requires Login",
-                Value = chkIpxeLogin.Checked.ToString(),
-                Id = Setting.GetSetting("Ipxe Requires Login").Id
-            },
-        };
-
-        Setting.UpdateSetting(listSettings);
+        
     }
 }

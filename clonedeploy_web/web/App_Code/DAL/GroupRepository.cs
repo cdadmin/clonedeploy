@@ -18,18 +18,6 @@ namespace DAL
         }
     
 
-      
-
-     
-
-        public void Import()
-        {
-          throw new Exception("Not Implemented");
-        }
-
-   
-       
-
         public List<Models.Computer> GetGroupMembers(int searchGroupId, string searchString)
         {
 
