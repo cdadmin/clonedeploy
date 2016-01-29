@@ -55,7 +55,6 @@ namespace Models
 
         [Column("custom_attr_5", Order = 16)]
         public string CustomAttribute5 { get; set; }
-      
 
         [NotMapped]
         public virtual Models.ActiveImagingTask ActiveImagingTask { get; set; }

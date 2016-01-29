@@ -1,0 +1,20 @@
+Id,Name,Mac,Description,SiteId,BuildingId,RoomId,ImageId,ImageProfileId,CustomBootEnabled,CustomAttribute1,CustomAttribute2,CustomAttribute3,CustomAttribute4,CustomAttribute5,Id,ComputerId,Status,QueuePosition,Elapsed,Remaining,Completed,Rate,Partition,Arguments,Type,MulticastId,UserId,Direction,Id,Name,Os,Description,Protected,IsVisible,Checksum,Type,Approved,ClientSize,ClientSizeCustom
+19,ddeeff,56:78:90:00:07:77,"add into smart
+new line
+""hello there""",9,6,-1,10,11,0,,,,,,0,0,,0,,,,,,,,0,0,,0,,,,0,0,,,0,,
+20,bbssese,123,add into smart,9,-1,-1,10,-1,0,,,,,,0,0,,0,,,,,,,,0,0,,0,,,,0,0,,,0,,
+21,asdfer,99403949,add into smart,-1,-1,-1,10,10,1,,,,,,0,0,,0,,,,,,,,0,0,,0,,,,0,0,,,0,,
+22,8589383984,949039034,add into smart,-1,0,0,10,10,1,,,,,,0,0,,0,,,,,,,,0,0,,0,,,,0,0,,,0,,
+26,zzddd,4444646,add into smart,-1,-1,4,10,10,1,abc,,,,,0,0,,0,,,,,,,,0,0,,0,,,,0,0,,,0,,
+28,newcomptuer1,89402JSJDF,add into smart,-1,0,0,10,10,1,,,,,,0,0,,0,,,,,,,,0,0,,0,,,,0,0,,,0,,
+29,ss,12,add into smart,0,0,4,10,10,1,,,,,,0,0,,0,,,,,,,,0,0,,0,,,,0,0,,,0,,
+30,sitetest,94943,add into smart,13,2,-1,10,-1,0,,,,,,0,0,,0,,,,,,,,0,0,,0,,,,0,0,,,0,,
+31,myhostskks,94903U094U,add into smart,-1,-1,-1,10,10,1,,,,,,0,0,,0,,,,,,,,0,0,,0,,,,0,0,,,0,,
+32,newpc,8580298343,add into smart,-1,-1,-1,10,10,1,5,4,0,2,1,0,0,,0,,,,,,,,0,0,,0,,,,0,0,,,0,,
+33,new17,5002048,add into smart,-1,-1,-1,10,10,1,,,,,,0,0,,0,,,,,,,,0,0,,0,,,,0,0,,,0,,
+34,affeetta,645565,add into smart,-1,-1,-1,10,10,1,,,,,,0,0,,0,,,,,,,,0,0,,0,,,,0,0,,,0,,
+38,my,00:15:5D:4B:A0:09,add into smart,-1,-1,-1,10,11,0,,,,,,0,0,,0,,,,,,,,0,0,,0,,,,0,0,,,0,,
+39,mypc26,00:15:5D:4B:A0:0C,add into smart,-1,-1,-1,8,8,0,,,,,,0,0,,0,,,,,,,,0,0,,0,,,,0,0,,,0,,
+40,Windows7_Test,00:15:5D:4B:A0:10,add into smart,-1,-1,-1,9,10,0,,,,,,0,0,,0,,,,,,,,0,0,,0,,,,0,0,,,0,,
+41,win10efi,00:15:5D:4B:A0:11,add into smart,-1,-1,-1,16,13,0,,,,,,0,0,,0,,,,,,,,0,0,,0,,,,0,0,,,0,,
+42,co-lab221-a-03,56456456456,add into smart,-1,-1,-1,-1,-1,1,,,,,,0,0,,0,,,,,,,,0,0,,0,,,,0,0,,,0,,

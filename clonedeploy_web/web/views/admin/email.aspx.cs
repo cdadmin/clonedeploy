@@ -37,8 +37,6 @@ public partial class views_admin_email : Admin
     {
         List<Setting> listSettings = new List<Setting>
         {
-
-
             new Setting {Name = "Smtp Server", Value = txtSmtpServer.Text, Id = BLL.Setting.GetSetting("Smtp Server").Id},
             new Setting {Name = "Smtp Port", Value = txtSmtpPort.Text, Id = BLL.Setting.GetSetting("Smtp Port").Id},
             new Setting {Name = "Smtp Username", Value = txtSmtpUsername.Text, Id = BLL.Setting.GetSetting("Smtp Username").Id},
@@ -70,8 +68,8 @@ public partial class views_admin_email : Admin
         listSettings.Add(new Setting { Name = "Notify Resize Failed", Value = chkValue, Id = BLL.Setting.GetSetting("Notify Resize Failed").Id });
 
 
-     
-        BLL.Setting.UpdateSetting(listSettings);
+
+        EndUserMessage = BLL.Setting.UpdateSetting(listSettings) ? "Successfully Updated Settings" : "Could Not Update Settings";
     }
 
     protected void btnTestMessage_Click(object sender, EventArgs e)
@@ -82,6 +80,6 @@ public partial class views_admin_email : Admin
             Body = HttpContext.Current.User.Identity.Name
         };
         mail.Send("Test Message");
-
+        EndUserMessage = "Test Message Sent";
     }
 }

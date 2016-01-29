@@ -150,6 +150,14 @@ namespace BLL
             }
         }
 
+        public static List<Models.Computer> GetAll()
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ComputerRepository.Get();
+            }
+        }
+
         public static List<Models.Computer> SearchComputers(string searchString)
         {
             using (var uow = new DAL.UnitOfWork())

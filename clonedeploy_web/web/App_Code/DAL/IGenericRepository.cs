@@ -14,6 +14,7 @@ namespace DAL
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             string includeProperties = "");
 
+
         TEntity GetById(object id);
 
 

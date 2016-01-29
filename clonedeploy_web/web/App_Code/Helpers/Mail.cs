@@ -3,9 +3,8 @@ using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Web;
-using Helpers;
 
-namespace Models
+namespace Helpers
 {
     /// <summary>
     /// Summary description for Mail
@@ -44,13 +43,8 @@ namespace Models
 
         public string Subject { get; set; }
         public string Body { get; set; }
-        public string Ip { get; set; }
-        public string Time { get; set; }
 
-        public Mail()
-        {
-            Time = DateTime.Now.ToString("MM-dd-yy h:mm:ss tt");
-        }
+     
         public void Send(string notificationType)
         {
             //Mail not enabled
@@ -84,10 +78,6 @@ namespace Models
                     break;
             }
 
-            object objIp = Ip;
-            if (objIp == null)
-                Ip = (string)HttpContext.Current.Session["ip_address"];
-
             Task.Factory.StartNew(SendMailAsync);
         }
 
@@ -95,8 +85,7 @@ namespace Models
         {
             var message = new MailMessage(Settings.SmtpMailFrom, Settings.SmtpMailTo)
             {
-                Subject = "CrucibleWDS " + "("+ Subject +")",
-                Body = Body + Environment.NewLine + Ip + Environment.NewLine + Time
+                Subject = "Clone Deploy " + "("+ Subject +")",
             };
 
             var client = new SmtpClient(Settings.SmtpServer, Convert.ToInt16(Settings.SmtpPort))
