@@ -106,7 +106,9 @@ namespace views.tasks
 
         protected void PopulateGrid()
         {
-            var listOfComputers = BLL.Computer.SearchComputersForUser(CloneDeployCurrentUser.Id, txtSearch.Text);
+            var limit = 0;
+            limit = ddlLimit.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimit.Text);
+            var listOfComputers = BLL.Computer.SearchComputersForUser(CloneDeployCurrentUser.Id,limit, txtSearch.Text);
             gvComputers.DataSource = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
             gvComputers.DataBind();
 
@@ -116,6 +118,11 @@ namespace views.tasks
         protected void search_Changed(object sender, EventArgs e)
         {
             PopulateGrid();
+        }
+
+        protected void ddlLimit_OnSelectedIndexChanged(object sender, EventArgs e)
+        {
+           PopulateGrid();
         }
     }
 }

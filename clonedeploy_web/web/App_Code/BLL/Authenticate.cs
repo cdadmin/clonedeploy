@@ -106,36 +106,12 @@ namespace Security
             if (validationResult.IsValid)
             {
                 BLL.UserLockout.DeleteUserLockouts(user.Id);
-                var history = new History
-                {
-                    //Ip = ip,
-                    Event = "Successful " + loginType + " Login",
-                    Type = "User",
-                    EventUser = userName,
-                    TypeId = user.Id.ToString(),
-                    Notes = ""
-                };
-                //history.CreateEvent();
-
-               
                 validationResult.Message = "Success";
                 return validationResult;
             }
             else
             {
                 BLL.UserLockout.ProcessBadLogin(user.Id);
-
-                var history = new History
-                {
-                    //Ip = ip,
-                    Event = "Failed " + loginType + " Login",
-                    Type = "User",
-                    EventUser = userName,
-                    Notes = password
-                };
-                //history.CreateEvent();
-
-              
                 return validationResult;
             }
         }

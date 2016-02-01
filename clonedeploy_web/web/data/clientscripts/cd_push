@@ -73,6 +73,7 @@ function process_lvm()
     array_index=$(( $array_index + 1))
     clear_and_move_down
     current_logical_volume="$(parse_json "$current_partition" .VolumeGroup.LogicalVolumes[$array_index])"
+	log "$current_logical_volume"
     unescaped_lv_name=$(echo $(parse_json "$current_logical_volume" .Name) | sed 's/--/-/g')
 	
 	if [ "$(parse_json "$current_logical_volume" .FileSystem)" = "swap" ]; then
@@ -90,10 +91,16 @@ function process_lvm()
 				
     download_image "$current_logical_volume" "$volume_group-$unescaped_lv_name"
 	
+	if [ "$skip_expand_volumes" != "true" ]; then 
+      if [ "$(parse_json "$current_logical_volume" .ImageType)" = "Block" ]; then
+        expand_volume /dev/mapper/$volume_group-$unescaped_lv_name $(parse_json "$current_logical_volume" .FileSystem)  
+      fi
+    fi
+	
 	if [ "$file_copy" = "true" ]; then
 	  process_file_copy "$current_logical_volume" "$volume_group-$unescaped_lv_name"
 	fi
-    clear
+    clear_and_move_down
   done
 }
 
@@ -116,6 +123,13 @@ function process_partitions()
       process_lvm
       continue
     fi
+	
+	#Only restore extended partition if the hd is the same size as the original
+	if [ "$(parse_json "$current_partition" .Type)" = "extended" ]; then
+	  if [ "$(parse_json "$hd_schema" .IsValid)" != "original" ] || [ "$force_dynamic_partitions" != "true" ]; then
+	    continue
+      fi
+	fi
 	
 	get_partitions_according_to_mbr_gpt
 	partition_counter=0
@@ -233,6 +247,15 @@ function download_image()
 	   log "mkfs.$(parse_json "$current_object" .FileSystem) -F $destination"
 	  mkfs.$(parse_json "$current_object" .FileSystem) -F $destination &>> $CLIENT_LOG
 	fi
+	
+	
+	if [ "$(parse_json "$current_object" .FileSystem)" != "ntfs" ]; then
+	  mkdir /mnt/fs &> /dev/null
+	  umount /mnt/fs &> /dev/null
+	  mount $destination /mnt/fs 2>> $CLIENT_LOG
+	  destination="/mnt/fs"
+	fi
+	
 	if [ "$multicast" = "true" ]; then
 	  log "cd_reporter $computer_id wimdown & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 $destination"
 	  cd_reporter $computer_id wimdown & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 $destination 2>> $CLIENT_LOG | tee /tmp/wim.progress
@@ -290,12 +313,11 @@ find /grub/menu.lst
 find /boot/grub/menu.lst
 eof
 			cat /tmp/grubroot >>$CLIENT_LOG
-			grubHdPass=$(( $current_hd_number - 1 ))
-			grubRoot=$(cat /tmp/grubroot | grep -i "$hard_drive$grubHdPass")
+			grubRoot=$(cat /tmp/grubroot | grep -i "$hard_drive$current_hd_number")
 			grubHD=$(echo $grubRoot | cut -d"," -f1)
 			grubHD="$grubHD)"
 		fi
-			log "grubHdPass: $grubHdPass grubRoot: $grubRoot grubHD: $grubHD current_hd_number: $current_hd_number"
+			log "grubRoot: $grubRoot grubHD: $grubHD current_hd_number: $current_hd_number"
 		
 		if [ -n "$grubRoot" ]; then
 			log " ...... Found Legacy Grub On $grubRoot "
@@ -305,8 +327,7 @@ root $grubRoot
 setup $grubHD
 eof
 		else
-			log " ...... Could Not Find Boot Files For Grub Legacy.  This Is Normal If Grub2 Is Being Used."
-			log " Otherwise, You Need To Manually Set Grub Root Using The Host Argument grubRoot="
+			log " ...... Could Not Find Boot Files For Grub Legacy."
 		fi
 	else
 		log " ...... Grub Is Not Required"
@@ -341,10 +362,22 @@ function create_partition_layout()
 	
   erase_mbr_gpt
   restore_mbr_gpt
-		
+  
+  get_partitions_according_to_mbr_gpt
+	partition_counter=0
+	for partition in $mbr_gpt_partitions; do
+      partition_counter=$(( $partition_counter + 1 ))
+      partition_number=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
+      if [ "$(parse_json "$hd_schema" .Number)" = "$partition_number" ]; then
+	    partition_prefix=$(echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[0-9]*//g')
+	  else
+        partition_prefix=""
+      fi
+	done
+	
   if [ "$(parse_json "$hd_schema" .IsValid)" = "true" ] || [ "$force_dynamic_partitions" = "true" ] || [ "$partition_method" = "script" ] || [ "$partition_method" = "layout" ]; then
     log " ** Creating Partition Table On $hard_drive ** " "display"
-    $curlAuth --data "imageProfileId=$profile_id&hdToGet=$image_hd_to_use&newHDSize=$drive_size_bytes&clientHD=$hard_drive&taskType=deploy" "${web}GetPartLayout" $curlEnd | dos2unix > /tmp/newPartLayout
+    $curlAuth --data "imageProfileId=$profile_id&hdToGet=$image_hd_to_use&newHDSize=$drive_size_bytes&clientHD=$hard_drive&taskType=deploy&partitionPrefix=$partition_prefix" "${web}GetPartLayout" $curlEnd | dos2unix > /tmp/newPartLayout
 	if [ "$(cat /tmp/newPartLayout)" = "failed" ]; then
 	  error "Could Not Dynamically Create Partition Layout"
 	fi
@@ -394,9 +427,9 @@ function create_partition_layout()
   fi
 	
   if [ "$(parse_json "$hd_schema" .UsesLvm)" = "true" ]; then
-    if [ "$(parse_json "$hd_schema" .IsValid)" = "original" ]; then
+    if [ "$(parse_json "$hd_schema" .IsValid)" = "original" ] && [ "$force_dynamic_partitions" != "true" ]; then
       log "Creating Original LVM"
-      $curlAuth --data "profileId=$profile_id&clientHd=$hard_drive&hdToGet=$image_hd_to_use" "${web}GetOriginalLvm" $curlEnd | dos2unix > /tmp/lvmcommands
+      $curlAuth --data "profileId=$profile_id&clientHd=$hard_drive&hdToGet=$image_hd_to_use&partitionPrefix=$partition_prefix" "${web}GetOriginalLvm" $curlEnd | dos2unix > /tmp/lvmcommands
       cat /tmp/lvmcommands >> $CLIENT_LOG
     fi
 	

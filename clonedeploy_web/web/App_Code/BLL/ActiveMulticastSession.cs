@@ -35,6 +35,33 @@ namespace BLL
             }
         }
 
+        public static void SendMulticastCompletedEmail(Models.ActiveMulticastSession session)
+        {
+            //Mail not enabled
+            if (Settings.SmtpEnabled == "0") return;
+
+            foreach (var user in BLL.User.SearchUsers("").Where(x => x.NotifyComplete == 1 && !string.IsNullOrEmpty(x.Email)))
+            {
+                if (session.UserId == user.Id)
+                {
+                    var mail = new Helpers.Mail
+                    {
+                        MailTo = user.Email,
+                        Body = session.Name + " Multicast Task Has Completed.",
+                        Subject = "Multicast Completed"
+                    };
+                    mail.Send();
+                }
+            }
+        }
+        public static Models.ActiveMulticastSession GetFromPort(int port)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ActiveMulticastSessionRepository.GetFirstOrDefault(x => x.Port == port);
+            }
+        }
+
         public static bool Delete(int multicastId)
         {
             using (var uow = new DAL.UnitOfWork())

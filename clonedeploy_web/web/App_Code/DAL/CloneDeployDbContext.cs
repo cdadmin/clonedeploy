@@ -17,7 +17,6 @@ namespace DAL
         public DbSet<Models.ActiveMulticastSession> ActiveMulticastSessions { get; set; }
         public DbSet<Models.BootTemplate> BootTemplates { get; set; }
         public DbSet<Models.Group> Groups { get; set; }
-        public DbSet<History> History { get; set; }
         public DbSet<Models.Image> Images { get; set; }
         public DbSet<CloneDeployUser> Users { get; set; }
         public DbSet<Models.Port> Ports { get; set; }

@@ -12,8 +12,9 @@ namespace BLL.Workflows
         public string NewHdSize { get; set; }
         public string TaskType { get; set; }
         public int profileId { get; set; }
-       
-        public string GeneratePartitionScript()
+        public string partitionPrefix { get; set; }
+
+    public string GeneratePartitionScript()
         {
             var imageProfile = BLL.ImageProfile.ReadProfile(profileId);
             ImageSchema = new ClientPartitionHelper(imageProfile).GetImageSchema();
@@ -189,9 +190,9 @@ namespace BLL.Workflows
                                  select part)
             {
                 partitionScript += "echo \"pvcreate -u " + part.Uuid + " --norestorefile -yf " +
-                                       ClientHd + part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] +
+                                       ClientHd + partitionPrefix + part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] +
                                        "\" >>/tmp/lvmcommands \r\n";
-                partitionScript += "echo \"vgcreate " + part.VolumeGroup.Name + " " + ClientHd +
+                partitionScript += "echo \"vgcreate " + part.VolumeGroup.Name + " " + ClientHd + partitionPrefix +
                                        part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] + " -yf" +
                                        "\" >>/tmp/lvmcommands \r\n";
                 partitionScript += "echo \"" + part.VolumeGroup.Uuid + "\" >>/tmp/vg-" + part.VolumeGroup.Name +
@@ -203,14 +204,14 @@ namespace BLL.Workflows
                         if (lv.Name != rlv.Name || lv.VolumeGroup != rlv.Vg) continue;
                         if (TaskType == "debug")
                         {
-                            partitionScript += "echo \"lvcreate -L " +
+                            partitionScript += "echo \"lvcreate --yes -L " +
                                                    rlv.Size + "mb -n " +
                                                    rlv.Name + " " + rlv.Vg +
                                                    "\" >>/tmp/lvmcommands \r\n";
                         }
                         else
                         {
-                            partitionScript += "echo \"lvcreate -L " +
+                            partitionScript += "echo \"lvcreate --yes -L " +
                                                    ((Convert.ToInt64(rlv.Size) - 8192)) + "s -n " +
                                                    rlv.Name + " " + rlv.Vg +
                                                    "\" >>/tmp/lvmcommands \r\n";

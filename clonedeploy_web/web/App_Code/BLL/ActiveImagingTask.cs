@@ -39,6 +39,46 @@ namespace BLL
             }
         }
 
+        public static void SendTaskCompletedEmail(Models.ActiveImagingTask task)
+        {
+            //Mail not enabled
+            if (Settings.SmtpEnabled == "0") return;
+
+            foreach (var user in BLL.User.SearchUsers("").Where(x => x.NotifyComplete == 1 && !string.IsNullOrEmpty(x.Email)))
+            {
+                if (task.UserId == user.Id)
+                {
+                    var mail = new Helpers.Mail
+                    {
+                        MailTo = user.Email,
+                        Body = task.Computer.Name + " Image Task Has Completed.",
+                        Subject = "Task Completed"
+                    };
+                    mail.Send();
+                }
+            }
+        }
+
+        public static void SendTaskErrorEmail(Models.ActiveImagingTask task)
+        {
+            //Mail not enabled
+            if (Settings.SmtpEnabled == "0") return;
+
+            foreach (var user in BLL.User.SearchUsers("").Where(x => x.NotifyError == 1 && !string.IsNullOrEmpty(x.Email)))
+            {
+                if (task.UserId == user.Id)
+                {
+                    var mail = new Helpers.Mail
+                    {
+                        MailTo = user.Email,
+                        Body = task.Computer.Name + " Image Task Has Failed.",
+                        Subject = "Task Failed"
+                    };
+                    mail.Send();
+                }
+            }
+        }
+
         public static bool AddActiveImagingTask(Models.ActiveImagingTask activeImagingTask)
         {
             using (var uow = new DAL.UnitOfWork())

@@ -86,6 +86,9 @@ namespace Models
         [Column("multicast_receiver_arguments", Order = 26)]
         public string ReceiverArguments { get; set; }
 
+        [Column("web_cancel", Order = 27)]
+        public int WebCancel { get; set; }
+
         [NotMapped]
         public virtual Models.Image Image { get; set; }
 

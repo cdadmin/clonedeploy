@@ -103,6 +103,24 @@ namespace BLL
             }
         }
 
+        public static void SendImageApprovedEmail(int imageId)
+        {
+            //Mail not enabled
+            if (Settings.SmtpEnabled == "0") return;
+
+            var image = BLL.Image.GetImage(imageId);
+            foreach (var user in BLL.User.SearchUsers("").Where(x => x.NotifyImageApproved == 1 && !string.IsNullOrEmpty(x.Email)))
+            {
+                var mail = new Helpers.Mail
+                {
+                    MailTo = user.Email,
+                    Body = image.Name + " Has Been Approved",
+                    Subject = "Image Approved"
+                };
+                mail.Send();
+            }
+        }
+
         public static string ImageCountUser(int userId)
         {
             if (BLL.User.GetUser(userId).Membership == "Administrator")

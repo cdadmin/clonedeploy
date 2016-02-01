@@ -31,6 +31,16 @@
     <div class="size-8 column">
         <asp:CheckBox ID="chkGlobalNoClock" runat="server" CssClass="textbox"></asp:CheckBox>
     </div>
+    
+      <br class="clear"/>
+    
+    <div class="size-9 column">
+        Web Cancellable
+    </div>
+    <div class="size-8 column">
+        <asp:CheckBox ID="chkWebCancel" runat="server" CssClass="textbox"></asp:CheckBox>
+    </div>
+
     <br class="clear"/>
     
     <div class="size-9 column">

@@ -13,8 +13,7 @@ public partial class views_tasks_activemulticast : BasePages.Tasks
         if (IsPostBack) return;
         ViewState["clickTracker"] = "1";
         PopulateGrid();
-       
-       
+             
     }
 
     private void PopulateGrid()

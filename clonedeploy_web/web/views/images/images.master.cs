@@ -51,6 +51,7 @@ namespace views.masters
             PageBaseMaster.EndUserMessage = BLL.Image.UpdateImage(Image, Image.Name).IsValid
                 ? "Successfully Approved Image"
                 : "Could Not Approve Image";
+            BLL.Image.SendImageApprovedEmail(Image.Id);
         }
 
         protected void OkButton_Click(object sender, EventArgs e)

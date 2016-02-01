@@ -51,6 +51,9 @@ function checkin()
 		fi
 	fi
 	
+	if [ "$web_cancel" = "true" ] && [ "$is_ondemand" != "true" ]; then
+	  cd_cancel $computer_id &
+	fi
 	echo
 	sleep 2
 }
@@ -62,23 +65,25 @@ function checkout()
 	cd /
 	sleep 10
 	umount /storage &> /dev/null
-	sleep 2
-	if [ "$multicast" = "true" ]; then
-	mccheckoutResult=`curl -H "Authorization: "$(echo -n "$WDS_KEY" | base64)"" -sSk -FportBase="$(echo -n $portBase | base64)" "${web}McCheckOut" --connect-timeout 10 --stderr -`
-		log " ...... $mccheckoutResult"
-	fi
 	
 	cat /tmp/clientlog.log | grep -v "percent completed" > /tmp/cleanedlog.log
-	if [ "$is_ondemand" = "true" ]; then
-	  log_status=$($curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/cleanedlog.log | base64)"  -F subType="$(echo -n $task | base64)" "${web}UploadLog" $curlEnd)
+	
+	if [ -z "$computer_id"  ]; then
+	  computer_id="-1"
 	fi
-	checkout_status=`$curlAuth --data "computerMac=$mac" "${web}CheckOut" $curlEnd`
-	log " ...... $checkout_status" "display"
+	
+	if [ "$multicast" = "true" ]; then
+	mccheckoutResult=$($curlAuth --data "portBase=$multicast_port" "${web}MulticastCheckOut" $curlEnd)
+		log " ...... $mccheckoutResult"
+	fi
 		
-	$curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/cleanedlog.log | base64)"  -F subType="$(echo -n $task | base64)" "${web}UploadLog" $curlEnd
-			
+	if [ "$is_ondemand" != "true" ]; then
+	  checkout_status=$($curlAuth --data "computerId=$computer_id" "${web}CheckOut" $curlEnd)
+	  log " ...... $checkout_status" "display"
+    fi
 	echo
 		
+	$curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/cleanedlog.log | base64)"  -F subType="$(echo -n $task | base64)"  -F mac="$(echo -n $mac | base64)" "${web}UploadLog" $curlEnd
 		
 	sleep 1;
 	
@@ -97,20 +102,28 @@ function checkout()
 
 function error()
 {
+  local reboot_time=$2
 	echo
 	log " ** An Error Has Occurred ** " "display"
 	log " ...... $1" "display"
 	echo
 	echo " ** Rebooting In One Minute ** "
 	
-	if [ -z "$computer_id"  ]; then
-			computer_id="-1"
-	fi
-		
-	
 	cat /tmp/clientlog.log | grep -v "percent completed" > /tmp/cleanedlog.log
-	$curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/cleanedlog.log | base64)"  -F subType="$(echo -n $task | base64)"  -F mac="$(echo -n $mac | base64)" "${web}UploadLog" $curlEnd
-	sleep 60
+	
+	if [ -z "$computer_id"  ]; then
+	  computer_id="-1"
+	else
+	  $curlAuth --data "computerId=$computer_id" "${web}ErrorEmail" $curlEnd
+	fi
+	
+	$curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/cleanedlog.log | base64)"  -F subType="$(echo -n $task | base64)"  -F mac="$(echo -n $mac | base64)" "${web}UploadLog" $curlEnd	
+	
+	if [ -n "$reboot_time" ]; then
+	  sleep $reboot_time
+	else
+	  sleep 60
+	fi
 	if [ "$task_completed_action" = "Power Off" ]; then
 		poweroff;
 	elif [ "$task_completed_action" = "Exit To Shell" ]; then
@@ -142,7 +155,7 @@ function expand_volume()
 		e2fsck -fp $1 &>/dev/null
 	
 	elif [ "$filesystem" = "ntfs" ]; then
-	  ntfsfix -b -d $1 &>>/tmp/clientlog.log
+	  ntfsfix -b -d $1 &>>$CLIENT_LOG
 		volumeSize=`ntfsresize -f -i -P $1 | grep -i "current volume size:" | cut -d " " -f4`
 		deviceSize=`ntfsresize -f -i -P $1 | grep -i "current device size:" | cut -d " " -f4`
 		volumeMargin=$(( $deviceSize - $volumeSize ))
@@ -158,7 +171,7 @@ function expand_volume()
 		#Found That expanding all the way sometimes corrupted the filesystem
 		deviceSize=$(( $deviceSize - 10485760 )) #Don't expand too far
 		log "Expanding NTFS Volume To: $deviceSize"
-		ntfsresize -f -b -s $deviceSize $1 &>> /tmp/clientlog.log << CONFIRM
+		ntfsresize -f -b -s $deviceSize $1 &>> $CLIENT_LOG << CONFIRM
 y
 CONFIRM
 
@@ -169,7 +182,7 @@ CONFIRM
 		fi
 	
 		echo 
-		ntfsfix -b -d $1 &>>/tmp/clientlog.log
+		ntfsfix -b -d $1 &>>$CLIENT_LOG
 	fi
 
 }
@@ -178,8 +191,8 @@ function get_hard_drives()
 {
 	log " ** Looking For Hard Drive(s) ** " "display"
 	log " ...... Displaying Available Devices "
-	blockdev --report &>> /tmp/clientlog.log
-	fdisk -l &>> /tmp/clientlog.log
+	blockdev --report &>> $CLIENT_LOG
+	fdisk -l &>> $CLIENT_LOG
 	
 	if [ -n "$custom_hard_drives" ]; then
 		hard_drives="$custom_hard_drives"
@@ -204,11 +217,11 @@ function get_hard_drives()
 
 function log()
 {
-	echo "" >> /tmp/clientlog.log
+	echo "" >> $CLIENT_LOG
 	if [ "$2" = "display" ]; then
-		echo "$1" | tee -a /tmp/clientlog.log
+		echo "$1" | tee -a $CLIENT_LOG
 	else
-		echo "$1" >> /tmp/clientlog.log
+		echo "$1" >> $CLIENT_LOG
 	fi
 }
 
@@ -216,19 +229,19 @@ function log_boot_args()
 {
 	log " ** Displaying Boot Arguments ** "
 	log "$(cat /proc/cmdline) MAC: $mac"
-	uname -a >> /tmp/clientlog.log
+	uname -a >> $CLIENT_LOG
 }
 
 
 function mount_smb()
 {
 	log " ** Mounting SMB Share **" "display"
-	mkdir /storage &>> /tmp/clientlog.log
+	mkdir /storage &>> $CLIENT_LOG
 	smbInfo=$($curlAuth --data "dpId=$dp_id" "${web}DistributionPoint" $curlEnd)
 	for smbVersion in 3.0 2.1 2.0 1.0; do	
 		mount -t cifs "$(parse_json "$smbInfo" .SharePath)" /storage -o user="$(parse_json "$smbInfo" .Username)",pass="$(parse_json "$smbInfo" .Password)",dom="$(parse_json "$smbInfo" .Domain)",vers=$smbVersion 2>/tmp/mntstat
 		if [ ! $? = "0" ]; then
-			cat /tmp/mntstat >> /tmp/clientlog.log
+			cat /tmp/mntstat >> $CLIENT_LOG
 			errormsg=$(cat /tmp/mntstat)
 			
 		else

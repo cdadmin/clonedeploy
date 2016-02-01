@@ -45,10 +45,12 @@ public partial class views_groups_addmembers : Groups
 
     protected void PopulateGrid()
     {
-        var listOfComputers = BLL.Computer.SearchComputersForUser(CloneDeployCurrentUser.Id, txtSearch.Text);
+        var limit = 0;
+        limit = ddlLimit.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimit.Text);
+        var listOfComputers = BLL.Computer.SearchComputersForUser(CloneDeployCurrentUser.Id,limit, txtSearch.Text);
         
         //If a user is using a managed group they can also see computers without any group, to add in.
-        listOfComputers.AddRange(BLL.Computer.ComputersWithoutGroup(txtSearch.Text));
+        listOfComputers.AddRange(BLL.Computer.ComputersWithoutGroup(txtSearch.Text,limit));
       
         gvComputers.DataSource = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
         gvComputers.DataBind();
@@ -76,5 +78,10 @@ public partial class views_groups_addmembers : Groups
                 ComputerId = Convert.ToInt32(dataKey.Value), GroupId = Group.Id
             }).ToList();
         EndUserMessage = BLL.GroupMembership.AddMembership(memberships) ? "Successfully Added Group Members" : "Could Not Add Group Members";
+    }
+
+    protected void ddlLimit_OnSelectedIndexChanged(object sender, EventArgs e)
+    {
+        PopulateGrid();
     }
 }

@@ -52,10 +52,7 @@
                 <a href="<%= ResolveUrl("~/views/groups/properties.aspx") %>?groupid=<%= Group.Id %>">
                     <span class="sub-nav-text">Computer Properties</span></a>
             </li>
-            <li id="history">
-                <a href="<%= ResolveUrl("~/views/groups/history.aspx") %>?groupid=<%= Group.Id %>">
-                    <span class="sub-nav-text">History</span></a>
-            </li>
+          
             <li id="bootmenu">
                 <a href="<%= ResolveUrl("~/views/groups/bootmenu.aspx") %>?groupid=<%= Group.Id %>">
                     <span class="sub-nav-text">Boot Menu</span></a>

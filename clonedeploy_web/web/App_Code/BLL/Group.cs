@@ -125,7 +125,7 @@ namespace BLL
         public static bool UpdateSmartMembership(Models.Group group)
         {
             BLL.GroupMembership.DeleteAllMembershipsForGroup(group.Id);
-            var computers = BLL.Computer.SearchComputers(group.SmartCriteria);
+            var computers = BLL.Computer.SearchComputers(group.SmartCriteria,Int32.MaxValue);
             var memberships = computers.Select(computer => new Models.GroupMembership {GroupId = @group.Id, ComputerId = computer.Id}).ToList();
             return BLL.GroupMembership.AddMembership(memberships);
         }

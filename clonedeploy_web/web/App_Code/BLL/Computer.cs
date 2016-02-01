@@ -129,16 +129,16 @@ namespace BLL
             }
         }
 
-        public static List<Models.Computer> SearchComputersForUser(int userId, string searchString = "")
+        public static List<Models.Computer> SearchComputersForUser(int userId,int limit, string searchString = "")
         {
             if(BLL.User.GetUser(userId).Membership == "Administrator")
-                return SearchComputers(searchString);
+                return SearchComputers(searchString,limit);
 
             var listOfComputers = new List<Models.Computer>();
 
             var userManagedGroups = BLL.UserGroupManagement.Get(userId);
             if (userManagedGroups.Count == 0)
-                return SearchComputers(searchString);
+                return SearchComputers(searchString,limit);
             else
             {
                 foreach (var managedGroup in userManagedGroups)
@@ -161,11 +161,11 @@ namespace BLL
             }
         }
 
-        public static List<Models.Computer> SearchComputers(string searchString)
+        public static List<Models.Computer> SearchComputers(string searchString, int limit)
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.ComputerRepository.Search(searchString);
+                return uow.ComputerRepository.Search(searchString, limit);
             }
         }
 
@@ -220,12 +220,12 @@ namespace BLL
             }
         }
 
-        public static List<Models.Computer> ComputersWithoutGroup(string searchString)
+        public static List<Models.Computer> ComputersWithoutGroup(string searchString, int limit)
         {
             List<Models.Computer> listOfComputers;
             using (var uow = new DAL.UnitOfWork())
             {
-                listOfComputers = uow.ComputerRepository.GetComputersWithoutGroup(searchString);
+                listOfComputers = uow.ComputerRepository.GetComputersWithoutGroup(searchString, limit);
                 
             }
             foreach (var computer in listOfComputers)

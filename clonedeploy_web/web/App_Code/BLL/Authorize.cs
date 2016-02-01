@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Models;
 
@@ -34,7 +35,7 @@ namespace BLL
             if (userGroupManagements.Count > 0)
             {
                 //Group management is in use since at least 1 result was returned.  Now check if allowed
-                var computers = BLL.Computer.SearchComputersForUser(_cloneDeployUser.Id);
+                var computers = BLL.Computer.SearchComputersForUser(_cloneDeployUser.Id,Int32.MaxValue);
                 return computers.Any(x => x.Id == computerId);
             }
             else //Group management is not in use, use the global rights for the user

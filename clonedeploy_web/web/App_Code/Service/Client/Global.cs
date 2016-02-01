@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -18,15 +19,12 @@ namespace Service.Client
 {
     public class Global
     {
-        public string AddComputer(string name, string mac, string imageId, string imageProfileId)
+        public string AddComputer(string name, string mac)
         {
             var computer = new Models.Computer
             {
                 Name = name,
                 Mac = mac,
-                ImageId = Convert.ToInt32(imageId),
-                ImageProfileId = Convert.ToInt32(imageProfileId)
-
             };
             var result = BLL.Computer.AddComputer(computer);
             return JsonConvert.SerializeObject(result);
@@ -146,6 +144,7 @@ namespace Service.Client
         public void DeleteImage(int profileId)
         {
             var image = BLL.ImageProfile.ReadProfile(profileId).Image;
+            if (string.IsNullOrEmpty(image.Name)) return;
             try
             {
                 if (Directory.Exists(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name))
@@ -157,15 +156,22 @@ namespace Service.Client
                 Logger.Log(ex.Message);
             }
         }
-        
-        public void CheckOut(string mac)
+
+        public void ErrorEmail(int computerId)
         {
-            var computer = BLL.Computer.GetComputerFromMac(mac);
-            var computerTask = BLL.ActiveImagingTask.GetTask(computer.Id);
-            BLL.ActiveImagingTask.DeleteActiveImagingTask(computerTask.Id);    
+            var computerTask = BLL.ActiveImagingTask.GetTask(computerId);
+            BLL.ActiveImagingTask.SendTaskErrorEmail(computerTask);
         }
 
-        public void UploadLog(int computerId, string logContents, string subType)
+        public void CheckOut(int computerId)
+        {
+            var computerTask = BLL.ActiveImagingTask.GetTask(computerId);
+            BLL.ActiveImagingTask.DeleteActiveImagingTask(computerTask.Id);
+            if(computerTask.Type == "unicast")
+                BLL.ActiveImagingTask.SendTaskCompletedEmail(computerTask);
+        }
+
+        public void UploadLog(int computerId, string logContents, string subType, string computerMac)
         {
             if (computerId == -1)
             {
@@ -333,12 +339,12 @@ namespace Service.Client
 
         }
 
-        public string GetOriginalLvm(int profileId, string clientHd, string hdToGet)
+        public string GetOriginalLvm(int profileId, string clientHd, string hdToGet, string partitionPrefix)
         {
             string result = null;
 
             var imageProfile = BLL.ImageProfile.ReadProfile(profileId);
-            var hdNumberToGet = Convert.ToInt32(hdToGet) - 1;
+            var hdNumberToGet = Convert.ToInt32(hdToGet);
             var partitionHelper = new ClientPartitionHelper(imageProfile);
             var imageSchema = partitionHelper.GetImageSchema();
             foreach (var part in from part in imageSchema.HardDrives[hdNumberToGet].Partitions
@@ -348,14 +354,14 @@ namespace Service.Client
                                  select part)
             {
                 result = "pvcreate -u " + part.Uuid + " --norestorefile -yf " +
-                         clientHd + part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] + "\r\n";
-                result += "vgcreate " + part.VolumeGroup.Name + " " + clientHd +
+                         clientHd + partitionPrefix + part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] + "\r\n";
+                result += "vgcreate " + part.VolumeGroup.Name + " " + clientHd + partitionPrefix +
                           part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] + " -yf" + "\r\n";
                 result += "echo \"" + part.VolumeGroup.Uuid + "\" >>/tmp/vg-" + part.VolumeGroup.Name +
                           "\r\n";
                 foreach (var lv in part.VolumeGroup.LogicalVolumes.Where(lv => lv.Active))
                 {
-                    result += "lvcreate -L " + lv.Size + "s -n " + lv.Name + " " +
+                    result += "lvcreate --yes -L " + lv.Size + "s -n " + lv.Name + " " +
                               lv.VolumeGroup + "\r\n";
                     result += "echo \"" + lv.Uuid + "\" >>/tmp/" + lv.VolumeGroup + "-" +
                               lv.Name + "\r\n";
@@ -405,6 +411,59 @@ namespace Service.Client
             fileFolderSchema.Count = counter.ToString();
             return JsonConvert.SerializeObject(fileFolderSchema);
         }
+
+        public string MulticastCheckout(string portBase)
+        {
+            string result = null;
+            var mcTask = BLL.ActiveMulticastSession.GetFromPort(Convert.ToInt32(portBase));
+               
+            if (mcTask != null)
+            {
+                var prsRunning = true;
+
+                if (Environment.OSVersion.ToString().Contains("Unix"))
+                {
+                    try
+                    {
+                        var prs = Process.GetProcessById(Convert.ToInt32(mcTask.Pid));
+                        if (prs.HasExited)
+                        {
+                            prsRunning = false;
+                        }
+                    }
+                    catch
+                    {
+                        prsRunning = false;
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        Process.GetProcessById(Convert.ToInt32(mcTask.Pid));
+                    }
+                    catch
+                    {
+                        prsRunning = false;
+                    }
+                }
+                if (!prsRunning)
+                {
+                    if (BLL.ActiveMulticastSession.Delete(mcTask.Id))
+                    {
+                        result = "Success";
+                        BLL.ActiveMulticastSession.SendMulticastCompletedEmail(mcTask);
+                    }
+                }
+                else
+                    result = "Cannot Close Session, It Is Still In Progress";
+            }
+            else
+                result = "Session Is Already Closed";
+
+            return result;
+        }
+        
 
        
     }

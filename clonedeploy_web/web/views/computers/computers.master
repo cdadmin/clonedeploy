@@ -26,15 +26,7 @@
                 <a href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?computerid=<%= Computer.Id %>">
                     <span class="sub-nav-text">General</span></a>
             </li>
-            <!--Todo: finish inventory client
-            <li id="inventory">
-                <a href="<%= ResolveUrl("~/views/computers/inventory/general.aspx?level=3") %>&computerid=<%= Computer.Id %>">
-                    <span class="sub-nav-text">Inventory</span></a>
-            </li>-->
-            <li id="history">
-                <a href="<%= ResolveUrl("~/views/computers/history.aspx") %>?computerid=<%= Computer.Id %>">
-                    <span class="sub-nav-text">History</span></a>
-            </li>
+        
             <li id="bootmenu">
                 <a href="<%= ResolveUrl("~/views/computers/bootmenu/active.aspx?level=3") %>&computerid=<%= Computer.Id %>">
                     <span class="sub-nav-text">Boot Menu</span></a>

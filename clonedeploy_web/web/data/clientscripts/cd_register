@@ -20,7 +20,7 @@ while [ "$isError" != "false" ]; do
 		continue
 	fi
 	echo
-		registerResult=$($curlAuth --data "name=$name&mac=$mac&imageId=3&imageProfileId=3" ${web}AddComputer $curlClose)
+		registerResult=$($curlAuth --data "name=$name&mac=$mac" ${web}AddComputer $curlClose)
 		if [ ! "$?" = "0" ]; then
 			echo " ...... Could Not Register Computer: $registerResult"
 		else

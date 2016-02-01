@@ -9,6 +9,7 @@ public partial class views_images_profiles_task : Images
         {
             chkGlobalNoCore.Checked = Convert.ToBoolean(ImageProfile.SkipCore);
             chkGlobalNoClock.Checked = Convert.ToBoolean(ImageProfile.SkipClock);
+            chkWebCancel.Checked = Convert.ToBoolean(ImageProfile.WebCancel);
             ddlTaskComplete.Text = ImageProfile.TaskCompletedAction;
 
         }
@@ -19,6 +20,7 @@ public partial class views_images_profiles_task : Images
         var imageProfile = ImageProfile;
         imageProfile.SkipCore = Convert.ToInt16(chkGlobalNoCore.Checked);
         imageProfile.SkipClock = Convert.ToInt16(chkGlobalNoClock.Checked);
+        imageProfile.WebCancel = Convert.ToInt16(chkWebCancel.Checked);
         imageProfile.TaskCompletedAction = ddlTaskComplete.Text;
         var result = BLL.ImageProfile.UpdateProfile(imageProfile);
         EndUserMessage = result.IsValid ? "Successfully Updated Image Profile" : result.Message;

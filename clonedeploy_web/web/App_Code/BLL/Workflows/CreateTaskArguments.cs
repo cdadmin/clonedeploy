@@ -147,6 +147,8 @@ namespace BLL.Workflows
                 AppendString("skip_core_download=true");
             if (Convert.ToBoolean(_imageProfile.SkipClock))
                 AppendString("skip_clock=true");
+            if (Convert.ToBoolean(_imageProfile.WebCancel))
+                AppendString("web_cancel=true");
             AppendString("task_completed_action=" + _imageProfile.TaskCompletedAction);
 
             if (_direction == "pull")

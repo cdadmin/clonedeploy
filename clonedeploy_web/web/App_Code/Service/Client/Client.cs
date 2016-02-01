@@ -15,7 +15,7 @@ using Security;
 
 namespace Service.Client
 {
-    [WebService(Namespace = "http://localhost/clonedeploy/Client.asmx")]
+    [WebService(Namespace = "http://localhost/clonedeploy/service/client.asmx")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [ToolboxItem(false)]
     [ScriptService]
@@ -41,7 +41,7 @@ namespace Service.Client
         }
 
         [WebMethod]
-        public void GetPartLayout(string imageProfileId, string hdToGet, string newHdSize, string clientHd, string taskType)
+        public void GetPartLayout(string imageProfileId, string hdToGet, string newHdSize, string clientHd, string taskType, string partitionPrefix)
         {
 
             var partLayout = new ClientPartitionScript
@@ -50,7 +50,8 @@ namespace Service.Client
                 HdNumberToGet = Convert.ToInt16(hdToGet),
                 NewHdSize = newHdSize,
                 ClientHd = clientHd,
-                TaskType = taskType
+                TaskType = taskType,
+                partitionPrefix = partitionPrefix
             };
 
             HttpContext.Current.Response.Write(partLayout.GeneratePartitionScript());
@@ -105,10 +106,10 @@ namespace Service.Client
         }
 
         [WebMethod]
-        public void AddComputer(string name, string mac, string imageId, string imageProfileId)
+        public void AddComputer(string name, string mac)
         {
             if (!Authorize()) return;        
-            HttpContext.Current.Response.Write(new Service.Client.Global().AddComputer(name,mac,imageId,imageProfileId));
+            HttpContext.Current.Response.Write(new Service.Client.Global().AddComputer(name,mac));
         }
 
         [WebMethod]
@@ -155,11 +156,17 @@ namespace Service.Client
             new Global().DeleteImage(Convert.ToInt32(profileId));
         }
 
+        [WebMethod]
+        public void ErrorEmail(string computerId)
+        {
+            new Service.Client.Global().ErrorEmail(Convert.ToInt32(computerId));
+        }
+
 
         [WebMethod]
-        public void CheckOut(string computerMac)
+        public void CheckOut(string computerId)
         {
-            new Service.Client.Global().CheckOut(computerMac);
+            new Service.Client.Global().CheckOut(Convert.ToInt32(computerId));
         }
 
         [WebMethod]
@@ -168,7 +175,8 @@ namespace Service.Client
             var computerId = Utility.Decode(HttpContext.Current.Request.Form["computerId"]);
             var logContents = Utility.Decode(HttpContext.Current.Request.Form["logContents"]);
             var subType = Utility.Decode(HttpContext.Current.Request.Form["subType"]);
-            new Global().UploadLog(Convert.ToInt32(computerId), logContents, subType);
+            var computerMac = Utility.Decode(HttpContext.Current.Request.Form["mac"]);
+            new Global().UploadLog(Convert.ToInt32(computerId), logContents, subType, computerMac);
         }
 
         [WebMethod]
@@ -202,9 +210,9 @@ namespace Service.Client
         }
 
         [WebMethod]
-        public void GetOriginalLvm(string profileId, string clientHd, string hdToGet)
+        public void GetOriginalLvm(string profileId, string clientHd, string hdToGet, string partitionPrefix)
         {
-            HttpContext.Current.Response.Write(new Service.Client.Global().GetOriginalLvm(Convert.ToInt32(profileId), clientHd, hdToGet));
+            HttpContext.Current.Response.Write(new Service.Client.Global().GetOriginalLvm(Convert.ToInt32(profileId), clientHd, hdToGet, partitionPrefix));
         }
 
         [WebMethod]
@@ -272,6 +280,12 @@ namespace Service.Client
         {
             HttpContext.Current.Response.Write(new Global().GetFileCopySchema(profileId));
 
+        }
+
+        [WebMethod]
+        public void MulticastCheckOut(string portBase)
+        {
+            HttpContext.Current.Response.Write(new Global().MulticastCheckout(portBase));   
         }
         /*
       

@@ -28,7 +28,17 @@
     </div>
     <br class="clear"/>
     
-    
+    <div class="size-7 column">
+    <asp:DropDownList runat="server" ID="ddlLimit" AutoPostBack="True" OnSelectedIndexChanged="ddlLimit_OnSelectedIndexChanged" CssClass="ddlist">
+        <asp:ListItem>25</asp:ListItem>
+        <asp:ListItem>100</asp:ListItem>
+         <asp:ListItem Selected="True">250</asp:ListItem>
+        <asp:ListItem >500</asp:ListItem>
+          <asp:ListItem>1000</asp:ListItem>
+         <asp:ListItem>5000</asp:ListItem>
+        <asp:ListItem>All</asp:ListItem>
+        </asp:DropDownList>
+    </div>
    
     <asp:GridView ID="gvComputers" runat="server" AllowSorting="True" DataKeyNames="Id" OnSorting="gridView_Sorting" AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
         <Columns>
