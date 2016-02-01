@@ -8,3 +8,6 @@
 .nav li a.icon-global:before{content:"\e007";font-size:2.0em;margin-left: 5px;}
 .nav li a.icon-logout:before{content:"\e01a";font-size:2.0em;margin-left: 5px;}
 .help:before{ font-family: "icon2";content:"\e001";font-size:40px;margin-top: 1px;color: #666;}
+.icon-mobile-nav:before{content:"\e014";font-size:48px;line-height:.5;color: #fff;}
+.icon-mobile-nav{font-family: 'Flaticon';position: absolute;top: 0;speak:none;font-size:2em;text-decoration:none;color: #fff;line-height:2;-webkit-font-smoothing: antialiased;}
+

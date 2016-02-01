@@ -19,7 +19,6 @@ namespace BLL
                 var validationResult = ValidateUser(user, true);
                 if (validationResult.IsValid)
                 {
-                    user.Password = Helpers.Utility.CreatePasswordHash(user.Password, user.Salt);
                     uow.UserRepository.Insert(user);
                     validationResult.IsValid = uow.Save();
                 }
@@ -59,6 +58,25 @@ namespace BLL
             return user.Membership == "Administrator";
         }
 
+        public static void SendLockOutEmail(int userId)
+        {
+            //Mail not enabled
+            if (Settings.SmtpEnabled == "0") return;
+
+            var lockedUser = GetUser(userId);
+            foreach (var user in SearchUsers("").Where(x => x.NotifyLockout == 1 && !string.IsNullOrEmpty(x.Email)))
+            {
+                if (user.Membership != "Administrator" && user.Id != userId) continue;
+                var mail = new Helpers.Mail
+                {
+                    MailTo = user.Email,
+                    Body = lockedUser.Name + " Has Been Locked For 15 Minutes Because Of Too Many Failed Login Attempts",
+                    Subject = "User Locked"
+                };
+                mail.Send();
+            }
+        }
+
         public static CloneDeployUser GetUser(int userId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -83,16 +101,13 @@ namespace BLL
             }
         }
 
-        public static Models.ValidationResult UpdateUser(CloneDeployUser user, bool updatePassword)
+        public static Models.ValidationResult UpdateUser(CloneDeployUser user)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateUser(user, false);
                 if (validationResult.IsValid)
                 {
-                    user.Password = updatePassword
-                        ? Helpers.Utility.CreatePasswordHash(user.Password, user.Salt)
-                        : uow.UserRepository.GetById(user.Id).Password;
                     uow.UserRepository.Update(user, user.Id);
                     validationResult.IsValid = uow.Save();
                 }

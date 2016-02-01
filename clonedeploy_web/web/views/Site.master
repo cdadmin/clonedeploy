@@ -5,7 +5,7 @@
 <head runat="server">
     <meta http-equiv="X-UA-Compatible" content="IE=EDGE"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-    <title>CloneDeploy</title>
+    <title>Clone Deploy</title>
 
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery-1.9.1.js") %>"></script>
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery-migrate-1.2.1.min.js") %>"></script>
@@ -35,16 +35,17 @@
     <a href="#" class="icon-mobile-nav"></a>
 </div>
 <div class="nav-menu-mobile" id="menu-mobile">
-    <a href="#" class="icon-mobile-nav2"></a>
+    
     <div class="mobile-menu-left">
         <a href="<%= ResolveUrl("~/views/computers/search.aspx") %>">Computers</a>
         <a href="<%= ResolveUrl("~/views/groups/search.aspx") %>">Groups</a>
         <a href="<%= ResolveUrl("~/views/images/search.aspx") %>">Images</a>
+        <a href="<%= ResolveUrl("~/views/global/chooser.aspx") %>">Global</a>
     </div>
     <div class="mobile-menu-right">
         <a href="<%= ResolveUrl("~/views/tasks/active.aspx") %>">Tasks</a>
         <a href="<%= ResolveUrl("~/views/users/search.aspx") %>">Users</a>
-        <a href="<%= ResolveUrl("~/views/admin/settings.aspx") %>">Admin</a>
+        <a href="<%= ResolveUrl("~/views/admin/chooser.aspx") %>">Admin</a>
     </div>
 </div>
 

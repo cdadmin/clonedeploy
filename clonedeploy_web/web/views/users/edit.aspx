@@ -49,6 +49,55 @@
     <div class="size-5 column">
         <asp:TextBox ID="txtUserPwdConfirm" runat="server" CssClass="textbox" TextMode="Password"></asp:TextBox>
     </div>
+    <br class="clear"/>
+    <div class="size-4 column">
+        Email:
+    </div>
+    <div class="size-5 column">
+        <asp:TextBox ID="txtEmail" runat="server" CssClass="textbox"></asp:TextBox>
+    </div>
+    <br class="clear"/>
+    <div class="size-4 column">
+        Security Token:
+        <asp:LinkButton ID="btnGenKey" runat="server" Text="Generate" OnClick="btnGenKey_OnClick" CssClass="submits" Style="margin: 0"/>
+    </div>
+    <div class="size-9 column">
+        <asp:TextBox ID="txtToken" runat="server" CssClass="textbox"></asp:TextBox>
+    </div>
+    <br class="clear"/>
+    <br />
+     <div class="size-4 column">
+        Notify On Lockout:
+    </div>
+    <div class="size-5 column">
+        <asp:Checkbox ID="chkLockout" runat="server"></asp:Checkbox>
+    </div>
+    <br class="clear"/>
+    <br />
+    <div class="size-4 column">
+        Notify On Task Error:
+    </div>
+    <div class="size-5 column">
+        <asp:Checkbox ID="chkError" runat="server"></asp:Checkbox>
+    </div>
+    <br class="clear"/>
+    <br />
+    <div class="size-4 column">
+        Notify On Task Complete:
+    </div>
+    <div class="size-5 column">
+        <asp:Checkbox ID="chkComplete" runat="server"></asp:Checkbox>
+    </div>
+    <br class="clear"/>
+    <br />
+    <div class="size-4 column">
+        Notify On Image Approved:
+    </div>
+    <div class="size-5 column">
+        <asp:Checkbox ID="chkApproved" runat="server"></asp:Checkbox>
+    </div>
+    <br class="clear"/>
+    <br />
    
  
 </asp:Content>

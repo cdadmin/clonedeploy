@@ -6,24 +6,28 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Helpers;
 
-public partial class views_tasks_activemulticast : System.Web.UI.Page
+public partial class views_tasks_activemulticast : BasePages.Tasks
 {
     protected void Page_Load(object sender, EventArgs e)
     {
         if (IsPostBack) return;
         ViewState["clickTracker"] = "1";
-        gvMcTasks.DataSource = BLL.ActiveMulticastSession.GetAllMulticastSessions();
+        PopulateGrid();
+       
+       
+    }
+
+    private void PopulateGrid()
+    {
+        gvMcTasks.DataSource = BLL.ActiveMulticastSession.GetAllMulticastSessions(CloneDeployCurrentUser.Id);
         gvMcTasks.DataBind();
-        lblTotal.Text = BLL.ActiveMulticastSession.ActiveCount() + " Total Multicast(s)";
+        lblTotal.Text = BLL.ActiveMulticastSession.ActiveCount(CloneDeployCurrentUser.Id) + " Total Multicast(s)";
         GetMcInfo();
     }
 
     protected void TimerMC_Tick(object sender, EventArgs e)
     {
-        gvMcTasks.DataSource = BLL.ActiveMulticastSession.GetAllMulticastSessions();
-        gvMcTasks.DataBind();
-        lblTotal.Text = BLL.ActiveMulticastSession.ActiveCount() + " Total Multicast(s)";
-        GetMcInfo();
+        PopulateGrid();
     }
 
     protected void btnCancelMc_Click(object sender, EventArgs e)
@@ -39,8 +43,7 @@ public partial class views_tasks_activemulticast : System.Web.UI.Page
                 BLL.ActiveMulticastSession.Delete(Convert.ToInt32(dataKey.Value));
             }
         }
-        gvMcTasks.DataSource = BLL.ActiveMulticastSession.GetAllMulticastSessions();
-        gvMcTasks.DataBind();
+        PopulateGrid();
     }
 
     protected void btnMembers_Click(object sender, EventArgs e)

@@ -41,10 +41,6 @@ public partial class views_admin_email : Admin
         var chkValue = chkEnabled.Checked ? "1" : "0";
         listSettings.Add(new Setting { Name = "Smtp Enabled", Value = chkValue, Id = BLL.Setting.GetSetting("Smtp Enabled").Id });
 
-     
-
-
-
         EndUserMessage = BLL.Setting.UpdateSetting(listSettings) ? "Successfully Updated Settings" : "Could Not Update Settings";
     }
 
@@ -53,9 +49,11 @@ public partial class views_admin_email : Admin
         var mail = new Mail
         {
             Subject = "Test Message",
-            Body = HttpContext.Current.User.Identity.Name
+            Body = "Email Notifications Are Working!",
+            MailTo = Settings.SmtpMailTo
         };
-        mail.Send("Test Message");
+
+        mail.Send();
         EndUserMessage = "Test Message Sent";
     }
 }
