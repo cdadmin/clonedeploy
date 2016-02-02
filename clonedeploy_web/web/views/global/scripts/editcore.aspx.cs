@@ -18,7 +18,7 @@ public partial class views_admin_scripts_editcore : BasePages.Global
     {
         scriptEditor.Value = "";
         if (ddlCoreScripts.Text == "Select A Script") return;
-        var path = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
+        var path = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
                     Path.DirectorySeparatorChar + "clientscripts" + Path.DirectorySeparatorChar + ddlCoreScripts.Text;
 
 
@@ -27,7 +27,7 @@ public partial class views_admin_scripts_editcore : BasePages.Global
 
     protected void buttonSaveCore_OnClick(object sender, EventArgs e)
     {
-        var path = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
+        var path = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
                    Path.DirectorySeparatorChar + "clientscripts" + Path.DirectorySeparatorChar + ddlCoreScripts.Text;
 
         var fixedLineEnding = scriptEditor.Value.Replace("\r\n", "\n");

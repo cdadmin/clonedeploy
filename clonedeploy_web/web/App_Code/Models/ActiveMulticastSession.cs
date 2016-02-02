@@ -22,6 +22,9 @@ namespace Models
 
         [Column("user_id", Order = 5)]
         public int UserId { get; set; }
+
+        [Column("ond_image_profile_id", Order = 6)]
+        public int ImageProfileId { get; set; }
         
     }
 }

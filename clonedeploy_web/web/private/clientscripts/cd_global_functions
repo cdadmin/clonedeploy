@@ -139,6 +139,7 @@ function expand_volume()
 	local partition="$1"
 	local filesystem="$2"
 	
+	echo
 	if [ "$filesystem" = "ext2" ] || [ "$filesystem" = "ext3" ] || [ "$filesystem" = "ext4" ]; then
 		log " ** Expanding EXT Volume On $1 ** " "display"
 		partprobe &>/dev/null;
@@ -213,6 +214,7 @@ function get_hard_drives()
 		error "Could Not Find A Hard Drive Attached To This Computer.  Try A Different Kernel."
 	fi
 	sleep 2
+	echo
 }
 
 function log()
@@ -237,7 +239,7 @@ function mount_smb()
 {
 	log " ** Mounting SMB Share **" "display"
 	mkdir /storage &>> $CLIENT_LOG
-	smbInfo=$($curlAuth --data "dpId=$dp_id" "${web}DistributionPoint" $curlEnd)
+	smbInfo=$($curlAuth --data "dpId=$dp_id&task=$task" "${web}DistributionPoint" $curlEnd)
 	for smbVersion in 3.0 2.1 2.0 1.0; do	
 		mount -t cifs "$(parse_json "$smbInfo" .SharePath)" /storage -o user="$(parse_json "$smbInfo" .Username)",pass="$(parse_json "$smbInfo" .Password)",dom="$(parse_json "$smbInfo" .Domain)",vers=$smbVersion 2>/tmp/mntstat
 		if [ ! $? = "0" ]; then
@@ -254,7 +256,7 @@ function mount_smb()
 			break
 		fi
 		if [ "$smbVersion" = "1.0" ]; then
-			error "SMB 1.0 Is Not Supported"
+			error "Could Not Mount SMB Share"
 		fi
 	done
 	echo

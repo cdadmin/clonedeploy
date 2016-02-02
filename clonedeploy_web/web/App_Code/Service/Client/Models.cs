@@ -18,6 +18,11 @@ namespace Services.Client
         
     }
 
+    public class MulticastList
+    {
+        public List<string> Multicasts { get; set; }
+    }
+
     public class CheckIn
     {
         public string Result { get; set; }

@@ -111,6 +111,22 @@ namespace BLL
             }
         }
 
+        public static Models.ActiveMulticastSession Get(int multicastId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ActiveMulticastSessionRepository.GetById(multicastId);
+            }
+        }
+
+        public static List<Models.ActiveMulticastSession> GetOnDemandList()
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ActiveMulticastSessionRepository.Get(x => x.ImageProfileId != -1, orderBy: (q => q.OrderBy(t => t.Name)));      
+            }
+        }
+
         public static bool UpdateActiveMulticastSession(Models.ActiveMulticastSession activeMulticastSession)
         {
             using (var uow = new DAL.UnitOfWork())

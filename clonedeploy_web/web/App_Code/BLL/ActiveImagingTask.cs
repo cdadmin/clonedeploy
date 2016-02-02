@@ -43,7 +43,7 @@ namespace BLL
         {
             //Mail not enabled
             if (Settings.SmtpEnabled == "0") return;
-
+            task.Computer = BLL.Computer.GetComputer(task.ComputerId);
             foreach (var user in BLL.User.SearchUsers("").Where(x => x.NotifyComplete == 1 && !string.IsNullOrEmpty(x.Email)))
             {
                 if (task.UserId == user.Id)
@@ -63,7 +63,7 @@ namespace BLL
         {
             //Mail not enabled
             if (Settings.SmtpEnabled == "0") return;
-
+            task.Computer = BLL.Computer.GetComputer(task.ComputerId);
             foreach (var user in BLL.User.SearchUsers("").Where(x => x.NotifyError == 1 && !string.IsNullOrEmpty(x.Email)))
             {
                 if (task.UserId == user.Id)

@@ -9,7 +9,7 @@ namespace BLL.Workflows
     {
         private const string NewLineChar = "\n";
         private readonly string _globalComputerArgs = Settings.GlobalComputerArgs;
-        private readonly string _wdsKey = Settings.WebTaskRequiresLogin == "No" ? Settings.ServerKey : "";
+        private string _wdsKey { get; set; }
         private readonly string _webPath = Settings.WebPath;
         public string AddPwd { get; set; }
         public string BootImage { get; set; }
@@ -23,6 +23,14 @@ namespace BLL.Workflows
 
         public void CreateGlobalDefaultBootMenu()
         {
+            if (Settings.DebugRequiresLogin == "No" || Settings.OnDemandRequiresLogin == "No" ||
+                Settings.RegisterRequiresLogin == "No")
+                _wdsKey = Settings.UniversalToken;
+            else
+            {
+                _wdsKey = "";
+            }
+
             var mode = Settings.PxeMode;
 
             if (Type == "standard")
@@ -110,7 +118,7 @@ namespace BLL.Workflows
                             NewLineChar);
             grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
                             _webPath +
-                            " WDS_KEY=" + _wdsKey + " task=debug consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
+                            " USER_TOKEN=" + _wdsKey + " task=debug consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
             grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
 
@@ -121,7 +129,7 @@ namespace BLL.Workflows
                             NewLineChar);
             grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
                             _webPath +
-                            " WDS_KEY=" + _wdsKey + " task=ond consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
+                            " USER_TOKEN=" + _wdsKey + " task=ond consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
             grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
 
@@ -132,7 +140,7 @@ namespace BLL.Workflows
                             NewLineChar);
             grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
                             _webPath +
-                            " WDS_KEY=" + _wdsKey + " task=register consoleblank=0 " + _globalComputerArgs + "" +
+                            " USER_TOKEN=" + _wdsKey + " task=register consoleblank=0 " + _globalComputerArgs + "" +
                             NewLineChar);
             grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
@@ -144,7 +152,7 @@ namespace BLL.Workflows
                             NewLineChar);
             grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
                             _webPath +
-                            " WDS_KEY=" + _wdsKey + " task=diag consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
+                            " USER_TOKEN=" + _wdsKey + " task=diag consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
             grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
 
@@ -219,7 +227,7 @@ namespace BLL.Workflows
                 ipxeMenu.Append(":console" + NewLineChar);
                 ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + Kernel + "&type=kernel" +
                                 " initrd=" + BootImage + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
-                                Settings.WebPath + " WDS_KEY=" + _wdsKey + " task=debug" + " consoleblank=0 " +
+                                Settings.WebPath + " USER_TOKEN=" + _wdsKey + " task=debug" + " consoleblank=0 " +
                                 _globalComputerArgs + NewLineChar);
                 ipxeMenu.Append("imgfetch --name " + BootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
                                 BootImage + "&type=bootimage" + NewLineChar);
@@ -229,7 +237,7 @@ namespace BLL.Workflows
                 ipxeMenu.Append(":register" + NewLineChar);
                 ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + Kernel + "&type=kernel" +
                                 " initrd=" + BootImage + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
-                                Settings.WebPath + " WDS_KEY=" + _wdsKey + " task=register" + " consoleblank=0 " +
+                                Settings.WebPath + " USER_TOKEN=" + _wdsKey + " task=register" + " consoleblank=0 " +
                                 _globalComputerArgs + NewLineChar);
                 ipxeMenu.Append("imgfetch --name " + BootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
                                 BootImage + "&type=bootimage" + NewLineChar);
@@ -239,7 +247,7 @@ namespace BLL.Workflows
                 ipxeMenu.Append(":ond" + NewLineChar);
                 ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + Kernel + "&type=kernel" +
                                 " initrd=" + BootImage + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
-                                Settings.WebPath + " WDS_KEY=" + _wdsKey + " task=ond" + " consoleblank=0 " +
+                                Settings.WebPath + " USER_TOKEN=" + _wdsKey + " task=ond" + " consoleblank=0 " +
                                 _globalComputerArgs + NewLineChar);
                 ipxeMenu.Append("imgfetch --name " + BootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
                                 BootImage + "&type=bootimage" + NewLineChar);
@@ -249,7 +257,7 @@ namespace BLL.Workflows
                 ipxeMenu.Append(":diag" + NewLineChar);
                 ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + Kernel + "&type=kernel" +
                                 " initrd=" + BootImage + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
-                                Settings.WebPath + " WDS_KEY=" + _wdsKey + " task=diag" + " consoleblank=0 " +
+                                Settings.WebPath + " USER_TOKEN=" + _wdsKey + " task=diag" + " consoleblank=0 " +
                                 _globalComputerArgs + NewLineChar);
                 ipxeMenu.Append("imgfetch --name " + BootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
                                 BootImage + "&type=bootimage" + NewLineChar);
@@ -302,7 +310,7 @@ namespace BLL.Workflows
 
             sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
-                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " WDS_KEY=" +
+                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " USER_TOKEN=" +
                                 _wdsKey +
                                 " task=debug consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
 
@@ -315,7 +323,7 @@ namespace BLL.Workflows
 
             sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
-                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " WDS_KEY=" +
+                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " USER_TOKEN=" +
                                 _wdsKey +
                                 " task=register consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
 
@@ -328,7 +336,7 @@ namespace BLL.Workflows
 
             sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
-                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " WDS_KEY=" +
+                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " USER_TOKEN=" +
                                 _wdsKey +
                                 " task=ond consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
 
@@ -341,7 +349,7 @@ namespace BLL.Workflows
 
             sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
-                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " WDS_KEY=" +
+                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " USER_TOKEN=" +
                                 _wdsKey +
                                 " task=diag consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
 

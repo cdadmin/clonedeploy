@@ -2,6 +2,10 @@
 
 . /bin/cd_global_functions
 
+if [ "$started_from_init" != "true" ]; then
+	error "Script Cannot Be Started This Way, Exports Are Not Set."
+fi
+
 ################################################################
 #  Run Various Tasks On NTFS Partitions.
 #  Clear mounted devices in registry
@@ -246,8 +250,10 @@ CONFIRM
 ################################################################
 function create_image_schema()
 {
+  clear_and_move_down
   log " ** Creating Image Schema ** " "display"
-  sleep 1
+  echo
+  sleep 5
   
   #Only used on EFI systems.
   mount -t efivarfs none /sys/firmware/efi/efivars &>>$CLIENT_LOG
@@ -529,7 +535,7 @@ function upload_image()
   for partition in $partitions; do 
     clear_and_move_down
 	wim_arguments=""
-    log " ** Starting Image Upload For Partition $partition ** " "display" 
+    log " ** Starting Image Upload For $partition ** " "display" 
 	if [ -n "$computer_id" ]; then    
 	  null=$($curlAuth --data "computerId=$computer_id&partition=$partition" "${web}UpdateProgressPartition" $curlEnd)
     fi

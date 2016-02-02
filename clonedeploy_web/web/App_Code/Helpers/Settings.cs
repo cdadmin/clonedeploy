@@ -115,12 +115,10 @@ namespace Helpers
             get { return Setting.GetSetting("Server IP").Value; }
         }
 
-        public static string ServerKey
+        public static string UniversalToken
         {
-            get { return Setting.GetSetting("Server Key").Value; }
+            get { return Setting.GetSetting("Universal Token").Value; }
         }
-
-      
 
         public static string StartPort
         {
@@ -186,8 +184,6 @@ namespace Helpers
         {
             get { return Setting.GetSetting("Smtp Enabled").Value; }
         }
-
-      
 
         public static string RequireImageApproval
         {

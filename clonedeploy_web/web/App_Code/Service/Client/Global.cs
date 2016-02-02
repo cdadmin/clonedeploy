@@ -19,6 +19,17 @@ namespace Service.Client
 {
     public class Global
     {
+        public bool Authorize(string token)
+        {
+            if (token == Settings.UniversalToken && !string.IsNullOrEmpty(Settings.UniversalToken))
+                return true;
+            
+            var user = BLL.User.GetUserByToken(token);
+            if (user != null)
+                return true;
+
+            return false;
+        }
         public string AddComputer(string name, string mac)
         {
             var computer = new Models.Computer
@@ -83,6 +94,38 @@ namespace Service.Client
             }
         }
 
+        public string TokenMatchesTask(string task, string token)
+        {
+            if (token != Settings.UniversalToken || string.IsNullOrEmpty(Settings.UniversalToken))
+                return "false";
+            switch (task)
+            {
+                case "ond":
+                    if (Settings.OnDemandRequiresLogin == "No")
+                        return "true";
+                    break;
+                case "debug":
+                    if (Settings.DebugRequiresLogin == "No")
+                        return "true";
+                    break;
+                case "register":
+                    if (Settings.RegisterRequiresLogin == "No")
+                        return "true";
+                    break;
+                case "push":
+                    if (Settings.WebTaskRequiresLogin == "No")
+                        return "true";
+                    break;
+                case "pull":
+                    if (Settings.WebTaskRequiresLogin == "No")
+                        return "true";
+                    break;
+
+                default:
+                    return "false";
+            }
+            return "false";
+        }
 
         public string CheckIn(string computerMac)
         {
@@ -121,14 +164,23 @@ namespace Service.Client
 
         }
 
-        public string DistributionPoint(int dpId)
+        public string DistributionPoint(int dpId, string task)
         {
             var smb = new Services.Client.SMB();
             var dp = BLL.DistributionPoint.GetDistributionPoint(dpId);
             smb.SharePath = "//" + ParameterReplace.Between(dp.Server) + "/" + dp.ShareName;
             smb.Domain = dp.Domain;
-            smb.Username = dp.Username;
-            smb.Password = new Helpers.Encryption().DecryptText(dp.Password);
+            if (task == "pull")
+            {
+                smb.Username = dp.RwUsername;
+                smb.Password = new Helpers.Encryption().DecryptText(dp.RwPassword);
+            }
+            else
+            {
+                smb.Username = dp.RoUsername;
+                smb.Password = new Helpers.Encryption().DecryptText(dp.RoPassword);
+            }
+            
             return JsonConvert.SerializeObject(smb);
 
 
@@ -467,6 +519,23 @@ namespace Service.Client
         public string GetCustomPartitionScript(int profileId)
         {
             return BLL.ImageProfile.ReadProfile(profileId).CustomPartitionScript;
+        }
+
+        public string GetOnDemandArguments(string mac, int objectId, string task)
+        {
+            ImageProfile imageProfile;
+            var computer = BLL.Computer.GetComputerFromMac(mac);
+            if (task == "push" || task == "pull")
+            {
+                imageProfile = BLL.ImageProfile.ReadProfile(objectId);
+            }
+            else //Multicast
+            {
+                var multicast = BLL.ActiveMulticastSession.Get(objectId);
+                imageProfile = BLL.ImageProfile.ReadProfile(multicast.ImageProfileId);
+            }
+
+            return new BLL.Workflows.CreateTaskArguments(computer, imageProfile, task).Run();
         }
 
        

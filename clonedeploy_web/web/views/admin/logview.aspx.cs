@@ -14,7 +14,7 @@ namespace views.admin
             try
             {
                 var computerLogPath = ddlLog.Text;
-                var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
+                var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
                               Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar;
                 HttpContext.Current.Response.ContentType = "application/octet-stream";
                 HttpContext.Current.Response.AppendHeader("Content-Disposition", "attachment; filename=" + ddlLog.Text);

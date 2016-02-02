@@ -21,10 +21,10 @@ namespace Models
         public string ShareName { get; set; }
         [Column("distribution_point_domain", Order = 6)]
         public string Domain { get; set; }
-        [Column("distribution_point_username", Order = 7)]
-        public string Username { get; set; }
-        [Column("distribution_point_password_encrypted", Order = 8)]
-        public string Password { get; set; }
+        [Column("distribution_point_rw_username", Order = 7)]
+        public string RwUsername { get; set; }
+        [Column("distribution_point_rw_password_encrypted", Order = 8)]
+        public string RwPassword { get; set; }
         [Column("distribution_point_is_Primary", Order = 9)]
         public int IsPrimary { get; set; }
         [Column("distribution_point_physical_path", Order = 10)]
@@ -33,6 +33,10 @@ namespace Models
         public int IsBackend { get; set; }
         [Column("distribution_point_backend_server", Order = 12)]
         public string BackendServer { get; set; }
+        [Column("distribution_point_ro_username", Order = 13)]
+        public string RoUsername { get; set; }
+        [Column("distribution_point_ro_password_encrypted", Order = 14)]
+        public string RoPassword { get; set; }
 
 
 

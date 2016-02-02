@@ -2,6 +2,10 @@
 
 . /bin/cd_global_functions
 
+if [ "$started_from_init" != "true" ]; then
+	error "Script Cannot Be Started This Way, Exports Are Not Set."
+fi
+
 function process_hard_drives()
 {
   local drive_name
@@ -24,7 +28,7 @@ function process_hard_drives()
     drive_size_block=$(cat /sys/block/$drive_name/size)
     drive_size_bytes=$(expr $lbs '*' $drive_size_block)
 	
-    log "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$drive_size_bytes&schemaHds=$imaged_schema_drives"
+    log "Get hd_schema:  profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$drive_size_bytes&schemaHds=$imaged_schema_drives"
     hd_schema=$($curlAuth --data "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$drive_size_bytes&schemaHds=$(remove_whitespace $imaged_schema_drives)" "${web}CheckHdRequirements" $curlEnd)
     log "$hd_schema"
 	
@@ -110,6 +114,7 @@ function process_partitions()
   local array_index=-1
   
   if [ "$file_copy" = "true" ]; then
+    log "file_copy_schema: profileId=$profile_id"
 	 file_copy_schema=$($curlAuth --data "profileId=$profile_id" "${web}GetFileCopySchema" $curlEnd)
   fi
 	
@@ -213,8 +218,7 @@ function download_image()
       partCompAlg="lz4 -d"
       partCompExt="lz4"
     elif [ "$(parse_json "$current_object" .Compression)" = "uncp" ]; then
-      #TODO: finish implementing no compression
-      partCompAlg=""
+      partCompAlg="none"
       partCompExt=""
     else
       error "Could Not Determine Compression Algorithm For Partition"
@@ -231,8 +235,13 @@ function download_image()
       cd_reporter $computer_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
     fi
   else #unicast
-    log "cd_reporter $computer_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
-    cd_reporter $computer_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
+    if [ "$partCompAlg" = "none" ]; then #no compression
+	   cd_reporter $computer_id partclone & partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -s $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).uncp -o $destination
+	   log "cd_reporter $computer_id partclone & partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -s $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).uncp -o $destination"
+	else #compression in use
+      log "cd_reporter $computer_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
+      cd_reporter $computer_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
+	fi
   fi
 			
   rm /tmp/clone.progress
@@ -240,12 +249,17 @@ function download_image()
   else # ImageType = File
     export WIMLIB_IMAGEX_USE_UTF8=1
     log " ** Creating $(parse_json "$current_object" .FileSystem) Filesystem On $destination ** "
-    if [ "$(parse_json "$current_object" .FileSystem)" = "ntfs" ] || [ "$(parse_json "$current_object" .FileSystem)" = "xfs" ]; then  
+    if [ "$(parse_json "$current_object" .FileSystem)" = "ntfs" ]; then
 	  log "mkfs.$(parse_json "$current_object" .FileSystem) -f $destination"
 	  mkfs.$(parse_json "$current_object" .FileSystem) -f $destination &>> $CLIENT_LOG
+	elif [ "$(parse_json "$current_object" .FileSystem)" = "xfs" ]; then
+	  log "mkfs.$(parse_json "$current_object" .FileSystem) -f $destination"
+	  mkfs.$(parse_json "$current_object" .FileSystem) -f $destination &>> $CLIENT_LOG
+	  xfs_admin -U $(parse_json "$current_object" .Uuid) $destination &>> $CLIENT_LOG
 	else #ext filesystems
-	   log "mkfs.$(parse_json "$current_object" .FileSystem) -F $destination"
+	  log "mkfs.$(parse_json "$current_object" .FileSystem) -F $destination"
 	  mkfs.$(parse_json "$current_object" .FileSystem) -F $destination &>> $CLIENT_LOG
+	  tune2fs $destination -U $(parse_json "$current_object" .Uuid) &>> $CLIENT_LOG
 	fi
 	
 	
@@ -768,6 +782,8 @@ function main()
 		  sleep 5
 		fi
       done
+	    log " ...... Complete" "display"
+		echo
 	fi	  		
   fi
 

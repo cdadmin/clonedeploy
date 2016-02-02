@@ -29,7 +29,7 @@ namespace Security
                 var wdsuser = BLL.User.GetUser(username);
                 result.Add("valid", "true");
                 result.Add("user_id", wdsuser.Id.ToString());
-                result.Add("user_token", Settings.ServerKey);
+                result.Add("user_token", wdsuser.Token);
             }
          
             return JsonConvert.SerializeObject(result);
@@ -40,14 +40,21 @@ namespace Security
         public string IpxeLogin(string username, string password, string kernel, string bootImage, string task)
         {
             var newLineChar = "\n";
-            var wdsKey = Settings.WebTaskRequiresLogin == "No" ? Settings.ServerKey : "";
+            string wdsKey = null;
+            if (Settings.DebugRequiresLogin == "No" || Settings.OnDemandRequiresLogin == "No" ||
+               Settings.RegisterRequiresLogin == "No" || Settings.WebTaskRequiresLogin == "No")
+                wdsKey = Settings.UniversalToken;
+            else
+            {
+                wdsKey = "";
+            }
             var globalComputerArgs = Settings.GlobalComputerArgs;
             var validationResult = GlobalLogin(username, password, "iPXE");
             if (!validationResult.IsValid) return "goto Menu";
             var lines = "#!ipxe" + newLineChar;
             lines += "kernel " + Settings.WebPath + "IpxeBoot?filename=" + kernel + "&type=kernel" +
                      " initrd=" + bootImage + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
-                     Settings.WebPath + " WDS_KEY=" + wdsKey + " task=" + task + " consoleblank=0 " +
+                     Settings.WebPath + " USER_TOKEN=" + wdsKey + " task=" + task + " consoleblank=0 " +
                      globalComputerArgs + newLineChar;
             lines += "imgfetch --name " + bootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
                      bootImage + "&type=bootimage" + newLineChar;

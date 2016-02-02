@@ -12,7 +12,7 @@ namespace Helpers
         {
             try
             {
-                var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
+                var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
                              Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar + "exceptions.log";
 
                 File.AppendAllText(logPath,
@@ -30,7 +30,7 @@ namespace Helpers
             if (limit == "All")
                 limit = "9999";
          
-            var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
+            var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
                           Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar;
 
             return File.ReadLines(logPath + log).Reverse().Take(Convert.ToInt16(limit)).Reverse().ToList();

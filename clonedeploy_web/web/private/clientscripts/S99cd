@@ -108,15 +108,28 @@ if [ "$loginRequired" != "No" ]; then
 			echo " ...... Login Successful"
 			echo			
 			export USER_TOKEN=$(parse_json "$loginResult" .user_token)
+			export user_id=$(parse_json "$loginResult" .user_id)
 			break
 		fi
 		loginCount=$(( $loginCount + 1 ))
 	done
 fi
 
+set_curl_auth
+
+#Verify Universal Token Is Usable For This Task
+if [ "$loginRequired" = "No" ]; then
+  token_match=$($curlAuth --data "task=$task" "${web}TokenMatchesTask" $curlEnd)
+  if [ "$token_match" != "true"]; then
+    echo " ...... Incorrect Token....Rebooting"
+    sleep 10
+    reboot -f
+  fi
+fi
+
+
 if [ "$skip_core_download" != "true" ]; then
 	clear_and_move_down
-	set_curl_auth
 	echo " ** Downloading Core Scripts ** "
 
 	for script_name in cd_global_functions cd_ond cd_pull cd_push cd_register cd_reporter; do

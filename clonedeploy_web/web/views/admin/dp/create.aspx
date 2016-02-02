@@ -59,23 +59,41 @@
     <br class="clear"/>
     
      <div class="size-4 column">
-        Username:
+        Read/Write Username:
     </div>
     <div class="size-5 column">
-        <asp:TextBox ID="txtUsername" runat="server" CssClass="textbox"/>
+        <asp:TextBox ID="txtRwUsername" runat="server" CssClass="textbox"/>
     </div>
 
     <br class="clear"/>
     
      <div class="size-4 column">
-        Password:
+        Read/Write Password:
     </div>
     <div class="size-5 column">
-        <asp:TextBox ID="txtPassword" runat="server" CssClass="textbox" TextMode="Password"/>
+        <asp:TextBox ID="txtRwPassword" runat="server" CssClass="textbox" TextMode="Password"/>
     </div>
 
     <br class="clear"/>
     
+     <div class="size-4 column">
+        Read Only Username:
+    </div>
+    <div class="size-5 column">
+        <asp:TextBox ID="txtRoUsername" runat="server" CssClass="textbox"/>
+    </div>
+
+    <br class="clear"/>
+    
+     <div class="size-4 column">
+        Read Only Password:
+    </div>
+    <div class="size-5 column">
+        <asp:TextBox ID="txtRoPassword" runat="server" CssClass="textbox" TextMode="Password"/>
+    </div>
+
+
+    <br class="clear"/>
      <div class="size-4 column">
         Primary Distribution Point:
     </div>

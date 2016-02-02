@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Web.Security;
-using DAL;
 using Helpers;
 using Models;
 
@@ -56,6 +53,14 @@ namespace BLL
         {
             var user = GetUser(userId);
             return user.Membership == "Administrator";
+        }
+
+        public static Models.CloneDeployUser GetUserByToken(string token)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.UserRepository.GetFirstOrDefault(x => x.Token == token);
+            }
         }
 
         public static void SendLockOutEmail(int userId)

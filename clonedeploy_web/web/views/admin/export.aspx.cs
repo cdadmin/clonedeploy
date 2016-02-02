@@ -24,7 +24,7 @@ namespace views.admin
         protected void btnExportSql_Click(object sender, EventArgs e)
         {
             string constring = ConfigurationManager.ConnectionStrings["clonedeploy"].ConnectionString;
-            string exportPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
+            string exportPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
                          Path.DirectorySeparatorChar + "exports" + Path.DirectorySeparatorChar;
 
             using (MySqlConnection conn = new MySqlConnection(constring))
@@ -49,7 +49,7 @@ namespace views.admin
         
         protected void btnExportCsv_Click(object sender, EventArgs e)
         {
-            string exportPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
+            string exportPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
                          Path.DirectorySeparatorChar + "exports" + Path.DirectorySeparatorChar;
 
            BLL.Computer.ExportCsv(exportPath + "computers.csv");

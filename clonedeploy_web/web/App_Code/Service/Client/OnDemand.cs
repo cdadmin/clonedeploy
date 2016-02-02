@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using BLL;
-using Helpers;
-using Models;
 using Newtonsoft.Json;
 
 namespace Service.Client
@@ -38,12 +34,23 @@ namespace Service.Client
             return JsonConvert.SerializeObject(imageProfileList);
         }
 
+        public string MulicastSessionList()
+        {
+            var multicastList = new Services.Client.MulticastList(){ Multicasts = new List<string>() };
+
+            foreach (var multicast in BLL.ActiveMulticastSession.GetOnDemandList())
+            {
+                multicastList.Multicasts.Add(multicast.Id + " " + multicast.Name);
+            }
+
+            return JsonConvert.SerializeObject(multicastList);
+        }
+
         public string AddImage(string imageName)
         {
             var image = new Models.Image()
             {
                 Name = imageName
-
             };
             var result = BLL.Image.AddImage(image);
             if (result.IsValid)
@@ -52,97 +59,7 @@ namespace Service.Client
             return JsonConvert.SerializeObject(result);
         }
 
-        /*
-        public string GetCustomMulticastInfo(string mac, string mcTaskName)
-        {
-            Models.ActiveMulticastSession mcTask;
-            var computer = new BLL.Computer().GetComputerFromMac(mac.ToLower());
-  
-            using (var db = new DB())
-            {
-                mcTask = db.ActiveMcTasks.FirstOrDefault(t => t.Name == mcTaskName);
-            }
-
-            return "portBase=" + mcTask.Port + " imgName=" + mcTask.Image + " computerName=" + computer.Name;
-        }
-
-        public string GetCustomMulticastSessions()
-        {
-            string result = null;
-            var listSessions = new List<string>();
-            try
-            {
-                using (var db = new DB())
-                {
-                    var mcTasks = db.ActiveMcTasks;
-                    foreach (var mcTask in mcTasks)
-                    {
-                        int n;
-                        if(int.TryParse(mcTask.Name, out n))
-                            listSessions.Add(mcTask.Name);
-                    }
-                }
-               
-
-                if (listSessions.Count == 0)
-                    result = "There Are No Active Sessions";
-                else
-                {
-                    foreach (var session in listSessions)
-                        result += session + " ";
-                }
-            }
-            catch (Exception ex)
-            {
-                result = "Could Not Read Active Multicasts.  Check The Exception Log For More Info";
-                Logger.Log(ex.ToString());
-            }
-            return result;
-        }
-
-        public string GetCustomUnicastInfo(string direction, string mac, string imageId)
-        {
-            var image = new BLL.Image().GetImage(Convert.ToInt32(imageId));
-
-
-            var computer = new BLL.Computer().GetComputerFromMac(mac.ToLower());
-
-            if (direction == "push")
-            {
-                if (!new BLL.Image().Check_Checksum(image))
-                {
-                    return "Client Error: This Image Has Not Been Confirmed And Cannot Be Deployed.";
-                }
-            }
-
-            string storage;
-            var serverIp = Settings.ServerIp;
-            var xferMode = Settings.ImageTransferMode;
-            var compAlg = Settings.CompressionAlgorithm;
-            var compLevel = Settings.CompressionLevel;
-            string result;
-            if (xferMode == "smb" || xferMode == "smb+http")
-                storage = Settings.SmbPath;
-            else
-            {
-                storage = direction == "pull" ? Settings.NfsUploadPath : Settings.NfsDeployPath;
-            }
-
-            //FIX ME
-            result = "imgName=" + image.Name + " computerName=" + computer.Name +
-                     //" computerScripts=" + "\"" + computer.Scripts + "\" " + computer.Args + " storage=" +
-                     storage + " serverIP=" + serverIp + " xferMode=" + xferMode + " compAlg=" + compAlg +
-                     " compLevel=-" + compLevel + " imageProtected=" + image.Protected;
-
-            if (direction == "pull" && Settings.ImageTransferMode == "udp+http")
-            {
-                var portBase = new BLL.Port().GetNextPort();
-                result = result + " portBase=" + portBase;
-            }
-
-            return result;
-        }
-        */
+       
       
     }
 }

@@ -13,7 +13,7 @@ public partial class views_admin_security : Admin
 
         txtADLogin.Text = Settings.AdLoginDomain;
         ddlOnd.SelectedValue = Settings.OnDemand;
-        txtServerKey.Text = Settings.ServerKey;
+        txtToken.Text = Settings.UniversalToken;
         ddlSSL.SelectedValue = Settings.ForceSsL;
         chkImageApproval.Checked = Convert.ToBoolean(Settings.RequireImageApproval);
         ddlWebTasksLogin.Text = Settings.WebTaskRequiresLogin;
@@ -21,14 +21,18 @@ public partial class views_admin_security : Admin
         ddlDebugLogin.Text = Settings.DebugRequiresLogin;
         ddlRegisterLogin.Text = Settings.RegisterRequiresLogin;
 
+        if (ddlDebugLogin.Text == "No" || ddlOndLogin.Text == "No" || ddlRegisterLogin.Text == "No" ||
+            ddlWebTasksLogin.Text == "No")
+            universal.Visible = true;
+
         //These require pxe boot menu or client iso to be recreated 
-        ViewState["serverKey"] = txtServerKey.Text;
+        ViewState["serverKey"] = txtToken.Text;
         ViewState["forceSSL"] = ddlSSL.Text;
     }
 
     protected void btnGenerate_Click(object sender, EventArgs e)
     {
-        txtServerKey.Text = Utility.GenerateKey();
+        txtToken.Text = Utility.GenerateKey();
     }
 
     protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
@@ -49,7 +53,7 @@ public partial class views_admin_security : Admin
                 Id = BLL.Setting.GetSetting("Require Image Approval").Id
             },
             new Setting {Name = "On Demand", Value = ddlOnd.Text, Id = BLL.Setting.GetSetting("On Demand").Id},
-            new Setting {Name = "Server Key", Value = txtServerKey.Text, Id = BLL.Setting.GetSetting("Server Key").Id},
+            new Setting {Name = "Universal Token", Value = txtToken.Text, Id = BLL.Setting.GetSetting("Universal Token").Id},
             new Setting {Name = "Force SSL", Value = ddlSSL.Text, Id = BLL.Setting.GetSetting("Force SSL").Id},
             new Setting
             {
@@ -60,29 +64,7 @@ public partial class views_admin_security : Admin
         };
 
 
-        if (ddlWebTasksLogin.Text == "Yes")
-        {
-            listSettings.Add(new Setting
-            {
-                Name = "On Demand Requires Login",
-                Value = "Yes",
-                Id = BLL.Setting.GetSetting("On Demand Requires Login").Id
-            });
-            listSettings.Add(new Setting
-            {
-                Name = "Debug Requires Login",
-                Value = "Yes",
-                Id = BLL.Setting.GetSetting("Debug Requires Login").Id
-            });
-            listSettings.Add(new Setting
-            {
-                Name = "Register Requires Login",
-                Value = "Yes",
-                Id = BLL.Setting.GetSetting("Register Requires Login").Id
-            });
-        }
-        else
-        {
+       
             listSettings.Add(new Setting
             {
                 Name = "On Demand Requires Login",
@@ -101,7 +83,7 @@ public partial class views_admin_security : Admin
                 Value = ddlRegisterLogin.Text,
                 Id = BLL.Setting.GetSetting("Register Requires Login").Id
             });
-        }
+        
 
 
         var newBootMenu = false;
@@ -109,7 +91,7 @@ public partial class views_admin_security : Admin
         if (BLL.Setting.UpdateSetting(listSettings))
         {
             EndUserMessage = "Successfully Updated Settings";
-            if ((string) ViewState["serverKey"] != txtServerKey.Text)
+            if ((string) ViewState["serverKey"] != txtToken.Text)
             {
                 newBootMenu = true;
                 newClientIso = true;
@@ -163,6 +145,8 @@ public partial class views_admin_security : Admin
         Session.Remove("Message");
     }
 
+
+
     protected void OkButton_Click(object sender, EventArgs e)
     {
         Response.Redirect("~/views/admin/bootmenu/defaultmenu.aspx?level=2");
@@ -177,5 +161,23 @@ public partial class views_admin_security : Admin
         }
 
         return true;
+    }
+
+    protected void LoginsChanged(object sender, EventArgs e)
+    {
+        if (ddlDebugLogin.Text == "No" || ddlOndLogin.Text == "No" || ddlRegisterLogin.Text == "No" ||
+            ddlWebTasksLogin.Text == "No")
+        {
+            universal.Visible = true;
+            lblDiscouraged.Text =
+                "This Is Highly Discouraged Unless You Are Operating In An Isolated Network.  The Universal Token Is Stored In Plain Text In All PXE Boot Files";
+            Page.ClientScript.RegisterStartupScript(GetType(), "modalscript",
+               "$(function() {  var menuTop = document.getElementById('discouraged'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
+               true);
+        }
+        else
+        {
+            universal.Visible = false;
+        }
     }
 }

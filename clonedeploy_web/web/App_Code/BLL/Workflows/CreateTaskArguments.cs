@@ -180,13 +180,17 @@ namespace BLL.Workflows
                 if (Convert.ToBoolean(_imageProfile.SkipExpandVolumes)) AppendString("skip_expand_volumes=true");
                 if (Convert.ToBoolean(_imageProfile.FixBcd)) AppendString("fix_bcd=true");
                 if (Convert.ToBoolean(_imageProfile.FixBootloader)) AppendString("fix_bootloader=true");
-                if (Settings.MulticastDecompression == "client") AppendString("decompress_multicast_on_client=true");
                 if (Convert.ToBoolean(_imageProfile.ForceDynamicPartitions))
                     AppendString("force_dynamic_partitions=true");
                 AppendString(SetPartitionMethod());
-                if (!string.IsNullOrEmpty(_imageProfile.CustomSchema)) SetCustomSchemaDeploy();
+                if (!string.IsNullOrEmpty(_imageProfile.CustomSchema))
+                {
+                    AppendString("custom_deploy_schema=true");
+                    SetCustomSchemaDeploy();
+                }
                 if (_direction == "multicast")
                 {
+                    if (Settings.MulticastDecompression == "client") AppendString("decompress_multicast_on_client=true");
                     AppendString("client_receiver_args=" + _imageProfile.ReceiverArguments);
                     AppendString("multicast_port=" + multicastPort);
                 }

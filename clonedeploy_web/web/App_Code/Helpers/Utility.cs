@@ -150,7 +150,7 @@ namespace Helpers
 
         public static string[] GetLogs()
         {
-            var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
+            var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
                           Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar;
 
             var logFiles = Directory.GetFiles(logPath, "*.*");
@@ -163,7 +163,7 @@ namespace Helpers
 
         public static string[] GetScripts(string type)
         {
-            var scriptPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
+            var scriptPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
                              Path.DirectorySeparatorChar + "clientscripts" + Path.DirectorySeparatorChar;
             string[] scriptFiles = null;
             try

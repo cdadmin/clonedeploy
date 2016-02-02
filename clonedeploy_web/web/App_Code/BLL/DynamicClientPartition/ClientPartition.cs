@@ -20,7 +20,7 @@ namespace BLL.DynamicClientPartition
         public ClientPartition(int hdToGet,string newHdSize, Models.ImageProfile imageProfile)
         {
             _hdToGet = hdToGet;
-            _newHdSize = Convert.ToInt64(newHdSize);
+            _newHdSize = (long)(Convert.ToInt64(newHdSize) * .99);
             _imageProfile = imageProfile;
             PrimaryAndExtendedPartitions = new List<Models.ClientPartition>();
             LogicalPartitions = new List<Models.ClientPartition>();
@@ -55,7 +55,6 @@ namespace BLL.DynamicClientPartition
         {
             var activeCounter = _hdToGet;
             HdNumberToGet = _hdToGet;
-
             //Look for first active hd
             if (!_imageSchema.HardDrives[HdNumberToGet].Active)
             {

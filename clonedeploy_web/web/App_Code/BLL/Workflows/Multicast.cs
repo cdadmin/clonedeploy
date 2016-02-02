@@ -19,7 +19,6 @@ namespace BLL.Workflows
         private readonly Models.Group _group;
         private Models.ImageProfile _imageProfile;
         private readonly int _userId;
-
         //Constructor For Starting Multicast For Group
         public Multicast(Models.Group group,int userId)
         {
@@ -40,6 +39,7 @@ namespace BLL.Workflows
             _clientCount = clientCount;
             _group = new Models.Group{ImageProfileId = _imageProfile.Id};
             _userId = userId;
+            _multicastSession.ImageProfileId = imageProfile.Id;
         }
 
         public string Create()
@@ -312,7 +312,7 @@ namespace BLL.Workflows
                     }
                     else
                     {
-                        var appPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
+                        var appPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
                                       Path.DirectorySeparatorChar + "apps" + Path.DirectorySeparatorChar;
 
                         string prefix = null;
@@ -377,7 +377,7 @@ namespace BLL.Workflows
             if (processArguments == null) return false;
             var senderInfo = new ProcessStartInfo {FileName = shell, Arguments = processArguments};
 
-            var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "data" +
+            var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
                           Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar + "multicast.log";
 
             var logText = (Environment.NewLine + DateTime.Now.ToString("MM-dd-yy hh:mm") +
