@@ -287,6 +287,12 @@ namespace Service.Client
         {
             HttpContext.Current.Response.Write(new Global().MulticastCheckout(portBase));   
         }
+
+        [WebMethod]
+        public void GetCustomPartitionScript(string profileId)
+        {
+            HttpContext.Current.Response.Write(new Global().GetCustomPartitionScript(Convert.ToInt32(profileId)));
+        }
         /*
       
 

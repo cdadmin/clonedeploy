@@ -239,11 +239,13 @@ public partial class views_images_profiles_deploy : Images
     {
         if (chkModifySchema.Checked)
         {
+            chkDownForceDynamic.Checked = true;
             imageSchema.Visible = true;
             PopulateHardDrives();
         }
         else
         {
+            chkDownForceDynamic.Checked = false;
             imageSchema.Visible = false;
         }
     }

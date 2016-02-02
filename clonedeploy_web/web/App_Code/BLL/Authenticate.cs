@@ -39,7 +39,6 @@ namespace Security
 
         public string IpxeLogin(string username, string password, string kernel, string bootImage, string task)
         {
-            //fix me
             var newLineChar = "\n";
             var wdsKey = Settings.WebTaskRequiresLogin == "No" ? Settings.ServerKey : "";
             var globalComputerArgs = Settings.GlobalComputerArgs;

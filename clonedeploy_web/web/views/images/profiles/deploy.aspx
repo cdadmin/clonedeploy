@@ -11,7 +11,7 @@
     <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits help" target="_blank"></a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
-    <asp:LinkButton ID="btnUpdateDeploy" runat="server" OnClick="btnUpdateDeploy_OnClick" Text="Update Deploy Options" CssClass="submits actions green"/>
+    <asp:LinkButton ID="btnUpdateDeploy" runat="server" OnClick="btnUpdateDeploy_OnClick" Text="Update Deploy Options" CssClass="submits actions green" OnClientClick="update_click()"/>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">

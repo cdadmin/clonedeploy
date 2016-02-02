@@ -126,7 +126,7 @@ function process_partitions()
 	
 	#Only restore extended partition if the hd is the same size as the original
 	if [ "$(parse_json "$current_partition" .Type)" = "extended" ]; then
-	  if [ "$(parse_json "$hd_schema" .IsValid)" != "original" ] || [ "$force_dynamic_partitions" != "true" ]; then
+	  if [ "$(parse_json "$hd_schema" .IsValid)" != "original" ] || [ "$force_dynamic_partitions" = "true" ]; then
 	    continue
       fi
 	fi
@@ -374,8 +374,14 @@ function create_partition_layout()
         partition_prefix=""
       fi
 	done
-	
-  if [ "$(parse_json "$hd_schema" .IsValid)" = "true" ] || [ "$force_dynamic_partitions" = "true" ] || [ "$partition_method" = "script" ] || [ "$partition_method" = "layout" ]; then
+  
+  if [ "$partition_method" = "script" ]; then # create partitions from image profile script
+     log " ** Creating Partition Table On $hard_drive From Custom Script ** " "display"
+    $curlAuth --data "profileId=$profile_id" "${web}GetCustomPartitionScript" $curlEnd | dos2unix > /tmp/newPartLayout
+	cat /tmp/newPartLayout >> $CLIENT_LOG
+    bash /tmp/newPartLayout
+    partprobe &>/dev/null
+  elif [ "$(parse_json "$hd_schema" .IsValid)" = "true" ] || [ "$force_dynamic_partitions" = "true" ]; then # create partitions dynamically from image profile settings
     log " ** Creating Partition Table On $hard_drive ** " "display"
     $curlAuth --data "imageProfileId=$profile_id&hdToGet=$image_hd_to_use&newHDSize=$drive_size_bytes&clientHD=$hard_drive&taskType=deploy&partitionPrefix=$partition_prefix" "${web}GetPartLayout" $curlEnd | dos2unix > /tmp/newPartLayout
 	if [ "$(cat /tmp/newPartLayout)" = "failed" ]; then
@@ -402,7 +408,7 @@ function create_partition_layout()
           fi
         fi
       done
-    else
+    else #partitiontype is mbr
       delete_all_partitions $hard_drive
 	  log " ** Partition Creation Script ** "
       cat /tmp/newPartLayout >> $CLIENT_LOG
@@ -413,7 +419,7 @@ function create_partition_layout()
         error "Could Not Create Partition Layout"
       fi
     fi
-  fi
+  fi #if neither conditions matched above, partitions were created when the mbr /gpt was restored.
 	
   log " ** New Partition Table Is ** "
   if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then

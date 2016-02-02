@@ -463,7 +463,11 @@ namespace Service.Client
 
             return result;
         }
-        
+
+        public string GetCustomPartitionScript(int profileId)
+        {
+            return BLL.ImageProfile.ReadProfile(profileId).CustomPartitionScript;
+        }
 
        
     }
