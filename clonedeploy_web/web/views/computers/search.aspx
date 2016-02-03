@@ -28,7 +28,7 @@
     </div>
     <br class="clear"/>
     
-    <div class="size-7 column">
+    <div class="size-10 column">
     <asp:DropDownList runat="server" ID="ddlLimit" AutoPostBack="True" OnSelectedIndexChanged="ddlLimit_OnSelectedIndexChanged" CssClass="ddlist">
         <asp:ListItem>25</asp:ListItem>
         <asp:ListItem>100</asp:ListItem>

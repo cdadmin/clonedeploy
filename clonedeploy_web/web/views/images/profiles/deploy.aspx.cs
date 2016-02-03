@@ -318,4 +318,17 @@ public partial class views_images_profiles_deploy : Images
         return JsonConvert.SerializeObject(schema, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
        
     }
+
+    protected void lnkExport_OnClick(object sender, EventArgs e)
+    {
+        if (string.IsNullOrEmpty(ImageProfile.CustomSchema))
+            EndUserMessage = "You Must Update The Schema First";
+        else
+        {
+            Response.ContentType = "text/plain";
+            Response.AppendHeader("Content-Disposition", "attachment; filename=schema.txt");
+            Response.Write(ImageProfile.CustomSchema);
+            Response.End();
+        }
+    }
 }

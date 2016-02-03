@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web.UI.WebControls;
 using BasePages;
 using Helpers;
 using Models;
@@ -165,15 +166,19 @@ public partial class views_admin_security : Admin
 
     protected void LoginsChanged(object sender, EventArgs e)
     {
+        var ddl = sender as DropDownList;
         if (ddlDebugLogin.Text == "No" || ddlOndLogin.Text == "No" || ddlRegisterLogin.Text == "No" ||
             ddlWebTasksLogin.Text == "No")
         {
             universal.Visible = true;
-            lblDiscouraged.Text =
-                "This Is Highly Discouraged Unless You Are Operating In An Isolated Network.  The Universal Token Is Stored In Plain Text In All PXE Boot Files";
-            Page.ClientScript.RegisterStartupScript(GetType(), "modalscript",
-               "$(function() {  var menuTop = document.getElementById('discouraged'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
-               true);
+            if (ddl != null && ddl.Text == "No")
+            {
+                lblDiscouraged.Text =
+                    "This Is Highly Discouraged Unless You Are Operating In An Isolated Network.  The Universal Token Is Stored In Plain Text In All PXE Boot Files";
+                Page.ClientScript.RegisterStartupScript(GetType(), "modalscript",
+                    "$(function() {  var menuTop = document.getElementById('discouraged'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
+                    true);
+            }
         }
         else
         {

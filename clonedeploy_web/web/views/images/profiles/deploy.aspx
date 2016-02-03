@@ -74,7 +74,10 @@
 </div>
 <br class="clear"/>
 
-<div id="imageSchema" runat="server">
+<div id="imageSchema" runat="server" visible="false">
+    <div class="size-4 column">
+        <asp:LinkButton ID="lnkExport" runat="server" OnClick="lnkExport_OnClick" Text="Export Schema" CssClass="submits"/>
+    </div>
     <asp:GridView ID="gvHDs" runat="server" AutoGenerateColumns="false" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
         <Columns>
 
