@@ -14,8 +14,7 @@ namespace Services.Client
     {
         public string Count { get; set; }
         public string FirstProfileId { get; set; }
-        public List<string> ImageProfiles { get; set; } 
-        
+        public List<string> ImageProfiles { get; set; }         
     }
 
     public class MulticastList

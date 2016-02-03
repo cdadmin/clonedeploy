@@ -40,7 +40,7 @@ namespace Service.Client
 
             foreach (var multicast in BLL.ActiveMulticastSession.GetOnDemandList())
             {
-                multicastList.Multicasts.Add(multicast.Id + " " + multicast.Name);
+                multicastList.Multicasts.Add(multicast.Port + " " + multicast.Name);
             }
 
             return JsonConvert.SerializeObject(multicastList);

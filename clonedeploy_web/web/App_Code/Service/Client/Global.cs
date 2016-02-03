@@ -94,36 +94,38 @@ namespace Service.Client
             }
         }
 
-        public string TokenMatchesTask(string task, string token)
+        public string CheckTaskAuth(string task, string token)
         {
-            if (token != Settings.UniversalToken || string.IsNullOrEmpty(Settings.UniversalToken))
-                return "false";
-            switch (task)
+            //only check ond and debug because web tasks can't even be started if user isn't authorized
+            if (task == "ond" && Settings.OnDemandRequiresLogin == "No")
             {
-                case "ond":
-                    if (Settings.OnDemandRequiresLogin == "No")
-                        return "true";
-                    break;
-                case "debug":
-                    if (Settings.DebugRequiresLogin == "No")
-                        return "true";
-                    break;
-                case "register":
-                    if (Settings.RegisterRequiresLogin == "No")
-                        return "true";
-                    break;
-                case "push":
-                    if (Settings.WebTaskRequiresLogin == "No")
-                        return "true";
-                    break;
-                case "pull":
-                    if (Settings.WebTaskRequiresLogin == "No")
-                        return "true";
-                    break;
-
-                default:
-                    return "false";
+                if (token == Settings.UniversalToken && !string.IsNullOrEmpty(Settings.UniversalToken))
+                    return "true";
             }
+            else if (task == "ond" && Settings.OnDemandRequiresLogin == "Yes")
+            {
+                var user = BLL.User.GetUserByToken(token);
+                if (user != null)
+                {
+                    if (new BLL.Authorize(user, Authorizations.AllowOnd).IsAuthorized())
+                        return "true";
+                }
+            }
+            else if (task == "debug" && Settings.DebugRequiresLogin == "No")
+            {
+                if (token == Settings.UniversalToken && !string.IsNullOrEmpty(Settings.UniversalToken))
+                    return "true";
+            }
+            else if (task == "debug" && Settings.OnDemandRequiresLogin == "Yes")
+            {
+                var user = BLL.User.GetUserByToken(token);
+                if (user != null)
+                {
+                    if (new BLL.Authorize(user, Authorizations.AllowDebug).IsAuthorized())
+                        return "true";
+                }
+            }
+           
             return "false";
         }
 
@@ -209,10 +211,10 @@ namespace Service.Client
             }
         }
 
-        public void ErrorEmail(int computerId)
+        public void ErrorEmail(int computerId, string error)
         {
             var computerTask = BLL.ActiveImagingTask.GetTask(computerId);
-            BLL.ActiveImagingTask.SendTaskErrorEmail(computerTask);
+            BLL.ActiveImagingTask.SendTaskErrorEmail(computerTask,error);
         }
 
         public void CheckOut(int computerId)
@@ -225,29 +227,16 @@ namespace Service.Client
 
         public void UploadLog(int computerId, string logContents, string subType, string computerMac)
         {
-            if (computerId == -1)
+            var computerLog = new Models.ComputerLog
             {
-                return;
-            }
-            else
-            {
-                var computerLog = new Models.ComputerLog
-                {
-                    ComputerId = computerId,
-                    Contents = logContents,
-                    Type = "image",
-                    SubType = subType
-                };
-                BLL.ComputerLog.AddComputerLog(computerLog);
-            }
-        }
+                ComputerId = computerId,
+                Contents = logContents,
+                Type = "image",
+                SubType = subType,
+                Mac = computerMac
+            };
+            BLL.ComputerLog.AddComputerLog(computerLog);
 
-        public string OnDemandTaskArguments(string mac, int profileId, string taskType)
-        {
-            var computer = BLL.Computer.GetComputerFromMac(mac);
-            var imageProfile = BLL.ImageProfile.ReadProfile(profileId);
-            return new BLL.Workflows.CreateTaskArguments(computer, imageProfile, taskType).Run();
-            
         }
 
         public string CheckQueue(int computerId)
@@ -528,14 +517,16 @@ namespace Service.Client
             if (task == "push" || task == "pull")
             {
                 imageProfile = BLL.ImageProfile.ReadProfile(objectId);
+                return new BLL.Workflows.CreateTaskArguments(computer, imageProfile, task).Run();
             }
             else //Multicast
             {
-                var multicast = BLL.ActiveMulticastSession.Get(objectId);
+                var multicast = BLL.ActiveMulticastSession.GetFromPort(objectId);
                 imageProfile = BLL.ImageProfile.ReadProfile(multicast.ImageProfileId);
+                return new BLL.Workflows.CreateTaskArguments(computer, imageProfile, task).Run(objectId.ToString());
             }
 
-            return new BLL.Workflows.CreateTaskArguments(computer, imageProfile, task).Run();
+            
         }
 
        

@@ -59,7 +59,7 @@ namespace BLL
             }
         }
 
-        public static void SendTaskErrorEmail(Models.ActiveImagingTask task)
+        public static void SendTaskErrorEmail(Models.ActiveImagingTask task, string error)
         {
             //Mail not enabled
             if (Settings.SmtpEnabled == "0") return;
@@ -71,7 +71,7 @@ namespace BLL
                     var mail = new Helpers.Mail
                     {
                         MailTo = user.Email,
-                        Body = task.Computer.Name + " Image Task Has Failed.",
+                        Body = task.Computer.Name + " Image Task Has Failed. " + error,
                         Subject = "Task Failed"
                     };
                     mail.Send();

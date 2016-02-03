@@ -23,21 +23,22 @@ namespace Service.Client
     {
         private bool Authorize()
         {
-            var userToken = Utility.Decode(HttpContext.Current.Request.Headers["Authorization"]);
+            var userToken = Utility.Decode(HttpContext.Current.Request.Headers["Authorization"],"Authorization");
             if (new Service.Client.Global().Authorize(userToken))
                 return true;
             else
             {
                 HttpContext.Current.Response.StatusCode = 403;
+                Logger.Log("Incorrect Token Was Provided");
                 return false;
             }
         }
 
         [WebMethod]
-        public void TokenMatchesTask(string task)
+        public void CheckTaskAuth(string task)
         {
-            var userToken = Utility.Decode(HttpContext.Current.Request.Headers["Authorization"]);
-            HttpContext.Current.Response.Write(new Service.Client.Global().TokenMatchesTask(task,userToken));
+            var userToken = Utility.Decode(HttpContext.Current.Request.Headers["Authorization"], "Authorization");
+            HttpContext.Current.Response.Write(new Service.Client.Global().CheckTaskAuth(task,userToken));
         }
 
         [WebMethod]
@@ -78,10 +79,10 @@ namespace Service.Client
         [WebMethod]
         public void ConsoleLogin()
         {
-            var ip = Utility.Decode(HttpContext.Current.Request.Form["clientIP"]);
-            var username = Utility.Decode(HttpContext.Current.Request.Form["username"]);
-            var password = Utility.Decode(HttpContext.Current.Request.Form["password"]);
-            var task = Utility.Decode(HttpContext.Current.Request.Form["task"]);
+            var ip = Utility.Decode(HttpContext.Current.Request.Form["clientIP"], "clientIP");
+            var username = Utility.Decode(HttpContext.Current.Request.Form["username"],"username");
+            var password = Utility.Decode(HttpContext.Current.Request.Form["password"],"password");
+            var task = Utility.Decode(HttpContext.Current.Request.Form["task"],"task");
 
             HttpContext.Current.Response.Write(new Authenticate().ConsoleLogin(username, password, task, ip));
         }
@@ -163,9 +164,9 @@ namespace Service.Client
         }
 
         [WebMethod]
-        public void ErrorEmail(string computerId)
+        public void ErrorEmail(string computerId, string error)
         {
-            new Service.Client.Global().ErrorEmail(Convert.ToInt32(computerId));
+            new Service.Client.Global().ErrorEmail(Convert.ToInt32(computerId),error);
         }
 
 
@@ -178,10 +179,10 @@ namespace Service.Client
         [WebMethod]
         public void UploadLog()
         {
-            var computerId = Utility.Decode(HttpContext.Current.Request.Form["computerId"]);
-            var logContents = Utility.Decode(HttpContext.Current.Request.Form["logContents"]);
-            var subType = Utility.Decode(HttpContext.Current.Request.Form["subType"]);
-            var computerMac = Utility.Decode(HttpContext.Current.Request.Form["mac"]);
+            var computerId = Utility.Decode(HttpContext.Current.Request.Form["computerId"],"computerId");
+            var logContents = Utility.Decode(HttpContext.Current.Request.Form["logContents"],"logContents");
+            var subType = Utility.Decode(HttpContext.Current.Request.Form["subType"],"subType");
+            var computerMac = Utility.Decode(HttpContext.Current.Request.Form["mac"],"mac");
             new Global().UploadLog(Convert.ToInt32(computerId), logContents, subType, computerMac);
         }
 
@@ -195,12 +196,6 @@ namespace Service.Client
         public void UpdateProgressPartition(string computerId, string partition)
         {
             new Service.Client.Global().UpdateProgressPartition(Convert.ToInt32(computerId), partition);
-        }
-
-        [WebMethod]
-        public void OnDemandTaskArgs(string mac, string profileId, string taskType)
-        {
-            HttpContext.Current.Response.Write(new Service.Client.Global().OnDemandTaskArguments(mac, Convert.ToInt32(profileId), taskType));
         }
 
         [WebMethod]
@@ -230,8 +225,8 @@ namespace Service.Client
         [WebMethod]
         public void UpdateBcd()
         {
-            var bcd = Utility.Decode(HttpContext.Current.Request.Form["bcd"]);
-            var offsetBytes = Utility.Decode(HttpContext.Current.Request.Form["offsetBytes"]);
+            var bcd = Utility.Decode(HttpContext.Current.Request.Form["bcd"],"bcd");
+            var offsetBytes = Utility.Decode(HttpContext.Current.Request.Form["offsetBytes"],"offsetBytes");
             HttpContext.Current.Response.Write(new BLL.Bcd().UpdateEntry(bcd, Convert.ToInt64(offsetBytes)));
         }
 

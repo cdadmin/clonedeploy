@@ -68,10 +68,6 @@ function checkout()
 	
 	cat /tmp/clientlog.log | grep -v "percent completed" > /tmp/cleanedlog.log
 	
-	if [ -z "$computer_id"  ]; then
-	  computer_id="-1"
-	fi
-	
 	if [ "$multicast" = "true" ]; then
 	mccheckoutResult=$($curlAuth --data "portBase=$multicast_port" "${web}MulticastCheckOut" $curlEnd)
 		log " ...... $mccheckoutResult"
@@ -80,7 +76,12 @@ function checkout()
 	if [ "$is_ondemand" != "true" ]; then
 	  checkout_status=$($curlAuth --data "computerId=$computer_id" "${web}CheckOut" $curlEnd)
 	  log " ...... $checkout_status" "display"
-    fi
+	else
+	  if [ -z "$computer_id"  ]; then
+	  computer_id="-1"
+	  fi
+	fi
+	
 	echo
 		
 	$curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/cleanedlog.log | base64)"  -F subType="$(echo -n $task | base64)"  -F mac="$(echo -n $mac | base64)" "${web}UploadLog" $curlEnd
@@ -114,7 +115,7 @@ function error()
 	if [ -z "$computer_id"  ]; then
 	  computer_id="-1"
 	else
-	  $curlAuth --data "computerId=$computer_id" "${web}ErrorEmail" $curlEnd
+	  $curlAuth --data "computerId=$computer_id&error=$1" "${web}ErrorEmail" $curlEnd
 	fi
 	
 	$curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/cleanedlog.log | base64)"  -F subType="$(echo -n $task | base64)"  -F mac="$(echo -n $mac | base64)" "${web}UploadLog" $curlEnd	
@@ -149,6 +150,7 @@ function expand_volume()
 		
 		if [ ! "$?" = "0" ]; then
 			log "Warning, EXT File System Did Not Resize Properly.  Check Your Disk Size After Booting" "display"
+			$curlAuth --data "computerId=$computer_id&error=Ext Volume Did Not Expand Properly" "${web}ErrorEmail" $curlEnd
 		else
 			log " ...... Success" "display"
 		fi
@@ -178,6 +180,7 @@ CONFIRM
 
 		if [ ! "$?" = "0" ]; then
 			log "Warning, NTFS File System Did Not Resize Properly.  Check Your Disk Size After Booting To Windows" "display"
+			$curlAuth --data "computerId=$computer_id&error=Ntfs Volume Did Not Expand Properly" "${web}ErrorEmail" $curlEnd
 		else
 			log " ...... Success" "display"
 		fi
@@ -269,6 +272,7 @@ function process_scripts()
   for script_id in $scripts; do
     $curlAuth --data "scriptId=$script_id" "${web}GetCustomScript" $curlEnd > /tmp/custom_script
 	log " ** Running Custom Script With Id $script_id ** " "display"
+	sleep 5
 	#source script in sub shell so the values of the core script do not get overwritten
 	( . /tmp/custom_script )
   done
@@ -277,7 +281,8 @@ function process_scripts()
 function process_sysprep_tags()
 {
   local partition="$1"
-  log " ** Processing Sysprep Tags On $partiton ** " "display"
+  log " ** Processing Sysprep Tags On $partition ** " "display"
+  sleep 5
   mkdir /mnt/ntfs &> /dev/null	
   ntfs-3g -o force,rw,remove_hiberfile $partition /mnt/ntfs &>/dev/null
   if [ "$?" != "0" ]; then
@@ -302,6 +307,8 @@ function process_file_copy()
   local current_object="$1"
   local object_type="$2"
   local array_index=-1
+   log " ** Processing File Copy ** " "display"
+   sleep 5
   while [  "$(( $array_index + 1 ))" -lt "$(parse_json "$file_copy_schema" .Count)" ]; do
     array_index=$(( $array_index + 1))
     clear_and_move_down
@@ -327,12 +334,12 @@ function process_file_copy()
 		fi
 		  if [ -d "/storage/resources/$(parse_json "$current_file" .SourcePath)" ]; then
 		    if [ "$(parse_json "$current_file" .FolderCopyType)" = "Folder" ]; then
-		      cp -R "/storage/resources/$(parse_json "$current_file" .SourcePath)" "/mnt/fs/$(parse_json "$current_file" .DestinationFolder)/"
+		      cp -R "/storage/resources/$(parse_json "$current_file" .SourcePath)" "/mnt/fs/$(parse_json "$current_file" .DestinationFolder)/" &>>$CLIENT_LOG
 			else #FolderCopyType = contents
-			  cp -R "/storage/resources/$(parse_json "$current_file" .SourcePath)/." "/mnt/fs/$(parse_json "$current_file" .DestinationFolder)/"
+			  cp -R "/storage/resources/$(parse_json "$current_file" .SourcePath)/." "/mnt/fs/$(parse_json "$current_file" .DestinationFolder)/" &>>$CLIENT_LOG
 			fi		
 		  else
-            cp "/storage/resources/$(parse_json "$current_file" .SourcePath)" "/mnt/fs/$(parse_json "$current_file" .DestinationFolder)/"
+            cp "/storage/resources/$(parse_json "$current_file" .SourcePath)" "/mnt/fs/$(parse_json "$current_file" .DestinationFolder)/" &>>$CLIENT_LOG
 		  fi
 	  fi
 	else # object_type = lvm
@@ -355,12 +362,12 @@ function process_file_copy()
 		fi
 		  if [ -d "/storage/resources/$(parse_json "$current_file" .SourcePath)" ]; then
 		    if [ "$(parse_json "$current_file" .FolderCopyType)" = "Folder" ]; then
-		      cp -R "/storage/resources/$(parse_json "$current_file" .SourcePath)" "/mnt/fs/$(parse_json "$current_file" .DestinationFolder)/"
+		      cp -R "/storage/resources/$(parse_json "$current_file" .SourcePath)" "/mnt/fs/$(parse_json "$current_file" .DestinationFolder)/" &>>$CLIENT_LOG
 			else #FolderCopyType = contents
-			  cp -R "/storage/resources/$(parse_json "$current_file" .SourcePath)/." "/mnt/fs/$(parse_json "$current_file" .DestinationFolder)/"
+			  cp -R "/storage/resources/$(parse_json "$current_file" .SourcePath)/." "/mnt/fs/$(parse_json "$current_file" .DestinationFolder)/" &>>$CLIENT_LOG
 			fi		
 		  else
-            cp "/storage/resources/$(parse_json "$current_file" .SourcePath)" "/mnt/fs/$(parse_json "$current_file" .DestinationFolder)/"
+            cp "/storage/resources/$(parse_json "$current_file" .SourcePath)" "/mnt/fs/$(parse_json "$current_file" .DestinationFolder)/" &>>$CLIENT_LOG
 		  fi
 		fi
 	fi

@@ -101,7 +101,7 @@ function process_lvm()
       fi
     fi
 	
-	if [ "$file_copy" = "true" ]; then
+	if [ "$file_copy" = "True" ]; then
 	  process_file_copy "$current_logical_volume" "$volume_group-$unescaped_lv_name"
 	fi
     clear_and_move_down
@@ -113,7 +113,7 @@ function process_partitions()
   local partition_size_mb
   local array_index=-1
   
-  if [ "$file_copy" = "true" ]; then
+  if [ "$file_copy" = "True" ]; then
     log "file_copy_schema: profileId=$profile_id"
 	 file_copy_schema=$($curlAuth --data "profileId=$profile_id" "${web}GetFileCopySchema" $curlEnd)
   fi
@@ -184,7 +184,7 @@ function process_partitions()
       process_sysprep_tags  ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)
 	fi
 	
-	if [ "$file_copy" = "true" ]; then
+	if [ "$file_copy" = "True" ]; then
 	  process_file_copy "$current_partition" "partition"
 	fi
   done
@@ -640,11 +640,12 @@ function update_bcd()
     log " ...... Could Not Verify Windows Partition Or BCD Partition.  BCD Has Not Been Changed" "display"
     log " ...... windows_partition: $windows_partition bcd_partition: $bcd_partition" 
   fi	
+  echo
 }
 
 function fix_ntfs_boot()
 {
-  local partition=$1
+  local partition="$1"
   log " ** Fixing NTFS Geometry ** " "display"
   partclone.ntfsfixboot -p $partition >> $CLIENT_LOG
   partclone.ntfsfixboot -w $partition >> $CLIENT_LOG
@@ -761,8 +762,6 @@ function main()
   
   log_boot_args
 
- 
-  
   if [ "$is_ondemand" = "true" ]; then
     log " ** Using On Demand Mode ** "
 	for arg in "$ondemand_arguments"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done

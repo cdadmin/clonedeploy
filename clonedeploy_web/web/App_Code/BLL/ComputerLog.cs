@@ -39,11 +39,20 @@ namespace BLL
             }
         }
 
+      
         public static List<Models.ComputerLog> Search(int computerId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 return uow.ComputerLogRepository.Get(x => x.ComputerId == computerId, orderBy:(q => q.OrderByDescending(x => x.LogTime)));
+            }
+        }
+
+        public static List<Models.ComputerLog> SearchOnDemand()
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ComputerLogRepository.Get(x => x.ComputerId == -1, orderBy: (q => q.OrderByDescending(x => x.LogTime)));
             }
         }
 

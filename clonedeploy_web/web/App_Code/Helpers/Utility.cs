@@ -51,7 +51,7 @@ namespace Helpers
             return Convert.ToBase64String(buff);
         }
 
-        public static string Decode(string encoded)
+        public static string Decode(string encoded, string parameter)
         {
             string decoded = null;
             try
@@ -61,7 +61,7 @@ namespace Helpers
             }
             catch (Exception ex)
             {
-                Logger.Log("Decoding Failed. " + ex.Message);
+                Logger.Log(parameter + " Base64 Decoding Failed. " + ex.Message);
             }
 
             return decoded;
@@ -77,7 +77,7 @@ namespace Helpers
             }
             catch (Exception ex)
             {
-                Logger.Log("Base64 Encoding Failed Failed. " + ex.Message);
+                Logger.Log("Base64 Encoding Failed. " + ex.Message);
             }
 
             return encoded;

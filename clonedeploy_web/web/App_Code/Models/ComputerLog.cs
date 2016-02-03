@@ -26,5 +26,8 @@ namespace Models
 
         [Column("log_time", Order = 6)]
         public DateTime? LogTime { get; set; }
+
+        [Column("computer_mac", Order = 7)]
+        public string Mac { get; set; }
     }
 }
