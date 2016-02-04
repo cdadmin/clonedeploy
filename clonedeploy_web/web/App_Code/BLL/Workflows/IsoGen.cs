@@ -41,13 +41,6 @@ namespace BLL.Workflows
 
         public bool Generate()
         {
-            if (!DeletePreviousBuild())
-                return false;
-
-        }
-
-        private bool DeletePreviousBuild()
-        {
             try
             {
                 if (Directory.Exists(_buildPath))
@@ -57,15 +50,24 @@ namespace BLL.Workflows
                 Directory.CreateDirectory(_buildPath + "EFI");
                 Directory.CreateDirectory(_buildPath + "EFI" + Path.DirectorySeparatorChar + "boot");
                 Directory.CreateDirectory(_buildPath + "syslinux");
-
-                return true;
+                File.Copy(Settings.TftpPath + "images" + Path.DirectorySeparatorChar + _bootImage,
+                    _buildPath + "clonedeploy" + Path.DirectorySeparatorChar + _bootImage, true);
+                File.Copy(Settings.TftpPath + "kernels" + Path.DirectorySeparatorChar + _kernel,
+                    _buildPath + "clonedeploy" + Path.DirectorySeparatorChar + _kernel, true);
             }
             catch (Exception ex)
             {
                 Logger.Log(ex.Message);
                 return false;
             }
+
+            CreateSyslinuxMenu();
+            CreateGrubMenu();
+
+            return true;
         }
+
+
 
         private void CreateSyslinuxMenu()
         {
@@ -178,67 +180,65 @@ namespace BLL.Workflows
             grubMenu.Append("terminal_output gfxterm" + NewLineChar);
             grubMenu.Append("fi" + NewLineChar);
            
-            
-menuentry "Download Image" {
-	set gfxpayload=keep
-	linux	/cruciblewds/bzImage64 ramdisk_size=224317 root=/dev/ram0 rw ip=dhcp web=http://192.168.56.1/cruciblewds/service/client.asmx/ WDS_KEY=mykey imgDirection=push consoleblank=0
-	initrd	/cruciblewds/initrd64.gz
-}
-
             grubMenu.Append("" + NewLineChar);
-            grubMenu.Append("menuentry \"Boot To Local Machine\" --unrestricted {" + NewLineChar);
+            grubMenu.Append("menuentry \"Boot To Local Machine\" {" + NewLineChar);
             grubMenu.Append("exit" + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
-
             grubMenu.Append("" + NewLineChar);
 
-            grubMenu.Append("menuentry \"Client Console\" --user {" + NewLineChar);
-            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
-                            NewLineChar);
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
-                            _webPath +
-                            " USER_TOKEN=" + _wdsKey + " task=debug consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
-            grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
+            grubMenu.Append("menuentry \"Download Image\" {" + NewLineChar);       
+	        grubMenu.Append("set gfxpayload=keep" + NewLineChar);
+	        grubMenu.Append("linux	/clonedeploy/" + _kernel + " ramdisk_size=127000 root=/dev/ram0 rw web=" + _webPath +
+                " USER_TOKEN=" + _wdsKey + " task=push consoleblank=0 " + _arguments + NewLineChar);
+	        grubMenu.Append("initrd	/clonedeploy/" + _bootImage + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
-
             grubMenu.Append("" + NewLineChar);
 
-            grubMenu.Append("menuentry \"On Demand Imaging\" --user {" + NewLineChar);
-            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
-                            NewLineChar);
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
-                            _webPath +
-                            " USER_TOKEN=" + _wdsKey + " task=ond consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
-            grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
+            grubMenu.Append("menuentry \"Upload Image\" {" + NewLineChar);
+            grubMenu.Append("set gfxpayload=keep" + NewLineChar);
+            grubMenu.Append("linux	/clonedeploy/" + _kernel + " ramdisk_size=127000 root=/dev/ram0 rw web=" + _webPath +
+                " USER_TOKEN=" + _wdsKey + " task=pull consoleblank=0 " + _arguments + NewLineChar);
+            grubMenu.Append("initrd	/clonedeploy/" + _bootImage + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
-
             grubMenu.Append("" + NewLineChar);
 
-            grubMenu.Append("menuentry \"Add Computer\" --user {" + NewLineChar);
-            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
-                            NewLineChar);
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
-                            _webPath +
-                            " USER_TOKEN=" + _wdsKey + " task=register consoleblank=0 " + _globalComputerArgs + "" +
-                            NewLineChar);
-            grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
+            grubMenu.Append("menuentry \"Client Console\" {" + NewLineChar);
+            grubMenu.Append("set gfxpayload=keep" + NewLineChar);
+            grubMenu.Append("linux	/clonedeploy/" + _kernel + " ramdisk_size=127000 root=/dev/ram0 rw web=" + _webPath +
+                " USER_TOKEN=" + _wdsKey + " task=debug consoleblank=0 " + _arguments + NewLineChar);
+            grubMenu.Append("initrd	/clonedeploy/" + _bootImage + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
-
             grubMenu.Append("" + NewLineChar);
 
-            grubMenu.Append("menuentry \"Diagnostics\" --user {" + NewLineChar);
-            grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
-                            NewLineChar);
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
-                            _webPath +
-                            " USER_TOKEN=" + _wdsKey + " task=diag consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
-            grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
+            grubMenu.Append("menuentry \"Add Computer\" {" + NewLineChar);
+            grubMenu.Append("set gfxpayload=keep" + NewLineChar);
+            grubMenu.Append("linux	/clonedeploy/" + _kernel + " ramdisk_size=127000 root=/dev/ram0 rw web=" + _webPath +
+                " USER_TOKEN=" + _wdsKey + " task=register consoleblank=0 " + _arguments + NewLineChar);
+            grubMenu.Append("initrd	/clonedeploy/" + _bootImage + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
+            grubMenu.Append("" + NewLineChar);
+
+            grubMenu.Append("menuentry \"On Demand\" {" + NewLineChar);
+            grubMenu.Append("set gfxpayload=keep" + NewLineChar);
+            grubMenu.Append("linux	/clonedeploy/" + _kernel + " ramdisk_size=127000 root=/dev/ram0 rw web=" + _webPath +
+                " USER_TOKEN=" + _wdsKey + " task=ond consoleblank=0 " + _arguments + NewLineChar);
+            grubMenu.Append("initrd	/clonedeploy/" + _bootImage + NewLineChar);
+            grubMenu.Append("}" + NewLineChar);
+            grubMenu.Append("" + NewLineChar);
+
+            grubMenu.Append("menuentry \"Diagnostics\" {" + NewLineChar);
+            grubMenu.Append("set gfxpayload=keep" + NewLineChar);
+            grubMenu.Append("linux	/clonedeploy/" + _kernel + " ramdisk_size=127000 root=/dev/ram0 rw web=" + _webPath +
+                " USER_TOKEN=" + _wdsKey + " task=diag consoleblank=0 " + _arguments + NewLineChar);
+            grubMenu.Append("initrd	/clonedeploy/" + _bootImage + NewLineChar);
+            grubMenu.Append("}" + NewLineChar);
+            grubMenu.Append("" + NewLineChar);
 
 
-            var path = Settings.TftpPath + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
+            var outFile = _buildPath + "EFI" + Path.DirectorySeparatorChar + "boot" + Path.DirectorySeparatorChar +
+                          "grub.cfg";
 
-            new FileOps().WritePath(path, grubMenu.ToString());
+            new FileOps().WritePath(outFile, grubMenu.ToString());
         }
     }
 }

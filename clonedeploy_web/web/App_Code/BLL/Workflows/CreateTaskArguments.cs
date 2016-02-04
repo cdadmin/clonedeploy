@@ -173,10 +173,23 @@ namespace BLL.Workflows
             {
                 //Support For on demand 
                 if (_computer != null)
-                    AppendString("dp_id=" + Computer.GetDistributionPoint(_computer).Id);              
-                else           
+                {
+                    AppendString("dp_id=" + Computer.GetDistributionPoint(_computer).Id);
+                    if(!string.IsNullOrEmpty(_computer.CustomAttribute1))
+                        AppendString("cust_attr_1=" + _computer.CustomAttribute1);
+                    if (!string.IsNullOrEmpty(_computer.CustomAttribute2))
+                        AppendString("cust_attr_2=" + _computer.CustomAttribute2);
+                    if (!string.IsNullOrEmpty(_computer.CustomAttribute3))
+                        AppendString("cust_attr_3=" + _computer.CustomAttribute3);
+                    if (!string.IsNullOrEmpty(_computer.CustomAttribute4))
+                        AppendString("cust_attr_4=" + _computer.CustomAttribute4);
+                    if (!string.IsNullOrEmpty(_computer.CustomAttribute5))
+                        AppendString("cust_attr_5=" + _computer.CustomAttribute5);
+                }
+                else
                     AppendString("dp_id=" + DistributionPoint.GetPrimaryDistributionPoint().Id);
-                
+
+                if (Convert.ToBoolean(_imageProfile.ChangeName)) AppendString("change_computer_name=true");
                 if (Convert.ToBoolean(_imageProfile.SkipExpandVolumes)) AppendString("skip_expand_volumes=true");
                 if (Convert.ToBoolean(_imageProfile.FixBcd)) AppendString("fix_bcd=true");
                 if (Convert.ToBoolean(_imageProfile.FixBootloader)) AppendString("fix_bootloader=true");
@@ -194,6 +207,7 @@ namespace BLL.Workflows
                     AppendString("client_receiver_args=" + _imageProfile.ReceiverArguments);
                     AppendString("multicast_port=" + multicastPort);
                 }
+                
             }
 
             return _activeTaskArguments.ToString();

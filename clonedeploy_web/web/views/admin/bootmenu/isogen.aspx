@@ -6,7 +6,7 @@
     <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits help" target="_blank"></a>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
-      <asp:LinkButton ID="btnSaveEditor" runat="server" Text="Generate" OnClick="btnSaveEditor_OnClick" CssClass="submits actions green" />
+      <asp:LinkButton ID="btnGenerate" runat="server" Text="Generate" OnClick="btnGenerate_OnClick" CssClass="submits actions green" />
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="SubContent2" Runat="Server">
     <script type="text/javascript">

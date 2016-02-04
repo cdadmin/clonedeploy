@@ -13,6 +13,7 @@ public partial class views_images_profiles_deploy : Images
     {
         if (IsPostBack) return;
         chkDownNoExpand.Checked = Convert.ToBoolean(ImageProfile.SkipExpandVolumes);
+        chkChangeName.Checked = Convert.ToBoolean(ImageProfile.ChangeName);
         chkAlignBCD.Checked = Convert.ToBoolean(ImageProfile.FixBcd);
         chkRunFixBoot.Checked = Convert.ToBoolean(ImageProfile.FixBootloader);
         ddlPartitionMethod.Text = ImageProfile.PartitionMethod;
@@ -22,6 +23,7 @@ public partial class views_images_profiles_deploy : Images
     protected void btnUpdateDeploy_OnClick(object sender, EventArgs e)
     {
         var imageProfile = ImageProfile;
+        imageProfile.ChangeName = Convert.ToInt16(chkChangeName.Checked);
         imageProfile.SkipExpandVolumes = Convert.ToInt16(chkDownNoExpand.Checked);
         imageProfile.FixBcd = Convert.ToInt16(chkAlignBCD.Checked);
         imageProfile.FixBootloader = Convert.ToInt16(chkRunFixBoot.Checked);

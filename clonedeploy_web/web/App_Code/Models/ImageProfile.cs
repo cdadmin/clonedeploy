@@ -89,6 +89,9 @@ namespace Models
         [Column("web_cancel", Order = 27)]
         public int WebCancel { get; set; }
 
+        [Column("change_name", Order = 28)]
+        public int ChangeName { get; set; }
+
         [NotMapped]
         public virtual Models.Image Image { get; set; }
 

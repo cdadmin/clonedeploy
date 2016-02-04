@@ -34,9 +34,6 @@ namespace CloneDeploy_Proxy_Dhcp.Server
         public String BiosBootFile { get; set; }
         public String Efi32BootFile { get; set; }
         public string Efi64BootFile { get; set; }
-        public string SyslinuxBiosPathPrefix { get; set; }
-        public string SyslinuxEfi32PathPrefix { get; set; }
-        public string SyslinuxEfi64PathPrefix { get; set; }
 
         public NetworkInterface DhcpInterface
         {
@@ -457,19 +454,15 @@ namespace CloneDeploy_Proxy_Dhcp.Server
 
                     case "00000":
                         response.BootFileName = Encoding.UTF8.GetBytes(BiosBootFile);
-                        response.AddOption(DhcpOption.PathPrefix, Encoding.UTF8.GetBytes(SyslinuxBiosPathPrefix));
                         break;
                     case "00006":
                         response.BootFileName = Encoding.UTF8.GetBytes(Efi32BootFile);
-                        response.AddOption(DhcpOption.PathPrefix, Encoding.UTF8.GetBytes(SyslinuxEfi32PathPrefix));
                         break;
                     case "00007":
                         response.BootFileName = Encoding.UTF8.GetBytes(Efi64BootFile);
-                        response.AddOption(DhcpOption.PathPrefix, Encoding.UTF8.GetBytes(SyslinuxEfi64PathPrefix));
                         break;
                     case "00009":
                         response.BootFileName = Encoding.UTF8.GetBytes(Efi64BootFile);
-                        response.AddOption(DhcpOption.PathPrefix, Encoding.UTF8.GetBytes(SyslinuxEfi64PathPrefix));
                         break;
                     default:
                         response.BootFileName = Encoding.UTF8.GetBytes(BiosBootFile);

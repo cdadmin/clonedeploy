@@ -6,7 +6,7 @@
 .breadcrumb_container{display: inline;position:relative;float:left;right: 0;width:100%;overflow-x:hidden;overflow-y:hidden;top: 0px;color: black;height: 30px;background: #fff;margin-bottom: 20px;margin-left: -5px;}
 .content-main{top: 0px; display: inline;position:relative;float:left;width: 100%;background-color: #fff;overflow-x:hidden;overflow-y:visible;height:calc(100% - 140px);padding: 20px 0 0 0;}
 .actions_container{display: inline;position:relative;float: left; width:230px;overflow-x:hidden;overflow-y:auto;top:0px;color: black;background:#fff;height: 100%;border-left: 1px solid #eee;}
-.help_pos{ position: absolute;bottom: 40px;width: 180px;}
+.help_pos{ position: absolute;bottom: 40px;width: 180px;display: none;}
 
 .container .column{float:left;display:inline;margin-right:10px;}
 .container .full.column{width:990px;overflow-x:scroll;}

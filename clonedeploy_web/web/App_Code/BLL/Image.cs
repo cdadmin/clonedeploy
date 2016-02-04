@@ -163,19 +163,19 @@ namespace BLL
             using (var uow = new DAL.UnitOfWork())
             {
                 if (userId == 0)
-                    return uow.ImageRepository.Get(i => i.IsVisible == 1, orderBy: (q => q.OrderBy(p => p.Name)));
+                    return uow.ImageRepository.Get(i => i.IsVisible == 1 && i.Enabled == 1, orderBy: (q => q.OrderBy(p => p.Name)));
                 else
                 {
                     if (BLL.User.GetUser(userId).Membership == "Administrator")
-                        return uow.ImageRepository.Get(i => i.IsVisible == 1, orderBy: (q => q.OrderBy(p => p.Name)));
+                        return uow.ImageRepository.Get(i => i.IsVisible == 1 && i.Enabled == 1, orderBy: (q => q.OrderBy(p => p.Name)));
 
                     var userManagedImages = BLL.UserImageManagement.Get(userId);
                     if (userManagedImages.Count == 0)
-                        return uow.ImageRepository.Get(i => i.IsVisible == 1, orderBy: (q => q.OrderBy(p => p.Name)));
+                        return uow.ImageRepository.Get(i => i.IsVisible == 1 && i.Enabled == 1, orderBy: (q => q.OrderBy(p => p.Name)));
                     else
                     {
                          var listOfImages = new List<Models.Image>();
-                         listOfImages.AddRange(userManagedImages.Select(managedImage => uow.ImageRepository.GetFirstOrDefault(i => i.IsVisible == 1 && i.Id == managedImage.ImageId)));
+                         listOfImages.AddRange(userManagedImages.Select(managedImage => uow.ImageRepository.GetFirstOrDefault(i => i.IsVisible == 1 && i.Id == managedImage.ImageId && i.Enabled == 1)));
                         return listOfImages;
                     }
                 }
@@ -288,6 +288,13 @@ namespace BLL
             {
                 validationResult.IsValid = false;
                 validationResult.Message = "Image Does Not Exist";
+                return validationResult;
+            }
+
+            if (image.Enabled == 0)
+            {
+                validationResult.IsValid = false;
+                validationResult.Message = "Image Is Not Enabled";
                 return validationResult;
             }
 

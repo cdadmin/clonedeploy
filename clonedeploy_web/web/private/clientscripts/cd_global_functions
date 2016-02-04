@@ -291,10 +291,16 @@ function process_sysprep_tags()
   fi
   
   if [ -f "/mnt/ntfs/Windows/Panther/unattend.xml" ]; then
-    log " ...... Found Answer File, Updating Answer File" "display"
+    log " ...... Found Answer File At /Windows/Panther/unattend.xml, Updating Answer File" "display"
 	for tag_id in $sysprep_tags; do
       sysprep_tag_json=$($curlAuth --data "tagId=$tag_id" "${web}GetSysprepTag" $curlEnd)
 	  perl -0777 -i -pe "s/($(parse_json "$sysprep_tag_json" .OpeningTag)).*($(parse_json "$sysprep_tag_json" .ClosingTag))/\$1$(parse_json "$sysprep_tag_json" .Contents)\$2/s" /mnt/ntfs/Windows/Panther/unattend.xml
+    done
+  elif [ -f "/mnt/ntfs/Windows/System32/sysprep/Panther/unattend.xml" ]; then
+     log " ...... Found Answer File At /Windows/System32/sysprep/Panther/unattend.xml"
+	 for tag_id in $sysprep_tags; do
+      sysprep_tag_json=$($curlAuth --data "tagId=$tag_id" "${web}GetSysprepTag" $curlEnd)
+	  perl -0777 -i -pe "s/($(parse_json "$sysprep_tag_json" .OpeningTag)).*($(parse_json "$sysprep_tag_json" .ClosingTag))/\$1$(parse_json "$sysprep_tag_json" .Contents)\$2/s" /mnt/ntfs/Windows/System32/sysprep/Panther/unattend.xml
     done
   else
     log " ...... Could Not Find Answer File"
@@ -311,7 +317,6 @@ function process_file_copy()
    sleep 5
   while [  "$(( $array_index + 1 ))" -lt "$(parse_json "$file_copy_schema" .Count)" ]; do
     array_index=$(( $array_index + 1))
-    clear_and_move_down
     current_file="$(parse_json "$file_copy_schema" .FilesAndFolders[$array_index])"
     log "$current_file"
 	if [ "$object_type" = "partition" ]; then

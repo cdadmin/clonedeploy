@@ -41,9 +41,6 @@ namespace CloneDeploy_Proxy_Dhcp
             var biosBootFile = reader.ReadConfig("bios-bootfile");
             var efi32BootFile = reader.ReadConfig("efi32-bootfile");
             var efi64BootFile = reader.ReadConfig("efi64-bootfile");
-            var syslinuxBiosPathPrefix = reader.ReadConfig("syslinux-bios-path-prefix");
-            var syslinuxEfi32PathPrefix = reader.ReadConfig("syslinux-efi32-path-prefix");
-            var syslinuxEfi64PathPrefix = reader.ReadConfig("syslinux-efi64-path-prefix");
 
             //apple options
             var appleBootFile = reader.ReadConfig("apple-boot-file");
@@ -60,9 +57,6 @@ namespace CloneDeploy_Proxy_Dhcp
                 proxy.BiosBootFile = biosBootFile;
                 proxy.Efi32BootFile = efi32BootFile;
                 proxy.Efi64BootFile = efi64BootFile;
-                proxy.SyslinuxBiosPathPrefix = syslinuxBiosPathPrefix;
-                proxy.SyslinuxEfi32PathPrefix = syslinuxEfi32PathPrefix;
-                proxy.SyslinuxEfi64PathPrefix = syslinuxEfi64PathPrefix;
 
                 if (allowAll == "true")
                 {

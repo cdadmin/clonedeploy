@@ -176,7 +176,7 @@ function process_partitions()
     fi
 	
 	#Todo: Add support for linux change name
-	if [ "$(parse_json "$current_partition" .FileSystem)" = "ntfs" ] && [ -n "$computer_name" ]; then
+	if [ "$(parse_json "$current_partition" .FileSystem)" = "ntfs" ] && [ -n "$computer_name" ] && [ "$change_computer_name" = "true" ]; then
       change_computer_name ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)
 	fi
 	
@@ -734,8 +734,11 @@ function change_computer_name()
   fi
   
   if [ -f "/mnt/ntfs/Windows/Panther/unattend.xml" ]; then
-    log " ...... Found Answer File, Changing Host Name" "display"
+    log " ...... Found Answer File At /Windows/Panther/unattend.xml, Changing Computer Name" "display"
     perl -0777 -i -pe "s/(\<ComputerName\>).*(\<\/ComputerName\>)/\$1$computer_name\$2/s" /mnt/ntfs/Windows/Panther/unattend.xml
+  elif [ -f "/mnt/ntfs/Windows/System32/sysprep/Panther/unattend.xml" ]; then
+    log " ...... Found Answer File At /Windows/System32/sysprep/Panther/unattend.xml, Changing Computer Name" "display"
+    perl -0777 -i -pe "s/(\<ComputerName\>).*(\<\/ComputerName\>)/\$1$computer_name\$2/s" /mnt/ntfs/Windows/System32/sysprep/Panther/unattend.xml
   elif [ -f "/mnt/ntfs/Sysprep/sysprep.inf" ]; then
     log " ...... Found Answer File, Changing Host Name" "display"
     sed -i "s/^ComputerName=.*$/ComputerName=$computer_name\r/" /mnt/ntfs/Sysprep/sysprep.inf

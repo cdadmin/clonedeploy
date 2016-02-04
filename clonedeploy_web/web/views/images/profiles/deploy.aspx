@@ -21,6 +21,13 @@
     });
 </script>
 
+    <div class="size-9 column">
+    Change Computer Name
+</div>
+<div class="size-8 column">
+    <asp:CheckBox ID="chkChangeName" runat="server" CssClass="textbox"></asp:CheckBox>
+</div>
+<br class="clear"/>
 <div class="size-9 column">
     Don't Expand Volume
 </div>

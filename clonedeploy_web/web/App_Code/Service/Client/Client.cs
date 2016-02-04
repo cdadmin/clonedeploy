@@ -300,6 +300,12 @@ namespace Service.Client
         {
             HttpContext.Current.Response.Write(new Global().GetOnDemandArguments(mac, Convert.ToInt32(objectId),task));
         }
+
+        [WebMethod]
+        public void Test()
+        {
+            HttpContext.Current.Response.Write("true");
+        }
       
     }
 }

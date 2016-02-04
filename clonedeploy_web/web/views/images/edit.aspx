@@ -50,6 +50,14 @@
     </div>
     <br class="clear"/>
     <div class="size-4 column">
+        Enabled:
+    </div>
+    <div class="size-5 column">
+        <asp:CheckBox ID="chkEnabled" runat="server"/>
+    </div>
+    <br class="clear"/>
+    <br />
+    <div class="size-4 column">
         Protected:
     </div>
     <div class="size-5 column">

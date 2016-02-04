@@ -23,6 +23,7 @@ namespace views.images
             image.Name = txtImageName.Text;
             image.Os = "";
             image.Description = txtImageDesc.Text;
+            image.Enabled = chkEnabled.Checked ? 1 : 0;
             image.Protected = chkProtected.Checked ? 1 : 0;
             image.IsVisible = chkVisible.Checked ? 1 : 0;
             image.Type = ddlImageType.Text;
@@ -34,7 +35,7 @@ namespace views.images
         protected void PopulateForm()
         {
             ViewState["currentName"] = Image.Name;
-
+            chkEnabled.Checked = Convert.ToBoolean(Image.Enabled);
             txtImageName.Text = Image.Name;
             txtImageDesc.Text = Image.Description;
             ddlImageType.Text = Image.Type;

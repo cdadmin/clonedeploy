@@ -26,12 +26,9 @@ namespace CloneDeploy_Proxy_Dhcp.Readers
                         writer.WriteLine("bios-bootfile=");
                         writer.WriteLine("efi32-bootfile=");
                         writer.WriteLine("efi64-bootfile=");
-                        writer.WriteLine("syslinux-bios-path-prefix=");
-                        writer.WriteLine("syslinux-efi32-path-prefix=");
-                        writer.WriteLine("syslinux-efi64-path-prefix =");
                         writer.WriteLine("apple-mode=disabled");
                         writer.WriteLine("apple-boot-file=");
-                        writer.WriteLine("apple-root-path=");
+                        writer.WriteLine("apple-root-path=\"\"");
                         writer.WriteLine("apple-vendor-specific-information=01:01:01:04:02:FF:FF:07:04:01:00:07:D9:08:04:01:00:07:D9:09:0C:01:00:07:D9:07:4E:65:74:42:6F:6F:74");
                     }
                 }
