@@ -1,6 +1,5 @@
 ﻿using System;
 using BasePages;
-using BLL;
 using Group = Models.Group;
 
 namespace views.groups

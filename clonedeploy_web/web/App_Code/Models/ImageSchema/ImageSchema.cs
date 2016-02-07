@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Models.ImageSchema
+﻿namespace Models.ImageSchema
 {
     public class ImageSchema
     {

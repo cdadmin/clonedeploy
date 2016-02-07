@@ -4,9 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using BLL;
 using Helpers;
-using Image = BLL.Image;
 
 namespace views.tasks
 {

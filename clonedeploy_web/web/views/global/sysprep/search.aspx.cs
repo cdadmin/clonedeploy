@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
-using BLL;
 
 public partial class views_global_sysprep_search : BasePages.Global
 {

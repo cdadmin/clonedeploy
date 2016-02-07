@@ -1,7 +1,6 @@
 ﻿using System;
 using BasePages;
 using Helpers;
-using Models;
 
 namespace views.groups
 {

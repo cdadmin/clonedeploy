@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Models;
+﻿using Models;
 
 namespace Tasks
 {

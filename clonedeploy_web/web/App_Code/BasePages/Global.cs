@@ -1,9 +1,6 @@
 ﻿using System;
 using Helpers;
 using Models;
-using Building = BLL.Building;
-using Room = BLL.Room;
-using Site = BLL.Site;
 
 namespace BasePages
 {

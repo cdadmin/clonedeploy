@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Configuration;
 using System.IO;
 using System.Web;
-using System.Web.Configuration;
 using BasePages;
-using BLL;
-using CsvHelper;
-using CsvHelper.Configuration;
 using Helpers;
 using MySql.Data.MySqlClient;
 

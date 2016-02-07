@@ -5,7 +5,6 @@ using System.Web.UI.WebControls;
 using BasePages;
 using Helpers;
 using Models;
-using GroupMembership = BLL.GroupMembership;
 
 public partial class views_groups_removemembers : Groups
 {

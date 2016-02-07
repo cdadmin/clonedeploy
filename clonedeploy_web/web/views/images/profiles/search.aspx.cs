@@ -4,8 +4,6 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BasePages;
-using BLL;
-using Models;
 
 
 public partial class views_images_profiles_search : Images

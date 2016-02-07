@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using DAL;
-using Helpers;
 
 namespace BLL
 {

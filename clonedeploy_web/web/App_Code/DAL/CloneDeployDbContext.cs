@@ -1,6 +1,5 @@
 ﻿using System.Data.Entity;
 using Models;
-using BootTemplate = BLL.BootTemplate;
 
 namespace DAL
 {

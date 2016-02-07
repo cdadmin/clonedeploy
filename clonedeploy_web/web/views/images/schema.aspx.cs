@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BasePages;
-using Models.ImageSchema;
 using ImageSchema = BLL.ImageSchema;
 
 namespace views.images

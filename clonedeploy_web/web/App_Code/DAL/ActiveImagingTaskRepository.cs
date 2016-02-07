@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
-using Helpers;
 
 namespace DAL
 {

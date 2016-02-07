@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace Models.ImageSchema.GridView
+﻿namespace Models.ImageSchema.GridView
 {
     public class ImageSchemaGridView
     {

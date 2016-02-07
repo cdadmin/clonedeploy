@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Data.Linq.Mapping;
 using BasePages;
-using Helpers;
 using Models;
-using Security;
 
 namespace views.images
 {

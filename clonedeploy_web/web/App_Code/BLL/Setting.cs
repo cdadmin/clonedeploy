@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Helpers;
-using MySql.Data.MySqlClient;
+﻿using System.Collections.Generic;
 
 namespace BLL
 {

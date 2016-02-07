@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
-using BLL;
 using Helpers;
 
 namespace views.groups
