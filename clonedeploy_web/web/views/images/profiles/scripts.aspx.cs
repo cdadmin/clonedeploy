@@ -26,7 +26,7 @@ public partial class views_images_profiles_scripts : Images
             if (dataKey == null) continue;
             foreach (var profileScript in profileScripts)
             {
-                if (profileScript.ScriptId == Convert.ToInt16(dataKey.Value))
+                if (profileScript.ScriptId == Convert.ToInt32(dataKey.Value))
                 {
                     pre.Checked = Convert.ToBoolean(profileScript.RunPre);
                     post.Checked = Convert.ToBoolean(profileScript.RunPost);
@@ -80,7 +80,7 @@ public partial class views_images_profiles_scripts : Images
            
             var profileScript = new Models.ImageProfileScript()
             {
-                ScriptId = Convert.ToInt16(dataKey.Value),
+                ScriptId = Convert.ToInt32(dataKey.Value),
                 ProfileId = ImageProfile.Id,
                 RunPre = Convert.ToInt16(pre.Checked),
                 RunPost = Convert.ToInt16(post.Checked)

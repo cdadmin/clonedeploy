@@ -23,7 +23,7 @@ public partial class views_images_profiles_filecopy : Images
             if (dataKey == null) continue;
             foreach (var profileFile in profileFiles)
             {
-                if (profileFile.FileFolderId == Convert.ToInt16(dataKey.Value))
+                if (profileFile.FileFolderId == Convert.ToInt32(dataKey.Value))
                 {
                     enabled.Checked = true;
                     var txtPriority = row.FindControl("txtPriority") as TextBox;
@@ -83,7 +83,7 @@ public partial class views_images_profiles_filecopy : Images
 
             var profileFileFolder = new Models.ImageProfileFileFolder
             {
-                FileFolderId = Convert.ToInt16(dataKey.Value),
+                FileFolderId = Convert.ToInt32(dataKey.Value),
                 ProfileId = ImageProfile.Id,
             };
             var txtPriority = row.FindControl("txtPriority") as TextBox;

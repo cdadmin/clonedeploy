@@ -13,9 +13,9 @@ if [ "$taskType" != "1" ] && [ "$taskType" != "2" ] && [ "$taskType" != "3" ]; t
 fi
 
 if [ "$taskType" = "1" ]; then
-	imageList=`$curlCommand --data "userId=$user_id" "${web}ListImages" $curlEnd`
+	imageList=`$curlAuth --data "userId=$user_id" "${web}ListImages" $curlEnd`
 	imageId=$(dialog --backtitle "Clone Deploy" --title "Select An Image" --clear --menu "" 20 60 15 `parse_json "$imageList" .Images[]` --stdout)
-	imageProfileList=`$curlCommand --data "imageId=$imageId" "${web}ListImageProfiles" $curlEnd`
+	imageProfileList=`$curlAuth --data "imageId=$imageId" "${web}ListImageProfiles" $curlEnd`
 	if [ "`parse_json "$imageProfileList" .Count`" = "1" ]; then
 		imageProfileId=`parse_json "$imageProfileList" .FirstProfileId`
 	else
@@ -25,9 +25,9 @@ if [ "$taskType" = "1" ]; then
 	ond_args="${ond_args} task=push"
     
 elif [ "$taskType" = "2" ]; then
-  image_list=`$curlCommand --data "userId=$user_id" "${web}ListImages" $curlEnd`
+  image_list=`$curlAuth --data "userId=$user_id" "${web}ListImages" $curlEnd`
   image_id=$(dialog --backtitle "Clone Deploy" --title "Select An Image" --clear --menu "" 20 60 15 `parse_json "$image_list" .Images[]` --stdout)
-  profile_list=`$curlCommand --data "imageId=$image_id" "${web}ListImageProfiles" $curlEnd`
+  profile_list=`$curlAuth --data "imageId=$image_id" "${web}ListImageProfiles" $curlEnd`
   if [ "$(parse_json "$profile_list" .Count)" = "1" ]; then
     image_profile_id=`parse_json "$profile_list" .FirstProfileId`
   else
@@ -37,7 +37,7 @@ elif [ "$taskType" = "2" ]; then
   ond_args="${ond_args} task=pull"
 		
 elif [ "$taskType" = "3" ]; then
-	multicastList=`$curlCommand "${web}ListMulticasts" $curlEnd`
+	multicastList=`$curlAuth "${web}ListMulticasts" $curlEnd`
 	multicastId=$(dialog --backtitle "Clone Deploy" --title "Select A Multicast Session" --clear --menu "" 20 60 15 `parse_json "$multicastList" .Multicasts[]` --stdout)
     ond_args=$($curlAuth --data "mac=$mac&objectId=$multicastId&task=multicast" "${web}GetOnDemandArguments" $curlEnd)
 	ond_args="${ond_args} task=push"

@@ -17,7 +17,7 @@ using ImageProfileFileFolder = BLL.ImageProfileFileFolder;
 
 namespace Service.Client
 {
-    public class Global
+    public class Logic
     {
         public bool Authorize(string token)
         {
@@ -79,7 +79,7 @@ namespace Service.Client
             switch (task)
             {
                 case "ond":
-                    return Settings.OnDemandRequiresLogin;
+                    return Settings.OnDemand != "Enabled" ? "Yes" : Settings.OnDemandRequiresLogin;
                 case "debug":
                     return Settings.DebugRequiresLogin;
                 case "register":
@@ -197,13 +197,16 @@ namespace Service.Client
 
         public void DeleteImage(int profileId)
         {
-            var image = BLL.ImageProfile.ReadProfile(profileId).Image;
-            if (string.IsNullOrEmpty(image.Name)) return;
+            var profile = BLL.ImageProfile.ReadProfile(profileId);
+            if (string.IsNullOrEmpty(profile.Image.Name)) return;
+            //Remove existing custom deploy schema, it may not match newly updated image
+            profile.CustomSchema = string.Empty;
+            BLL.ImageProfile.UpdateProfile(profile);
             try
             {
-                if (Directory.Exists(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name))
-                    Directory.Delete(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name, true);
-                Directory.CreateDirectory(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name);
+                if (Directory.Exists(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + profile.Image.Name))
+                    Directory.Delete(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + profile.Image.Name, true);
+                Directory.CreateDirectory(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + profile.Image.Name);
             }
             catch (Exception ex)
             {
@@ -527,6 +530,59 @@ namespace Service.Client
             }
 
             
+        }
+
+        public string ImageList(int userId = 0)
+        {
+            var imageList = new Services.Client.ImageList { Images = new List<string>() };
+
+            foreach (var image in BLL.Image.GetOnDemandImageList(userId))
+                imageList.Images.Add(image.Id + " " + image.Name);
+
+            return JsonConvert.SerializeObject(imageList);
+        }
+
+        public string ImageProfileList(int imageId)
+        {
+            var imageProfileList = new Services.Client.ImageProfileList { ImageProfiles = new List<string>() };
+
+            int profileCounter = 0;
+            foreach (var imageProfile in BLL.ImageProfile.SearchProfiles(Convert.ToInt32(imageId)))
+            {
+                profileCounter++;
+                imageProfileList.ImageProfiles.Add(imageProfile.Id + " " + imageProfile.Name);
+                if (profileCounter == 1)
+                    imageProfileList.FirstProfileId = imageProfile.Id.ToString();
+            }
+
+            imageProfileList.Count = profileCounter.ToString();
+
+            return JsonConvert.SerializeObject(imageProfileList);
+        }
+
+        public string MulicastSessionList()
+        {
+            var multicastList = new Services.Client.MulticastList() { Multicasts = new List<string>() };
+
+            foreach (var multicast in BLL.ActiveMulticastSession.GetOnDemandList())
+            {
+                multicastList.Multicasts.Add(multicast.Port + " " + multicast.Name);
+            }
+
+            return JsonConvert.SerializeObject(multicastList);
+        }
+
+        public string AddImage(string imageName)
+        {
+            var image = new Models.Image()
+            {
+                Name = imageName
+            };
+            var result = BLL.Image.AddImage(image);
+            if (result.IsValid)
+                result.Message = image.Id.ToString();
+
+            return JsonConvert.SerializeObject(result);
         }
 
        

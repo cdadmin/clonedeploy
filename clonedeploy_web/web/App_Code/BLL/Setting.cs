@@ -8,10 +8,7 @@ namespace BLL
     public class Setting
     {
         
-        public static bool ExportDatabase()
-        {
-            throw new Exception("Not Implemented");
-        }
+       
 
         public static Models.Setting GetSetting(string settingName)
         {

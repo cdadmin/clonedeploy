@@ -29,7 +29,7 @@ namespace Helpers
                 Body = Body
             };
 
-            var client = new SmtpClient(Settings.SmtpServer, Convert.ToInt16(Settings.SmtpPort))
+            var client = new SmtpClient(Settings.SmtpServer, Convert.ToInt32(Settings.SmtpPort))
             {
                 Credentials = new NetworkCredential(Settings.SmtpUsername, new Helpers.Encryption().DecryptText(Settings.SmtpPassword)),
                 EnableSsl = Settings.SmtpSsl == "Yes"

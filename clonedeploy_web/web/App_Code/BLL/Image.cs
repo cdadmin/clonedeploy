@@ -42,7 +42,7 @@ namespace BLL
                 catch (Exception ex)
                 {
                     Logger.Log(ex.Message);
-                    throw;
+                  
                 }                
             }
             return validationResult;
@@ -211,7 +211,7 @@ namespace BLL
                             catch (Exception ex)
                             {
                                 Logger.Log(ex.Message);
-                                throw;
+                                
                             }
                         }
                         else

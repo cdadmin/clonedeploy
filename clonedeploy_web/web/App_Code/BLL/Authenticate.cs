@@ -16,8 +16,17 @@ namespace Security
     {
         public string ConsoleLogin(string username, string password, string task, string ip)
         {
-            var validationResult = GlobalLogin(username, password, "Console");
             var result = new Dictionary<string, string>();
+            if (Settings.OnDemand != "Enabled")
+            {
+                Logger.Log("On Demand Mode Is Globally Disabled.  Cannot Login.");
+                result.Add("valid", "false");
+                result.Add("user_id", "");
+                result.Add("user_token", "");
+                return JsonConvert.SerializeObject(result);
+            }
+            var validationResult = GlobalLogin(username, password, "Console");
+            
             if (!validationResult.IsValid)
             {
                 result.Add("valid", "false");

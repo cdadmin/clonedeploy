@@ -24,7 +24,7 @@ namespace Service.Client
         private bool Authorize()
         {
             var userToken = Utility.Decode(HttpContext.Current.Request.Headers["Authorization"],"Authorization");
-            if (new Service.Client.Global().Authorize(userToken))
+            if (new Service.Client.Logic().Authorize(userToken))
                 return true;
             else
             {
@@ -38,17 +38,18 @@ namespace Service.Client
         public void CheckTaskAuth(string task)
         {
             var userToken = Utility.Decode(HttpContext.Current.Request.Headers["Authorization"], "Authorization");
-            HttpContext.Current.Response.Write(new Service.Client.Global().CheckTaskAuth(task,userToken));
+            HttpContext.Current.Response.Write(new Service.Client.Logic().CheckTaskAuth(task,userToken));
         }
 
         [WebMethod]
         public void GetPartLayout(string imageProfileId, string hdToGet, string newHdSize, string clientHd, string taskType, string partitionPrefix)
         {
+            if (!Authorize()) return;
 
             var partLayout = new ClientPartitionScript
             {
                 profileId = Convert.ToInt32(imageProfileId),
-                HdNumberToGet = Convert.ToInt16(hdToGet),
+                HdNumberToGet = Convert.ToInt32(hdToGet),
                 NewHdSize = newHdSize,
                 ClientHd = clientHd,
                 TaskType = taskType,
@@ -61,24 +62,28 @@ namespace Service.Client
         [WebMethod]
         public void GetUtcDateTime()
         {
+            //No auth
             HttpContext.Current.Response.Write(DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"));
         }
 
         [WebMethod]
         public void GetLocalDateTime()
         {
+            //No auth
             HttpContext.Current.Response.Write(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
         }
 
         [WebMethod]
         public void IsLoginRequired(string task)
         {
-            HttpContext.Current.Response.Write(new Service.Client.Global().IsLoginRequired(task));
+            //No auth
+            HttpContext.Current.Response.Write(new Service.Client.Logic().IsLoginRequired(task));
         }
 
         [WebMethod]
         public void ConsoleLogin()
         {
+            //No auth
             var ip = Utility.Decode(HttpContext.Current.Request.Form["clientIP"], "clientIP");
             var username = Utility.Decode(HttpContext.Current.Request.Form["username"],"username");
             var password = Utility.Decode(HttpContext.Current.Request.Form["password"],"password");
@@ -110,121 +115,138 @@ namespace Service.Client
         public void AddComputer(string name, string mac)
         {
             if (!Authorize()) return;        
-            HttpContext.Current.Response.Write(new Service.Client.Global().AddComputer(name,mac));
+            HttpContext.Current.Response.Write(new Service.Client.Logic().AddComputer(name,mac));
         }
 
         [WebMethod]
         public void AddImage(string name)
         {
             if (!Authorize()) return;      
-            HttpContext.Current.Response.Write(new Service.Client.OnDemand().AddImage(name));
+            HttpContext.Current.Response.Write(new Service.Client.Logic().AddImage(name));
         }
 
         [WebMethod]
         public void ListImages(string userId)
         {
-            HttpContext.Current.Response.Write(new Service.Client.OnDemand().ImageList(Convert.ToInt32(userId)));
+            if (!Authorize()) return;
+            HttpContext.Current.Response.Write(new Service.Client.Logic().ImageList(Convert.ToInt32(userId)));
         }
 
         [WebMethod]
         public void ListImageProfiles(string imageId)
         {
-            HttpContext.Current.Response.Write(new Service.Client.OnDemand().ImageProfileList(Convert.ToInt32(imageId)));
+            if (!Authorize()) return;
+            HttpContext.Current.Response.Write(new Service.Client.Logic().ImageProfileList(Convert.ToInt32(imageId)));
         }
 
         [WebMethod]
         public void ListMulticasts()
         {
-            HttpContext.Current.Response.Write(new Service.Client.OnDemand().MulicastSessionList());
+            if (!Authorize()) return;
+            HttpContext.Current.Response.Write(new Service.Client.Logic().MulicastSessionList());
         }
 
         [WebMethod]
         public void CheckIn(string computerMac)
         {
-           HttpContext.Current.Response.Write(new Service.Client.Global().CheckIn(computerMac));
+            if (!Authorize()) return;
+           HttpContext.Current.Response.Write(new Service.Client.Logic().CheckIn(computerMac));
         }
 
         [WebMethod]
         public void DistributionPoint(string dpId, string task)
         {
-            HttpContext.Current.Response.Write(new Global().DistributionPoint(Convert.ToInt32(dpId), task));
+            if (!Authorize()) return;
+            HttpContext.Current.Response.Write(new Logic().DistributionPoint(Convert.ToInt32(dpId), task));
         }
 
         [WebMethod]
         public void UpdateStatusInProgress(int computerId)
         {
-            new Global().ChangeStatusInProgress(computerId);
+            if (!Authorize()) return;
+            new Logic().ChangeStatusInProgress(computerId);
 
         }
 
         [WebMethod]
         public void DeleteImage(string profileId)
         {
-            new Global().DeleteImage(Convert.ToInt32(profileId));
+            if (!Authorize()) return;
+            new Logic().DeleteImage(Convert.ToInt32(profileId));
         }
 
         [WebMethod]
         public void ErrorEmail(string computerId, string error)
         {
-            new Service.Client.Global().ErrorEmail(Convert.ToInt32(computerId),error);
+            if (!Authorize()) return;
+            new Service.Client.Logic().ErrorEmail(Convert.ToInt32(computerId),error);
         }
 
 
         [WebMethod]
         public void CheckOut(string computerId)
         {
-            new Service.Client.Global().CheckOut(Convert.ToInt32(computerId));
+            if (!Authorize()) return;
+            new Service.Client.Logic().CheckOut(Convert.ToInt32(computerId));
         }
 
         [WebMethod]
         public void UploadLog()
         {
+            if (!Authorize()) return;
             var computerId = Utility.Decode(HttpContext.Current.Request.Form["computerId"],"computerId");
             var logContents = Utility.Decode(HttpContext.Current.Request.Form["logContents"],"logContents");
             var subType = Utility.Decode(HttpContext.Current.Request.Form["subType"],"subType");
             var computerMac = Utility.Decode(HttpContext.Current.Request.Form["mac"],"mac");
-            new Global().UploadLog(Convert.ToInt32(computerId), logContents, subType, computerMac);
+            new Logic().UploadLog(Convert.ToInt32(computerId), logContents, subType, computerMac);
         }
 
         [WebMethod]
         public void UpdateProgress(string computerId, string progress, string progressType)
         {
-            new Service.Client.Global().UpdateProgress(Convert.ToInt32(computerId), progress, progressType);
+            if (!Authorize()) return;
+            new Service.Client.Logic().UpdateProgress(Convert.ToInt32(computerId), progress, progressType);
         }
 
         [WebMethod]
         public void UpdateProgressPartition(string computerId, string partition)
         {
-            new Service.Client.Global().UpdateProgressPartition(Convert.ToInt32(computerId), partition);
+            if (!Authorize()) return;
+            new Service.Client.Logic().UpdateProgressPartition(Convert.ToInt32(computerId), partition);
         }
 
         [WebMethod]
         public void CheckQueue(string computerId)
         {
-            HttpContext.Current.Response.Write(new Service.Client.Global().CheckQueue(Convert.ToInt32(computerId)));
+            if (!Authorize()) return;
+            HttpContext.Current.Response.Write(new Service.Client.Logic().CheckQueue(Convert.ToInt32(computerId)));
         }
 
         [WebMethod]
         public void CheckHdRequirements(string profileId, string clientHdNumber, string newHdSize, string schemaHds)
         {
-            HttpContext.Current.Response.Write(new Service.Client.Global().CheckHdRequirements(Convert.ToInt32(profileId),Convert.ToInt32(clientHdNumber),newHdSize,schemaHds));
+            if (!Authorize()) return;
+            HttpContext.Current.Response.Write(new Service.Client.Logic().CheckHdRequirements(Convert.ToInt32(profileId),Convert.ToInt32(clientHdNumber),newHdSize,schemaHds));
         }
 
         [WebMethod]
         public void GetOriginalLvm(string profileId, string clientHd, string hdToGet, string partitionPrefix)
         {
-            HttpContext.Current.Response.Write(new Service.Client.Global().GetOriginalLvm(Convert.ToInt32(profileId), clientHd, hdToGet, partitionPrefix));
+            if (!Authorize()) return;
+            HttpContext.Current.Response.Write(new Service.Client.Logic().GetOriginalLvm(Convert.ToInt32(profileId), clientHd, hdToGet, partitionPrefix));
         }
 
         [WebMethod]
         public void CheckForCancelledTask(string computerId)
         {
-            HttpContext.Current.Response.Write(new Service.Client.Global().CheckForCancelledTask(Convert.ToInt32(computerId)));
+            if (!Authorize()) return;
+            HttpContext.Current.Response.Write(new Service.Client.Logic().CheckForCancelledTask(Convert.ToInt32(computerId)));
         }
 
         [WebMethod]
         public void UpdateBcd()
         {
+            if (!Authorize()) return;
             var bcd = Utility.Decode(HttpContext.Current.Request.Form["bcd"],"bcd");
             var offsetBytes = Utility.Decode(HttpContext.Current.Request.Form["offsetBytes"],"offsetBytes");
             HttpContext.Current.Response.Write(new BLL.Bcd().UpdateEntry(bcd, Convert.ToInt64(offsetBytes)));
@@ -233,6 +255,7 @@ namespace Service.Client
         [WebMethod]
         public void IpxeBoot(string filename, string type)
         {
+            //No auth
             if (type == "kernel")
             {
                 var path = Settings.TftpPath + "kernels" + Path.DirectorySeparatorChar;
@@ -250,9 +273,11 @@ namespace Service.Client
                 HttpContext.Current.Response.End();
             }
         }
+
         [WebMethod]
         public void IpxeLogin()
         {
+            // No Auth
             var username = HttpContext.Current.Request.Form["uname"];
             var password = HttpContext.Current.Request.Form["pwd"];
             var kernel = HttpContext.Current.Request.Form["kernel"];
@@ -265,45 +290,53 @@ namespace Service.Client
         [WebMethod]
         public void GetCustomScript(int scriptId)
         {
-            HttpContext.Current.Response.Write(new Global().GetCustomScript(scriptId));
+            if (!Authorize()) return;
+            HttpContext.Current.Response.Write(new Logic().GetCustomScript(scriptId));
 
         }
 
         [WebMethod]
         public void GetSysprepTag(int tagId)
         {
-            HttpContext.Current.Response.Write(new Global().GetSysprepTag(tagId));
+            if (!Authorize()) return;
+            HttpContext.Current.Response.Write(new Logic().GetSysprepTag(tagId));
 
         }
 
         [WebMethod]
         public void GetFileCopySchema(int profileId)
         {
-            HttpContext.Current.Response.Write(new Global().GetFileCopySchema(profileId));
+            if (!Authorize()) return;
+            HttpContext.Current.Response.Write(new Logic().GetFileCopySchema(profileId));
 
         }
 
         [WebMethod]
         public void MulticastCheckOut(string portBase)
         {
-            HttpContext.Current.Response.Write(new Global().MulticastCheckout(portBase));   
+            if (!Authorize()) return;
+            HttpContext.Current.Response.Write(new Logic().MulticastCheckout(portBase));   
         }
 
         [WebMethod]
         public void GetCustomPartitionScript(string profileId)
         {
-            HttpContext.Current.Response.Write(new Global().GetCustomPartitionScript(Convert.ToInt32(profileId)));
+            if (!Authorize()) return;
+            HttpContext.Current.Response.Write(new Logic().GetCustomPartitionScript(Convert.ToInt32(profileId)));
         }
 
         [WebMethod]
         public void GetOnDemandArguments(string mac, string objectId, string task)
         {
-            HttpContext.Current.Response.Write(new Global().GetOnDemandArguments(mac, Convert.ToInt32(objectId),task));
+            if (!Authorize()) return;
+            HttpContext.Current.Response.Write(new Logic().GetOnDemandArguments(mac, Convert.ToInt32(objectId),task));
         }
 
         [WebMethod]
         public void Test()
         {
+            
+            //No auth
             HttpContext.Current.Response.Write("true");
         }
       

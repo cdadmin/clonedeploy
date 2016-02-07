@@ -13,7 +13,9 @@ public partial class views_admin_client : Admin
         if (IsPostBack) return;
      
         txtQSize.Text = Settings.QueueSize;        
-        txtGlobalComputerArgs.Text = Settings.GlobalComputerArgs;  
+        txtGlobalComputerArgs.Text = Settings.GlobalComputerArgs;
+        //These require pxe boot menu or client iso to be recreated
+        ViewState["globalArgs"] = txtGlobalComputerArgs.Text;
     }
 
     protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
@@ -28,6 +30,16 @@ public partial class views_admin_client : Admin
 
 
             EndUserMessage = Setting.UpdateSetting(listSettings) ? "Successfully Updated Settings" : "Could Not Update Settings";
+            if ((string)ViewState["globalArgs"] != txtGlobalComputerArgs.Text)
+            {
+                lblTitle.Text =
+          "Your Settings Changes Require A New PXE Boot File Be Created.  <br>Go There Now?";
+                
+                ClientScript.RegisterStartupScript(GetType(), "modalscript",
+                    "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
+                    true);
+                Session.Remove("Message");
+            }
         }
     }
 
@@ -39,5 +51,10 @@ public partial class views_admin_client : Admin
             return false;
         }
         return true;
+    }
+
+    protected void OkButton_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("~/views/admin/bootmenu/defaultmenu.aspx?level=2");
     }
 }

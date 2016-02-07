@@ -48,11 +48,11 @@ namespace BLL
             }
         }
 
-        public static List<Models.ComputerLog> SearchOnDemand()
+        public static List<Models.ComputerLog> SearchOnDemand(int limit)
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.ComputerLogRepository.Get(x => x.ComputerId == -1, orderBy: (q => q.OrderByDescending(x => x.LogTime)));
+                return uow.ComputerLogRepository.Get(x => x.ComputerId == -1, orderBy: (q => q.OrderByDescending(x => x.LogTime))).Take(limit).ToList();
             }
         }
 

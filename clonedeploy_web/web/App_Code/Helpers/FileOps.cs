@@ -50,7 +50,7 @@ namespace Helpers
             catch (Exception ex)
             {
                 Logger.Log(ex.Message);
-                throw new Exception("Could Not Remove Custom Boot Menu.  Check The Exception Log For More Info.");
+               
              
                 return false;
             }
@@ -99,7 +99,7 @@ namespace Helpers
             catch (Exception ex)
             {
                Logger.Log(ex.Message);
-               throw;
+             
             }
         }
 

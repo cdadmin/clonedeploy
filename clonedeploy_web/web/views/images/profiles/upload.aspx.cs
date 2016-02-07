@@ -15,6 +15,11 @@ public partial class views_images_profiles_upload : Images
 
     protected void btnUpdateUpload_OnClick(object sender, EventArgs e)
     {
+        if (chkCustomUpload.Checked && chkSchemaOnly.Checked)
+        {
+            EndUserMessage = "Custom Schema And Upload Schema Only Cannot Both Be Checked";
+            return;
+        }
         var imageProfile = ImageProfile;
         imageProfile.RemoveGPT = Convert.ToInt16(chkRemoveGpt.Checked);
         imageProfile.SkipShrinkVolumes = Convert.ToInt16(chkUpNoShrink.Checked);

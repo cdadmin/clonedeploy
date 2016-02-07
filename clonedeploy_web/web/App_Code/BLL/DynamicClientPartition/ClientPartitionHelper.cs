@@ -149,10 +149,18 @@ namespace BLL.DynamicClientPartition
                     string imageFile = null;
                     foreach (var ext in new[] { "ntfs", "fat", "extfs", "hfsp", "imager", "xfs" })
                     {
-                        imageFile =
-                            Directory.GetFiles(
-                                imagePath + Path.DirectorySeparatorChar, "part" + partition.Number + "." + ext + ".*")
-                                .FirstOrDefault();
+                        try
+                        {
+                            imageFile =
+                                Directory.GetFiles(
+                                    imagePath + Path.DirectorySeparatorChar,
+                                    "part" + partition.Number + "." + ext + ".*")
+                                    .FirstOrDefault();
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Log(ex.Message);
+                        }
 
                         if (imageFile != null) break;
                     }
@@ -364,11 +372,18 @@ namespace BLL.DynamicClientPartition
                 string imageFile = null;
                 foreach (var ext in new[] { "ntfs", "fat", "extfs", "hfsp", "imager", "xfs" })
                 {
-                    imageFile =
-                               Directory.GetFiles(
-                                   imagePath + Path.DirectorySeparatorChar,
-                                   lv.VolumeGroup + "-" + lv.Name + "." + ext + ".*")
-                                   .FirstOrDefault();
+                    try
+                    {
+                        imageFile =
+                            Directory.GetFiles(
+                                imagePath + Path.DirectorySeparatorChar,
+                                lv.VolumeGroup + "-" + lv.Name + "." + ext + ".*")
+                                .FirstOrDefault();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(ex.Message);
+                    }
 
                     if (imageFile != null) break;
                 }
@@ -424,11 +439,18 @@ namespace BLL.DynamicClientPartition
                 string imageFile = null;
                 foreach (var ext in new[] {"ntfs", "fat", "extfs", "hfsp", "imager", "xfs"})
                 {
-                    imageFile =
-                        Directory.GetFiles(
-                            imagePath + Path.DirectorySeparatorChar, "part" + partition.Number + "." + ext + ".*")
-                            .FirstOrDefault();
-                    physicalPartition.PartcloneFileSystem = ext;
+                    try
+                    {
+                        imageFile =
+                            Directory.GetFiles(
+                                imagePath + Path.DirectorySeparatorChar, "part" + partition.Number + "." + ext + ".*")
+                                .FirstOrDefault();
+                        physicalPartition.PartcloneFileSystem = ext;
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(ex.Message);
+                    }
                     if (imageFile != null) break;
                 }
                 switch (Path.GetExtension(imageFile))
@@ -467,12 +489,19 @@ namespace BLL.DynamicClientPartition
 
                         foreach (var ext in new[] {"ntfs", "fat", "extfs", "hfsp", "imager", "xfs"})
                         {
-                            imageFile =
-                                Directory.GetFiles(
-                                    imagePath + Path.DirectorySeparatorChar,
-                                    partition.VolumeGroup.Name + "-" + logicalVolume.Name +"." + ext + ".*")
-                                    .FirstOrDefault();
-                            clientLogicalVolume.PartcloneFileSystem = ext;
+                            try
+                            {
+                                imageFile =
+                                    Directory.GetFiles(
+                                        imagePath + Path.DirectorySeparatorChar,
+                                        partition.VolumeGroup.Name + "-" + logicalVolume.Name + "." + ext + ".*")
+                                        .FirstOrDefault();
+                                clientLogicalVolume.PartcloneFileSystem = ext;
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.Log(ex.Message);
+                            }
                             if (imageFile != null) break;
                         }
                         switch (Path.GetExtension(imageFile))

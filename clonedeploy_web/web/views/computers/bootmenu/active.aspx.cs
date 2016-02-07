@@ -31,7 +31,7 @@ public partial class views_computers_bootmenu_active : BasePages.Computers
         }
         else
         {
-            if (Convert.ToBoolean(Convert.ToInt16(Computer.CustomBootEnabled)))
+            if (Convert.ToBoolean(Computer.CustomBootEnabled))
             {
                 path = proxyDhcp == "Yes"
                     ? BLL.ComputerBootMenu.GetComputerProxyPath(Computer, true, ddlProxyMode.Text)

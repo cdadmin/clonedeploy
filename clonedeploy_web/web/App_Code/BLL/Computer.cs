@@ -303,10 +303,7 @@ namespace BLL
             return validationResult;
         }
 
-        public static void ImportComputers()
-        {
-            throw new NotImplementedException();
-        }
+      
 
        
     }

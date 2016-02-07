@@ -28,9 +28,9 @@ namespace BLL
             }
 
             if (lastPort == null)
-                nextPort.Number = Convert.ToInt16(Settings.StartPort);
-            else if (nextPort.Number >= Convert.ToInt16(Settings.EndPort))
-                nextPort.Number = Convert.ToInt16(Settings.StartPort);
+                nextPort.Number = Convert.ToInt32(Settings.StartPort);
+            else if (nextPort.Number >= Convert.ToInt32(Settings.EndPort))
+                nextPort.Number = Convert.ToInt32(Settings.StartPort);
             else
                 nextPort.Number = lastPort.Number + 2;
 

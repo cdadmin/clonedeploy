@@ -20,16 +20,6 @@ else
 	ifconfig -a
 fi
 echo
-
-echo Press Enter To Continue
-read enter
-
-echo
-echo " ** Testing Hard Drive Compatibility ** " 
-sleep 1
-get_hard_drives
-
-echo
 echo Press Enter To Continue
 read enter
 
@@ -43,8 +33,19 @@ read enter
 	fi
 
 echo
-echo " ** All Tests Complete ** "
+echo Press Enter To Continue
+read enter
 
+echo
+echo " ** Testing Hard Drive Compatibility ** " 
+sleep 1
+get_hard_drives
+
+echo
+echo
+echo " ** All Tests Complete ** "
+echo Press Enter To Reboot
+read enter
 
 
 

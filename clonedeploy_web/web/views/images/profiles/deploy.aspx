@@ -154,7 +154,7 @@
                                                     <asp:ListItem>MB</asp:ListItem>
                                                     <asp:ListItem>GB</asp:ListItem>
                                                     <asp:ListItem>%</asp:ListItem>
-                                                    <asp:ListItem>Fill</asp:ListItem>
+                                                   
                                                 </asp:DropDownList>
                                           
                                         </ItemTemplate>
@@ -252,7 +252,7 @@
                                                     <asp:ListItem>MB</asp:ListItem>
                                                     <asp:ListItem>GB</asp:ListItem>
                                                     <asp:ListItem>%</asp:ListItem>
-                                                    <asp:ListItem>Fill</asp:ListItem>
+                                                    
                                                 </asp:DropDownList>
                                           
                                         </ItemTemplate>

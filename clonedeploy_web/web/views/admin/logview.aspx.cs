@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -36,13 +37,17 @@ namespace views.admin
             {
                 if (ddlLog.Text == "On Demand")
                 {
+                    
+                    var limit = ddlDbLimit.Text == "All" ? int.MaxValue : Convert.ToInt32(ddlDbLimit.Text);
                     dbView.Visible = true;
-                    gvLogs.DataSource = BLL.ComputerLog.SearchOnDemand();
+                    fileView.Visible = false;
+                    gvLogs.DataSource = BLL.ComputerLog.SearchOnDemand(limit);
                     gvLogs.DataBind();
                 }
                 else
                 {
                     fileView.Visible = true;
+                    dbView.Visible = false;
                     GridView1.DataSource = Logger.ViewLog(ddlLog.Text, ddlLimit.Text);
                     GridView1.DataBind();
                 }
@@ -72,7 +77,7 @@ namespace views.admin
 
         protected void ddlDbLimit_OnSelectedIndexChanged(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            PopulateLogs();
         }
 
         protected void btnExport_OnClick(object sender, EventArgs e)
@@ -83,7 +88,7 @@ namespace views.admin
             var dataKey = gvLogs.DataKeys[gvRow.RowIndex];
             if (dataKey == null) return;
             var log = BLL.ComputerLog.GetComputerLog(Convert.ToInt32(dataKey.Value));
-            //Export(Computer.Name + "-" + log.SubType + ".txt", log.Contents);
+            Export(gvRow.Cells[2].Text + "-" + log.SubType + ".txt", log.Contents);
         }
 
         protected void btnView_OnClick(object sender, EventArgs e)

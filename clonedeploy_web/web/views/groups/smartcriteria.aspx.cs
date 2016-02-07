@@ -21,7 +21,7 @@ public partial class views_groups_smartcriteria : BasePages.Groups
 
     protected void gvComputers_OnSorting(object sender, GridViewSortEventArgs e)
     {
-        throw new NotImplementedException();
+        
     }
 
     protected void btnTestQuery_OnClick(object sender, EventArgs e)

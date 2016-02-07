@@ -110,11 +110,11 @@ namespace BLL
         {
             var lvList = new List<Models.ImageSchema.GridView.LogicalVolume>();
 
-            foreach (var partition in _imageSchema.HardDrives[Convert.ToInt16(selectedHd)].Partitions)
+            foreach (var partition in _imageSchema.HardDrives[Convert.ToInt32(selectedHd)].Partitions)
             {
                 if (partition.VolumeGroup.Name == null) continue;
                 if (partition.VolumeGroup.LogicalVolumes == null) continue;
-                var lbs = _imageSchema.HardDrives[Convert.ToInt16(selectedHd)].Lbs;
+                var lbs = _imageSchema.HardDrives[Convert.ToInt32(selectedHd)].Lbs;
                 foreach (var lv in partition.VolumeGroup.LogicalVolumes)
                 {
                     if ((Convert.ToInt64(lv.Size) * lbs ) < 1048576000)
@@ -154,8 +154,9 @@ namespace BLL
 
                 return new List<ImageFileInfo> {imageFileInfo};
             }
-            catch
+            catch(Exception ex)
             {
+                Logger.Log(ex.Message);
                 return null;
             }
         }

@@ -23,7 +23,7 @@ public partial class views_images_profiles_sysprep : Images
             if (dataKey == null) continue;
             foreach (var profileSysprep in profileSyspreps)
             {
-                if (profileSysprep.SysprepId == Convert.ToInt16(dataKey.Value))
+                if (profileSysprep.SysprepId == Convert.ToInt32(dataKey.Value))
                 {
 
                     enabled.Checked = true;
@@ -75,7 +75,7 @@ public partial class views_images_profiles_sysprep : Images
 
             var profileSysPrep = new Models.ImageProfileSysprepTag
             {
-                SysprepId = Convert.ToInt16(dataKey.Value),
+                SysprepId = Convert.ToInt32(dataKey.Value),
                 ProfileId = ImageProfile.Id,
             };
             var txtPriority = row.FindControl("txtPriority") as TextBox;

@@ -12,6 +12,8 @@ namespace views.tasks
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if(Settings.OnDemand != "Enabled")
+                Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
             RequiresAuthorization(Authorizations.AllowOnd);
             if (!IsPostBack) PopulateForm();
         }

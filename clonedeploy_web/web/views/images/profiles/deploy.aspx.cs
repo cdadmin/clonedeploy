@@ -49,7 +49,7 @@ public partial class views_images_profiles_deploy : Images
                     if (dataKey == null) continue;
                     var profilePartitionLayout = new Models.ImageProfilePartitionLayout()
                     {
-                        LayoutId = Convert.ToInt16(dataKey.Value),
+                        LayoutId = Convert.ToInt32(dataKey.Value),
                         ProfileId = ImageProfile.Id
                     };
                     BLL.ImageProfilePartition.AddImageProfilePartition(profilePartitionLayout);
@@ -104,7 +104,7 @@ public partial class views_images_profiles_deploy : Images
                     if (dataKey == null) continue;
                     foreach (var profilePartitionLayout in profilePartitionLayouts)
                     {
-                        if (profilePartitionLayout.LayoutId == Convert.ToInt16(dataKey.Value))
+                        if (profilePartitionLayout.LayoutId == Convert.ToInt32(dataKey.Value))
                             cb.Checked = true;
                     }
                 }

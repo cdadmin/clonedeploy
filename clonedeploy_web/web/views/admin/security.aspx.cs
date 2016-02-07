@@ -29,6 +29,10 @@ public partial class views_admin_security : Admin
         //These require pxe boot menu or client iso to be recreated 
         ViewState["serverKey"] = txtToken.Text;
         ViewState["forceSSL"] = ddlSSL.Text;
+        ViewState["debugLogin"] = ddlDebugLogin.Text;
+        ViewState["ondLogin"] = ddlOndLogin.Text;
+        ViewState["registerLogin"] = ddlRegisterLogin.Text;
+        ViewState["webTaskLogin"] = ddlWebTasksLogin.Text;
     }
 
     protected void btnGenerate_Click(object sender, EventArgs e)
@@ -39,6 +43,9 @@ public partial class views_admin_security : Admin
     protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
     {
         if (!ValidateSettings()) return;
+        if (ddlDebugLogin.Text == "Yes" && ddlOndLogin.Text == "Yes" && ddlRegisterLogin.Text == "Yes" &&
+            ddlWebTasksLogin.Text == "Yes")
+            txtToken.Text = "";
         var listSettings = new List<Setting>
         {
             new Setting
@@ -93,6 +100,27 @@ public partial class views_admin_security : Admin
         {
             EndUserMessage = "Successfully Updated Settings";
             if ((string) ViewState["serverKey"] != txtToken.Text)
+            {
+                newBootMenu = true;
+                newClientIso = true;
+            }
+
+            if ((string) ViewState["debugLogin"] != ddlDebugLogin.Text)
+            {
+                newBootMenu = true;
+                newClientIso = true;
+            }
+            if ((string) ViewState["ondLogin"] != ddlOndLogin.Text)
+            {
+                newBootMenu = true;
+                newClientIso = true;
+            }
+            if ((string) ViewState["registerLogin"] != ddlRegisterLogin.Text)
+            {
+                newBootMenu = true;
+                newClientIso = true;
+            }
+            if ((string) ViewState["webTaskLogin"] != ddlWebTasksLogin.Text)
             {
                 newBootMenu = true;
                 newClientIso = true;

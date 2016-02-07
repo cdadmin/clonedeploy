@@ -41,8 +41,8 @@ namespace Helpers
             catch (Exception)
             {
                 Logger.Log("Could Not Decrypt Password.  Ensure Your Encryption Key is Correct.");
+                return null;
 
-                throw;
             }
           
 

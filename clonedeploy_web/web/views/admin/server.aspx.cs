@@ -50,7 +50,7 @@ public partial class views_admin_server : Admin
                 newBootMenu = true;
                 newClientIso = true;
             }
-            if ((string)ViewState["servicePath"] != txtWebService.Text)
+            if ((string)ViewState["servicePath"] != ParameterReplace.Between(txtWebService.Text))
             {
                 newBootMenu = true;
                 newClientIso = true;
@@ -96,10 +96,12 @@ public partial class views_admin_server : Admin
             {
                 txtWebService.Text = "http://[server-ip]:" + txtPort.Text + "/clonedeploy/service/client.asmx/";
             }
-            if (txtPort.Text == "80" || txtPort.Text == "443" || string.IsNullOrEmpty(txtPort.Text))
+            if (txtPort.Text == "80" || string.IsNullOrEmpty(txtPort.Text))
             {
                 txtWebService.Text = "http://[server-ip]/clonedeploy/service/client.asmx/";
             }
+            if(txtPort.Text == "443")
+                txtWebService.Text = "https://[server-ip]/clonedeploy/service/client.asmx/";
         }
         if (!txtTFTPPath.Text.Trim().EndsWith(Path.DirectorySeparatorChar.ToString()))
             txtTFTPPath.Text += Path.DirectorySeparatorChar;

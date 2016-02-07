@@ -33,7 +33,7 @@ namespace Helpers
             var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
                           Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar;
 
-            return File.ReadLines(logPath + log).Reverse().Take(Convert.ToInt16(limit)).Reverse().ToList();
+            return File.ReadLines(logPath + log).Reverse().Take(Convert.ToInt32(limit)).Reverse().ToList();
 
         }
     }
