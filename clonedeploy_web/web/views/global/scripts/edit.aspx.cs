@@ -1,4 +1,5 @@
 ﻿using System;
+using Helpers;
 using Models;
 
 public partial class views_admin_scripts_edit : BasePages.Global
@@ -11,6 +12,7 @@ public partial class views_admin_scripts_edit : BasePages.Global
 
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.UpdateGlobal);
         var script = new Script
         {
             Id = Script.Id,

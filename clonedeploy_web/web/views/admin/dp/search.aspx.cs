@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
+using Helpers;
 
 public partial class views_admin_dp_search : Admin
 {
@@ -14,6 +15,7 @@ public partial class views_admin_dp_search : Admin
 
     protected void ButtonConfirmDelete_Click(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.UpdateAdmin);
         var deletedCount = 0;
         foreach (GridViewRow row in gvDps.Rows)
         {

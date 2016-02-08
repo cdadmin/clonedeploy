@@ -20,6 +20,7 @@ public partial class views_images_profiles_pxe : Images
 
     protected void buttonUpdatePXE_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorizationOrManagedImage(Authorizations.UpdateProfile, Image.Id);
         var imageProfile = ImageProfile;
         imageProfile.Kernel = ddlKernel.Text;
         imageProfile.BootImage = ddlBootImage.Text;

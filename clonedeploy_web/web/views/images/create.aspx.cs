@@ -1,5 +1,6 @@
 ﻿using System;
 using BasePages;
+using Helpers;
 using Models;
 
 namespace views.images
@@ -16,6 +17,7 @@ namespace views.images
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
+            RequiresAuthorization(Authorizations.CreateImage);
             var image = new Image
             {
                 Name = txtImageName.Text,

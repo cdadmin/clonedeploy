@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BasePages;
+using Helpers;
 
 namespace views.images
 {
@@ -53,6 +54,7 @@ namespace views.images
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
+            RequiresAuthorization(Authorizations.DeleteImage);
             var deleteCount = 0;
             foreach (GridViewRow row in gvImages.Rows)
             {

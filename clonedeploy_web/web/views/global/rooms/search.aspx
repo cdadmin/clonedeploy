@@ -5,7 +5,7 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="Help" Runat="Server">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits actions" target="_blank">Help</a>
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits help" target="_blank"></a>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" runat="Server">
@@ -20,7 +20,7 @@
     <br class="clear"/>
 
 
-    <asp:GridView ID="gvRooms" runat="server" AutoGenerateColumns="false" DataKeyNames="Id" CssClass="Gridview"
+    <asp:GridView ID="gvRooms" runat="server" AutoGenerateColumns="false" DataKeyNames="Id" CssClass="Gridview extraPad"
                   OnRowEditing="OnRowEditing" OnRowCancelingEdit="OnRowCancelingEdit" ShowFooter="True"
                   OnRowUpdating="OnRowUpdating" OnRowDeleting="OnRowDeleting" OnRowDataBound="gvRooms_OnRowDataBound"  AlternatingRowStyle-CssClass="alt">
         <Columns>
@@ -68,7 +68,7 @@
                 </ItemTemplate>
                 <FooterTemplate>
 
-                    <asp:Button ID="btnAdd1" runat="server" Text="Add" OnClick="Insert"/>
+                    <asp:LinkButton ID="btnAdd1" runat="server" Text="Add" OnClick="Insert" CssClass="submits"/>
                 </FooterTemplate>
             </asp:TemplateField>
             <asp:TemplateField></asp:TemplateField>

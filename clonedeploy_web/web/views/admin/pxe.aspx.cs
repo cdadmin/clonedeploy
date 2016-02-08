@@ -29,6 +29,7 @@ public partial class views_admin_pxe : Admin
 
     protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.UpdateAdmin);
         if (ValidateSettings())
         {
             var listSettings = new List<Setting>

@@ -1,4 +1,5 @@
 ﻿using System;
+using Helpers;
 using Models;
 
 public partial class views_global_sysprep_create : BasePages.Global
@@ -10,6 +11,7 @@ public partial class views_global_sysprep_create : BasePages.Global
 
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.CreateGlobal);
         var sysPrepTag = new SysprepTag()
         {
             Name = txtName.Text,
@@ -19,7 +21,15 @@ public partial class views_global_sysprep_create : BasePages.Global
             Contents = txtContent.Text
         };
 
-        BLL.SysprepTag.AddSysprepTag(sysPrepTag);
+        var result = BLL.SysprepTag.AddSysprepTag(sysPrepTag);
+        if (result.IsValid)
+        {
+            EndUserMessage = "Successfully Created Sysprep Tag";
             Response.Redirect("~/views/global/sysprep/edit.aspx?cat=sub1&syspreptagid=" + sysPrepTag.Id);
+        }
+        else
+        {
+            EndUserMessage = result.Message;
+        }
     }
 }

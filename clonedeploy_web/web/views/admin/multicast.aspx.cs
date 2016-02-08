@@ -23,6 +23,7 @@ public partial class views_admin_multicast : Admin
 
     protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.UpdateAdmin);
         if (ValidateSettings())
         {
             List<Setting> listSettings = new List<Setting>

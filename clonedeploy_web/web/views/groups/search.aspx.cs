@@ -11,7 +11,7 @@ namespace views.groups
     {
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.DeleteGroup);
+            RequiresAuthorization(Authorizations.DeleteGroup); 
             var deletedCount = 0;
             foreach (var dataKey in from GridViewRow row in gvGroups.Rows
                 let cb = (CheckBox) row.FindControl("chkSelector")

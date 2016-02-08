@@ -1,4 +1,5 @@
 ﻿using System;
+using Helpers;
 using Models;
 
 public partial class views_admin_scripts_create : BasePages.Global
@@ -10,6 +11,7 @@ public partial class views_admin_scripts_create : BasePages.Global
 
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.CreateGlobal);
         var script = new Script
         {
             Name = txtScriptName.Text,
@@ -17,9 +19,16 @@ public partial class views_admin_scripts_create : BasePages.Global
         };
         var fixedLineEnding = scriptEditor.Value.Replace("\r\n", "\n");
         script.Contents = fixedLineEnding;
-        BLL.Script.AddScript(script);
-            //if (script.Create())
-                //Response.Redirect("~/views/computers/edit.aspx?computerid=" + computer.Id);
+        var result = BLL.Script.AddScript(script);
+        if (result.IsValid)
+        {
+            EndUserMessage = "Successfully Created Script";
+            Response.Redirect("~/views/global/scripts/edit.aspx?cat=sub1&scriptid=" + script.Id);
+        }
+        else
+        {
+            EndUserMessage = result.Message;
+        }
 
-   }
+    }
 }

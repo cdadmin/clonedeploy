@@ -24,7 +24,7 @@ namespace BLL.Workflows
             var pxeComputerMac = Utility.MacToPxeMac(_computer.Mac);
             var webPath = Settings.WebPath;
             var globalComputerArgs = Settings.GlobalComputerArgs;
-            var wdsKey = Settings.WebTaskRequiresLogin == "No" ? Settings.UniversalToken : "";
+            var userToken = Settings.WebTaskRequiresLogin == "No" ? Settings.UniversalToken : "";
             const string newLineChar = "\n";
 
 
@@ -33,7 +33,7 @@ namespace BLL.Workflows
             ipxe.Append("kernel " + webPath + "IpxeBoot?filename=" + _imageProfile.Kernel +
                         "&type=kernel" + " initrd=" + _imageProfile.BootImage +
                         " root=/dev/ram0 rw ramdisk_size=127000 task=" + _direction +
-                        " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" + wdsKey + " " + globalComputerArgs +
+                        " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" + userToken + " " + globalComputerArgs +
                         " " + _imageProfile.KernelArguments + newLineChar);
             ipxe.Append("imgfetch --name " + _imageProfile.BootImage + " " + webPath +
                         "IpxeBoot?filename=" + _imageProfile.BootImage + "&type=bootimage" + newLineChar);
@@ -46,7 +46,7 @@ namespace BLL.Workflows
             sysLinux.Append("KERNEL kernels" + Path.DirectorySeparatorChar + _imageProfile.Kernel + newLineChar);
             sysLinux.Append("APPEND initrd=images" + Path.DirectorySeparatorChar + _imageProfile.BootImage +
                             " root=/dev/ram0 rw ramdisk_size=127000 task=" + _direction +
-                            " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" + wdsKey + " " + globalComputerArgs +
+                            " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" + userToken + " " + globalComputerArgs +
                             " " + _imageProfile.KernelArguments + newLineChar);
 
 
@@ -59,7 +59,7 @@ namespace BLL.Workflows
             grub.Append("linux /kernels/" + _imageProfile.Kernel +
                         " root=/dev/ram0 rw ramdisk_size=127000 task=" +
                         _direction + " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" +
-                        wdsKey + " " +
+                        userToken + " " +
                         globalComputerArgs + " " + _imageProfile.KernelArguments + newLineChar);
             grub.Append("initrd /images/" + _imageProfile.BootImage + newLineChar);
             grub.Append("}" + newLineChar);

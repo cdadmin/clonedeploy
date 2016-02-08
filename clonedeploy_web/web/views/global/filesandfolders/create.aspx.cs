@@ -1,4 +1,5 @@
 ﻿using System;
+using Helpers;
 
 public partial class views_global_filesandfolders_create : BasePages.Global
 {
@@ -9,6 +10,7 @@ public partial class views_global_filesandfolders_create : BasePages.Global
 
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.CreateGlobal);
         var fileFolder = new Models.FileFolder
         {
             Name = txtName.Text,

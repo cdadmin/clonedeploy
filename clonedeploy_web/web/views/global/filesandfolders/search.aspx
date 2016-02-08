@@ -4,10 +4,10 @@
     <li>Search</li>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubHelp" Runat="Server">
-       <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits actions" target="_blank">Help</a>
+       <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits help" target="_blank"></a>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
-    <a class="confirm" href="#">Delete Selected Files / Folders</a>
+    <a class="confirm actions green" href="#">Delete Selected Files / Folders</a>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="SubContent2" Runat="Server">
     <script type="text/javascript">
@@ -15,13 +15,14 @@
             $('#search').addClass("nav-current");
         });
     </script>
+       <p class="total">
+        <asp:Label ID="lblTotal" runat="server"></asp:Label>
+    </p>
     <div class="size-7 column">
         <asp:TextBox ID="txtSearch" runat="server" CssClass="searchbox" OnTextChanged="txtSearch_OnTextChanged"></asp:TextBox>
     </div>
     <br class="clear"/>
-    <p class="total">
-        <asp:Label ID="lblTotal" runat="server"></asp:Label>
-    </p>
+ 
     <asp:GridView ID="gvFiles" runat="server" AllowSorting="True" DataKeyNames="Id" OnSorting="gvFiles_OnSorting" AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
         <Columns>
             <asp:TemplateField>
@@ -51,7 +52,7 @@
     <div id="confirmbox" class="confirm-box-outer">
         <div class="confirm-box-inner">
             <h4>
-                <asp:Label ID="lblTitle" runat="server" Text="Delete The Selected Boot Menu Templates?"></asp:Label>
+                <asp:Label ID="lblTitle" runat="server" Text="Delete The Selected File?"></asp:Label>
             </h4>
             <div class="confirm-box-btns">
                 <asp:LinkButton ID="ConfirmButton" OnClick="ButtonConfirmDelete_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>

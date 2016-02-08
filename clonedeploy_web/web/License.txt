@@ -5,7 +5,7 @@ This program should not be used as a backup solution.  It is
 intended for mass deployments of generic images only.  
 Read this license agreement before continuing.
 
- CrucibleWDS A Windows Deployment Solution
+ Clone Deploy A Multi Platform Deployment Solution
     Copyright (C) 2016  Jon Dolny
 
     This program is free software: you can redistribute it and/or modify

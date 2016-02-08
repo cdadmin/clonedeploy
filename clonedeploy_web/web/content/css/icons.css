@@ -1,4 +1,4 @@
-.nav li a.icon-logo:before{font-family:opensans, Calibri, Arial;content:"WDS";font-size:10px;margin-left:50px;}
+.nav li a.icon-logo:before{font-family:opensans, Calibri, Arial;content:"CD";font-size:10px;margin-left:50px;}
 .nav li a.icon-host:before,.sub-nav li a.icon-host:before{content:"\e017";font-size:2.0em;margin-left: 5px; }
 .nav li a.icon-group:before{content:"\e003";font-size:2.0em;margin-left: 5px;}
 .nav li a.icon-image:before{content:"\e009";font-size:2.0em;margin-left: 5px;}

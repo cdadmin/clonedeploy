@@ -66,6 +66,7 @@ public partial class views_groups_addmembers : Groups
 
     protected void btnAddSelected_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorizationOrManagedGroup(Authorizations.UpdateGroup, Group.Id); 
         var memberships = (from GridViewRow row in gvComputers.Rows
             let cb = (CheckBox) row.FindControl("chkSelector")
             where cb != null && cb.Checked

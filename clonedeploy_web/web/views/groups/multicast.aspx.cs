@@ -5,7 +5,7 @@ public partial class views_groups_multicast : BasePages.Groups
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        RequiresAuthorization(Authorizations.CreateGroup);
+       
 
         if (!IsPostBack) PopulateForm();
     }
@@ -20,6 +20,7 @@ public partial class views_groups_multicast : BasePages.Groups
 
     protected void Submit_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorizationOrManagedGroup(Authorizations.UpdateGroup, Group.Id); 
         var group = Group;
 
         group.ImageId = Convert.ToInt32(ddlGroupImage.SelectedValue);

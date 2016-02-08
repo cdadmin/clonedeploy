@@ -74,7 +74,7 @@ namespace Service.Client
             switch (task)
             {
                 case "ond":
-                    return Settings.OnDemand != "Enabled" ? "Yes" : Settings.OnDemandRequiresLogin;
+                    return Settings.OnDemandRequiresLogin;
                 case "debug":
                     return Settings.DebugRequiresLogin;
                 case "register":
@@ -92,6 +92,11 @@ namespace Service.Client
         public string CheckTaskAuth(string task, string token)
         {
             //only check ond and debug because web tasks can't even be started if user isn't authorized
+            if (task == "ond" && Settings.OnDemand != "Enabled")
+            {
+                return "false";
+            }
+
             if (task == "ond" && Settings.OnDemandRequiresLogin == "No")
             {
                 if (token == Settings.UniversalToken && !string.IsNullOrEmpty(Settings.UniversalToken))

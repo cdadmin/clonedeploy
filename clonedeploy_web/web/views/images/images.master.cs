@@ -40,6 +40,7 @@ namespace views.masters
 
         protected void btnDelete_Click(object sender, EventArgs e)
         {
+            imagesBasePage.RequiresAuthorizationOrManagedImage(Authorizations.DeleteImage, Image.Id);
             lblTitle.Text = "Delete This Image?";
             DisplayConfirm();
         }

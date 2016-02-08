@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
+using Helpers;
 
 public partial class views_images_profiles_scripts : Images
 {
@@ -64,6 +65,7 @@ public partial class views_images_profiles_scripts : Images
 
     protected void btnUpdateScripts_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorizationOrManagedImage(Authorizations.UpdateProfile, Image.Id);
         var deleteResult = BLL.ImageProfileScript.DeleteImageProfileScripts((ImageProfile.Id));
         var checkedCount = 0;
         foreach (GridViewRow row in gvScripts.Rows)

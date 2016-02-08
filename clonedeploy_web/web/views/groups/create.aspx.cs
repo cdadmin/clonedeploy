@@ -8,11 +8,12 @@ namespace views.groups
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.CreateGroup);           
+                      
         }
 
         protected void Submit_Click(object sender, EventArgs e)
         {
+            RequiresAuthorization(Authorizations.CreateGroup); 
             if(ddlGroupType.Text == "smart")
                 RequiresAuthorization(Authorizations.CreateSmart);
             var group = new Models.Group

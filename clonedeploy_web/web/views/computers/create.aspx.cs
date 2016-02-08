@@ -9,13 +9,14 @@ namespace views.computers
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.CreateComputer);
+           
 
             if (!IsPostBack) PopulateForm();
         }
 
         protected void ButtonAddComputer_Click(object sender, EventArgs e)
         {
+            RequiresAuthorization(Authorizations.CreateComputer);
             var computer = new Computer
             {
                 Name = txtComputerName.Text,

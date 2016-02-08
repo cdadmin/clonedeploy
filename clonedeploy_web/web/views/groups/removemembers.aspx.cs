@@ -60,6 +60,7 @@ public partial class views_groups_removemembers : Groups
 
     protected void btnRemoveSelected_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorizationOrManagedGroup(Authorizations.UpdateGroup, Group.Id); 
         var removedCount = 0;
         foreach (GridViewRow row in gvComputers.Rows)
         {

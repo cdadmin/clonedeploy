@@ -1,5 +1,6 @@
 ﻿using System;
 using BasePages;
+using Helpers;
 
 public partial class views_images_profiles_create : Images
 {
@@ -10,6 +11,7 @@ public partial class views_images_profiles_create : Images
 
     protected void buttonCreateProfile_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.CreateProfile);
         var defaultProfile = BLL.ImageProfile.SeedDefaultImageProfile();
         defaultProfile.ImageId = Image.Id;
         defaultProfile.Name = txtProfileName.Text;

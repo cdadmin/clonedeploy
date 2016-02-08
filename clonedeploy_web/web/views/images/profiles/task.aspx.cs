@@ -1,5 +1,6 @@
 ﻿using System;
 using BasePages;
+using Helpers;
 
 public partial class views_images_profiles_task : Images
 {
@@ -17,6 +18,7 @@ public partial class views_images_profiles_task : Images
 
     protected void btnUpdateTask_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorizationOrManagedImage(Authorizations.UpdateProfile, Image.Id);
         var imageProfile = ImageProfile;
         imageProfile.SkipCore = Convert.ToInt16(chkGlobalNoCore.Checked);
         imageProfile.SkipClock = Convert.ToInt16(chkGlobalNoClock.Checked);

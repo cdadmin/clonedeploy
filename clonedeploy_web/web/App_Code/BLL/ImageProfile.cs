@@ -132,7 +132,7 @@ namespace BLL
             imageProfile.SkipShrinkLvm = 0;
             imageProfile.SkipExpandVolumes = 0;
             imageProfile.FixBcd = 0;
-            imageProfile.FixBootloader = 0;
+            imageProfile.FixBootloader = 1;
             imageProfile.PartitionMethod = "Dynamic";
             imageProfile.Compression = "lz4";
             imageProfile.CompressionLevel = "1";

@@ -24,6 +24,7 @@ public partial class views_admin_email : Admin
 
     protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.UpdateAdmin);
         List<Setting> listSettings = new List<Setting>
         {
             new Setting {Name = "Smtp Server", Value = txtSmtpServer.Text, Id = BLL.Setting.GetSetting("Smtp Server").Id},

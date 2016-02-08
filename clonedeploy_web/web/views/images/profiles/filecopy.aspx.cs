@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
+using Helpers;
 
 public partial class views_images_profiles_filecopy : Images
 {
@@ -70,6 +71,7 @@ public partial class views_images_profiles_filecopy : Images
 
     protected void btnUpdateFile_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorizationOrManagedImage(Authorizations.UpdateProfile, Image.Id);
         var deleteResult = BLL.ImageProfileFileFolder.DeleteImageProfileFileFolders(ImageProfile.Id);
         var checkedCount = 0;
         foreach (GridViewRow row in gvFile.Rows)

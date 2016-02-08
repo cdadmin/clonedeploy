@@ -594,7 +594,7 @@ function update_bcd()
   local original_bcd
   local updated_bcd
   
-  if [ "$skip_fix_bcd" = "true" ]; then
+  if [ "$fix_bcd" != "true" ]; then
     log "BCD Update Has Been Skipped Via Image Profile"
     return 0
   fi
@@ -645,8 +645,12 @@ function update_bcd()
 
 function fix_ntfs_boot()
 {
+  if [ "$fix_bootloader" != "true" ]; then
+    log "Bootloader fix Has Been Skipped Via Image Profile"
+    return 0
+  fi
   local partition="$1"
-  log " ** Fixing NTFS Geometry ** " "display"
+  log " ** Fixing NTFS Bootloader ** " "display"
   partclone.ntfsfixboot -p $partition >> $CLIENT_LOG
   partclone.ntfsfixboot -w $partition >> $CLIENT_LOG
 		

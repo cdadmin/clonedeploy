@@ -51,7 +51,7 @@ public partial class views_computers_bootmenu_custom : BasePages.Computers
 
     protected void buttonUpdate_OnClick(object sender, EventArgs e)
     {
-        RequiresAuthorization(Authorizations.UpdateComputer);
+        RequiresAuthorizationOrManagedComputer(Authorizations.UpdateComputer, Computer.Id);
         var bootMenu = BLL.ComputerBootMenu.GetComputerBootMenu(Computer.Id) ?? new ComputerBootMenu();
         bootMenu.ComputerId = Computer.Id;
         if (Settings.ProxyDhcp == "Yes")

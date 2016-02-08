@@ -1,4 +1,5 @@
 ﻿using System;
+using Helpers;
 using Models;
 
 public partial class views_global_sysprep_edit : BasePages.Global
@@ -10,6 +11,7 @@ public partial class views_global_sysprep_edit : BasePages.Global
 
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.UpdateGlobal);
         var sysprepTag = new SysprepTag
         {
             Id = SysprepTag.Id,
@@ -20,7 +22,8 @@ public partial class views_global_sysprep_edit : BasePages.Global
             Contents = txtContent.Text        
         };
       
-        BLL.SysprepTag.UpdateSysprepTag(sysprepTag);
+        var result = BLL.SysprepTag.UpdateSysprepTag(sysprepTag);
+        EndUserMessage = result.IsValid ? "Successfully Updated Sysprep Tag" : result.Message;
     }
 
     protected void PopulateForm()

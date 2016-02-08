@@ -25,6 +25,7 @@ namespace views.tasks
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
+            RequiresAuthorization(Authorizations.ImageMulticastTask);
             if (ddlComputerImage.Text == "Select Image") return;
             var imageProfile = BLL.ImageProfile.ReadProfile(Convert.ToInt32(ddlImageProfile.SelectedValue));
             EndUserMessage = new BLL.Workflows.Multicast(imageProfile, txtClientCount.Text,CloneDeployCurrentUser.Id).Create();

@@ -19,6 +19,7 @@ public partial class views_admin_client : Admin
 
     protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.UpdateAdmin);
         if (ValidateSettings())
         {
             List<Models.Setting> listSettings = new List<Models.Setting>

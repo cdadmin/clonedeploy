@@ -29,7 +29,7 @@
 </div>
 <br class="clear"/>
 <div class="size-9 column">
-    Don't Expand Volume
+    Don't Expand Volumes
 </div>
 <div class="size-8 column">
     <asp:CheckBox ID="chkDownNoExpand" runat="server" CssClass="textbox"></asp:CheckBox>
@@ -37,7 +37,7 @@
 <br class="clear"/>
 
 <div class="size-9 column">
-    Align BCD To Partition
+    Update BCD
 </div>
 <div class="size-8 column">
     <asp:CheckBox ID="chkAlignBCD" runat="server" CssClass="textbox"></asp:CheckBox>
@@ -45,7 +45,7 @@
 <br class="clear"/>
 
 <div class="size-9 column">
-    Run Fix Boot
+    Fix Bootloader
 </div>
 <div class="size-8 column">
     <asp:CheckBox ID="chkRunFixBoot" runat="server" CssClass="textbox"></asp:CheckBox>

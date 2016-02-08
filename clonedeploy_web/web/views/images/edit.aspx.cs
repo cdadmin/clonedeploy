@@ -2,6 +2,7 @@
 
 using System;
 using BasePages;
+using Helpers;
 
 namespace views.images
 {
@@ -15,6 +16,7 @@ namespace views.images
    
         protected void btnUpdateImage_Click(object sender, EventArgs e)
         {
+            RequiresAuthorizationOrManagedImage(Authorizations.UpdateImage, Image.Id);
             var image = Image;
 
             var currentName = (string) (ViewState["currentName"]);

@@ -16,13 +16,13 @@ public partial class views_admin_bootmenu_editor : Admin
             try
             {
                 txtGrubSha.Text =
-                    new WebClient().DownloadString("http://docs.cruciblewds.org/grub-pass-gen/encrypt.php?password=" +
+                    new WebClient().DownloadString("http://docs.clonedeploy.org/grub-pass-gen/encrypt.php?password=" +
                                                    txtGrubPass.Text);
                 txtGrubSha.Text = txtGrubSha.Text.Replace("\n \n\n\n", "");
             }
             catch
             {
-                txtGrubSha.Text = "Coud not contact http://cruciblewds.org to encrypt password.";
+                txtGrubSha.Text = "Coud not contact http://clonedeploy.org to encrypt password.";
             }
         }
 
@@ -104,6 +104,7 @@ public partial class views_admin_bootmenu_editor : Admin
 
         protected void saveEditor_Click(object sender, EventArgs e)
         {
+            RequiresAuthorization(Authorizations.UpdateAdmin);
             string path = null;
             var tftpPath = Settings.TftpPath;
             var mode = Settings.PxeMode;

@@ -14,14 +14,7 @@ namespace Security
         public string ConsoleLogin(string username, string password, string task, string ip)
         {
             var result = new Dictionary<string, string>();
-            if (Settings.OnDemand != "Enabled")
-            {
-                Logger.Log("On Demand Mode Is Globally Disabled.  Cannot Login.");
-                result.Add("valid", "false");
-                result.Add("user_id", "");
-                result.Add("user_token", "");
-                return JsonConvert.SerializeObject(result);
-            }
+           
             var validationResult = GlobalLogin(username, password, "Console");
             
             if (!validationResult.IsValid)
@@ -32,10 +25,10 @@ namespace Security
             }
             else
             {
-                var wdsuser = BLL.User.GetUser(username);
+                var cloneDeployUser = BLL.User.GetUser(username);
                 result.Add("valid", "true");
-                result.Add("user_id", wdsuser.Id.ToString());
-                result.Add("user_token", wdsuser.Token);
+                result.Add("user_id", cloneDeployUser.Id.ToString());
+                result.Add("user_token", cloneDeployUser.Token);
             }
          
             return JsonConvert.SerializeObject(result);
@@ -46,13 +39,13 @@ namespace Security
         public string IpxeLogin(string username, string password, string kernel, string bootImage, string task)
         {
             var newLineChar = "\n";
-            string wdsKey = null;
+            string userToken = null;
             if (Settings.DebugRequiresLogin == "No" || Settings.OnDemandRequiresLogin == "No" ||
                Settings.RegisterRequiresLogin == "No" || Settings.WebTaskRequiresLogin == "No")
-                wdsKey = Settings.UniversalToken;
+                userToken = Settings.UniversalToken;
             else
             {
-                wdsKey = "";
+                userToken = "";
             }
             var globalComputerArgs = Settings.GlobalComputerArgs;
             var validationResult = GlobalLogin(username, password, "iPXE");
@@ -60,7 +53,7 @@ namespace Security
             var lines = "#!ipxe" + newLineChar;
             lines += "kernel " + Settings.WebPath + "IpxeBoot?filename=" + kernel + "&type=kernel" +
                      " initrd=" + bootImage + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
-                     Settings.WebPath + " USER_TOKEN=" + wdsKey + " task=" + task + " consoleblank=0 " +
+                     Settings.WebPath + " USER_TOKEN=" + userToken + " task=" + task + " consoleblank=0 " +
                      globalComputerArgs + newLineChar;
             lines += "imgfetch --name " + bootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
                      bootImage + "&type=bootimage" + newLineChar;
@@ -79,7 +72,7 @@ namespace Security
                 IsValid = false
             };
 
-            //Check if user exists in CWDS
+            //Check if user exists in Clone Deploy
             var user = BLL.User.GetUser(userName);
             if (user == null) return validationResult;
 

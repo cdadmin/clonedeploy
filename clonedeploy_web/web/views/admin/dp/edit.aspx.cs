@@ -1,5 +1,6 @@
 ﻿using System;
 using BasePages;
+using Helpers;
 
 public partial class views_admin_dp_edit : Admin
 {
@@ -10,6 +11,7 @@ public partial class views_admin_dp_edit : Admin
 
     protected void buttonUpdateDp_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.UpdateAdmin);
         var distributionPoint = BLL.DistributionPoint.GetDistributionPoint(Convert.ToInt32(Request.QueryString["dpid"]));
 
         distributionPoint.DisplayName = txtDisplayName.Text;

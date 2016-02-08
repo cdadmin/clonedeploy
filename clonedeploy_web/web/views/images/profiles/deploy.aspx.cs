@@ -5,6 +5,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using BasePages;
 using BLL;
+using Helpers;
 using Newtonsoft.Json;
 
 public partial class views_images_profiles_deploy : Images
@@ -22,6 +23,7 @@ public partial class views_images_profiles_deploy : Images
 
     protected void btnUpdateDeploy_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorizationOrManagedImage(Authorizations.UpdateProfile, Image.Id);
         var imageProfile = ImageProfile;
         imageProfile.ChangeName = Convert.ToInt16(chkChangeName.Checked);
         imageProfile.SkipExpandVolumes = Convert.ToInt16(chkDownNoExpand.Checked);

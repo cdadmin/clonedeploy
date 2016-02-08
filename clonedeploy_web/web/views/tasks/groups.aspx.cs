@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Helpers;
 
 namespace views.tasks
 {
@@ -19,11 +20,13 @@ namespace views.tasks
 
             if (isUnicast == 1)
             {
+                RequiresAuthorizationOrManagedGroup(Authorizations.ImageDeployTask, group.Id);
                 var successCount = BLL.Group.StartGroupUnicast(group, CloneDeployCurrentUser.Id);
                 EndUserMessage = "Started " + successCount + " Tasks";
             }
             else
             {
+                RequiresAuthorizationOrManagedGroup(Authorizations.ImageMulticastTask, group.Id);
                 EndUserMessage = new BLL.Workflows.Multicast(group,CloneDeployCurrentUser.Id).Create();
             }
             Session.Remove("groupID");

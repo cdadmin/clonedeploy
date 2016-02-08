@@ -1,5 +1,6 @@
 ﻿using System;
 using BasePages;
+using Helpers;
 using Models;
 
 public partial class views_admin_dp_create : Admin
@@ -11,6 +12,7 @@ public partial class views_admin_dp_create : Admin
 
     protected void buttonAddDp_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.UpdateAdmin);
         var distributionPoint = new DistributionPoint
         {
             DisplayName = txtDisplayName.Text,

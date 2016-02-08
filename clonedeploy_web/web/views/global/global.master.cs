@@ -8,8 +8,5 @@ public partial class views_global_global : MasterPage
         if (Request.QueryString["cat"] == "sub1")
             Level1.Visible = false;
     }
-    protected void OkButton_Click(object sender, EventArgs e)
-    {
-        Response.Redirect("~/views/admin/bootmenu.aspx?defaultmenu=true");
-    }
+   
 }

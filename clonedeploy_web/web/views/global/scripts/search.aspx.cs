@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using Helpers;
 
 public partial class views_admin_scripts_search : BasePages.Global
 {
@@ -50,6 +51,7 @@ public partial class views_admin_scripts_search : BasePages.Global
 
     protected void ButtonConfirmDelete_Click(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.DeleteGlobal);
         foreach (GridViewRow row in gvScripts.Rows)
         {
             var cb = (CheckBox)row.FindControl("chkSelector");

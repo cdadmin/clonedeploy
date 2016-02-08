@@ -7,6 +7,7 @@ public partial class views_admin_scripts_editcore : BasePages.Global
 {
     protected void Page_Load(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.Administrator);
         if (IsPostBack) return;
         scriptEditor.Value = "";
         ddlCoreScripts.DataSource = Utility.GetScripts("core");

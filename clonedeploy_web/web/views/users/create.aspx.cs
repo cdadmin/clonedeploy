@@ -20,6 +20,12 @@ namespace views.users
                 EndUserMessage = "Passwords Did Not Match";
                 return;
             }
+
+            if (string.IsNullOrEmpty(txtUserPwd.Text))
+            {
+                EndUserMessage = "Passwords Cannot Be Empty";
+                return;
+            }
   
             var user = new CloneDeployUser
             {

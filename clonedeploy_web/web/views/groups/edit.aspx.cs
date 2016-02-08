@@ -1,5 +1,6 @@
 ﻿using System;
 using BasePages;
+using Helpers;
 using Group = Models.Group;
 
 namespace views.groups
@@ -8,6 +9,7 @@ namespace views.groups
     {
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
+            RequiresAuthorizationOrManagedGroup(Authorizations.UpdateGroup, Group.Id); 
             var group = new Group
             {
                 Id = Group.Id,

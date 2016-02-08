@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BasePages;
+using Helpers;
 
 
 public partial class views_images_profiles_search : Images
@@ -17,6 +18,7 @@ public partial class views_images_profiles_search : Images
 
     protected void ButtonConfirmDelete_Click(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.DeleteProfile);
         var deleteCounter = 0;
         foreach (GridViewRow row in gvProfiles.Rows)
         {

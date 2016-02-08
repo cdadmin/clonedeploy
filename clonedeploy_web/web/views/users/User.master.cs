@@ -1,5 +1,6 @@
 ﻿using System;
 using BasePages;
+using Helpers;
 using Models;
 
 namespace views.masters
@@ -33,6 +34,7 @@ namespace views.masters
 
         protected void btnDelete_Click(object sender, EventArgs e)
         {
+            UsersBasePage.RequiresAuthorization(Authorizations.Administrator);
             if (BLL.User.GetAdminCount() == 1 && CloneDeployUser.Membership == "Administrator")
             {
                 PageBaseMaster.EndUserMessage = "There Must Be At Least One Administrator";

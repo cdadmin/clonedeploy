@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
+using Helpers;
 
 public partial class views_images_profiles_sysprep : Images
 {
@@ -62,6 +63,7 @@ public partial class views_images_profiles_sysprep : Images
 
     protected void btnUpdateSysprep_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorizationOrManagedImage(Authorizations.UpdateProfile, Image.Id);
         var deleteResult = BLL.ImageProfileSysprepTag.DeleteImageProfileSysprepTags(ImageProfile.Id);
         var checkedCount = 0;
         foreach (GridViewRow row in gvSysprep.Rows)

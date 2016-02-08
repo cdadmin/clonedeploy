@@ -49,7 +49,7 @@ function save_mbr_gpt()
       usingGPT=true
       mbr_status=`gdisk -l $hard_drive <<< "q" 2>> $CLIENT_LOG | grep 'MBR:' | awk '{$1=""; print $0}' | sed 's/^ //'`
       if [ "$mbr_status" = "MBR only" ]; then
-        error "This Hard Drive Appears To Have Both GPT And MBR.  CrucibleWDS Does Not Know What To Use.  You Must First Convert The Drive To One Or The Other Before Uploading"
+        error "This Hard Drive Appears To Have Both GPT And MBR.  Clone Deploy Does Not Know What To Use.  You Must First Convert The Drive To One Or The Other Before Uploading"
       fi
     elif [ "$gpt_status" = "damaged" ]; then
       error "The GPT Table Is Damaged And Cannot Be Saved.  You Must Fix This Before Uploading This Image"
@@ -280,7 +280,7 @@ function create_image_schema()
 	  log "Current NVRAM Entries"
 	  efibootmgr -v &>> $CLIENT_LOG
       if [ "$mbr_status" = "MBR only" ]; then
-        error "This Hard Drive Appears To Have Both GPT And MBR.  CrucibleWDS Does Not Know What To Use.  You Must First Convert The Drive To One Or The Other Before Uploading"
+        error "This Hard Drive Appears To Have Both GPT And MBR.  Clone Deploy Does Not Know What To Use.  You Must First Convert The Drive To One Or The Other Before Uploading"
       fi
     else
       layout_type="mbr"

@@ -29,6 +29,7 @@ public partial class views_groups_smartcriteria : BasePages.Groups
 
     protected void btnUpdate_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorizationOrManagedGroup(Authorizations.UpdateGroup,Group.Id); 
         RequiresAuthorization(Authorizations.UpdateSmart);
         var group = Group;
         group.SmartCriteria = txtContains.Text;

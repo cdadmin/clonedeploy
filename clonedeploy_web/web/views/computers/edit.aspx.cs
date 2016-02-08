@@ -14,7 +14,7 @@ namespace views.computers
 
         protected void buttonUpdateComputer_Click(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.UpdateComputer);
+            RequiresAuthorizationOrManagedComputer(Authorizations.UpdateComputer, Computer.Id);
             var computer = new Computer
             {
                 Id = Computer.Id,

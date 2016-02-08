@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Helpers;
 using Models;
 
 public partial class views_global_rooms_search : BasePages.Global
@@ -47,6 +48,7 @@ public partial class views_global_rooms_search : BasePages.Global
 
     protected void Insert(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.CreateGlobal);
         GridViewRow gvRow = (GridViewRow)(sender as Control).Parent.Parent;
         var room = new Room
         {
@@ -67,6 +69,7 @@ public partial class views_global_rooms_search : BasePages.Global
 
     protected void OnRowUpdating(object sender, GridViewUpdateEventArgs e)
     {
+        RequiresAuthorization(Authorizations.UpdateGlobal);
         GridViewRow gvRow = gvRooms.Rows[e.RowIndex];
         var room = new Room
         {
@@ -89,6 +92,7 @@ public partial class views_global_rooms_search : BasePages.Global
 
     protected void OnRowDeleting(object sender, GridViewDeleteEventArgs e)
     {
+        RequiresAuthorization(Authorizations.DeleteGlobal);
         BLL.Room.DeleteRoom(Convert.ToInt32(gvRooms.DataKeys[e.RowIndex].Values[0]));
         BindGrid();
     }

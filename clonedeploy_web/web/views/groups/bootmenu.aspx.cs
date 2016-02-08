@@ -52,7 +52,7 @@ namespace views.groups
 
         protected void buttonUpdate_OnClick(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.UpdateGroup);
+            RequiresAuthorizationOrManagedGroup(Authorizations.UpdateGroup, Group.Id); 
             var bootMenu = BLL.GroupBootMenu.GetGroupBootMenu(Group.Id) ?? new Models.GroupBootMenu();
             bootMenu.GroupId = Group.Id;
             if (Helpers.Settings.ProxyDhcp == "Yes")

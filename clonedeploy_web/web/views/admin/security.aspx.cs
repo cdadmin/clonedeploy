@@ -42,6 +42,7 @@ public partial class views_admin_security : Admin
 
     protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.UpdateAdmin);
         if (!ValidateSettings()) return;
         if (ddlDebugLogin.Text == "Yes" && ddlOndLogin.Text == "Yes" && ddlRegisterLogin.Text == "Yes" &&
             ddlWebTasksLogin.Text == "Yes")

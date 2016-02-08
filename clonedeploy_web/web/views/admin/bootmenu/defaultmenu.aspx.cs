@@ -145,6 +145,7 @@ public partial class views_admin_bootmenu_defaultmenu : Admin
 
     public void btnSubmit_Click(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.UpdateAdmin);
         if(Settings.ProxyDhcp == "Yes")
             CreateProxyMenu();
         else

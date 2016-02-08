@@ -55,7 +55,7 @@
         <div class="nav" id="navmenu">
             <ul>
                 <li>
-                    <a href="#" class="leftmenu">
+                    <a href="<%= ResolveUrl("~/views/dashboard/dash.aspx") %>" class="leftmenu">
                         <img alt="logo" src="<%= ResolveUrl("~/") %>content/img/cd.png" style="margin-top: 7px; margin-left: 3px; opacity: 0.7"/>
                     </a>
                 </li>

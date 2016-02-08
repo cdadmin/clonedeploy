@@ -1,4 +1,5 @@
 ﻿using System;
+using Helpers;
 
 public partial class views_global_filesandfolders_edit : BasePages.Global
 {
@@ -16,6 +17,7 @@ public partial class views_global_filesandfolders_edit : BasePages.Global
 
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.UpdateGlobal);
         var fileFolder = FileFolder;
         fileFolder.Name = txtName.Text;
         fileFolder.Path = txtPath.Text;

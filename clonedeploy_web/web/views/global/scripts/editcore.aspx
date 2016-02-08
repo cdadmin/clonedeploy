@@ -6,13 +6,18 @@
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="SubHelp" Runat="Server">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits actions" target="_blank">Help</a>
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits help" target="_blank"></a>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
-      <asp:LinkButton ID="buttonSaveCore" runat="server" Text="Update" OnClick="buttonSaveCore_OnClick" CssClass="submits actions" OnClientClick="update_click()"/>
+      <asp:LinkButton ID="buttonSaveCore" runat="server" Text="Update" OnClick="buttonSaveCore_OnClick" CssClass="submits actions green" OnClientClick="update_click()"/>
 </asp:Content>
 
 <asp:Content runat="server" ID="Content2" ContentPlaceHolderID="SubContent2">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#edit').addClass("nav-current");
+        });
+    </script>
      <asp:DropDownList runat="server" ID="ddlCoreScripts" OnSelectedIndexChanged="ddlCoreScripts_OnSelectedIndexChanged" AutoPostBack="True" CssClass="ddlist" Style="float: right; margin-right: 5px; margin-top: 5px; width: 200px;">
             </asp:DropDownList>
         <br class="clear"/>

@@ -82,6 +82,7 @@ namespace views.tasks
 
             if (direction == "push")
             {
+                RequiresAuthorizationOrManagedComputer(Authorizations.ImageDeployTask, computer.Id);
                 var image = BLL.Image.GetImage(computer.ImageId);
                 Session["imageID"] = image.Id;        
                 EndUserMessage = new BLL.Workflows.Unicast(computer,direction,CloneDeployCurrentUser.Id).Start();               
@@ -89,6 +90,7 @@ namespace views.tasks
             }
             else
             {
+                RequiresAuthorizationOrManagedComputer(Authorizations.ImageUploadTask, computer.Id);
                 EndUserMessage = new BLL.Workflows.Unicast(computer,direction,CloneDeployCurrentUser.Id).Start();
             }
             Session.Remove("computerID");

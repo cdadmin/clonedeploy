@@ -4,6 +4,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using BasePages;
 using BLL;
+using Helpers;
 using Newtonsoft.Json;
 
 public partial class views_images_profiles_upload : Images
@@ -15,6 +16,7 @@ public partial class views_images_profiles_upload : Images
 
     protected void btnUpdateUpload_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorizationOrManagedImage(Authorizations.UpdateProfile, Image.Id);
         if (chkCustomUpload.Checked && chkSchemaOnly.Checked)
         {
             EndUserMessage = "Custom Schema And Upload Schema Only Cannot Both Be Checked";

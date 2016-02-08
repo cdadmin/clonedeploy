@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Helpers;
 using Models;
 
 public partial class views_global_sites_search : BasePages.Global
@@ -47,6 +48,7 @@ public partial class views_global_sites_search : BasePages.Global
 
     protected void Insert(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.CreateGlobal);
         GridViewRow gvRow = (GridViewRow)(sender as Control).Parent.Parent;
         var site = new Site
         {
@@ -67,6 +69,7 @@ public partial class views_global_sites_search : BasePages.Global
 
     protected void OnRowUpdating(object sender, GridViewUpdateEventArgs e)
     {
+        RequiresAuthorization(Authorizations.UpdateGlobal);
         GridViewRow gvRow = gvSites.Rows[e.RowIndex];
         var site = new Site
         {
@@ -88,6 +91,7 @@ public partial class views_global_sites_search : BasePages.Global
 
     protected void OnRowDeleting(object sender, GridViewDeleteEventArgs e)
     {
+        RequiresAuthorization(Authorizations.DeleteGlobal);
         BLL.Site.DeleteSite(Convert.ToInt32(gvSites.DataKeys[e.RowIndex].Values[0]));
         BindGrid();
     }

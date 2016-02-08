@@ -24,6 +24,7 @@ public partial class views_admin_server : Admin
 
     protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
     {
+        RequiresAuthorization(Authorizations.UpdateAdmin);
         if (!ValidateSettings()) return;
         var listSettings = new List<Models.Setting>
         {
