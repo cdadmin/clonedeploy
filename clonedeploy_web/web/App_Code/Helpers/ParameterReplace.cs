@@ -10,6 +10,7 @@ namespace Helpers
 
         public static string Between(string parameter)
         {
+            if(string.IsNullOrEmpty(parameter)) return parameter;
             int start = parameter.IndexOf("[", StringComparison.Ordinal);
             int to = parameter.IndexOf("]", start + "[".Length, StringComparison.Ordinal);
             if (start < 0 || to < 0) return parameter;

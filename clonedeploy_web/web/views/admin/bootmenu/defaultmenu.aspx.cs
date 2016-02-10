@@ -32,8 +32,7 @@ public partial class views_admin_bootmenu_defaultmenu : Admin
             }
             if (efi64File.Contains("grub"))
                 grubProxyPasses.Visible = true;
-            try
-            {
+          
                 ddlBiosKernel.DataSource = Utility.GetKernels();
                 ddlBiosKernel.DataBind();
                 ddlEfi32Kernel.DataSource = Utility.GetKernels();
@@ -41,25 +40,7 @@ public partial class views_admin_bootmenu_defaultmenu : Admin
                 ddlEfi64Kernel.DataSource = Utility.GetKernels();
                 ddlEfi64Kernel.DataBind();
 
-                var itemKernel = ddlBiosKernel.Items.FindByText(Settings.DefaultKernel32);
-                if (itemKernel != null)
-                {
-                    ddlBiosKernel.SelectedValue = Settings.DefaultKernel32;
-                    ddlEfi32Kernel.SelectedValue = Settings.DefaultKernel32;
-                }
-                else
-                {
-                    ddlBiosKernel.Items.Insert(0, "Select Kernel");
-                    ddlEfi32Kernel.Items.Insert(0, "Select Kernel");
-                }
-
-                var itemKernel64 = ddlEfi64Kernel.Items.FindByText(Settings.DefaultKernel64);
-                if (itemKernel64 != null)
-                    ddlEfi64Kernel.SelectedValue = Settings.DefaultKernel64;
-                else
-                    ddlEfi64Kernel.Items.Insert(0, "Select Kernel");
-
-
+              
                 ddlBiosBootImage.DataSource = Utility.GetBootImages();
                 ddlBiosBootImage.DataBind();
                 ddlEfi32BootImage.DataSource = Utility.GetBootImages();
@@ -67,28 +48,8 @@ public partial class views_admin_bootmenu_defaultmenu : Admin
                 ddlEfi64BootImage.DataSource = Utility.GetBootImages();
                 ddlEfi64BootImage.DataBind();
 
-                var itemBootImage = ddlBiosBootImage.Items.FindByText("initrd.gz");
-                if (itemBootImage != null)
-                {
-                    ddlBiosBootImage.SelectedValue = "initrd.gz";
-                    ddlEfi32BootImage.SelectedValue = "initrd.gz";
-                }
-                else
-                {
-                    ddlBiosBootImage.Items.Insert(0, "Select Boot Image");
-                    ddlEfi32BootImage.Items.Insert(0, "Select Boot Image");
-                }
-
-                var itemBootImage64 = ddlEfi64BootImage.Items.FindByText("initrd64.gz");
-                if (itemBootImage64 != null)
-                    ddlEfi64BootImage.SelectedValue = "initrd64.gz";
-                else
-                    ddlEfi64BootImage.Items.Insert(0, "Select Boot Image");
-            }
-            catch
-            {
-                // ignored
-            }
+              
+          
         }
         else
         {
@@ -110,34 +71,14 @@ public partial class views_admin_bootmenu_defaultmenu : Admin
                 grubPassBoxes.Visible = true;
                 ipxePassBoxes.Visible = false;
             }
-            try
-            {
+          
                 ddlComputerKernel.DataSource = Utility.GetKernels();
                 ddlComputerKernel.DataBind();
-                var itemKernel = ddlComputerKernel.Items.FindByText(Settings.DefaultKernel32);
-                if (itemKernel != null)
-                    ddlComputerKernel.SelectedValue = Settings.DefaultKernel32;
-                else
-                    ddlComputerKernel.Items.Insert(0, "Select Kernel");
-            }
-            catch
-            {
-                // ignored
-            }
-            try
-            {
+               
+           
                 ddlComputerBootImage.DataSource = Utility.GetBootImages();
                 ddlComputerBootImage.DataBind();
-                var itemBootImage = ddlComputerBootImage.Items.FindByText("initrd.gz");
-                if (itemBootImage != null)
-                    ddlComputerBootImage.SelectedValue = "initrd.gz";
-                else
-                    ddlComputerBootImage.Items.Insert(0, "Select Boot Image");
-            }
-            catch
-            {
-                // ignored
-            }
+              
         }
     }
 

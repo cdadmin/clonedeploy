@@ -137,6 +137,7 @@ namespace BLL
             imageProfile.Compression = "lz4";
             imageProfile.CompressionLevel = "1";
             imageProfile.TaskCompletedAction = "Reboot";
+            imageProfile.ChangeName = 1;
             return imageProfile;
         }
 
