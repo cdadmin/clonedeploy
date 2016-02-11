@@ -9,6 +9,7 @@ namespace views.tasks
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            cancelTasks.Visible = BLL.User.IsAdmin(CloneDeployCurrentUser.Id);
             if (IsPostBack) return;
             ViewState["clickTracker"] = "1";
             PopulateGrid();

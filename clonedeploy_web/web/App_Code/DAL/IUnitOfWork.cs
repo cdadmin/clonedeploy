@@ -36,6 +36,7 @@ namespace DAL
         DAL.IGenericRepository<Models.ImageProfileScript> ImageProfileScriptRepository { get; }
         DAL.IGenericRepository<Models.ImageProfileFileFolder> ImageProfileFileFolderRepository { get; }
         DAL.IGenericRepository<Models.ImageProfileSysprepTag> ImageProfileSysprepRepository { get; }
+        DAL.IGenericRepository<Models.CdVersion> CdVersionRepository { get; }
         DAL.GroupRepository GroupRepository { get; }
         DAL.ActiveImagingTaskRepository ActiveImagingTaskRepository { get; }
         bool Save();

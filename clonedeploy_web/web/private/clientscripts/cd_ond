@@ -33,7 +33,7 @@ elif [ "$taskType" = "2" ]; then
   else
     image_profile_id=$(dialog --backtitle "Clone Deploy" --title "Select An Image Profile" --clear --menu "" 20 60 15 `parse_json "$profile_list" .ImageProfiles[]` --stdout)
   fi
-  ond_args=$($curlAuth --data "mac=$mac&objectId=$imageProfileId&task=pull" "${web}GetOnDemandArguments" $curlEnd)
+  ond_args=$($curlAuth --data "mac=$mac&objectId=$image_profile_id&task=pull" "${web}GetOnDemandArguments" $curlEnd)
   ond_args="${ond_args} task=pull"
 		
 elif [ "$taskType" = "3" ]; then

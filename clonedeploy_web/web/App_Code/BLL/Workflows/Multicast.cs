@@ -268,11 +268,11 @@ namespace BLL.Workflows
                     switch (Path.GetExtension(imageFile))
                     {
                         case ".lz4":
-                            compAlg = isUnix ? "lz4 -d " : "lz4.exe -d ";
+                            compAlg = isUnix ? "lz4 -d " : "lz4.exe\" -d ";
                             stdout = " - ";
                             break;
                         case ".gz":
-                            compAlg = isUnix ? "gzip -c -d " : "gzip.exe -c -d ";
+                            compAlg = isUnix ? "gzip -c -d " : "gzip.exe\" -c -d ";
                             stdout = "";
                             break;
                         case ".uncp":
@@ -296,7 +296,7 @@ namespace BLL.Workflows
 
                         if (compAlg == "none" || Settings.MulticastDecompression == "client")
                         {
-                            processArguments += (prefix + " udp-sender" + " --file " + imageFile +
+                            processArguments += (prefix + " udp-sender" + " --file " + "\"" + imageFile + "\"" +
                                                  " --portbase " + _multicastSession.Port + minReceivers + " " +
                                                  " --ttl 32 " +
                                                  senderArgs);
@@ -304,7 +304,7 @@ namespace BLL.Workflows
 
                         else
                         {
-                            processArguments += (prefix + compAlg + imageFile + stdout + " | udp-sender" +
+                            processArguments += (prefix + compAlg + "\"" + imageFile + "\"" + stdout + " | udp-sender" +
                                                  " --portbase " + _multicastSession.Port + minReceivers + " " +
                                                  " --ttl 32 " +
                                                  senderArgs);
@@ -317,23 +317,23 @@ namespace BLL.Workflows
 
                         string prefix = null;
                         if (multicastHdCounter == 1)
-                            prefix = x == 1 ? " /c " : " & ";
+                            prefix = x == 1 ? " /c \"" : " & ";
                         else
                             prefix = " & ";
                        
 
                         if (compAlg == "none" || Settings.MulticastDecompression == "client")
                         {
-                            processArguments += (prefix + appPath +
-                                                 "udp-sender.exe" + " --file " + imageFile +
+                            processArguments += (prefix + "\"" + appPath +
+                                                 "udp-sender.exe" + "\"" + " --file " + "\"" + imageFile + "\"" +
                                                  " --portbase " + _multicastSession.Port + minReceivers + " " +
                                                  " --ttl 32 " +
                                                  senderArgs);
                         }
                         else
                         {
-                            processArguments += (prefix + appPath + compAlg + imageFile + stdout + " | " + appPath +
-                                                 "udp-sender.exe" +
+                            processArguments += (prefix + "\"" + appPath + compAlg + "\"" + imageFile + "\"" + stdout + " | " + "\"" + appPath +
+                                                 "udp-sender.exe" + "\"" +
                                                  " --portbase " + _multicastSession.Port + minReceivers + " " +
                                                  " --ttl 32 " +
                                                  senderArgs);
@@ -342,8 +342,8 @@ namespace BLL.Workflows
                     }
                 }
             }
-            if (isUnix)
-                processArguments += "\"";
+
+            processArguments += "\"";
             return processArguments;
         }
 

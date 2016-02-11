@@ -32,6 +32,7 @@ namespace DAL
         private IGenericRepository<Models.SysprepTag> _sysprepTagRepository;
         private IGenericRepository<Models.CloneDeployUser> _userRepository;
         private IGenericRepository<Models.BootTemplate> _bootTemplateRepository;
+        private IGenericRepository<Models.CdVersion> _cdVersionRepository;
         private ComputerRepository _computerRepository;
         private IGenericRepository<Models.ImageProfileScript> _imageProfileScriptRepository;
         private IGenericRepository<Models.ImageProfileFileFolder> _imageProfileFileFolderRepository;
@@ -184,6 +185,11 @@ namespace DAL
         public IGenericRepository<Models.ImageProfileScript> ImageProfileScriptRepository
         {
             get { return _imageProfileScriptRepository ?? (_imageProfileScriptRepository = new GenericRepository<Models.ImageProfileScript>(_context)); }
+        }
+
+        public IGenericRepository<Models.CdVersion> CdVersionRepository
+        {
+            get { return _cdVersionRepository ?? (_cdVersionRepository = new GenericRepository<Models.CdVersion>(_context)); }
         }
 
         public IGenericRepository<Models.ImageProfileFileFolder> ImageProfileFileFolderRepository

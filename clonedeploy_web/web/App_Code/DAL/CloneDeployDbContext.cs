@@ -42,6 +42,7 @@ namespace DAL
         public DbSet<Models.UserLockout> UserLockouts { get; set; }
         public DbSet<Models.GroupProperty> GroupProperties { get; set; }
         public DbSet<Models.FileFolder> FilesFolders { get; set; }
+        public DbSet<Models.CdVersion> CdVersions { get; set; }
 
 
     }
