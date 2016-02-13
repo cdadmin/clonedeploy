@@ -15,6 +15,9 @@ fi
 if [ "$taskType" = "1" ]; then
 	imageList=`$curlAuth --data "userId=$user_id" "${web}ListImages" $curlEnd`
 	imageId=$(dialog --backtitle "Clone Deploy" --title "Select An Image" --clear --menu "" 20 60 15 `parse_json "$imageList" .Images[]` --stdout)
+	if [ -z "$imageId"]; then
+	  error "No Image Was Selected Or No Images Have Been Added Yet"
+	fi
 	imageProfileList=`$curlAuth --data "imageId=$imageId" "${web}ListImageProfiles" $curlEnd`
 	if [ "`parse_json "$imageProfileList" .Count`" = "1" ]; then
 		imageProfileId=`parse_json "$imageProfileList" .FirstProfileId`
@@ -27,6 +30,9 @@ if [ "$taskType" = "1" ]; then
 elif [ "$taskType" = "2" ]; then
   image_list=`$curlAuth --data "userId=$user_id" "${web}ListImages" $curlEnd`
   image_id=$(dialog --backtitle "Clone Deploy" --title "Select An Image" --clear --menu "" 20 60 15 `parse_json "$image_list" .Images[]` --stdout)
+  if [ -z "$image_id"]; then
+	  error "No Image Was Selected Or No Images Have Been Added Yet"
+  fi
   profile_list=`$curlAuth --data "imageId=$image_id" "${web}ListImageProfiles" $curlEnd`
   if [ "$(parse_json "$profile_list" .Count)" = "1" ]; then
     image_profile_id=`parse_json "$profile_list" .FirstProfileId`
@@ -39,6 +45,9 @@ elif [ "$taskType" = "2" ]; then
 elif [ "$taskType" = "3" ]; then
 	multicastList=`$curlAuth "${web}ListMulticasts" $curlEnd`
 	multicastId=$(dialog --backtitle "Clone Deploy" --title "Select A Multicast Session" --clear --menu "" 20 60 15 `parse_json "$multicastList" .Multicasts[]` --stdout)
+	if [ -z "$multicastId"]; then
+	  error "No Multicast Session Was Selected Or There Are No Active Sessions"
+	fi
     ond_args=$($curlAuth --data "mac=$mac&objectId=$multicastId&task=multicast" "${web}GetOnDemandArguments" $curlEnd)
 	ond_args="${ond_args} task=push"
 else

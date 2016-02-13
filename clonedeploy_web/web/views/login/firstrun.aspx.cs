@@ -77,6 +77,7 @@ public partial class views_login_firstrun : PageBaseMaster
             var defaultBootMenu = new BLL.Workflows.DefaultBootMenu();
             defaultBootMenu.Kernel = Settings.DefaultKernel32;
             defaultBootMenu.BootImage = "initrd.xz";
+            defaultBootMenu.Type = "standard";
             defaultBootMenu.CreateGlobalDefaultBootMenu();
 
             var cdVersion = BLL.CdVersion.Get(1);
