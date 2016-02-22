@@ -149,7 +149,7 @@ namespace BLL.Workflows
                 AppendString("skip_clock=true");
             if (Convert.ToBoolean(_imageProfile.WebCancel))
                 AppendString("web_cancel=true");
-            AppendString("task_completed_action=" + _imageProfile.TaskCompletedAction);
+            AppendString("task_completed_action=" + "\"" + _imageProfile.TaskCompletedAction + "\"");
 
             if (_direction == "pull")
             {
@@ -176,15 +176,15 @@ namespace BLL.Workflows
                 {
                     AppendString("dp_id=" + Computer.GetDistributionPoint(_computer).Id);
                     if(!string.IsNullOrEmpty(_computer.CustomAttribute1))
-                        AppendString("cust_attr_1=" + _computer.CustomAttribute1);
+                        AppendString("cust_attr_1=" + "\"" + _computer.CustomAttribute1 + "\"");
                     if (!string.IsNullOrEmpty(_computer.CustomAttribute2))
-                        AppendString("cust_attr_2=" + _computer.CustomAttribute2);
+                        AppendString("cust_attr_2=" + "\"" + _computer.CustomAttribute2 + "\"");
                     if (!string.IsNullOrEmpty(_computer.CustomAttribute3))
-                        AppendString("cust_attr_3=" + _computer.CustomAttribute3);
+                        AppendString("cust_attr_3=" + "\"" + _computer.CustomAttribute3 + "\"");
                     if (!string.IsNullOrEmpty(_computer.CustomAttribute4))
-                        AppendString("cust_attr_4=" + _computer.CustomAttribute4);
+                        AppendString("cust_attr_4=" + "\"" + _computer.CustomAttribute4 + "\"");
                     if (!string.IsNullOrEmpty(_computer.CustomAttribute5))
-                        AppendString("cust_attr_5=" + _computer.CustomAttribute5);
+                        AppendString("cust_attr_5=" + "\"" + _computer.CustomAttribute5 + "\"");
                 }
                 else
                     AppendString("dp_id=" + DistributionPoint.GetPrimaryDistributionPoint().Id);
@@ -204,7 +204,7 @@ namespace BLL.Workflows
                 if (_direction == "multicast")
                 {
                     if (Settings.MulticastDecompression == "client") AppendString("decompress_multicast_on_client=true");
-                    AppendString("client_receiver_args=" + _imageProfile.ReceiverArguments);
+                    AppendString("client_receiver_args=" + "\"" + _imageProfile.ReceiverArguments + "\"");
                     AppendString("multicast_port=" + multicastPort);
                 }
                 
