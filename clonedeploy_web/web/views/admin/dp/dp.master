@@ -1,0 +1,28 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/views/admin/admin.master" AutoEventWireup="true" CodeFile="dp.master.cs" Inherits="views_admin_dp_dp" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
+     <li ><a href="<%= ResolveUrl("~/views/admin/dp/search.aspx") %>?level=2">Distribution Points</a></li>
+    <asp:ContentPlaceHolder runat="server" ID="BreadcrumbSub2">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content runat="server" ID="Help" ContentPlaceHolderID="Help">
+    <asp:ContentPlaceHolder runat="server" ID="SubHelp">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
+    <asp:ContentPlaceHolder runat="server" ID="ActionsRightSub">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="Level2" Runat="Server">
+      <li id="search"><a  href="<%= ResolveUrl("~/views/admin/dp/search.aspx") %>?level=2"><span class="sub-nav-text">Search Distribution Points</span></a></li>
+    <li id="create"><a href="<%= ResolveUrl("~/views/admin/dp/create.aspx")  %>?level=2"><span class="sub-nav-text">New Distribution Point</span></a></li>
+</asp:Content>
+
+<asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
+      <asp:ContentPlaceHolder ID="SubContent2" runat="server">
+        </asp:ContentPlaceHolder>
+</asp:Content>
+
