@@ -20,6 +20,7 @@ public partial class views_images_profiles_deploy : Images
         ddlPartitionMethod.Text = ImageProfile.PartitionMethod;
         chkDownForceDynamic.Checked = Convert.ToBoolean(ImageProfile.ForceDynamicPartitions);
         if (chkDownForceDynamic.Checked) ddlPartitionMethod.Enabled = false;
+        ForceDiv.Visible = ddlPartitionMethod.Text == "Dynamic";
         DisplayLayout();
     }
 
@@ -59,6 +60,7 @@ public partial class views_images_profiles_deploy : Images
 
     protected void ddlPartitionMethod_OnSelectedIndexChanged(object sender, EventArgs e)
     {
+        ForceDiv.Visible = ddlPartitionMethod.Text == "Dynamic";
         DisplayLayout();
     }
 
@@ -66,33 +68,10 @@ public partial class views_images_profiles_deploy : Images
     {
         switch (ddlPartitionMethod.SelectedIndex)
         {
-            case 0:
-                customScript.Visible = false;
-                customLayout.Visible = false;
-
-                if (!string.IsNullOrEmpty(ImageProfile.CustomSchema))
-                {
-                    chkModifySchema.Checked = true;
-                    imageSchema.Visible = true;
-                    PopulateHardDrives();
-                }
-                break;
-            case 1:
-                customScript.Visible = false;
-                customLayout.Visible = false;
-                
-                if (!string.IsNullOrEmpty(ImageProfile.CustomSchema))
-                {
-                    chkModifySchema.Checked = true;
-                    imageSchema.Visible = true;
-                    PopulateHardDrives();
-                }
-                break;
             case 2:
                 customScript.Visible = true;
-                customLayout.Visible = false;
                 scriptEditorText.Value = ImageProfile.CustomPartitionScript;
-                if (!string.IsNullOrEmpty(ImageProfile.CustomSchema))
+                if (!string.IsNullOrEmpty(ImageProfile.CustomSchema) || chkModifySchema.Checked)
                 {
                     chkModifySchema.Checked = true;
                     imageSchema.Visible = true;
@@ -101,41 +80,19 @@ public partial class views_images_profiles_deploy : Images
                 break;
           
             default:
-                customScript.Visible = false;
-                customLayout.Visible = false;
+                 customScript.Visible = false;
+
+                if (!string.IsNullOrEmpty(ImageProfile.CustomSchema) || chkModifySchema.Checked)
+                {
+                    chkModifySchema.Checked = true;
+                    imageSchema.Visible = true;
+                    PopulateHardDrives();
+                }
+
                 break;
         }
     }
 
-    protected void PopulateGrid()
-    {
-        gvLayout.DataSource = BLL.PartitionLayout.SearchPartitionLayouts("");
-        gvLayout.DataBind();
-    }
-
-    protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
-    {
-        PopulateGrid();
-        List<Models.PartitionLayout> listLayouts = (List<Models.PartitionLayout>)gvLayout.DataSource;
-        switch (e.SortExpression)
-        {
-            case "Name":
-                listLayouts = GetSortDirection(e.SortExpression) == "Asc" ? listLayouts.OrderBy(l => l.Name).ToList() : listLayouts.OrderByDescending(l => l.Name).ToList();
-                break;
-            case "Table":
-                listLayouts = GetSortDirection(e.SortExpression) == "Asc" ? listLayouts.OrderBy(l => l.Table).ToList() : listLayouts.OrderByDescending(l => l.Table).ToList();
-                break;
-            case "ImageEnvironment":
-                listLayouts = GetSortDirection(e.SortExpression) == "Asc" ? listLayouts.OrderBy(l => l.ImageEnvironment).ToList() : listLayouts.OrderByDescending(l => l.ImageEnvironment).ToList();
-                break;
-
-        }
-
-
-        gvLayout.DataSource = listLayouts;
-        gvLayout.DataBind();
-    }
-   
     protected void btnHd_Click(object sender, EventArgs e)
     {
         var control = sender as Control;
@@ -172,6 +129,24 @@ public partial class views_images_profiles_deploy : Images
 
         foreach (GridViewRow row in gv.Rows)
         {
+            if (ddlPartitionMethod.Text != "Dynamic")
+            {
+                foreach (GridViewRow partRow in gv.Rows)
+                {
+                    var txtCustomSize = partRow.FindControl("txtCustomSize") as TextBox;
+                    if (txtCustomSize != null)
+                        txtCustomSize.Enabled = false;
+
+                    var ddlUnit = partRow.FindControl("ddlUnit") as DropDownList;
+                    if (ddlUnit != null)
+                        ddlUnit.Enabled = false;
+
+                    var chkFixed = partRow.FindControl("chkFixed") as CheckBox;
+                    if (chkFixed != null)
+                        chkFixed.Enabled = false;
+                }
+            }
+
             if (partitions[row.RowIndex].VolumeGroup == null) continue;
             if (partitions[row.RowIndex].VolumeGroup.Name == null) continue;
             var gvVg = (GridView)row.FindControl("gvVG");
@@ -185,8 +160,10 @@ public partial class views_images_profiles_deploy : Images
             var td = row.FindControl("tdVG");
             td.Visible = true;
 
+           
          
         }
+       
     }
 
 
@@ -218,6 +195,24 @@ public partial class views_images_profiles_deploy : Images
             var td = gvRow.FindControl("tdLVS");
             td.Visible = false;
             btn.Text = "+";
+        }
+
+        if (ddlPartitionMethod.Text != "Dynamic")
+        {
+            foreach (GridViewRow lv in gv.Rows)
+            {
+                var lvTxtCustomSize = lv.FindControl("txtCustomSize") as TextBox;
+                if (lvTxtCustomSize != null)
+                    lvTxtCustomSize.Enabled = false;
+
+                var lvDdlUnit = lv.FindControl("ddlUnit") as DropDownList;
+                if (lvDdlUnit != null)
+                    lvDdlUnit.Enabled = false;
+
+                var lvChkFixed = lv.FindControl("chkFixed") as CheckBox;
+                if (lvChkFixed != null)
+                    lvChkFixed.Enabled = false;
+            }
         }
     }
 

@@ -64,7 +64,7 @@
 <br class="clear"/>
 
 
-
+<div id="ForceDiv" runat="server" Visible="False">
 <div class="size-9 column">
     Force Dynamic Partition For Exact Hdd Match
 </div>
@@ -72,7 +72,7 @@
     <asp:CheckBox ID="chkDownForceDynamic" runat="server" AutoPostBack="True" OnCheckedChanged="chkForceDynamic_OnCheckedChanged"></asp:CheckBox>
 </div>
 <br class="clear"/>
-
+    </div>
 <div class="size-9 column">
     Modify The Image Schema
 </div>
@@ -330,30 +330,7 @@
     </div>
 </div>
 
-<div id="customLayout" runat="server">
-    <asp:GridView ID="gvLayout" runat="server" AllowSorting="True" DataKeyNames="Id" OnSorting="gridView_Sorting" AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
-        <Columns>
-            <asp:TemplateField>
-                <HeaderStyle CssClass="chkboxwidth"></HeaderStyle>
-                <ItemStyle CssClass="chkboxwidth"></ItemStyle>
 
-                <ItemTemplate>
-                    <asp:CheckBox ID="chkSelector" runat="server"/>
-                </ItemTemplate>
-            </asp:TemplateField>
-            <asp:BoundField DataField="Id" HeaderText="computerID" SortExpression="computerID" Visible="False"/>
-            <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"></asp:BoundField>
-            <asp:BoundField DataField="Table" HeaderText="Table" SortExpression="Table" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
-            <asp:BoundField DataField="ImageEnvironment" HeaderText="Environment" SortExpression="ImageEnvironment" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
-
-
-            <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/global/partitions/edit.aspx?cat=sub1&layoutid={0}" Text="View"/>
-        </Columns>
-        <EmptyDataTemplate>
-            No Computers Found
-        </EmptyDataTemplate>
-    </asp:GridView>
-</div>
 
 </asp:Content>
 

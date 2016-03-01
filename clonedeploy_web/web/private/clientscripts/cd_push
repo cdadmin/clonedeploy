@@ -184,6 +184,12 @@ function process_partitions()
       process_sysprep_tags  ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)
 	fi
 	
+	if [ "$(parse_json "$current_partition" .FileSystem)" = "hfsplus" ]; then
+	  log " ** Repairing Hfsplus filesystem" "display"
+      fsck.hfsplus -f ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)
+	  sleep 5
+	fi
+	
 	if [ "$file_copy" = "True" ]; then
 	  process_file_copy "$current_partition" "partition"
 	fi
