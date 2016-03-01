@@ -312,6 +312,8 @@ function create_image_schema()
         partclone_type="extfs"
       elif [ "$filesystem_type" = "xfs" ]; then
         partclone_type="xfs"
+	  elif [ "$filesystem_type" = "hfsplus" ]; then
+        partclone_type="hfsp"
       else
         partclone_type="imager"
       fi
@@ -401,6 +403,8 @@ function create_image_schema()
               partclone_type="extfs"
             elif [ "$filesystem_type" = "xfs" ]; then
               partclone_type="xfs"
+			elif [ "$filesystem_type" = "hfsplus" ]; then
+              partclone_type="hfsp"
             else
               partclone_type="imager"
             fi

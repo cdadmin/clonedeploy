@@ -52,7 +52,7 @@ namespace Security
             if (!validationResult.IsValid) return "goto Menu";
             var lines = "#!ipxe" + newLineChar;
             lines += "kernel " + Settings.WebPath + "IpxeBoot?filename=" + kernel + "&type=kernel" +
-                     " initrd=" + bootImage + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
+                     " initrd=" + bootImage + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
                      Settings.WebPath + " USER_TOKEN=" + userToken + " task=" + task + " consoleblank=0 " +
                      globalComputerArgs + newLineChar;
             lines += "imgfetch --name " + bootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +

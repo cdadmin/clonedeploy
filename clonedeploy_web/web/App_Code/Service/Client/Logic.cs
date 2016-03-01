@@ -340,7 +340,7 @@ namespace Service.Client
             if (result.SchemaHdNumber == -1)
             {
                 result.IsValid = "false";
-                result.Message = "Not Active Hard Drive Images Were Found To Deploy.";
+                result.Message = "No Active Hard Drive Images Were Found To Deploy.";
                 return JsonConvert.SerializeObject(result);
             }
 

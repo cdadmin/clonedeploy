@@ -99,7 +99,7 @@ namespace BLL.Workflows
             sysLinuxMenu.Append("LABEL Download Image" + NewLineChar);
             sysLinuxMenu.Append("kernel /clonedeploy/" + _kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=/clonedeploy/" + _bootImage +
-                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " USER_TOKEN=" +
+                                " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" + _webPath + " USER_TOKEN=" +
                                 _userToken +
                                 " task=push consoleblank=0 " + _arguments + "" + NewLineChar);
             sysLinuxMenu.Append("MENU LABEL Download Image" + NewLineChar);
@@ -108,7 +108,7 @@ namespace BLL.Workflows
             sysLinuxMenu.Append("LABEL Upload Image" + NewLineChar);
             sysLinuxMenu.Append("kernel /clonedeploy/" + _kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=/clonedeploy/" + _bootImage +
-                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " USER_TOKEN=" +
+                                " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" + _webPath + " USER_TOKEN=" +
                                 _userToken +
                                 " task=pull consoleblank=0 " + _arguments + "" + NewLineChar);
             sysLinuxMenu.Append("MENU LABEL Upload Image" + NewLineChar);
@@ -117,7 +117,7 @@ namespace BLL.Workflows
             sysLinuxMenu.Append("LABEL Client Console" + NewLineChar);
             sysLinuxMenu.Append("kernel /clonedeploy/" + _kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=/clonedeploy/" + _bootImage +
-                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " USER_TOKEN=" +
+                                " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" + _webPath + " USER_TOKEN=" +
                                 _userToken +
                                 " task=debug consoleblank=0 " + _arguments + "" + NewLineChar);
             sysLinuxMenu.Append("MENU LABEL Client Console" + NewLineChar);
@@ -125,7 +125,7 @@ namespace BLL.Workflows
 
             sysLinuxMenu.Append("kernel /clonedeploy/" + _kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=/clonedeploy/" + _bootImage +
-                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " USER_TOKEN=" +
+                                " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" + _webPath + " USER_TOKEN=" +
                                 _userToken +
                                 " task=register consoleblank=0 " + _arguments + "" + NewLineChar);
             sysLinuxMenu.Append("MENU LABEL Add Computer" + NewLineChar);
@@ -134,7 +134,7 @@ namespace BLL.Workflows
             sysLinuxMenu.Append("LABEL On Demand" + NewLineChar);
             sysLinuxMenu.Append("kernel /clonedeploy/" + _kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=/clonedeploy/" + _bootImage +
-                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " USER_TOKEN=" +
+                                " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" + _webPath + " USER_TOKEN=" +
                                 _userToken +
                                 " task=ond consoleblank=0 " + _arguments + "" + NewLineChar);
             sysLinuxMenu.Append("MENU LABEL On Demand" + NewLineChar);
@@ -143,7 +143,7 @@ namespace BLL.Workflows
             sysLinuxMenu.Append("LABEL Diagnostics" + NewLineChar);
             sysLinuxMenu.Append("kernel /clonedeploy/" + _kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=/clonedeploy/" + _bootImage +
-                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " USER_TOKEN=" +
+                                " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" + _webPath + " USER_TOKEN=" +
                                 _userToken +
                                 " task=diag consoleblank=0 " + _arguments + "" + NewLineChar);
             sysLinuxMenu.Append("MENU LABEL Diagnostics" + NewLineChar);
@@ -188,7 +188,7 @@ namespace BLL.Workflows
 
             grubMenu.Append("menuentry \"Download Image\" {" + NewLineChar);       
 	        grubMenu.Append("set gfxpayload=keep" + NewLineChar);
-	        grubMenu.Append("linux	/clonedeploy/" + _kernel + " ramdisk_size=127000 root=/dev/ram0 rw web=" + _webPath +
+	        grubMenu.Append("linux	/clonedeploy/" + _kernel + " ramdisk_size=156000 root=/dev/ram0 rw web=" + _webPath +
                 " USER_TOKEN=" + _userToken + " task=push consoleblank=0 " + _arguments + NewLineChar);
 	        grubMenu.Append("initrd	/clonedeploy/" + _bootImage + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
@@ -196,7 +196,7 @@ namespace BLL.Workflows
 
             grubMenu.Append("menuentry \"Upload Image\" {" + NewLineChar);
             grubMenu.Append("set gfxpayload=keep" + NewLineChar);
-            grubMenu.Append("linux	/clonedeploy/" + _kernel + " ramdisk_size=127000 root=/dev/ram0 rw web=" + _webPath +
+            grubMenu.Append("linux	/clonedeploy/" + _kernel + " ramdisk_size=156000 root=/dev/ram0 rw web=" + _webPath +
                 " USER_TOKEN=" + _userToken + " task=pull consoleblank=0 " + _arguments + NewLineChar);
             grubMenu.Append("initrd	/clonedeploy/" + _bootImage + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
@@ -204,7 +204,7 @@ namespace BLL.Workflows
 
             grubMenu.Append("menuentry \"Client Console\" {" + NewLineChar);
             grubMenu.Append("set gfxpayload=keep" + NewLineChar);
-            grubMenu.Append("linux	/clonedeploy/" + _kernel + " ramdisk_size=127000 root=/dev/ram0 rw web=" + _webPath +
+            grubMenu.Append("linux	/clonedeploy/" + _kernel + " ramdisk_size=156000 root=/dev/ram0 rw web=" + _webPath +
                 " USER_TOKEN=" + _userToken + " task=debug consoleblank=0 " + _arguments + NewLineChar);
             grubMenu.Append("initrd	/clonedeploy/" + _bootImage + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
@@ -212,7 +212,7 @@ namespace BLL.Workflows
 
             grubMenu.Append("menuentry \"Add Computer\" {" + NewLineChar);
             grubMenu.Append("set gfxpayload=keep" + NewLineChar);
-            grubMenu.Append("linux	/clonedeploy/" + _kernel + " ramdisk_size=127000 root=/dev/ram0 rw web=" + _webPath +
+            grubMenu.Append("linux	/clonedeploy/" + _kernel + " ramdisk_size=156000 root=/dev/ram0 rw web=" + _webPath +
                 " USER_TOKEN=" + _userToken + " task=register consoleblank=0 " + _arguments + NewLineChar);
             grubMenu.Append("initrd	/clonedeploy/" + _bootImage + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
@@ -220,7 +220,7 @@ namespace BLL.Workflows
 
             grubMenu.Append("menuentry \"On Demand\" {" + NewLineChar);
             grubMenu.Append("set gfxpayload=keep" + NewLineChar);
-            grubMenu.Append("linux	/clonedeploy/" + _kernel + " ramdisk_size=127000 root=/dev/ram0 rw web=" + _webPath +
+            grubMenu.Append("linux	/clonedeploy/" + _kernel + " ramdisk_size=156000 root=/dev/ram0 rw web=" + _webPath +
                 " USER_TOKEN=" + _userToken + " task=ond consoleblank=0 " + _arguments + NewLineChar);
             grubMenu.Append("initrd	/clonedeploy/" + _bootImage + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
@@ -228,7 +228,7 @@ namespace BLL.Workflows
 
             grubMenu.Append("menuentry \"Diagnostics\" {" + NewLineChar);
             grubMenu.Append("set gfxpayload=keep" + NewLineChar);
-            grubMenu.Append("linux	/clonedeploy/" + _kernel + " ramdisk_size=127000 root=/dev/ram0 rw web=" + _webPath +
+            grubMenu.Append("linux	/clonedeploy/" + _kernel + " ramdisk_size=156000 root=/dev/ram0 rw web=" + _webPath +
                 " USER_TOKEN=" + _userToken + " task=diag consoleblank=0 " + _arguments + NewLineChar);
             grubMenu.Append("initrd	/clonedeploy/" + _bootImage + NewLineChar);
             grubMenu.Append("}" + NewLineChar);

@@ -408,7 +408,7 @@ namespace BLL.DynamicClientPartition
             else
             {
                 var hardDriveCounter = 0;
-                while (hardDriveCounter <= _imageSchema.HardDrives.Count())
+                while (hardDriveCounter < _imageSchema.HardDrives.Count())
                 {
                     if (_imageSchema.HardDrives[hardDriveCounter].Active && !schemaImagedDrives.Contains(hardDriveCounter))
                     {

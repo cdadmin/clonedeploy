@@ -64,12 +64,12 @@
 <br class="clear"/>
 
 
-<div id="dynamicPartition" runat="server">
+
 <div class="size-9 column">
     Force Dynamic Partition For Exact Hdd Match
 </div>
 <div class="size-8 column">
-    <asp:CheckBox ID="chkDownForceDynamic" runat="server"></asp:CheckBox>
+    <asp:CheckBox ID="chkDownForceDynamic" runat="server" AutoPostBack="True" OnCheckedChanged="chkForceDynamic_OnCheckedChanged"></asp:CheckBox>
 </div>
 <br class="clear"/>
 
@@ -299,7 +299,7 @@
     </asp:GridView>
 </div>
 
-</div>
+
 
 <div id="customScript" runat="server">
     <br/><br/>

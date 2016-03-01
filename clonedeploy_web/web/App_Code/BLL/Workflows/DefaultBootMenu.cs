@@ -116,7 +116,7 @@ namespace BLL.Workflows
             grubMenu.Append("menuentry \"Client Console\" --user {" + NewLineChar);
             grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
                             NewLineChar);
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
+            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
                             _webPath +
                             " USER_TOKEN=" + _userToken + " task=debug consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
             grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
@@ -127,7 +127,7 @@ namespace BLL.Workflows
             grubMenu.Append("menuentry \"On Demand Imaging\" --user {" + NewLineChar);
             grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
                             NewLineChar);
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
+            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
                             _webPath +
                             " USER_TOKEN=" + _userToken + " task=ond consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
             grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
@@ -138,7 +138,7 @@ namespace BLL.Workflows
             grubMenu.Append("menuentry \"Add Computer\" --user {" + NewLineChar);
             grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
                             NewLineChar);
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
+            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
                             _webPath +
                             " USER_TOKEN=" + _userToken + " task=register consoleblank=0 " + _globalComputerArgs + "" +
                             NewLineChar);
@@ -150,7 +150,7 @@ namespace BLL.Workflows
             grubMenu.Append("menuentry \"Diagnostics\" --user {" + NewLineChar);
             grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
                             NewLineChar);
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
+            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
                             _webPath +
                             " USER_TOKEN=" + _userToken + " task=diag consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
             grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
@@ -226,7 +226,7 @@ namespace BLL.Workflows
 
                 ipxeMenu.Append(":console" + NewLineChar);
                 ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + Kernel + "&type=kernel" +
-                                " initrd=" + BootImage + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
+                                " initrd=" + BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
                                 Settings.WebPath + " USER_TOKEN=" + _userToken + " task=debug" + " consoleblank=0 " +
                                 _globalComputerArgs + NewLineChar);
                 ipxeMenu.Append("imgfetch --name " + BootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
@@ -236,7 +236,7 @@ namespace BLL.Workflows
 
                 ipxeMenu.Append(":register" + NewLineChar);
                 ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + Kernel + "&type=kernel" +
-                                " initrd=" + BootImage + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
+                                " initrd=" + BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
                                 Settings.WebPath + " USER_TOKEN=" + _userToken + " task=register" + " consoleblank=0 " +
                                 _globalComputerArgs + NewLineChar);
                 ipxeMenu.Append("imgfetch --name " + BootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
@@ -246,7 +246,7 @@ namespace BLL.Workflows
 
                 ipxeMenu.Append(":ond" + NewLineChar);
                 ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + Kernel + "&type=kernel" +
-                                " initrd=" + BootImage + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
+                                " initrd=" + BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
                                 Settings.WebPath + " USER_TOKEN=" + _userToken + " task=ond" + " consoleblank=0 " +
                                 _globalComputerArgs + NewLineChar);
                 ipxeMenu.Append("imgfetch --name " + BootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
@@ -256,7 +256,7 @@ namespace BLL.Workflows
 
                 ipxeMenu.Append(":diag" + NewLineChar);
                 ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + Kernel + "&type=kernel" +
-                                " initrd=" + BootImage + " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" +
+                                " initrd=" + BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
                                 Settings.WebPath + " USER_TOKEN=" + _userToken + " task=diag" + " consoleblank=0 " +
                                 _globalComputerArgs + NewLineChar);
                 ipxeMenu.Append("imgfetch --name " + BootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
@@ -310,7 +310,7 @@ namespace BLL.Workflows
 
             sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
-                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " USER_TOKEN=" +
+                                " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" + _webPath + " USER_TOKEN=" +
                                 _userToken +
                                 " task=debug consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
 
@@ -323,7 +323,7 @@ namespace BLL.Workflows
 
             sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
-                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " USER_TOKEN=" +
+                                " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" + _webPath + " USER_TOKEN=" +
                                 _userToken +
                                 " task=register consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
 
@@ -336,7 +336,7 @@ namespace BLL.Workflows
 
             sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
-                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " USER_TOKEN=" +
+                                " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" + _webPath + " USER_TOKEN=" +
                                 _userToken +
                                 " task=ond consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
 
@@ -349,7 +349,7 @@ namespace BLL.Workflows
 
             sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
-                                " root=/dev/ram0 rw ramdisk_size=127000 " + " web=" + _webPath + " USER_TOKEN=" +
+                                " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" + _webPath + " USER_TOKEN=" +
                                 _userToken +
                                 " task=diag consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
 

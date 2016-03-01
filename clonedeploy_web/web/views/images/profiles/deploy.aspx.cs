@@ -18,6 +18,8 @@ public partial class views_images_profiles_deploy : Images
         chkAlignBCD.Checked = Convert.ToBoolean(ImageProfile.FixBcd);
         chkRunFixBoot.Checked = Convert.ToBoolean(ImageProfile.FixBootloader);
         ddlPartitionMethod.Text = ImageProfile.PartitionMethod;
+        chkDownForceDynamic.Checked = Convert.ToBoolean(ImageProfile.ForceDynamicPartitions);
+        if (chkDownForceDynamic.Checked) ddlPartitionMethod.Enabled = false;
         DisplayLayout();
     }
 
@@ -30,33 +32,22 @@ public partial class views_images_profiles_deploy : Images
         imageProfile.FixBcd = Convert.ToInt16(chkAlignBCD.Checked);
         imageProfile.FixBootloader = Convert.ToInt16(chkRunFixBoot.Checked);
         imageProfile.PartitionMethod = ddlPartitionMethod.Text;
+        imageProfile.ForceDynamicPartitions = Convert.ToInt16(chkDownForceDynamic.Checked);
         switch (ddlPartitionMethod.SelectedIndex)
         {
+            case 0:
+                imageProfile.CustomSchema = chkModifySchema.Checked ? SetCustomSchema() : "";
+                break;
             case 1:
-                imageProfile.ForceDynamicPartitions = Convert.ToInt16(chkDownForceDynamic.Checked);
+                
                 imageProfile.CustomSchema = chkModifySchema.Checked ? SetCustomSchema() : "";
                 break;
             case 2:
                 var fixedLineEnding = scriptEditorText.Value.Replace("\r\n", "\n");
                 imageProfile.CustomPartitionScript = fixedLineEnding;
+                imageProfile.CustomSchema = chkModifySchema.Checked ? SetCustomSchema() : "";
                 break;
-            case 3:
-                BLL.ImageProfilePartition.DeleteImageProfilePartitions(ImageProfile.Id);
-                imageProfile.CustomPartitionScript = "";
-                foreach (GridViewRow row in gvLayout.Rows)
-                {
-                    var cb = (CheckBox)row.FindControl("chkSelector");
-                    if (cb == null || !cb.Checked) continue;
-                    var dataKey = gvLayout.DataKeys[row.RowIndex];
-                    if (dataKey == null) continue;
-                    var profilePartitionLayout = new Models.ImageProfilePartitionLayout()
-                    {
-                        LayoutId = Convert.ToInt32(dataKey.Value),
-                        ProfileId = ImageProfile.Id
-                    };
-                    BLL.ImageProfilePartition.AddImageProfilePartition(profilePartitionLayout);
-                }
-                break;
+           
             default:
                 imageProfile.CustomPartitionScript = "";
                 break;
@@ -75,11 +66,21 @@ public partial class views_images_profiles_deploy : Images
     {
         switch (ddlPartitionMethod.SelectedIndex)
         {
-            case 1:
-                dynamicPartition.Visible = true;
+            case 0:
                 customScript.Visible = false;
                 customLayout.Visible = false;
-                chkDownForceDynamic.Checked = Convert.ToBoolean(ImageProfile.ForceDynamicPartitions);
+
+                if (!string.IsNullOrEmpty(ImageProfile.CustomSchema))
+                {
+                    chkModifySchema.Checked = true;
+                    imageSchema.Visible = true;
+                    PopulateHardDrives();
+                }
+                break;
+            case 1:
+                customScript.Visible = false;
+                customLayout.Visible = false;
+                
                 if (!string.IsNullOrEmpty(ImageProfile.CustomSchema))
                 {
                     chkModifySchema.Checked = true;
@@ -90,31 +91,18 @@ public partial class views_images_profiles_deploy : Images
             case 2:
                 customScript.Visible = true;
                 customLayout.Visible = false;
-                dynamicPartition.Visible = false;
                 scriptEditorText.Value = ImageProfile.CustomPartitionScript;
-                break;
-            case 3:
-                customScript.Visible = false;
-                customLayout.Visible = true;
-                dynamicPartition.Visible = false;
-                PopulateGrid();
-                var profilePartitionLayouts = BLL.ImageProfilePartition.SearchImageProfilePartitions(ImageProfile.Id);
-                foreach (GridViewRow row in gvLayout.Rows)
+                if (!string.IsNullOrEmpty(ImageProfile.CustomSchema))
                 {
-                    var cb = (CheckBox)row.FindControl("chkSelector");
-                    var dataKey = gvLayout.DataKeys[row.RowIndex];
-                    if (dataKey == null) continue;
-                    foreach (var profilePartitionLayout in profilePartitionLayouts)
-                    {
-                        if (profilePartitionLayout.LayoutId == Convert.ToInt32(dataKey.Value))
-                            cb.Checked = true;
-                    }
+                    chkModifySchema.Checked = true;
+                    imageSchema.Visible = true;
+                    PopulateHardDrives();
                 }
                 break;
+          
             default:
                 customScript.Visible = false;
                 customLayout.Visible = false;
-                dynamicPartition.Visible = false;
                 break;
         }
     }
@@ -239,17 +227,28 @@ public partial class views_images_profiles_deploy : Images
         gvHDs.DataBind();
     }
 
+    protected void chkForceDynamic_OnCheckedChanged(object sender, EventArgs e)
+    {
+        if (chkDownForceDynamic.Checked)
+        {
+            ddlPartitionMethod.Enabled = false;
+            ddlPartitionMethod.Text = "Dynamic";
+        }
+        else
+        {
+            ddlPartitionMethod.Enabled = true;
+        }
+    }
+
     protected void chkModifySchema_OnCheckedChanged(object sender, EventArgs e)
     {
         if (chkModifySchema.Checked)
         {
-            chkDownForceDynamic.Checked = true;
             imageSchema.Visible = true;
             PopulateHardDrives();
         }
         else
         {
-            chkDownForceDynamic.Checked = false;
             imageSchema.Visible = false;
         }
     }

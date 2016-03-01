@@ -212,7 +212,7 @@ function download_image()
 	
   if [ "$(parse_json "$current_object" .ImageType)" = "Block" ]; then
     if [ "$(parse_json "$current_object" .Compression)" = "gz" ]; then
-      partCompAlg="/usr/bin/gzip -c -d"
+      partCompAlg="gzip -c -d"
       partCompExt="gz"
     elif [ "$(parse_json "$current_object" .Compression)" = "lz4" ]; then
       partCompAlg="lz4 -d"
@@ -395,6 +395,9 @@ function create_partition_layout()
 	cat /tmp/newPartLayout >> $CLIENT_LOG
     bash /tmp/newPartLayout
     partprobe &>/dev/null
+  elif [ "$partition_method" = "original" ]; then # create partitions from original mbr / gpt
+     log " ** Creating Partition Table On $hard_drive From Original MBR / GPT ** " "display"
+	 #This doesn't really do anything, partition table was already restored, it's just here so the next elif does run
   elif [ "$(parse_json "$hd_schema" .IsValid)" = "true" ] || [ "$force_dynamic_partitions" = "true" ]; then # create partitions dynamically from image profile settings
     log " ** Creating Partition Table On $hard_drive ** " "display"
     $curlAuth --data "imageProfileId=$profile_id&hdToGet=$image_hd_to_use&newHDSize=$drive_size_bytes&clientHD=$hard_drive&taskType=deploy&partitionPrefix=$partition_prefix" "${web}GetPartLayout" $curlEnd | dos2unix > /tmp/newPartLayout
