@@ -39,7 +39,7 @@
         <asp:ListItem>All</asp:ListItem>
         </asp:DropDownList>
     </div>
-   
+   <br class="clear" />
     <asp:GridView ID="gvComputers" runat="server" AllowSorting="True" DataKeyNames="Id" OnSorting="gridView_Sorting" AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
         <Columns>
            
@@ -58,8 +58,13 @@
             <asp:BoundField DataField="Id" HeaderText="computerID" SortExpression="computerID" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"></asp:BoundField>
             <asp:BoundField DataField="Mac" HeaderText="MAC" SortExpression="Mac" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
-            <asp:BoundField DataField="Image.Name" HeaderText="Image" SortExpression="Image.Name" ItemStyle-CssClass="width_200 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller"/>
-         
+           
+             <asp:TemplateField ItemStyle-CssClass="width_200 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller" HeaderText="Image">
+                <ItemTemplate>
+                    <asp:Label ID="lblImage" runat="server" Text='<%# Bind("Image.Name") %>'/>
+                </ItemTemplate>
+            </asp:TemplateField>
+            
           
         </Columns>
         <EmptyDataTemplate>

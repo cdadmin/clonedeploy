@@ -37,6 +37,7 @@ namespace BLL
                 try
                 {
                     Directory.CreateDirectory(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name);
+                    new FileOps().SetUnixPermissionsImage(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name);
                     
                 }
                 catch (Exception ex)

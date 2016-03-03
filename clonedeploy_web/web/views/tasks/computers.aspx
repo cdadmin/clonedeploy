@@ -34,6 +34,7 @@
         <asp:ListItem>All</asp:ListItem>
         </asp:DropDownList>
     </div>
+     <br class="clear" />
 
     <asp:GridView ID="gvComputers" runat="server" AutoGenerateColumns="False" DataKeyNames="Id" CssClass="Gridview extraPad" AllowSorting="True" OnSorting="gridView_Sorting" AlternatingRowStyle-CssClass="alt">
         <Columns>

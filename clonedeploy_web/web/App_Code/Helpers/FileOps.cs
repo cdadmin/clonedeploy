@@ -110,6 +110,13 @@ namespace Helpers
                     (FilePermissions.S_IWUSR | FilePermissions.S_IRGRP | FilePermissions.S_IROTH |
                      FilePermissions.S_IRUSR));
         }
+
+        public void SetUnixPermissionsImage(string path)
+        {
+            if (Environment.OSVersion.ToString().Contains("Unix"))
+                Syscall.chmod(path,
+                    (FilePermissions.S_IRWXU | FilePermissions.S_IRWXG | FilePermissions.S_IROTH ));
+        }
         
        
 

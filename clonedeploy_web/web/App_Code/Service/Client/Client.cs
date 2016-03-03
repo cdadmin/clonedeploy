@@ -125,6 +125,8 @@ namespace Service.Client
         public void ListImages(string userId)
         {
             if (!Authorize()) return;
+            if (string.IsNullOrEmpty(userId))
+                userId = "0";
             HttpContext.Current.Response.Write(new Service.Client.Logic().ImageList(Convert.ToInt32(userId)));
         }
 

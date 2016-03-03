@@ -52,6 +52,7 @@ function start_network()
 	  ifup lo
 	fi
 	
+	ip link set $net_if up
 	for timeout in 10 20 30; do
 	  udhcpc -i $net_if -t 5 -T $timeout -n
 	  if [ "$?" = "0" ]; then
