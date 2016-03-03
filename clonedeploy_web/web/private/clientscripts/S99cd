@@ -18,23 +18,53 @@ echo 3 > /proc/sys/kernel/printk
 
 function start_network()
 {
+    if [ "$nic_debug" = "1" ]; then
+	  echo "Current Kernel: "
+	  uname -a
+	  echo
+	  
+	  echo "Interfaces: "
+	  ifconfig -a
+	  echo
+	  
+	  echo "Hardware Ids: "
+	  lspci -nn
+	  lsusb
+	  echo
+	  
+	  echo " Press Any Key To Continue "
+	  read key_pressed
+	fi
+	
 	if [ -z "$net_if" ]; then
 		export net_if=eth0
 	fi
 	export mac=$(cat /sys/class/net/$net_if/address)
 	
-	echo " ** Starting Network On Interace $net_if ** "
+	echo " ** Starting Network On Interface $net_if ** "
 	echo
+	
 	echo "auto lo" > /etc/network/interfaces
 	echo "iface lo inet loopback" >> /etc/network/interfaces
-	echo "auto $net_if" >> /etc/network/interfaces
-	echo "iface $net_if inet dhcp" >> /etc/network/interfaces
-	ifup $net_if
-	ifdown $net_if
-	ifup $net_if
-	ifup lo
+	
+	lo_hwaddr=$(cat /sys/class/net/lo/address)
+	if [ -n "$lo_hwaddr" ]; then
+	  ifup lo
+	fi
+	
+	for timeout in 10 20 30; do
+	  udhcpc -i $net_if -t 5 -T $timeout -n
+	  if [ "$?" = "0" ]; then
+	    break;
+	  fi
+	done
 	
 	clientIP=$(ifconfig | grep $net_if -A2 | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}')
+	
+	if [ "$nic_debug" = "1" ]; then
+	  echo " Press Any Key To Continue "
+	  read key_pressed
+	fi
 }
 
 function check_download()

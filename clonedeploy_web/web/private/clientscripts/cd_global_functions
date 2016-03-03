@@ -253,7 +253,7 @@ function mount_smb()
 			log " ...... Success" "display"
 
 			cd /storage/images/$imgName;
-			if [ ! $? = "0" ]; then
+			if [ "$?" != "0" ]; then
 				error "Could Not Change Directory To /images/$imgName Check Permissions"
 			fi
 			break
