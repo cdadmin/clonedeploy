@@ -82,10 +82,10 @@ namespace BLL
                         var processName = prs.ProcessName;
                         if (Environment.OSVersion.ToString().Contains("Unix"))
                         {
-                            while (!prs.HasExited)
+                            for (var x = 1; x <= 5; x++)
                             {
                                 KillProcessLinux(Convert.ToInt32(multicast.Pid));
-                                Thread.Sleep(1000);
+                                Thread.Sleep(200);
                             }
                         }
                         else
@@ -193,26 +193,11 @@ namespace BLL
         {
             try
             {
-                string dist = null;
-                var distInfo = new ProcessStartInfo
-                {
-                    UseShellExecute = false,
-                    FileName = "uname",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true
-                };
-
-                using (var process = Process.Start(distInfo))
-                {
-                    if (process != null) dist = process.StandardOutput.ReadToEnd();
-                }
-
-                var shell = dist != null && dist.ToLower().Contains("bsd") ? "/bin/csh" : "/bin/bash";
-
+             
                 var killProcInfo = new ProcessStartInfo
                 {
-                    FileName = (shell),
-                    Arguments = (" -c \"pkill -TERM -P " + pid + "\"")
+                    FileName = ("pkill"),
+                    Arguments = (" -SIGKILL -P " + pid)
                 };
                 Process.Start(killProcInfo);
             }

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/scripts/scripts.master" AutoEventWireup="true" CodeFile="editcore.aspx.cs" Inherits="views_admin_scripts_editcore" ValidateRequestMode="Disabled" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/scripts/scripts.master" AutoEventWireup="true" CodeFile="editcore.aspx.cs" Inherits="views_admin_scripts_editcore" ValidateRequest="False" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
      <li ><a href="<%= ResolveUrl("~/views/global/scripts/search.aspx?cat=sub1") %>">Scripts</a></li>

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/sysprep/sysprep.master" AutoEventWireup="true" CodeFile="edit.aspx.cs" Inherits="views_global_sysprep_edit" ValidateRequestMode="Disabled" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/sysprep/sysprep.master" AutoEventWireup="true" CodeFile="edit.aspx.cs" Inherits="views_global_sysprep_edit" ValidateRequest="False" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">

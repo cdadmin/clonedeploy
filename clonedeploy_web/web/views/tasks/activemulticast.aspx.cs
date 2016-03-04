@@ -82,9 +82,15 @@ public partial class views_tasks_activemulticast : BasePages.Tasks
     {
         foreach (GridViewRow row in gvMcTasks.Rows)
         {
+            var dataKey = gvMcTasks.DataKeys[row.RowIndex];
+            var mcId = 0;
+            if (dataKey != null)
+            {
+                mcId = Convert.ToInt32(dataKey.Value);
+            }
             try
             {
-                var listActive = BLL.ActiveImagingTask.MulticastProgress(Convert.ToInt32(row.Cells[1].Text));
+                var listActive = BLL.ActiveImagingTask.MulticastProgress(mcId);
                 var lblPartition = row.FindControl("lblPartition") as Label;
                 var lblElapsed = row.FindControl("lblElapsed") as Label;
                 var lblRemaining = row.FindControl("lblRemaining") as Label;
@@ -99,9 +105,9 @@ public partial class views_tasks_activemulticast : BasePages.Tasks
                     lblRate.Text = activeTask.Rate;
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                Logger.Log(ex.Message);
+                // ignored
             }
         }
     }

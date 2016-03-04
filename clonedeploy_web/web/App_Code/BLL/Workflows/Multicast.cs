@@ -296,7 +296,7 @@ namespace BLL.Workflows
 
                         if (compAlg == "none" || Settings.MulticastDecompression == "client")
                         {
-                            processArguments += (prefix + " udp-sender" + " --file " + "\"" + imageFile + "\"" +
+                            processArguments += (prefix + "cat " + "\"" + imageFile + "\"" + " | udp-sender" +
                                                  " --portbase " + _multicastSession.Port + minReceivers + " " +
                                                  " --ttl 32 " +
                                                  senderArgs);

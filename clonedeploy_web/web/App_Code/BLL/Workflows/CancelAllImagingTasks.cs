@@ -52,7 +52,7 @@ namespace BLL.Workflows
                         var killProcInfo = new ProcessStartInfo
                         {
                             FileName = ("killall"),
-                            Arguments = (" udp-sender")
+                            Arguments = (" -s SIGKILL udp-sender")
                         };
                         Process.Start(killProcInfo);
                     }
