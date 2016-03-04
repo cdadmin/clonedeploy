@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Security;
 
 namespace BasePages
 {
@@ -33,8 +34,6 @@ namespace BasePages
             }
 
             CloneDeployCurrentUser = (Models.CloneDeployUser)currentUser;
-
-
         }
 
         protected override void OnLoadComplete(EventArgs e)

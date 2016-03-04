@@ -53,7 +53,11 @@
             </asp:TemplateField>
             <asp:BoundField DataField="Id" HeaderText="computerID" InsertVisible="False" ReadOnly="True" SortExpression="Id" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"/>
-            <asp:BoundField DataField="Image.Name" HeaderText="Image" SortExpression="Image" ItemStyle-CssClass="width_200 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller"/>
+              <asp:TemplateField ItemStyle-CssClass="width_200 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller" HeaderText="Image">
+                <ItemTemplate>
+                    <asp:Label ID="lblImage" runat="server" Text='<%# Bind("Image.Name") %>'/>
+                </ItemTemplate>
+            </asp:TemplateField>
             <asp:TemplateField ItemStyle-CssClass="width_250">
                 <ItemTemplate>
                 </ItemTemplate>
@@ -73,7 +77,11 @@
                 <Columns>
                     <asp:BoundField DataField="Name" HeaderText="Name"/>
                     <asp:BoundField DataField="Mac" HeaderText="MAC" ItemStyle-CssClass="mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
-                    <asp:BoundField DataField="Image.Name" HeaderText="Image"/>
+                      <asp:TemplateField HeaderText="Image">
+                <ItemTemplate>
+                    <asp:Label ID="lblImage" runat="server" Text='<%# Bind("Image.Name") %>'/>
+                </ItemTemplate>
+            </asp:TemplateField>
                 </Columns>
             </asp:GridView>
             <div class="confirm-box-btns">

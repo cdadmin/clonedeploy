@@ -333,10 +333,15 @@ namespace Service.Client
         [WebMethod]
         public void Test()
         {
-            
             //No auth
             HttpContext.Current.Response.Write("true");
         }
-      
+
+        [WebMethod]
+        public void GetComputerName(string mac)
+        {
+            //No auth
+            HttpContext.Current.Response.Write(BLL.Computer.GetComputerFromMac(mac).Name);
+        }   
     }
 }

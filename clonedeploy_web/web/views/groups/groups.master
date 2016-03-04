@@ -106,7 +106,12 @@
             <asp:GridView ID="gvConfirm" runat="server" CssClass="Gridview gv-confirm" AutoGenerateColumns="false">
                 <Columns>
                     <asp:BoundField DataField="Name" HeaderText="Name" ItemStyle-CssClass="width_200"/>
-                    <asp:BoundField DataField="Image.Name" HeaderText="Image" ItemStyle-CssClass="width_200"/>
+                      <asp:TemplateField ItemStyle-CssClass="width_200" HeaderText="Image">
+                <ItemTemplate>
+                    <asp:Label ID="lblImage" runat="server" Text='<%# Bind("Image.Name") %>'/>
+                </ItemTemplate>
+            </asp:TemplateField>
+                  
                 </Columns>
             </asp:GridView>
             <div class="confirm-box-btns">

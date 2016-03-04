@@ -36,7 +36,11 @@
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:BoundField DataField="Id" HeaderText="taskID" SortExpression="_taskID" InsertVisible="False" ReadOnly="True" Visible="False"/>
-                    <asp:BoundField DataField="Computer.Name" HeaderText="Name" SortExpression="_taskName" ItemStyle-CssClass="width_150"/>
+                     <asp:TemplateField ItemStyle-CssClass="width_150" HeaderText="Name">
+                <ItemTemplate>
+                    <asp:Label ID="lblComputer" runat="server" Text='<%# Bind("Computer.Name") %>'/>
+                </ItemTemplate>
+            </asp:TemplateField>
                     <asp:BoundField DataField="Status" HeaderText="Status" SortExpression="_taskStatus" ItemStyle-CssClass="width_50"/>
                     <asp:BoundField DataField="Partition" HeaderText="Partition" ItemStyle-CssClass="mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller"/>
                     <asp:BoundField DataField="Elapsed" HeaderText="Elapsed" ItemStyle-CssClass="mobi-hide-small" HeaderStyle-CssClass="mobi-hide-small"/>

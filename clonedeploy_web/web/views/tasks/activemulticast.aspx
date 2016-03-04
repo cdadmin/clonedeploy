@@ -75,7 +75,11 @@
                                 <td runat="server" id="tdMembers" colspan="700" visible="false">
                                     <asp:GridView ID="gvMembers" AutoGenerateColumns="false" runat="server" CssClass="Gridview gv_members" ShowHeader="false" Visible="false" AlternatingRowStyle-CssClass="alt">
                                         <Columns>
-                                            <asp:BoundField DataField="Computer.Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_150"/>
+                                              <asp:TemplateField ItemStyle-CssClass="width_150" HeaderText="Name">
+                <ItemTemplate>
+                    <asp:Label ID="lblComputer" runat="server" Text='<%# Bind("Computer.Name") %>'/>
+                </ItemTemplate>
+            </asp:TemplateField>
                                             <asp:BoundField DataField="Status" HeaderText="Status" SortExpression="Status" ItemStyle-CssClass="width_50"/>
                                             <asp:BoundField DataField="Partition" HeaderText="Partition" ItemStyle-CssClass="mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller"/>
                                             <asp:BoundField DataField="Elapsed" HeaderText="Elapsed" ItemStyle-CssClass="mobi-hide-small" HeaderStyle-CssClass="mobi-hide-small"/>
