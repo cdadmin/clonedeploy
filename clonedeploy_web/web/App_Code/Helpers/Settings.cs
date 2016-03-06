@@ -26,12 +26,12 @@ namespace Helpers
 
         public static string DefaultKernel32
         {
-            get { return "3.18.1"; }
+            get { return "4.4.3"; }
         }
-
+        
         public static string DefaultKernel64
         {
-            get { return "3.18.1x64"; }
+            get { return "4.4.3x64"; }
         }
 
         public static string EndPort

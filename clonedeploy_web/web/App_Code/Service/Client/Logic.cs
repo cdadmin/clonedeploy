@@ -540,6 +540,8 @@ namespace Service.Client
             foreach (var image in BLL.Image.GetOnDemandImageList(userId))
                 imageList.Images.Add(image.Id + " " + image.Name);
 
+            if (imageList.Images.Count == 0)
+                imageList.Images.Add(-1 + " " + "No_Images_Found");
             return JsonConvert.SerializeObject(imageList);
         }
 

@@ -1,5 +1,5 @@
 #define MyAppName "CloneDeploy"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.0.1"
 #define MyAppPublisher "CloneDeploy"
 #define MyAppURL "http://clonedeploy.org"
 
@@ -23,7 +23,7 @@ OutputBaseFilename=setup
 Compression=lzma
 SolidCompression=true
 Uninstallable=true
-VersionInfoVersion=1.0.0
+VersionInfoVersion=1.0.1
 VersionInfoCompany=CloneDeploy
 VersionInfoDescription=CloneDeploy Server Setup
 VersionInfoCopyright=2016
@@ -31,13 +31,12 @@ AlwaysRestart=false
 RestartIfNeededByRun=false
 AppContact=http://clonedeploy.org
 UninstallDisplayName=CloneDeploy Server
-AppVerName=1.0.0
+AppVerName=1.0.1
 AppComments=CloneDeploy
 MinVersion=0,6.1
 SetupLogging=yes
 DisableWelcomePage=no
 UninstallDisplayIcon={uninstallexe}
-SetupIconFile=C:\Users\jddol\Desktop\cd.ico
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl
@@ -59,7 +58,7 @@ Filename: cmd; Parameters: "/c icacls ""{app}\cd_dp"" /T /C /grant cd_share_ro:(
 ;Install MariaDB
 Filename: msiexec; Parameters: "/i {userappdata}\clonedeploy\mariadb-10.1.11-win32.msi SERVICENAME=mysql-cd PASSWORD={code:GetDBPass} UTF8=1 /qb"; StatusMsg: "Installing MariaDB";
 Filename: "{pf32}\MariaDB 10.1\bin\mysql.exe"; Parameters: "--user=root --password={code:GetDBPass} --execute=""create database clonedeploy"" -v"; StatusMsg: "Creating Database";
-Filename: "{pf32}\MariaDB 10.1\bin\mysql.exe"; Parameters: "--user=root --password={code:GetDBPass} --database=clonedeploy --execute=""source {userappdata}\clonedeploy\cd.sql"" -v"; StatusMsg: "Creating Database";
+Filename: "{pf32}\MariaDB 10.1\bin\mysql.exe"; Parameters: "--user=root --password={code:GetDBPass} --database=clonedeploy --execute=""source {code:MySQLAppData}/clonedeploy/cd.sql"" -v"; StatusMsg: "Creating Database";
 
 ;Install Tftpd32
 Filename: {app}\tftpd32\tftpd32_svc; Parameters: "-install"; StatusMsg: "Setting Up Tftp Server";
@@ -119,8 +118,8 @@ Filename: cmd; Parameters: "/c mklink /J ""{app}\tftpboot\proxy\efi32\images"" "
 Filename: cmd; Parameters: "/c mklink /J ""{app}\tftpboot\proxy\efi64\kernels"" ""{app}\tftpboot\kernels"""; StatusMsg: "Creating Symlinks";
 Filename: cmd; Parameters: "/c mklink /J ""{app}\tftpboot\proxy\efi64\images"" ""{app}\tftpboot\images"""; StatusMsg: "Creating Symlinks";
 [Registry]
-Root: "HKLM32"; Subkey: "SOFTWARE\CloneDeploy"; ValueType: string; ValueName: "AppVersion"; ValueData: "1.00"; Flags: createvalueifdoesntexist; Check: not IsWin64
-Root: "HKLM64"; Subkey: "SOFTWARE\CloneDeploy"; ValueType: string; ValueName: "AppVersion"; ValueData: "1.00"; Flags: createvalueifdoesntexist; Check: IsWin64
+Root: "HKLM32"; Subkey: "SOFTWARE\CloneDeploy"; ValueType: string; ValueName: "AppVersion"; ValueData: "1001"; Flags: createvalueifdoesntexist; Check: not IsWin64
+Root: "HKLM64"; Subkey: "SOFTWARE\CloneDeploy"; ValueType: string; ValueName: "AppVersion"; ValueData: "1001"; Flags: createvalueifdoesntexist; Check: IsWin64
 
 [Code]
 var
@@ -243,6 +242,15 @@ begin
     SaveStringToFile(ExpandConstant('{app}\tftpd32\tftpd32.ini'), FileData, False);    
 end;
 
+function MySQLAppData(Param: String): string;
+var
+mysqlapp: string;
+begin
+mysqlapp := expandconstant('{userappdata}');
+StringChange(mysqlapp, '\', '/');
+result := mysqlapp
+end;
+
 function IsDotNetDetected(version: string; service: cardinal): boolean;
 // Indicates whether the specified version and service pack of the .NET Framework is installed.
 //
@@ -318,6 +326,9 @@ end;
 function InitializeSetup(): Boolean;
 
 begin
+    MsgBox('This Installer Is Only For New Installations.'#13#13
+            'If You Are Upgrading, Use The Upgrade Installer.'#13
+            'See http://clonedeploy.org for more info', mbInformation, MB_OK);
 
     if not IsDotNetDetected('v4.5', 0) then begin
         MsgBox('Clone Deploy requires Microsoft .NET Framework 4.5.'#13#13

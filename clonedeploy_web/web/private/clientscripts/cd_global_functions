@@ -235,6 +235,7 @@ function log_boot_args()
 	log " ** Displaying Boot Arguments ** "
 	log "$(cat /proc/cmdline) MAC: $mac"
 	uname -a >> $CLIENT_LOG
+	log "Boot Image Version: $(cat /etc/cd_version)"
 }
 
 
