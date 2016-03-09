@@ -115,7 +115,7 @@ namespace Helpers
         {
             if (Environment.OSVersion.ToString().Contains("Unix"))
                 Syscall.chmod(path,
-                    (FilePermissions.S_IRWXU | FilePermissions.S_IRWXG | FilePermissions.S_IROTH ));
+                    (FilePermissions.S_IRWXU | FilePermissions.S_IRWXG | FilePermissions.S_IROTH | FilePermissions.S_IXOTH ));
         }
         
        
