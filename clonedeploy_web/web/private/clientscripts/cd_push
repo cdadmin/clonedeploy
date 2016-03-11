@@ -12,11 +12,13 @@ function process_hard_drives()
   local lbs
   local drive_size_block
   
-  get_hard_drives
+  get_hard_drives "deploy"
 
   imaged_schema_drives=""
   current_hd_number=-1
   for hard_drive in $hard_drives; do
+    echo
+    log " ** Processing $hard_drive ** " "display"
     current_hd_number=$(( $current_hd_number + 1 ))
 	
 	if [ -n "$pre_scripts" ]; then

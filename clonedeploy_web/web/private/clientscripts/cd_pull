@@ -61,7 +61,7 @@ function save_mbr_gpt()
   if [ "$usingGPT" = "true" ]; then
     checkPartStart=$(gdisk $hard_drive -l | awk '/^ / {print $2+0}' | grep -vw "0" | sort -n | head -n1)
   else
-    checkPartStart=$(parted -s $hard_drive unit s print all | awk -F' ' '{print $2+0}' | grep -vw "0" | sort -n | head -n1)
+    checkPartStart=$(parted -s $hard_drive unit s print all | grep "Disk /dev/" -m1 -A50 | awk -F' ' '{print $2+0}' | grep -vw "0" | sort -n | head -n1)
   fi
 
   toSave=$(( $checkPartStart - 1 ))
@@ -153,10 +153,6 @@ function get_partitions()
   for partition in $partitions; do
     partition_count=$(( $partition_count + 1 ))
   done
-  
-  if [ "$partition_count" = "0" ]; then
-    error "Unable To Determine Partition Count Or There Are No Partitions On This Drive"
-  fi
   
   if [ "$display_onscreen" = "true" ]; then
     log " ...... Found $partition_count Partition(s)" "display"
@@ -318,13 +314,13 @@ function create_image_schema()
         partclone_type="imager"
       fi
           
-      partition_start=$(parted -s $hard_drive unit s print all | grep " $partition_number " -m 1 | awk -F' ' '{print $2}' | sed 's/s//g')
-      partition_end=$(parted -s $hard_drive unit s print all | grep " $partition_number " -m 1 | awk -F' ' '{print $3}' | sed 's/s//g')
-      partition_size=$(parted -s $hard_drive unit s print all | grep " $partition_number " -m 1 | awk -F' ' '{print $4}' | sed 's/s//g')
-      partition_size_bytes=$(parted -s $hard_drive unit b print all | grep " $partition_number " -m 1 | awk -F' ' '{print $4}' | sed 's/B//g')
+      partition_start=$(parted -s $hard_drive unit s print all | grep "Number  Start" -m1 -A50 | grep " $partition_number " -m 1 | awk -F' ' '{print $2}' | sed 's/s//g')
+      partition_end=$(parted -s $hard_drive unit s print all | grep "Number  Start" -m1 -A50 | grep " $partition_number " -m 1 | awk -F' ' '{print $3}' | sed 's/s//g')
+      partition_size=$(parted -s $hard_drive unit s print all | grep "Number  Start" -m1 -A50 | grep " $partition_number " -m 1 | awk -F' ' '{print $4}' | sed 's/s//g')
+      partition_size_bytes=$(parted -s $hard_drive unit b print all | grep "Number  Start" -m1 -A50 | grep " $partition_number " -m 1 | awk -F' ' '{print $4}' | sed 's/B//g')
       #GPT does not have a concept of partition type only mbr has primary, extended, or logical
       if [ "$layout_type" = "mbr" ]; then
-        partition_type=$(parted -s $hard_drive unit s print all | grep " $partition_number " -m 1| awk -F' ' '{print $5}')
+        partition_type=$(parted -s $hard_drive unit s print all | grep "Number  Start" -m1 -A50 | grep " $partition_number " -m 1| awk -F' ' '{print $5}')
         fsid=$(sfdisk --part-type $hard_drive $partition_number | sed 's/ //g' 2>> $CLIENT_LOG)
       else
         fsid=$(gdisk $hard_drive -l | grep " $partition_number " | awk '/^ / {print $6}')
@@ -694,7 +690,7 @@ function main()
 
   mount_smb
 
-  get_hard_drives
+  get_hard_drives "upload"
 
   if [ "$is_ondemand" != "true" ]; then
     log " ** Updating Client Status To In-Progress ** "

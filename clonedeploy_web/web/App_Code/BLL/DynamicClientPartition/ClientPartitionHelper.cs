@@ -401,6 +401,12 @@ namespace BLL.DynamicClientPartition
         public int NextActiveHardDrive(List<int> schemaImagedDrives, int clientHdNumber )
         {
             //Look for first active hard drive image
+            if (clientHdNumber + 1 > _imageSchema.HardDrives.Count())
+            {
+                //More hard drives on client than original image.  Time to stop.
+                return -1;
+            }
+          
             if (_imageSchema.HardDrives[clientHdNumber].Active)
             {
                 return clientHdNumber;

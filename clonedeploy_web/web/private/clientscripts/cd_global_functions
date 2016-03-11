@@ -193,16 +193,44 @@ CONFIRM
 
 function get_hard_drives()
 {
+	local task_type="$1"
+	local partitions
+	local partition_count
+	local partition
+	
 	log " ** Looking For Hard Drive(s) ** " "display"
 	log " ...... Displaying Available Devices "
 	blockdev --report &>> $CLIENT_LOG
 	fdisk -l &>> $CLIENT_LOG
-	
+	parted -l &>> $CLIENT_LOG
 	if [ -n "$custom_hard_drives" ]; then
 		hard_drives="$custom_hard_drives"
 		log " ...... Hard Drive(s) Set By Image Profile: $hard_drives" "display"		
 	else
-		hard_drives=`lsblk -ipdno KNAME`	
+	  if [ "$task_type" = "upload" ]; then
+		all_hard_drives=`lsblk -ipdno KNAME`
+		log "all_hard_drives: $all_hard_drives"
+		for hdd in $all_hard_drives; do
+		  disk_label=$(fdisk -l $hdd | grep -i "disklabel type" | tr -d ' ' | awk -F ':' '{print $2}')
+		  log "disk_label: $disk_label $hdd"
+		  #Only get hard drives with valid disk labels
+		  if [ "$disk_label" = "dos" ] || [ "$disk_label" = "gpt" ]; then
+		    #only get hard drives that have partitions.  No reason to try and upload a disk without partitions
+			partitions=$(lsblk -ipno KNAME | grep "$hdd" | grep -vw "$hdd" 2>> $CLIENT_LOG)
+			log "partitions: $partitions"
+			partition_count=0  
+            for partition in $partitions; do
+              partition_count=$(( $partition_count + 1 ))
+            done
+            if [ "$partition_count" -gt "0" ]; then
+              hard_drives="$hard_drives $hdd "
+            fi	    
+		  fi
+		done
+	  else #deploy
+	    #When deploying it is very possible the hard drive won't have a disk label so don't use the method used for uploads
+	    hard_drives=`lsblk -ipdno KNAME`
+	  fi
 	fi
 	
 	hard_drive_count=0
