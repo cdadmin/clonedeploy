@@ -1,76 +1,98 @@
 #!/bin/sh
 #########################################
-
 clonedeploy_pbi_path=/usr/pbi/clonedeploy-$(uname -m)
+
+echo mysql_enable=yes >> /etc/rc.conf
+mv ${clonedeploy_pbi_path}/www/clonedeploy ${clonedeploy_pbi_path}/
+mv ${clonedeploy_pbi_path}/clonedeploy/web ${clonedeploy_pbi_path}/www/clonedeploy
+cp -R ${clonedeploy_pbi_path}/1.0.1p1/ ${clonedeploy_pbi_path}/www/clonedeploy/
+
+mv ${clonedeploy_pbi_path}/udp-sender ${clonedeploy_pbi_path}/sbin/udp-sender
+chmod +x ${clonedeploy_pbi_path}/sbin/udp-sender
+/bin/ln -s ${clonedeploy_pbi_path}/sbin/udp-sender /usr/local/bin/udp-sender
+/bin/ln -s ${clonedeploy_pbi_path}/bin/mono /usr/local/bin/mono
+/bin/ln -s ${clonedeploy_pbi_path}/bin/mod-mono-server4 /usr/local/bin/mod-mono-server4
+/bin/ln -s ${clonedeploy_pbi_path}/bin/mysql /usr/local/bin/mysql
+/bin/ln -s ${clonedeploy_pbi_path}/bin/mysqladmin /usr/local/bin/mysqladmin
+/bin/ln -s ${clonedeploy_pbi_path}/lib/mono/4.0/mod-mono-server4.exe ${clonedeploy_pbi_path}/lib/mono/4.5/mod-mono-server4.exe
+/bin/ln -s ${clonedeploy_pbi_path}/bin/lz4c /usr/local/bin/lz4
+/bin/ln -s ${clonedeploy_pbi_path}/bin/mcs /usr/local/bin/mcs
+
+/bin/cp ${clonedeploy_pbi_path}/etc/rc.d/apache22 /usr/local/etc/rc.d/
+/bin/cp ${clonedeploy_pbi_path}/etc/rc.d/mysql-server /usr/local/etc/rc.d/
+
+sed -i.bak s/4.0/4.5/g ${clonedeploy_pbi_path}/bin/mod-mono-server4
 
 ${clonedeploy_pbi_path}/bin/python2.7 ${clonedeploy_pbi_path}/clonedeployUI/manage.py syncdb --migrate --noinput
 
-# Create Apache alias for clonedeploy
-cat << __EOF__ > ${clonedeploy_pbi_path}/etc/apache24/Includes/clonedeploy.conf
- Alias /clonedeploy "${clonedeploy_pbi_path}/www/clonedeploy"
-  MonoServerPath clonedeploy "/usr/bin/mod-mono-server4"
-  MonoDebug clonedeploy true
-  MonoApplications clonedeploy "/clonedeploy:${clonedeploy_pbi_path}/www/clonedeploy"
-  AddType text/plain .asmx
-  
-<Location "/clonedeploy">
-    Allow from all
-    Order allow,deny
-    MonoSetServerAlias clonedeploy
-    SetHandler mono
-  </Location>
-  
+cat << __EOF__ > ${clonedeploy_pbi_path}/etc/apache22/Includes/clonedeploy.conf
+<VirtualHost *:80>
+	ServerAdmin webmaster@localhost
+
+	DocumentRoot /usr/pbi/clonedeploy-amd64/www/clonedeploy
+
+	AddMonoApplications clonedeploy "/clonedeploy:/usr/pbi/clonedeploy-amd64/www/clonedeploy"
+	MonoServerPath clonedeploy "/usr/local/bin/mod-mono-server4"
+	
+	<Directory /usr/pbi/clonedeploy-amd64/www/clonedeploy/>
+    		MonoSetServerAlias clonedeploy
+    		SetHandler mono
+    		AddHandler mod_mono .aspx .ascx .asax .ashx .config .cs .asmx
+     		<FilesMatch "\.(gif|jp?g|png|css|ico|xsl|wmv|zip)$">
+        		SetHandler None
+    		</FilesMatch>
+		Options FollowSymLinks MultiViews
+    		AllowOverride All
+    		Order allow,deny
+    		Allow from all
+    		SetHandler mono
+    		DirectoryIndex default.aspx
+	</Directory>	
+</VirtualHost>
 __EOF__
 
-# Add paths to Apache
-cat << __EOF__ > ${clonedeploy_pbi_path}/etc/apache24/envvars.d/path.env
-export PATH=${clonedeploy_pbi_path}/bin:/usr/local/bin:\$PATH
-export LD_LIBRARY_PATH=/usr/local/lib:\$LD_LIBRARY_PATH
-__EOF__
+mkdir ${clonedeploy_pbi_path}/www/.mono
+chown -R www:www ${clonedeploy_pbi_path}/www/.mono
 
-# Optimize Apache on ZFS
-sed -i '' -e 's/^#\(EnableMMAP[[:space:]]\).*$/\1Off/' ${clonedeploy_pbi_path}/etc/apache24/httpd.conf
+mv ${clonedeploy_pbi_path}/clonedeploy/tftpboot ${clonedeploy_pbi_path}/
 
-# Enable SSL
-sed -i '' -e 's|^#\(Include[[:space:]].*/httpd-ssl.conf$\)|\1|' ${clonedeploy_pbi_path}/etc/apache24/httpd.conf
-sed -i '' -e 's/^#\(LoadModule[[:space:]]*ssl_module[[:space:]].*$\)/\1/' ${clonedeploy_pbi_path}/etc/apache24/httpd.conf
-sed -i '' -e 's/^#\(LoadModule[[:space:]]*socache_shmcb_module[[:space:]].*$\)/\1/' ${clonedeploy_pbi_path}/etc/apache24/httpd.conf
-
-# Make sure SSL config exists
-if [ ! -f "${clonedeploy_pbi_path}/openssl/openssl.cnf" ];
-        ln -s openssl.cnf.sample ${clonedeploy_pbi_path}/openssl/openssl.cnf
-fi
-
-tmp=$(mktemp /tmp/tmp.XXXXXX)
-# Generate SSL certificate
-if [ ! -f "${clonedeploy_pbi_path}/etc/apache24/server.crt" ]; then
-
-	if ! grep -e '^commonName_default[[:space:]]*=' /etc/ssl/openssl.cnf; then
-		sed -i '' -e '/^commonName_max[[:space:]]*=/ a\
-commonName_default = clonedeploy\
-' /etc/ssl/openssl.cnf
-	fi
-	dd if=/dev/urandom count=16 bs=1 2> /dev/null | uuencode -|head -2 |tail -1 > "${tmp}"
-	openssl req -batch -passout file:"${tmp}" -new -x509 -keyout ${clonedeploy_pbi_path}/etc/apache24/server.key.out -out ${clonedeploy_pbi_path}/etc/apache24/server.crt
-	openssl rsa -passin file:"${tmp}" -in ${clonedeploy_pbi_path}/etc/apache24/server.key.out -out ${clonedeploy_pbi_path}/etc/apache24/server.key
-fi
-
-echo mysql_enable=yes >> /etc/rc.conf
-/bin/ln -s ${clonedeploy_pbi_path}/sbin/udp-sender /usr/local/bin/udp-sender
-/bin/ln -s ${clonedeploy_pbi_path}/sbin/udp-receiver /usr/local/bin/udp-receiver
-/bin/ln -s ${clonedeploy_pbi_path}/bin/lz4c /usr/local/bin/lz4
-/bin/ln -s ${clonedeploy_pbi_path}/bin/mcs /usr/local/bin/mcs
 mkdir ${clonedeploy_pbi_path}/cd_dp
 mkdir ${clonedeploy_pbi_path}/cd_dp/images
 mkdir ${clonedeploy_pbi_path}/cd_dp/resources
+
+mkdir ${clonedeploy_pbi_path}/tftpboot/pxelinux.cfg
+mkdir ${clonedeploy_pbi_path}/tftpboot/proxy/bios/pxelinux.cfg
+mkdir ${clonedeploy_pbi_path}/tftpboot/proxy/efi32/pxelinux.cfg
+mkdir ${clonedeploy_pbi_path}/tftpboot/proxy/efi64/pxelinux.cfg
+
+mkdir ${clonedeploy_pbi_path}/www/clonedeploy/public
+mkdir ${clonedeploy_pbi_path}/www/clonedeploy/private/client_iso
+mkdir ${clonedeploy_pbi_path}/www/clonedeploy/private/exports
+mkdir ${clonedeploy_pbi_path}/www/clonedeploy/private/imports
+mkdir ${clonedeploy_pbi_path}/www/clonedeploy/private/logs
+
 chown -R www:www ${clonedeploy_pbi_path}/www/clonedeploy
 chown -R www:www ${clonedeploy_pbi_path}/cd_dp
 chown -R www:www ${clonedeploy_pbi_path}/tftpboot
-mkdir ${clonedeploy_pbi_path}/www/.mono
-chown -R www:www ${clonedeploy_pbi_path}/www/.mono
+chmod -R 755 ${clonedeploy_pbi_path}/tftpboot
+
 /bin/ln -s ${clonedeploy_pbi_path}/tftpboot/images ${clonedeploy_pbi_path}/tftpboot/proxy/bios/images 
 /bin/ln -s ${clonedeploy_pbi_path}/tftpboot/kernels ${clonedeploy_pbi_path}/tftpboot/proxy/bios/kernels
 /bin/ln -s ${clonedeploy_pbi_path}/tftpboot/images ${clonedeploy_pbi_path}/tftpboot/proxy/efi32/images 
 /bin/ln -s ${clonedeploy_pbi_path}/tftpboot/kernels ${clonedeploy_pbi_path}/tftpboot/proxy/efi32/kernels 
 /bin/ln -s ${clonedeploy_pbi_path}/tftpboot/images ${clonedeploy_pbi_path}/tftpboot/proxy/efi64/images 
-/bin/ln -s ${clonedeploy_pbi_path}/tftpboot/kernels ${clonedeploy_pbi_path}/tftpboot/proxy/efi64/kernels 
+/bin/ln -s ${clonedeploy_pbi_path}/tftpboot/kernels ${clonedeploy_pbi_path}/tftpboot/proxy/efi64/kernels
+
+
+service mysql-server restart
+cd ${clonedeploy_pbi_path}/bin
+
+rand_pass=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 8)
+rand_key=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 8)
+
+sed -i '' "s/xx_marker1_xx/$rand_pass/" ${clonedeploy_pbi_path}/www/clonedeploy/web.config
+sed -i '' "s/xx_marker2_xx/$rand_key/" ${clonedeploy_pbi_path}/www/clonedeploy/web.config
+
+./mysqladmin create clonedeploy
+./mysql clonedeploy < ${clonedeploy_pbi_path}/clonedeploy/cd.sql
+./mysqladmin -u root password $rand_pass

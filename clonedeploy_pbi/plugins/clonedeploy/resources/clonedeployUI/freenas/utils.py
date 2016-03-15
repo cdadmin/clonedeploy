@@ -2,8 +2,11 @@ import os
 import platform
 
 clonedeploy_pbi_path = "/usr/pbi/clonedeploy-" + platform.machine()
+clonedeploy_etc_path = os.path.join(clonedeploy_pbi_path, "etc")
+clonedeploy_mnt_path = os.path.join(clonedeploy_pbi_path, "mnt")
 clonedeploy_fcgi_pidfile = "/var/run/clonedeploy_fcgi_server.pid"
-clonedeploy_control = "/usr/local/etc/rc.d/apache24"
+clonedeploy_fcgi_wwwdir = os.path.join(clonedeploy_pbi_path, "www")
+clonedeploy_control = "/usr/local/etc/rc.d/apache22"
 clonedeploy_icon = os.path.join(clonedeploy_pbi_path, "default.png")
 clonedeploy_oauth_file = os.path.join(clonedeploy_pbi_path, ".oauth")
 

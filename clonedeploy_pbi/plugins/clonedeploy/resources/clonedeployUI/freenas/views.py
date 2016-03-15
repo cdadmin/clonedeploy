@@ -2,7 +2,6 @@ from subprocess import Popen, PIPE
 import json
 import time
 import urllib2
-import ssl
 
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
@@ -49,7 +48,6 @@ class OAuthTransport(jsonrpclib.jsonrpc.SafeTransport):
         req = urllib2.Request(request.to_url())
         req.add_header('Content-Type', 'text/json')
         req.add_data(request_body)
-        ssl._create_default_https_context = ssl._create_unverified_context
         f = urllib2.urlopen(req)
         return(self.parse_response(f))
 
@@ -253,6 +251,58 @@ def stop(request, plugin_id):
         }), content_type='application/json')
 
 
+def edit(request, plugin_id):
+    (clonedeploy_key,
+    clonedeploy_secret) = utils.get_clonedeploy_oauth_creds()
+    url = utils.get_rpc_url(request)
+    trans = OAuthTransport(url, key=clonedeploy_key,
+        secret=clonedeploy_secret)
+
+    """
+    Get the Clonedeploy object
+    If it does not exist create a new entry
+    """
+    try:
+        clonedeploy = models.Clonedeploy.objects.order_by('-id')[0]
+    except IndexError:
+        clonedeploy = models.Clonedeploy.objects.create()
+
+    try:
+        server = jsonrpclib.Server(url, transport=trans)
+        jail_path = server.plugins.jail.path(plugin_id)
+        auth = server.plugins.is_authenticated(
+            request.COOKIES.get("sessionid", "")
+            )
+        assert auth
+    except Exception:
+        raise
+
+    if request.method == "GET":
+        form = forms.ClonedeployForm(instance=clonedeploy,
+            jail_path=jail_path)
+        return render(request, "edit.html", {
+            'form': form,
+        })
+
+    if not request.POST:
+        return JsonResponse(request, error=True, message="A problem occurred.")
+
+    form = forms.ClonedeployForm(request.POST,
+        instance=clonedeploy,
+        jail_path=jail_path)
+    if form.is_valid():
+        form.save()
+
+        cmd = "%s restart" % utils.clonedeploy_control
+        pipe = Popen(cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE,
+            shell=True, close_fds=True)
+
+        return JsonResponse(request, error=True,
+            message="Clonedeploy settings successfully saved.")
+
+    return JsonResponse(request, form=form)
+
+
 def open_view(request, plugin_id):
     (clonedeploy_key,
     clonedeploy_secret) = utils.get_clonedeploy_oauth_creds()
@@ -261,10 +311,10 @@ def open_view(request, plugin_id):
         secret=clonedeploy_secret)
     server = jsonrpclib.Server(url, transport=trans)
     jail = json.loads(server.plugins.jail.info(plugin_id))[0]
-    jail_ipv4 = jail['fields']['jail_ipv4'].split('/', 1)[0]
+    jail_ip = jail['fields']['jail_ipv4'].split('/', 1)[0]
 
     return render(request, "open.html", {
-        'ipv4': jail_ipv4,
+        'jail_ip': jail_ip,
     })
 
 
@@ -318,7 +368,7 @@ def status(request, plugin_id):
     """
     pid = None
 
-    proc = Popen([utils.clonedeploy_control, "onestatus"],
+    proc = Popen(["/usr/bin/pgrep", "httpd"],
         stdout=PIPE,
         stderr=PIPE)
 

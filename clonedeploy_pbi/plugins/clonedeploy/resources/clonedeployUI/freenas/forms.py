@@ -1,6 +1,6 @@
-from subprocess import Popen, PIPE
 import hashlib
 import json
+import os
 import pwd
 import urllib
 
@@ -16,7 +16,7 @@ class ClonedeployForm(forms.ModelForm):
         model = models.Clonedeploy
         exclude = (
             'enable',
-            )
+        )
 
     def __init__(self, *args, **kwargs):
         self.jail_path = kwargs.pop('jail_path')
@@ -25,11 +25,9 @@ class ClonedeployForm(forms.ModelForm):
     def save(self, *args, **kwargs):
         obj = super(ClonedeployForm, self).save(*args, **kwargs)
 
-        if obj.enable:
-            Popen(["/usr/sbin/sysrc", "apache24_enable=YES"],
-                stdout=PIPE,
-                stderr=PIPE)
-        else:
-            Popen(["/usr/sbin/sysrc", "apache24_enable=NO"],
-                stdout=PIPE,
-                stderr=PIPE)
+        rcconf = os.path.join(utils.clonedeploy_etc_path, "rc.conf")
+        with open(rcconf, "w") as f:
+            if obj.enable:
+                f.write('apache22_enable="YES"\n')
+
+        os.system(os.path.join(utils.clonedeploy_pbi_path, "tweak-rcconf"))
