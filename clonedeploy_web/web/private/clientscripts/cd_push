@@ -750,13 +750,13 @@ function change_computer_name()
   
   if [ -f "/mnt/ntfs/Windows/Panther/unattend.xml" ]; then
     log " ...... Found Answer File At /Windows/Panther/unattend.xml, Changing Computer Name" "display"
-    perl -0777 -i -pe "s/(\<ComputerName\>).*(\<\/ComputerName\>)/\$1$computer_name\$2/s" /mnt/ntfs/Windows/Panther/unattend.xml
+    perl -0777 -i -pe "s/(\<ComputerName\>).*(\<\/ComputerName\>)/\$1$computer_name\$2/si" /mnt/ntfs/Windows/Panther/unattend.xml
   elif [ -f "/mnt/ntfs/Windows/System32/sysprep/Panther/unattend.xml" ]; then
     log " ...... Found Answer File At /Windows/System32/sysprep/Panther/unattend.xml, Changing Computer Name" "display"
-    perl -0777 -i -pe "s/(\<ComputerName\>).*(\<\/ComputerName\>)/\$1$computer_name\$2/s" /mnt/ntfs/Windows/System32/sysprep/Panther/unattend.xml
+    perl -0777 -i -pe "s/(\<ComputerName\>).*(\<\/ComputerName\>)/\$1$computer_name\$2/si" /mnt/ntfs/Windows/System32/sysprep/Panther/unattend.xml
   elif [ -f "/mnt/ntfs/Sysprep/sysprep.inf" ]; then
     log " ...... Found Answer File, Changing Host Name" "display"
-    sed -i "s/^ComputerName=.*$/ComputerName=$computer_name\r/" /mnt/ntfs/Sysprep/sysprep.inf
+    sed -i "s/ComputerName=.*$/ComputerName=$computer_name\r/I" /mnt/ntfs/Sysprep/sysprep.inf
   else
     log " ...... Could Not Find Answer File, Attempting Registry Change" "display"
 	#Editing the registry is case sensitive, these are all the variations I have found so far.
