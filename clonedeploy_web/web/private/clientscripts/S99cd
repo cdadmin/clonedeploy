@@ -19,14 +19,21 @@ echo 3 > /proc/sys/kernel/printk
 function start_network()
 {
     if [ "$nic_debug" = "1" ]; then
+	  clear_and_move_down
 	  echo "Current Kernel: "
 	  uname -a
+	  echo
+	  
+	  echo "Current Boot Image:"
+	  cat /etc/cd_version
 	  echo
 	  
 	  echo "Interfaces: "
 	  ifconfig -a
 	  echo
+	  read key_pressed
 	  
+	  clear_and_move_down
 	  echo "Hardware Ids: "
 	  lspci -nn
 	  lsusb
@@ -52,7 +59,6 @@ function start_network()
 	  ifup lo
 	fi
 	
-	if [ "$dhcp_mode" = "1" ]; then
 	  ip link set $net_if up
 	  for timeout in 10 20 30; do
 	    udhcpc -i $net_if -t 5 -T $timeout -n
@@ -60,14 +66,6 @@ function start_network()
 	      break;
 	    fi
 	  done
-	else
-	  echo "auto $net_if" >> /etc/network/interfaces
-	  echo "iface $net_if inet dhcp" >> /etc/network/interfaces
-	  echo "udhcpc_opts -t 10 -T 15 -n" >> /etc/network/interfaces
-	  ifup $net_if
-	  ifdown $net_if
-	  ifup $net_if
-	fi
 	
 	clientIP=$(ifconfig | grep $net_if -A2 | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}')
 	
