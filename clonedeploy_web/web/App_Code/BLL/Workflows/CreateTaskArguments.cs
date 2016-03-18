@@ -110,8 +110,8 @@ namespace BLL.Workflows
 
         public string Run(string multicastPort = "")
         {
-            string preScripts = null;
-            string postScripts = null;
+            string preScripts = "\"";
+            string postScripts = "\"";
             foreach (var script in ImageProfileScript.SearchImageProfileScripts(_imageProfile.Id))
             {
                 if (Convert.ToBoolean(script.RunPre))
@@ -120,11 +120,14 @@ namespace BLL.Workflows
                 if (Convert.ToBoolean(script.RunPost))
                     postScripts += script.ScriptId + " ";
             }
+            postScripts += "\"";
+            preScripts += "\"";
 
-            string sysprepTags = null;
+            string sysprepTags = "\"";
             foreach (var sysprepTag in ImageProfileSysprepTag.SearchImageProfileSysprepTags(_imageProfile.Id))
                 sysprepTags += sysprepTag.SysprepId + " ";
 
+            sysprepTags += "\"";
             var areFilesToCopy = ImageProfileFileFolder.SearchImageProfileFileFolders(_imageProfile.Id).Any();
 
             //On demand computer may be null if not registered
