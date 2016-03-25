@@ -16,7 +16,7 @@ function create_image_schema()
     drive_name="";logical_block_size="";physical_block_size="";hard_drive_size_bytes="";boot_partition="";gpt_status="";mbr_status="";layout_type="";hard_drive_guid="";
     drive_name=$(echo $hard_drive | cut -d "/" -f 3)
     logical_block_size="$(diskutil info $hard_drive | grep "Device Block Size:" | cut -d : -f2 | sed 's/Bytes//g' | sed -e 's/^[ \t]*//')"
-    physical_block_size=""
+    physical_block_size="$logical_block_size"
     hard_drive_size_bytes=$(diskutil info $hard_drive | grep "Total Size:" | cut -d "(" -f3 | cut -d " " -f2 )
     boot_partition="$(bless -getBoot)"
     gpt_status=""
@@ -49,63 +49,49 @@ function create_image_schema()
       
       volume_size=$(diskutil info $partition | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1)
 	  volume_size_mb=$(( $volume_size / 1000 / 1000 ))
-	
-      partition_json="{\"number\":\"$partition_number\",\"start\":\"$partition_start\",\"end\":\"$partition_end\",\"size\":\"$partition_size\",\"volumesize\":\"$volume_size_mb\",\"type\":\"$partition_type\",\"usedmb\":\"$volume_size_mb\",\"fsType\":\"$filesystem_type\",\"fsid\":\"$fsid\",\"uuid\":\"$partition_uuid\",\"guid\":\"$partition_guid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\",\"prefix\":\"$partition_prefix\",\"efibootloader\":\"$efi_bootloader\",\"volumegroup\": { "
+	  
+	  #Check if partition is pv for a vg
+	  partition_is_pv=$(diskutil info $partition | grep "PV UUID" -c)
+	  if [ "$partition_is_pv" -ge "1" ]; then
+	    pv_uuid=$(diskutil info $partition | grep "PV UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+	  fi
+	  
+      partition_json="{\"number\":\"$partition_number\",\"start\":\"$partition_start\",\"end\":\"$partition_end\",\"size\":\"$partition_size\",\"volumesize\":\"$volume_size_mb\",\"type\":\"$partition_type\",\"usedmb\":\"$volume_size_mb\",\"fsType\":\"$filesystem_type\",\"fsid\":\"$fsid\",\"uuid\":\"$pv_uuid\",\"guid\":\"$partition_guid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\",\"prefix\":\"$partition_prefix\",\"efibootloader\":\"$efi_bootloader\",\"volumegroup\": { "
       
       #experimental lvm support
 	  
-      if [ "$lvmResize" != "false" ]; then
-        if [ "$fsid" = "8e" ] || [ "$fsid" = "8E00" ]; then
-          vgscan >> $CLIENT_LOG    
-          volume_group=$(pvs --noheadings | grep $partition | awk '/^ / {print $2}')
-		  escaped_volume_group=$(echo $volume_group | sed 's/-/--/g')
-          if [ "$?" = "0" ]; then
-            hd_has_lvm="true"
-            log " ** Displaying LVM Information ** "
-            pvdisplay >>$CLIENT_LOG
-            vgdisplay >>$CLIENT_LOG
-            lvdisplay >>$CLIENT_LOG
-          fi
-          vgchange -a y "$volume_group"
-          lvmVGUUID=$(vgs --noheadings -v  2>/dev/null | grep "$volume_group" | awk '/^ / {print $9}')
-          lvmVGSize=$(vgs --noheadings 2>/dev/null --units s | grep "$volume_group" | awk '/^ /  {print $6}' | sed 's/S//')
-          volume_group_json="\"name\":\"$volume_group\",\"size\":\"$lvmVGSize\",\"type\":\"vg\",\"physicalvolume\":\"$partition\",\"uuid\":\"$lvmVGUUID\",\"logicalvolumes\": [ "
+        if [ "$partition_is_pv" -ge "1" ]; then
+		  vg_uuid=$(diskutil info $partition | grep "LVG UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+          volume_group_name=$(diskutil cs list | grep "$vg_uuid" -A5 | grep Name: | cut -d : -f2 | sed -e 's/^[ \t]*//')
+		  
+          hd_has_lvm="true"
+          volume_group_json="\"name\":\"$volume_group_name\",\"size\":\"$partition_size\",\"type\":\"vg\",\"physicalvolume\":\"$partition\",\"uuid\":\"$vg_uuid\",\"logicalvolumes\": [ "
         
-          get_logical_volumes
+          get_logical_volumes_for_vg
           
           logical_volume_counter=0
           for logical_volume in $logical_volumes; do
+		     logical_volume_counter=$(( $logical_volume_counter + 1 ))
+		    #Fix Me
 		    if [ -n "$custom_logical_volumes" ]; then
               logical_volume_device="/dev/mapper/$logical_volume"
 			  volume_name=$(echo $logical_volume | sed "s/${volume_group}-//")
 			else
-			    logical_volume_device="/dev/mapper/$escaped_volume_group-$logical_volume"
-				volume_name="$logical_volume"
+			    logical_volume_device="$logical_volume"
+				volume_name=$(diskutil cs info $logical_volume | grep "LV Name:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
 			fi
-            logical_volume_counter=$(( $logical_volume_counter + 1 ))
-            filesystem_type=`blkid -po udev "$logical_volume_device" | grep FS_TYPE | awk -F'=' '{print $2}'`
-            logical_volume_uuid=`lvs --noheadings -v 2>/dev/null | grep "$volume_group" | grep "$volume_name" | awk '/^ / {print $10}'`
-            logical_volume_size_block=`lvs --noheadings --units s | grep "$volume_group" | grep "$volume_name" | awk '/^ / {print $4}' | sed 's/S//'`
-			logical_volume_size_bytes=`lvs --noheadings --units b | grep "$volume_group" | grep "$volume_name" | awk '/^ / {print $4}' | sed 's/B//'`
+           
+			
+      filesystem_type=$(diskutil info $logical_volume | grep "File System Personality:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+         lv_uuid=$(diskutil info $logical_volume | grep "LV UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+      logical_volume_size_block=$(diskutil info $partition | grep "Total Size:" | cut -d "(" -f3 | cut -d " " -f2)
+      logical_volume_size_bytes=$(diskutil info $partition | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1)
+      generic_fs=$(diskutil info $partition | grep "Type (Bundle):" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+	  
+         
+           
+          
 
-            #In addition to setting partclone type, clean filesystems for better compatibility moving forward
-            if [ "$filesystem_type" = "ntfs" ]; then
-              ntfsfix -b -d "$logical_volume_device" &>/dev/null
-              ntfs-3g -o force,rw,remove_hiberfile "$logical_volume_device" /mnt/ntfs 2> /dev/null
-              umount /mnt/ntfs &> /dev/null
-              partclone_type="ntfs"
-          
-            elif [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ]; then
-              e2fsck -fp "$logical_volume_device" &> /dev/null
-              partclone_type="extfs"
-            elif [ "$filesystem_type" = "xfs" ]; then
-              partclone_type="xfs"
-			elif [ "$filesystem_type" = "hfsplus" ]; then
-              partclone_type="hfsp"
-            else
-              partclone_type="imager"
-            fi
-          
             
             if [ "$upload_schema_only" != "true" ] && [ "$skip_shrink_lvm" != "true" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
               if [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ] || [ "$filesystem_type" = "ntfs" ]; then
@@ -127,7 +113,7 @@ function create_image_schema()
 	        lv_volume_size=$(( $lv_volume_size / 1024 / 1024 ))
             lv_used_mb=$(( $lv_used_mb * 1000 * 1000 ))
 	        lv_used_mb=$(( $lv_used_mb / 1024 / 1024 ))
-            logical_volume_json="{\"name\":\"$volume_name\",\"size\":\"$logical_volume_size_block\",\"volumesize\":\"$lv_volume_size\",\"type\":\"lv\",\"volumegroup\":\"$volume_group\",\"usedmb\":\"$lv_used_mb\",\"fstype\":\"$filesystem_type\",\"uuid\":\"$logical_volume_uuid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\"}"
+            logical_volume_json="{\"name\":\"$volume_name\",\"size\":\"$logical_volume_size_block\",\"volumesize\":\"$lv_volume_size\",\"type\":\"lv\",\"volumegroup\":\"$volume_group\",\"usedmb\":\"$lv_used_mb\",\"fstype\":\"$filesystem_type\",\"uuid\":\"$lv_uuid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\"}"
             if [ "$logical_volume_counter" = "$logical_volume_count" ]; then
               logical_volume_json="$logical_volume_json] } }"
             else
@@ -156,15 +142,7 @@ function create_image_schema()
         
         fi
       
-      else
-        partition_json="$partition_json} }"
-        
-        if [ "$partition_counter" = "$partition_count" ]; then
-          complete_partition_json="$complete_partition_json$partition_json] }"
-        else
-          complete_partition_json="$complete_partition_json$partition_json,"
-        fi
-      fi
+     
       
     done
     
@@ -186,6 +164,31 @@ function create_image_schema()
   sleep 2 
   
   echo $image_schema > /storage/images/$image_name/schema
+}
+
+function get_logical_volumes_for_vg()
+{
+  local logical_volume
+  
+  logical_volumes=""
+  if [ -n "$custom_logical_volumes" ]; then
+    logical_volumes=`echo "$custom_logical_volumes" | grep "$volume_group_name"`
+    log " ...... Logical Volumes Set By Image Profile: $logical_volumes" "display"    
+  else
+    known_hard_drives=$(diskutil list | grep "):" | cut -d " " -f1)
+		
+		for hdd in $known_hard_drives; do
+		  drive_is_lv=$(diskutil list $hdd | grep "LVG UUID" | grep $vg_uuid -c)
+		  if [ "$drive_is_lv" -ge "1" ]; then
+		     logical_volumes="$logical_volumes $hdd"
+		  fi
+		done
+  fi
+                  
+  logical_volume_count=0
+  for logical_volume in $logical_volumes; do
+    logical_volume_count=$(( $logical_volume_count + 1 ))
+  done
 }
 
 function shrink_volume()
