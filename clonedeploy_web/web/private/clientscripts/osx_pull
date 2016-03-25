@@ -1,0 +1,353 @@
+#!/bin/bash
+
+. /usr/local/bin/osx_global_functions
+
+function create_image_schema()
+{
+  log " ** Creating Image Schema ** " "display"
+  echo
+  sleep 5
+    
+  hard_drive_counter=0
+  image_schema="{\"harddrives\": [ "
+  for hard_drive in $hard_drives; do
+  
+    hard_drive_counter=$(( $hard_drive_counter + 1 ))
+    drive_name="";logical_block_size="";physical_block_size="";hard_drive_size_bytes="";boot_partition="";gpt_status="";mbr_status="";layout_type="";hard_drive_guid="";
+    drive_name=$(echo $hard_drive | cut -d "/" -f 3)
+    logical_block_size="$(diskutil info $hard_drive | grep "Device Block Size:" | cut -d : -f2 | sed 's/Bytes//g' | sed -e 's/^[ \t]*//')"
+    physical_block_size=""
+    hard_drive_size_bytes=$(diskutil info $hard_drive | grep "Total Size:" | cut -d "(" -f3 | cut -d " " -f2 )
+    boot_partition="$(bless -getBoot)"
+    gpt_status=""
+	layout_type="$(diskutil info $hard_drive | grep "(IOContent):" | cut -d : -f2 | sed -e 's/^[ \t]*//')"
+    hard_drive_guid=""
+   
+    hard_drive_json="{\"name\":\"$hard_drive\",\"size\":\"$hard_drive_size_bytes\",\"table\":\"$layout_type\",\"boot\":\"$boot_partition\",\"lbs\":\"$logical_block_size\",\"pbs\":\"$physical_block_size\",\"guid\":\"$hard_drive_guid\",\"active\":\"true\",\"partitions\": [ "
+    
+    get_partitions "true"
+    
+    partition_counter=0
+    for partition in $partitions; do
+      partition_counter=$(( $partition_counter + 1 ))
+      filesystem_type="";partition_uuid="";partition_guid="";partclone_type="";partition_used_mb="";partition_start="0";partition_end="0";partition_size="";partition_type="";partition_number="";fsid="";
+      partition_number=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
+	  partition_prefix=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[0-9]*//g'`
+      filesystem_type=$(diskutil info $partition | grep "File System Personality:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+        
+      partition_size=$(diskutil info $partition | grep "Total Size:" | cut -d "(" -f3 | cut -d " " -f2)
+      partition_size_bytes=$(diskutil info $partition | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1)
+      generic_fs=$(diskutil info $partition | grep "Type (Bundle):" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+      if [ "$skip_shrink_volumes" != "true" ] && [ "$upload_schema_only" != "true" ] && [ "$generic_fs" = "hfs" ]; then 
+          if [[ ! "$custom_fixed_partitions" == *"$hard_drive$partition_number"* ]]; then
+		    if [ "$image_type" = "Block" ] &&  [ "$partition_size_bytes" -gt "5368709120" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
+              shrink_volume $partition
+            fi			  
+          fi
+      fi
+
+      
+      volume_size=$(diskutil info $partition | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1)
+	  volume_size_mb=$(( $volume_size / 1000 / 1000 ))
+	
+      partition_json="{\"number\":\"$partition_number\",\"start\":\"$partition_start\",\"end\":\"$partition_end\",\"size\":\"$partition_size\",\"volumesize\":\"$volume_size_mb\",\"type\":\"$partition_type\",\"usedmb\":\"$volume_size_mb\",\"fsType\":\"$filesystem_type\",\"fsid\":\"$fsid\",\"uuid\":\"$partition_uuid\",\"guid\":\"$partition_guid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\",\"prefix\":\"$partition_prefix\",\"efibootloader\":\"$efi_bootloader\",\"volumegroup\": { "
+      
+      #experimental lvm support
+	  
+      if [ "$lvmResize" != "false" ]; then
+        if [ "$fsid" = "8e" ] || [ "$fsid" = "8E00" ]; then
+          vgscan >> $CLIENT_LOG    
+          volume_group=$(pvs --noheadings | grep $partition | awk '/^ / {print $2}')
+		  escaped_volume_group=$(echo $volume_group | sed 's/-/--/g')
+          if [ "$?" = "0" ]; then
+            hd_has_lvm="true"
+            log " ** Displaying LVM Information ** "
+            pvdisplay >>$CLIENT_LOG
+            vgdisplay >>$CLIENT_LOG
+            lvdisplay >>$CLIENT_LOG
+          fi
+          vgchange -a y "$volume_group"
+          lvmVGUUID=$(vgs --noheadings -v  2>/dev/null | grep "$volume_group" | awk '/^ / {print $9}')
+          lvmVGSize=$(vgs --noheadings 2>/dev/null --units s | grep "$volume_group" | awk '/^ /  {print $6}' | sed 's/S//')
+          volume_group_json="\"name\":\"$volume_group\",\"size\":\"$lvmVGSize\",\"type\":\"vg\",\"physicalvolume\":\"$partition\",\"uuid\":\"$lvmVGUUID\",\"logicalvolumes\": [ "
+        
+          get_logical_volumes
+          
+          logical_volume_counter=0
+          for logical_volume in $logical_volumes; do
+		    if [ -n "$custom_logical_volumes" ]; then
+              logical_volume_device="/dev/mapper/$logical_volume"
+			  volume_name=$(echo $logical_volume | sed "s/${volume_group}-//")
+			else
+			    logical_volume_device="/dev/mapper/$escaped_volume_group-$logical_volume"
+				volume_name="$logical_volume"
+			fi
+            logical_volume_counter=$(( $logical_volume_counter + 1 ))
+            filesystem_type=`blkid -po udev "$logical_volume_device" | grep FS_TYPE | awk -F'=' '{print $2}'`
+            logical_volume_uuid=`lvs --noheadings -v 2>/dev/null | grep "$volume_group" | grep "$volume_name" | awk '/^ / {print $10}'`
+            logical_volume_size_block=`lvs --noheadings --units s | grep "$volume_group" | grep "$volume_name" | awk '/^ / {print $4}' | sed 's/S//'`
+			logical_volume_size_bytes=`lvs --noheadings --units b | grep "$volume_group" | grep "$volume_name" | awk '/^ / {print $4}' | sed 's/B//'`
+
+            #In addition to setting partclone type, clean filesystems for better compatibility moving forward
+            if [ "$filesystem_type" = "ntfs" ]; then
+              ntfsfix -b -d "$logical_volume_device" &>/dev/null
+              ntfs-3g -o force,rw,remove_hiberfile "$logical_volume_device" /mnt/ntfs 2> /dev/null
+              umount /mnt/ntfs &> /dev/null
+              partclone_type="ntfs"
+          
+            elif [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ]; then
+              e2fsck -fp "$logical_volume_device" &> /dev/null
+              partclone_type="extfs"
+            elif [ "$filesystem_type" = "xfs" ]; then
+              partclone_type="xfs"
+			elif [ "$filesystem_type" = "hfsplus" ]; then
+              partclone_type="hfsp"
+            else
+              partclone_type="imager"
+            fi
+          
+            
+            if [ "$upload_schema_only" != "true" ] && [ "$skip_shrink_lvm" != "true" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
+              if [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ] || [ "$filesystem_type" = "ntfs" ]; then
+			    if [[ ! "$custom_fixed_logical_volumes" == *"$logical_volume_device"* ]]; then
+				  if [ "$image_type" = "Block" ] && [ "$logical_volume_size_bytes" -gt "5368709120" ]; then
+                    shrink_volume $logical_volume_device      
+				  fi
+				fi
+              fi
+            fi
+            
+            partclone.$partclone_type -SIic -s "$logical_volume_device" -O /dev/null >& /tmp/lv$logical_volume_counter.size
+            log "$logical_volume_device Volume Size"
+            cat /tmp/lv$logical_volume_counter.size | grep volume_size >> $CLIENT_LOG
+            cat /tmp/lv$logical_volume_counter.size | grep used_size >> $CLIENT_LOG
+            lv_volume_size=`cat /tmp/lv$logical_volume_counter.size | grep volume_size | cut -d"," -f 1 | cut -d ":" -f 2` #sed 's/ *$//'
+            lv_used_mb=`cat /tmp/lv$logical_volume_counter.size | grep used_size | cut -d"," -f 2 | cut -d ":" -f 2` #sed 's/ *$//'
+            lv_volume_size=$(( $lv_volume_size * 1000 * 1000 ))
+	        lv_volume_size=$(( $lv_volume_size / 1024 / 1024 ))
+            lv_used_mb=$(( $lv_used_mb * 1000 * 1000 ))
+	        lv_used_mb=$(( $lv_used_mb / 1024 / 1024 ))
+            logical_volume_json="{\"name\":\"$volume_name\",\"size\":\"$logical_volume_size_block\",\"volumesize\":\"$lv_volume_size\",\"type\":\"lv\",\"volumegroup\":\"$volume_group\",\"usedmb\":\"$lv_used_mb\",\"fstype\":\"$filesystem_type\",\"uuid\":\"$logical_volume_uuid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\"}"
+            if [ "$logical_volume_counter" = "$logical_volume_count" ]; then
+              logical_volume_json="$logical_volume_json] } }"
+            else
+              logical_volume_json="$logical_volume_json,"
+            fi
+          
+            complete_lv_json=$complete_lv_json$logical_volume_json
+          
+          done
+        
+          complete_vg_json=$volume_group_json$complete_lv_json
+        
+          if [ "$partition_counter" = "$partition_count" ]; then
+            complete_partition_json="$complete_partition_json$partition_json$complete_vg_json] }"
+          else
+            complete_partition_json="$complete_partition_json$partition_json$complete_vg_json,"
+          fi
+        else
+          partition_json="$partition_json} }"
+        
+          if [ "$partition_counter" = "$partition_count" ]; then
+            complete_partition_json="$complete_partition_json$partition_json] }"
+          else
+            complete_partition_json="$complete_partition_json$partition_json,"
+          fi
+        
+        fi
+      
+      else
+        partition_json="$partition_json} }"
+        
+        if [ "$partition_counter" = "$partition_count" ]; then
+          complete_partition_json="$complete_partition_json$partition_json] }"
+        else
+          complete_partition_json="$complete_partition_json$partition_json,"
+        fi
+      fi
+      
+    done
+    
+    complete_hd_json=$complete_hd_json$hard_drive_json$complete_partition_json
+    if [ "$hard_drive_counter" = "$hard_drive_count" ]; then
+      complete_hd_json="$complete_hd_json] }" 
+    else
+      complete_hd_json="$complete_hd_json,"
+    fi
+    
+    complete_partition_json=""
+  done
+  
+  image_schema=$image_schema$complete_hd_json
+  
+  log " ...... image_schema: $image_schema"  
+  log " ...... Complete" "display"
+  echo
+  sleep 2 
+  
+  echo $image_schema > /storage/images/$image_name/schema
+}
+
+function shrink_volume()
+{
+	local volume_to_shrink="$1"
+	local minimum_size_bytes
+	 
+      log " ...... Shrinking Volume On $volume_to_shrink (This May Take A Few Minutes) " "display"
+	  echo
+	  diskutil repairVolume $volume_to_shrink 2>> $CLIENT_LOG
+      minimum_size_bytes=$(diskutil resizeVolume $volume_to_shrink limits 2>> $CLIENT_LOG | grep "Minimum" | cut -d "(" -f2 | cut -d " " -f1)
+  
+      diskutil resizeVolume $volume_to_shrink ${minimum_size_bytes}B 2>> $CLIENT_LOG
+      
+      if [ ! "$?" = "0" ]; then
+        log "Warning, File System Did Not Shrink Properly. " "display"
+      else   
+        shrunk_volumes="$shrunk_volumes $volume_to_shrink "
+        log " ...... Success" "display"
+      fi
+
+      log " ...... minimum_size_bytes: $minimum_size_bytes"
+}
+
+
+
+################################################################
+#  Upload the image for the current hard drive
+#  Global Get:
+#    partitions
+#    compression_algorithm
+#    compression_level
+#	 computer_name
+#    web
+#    image_path
+#  Global Set:
+#    none
+#  Arguments:
+#    upload_type - physical | lvm
+################################################################
+function upload_image()
+{
+  local upload_type="$1"
+  local partition
+  local partition_number
+  local filesystem_type
+      
+  for partition in $partitions; do 
+    clear_and_move_down
+
+    log " ** Starting Image Upload For $partition ** " "display" 
+	if [ -n "$computer_id" ]; then    
+	  null=$($curlAuth --data "computerId=$computer_id&partition=$partition" "${web}UpdateProgressPartition" $curlEnd)
+    fi
+    sleep 7
+    echo
+    
+    if [ "$upload_type" = "lvm" ]; then
+      partition_number=`echo $partition | sed 's/\/dev\/mapper\///g'`
+    else
+      partition_number=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
+    fi
+
+    filesystem_type=$(diskutil info $partition | grep "Type (Bundle):" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+
+    log " ...... partition_number: $partition_number filesystem_type: $filesystem_type"
+    
+    if [ "$upload_type" = "lvm" ]; then
+      output_name=$(echo $partition_number | sed 's/--/-/g')
+	else
+	  output_name=part$partition_number
+	fi
+  
+	  touch /tmp/osx.progress
+	  eval ". osx_reporter $computer_id & hdiutil create -srcDevice $partition -format UDZO -layout GPTSPUD -puppetstrings $image_path/part${partition_number}.$filesystem_type.dmg" >> /tmp/osx.progress
+	  log " ...... osx_reporter $computer_id & hdiutil create -srcDevice $partition -format UDZO -layout GPTSPUD -puppetstrings $image_path/part${partition_number}.$filesystem_type.dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress"
+	  killall osx_reporter &>/dev/null
+	  rm /tmp/osx.progress
+	  asr imagescan --source $image_path/part${partition_number}.$filesystem_type.dmg
+  done
+}
+
+function process_hard_drives()
+{
+  current_hd_number=-1
+  for hard_drive in $hard_drives; do
+    current_hd_number=$(( $current_hd_number + 1 ))
+
+	#unmount any mounted volumes for this hd
+	diskutil unmountdisk force $hard_drive >> $CLIENT_LOG
+	
+    image_path=/storage/images/$image_name/hd$current_hd_number
+    mkdir $image_path 2>> $CLIENT_LOG
+	  
+    get_partitions "true"
+    
+    upload_image "physical"
+
+    if [ "$hd_has_lvm" = "true" ]; then
+	  for partition in $partitions; do
+	    volume_group=$(pvs --noheadings | grep $partition | awk '/^ / {print $2}')
+		if [ -z "$volume_group" ]; then
+		  continue
+		fi
+		get_logical_volumes
+        escaped_volume_group=$(echo $volume_group | sed 's/-/--/g')
+		for lv in $logical_volumes; do
+		  if [ -n "$custom_logical_volumes" ]; then
+		    lvs_to_upload="$lvs_to_upload /dev/mapper/$lv "
+		  else
+		    lvs_to_upload="$lvs_to_upload /dev/mapper/$escaped_volume_group-$lv "
+		  fi
+		done
+	  done
+      
+	  partitions=$lvs_to_upload     
+      upload_image "lvm"     
+    fi
+
+	diskutil mountdisk force $hard_drive >> $CLIENT_LOG
+  done
+
+  log " shrunk_volumes: $shrunk_volumes"
+  for shrunk_volume in $shrunk_volumes; do
+    diskutil resizeVolume $shrunk_volume R 2>> $CLIENT_LOG
+  done
+}
+
+function main()
+{  
+  if [ "$is_ondemand" = "true" ]; then
+    log " ** On Demand Enabled ** "
+    for arg in "$ondemand_arguments"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
+  fi
+
+  if [ "$imageProtected" = "1" ]; then
+    error "This Image Is Protected And Cannot Be Overwritten"
+  fi
+
+  mount_smb
+
+  get_hard_drives "upload"
+
+  if [ "$is_ondemand" != "true" ]; then
+    log " ** Updating Client Status To In-Progress ** "
+    $curlAuth --data "computerId=$computer_id" "${web}UpdateStatusInProgress" $curlEnd
+  fi
+
+  log " ** Removing All Files For Existing Image: $image_name ** "
+    $curlAuth --data "profileId=$profile_id" "${web}DeleteImage" $curlEnd
+
+  create_image_schema
+  if [ "$upload_schema_only" = "true" ]; then
+    checkout
+  fi
+ 
+  process_hard_drives
+  
+checkout
+}
+
+is_ondemand="$1"
+ondemand_arguments="$2"
+main "$@"
+  

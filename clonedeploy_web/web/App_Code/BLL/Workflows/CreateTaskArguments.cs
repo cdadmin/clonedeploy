@@ -158,7 +158,9 @@ namespace BLL.Workflows
             {
                 //Upload currently only support going to the primary distribution point
                 AppendString("dp_id=" + DistributionPoint.GetPrimaryDistributionPoint().Id);
-                
+                //Added for OSX NBI suppport
+                AppendString("image_direction=pull");
+
                 AppendString("image_type=" + _imageProfile.Image.Type);
                 if (Convert.ToBoolean(_imageProfile.RemoveGPT)) AppendString("remove_gpt_structures=true");
                 if (Convert.ToBoolean(_imageProfile.SkipShrinkVolumes)) AppendString("skip_shrink_volumes=true");
@@ -191,6 +193,9 @@ namespace BLL.Workflows
                 }
                 else
                     AppendString("dp_id=" + DistributionPoint.GetPrimaryDistributionPoint().Id);
+
+                //Added for OSX NBI suppport
+                AppendString("image_direction=push");
 
                 if (Convert.ToBoolean(_imageProfile.ChangeName)) AppendString("change_computer_name=true");
                 if (Convert.ToBoolean(_imageProfile.SkipExpandVolumes)) AppendString("skip_expand_volumes=true");
