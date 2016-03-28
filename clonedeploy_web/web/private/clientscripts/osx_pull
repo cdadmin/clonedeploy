@@ -41,7 +41,7 @@ function create_image_schema()
       if [ "$skip_shrink_volumes" != "true" ] && [ "$upload_schema_only" != "true" ] && [ "$generic_fs" = "hfs" ]; then 
           if [[ ! "$custom_fixed_partitions" == *"$hard_drive$partition_number"* ]]; then
 		    if [ "$image_type" = "Block" ] &&  [ "$partition_size_bytes" -gt "5368709120" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
-              shrink_volume $partition
+              shrink_volume $partition physical
             fi			  
           fi
       fi
@@ -84,36 +84,22 @@ function create_image_schema()
 			
       filesystem_type=$(diskutil info $logical_volume | grep "File System Personality:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
          lv_uuid=$(diskutil info $logical_volume | grep "LV UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
-      logical_volume_size_block=$(diskutil info $partition | grep "Total Size:" | cut -d "(" -f3 | cut -d " " -f2)
-      logical_volume_size_bytes=$(diskutil info $partition | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1)
-      generic_fs=$(diskutil info $partition | grep "Type (Bundle):" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+      logical_volume_size_block=$(diskutil info $logical_volume | grep "Total Size:" | cut -d "(" -f3 | cut -d " " -f2)
+      logical_volume_size_bytes=$(diskutil info $logical_volume | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1)
+      generic_fs=$(diskutil info $logical_volume | grep "Type (Bundle):" | cut -d : -f2 | sed -e 's/^[ \t]*//')
 	  
-         
-           
-          
-
-            
-            if [ "$upload_schema_only" != "true" ] && [ "$skip_shrink_lvm" != "true" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
-              if [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ] || [ "$filesystem_type" = "ntfs" ]; then
+                     
+            if [ "$upload_schema_only" != "true" ] && [ "$skip_shrink_lvm" != "true" ] && [ "$generic_fs" = "hfs" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
 			    if [[ ! "$custom_fixed_logical_volumes" == *"$logical_volume_device"* ]]; then
 				  if [ "$image_type" = "Block" ] && [ "$logical_volume_size_bytes" -gt "5368709120" ]; then
-                    shrink_volume $logical_volume_device      
+                    shrink_volume $logical_volume_device lvm
 				  fi
-				fi
-              fi
+				fi          
             fi
             
-            partclone.$partclone_type -SIic -s "$logical_volume_device" -O /dev/null >& /tmp/lv$logical_volume_counter.size
-            log "$logical_volume_device Volume Size"
-            cat /tmp/lv$logical_volume_counter.size | grep volume_size >> $CLIENT_LOG
-            cat /tmp/lv$logical_volume_counter.size | grep used_size >> $CLIENT_LOG
-            lv_volume_size=`cat /tmp/lv$logical_volume_counter.size | grep volume_size | cut -d"," -f 1 | cut -d ":" -f 2` #sed 's/ *$//'
-            lv_used_mb=`cat /tmp/lv$logical_volume_counter.size | grep used_size | cut -d"," -f 2 | cut -d ":" -f 2` #sed 's/ *$//'
-            lv_volume_size=$(( $lv_volume_size * 1000 * 1000 ))
-	        lv_volume_size=$(( $lv_volume_size / 1024 / 1024 ))
-            lv_used_mb=$(( $lv_used_mb * 1000 * 1000 ))
-	        lv_used_mb=$(( $lv_used_mb / 1024 / 1024 ))
-            logical_volume_json="{\"name\":\"$volume_name\",\"size\":\"$logical_volume_size_block\",\"volumesize\":\"$lv_volume_size\",\"type\":\"lv\",\"volumegroup\":\"$volume_group\",\"usedmb\":\"$lv_used_mb\",\"fstype\":\"$filesystem_type\",\"uuid\":\"$lv_uuid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\"}"
+            lv_volume_size=$(diskutil info $partition | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1)
+	        lv_volume_size_mb=$(( $volume_size / 1000 / 1000 ))
+            logical_volume_json="{\"name\":\"$volume_name\",\"size\":\"$logical_volume_size_block\",\"volumesize\":\"$lv_volume_size\",\"type\":\"lv\",\"volumegroup\":\"$volume_group\",\"usedmb\":\"$lv_volume_size_mb\",\"fstype\":\"$filesystem_type\",\"uuid\":\"$lv_uuid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\"}"
             if [ "$logical_volume_counter" = "$logical_volume_count" ]; then
               logical_volume_json="$logical_volume_json] } }"
             else
@@ -194,14 +180,30 @@ function get_logical_volumes_for_vg()
 function shrink_volume()
 {
 	local volume_to_shrink="$1"
+	local volume_type="$2"
 	local minimum_size_bytes
-	 
+	local total_size_bytes
+	local total_free_bytes
+	local padding
+	
       log " ...... Shrinking Volume On $volume_to_shrink (This May Take A Few Minutes) " "display"
 	  echo
 	  diskutil repairVolume $volume_to_shrink 2>> $CLIENT_LOG
-      minimum_size_bytes=$(diskutil resizeVolume $volume_to_shrink limits 2>> $CLIENT_LOG | grep "Minimum" | cut -d "(" -f2 | cut -d " " -f1)
-  
-      diskutil resizeVolume $volume_to_shrink ${minimum_size_bytes}B 2>> $CLIENT_LOG
+	  
+	  if [ "$volume_type" = "physical" ]; then
+        minimum_size_bytes=$(diskutil resizeVolume $volume_to_shrink limits 2>> $CLIENT_LOG | grep "Minimum" | cut -d "(" -f2 | cut -d " " -f1)
+		diskutil resizeVolume $volume_to_shrink ${minimum_size_bytes}B 2>> $CLIENT_LOG
+      elif [ "$volume_type" = "lvm" ]; then
+        total_size_bytes=$(diskutil info $logical_volume | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1)
+		total_free_bytes=$(diskutil info $logical_volume | grep "Volume Free Space:" | cut -d "(" -f2 | cut -d " " -f1)
+		padding=$(awk -v v1="$total_size_bytes" BEGIN'{printf "%.0f",v1 * .10}') #core storage doesn't have a limits option, use 10% of volume size for padding
+		minimum_size_bytes=`expr $total_size_bytes '-' $total_free_bytes '+' $padding`
+		diskutil cs resizeVolume $volume_to_shrink ${minimum_size_bytes}B 2>> $CLIENT_LOG
+      else
+	    log "Incorrect Volume Type.  Not Shrinking"
+		return 1
+	  fi
+      
       
       if [ ! "$?" = "0" ]; then
         log "Warning, File System Did Not Shrink Properly. " "display"
