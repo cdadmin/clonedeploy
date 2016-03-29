@@ -13,17 +13,35 @@ namespace BLL.Workflows
         public string TaskType { get; set; }
         public int profileId { get; set; }
         public string partitionPrefix { get; set; }
-
-    public string GeneratePartitionScript()
+        private Models.ImageProfile imageProfile;
+        private BLL.DynamicClientPartition.ClientPartition clientSchema;
+        public string GeneratePartitionScript()
         {
-            var imageProfile = BLL.ImageProfile.ReadProfile(profileId);
+            imageProfile = BLL.ImageProfile.ReadProfile(profileId);
             ImageSchema = new ClientPartitionHelper(imageProfile).GetImageSchema();
-            string partitionScript = null;
-          
-            var clientSchema = new ClientPartition(HdNumberToGet,NewHdSize,imageProfile).GenerateClientSchema();
-            if (clientSchema == null) return "failed";
             
+
+            clientSchema = new ClientPartition(HdNumberToGet, NewHdSize, imageProfile).GenerateClientSchema();
+            if (clientSchema == null) return "failed";
+
+            if (imageProfile.Image.Environment == "linux" || string.IsNullOrEmpty(imageProfile.Image.Environment))
+            {
+                return LinuxLayout();
+            }
+            else
+            {
+                return OsxNbiLayout();
+            }
+
            
+
+
+           
+        }
+
+        private string LinuxLayout()
+        {
+            string partitionScript = null;
             if (TaskType == "debug")
             {
                 partitionScript = clientSchema.DebugStatus;
@@ -31,7 +49,8 @@ namespace BLL.Workflows
                     return partitionScript;
                 try
                 {
-                    clientSchema.ExtendedPartitionHelper.AgreedSizeBlk = clientSchema.ExtendedPartitionHelper.AgreedSizeBlk * 512 / 1024 / 1024;
+                    clientSchema.ExtendedPartitionHelper.AgreedSizeBlk =
+                        clientSchema.ExtendedPartitionHelper.AgreedSizeBlk * 512 / 1024 / 1024;
                 }
                 catch
                 {
@@ -55,7 +74,7 @@ namespace BLL.Workflows
                 partitionCommands = "fdisk " + ClientHd + " &>>/tmp/clientlog.log <<FDISK\r\n";
                 if (Convert.ToInt32(clientSchema.PrimaryAndExtendedPartitions[0].Start) < 2048)
                     partitionCommands += "c\r\n";
-               
+
                 foreach (var part in clientSchema.PrimaryAndExtendedPartitions)
                 {
                     counter++;
@@ -77,7 +96,9 @@ namespace BLL.Workflows
                     else
                         partitionCommands += "\r\n";
                     if (part.Type == "extended")
-                        partitionCommands += "+" + (Convert.ToInt64(clientSchema.ExtendedPartitionHelper.AgreedSizeBlk) - 1) + "\r\n";
+                        partitionCommands += "+" +
+                                             (Convert.ToInt64(clientSchema.ExtendedPartitionHelper.AgreedSizeBlk) - 1) +
+                                             "\r\n";
                     else //FDISK seems to include the starting sector in size so we need to subtract 1
                         partitionCommands += "+" + (Convert.ToInt64(part.Size) - 1) + "\r\n";
 
@@ -190,13 +211,14 @@ namespace BLL.Workflows
                                  select part)
             {
                 partitionScript += "echo \"pvcreate -u " + part.Uuid + " --norestorefile -yf " +
-                                       ClientHd + partitionPrefix + part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] +
-                                       "\" >>/tmp/lvmcommands \r\n";
+                                   ClientHd + partitionPrefix +
+                                   part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] +
+                                   "\" >>/tmp/lvmcommands \r\n";
                 partitionScript += "echo \"vgcreate " + part.VolumeGroup.Name + " " + ClientHd + partitionPrefix +
-                                       part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] + " -yf" +
-                                       "\" >>/tmp/lvmcommands \r\n";
+                                   part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] + " -yf" +
+                                   "\" >>/tmp/lvmcommands \r\n";
                 partitionScript += "echo \"" + part.VolumeGroup.Uuid + "\" >>/tmp/vg-" + part.VolumeGroup.Name +
-                                       " \r\n";
+                                   " \r\n";
                 foreach (var lv in part.VolumeGroup.LogicalVolumes)
                 {
                     foreach (var rlv in clientSchema.LogicalVolumes)
@@ -205,27 +227,41 @@ namespace BLL.Workflows
                         if (TaskType == "debug")
                         {
                             partitionScript += "echo \"lvcreate --yes -L " +
-                                                   rlv.Size + "mb -n " +
-                                                   rlv.Name + " " + rlv.Vg +
-                                                   "\" >>/tmp/lvmcommands \r\n";
+                                               rlv.Size + "mb -n " +
+                                               rlv.Name + " " + rlv.Vg +
+                                               "\" >>/tmp/lvmcommands \r\n";
                         }
                         else
                         {
                             partitionScript += "echo \"lvcreate --yes -L " +
-                                                   ((Convert.ToInt64(rlv.Size) - 8192)) + "s -n " +
-                                                   rlv.Name + " " + rlv.Vg +
-                                                   "\" >>/tmp/lvmcommands \r\n";
+                                               ((Convert.ToInt64(rlv.Size) - 8192)) + "s -n " +
+                                               rlv.Name + " " + rlv.Vg +
+                                               "\" >>/tmp/lvmcommands \r\n";
                         }
                         partitionScript += "echo \"" + rlv.Uuid + "\" >>/tmp/" + rlv.Vg +
-                                               "-" + rlv.Name + "\r\n";
+                                           "-" + rlv.Name + "\r\n";
                     }
                 }
                 partitionScript += "echo \"vgcfgbackup -f /tmp/lvm-" + part.VolumeGroup.Name +
-                                       "\" >>/tmp/lvmcommands\r\n";
+                                   "\" >>/tmp/lvmcommands\r\n";
+            }
+            return partitionScript;
+        }
+
+        private string OsxNbiLayout()
+        {
+            string partitionScript = "diskutil partitionDisk " + clientSchema.PrimaryAndExtendedPartitions.Count + " ";
+            foreach (var partition in clientSchema.PrimaryAndExtendedPartitions)
+            {
+                partitionScript += "\"" + partition.FsType + "\"" + " " + "\"" + partition.Type + "\"" + " " +
+                                   partition.Size + "s";
             }
 
-         
+
             return partitionScript;
         }
     }
+
+
+
 }

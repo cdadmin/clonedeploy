@@ -46,6 +46,7 @@ namespace views.images
 
             //Image types can't be changed after they are created
             ddlImageType.Enabled = false;
+            ddlEnvironment.Enabled = false;
 
         }
     }

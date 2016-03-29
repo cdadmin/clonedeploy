@@ -22,6 +22,7 @@ namespace views.images
             {
                 Name = txtImageName.Text,
                 Os = "",
+                Environment = ddlEnvironment.Text,
                 Description = txtImageDesc.Text,
                 Protected = chkProtected.Checked ? 1 : 0,
                 IsVisible = chkVisible.Checked ? 1 : 0,

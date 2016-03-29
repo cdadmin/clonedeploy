@@ -23,7 +23,16 @@
     </div>
     <br class="clear"/>
     
-    
+    <div class="size-4 column">
+        Client Imaging Environment:
+    </div>
+    <div class="size-5 column">
+        <asp:DropDownList ID="ddlEnvironment" runat="server" CssClass="ddlist">
+            <asp:ListItem>linux</asp:ListItem>
+            <asp:ListItem>osx</asp:ListItem>
+        </asp:DropDownList>
+    </div>
+    <br class="clear"/>
     
      <div class="size-4 column">
         Image Type:

@@ -33,7 +33,10 @@ namespace Models
         [Column("image_type", Order = 8)]
         public string Type { get; set; }
 
-        [Column("image_approved", Order = 9)]
+        [Column("image_environment", Order = 9)]
+        public string Environment { get; set; }
+
+        [Column("image_approved", Order = 10)]
         public int Approved { get; set; }        
     }
 
