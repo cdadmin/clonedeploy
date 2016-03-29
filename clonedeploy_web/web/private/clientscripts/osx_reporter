@@ -2,13 +2,13 @@
 
 . /usr/local/bin/osx_global_functions
 
-computer_id=$1
-
-
   while [ -f "/tmp/osx.progress" ]; do
     post=$(tail -n 1 /tmp/osx.progress)
     result=$($curlAuth --data "computerId=$computer_id&progress=$post&progressType=wim" "${web}UpdateProgress" $curlEnd)        
-	echo $post
+	echo "$post" | grep -i "created"
+	if [ "$?" = "0" ]; then
+	  echo "$post" >> $CLIENT_LOG
+	fi
     sleep 2
   done	
 

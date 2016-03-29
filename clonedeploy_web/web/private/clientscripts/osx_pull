@@ -265,11 +265,13 @@ function upload_image()
 	fi
   
 	  touch /tmp/osx.progress
-	  eval ". osx_reporter $computer_id & hdiutil create -srcDevice $partition -format UDZO -layout GPTSPUD -puppetstrings $image_path/part${partition_number}.$filesystem_type.dmg" >> /tmp/osx.progress
-	  log " ...... osx_reporter $computer_id & hdiutil create -srcDevice $partition -format UDZO -layout GPTSPUD -puppetstrings $image_path/part${partition_number}.$filesystem_type.dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress"
+	  . osx_reporter & hdiutil create -srcDevice $partition -format UDZO -layout GPTSPUD -puppetstrings $image_path/part${partition_number}.$filesystem_type.dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress
+	  log ". osx_reporter & hdiutil create -srcDevice $partition -format UDZO -layout GPTSPUD -puppetstrings $image_path/part${partition_number}.$filesystem_type.dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress"
+	  sleep 5
+	  asr imagescan --source $image_path/part${partition_number}.$filesystem_type.dmg | tee /tmp/osx.progress
 	  killall osx_reporter &>/dev/null
 	  rm /tmp/osx.progress
-	  asr imagescan --source $image_path/part${partition_number}.$filesystem_type.dmg
+	  
   done
 }
 
@@ -314,6 +316,8 @@ function process_hard_drives()
   done
 
   log " shrunk_volumes: $shrunk_volumes"
+  log " ** Expanding Resized Volumes **" "display"
+  echo
   for shrunk_volume in $shrunk_volumes; do
     diskutil resizeVolume $shrunk_volume R 2>> $CLIENT_LOG
   done

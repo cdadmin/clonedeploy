@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#asr restoreexact --source file --target /dev/disk0s2 --erase --noprompt --noverify --puppetstrings
 . /bin/cd_global_functions
 
 if [ "$started_from_init" != "true" ]; then
