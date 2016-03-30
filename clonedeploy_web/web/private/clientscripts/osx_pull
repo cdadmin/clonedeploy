@@ -248,7 +248,6 @@ function upload_image()
   local upload_type="$1"
   local partition
   local partition_number
-  local filesystem_type
       
   for partition in $partitions; do 
     clear_and_move_down
@@ -260,15 +259,13 @@ function upload_image()
     sleep 7
     echo
     
-    if [ "$upload_type" = "lvm" ]; then
-      partition_number=`echo $partition | sed 's/\/dev\/mapper\///g'`
-    else
-      partition_number=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
-    fi
+  
+    partition_number=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
+    
 
-    filesystem_type=$(diskutil info $partition | grep "Type (Bundle):" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+   
 
-    log " ...... partition_number: $partition_number filesystem_type: $filesystem_type"
+    log " ...... partition_number: $partition_number"
     
     if [ "$upload_type" = "lvm" ]; then
       output_name=$(echo $partition_number | sed 's/--/-/g')
@@ -277,8 +274,8 @@ function upload_image()
 	fi
   
 	  touch /tmp/osx.progress
-	  . osx_reporter & hdiutil create -srcDevice $partition -format UDZO -layout GPTSPUD -puppetstrings $image_path/part${partition_number}.$filesystem_type.dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress
-	  log ". osx_reporter & hdiutil create -srcDevice $partition -format UDZO -layout GPTSPUD -puppetstrings $image_path/part${partition_number}.$filesystem_type.dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress"
+	  . osx_reporter & hdiutil create -srcDevice $partition -format UDZO -layout GPTSPUD -puppetstrings $image_path/part${partition_number}.dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress
+	  log ". osx_reporter & hdiutil create -srcDevice $partition -format UDZO -layout GPTSPUD -puppetstrings $image_path/part${partition_number}.dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress"
 	  sleep 5
 	  asr imagescan --source $image_path/part${partition_number}.$filesystem_type.dmg | tee /tmp/osx.progress
 	  killall osx_reporter &>/dev/null
@@ -302,27 +299,6 @@ function process_hard_drives()
     get_partitions "true"
     
     upload_image "physical"
-
-    if [ "$hd_has_lvm" = "true" ]; then
-	  for partition in $partitions; do
-	    volume_group=$(pvs --noheadings | grep $partition | awk '/^ / {print $2}')
-		if [ -z "$volume_group" ]; then
-		  continue
-		fi
-		get_logical_volumes
-        escaped_volume_group=$(echo $volume_group | sed 's/-/--/g')
-		for lv in $logical_volumes; do
-		  if [ -n "$custom_logical_volumes" ]; then
-		    lvs_to_upload="$lvs_to_upload /dev/mapper/$lv "
-		  else
-		    lvs_to_upload="$lvs_to_upload /dev/mapper/$escaped_volume_group-$lv "
-		  fi
-		done
-	  done
-      
-	  partitions=$lvs_to_upload     
-      upload_image "lvm"     
-    fi
 
 	diskutil mountdisk force $hard_drive >> $CLIENT_LOG
   done
