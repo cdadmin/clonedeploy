@@ -17,7 +17,7 @@ namespace BLL.DynamicClientPartition
 
     public class ClientPartition
     {
-        public ClientPartition(int hdToGet,string newHdSize, Models.ImageProfile imageProfile)
+        public ClientPartition(int hdToGet,string newHdSize, Models.ImageProfile imageProfile, string partitionPrefix)
         {
             _hdToGet = hdToGet;
             _newHdSize = (long)(Convert.ToInt64(newHdSize) * .99);
@@ -436,7 +436,7 @@ namespace BLL.DynamicClientPartition
                 foreach (var partition in _imageSchema.HardDrives[HdNumberToGet].Partitions)
                 {
                     //Find the partition this volume group belongs to
-                    if (_imageSchema.HardDrives[HdNumberToGet].Name + partition.Number != volumeGroup.Pv) continue;
+                    if (_imageSchema.HardDrives[HdNumberToGet].Name + partition.Prefix + partition.Number != volumeGroup.Pv) continue;
                     var singleLvVerified = false;
 
                     double percentCounter = -.1;
@@ -461,6 +461,7 @@ namespace BLL.DynamicClientPartition
                                 Name = lv.Name,
                                 Vg = lv.VolumeGroup,
                                 Uuid = lv.Uuid,
+                                VgUuid = volumeGroup.Uuid,
                                 FsType = lv.FsType
                             };
 

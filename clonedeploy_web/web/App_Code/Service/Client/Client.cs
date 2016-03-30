@@ -40,7 +40,7 @@ namespace Service.Client
         [WebMethod]
         public void GetPartLayout(string imageProfileId, string hdToGet, string newHdSize, string clientHd, string taskType, string partitionPrefix)
         {
-            if (!Authorize()) return;
+            //if (!Authorize()) return;
 
             var partLayout = new ClientPartitionScript
             {

@@ -77,7 +77,6 @@ function checkout()
 	
 }
 
-
 function clear_and_move_down()
 {
 	clear
@@ -114,7 +113,7 @@ function get_hard_drives()
 		log " ...... Hard Drive(s) Set By Image Profile: $hard_drives" "display"		
 	else
 	  if [ "$task_type" = "upload" ]; then
-		all_hard_drives=$(diskutil list | grep internal | cut -d " " -f1)
+		all_hard_drives=$(diskutil list | grep "/dev/" | cut -d " " -f1)
 		log "all_hard_drives: $all_hard_drives"
 		for hdd in $all_hard_drives; do
 		  disk_name=$(echo $hdd | sed 's~/dev/~~g')
@@ -127,7 +126,7 @@ function get_hard_drives()
 		done
 	  else #deploy
 	    #When deploying it is very possible the hard drive won't have a disk label so don't use the method used for uploads
-	    hard_drives=$(diskutil list | grep internal | cut -d " " -f1)
+	    hard_drives=$(diskutil list | grep "/dev/" | cut -d " " -f1)
 	  fi
 	fi
 	
@@ -167,7 +166,7 @@ function get_partitions()
 	  log " ...... Partitions Set By Image Profile: $partitions" "display"
     fi
   else
-    partitions_suffix=$(diskutil list | grep $drive_name | grep -vw $hard_drive | grep -vw $drive_name | awk -F"$drive_name"  '{print $2}' )
+    partitions_suffix=$(diskutil list | grep $drive_name | grep -vw $hard_drive | grep -vw $drive_name | grep -vi "volume on" | awk -F"$drive_name"  '{print $2}' )
 	for suffix in $partitions_suffix; do
 	  partitions="$partitions $hard_drive$suffix"
 	done

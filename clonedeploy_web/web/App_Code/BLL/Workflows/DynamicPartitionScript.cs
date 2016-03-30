@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Activities.Statements;
 using System.Linq;
 using BLL.DynamicClientPartition;
 
@@ -21,7 +22,7 @@ namespace BLL.Workflows
             ImageSchema = new ClientPartitionHelper(imageProfile).GetImageSchema();
             
 
-            clientSchema = new ClientPartition(HdNumberToGet, NewHdSize, imageProfile).GenerateClientSchema();
+            clientSchema = new ClientPartition(HdNumberToGet, NewHdSize, imageProfile, partitionPrefix).GenerateClientSchema();
             if (clientSchema == null) return "failed";
 
             if (imageProfile.Image.Environment == "linux" || string.IsNullOrEmpty(imageProfile.Image.Environment))
@@ -250,14 +251,69 @@ namespace BLL.Workflows
 
         private string OsxNbiLayout()
         {
-            string partitionScript = "diskutil partitionDisk " + clientSchema.PrimaryAndExtendedPartitions.Count + " ";
-            foreach (var partition in clientSchema.PrimaryAndExtendedPartitions)
+            string partitionScript = "diskutil partitionDisk ";
+            if (TaskType == "debug")
             {
-                partitionScript += "\"" + partition.FsType + "\"" + " " + "\"" + partition.Type + "\"" + " " +
-                                   partition.Size + "s";
+            
+                if (clientSchema.PrimaryAndExtendedPartitions.Count == 0)
+                    return partitionScript;
+                try
+                {
+                    clientSchema.ExtendedPartitionHelper.AgreedSizeBlk =
+                        clientSchema.ExtendedPartitionHelper.AgreedSizeBlk * 512 / 1024 / 1024;
+                }
+                catch
+                {
+                    // ignored
+                }
+                foreach (var p in clientSchema.PrimaryAndExtendedPartitions)
+                    p.Size = p.Size * 512 / 1024 / 1024;
+                foreach (var p in clientSchema.LogicalPartitions)
+                    p.Size = p.Size * 512 / 1024 / 1024;
+                foreach (var p in clientSchema.LogicalVolumes)
+                    p.Size = p.Size * 512 / 1024 / 1024;
             }
 
+            
+            var neededPartitionCount = clientSchema.PrimaryAndExtendedPartitions.Count;
+            
+            foreach (var partition in clientSchema.PrimaryAndExtendedPartitions)
+            {
+                if (partition.Type.ToLower() == "efi" || partition.Type.ToLower() == "boot os x")
+                    neededPartitionCount -= 1;        
+            }
 
+            partitionScript += neededPartitionCount + " ";
+            
+            foreach (var partition in clientSchema.PrimaryAndExtendedPartitions)
+            {
+                if (partition.Type.ToLower() == "efi" || partition.Type.ToLower() == "boot os x")
+                    continue; //osx automatically creates the efi partition and boot partition if needed
+
+                partitionScript += "\"" + partition.FsType + "\"" + " " + "\"" + partition.Type + "\"" + " " +
+                                  partition.Size + "s ";
+            }
+
+            foreach (var part in from part in ImageSchema.HardDrives[HdNumberToGet].Partitions
+                                 where part.Active
+                                 where part.VolumeGroup != null
+                                 where part.VolumeGroup.LogicalVolumes != null
+                                 select part)
+            {
+                foreach (var lv in part.VolumeGroup.LogicalVolumes)
+                {
+                    foreach (var rlv in clientSchema.LogicalVolumes)
+                    {
+                        if (lv.Name != rlv.Name || lv.VolumeGroup != rlv.Vg) continue;
+
+                        partitionScript += "\r\necho \"" + part.VolumeGroup.Name + ":" + ClientHd + partitionPrefix +
+                                           part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] +
+                                           ":" + part.VolumeGroup.Uuid + ":" + rlv.Name +
+                                           ":" + rlv.Size + "\" >> /tmp/corestorage";
+                    }
+                }
+            }
+         
             return partitionScript;
         }
     }

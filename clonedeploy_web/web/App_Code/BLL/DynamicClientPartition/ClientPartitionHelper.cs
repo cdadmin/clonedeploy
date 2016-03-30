@@ -301,8 +301,12 @@ namespace BLL.DynamicClientPartition
                 HasLv = false
             };
 
-            if (_imageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].FsId.ToLower() != "8e" &&
-                _imageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].FsId.ToLower() != "8e00") return volumeGroupHelper;
+            if (_imageProfile.Image.Environment == "linux" || string.IsNullOrEmpty(_imageProfile.Image.Environment))
+            {
+                if (_imageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].FsId.ToLower() != "8e" &&
+                    _imageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].FsId.ToLower() != "8e00")
+                    return volumeGroupHelper;
+            }
             if (!_imageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].Active)
                 return volumeGroupHelper;
 
@@ -311,6 +315,7 @@ namespace BLL.DynamicClientPartition
             //if vg.name is null partition was uploaded at physical partion level, by using the shrink_lvm=false flag
             if (_imageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup.Name == null) return volumeGroupHelper;
             volumeGroupHelper.Name = _imageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup.Name;
+            volumeGroupHelper.Uuid = _imageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup.Uuid;
             foreach (var logicalVolume in _imageSchema.HardDrives[hdNumberToGet].Partitions[partNumberToGet].VolumeGroup.LogicalVolumes)
             {
                 if (!logicalVolume.Active)

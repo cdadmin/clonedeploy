@@ -21,6 +21,7 @@
         public long Size { get; set; }
         public string Uuid { get; set; }
         public string Vg { get; set; }
+        public string VgUuid { get; set; }
         public bool SizeIsDynamic { get; set; }
     }
 
@@ -31,6 +32,7 @@
         public long MinSizeBlk { get; set; }
         public string Name { get; set; }
         public string Pv { get; set; }
+        public string Uuid { get; set; }
     }
 
     public class ExtendedPartitionHelper
