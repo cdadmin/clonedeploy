@@ -2,9 +2,11 @@
 
 . /usr/local/bin/osx_global_functions
 
-function pre
+function create_all_partition_layouts
 {
-   get_hard_drives "deploy"
+  #The partition layout for all hard drives must be created before any imaging can begin
+  #In the case that Core storage spans across multiple disks
+  get_hard_drives "deploy"
    imaged_schema_drives=""
   current_hd_number=-1
   for hard_drive in $hard_drives; do
@@ -18,7 +20,7 @@ function pre
 	
 	drive_name=$(echo $hard_drive | cut -d "/" -f 3)
     logical_block_size="$(diskutil info $hard_drive | grep "Device Block Size:" | cut -d : -f2 | sed 's/Bytes//g' | sed -e 's/^[ \t]*//')"   
-    hard_drive_size_bytes=$(diskutil info $hard_drive | grep "Total Size:" | cut -d "(" -f3 | cut -d " " -f2 )
+    hard_drive_size_bytes=$(diskutil info $hard_drive | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1 )
 	
     log "Get hd_schema:  profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$hard_drive_size_bytes&schemaHds=$imaged_schema_drives"
     hd_schema=$($curlAuth --data "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$hard_drive_size_bytes&schemaHds=$(remove_whitespace $imaged_schema_drives)" "${web}CheckHdRequirements" $curlEnd)
@@ -26,13 +28,18 @@ function pre
 	
     image_hd_to_use=$(parse_json "$hd_schema" .SchemaHdNumber)
     image_path=/storage/images/$image_name/hd$image_hd_to_use
-	
+
+	 create_partition_layout
+	 
 	 imaged_schema_drives="$imaged_schema_drives $(parse_json "$hd_schema" .SchemaHdNumber) "
   done
 }
 
 function process_hard_drives()
 {
+  create_all_partition_layouts
+  
+  #Do it all again, There may be new hard drives listed now that all partitions have been created because of Core Storage
   local drive_name
   local lbs
   local drive_size_block
@@ -52,7 +59,7 @@ function process_hard_drives()
 	
 	drive_name=$(echo $hard_drive | cut -d "/" -f 3)
     logical_block_size="$(diskutil info $hard_drive | grep "Device Block Size:" | cut -d : -f2 | sed 's/Bytes//g' | sed -e 's/^[ \t]*//')"   
-    hard_drive_size_bytes=$(diskutil info $hard_drive | grep "Total Size:" | cut -d "(" -f3 | cut -d " " -f2 )
+    hard_drive_size_bytes=$(diskutil info $hard_drive | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1 )
 	
     log "Get hd_schema:  profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$hard_drive_size_bytes&schemaHds=$imaged_schema_drives"
     hd_schema=$($curlAuth --data "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$hard_drive_size_bytes&schemaHds=$(remove_whitespace $imaged_schema_drives)" "${web}CheckHdRequirements" $curlEnd)
@@ -61,12 +68,6 @@ function process_hard_drives()
     image_hd_to_use=$(parse_json "$hd_schema" .SchemaHdNumber)
     image_path=/storage/images/$image_name/hd$image_hd_to_use
 	
-    create_partition_layout
-	
-	#if lvm is in use, all hard drives must have partitions created before imaging can begin in the event that the volume group spans multiple disks
-	 if [ "$(parse_json "$hd_schema" .UsesLvm)" = "true" ]; then
-       continue
-     fi
     process_partitions
 	
     imaged_schema_drives="$imaged_schema_drives $(parse_json "$hd_schema" .SchemaHdNumber) "
@@ -92,6 +93,14 @@ function process_partitions()
     clear_and_move_down
     current_partition="$(parse_json "$hd_schema" .PhysicalPartitions[$array_index])"
     log "$current_partition"
+
+	if [ "$(parse_json "$current_partition" .Type)" = "EFI" ] || [ "$(parse_json "$current_partition" .Type)" = "Efi" ]; then
+	  continue
+	fi
+	
+	if [ "$(parse_json "$current_partition" .Type)" = "Boot OS X" ] || [ "$(parse_json "$current_partition" .Type)" = "boot os x" ]; then
+	  continue
+	fi
 	
  
 	get_partitions_according_to_mbr_gpt
@@ -99,8 +108,9 @@ function process_partitions()
 	for partition in $mbr_gpt_partitions; do
       partition_counter=$(( $partition_counter + 1 ))
       partition_number=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
-      if [ "$(parse_json "$hd_schema" .Number)" = "$partition_number" ]; then
+      if [ "$(parse_json "$current_partition" .Number)" = "$partition_number" ]; then
 	    partition_prefix=$(echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[0-9]*//g')
+		break;
 	  else
         partition_prefix=""
       fi
@@ -108,16 +118,17 @@ function process_partitions()
 	
 	partition_size_bytes=$(diskutil info ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)  | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1)
     download_image "$current_partition" part
-		
-    if [ "$skip_expand_volumes" != "true" ]; then 
-      if [ "$(parse_json "$current_partition" .ImageType)" = "Block" ] && [ "$partition_size_bytes" -gt "5368709120" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
-        expand_volume ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number) 
-      fi
-    fi
-		
-	if [ "$(parse_json "$current_partition" .FileSystem)" = "ntfs" ] && [ -n "$computer_name" ] && [ "$change_computer_name" = "true" ]; then
-      change_computer_name ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)
-	fi
+			
+	#if [ -n "$computer_name" ] && [ "$change_computer_name" = "true" ]; then
+	  #Fix Me: not working
+	  #chroot /Volumes/"$(parse_json "$current_partition" .Type)"
+	  #if [ "$?" = "0" ]; then
+        #scutil --set ComputerName "$computer_name"
+        #scutil --set HostName "$computer_name"
+        #scutil --set LocalHostName "$computer_name"
+		#exit
+	  #fi
+	#fi
 		
 	if [ "$file_copy" = "True" ]; then
 	  process_file_copy "$current_partition" "partition"
@@ -130,11 +141,17 @@ function download_image()
   local current_object="$1"
   local file_name_prefix="$2"
   local destination
-    
+  local asr_verb   
  
-    destination=${hard_drive}${partition_prefix}$(parse_json "$current_object" .Number)
-    file_name_prefix=part"$(parse_json "$current_object" .Number)"
+  destination=${hard_drive}${partition_prefix}$(parse_json "$current_object" .Number)
+  file_name_prefix=part"$(parse_json "$current_object" .Number)"
   
+  log "partition size bytes: $partition_size_bytes"
+  if [ "$partition_size_bytes" -gt "5368709120" ]; then
+    asr_verb="restore"
+  else
+    asr_verb="restoreexact"
+  fi
   
   log " ** Starting Image Download For $destination ** " "display" 
   if [ -n "$computer_id" ]; then    
@@ -144,17 +161,13 @@ function download_image()
   echo
 	
   touch /tmp/osx.progress
-	  . osx_reporter &  asr restoreexact --source $image_path/$file_name_prefix.dmg --target $destination --erase --noprompt --noverify --puppetstrings 2>> $CLIENT_LOG | tee /tmp/osx.progress
-	
+	  . osx_reporter & asr $asr_verb --source $image_path/$file_name_prefix.dmg --target $destination --erase --noprompt --noverify --puppetstrings 2>> $CLIENT_LOG | tee /tmp/osx.progress
+	  log ". osx_reporter &  asr $asr_verb --source $image_path/$file_name_prefix.dmg --target $destination --erase --noprompt --noverify --puppetstrings 2>> $CLIENT_LOG | tee /tmp/osx.progress"
 	  sleep 5
 	  
 	  killall osx_reporter &>/dev/null
 	  rm /tmp/osx.progress
 }
-
-
-
-
 
 function create_partition_layout()
 {
@@ -169,8 +182,8 @@ function create_partition_layout()
   local volume_group_uuid
   local logical_volume_uuid
   
-  if [ "$(parse_json "$hd_schema" .IsValid)" = "true" ]; then
-    log " ...... HD Meets The Minimum Sized Required"		
+  if [ "$(parse_json "$hd_schema" .IsValid)" = "true" ] || [ "$(parse_json "$hd_schema" .IsValid)" = "original" ]; then
+    log " ...... HD Meets The Minimum Sized Required"
   elif [ "$(parse_json "$hd_schema" .IsValid)" = "false" ]; then
     log " ...... $(parse_json "$hd_schema" .Message)" "display"
     sleep 10
@@ -187,22 +200,19 @@ function create_partition_layout()
 	for partition in $mbr_gpt_partitions; do
       partition_counter=$(( $partition_counter + 1 ))
       partition_number=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
-      if [ "$(parse_json "$hd_schema" .Number)" = "$partition_number" ]; then
-	    partition_prefix=$(echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[0-9]*//g')
-	  else
-        partition_prefix=""
-      fi
+      partition_prefix=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[0-9]*//g'`
+	  break
 	done
   
   if [ "$partition_method" = "script" ]; then # create partitions from image profile script
      log " ** Creating Partition Table On $hard_drive From Custom Script ** " "display"
-    $curlAuth --data "profileId=$profile_id" "${web}GetCustomPartitionScript" $curlEnd | dos2unix > /tmp/newPartLayout
+    $curlAuth --data "profileId=$profile_id" "${web}GetCustomPartitionScript" $curlEnd > /tmp/newPartLayout
 	cat /tmp/newPartLayout >> $CLIENT_LOG
     bash /tmp/newPartLayout
-    partprobe &>/dev/null
   else
     log " ** Creating Partition Table On $hard_drive ** " "display"
-    $curlAuth --data "imageProfileId=$profile_id&hdToGet=$image_hd_to_use&newHDSize=$drive_size_bytes&clientHD=$hard_drive&taskType=deploy&partitionPrefix=$partition_prefix" "${web}GetPartLayout" $curlEnd | dos2unix > /tmp/newPartLayout
+    log "imageProfileId=$profile_id&hdToGet=$image_hd_to_use&newHDSize=$hard_drive_size_bytes&clientHD=$hard_drive&taskType=deploy&partitionPrefix=$partition_prefix ${web}GetPartLayout" 
+    $curlAuth --data "imageProfileId=$profile_id&hdToGet=$image_hd_to_use&newHDSize=$hard_drive_size_bytes&clientHD=$hard_drive&taskType=deploy&partitionPrefix=$partition_prefix" "${web}GetPartLayout" $curlEnd > /tmp/newPartLayout
 	if [ "$(cat /tmp/newPartLayout)" = "failed" ]; then
 	  error "Could Not Dynamically Create Partition Layout"
 	fi
@@ -213,11 +223,8 @@ function create_partition_layout()
   fi 
 	
   log " ** New Partition Table Is ** "
-  if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
-    gdisk -l $hard_drive &>>$CLIENT_LOG
-  else
-    fdisk -l &>>$CLIENT_LOG
-  fi
+  diskutil list $hard_drive >> $CLIENT_LOG 2>&1
+  
 	
  
 }
@@ -238,7 +245,7 @@ function get_partitions_according_to_mbr_gpt()
 function erase_mbr_gpt()
 {
   log " ** Clearing MBR / GPT ** "
-  dd if=/dev/zero of=$hard_drive bs=512 count=2047 &>>$CLIENT_LOG
+  dd if=/dev/zero of=$hard_drive bs=512 count=2047 >>$CLIENT_LOG 2>&1
 }
 
 
@@ -252,16 +259,10 @@ function change_computer_name()
 function main()
 {
   
-  log_boot_args
-
   if [ "$is_ondemand" = "true" ]; then
     log " ** Using On Demand Mode ** "
 	for arg in "$ondemand_arguments"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
   else
-    checkin
-	if [ "$multicast" = "true" ]; then
-	  $curlAuth --data "computerId=$computer_id" "${web}UpdateStatusInProgress" $curlEnd
-	else
 	  log " ** Checking Current Queue ** " "display"	
       while true; do
 	    queue_status=$($curlAuth --data "computerId=$computer_id" "${web}CheckQueue" $curlEnd)
@@ -275,7 +276,7 @@ function main()
       done
 	    log " ...... Complete" "display"
 		echo
-	fi	  		
+		  		
   fi
 
   sleep 2
@@ -283,7 +284,10 @@ function main()
   mount_smb
 
   process_hard_drives
-	
+
+  #set the system startup disk - bless no longer works in el cap - I strongly dislike sip
+  systemsetup -setstartupdisk "Macintosh HD"
+  
   checkout
 }
 

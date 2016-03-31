@@ -6,6 +6,13 @@ function parse_json()
 	echo `echo "$1" | jq "$2" -r`
 }
 
+function remove_whitespace() {
+    local var="$*"
+    var="${var#"${var%%[![:space:]]*}"}"   # remove leading whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"   # remove trailing whitespace characters
+    echo -n "$var"
+}
+
 function error()
 {
   local reboot_time=$2
@@ -113,7 +120,7 @@ function get_hard_drives()
 		log " ...... Hard Drive(s) Set By Image Profile: $hard_drives" "display"		
 	else
 	  if [ "$task_type" = "upload" ]; then
-		all_hard_drives=$(diskutil list | grep "/dev/" | cut -d " " -f1)
+		hard_drives=$(diskutil list | grep "(internal" | cut -d " " -f1)
 		log "all_hard_drives: $all_hard_drives"
 		for hdd in $all_hard_drives; do
 		  disk_name=$(echo $hdd | sed 's~/dev/~~g')
@@ -126,7 +133,7 @@ function get_hard_drives()
 		done
 	  else #deploy
 	    #When deploying it is very possible the hard drive won't have a disk label so don't use the method used for uploads
-	    hard_drives=$(diskutil list | grep "/dev/" | cut -d " " -f1)
+	    hard_drives=$(diskutil list | grep "(internal" | cut -d " " -f1)
 	  fi
 	fi
 	
