@@ -143,8 +143,9 @@ function process_partitions()
 	for partition in $mbr_gpt_partitions; do
       partition_counter=$(( $partition_counter + 1 ))
       partition_number=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
-      if [ "$(parse_json "$hd_schema" .Number)" = "$partition_number" ]; then
+     if [ "$(parse_json "$current_partition" .Number)" = "$partition_number" ]; then
 	    partition_prefix=$(echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[0-9]*//g')
+		break
 	  else
         partition_prefix=""
       fi
@@ -386,17 +387,14 @@ function create_partition_layout()
   restore_mbr_gpt
   
   get_partitions_according_to_mbr_gpt
-	partition_counter=0
+  partition_counter=0
 	for partition in $mbr_gpt_partitions; do
       partition_counter=$(( $partition_counter + 1 ))
       partition_number=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
-      if [ "$(parse_json "$hd_schema" .Number)" = "$partition_number" ]; then
-	    partition_prefix=$(echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[0-9]*//g')
-	  else
-        partition_prefix=""
-      fi
+      partition_prefix=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[0-9]*//g'`
+	  break
 	done
-  
+	
   if [ "$partition_method" = "script" ]; then # create partitions from image profile script
      log " ** Creating Partition Table On $hard_drive From Custom Script ** " "display"
     $curlAuth --data "profileId=$profile_id" "${web}GetCustomPartitionScript" $curlEnd | dos2unix > /tmp/newPartLayout

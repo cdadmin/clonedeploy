@@ -545,7 +545,7 @@ function upload_image()
     if [ "$upload_type" = "lvm" ]; then
       partition_number=`echo $partition | sed 's/\/dev\/mapper\///g'`
     else
-      partition_number=`echo $partition | awk -F $hard_drive ' {print $2}'`    
+	  partition_number=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
     fi
 
     filesystem_type=`blkid -po udev $partition | grep FS_TYPE | awk -F'=' '{print $2}'`
