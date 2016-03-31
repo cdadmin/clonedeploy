@@ -84,14 +84,10 @@ function create_image_schema()
           for logical_volume in $logical_volumes; do
 		    	  log "partition is logical volume: $logical_volume"
 		     logical_volume_counter=$(( $logical_volume_counter + 1 ))
-		    #Fix Me
-		    if [ -n "$custom_logical_volumes" ]; then
-              logical_volume_device="/dev/mapper/$logical_volume"
-			  volume_name=$(echo $logical_volume | sed "s/${volume_group}-//")
-			else
-			    logical_volume_device="$logical_volume"
-				volume_name=$(diskutil cs info $logical_volume | grep "LV Name:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
-			fi
+		    #Fix Me - add logic for using custom logical volumes
+		    #if [ -n "$custom_logical_volumes" ]; then
+            #fi
+		
            
 			
       filesystem_type=$(diskutil info $logical_volume | grep "File System Personality:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
@@ -272,17 +268,35 @@ function upload_image()
     sleep 7
     echo
     
-  
     partition_number=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
-    
     log " ...... partition_number: $partition_number"
     
-    if [ "$upload_type" = "lvm" ]; then
-      output_name=$(echo $partition_number | sed 's/--/-/g')
-	else
-	  output_name=part$partition_number
-	fi
-  
+	partition_is_pv=$(diskutil info $partition | grep "PV UUID" -c)
+	if [ "$partition_is_pv" = "1" ]; then
+	   vg_uuid=$(diskutil info $partition | grep "LVG UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+        volume_group_name=$(diskutil cs list | grep "$vg_uuid" -A5 | grep Name: | cut -d : -f2 | sed -e 's/^[ \t]*//')
+        get_logical_volumes_for_vg         
+        logical_volume_counter=0
+        for logical_volume in $logical_volumes; do
+		  logical_volume_counter=$(( $logical_volume_counter + 1 ))
+		  #Fix Me - Need logic when using custom logical volumes for upload
+		  #if [ -n "$custom_logical_volumes" ]; then
+		  #fi
+          volume_name=$(diskutil cs info $logical_volume | grep "LV Name:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+		  
+		  #preventing uploading the same logical volume again.  If the volume group is spanned across multiple disks, it will be recognized multiple times
+		  if [ -e "$image_path/part${volume_group_name}-${volume_name}.dmg" ]; then
+		    continue
+		  fi
+		  touch /tmp/osx.progress
+	      . osx_reporter & hdiutil create -srcDevice $logical_volume -format UDZO -layout GPTSPUD -puppetstrings $image_path/part"${volume_group_name}-${volume_name}".dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress
+	      log " . osx_reporter & hdiutil create -srcDevice $logical_volume -format UDZO -layout GPTSPUD -puppetstrings $image_path/part"${volume_group_name}-${volume_name}".dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress"
+	      sleep 5
+	      asr imagescan --source $image_path/part"${volume_group_name}-${volume_name}".dmg | tee /tmp/osx.progress
+	      killall osx_reporter &>/dev/null
+	      rm /tmp/osx.progress
+		done	
+    else
 	  touch /tmp/osx.progress
 	  . osx_reporter & hdiutil create -srcDevice $partition -format UDZO -layout GPTSPUD -puppetstrings $image_path/part${partition_number}.dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress
 	  log ". osx_reporter & hdiutil create -srcDevice $partition -format UDZO -layout GPTSPUD -puppetstrings $image_path/part${partition_number}.dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress"
@@ -290,8 +304,49 @@ function upload_image()
 	  asr imagescan --source $image_path/part${partition_number}.dmg | tee /tmp/osx.progress
 	  killall osx_reporter &>/dev/null
 	  rm /tmp/osx.progress
-	  
+	 fi 
   done
+}
+
+function unmount_all_volumes_for_hd
+{
+  get_partitions "false"
+  
+  for partition in $partitions; do 
+    partition_is_pv=$(diskutil info $partition | grep "PV UUID" -c)
+	if [ "$partition_is_pv" = "1" ]; then
+	  vg_uuid=$(diskutil info $partition | grep "LVG UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+      volume_group_name=$(diskutil cs list | grep "$vg_uuid" -A5 | grep Name: | cut -d : -f2 | sed -e 's/^[ \t]*//')
+      get_logical_volumes_for_vg         
+      logical_volume_counter=0
+      for logical_volume in $logical_volumes; do
+	    diskutil unmountdisk force $logical_volume >> $CLIENT_LOG	  
+	  done	
+	fi
+  done
+  
+  diskutil unmountdisk force $hard_drive >> $CLIENT_LOG
+}
+
+function mount_all_volumes_for_hd
+{
+  get_partitions "false"
+  
+  diskutil mountdisk $hard_drive >> $CLIENT_LOG
+  
+  for partition in $partitions; do 
+    partition_is_pv=$(diskutil info $partition | grep "PV UUID" -c)
+	if [ "$partition_is_pv" = "1" ]; then
+	  vg_uuid=$(diskutil info $partition | grep "LVG UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+      volume_group_name=$(diskutil cs list | grep "$vg_uuid" -A5 | grep Name: | cut -d : -f2 | sed -e 's/^[ \t]*//')
+      get_logical_volumes_for_vg         
+      logical_volume_counter=0
+      for logical_volume in $logical_volumes; do
+	    diskutil mount $logical_volume >> $CLIENT_LOG	  
+	  done	
+	fi
+  done
+  
 }
 
 function process_hard_drives()
@@ -300,24 +355,28 @@ function process_hard_drives()
   for hard_drive in $hard_drives; do
     current_hd_number=$(( $current_hd_number + 1 ))
 
-	#unmount any mounted volumes for this hd
-	diskutil unmountdisk force $hard_drive >> $CLIENT_LOG
+	unmount_all_volumes_for_hd
 	
     image_path=/storage/images/$image_name/hd$current_hd_number
     mkdir $image_path 2>> $CLIENT_LOG
 	  
     get_partitions "true"
     
-    upload_image "physical"
+    upload_image
 
-	diskutil mountdisk force $hard_drive >> $CLIENT_LOG
+	mount_all_volumes_for_hd
+	
   done
 
   log " shrunk_volumes: $shrunk_volumes"
   log " ** Expanding Resized Volumes **" "display"
   echo
   for shrunk_volume in $shrunk_volumes; do
-    diskutil resizeVolume $shrunk_volume R 2>> $CLIENT_LOG
+    if /usr/sbin/diskutil info $shrunk_volume | grep "Logical Volume" > /dev/null; then
+	  diskutil cs resizeVolume $shrunk_volume 0b 2>> $CLIENT_LOG
+	else
+      diskutil resizeVolume $shrunk_volume R 2>> $CLIENT_LOG
+	fi
   done
 }
 
