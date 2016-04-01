@@ -120,7 +120,7 @@ function get_hard_drives()
 		log " ...... Hard Drive(s) Set By Image Profile: $hard_drives" "display"		
 	else
 	  if [ "$task_type" = "upload" ]; then
-		hard_drives=$(diskutil list | grep "(internal" | cut -d " " -f1)
+		all_hard_drives=$(diskutil list | grep "(internal" | cut -d " " -f1)
 		log "all_hard_drives: $all_hard_drives"
 		for hdd in $all_hard_drives; do
 		  disk_name=$(echo $hdd | sed 's~/dev/~~g')

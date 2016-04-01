@@ -25,8 +25,7 @@ function create_image_schema()
    
     hard_drive_json="{\"name\":\"$hard_drive\",\"size\":\"$hard_drive_size_bytes\",\"table\":\"$layout_type\",\"boot\":\"$boot_partition\",\"lbs\":\"$logical_block_size\",\"pbs\":\"$physical_block_size\",\"guid\":\"$hard_drive_guid\",\"active\":\"true\",\"partitions\": [ "
     
-    get_partitions "true"
-    log "Partitions are : $partitions"
+    get_partitions "false"
     partition_counter=0
     for partition in $partitions; do
       partition_counter=$(( $partition_counter + 1 ))
@@ -89,7 +88,7 @@ function create_image_schema()
             #fi
 		
            
-			
+			volume_name=$(diskutil cs info $logical_volume | grep "LV Name:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
       filesystem_type=$(diskutil info $logical_volume | grep "File System Personality:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
          lv_uuid=$(diskutil info $logical_volume | grep "LV UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
       logical_volume_size_block=$(diskutil info $logical_volume | grep "Total Size:" | cut -d "(" -f3 | cut -d " " -f2)
@@ -98,16 +97,16 @@ function create_image_schema()
 	  
                      
             if [ "$upload_schema_only" != "true" ] && [ "$skip_shrink_lvm" != "true" ] && [ "$generic_fs" = "hfs" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
-			    if [[ ! "$custom_fixed_logical_volumes" == *"$logical_volume_device"* ]]; then
+			    if [[ ! "$custom_fixed_logical_volumes" == *"$logical_volume"* ]]; then
 				  if [ "$image_type" = "Block" ] && [ "$logical_volume_size_bytes" -gt "5368709120" ]; then
-                    shrink_volume $logical_volume_device lvm
+                    shrink_volume $logical_volume lvm
 				  fi
 				fi          
             fi
             
 			#Just get the volume size again after volume has been shrunk
             lv_volume_size=$(diskutil info $logical_volume | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1)
-	        lv_volume_used_mb=$(( $logical_volume_size_bytes / 1000 / 1000 ))
+	        lv_volume_used_mb=$(( $lv_volume_size / 1000 / 1000 ))
 			
 			#Not sure why but Apples disk utility makes volumes smaller than you specify.  For example if you tell diskutil to make a volume of 325000 bytes it will actually be smaller than that, sometimes significantly
 	  #That is a problem when restoring an image to a volume that should be the exact size you specify.  So instead just make the volume larger by mulitiplying by 1024
@@ -165,7 +164,7 @@ function create_image_schema()
   image_schema=$image_schema$complete_hd_json
   
   log " ...... image_schema: $image_schema"  
-  log " ...... Complete" "display"
+  log " ...... Image Schema Complete" "display"
   echo
   sleep 2 
   
@@ -215,8 +214,8 @@ function shrink_volume()
 		diskutil resizeVolume $volume_to_shrink ${minimum_size_bytes}B 2>> $CLIENT_LOG
       elif [ "$volume_type" = "lvm" ]; then
 	    log "shrinking lvm"
-        total_size_bytes=$(diskutil info $logical_volume | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1)
-		total_free_bytes=$(diskutil info $logical_volume | grep "Volume Free Space:" | cut -d "(" -f2 | cut -d " " -f1)
+        total_size_bytes=$(diskutil info $volume_to_shrink | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1)
+		total_free_bytes=$(diskutil info $volume_to_shrink | grep "Volume Free Space:" | cut -d "(" -f2 | cut -d " " -f1)
 		padding=$(awk -v v1="$total_size_bytes" BEGIN'{printf "%.0f",v1 * .10}') #core storage doesn't have a limits option, use 10% of volume size for padding
 		minimum_size_bytes=`expr $total_size_bytes '-' $total_free_bytes '+' $padding`
 		diskutil cs resizeVolume $volume_to_shrink ${minimum_size_bytes}B 2>> $CLIENT_LOG
@@ -289,19 +288,19 @@ function upload_image()
 		    continue
 		  fi
 		  touch /tmp/osx.progress
-	      . osx_reporter & hdiutil create -srcDevice $logical_volume -format UDZO -layout GPTSPUD -puppetstrings $image_path/part"${volume_group_name}-${volume_name}".dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress
-	      log " . osx_reporter & hdiutil create -srcDevice $logical_volume -format UDZO -layout GPTSPUD -puppetstrings $image_path/part"${volume_group_name}-${volume_name}".dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress"
+	      . osx_reporter & hdiutil create -srcDevice $logical_volume -format UDZO -layout GPTSPUD -puppetstrings "$image_path/${volume_group_name}-${volume_name}".dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress
+	      log " . osx_reporter & hdiutil create -srcDevice $logical_volume -format UDZO -layout GPTSPUD -puppetstrings $image_path/${volume_group_name}-${volume_name}.dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress"
 	      sleep 5
-	      asr imagescan --source $image_path/part"${volume_group_name}-${volume_name}".dmg | tee /tmp/osx.progress
+	      asr imagescan --source "$image_path/${volume_group_name}-${volume_name}".dmg | tee /tmp/osx.progress
 	      killall osx_reporter &>/dev/null
 	      rm /tmp/osx.progress
 		done	
     else
 	  touch /tmp/osx.progress
-	  . osx_reporter & hdiutil create -srcDevice $partition -format UDZO -layout GPTSPUD -puppetstrings $image_path/part${partition_number}.dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress
+	  . osx_reporter & hdiutil create -srcDevice $partition -format UDZO -layout GPTSPUD -puppetstrings "$image_path/part${partition_number}".dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress
 	  log ". osx_reporter & hdiutil create -srcDevice $partition -format UDZO -layout GPTSPUD -puppetstrings $image_path/part${partition_number}.dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress"
 	  sleep 5
-	  asr imagescan --source $image_path/part${partition_number}.dmg | tee /tmp/osx.progress
+	  asr imagescan --source "$image_path/part${partition_number}".dmg | tee /tmp/osx.progress
 	  killall osx_reporter &>/dev/null
 	  rm /tmp/osx.progress
 	 fi 
@@ -357,8 +356,8 @@ function process_hard_drives()
 
 	unmount_all_volumes_for_hd
 	
-    image_path=/storage/images/$image_name/hd$current_hd_number
-    mkdir $image_path 2>> $CLIENT_LOG
+    image_path="/storage/images/$image_name/hd$current_hd_number"
+    mkdir "$image_path" 2>> $CLIENT_LOG
 	  
     get_partitions "true"
     

@@ -12,7 +12,7 @@
     while [ -f "/tmp/osx.progress" ]; do
       post=$(tail -n 1 /tmp/osx.progress)
       result=$($curlAuth --data "computerId=$computer_id&progress=$post&progressType=wim" "${web}UpdateProgress" $curlEnd)        
-	  echo "$post" | grep -i "created"
+	  echo "$post" | grep -i "created" > /dev/null
 	  if [ "$?" = "0" ]; then
 	    echo "$post" >> $CLIENT_LOG
 	  fi

@@ -33,6 +33,52 @@ function create_all_partition_layouts
 	 
 	 imaged_schema_drives="$imaged_schema_drives $(parse_json "$hd_schema" .SchemaHdNumber) "
   done
+  
+  #Now that all partitions have been created check for and create corestorage
+  create_cs_layouts
+}
+
+function create_cs_layouts
+{
+  if [ ! -f "/tmp/corestorage" ]; then
+    log "Core Storage Is Not Being Used"
+    return 0
+  fi
+    #core storage was in use on original image, need to recreate
+    
+	#volume groups that were on a single disk
+	unique_vgs=$(cat /tmp/corestorage | cut -d: -f3 | uniq -u)
+	#volume groups that spanned multiple disks
+	duplicate_vgs=$(cat /tmp/corestorage | awk -F ":" '{print $3 ":" $6}' | uniq -d | cut -d: -f1)
+	
+	for unique_vg in $unique_vgs; do
+	  vg_name=$(cat /tmp/corestorage | grep $unique_vg | cut -d: -f1)
+	  vg_pv=$(cat /tmp/corestorage | grep $unique_vg | cut -d: -f2)
+	  lv_name=$(cat /tmp/corestorage | grep $unique_vg | cut -d: -f4)
+	  lv_size_block=$(cat /tmp/corestorage | grep $unique_vg | cut -d: -f5)
+	  lv_filesystem=$(cat /tmp/corestorage | grep $unique_vg | cut -d: -f6)
+	  
+	  diskutil cs create "$vg_name" "$vg_pv" 2>>$CLIENT_LOG
+	  new_vg_uuid=$(diskutil info $vg_pv | grep "LVG UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+	  diskutil cs createVolume "$new_vg_uuid" "$lv_filesystem" "$lv_name" "${lv_size_block}s"
+	done
+	
+	for duplicate_vg in $duplicate_vgs; do
+	  vg_name=$(cat /tmp/corestorage | grep $duplicate_vg | cut -d: -f1 | head -n1)
+	  first_vg_pv=$(cat /tmp/corestorage | grep $duplicate_vg | cut -d: -f2 | head -n1)
+	  
+	  diskutil cs create "$vg_name" "$first_vg_pv" 2>>$CLIENT_LOG
+	  new_vg_uuid=$(diskutil info $first_vg_pv | grep "LVG UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+	  
+	  vg_pvs=$(cat /tmp/corestorage | grep $duplicate_vg | cut -d: -f2)
+	  
+	  for vg_pv in $vg_pvs; do
+	    diskutil cs addDisk "$new_vg_uuid" "$vg_pv"
+	  done
+	  
+	  
+	  
+	done
 }
 
 function process_hard_drives()
