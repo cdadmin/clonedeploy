@@ -251,7 +251,7 @@ namespace BLL.Workflows
 
         private string OsxNbiLayout()
         {
-            string partitionScript = "diskutil partitionDisk " + ClientHd + " ";
+            string partitionScript = "echo \"diskutil partitionDisk " + ClientHd + " ";
             if (TaskType == "debug")
             {
             
@@ -296,7 +296,7 @@ namespace BLL.Workflows
                                   partition.Size + "s ";
             }
 
-            partitionScript += "\"" + "Free Space" + "\"" + " " + "\"" + "" + "\"" + " " + "R";
+            partitionScript += "\"" + "Free Space" + "\"" + " " + "\"" + "" + "\"" + " " + "R" + "\" > /tmp/createPartitions";
                                   
             foreach (var part in from part in ImageSchema.HardDrives[HdNumberToGet].Partitions
                                  where part.Active

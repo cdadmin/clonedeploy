@@ -45,8 +45,8 @@ function create_cs_layouts
     log "Core Storage Is Not Being Used"
     return 0
   fi
-    
-    
+  
+  cat /tmp/corestorage >>$CLIENT_LOG
 	#The easy one, volume groups that were only on 1 disk and contained only 1 lv
 	unique_vgs=$(cat /tmp/corestorage | cut -d: -f3 | uniq -u)
 	for unique_vg in $unique_vgs; do
@@ -65,33 +65,35 @@ function create_cs_layouts
 	#The hard one, volume groups that either spanned multiple disks or contained more than 1 lv
 	duplicate_vgs=$(cat /tmp/corestorage | cut -d: -f3 | uniq -d)
 	for duplicate_vg in $duplicate_vgs; do
-	  duplicate_count=$(cat /tmp/corestorage | grep $duplicate_vg | cut -d: -f6 | uniq -d | wc -l)
+	  duplicate_count=$(cat /tmp/corestorage | grep $duplicate_vg | cut -d: -f7 | uniq -d | wc -l)
 	  if [ "$duplicate_count" =  "0" ]; then
 	    #We are dealing with 1 volume group on 1 disk with multiple lvs
-		single_lvs=$(cat /tmp/corestorage | grep $duplicate_vg | cut -d: -f6 | uniq -u)
+		single_lvs=$(cat /tmp/corestorage | grep $duplicate_vg | cut -d: -f7 | uniq -u)
+		vg_name=$(cat /tmp/corestorage | grep $duplicate_vg | cut -d: -f1 | head -n1)
+	    vg_pv=$(cat /tmp/corestorage | grep $duplicate_vg | cut -d: -f2 | head -n1)
+		diskutil cs create "$vg_name" "$vg_pv" 2>>$CLIENT_LOG
+		new_vg_uuid=$(diskutil info $vg_pv | grep "LVG UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+		for single_lv in $single_lvs; do
+		  lv_name=$(cat /tmp/corestorage | grep $duplicate_vg | grep $single_lv | cut -d: -f4)
+	      lv_size_block=$(cat /tmp/corestorage | grep $duplicate_vg | grep $single_lv | cut -d: -f5)
+	      lv_filesystem=$(cat /tmp/corestorage | grep $duplicate_vg | grep $single_lv | cut -d: -f6)
+		  diskutil cs createVolume "$new_vg_uuid" "$lv_filesystem" "$lv_name" "${lv_size_block}s"
+		done
 	  else
 	    #We are dealing with 1 volume group spanned across multiple disks with 1 or more lvs
-		spanned_lvs=$(cat /tmp/corestorage | grep $duplicate_vg | cut -d: -f6 | uniq -d)
-		
+		spanned_lvs=$(cat /tmp/corestorage | grep $duplicate_vg | cut -d: -f7 | uniq -d)		
 	    vg_name=$(cat /tmp/corestorage | grep $duplicate_vg | cut -d: -f1 | head -n1)
-	    first_vg_pv=$(cat /tmp/corestorage | grep $duplicate_vg | cut -d: -f2 | head -n1)
-	  
-	    diskutil cs create "$vg_name" "$first_vg_pv" 2>>$CLIENT_LOG
-	    new_vg_uuid=$(diskutil info $first_vg_pv | grep "LVG UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
-	  
-	    vg_pvs=$(cat /tmp/corestorage | grep $duplicate_vg | cut -d: -f2)
-	  
-	    for vg_pv in $vg_pvs; do
-	      diskutil cs addDisk "$new_vg_uuid" "$vg_pv"
-	    done
-	    
+		for spanned_lv in $spanned_lvs; do
+		  first_vg_pv=$(cat /tmp/corestorage | grep $duplicate_vg | grep $spanned_lv | cut -d: -f2 | head -n1)
+		  diskutil cs create "$vg_name" "$first_vg_pv" 2>>$CLIENT_LOG
+		  new_vg_uuid=$(diskutil info $first_vg_pv | grep "LVG UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+		  remaining_vg_pvs=$(cat /tmp/corestorage | grep $duplicate_vg | grep $spanned_lv | cut -d: -f2 | grep -vw $first_vg_pv)
+		  for vg_pv in $remaining_vg_pvs; do
+	        diskutil cs addDisk "$new_vg_uuid" "$vg_pv"
+	      done
+		done   
 	  fi
 	done
-	
-	
-	
-	
-	
 }
 
 function process_hard_drives()
@@ -279,6 +281,7 @@ function create_partition_layout()
 	  log " ** Partition Creation Script ** "
       cat /tmp/newPartLayout >> $CLIENT_LOG
       bash /tmp/newPartLayout
+	  bash /tmp/createPartitions
   fi 
 	
   log " ** New Partition Table Is ** "
