@@ -296,7 +296,7 @@ namespace BLL.Workflows
                                   partition.Size + "s ";
             }
 
-            partitionScript += "\"" + "Free Space" + "\"" + " " + "\"" + "" + "\"" + " " + "R" + "\" > /tmp/createPartitions";
+            partitionScript += "\'" + "Free Space" + "\"" + " " + "\"" + "" + "\"" + " " + "R" + "\' > /tmp/createPartitions";
                                   
             foreach (var part in from part in ImageSchema.HardDrives[HdNumberToGet].Partitions
                                  where part.Active

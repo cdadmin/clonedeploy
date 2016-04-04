@@ -53,7 +53,11 @@
                     <span class="sub-nav-text">Rooms</span>
                 </a>
             </li>
-            
+               <li id="munki">
+                <a href="<%= ResolveUrl("~/views/global/munki/chooser.aspx?cat=sub1") %>" >
+                    <span class="sub-nav-text">Munki</span>
+                </a>
+            </li>
              
             
 
