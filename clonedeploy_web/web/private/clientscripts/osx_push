@@ -36,10 +36,19 @@ function create_all_partition_layouts
   
   #Now that all partitions have been created check for and create corestorage
   create_cs_layouts
+  
+  #Now fix drive identifiers after cs was created
+  	fix_disk_identifiers
+}
+
+function fix_disk_identifiers
+{
+
 }
 
 function create_cs_layouts
 {
+  local lv_created_count
   #Check if core storage was used in original image.  /tmp/corestorage created during par
   if [ ! -f "/tmp/corestorage" ]; then
     log "Core Storage Is Not Being Used"
@@ -58,7 +67,19 @@ function create_cs_layouts
 	  
 	  diskutil cs create "$vg_name" "$vg_pv" 2>>$CLIENT_LOG
 	  new_vg_uuid=$(diskutil info $vg_pv | grep "LVG UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
-	  diskutil cs createVolume "$new_vg_uuid" "$lv_filesystem" "$lv_name" "${lv_size_block}s"
+	  
+	  #partitioning in OS X is just absolutely terrible.  Partitions don't get created to the size you set, because of that and some other things the lv won't fit in the vg based on CloneDeploy's calculations
+	  #try to create lv 10 times, each time subtracting 500 meg.
+	  lv_created_count=1
+	  while [ "$lv_created_count" -le "10" ]; do 
+	    diskutil cs createVolume "$new_vg_uuid" "$lv_filesystem" "$lv_name" "${lv_size_block}s"
+		if [ "$?" != "0" ]; then
+		  lv_size_block=$(( $lv_size_block - 976562 ))
+		  lv_created_count=$(( $lv_created_count + 1 ))
+		else
+		  break;
+		fi
+	  done
 	done
 	
 	
@@ -128,7 +149,7 @@ function process_hard_drives()
 	
     image_hd_to_use=$(parse_json "$hd_schema" .SchemaHdNumber)
     image_path=/storage/images/$image_name/hd$image_hd_to_use
-	
+		
     process_partitions
 	
     imaged_schema_drives="$imaged_schema_drives $(parse_json "$hd_schema" .SchemaHdNumber) "

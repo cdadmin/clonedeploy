@@ -251,7 +251,7 @@ namespace BLL.Workflows
 
         private string OsxNbiLayout()
         {
-            string partitionScript = "echo \"diskutil partitionDisk " + ClientHd + " ";
+            string partitionScript = "echo \'diskutil partitionDisk " + ClientHd + " ";
             if (TaskType == "debug")
             {
             
@@ -296,7 +296,7 @@ namespace BLL.Workflows
                                   partition.Size + "s ";
             }
 
-            partitionScript += "\'" + "Free Space" + "\"" + " " + "\"" + "" + "\"" + " " + "R" + "\' > /tmp/createPartitions";
+            partitionScript += "\"" + "Free Space" + "\"" + " " + "\"" + "" + "\"" + " " + "R" + "\' > /tmp/createPartitions\n";
                                   
             foreach (var part in from part in ImageSchema.HardDrives[HdNumberToGet].Partitions
                                  where part.Active
@@ -310,10 +310,10 @@ namespace BLL.Workflows
                     {
                         if (lv.Name != rlv.Name || lv.VolumeGroup != rlv.Vg) continue;
 
-                        partitionScript += "\r\necho \"" + part.VolumeGroup.Name + ":" + ClientHd + partitionPrefix +
+                        partitionScript += "echo \"" + part.VolumeGroup.Name + ":" + ClientHd + partitionPrefix +
                                            part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] +
                                            ":" + part.VolumeGroup.Uuid + ":" + rlv.Name +
-                                           ":" + rlv.Size + ":" + rlv.FsType + ":" + rlv.Uuid + "\" >> /tmp/corestorage";
+                                           ":" + rlv.Size + ":" + rlv.FsType + ":" + rlv.Uuid + "\" >> /tmp/corestorage\n";
                     }
                 }
             }
