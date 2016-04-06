@@ -37,13 +37,29 @@ function create_all_partition_layouts
   #Now that all partitions have been created check for and create corestorage
   create_cs_layouts
   
-  #Now fix drive identifiers after cs was created
+  #Now fix drive identifiers after cs was created if cs was used
   	fix_disk_identifiers
 }
 
 function fix_disk_identifiers
 {
-
+#Check if core storage was used in original image.  /tmp/corestorage created during par
+  if [ ! -f "/tmp/corestorage" ]; then
+    log "Core Storage Is Not Being Used"
+    return 0
+  fi
+  #If a core storage volume is created on the boot drive, osx will automatically create a new boot volume, when this happens the disk identifiers change and are in the wrong order
+  #This is kind of a hack to get osx to rescan the drive and reorder the disk identifiers back to normal
+   get_hard_drives "deploy"
+  current_hd_number=-1
+  for hard_drive in $hard_drives; do
+    drive_name=$(echo $hard_drive | cut -d "/" -f 3)
+    boot_volume=$(diskutil list $hard_drive | grep -i "boot os x" | awk -F "$drive_name" '{print $2}' )
+    if [ -n "$boot_volume" ]; then
+      partition_size_bytes=$(diskutil info "$drive_name$boot_volume" | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1)
+	  diskutil resizeVolume "$drive_name$boot_volume" ${partition_size_bytes}B
+    fi
+  done
 }
 
 function create_cs_layouts
@@ -98,7 +114,18 @@ function create_cs_layouts
 		  lv_name=$(cat /tmp/corestorage | grep $duplicate_vg | grep $single_lv | cut -d: -f4)
 	      lv_size_block=$(cat /tmp/corestorage | grep $duplicate_vg | grep $single_lv | cut -d: -f5)
 	      lv_filesystem=$(cat /tmp/corestorage | grep $duplicate_vg | grep $single_lv | cut -d: -f6)
-		  diskutil cs createVolume "$new_vg_uuid" "$lv_filesystem" "$lv_name" "${lv_size_block}s"
+		  
+		  lv_created_count=1
+	      while [ "$lv_created_count" -le "10" ]; do 
+	         diskutil cs createVolume "$new_vg_uuid" "$lv_filesystem" "$lv_name" "${lv_size_block}s"
+		    if [ "$?" != "0" ]; then
+		      lv_size_block=$(( $lv_size_block - 976562 ))
+		      lv_created_count=$(( $lv_created_count + 1 ))
+		    else
+		      break;
+		    fi
+	      done
+		 
 		done
 	  else
 	    #We are dealing with 1 volume group spanned across multiple disks with 1 or more lvs
@@ -112,7 +139,26 @@ function create_cs_layouts
 		  for vg_pv in $remaining_vg_pvs; do
 	        diskutil cs addDisk "$new_vg_uuid" "$vg_pv"
 	      done
-		done   
+		done
+		#create lvs after all disks have been added to the vg
+		for spanned_lv in $spanned_lvs; do
+		  first_vg_pv=$(cat /tmp/corestorage | grep $duplicate_vg | grep $spanned_lv | cut -d: -f2 | head -n1)
+		  new_vg_uuid=$(diskutil info $first_vg_pv | grep "LVG UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+		  lv_name=$(cat /tmp/corestorage | grep $duplicate_vg | grep $spanned_lv | cut -d: -f4)
+	      lv_size_block=$(cat /tmp/corestorage | grep $duplicate_vg | grep $spanned_lv | cut -d: -f5)
+	      lv_filesystem=$(cat /tmp/corestorage | grep $duplicate_vg | grep $spanned_lv | cut -d: -f6)
+		  
+		  lv_created_count=1
+	      while [ "$lv_created_count" -le "10" ]; do 
+	         diskutil cs createVolume "$new_vg_uuid" "$lv_filesystem" "$lv_name" "${lv_size_block}s"
+		    if [ "$?" != "0" ]; then
+		      lv_size_block=$(( $lv_size_block - 976562 ))
+		      lv_created_count=$(( $lv_created_count + 1 ))
+		    else
+		      break;
+		    fi
+	      done
+		done
 	  fi
 	done
 }

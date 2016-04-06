@@ -110,7 +110,7 @@ function get_hard_drives()
 	local partitions
 	local partition_count
 	local partition
-	
+	hard_drives=""
 	log " ** Looking For Hard Drive(s) ** " "display"
 	log " ...... Displaying Available Devices "
 	diskutil list >> $CLIENT_LOG 2>&1
