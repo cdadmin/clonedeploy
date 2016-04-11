@@ -18,9 +18,14 @@ namespace BLL
                 var validationResult = ValidateComputer(computer, "new");
                 if (validationResult.IsValid)
                 {
+                    
                     uow.ComputerRepository.Insert(computer);
                     validationResult.IsValid = uow.Save();
-                    if(validationResult.IsValid) BLL.Group.UpdateAllSmartGroupsMembers();
+                    if (validationResult.IsValid)
+                    {
+                        validationResult.ObjectId = computer.Id;
+                        BLL.Group.UpdateAllSmartGroupsMembers();
+                    }
 
                 }
 

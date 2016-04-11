@@ -4,6 +4,7 @@
 
 function create_all_partition_layouts
 {
+  log " ** Creating Partition Layouts ** " "display"
   #The partition layout for all hard drives must be created before any imaging can begin
   #In the case that Core storage spans across multiple disks
   get_hard_drives "deploy"
@@ -36,28 +37,25 @@ function create_all_partition_layouts
   
   #Now that all partitions have been created check for and create corestorage
   create_cs_layouts
-  
-  #Now fix drive identifiers after cs was created if cs was used
-  	fix_disk_identifiers
 }
 
 function fix_disk_identifiers
 {
-#Check if core storage was used in original image.  /tmp/corestorage created during par
-  if [ ! -f "/tmp/corestorage" ]; then
-    log "Core Storage Is Not Being Used"
-    return 0
-  fi
+
   #If a core storage volume is created on the boot drive, osx will automatically create a new boot volume, when this happens the disk identifiers change and are in the wrong order
   #This is kind of a hack to get osx to rescan the drive and reorder the disk identifiers back to normal
+  #This must done before any logical volumes are created or it doesn't work
+  log "Fixing Disk Identifiers"
    get_hard_drives "deploy"
   current_hd_number=-1
   for hard_drive in $hard_drives; do
     drive_name=$(echo $hard_drive | cut -d "/" -f 3)
     boot_volume=$(diskutil list $hard_drive | grep -i "boot os x" | awk -F "$drive_name" '{print $2}' )
     if [ -n "$boot_volume" ]; then
+	  log "$hard_drive needs identifiers updated.  Updating"
       partition_size_bytes=$(diskutil info "$drive_name$boot_volume" | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1)
-	  diskutil resizeVolume "$drive_name$boot_volume" ${partition_size_bytes}B
+	  diskutil resizeVolume "$drive_name$boot_volume" ${partition_size_bytes}B 2>>$CLIENT_LOG
+	  log "$partition_size_bytes $drive_name $boot_volume"
     fi
   done
 }
@@ -84,11 +82,13 @@ function create_cs_layouts
 	  diskutil cs create "$vg_name" "$vg_pv" 2>>$CLIENT_LOG
 	  new_vg_uuid=$(diskutil info $vg_pv | grep "LVG UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
 	  
+  	  fix_disk_identifiers
+	  
 	  #partitioning in OS X is just absolutely terrible.  Partitions don't get created to the size you set, because of that and some other things the lv won't fit in the vg based on CloneDeploy's calculations
 	  #try to create lv 10 times, each time subtracting 500 meg.
 	  lv_created_count=1
 	  while [ "$lv_created_count" -le "10" ]; do 
-	    diskutil cs createVolume "$new_vg_uuid" "$lv_filesystem" "$lv_name" "${lv_size_block}s"
+	    diskutil cs createVolume "$new_vg_uuid" "$lv_filesystem" "$lv_name" "${lv_size_block}s" 2>>$CLIENT_LOG
 		if [ "$?" != "0" ]; then
 		  lv_size_block=$(( $lv_size_block - 976562 ))
 		  lv_created_count=$(( $lv_created_count + 1 ))
@@ -110,6 +110,7 @@ function create_cs_layouts
 	    vg_pv=$(cat /tmp/corestorage | grep $duplicate_vg | cut -d: -f2 | head -n1)
 		diskutil cs create "$vg_name" "$vg_pv" 2>>$CLIENT_LOG
 		new_vg_uuid=$(diskutil info $vg_pv | grep "LVG UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+		fix_disk_identifiers
 		for single_lv in $single_lvs; do
 		  lv_name=$(cat /tmp/corestorage | grep $duplicate_vg | grep $single_lv | cut -d: -f4)
 	      lv_size_block=$(cat /tmp/corestorage | grep $duplicate_vg | grep $single_lv | cut -d: -f5)
@@ -117,7 +118,7 @@ function create_cs_layouts
 		  
 		  lv_created_count=1
 	      while [ "$lv_created_count" -le "10" ]; do 
-	         diskutil cs createVolume "$new_vg_uuid" "$lv_filesystem" "$lv_name" "${lv_size_block}s"
+	         diskutil cs createVolume "$new_vg_uuid" "$lv_filesystem" "$lv_name" "${lv_size_block}s" 2>>$CLIENT_LOG
 		    if [ "$?" != "0" ]; then
 		      lv_size_block=$(( $lv_size_block - 976562 ))
 		      lv_created_count=$(( $lv_created_count + 1 ))
@@ -134,10 +135,11 @@ function create_cs_layouts
 		for spanned_lv in $spanned_lvs; do
 		  first_vg_pv=$(cat /tmp/corestorage | grep $duplicate_vg | grep $spanned_lv | cut -d: -f2 | head -n1)
 		  diskutil cs create "$vg_name" "$first_vg_pv" 2>>$CLIENT_LOG
+		   fix_disk_identifiers
 		  new_vg_uuid=$(diskutil info $first_vg_pv | grep "LVG UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
 		  remaining_vg_pvs=$(cat /tmp/corestorage | grep $duplicate_vg | grep $spanned_lv | cut -d: -f2 | grep -vw $first_vg_pv)
 		  for vg_pv in $remaining_vg_pvs; do
-	        diskutil cs addDisk "$new_vg_uuid" "$vg_pv"
+	        diskutil cs addDisk "$new_vg_uuid" "$vg_pv" 2>>$CLIENT_LOG
 	      done
 		done
 		#create lvs after all disks have been added to the vg
@@ -150,7 +152,7 @@ function create_cs_layouts
 		  
 		  lv_created_count=1
 	      while [ "$lv_created_count" -le "10" ]; do 
-	         diskutil cs createVolume "$new_vg_uuid" "$lv_filesystem" "$lv_name" "${lv_size_block}s"
+	         diskutil cs createVolume "$new_vg_uuid" "$lv_filesystem" "$lv_name" "${lv_size_block}s" 2>>$CLIENT_LOG
 		    if [ "$?" != "0" ]; then
 		      lv_size_block=$(( $lv_size_block - 976562 ))
 		      lv_created_count=$(( $lv_created_count + 1 ))
@@ -163,8 +165,22 @@ function create_cs_layouts
 	done
 }
 
+function remove_existing_logical_volumes
+{
+  get_hard_drives "deploy"
+  for hard_drive in $hard_drives; do
+    if diskutil info $hard_drive | grep "Logical Volume" > /dev/null; then
+	diskutil cs deleteVolume $hard_drive 2>> $CLIENT_LOG
+	fi
+  done
+}
+
 function process_hard_drives()
 {
+  #remove all existing logical volumes before beginning, as changes cannot be made to physical disks while they are present
+  #Todo:  This will remove all logical volumes even if you aren't deploying an image to that drive
+  remove_existing_logical_volumes
+
   create_all_partition_layouts
   
   #Do it all again, There may be new hard drives listed now that all partitions have been created because of Core Storage
@@ -178,7 +194,8 @@ function process_hard_drives()
   current_hd_number=-1
   for hard_drive in $hard_drives; do
     echo
-    log " ** Processing $hard_drive ** " "display"
+    
+	log " ** Processing $hard_drive ** " "display"
     current_hd_number=$(( $current_hd_number + 1 ))
 	
 	if [ -n "$pre_scripts" ]; then
@@ -206,6 +223,51 @@ function process_hard_drives()
 done
 }
 
+
+function process_lvm()
+{
+  local array_index=-1
+  local volume_group="$(parse_json "$current_partition" .VolumeGroup.Name)"
+  local make_swap_result
+  local current_logical_volume
+  local volume_group
+  local lv_disk_vol_name
+  local volume_group_uuid
+  local volume_group_name
+  
+  while [  "$(( $array_index + 1 ))" -lt "$(parse_json "$current_partition" .VolumeGroup.LogicalVolumeCount)" ]; do
+    array_index=$(( $array_index + 1))
+    clear_and_move_down
+    current_logical_volume="$(parse_json "$current_partition" .VolumeGroup.LogicalVolumes[$array_index])"
+	log "$current_logical_volume"
+    lv_name="$(parse_json "$current_logical_volume" .Name)"
+	
+	#find the disk for the logical volume
+	for lv_disk in $(diskutil list | grep "(internal" | cut -d " " -f1); do
+	  log "processing lv disk $lv_disk"
+	  if diskutil info $lv_disk | grep "Logical Volume" > /dev/null; then
+	    lv_disk_vol_name=$(diskutil cs info $lv_disk | grep "LV Name:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+		log "$lv_disk_vol_name and $lv_name"
+		if [ "$lv_disk_vol_name" = "$lv_name" ]; then
+		  volume_group_uuid=$(diskutil info $lv_disk | grep "LVG UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+		  volume_group_name=$(diskutil cs list | grep "$volume_group_uuid" -A5 | grep Name: | cut -d : -f2 | sed -e 's/^[ \t]*//')
+		  log "$volume_group_uuid $volume_group_name"
+		  if [ "$volume_group_name" = "$volume_group" ]; then
+		    partition_size_bytes=5368709121 #Don't care about the lv size at this point, but need a value for the download_image function
+		    download_image "$current_logical_volume" "$volume_group-$lv_name" "$lv_disk"
+			
+			if [ "$file_copy" = "True" ]; then
+	          process_file_copy "$current_logical_volume" "$volume_group-$unescaped_lv_name"
+	        fi
+			
+		  fi
+		fi
+	  fi
+	done
+	
+    clear_and_move_down
+  done
+}
 function process_partitions()
 {
   local partition_size_mb
@@ -222,6 +284,11 @@ function process_partitions()
     current_partition="$(parse_json "$hd_schema" .PhysicalPartitions[$array_index])"
     log "$current_partition"
 
+	if [ -n "$(parse_json "$current_partition" .VolumeGroup)" ] && [ "$(parse_json "$current_partition" .VolumeGroup)" != "null" ]; then
+      process_lvm
+      continue
+    fi
+	
 	if [ "$(parse_json "$current_partition" .Type)" = "EFI" ] || [ "$(parse_json "$current_partition" .Type)" = "Efi" ]; then
 	  continue
 	fi
@@ -246,18 +313,7 @@ function process_partitions()
 	
 	partition_size_bytes=$(diskutil info ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)  | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1)
     download_image "$current_partition" part
-			
-	#if [ -n "$computer_name" ] && [ "$change_computer_name" = "true" ]; then
-	  #Fix Me: not working
-	  #chroot /Volumes/"$(parse_json "$current_partition" .Type)"
-	  #if [ "$?" = "0" ]; then
-        #scutil --set ComputerName "$computer_name"
-        #scutil --set HostName "$computer_name"
-        #scutil --set LocalHostName "$computer_name"
-		#exit
-	  #fi
-	#fi
-		
+				
 	if [ "$file_copy" = "True" ]; then
 	  process_file_copy "$current_partition" "partition"
 	fi
@@ -268,17 +324,19 @@ function download_image()
 {
   local current_object="$1"
   local file_name_prefix="$2"
-  local destination
-  local asr_verb   
+  local destination="$3"
+  local asr_verb
  
-  destination=${hard_drive}${partition_prefix}$(parse_json "$current_object" .Number)
-  file_name_prefix=part"$(parse_json "$current_object" .Number)"
+  if [ -z "$destination" ]; then
+    destination=${hard_drive}${partition_prefix}$(parse_json "$current_object" .Number)
+    file_name_prefix=part"$(parse_json "$current_object" .Number)"
+  fi
   
   log "partition size bytes: $partition_size_bytes"
-  if [ "$partition_size_bytes" -gt "5368709120" ]; then
-    asr_verb="restore"
-  else
+  if [ "$partition_size_bytes" -le "5368709120" ]; then
     asr_verb="restoreexact"
+  else
+    asr_verb="restore"
   fi
   
   log " ** Starting Image Download For $destination ** " "display" 
@@ -289,7 +347,7 @@ function download_image()
   echo
 	
   touch /tmp/osx.progress
-	  . osx_reporter & asr $asr_verb --source $image_path/$file_name_prefix.dmg --target $destination --erase --noprompt --noverify --puppetstrings 2>> $CLIENT_LOG | tee /tmp/osx.progress
+	  . osx_reporter & asr $asr_verb --source "$image_path/$file_name_prefix.dmg" --target $destination --erase --noprompt --noverify --puppetstrings 2>> $CLIENT_LOG | tee /tmp/osx.progress
 	  log ". osx_reporter &  asr $asr_verb --source $image_path/$file_name_prefix.dmg --target $destination --erase --noprompt --noverify --puppetstrings 2>> $CLIENT_LOG | tee /tmp/osx.progress"
 	  sleep 5
 	  
@@ -320,9 +378,6 @@ function create_partition_layout()
     error "Unknown Error Occurred While Determining Minimum HD Size Required.  Check The Exception Log"
   fi
 	
-  erase_mbr_gpt
-
-  
   get_partitions_according_to_mbr_gpt
 	partition_counter=0
 	for partition in $mbr_gpt_partitions; do
@@ -369,15 +424,6 @@ function get_partitions_according_to_mbr_gpt()
 	done
 }
 
-
-
-function erase_mbr_gpt()
-{
-  log " ** Clearing MBR / GPT ** "
-  dd if=/dev/zero of=$hard_drive bs=512 count=2047 >>$CLIENT_LOG 2>&1
-}
-
-
 function change_computer_name()
 {  
   local partition="$1"
@@ -416,6 +462,14 @@ function main()
 
   #set the system startup disk - bless no longer works in el cap - I strongly dislike sip
   systemsetup -setstartupdisk "Macintosh HD"
+  
+  if [ -n "$computer_name" ] && [ "$change_computer_name" = "true" ]; then
+    log "Setting Computer Name To $computer_name"
+     echo "scutil --set ComputerName $computer_name" > "/Volumes/Macintosh HD/set_computer_name"
+     echo "scutil --set HostName $computer_name" >> "/Volumes/Macintosh HD/set_computer_name"
+     echo "scutil --set LocalHostName $computer_name" >> "/Volumes/Macintosh HD/set_computer_name"
+	 chroot "/Volumes/Macintosh HD" bash set_computer_name
+  fi
   
   checkout
 }

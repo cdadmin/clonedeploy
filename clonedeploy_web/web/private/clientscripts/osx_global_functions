@@ -1,4 +1,6 @@
 #!/bin/bash
+export LC_ALL=C
+export LANG=C
 CLIENT_LOG="/tmp/clientlog.log"
 
 function parse_json()
@@ -111,13 +113,13 @@ function get_hard_drives()
 	local partition_count
 	local partition
 	hard_drives=""
-	log " ** Looking For Hard Drive(s) ** " "display"
+	log " ** Looking For Hard Drive(s) ** "
 	log " ...... Displaying Available Devices "
 	diskutil list >> $CLIENT_LOG 2>&1
 	
 	if [ -n "$custom_hard_drives" ]; then
 		hard_drives="$custom_hard_drives"
-		log " ...... Hard Drive(s) Set By Image Profile: $hard_drives" "display"		
+		log " ...... Hard Drive(s) Set By Image Profile: $hard_drives"	
 	else
 	  if [ "$task_type" = "upload" ]; then
 		all_hard_drives=$(diskutil list | grep "(internal" | cut -d " " -f1)
@@ -142,8 +144,8 @@ function get_hard_drives()
 		hard_drive_count=$(( $hard_drive_count + 1 ))
 	done
 		
-	log " ...... Found $hdCount Drive(s)" "display"
-	log " ...... Drive(s): $hard_drives" "display"
+	log " ...... Found $hdCount Drive(s)" 
+	log " ...... Drive(s): $hard_drives" 
 	
 	if [ "$hard_drive_count" = "0" ]; then
 		error "Could Not Find A Hard Drive Attached To This Computer."
