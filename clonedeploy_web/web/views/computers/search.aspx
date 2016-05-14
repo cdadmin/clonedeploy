@@ -28,8 +28,26 @@
     </div>
     <br class="clear"/>
     
+   
     <div class="size-10 column">
-    <asp:DropDownList runat="server" ID="ddlLimit" AutoPostBack="True" OnSelectedIndexChanged="ddlLimit_OnSelectedIndexChanged" CssClass="ddlist">
+    <asp:DropDownList ID="ddlSite" runat="server" CssClass="ddlist" AutoPostBack="True" OnSelectedIndexChanged="ddl_OnSelectedIndexChanged"/>
+    </div>
+     <div class="size-10 column">
+    <asp:DropDownList ID="ddlBuilding" runat="server" CssClass="ddlist" AutoPostBack="True" OnSelectedIndexChanged="ddl_OnSelectedIndexChanged"/>
+    </div>
+     <div class="size-10 column">
+    <asp:DropDownList ID="ddlRoom" runat="server" CssClass="ddlist" AutoPostBack="True" OnSelectedIndexChanged="ddl_OnSelectedIndexChanged"/>
+    </div>
+     <div class="size-10 column">
+    <asp:DropDownList ID="ddlGroup" runat="server" CssClass="ddlist" AutoPostBack="True" OnSelectedIndexChanged="ddl_OnSelectedIndexChanged"/>
+    </div>
+     <div class="size-10 column">
+    <asp:DropDownList ID="ddlImage" runat="server" CssClass="ddlist" AutoPostBack="True" OnSelectedIndexChanged="ddl_OnSelectedIndexChanged"/>
+    </div>
+   
+     <div class="size-11 column">
+        
+    <asp:DropDownList runat="server" ID="ddlLimit" AutoPostBack="True" OnSelectedIndexChanged="ddl_OnSelectedIndexChanged" CssClass="ddlist">
         <asp:ListItem>25</asp:ListItem>
         <asp:ListItem>100</asp:ListItem>
          <asp:ListItem Selected="True">250</asp:ListItem>
@@ -39,7 +57,7 @@
         <asp:ListItem>All</asp:ListItem>
         </asp:DropDownList>
     </div>
-   <br class="clear" />
+    <br class="clear" />
     <asp:GridView ID="gvComputers" runat="server" AllowSorting="True" DataKeyNames="Id" OnSorting="gridView_Sorting" AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
         <Columns>
            

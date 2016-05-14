@@ -12,10 +12,18 @@ namespace views.computers
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (IsPostBack) return;
+            if (!IsPostBack)
+            {
+                PopulateSitesDdl(ddlSite);
+                PopulateBuildingsDdl(ddlBuilding);
+                PopulateRoomsDdl(ddlRoom);
+                PopulateGroupsDdl(ddlGroup);
+                PopulateImagesDdl(ddlImage);
+                if (Settings.DefaultComputerView == "all")
+                    PopulateGrid();
+            }
 
-            if (Settings.DefaultComputerView == "all")
-                PopulateGrid();
+          
         }
 
         protected void ButtonConfirmDelete_Click(object sender, EventArgs e)
@@ -72,13 +80,43 @@ namespace views.computers
         }
 
         protected void PopulateGrid()
-        {
+        {    
             var limit = 0;
             limit = ddlLimit.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimit.Text);
+           
             var listOfComputers = BLL.Computer.SearchComputersForUser(CloneDeployCurrentUser.Id, limit ,txtSearch.Text);
-            gvComputers.DataSource = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
-            gvComputers.DataBind();
+            listOfComputers = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
+            if (ddlSite.SelectedIndex != -1)
+                listOfComputers = listOfComputers.Where(c => c.SiteId == ddlSite.SelectedIndex).ToList();
+            if (ddlBuilding.SelectedIndex != -1)
+                listOfComputers = listOfComputers.Where(c => c.BuildingId == ddlBuilding.SelectedIndex).ToList();
+            if (ddlRoom.SelectedIndex != -1)
+                listOfComputers = listOfComputers.Where(c => c.RoomId == ddlRoom.SelectedIndex).ToList();
+            if (ddlGroup.SelectedValue != "-1")
+            {
+                var groupMembers = BLL.Group.GetGroupMembers(Convert.ToInt32(ddlGroup.SelectedValue));
 
+                listOfComputers =
+                    (from groupMember in groupMembers
+                        from computer in listOfComputers
+                        where groupMember.Id == computer.Id
+                        select computer).ToList();
+              
+               
+            }
+            if (ddlImage.SelectedValue != "-1")
+                listOfComputers = listOfComputers.Where(c => c.Image != null).Where(a => a.Image.Id == Convert.ToInt32(ddlImage.SelectedValue)).ToList();
+            gvComputers.DataSource = listOfComputers;
+            
+            /*Dynamic column example
+            BoundField test = new BoundField();
+            test.DataField = "ImageProfileId";
+            test.HeaderText = "Image Profile";
+            gvComputers.Columns.Add(test);
+            */
+            gvComputers.DataBind();
+            
+        
             lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + BLL.Computer.ComputerCountUser(CloneDeployCurrentUser.Id) + " Computer(s)";
         }
 
@@ -92,7 +130,7 @@ namespace views.computers
             ChkAll(gvComputers);
         }
 
-        protected void ddlLimit_OnSelectedIndexChanged(object sender, EventArgs e)
+        protected void ddl_OnSelectedIndexChanged(object sender, EventArgs e)
         {
             PopulateGrid();
         }

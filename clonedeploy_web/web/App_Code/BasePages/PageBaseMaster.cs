@@ -58,6 +58,15 @@ namespace BasePages
             ddlImages.Items.Insert(0, new ListItem("Select Image", "-1"));
         }
 
+        protected void PopulateGroupsDdl(DropDownList ddlGroups)
+        {
+            ddlGroups.DataSource = BLL.Group.SearchGroupsForUser(CloneDeployCurrentUser.Id).Select(i => new { i.Id, i.Name });
+            ddlGroups.DataValueField = "Id";
+            ddlGroups.DataTextField = "Name";
+            ddlGroups.DataBind();
+            ddlGroups.Items.Insert(0, new ListItem("Select Group", "-1"));
+        }
+
         protected void PopulateImageProfilesDdl(DropDownList ddlImageProfile, int value)
         {
             ddlImageProfile.DataSource = BLL.ImageProfile.SearchProfiles(value).Select(i => new { i.Id, i.Name });
