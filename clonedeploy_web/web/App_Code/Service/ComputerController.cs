@@ -1,34 +1,25 @@
-﻿using System;
-using System.Activities.Validation;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Collections.Generic;
 using System.Web.Http;
-using System.Web.Http.Controllers;
-using System.Web.Http.Filters;
-using System.Web.Http.Validation;
-using CsvHelper;
-using Helpers;
 using Models;
-
 
 namespace Service
 {
-    
-
     public class ComputerController : ApiController
     {
-
         public IEnumerable<Models.Computer> Get()
         {
+            BLL.Authorize.ApiAuth();
             return BLL.Computer.GetAll();
         }
-
-        
+    
         public Computer Get(int id)
         {
             return BLL.Computer.GetComputer(id);
+        }
+
+        public Computer GetFromMac(string mac)
+        {
+            return BLL.Computer.GetComputerFromMac(mac);
         }
 
         public Models.ValidationResult Post(Models.Computer value)

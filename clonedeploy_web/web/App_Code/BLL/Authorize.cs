@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using Helpers;
 using Models;
 
 namespace BLL
@@ -80,6 +85,42 @@ namespace BLL
             {
                 return IsAuthorized();
             }
+        }
+
+        public static void ApiAuth()
+        {
+            if (!HttpContext.Current.Request.IsSecureConnection)
+              ApiErrorResponse("ssl");
+
+            var apiId = Utility.Decode(HttpContext.Current.Request.Headers["api-id"], "api-id");
+            var apiKey = Utility.Decode(HttpContext.Current.Request.Headers["api-key"], "api-key");
+          
+            if(string.IsNullOrEmpty(apiId) || string.IsNullOrEmpty(apiKey))
+                ApiErrorResponse("auth");
+
+            var user = BLL.User.GetUserByApiId(apiId);
+            if (user == null)
+                ApiErrorResponse("auth");
+
+            if (user.ApiKey != apiKey)             
+                ApiErrorResponse("auth");           
+        }
+
+        private static void ApiErrorResponse(string type)
+        {
+            var responseMsg = new HttpResponseMessage();
+            if (type == "ssl")
+            {
+                responseMsg.StatusCode = HttpStatusCode.Forbidden;
+                responseMsg.Content = new StringContent("SSL Required");
+            }
+            else
+            {
+                responseMsg.StatusCode = HttpStatusCode.Unauthorized;
+                responseMsg.Content = new StringContent("User not authorized");
+            }
+
+            throw new HttpResponseException(responseMsg);
         }
     }
 }

@@ -63,6 +63,14 @@ namespace BLL
             }
         }
 
+        public static Models.CloneDeployUser GetUserByApiId(string apiId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.UserRepository.GetFirstOrDefault(x => x.ApiId == apiId);
+            }
+        }
+
         public static void SendLockOutEmail(int userId)
         {
             //Mail not enabled

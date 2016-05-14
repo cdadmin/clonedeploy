@@ -24,7 +24,7 @@ namespace Service.Client
                 return true;
             else
             {
-                HttpContext.Current.Response.StatusCode = 403;
+                HttpContext.Current.Response.StatusCode = 401;
                 Logger.Log("Incorrect Token Was Provided");
                 return false;
             }

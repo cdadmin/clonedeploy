@@ -40,5 +40,11 @@ namespace Models
 
         [Column("notify_on_image_approved", Order = 11)]
         public int NotifyImageApproved { get; set; }
+
+        [Column("clonedeploy_user_api_id", Order = 12)]
+        public string ApiId { get; set; }
+
+        [Column("clonedeploy_user_api_key", Order = 13)]
+        public string ApiKey { get; set; }
     }
 }

@@ -45,6 +45,8 @@ namespace views.users
             updatedUser.NotifyError = chkError.Checked ? 1 : 0;
             updatedUser.NotifyComplete = chkComplete.Checked ? 1 : 0;
             updatedUser.NotifyImageApproved = chkApproved.Checked ? 1 : 0;
+            updatedUser.ApiId = txtApiId.Text;
+            updatedUser.ApiKey = txtApiKey.Text;
            
             var result = BLL.User.UpdateUser(updatedUser);
             EndUserMessage = !result.IsValid ? result.Message : "Successfully Updated User";
@@ -62,12 +64,24 @@ namespace views.users
             chkError.Checked = CloneDeployUser.NotifyError == 1;
             chkComplete.Checked = CloneDeployUser.NotifyComplete == 1;
             chkApproved.Checked = CloneDeployUser.NotifyImageApproved == 1;
+            txtApiId.Text = CloneDeployUser.ApiId;
+            txtApiKey.Text = CloneDeployUser.ApiKey;
         }
 
 
         protected void btnGenKey_OnClick(object sender, EventArgs e)
         {
             txtToken.Text = Utility.GenerateKey();
+        }
+
+        protected void btnGenId_OnClick(object sender, EventArgs e)
+        {
+            txtApiId.Text = Utility.GenerateKey();
+        }
+
+        protected void btnGenApiKey_OnClick(object sender, EventArgs e)
+        {
+            txtApiKey.Text = Utility.GenerateKey();
         }
     }
 }

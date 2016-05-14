@@ -5,21 +5,19 @@
 
 
 <script runat="server">
-
-    protected static string GetXmlCommentsPath()
-    {
-        return System.String.Format(@"{0}\bin\WebApiSwagger.XML", System.AppDomain.CurrentDomain.BaseDirectory);
-    }
-    
+ 
     void Application_Start(object sender, EventArgs e)
     {
         GlobalConfiguration.Configuration
             .EnableSwagger(c =>
             {
                 c.SingleApiVersion("v1", "CloneDeploy Web API");
-             
+               
             })
-            .EnableSwaggerUi();
+             .EnableSwaggerUi(c =>
+        {
+           
+        });
             
 
      
@@ -31,7 +29,7 @@
             routeTemplate: "api/{controller}/{action}/{id}",
             defaults: new {id = System.Web.Http.RouteParameter.Optional}
             );
-        GlobalConfiguration.Configuration.Filters.Add(new AuthorizeAttribute());
+        
     }
 
     void Application_End(object sender, EventArgs e) 
