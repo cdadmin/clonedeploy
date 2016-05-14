@@ -26,6 +26,7 @@ namespace CloneDeploy_Proxy_Dhcp.Server
         private readonly ReaderWriterLock _mAbortLock = new ReaderWriterLock();
         private Socket _mDhcpSocket;
         private bool _mAbort;
+        private string _interfaceHex;
 
         public string UserNextServer { get; set; }
         public string UserNetworkInterface { get; set; }
@@ -33,7 +34,7 @@ namespace CloneDeploy_Proxy_Dhcp.Server
         public string AppleBootFile { get; set; }
         public string VendorInfo { get; set; }
         public string BsdpMode { get; set; }
-
+        
         private readonly Dictionary<PhysicalAddress, ReservationOptions> _dReservations =
             new Dictionary<PhysicalAddress, ReservationOptions>();
 
@@ -176,7 +177,8 @@ namespace CloneDeploy_Proxy_Dhcp.Server
                     "Unabled to Set Dhcp Interface Address. Check the networkInterface property of your config file.");
                 throw new InvalidOperationException("Unabled to Set Dhcp Interface Address.");
             }
-            
+
+            _interfaceHex = ByteArrayToString(_mDhcpInterfaceAddress.GetAddressBytes());           
             _mAbort = false;
 
            
@@ -344,17 +346,17 @@ namespace CloneDeploy_Proxy_Dhcp.Server
                     {
                         if (strVendorId.Length >= 14)
                         {
-
+                            //Limit to only Intel Apple machines
                             if (strVendorId.Substring(0, 14) == "AAPLBSDPC/i386")
                             {
                                 var vendorOptions = message.GetOptionData(DhcpOption.VendorSpecificInformation);
                                 if (vendorOptions != null)
                                 {
                                     var strVendorInformation = ByteArrayToString(vendorOptions);
-                                    if (strVendorInformation.Length >= 12)
+                                    if (strVendorInformation.Length >= 6)
                                     {
-                                        if (strVendorInformation.Substring(0, 12) != "010101020201" &&
-                                            strVendorInformation.Substring(0, 12) != "010102020201")
+                                        if (strVendorInformation.Substring(0, 6) != "010101" &&
+                                            strVendorInformation.Substring(0, 6) != "010102")
                                         {
                                             Trace.TraceInformation(
                                                 "{0} Ignoring, Not An Apple BSDP Request, Vendor Information Mismatch",
@@ -438,14 +440,6 @@ namespace CloneDeploy_Proxy_Dhcp.Server
 
         private void DhcpDiscover(DhcpMessage message)
         {
-            Byte[] addressRequestData = message.GetOptionData(DhcpOption.AddressRequest);
-            if (addressRequestData == null)
-            {
-                addressRequestData = message.ClientAddress;
-            }
-
-            InternetAddress addressRequest = new InternetAddress(addressRequestData);
-
             // Assume we're on an ethernet network
             Byte[] hardwareAddressData = new Byte[6];
             Array.Copy(message.ClientHardwareAddress, hardwareAddressData, 6);
@@ -475,7 +469,25 @@ namespace CloneDeploy_Proxy_Dhcp.Server
             if (_mAcl.ContainsKey(clientHardwareAddress) && _mAcl[clientHardwareAddress] ||
                 !_mAcl.ContainsKey(clientHardwareAddress) && _mAllowAny)
             {
-                SendAck(message);
+                var vendorOptions = message.GetOptionData(DhcpOption.VendorSpecificInformation);
+                var strVendorInformation = ByteArrayToString(vendorOptions);
+                if (strVendorInformation.Substring(0, 6) == "010101")
+                    SendBootImageList(message);
+                else if (strVendorInformation.Substring(0, 6) == "010102")
+                {
+                    Trace.TraceInformation(strVendorInformation);
+                    if(strVendorInformation.Contains(_interfaceHex))
+                        SendAck(message);
+                    else
+                    {
+                        Trace.TraceInformation("Ignoring, Different Server Targeted.");
+                        return;
+                    }
+                }
+                else
+                {
+                    SendNak(message);
+                }
             }
             else
             {
@@ -497,7 +509,6 @@ namespace CloneDeploy_Proxy_Dhcp.Server
 
             Byte[] hardwareAddressData = new Byte[6];
             Array.Copy(message.ClientHardwareAddress, hardwareAddressData, 6);
-            PhysicalAddress clientHardwareAddress = new PhysicalAddress(hardwareAddressData);
 
             response.NextServerAddress = this._mDhcpInterfaceAddress.GetAddressBytes();
             response.ClientHardwareAddress = message.ClientHardwareAddress;
@@ -527,8 +538,66 @@ namespace CloneDeploy_Proxy_Dhcp.Server
             Trace.TraceInformation("{0} Dhcp Offer Sent.", Thread.CurrentThread.ManagedThreadId);
         }
 
+        private void SendBootImageList(DhcpMessage message)
+        {
+            var bsdpPort = DhcpClientPort;
+            Trace.TraceInformation("{0} Sending Dhcp Acknowledge Boot Image List.", Thread.CurrentThread.ManagedThreadId);
+            var vendorOptions = message.GetOptionData(DhcpOption.VendorSpecificInformation);
+            var strVendorInformation = ByteArrayToString(vendorOptions);
+            //This will most likely break at some point.  Really need to parse the vendor options instead of grabbing values based off of location
+            if (strVendorInformation.Length >= 21)
+            {
+                var isReturnPort = strVendorInformation.Substring(14, 4);
+                if (isReturnPort == "0502")
+                {
+                    var returnPort = strVendorInformation.Substring(18, 4);
+                    bsdpPort = Convert.ToInt32(returnPort, 16);
+                }
+            }
+            //Trace.TraceInformation("{0} Return Port." + bsdpPort, Thread.CurrentThread.ManagedThreadId);
+            var response = new DhcpMessage
+            {
+                Operation = DhcpOperation.BootReply,
+                Hardware = HardwareType.Ethernet,
+                HardwareAddressLength = 6,
+                SecondsElapsed = message.SecondsElapsed,
+                SessionId = message.SessionId
+            };
+
+            var hardwareAddressData = new byte[6];
+            Array.Copy(message.ClientHardwareAddress, hardwareAddressData, 6);
+        
+            response.ClientAddress = message.ClientAddress;
+            response.ClientHardwareAddress = message.ClientHardwareAddress;
+            response.AddOption(DhcpOption.DhcpMessageType, (byte)DhcpMessageType.Ack);
+            response.AddOption(DhcpOption.ClassId, Encoding.UTF8.GetBytes("AAPLBSDPC"));
+            response.AddOption(DhcpOption.VendorSpecificInformation, StringToByteArray(VendorInfo));
+            response.SourcePort = message.SourcePort;
+            response.AddOption(DhcpOption.DhcpAddress, _mDhcpInterfaceAddress.GetAddressBytes());
+
+            try
+            {
+                var clientIp = response.ClientAddress[0] + "." + response.ClientAddress[1] + "." +
+                               response.ClientAddress[2] + "." + response.ClientAddress[3];
+                _mDhcpSocket.SendTo(response.ToArray(), new IPEndPoint(IPAddress.Parse(clientIp), bsdpPort));
+            }
+            catch (Exception ex)
+            {
+                TraceException("Error Sending Dhcp Reply", ex);
+                return;
+            }
+
+            Trace.TraceInformation("{0} Dhcp Acknowledge Sent.", Thread.CurrentThread.ManagedThreadId);
+        }
+
         private void SendAck(DhcpMessage message)
         {
+            //This is the client selecting which image they want to boot from
+
+            var vendorOptions = message.GetOptionData(DhcpOption.VendorSpecificInformation);
+            var strVendorInformation = ByteArrayToString(vendorOptions);
+            var imageId = strVendorInformation.Substring(strVendorInformation.Length - 4);
+            var targetNbi = RootPath.Replace("[nbi_id]", imageId);
             Trace.TraceInformation("{0} Sending Dhcp Acknowledge.", Thread.CurrentThread.ManagedThreadId);
 
             var response = new DhcpMessage
@@ -564,7 +633,7 @@ namespace CloneDeploy_Proxy_Dhcp.Server
             response.AddOption(DhcpOption.DhcpMessageType, (byte) DhcpMessageType.Ack);
             response.AddOption(DhcpOption.ClassId, Encoding.UTF8.GetBytes("AAPLBSDPC"));
             response.AddOption(DhcpOption.VendorSpecificInformation, StringToByteArray(VendorInfo));
-            response.AddOption(DhcpOption.RootPath, Encoding.UTF8.GetBytes(RootPath));
+            response.AddOption(DhcpOption.RootPath, Encoding.UTF8.GetBytes(targetNbi));
             response.SourcePort = message.SourcePort;
             response.AddOption(DhcpOption.DhcpAddress, _mDhcpInterfaceAddress.GetAddressBytes());
 
@@ -620,7 +689,7 @@ namespace CloneDeploy_Proxy_Dhcp.Server
         {
             var hex = new StringBuilder(ba.Length*2);
             foreach (var b in ba)
-                hex.AppendFormat("{0:x2}", b);
+                hex.AppendFormat("{0:X2}", b);
             return hex.ToString();
         }
 
@@ -632,5 +701,18 @@ namespace CloneDeploy_Proxy_Dhcp.Server
                 .Select(x => Convert.ToByte(hexNoColons.Substring(x, 2), 16))
                 .ToArray();
         }
+
+        public static string AddHexColons(string hex)
+        {
+            var sb = new StringBuilder();
+            for (var i = 0; i < hex.Length; i++)
+            {
+                if (i % 2 == 0 && i != 0)
+                    sb.Append(':');
+                sb.Append(hex[i]);
+            }
+            return sb.ToString();
+        }
+        
     }
 }
