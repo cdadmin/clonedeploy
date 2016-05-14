@@ -37,7 +37,16 @@ namespace Models
         public string Environment { get; set; }
 
         [Column("image_approved", Order = 10)]
-        public int Approved { get; set; }        
+        public int Approved { get; set; }
+
+        [Column("image_osx_type", Order = 11)]
+        public string OsxType { get; set; }
+
+        [Column("image_osx_thin_os", Order = 12)]
+        public string OsxThinOs { get; set; }
+
+        [Column("image_osx_thin_recovery", Order = 13)]
+        public string OsxThinRecovery { get; set; }        
     }
 
     public sealed class ImageCsvMap : CsvClassMap<Models.Image>

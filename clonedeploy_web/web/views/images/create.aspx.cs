@@ -26,10 +26,19 @@ namespace views.images
                 Description = txtImageDesc.Text,
                 Protected = chkProtected.Checked ? 1 : 0,
                 IsVisible = chkVisible.Checked ? 1 : 0,
-                Type = ddlImageType.Text,
                 Enabled = 1
             };
 
+            image.Type = ddlEnvironment.Text == "osx" ? "Block" : ddlImageType.Text;
+            if (ddlEnvironment.Text == "osx")
+            {
+                image.OsxType = ddlOsxImageType.Text;
+                if (image.OsxType == "thin")
+                {
+                    image.OsxThinOs = ddlThinOS.Text;
+                    image.OsxThinRecovery = ddlThinRecovery.Text;
+                }
+            }
            
             var result = BLL.Image.AddImage(image);
             if (result.IsValid)
@@ -42,6 +51,37 @@ namespace views.images
                 EndUserMessage = result.Message;
             }
 
+        }
+
+        protected void ddlEnvironment_OnSelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ddlEnvironment.Text == "osx")
+            {
+                imageType.Visible = false;
+                osxImageType.Visible = true;
+            }
+            else
+            {
+                imageType.Visible = true;
+                osxImageType.Visible = false;
+                thinImage.Visible = false;
+            }
+        }
+
+        protected void ddlOsxImageType_OnSelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ddlOsxImageType.Text == "thin")
+            {
+                thinImage.Visible = true;
+                ddlThinOS.DataSource = Utility.GetThinImages();
+                ddlThinOS.DataBind();
+                ddlThinRecovery.DataSource = Utility.GetThinImages();
+                ddlThinRecovery.DataBind();
+            }
+            else
+            {
+                thinImage.Visible = false;
+            }
         }
     }
 }

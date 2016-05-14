@@ -25,13 +25,16 @@ namespace DAL
                         id = h.Id,
                         name = h.Name,
                         mac = h.Mac,
-                        image = p
+                        image = p,
+                        profileId = h.ImageProfileId
                     }).AsEnumerable().Select(x => new Models.Computer()
                     {
                         Id = x.id,
                         Name = x.name,
                         Mac = x.mac,
-                        Image = x.image
+                        Image = x.image,
+                        ImageProfileId = x.profileId
+                        
                     }).OrderBy(x => x.Name).Take(limit).ToList();
         }
 

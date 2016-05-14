@@ -16,5 +16,16 @@ public partial class views_masters_Profile : MasterBaseMaster
 
         if (ImageProfile == null) return;
         if (Image == null) Response.Redirect("~/", true);
+
+        if (Image.Environment == "osx")
+        {
+            osx_profile.Visible = true;
+            linux_profile.Visible = false;
+        }
+        else
+        {
+            osx_profile.Visible = false;
+            linux_profile.Visible = true;
+        }
     } 
 }

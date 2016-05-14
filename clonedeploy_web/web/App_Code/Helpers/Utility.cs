@@ -148,6 +148,25 @@ namespace Helpers
             return kernelFiles;
         }
 
+        public static string[] GetThinImages()
+        {
+            var thinImagePath = Settings.PrimaryStoragePath + "thin_images" + Path.DirectorySeparatorChar;
+            string[] dmgs = null;
+            try
+            {
+                dmgs = Directory.GetFiles(thinImagePath, "*.dmg*");
+
+                for (var x = 0; x < dmgs.Length; x++)
+                    dmgs[x] = Path.GetFileName(dmgs[x]);
+            }
+
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+            }
+            return dmgs;
+        }
+
         public static string[] GetLogs()
         {
             var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +

@@ -38,16 +38,49 @@
     </div>
     <br class="clear"/>
     
+    <div id="imageType" runat="server">
      <div class="size-4 column">
         Image Type:
     </div>
     <div class="size-5 column">
-        <asp:DropDownList ID="ddlImageType" runat="server" CssClass="ddlist" >
+        <asp:DropDownList ID="ddlImageType" runat="server" CssClass="ddlist">
             <asp:ListItem>Block</asp:ListItem>
             <asp:ListItem>File</asp:ListItem>
         </asp:DropDownList>
     </div>
     <br class="clear"/>
+    </div>
+    
+    <div id="osxImageType" runat="server" Visible="False">
+     <div class="size-4 column">
+        OSX Image Type:
+    </div>
+    <div class="size-5 column">
+        <asp:DropDownList ID="ddlOsxImageType" runat="server" CssClass="ddlist">
+            <asp:ListItem>thick</asp:ListItem>
+            <asp:ListItem>thin</asp:ListItem>
+        </asp:DropDownList>
+    </div>
+    <br class="clear"/>
+    </div>
+    
+    <div id="thinImage" runat="server" Visible="False">
+     <div class="size-4 column">
+        Thin Image OS DMG:
+    </div>
+    <div class="size-5 column">
+        <asp:DropDownList ID="ddlThinOS" runat="server" CssClass="ddlist"/>
+    </div>
+    <br class="clear"/>
+        
+        <div class="size-4 column">
+        Thin Image Recovery DMG:
+    </div>
+    <div class="size-5 column">
+        <asp:DropDownList ID="ddlThinRecovery" runat="server" CssClass="ddlist"/>
+    </div>
+    <br class="clear"/>
+    </div>
     
    
 

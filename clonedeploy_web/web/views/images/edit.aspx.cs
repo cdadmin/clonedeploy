@@ -26,7 +26,6 @@ namespace views.images
             image.Enabled = chkEnabled.Checked ? 1 : 0;
             image.Protected = chkProtected.Checked ? 1 : 0;
             image.IsVisible = chkVisible.Checked ? 1 : 0;
-            image.Type = ddlImageType.Text;
 
             var result = BLL.Image.UpdateImage(image, currentName);
             EndUserMessage = result.IsValid ? "Successfully Updated Image" : result.Message;
@@ -39,6 +38,23 @@ namespace views.images
             txtImageName.Text = Image.Name;
             txtImageDesc.Text = Image.Description;
             ddlImageType.Text = Image.Type;
+            ddlEnvironment.Text = Image.Environment;
+            if (Image.Environment == "osx")
+            {
+                osxImageType.Visible = true;
+                ddlOsxImageType.Text = Image.OsxType;
+                if (Image.OsxType == "thin")
+                {
+                    thinImage.Visible = true;
+                    ddlThinOS.DataSource = Utility.GetThinImages();
+                    ddlThinOS.DataBind();
+                    ddlThinRecovery.DataSource = Utility.GetThinImages();
+                    ddlThinRecovery.DataBind();
+                    
+                    ddlThinOS.Text = Image.OsxThinOs;
+                    ddlThinRecovery.Text = Image.OsxThinRecovery;
+                }
+            }
             if (Image.Protected == 1)
                 chkProtected.Checked = true;
             if (Image.IsVisible == 1)
@@ -47,6 +63,7 @@ namespace views.images
             //Image types can't be changed after they are created
             ddlImageType.Enabled = false;
             ddlEnvironment.Enabled = false;
+            ddlOsxImageType.Enabled = false;
 
         }
     }

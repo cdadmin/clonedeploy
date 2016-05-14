@@ -25,6 +25,7 @@
 </asp:Content>
 
 <asp:Content ID="Content4" ContentPlaceHolderID="Level4" Runat="Server">
+    <div id="linux_profile" runat="server">
      <li id="general"><a  href="<%= ResolveUrl("~/views/images/profiles/general.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">General</span></a></li>
      <li id="pxe"><a  href="<%= ResolveUrl("~/views/images/profiles/pxe.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">PXE Boot Options</span></a></li>
      <li id="task"><a  href="<%= ResolveUrl("~/views/images/profiles/task.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Task Options</span></a></li>
@@ -34,6 +35,18 @@
     <li id="scripts"><a href="<%= ResolveUrl("~/views/images/profiles/scripts.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Scripts</span></a></li>
      <li id="sysprep"><a href="<%= ResolveUrl("~/views/images/profiles/sysprep.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Sysprep</span></a></li>
     <li  id="filecopy"><a href="<%= ResolveUrl("~/views/images/profiles/filecopy.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">File Copy</span></a></li>
+    </div>
+    <div id="osx_profile" runat="server">
+         <li id="general"><a  href="<%= ResolveUrl("~/views/images/profiles/general.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">General</span></a></li>
+    
+     <li id="task"><a  href="<%= ResolveUrl("~/views/images/profiles/task.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Task Options</span></a></li>
+    
+    <li id="deploy"><a href="<%= ResolveUrl("~/views/images/profiles/deploy.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Deploy Options</span></a></li>
+   
+    <li id="scripts"><a href="<%= ResolveUrl("~/views/images/profiles/scripts.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Scripts</span></a></li>
+    
+    <li  id="filecopy"><a href="<%= ResolveUrl("~/views/images/profiles/filecopy.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">File Copy</span></a></li>
+    </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
     <asp:ContentPlaceHolder ID="SubContent2" runat="server">

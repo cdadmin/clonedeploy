@@ -15,10 +15,6 @@ public partial class views_groups_currentmembers : Groups
             PopulateGrid();
     }
 
-    
-
-    
-
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();

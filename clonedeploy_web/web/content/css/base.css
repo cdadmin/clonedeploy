@@ -144,6 +144,7 @@ Table.gv_vg{margin-left:30px;border-left:2px solid #e8e8e8;border-bottom:2px sol
 .height_600{ height: 600px;}
 .height_400{ height: 400px;}
 .height_1200{ height: 1200px;}
+.max_width300 { max-width: 300px;overflow: hidden;}
 .inline { display: inline !important;}
 
 /* #Forms
@@ -174,6 +175,7 @@ input[type="checkbox"]{display:inline;}
 /* Buttons
 ================================================== */
 a.confirm,a.submits,input[type="submit"]{text-align: center;background:#666;-moz-border-radius:4px;-webkit-border-radius:4px;border-radius:4px;color: #fff;display:inline-block;text-decoration:none;cursor:pointer;margin-bottom:3px;line-height:normal;padding:15px 10px; font-size:18px;width: 200px;}
+
 a.confirm:hover,a.submits:hover,input[type="submit"]:hover,a.boot-active{color:#fff;background:#47a3da;-webkit-transition:background .2s ease-in-out;-moz-transition:background .2s ease-in-out;transition:background .2s ease-in-out;}
 a.confirm:active,a.submits:active,input[type="submit"]:active{background:#ccc;}
 a.confirm_yes{width:100px;display:inline-block;background-color:#fff;padding:15px 30px;color:#47a3da;-webkit-border-radius:5px;-moz-border-radius:5px;-ms-border-radius:5px;-o-border-radius:5px;border-radius:5px;text-decoration:none; }
@@ -188,6 +190,7 @@ a.actions { width: 175px;text-align: center;margin-left: 8px;margin-bottom: 7px;
 .green { background: #47d890 !important;color: white !important;}
 a.green:hover{ color: #666 !important;}
 a.help { width: 10px !important;background: #fff !important;float: right;}
+a.keygen { text-align: center;background: #fff;padding: 4px; -moz-border-radius:4px;-webkit-border-radius:4px;border-radius:4px;color: #47a3da;width: 100px;margin: 5px;border: 1px solid #eee;}
 
 /* Toast Notifications
 ================================================== */
