@@ -39,10 +39,61 @@ namespace DAL
         private IGenericRepository<Models.ImageProfileSysprepTag> _imageProfileSysprepRepository;
         private GroupRepository _groupRepository;
         private ActiveImagingTaskRepository _activeImagingTaskRepository;
+        private IGenericRepository<Models.MunkiManifestTemplate> _munkiManifestRepository;
+        private IGenericRepository<Models.MunkiManifestCatalog> _munkiCatalogRepository;
+        private DAL.IGenericRepository<Models.MunkiManifestManagedInstall> _munkiManagedInstallRepository;
+        private DAL.IGenericRepository<Models.MunkiManifestManagedUnInstall> _munkiManagedUninstallRepository;
+        private DAL.IGenericRepository<Models.MunkiManifestManagedUpdate> _munkiManagedUpdateRepository;
+        private DAL.IGenericRepository<Models.MunkiManifestOptionInstall> _munkiOptionalInstallRepository;
+        private DAL.IGenericRepository<Models.MunkiManifestIncludedManifest> _munkiIncludedManifestRepository;
+        private DAL.IGenericRepository<Models.MunkiConditional> _munkiConditionalRepository;
+      
 
         public IGenericRepository<Models.GroupBootMenu> GroupBootMenuRepository
         {
             get { return _groupBootMenuRepository ?? (_groupBootMenuRepository = new GenericRepository<Models.GroupBootMenu>(_context)); }
+
+        }
+
+        public IGenericRepository<Models.MunkiManifestCatalog> MunkiCatalogRepository
+        {
+            get { return _munkiCatalogRepository ?? (_munkiCatalogRepository = new GenericRepository<Models.MunkiManifestCatalog>(_context)); }
+
+        }
+
+        public IGenericRepository<Models.MunkiManifestManagedInstall> MunkiManagedInstallRepository
+        {
+            get { return _munkiManagedInstallRepository ?? (_munkiManagedInstallRepository = new GenericRepository<Models.MunkiManifestManagedInstall>(_context)); }
+        }
+
+        public IGenericRepository<Models.MunkiManifestManagedUnInstall> MunkiManagedUnInstallRepository
+        {
+            get { return _munkiManagedUninstallRepository ?? (_munkiManagedUninstallRepository = new GenericRepository<Models.MunkiManifestManagedUnInstall>(_context)); }
+        }
+
+        public IGenericRepository<Models.MunkiManifestManagedUpdate> MunkiManagedUpdateRepository
+        {
+            get { return _munkiManagedUpdateRepository ?? (_munkiManagedUpdateRepository = new GenericRepository<Models.MunkiManifestManagedUpdate>(_context)); }
+        }
+
+        public IGenericRepository<Models.MunkiManifestOptionInstall> MunkiOptionalInstallRepository
+        {
+            get { return _munkiOptionalInstallRepository ?? (_munkiOptionalInstallRepository = new GenericRepository<Models.MunkiManifestOptionInstall>(_context)); }
+        }
+
+        public IGenericRepository<Models.MunkiManifestIncludedManifest> MunkiIncludedManifestRepository
+        {
+            get { return _munkiIncludedManifestRepository ?? (_munkiIncludedManifestRepository = new GenericRepository<Models.MunkiManifestIncludedManifest>(_context)); }
+        }
+
+        public IGenericRepository<Models.MunkiConditional> MunkiConditionalRepository
+        {
+            get { return _munkiConditionalRepository ?? (_munkiConditionalRepository = new GenericRepository<Models.MunkiConditional>(_context)); }
+        }
+
+        public IGenericRepository<Models.MunkiManifestTemplate> MunkiManifestRepository
+        {
+            get { return _munkiManifestRepository ?? (_munkiManifestRepository = new GenericRepository<Models.MunkiManifestTemplate>(_context)); }
 
         }
 

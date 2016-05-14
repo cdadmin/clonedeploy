@@ -1,0 +1,24 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Models
+{
+    [Table("munki_manifest_templates")]
+    public class MunkiManifestTemplate
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("manifest_template_id", Order = 1)]
+        public int Id { get; set; }
+
+        [Column("manifest_template_name", Order = 2)]
+        public string Name { get; set; }
+
+        [Column("manifest_template_description", Order = 3)]
+        public string Description { get; set; }
+
+        [Column("manifest_template_as_manifest", Order = 4)]
+        public int TemplateAsManifest { get; set; }
+  
+    }
+}

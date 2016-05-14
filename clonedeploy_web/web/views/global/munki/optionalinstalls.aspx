@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/munki/munki.master" AutoEventWireup="true" CodeFile="chooser.aspx.cs" Inherits="views_global_munki_chooser" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/munki/munki.master" AutoEventWireup="true" CodeFile="optionalinstalls.aspx.cs" Inherits="views_global_munki_optionalinstalls" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
 </asp:Content>

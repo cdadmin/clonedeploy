@@ -1,4 +1,6 @@
-﻿using BLL;
+﻿using System.IO;
+using System.Web;
+using BLL;
 
 namespace Helpers
 {
@@ -198,6 +200,15 @@ namespace Helpers
         public static string IpxeRequiresLogin
         {
             get { return Setting.GetSetting("Ipxe Requires Login").Value; }
+        }
+
+        public static string MunkiRootPath
+        {
+            get
+            {
+                return HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "public" +
+                       Path.DirectorySeparatorChar + "munki" + Path.DirectorySeparatorChar;
+            }
         }
     
     }

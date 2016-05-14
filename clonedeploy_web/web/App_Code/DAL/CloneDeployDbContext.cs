@@ -43,7 +43,15 @@ namespace DAL
         public DbSet<Models.GroupProperty> GroupProperties { get; set; }
         public DbSet<Models.FileFolder> FilesFolders { get; set; }
         public DbSet<Models.CdVersion> CdVersions { get; set; }
-
+        public DbSet<Models.MunkiManifestTemplate> MunkiManifestTemplates { get; set; }
+        public DbSet<Models.MunkiManifestCatalog> MunkiManifestCatalogs { get; set; }
+        public DbSet<Models.MunkiManifestManagedInstall> MunkiManifestManagedInstalls { get; set; }
+        public DbSet<Models.MunkiManifestManagedUnInstall> MunkiManifestManagedUnInstalls { get; set; }
+        public DbSet<Models.MunkiManifestManagedUpdate> MunkiManifestManagedUpdates { get; set; }
+        public DbSet<Models.MunkiManifestOptionInstall> MunkiManifestOptionalInstalls { get; set; }
+        public DbSet<Models.MunkiManifestConditional> MunkiManifestConditionals { get; set; }
+        public DbSet<Models.MunkiManifestIncludedManifest> MunkiManifestIncludedManifests { get; set; }
+        public DbSet<Models.MunkiConditional> MunkiConditionals { get; set; }
 
     }
 

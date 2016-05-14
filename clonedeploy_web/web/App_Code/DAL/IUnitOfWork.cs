@@ -39,6 +39,14 @@ namespace DAL
         DAL.IGenericRepository<Models.CdVersion> CdVersionRepository { get; }
         DAL.GroupRepository GroupRepository { get; }
         DAL.ActiveImagingTaskRepository ActiveImagingTaskRepository { get; }
+        DAL.IGenericRepository<Models.MunkiManifestTemplate> MunkiManifestRepository { get; }
+        DAL.IGenericRepository<Models.MunkiManifestCatalog> MunkiCatalogRepository { get; }
+        DAL.IGenericRepository<Models.MunkiManifestManagedInstall> MunkiManagedInstallRepository { get; }
+        DAL.IGenericRepository<Models.MunkiManifestManagedUnInstall> MunkiManagedUnInstallRepository { get; }
+        DAL.IGenericRepository<Models.MunkiManifestManagedUpdate> MunkiManagedUpdateRepository { get; }
+        DAL.IGenericRepository<Models.MunkiManifestOptionInstall> MunkiOptionalInstallRepository { get; }
+        DAL.IGenericRepository<Models.MunkiManifestIncludedManifest> MunkiIncludedManifestRepository { get; }
+        DAL.IGenericRepository<Models.MunkiConditional> MunkiConditionalRepository { get; }
         bool Save();
         
     }

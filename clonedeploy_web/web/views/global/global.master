@@ -9,9 +9,6 @@
        <div class="sub-nav-top">
         <div id="Level1" runat="server">
         <ul>
-           
-          
-            
              <li id="scripts">
                 <a href="<%= ResolveUrl("~/views/global/scripts/search.aspx?cat=sub1") %>" >
                     <span class="sub-nav-text">Imaging Scripts</span>
@@ -54,7 +51,7 @@
                 </a>
             </li>
                <li id="munki">
-                <a href="<%= ResolveUrl("~/views/global/munki/chooser.aspx?cat=sub1") %>" >
+                <a href="<%= ResolveUrl("~/views/global/munki/manifestsearch.aspx?cat=sub1") %>" >
                     <span class="sub-nav-text">Munki</span>
                 </a>
             </li>
@@ -68,7 +65,8 @@
         <asp:ContentPlaceHolder ID="Level2" runat="server">
         </asp:ContentPlaceHolder>
                 
-       
+        <asp:ContentPlaceHolder ID="Level3" runat="server">
+        </asp:ContentPlaceHolder>
                 </ul>
     </div>
 </asp:Content>
