@@ -146,7 +146,8 @@ function get_partitions()
 	  log " ...... Partitions Set By Image Profile: $partitions" "display"
     fi
   else
-    partitions=$(lsblk -ipno KNAME | grep "$hard_drive" | grep -vw "$hard_drive" 2>> $CLIENT_LOG)  
+    #added grep -v boot to exclude boot partitions on emmc drives.  Not sure if this may effect anything else
+    partitions=$(lsblk -ipno KNAME | grep "$hard_drive" | grep -vw "$hard_drive" | grep -v "boot" 2>> $CLIENT_LOG)  
   fi
     
   partition_count=0  
@@ -291,8 +292,8 @@ function create_image_schema()
       filesystem_type="";partition_uuid="";partition_guid="";partclone_type="";partition_used_mb="";partition_start="";partition_end="";partition_size="";partition_type="";partition_number="";
       partition_number=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
 	  partition_prefix=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[0-9]*//g'`
-      filesystem_type=`blkid -po udev $hard_drive$partition_number | grep FS_TYPE | awk -F'=' '{print $2}'`
-      partition_uuid=`blkid -po udev $hard_drive$partition_number | grep ID_FS_UUID= | awk -F'=' '{print $2}'`
+      filesystem_type=`blkid -po udev $partition | grep FS_TYPE | awk -F'=' '{print $2}'`
+      partition_uuid=`blkid -po udev $partition | grep ID_FS_UUID= | awk -F'=' '{print $2}'`
       
       if [ "$layout_type" = "gpt" ]; then
         partition_guid=`sgdisk $hard_drive -i$partition_number | grep "unique GUID" | awk -F ' ' '{print $4}'`
@@ -300,11 +301,11 @@ function create_image_schema()
       
       #In addition to setting partclone type, clean filesystems for better compatibility moving forward
       if [ "$filesystem_type" = "ntfs" ]; then
-        ntfsfix -b -d $hard_drive$partition_number &>/dev/null
+        ntfsfix -b -d $partition &>/dev/null
         partclone_type="ntfs"
           
       elif [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ]; then
-        e2fsck -fp $hard_drive$partition_number &> /dev/null
+        e2fsck -fp $partition &> /dev/null
         partclone_type="extfs"
       elif [ "$filesystem_type" = "xfs" ]; then
         partclone_type="xfs"
@@ -331,16 +332,16 @@ function create_image_schema()
 
       if [ "$skip_shrink_volumes" != "true" ] && [ "$upload_schema_only" != "true" ]; then 
         if [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ] || [ "$filesystem_type" = "ntfs" ]; then
-          if [[ ! "$custom_fixed_partitions" == *"$hard_drive$partition_number"* ]]; then
+          if [[ ! "$custom_fixed_partitions" == *"$partition"* ]]; then
 		    if [ "$image_type" = "Block" ] &&  [ "$partition_size_bytes" -gt "5368709120" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
-              shrink_volume $hard_drive$partition_number
+              shrink_volume $partition
             fi			  
           fi
         fi
       fi
 
-      partclone.$partclone_type -SIic -s $hard_drive$partition_number -O /dev/null >& /tmp/$partition_number.size
-      log "$hard_drive$partition_number Volume Size"
+      partclone.$partclone_type -SIic -s $partition -O /dev/null >& /tmp/$partition_number.size
+      log "$partition Volume Size"
       cat /tmp/$partition_number.size | grep volume_size >> $CLIENT_LOG
       cat /tmp/$partition_number.size | grep used_size >> $CLIENT_LOG
       volume_size=`cat /tmp/$partition_number.size | grep volume_size | cut -d"," -f 1 | cut -d ":" -f 2` #sed 's/ *$//'

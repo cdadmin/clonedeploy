@@ -229,7 +229,7 @@ function get_hard_drives()
 		done
 	  else #deploy
 	    #When deploying it is very possible the hard drive won't have a disk label so don't use the method used for uploads
-	    hard_drives=`lsblk -ipdno KNAME`
+	    hard_drives=`lsblk -ipdno KNAME | grep -v boot`
 	  fi
 	fi
 	

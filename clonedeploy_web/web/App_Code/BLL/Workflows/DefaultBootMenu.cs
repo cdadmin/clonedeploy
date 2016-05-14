@@ -168,7 +168,7 @@ namespace BLL.Workflows
 
 
             ipxeMenu.Append("#!ipxe" + NewLineChar);
-            ipxeMenu.Append("chain 01-${net0/mac:hexhyp}.ipxe || goto Menu" + NewLineChar);
+            ipxeMenu.Append("chain 01-${net0/mac:hexhyp}.ipxe || chain 01-${net1/mac:hexhyp}.ipxe || goto Menu" + NewLineChar);
             ipxeMenu.Append("" + NewLineChar);
             ipxeMenu.Append(":Menu" + NewLineChar);
             ipxeMenu.Append("menu Boot Menu" + NewLineChar);

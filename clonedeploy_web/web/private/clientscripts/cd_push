@@ -529,7 +529,7 @@ eof
 function get_partitions_according_to_mbr_gpt()
 {
   mbr_gpt_partitions=""
-  mbr_gpt_partitions=$(lsblk -ipno KNAME | grep "$hard_drive" | grep -vw "$hard_drive" 2>> $CLIENT_LOG)  
+  mbr_gpt_partitions=$(lsblk -ipno KNAME | grep "$hard_drive" | grep -vw "$hard_drive" | grep -v "boot" 2>> $CLIENT_LOG)  
 }
 
 function update_efi_nvram()
