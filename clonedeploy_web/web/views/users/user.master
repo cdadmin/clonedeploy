@@ -44,13 +44,13 @@
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="PageActions">
     <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
     </asp:ContentPlaceHolder>
-      <div id="actions_left" runat="server">
-      <asp:LinkButton ID="btnDelete" runat="server" CssClass="submits actions" Text="Delete User" OnClick="btnDelete_Click"></asp:LinkButton>
+   
+      <asp:LinkButton ID="btnDelete" runat="server"  Text="Delete User" OnClick="btnDelete_Click"></asp:LinkButton>
             <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
-    </div>
-    <div class="help_pos">
+   
+ 
      <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
-        </div>
+       
 </asp:Content>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="Content" Runat="Server">

@@ -14,9 +14,14 @@ public partial class views_masters_Profile : MasterBaseMaster
         ImageProfile = imageBasePage.ImageProfile;
         Image = imageBasePage.Image;
 
-        if (ImageProfile == null) return;
+        if (ImageProfile == null)
+        {
+            osx_profile.Visible = false;
+            linux_profile.Visible = false;
+            return;
+        }
         if (Image == null) Response.Redirect("~/", true);
-
+        divProfiles.Visible = false;
         if (Image.Environment == "osx")
         {
             osx_profile.Visible = true;

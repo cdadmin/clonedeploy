@@ -16,13 +16,19 @@
     </asp:ContentPlaceHolder>
 </asp:Content>
 
-<asp:Content ID="Content2" ContentPlaceHolderID="Level2" Runat="Server">
+<asp:Content ID="Content2" ContentPlaceHolderID="PageNavSub" Runat="Server">
      <li id="search"><a  href="<%= ResolveUrl("~/views/global/scripts/search.aspx?cat=sub1") %>"><span class="sub-nav-text">Search Scripts</span></a></li>
     <li id="create"><a href="<%= ResolveUrl("~/views/global/scripts/create.aspx?cat=sub1")  %>"><span class="sub-nav-text">New Script</span></a></li>
      <li id="edit"><a href="<%= ResolveUrl("~/views/global/scripts/editcore.aspx?cat=sub1")  %>"><span class="sub-nav-text">Edit Core Scripts</span></a></li>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#scripts').addClass("nav-current");
+        
+        });
+    </script>
     <asp:ContentPlaceHolder ID="SubContent2" runat="server">
         </asp:ContentPlaceHolder>
 </asp:Content>

@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Web.UI.WebControls;
-using Claunia.PropertyList;
 using Helpers;
 
 
-public partial class views_global_munki_manageduninstalls : BasePages.Global
+public partial class views_global_munki_assignedmanageduninstalls : BasePages.Global
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -17,7 +15,7 @@ public partial class views_global_munki_manageduninstalls : BasePages.Global
 
     protected void PopulateGrid()
     {
-        var availableLimit = ddlLimitAvailable.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimitAvailable.Text);
+      
         var assignedLimit = ddlLimitAssigned.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimitAssigned.Text);
 
         var templateInstalls = BLL.MunkiManagedUninstall.GetAllManagedUnInstallsForMt(ManifestTemplate.Id).Where(s => s.Name.IndexOf(txtSearchAssigned.Text, StringComparison.CurrentCultureIgnoreCase) != -1).OrderBy(x => x.Name).Take(assignedLimit);
@@ -35,46 +33,16 @@ public partial class views_global_munki_manageduninstalls : BasePages.Global
                 listOfPackages.Add(pkg);
         }
 
-        listOfPackages = listOfPackages.Where(f => f.Name.IndexOf(txtSearchAvailable.Text, StringComparison.CurrentCultureIgnoreCase) != -1).Take(availableLimit).ToList();
-        gvPkgInfos.DataSource = listOfPackages;
-        gvPkgInfos.DataBind();
-
-        lblTotalAvailable.Text = gvPkgInfos.Rows.Count + " Result(s) / " + GetMunkiResources("pkgsinfo").Length + " Total Packages(s)";
+     
     }
 
     protected void buttonUpdate_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.UpdateGlobal);
 
+       
+
         var updateCount = 0;
-        foreach (GridViewRow row in gvPkgInfos.Rows)
-        {
-            var enabled = (CheckBox)row.FindControl("chkSelector");
-            if (enabled == null) continue;
-            if (!enabled.Checked) continue;
-
-            var dataKey = gvPkgInfos.DataKeys[row.RowIndex];
-            if (dataKey == null) continue;
-
-            var managedUninstall = new Models.MunkiManifestManagedUnInstall()
-            {
-                Name = dataKey.Value.ToString(),
-                ManifestTemplateId = ManifestTemplate.Id,
-            };
-
-
-
-            var cbUseVersion = (CheckBox)row.FindControl("chkUseVersion");
-            if (cbUseVersion.Checked)
-            {
-                managedUninstall.Version = row.Cells[2].Text;
-                managedUninstall.IncludeVersion = 1;
-            }
-
-            if (BLL.MunkiManagedUninstall.AddManagedUnInstallToTemplate(managedUninstall)) updateCount++;
-        }
-
-        var deleteCount = 0;
         foreach (GridViewRow row in gvTemplateInstalls.Rows)
         {
             var enabled = (CheckBox)row.FindControl("chkSelector");
@@ -85,15 +53,24 @@ public partial class views_global_munki_manageduninstalls : BasePages.Global
             if (!enabled.Checked)
             {
                 if (BLL.MunkiManagedUninstall.DeleteManagedUnInstallFromTemplate(Convert.ToInt32(dataKey.Value)))
-                    deleteCount++;
+                    updateCount++;
             }
+
+            else
+            {
+                var managedUnInstall = BLL.MunkiManagedUninstall.GetManagedUnInstall(Convert.ToInt32(dataKey.Value));
+
+                var txtCondition = row.FindControl("txtCondition") as TextBox;
+                if (txtCondition != null)
+                    if (txtCondition.Text != managedUnInstall.Condition)
+                        managedUnInstall.Condition = txtCondition.Text;
+
+                if (BLL.MunkiManagedUninstall.AddManagedUnInstallToTemplate(managedUnInstall)) updateCount++;
+            } 
 
         }
 
-        if (deleteCount > 0 || updateCount > 0)
-            EndUserMessage = "Successfully Updated Managed Uninstalls";
-        else
-            EndUserMessage = "Could Not Update Managed Uninstalls";
+        EndUserMessage = updateCount > 0 ? "Successfully Updated Managed Uninstalls" : "Could Not Update Managed Uninstalls";
 
         PopulateGrid();
     }
@@ -103,21 +80,14 @@ public partial class views_global_munki_manageduninstalls : BasePages.Global
         PopulateGrid();
     }
 
-    protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
-    {
-        ChkAll(gvPkgInfos);
-    }
+  
 
     protected void showAssigned_OnClick(object sender, EventArgs e)
     {
         Assigned.Visible = !Assigned.Visible;
     }
 
-    protected void showAvailable_OnClick(object sender, EventArgs e)
-    {
-        Available.Visible = !Available.Visible;
-    }
-
+   
     protected void ddlLimit_OnSelectedIndexChanged(object sender, EventArgs e)
     {
         PopulateGrid();

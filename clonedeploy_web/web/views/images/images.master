@@ -43,11 +43,8 @@
         
 
             <ul>
-        <asp:ContentPlaceHolder ID="Level3" runat="server">
-        </asp:ContentPlaceHolder>
-                
-        <asp:ContentPlaceHolder ID="Level4" runat="server">
-        </asp:ContentPlaceHolder>
+       
+      
                 </ul>
 
     </div>
@@ -63,17 +60,18 @@
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="PageActions">
     <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
     </asp:ContentPlaceHolder>
-    <div id="actions_left" runat="server">
-      <asp:LinkButton ID="btnDelete" runat="server" CssClass="submits actions" OnClick="btnDelete_Click">Delete Image</asp:LinkButton>
-         <div id="approve" runat="server" Visible="False">
-         <asp:LinkButton ID="btnApproveImage" runat="server" CssClass="submits actions" OnClick="btnApprove_Click">Approve Image</asp:LinkButton>
-    </div>
-            <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
-    </div>
+
+      <asp:LinkButton ID="btnDelete" runat="server"  OnClick="btnDelete_Click">Delete Image</asp:LinkButton>
+       
+         <asp:LinkButton ID="btnApproveImage" runat="server" OnClick="btnApprove_Click">Approve Image</asp:LinkButton>
+  
    
-    <div class="help_pos">
      <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
-        </div>
+
+</asp:Content>
+
+<asp:Content runat="server" ID="PageNav" ContentPlaceHolderID="PageNav">
+    <asp:ContentPlaceHolder runat="server" ID="PageNavSub"></asp:ContentPlaceHolder>
 </asp:Content>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="Content" runat="Server">

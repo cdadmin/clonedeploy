@@ -54,6 +54,6 @@
     <br class="clear"/>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="PageActions" Runat="Server">
-      <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Finalize Setup" CssClass="submits actions green"/>
+      <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Finalize Setup" />
 </asp:Content>
 

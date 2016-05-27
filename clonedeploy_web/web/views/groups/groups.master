@@ -57,6 +57,10 @@
                 <a href="<%= ResolveUrl("~/views/groups/bootmenu.aspx") %>?groupid=<%= Group.Id %>">
                     <span class="sub-nav-text">Boot Menu</span></a>
             </li>
+             <li id="munki">
+                <a href="<%= ResolveUrl("~/views/groups/munki.aspx") %>?groupid=<%= Group.Id %>">
+                    <span class="sub-nav-text">Munki Templates</span></a>
+            </li>
 
         </ul>
 
@@ -76,16 +80,14 @@
     <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
     </asp:ContentPlaceHolder>
 
-    <div id="actions_left" runat="server">
-
-        <asp:LinkButton ID="btnMulticast" runat="server" OnClick="btnMulticast_Click" CssClass="submits actions" Text="Multicast Group"></asp:LinkButton>
-        <asp:LinkButton ID="btnUnicast" runat="server" OnClick="btnUnicast_Click" CssClass="submits actions" Text="Unicast Group"></asp:LinkButton>
-        <asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click" CssClass="submits actions" Text="Delete Group"></asp:LinkButton>
+        <asp:LinkButton ID="btnMulticast" runat="server" OnClick="btnMulticast_Click"  Text="Multicast Group"></asp:LinkButton>
+        <asp:LinkButton ID="btnUnicast" runat="server" OnClick="btnUnicast_Click"  Text="Unicast Group"></asp:LinkButton>
+        <asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click"  Text="Delete Group"></asp:LinkButton>
         <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
-    </div>
-     <div class="help_pos">
+
+
     <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
-         </div>
+
 </asp:Content>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="Content" Runat="Server">

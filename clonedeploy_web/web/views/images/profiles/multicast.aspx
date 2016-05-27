@@ -5,10 +5,10 @@
     <li>Multicast Options</li>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubHelp" Runat="Server">
-     <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits help" target="_blank"></a>
+     <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
-     <asp:LinkButton ID="buttonUpdateMulticast" runat="server" OnClick="buttonUpdateMulticast_OnClick" Text="Update Multicast Options" CssClass="submits actions green"/>
+     <asp:LinkButton ID="buttonUpdateMulticast" runat="server" OnClick="buttonUpdateMulticast_OnClick" Text="Update Multicast Options " />
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="SubContent2" Runat="Server">
       <script type="text/javascript">

@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using Helpers;
 
 public partial class views_global_munki_general : BasePages.Global
@@ -29,4 +24,5 @@ public partial class views_global_munki_general : BasePages.Global
         var result = BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
         EndUserMessage = result.IsValid ? "Successfully Updated Manifest Template" : result.Message;
     }
+
 }

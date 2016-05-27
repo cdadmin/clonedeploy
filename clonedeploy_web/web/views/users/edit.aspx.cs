@@ -56,6 +56,11 @@ namespace views.users
 
         protected void PopulateForm()
         {
+            if (CloneDeployUser.IsLdapUser == 1)
+            {
+                chkldap.Checked = true;
+                passwords.Visible = false;
+            }
             txtUserName.Text = CloneDeployUser.Name;
             ddluserMembership.Text = CloneDeployUser.Membership;
             txtEmail.Text = CloneDeployUser.Email;

@@ -16,7 +16,7 @@
     </asp:ContentPlaceHolder>
 </asp:Content>
 
-<asp:Content ID="Content2" ContentPlaceHolderID="Level2" Runat="Server">
+<asp:Content ID="Content2" ContentPlaceHolderID="PageNavSub" Runat="Server">
       <li id="search"><a  href="<%= ResolveUrl("~/views/global/partitions/search.aspx?cat=sub1") %>"><span class="sub-nav-text">Search Layouts</span></a></li>
     <li id="create"><a href="<%= ResolveUrl("~/views/global/partitions/create.aspx?cat=sub1")  %>"><span class="sub-nav-text">New Layout</span></a></li>
 </asp:Content>

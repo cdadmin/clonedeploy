@@ -5,10 +5,10 @@
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="SubHelp" Runat="Server">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits help"  target="_blank"></a>
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
-    <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Update Script" CssClass="submits actions green" OnClientClick="update_click()"/>
+    <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Update Script "  OnClientClick="update_click()"/>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
@@ -32,9 +32,9 @@
    <div class="size-4 column">
         Script Contents:
     </div>
-     <div id="aceEditor" runat="server" class="full column">
+     <div id="aceEditor" runat="server" >
         <br class="clear"/>
-        <pre id="editor" class="editor height_600"></pre>
+        <pre id="editor" class="editor height_1200"></pre>
         <asp:HiddenField ID="scriptEditor" runat="server"/>
 
 

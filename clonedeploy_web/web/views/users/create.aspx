@@ -5,10 +5,10 @@
     </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits help" target="_blank"></a>
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>"  target="_blank">Help</a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-     <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_Click" Text="Add User" CssClass="submits actions green"/>
+     <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_Click" Text="Add User " />
 </asp:Content>
 
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
@@ -35,6 +35,14 @@
     </div>
     <br class="clear"/>
     <div class="size-4 column">
+        Use LDAP Authentication:
+    </div>
+    <div class="size-setting column">
+        <asp:CheckBox ID="chkldap" runat="server" AutoPostBack="True" OnCheckedChanged="chkldap_OnCheckedChanged"></asp:CheckBox>
+    </div>
+    <br class="clear" />
+    <div id="passwords" runat="server">
+    <div class="size-4 column">
         User Password:
     </div>
     <div class="size-5 column">
@@ -48,6 +56,7 @@
         <asp:TextBox ID="txtUserPwdConfirm" runat="server" CssClass="textbox" TextMode="Password"></asp:TextBox>
     </div>
     <br class="clear" />
+        </div>
     <div class="size-4 column">
         Email:
     </div>
@@ -57,7 +66,7 @@
     <br class="clear"/>
     <div class="size-4 column">
         Security Token:
-        <asp:LinkButton ID="btnGenKey" runat="server" Text="Generate" OnClick="btnGenKey_OnClick" CssClass="submits" Style="margin: 0"/>
+        <asp:LinkButton ID="btnGenKey" runat="server" Text="Generate" OnClick="btnGenKey_OnClick" CssClass="generic-btn" Style="margin: 0"/>
     </div>
     <div class="size-9 column">
         <asp:TextBox ID="txtToken" runat="server" CssClass="textbox"></asp:TextBox>

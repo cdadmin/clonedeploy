@@ -46,7 +46,8 @@ namespace DAL
         DAL.IGenericRepository<Models.MunkiManifestManagedUpdate> MunkiManagedUpdateRepository { get; }
         DAL.IGenericRepository<Models.MunkiManifestOptionInstall> MunkiOptionalInstallRepository { get; }
         DAL.IGenericRepository<Models.MunkiManifestIncludedManifest> MunkiIncludedManifestRepository { get; }
-        DAL.IGenericRepository<Models.MunkiConditional> MunkiConditionalRepository { get; }
+        DAL.IGenericRepository<Models.ComputerMunki> ComputerMunkiRepository { get; }
+        DAL.IGenericRepository<Models.GroupMunki> GroupMunkiRepository { get; }
         bool Save();
         
     }

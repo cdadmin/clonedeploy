@@ -5,11 +5,11 @@
     </asp:Content>
 
 <asp:Content runat="server" ID="Help" ContentPlaceHolderID="Help">
-      <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits help" target="_blank"></a>
+      <a href="<%= ResolveUrl("~/views/help/index.html")%>"  target="_blank">Help</a>
 </asp:Content>
 
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
-    <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update Server Settings" OnClick="btnUpdateSettings_OnClick" CssClass="submits actions green"/>
+    <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update Server Settings " OnClick="btnUpdateSettings_OnClick" />
 </asp:Content>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="SubContent" Runat="Server">
@@ -20,7 +20,7 @@
 </script>
 <div id="settings">
     <div class="size-4 column">
-    Server IP:
+    Server IP / FQDN:
 </div>
 <div class="size-setting column">
     <asp:TextBox ID="txtIP" runat="server" CssClass="textbox"></asp:TextBox>
@@ -40,7 +40,9 @@
 <div class="size-setting column">
     <asp:CheckBox ID="chkOverride" runat="server" ></asp:CheckBox>
 </div>
+    
     <br class="clear"/>
+    <br/>
 <div class="size-4 column">
     Web Service:
 </div>

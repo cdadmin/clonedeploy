@@ -3,11 +3,11 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubHelp" Runat="Server">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits help" target="_blank"></a>
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
-    <asp:LinkButton ID="btnSubmitDefault" runat="server" Text="Create Boot Files" OnClick="btnSubmit_Click" CssClass="submits actions green" OnClientClick="get_shas();"/>
-    <asp:LinkButton ID="btnSubmitDefaultProxy" runat="server" Text="Create Boot Files" OnClick="btnSubmit_Click" CssClass="submits actions green" OnClientClick="get_shas_proxy();"/>
+    <asp:LinkButton ID="btnSubmitDefault" runat="server" Text="Create Boot Files " OnClick="btnSubmit_Click"  OnClientClick="get_shas();"/>
+    <asp:LinkButton ID="btnSubmitDefaultProxy" runat="server" Text="Create Boot Files " OnClick="btnSubmit_Click"  OnClientClick="get_shas_proxy();"/>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="SubContent2" Runat="Server">
 

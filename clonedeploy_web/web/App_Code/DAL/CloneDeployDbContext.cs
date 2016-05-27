@@ -49,9 +49,10 @@ namespace DAL
         public DbSet<Models.MunkiManifestManagedUnInstall> MunkiManifestManagedUnInstalls { get; set; }
         public DbSet<Models.MunkiManifestManagedUpdate> MunkiManifestManagedUpdates { get; set; }
         public DbSet<Models.MunkiManifestOptionInstall> MunkiManifestOptionalInstalls { get; set; }
-        public DbSet<Models.MunkiManifestConditional> MunkiManifestConditionals { get; set; }
         public DbSet<Models.MunkiManifestIncludedManifest> MunkiManifestIncludedManifests { get; set; }
-        public DbSet<Models.MunkiConditional> MunkiConditionals { get; set; }
+        public DbSet<Models.ComputerMunki> ComputerMunkis { get; set; }
+        public DbSet<Models.GroupMunki> GroupMunkis { get; set; }
+     
 
     }
 

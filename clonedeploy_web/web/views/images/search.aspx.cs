@@ -97,7 +97,7 @@ namespace views.images
 
         protected void PopulateGrid()
         {
-            gvImages.DataSource = BLL.Image.SearchImagesForUser(CloneDeployCurrentUser.Id, txtSearch.Text);
+            gvImages.DataSource = BLL.Image.SearchImagesForUser(CloneDeployCurrentUser.Id, txtSearch.Text).OrderBy(x => x.Name).ToList();
             gvImages.DataBind();
             lblTotal.Text = gvImages.Rows.Count + " Result(s) / " + BLL.Image.ImageCountUser(CloneDeployCurrentUser.Id) + " Total Image(s)";
             PopulateSizes();

@@ -3,11 +3,13 @@
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li>Search</li>
     </asp:Content>
+
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits help" target="_blank"></a>
+<a href="<%= ResolveUrl("~/views/help/index.html")%>" class="" target="_blank">Help</a>
 </asp:Content>
+
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-    <a class="confirm actions green" href="#">Delete Selected Computers</a>
+   <a class="confirm" href="#">Delete Selected Computers</a> 
 </asp:Content>
 
 
@@ -15,19 +17,26 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('#search').addClass("nav-current");
-        });
-    </script>
 
-          <p class="total">
+            $("[id*=gvComputers] td").hover(function () {
+                $("td", $(this).closest("tr")).addClass("hover_row");
+            }, function () {
+                $("td", $(this).closest("tr")).removeClass("hover_row");
+            });
+        });
+
+    </script>
+    
+     <p class="total">
         <asp:Label ID="lblTotal" runat="server"></asp:Label>
     </p>
-
     <div class="size-7 column">
         
         <asp:TextBox ID="txtSearch" runat="server" CssClass="searchbox" OnTextChanged="search_Changed"></asp:TextBox>
     </div>
+      
     <br class="clear"/>
-    
+   
    
     <div class="size-10 column">
     <asp:DropDownList ID="ddlSite" runat="server" CssClass="ddlist" AutoPostBack="True" OnSelectedIndexChanged="ddl_OnSelectedIndexChanged"/>
@@ -63,7 +72,6 @@
            
             <asp:TemplateField>
                 
-                <HeaderStyle CssClass="chkboxwidth"></HeaderStyle>
                 <ItemStyle CssClass="chkboxwidth"></ItemStyle>
                 <HeaderTemplate>
                     <asp:CheckBox ID="chkSelectAll" runat="server" AutoPostBack="True" OnCheckedChanged="chkSelectAll_CheckedChanged"/>
@@ -77,7 +85,7 @@
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"></asp:BoundField>
             <asp:BoundField DataField="Mac" HeaderText="MAC" SortExpression="Mac" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
            
-             <asp:TemplateField ItemStyle-CssClass="width_200 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller" HeaderText="Image">
+             <asp:TemplateField ItemStyle-CssClass="mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller" HeaderText="Image">
                 <ItemTemplate>
                     <asp:Label ID="lblImage" runat="server" Text='<%# Bind("Image.Name") %>'/>
                 </ItemTemplate>

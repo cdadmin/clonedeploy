@@ -5,15 +5,23 @@
     </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits help" target="_blank"></a>
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>"  target="_blank">Help</a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-         <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_Click" Text="Update User" CssClass="submits actions green"/>
+         <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_Click" Text="Update User" />
 
 </asp:Content>
 
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <h4 style="margin-bottom: 20px;">Change Password</h4>
+     <div class="size-4 column">
+        Use LDAP Authentication:
+    </div>
+    <div class="size-setting column">
+        <asp:CheckBox ID="chkldap" runat="server" Enabled="False"></asp:CheckBox>
+    </div>
+    <br class="clear" />
+    <div id="passwords" runat="server">
     <div class="size-4 column">
         New Password:
     </div>
@@ -28,6 +36,7 @@
         <asp:TextBox ID="txtUserPwdConfirm" runat="server" CssClass="textbox" TextMode="Password"></asp:TextBox>
     </div>
      <br class="clear"/>
+        </div>
     <div class="size-4 column">
         Email:
     </div>

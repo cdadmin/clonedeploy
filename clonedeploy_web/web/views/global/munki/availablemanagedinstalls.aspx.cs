@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web.UI.WebControls;
 using Helpers;
 
-public partial class views_global_munki_managedinstalls : BasePages.Global
+public partial class views_global_munki_availablemanagedinstalls : BasePages.Global
 {
    
     protected void Page_Load(object sender, EventArgs e)
@@ -16,15 +16,7 @@ public partial class views_global_munki_managedinstalls : BasePages.Global
     protected void PopulateGrid()
     {
         var availableLimit = ddlLimitAvailable.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimitAvailable.Text);
-        var assignedLimit = ddlLimitAssigned.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimitAssigned.Text);
-
-        var templateInstalls = BLL.MunkiManagedInstall.GetAllManagedInstallsForMt(ManifestTemplate.Id).Where(s => s.Name.IndexOf(txtSearchAssigned.Text, StringComparison.CurrentCultureIgnoreCase) != -1).OrderBy(x => x.Name).Take(assignedLimit);
-        gvTemplateInstalls.DataSource = templateInstalls;
-        gvTemplateInstalls.DataBind();
-
-        lblTotalAssigned.Text = gvTemplateInstalls.Rows.Count + " Result(s) / " + BLL.MunkiManagedInstall.TotalCount(ManifestTemplate.Id) + " Total Managed Install(s)";
-
-
+ 
         var listOfPackages = new List<Models.MunkiPackageInfo>();
         foreach (var pkgInfoFile in GetMunkiResources("pkgsinfo"))
         {
@@ -60,8 +52,6 @@ public partial class views_global_munki_managedinstalls : BasePages.Global
                 ManifestTemplateId = ManifestTemplate.Id,
             };
 
-            
-
             var cbUseVersion = (CheckBox)row.FindControl("chkUseVersion");
             if (cbUseVersion.Checked)
             {
@@ -69,29 +59,13 @@ public partial class views_global_munki_managedinstalls : BasePages.Global
                 managedInstall.IncludeVersion = 1;
             }
 
+            var condition = (TextBox)row.FindControl("txtCondition");
+            managedInstall.Condition = condition.Text;
+
             if (BLL.MunkiManagedInstall.AddManagedInstallToTemplate(managedInstall)) updateCount++;
         }
 
-        var deleteCount = 0;
-        foreach (GridViewRow row in gvTemplateInstalls.Rows)
-        {
-            var enabled = (CheckBox)row.FindControl("chkSelector");
-            if (enabled == null) continue;
-            var dataKey = gvTemplateInstalls.DataKeys[row.RowIndex];
-            if (dataKey == null) continue;
-
-            if (!enabled.Checked)
-            {
-                if (BLL.MunkiManagedInstall.DeleteManagedInstallFromTemplate(Convert.ToInt32(dataKey.Value)))
-                    deleteCount++;
-            }
-       
-        }
-
-        if (deleteCount > 0 || updateCount > 0)
-            EndUserMessage = "Successfully Updated Managed Installs";
-        else
-            EndUserMessage = "Could Not Update Managed Installs";
+        EndUserMessage = updateCount > 0 ? "Successfully Updated Managed Installs" : "Could Not Update Managed Installs";
 
         PopulateGrid();
     }
@@ -104,16 +78,6 @@ public partial class views_global_munki_managedinstalls : BasePages.Global
     protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
     {
         ChkAll(gvPkgInfos);
-    }
-
-    protected void showAssigned_OnClick(object sender, EventArgs e)
-    {
-        Assigned.Visible = !Assigned.Visible;
-    }
-
-    protected void showAvailable_OnClick(object sender, EventArgs e)
-    {
-        Available.Visible = !Available.Visible;
     }
 
     protected void ddlLimit_OnSelectedIndexChanged(object sender, EventArgs e)

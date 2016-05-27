@@ -5,10 +5,10 @@
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="SubHelp">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits help" target="_blank"></a>
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>"  target="_blank">Help</a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
-     <asp:LinkButton ID="buttonUpdateDp" runat="server" OnClick="buttonUpdateDp_OnClick" Text="Update Distribution Point" CssClass="submits actions green" />
+     <asp:LinkButton ID="buttonUpdateDp" runat="server" OnClick="buttonUpdateDp_OnClick" Text="Update Distribution Point "  />
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">

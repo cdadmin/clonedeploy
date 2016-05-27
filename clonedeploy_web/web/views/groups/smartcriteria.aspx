@@ -6,10 +6,10 @@
 </asp:Content>
 
     <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits help" target="_blank"></a>
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>" target="_blank">Help</a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-   <asp:LinkButton ID="btnUpdate" runat="server" Text="Update Criteria" OnClick="btnUpdate_OnClick" CssClass="submits actions green"/>
+   <asp:LinkButton ID="btnUpdate" runat="server" Text="Update Criteria" OnClick="btnUpdate_OnClick" />
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent" Runat="Server">
@@ -25,8 +25,8 @@
     <div class="size-5 column">
         <asp:TextBox ID="txtContains" runat="server" CssClass="textbox"></asp:TextBox>
     </div>
-    <div class="size-5 column">
-        <asp:LinkButton ID="btnTestQuery" runat="server" Text="Test Query" OnClick="btnTestQuery_OnClick" CssClass="submits"/>
+    <div class="size-5 column" style="margin-top: 10px;">
+        <asp:LinkButton ID="btnTestQuery" runat="server" Text="Test Query" OnClick="btnTestQuery_OnClick" CssClass="generic-btn"/>
     </div>
     <br class="clear"/>
         
@@ -37,7 +37,7 @@
         <Columns>
             <asp:BoundField DataField="Id" HeaderText="computerID" SortExpression="computerID" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"></asp:BoundField>
-            <asp:BoundField DataField="Mac" HeaderText="MAC" SortExpression="Mac" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
+            <asp:BoundField DataField="Mac" HeaderText="MAC" SortExpression="Mac" ItemStyle-CssClass="mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
         </Columns>
         <EmptyDataTemplate>
             No Computers Found

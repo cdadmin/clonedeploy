@@ -12,28 +12,39 @@
 </asp:Content>
 
 <asp:Content ID="Content6" ContentPlaceHolderID="SubPageActionsRight" Runat="Server">
+  
      <asp:ContentPlaceHolder runat="server" ID="ActionsRightSub">
     </asp:ContentPlaceHolder>
 </asp:Content>
 
-<asp:Content ID="Content2" ContentPlaceHolderID="Level2" Runat="Server">
+<asp:Content ID="Content2" ContentPlaceHolderID="PageNavSub" Runat="Server">
     
+    <div id="divMunki" runat="server">
      <li id="search"><a  href="<%= ResolveUrl("~/views/global/munki/manifestsearch.aspx?cat=sub1") %>"><span class="sub-nav-text">Search Manifest Templates</span></a></li>
     <li id="create"><a href="<%= ResolveUrl("~/views/global/munki/manifestcreate.aspx?cat=sub1")  %>"><span class="sub-nav-text">New Manifest Template</span></a></li>
-</asp:Content>
-<asp:Content ID="Content5" ContentPlaceHolderID="Level3" Runat="Server">
-     <li id="general"><a  href="<%= ResolveUrl("~/views/global/munki/general.aspx") %>?manifestid=<%= ManifestTemplate.Id %>&cat=sub2"><span class="sub-nav-text">General</span></a></li>
-     <li id="catalogs"><a  href="<%= ResolveUrl("~/views/global/munki/catalogs.aspx") %>?manifestid=<%= ManifestTemplate.Id %>&cat=sub2"><span class="sub-nav-text">Catalogs</span></a></li>
-     <li id="managedinstalls"><a  href="<%= ResolveUrl("~/views/global/munki/managedinstalls.aspx") %>?manifestid=<%= ManifestTemplate.Id %>&cat=sub2"><span class="sub-nav-text">Managed Installs</span></a></li>
-     <li id="manageduninstalls"><a  href="<%= ResolveUrl("~/views/global/munki/manageduninstalls.aspx") %>?manifestid=<%= ManifestTemplate.Id %>&cat=sub2"><span class="sub-nav-text">Managed Uninstalls</span></a></li>
-     <li id="optionalinstalls"><a  href="<%= ResolveUrl("~/views/global/munki/optionalinstalls.aspx") %>?manifestid=<%= ManifestTemplate.Id %>&cat=sub2"><span class="sub-nav-text">Optional Installs</span></a></li>
-     <li id="managedupdates"><a  href="<%= ResolveUrl("~/views/global/munki/managedupdates.aspx") %>?manifestid=<%= ManifestTemplate.Id %>&cat=sub2"><span class="sub-nav-text">Managed Updates</span></a></li>
-     <li id="conditionals"><a  href="<%= ResolveUrl("~/views/global/munki/conditionals.aspx") %>?manifestid=<%= ManifestTemplate.Id %>&cat=sub2"><span class="sub-nav-text">Conditionals</span></a></li>
-     <li id="manifests"><a  href="<%= ResolveUrl("~/views/global/munki/manifests.aspx") %>?manifestid=<%= ManifestTemplate.Id %>&cat=sub2"><span class="sub-nav-text">Included Manifests</span></a></li>
-     
+    </div>
+   <asp:ContentPlaceHolder runat="server" ID="SubPageNavSub"></asp:ContentPlaceHolder>
 </asp:Content>
 
+<asp:Content runat="server" Id="LeftNav" ContentPlaceHolderID="Level3">
+     
+    <div id="divMunkiDetails" runat="server">
+     <li id="general"><a  href="<%= ResolveUrl("~/views/global/munki/general.aspx") %>?manifestid=<%= ManifestTemplate.Id %>&cat=sub2"><span class="sub-nav-text">General</span></a></li>
+     <li id="catalogs"><a  href="<%= ResolveUrl("~/views/global/munki/assignedcatalogs.aspx") %>?manifestid=<%= ManifestTemplate.Id %>&cat=sub2"><span class="sub-nav-text">Catalogs</span></a></li>
+     <li id="managedinstalls"><a  href="<%= ResolveUrl("~/views/global/munki/assignedmanagedinstalls.aspx") %>?manifestid=<%= ManifestTemplate.Id %>&cat=sub2"><span class="sub-nav-text">Managed Installs</span></a></li>
+     <li id="manageduninstalls"><a  href="<%= ResolveUrl("~/views/global/munki/assignedmanageduninstalls.aspx") %>?manifestid=<%= ManifestTemplate.Id %>&cat=sub2"><span class="sub-nav-text">Managed Uninstalls</span></a></li>
+     <li id="optionalinstalls"><a  href="<%= ResolveUrl("~/views/global/munki/assignedoptionalinstalls.aspx") %>?manifestid=<%= ManifestTemplate.Id %>&cat=sub2"><span class="sub-nav-text">Optional Installs</span></a></li>
+     <li id="managedupdates"><a  href="<%= ResolveUrl("~/views/global/munki/assignedmanagedupdates.aspx") %>?manifestid=<%= ManifestTemplate.Id %>&cat=sub2"><span class="sub-nav-text">Managed Updates</span></a></li>
+     <li id="manifests"><a  href="<%= ResolveUrl("~/views/global/munki/assignedmanifests.aspx") %>?manifestid=<%= ManifestTemplate.Id %>&cat=sub2"><span class="sub-nav-text">Included Manifests</span></a></li>
+        </div>
+
+</asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
+     <script type="text/javascript">
+        $(document).ready(function() {
+            $('#munki').addClass("nav-current");     
+        });
+    </script>
      <asp:ContentPlaceHolder ID="SubContent2" runat="server">
         </asp:ContentPlaceHolder>
 </asp:Content>

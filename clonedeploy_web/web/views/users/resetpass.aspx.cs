@@ -43,7 +43,13 @@ namespace views.users
         }
 
         private void PopulateForm()
-        {       
+        {
+            if (CloneDeployCurrentUser.IsLdapUser == 1)
+            {
+                chkldap.Checked = true;
+                passwords.Visible = false;
+                
+            }
             txtEmail.Text = CloneDeployCurrentUser.Email;
             chkLockout.Checked = CloneDeployCurrentUser.NotifyLockout == 1;
             chkError.Checked = CloneDeployCurrentUser.NotifyError == 1;

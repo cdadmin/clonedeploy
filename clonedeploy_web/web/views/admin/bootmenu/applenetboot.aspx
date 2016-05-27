@@ -3,9 +3,10 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubHelp" Runat="Server">
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
-    <asp:LinkButton ID="btnSubmitDefault" runat="server" Text="Generate" OnClick="btnSubmitDefault_OnClick" CssClass="submits actions green" />
+    <asp:LinkButton ID="btnSubmitDefault" runat="server" Text="Generate" OnClick="btnSubmitDefault_OnClick"  />
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="SubContent2" Runat="Server">
     <script type="text/javascript">

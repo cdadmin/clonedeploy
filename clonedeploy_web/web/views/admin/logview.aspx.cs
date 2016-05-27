@@ -35,7 +35,7 @@ namespace views.admin
             {
                 if (ddlLog.Text == "On Demand")
                 {
-                    
+                    btnExportLog.Visible = false;
                     var limit = ddlDbLimit.Text == "All" ? int.MaxValue : Convert.ToInt32(ddlDbLimit.Text);
                     dbView.Visible = true;
                     fileView.Visible = false;

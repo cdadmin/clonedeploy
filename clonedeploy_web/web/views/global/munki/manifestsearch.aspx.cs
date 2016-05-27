@@ -1,26 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Web;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Helpers;
 
 public partial class views_global_munki_manifestsearch : BasePages.Global
 {
-    public static string[] GetLogs()
-    {
-        var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "public" +
-                      Path.DirectorySeparatorChar + "munki" + Path.DirectorySeparatorChar + "catalogs" + Path.DirectorySeparatorChar;
-
-        var catalogs = Directory.GetFiles(logPath, "*.*");
-
-        for (var x = 0; x < catalogs.Length; x++)
-            catalogs[x] = Path.GetFileName(catalogs[x]);
-
-        return catalogs;
-    }
+    
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -79,5 +67,22 @@ public partial class views_global_munki_manifestsearch : BasePages.Global
         }
 
         PopulateGrid();
+    }
+
+    protected void btnPreview_OnClick(object sender, EventArgs e)
+    {
+        var control = sender as Control;
+        if (control != null)
+        {
+            var gvRow = (GridViewRow) control.Parent.Parent;
+            var dataKey = gvManifestTemplates.DataKeys[gvRow.RowIndex];
+            if (dataKey != null)
+            {
+                var effectiveManifest = new BLL.Workflows.EffectiveMunkiTemplate().MunkiTemplate(Convert.ToInt32(dataKey.Value));
+                Response.Write(Encoding.UTF8.GetString(effectiveManifest.ToArray()));
+                Response.ContentType = "text/plain";
+                Response.End();  
+            }
+        }
     }
 }

@@ -17,25 +17,20 @@ namespace views.masters
             if (Image == null)
             {
                 Level2.Visible = false;
-                actions_left.Visible = false;
+                btnDelete.Visible = false;
                 return;
             }
 
             Level1.Visible = false;
             if (Settings.RequireImageApproval.ToLower() == "true" && Image.Approved != 1)
-                approve.Visible = true;
+                btnApproveImage.Visible = true;
 
             if (Request.QueryString["cat"] == "profiles")
             {
-                Level2.Visible = false;
                 btnDelete.Visible = false;
             }
-            if (string.IsNullOrEmpty(Request.QueryString["profileid"]))
-                Level4.Visible = false;
-            else
-            {
-                Level3.Visible = false;
-            }
+  
+           
         }
 
         protected void btnDelete_Click(object sender, EventArgs e)

@@ -31,12 +31,12 @@
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="PageActions">
     <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
     </asp:ContentPlaceHolder>
-    <div id="actions_left" runat="server">
+
             <asp:ContentPlaceHolder ID="ActionsLeftSub" runat="server"></asp:ContentPlaceHolder>
-    </div>
-    <div class="help_pos">
+
+
      <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
-    </div>
+
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">  

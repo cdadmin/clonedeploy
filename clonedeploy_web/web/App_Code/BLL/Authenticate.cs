@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.DirectoryServices.AccountManagement;
+﻿using System.Collections.Generic;
 using Helpers;
 using Newtonsoft.Json;
 
@@ -64,8 +62,6 @@ namespace Security
 
         public Models.ValidationResult GlobalLogin(string userName, string password, string loginType)
         {
-            var tmp = Helpers.Utility.CreatePasswordHash("password", "salt");
-
             var validationResult = new Models.ValidationResult
             {
                 Message = "Login Was Not Successful",
@@ -84,22 +80,14 @@ namespace Security
             }
 
             //Check against AD
-            if (!string.IsNullOrEmpty(Settings.AdLoginDomain))
+            if (user.IsLdapUser == 1 && Settings.LdapEnabled == "1")
             {
-                try
-                {
-                    var context = new PrincipalContext(ContextType.Domain, Settings.AdLoginDomain,
-                        userName, password);
-                    var adUser = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, userName);
-                    if (adUser != null) validationResult.IsValid = true;
-                }
-                catch (Exception)
-                {
-                    //Fallback to local db in case ad auth isn't working
-                    var hash = Helpers.Utility.CreatePasswordHash(password, user.Salt);
-                    if (user.Password == hash) validationResult.IsValid = true;
-
-                }
+                if (new BLL.Ldap().Authenticate(userName, password)) validationResult.IsValid = true;
+            }
+            else if (user.IsLdapUser == 1 && Settings.LdapEnabled != "1")
+            {
+                //prevent ldap user from logging in with local pass if ldap auth gets turned off
+                validationResult.IsValid = false;
             }
             //Check against local DB
             else

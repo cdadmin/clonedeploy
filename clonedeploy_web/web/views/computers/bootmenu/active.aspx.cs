@@ -53,6 +53,6 @@ public partial class views_computers_bootmenu_active : BasePages.Computers
         }
 
         lblFileName.Text = path;
-        txtBootMenu.Text = new FileOps().ReadAllText(path);
+        scriptEditor.Value = new FileOps().ReadAllText(path);
     }
 }

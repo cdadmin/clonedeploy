@@ -5,16 +5,21 @@
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="SubHelp" Runat="Server">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits help" target="_blank"></a>
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
-      <a class="confirm actions green" href="#">Delete Selected Tags</a>
+      <a class="confirm actions green" href="#">Delete Selected Tags &nbsp;</a>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
      <script type="text/javascript">
         $(document).ready(function() {
             $('#search').addClass("nav-current");
+            $("[id*=gvSysprepTags] td").hover(function () {
+                $("td", $(this).closest("tr")).addClass("hover_row");
+            }, function () {
+                $("td", $(this).closest("tr")).removeClass("hover_row");
+            });
         });
     </script>
      <p class="total">
@@ -37,12 +42,13 @@
                     <asp:CheckBox ID="chkSelector" runat="server"/>
                 </ItemTemplate>
             </asp:TemplateField>
+            <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/global/sysprep/edit.aspx?cat=sub1&syspreptagid={0}" Text="View" ItemStyle-CssClass="chkboxwidth"/>
             <asp:BoundField DataField="Id" HeaderText="computerID" SortExpression="computerID" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"></asp:BoundField>
-            <asp:BoundField DataField="OpeningTag" HeaderText="Tag" SortExpression="OpeningTag" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
+            <asp:BoundField DataField="OpeningTag" HeaderText="Tag" SortExpression="OpeningTag" ItemStyle-CssClass="mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
           
          
-            <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/global/sysprep/edit.aspx?cat=sub1&syspreptagid={0}" Text="View"/>
+            
         </Columns>
         <EmptyDataTemplate>
             No Sysprep Tags Found

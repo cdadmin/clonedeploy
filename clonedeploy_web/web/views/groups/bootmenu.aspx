@@ -7,10 +7,10 @@
 
 
     <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits help" target="_blank"></a>
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>" target="_blank">Help</a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-  <asp:LinkButton ID="buttonUpdate" runat="server" OnClick="buttonUpdate_OnClick" Text="Update Menu" CssClass="submits actions green" OnClientClick="update_click()"/>
+  <asp:LinkButton ID="buttonUpdate" runat="server" OnClick="buttonUpdate_OnClick" Text="Update Menu" OnClientClick="update_click()"/>
 </asp:Content>
  
 <asp:Content ID="Content1" ContentPlaceHolderID="SubContent" Runat="Server">
@@ -56,9 +56,9 @@
      <div class="size-4 column">
         Boot Menu Contents:
     </div>
-     <div id="aceEditor" runat="server" class="full column">
+     <div id="aceEditor" runat="server">
         <br class="clear"/>
-        <pre id="editor" class="editor height_600"></pre>
+        <pre id="editor" class="editor height_1200"></pre>
         <asp:HiddenField ID="scriptEditor" runat="server"/>
 
 

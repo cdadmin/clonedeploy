@@ -4,15 +4,20 @@
      <li>Search</li>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubHelp" Runat="Server">
-     <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits help" target="_blank"></a>
+     <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
-    <a class="confirm actions green" href="#">Delete Selected Manifest Templates</a>
+    <a class="confirm actions green" href="#">Delete Selected Templates</a>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="SubContent2" Runat="Server">
      <script type="text/javascript">
         $(document).ready(function() {
             $('#search').addClass("nav-current");
+            $("[id*=gvManifestTemplates] td").hover(function () {
+                $("td", $(this).closest("tr")).addClass("hover_row");
+            }, function () {
+                $("td", $(this).closest("tr")).removeClass("hover_row");
+            });
         });
     </script>
      <p class="total">
@@ -38,9 +43,15 @@
                 </ItemTemplate>
             </asp:TemplateField>
              <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/global/munki/general.aspx?cat=sub2&manifestid={0}" Text="View" ItemStyle-CssClass="chkboxwidth"/>
+              <asp:TemplateField>
+                <ItemStyle CssClass="chkboxwidth"></ItemStyle>
+                <ItemTemplate>
+                    <asp:LinkButton ID="btnPreview" Text="Preview" runat="server" OnClick="btnPreview_OnClick" />
+                </ItemTemplate>
+            </asp:TemplateField>
             <asp:BoundField DataField="Id" HeaderText="ID" SortExpression="Id" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"></asp:BoundField>
-            <asp:BoundField DataField="Description" HeaderText="Description" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
+            <asp:BoundField DataField="Description" HeaderText="Description" />
            
              
             

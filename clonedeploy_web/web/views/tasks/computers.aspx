@@ -4,7 +4,7 @@
      <li>Start Computer Task</li>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="Help" Runat="Server">
-    <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits help" target="_blank"></a>
+    <a href="<%= ResolveUrl("~/views/help/index.html")%>"  target="_blank">Help</a>
 </asp:Content>
 
 <asp:Content ID="Content4" ContentPlaceHolderID="SubPageActionsRight" Runat="Server">
@@ -23,7 +23,7 @@
     </div>
     <br class="clear"/>
   
-     <div class="size-7 column">
+     <div class="size-11 column">
     <asp:DropDownList runat="server" ID="ddlLimit" AutoPostBack="True" OnSelectedIndexChanged="ddlLimit_OnSelectedIndexChanged" CssClass="ddlist">
         <asp:ListItem>25</asp:ListItem>
         <asp:ListItem>100</asp:ListItem>

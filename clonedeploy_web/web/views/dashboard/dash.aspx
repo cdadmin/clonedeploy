@@ -3,7 +3,7 @@
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="SubNav" runat="Server">
-    <h4 style="float: right; margin-right: 10px;">CloneDeploy 1.0.1p1</h4>
+   
     </asp:Content>
 
 <asp:Content ID="Content" ContentPlaceHolderID="Content" runat="Server">

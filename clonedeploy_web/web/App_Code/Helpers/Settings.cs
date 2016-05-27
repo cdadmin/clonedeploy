@@ -202,6 +202,36 @@ namespace Helpers
             get { return Setting.GetSetting("Ipxe Requires Login").Value; }
         }
 
+        public static string LdapEnabled
+        {
+            get { return Setting.GetSetting("Ldap Enabled").Value; }
+        }
+
+        public static string LdapServer
+        {
+            get { return Setting.GetSetting("Ldap Server").Value; }
+        }
+
+        public static string LdapPort
+        {
+            get { return Setting.GetSetting("Ldap Port").Value; }
+        }
+
+        public static string LdapAuthAttribute
+        {
+            get { return Setting.GetSetting("Ldap Auth Attribute").Value; }
+        }
+
+        public static string LdapBaseDN
+        {
+            get { return Setting.GetSetting("Ldap Base DN").Value; }
+        }
+
+        public static string LdapAuthType
+        {
+            get { return Setting.GetSetting("Ldap Auth Type").Value; }
+        }
+
         public static string MunkiRootPath
         {
             get

@@ -72,6 +72,14 @@ namespace BLL
             }
         }
 
+        public static List<Models.GroupMembership> GetAllComputerMemberships(int computerId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.GroupMembershipRepository.Get(x => x.ComputerId == computerId);
+            }
+        }
+
       
     }
 }

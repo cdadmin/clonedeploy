@@ -8,7 +8,7 @@
     <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits actions" target="_blank">Help</a>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
-     <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Add Partition Layout" CssClass="submits actions" />
+     <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Add Partition Layout"  />
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent2" Runat="Server">

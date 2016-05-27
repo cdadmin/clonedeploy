@@ -22,6 +22,9 @@ namespace Models
 
         [Column("munki_manifest_template_id", Order = 5)]
         public int ManifestTemplateId { get; set; }
+
+        [Column("munki_manifest_condition", Order = 6)]
+        public string Condition { get; set; }
   
     }
 }

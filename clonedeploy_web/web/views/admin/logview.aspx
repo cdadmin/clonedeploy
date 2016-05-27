@@ -5,17 +5,22 @@
 </asp:Content>
 
 <asp:Content runat="server" ID="Help" ContentPlaceHolderID="Help">
-      <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits help" target="_blank"></a>
+      <a href="<%= ResolveUrl("~/views/help/index.html")%>"  target="_blank">Help</a>
 </asp:Content>
 
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
-   <asp:LinkButton ID="btnExportLog" runat="server" Text="Export Log" CssClass="submits actions green" OnClick="btnExportLog_Click"></asp:LinkButton>
+   <asp:LinkButton ID="btnExportLog" runat="server" Text="Export Log"  OnClick="btnExportLog_Click"></asp:LinkButton>
 </asp:Content>
 
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
             $('#log').addClass("nav-current");
+            $("[id*=gvLogs] td").hover(function () {
+                $("td", $(this).closest("tr")).addClass("hover_row");
+            }, function () {
+                $("td", $(this).closest("tr")).removeClass("hover_row");
+            });
         });
     </script>
     <div class="size-7 column">
@@ -61,17 +66,19 @@
                     <asp:LinkButton ID="btnView" runat="server" OnClick="btnView_OnClick" Text="View"/>
                 </ItemTemplate>
             </asp:TemplateField>
-            <asp:BoundField DataField="Id" Visible="False"/>
-            <asp:BoundField DataField="Mac" HeaderText="Mac" SortExpression="Mac" ItemStyle-CssClass="width_200"></asp:BoundField>
-            <asp:BoundField DataField="LogTime" HeaderText="Time" SortExpression="LogTime" ItemStyle-CssClass="width_200"></asp:BoundField>
-            <asp:BoundField DataField="SubType" HeaderText="Type" SortExpression="SubType" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
-          
-            
-         <asp:TemplateField>
+              <asp:TemplateField>
+                     <ItemStyle CssClass="chkboxwidth"></ItemStyle>
                 <ItemTemplate>
                     <asp:LinkButton ID="btnExport" runat="server" OnClick="btnExport_OnClick" Text="Export"/>
                 </ItemTemplate>
             </asp:TemplateField>
+            <asp:BoundField DataField="Id" Visible="False"/>
+            <asp:BoundField DataField="Mac" HeaderText="Mac" SortExpression="Mac" ItemStyle-CssClass="width_200"></asp:BoundField>
+            <asp:BoundField DataField="LogTime" HeaderText="Time" SortExpression="LogTime" ItemStyle-CssClass="width_200"></asp:BoundField>
+            <asp:BoundField DataField="SubType" HeaderText="Type" SortExpression="SubType" />
+          
+            
+       
              </Columns>
         <EmptyDataTemplate>
             No Logs Found

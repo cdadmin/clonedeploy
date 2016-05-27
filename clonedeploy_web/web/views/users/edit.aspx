@@ -6,10 +6,10 @@
     </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits help" target="_blank"></a>
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>"  target="_blank">Help</a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-     <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_Click" Text="Update User" CssClass="submits actions green"/>
+     <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_Click" Text="Update User" />
 
 </asp:Content>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
@@ -36,6 +36,14 @@
         </asp:DropDownList>
     </div>
     <br class="clear"/>
+     <div class="size-4 column">
+        Use LDAP Authentication:
+    </div>
+    <div class="size-setting column">
+        <asp:CheckBox ID="chkldap" runat="server" Enabled="False"></asp:CheckBox>
+    </div>
+    <br class="clear" />
+    <div id="passwords" runat="server">
     <div class="size-4 column">
         User Password:
     </div>
@@ -50,6 +58,7 @@
         <asp:TextBox ID="txtUserPwdConfirm" runat="server" CssClass="textbox" TextMode="Password"></asp:TextBox>
     </div>
     <br class="clear"/>
+        </div>
     <div class="size-4 column">
         Email:
     </div>
@@ -58,8 +67,8 @@
     </div>
     <br class="clear"/>
     <div class="size-4 column">
-        <p style="margin-bottom: 5px;">Imaging Client Token:</p>
-        <asp:LinkButton ID="btnGenKey" runat="server" Text="Generate" OnClick="btnGenKey_OnClick" CssClass="keygen" />
+        <p style="margin-bottom: 5px;">Imaging Client Token:
+        <asp:LinkButton ID="btnGenKey" runat="server" Text="Generate" OnClick="btnGenKey_OnClick" CssClass="generic-btn" /></p>
     </div>
     <div class="size-9 column">
         <asp:TextBox ID="txtToken" runat="server" CssClass="textbox"></asp:TextBox>
@@ -68,8 +77,8 @@
      <br class="clear"/>
      <br/>
     <div class="size-4 column">
-         <p style="margin-bottom: 5px;">API Id:</p>
-        <asp:LinkButton ID="btnGenId" runat="server" Text="Generate" OnClick="btnGenId_OnClick" CssClass="keygen" />
+         <p style="margin-bottom: 5px;">API Id:
+        <asp:LinkButton ID="btnGenId" runat="server" Text="Generate" OnClick="btnGenId_OnClick" CssClass="generic-btn" /></p>
     </div>
     <div class="size-9 column">
         <asp:TextBox ID="txtApiId" runat="server" CssClass="textbox"></asp:TextBox>
@@ -77,8 +86,8 @@
      <br class="clear"/>
     <br />
     <div class="size-4 column">
-         <p style="margin-bottom: 5px;">API Key:</p>
-        <asp:LinkButton ID="btnGenApiKey" runat="server" Text="Generate" OnClick="btnGenApiKey_OnClick" CssClass="keygen" />
+         <p style="margin-bottom: 5px;">API Key:
+        <asp:LinkButton ID="btnGenApiKey" runat="server" Text="Generate" OnClick="btnGenApiKey_OnClick" CssClass="generic-btn" /></p>
     </div>
     <div class="size-9 column">
         <asp:TextBox ID="txtApiKey" runat="server" CssClass="textbox"></asp:TextBox>

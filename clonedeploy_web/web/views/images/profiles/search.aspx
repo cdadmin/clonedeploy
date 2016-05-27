@@ -8,15 +8,21 @@
 
 
 <asp:Content runat="server" ContentPlaceHolderID="SubHelp">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits help"  target="_blank"></a>
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>"  target="_blank">Help</a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
-      <a class="confirm actions green" href="#">Delete Selected Profiles</a>
+      <a class="confirm actions green" href="#">Delete Selected Profiles &nbsp;</a>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
             $('#search').addClass("nav-current");
+            $("[id*=gvProfiles] td").hover(function () {
+                $("td", $(this).closest("tr")).addClass("hover_row");
+            }, function () {
+                $("td", $(this).closest("tr")).removeClass("hover_row");
+            });
+       
         });
     </script>
    
@@ -25,13 +31,7 @@
 
     <asp:GridView ID="gvProfiles" runat="server" AllowSorting="True" DataKeyNames="Id" OnSorting="gridView_Sorting" AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
         <Columns>
-              <asp:TemplateField ShowHeader="False" ItemStyle-CssClass="width_30 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller">
-                <ItemTemplate>
-                    <div style="width: 0">
-                        <asp:LinkButton ID="btnHds" runat="server" CausesValidation="false" CommandName="" Text="+" OnClick="btnHds_Click"></asp:LinkButton>
-                    </div>
-                </ItemTemplate>
-            </asp:TemplateField>
+            
             <asp:TemplateField>
                 <HeaderStyle CssClass="chkboxwidth"></HeaderStyle>
                 <ItemStyle CssClass="chkboxwidth"></ItemStyle>
@@ -40,6 +40,13 @@
                 </HeaderTemplate>
                 <ItemTemplate>
                     <asp:CheckBox ID="chkSelector" runat="server"/>
+                </ItemTemplate>
+            </asp:TemplateField>
+              <asp:TemplateField ShowHeader="False" ItemStyle-CssClass="width_30 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller">
+                <ItemTemplate>
+                    <div style="width: 0">
+                        <asp:LinkButton ID="btnHds" runat="server" CausesValidation="false" CommandName="" Text="+" OnClick="btnHds_Click"></asp:LinkButton>
+                    </div>
                 </ItemTemplate>
             </asp:TemplateField>
              <asp:HyperLinkField DataNavigateUrlFields="Id,ImageId" DataNavigateUrlFormatString="~/views/images/profiles/general.aspx?imageid={1}&profileid={0}&cat=profiles" Text="View" ItemStyle-CssClass="chkboxwidth"/>

@@ -5,12 +5,12 @@
 </asp:Content>
 
 <asp:Content runat="server" ID="Help" ContentPlaceHolderID="Help">
-      <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits help" target="_blank"></a>
+      <a href="<%= ResolveUrl("~/views/help/index.html")%>"  target="_blank">Help</a>
 </asp:Content>
 
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
-   <asp:LinkButton ID="btnExportSql" runat="server" Text="Full Database Dump" OnClick="btnExportSql_Click" CssClass="submits actions green"/>
-    <asp:LinkButton ID="btnExportCsv" runat="server" Text="CSV Export" OnClick="btnExportCsv_Click" CssClass="submits actions green"/>
+   <asp:LinkButton ID="btnExportSql" runat="server" Text="Full Database Dump " OnClick="btnExportSql_Click" />
+    <asp:LinkButton ID="btnExportCsv" runat="server" Text="CSV Export" OnClick="btnExportCsv_Click" />
 </asp:Content>
 
 

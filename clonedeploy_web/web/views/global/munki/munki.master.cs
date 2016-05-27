@@ -10,15 +10,22 @@ public partial class views_global_munki_munki : MasterBaseMaster
 
     public void Page_Load(object sender, EventArgs e)
     {
-        if (Request.QueryString["cat"] == "sub2")
-        {
+     
             globalBasePage = (Page as Global);
             ManifestTemplate = globalBasePage.ManifestTemplate;
 
-            if (ManifestTemplate == null) return;
+            if (ManifestTemplate == null)
+            {
+                divMunkiDetails.Visible = false;
+                return;
+            }
+            else
+            {
+                divMunki.Visible = false;
+            }
 
             
             
-        }
+        
     } 
 }

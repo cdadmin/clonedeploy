@@ -62,11 +62,7 @@
         </div>
 
             <ul>
-        <asp:ContentPlaceHolder ID="Level2" runat="server">
-        </asp:ContentPlaceHolder>
-                
-        <asp:ContentPlaceHolder ID="Level3" runat="server">
-        </asp:ContentPlaceHolder>
+                <asp:ContentPlaceHolder runat="server" ID="Level3"></asp:ContentPlaceHolder>
                 </ul>
     </div>
 </asp:Content>
@@ -81,12 +77,16 @@
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="PageActions">
     <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
     </asp:ContentPlaceHolder>
-     <div id="actions_left" runat="server">
+
        <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
-    </div>
-    <div class="help_pos">
+
+
       <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
-        </div>
+
+</asp:Content>
+
+<asp:Content runat="server" ID="PageNav" ContentPlaceHolderID="PageNav">
+    <asp:ContentPlaceHolder runat="server" ID="PageNavSub"></asp:ContentPlaceHolder>
 </asp:Content>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="Content" Runat="Server">

@@ -17,14 +17,13 @@ namespace views.computers
             if (Computer == null) //level 2
             {
                 Level2.Visible = false;
-                Level3.Visible = false;
-                actions_left.Visible = false;
+                LinkButton1.Visible = false;
+                LinkButton2.Visible = false;
+                LinkButton3.Visible = false;
             }
             else
             {
                 Level1.Visible = false;
-                if (Request.QueryString["level"] == "3")
-                    Level2.Visible = false;
             }
         }
 

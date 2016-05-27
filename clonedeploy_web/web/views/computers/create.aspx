@@ -4,10 +4,12 @@
     <li>New</li>
     </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits help" target="_blank"></a>
+<a href="<%= ResolveUrl("~/views/help/index.html")%>" class="" target="_blank">Help</a>
 </asp:Content>
+
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-     <asp:LinkButton ID="buttonAddComputer" runat="server" OnClick="ButtonAddComputer_Click" Text="Add Computer" CssClass="submits actions green"/>
+     <asp:LinkButton ID="buttonAddComputer" runat="server" OnClick="ButtonAddComputer_Click" Text="Add Computer " />
+
 </asp:Content>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">     
@@ -125,10 +127,8 @@
       
     </div>
 
-    <div class="size-4 column">
+    <div class="size-5 column">
          <asp:CheckBox runat="server" ID="createAnother"/>
     </div>
-    <div class="size-5 column">
-       
-    </div>
+    
 </asp:Content>

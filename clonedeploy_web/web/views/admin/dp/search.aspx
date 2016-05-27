@@ -5,7 +5,7 @@
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="SubHelp">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits help" target="_blank"></a>
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>"  target="_blank">Help</a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
    <a class="confirm actions green" href="#">Delete Selected Distribution Points</a>
@@ -15,6 +15,11 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('#search').addClass("nav-current");
+            $("[id*=gvDps] td").hover(function () {
+                $("td", $(this).closest("tr")).addClass("hover_row");
+            }, function () {
+                $("td", $(this).closest("tr")).removeClass("hover_row");
+            });
         });
     </script>
      <p class="total">
@@ -42,7 +47,7 @@
             <asp:BoundField DataField="DisplayName" HeaderText="Display Name" SortExpression="DisplayName" ItemStyle-CssClass="width_200"></asp:BoundField>
             <asp:BoundField DataField="Server" HeaderText="Server" SortExpression="Server" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
             <asp:BoundField DataField="ShareName" HeaderText="Share" SortExpression="ShareName" ItemStyle-CssClass="width_200 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller"/>
-            <asp:BoundField DataField="IsPrimary" HeaderText="Primary" SortExpression="IsPrimary" ItemStyle-CssClass="width_200 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller"/>
+            <asp:BoundField DataField="IsPrimary" HeaderText="Primary" SortExpression="IsPrimary" />
          
            
         </Columns>

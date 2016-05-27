@@ -12,12 +12,9 @@ namespace views.dashboard
 
             if (Request.QueryString["access"] == "denied")
                 lblDenied.Text = "You Are Not Authorized For That Action";
-            
-
-
         }
 
-
+      
        
     }
 }

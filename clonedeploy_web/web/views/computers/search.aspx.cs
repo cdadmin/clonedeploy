@@ -86,12 +86,12 @@ namespace views.computers
            
             var listOfComputers = BLL.Computer.SearchComputersForUser(CloneDeployCurrentUser.Id, limit ,txtSearch.Text);
             listOfComputers = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
-            if (ddlSite.SelectedIndex != -1)
-                listOfComputers = listOfComputers.Where(c => c.SiteId == ddlSite.SelectedIndex).ToList();
-            if (ddlBuilding.SelectedIndex != -1)
-                listOfComputers = listOfComputers.Where(c => c.BuildingId == ddlBuilding.SelectedIndex).ToList();
-            if (ddlRoom.SelectedIndex != -1)
-                listOfComputers = listOfComputers.Where(c => c.RoomId == ddlRoom.SelectedIndex).ToList();
+            if (ddlSite.SelectedValue != "-1")
+                listOfComputers = listOfComputers.Where(c => c.SiteId == Convert.ToInt32(ddlSite.SelectedValue)).ToList();
+            if (ddlBuilding.SelectedValue != "-1")
+                listOfComputers = listOfComputers.Where(c => c.BuildingId == Convert.ToInt32(ddlBuilding.SelectedValue)).ToList();
+            if (ddlRoom.SelectedValue != "-1")
+                listOfComputers = listOfComputers.Where(c => c.RoomId == Convert.ToInt32(ddlRoom.SelectedValue)).ToList();
             if (ddlGroup.SelectedValue != "-1")
             {
                 var groupMembers = BLL.Group.GetGroupMembers(Convert.ToInt32(ddlGroup.SelectedValue));

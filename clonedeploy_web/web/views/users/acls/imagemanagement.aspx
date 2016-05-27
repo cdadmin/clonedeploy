@@ -3,16 +3,21 @@
     <li>Image Management</li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubHelp">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits help" target="_blank"></a>
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
-     <asp:LinkButton ID="buttonUpdate" runat="server" OnClick="buttonUpdate_OnClick" Text="Update Image Management" CssClass="submits actions green" />
+     <asp:LinkButton ID="buttonUpdate" runat="server" OnClick="buttonUpdate_OnClick" Text="Update Image Management "  />
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent2" Runat="Server">
      <script type="text/javascript">
         $(document).ready(function() {
             $('#image').addClass("nav-current");
+            $("[id*=gvImages] td").hover(function () {
+                $("td", $(this).closest("tr")).addClass("hover_row");
+            }, function () {
+                $("td", $(this).closest("tr")).removeClass("hover_row");
+            });
         });
     </script>
      
@@ -29,7 +34,7 @@
                 </ItemTemplate>
             </asp:TemplateField>
             <asp:BoundField DataField="Id" Visible="False"/>
-            <asp:BoundField DataField="Name" HeaderText="Name" ItemStyle-CssClass="width_200"/>
+            <asp:BoundField DataField="Name" HeaderText="Name" />
         </Columns>
         <EmptyDataTemplate>
             No Images Have Been Created

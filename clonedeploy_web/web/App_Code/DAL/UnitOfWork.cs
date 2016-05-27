@@ -46,8 +46,20 @@ namespace DAL
         private DAL.IGenericRepository<Models.MunkiManifestManagedUpdate> _munkiManagedUpdateRepository;
         private DAL.IGenericRepository<Models.MunkiManifestOptionInstall> _munkiOptionalInstallRepository;
         private DAL.IGenericRepository<Models.MunkiManifestIncludedManifest> _munkiIncludedManifestRepository;
-        private DAL.IGenericRepository<Models.MunkiConditional> _munkiConditionalRepository;
-      
+        private IGenericRepository<Models.ComputerMunki> _computerMunkiRepository;
+        private IGenericRepository<Models.GroupMunki> _groupMunkiRepository;
+
+        public IGenericRepository<Models.ComputerMunki> ComputerMunkiRepository
+        {
+            get { return _computerMunkiRepository ?? (_computerMunkiRepository = new GenericRepository<Models.ComputerMunki>(_context)); }
+
+        }
+
+        public IGenericRepository<Models.GroupMunki> GroupMunkiRepository
+        {
+            get { return _groupMunkiRepository ?? (_groupMunkiRepository = new GenericRepository<Models.GroupMunki>(_context)); }
+
+        }
 
         public IGenericRepository<Models.GroupBootMenu> GroupBootMenuRepository
         {
@@ -84,11 +96,6 @@ namespace DAL
         public IGenericRepository<Models.MunkiManifestIncludedManifest> MunkiIncludedManifestRepository
         {
             get { return _munkiIncludedManifestRepository ?? (_munkiIncludedManifestRepository = new GenericRepository<Models.MunkiManifestIncludedManifest>(_context)); }
-        }
-
-        public IGenericRepository<Models.MunkiConditional> MunkiConditionalRepository
-        {
-            get { return _munkiConditionalRepository ?? (_munkiConditionalRepository = new GenericRepository<Models.MunkiConditional>(_context)); }
         }
 
         public IGenericRepository<Models.MunkiManifestTemplate> MunkiManifestRepository

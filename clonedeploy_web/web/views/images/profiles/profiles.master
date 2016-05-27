@@ -19,12 +19,11 @@
     </asp:ContentPlaceHolder>
 </asp:Content>
 
-<asp:Content ID="Content2" ContentPlaceHolderID="Level3" Runat="Server">
+<asp:Content ID="Content2" ContentPlaceHolderID="PageNavSub" Runat="Server">
+    <div id="divProfiles" runat="server">
      <li id="search"><a  href="<%= ResolveUrl("~/views/images/profiles/search.aspx") %>?imageid=<%= Image.Id %>&cat=profiles"><span class="sub-nav-text">Search Profiles</span></a></li>
     <li id="create"><a href="<%= ResolveUrl("~/views/images/profiles/create.aspx")  %>?imageid=<%= Image.Id %>&cat=profiles"><span class="sub-nav-text">New Profile</span></a></li>
-</asp:Content>
-
-<asp:Content ID="Content4" ContentPlaceHolderID="Level4" Runat="Server">
+    </div>
     <div id="linux_profile" runat="server">
      <li id="general"><a  href="<%= ResolveUrl("~/views/images/profiles/general.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">General</span></a></li>
      <li id="pxe"><a  href="<%= ResolveUrl("~/views/images/profiles/pxe.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">PXE Boot Options</span></a></li>
@@ -48,7 +47,13 @@
     <li  id="filecopy"><a href="<%= ResolveUrl("~/views/images/profiles/filecopy.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">File Copy</span></a></li>
     </div>
 </asp:Content>
+
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#profile').addClass("nav-current");
+        });
+    </script>
     <asp:ContentPlaceHolder ID="SubContent2" runat="server">
         </asp:ContentPlaceHolder>
 </asp:Content>

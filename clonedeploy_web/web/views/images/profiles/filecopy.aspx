@@ -8,15 +8,20 @@
     <li>File Copy</li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubHelp">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>" class="submits help" target="_blank"></a>
+    <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
-    <asp:LinkButton ID="btnUpdateFile" runat="server" OnClick="btnUpdateFile_OnClick" Text="Update File Options" CssClass="submits actions green"/>
+    <asp:LinkButton ID="btnUpdateFile" runat="server" OnClick="btnUpdateFile_OnClick" Text="Update File Options" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
             $('#filecopy').addClass("nav-current");
+            $("[id*=gvFile] td").hover(function () {
+                $("td", $(this).closest("tr")).addClass("hover_row");
+            }, function () {
+                $("td", $(this).closest("tr")).removeClass("hover_row");
+            });
         });
     </script>
     <asp:GridView ID="gvFile" runat="server" AllowSorting="True" DataKeyNames="Id" OnSorting="gridView_Sorting" AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
@@ -31,28 +36,29 @@
                     <asp:CheckBox ID="chkEnabled" runat="server"/>
                 </ItemTemplate>
             </asp:TemplateField>
-             <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/global/filesandfolders/edit.aspx?cat=sub1&fileid={0}" Text="View" ItemStyle-CssClass="chkboxwidth"/>
-            <asp:BoundField DataField="Id" Visible="False"/>
-            <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_100"></asp:BoundField>
-            <asp:TemplateField ItemStyle-CssClass="width_50" HeaderText="Priority" SortExpression="Priority">
+           
+             <asp:HyperLinkField Target="_blank" DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/global/filesandfolders/edit.aspx?cat=sub1&fileid={0}" Text="View" ItemStyle-CssClass="chkboxwidth"/>
+              <asp:TemplateField ItemStyle-CssClass="width_50" HeaderText="Priority" SortExpression="Priority">
                 <ItemTemplate>
-                    <div id="settings">
-                        <asp:TextBox ID="txtPriority" runat="server" CssClass="textbox_specs"/>
-                    </div>
+                  
+                        <asp:TextBox ID="txtPriority" runat="server" CssClass="textbox height_18"/>
+                 
                 </ItemTemplate>
             </asp:TemplateField>
+            <asp:BoundField DataField="Id" Visible="False"/>
+            <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_100"></asp:BoundField>
+           
              <asp:TemplateField ItemStyle-CssClass="width_50" HeaderText="Destination Partition" SortExpression="Destination Partition">
                 <ItemTemplate>
-                    <div id="settings">
-                        <asp:TextBox ID="txtPartition" runat="server" CssClass="textbox_specs"/>
-                    </div>
-                </ItemTemplate>
+                  
+                        <asp:TextBox ID="txtPartition" runat="server" CssClass="textbox height_18"/>
+                  </ItemTemplate>
             </asp:TemplateField>
              <asp:TemplateField ItemStyle-CssClass="width_100" HeaderText="Destination Path" SortExpression="Destination Path">
                 <ItemTemplate>
-                    <div id="settings">
-                        <asp:TextBox ID="txtPath" runat="server" CssClass="textbox_specs"/>
-                    </div>
+                   
+                        <asp:TextBox ID="txtPath" runat="server" CssClass="textbox height_18"/>
+                   
                 </ItemTemplate>
             </asp:TemplateField>
              <asp:TemplateField ItemStyle-CssClass="width_100" HeaderText="Folder Copy Mode" SortExpression="Folder Copy Mode">

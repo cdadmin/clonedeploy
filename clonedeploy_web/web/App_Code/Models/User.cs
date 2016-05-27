@@ -46,5 +46,8 @@ namespace Models
 
         [Column("clonedeploy_user_api_key", Order = 13)]
         public string ApiKey { get; set; }
+
+        [Column("clonedeploy_user_is_ldap", Order = 14)]
+        public int IsLdapUser { get; set; }
     }
 }

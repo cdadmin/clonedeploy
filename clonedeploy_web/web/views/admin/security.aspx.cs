@@ -12,7 +12,16 @@ public partial class views_admin_security : Admin
     {
         if (IsPostBack) return;
 
-        txtADLogin.Text = Settings.AdLoginDomain;
+        chkldap.Checked = Settings.LdapEnabled == "1";
+        if (chkldap.Checked)
+        {
+            ad.Visible = true;
+            txtldapServer.Text = Settings.LdapServer;
+            txtldapPort.Text = Settings.LdapPort;
+            txtldapAuthAttribute.Text = Settings.LdapAuthAttribute;
+            txtldapbasedn.Text = Settings.LdapBaseDN;
+            ddlldapAuthType.Text = Settings.LdapAuthType;
+        }
         ddlOnd.SelectedValue = Settings.OnDemand;
         txtToken.Text = Settings.UniversalToken;
         ddlSSL.SelectedValue = Settings.ForceSsL;
@@ -49,12 +58,7 @@ public partial class views_admin_security : Admin
             txtToken.Text = "";
         var listSettings = new List<Setting>
         {
-            new Setting
-            {
-                Name = "AD Login Domain",
-                Value = txtADLogin.Text,
-                Id = BLL.Setting.GetSetting("AD Login Domain").Id
-            },
+           
             new Setting
             {
                 Name = "Require Image Approval",
@@ -64,6 +68,12 @@ public partial class views_admin_security : Admin
             new Setting {Name = "On Demand", Value = ddlOnd.Text, Id = BLL.Setting.GetSetting("On Demand").Id},
             new Setting {Name = "Universal Token", Value = txtToken.Text, Id = BLL.Setting.GetSetting("Universal Token").Id},
             new Setting {Name = "Force SSL", Value = ddlSSL.Text, Id = BLL.Setting.GetSetting("Force SSL").Id},
+            new Setting {Name = "Ldap Enabled", Value = Convert.ToInt16(chkldap.Checked).ToString(), Id = BLL.Setting.GetSetting("Ldap Enabled").Id},
+            new Setting {Name = "Ldap Server", Value = txtldapServer.Text, Id = BLL.Setting.GetSetting("Ldap Server").Id},
+            new Setting {Name = "Ldap Port", Value = txtldapPort.Text, Id = BLL.Setting.GetSetting("Ldap Port").Id},
+            new Setting {Name = "Ldap Auth Attribute", Value = txtldapAuthAttribute.Text, Id = BLL.Setting.GetSetting("Ldap Auth Attribute").Id},
+            new Setting {Name = "Ldap Base DN", Value = txtldapbasedn.Text, Id = BLL.Setting.GetSetting("Ldap Base DN").Id},
+            new Setting {Name = "Ldap Auth Type", Value = ddlldapAuthType.Text, Id = BLL.Setting.GetSetting("Ldap Auth Type").Id},
             new Setting
             {
                 Name = "Web Task Requires Login",
@@ -212,6 +222,18 @@ public partial class views_admin_security : Admin
         else
         {
             universal.Visible = false;
+        }
+    }
+
+    protected void chkldap_OnCheckedChanged(object sender, EventArgs e)
+    {
+        if (chkldap.Checked)
+        {
+            ad.Visible = true;
+        }
+        else
+        {
+            ad.Visible = false;
         }
     }
 }

@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <meta http-equiv="X-UA-Compatible" content="IE=EDGE"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-    <title>Clone Deploy</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>CloneDeploy</title>
 
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery-1.9.1.js") %>"></script>
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery-migrate-1.2.1.min.js") %>"></script>
@@ -18,145 +18,175 @@
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery.jBreadCrumb.1.1.js") %>" charset="utf-8"></script>
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery.easing.1.3.js") %>" charset="utf-8"></script>
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery-labelauty.js") %>" charset="utf-8"></script>
+    <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery.splitdropbutton.js") %>" charset="utf-8"></script>
+     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/scrollsaver.js") %>" charset="utf-8"></script>
 
 
-    <link rel="stylesheet" type="text/css" href="~/content/css/BreadCrumb.css"/>
+    <link rel="stylesheet" type="text/css" href="~/content/css/BreadCrumb.css" />
 
-    <link href="~/content/js/jquery-labelauty.css" rel="stylesheet" type="text/css"/>
-    <link href="~/content/css/base.css" rel="stylesheet" type="text/css"/>
-    <link href="~/content/css/icons.css" rel="stylesheet" type="text/css"/>
-    <link href="~/content/css/layout.css" rel="stylesheet" type="text/css"/>
+    <link href="~/content/js/jquery-labelauty.css" rel="stylesheet" type="text/css" />
+    <link href="~/content/css/base.css" rel="stylesheet" type="text/css" />
+    <link href="~/content/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="~/content/css/layout.css" rel="stylesheet" type="text/css" />
 
 
 </head>
 <body>
 
-<div class="nav-bar-mobile">
-    <a href="#" class="icon-mobile-nav"></a>
-</div>
-<div class="nav-menu-mobile" id="menu-mobile">
-    
-    <div class="mobile-menu-left">
-        <a href="<%= ResolveUrl("~/views/computers/search.aspx") %>">Computers</a>
-        <a href="<%= ResolveUrl("~/views/groups/search.aspx") %>">Groups</a>
-        <a href="<%= ResolveUrl("~/views/images/search.aspx") %>">Images</a>
-        <a href="<%= ResolveUrl("~/views/global/chooser.aspx") %>">Global</a>
+    <div class="nav-bar-mobile">
+        <a href="#" class="icon-mobile-nav"></a>
     </div>
-    <div class="mobile-menu-right">
-        <a href="<%= ResolveUrl("~/views/tasks/active.aspx") %>">Tasks</a>
-        <a href="<%= ResolveUrl("~/views/users/search.aspx") %>">Users</a>
-        <a href="<%= ResolveUrl("~/views/admin/chooser.aspx") %>">Admin</a>
-    </div>
-</div>
+    <div class="nav-menu-mobile" id="menu-mobile">
 
-<form id="form1" runat="server" class="form">
-
-    <div class="container">
-        <div class="nav" id="navmenu">
-            <ul>
-                <li>
-                    <a href="<%= ResolveUrl("~/views/dashboard/dash.aspx") %>" class="leftmenu">
-                        <img alt="logo" src="<%= ResolveUrl("~/") %>content/img/cd.png" style="margin-top: 7px; margin-left: 3px; opacity: 0.7"/>
-                    </a>
-                </li>
-                <li id="nav-hosts">
-                    <a href="<%= ResolveUrl("~/views/computers/search.aspx") %>" class="icon-host">
-                    </a>
-                </li>
-                <li id="nav-groups">
-                    <a href="<%= ResolveUrl("~/views/groups/search.aspx") %>" class="icon-group">
-                    </a>
-                </li>
-                <li id="nav-images">
-                    <a href="<%= ResolveUrl("~/views/images/search.aspx") %>" class="icon-image">
-                    </a>
-                </li>
-                <li id="nav-tasks">
-                    <a href="<%= ResolveUrl("~/views/tasks/active.aspx") %>" class="icon-task">
-                    </a>
-                </li>
-                <li id="nav-users">
-                    <a href="<%= ResolveUrl("~/views/users/search.aspx") %>" class="icon-user">
-                    </a>
-                </li>
-                <li id="nav-global">
-                    <a href="<%= ResolveUrl("~/views/global/chooser.aspx") %>" class="icon-global">
-                    </a>
-                </li>
-                <li id="nav-settings">
-                    <a href="<%= ResolveUrl("~/views/admin/chooser.aspx") %>" class="icon-setting">
-                    </a>
-                </li>
-
-                <li id="nav-logout" style="float: right; margin: 4px 90px 0 0; font-size: 24px; text-align: right;">
-                    <asp:LinkButton ID="LogOut" runat="server" OnClick="LogOut_OnClick"></asp:LinkButton>
-                </li>
-
-            </ul>
+        <div class="mobile-menu-left">
+            <a href="<%= ResolveUrl("~/views/computers/search.aspx") %>">Computers</a>
+            <a href="<%= ResolveUrl("~/views/groups/search.aspx") %>">Groups</a>
+            <a href="<%= ResolveUrl("~/views/images/search.aspx") %>">Images</a>
+            <a href="<%= ResolveUrl("~/views/global/chooser.aspx") %>">Global</a>
         </div>
+        <div class="mobile-menu-right">
+            <a href="<%= ResolveUrl("~/views/tasks/active.aspx") %>">Tasks</a>
+            <a href="<%= ResolveUrl("~/views/users/search.aspx") %>">Users</a>
+            <a href="<%= ResolveUrl("~/views/admin/chooser.aspx") %>">Admin</a>
+        </div>
+    </div>
 
-        <div class="content_container">
-            <br class="clear;"/>
-            <div class="content-wrapper">
-                <div class="content-header">
-                    <div class="module breadcrumb_container">
-                        <div id="bread-crumb1" class="breadCrumb module">
-                            <ul>
-                                <asp:ContentPlaceHolder ID="Breadcrumb" runat="server">
-                                </asp:ContentPlaceHolder>
-                            </ul>
+    <form id="form1" runat="server" class="form">
 
-                        </div>
-                    </div>
+        <div class="container">
 
+
+            <div class="nav">
+                <div id="title">
+                    <h1>CloneDeploy</h1>
+                    <span class="version">1.1.0</span>
+                </div>
+
+
+                <div class="navmenu">
+                    <ul>
+
+
+                        <li id="nav-hosts">
+                            <a href="<%= ResolveUrl("~/views/computers/search.aspx") %>" class="icon-host"></a>
+                        </li>
+                        <li id="nav-groups">
+                            <a href="<%= ResolveUrl("~/views/groups/search.aspx") %>" class="icon-group"></a>
+                        </li>
+                        <li id="nav-images">
+                            <a href="<%= ResolveUrl("~/views/images/search.aspx") %>" class="icon-image"></a>
+                        </li>
+                        <li id="nav-tasks">
+                            <a href="<%= ResolveUrl("~/views/tasks/active.aspx") %>" class="icon-task"></a>
+                        </li>
+                        <li id="nav-users">
+                            <a href="<%= ResolveUrl("~/views/users/search.aspx") %>" class="icon-user"></a>
+                        </li>
+                        <li id="nav-global">
+                            <a href="<%= ResolveUrl("~/views/global/chooser.aspx") %>" class="icon-global"></a>
+                        </li>
+                        <li id="nav-settings">
+                            <a href="<%= ResolveUrl("~/views/admin/chooser.aspx") %>" class="icon-setting"></a>
+                        </li>
+                        
+
+
+                    </ul>
+                    
+                </div>
+                
+
+            </div>
+             
+            <div class="content_container">
+                
+                <br class="clear;" />
+                <div id="leftnav">
                     <div class="sub-nav">
                         <asp:ContentPlaceHolder ID="SubNav" runat="server">
                         </asp:ContentPlaceHolder>
+                        
                     </div>
+
+                   
                 </div>
-                <div class="content-main">
-                    <div class="size-fullgrid column">
-                        <asp:ContentPlaceHolder ID="Content" runat="server">
-                        </asp:ContentPlaceHolder>
+
+                <div class="content-wrapper">
+                    
+                    <div class="content-header">
+                       
+                        <div class="module breadcrumb_container">
+                            <div id="bread-crumb1" class="breadCrumb module">
+                                <ul>
+                                    <asp:ContentPlaceHolder ID="Breadcrumb" runat="server">
+                                    </asp:ContentPlaceHolder>
+                                </ul>
+                             
+                            </div>
+                        </div>
+
                     </div>
                     
+                      <div class="actions_container">
+                            <div class="split-btn">
+                        <asp:ContentPlaceHolder ID="PageActions" runat="server">
+                        </asp:ContentPlaceHolder>
+                                </div>
+
+                    </div>
+                 
+
+                    <div id="content-main">
+                         
+                        <br class="clear" />
+                       <div class="page-nav">
+                           <ul class="page-nav-menu">
+                       <asp:ContentPlaceHolder ID="PageNav" runat="server"></asp:ContentPlaceHolder>
+                               </ul>
+                            </div>
+
+                        <div class="size-fullgrid column">
+                            <asp:ContentPlaceHolder ID="Content" runat="server">
+                            </asp:ContentPlaceHolder>
+                        </div>
+
+                    </div>
                 </div>
-            </div>
-            <div class="actions_container">
 
-                    <asp:ContentPlaceHolder ID="PageActions" runat="server">
-                    </asp:ContentPlaceHolder>
-                
             </div>
+             <asp:LinkButton ID="LogOut" runat="server" OnClick="LogOut_OnClick" CssClass="username"></asp:LinkButton>
         </div>
-    </div>
-</form>
+           
+    </form>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        $(":checkbox").labelauty({ label: false });
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(":checkbox").labelauty({ label: false });
 
-        jQuery("#bread-crumb1").jBreadCrumb();
-        $('.searchbox').watermark('Search', { useNative: false });
-        $('.txt-generate').watermark('Password', { useNative: false });
+            jQuery("#bread-crumb1").jBreadCrumb();
+            $('.searchbox').watermark('Search', { useNative: false });
+            $('.txt-generate').watermark('Password', { useNative: false });
 
-        $(".confirm").click(function() {
-            var menuTop = document.getElementById('confirmbox');
-            classie.toggle(menuTop, 'confirm-box-outer-open');
+            $(".confirm").click(function () {
+                var menuTop = document.getElementById('confirmbox');
+                classie.toggle(menuTop, 'confirm-box-outer-open');
+            });
+
+            $(".icon-mobile-nav").click(function () {
+                var menuTop = document.getElementById('menu-mobile');
+                classie.toggle(menuTop, 'nav-menu-mobile-open');
+            });
+
+            $(".icon-mobile-nav2").click(function () {
+                var menuTop = document.getElementById('menu-mobile');
+                classie.toggle(menuTop, 'nav-menu-mobile-open');
+            });
+
+            $('.split-btn').splitdropbutton({
+                toggleDivContent: '' // optional html content for the clickable toggle div
+            });
+
         });
-
-        $(".icon-mobile-nav").click(function() {
-            var menuTop = document.getElementById('menu-mobile');
-            classie.toggle(menuTop, 'nav-menu-mobile-open');
-        });
-
-        $(".icon-mobile-nav2").click(function() {
-            var menuTop = document.getElementById('menu-mobile');
-            classie.toggle(menuTop, 'nav-menu-mobile-open');
-        });
-
-
-    });
-</script>
+    </script>
 </body>
 </html>

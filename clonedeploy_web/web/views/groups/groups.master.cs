@@ -19,7 +19,9 @@ namespace views.masters
             if (Group == null)
             {
                 Level2_Edit.Visible = false;
-                actions_left.Visible = false;
+                btnDelete.Visible = false;
+                btnMulticast.Visible = false;
+                btnUnicast.Visible = false;
                 return;
             }
 

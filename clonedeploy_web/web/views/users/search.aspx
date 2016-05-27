@@ -5,7 +5,7 @@
     </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>" class="submits help" target="_blank"></a>
+     <a href="<%= ResolveUrl("~/views/help/index.html")%>"  target="_blank">Help</a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
           <a class="confirm actions green" href="#">Delete Selected Users</a>
@@ -16,6 +16,11 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('#searchuser').addClass("nav-current");
+            $("[id*=gvUsers] td").hover(function () {
+                $("td", $(this).closest("tr")).addClass("hover_row");
+            }, function () {
+                $("td", $(this).closest("tr")).removeClass("hover_row");
+            });
         });
     </script>
      <p class="total">
@@ -38,10 +43,11 @@
                     <asp:CheckBox ID="chkSelector" runat="server"/>
                 </ItemTemplate>
             </asp:TemplateField>
+            <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/users/edit.aspx?userid={0}" Text="View" ItemStyle-CssClass="chkboxwidth"/>
             <asp:BoundField DataField="Id" HeaderText="userID" SortExpression="Id" Visible="False"/>
-            <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name"/>
+            <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"/>
             <asp:BoundField DataField="Membership" HeaderText="Membership" SortExpression="Membership" ItemStyle-CssClass="mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
-            <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/users/edit.aspx?userid={0}" Text="View"/>
+            
         </Columns>
         <EmptyDataTemplate>
             No Users Found
