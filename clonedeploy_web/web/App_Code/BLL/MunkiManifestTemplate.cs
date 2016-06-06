@@ -47,6 +47,8 @@ namespace BLL
             }
         }
 
+       
+
         public static  List<Models.MunkiManifestTemplate> SearchManifests(string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())

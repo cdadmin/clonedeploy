@@ -49,6 +49,12 @@
                     <asp:LinkButton ID="btnPreview" Text="Preview" runat="server" OnClick="btnPreview_OnClick" />
                 </ItemTemplate>
             </asp:TemplateField>
+              <asp:TemplateField>
+                <ItemStyle CssClass="chkboxwidth"></ItemStyle>
+                <ItemTemplate>
+                    <asp:LinkButton ID="btnApply" Text="Apply" runat="server" OnClick="btnApply_OnClick" />
+                </ItemTemplate>
+            </asp:TemplateField>
             <asp:BoundField DataField="Id" HeaderText="ID" SortExpression="Id" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"></asp:BoundField>
             <asp:BoundField DataField="Description" HeaderText="Description" />

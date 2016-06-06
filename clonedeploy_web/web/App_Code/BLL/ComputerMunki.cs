@@ -32,6 +32,14 @@ namespace BLL
             }
         }
 
+        public static List<Models.ComputerMunki> GetComputersForManifestTemplate(int templateId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ComputerMunkiRepository.Get(x => x.MunkiTemplateId == templateId);
+            }
+        }
+
        
     }
 }

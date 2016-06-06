@@ -32,6 +32,14 @@ namespace BLL
             }
         }
 
+        public static List<Models.GroupMunki> GetGroupsForManifestTemplate(int templateId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.GroupMunkiRepository.Get(x => x.MunkiTemplateId == templateId);
+            }
+        }
+
        
     }
 }

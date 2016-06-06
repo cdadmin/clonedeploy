@@ -15,10 +15,10 @@
 .container .size-4.column{width:250px;color:#666;font-size:16px;line-height: 30px;}
 .container .size-5.column{width:290px;margin-bottom: 10px;}
 .container .size-6.column{width:350px;margin-left:0;}
-.container .size-7.column{width:250px; margin-left:0;}
+.container .size-7.column{width:250px; margin-left:0;margin-bottom: 10px;}
 .container .size-8.column{width:120px; margin-left:0; color:#666;font-size:18px;margin-bottom: 10px;}
 .container .size-9.column{ width: 400px;font-size: 18px;line-height: 30px;}
-.container .size-10.column { width: 170px;}
+.container .size-10.column { width: 170px;margin-bottom: 5px;}
 .container .size-11.column { width: 80px;float: right;margin-right: 0;}
 .container .size-12.column{width:30px;}
 .container .size-setting.column{width:420px;margin-bottom: 10px;}

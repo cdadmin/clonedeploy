@@ -57,7 +57,6 @@ namespace BLL
             return userManagedGroups.Count == 0 ? TotalCount() : userManagedGroups.Count.ToString();
         }
 
-
       
         public static Models.ValidationResult DeleteGroup(int groupId)
         {

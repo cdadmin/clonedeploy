@@ -85,4 +85,9 @@ public partial class views_global_munki_manifestsearch : BasePages.Global
             }
         }
     }
+
+    protected void btnApply_OnClick(object sender, EventArgs e)
+    {
+        throw new NotImplementedException();
+    }
 }
