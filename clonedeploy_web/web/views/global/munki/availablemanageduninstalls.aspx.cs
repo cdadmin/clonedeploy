@@ -19,18 +19,31 @@ public partial class views_global_munki_availablemanageduninstalls : BasePages.G
      
 
         var listOfPackages = new List<Models.MunkiPackageInfo>();
-        foreach (var pkgInfoFile in GetMunkiResources("pkgsinfo"))
+         var pkgInfos = GetMunkiResources("pkgsinfo");
+        if (pkgInfos != null)
         {
-            var pkg = ReadPlist(pkgInfoFile.FullName);
-            if (pkg != null)
-                listOfPackages.Add(pkg);
+            foreach (var pkgInfoFile in pkgInfos)
+            {
+                var pkg = ReadPlist(pkgInfoFile.FullName);
+                if (pkg != null)
+                    listOfPackages.Add(pkg);
+            }
+
+            listOfPackages =
+                listOfPackages.Where(
+                    f => f.Name.IndexOf(txtSearchAvailable.Text, StringComparison.CurrentCultureIgnoreCase) != -1)
+                    .Take(availableLimit)
+                    .ToList();
+            gvPkgInfos.DataSource = listOfPackages;
+            gvPkgInfos.DataBind();
+
+            lblTotalAvailable.Text = gvPkgInfos.Rows.Count + " Result(s) / " + pkgInfos.Length +
+                                     " Total Packages(s)";
         }
-
-        listOfPackages = listOfPackages.Where(f => f.Name.IndexOf(txtSearchAvailable.Text, StringComparison.CurrentCultureIgnoreCase) != -1).Take(availableLimit).ToList();
-        gvPkgInfos.DataSource = listOfPackages;
-        gvPkgInfos.DataBind();
-
-        lblTotalAvailable.Text = gvPkgInfos.Rows.Count + " Result(s) / " + GetMunkiResources("pkgsinfo").Length + " Total Packages(s)";
+        else
+        {
+            gvPkgInfos.DataBind();
+        }
     }
 
     protected void buttonUpdate_OnClick(object sender, EventArgs e)
@@ -67,9 +80,19 @@ public partial class views_global_munki_availablemanageduninstalls : BasePages.G
             if (BLL.MunkiManagedUninstall.AddManagedUnInstallToTemplate(managedUninstall)) updateCount++;
         }
 
-      
 
-        EndUserMessage = updateCount > 0 ? "Successfully Updated Managed Uninstalls" : "Could Not Update Managed Uninstalls";
+        if (updateCount > 0)
+        {
+            EndUserMessage = "Successfully Updated Managed Uninstalls";
+            ManifestTemplate.ChangesApplied = 0;
+            BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
+        }
+        else
+        {
+            EndUserMessage = "Could Not Update Managed Uninstalls";
+        }
+
+       
 
         PopulateGrid();
     }

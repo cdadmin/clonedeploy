@@ -59,10 +59,18 @@ public partial class views_global_munki_assignedoptionalinstalls : BasePages.Glo
        
         }
 
-        if (updateCount > 0 )
+        if (updateCount > 0)
+        {
             EndUserMessage = "Successfully Updated Optional Installs";
+            ManifestTemplate.ChangesApplied = 0;
+            BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
+        }
         else
+        {
             EndUserMessage = "Could Not Update Optional Installs";
+        }
+
+      
 
         PopulateGrid();
     }

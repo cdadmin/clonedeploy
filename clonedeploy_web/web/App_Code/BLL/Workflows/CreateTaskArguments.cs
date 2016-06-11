@@ -196,6 +196,9 @@ namespace BLL.Workflows
 
                 //Added for OSX NBI suppport
                 AppendString("image_direction=push");
+                if (Convert.ToBoolean(_imageProfile.OsxInstallMunki)) AppendString("install_munki=true");
+                AppendString("osx_target_volume=" + "\"" + _imageProfile.OsxTargetVolume + "\"");
+                AppendString("munki_repo_url=" + "\"" + _imageProfile.MunkiRepoUrl + "\"");
 
                 if (Convert.ToBoolean(_imageProfile.ChangeName)) AppendString("change_computer_name=true");
                 if (Convert.ToBoolean(_imageProfile.SkipExpandVolumes)) AppendString("skip_expand_volumes=true");

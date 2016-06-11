@@ -57,7 +57,14 @@
             </asp:TemplateField>
             <asp:BoundField DataField="Id" HeaderText="ID" SortExpression="Id" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"></asp:BoundField>
-            <asp:BoundField DataField="Description" HeaderText="Description" />
+              <asp:TemplateField HeaderText="Changes Applied">
+                 
+
+                <ItemTemplate>
+                   <asp:Label runat="server" Id="lblApplied"></asp:Label>
+                </ItemTemplate>
+            </asp:TemplateField>
+            
            
              
             
@@ -71,10 +78,11 @@
      <div id="confirmbox" class="confirm-box-outer">
         <div class="confirm-box-inner">
             <h4>
-                <asp:Label ID="lblTitle" runat="server" Text="Delete The Selected Manifest Templates?"></asp:Label>
+                <asp:Label ID="lblTitle" runat="server"></asp:Label>
+                <asp:Label ID="lblSubTitle" runat="server" CssClass="smalltext"></asp:Label>
             </h4>
             <div class="confirm-box-btns">
-                <asp:LinkButton ID="ConfirmButton" OnClick="ButtonConfirmDelete_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
+                <asp:LinkButton ID="ConfirmButton" OnClick="ConfirmButton_OnClick" runat="server" Text="Yes" CssClass="confirm_yes"/>
                 <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no"/>
             </div>
         </div>

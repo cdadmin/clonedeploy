@@ -232,13 +232,29 @@ namespace Helpers
             get { return Setting.GetSetting("Ldap Auth Type").Value; }
         }
 
-        public static string MunkiRootPath
+        public static string MunkiPathType
         {
-            get
-            {
-                return HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "public" +
-                       Path.DirectorySeparatorChar + "munki" + Path.DirectorySeparatorChar;
-            }
+            get { return Setting.GetSetting("Munki Path Type").Value; }
+        }
+
+        public static string MunkiBasePath
+        {
+            get { return Setting.GetSetting("Munki Base Path").Value; }
+        }
+
+        public static string MunkiSMBUsername
+        {
+            get { return Setting.GetSetting("Munki SMB Username").Value; }
+        }
+
+        public static string MunkiSMBPassword
+        {
+            get { return Setting.GetSetting("Munki SMB Password Encrypted").Value; }
+        }
+
+        public static string MunkiSMBDomain
+        {
+            get { return Setting.GetSetting("Munki SMB Domain").Value; }
         }
     
     }

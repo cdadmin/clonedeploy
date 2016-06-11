@@ -58,9 +58,17 @@ public partial class views_global_munki_assignedmanagedupdates : BasePages.Globa
         }
 
         if (updateCount > 0)
+        {
             EndUserMessage = "Successfully Updated Managed Updates";
+            ManifestTemplate.ChangesApplied = 0;
+            BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
+        }
         else
+        {
             EndUserMessage = "Could Not Update Managed Updates";
+        }
+
+      
 
         PopulateGrid();
     }

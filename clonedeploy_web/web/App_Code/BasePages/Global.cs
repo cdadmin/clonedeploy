@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Claunia.PropertyList;
+using ConnectUNCWithCredentials;
 using Helpers;
 using Models;
 
@@ -31,10 +32,7 @@ namespace BasePages
                 plist.Name = rootDict.ObjectForKey("name").ToString();
                 plist.Version = rootDict.ObjectForKey("version").ToString();
                 return plist;
-                /*NSObject[] parameters = ((NSArray) rootDict.ObjectForKey("installs")).GetArray();
-                foreach (NSObject param in parameters)
-                {   
-                }*/
+              
             }
             catch (Exception ex)
             {
@@ -45,9 +43,51 @@ namespace BasePages
 
         public FileInfo[] GetMunkiResources(string type)
         {
-            var pkgInfoFiles = Settings.MunkiRootPath + type + Path.DirectorySeparatorChar;
-            DirectoryInfo di = new DirectoryInfo(pkgInfoFiles);
-            return di.GetFiles("*.*");
+            FileInfo[] directoryFiles = null;
+            string pkgInfoFiles = Settings.MunkiBasePath + Path.DirectorySeparatorChar + type + Path.DirectorySeparatorChar;
+            if (Settings.MunkiPathType == "Local")
+            {
+                DirectoryInfo di = new DirectoryInfo(pkgInfoFiles);
+                try
+                {
+                    directoryFiles = di.GetFiles("*.*");
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(ex.Message);
+                  
+                }
+            }
+           
+            else
+            {
+                using (UNCAccessWithCredentials unc = new UNCAccessWithCredentials())
+                {
+                    var smbPassword = new Helpers.Encryption().DecryptText(Settings.MunkiSMBPassword);
+                    var smbDomain = string.IsNullOrEmpty(Settings.MunkiSMBDomain) ? "" : Settings.MunkiSMBDomain;
+                    if (unc.NetUseWithCredentials(Settings.MunkiBasePath, Settings.MunkiSMBUsername, smbDomain, smbPassword) || unc.LastError == 1219)
+                    {
+                        
+                        DirectoryInfo di = new DirectoryInfo(pkgInfoFiles);
+                        try
+                        {
+                            directoryFiles = di.GetFiles("*.*");
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Log(ex.Message);
+                           
+                        }
+                    }
+                    else
+                    {
+                        Logger.Log("Failed to connect to " + Settings.MunkiBasePath + "\r\nLastError = " + unc.LastError);
+                    }
+                }
+            }
+
+            return directoryFiles;
+
         }
     }
 }

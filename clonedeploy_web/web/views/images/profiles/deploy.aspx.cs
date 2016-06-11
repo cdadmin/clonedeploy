@@ -18,6 +18,9 @@ public partial class views_images_profiles_deploy : Images
         chkRunFixBoot.Checked = Convert.ToBoolean(ImageProfile.FixBootloader);
         ddlPartitionMethod.Text = ImageProfile.PartitionMethod;
         chkDownForceDynamic.Checked = Convert.ToBoolean(ImageProfile.ForceDynamicPartitions);
+        chkInstallMunki.Checked = Convert.ToBoolean(ImageProfile.OsxInstallMunki);
+        txtMunkiRepoUrl.Text = ImageProfile.MunkiRepoUrl;
+        txtTargetVolume.Text = string.IsNullOrEmpty(ImageProfile.OsxTargetVolume) ? "Macintosh HD" : ImageProfile.OsxTargetVolume;
         if (chkDownForceDynamic.Checked) ddlPartitionMethod.Enabled = false;
         ForceDiv.Visible = ddlPartitionMethod.Text == "Dynamic";
         DisplayLayout();
@@ -31,6 +34,9 @@ public partial class views_images_profiles_deploy : Images
         imageProfile.SkipExpandVolumes = Convert.ToInt16(chkDownNoExpand.Checked);
         imageProfile.FixBcd = Convert.ToInt16(chkAlignBCD.Checked);
         imageProfile.FixBootloader = Convert.ToInt16(chkRunFixBoot.Checked);
+        imageProfile.OsxInstallMunki = Convert.ToInt16(chkInstallMunki.Checked);
+        imageProfile.MunkiRepoUrl = txtMunkiRepoUrl.Text;
+        imageProfile.OsxTargetVolume = txtTargetVolume.Text;
         imageProfile.PartitionMethod = ddlPartitionMethod.Text;
         imageProfile.ForceDynamicPartitions = Convert.ToInt16(chkDownForceDynamic.Checked);
         switch (ddlPartitionMethod.SelectedIndex)

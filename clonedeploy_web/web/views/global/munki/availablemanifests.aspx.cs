@@ -18,16 +18,29 @@ public partial class views_global_munki_availablemanifests : BasePages.Global
         var availableLimit = ddlLimitAvailable.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimitAvailable.Text);
 
         var listOfManifests = new List<Models.MunkiPackageInfo>();
-        foreach (var manifest in GetMunkiResources("manifests"))
+        var manifests = GetMunkiResources("manifests");
+        if (manifests != null)
         {
-            listOfManifests.Add(new MunkiPackageInfo{Name = manifest.Name});
+            foreach (var manifest in manifests)
+            {
+                listOfManifests.Add(new MunkiPackageInfo {Name = manifest.Name});
+            }
+
+            listOfManifests =
+                listOfManifests.Where(
+                    s => s.Name.IndexOf(txtSearchAvailable.Text, StringComparison.CurrentCultureIgnoreCase) != -1)
+                    .Take(availableLimit)
+                    .ToList();
+            gvPkgInfos.DataSource = listOfManifests;
+            gvPkgInfos.DataBind();
+
+            lblTotalAvailable.Text = gvPkgInfos.Rows.Count + " Result(s) / " + manifests.Length +
+                                     " Total Manifest(s)";
         }
-
-        listOfManifests = listOfManifests.Where(s => s.Name.IndexOf(txtSearchAvailable.Text, StringComparison.CurrentCultureIgnoreCase) != -1).Take(availableLimit).ToList();
-        gvPkgInfos.DataSource = listOfManifests;
-        gvPkgInfos.DataBind();
-
-        lblTotalAvailable.Text = gvPkgInfos.Rows.Count + " Result(s) / " + GetMunkiResources("manifests").Length + " Total Manifest(s)";
+        else
+        {
+            gvPkgInfos.DataBind();
+        }
     }
 
     protected void buttonUpdate_OnClick(object sender, EventArgs e)
@@ -56,7 +69,18 @@ public partial class views_global_munki_availablemanifests : BasePages.Global
             if (BLL.MunkiIncludedManifest.AddIncludedManifestToTemplate(includedManifest)) updateCount++;
         }
 
-        EndUserMessage = updateCount > 0 ? "Successfully Updated Included Manifests" : "Could Not Update Included Manifests";
+        if (updateCount > 0)
+        {
+            EndUserMessage = "Successfully Updated Included Manifests";
+            ManifestTemplate.ChangesApplied = 0;
+            BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
+        }
+        else
+        {
+            EndUserMessage = "Could Not Update Included Manifests";
+        }
+
+        
 
         PopulateGrid();
     }

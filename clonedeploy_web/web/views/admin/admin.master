@@ -58,7 +58,11 @@
                 </a>
             </li>
             
-            
+               <li id="munki">
+                <a href="<%= ResolveUrl("~/views/admin/munki.aspx") %>">
+                    <span class="nav-text">Munki</span>
+                </a>
+            </li>
             
              <li id="log">
                 <a href="<%= ResolveUrl("~/views/admin/logview.aspx") %>" >

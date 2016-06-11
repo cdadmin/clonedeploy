@@ -23,16 +23,6 @@ public partial class views_global_munki_assignedmanageduninstalls : BasePages.Gl
         gvTemplateInstalls.DataBind();
 
         lblTotalAssigned.Text = gvTemplateInstalls.Rows.Count + " Result(s) / " + BLL.MunkiManagedUninstall.TotalCount(ManifestTemplate.Id) + " Total Managed Uninstall(s)";
-
-
-        var listOfPackages = new List<Models.MunkiPackageInfo>();
-        foreach (var pkgInfoFile in GetMunkiResources("pkgsinfo"))
-        {
-            var pkg = ReadPlist(pkgInfoFile.FullName);
-            if (pkg != null)
-                listOfPackages.Add(pkg);
-        }
-
      
     }
 
@@ -70,8 +60,18 @@ public partial class views_global_munki_assignedmanageduninstalls : BasePages.Gl
 
         }
 
-        EndUserMessage = updateCount > 0 ? "Successfully Updated Managed Uninstalls" : "Could Not Update Managed Uninstalls";
+        if (updateCount > 0)
+        {
+            EndUserMessage = "Successfully Updated Managed Uninstalls";
+            ManifestTemplate.ChangesApplied = 0;
+            BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
+        }
+        else
+        {
+            EndUserMessage = "Could Not Update Managed Uninstalls";
+        }
 
+      
         PopulateGrid();
     }
 
@@ -92,53 +92,4 @@ public partial class views_global_munki_assignedmanageduninstalls : BasePages.Gl
     {
         PopulateGrid();
     }
-
-    /*protected void Page_Load(object sender, EventArgs e)
-    {
-        NSDictionary root = new NSDictionary();
-
-        NSArray catalogs = new NSArray(1);       
-        catalogs.SetValue(0, "test");
-
-        NSArray conditionalItems = new NSArray(1); 
-        NSDictionary condition = new NSDictionary();
-        condition.Add("condition", "os_version == 10.1");
-        conditionalItems.SetValue(0, condition);
-
-        NSArray includedManifests = new NSArray(1);
-        includedManifests.SetValue(0, "manifest1");
-
-        NSArray managedInstalls = new NSArray(1);
-        managedInstalls.SetValue(0, "inst1");
-
-        NSArray managedUninstalls = new NSArray(1);
-        managedUninstalls.SetValue(0, "uninst1");
-
-        NSArray managedUpdates = new NSArray(1);
-        managedUpdates.SetValue(0, "up1");
-
-        NSArray optionalInstalls = new NSArray(1);
-        optionalInstalls.SetValue(0, "opt1");
-
-        root.Add("catalogs", catalogs);
-        root.Add("conditional_items", conditionalItems);
-        root.Add("included_manifests", includedManifests);
-        root.Add("managed_installs",managedInstalls);
-        root.Add("managed_uninstalls",managedUninstalls);
-        root.Add("managed_updates", managedUpdates);
-        root.Add("optional_installs",optionalInstalls);
-
-        //Save the propery list
-
-        try
-        {
-            PropertyListParser.SaveAsXml(root, new FileInfo("C:\\intel\\my.plist"));
-        }
-        catch (Exception)
-        {
-           
-           
-        }
-        
-    }*/
 }

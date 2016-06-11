@@ -30,13 +30,8 @@
         <asp:TextBox ID="txtManifestDesc" runat="server" CssClass="descbox" TextMode="MultiLine"></asp:TextBox>
     </div>
     <br class="clear" />
-     <div class="size-4 column">
-        Override Template As Manifest:
-    </div>
-    <div class="size-5 column">
-        <asp:CheckBox ID="chkBoxManifest" runat="server"></asp:CheckBox>
-    </div>
-    <br class="clear"/>
+ 
+    
    
 </asp:Content>
 

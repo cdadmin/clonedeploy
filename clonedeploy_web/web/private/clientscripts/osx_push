@@ -15,10 +15,6 @@ function create_all_partition_layouts
     log " ** Processing $hard_drive ** " "display"
     current_hd_number=$(( $current_hd_number + 1 ))
 	
-	if [ -n "$pre_scripts" ]; then
-	  process_scripts "$pre_scripts"
-	fi
-	
 	drive_name=$(echo $hard_drive | cut -d "/" -f 3)
     logical_block_size="$(diskutil info $hard_drive | grep "Device Block Size:" | cut -d : -f2 | sed 's/Bytes//g' | sed -e 's/^[ \t]*//')"   
     hard_drive_size_bytes=$(diskutil info $hard_drive | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1 )
@@ -198,10 +194,6 @@ function process_hard_drives()
 	log " ** Processing $hard_drive ** " "display"
     current_hd_number=$(( $current_hd_number + 1 ))
 	
-	if [ -n "$pre_scripts" ]; then
-	  process_scripts "$pre_scripts"
-	fi
-	
 	drive_name=$(echo $hard_drive | cut -d "/" -f 3)
     logical_block_size="$(diskutil info $hard_drive | grep "Device Block Size:" | cut -d : -f2 | sed 's/Bytes//g' | sed -e 's/^[ \t]*//')"   
     hard_drive_size_bytes=$(diskutil info $hard_drive | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1 )
@@ -217,9 +209,6 @@ function process_hard_drives()
 	
     imaged_schema_drives="$imaged_schema_drives $(parse_json "$hd_schema" .SchemaHdNumber) "
 	
-	if [ -n "$post_scripts" ]; then
-	  process_scripts "$post_scripts"
-	fi
 done
 }
 
@@ -256,9 +245,7 @@ function process_lvm()
 		    partition_size_bytes=5368709121 #Don't care about the lv size at this point, but need a value for the download_image function
 		    download_image "$current_logical_volume" "$volume_group-$lv_name" "$lv_disk"
 			
-			if [ "$file_copy" = "True" ]; then
-	          process_file_copy "$current_logical_volume" "$volume_group-$unescaped_lv_name"
-	        fi
+		
 			
 		  fi
 		fi
@@ -272,12 +259,7 @@ function process_partitions()
 {
   local partition_size_mb
   local array_index=-1
-  
-  if [ "$file_copy" = "True" ]; then
-    log "file_copy_schema: profileId=$profile_id"
-	 file_copy_schema=$($curlAuth --data "profileId=$profile_id" "${web}GetFileCopySchema" $curlEnd)
-  fi
-	
+  	
   while [  "$(( $array_index + 1 ))" -lt "$(parse_json "$hd_schema" .PhysicalPartitionCount)" ]; do
     array_index=$(( $array_index + 1))
     clear_and_move_down
@@ -314,9 +296,7 @@ function process_partitions()
 	partition_size_bytes=$(diskutil info ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)  | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1)
     download_image "$current_partition" part
 				
-	if [ "$file_copy" = "True" ]; then
-	  process_file_copy "$current_partition" "partition"
-	fi
+	
   done
 }
 
@@ -409,8 +389,6 @@ function create_partition_layout()
   log " ** New Partition Table Is ** "
   diskutil list $hard_drive >> $CLIENT_LOG 2>&1
   
-	
- 
 }
 
 
@@ -426,9 +404,27 @@ function get_partitions_according_to_mbr_gpt()
 
 function change_computer_name()
 {  
-  local partition="$1"
-  log " ** Changing Computer Name On $partition ** " "display"
- 
+ if [ -n "$computer_name" ] && [ "$change_computer_name" = "true" ]; then
+    log "Setting Computer Name To $computer_name" "display"
+     echo "scutil --set ComputerName $computer_name" > "/Volumes/$osx_target_volume/set_computer_name"
+     echo "scutil --set HostName $computer_name" >> "/Volumes/$osx_target_volume/set_computer_name"
+     echo "scutil --set LocalHostName $computer_name" >> "/Volumes/$osx_target_volume/set_computer_name"
+	 chroot "/Volumes/$osx_target_volume" bash set_computer_name
+  fi
+}
+
+function install_munki()
+{
+  if [ "$install_munki" = "true" ]; then
+    log "Installing Munki To $osx_target_volume" "display"
+	installer -pkg /storage/resources/munkitools.pkg -target "/Volumes/$osx_target_volume" >> $CLIENT_LOG
+  
+    defaults write "/Volumes/$osx_target_volume/Library/Preferences/ManagedInstalls" SoftwareRepoURL "$munki_repo_url" >> $CLIENT_LOG
+    if [ -n "$computer_name" ]; then
+	  defaults write "/Volumes/$osx_target_volume/Library/Preferences/ManagedInstalls" ClientIdentifier "$computer_name" >> $CLIENT_LOG
+	fi
+    
+  fi
 }
 
 function main()
@@ -456,19 +452,29 @@ function main()
 
   sleep 2
 
+  if [ -n "$pre_scripts" ]; then
+	process_scripts "$pre_scripts"
+  fi
+	
   mount_smb
 
   process_hard_drives
 
   #set the system startup disk - bless no longer works in el cap - I strongly dislike sip
-  systemsetup -setstartupdisk "Macintosh HD"
+  systemsetup -setstartupdisk "$osx_target_volume"
   
-  if [ -n "$computer_name" ] && [ "$change_computer_name" = "true" ]; then
-    log "Setting Computer Name To $computer_name"
-     echo "scutil --set ComputerName $computer_name" > "/Volumes/Macintosh HD/set_computer_name"
-     echo "scutil --set HostName $computer_name" >> "/Volumes/Macintosh HD/set_computer_name"
-     echo "scutil --set LocalHostName $computer_name" >> "/Volumes/Macintosh HD/set_computer_name"
-	 chroot "/Volumes/Macintosh HD" bash set_computer_name
+  change_computer_name
+  
+  install_munki
+  
+  if [ "$file_copy" = "True" ]; then
+      log "file_copy_schema: profileId=$profile_id"
+	  file_copy_schema=$($curlAuth --data "profileId=$profile_id" "${web}GetFileCopySchema" $curlEnd)
+	  process_file_copy "$current_partition" "partition"
+  fi
+  
+  if [ -n "$post_scripts" ]; then
+	  process_scripts "$post_scripts"
   fi
   
   checkout

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web.UI.WebControls;
 using Helpers;
@@ -7,14 +9,6 @@ public partial class views_global_munki_availablecatalogs : BasePages.Global
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (ManifestTemplate.TemplateAsManifest == 1)
-        {
-            txtSearch.Visible = false;
-            na.Text = "Catalogs Are Not Used When The Manifest Template Is Overridden As Manifest";
-            na.Visible = true;
-            buttonUpdate.Visible = false;
-            return;
-        }
 
         if (IsPostBack) return;
         PopulateGrid();
@@ -22,11 +16,18 @@ public partial class views_global_munki_availablecatalogs : BasePages.Global
 
     protected void PopulateGrid()
     {
-      
-        gvCatalogs.DataSource = GetMunkiResources("catalogs").Where(f => f.Name.IndexOf(txtSearch.Text, StringComparison.CurrentCultureIgnoreCase) != -1 && f.Name != "all");
+
+        var catalogs = GetMunkiResources("catalogs");
+        IEnumerable<FileInfo> searchedCatalogs = null;
+        if (catalogs != null)
+        {
+            searchedCatalogs = catalogs.Where(f => f.Name.IndexOf(txtSearch.Text, StringComparison.CurrentCultureIgnoreCase) != -1 && f.Name != "all");
+        }
+        gvCatalogs.DataSource = searchedCatalogs;
         gvCatalogs.DataBind();
 
-        lblTotal.Text = gvCatalogs.Rows.Count + " Result(s) / " + GetMunkiResources("catalogs").Length + " Total Catalog(s)";
+        if (searchedCatalogs != null)
+            lblTotal.Text = gvCatalogs.Rows.Count + " Result(s) / " + searchedCatalogs.Count() + " Total Catalog(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)
@@ -61,9 +62,18 @@ public partial class views_global_munki_availablecatalogs : BasePages.Global
             if (BLL.MunkiCatalog.AddCatalogToTemplate(catalog)) updateCount++;
         }
 
-       
 
-        EndUserMessage = updateCount > 0 ? "Successfully Updated Catalogs" : "Could Not Update Catalogs";
+        if (updateCount > 0)
+        {
+            EndUserMessage = "Successfully Updated Catalogs";
+            ManifestTemplate.ChangesApplied = 0;
+            BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
+        }
+        else
+        {
+            EndUserMessage = "Could Not Update Catalogs";
+        }
+      
         
         PopulateGrid();
     }

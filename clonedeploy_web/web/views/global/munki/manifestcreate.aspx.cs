@@ -16,7 +16,7 @@ public partial class views_global_munki_manifestcreate : BasePages.Global
         {
             Name = txtManifestName.Text,
             Description = txtManifestDesc.Text,
-            TemplateAsManifest = chkBoxManifest.Checked ? 1 : 0,
+          
         };
 
         var result = BLL.MunkiManifestTemplate.AddManifest(manifestTemplate);

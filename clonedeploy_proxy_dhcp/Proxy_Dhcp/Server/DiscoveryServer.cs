@@ -596,8 +596,8 @@ namespace CloneDeploy_Proxy_Dhcp.Server
 
             var vendorOptions = message.GetOptionData(DhcpOption.VendorSpecificInformation);
             var strVendorInformation = ByteArrayToString(vendorOptions);
-            var imageId = strVendorInformation.Substring(strVendorInformation.Length - 4);
-            var targetNbi = RootPath.Replace("[nbi_id]", imageId);
+            var imageIdHex = strVendorInformation.Substring(strVendorInformation.Length - 4);
+            var targetNbi = RootPath.Replace("[nbi_id]", imageIdHex);
             Trace.TraceInformation("{0} Sending Dhcp Acknowledge.", Thread.CurrentThread.ManagedThreadId);
 
             var response = new DhcpMessage

@@ -7,14 +7,7 @@ public partial class views_global_munki_catalogs : BasePages.Global
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (ManifestTemplate.TemplateAsManifest == 1)
-        {
-            TextBox1.Visible = false;
-            na.Text = "Catalogs Are Not Used When The Manifest Template Is Overridden As Manifest";
-            na.Visible = true;
-            buttonUpdate.Visible = false;
-            return;
-        }
+       
 
         if (IsPostBack) return;
         PopulateGrid();
@@ -64,8 +57,18 @@ public partial class views_global_munki_catalogs : BasePages.Global
             }       
         }
 
-        EndUserMessage = updateCount > 0 ? "Successfully Updated Catalogs" : "Could Not Update Catalogs";
-        
+        if (updateCount > 0)
+        {
+            EndUserMessage = "Successfully Updated Catalogs";
+            ManifestTemplate.ChangesApplied = 0;
+            BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
+        }
+        else
+        {
+            EndUserMessage = "Could Not Update Catalogs";
+        }
+
+
         PopulateGrid();
     }
 

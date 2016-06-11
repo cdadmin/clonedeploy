@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web.Management;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Helpers;
@@ -23,6 +24,15 @@ public partial class views_global_munki_manifestsearch : BasePages.Global
         gvManifestTemplates.DataBind();
 
         lblTotal.Text = gvManifestTemplates.Rows.Count + " Result(s) / " + BLL.MunkiManifestTemplate.TotalCount() + " Total Manifest Template(s)";
+
+        foreach (GridViewRow row in gvManifestTemplates.Rows)
+        {
+            var dataKey = gvManifestTemplates.DataKeys[row.RowIndex];
+            if (dataKey == null) continue;
+            var lblApplied = (Label) row.FindControl("lblApplied");
+            var manifestTemplate = BLL.MunkiManifestTemplate.GetManifest(Convert.ToInt32(dataKey.Value));
+            lblApplied.Text = manifestTemplate.ChangesApplied == 0 ? "No" : "Yes";
+        }
     }
 
     protected void search_Changed(object sender, EventArgs e)
@@ -88,6 +98,45 @@ public partial class views_global_munki_manifestsearch : BasePages.Global
 
     protected void btnApply_OnClick(object sender, EventArgs e)
     {
-        throw new NotImplementedException();
+        var control = sender as Control;
+        if (control != null)
+        {
+            var gvRow = (GridViewRow) control.Parent.Parent;
+            var dataKey = gvManifestTemplates.DataKeys[gvRow.RowIndex];
+            if (dataKey != null)
+            {
+                Session["manifestTemplateId"] = Convert.ToInt32(dataKey.Value);
+                var confirmStats =
+                    new BLL.Workflows.EffectiveMunkiTemplate().GetUpdateStats(Convert.ToInt32(dataKey.Value));
+
+                lblTitle.Text =
+                    "Are You Sure?<br>";
+          lblSubTitle.Text = " The Manifest For " + confirmStats.computerCount + " Computers Will Be Updated.  Applying This Template Will Include Changes From the Following Templates. ";
+
+                foreach (var munkiTemplate in confirmStats.manifestTemplates)
+                {
+                    lblSubTitle.Text += munkiTemplate.Name + " ";
+                }
+
+                ClientScript.RegisterStartupScript(GetType(), "modalscript",
+                    "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
+                    true);
+            }
+        }
+    }
+
+    protected void ConfirmButton_OnClick(object sender, EventArgs e)
+    {
+        var manifestTemplateId = (int) Session["manifestTemplateId"];
+        Session.Remove("manifestTemplateId");
+        var failedCount = new BLL.Workflows.EffectiveMunkiTemplate().Apply(manifestTemplateId);
+
+        PopulateGrid();
+        if (failedCount > 0)
+            EndUserMessage = "Failed To Update " + failedCount + "Manifests";
+        else
+
+            EndUserMessage = "Successfully Updated Manifests";
+
     }
 }

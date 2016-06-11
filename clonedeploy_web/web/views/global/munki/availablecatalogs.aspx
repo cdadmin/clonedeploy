@@ -27,7 +27,7 @@
         });
      </script>
   
-    <asp:Label runat="server" ID="na" Visible="False"></asp:Label>
+  
    
     <div id="Available" runat="server">
       <p class="total">

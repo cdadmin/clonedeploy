@@ -49,7 +49,7 @@ function save_mbr_gpt()
       usingGPT=true
       mbr_status=`gdisk -l $hard_drive <<< "q" 2>> $CLIENT_LOG | grep 'MBR:' | awk '{$1=""; print $0}' | sed 's/^ //'`
       if [ "$mbr_status" = "MBR only" ]; then
-        error "This Hard Drive Appears To Have Both GPT And MBR.  Clone Deploy Does Not Know What To Use.  You Must First Convert The Drive To One Or The Other Before Uploading"
+        error "This Hard Drive Appears To Have Both GPT And MBR.  CloneDeploy Does Not Know What To Use.  You Must First Convert The Drive To One Or The Other Before Uploading"
       fi
     elif [ "$gpt_status" = "damaged" ]; then
       error "The GPT Table Is Damaged And Cannot Be Saved.  You Must Fix This Before Uploading This Image"
@@ -68,7 +68,9 @@ function save_mbr_gpt()
     
   log " ...... drive: $drive checkPartStart: $checkPartStart toSave: $toSave "
     
-    dd if=$hard_drive of=$image_path/table count=$toSave bs=512 &>> $CLIENT_LOG 
+	dd_drive_name=$(echo $hard_drive | cut -d "/" -f 3)
+    dd_lbs=$(cat /sys/block/$dd_drive_name/queue/logical_block_size)
+    dd if=$hard_drive of=$image_path/table count=$toSave bs=$dd_lbs &>> $CLIENT_LOG 
     if [ -s "$image_path/table" ]; then
       log " ...... Success" "display"
     else
@@ -263,12 +265,15 @@ function create_image_schema()
 	fi
 	
     hard_drive_counter=$(( $hard_drive_counter + 1 ))
-    drive_name="";logical_block_size="";physical_block_size="";hard_drive_size_bytes="";boot_partition="";gpt_status="";mbr_status="";layout_type="";hard_drive_guid="";
+    drive_name="";logical_block_size="";physical_block_size="";hard_drive_size_block="";boot_partition="";gpt_status="";mbr_status="";layout_type="";hard_drive_guid="";
     drive_name=$(echo $hard_drive | cut -d "/" -f 3)
     logical_block_size=$(cat /sys/block/$drive_name/queue/logical_block_size)
     physical_block_size=$(cat /sys/block/$drive_name/queue/physical_block_size)
-    hard_drive_size_bytes=$(cat /sys/block/$drive_name/size)
-    boot_partition=$(sfdisk $hard_drive -l | grep "*" | grep "dev" | cut -d" " -f1 | sed "s~$hard_drive~~g" | sed 's/[^0-9]//g')
+    hard_drive_size_block=$(blockdev --getsz $hard_drive) #Always outputs for 512 byte sectors, needs changed for other sector sizes
+    if [ "$logical_block_size" = "4096" ]; then
+	  hard_drive_size_block=$(( $hard_drive_size_block / 8 ))
+	fi
+	boot_partition=$(sfdisk $hard_drive -l | grep "*" | grep "dev" | cut -d" " -f1 | sed "s~$hard_drive~~g" | sed 's/[^0-9]//g')
     gpt_status=`gdisk -l $hard_drive <<< "q" 2>> $CLIENT_LOG | grep 'GPT:' | awk '{$1=""; print $0}' | sed 's/^ //'`
     if [ "$gpt_status" = "present" ]; then
       mbr_status=`gdisk -l $hard_drive <<< "q" 2>> $CLIENT_LOG| grep 'MBR:' | awk '{$1=""; print $0}' | sed 's/^ //'`
@@ -277,12 +282,12 @@ function create_image_schema()
 	  log "Current NVRAM Entries"
 	  efibootmgr -v &>> $CLIENT_LOG
       if [ "$mbr_status" = "MBR only" ]; then
-        error "This Hard Drive Appears To Have Both GPT And MBR.  Clone Deploy Does Not Know What To Use.  You Must First Convert The Drive To One Or The Other Before Uploading"
+        error "This Hard Drive Appears To Have Both GPT And MBR.  CloneDeploy Does Not Know What To Use.  You Must First Convert The Drive To One Or The Other Before Uploading"
       fi
     else
       layout_type="mbr"
     fi
-    hard_drive_json="{\"name\":\"$hard_drive\",\"size\":\"$hard_drive_size_bytes\",\"table\":\"$layout_type\",\"boot\":\"$boot_partition\",\"lbs\":\"$logical_block_size\",\"pbs\":\"$physical_block_size\",\"guid\":\"$hard_drive_guid\",\"active\":\"true\",\"partitions\": [ "
+    hard_drive_json="{\"name\":\"$hard_drive\",\"size\":\"$hard_drive_size_block\",\"table\":\"$layout_type\",\"boot\":\"$boot_partition\",\"lbs\":\"$logical_block_size\",\"pbs\":\"$physical_block_size\",\"guid\":\"$hard_drive_guid\",\"active\":\"true\",\"partitions\": [ "
     
     get_partitions "false"
     

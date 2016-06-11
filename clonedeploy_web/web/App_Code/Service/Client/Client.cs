@@ -38,7 +38,7 @@ namespace Service.Client
         }
 
         [WebMethod]
-        public void GetPartLayout(string imageProfileId, string hdToGet, string newHdSize, string clientHd, string taskType, string partitionPrefix)
+        public void GetPartLayout(string imageProfileId, string hdToGet, string newHdSize, string clientHd, string taskType, string partitionPrefix, string lbs)
         {
             //if (!Authorize()) return;
 
@@ -49,7 +49,8 @@ namespace Service.Client
                 NewHdSize = newHdSize,
                 ClientHd = clientHd,
                 TaskType = taskType,
-                partitionPrefix = partitionPrefix
+                partitionPrefix = partitionPrefix,
+                clientBlockSize = Convert.ToInt32(lbs)
             };
 
             HttpContext.Current.Response.Write(partLayout.GeneratePartitionScript());

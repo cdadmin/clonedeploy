@@ -13,6 +13,7 @@ namespace BLL.Workflows
         public string TaskType { get; set; }
         public int profileId { get; set; }
         public string partitionPrefix { get; set; }
+        public int clientBlockSize { get; set; }
         private Models.ImageProfile imageProfile;
         private BLL.DynamicClientPartition.ClientPartition clientSchema;
         public string GeneratePartitionScript()
@@ -24,6 +25,74 @@ namespace BLL.Workflows
             clientSchema = new ClientPartition(HdNumberToGet, NewHdSize, imageProfile, partitionPrefix).GenerateClientSchema();
             if (clientSchema == null) return "failed";
 
+            //Handle moving from / to hard drives with different sector sizes ie 512 / 4096
+            var activeCounter = HdNumberToGet;          
+            //Look for first active hd
+            if (!ImageSchema.HardDrives[HdNumberToGet].Active)
+            {
+                while (activeCounter <= ImageSchema.HardDrives.Count())
+                {
+                    if (ImageSchema.HardDrives[activeCounter - 1].Active)
+                    {
+                        HdNumberToGet = activeCounter - 1;
+                    }
+                    activeCounter++;
+                }
+            }
+            var LbsByte = Convert.ToInt32(ImageSchema.HardDrives[HdNumberToGet].Lbs); //logical block size in bytes
+            if (LbsByte == 512 && clientBlockSize == 4096)
+            {
+                
+                //fix calculations from 512 to 4096
+                clientSchema.FirstPartitionStartSector = clientSchema.FirstPartitionStartSector/8;
+                clientSchema.ExtendedPartitionHelper.AgreedSizeBlk = clientSchema.ExtendedPartitionHelper.AgreedSizeBlk/
+                                                                     8;
+                foreach (var partition in clientSchema.PrimaryAndExtendedPartitions)
+                {
+                    partition.Size = partition.Size/8;
+                    partition.Start = partition.Size/8;
+                }
+                                                                                                                                     
+                foreach (var partition in clientSchema.LogicalPartitions)
+                {
+                    partition.Size = partition.Size / 8;
+                    partition.Start = partition.Size / 8;
+                }
+
+                foreach (var lv in clientSchema.LogicalVolumes)
+                {
+                    lv.Size = lv.Size / 8;
+                }
+
+            }
+            else if (LbsByte == 4096 && clientBlockSize == 512)
+            {
+                //fix calculations from 4096 to 512
+                clientSchema.FirstPartitionStartSector = clientSchema.FirstPartitionStartSector * 8;
+                clientSchema.ExtendedPartitionHelper.AgreedSizeBlk = clientSchema.ExtendedPartitionHelper.AgreedSizeBlk *
+                                                                     8;
+                foreach (var partition in clientSchema.PrimaryAndExtendedPartitions)
+                {
+                    partition.Size = partition.Size * 8;
+                    partition.Start = partition.Size * 8;
+                }
+
+                foreach (var partition in clientSchema.LogicalPartitions)
+                {
+                    partition.Size = partition.Size * 8;
+                    partition.Start = partition.Size * 8;
+                }
+
+                foreach (var lv in clientSchema.LogicalVolumes)
+                {
+                    lv.Size = lv.Size * 8;
+                }
+            }
+
+            //otherwise both the original image block size and the destination hard block size are the same, no changes needed
+            //End Handle moving from / to hard drives with different sector sizes
+
+
             if (imageProfile.Image.Environment == "linux" || string.IsNullOrEmpty(imageProfile.Image.Environment))
             {
                 return LinuxLayout();
@@ -31,12 +100,7 @@ namespace BLL.Workflows
             else
             {
                 return OsxNbiLayout();
-            }
-
-           
-
-
-           
+            }           
         }
 
         private string LinuxLayout()
@@ -50,18 +114,18 @@ namespace BLL.Workflows
                 try
                 {
                     clientSchema.ExtendedPartitionHelper.AgreedSizeBlk =
-                        clientSchema.ExtendedPartitionHelper.AgreedSizeBlk * 512 / 1024 / 1024;
+                        clientSchema.ExtendedPartitionHelper.AgreedSizeBlk * clientBlockSize / 1024 / 1024;
                 }
                 catch
                 {
                     // ignored
                 }
                 foreach (var p in clientSchema.PrimaryAndExtendedPartitions)
-                    p.Size = p.Size * 512 / 1024 / 1024;
+                    p.Size = p.Size * clientBlockSize / 1024 / 1024;
                 foreach (var p in clientSchema.LogicalPartitions)
-                    p.Size = p.Size * 512 / 1024 / 1024;
+                    p.Size = p.Size * clientBlockSize / 1024 / 1024;
                 foreach (var p in clientSchema.LogicalVolumes)
-                    p.Size = p.Size * 512 / 1024 / 1024;
+                    p.Size = p.Size * clientBlockSize / 1024 / 1024;
             }
 
             //Create Menu
@@ -72,8 +136,16 @@ namespace BLL.Workflows
 
                 string partitionCommands;
                 partitionCommands = "fdisk " + ClientHd + " &>>/tmp/clientlog.log <<FDISK\r\n";
-                if (Convert.ToInt32(clientSchema.PrimaryAndExtendedPartitions[0].Start) < 2048)
-                    partitionCommands += "c\r\n";
+                if (clientBlockSize == 512)
+                {
+                    if (Convert.ToInt32(clientSchema.PrimaryAndExtendedPartitions[0].Start) < 2048)
+                        partitionCommands += "c\r\n";
+                }
+                else if (clientBlockSize == 4096)
+                {
+                    if (Convert.ToInt32(clientSchema.PrimaryAndExtendedPartitions[0].Start) < 256)
+                        partitionCommands += "c\r\n";
+                }
 
                 foreach (var part in clientSchema.PrimaryAndExtendedPartitions)
                 {
@@ -136,9 +208,14 @@ namespace BLL.Workflows
                     partitionCommands += "\r\n";
 
                     if (TaskType == "debug")
-                        partitionCommands += "+" + (Convert.ToInt64(logicalPart.Size) - (logicalCounter * 1)) + "\r\n";
+                        partitionCommands += "+" + (Convert.ToInt64(logicalPart.Size) - (logicalCounter*1)) + "\r\n";
                     else
-                        partitionCommands += "+" + (Convert.ToInt64(logicalPart.Size) - (logicalCounter * 2049)) + "\r\n";
+                    {
+                        if (clientBlockSize == 512)
+                        partitionCommands += "+" + (Convert.ToInt64(logicalPart.Size) - (logicalCounter*2049)) + "\r\n";
+                        else if(clientBlockSize == 4096)
+                            partitionCommands += "+" + (Convert.ToInt64(logicalPart.Size) - (logicalCounter * 257)) + "\r\n";
+                    }
 
 
                     partitionCommands += "t\r\n";
@@ -173,9 +250,13 @@ namespace BLL.Workflows
                         break;
                     }
                 }
-                if (clientSchema.FirstPartitionStartSector < 2048 && isApple) //osx cylinder boundary is 8
+                //Not sure about this one for 4k native
+                if (clientBlockSize == 512)
                 {
-                    partitionCommands += "x\r\nl\r\n8\r\nm\r\n";
+                    if (clientSchema.FirstPartitionStartSector < 2048 && isApple) //osx cylinder boundary is 8
+                    {
+                        partitionCommands += "x\r\nl\r\n8\r\nm\r\n";
+                    }
                 }
                 foreach (var part in clientSchema.PrimaryAndExtendedPartitions)
                 {
@@ -185,7 +266,13 @@ namespace BLL.Workflows
 
                     partitionCommands += part.Number + "\r\n";
                     if (counter == 1)
-                        partitionCommands += clientSchema.FirstPartitionStartSector + "\r\n";
+                    {
+                        if(isApple && clientBlockSize == 4096) //not sure about this one either
+                            partitionCommands += "256" + "\r\n";
+                        else
+                            partitionCommands += clientSchema.FirstPartitionStartSector + "\r\n";
+
+                    }
                     else
                         partitionCommands += "\r\n";
                     //GDISK seems to NOT include the starting sector in size so don't subtract 1 like in FDISK
@@ -233,10 +320,20 @@ namespace BLL.Workflows
                         }
                         else
                         {
-                            partitionScript += "echo \"lvcreate --yes -L " +
-                                               ((Convert.ToInt64(rlv.Size) - 8192)) + "s -n " +
-                                               rlv.Name + " " + rlv.Vg +
-                                               "\" >>/tmp/lvmcommands \r\n";
+                            if (clientBlockSize == 512)
+                            {
+                                partitionScript += "echo \"lvcreate --yes -L " +
+                                                   ((Convert.ToInt64(rlv.Size) - 8192)) + "s -n " +
+                                                   rlv.Name + " " + rlv.Vg +
+                                                   "\" >>/tmp/lvmcommands \r\n";
+                            }
+                            else if(clientBlockSize == 4096)
+                            {
+                                partitionScript += "echo \"lvcreate --yes -L " +
+                                                  ((Convert.ToInt64(rlv.Size) - 1024)) + "s -n " +
+                                                  rlv.Name + " " + rlv.Vg +
+                                                  "\" >>/tmp/lvmcommands \r\n";
+                            }
                         }
                         partitionScript += "echo \"" + rlv.Uuid + "\" >>/tmp/" + rlv.Vg +
                                            "-" + rlv.Name + "\r\n";
@@ -259,18 +356,18 @@ namespace BLL.Workflows
                 try
                 {
                     clientSchema.ExtendedPartitionHelper.AgreedSizeBlk =
-                        clientSchema.ExtendedPartitionHelper.AgreedSizeBlk * 512 / 1024 / 1024;
+                        clientSchema.ExtendedPartitionHelper.AgreedSizeBlk * clientBlockSize / 1024 / 1024;
                 }
                 catch
                 {
                     // ignored
                 }
                 foreach (var p in clientSchema.PrimaryAndExtendedPartitions)
-                    p.Size = p.Size * 512 / 1024 / 1024;
+                    p.Size = p.Size * clientBlockSize / 1024 / 1024;
                 foreach (var p in clientSchema.LogicalPartitions)
-                    p.Size = p.Size * 512 / 1024 / 1024;
+                    p.Size = p.Size * clientBlockSize / 1024 / 1024;
                 foreach (var p in clientSchema.LogicalVolumes)
-                    p.Size = p.Size * 512 / 1024 / 1024;
+                    p.Size = p.Size * clientBlockSize / 1024 / 1024;
             }
 
             

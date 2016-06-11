@@ -58,7 +58,17 @@ public partial class views_global_munki_assignedmanagedinstalls : BasePages.Glob
        
         }
 
-        EndUserMessage = updateCount > 0 ? "Successfully Updated Managed Installs" : "Could Not Update Managed Installs";
+        if (updateCount > 0)
+        {
+            EndUserMessage = "Successfully Updated Managed Installs";
+            ManifestTemplate.ChangesApplied = 0;
+            BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
+        }
+        else
+        {
+            EndUserMessage = "Could Not Update Managed Installs";
+        }
+      
 
         PopulateGrid();
     }

@@ -17,8 +17,8 @@ namespace Models
         [Column("manifest_template_description", Order = 3)]
         public string Description { get; set; }
 
-        [Column("manifest_template_as_manifest", Order = 4)]
-        public int TemplateAsManifest { get; set; }
+        [Column("changes_applied", Order = 4)]
+        public int ChangesApplied { get; set; }
   
     }
 }

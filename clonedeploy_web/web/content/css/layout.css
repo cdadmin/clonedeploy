@@ -133,6 +133,8 @@ body{ overflow-x: initial; }
 .nav{display:none;}
 .nav-bar-mobile{display:inline;}
 .nav-menu-mobile{ display: inline;}
+.page-nav-menu { margin-top: 10px;}
+.page-nav-menu li { width: 100%;}
 .sub-nav li { width: 100%;font-size: 18px;}
 .sub-nav-text{ font-size: 18px;}
 .actions_container{ margin-right: 0;margin-top: 0;}

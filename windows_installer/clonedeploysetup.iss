@@ -56,7 +56,7 @@ Filename: cmd; Parameters: "/c net share ""cd_share={app}\cd_dp"" /grant:cd_shar
 Filename: cmd; Parameters: "/c icacls ""{app}\cd_dp"" /T /C /grant cd_share_ro:(OI)(CI)RX /grant cd_share_rw:(OI)(CI)F"; StatusMsg: "Creating SMB Shares";
 
 ;Install MariaDB
-Filename: msiexec; Parameters: "/i {userappdata}\clonedeploy\mariadb-10.1.11-win32.msi SERVICENAME=mysql-cd PASSWORD={code:GetDBPass} UTF8=1 /qb"; StatusMsg: "Installing MariaDB";
+Filename: msiexec; Parameters: "/i ""{userappdata}\clonedeploy\mariadb-10.1.11-win32.msi"" SERVICENAME=mysql-cd PASSWORD={code:GetDBPass} UTF8=1 /qb"; StatusMsg: "Installing MariaDB";
 Filename: "{pf32}\MariaDB 10.1\bin\mysql.exe"; Parameters: "--user=root --password={code:GetDBPass} --execute=""create database clonedeploy"" -v"; StatusMsg: "Creating Database";
 Filename: "{pf32}\MariaDB 10.1\bin\mysql.exe"; Parameters: "--user=root --password={code:GetDBPass} --database=clonedeploy --execute=""source {code:MySQLAppData}/clonedeploy/cd.sql"" -v"; StatusMsg: "Creating Database";
 

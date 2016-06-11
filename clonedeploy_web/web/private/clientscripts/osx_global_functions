@@ -38,12 +38,11 @@ function error()
 	  sleep 60
 	fi
 	if [ "$task_completed_action" = "Power Off" ]; then
-		poweroff;
+		shutdown
 	elif [ "$task_completed_action" = "Exit To Shell" ]; then
-		/bin/bash;
-	else
-		#reboot -f
 		exit
+	else
+		reboot
 	fi 
 }
 
@@ -76,12 +75,11 @@ function checkout()
 	sleep 1;
 	
 	if [ "$task_completed_action" = "Power Off" ]; then
-		poweroff;
+		shutdown
 	elif [ "$task_completed_action" = "Exit To Shell" ]; then
-		/bin/bash
-	else
-		#reboot -f
 		exit
+	else
+		reboot
 	fi
 	
 }
@@ -191,6 +189,18 @@ function get_partitions()
   fi
 }
 
+function process_scripts()
+{
+  local scripts="$1"
+  for script_id in $scripts; do
+    $curlAuth --data "scriptId=$script_id" "${web}GetCustomScript" $curlEnd > /tmp/custom_script
+	log " ** Running Custom Script With Id $script_id ** " "display"
+	sleep 5
+	#source script in sub shell so the values of the core script do not get overwritten
+	( . /tmp/custom_script )
+  done
+}
+
 function mount_smb()
 {
 	log " ** Mounting SMB Share **" "display"
@@ -222,4 +232,30 @@ function mount_smb()
 		fi
 	echo
 	sleep 2
+}
+
+function process_file_copy()
+{
+  local current_object="$1"
+  local object_type="$2"
+  local array_index=-1
+   log " ** Processing File Copy ** " "display"
+   sleep 5
+  while [  "$(( $array_index + 1 ))" -lt "$(parse_json "$file_copy_schema" .Count)" ]; do
+    array_index=$(( $array_index + 1))
+    current_file="$(parse_json "$file_copy_schema" .FilesAndFolders[$array_index])"
+    log "$current_file"
+	  
+	    log "Copying /storage/resources/$(parse_json "$current_file" .SourcePath)"
+		
+		  if [ -d "/storage/resources/$(parse_json "$current_file" .SourcePath)" ]; then
+		    if [ "$(parse_json "$current_file" .FolderCopyType)" = "Folder" ]; then
+		      cp -R "/storage/resources/$(parse_json "$current_file" .SourcePath)" "/Volumes/$osx_target_volume/$(parse_json "$current_file" .DestinationFolder)/" 2>>$CLIENT_LOG
+			else #FolderCopyType = contents
+			  cp -R "/storage/resources/$(parse_json "$current_file" .SourcePath)/." "/Volumes/$osx_target_volume/$(parse_json "$current_file" .DestinationFolder)/" 2>>$CLIENT_LOG
+			fi		
+		  else
+            cp "/storage/resources/$(parse_json "$current_file" .SourcePath)" "/Volumes/$osx_target_volume/$(parse_json "$current_file" .DestinationFolder)/" 2>>$CLIENT_LOG
+		  fi
+  done
 }

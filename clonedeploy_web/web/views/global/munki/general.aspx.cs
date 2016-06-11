@@ -9,7 +9,7 @@ public partial class views_global_munki_general : BasePages.Global
         {
             txtManifestName.Text = ManifestTemplate.Name;
             txtManifestDesc.Text = ManifestTemplate.Description;
-            chkBoxManifest.Checked = Convert.ToBoolean(ManifestTemplate.TemplateAsManifest);
+          
         }
 
     }
@@ -20,7 +20,7 @@ public partial class views_global_munki_general : BasePages.Global
         
         ManifestTemplate.Name = txtManifestName.Text;
         ManifestTemplate.Description = txtManifestDesc.Text;
-        ManifestTemplate.TemplateAsManifest = chkBoxManifest.Checked ? 1 : 0;
+       
         var result = BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
         EndUserMessage = result.IsValid ? "Successfully Updated Manifest Template" : result.Message;
     }

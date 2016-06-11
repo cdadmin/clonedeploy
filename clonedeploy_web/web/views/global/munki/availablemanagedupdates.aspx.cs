@@ -17,18 +17,31 @@ public partial class views_global_munki_availablemanagedupdates : BasePages.Glob
         var availableLimit = ddlLimitAvailable.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimitAvailable.Text);
 
         var listOfPackages = new List<Models.MunkiPackageInfo>();
-        foreach (var pkgInfoFile in GetMunkiResources("pkgsinfo"))
+         var pkgInfos = GetMunkiResources("pkgsinfo");
+        if (pkgInfos != null)
         {
-            var pkg = ReadPlist(pkgInfoFile.FullName);
-            if (pkg != null)
-                listOfPackages.Add(pkg);
+            foreach (var pkgInfoFile in pkgInfos)
+            {
+                var pkg = ReadPlist(pkgInfoFile.FullName);
+                if (pkg != null)
+                    listOfPackages.Add(pkg);
+            }
+
+            listOfPackages =
+                listOfPackages.Where(
+                    s => s.Name.IndexOf(txtSearchAvailable.Text, StringComparison.CurrentCultureIgnoreCase) != -1)
+                    .Take(availableLimit)
+                    .ToList();
+            gvPkgInfos.DataSource = listOfPackages;
+            gvPkgInfos.DataBind();
+
+            lblTotalAvailable.Text = gvPkgInfos.Rows.Count + " Result(s) / " + pkgInfos.Length +
+                                     " Total Packages(s)";
         }
-
-        listOfPackages = listOfPackages.Where(s => s.Name.IndexOf(txtSearchAvailable.Text, StringComparison.CurrentCultureIgnoreCase) != -1).Take(availableLimit).ToList();
-        gvPkgInfos.DataSource = listOfPackages;
-        gvPkgInfos.DataBind();
-
-        lblTotalAvailable.Text = gvPkgInfos.Rows.Count + " Result(s) / " + GetMunkiResources("pkgsinfo").Length + " Total Packages(s)";
+        else
+        {
+            gvPkgInfos.DataBind();
+        }
     }
 
     protected void buttonUpdate_OnClick(object sender, EventArgs e)
@@ -57,7 +70,18 @@ public partial class views_global_munki_availablemanagedupdates : BasePages.Glob
             if (BLL.MunkiManagedUpdate.AddManagedUpdateToTemplate(managedUpdate)) updateCount++;
         }
 
-        EndUserMessage = updateCount > 0 ? "Successfully Updated Managed Installs" : "Could Not Update Managed Installs";
+        if (updateCount > 0)
+        {
+            EndUserMessage = "Successfully Updated Managed Updates";
+            ManifestTemplate.ChangesApplied = 0;
+            BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
+        }
+        else
+        {
+            EndUserMessage = "Could Not Update Managed Updates";
+
+        }
+     
 
         PopulateGrid();
     }

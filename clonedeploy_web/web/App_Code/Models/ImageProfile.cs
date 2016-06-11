@@ -92,6 +92,15 @@ namespace Models
         [Column("change_name", Order = 28)]
         public int ChangeName { get; set; }
 
+        [Column("osx_target_volume", Order = 29)]
+        public string OsxTargetVolume { get; set; }
+
+        [Column("osx_install_munki", Order = 30)]
+        public int OsxInstallMunki { get; set; }
+
+        [Column("munki_repo_url", Order = 31)]
+        public string MunkiRepoUrl { get; set; }
+
         [NotMapped]
         public virtual Models.Image Image { get; set; }
 

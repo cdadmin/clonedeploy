@@ -2,22 +2,180 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Claunia.PropertyList;
+using ConnectUNCWithCredentials;
 using Helpers;
 
 namespace BLL.Workflows
 {
-    /// <summary>
-    /// Summary description for EffectiveMunkiTemplate
-    /// </summary>
+    public class MunkiUpdateConfirm
+    {
+        public List<Models.MunkiManifestTemplate> manifestTemplates { get; set; }
+        public int groupCount { get; set; }
+        public int computerCount { get; set; }
+    }
+
     public class EffectiveMunkiTemplate
     {
-        private List<int> _templateIds; 
-        /* Check for computer
-         * find all templates assigned to computer
-         * find all groups computer is assigned to
-         * find all templates assigned to all of those groups
-         */
+        private List<int> _templateIds;
+
+        public MunkiUpdateConfirm GetUpdateStats(int templateId)
+        {
+            var includedTemplates = new List<Models.MunkiManifestTemplate>();
+            var groups = BLL.GroupMunki.GetGroupsForManifestTemplate(templateId);
+            //get list of all templates that are used in these groups
+
+            int totalComputerCount = 0;
+            foreach (var munkiGroup in groups)
+            {
+                totalComputerCount += Convert.ToInt32(BLL.GroupMembership.GetGroupMemberCount(munkiGroup.GroupId));
+                foreach (var template in BLL.GroupMunki.Get(munkiGroup.GroupId))
+                {
+                    includedTemplates.Add(BLL.MunkiManifestTemplate.GetManifest(template.MunkiTemplateId));
+                }
+            }
+
+            var computers = BLL.ComputerMunki.GetComputersForManifestTemplate(templateId);
+            foreach (var computer in computers)
+            {
+                foreach (var template in BLL.ComputerMunki.Get(computer.ComputerId))
+                {
+                    includedTemplates.Add(BLL.MunkiManifestTemplate.GetManifest(template.MunkiTemplateId));
+                }
+            }
+            totalComputerCount += computers.Count;
+            var distinctList = includedTemplates.GroupBy(x => x.Name).Select(s => s.First()).ToList();
+            var munkiConfirm = new MunkiUpdateConfirm();
+            munkiConfirm.manifestTemplates = distinctList;
+            munkiConfirm.groupCount = groups.Count;
+            munkiConfirm.computerCount = totalComputerCount;
+
+            return munkiConfirm;
+
+
+        }
+
+        public int Apply(int templateId)
+        {
+            var errorCount = 0;
+            string basePath = Settings.MunkiBasePath + Path.DirectorySeparatorChar + "manifests" + Path.DirectorySeparatorChar;
+
+            var groups = BLL.GroupMunki.GetGroupsForManifestTemplate(templateId);
+            if (Settings.MunkiPathType == "Local")
+            {
+                foreach (var munkiGroup in groups)
+                {
+                    var effectiveManifest = new BLL.Workflows.EffectiveMunkiTemplate().Group(munkiGroup.GroupId);
+                    var computersInGroup = BLL.Group.GetGroupMembers(munkiGroup.GroupId);
+                    foreach (var computer in computersInGroup)
+                    {
+                        if (!WritePath(basePath + computer.Name, Encoding.UTF8.GetString(effectiveManifest.ToArray())))
+                            errorCount++;
+                    }
+                }
+            }
+            else
+            {
+                using (UNCAccessWithCredentials unc = new UNCAccessWithCredentials())
+                {
+                    var smbPassword = new Helpers.Encryption().DecryptText(Settings.MunkiSMBPassword);
+                    var smbDomain = string.IsNullOrEmpty(Settings.MunkiSMBDomain) ? "" : Settings.MunkiSMBDomain;
+                    if (unc.NetUseWithCredentials(Settings.MunkiBasePath, Settings.MunkiSMBUsername, smbDomain, smbPassword) || unc.LastError == 1219)
+                    {
+                        foreach (var munkiGroup in groups)
+                        {
+                            var effectiveManifest = new BLL.Workflows.EffectiveMunkiTemplate().Group(munkiGroup.GroupId);
+                            var computersInGroup = BLL.Group.GetGroupMembers(munkiGroup.GroupId);
+                            foreach (var computer in computersInGroup)
+                            {
+                                if (!WritePath(basePath + computer.Name, Encoding.UTF8.GetString(effectiveManifest.ToArray())))
+                                    errorCount++;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Logger.Log("Failed to connect to " + Settings.MunkiBasePath + "\r\nLastError = " + unc.LastError);
+                        foreach (var munkiGroup in groups)
+                        {
+                            var computersInGroup = BLL.Group.GetGroupMembers(munkiGroup.GroupId);
+                            errorCount += computersInGroup.Count();
+                        }
+                    }
+                }
+            }
+            var computers = BLL.ComputerMunki.GetComputersForManifestTemplate(templateId);
+            if (Settings.MunkiPathType == "Local")
+            {
+                foreach (var munkiComputer in computers)
+                {
+                    var effectiveManifest = new BLL.Workflows.EffectiveMunkiTemplate().Computer(munkiComputer.ComputerId);
+                    var computer = BLL.Computer.GetComputer(munkiComputer.ComputerId);
+                    if (!WritePath(basePath + computer.Name, Encoding.UTF8.GetString(effectiveManifest.ToArray())))
+                        errorCount++;
+                }
+            }
+            else
+            {
+                using (UNCAccessWithCredentials unc = new UNCAccessWithCredentials())
+                {
+                    var smbPassword = new Helpers.Encryption().DecryptText(Settings.MunkiSMBPassword);
+                    var smbDomain = string.IsNullOrEmpty(Settings.MunkiSMBDomain) ? "" : Settings.MunkiSMBDomain;
+                    if (
+                        unc.NetUseWithCredentials(Settings.MunkiBasePath, Settings.MunkiSMBUsername, smbDomain,
+                            smbPassword) || unc.LastError == 1219)
+                    {
+                        foreach (var munkiComputer in computers)
+                        {
+                            var effectiveManifest =
+                                new BLL.Workflows.EffectiveMunkiTemplate().Computer(munkiComputer.ComputerId);
+                            var computer = BLL.Computer.GetComputer(munkiComputer.ComputerId);
+
+
+                            if (
+                                !WritePath(basePath + computer.Name,
+                                    Encoding.UTF8.GetString(effectiveManifest.ToArray())))
+                                errorCount++;
+                        }
+                    }
+                    else
+                    {
+                        Logger.Log("Failed to connect to " + Settings.MunkiBasePath + "\r\nLastError = " +
+                                   unc.LastError);
+                        errorCount += computers.Count();
+                    }
+                }
+            }
+
+            if (errorCount > 0)
+                return errorCount;
+
+            var includedTemplates = new List<Models.MunkiManifestTemplate>();
+            foreach (var munkiGroup in groups)
+            {
+                foreach (var template in BLL.GroupMunki.Get(munkiGroup.GroupId))
+                {
+                    includedTemplates.Add(BLL.MunkiManifestTemplate.GetManifest(template.MunkiTemplateId));
+                }
+            }
+
+            foreach (var computer in computers)
+            {
+                foreach (var template in BLL.ComputerMunki.Get(computer.ComputerId))
+                {
+                    includedTemplates.Add(BLL.MunkiManifestTemplate.GetManifest(template.MunkiTemplateId));
+                }
+            }
+
+            foreach (var template in includedTemplates)
+            {
+                template.ChangesApplied = 1;
+                BLL.MunkiManifestTemplate.UpdateManifest(template);
+            }
+
+            return 0;
+        }
 
         public MemoryStream Group(int groupId)
         {
@@ -29,7 +187,7 @@ namespace BLL.Workflows
                 _templateIds.Add(template.MunkiTemplateId);
             }
 
-            return Calculate();
+            return GeneratePlist();
         }
 
         public MemoryStream Computer(int computerId)
@@ -51,7 +209,7 @@ namespace BLL.Workflows
                 }
             }
 
-            return Calculate();
+            return GeneratePlist();
         }
 
         public MemoryStream MunkiTemplate(int templateId)
@@ -59,10 +217,10 @@ namespace BLL.Workflows
             _templateIds = new List<int>();
             _templateIds.Add(templateId);
 
-            return Calculate();
+            return GeneratePlist();
         }
 
-        private MemoryStream Calculate()
+        private MemoryStream GeneratePlist()
         {
             NSDictionary root = new NSDictionary();
             NSArray plCatalogs = GetCatalogs();
@@ -86,14 +244,10 @@ namespace BLL.Workflows
             {
 
                 PropertyListParser.SaveAsXml(root, rdr);
-
-                //File.WriteAllBytes("C:\\intel\\my.plist", rdr.ToArray());
-                //PropertyListParser.SaveAsXml(root, new FileInfo("C:\\intel\\my.plist"));
             }
             catch (Exception ex)
             {
                 Logger.Log(ex.Message);
-
             }
 
             return rdr;
@@ -352,6 +506,24 @@ namespace BLL.Workflows
             }
 
             return allConditions.Distinct(StringComparer.CurrentCultureIgnoreCase).ToList();
+        }
+
+        public bool WritePath(string path, string contents)
+        {
+            try
+            {
+                using (var file = new StreamWriter(path))
+                {
+                    file.WriteLine(contents);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("Could Not Write " + path + " " + ex.Message);
+                return false;
+            }
         }
     }
 

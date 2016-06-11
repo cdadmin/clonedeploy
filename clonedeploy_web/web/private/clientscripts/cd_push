@@ -27,7 +27,11 @@ function process_hard_drives()
 	
     drive_name=$(echo $hard_drive | cut -d "/" -f 3)
     lbs=$(cat /sys/block/$drive_name/queue/logical_block_size)
-    drive_size_block=$(cat /sys/block/$drive_name/size)
+	drive_size_block=$(blockdev --getsz $hard_drive) #Always outputs for 512 byte sectors, needs changed for other sector sizes
+    if [ "$lbs" = "4096" ]; then
+	  drive_size_block=$(( $drive_size_block / 8 ))
+	fi
+ 
     drive_size_bytes=$(expr $lbs '*' $drive_size_block)
 	
     log "Get hd_schema:  profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$drive_size_bytes&schemaHds=$imaged_schema_drives"
@@ -406,7 +410,7 @@ function create_partition_layout()
 	 #This doesn't really do anything, partition table was already restored, it's just here so the next elif does run
   elif [ "$(parse_json "$hd_schema" .IsValid)" = "true" ] || [ "$force_dynamic_partitions" = "true" ]; then # create partitions dynamically from image profile settings
     log " ** Creating Partition Table On $hard_drive ** " "display"
-    $curlAuth --data "imageProfileId=$profile_id&hdToGet=$image_hd_to_use&newHDSize=$drive_size_bytes&clientHD=$hard_drive&taskType=deploy&partitionPrefix=$partition_prefix" "${web}GetPartLayout" $curlEnd | dos2unix > /tmp/newPartLayout
+    $curlAuth --data "imageProfileId=$profile_id&hdToGet=$image_hd_to_use&newHDSize=$drive_size_bytes&clientHD=$hard_drive&taskType=deploy&partitionPrefix=$partition_prefix&lbs=$lbs" "${web}GetPartLayout" $curlEnd | dos2unix > /tmp/newPartLayout
 	if [ "$(cat /tmp/newPartLayout)" = "failed" ]; then
 	  error "Could Not Dynamically Create Partition Layout"
 	fi
@@ -424,7 +428,7 @@ function create_partition_layout()
           layout_created_successfully="true"
           log " ...... Success" "display"
         else
-          layout_failed_counter=$(( $partCreatedCounter + 1 ))
+          layout_failed_counter=$(( $layout_failed_counter + 1 ))
           log " ...... Could Not Create Partition Layout.  Retrying Attempt $layout_failed_counter"
           if [ "$layout_failed_counter" -gt "10" ]; then
             error "Could Not Create Partition Layout"

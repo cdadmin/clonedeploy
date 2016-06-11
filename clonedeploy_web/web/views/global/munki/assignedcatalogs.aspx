@@ -32,9 +32,6 @@
      </script>
 
   
-    <asp:Label runat="server" ID="na" Visible="False"></asp:Label>
-   
-   
     <div id="Assigned" runat="Server">
       <div class="size-7 column">
         <asp:TextBox ID="TextBox1" runat="server" CssClass="searchbox" OnTextChanged="search_Changed" AutoPostBack="True"></asp:TextBox>

@@ -2,9 +2,9 @@
 
 . /usr/local/bin/osx_global_functions
 
-taskType=$(dialog --backtitle "Clone Deploy" --title "Select A Task" --clear --menu "" 20 60 15 1 Deploy 2 Upload 3 Multicast --stdout)
+taskType=$(dialog --backtitle "Clone Deploy" --title "Select A Task" --clear --menu "" 20 60 15 1 Deploy 2 Upload --stdout)
 
-if [ "$taskType" != "1" ] && [ "$taskType" != "2" ] && [ "$taskType" != "3" ]; then
+if [ "$taskType" != "1" ] && [ "$taskType" != "2" ]; then
     image_direction="unknown"
 	error "Could Not Determine Task Type"
 fi
@@ -41,15 +41,6 @@ elif [ "$taskType" = "2" ]; then
   ond_args=$($curlAuth --data "mac=$mac&objectId=$image_profile_id&task=pull" "${web}GetOnDemandArguments" $curlEnd)
   ond_args="${ond_args} image_direction=pull"
 		
-elif [ "$taskType" = "3" ]; then
-    image_direction="push"
-	multicastList=`$curlAuth "${web}ListMulticasts" $curlEnd`
-	multicastId=$(dialog --backtitle "Clone Deploy" --title "Select A Multicast Session" --clear --menu "" 20 60 15 `parse_json "$multicastList" .Multicasts[]` --stdout)
-	if [ -z "$multicastId"]; then
-	  error "No Multicast Session Was Selected Or There Are No Active Sessions"
-	fi
-    ond_args=$($curlAuth --data "mac=$mac&objectId=$multicastId&task=multicast" "${web}GetOnDemandArguments" $curlEnd)
-	ond_args="${ond_args} image_direction=push"
 else
 	error "An Error Occurred Or No Task Was Selected"
 fi

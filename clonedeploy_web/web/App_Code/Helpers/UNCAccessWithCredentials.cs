@@ -138,18 +138,6 @@ namespace ConnectUNCWithCredentials
             Dispose();
         }
 
-        /*using (UNCAccessWithCredentials unc = new UNCAccessWithCredentials())
-       {
-           if (unc.NetUseWithCredentials(path, user, domain, password))
-           {
-               new FileOps().WritePath();        
-           }
-           else
-           {
-               // The connection has failed. Use the LastError to get the system error code
-               Logger.Log("Failed to connect to " + "\r\nLastError = " + unc.LastError);
-           }
-           // When it reaches the end of the using block, the class deletes the connection.
-       }*/
+      
     }
 }
