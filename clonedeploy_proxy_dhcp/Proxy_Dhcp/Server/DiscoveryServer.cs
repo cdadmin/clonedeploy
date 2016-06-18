@@ -20,7 +20,6 @@ namespace CloneDeploy_Proxy_Dhcp.Server
 
         private readonly SortedList<PhysicalAddress, bool> _mAcl = new SortedList<PhysicalAddress, bool>();
         private bool _mAllowAny = true;
-        private readonly Dictionary<PhysicalAddress, string> _mReservations = new Dictionary<PhysicalAddress, string>();
         private Dictionary<PhysicalAddress, ReservationOptions> m_Reservations = new Dictionary<PhysicalAddress, ReservationOptions>();
         private readonly ReaderWriterLock _mAclLock = new ReaderWriterLock();
         private readonly ReaderWriterLock _mAbortLock = new ReaderWriterLock();
@@ -34,15 +33,7 @@ namespace CloneDeploy_Proxy_Dhcp.Server
         public string AppleBootFile { get; set; }
         public string VendorInfo { get; set; }
         public string BsdpMode { get; set; }
-        
-        private readonly Dictionary<PhysicalAddress, ReservationOptions> _dReservations =
-            new Dictionary<PhysicalAddress, ReservationOptions>();
-
-        public Dictionary<PhysicalAddress, ReservationOptions> DReservations
-        {
-            get { return _dReservations; }
-        }
-
+        public string AppleEfiBootFile { get; set; }
         public NetworkInterface DhcpInterface { get; set; }
 
         public bool AllowAny
@@ -613,20 +604,31 @@ namespace CloneDeploy_Proxy_Dhcp.Server
             Array.Copy(message.ClientHardwareAddress, hardwareAddressData, 6);
             var clientHardwareAddress = new PhysicalAddress(hardwareAddressData);
 
-
-            if (_mReservations.ContainsKey(clientHardwareAddress))
+            //Modification to allow both a clonedeploy linux and osx imaging environment to work simultaneously without two proxy dhcp servers running
+            if (imageIdHex == "0F49" || imageIdHex == "98DB")
             {
-                response.NextServerAddress =
-                    IPAddress.Parse(_dReservations[clientHardwareAddress].ReserveNextServer).GetAddressBytes();
-                response.BootFileName = Encoding.UTF8.GetBytes(_dReservations[clientHardwareAddress].ReserveBootFile);
+                response.NextServerAddress = !string.IsNullOrEmpty(UserNextServer)
+                    ? IPAddress.Parse(UserNextServer).GetAddressBytes()
+                    : _mDhcpInterfaceAddress.GetAddressBytes();
+                response.BootFileName = Encoding.UTF8.GetBytes(AppleEfiBootFile);
             }
             else
             {
+                Trace.TraceInformation("{0} No Reservation Found.", ByteArrayToString(hardwareAddressData));
                 response.NextServerAddress = !string.IsNullOrEmpty(UserNextServer)
                     ? IPAddress.Parse(UserNextServer).GetAddressBytes()
                     : _mDhcpInterfaceAddress.GetAddressBytes();
                 response.BootFileName = Encoding.UTF8.GetBytes(AppleBootFile);
             }
+
+            if (m_Reservations.ContainsKey(clientHardwareAddress))
+            {
+                Trace.TraceInformation("{0} Reservation Found.", ByteArrayToString(hardwareAddressData)); 
+                response.NextServerAddress =
+                    IPAddress.Parse(m_Reservations[clientHardwareAddress].ReserveNextServer).GetAddressBytes();
+                response.BootFileName = Encoding.UTF8.GetBytes(m_Reservations[clientHardwareAddress].ReserveBootFile);
+            }
+            
 
             response.ClientAddress = message.ClientAddress;
             response.ClientHardwareAddress = message.ClientHardwareAddress;

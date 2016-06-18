@@ -10,6 +10,7 @@
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
        <asp:LinkButton ID="btnAddSelected" runat="server" OnClick="btnAddSelected_OnClick" Text="Update Templates " />
+     <asp:LinkButton runat="server" Id="effective" OnClick="effective_OnClick" Text="View Effective Manifest"></asp:LinkButton>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="SubContent" Runat="Server">
      <script type="text/javascript">
@@ -53,6 +54,6 @@
         </EmptyDataTemplate>
     </asp:GridView>
    
-    <asp:LinkButton runat="server" Id="effective" OnClick="effective_OnClick" CssClass="generic-btn" Text="Test"></asp:LinkButton>
+   
 </asp:Content>
 

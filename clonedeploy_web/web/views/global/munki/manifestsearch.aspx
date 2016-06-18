@@ -7,7 +7,7 @@
      <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
-    <a class="confirm actions green" href="#">Delete Selected Templates</a>
+    <a class="confirm actions green" href="#">Delete Selected Templates </a>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="SubContent2" Runat="Server">
      <script type="text/javascript">

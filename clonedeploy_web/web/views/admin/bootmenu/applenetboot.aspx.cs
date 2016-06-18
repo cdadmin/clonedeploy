@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Helpers;
 
-public partial class views_admin_bootmenu_applenetboot : System.Web.UI.Page
+public partial class views_admin_bootmenu_applenetboot : BasePages.Admin
 {
     /*BSDP Options
      *Code      Length      Values                              Name                        Client Or Server
@@ -62,17 +67,33 @@ public partial class views_admin_bootmenu_applenetboot : System.Web.UI.Page
 
     protected void btnSubmitDefault_OnClick(object sender, EventArgs e)
     {
+        directions.Text = "";
+        directions.Visible = true;
+        var publicFolder = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "public" +
+                           Path.DirectorySeparatorChar + "macos_nbis";
+
         var vendorOptions = new StringBuilder();
         vendorOptions.Append("01:01:01:03:04:");
 
-        IPAddress ip = IPAddress.Parse(txtServerIp.Text);
-
+        IPAddress ip;
+        try
+        {
+            ip = IPAddress.Parse(txtServerIp.Text);
+        }
+        catch (Exception ex)
+        {
+            Logger.Log("Could Not Parse IP Address. " + txtServerIp.Text + " " + ex.Message);
+            EndUserMessage = "Could Not Parse IP Address";
+            return;
+        }
+        
         foreach (byte i in ip.GetAddressBytes())
         {
             vendorOptions.Append(i.ToString("X2") + ":");
         }
 
         vendorOptions.Append("04:02:FF:FF:07:04:");
+
 
         int rowCount = 0;
         int totalNameLength = 0;
@@ -88,22 +109,43 @@ public partial class views_admin_bootmenu_applenetboot : System.Web.UI.Page
             }
             var name = (Label)row.FindControl("lblName");
             totalNameLength += name.Text.Length;
+            
         }
+
+       
 
         vendorOptions.Append("09:" + (5 * rowCount + totalNameLength).ToString("X2"));
         vendorOptions.Append(":");
+
+        List<string> listIds = new List<string>();
         foreach (GridViewRow row in gvNetBoot.Rows)
         {
-
             var imageId = (Label) row.FindControl("lblImageId");
             vendorOptions.Append("01:00:");
-            vendorOptions.Append(AddHexColons(Convert.ToInt32(imageId.Text).ToString("X4")));
+            var nbiIdHex = Convert.ToInt32(imageId.Text).ToString("X4");
+            vendorOptions.Append(AddHexColons(nbiIdHex));
             vendorOptions.Append(":");
 
             var name = (Label) row.FindControl("lblName");
             vendorOptions.Append(name.Text.Length.ToString("X2"));
             vendorOptions.Append(":");
             vendorOptions.Append(StringToHex(name.Text));
+
+            listIds.Add(nbiIdHex);
+
+            if (nbiIdHex != "0F49" && nbiIdHex != "98DB")
+                directions.Text += "Place the " + name.Text + " nbi in " + publicFolder + Path.DirectorySeparatorChar + nbiIdHex + "<br>";
+        }
+
+        var duplicateIds = listIds.GroupBy(x => x)
+                        .Where(group => group.Count() > 1)
+                        .Select(group => group.Key);
+
+        if (duplicateIds.Any())
+        {
+            EndUserMessage = "The list cannot contain duplicate ids";
+            directions.Visible = false;
+            return;
         }
 
         txtOut.Text = vendorOptions.ToString();

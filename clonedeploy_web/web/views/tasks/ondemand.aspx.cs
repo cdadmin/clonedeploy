@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Web.UI.WebControls;
 using Helpers;
 
 namespace views.tasks
@@ -15,7 +17,13 @@ namespace views.tasks
 
         protected void PopulateForm()
         {
-            PopulateImagesDdl(ddlComputerImage);
+            //PopulateImagesDdl(ddlComputerImage);
+
+            ddlComputerImage.DataSource = BLL.Image.SearchImagesForUser(CloneDeployCurrentUser.Id).Where(x => x.Environment == "linux").Select(i => new { i.Id, i.Name }).OrderBy(x => x.Name).ToList();
+            ddlComputerImage.DataValueField = "Id";
+            ddlComputerImage.DataTextField = "Name";
+            ddlComputerImage.DataBind();
+            ddlComputerImage.Items.Insert(0, new ListItem("Select Image", "-1"));   
         }
 
         protected void ddlComputerImage_OnSelectedIndexChanged(object sender, EventArgs e)

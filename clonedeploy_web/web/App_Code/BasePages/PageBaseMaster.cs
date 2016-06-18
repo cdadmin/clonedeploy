@@ -50,7 +50,7 @@ namespace BasePages
 
         protected void PopulateImagesDdl(DropDownList ddlImages)
         {
-            ddlImages.DataSource = BLL.Image.SearchImagesForUser(CloneDeployCurrentUser.Id).Select(i => new { i.Id, i.Name });
+            ddlImages.DataSource = BLL.Image.SearchImagesForUser(CloneDeployCurrentUser.Id).Select(i => new { i.Id, i.Name }).OrderBy(x => x.Name).ToList();
             ddlImages.DataValueField = "Id";
             ddlImages.DataTextField = "Name";
             ddlImages.DataBind();

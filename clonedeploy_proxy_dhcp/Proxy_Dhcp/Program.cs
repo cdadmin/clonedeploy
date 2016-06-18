@@ -23,10 +23,14 @@ namespace CloneDeploy_Proxy_Dhcp
     {
 
 
-    private static void Main(string[] args)
-    {
-        
-        
+        private static void Main(string[] args)
+        {
+            if (args.Length > 0 && ContainsSwitch(args, "version"))
+            {
+                Console.WriteLine("1.1.0");
+                Environment.Exit(0);
+            }
+
             var reader = new IniReader();
             reader.CheckForConfig();
 
@@ -47,7 +51,7 @@ namespace CloneDeploy_Proxy_Dhcp
             var rootPath = reader.ReadConfig("apple-root-path");
             var vendorInfo = reader.ReadConfig("apple-vendor-specific-information");
             var bsdpMode = reader.ReadConfig("apple-mode");
-
+            var appleEfiBootFile = reader.ReadConfig("apple-efi-boot-file");
             ProxyServer proxy = new ProxyServer();
             if (listenProxy == "true")
             {
@@ -73,9 +77,10 @@ namespace CloneDeploy_Proxy_Dhcp
                 discovery.UserNextServer = nextServer;
                 discovery.AppleBootFile = appleBootFile;
                 discovery.RootPath = rootPath;
+                discovery.AppleEfiBootFile = appleEfiBootFile;
                 discovery.BsdpMode = bsdpMode;
                 discovery.VendorInfo = vendorInfo;
-                
+
                 if (allowAll == "true")
                 {
                     discovery.ClearAcls();
@@ -83,7 +88,7 @@ namespace CloneDeploy_Proxy_Dhcp
                 }
             }
 
-          
+
 
             var rdr = new FileReader();
             rdr.CheckForFile();
@@ -92,9 +97,9 @@ namespace CloneDeploy_Proxy_Dhcp
             {
                 foreach (var mac in rdr.ReadFile("allow"))
                 {
-                    if(listenDiscover == "true")
+                    if (listenDiscover == "true")
                         discovery.AddAcl(PhysicalAddress.Parse(mac), false);
-                    if(listenProxy == "true")
+                    if (listenProxy == "true")
                         proxy.AddAcl(PhysicalAddress.Parse(mac), false);
                 }
             }
@@ -128,11 +133,12 @@ namespace CloneDeploy_Proxy_Dhcp
                 }
             }
 
+           
 
             if (args.Length > 0 &&
                 (ContainsSwitch(args, "console") || ContainsSwitch(args, "debug") || ContainsSwitch(args, "daemon")))
             {
-                DhcpHost hostDiscover = new DhcpHost(discovery,proxy);
+                DhcpHost hostDiscover = new DhcpHost(discovery, proxy);
                 if (listenDiscover == "true")
                     hostDiscover.DiscoverListen = true;
                 if (listenProxy == "true")

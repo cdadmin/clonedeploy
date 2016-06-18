@@ -560,14 +560,14 @@ function upload_image()
     
     if [ "$filesystem_type" = "ntfs" ]; then    
       partclone_type="ntfs"
-	  wim_arguments=" --pipable "
+	  wim_arguments=" $web_wim_args"
       ntfs_tasks
     elif [ "$filesystem_type" = "vfat" ]; then
       partclone_type="fat"
       
     elif [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ]; then
       partclone_type="extfs"
-      wim_arguments=" --pipable --unix-data"
+      wim_arguments=" --unix-data $web_wim_args"
     elif [ "$filesystem_type" = "hfsplus" ]; then
       partclone_type="hfsp"
       #I don't know why but partclone.hfsp used with lz4 results in a corrupted image file, always use gzip with hfs
@@ -578,7 +578,7 @@ function upload_image()
       fi
     elif [ "$filesystem_type" = "xfs" ]; then
       partclone_type="xfs"
-      wim_arguments=" --pipable --unix-data"
+      wim_arguments=" --unix-data $web_wim_args"
     elif [ "$filesystem_type" = "swap" ]; then
       log " ...... $partition Is A Swap Partition.  Skipping." "display"
       sleep 2
@@ -606,8 +606,6 @@ function upload_image()
 	  output_name=part$partition_number
 	fi
   
-   
-	  
     if [ "$image_type" = "File" ] && [ -n "$wim_arguments" ]; then
 	  
 	  if [ "$filesystem_type" = "ntfs" ]; then
@@ -618,14 +616,14 @@ function upload_image()
 		wimsource="/mnt/wimsource"
       fi 	  
 	  touch /tmp/wim.progress
-	  log " ...... cd_reporter $computer_id wimup & wimcapture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
-	  eval "cd_reporter $computer_id wimup & wimcapture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
+	  log " ...... cd_reporter $computer_id wimup $is_ondemand & wimcapture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
+	  eval "cd_reporter $computer_id wimup $is_ondemand & wimcapture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
 	  rm /tmp/wim.progress
 	  umount /mnt/wimsource &> /dev/null
     else
 	  touch /tmp/clone.progress
-	  log " ...... cd_reporter $computer_id partclone & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension"    
-	  eval "cd_reporter $computer_id partclone & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension"
+	  log " ...... cd_reporter $computer_id partclone $is_ondemand & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension"    
+	  eval "cd_reporter $computer_id partclone $is_ondemand & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension"
       rm /tmp/clone.progress
       cat /var/log/partclone.log >> $CLIENT_LOG
 	  

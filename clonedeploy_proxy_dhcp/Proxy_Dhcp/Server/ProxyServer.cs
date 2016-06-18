@@ -439,11 +439,13 @@ namespace CloneDeploy_Proxy_Dhcp.Server
 
             if (this.m_Reservations.ContainsKey(clientHardwareAddress))
             {
+                Trace.TraceInformation("{0} Reservation Found.", ByteArrayToString(hardwareAddressData)); 
                 response.NextServerAddress = IPAddress.Parse(this.m_Reservations[clientHardwareAddress].ReserveNextServer).GetAddressBytes();
                 response.BootFileName = Encoding.UTF8.GetBytes(this.m_Reservations[clientHardwareAddress].ReserveBootFile);
             }
             else
             {
+                Trace.TraceInformation("{0} No Reservation Found.", ByteArrayToString(hardwareAddressData)); 
                 if (!string.IsNullOrEmpty(UserNextServer))
                     response.NextServerAddress = IPAddress.Parse(UserNextServer).GetAddressBytes();
                 else
@@ -545,6 +547,14 @@ namespace CloneDeploy_Proxy_Dhcp.Server
                     return;
                 }
             }
+        }
+
+        public static string ByteArrayToString(byte[] ba)
+        {
+            var hex = new StringBuilder(ba.Length * 2);
+            foreach (var b in ba)
+                hex.AppendFormat("{0:X2}", b);
+            return hex.ToString();
         }
     }
 }

@@ -1,5 +1,5 @@
 #define MyAppName "CloneDeploy"
-#define MyAppVersion "1.0.1"
+#define MyAppVersion "1.1.0"
 #define MyAppPublisher "CloneDeploy"
 #define MyAppURL "http://clonedeploy.org"
 
@@ -23,7 +23,7 @@ OutputBaseFilename=setup
 Compression=lzma
 SolidCompression=true
 Uninstallable=true
-VersionInfoVersion=1.0.1
+VersionInfoVersion=1.1.0
 VersionInfoCompany=CloneDeploy
 VersionInfoDescription=CloneDeploy Server Setup
 VersionInfoCopyright=2016
@@ -31,7 +31,7 @@ AlwaysRestart=false
 RestartIfNeededByRun=false
 AppContact=http://clonedeploy.org
 UninstallDisplayName=CloneDeploy Server
-AppVerName=1.0.1
+AppVerName=1.1.0
 AppComments=CloneDeploy
 MinVersion=0,6.1
 SetupLogging=yes
@@ -70,8 +70,8 @@ Filename: cmd; Parameters: "/c dism /online /enable-feature /featurename:IIS-Web
 Filename: cmd; Parameters: "/c dism /online /enable-feature /featurename:IIS-WebServerRole /featurename:IIS-WebServer /featurename:IIS-ISAPIFilter /featurename:IIS-ISAPIExtensions /featurename:IIS-NetFxExtensibility /featurename:IIS-ASPNET /norestart"; StatusMsg: "Installing IIS"; Flags: 64bit; Check: IsWin64 and IsWin7;
  
 ;Install IIS Win8 or Win10
-Filename: cmd; Parameters: "/c powershell -command ""enable-windowsoptionalfeature -online -featurename iis-webserverrole -norestart;enable-windowsoptionalfeature -online -featurename iis-webserver -norestart;enable-windowsoptionalfeature -online -featurename iis-isapifilter -norestart;enable-windowsoptionalfeature -online -featurename iis-isapiextensions -norestart; enable-windowsoptionalfeature -online -featurename netfx4extended-aspnet45 -norestart; enable-windowsoptionalfeature -online -featurename iis-netfxextensibility45 -norestart;enable-windowsoptionalfeature -online -featurename iis-aspnet45 -norestart;"""; StatusMsg: "Installing IIS"; Flags: 32bit; Check: not IsWin64 and (IsWin8 or IsWin10);
-Filename: cmd; Parameters: "/c powershell -command ""enable-windowsoptionalfeature -online -featurename iis-webserverrole -norestart;enable-windowsoptionalfeature -online -featurename iis-webserver -norestart;enable-windowsoptionalfeature -online -featurename iis-isapifilter -norestart;enable-windowsoptionalfeature -online -featurename iis-isapiextensions -norestart; enable-windowsoptionalfeature -online -featurename netfx4extended-aspnet45 -norestart; enable-windowsoptionalfeature -online -featurename iis-netfxextensibility45 -norestart;enable-windowsoptionalfeature -online -featurename iis-aspnet45 -norestart;"""; StatusMsg: "Installing IIS"; Flags: 64bit; Check: IsWin64 and (IsWin8 or IsWin10);
+Filename: cmd; Parameters: "/c powershell -command ""enable-windowsoptionalfeature -online -featurename iis-webserverrole -norestart;enable-windowsoptionalfeature -online -featurename iis-webserver -norestart;enable-windowsoptionalfeature -online -featurename iis-isapifilter -norestart;enable-windowsoptionalfeature -online -featurename iis-isapiextensions -norestart; enable-windowsoptionalfeature -online -featurename netfx4extended-aspnet45 -norestart; enable-windowsoptionalfeature -online -featurename iis-netfxextensibility45 -norestart;enable-windowsoptionalfeature -online -featurename iis-aspnet45 -all -norestart;"""; StatusMsg: "Installing IIS"; Flags: 32bit; Check: not IsWin64 and (IsWin8 or IsWin10);
+Filename: cmd; Parameters: "/c powershell -command ""enable-windowsoptionalfeature -online -featurename iis-webserverrole -norestart;enable-windowsoptionalfeature -online -featurename iis-webserver -norestart;enable-windowsoptionalfeature -online -featurename iis-isapifilter -norestart;enable-windowsoptionalfeature -online -featurename iis-isapiextensions -norestart; enable-windowsoptionalfeature -online -featurename netfx4extended-aspnet45 -norestart; enable-windowsoptionalfeature -online -featurename iis-netfxextensibility45 -norestart;enable-windowsoptionalfeature -online -featurename iis-aspnet45 -all -norestart;"""; StatusMsg: "Installing IIS"; Flags: 64bit; Check: IsWin64 and (IsWin8 or IsWin10);
 
 ;Install IIS Server 2008
 Filename: servermanagercmd; Parameters: "-install web-server"; StatusMsg: "Installing IIS"; Flags: 32bit; Check: not IsWin64 and IsServer2008;
@@ -107,9 +107,6 @@ Filename: cmd; Parameters: "/c netsh advfirewall firewall add rule name=udp-send
 Filename: cmd; Parameters: "/c netsh advfirewall firewall add rule name=udp-sender dir=out action=allow program=""{app}\web\private\apps\udp-sender.exe"" enable=yes profile=any "; StatusMsg: "Creating Firewall Exceptions";
 Filename: cmd; Parameters: "/c netsh advfirewall firewall set rule group=""File and Printer Sharing"" new enable=Yes"; StatusMsg: "Creating Firewall Exceptions";
 
-;Install Proxyd
-Filename: cmd; Parameters: "/c sc create proxyd DisplayName= proxyd binPath= ""{app}\proxyd\CloneDeploy_Proxy_Dhcp.exe"" start= demand"; StatusMsg: "Installing Proxy Dhcp";
-
 ;Create Symlinks For ProxyDHCP
 Filename: cmd; Parameters: "/c mklink /J ""{app}\tftpboot\proxy\bios\kernels"" ""{app}\tftpboot\kernels"""; StatusMsg: "Creating Symlinks";
 Filename: cmd; Parameters: "/c mklink /J ""{app}\tftpboot\proxy\bios\images"" ""{app}\tftpboot\images"""; StatusMsg: "Creating Symlinks";
@@ -118,8 +115,8 @@ Filename: cmd; Parameters: "/c mklink /J ""{app}\tftpboot\proxy\efi32\images"" "
 Filename: cmd; Parameters: "/c mklink /J ""{app}\tftpboot\proxy\efi64\kernels"" ""{app}\tftpboot\kernels"""; StatusMsg: "Creating Symlinks";
 Filename: cmd; Parameters: "/c mklink /J ""{app}\tftpboot\proxy\efi64\images"" ""{app}\tftpboot\images"""; StatusMsg: "Creating Symlinks";
 [Registry]
-Root: "HKLM32"; Subkey: "SOFTWARE\CloneDeploy"; ValueType: string; ValueName: "AppVersion"; ValueData: "1001"; Flags: createvalueifdoesntexist; Check: not IsWin64
-Root: "HKLM64"; Subkey: "SOFTWARE\CloneDeploy"; ValueType: string; ValueName: "AppVersion"; ValueData: "1001"; Flags: createvalueifdoesntexist; Check: IsWin64
+Root: "HKLM32"; Subkey: "SOFTWARE\CloneDeploy"; ValueType: string; ValueName: "AppVersion"; ValueData: "1100"; Flags: createvalueifdoesntexist; Check: not IsWin64
+Root: "HKLM64"; Subkey: "SOFTWARE\CloneDeploy"; ValueType: string; ValueName: "AppVersion"; ValueData: "1100"; Flags: createvalueifdoesntexist; Check: IsWin64
 
 [Code]
 var
@@ -131,7 +128,7 @@ procedure InitializeWizard;
 begin
 AuthPage := CreateInputQueryPage(wpWelcome,
     'Setup', 'Information Needed',
-    'A Read Only And Read/Write SMB Share Will Be Created.  Create A Password For Each.  Also Create A Database Password');
+    'A Read Only And Read/Write SMB Share Will Be Created.  Create A Password For Each.  Also Create A Database Password.  Do Not Use The Following Characters < > " Ampersand  '+Chr(39)+'');
   AuthPage.Add('Share Read Only Password: (Complexity Requirements Apply To Server 2008, 2012)', True);
   AuthPage.Add('Share Read Write Password: (Complexity Requirements Apply To Server 2008, 2012)', True);
   AuthPage.Add('Database Password:', True);
@@ -326,8 +323,8 @@ end;
 function InitializeSetup(): Boolean;
 
 begin
-    MsgBox('This Installer Is Only For New Installations.'#13#13
-            'If You Are Upgrading, Use The Upgrade Installer.'#13
+    MsgBox('Warning: This Installer Is Only For New Installations.'#13#13
+            'If You Are Upgrading, Exit Now And Follow The Upgrade Documentation.'#13
             'See http://clonedeploy.org for more info', mbInformation, MB_OK);
 
     if not IsDotNetDetected('v4.5', 0) then begin

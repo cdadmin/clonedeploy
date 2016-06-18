@@ -166,6 +166,13 @@ namespace Service.Client
 
         }
 
+        public string GetMunkiBasicAuth(int profileId)
+        {
+            var imageProfile = BLL.ImageProfile.ReadProfile(profileId);
+            var authString = imageProfile.MunkiAuthUsername + ":" + imageProfile.MunkiAuthPassword;
+            return Helpers.Utility.Encode(authString);
+        }
+
         public string DistributionPoint(int dpId, string task)
         {
             var smb = new Services.Client.SMB();
@@ -316,7 +323,7 @@ namespace Service.Client
 
         }
 
-        public string CheckHdRequirements(int profileId, int clientHdNumber, string newHdSize, string imageSchemaDrives)
+        public string CheckHdRequirements(int profileId, int clientHdNumber, string newHdSize, string imageSchemaDrives, int clientLbs)
         {
             var result = new Services.Client.HardDriveSchema();
             
@@ -347,8 +354,23 @@ namespace Service.Client
 
             var newHdBytes = Convert.ToInt64(newHdSize);
             var minimumSize = partitionHelper.HardDrive(result.SchemaHdNumber,newHdBytes);
-           
-           
+
+            if (clientLbs != 0) //if zero should be from the osx imaging environment
+            {
+                if (clientLbs != imageSchema.HardDrives[result.SchemaHdNumber].Lbs)
+                {
+                    Logger.Log("Error: The Logical Block Size Of This Hard Drive " + clientLbs +
+                               " Does Not Match The Original Image " + imageSchema.HardDrives[result.SchemaHdNumber].Lbs);
+
+
+                    result.IsValid = "false";
+                    result.Message = "The Logical Block Size Of This Hard Drive " + clientLbs +
+                                     " Does Not Match The Original Image " +
+                                     imageSchema.HardDrives[result.SchemaHdNumber].Lbs;
+                    return JsonConvert.SerializeObject(result);
+                }
+            }
+
             if (minimumSize > newHdBytes)
             {
                 Logger.Log("Error:  " + newHdBytes / 1024 / 1024 +
@@ -533,11 +555,16 @@ namespace Service.Client
             
         }
 
-        public string ImageList(int userId = 0)
+        public string ImageList(string environment,int userId = 0)
         {
             var imageList = new Services.Client.ImageList { Images = new List<string>() };
 
-            foreach (var image in BLL.Image.GetOnDemandImageList(userId))
+            var images = BLL.Image.GetOnDemandImageList(userId);
+            if(environment == "macOS")
+                images = images.Where(x => x.Environment == "macOS").ToList();
+            else if(environment == "linux")
+                images = images.Where(x => x.Environment == "linux").ToList();
+            foreach (var image in images)
                 imageList.Images.Add(image.Id + " " + image.Name);
 
             if (imageList.Images.Count == 0)
@@ -579,7 +606,34 @@ namespace Service.Client
         {
             var image = new Models.Image()
             {
-                Name = imageName
+                Name = imageName,
+                Environment = "linux",
+                Type = "Block",
+                Enabled = 1,
+                IsVisible = 1,
+                Os = "",
+                Description = ""
+            };
+            var result = BLL.Image.AddImage(image);
+            if (result.IsValid)
+                result.Message = image.Id.ToString();
+
+            return JsonConvert.SerializeObject(result);
+        }
+
+        public string AddImageOsxEnv(string imageName)
+        {
+            var image = new Models.Image()
+            {
+                Name = imageName,
+                Environment = "macOS",
+                Type = "Block",
+                OsxType = "thick",
+                Enabled = 1,
+                IsVisible = 1,
+                Os = "",
+                Description = ""
+
             };
             var result = BLL.Image.AddImage(image);
             if (result.IsValid)

@@ -12,7 +12,7 @@ public partial class views_images_profiles_task : Images
             chkGlobalNoClock.Checked = Convert.ToBoolean(ImageProfile.SkipClock);
             chkWebCancel.Checked = Convert.ToBoolean(ImageProfile.WebCancel);
             ddlTaskComplete.Text = ImageProfile.TaskCompletedAction;
-
+            if (Image.Environment == "macOS") nolinuxhide.Visible = false;
         }
     }
 

@@ -1,29 +1,14 @@
 ﻿<%@ Application Language="C#" %>
 <%@ Import Namespace="System.Web.Http" %>
 <%@ Import Namespace="System.Web.Routing" %>
-<%@ Import Namespace="Swashbuckle.Application" %>
+
 
 
 <script runat="server">
  
     void Application_Start(object sender, EventArgs e)
-    {
-        GlobalConfiguration.Configuration
-            .EnableSwagger(c =>
-            {
-                c.SingleApiVersion("v1", "CloneDeploy Web API");
-               
-            })
-             .EnableSwaggerUi(c =>
-        {
-           
-        });
-            
-
-     
-
+    {  
         GlobalConfiguration.Configuration.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
-
         RouteTable.Routes.MapHttpRoute(
             name: "DefaultApi",
             routeTemplate: "api/{controller}/{action}/{id}",

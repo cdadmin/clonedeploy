@@ -50,6 +50,23 @@ namespace BLL
             }
         }
 
+        public static List<Models.ImageProfile> GetAllProfiles()
+        {
+            List<Models.ImageProfile> imageProfiles;
+            using (var uow = new DAL.UnitOfWork())
+            {
+                imageProfiles = uow.ImageProfileRepository.Get(orderBy: (q => q.OrderBy(p => p.Name)));
+            }
+
+            foreach (var imageProfile in imageProfiles)
+            {
+                imageProfile.Image = BLL.Image.GetImage(imageProfile.ImageId);
+            }
+
+            return imageProfiles.OrderBy(x => x.Image.Name).ToList();
+            
+        }
+
         public static Models.ValidationResult UpdateProfile(Models.ImageProfile profile)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -118,7 +135,7 @@ namespace BLL
             return validationResult;
         }
 
-        public static Models.ImageProfile SeedDefaultImageProfile()
+        public static Models.ImageProfile SeedDefaultImageProfile(Models.Image image)
         {
             var imageProfile = new Models.ImageProfile();
             imageProfile.Kernel = Settings.DefaultKernel32;
@@ -138,6 +155,9 @@ namespace BLL
             imageProfile.CompressionLevel = "1";
             imageProfile.TaskCompletedAction = "Reboot";
             imageProfile.ChangeName = 1;
+            if (image.Environment == "macOS")
+                imageProfile.OsxTargetVolume = "Macintosh HD";
+
             return imageProfile;
         }
 

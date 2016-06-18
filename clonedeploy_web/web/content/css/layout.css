@@ -78,6 +78,7 @@ body{ overflow-x: initial; }
 #leftnav{ width: 100%;}
 #title h1{ font-size: 18px;margin-left: 0;margin-top: 20px;}
 #title{ width: auto;}
+.username{ display: none;}
 }
 
 @media only screen and (min-width: 480px) and (max-width: 679px) {
@@ -96,10 +97,12 @@ body{ overflow-x: initial; }
 .nav-bar-mobile{display:inline;}
 .nav-menu-mobile{ display: inline;}
 
+
 .sub-nav-text{ font-size: 18px;}
 
 .sub-nav li { display: inline-block; margin-left: 0;}
 .sub-nav li a { width: auto;}
+
 #leftnav{ width: 100%;}
 
 .breadCrumb ul li {width:100%}
@@ -116,7 +119,7 @@ Table.gv-confirm{width:440px;}
 .mobi-hide-small{display:none;}
 .mobi-hide-smaller{display:none;}
 
-
+.username{ display: none;}
 }
 
 
@@ -137,14 +140,14 @@ body{ overflow-x: initial; }
 .page-nav-menu li { width: 100%;}
 .sub-nav li { width: 100%;font-size: 18px;}
 .sub-nav-text{ font-size: 18px;}
-.actions_container{ margin-right: 0;margin-top: 0;}
+.actions_container{ margin-top: 0;margin-right: 0;}
 .sub-nav li { display: inline-block;margin-left: 0; }
 .sub-nav li a { width: auto;}
 #leftnav{ width: 100%;}
 
 .breadCrumb ul li {width:100%}
 .breadCrumb ul li.first a{ font-size: 24px;}
-a.actions{width: 270px; margin-left: 5px;}
+a.actions{width: 250px; margin-left: 5px;}
 
 input[type="text"]{width:100%;margin-bottom:15px;}
 Table.Gridview{width:300px;}
@@ -159,6 +162,7 @@ a.confirm_no{width:75px; }
 .mobi-hide-small{display:none;}
 .mobi-hide-smaller{display:none;}
 .mobi-hide-smallest{display:none;}
+.username{ display: none;}
 }
 
 

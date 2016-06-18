@@ -4,6 +4,11 @@
 
 computer_id=$1
 reporter_type=$2
+is_ondemand=$3
+
+if [ "$is_ondemand" = "true" ]; then
+  exit 
+fi
 
 if [ "$reporter_type" = "partclone" ]; then
   while [ -f "/tmp/clone.progress" ]; do
@@ -14,11 +19,15 @@ if [ "$reporter_type" = "partclone" ]; then
 else
   while [ -f "/tmp/wim.progress" ]; do
     if [ "$reporter_type" = "wimup" ]; then
-      post=$(cat /tmp/wim.progress | dos2unix | sed -e 's/    /\n/g' | sed -e 's/done)/)\n/g' | tail -n 1)
+      post=$(cat /tmp/wim.progress | dos2unix | sed -e 's/done/\n/g' | tail -n 1)
     else #wimdown
       post=$(cat /tmp/wim.progress | dos2unix | sed -e 's/done/\n/g' | tail -n 1)
     fi
 	
+	 if [[ "$post" == *"scanned"* ]]; then
+	   post="Scanning Files."
+	 fi
+	 
     if [ -z "$post" ]; then
       post="Please Wait."
     fi

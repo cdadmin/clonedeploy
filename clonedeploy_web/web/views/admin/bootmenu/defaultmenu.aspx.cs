@@ -32,24 +32,29 @@ public partial class views_admin_bootmenu_defaultmenu : Admin
             }
             if (efi64File.Contains("grub"))
                 grubProxyPasses.Visible = true;
-          
-                ddlBiosKernel.DataSource = Utility.GetKernels();
-                ddlBiosKernel.DataBind();
-                ddlEfi32Kernel.DataSource = Utility.GetKernels();
-                ddlEfi32Kernel.DataBind();
-                ddlEfi64Kernel.DataSource = Utility.GetKernels();
-                ddlEfi64Kernel.DataBind();
 
-              
-                ddlBiosBootImage.DataSource = Utility.GetBootImages();
-                ddlBiosBootImage.DataBind();
-                ddlEfi32BootImage.DataSource = Utility.GetBootImages();
-                ddlEfi32BootImage.DataBind();
-                ddlEfi64BootImage.DataSource = Utility.GetBootImages();
-                ddlEfi64BootImage.DataBind();
+            ddlBiosKernel.DataSource = Utility.GetKernels();
+            ddlBiosKernel.DataBind();
+            ddlBiosKernel.SelectedValue = Settings.DefaultKernel32;
+            ddlEfi32Kernel.DataSource = Utility.GetKernels();
+            ddlEfi32Kernel.DataBind();
+            ddlEfi32Kernel.SelectedValue = Settings.DefaultKernel32;
+            ddlEfi64Kernel.DataSource = Utility.GetKernels();
+            ddlEfi64Kernel.DataBind();
+            ddlEfi64Kernel.SelectedValue = Settings.DefaultKernel64;
 
-              
-          
+            ddlBiosBootImage.DataSource = Utility.GetBootImages();
+            ddlBiosBootImage.DataBind();
+            ddlBiosBootImage.SelectedValue = Settings.DefaultInit;
+            ddlEfi32BootImage.DataSource = Utility.GetBootImages();
+            ddlEfi32BootImage.DataBind();
+            ddlEfi32BootImage.SelectedValue = Settings.DefaultInit;
+            ddlEfi64BootImage.DataSource = Utility.GetBootImages();
+            ddlEfi64BootImage.DataBind();
+            ddlEfi64BootImage.SelectedValue = Settings.DefaultInit;
+
+
+
         }
         else
         {
@@ -71,14 +76,16 @@ public partial class views_admin_bootmenu_defaultmenu : Admin
                 grubPassBoxes.Visible = true;
                 ipxePassBoxes.Visible = false;
             }
-          
-                ddlComputerKernel.DataSource = Utility.GetKernels();
-                ddlComputerKernel.DataBind();
-               
-           
-                ddlComputerBootImage.DataSource = Utility.GetBootImages();
-                ddlComputerBootImage.DataBind();
-              
+
+            ddlComputerKernel.DataSource = Utility.GetKernels();
+            ddlComputerKernel.DataBind();
+            ddlComputerKernel.SelectedValue = Settings.DefaultKernel32;
+
+
+            ddlComputerBootImage.DataSource = Utility.GetBootImages();
+            ddlComputerBootImage.DataBind();
+            ddlComputerBootImage.SelectedValue = Settings.DefaultInit;
+
         }
     }
 

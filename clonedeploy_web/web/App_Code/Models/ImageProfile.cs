@@ -101,6 +101,15 @@ namespace Models
         [Column("munki_repo_url", Order = 31)]
         public string MunkiRepoUrl { get; set; }
 
+        [Column("munki_auth_username", Order = 32)]
+        public string MunkiAuthUsername { get; set; }
+
+        [Column("munki_auth_password", Order = 33)]
+        public string MunkiAuthPassword { get; set; }
+
+        [Column("wim_enabled_multicast", Order = 34)]
+        public int WimMulticastEnabled { get; set; }
+
         [NotMapped]
         public virtual Models.Image Image { get; set; }
 

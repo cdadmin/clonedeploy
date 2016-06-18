@@ -28,12 +28,17 @@ namespace Helpers
 
         public static string DefaultKernel32
         {
-            get { return "4.4.3"; }
+            get { return "4.5"; }
         }
         
         public static string DefaultKernel64
         {
-            get { return "4.4.3x64"; }
+            get { return "4.5x64"; }
+        }
+
+        public static string DefaultInit
+        {
+            get { return "initrd.xz"; }
         }
 
         public static string EndPort

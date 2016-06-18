@@ -99,7 +99,7 @@
             </div>
              
             <div class="content_container">
-                
+              
                 <br class="clear;" />
                 <div id="leftnav">
                     <div class="sub-nav">
@@ -152,9 +152,9 @@
 
                     </div>
                 </div>
-
+                    <asp:LinkButton ID="LogOut" runat="server" OnClick="LogOut_OnClick" CssClass="username"></asp:LinkButton>
             </div>
-             <asp:LinkButton ID="LogOut" runat="server" OnClick="LogOut_OnClick" CssClass="username"></asp:LinkButton>
+           
         </div>
            
     </form>

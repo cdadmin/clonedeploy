@@ -6,15 +6,15 @@ if [ "$started_from_init" != "true" ]; then
 	error "Script Cannot Be Started This Way, Exports Are Not Set."
 fi
 
-taskType=$(dialog --backtitle "Clone Deploy" --title "Select A Task" --clear --menu "" 20 60 15 1 Deploy 2 Upload 3 Multicast --stdout)
+taskType=$(dialog --backtitle "CloneDeploy" --title "Select A Task" --clear --menu "" 20 60 15 1 Deploy 2 Upload 3 Multicast --stdout)
 
 if [ "$taskType" != "1" ] && [ "$taskType" != "2" ] && [ "$taskType" != "3" ]; then
 	error "Could Not Determine Task Type"
 fi
 
 if [ "$taskType" = "1" ]; then
-	imageList=`$curlAuth --data "userId=$user_id" "${web}ListImages" $curlEnd`
-	imageId=$(dialog --backtitle "Clone Deploy" --title "Select An Image" --clear --menu "" 20 60 15 `parse_json "$imageList" .Images[]` --stdout)
+	imageList=`$curlAuth --data "environment=linux&userId=$user_id" "${web}ListImages" $curlEnd`
+	imageId=$(dialog --backtitle "CloneDeploy" --title "Select An Image" --clear --menu "" 20 60 15 `parse_json "$imageList" .Images[]` --stdout)
 	if [ -z "$imageId"]; then
 	  error "No Image Was Selected Or No Images Have Been Added Yet"
 	fi
@@ -22,29 +22,66 @@ if [ "$taskType" = "1" ]; then
 	if [ "`parse_json "$imageProfileList" .Count`" = "1" ]; then
 		imageProfileId=`parse_json "$imageProfileList" .FirstProfileId`
 	else
-		imageProfileId=$(dialog --backtitle "Clone Deploy" --title "Select An Image Profile" --clear --menu "" 20 60 15 `parse_json "$imageProfileList" .ImageProfiles[]` --stdout)
+		imageProfileId=$(dialog --backtitle "CloneDeploy" --title "Select An Image Profile" --clear --menu "" 20 60 15 `parse_json "$imageProfileList" .ImageProfiles[]` --stdout)
 	fi	
 	ond_args=$($curlAuth --data "mac=$mac&objectId=$imageProfileId&task=push" "${web}GetOnDemandArguments" $curlEnd)
 	ond_args="${ond_args} task=push"
     
 elif [ "$taskType" = "2" ]; then
-  image_list=`$curlAuth --data "userId=$user_id" "${web}ListImages" $curlEnd`
-  image_id=$(dialog --backtitle "Clone Deploy" --title "Select An Image" --clear --menu "" 20 60 15 `parse_json "$image_list" .Images[]` --stdout)
-  if [ -z "$image_id"]; then
-	  error "No Image Was Selected Or No Images Have Been Added Yet"
+
+  new_or_existing=$(dialog --backtitle "CloneDeploy" --title "New Or Existing?" --clear --menu "" 20 60 15 1 "New Image" 2 "Existing Image" --stdout)
+
+  if [ "$new_or_existing" != "1" ] && [ "$new_or_existing" != "2" ]; then
+	error "Could Not Determine If This Is A New Or Existing Image"
   fi
-  profile_list=`$curlAuth --data "imageId=$image_id" "${web}ListImageProfiles" $curlEnd`
-  if [ "$(parse_json "$profile_list" .Count)" = "1" ]; then
-    image_profile_id=`parse_json "$profile_list" .FirstProfileId`
+  
+  
+  if [ "$new_or_existing" = "1" ]; then
+    while [ "$isError" != "false" ]; do
+	  if [ "$isError" = "true" ]; then
+	    new_image_name=$(dialog --backtitle "CloneDeploy" --title "Enter Image Name" --clear --inputbox "Invalid Name.  Enter An Image Name" 20 60 --stdout)
+	  else
+	     new_image_name=$(dialog --backtitle "CloneDeploy" --title "Enter Image Name" --clear --inputbox "Enter An Image Name" 20 60 --stdout)
+	  fi	
+	  
+	  if [ -z "$new_image_name" ]; then
+	    error "No Image Name Entered"
+	  fi
+	  
+		addImageResult=$($curlAuth --data "name=$new_image_name" ${web}AddImage $curlClose)
+		if [ ! "$?" = "0" ]; then
+			error "Could Not Add Image: $addImageResult"
+		else
+			if [ "$(parse_json "$addImageResult" .IsValid)" = "true" ]; then
+			  image_id="$(parse_json "$addImageResult" .Message)"
+			  isError="false"
+			else
+			  isError="true"
+			fi
+		fi
+   done
+    
   else
-    image_profile_id=$(dialog --backtitle "Clone Deploy" --title "Select An Image Profile" --clear --menu "" 20 60 15 `parse_json "$profile_list" .ImageProfiles[]` --stdout)
+    image_list=`$curlAuth --data "environment=linux&userId=$user_id" "${web}ListImages" $curlEnd`
+    image_id=$(dialog --backtitle "CloneDeploy" --title "Select An Image" --clear --menu "" 20 60 15 `parse_json "$image_list" .Images[]` --stdout)
   fi
+  
+    if [ -z "$image_id"]; then
+	  error "No Image Was Selected Or No Images Have Been Added Yet"
+    fi
+    profile_list=`$curlAuth --data "imageId=$image_id" "${web}ListImageProfiles" $curlEnd`
+    if [ "$(parse_json "$profile_list" .Count)" = "1" ]; then
+      image_profile_id=`parse_json "$profile_list" .FirstProfileId`
+    else
+      image_profile_id=$(dialog --backtitle "CloneDeploy" --title "Select An Image Profile" --clear --menu "" 20 60 15 `parse_json "$profile_list" .ImageProfiles[]` --stdout)
+    fi
+  
   ond_args=$($curlAuth --data "mac=$mac&objectId=$image_profile_id&task=pull" "${web}GetOnDemandArguments" $curlEnd)
   ond_args="${ond_args} task=pull"
 		
 elif [ "$taskType" = "3" ]; then
 	multicastList=`$curlAuth "${web}ListMulticasts" $curlEnd`
-	multicastId=$(dialog --backtitle "Clone Deploy" --title "Select A Multicast Session" --clear --menu "" 20 60 15 `parse_json "$multicastList" .Multicasts[]` --stdout)
+	multicastId=$(dialog --backtitle "CloneDeploy" --title "Select A Multicast Session" --clear --menu "" 20 60 15 `parse_json "$multicastList" .Multicasts[]` --stdout)
 	if [ -z "$multicastId"]; then
 	  error "No Multicast Session Was Selected Or There Are No Active Sessions"
 	fi

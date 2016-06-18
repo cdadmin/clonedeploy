@@ -55,6 +55,11 @@
                     <span class="sub-nav-text">Munki</span>
                 </a>
             </li>
+              <li id="kernel">
+                <a href="<%= ResolveUrl("~/views/global/profileupdater/kernel.aspx?cat=sub1") %>" >
+                    <span class="sub-nav-text">Image Profile Updater</span>
+                </a>
+            </li>
              
             
 

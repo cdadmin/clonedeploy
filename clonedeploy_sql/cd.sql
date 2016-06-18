@@ -27,7 +27,7 @@ CREATE TABLE `active_imaging_tasks` (
   `computer_id` int(11) NOT NULL,
   `task_status` varchar(45) DEFAULT NULL,
   `task_queue_position` int(11) DEFAULT '0',
-  `task_elapsed` varchar(100) DEFAULT NULL,
+  `task_elapsed` varchar(150) DEFAULT NULL,
   `task_remaining` varchar(45) DEFAULT NULL,
   `task_completed` varchar(45) DEFAULT NULL,
   `task_rate` varchar(45) DEFAULT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE `admin_settings` (
   `admin_setting_value` varchar(255) DEFAULT NULL,
   `admin_setting_category` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`admin_setting_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -98,7 +98,7 @@ CREATE TABLE `admin_settings` (
 
 LOCK TABLES `admin_settings` WRITE;
 /*!40000 ALTER TABLE `admin_settings` DISABLE KEYS */;
-INSERT INTO `admin_settings` VALUES (1,'AD Login Domain','',NULL),(2,'Client Receiver Args','',NULL),(3,'Debug Requires Login','Yes',NULL),(4,'Default Computer View','all',NULL),(5,'Force SSL','No',NULL),(6,'Global Computer Args','',NULL),(7,'Ipxe Requires Login','False',NULL),(8,'Multicast Decompression','client',NULL),(9,'On Demand','Enabled',NULL),(10,'On Demand Requires Login','Yes',NULL),(11,'Proxy Bios File','pxelinux',NULL),(12,'Proxy Dhcp','No',NULL),(13,'Proxy Efi32 File','syslinux',NULL),(14,'Proxy Efi64 File','syslinux',NULL),(15,'PXE Mode','pxelinux',NULL),(16,'Queue Size','2',NULL),(17,'Register Requires Login','Yes',NULL),(18,'Require Image Approval','True',NULL),(19,'Sender Args','',NULL),(20,'Server IP',NULL,NULL),(21,'Smtp Enabled','0',NULL),(22,'Smtp Mail From',NULL,NULL),(23,'Smtp Mail To',NULL,NULL),(24,'Smtp Password Encrypted',NULL,NULL),(25,'Smtp Port',NULL,NULL),(26,'Smtp Server',NULL,NULL),(27,'Smtp Ssl','No',NULL),(28,'Smtp Username',NULL,NULL),(29,'Tftp Path',NULL,NULL),(30,'Udpcast End Port','10000',NULL),(31,'Udpcast Start Port','9000',NULL),(32,'Universal Token',NULL,NULL),(33,'Web Path','http://[server-ip]/clonedeploy/service/client.asmx/',NULL),(34,'Web Server Port','80',NULL),(35,'Web Task Requires Login','Yes',NULL);
+INSERT INTO `admin_settings` VALUES (1,'AD Login Domain','',NULL),(2,'Client Receiver Args','',NULL),(3,'Debug Requires Login','Yes',NULL),(4,'Default Computer View','all',NULL),(5,'Force SSL','No',NULL),(6,'Global Computer Args','',NULL),(7,'Ipxe Requires Login','False',NULL),(8,'Multicast Decompression','client',NULL),(9,'On Demand','Enabled',NULL),(10,'On Demand Requires Login','Yes',NULL),(11,'Proxy Bios File','pxelinux',NULL),(12,'Proxy Dhcp','No',NULL),(13,'Proxy Efi32 File','syslinux',NULL),(14,'Proxy Efi64 File','syslinux',NULL),(15,'PXE Mode','pxelinux',NULL),(16,'Queue Size','2',NULL),(17,'Register Requires Login','Yes',NULL),(18,'Require Image Approval','True',NULL),(19,'Sender Args','',NULL),(20,'Server IP','',NULL),(21,'Smtp Enabled','0',NULL),(22,'Smtp Mail From',NULL,NULL),(23,'Smtp Mail To',NULL,NULL),(24,'Smtp Password Encrypted',NULL,NULL),(25,'Smtp Port',NULL,NULL),(26,'Smtp Server',NULL,NULL),(27,'Smtp Ssl','No',NULL),(28,'Smtp Username',NULL,NULL),(29,'Tftp Path','',NULL),(30,'Udpcast End Port','10000',NULL),(31,'Udpcast Start Port','9000',NULL),(32,'Universal Token','',NULL),(33,'Web Path','http://[server-ip]/clonedeploy/service/client.asmx/',NULL),(34,'Web Server Port','80',NULL),(35,'Web Task Requires Login','Yes',NULL),(36,'Ldap Server','',NULL),(37,'Ldap Port','',NULL),(38,'Ldap Auth Attribute','',NULL),(39,'Ldap Base DN','',NULL),(40,'Ldap Auth Type','',NULL),(41,'Ldap Enabled','',NULL),(42,'Munki Base Path','',NULL),(43,'Munki Path Type','Local',NULL),(44,'Munki SMB Username','',NULL),(45,'Munki SMB Password Encrypted','',NULL),(46,'Munki SMB Domain','',NULL);
 /*!40000 ALTER TABLE `admin_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -322,6 +322,9 @@ CREATE TABLE `clonedeploy_users` (
   `notify_on_error` tinyint(4) DEFAULT '0',
   `notify_on_complete` tinyint(4) DEFAULT '0',
   `notify_on_image_approved` tinyint(4) DEFAULT '0',
+  `clonedeploy_user_api_id` varchar(45) DEFAULT NULL,
+  `clonedeploy_user_api_key` varchar(45) DEFAULT NULL,
+  `clonedeploy_user_is_ldap` tinyint(4) DEFAULT '0',
   PRIMARY KEY (`clonedeploy_user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -332,7 +335,7 @@ CREATE TABLE `clonedeploy_users` (
 
 LOCK TABLES `clonedeploy_users` WRITE;
 /*!40000 ALTER TABLE `clonedeploy_users` DISABLE KEYS */;
-INSERT INTO `clonedeploy_users` VALUES (1,'clonedeploy','1XCXXUD7m+MUOMXP+2DWLL3SGLpgx2HnerBG7xAUmNo=','IyMrWdoCEKufx5pav5VpxE7z/LAdd9yjYIu/1+mUjD49+XEy8yRNwRj6zyW2msVBS4qZWQskDD/YV9nA42pG5Q==','Administrator',NULL,NULL,1,1,1,1);
+INSERT INTO `clonedeploy_users` VALUES (1,'clonedeploy','BWv6Qra79AdyvAQjG1Op5G9k1/httkKj+eU7ap9uqks=','6UoGwLEuu527C9mBMk+DfR8ZcpYaeIQuGM3rEWAwqT/ZFqVBxRs1hz8v+C6xNC3WSiZseg8h84Jgd3DBr2DtaQ==','Administrator','',NULL,1,1,1,1,NULL,NULL,0);
 /*!40000 ALTER TABLE `clonedeploy_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -358,7 +361,7 @@ CREATE TABLE `clonedeploy_version` (
 
 LOCK TABLES `clonedeploy_version` WRITE;
 /*!40000 ALTER TABLE `clonedeploy_version` DISABLE KEYS */;
-INSERT INTO `clonedeploy_version` VALUES (1,'1.0.0','100',0);
+INSERT INTO `clonedeploy_version` VALUES (1,'1.1.0','101',0);
 /*!40000 ALTER TABLE `clonedeploy_version` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -554,6 +557,30 @@ CREATE TABLE `computer_logs` (
 LOCK TABLES `computer_logs` WRITE;
 /*!40000 ALTER TABLE `computer_logs` DISABLE KEYS */;
 /*!40000 ALTER TABLE `computer_logs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `computer_munki_templates`
+--
+
+DROP TABLE IF EXISTS `computer_munki_templates`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `computer_munki_templates` (
+  `computer_munki_template_id` int(11) NOT NULL AUTO_INCREMENT,
+  `computer_id` int(11) DEFAULT NULL,
+  `munki_template_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`computer_munki_template_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `computer_munki_templates`
+--
+
+LOCK TABLES `computer_munki_templates` WRITE;
+/*!40000 ALTER TABLE `computer_munki_templates` DISABLE KEYS */;
+/*!40000 ALTER TABLE `computer_munki_templates` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -797,6 +824,30 @@ LOCK TABLES `group_membership` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `group_munki_templates`
+--
+
+DROP TABLE IF EXISTS `group_munki_templates`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `group_munki_templates` (
+  `group_munki_template_id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) DEFAULT NULL,
+  `munki_template_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`group_munki_template_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `group_munki_templates`
+--
+
+LOCK TABLES `group_munki_templates` WRITE;
+/*!40000 ALTER TABLE `group_munki_templates` DISABLE KEYS */;
+/*!40000 ALTER TABLE `group_munki_templates` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `groups`
 --
 
@@ -995,6 +1046,12 @@ CREATE TABLE `image_profiles` (
   `multicast_receiver_arguments` varchar(45) DEFAULT NULL,
   `web_cancel` tinyint(4) DEFAULT '0',
   `change_name` tinyint(4) DEFAULT '1',
+  `osx_target_volume` varchar(45) DEFAULT NULL,
+  `osx_install_munki` tinyint(4) DEFAULT '0',
+  `munki_repo_url` varchar(255) DEFAULT NULL,
+  `munki_auth_username` varchar(45) DEFAULT NULL,
+  `munki_auth_password` varchar(45) DEFAULT NULL,
+  `wim_enabled_multicast` tinyint(4) DEFAULT '0',
   PRIMARY KEY (`image_profile_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1026,6 +1083,9 @@ CREATE TABLE `images` (
   `image_type` varchar(45) DEFAULT NULL,
   `image_environment` varchar(45) DEFAULT NULL,
   `image_approved` tinyint(4) DEFAULT '0',
+  `image_osx_type` varchar(45) DEFAULT NULL,
+  `image_osx_thin_os` varchar(100) DEFAULT NULL,
+  `image_osx_thin_recovery` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`image_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1060,6 +1120,187 @@ CREATE TABLE `multicast_ports` (
 LOCK TABLES `multicast_ports` WRITE;
 /*!40000 ALTER TABLE `multicast_ports` DISABLE KEYS */;
 /*!40000 ALTER TABLE `multicast_ports` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `munki_manifest_catalogs`
+--
+
+DROP TABLE IF EXISTS `munki_manifest_catalogs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `munki_manifest_catalogs` (
+  `munki_manifest_catalog_id` int(11) NOT NULL AUTO_INCREMENT,
+  `munki_manifest_catalog_name` varchar(45) DEFAULT NULL,
+  `munki_manifest_catalog_priority` int(11) DEFAULT NULL,
+  `munki_manifest_template_id` int(11) NOT NULL,
+  PRIMARY KEY (`munki_manifest_catalog_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `munki_manifest_catalogs`
+--
+
+LOCK TABLES `munki_manifest_catalogs` WRITE;
+/*!40000 ALTER TABLE `munki_manifest_catalogs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `munki_manifest_catalogs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `munki_manifest_included_manifests`
+--
+
+DROP TABLE IF EXISTS `munki_manifest_included_manifests`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `munki_manifest_included_manifests` (
+  `munki_manifest_included_manifest_id` int(11) NOT NULL AUTO_INCREMENT,
+  `munki_manifest_included_manifest_name` varchar(45) DEFAULT NULL,
+  `munki_manifest_template_id` varchar(45) DEFAULT NULL,
+  `munki_manifest_condition` text,
+  PRIMARY KEY (`munki_manifest_included_manifest_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `munki_manifest_included_manifests`
+--
+
+LOCK TABLES `munki_manifest_included_manifests` WRITE;
+/*!40000 ALTER TABLE `munki_manifest_included_manifests` DISABLE KEYS */;
+/*!40000 ALTER TABLE `munki_manifest_included_manifests` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `munki_manifest_managed_installs`
+--
+
+DROP TABLE IF EXISTS `munki_manifest_managed_installs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `munki_manifest_managed_installs` (
+  `munki_manifest_managed_install_id` int(11) NOT NULL AUTO_INCREMENT,
+  `munki_manifest_managed_install_name` varchar(45) DEFAULT NULL,
+  `munki_manifest_managed_install_version` varchar(45) DEFAULT NULL,
+  `munki_manifest_managed_install_include_version` tinyint(4) DEFAULT NULL,
+  `munki_manifest_template_id` int(11) DEFAULT NULL,
+  `munki_manifest_condition` text,
+  PRIMARY KEY (`munki_manifest_managed_install_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `munki_manifest_managed_installs`
+--
+
+LOCK TABLES `munki_manifest_managed_installs` WRITE;
+/*!40000 ALTER TABLE `munki_manifest_managed_installs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `munki_manifest_managed_installs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `munki_manifest_managed_uninstalls`
+--
+
+DROP TABLE IF EXISTS `munki_manifest_managed_uninstalls`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `munki_manifest_managed_uninstalls` (
+  `munki_manifest_managed_uninstall_id` int(11) NOT NULL AUTO_INCREMENT,
+  `munki_manifest_managed_uninstall_name` varchar(45) DEFAULT NULL,
+  `munki_manifest_managed_uninstall_version` varchar(45) DEFAULT NULL,
+  `munki_manifest_managed_uninstall_include_version` tinyint(4) DEFAULT NULL,
+  `munki_manifest_template_id` int(11) DEFAULT NULL,
+  `munki_manifest_condition` text,
+  PRIMARY KEY (`munki_manifest_managed_uninstall_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `munki_manifest_managed_uninstalls`
+--
+
+LOCK TABLES `munki_manifest_managed_uninstalls` WRITE;
+/*!40000 ALTER TABLE `munki_manifest_managed_uninstalls` DISABLE KEYS */;
+/*!40000 ALTER TABLE `munki_manifest_managed_uninstalls` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `munki_manifest_managed_updates`
+--
+
+DROP TABLE IF EXISTS `munki_manifest_managed_updates`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `munki_manifest_managed_updates` (
+  `munki_manifest_managed_update_id` int(11) NOT NULL AUTO_INCREMENT,
+  `munki_manifest_managed_update_name` varchar(45) DEFAULT NULL,
+  `munki_manifest_template_id` int(11) DEFAULT NULL,
+  `munki_manifest_condition` text,
+  PRIMARY KEY (`munki_manifest_managed_update_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `munki_manifest_managed_updates`
+--
+
+LOCK TABLES `munki_manifest_managed_updates` WRITE;
+/*!40000 ALTER TABLE `munki_manifest_managed_updates` DISABLE KEYS */;
+/*!40000 ALTER TABLE `munki_manifest_managed_updates` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `munki_manifest_optional_installs`
+--
+
+DROP TABLE IF EXISTS `munki_manifest_optional_installs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `munki_manifest_optional_installs` (
+  `munki_manifest_optional_install_id` int(11) NOT NULL AUTO_INCREMENT,
+  `munki_manifest_optional_install_name` varchar(45) DEFAULT NULL,
+  `munki_manifest_optional_install_version` varchar(45) DEFAULT NULL,
+  `munki_manifest_optional_install_include_version` tinyint(4) DEFAULT NULL,
+  `munki_manifest_template_id` int(11) DEFAULT NULL,
+  `munki_manifest_condition` text,
+  PRIMARY KEY (`munki_manifest_optional_install_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `munki_manifest_optional_installs`
+--
+
+LOCK TABLES `munki_manifest_optional_installs` WRITE;
+/*!40000 ALTER TABLE `munki_manifest_optional_installs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `munki_manifest_optional_installs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `munki_manifest_templates`
+--
+
+DROP TABLE IF EXISTS `munki_manifest_templates`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `munki_manifest_templates` (
+  `manifest_template_id` int(11) NOT NULL AUTO_INCREMENT,
+  `manifest_template_name` varchar(45) DEFAULT NULL,
+  `manifest_template_description` varchar(45) DEFAULT NULL,
+  `changes_applied` tinyint(4) DEFAULT '0',
+  PRIMARY KEY (`manifest_template_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `munki_manifest_templates`
+--
+
+LOCK TABLES `munki_manifest_templates` WRITE;
+/*!40000 ALTER TABLE `munki_manifest_templates` DISABLE KEYS */;
+/*!40000 ALTER TABLE `munki_manifest_templates` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1226,4 +1467,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-02-11 11:01:42
+-- Dump completed on 2016-06-16 21:10:17

@@ -29,7 +29,7 @@
     <div class="size-5 column">
         <asp:DropDownList ID="ddlEnvironment" runat="server" CssClass="ddlist" AutoPostBack="True" OnSelectedIndexChanged="ddlEnvironment_OnSelectedIndexChanged">
             <asp:ListItem>linux</asp:ListItem>
-            <asp:ListItem>osx</asp:ListItem>
+            <asp:ListItem>macOS</asp:ListItem>
         </asp:DropDownList>
     </div>
     <br class="clear"/>
@@ -94,7 +94,7 @@
     <br class="clear"/>
     <br />
     <div class="size-4 column">
-        Visible In On Demand:
+        Visible On Demand:
     </div>
     <div class="size-5 column">
         <asp:CheckBox ID="chkVisible" runat="server"/>

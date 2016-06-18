@@ -22,7 +22,7 @@ public partial class views_masters_Profile : MasterBaseMaster
         }
         if (Image == null) Response.Redirect("~/", true);
         divProfiles.Visible = false;
-        if (Image.Environment == "osx")
+        if (Image.Environment == "macOS")
         {
             osx_profile.Visible = true;
             linux_profile.Visible = false;

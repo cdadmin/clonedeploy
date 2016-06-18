@@ -19,6 +19,7 @@
         });
     </script>
     
+    <div id="divGpt" runat="server">
       <div class="size-9 column">
         Remove GPT Structures
     </div>
@@ -26,7 +27,9 @@
         <asp:CheckBox ID="chkRemoveGpt" runat="server" CssClass="textbox"></asp:CheckBox>
     </div>
     <br class="clear"/>
+    </div>
     
+    <div id="divShrink" runat="server">
      <div class="size-9 column">
         Don't Shrink Volumes
     </div>
@@ -42,7 +45,9 @@
         <asp:CheckBox ID="chkUpNoShrinkLVM" runat="server" CssClass="textbox"></asp:CheckBox>
     </div>
     <br class="clear"/>
-  
+  </div>
+
+    <div id="divCompression" runat="server">
     <div class="size-9 column">
     Compression Algorithm:
 </div>
@@ -71,7 +76,19 @@
         <asp:ListItem>9</asp:ListItem>
     </asp:DropDownList>
 </div>
-<br class="clear"/>
+        </div>
+    <br class="clear"/>
+    
+    <div id="divWimMulticast" runat="server">
+  <div class="size-9 column">
+        Enable Multicast Support:
+    </div>
+    <div class="size-8 column">
+        <asp:CheckBox ID="chkWimMulticast" runat="server"/>
+    </div>
+    <br class="clear"/>
+        </div>
+
     <div class="size-9 column">
         Only Upload Schema
     </div>

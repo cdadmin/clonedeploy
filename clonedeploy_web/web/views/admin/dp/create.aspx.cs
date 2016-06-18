@@ -26,8 +26,7 @@ public partial class views_admin_dp_create : Admin
             RoPassword = new Helpers.Encryption().EncryptText(txtRoPassword.Text),
             IsPrimary = Convert.ToInt16(chkPrimary.Checked),
             PhysicalPath = chkPrimary.Checked ? txtPhysicalPath.Text : "",           
-            IsBackend = Convert.ToInt16(chkBackend.Checked),
-            BackendServer = chkBackend.Checked ? txtBackendServer.Text : ""
+           
         };
 
         var result = BLL.DistributionPoint.AddDistributionPoint(distributionPoint);
@@ -49,8 +48,4 @@ public partial class views_admin_dp_create : Admin
         PhysicalPath.Visible = chkPrimary.Checked;
     }
 
-    protected void chkBackend_OnCheckedChanged(object sender, EventArgs e)
-    {
-        BackendServer.Visible = chkBackend.Checked;
-    }
 }

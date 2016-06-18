@@ -19,8 +19,8 @@ function create_all_partition_layouts
     logical_block_size="$(diskutil info $hard_drive | grep "Device Block Size:" | cut -d : -f2 | sed 's/Bytes//g' | sed -e 's/^[ \t]*//')"   
     hard_drive_size_bytes=$(diskutil info $hard_drive | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1 )
 	
-    log "Get hd_schema:  profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$hard_drive_size_bytes&schemaHds=$imaged_schema_drives"
-    hd_schema=$($curlAuth --data "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$hard_drive_size_bytes&schemaHds=$(remove_whitespace $imaged_schema_drives)" "${web}CheckHdRequirements" $curlEnd)
+    log "Get hd_schema:  profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$hard_drive_size_bytes&schemaHds=$imaged_schema_drives&clientLbs=0"
+    hd_schema=$($curlAuth --data "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$hard_drive_size_bytes&schemaHds=$(remove_whitespace $imaged_schema_drives)&clientLbs=0" "${web}CheckHdRequirements" $curlEnd)
     log "$hd_schema"
 	
     image_hd_to_use=$(parse_json "$hd_schema" .SchemaHdNumber)
@@ -198,8 +198,8 @@ function process_hard_drives()
     logical_block_size="$(diskutil info $hard_drive | grep "Device Block Size:" | cut -d : -f2 | sed 's/Bytes//g' | sed -e 's/^[ \t]*//')"   
     hard_drive_size_bytes=$(diskutil info $hard_drive | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1 )
 	
-    log "Get hd_schema:  profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$hard_drive_size_bytes&schemaHds=$imaged_schema_drives"
-    hd_schema=$($curlAuth --data "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$hard_drive_size_bytes&schemaHds=$(remove_whitespace $imaged_schema_drives)" "${web}CheckHdRequirements" $curlEnd)
+    log "Get hd_schema:  profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$hard_drive_size_bytes&schemaHds=$imaged_schema_drives&clientLbs=0"
+    hd_schema=$($curlAuth --data "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$hard_drive_size_bytes&schemaHds=$(remove_whitespace $imaged_schema_drives)&clientLbs=0" "${web}CheckHdRequirements" $curlEnd)
     log "$hd_schema"
 	
     image_hd_to_use=$(parse_json "$hd_schema" .SchemaHdNumber)
@@ -374,8 +374,8 @@ function create_partition_layout()
     bash /tmp/newPartLayout
   else
     log " ** Creating Partition Table On $hard_drive ** " "display"
-    log "imageProfileId=$profile_id&hdToGet=$image_hd_to_use&newHDSize=$hard_drive_size_bytes&clientHD=$hard_drive&taskType=deploy&partitionPrefix=$partition_prefix ${web}GetPartLayout" 
-    $curlAuth --data "imageProfileId=$profile_id&hdToGet=$image_hd_to_use&newHDSize=$hard_drive_size_bytes&clientHD=$hard_drive&taskType=deploy&partitionPrefix=$partition_prefix" "${web}GetPartLayout" $curlEnd > /tmp/newPartLayout
+    log "imageProfileId=$profile_id&hdToGet=$image_hd_to_use&newHDSize=$hard_drive_size_bytes&clientHD=$hard_drive&taskType=deploy&partitionPrefix=$partition_prefix&lbs=$logical_block_size ${web}GetPartLayout" 
+    $curlAuth --data "imageProfileId=$profile_id&hdToGet=$image_hd_to_use&newHDSize=$hard_drive_size_bytes&clientHD=$hard_drive&taskType=deploy&partitionPrefix=$partition_prefix&lbs=$logical_block_size" "${web}GetPartLayout" $curlEnd > /tmp/newPartLayout
 	if [ "$(cat /tmp/newPartLayout)" = "failed" ]; then
 	  error "Could Not Dynamically Create Partition Layout"
 	fi
@@ -424,6 +424,11 @@ function install_munki()
 	  defaults write "/Volumes/$osx_target_volume/Library/Preferences/ManagedInstalls" ClientIdentifier "$computer_name" >> $CLIENT_LOG
 	fi
     
+	if [ "$munki_requires_auth" = "true" ]; then
+	    munki_auth=$($curlAuth --data "profileId=$profile_id" "${web}GetMunkiBasicAuth" $curlEnd)
+		defaults write "/Volumes/$osx_target_volume/private/var/root/Library/Preferences/ManagedInstalls" AdditionalHttpHeaders -array "Authorization: Basic $munki_auth" >> $CLIENT_LOG
+	fi
+	
   fi
 }
 

@@ -17,6 +17,8 @@
             $('#task').addClass("nav-current");
         });
     </script>
+    
+    <div id="nolinuxhide" runat="server">
      <div class="size-9 column">
         Don't Download Core Scripts
     </div>
@@ -33,9 +35,9 @@
     </div>
     
       <br class="clear"/>
-    
+    </div>
     <div class="size-9 column">
-        Web Cancellable
+        Web Cancelable
     </div>
     <div class="size-8 column">
         <asp:CheckBox ID="chkWebCancel" runat="server" CssClass="textbox"></asp:CheckBox>

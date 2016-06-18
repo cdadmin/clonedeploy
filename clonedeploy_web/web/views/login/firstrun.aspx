@@ -1,11 +1,14 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/site.master" AutoEventWireup="true" CodeFile="firstrun.aspx.cs" Inherits="views_login_firstrun" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="Breadcrumb" Runat="Server">
+    <h4>CloneDeploy Initial Setup</h4>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubNav" Runat="Server">
-    <h4>Clone Deploy Initial Setup</h4>
+    &nbsp;
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">
+    
+
     <h5>Change The Admin Password:</h5>
     <br />
     <div class="size-4 column">
@@ -23,7 +26,7 @@
     </div>
      <br class="clear"/>
     <br />
-    <h5>Enter The IP Address Of The Clone Deploy Server:</h5>
+    <h5>Enter The IP Address Of The CloneDeploy Server:</h5>
     <br/>
     <div class="size-4 column">
         Server IP:
@@ -34,9 +37,9 @@
     <br class="clear"/>
     <br/>
     
-     <h5>An SMB Share Is Used For Uploading And Deploying Images.</h5>
-    <h5>Create A Read Only Password And A Read/Write Password For These Accounts.</h5>
-    <h5>If You Used The Automated Windows Installer, These Must Match The Values You Used During Installation.</h5>
+     <h5></h5>
+    <h5>Enter The SMB Share Passwords That Were Used During Installation.</h5>
+
     <br/>
     <div class="size-4 column">
         Read Only Password:
@@ -46,7 +49,7 @@
     </div>
     <br class="clear"/>
     <div class="size-4 column">
-        Read/Write Password:
+        Read / Write Password:
     </div>
     <div class="size-5 column">
         <asp:TextBox ID="txtReadWrite" runat="server" CssClass="textbox" TextMode="Password"></asp:TextBox>

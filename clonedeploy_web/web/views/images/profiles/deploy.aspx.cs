@@ -12,6 +12,8 @@ public partial class views_images_profiles_deploy : Images
     protected void Page_Load(object sender, EventArgs e)
     {
         if (IsPostBack) return;
+
+       
         chkDownNoExpand.Checked = Convert.ToBoolean(ImageProfile.SkipExpandVolumes);
         chkChangeName.Checked = Convert.ToBoolean(ImageProfile.ChangeName);
         chkAlignBCD.Checked = Convert.ToBoolean(ImageProfile.FixBcd);
@@ -20,9 +22,26 @@ public partial class views_images_profiles_deploy : Images
         chkDownForceDynamic.Checked = Convert.ToBoolean(ImageProfile.ForceDynamicPartitions);
         chkInstallMunki.Checked = Convert.ToBoolean(ImageProfile.OsxInstallMunki);
         txtMunkiRepoUrl.Text = ImageProfile.MunkiRepoUrl;
-        txtTargetVolume.Text = string.IsNullOrEmpty(ImageProfile.OsxTargetVolume) ? "Macintosh HD" : ImageProfile.OsxTargetVolume;
+        txtTargetVolume.Text = ImageProfile.OsxTargetVolume;
+        txtMunkiUsername.Text = ImageProfile.MunkiAuthUsername;
+
         if (chkDownForceDynamic.Checked) ddlPartitionMethod.Enabled = false;
         ForceDiv.Visible = ddlPartitionMethod.Text == "Dynamic";
+        if (Image.Environment == "macOS")
+        {
+            divBoot.Visible = false;
+            divExpandVol.Visible = false;
+            ForceDiv.Visible = false;
+        }
+        else if (Image.Environment == "linux" && Image.Type == "File")
+        {
+            divExpandVol.Visible = false;
+            divOsx.Visible = false;
+        }
+        else
+        {
+            divOsx.Visible = false;
+        }
         DisplayLayout();
     }
 
@@ -39,6 +58,9 @@ public partial class views_images_profiles_deploy : Images
         imageProfile.OsxTargetVolume = txtTargetVolume.Text;
         imageProfile.PartitionMethod = ddlPartitionMethod.Text;
         imageProfile.ForceDynamicPartitions = Convert.ToInt16(chkDownForceDynamic.Checked);
+        imageProfile.MunkiAuthUsername = txtMunkiUsername.Text;
+        if(!string.IsNullOrEmpty(txtMunkiPassword.Text))
+            imageProfile.MunkiAuthPassword = new Helpers.Encryption().EncryptText(txtMunkiPassword.Text);
         switch (ddlPartitionMethod.SelectedIndex)
         {
             case 0:
@@ -66,6 +88,11 @@ public partial class views_images_profiles_deploy : Images
     protected void ddlPartitionMethod_OnSelectedIndexChanged(object sender, EventArgs e)
     {
         ForceDiv.Visible = ddlPartitionMethod.Text == "Dynamic";
+        if (Image.Environment == "macOS")
+        {
+            
+            ForceDiv.Visible = false;
+        }
         DisplayLayout();
     }
 

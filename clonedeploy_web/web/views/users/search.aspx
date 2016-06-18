@@ -8,7 +8,7 @@
      <a href="<%= ResolveUrl("~/views/help/index.html")%>"  target="_blank">Help</a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-          <a class="confirm actions green" href="#">Delete Selected Users</a>
+          <a class="confirm actions green" href="#">Delete Selected Users  &nbsp;</a>
 
 </asp:Content>
 

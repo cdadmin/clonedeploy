@@ -30,7 +30,7 @@ namespace BLL
             }
             if (validationResult.IsValid)
             {
-                var defaultProfile = BLL.ImageProfile.SeedDefaultImageProfile();
+                var defaultProfile = BLL.ImageProfile.SeedDefaultImageProfile(image);
                 defaultProfile.ImageId = image.Id;
                 BLL.ImageProfile.AddProfile(defaultProfile);
 
@@ -319,7 +319,7 @@ namespace BLL
         {
             var validationResult = new Models.ValidationResult();
 
-            if (string.IsNullOrEmpty(image.Name) || !image.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
+            if (string.IsNullOrEmpty(image.Name) || !image.Name.All(c => char.IsLetterOrDigit(c) || c == '_' || c == '-'))
             {
                 validationResult.IsValid = false;
                 validationResult.Message = "Image Name Is Not Valid";

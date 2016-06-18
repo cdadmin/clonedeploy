@@ -28,6 +28,8 @@
     <asp:CheckBox ID="chkChangeName" runat="server" CssClass="textbox"></asp:CheckBox>
 </div>
 <br class="clear"/>
+    
+    <div id="divExpandVol" runat="server">
 <div class="size-9 column">
     Don't Expand Volumes
 </div>
@@ -35,7 +37,9 @@
     <asp:CheckBox ID="chkDownNoExpand" runat="server" CssClass="textbox"></asp:CheckBox>
 </div>
 <br class="clear"/>
-
+        </div>
+    
+    <div id="divBoot" runat="server">
 <div class="size-9 column">
     Update BCD
 </div>
@@ -51,6 +55,8 @@
     <asp:CheckBox ID="chkRunFixBoot" runat="server" CssClass="textbox"></asp:CheckBox>
 </div>
 <br class="clear"/>
+        </div>
+    <div id="divOsx" runat="server">
     <div class="size-9 column">
     OS X Target Volume
 </div>
@@ -66,7 +72,7 @@
     <asp:CheckBox ID="chkInstallMunki" runat="server" CssClass="textbox"></asp:CheckBox>
 </div>
 <br class="clear"/>
-    <br class="clear"/>
+
     <div class="size-9 column">
     Munki Repo URL
 </div>
@@ -74,6 +80,22 @@
     <asp:TextBox ID="txtMunkiRepoUrl" runat="server" CssClass="textbox"></asp:TextBox>
 </div>
 <br class="clear"/>
+        
+         <div class="size-9 column">
+    Munki Basic Auth Username
+</div>
+<div class="size-5 column">
+    <asp:TextBox ID="txtMunkiUsername" runat="server" CssClass="textbox"></asp:TextBox>
+</div>
+<br class="clear"/>
+         <div class="size-9 column">
+    Munki Basic Auth Password
+</div>
+<div class="size-5 column">
+    <asp:TextBox ID="txtMunkiPassword" runat="server" CssClass="textbox" TextMode="Password"></asp:TextBox>
+</div>
+<br class="clear"/>
+        </div>
 <div class="size-9 column">
     Create Partitions Method
 </div>

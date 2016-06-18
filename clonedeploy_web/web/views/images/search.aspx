@@ -61,12 +61,12 @@
             </asp:TemplateField>
             <asp:BoundField DataField="Id" HeaderText="imageID" SortExpression="Id" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"/>
-            <asp:TemplateField ShowHeader="True" HeaderText="Size On Server" ItemStyle-CssClass="mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller">
+            <asp:TemplateField ShowHeader="True" HeaderText="Size On Server" ItemStyle-CssClass="width_200 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller">
                 <ItemTemplate>
                     <asp:Label ID="lblSize" runat="server" CausesValidation="false" CssClass="lbl_file"></asp:Label>
                 </ItemTemplate>
             </asp:TemplateField>
-         
+          <asp:BoundField DataField="Environment" HeaderText="Imaging Environment"  ></asp:BoundField>
 
             
 

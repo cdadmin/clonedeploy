@@ -87,7 +87,7 @@ namespace BLL
             }
         }
 
-        public static void ApiAuth()
+        public static int ApiAuth()
         {
             if (!HttpContext.Current.Request.IsSecureConnection)
               ApiErrorResponse("ssl");
@@ -103,7 +103,9 @@ namespace BLL
                 ApiErrorResponse("auth");
 
             if (user.ApiKey != apiKey)             
-                ApiErrorResponse("auth");           
+                ApiErrorResponse("auth");
+
+            return user.Id;
         }
 
         private static void ApiErrorResponse(string type)

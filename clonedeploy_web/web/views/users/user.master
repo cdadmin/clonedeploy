@@ -12,8 +12,7 @@
         <ul>
        <li id="searchuser">     <a  href="<%= ResolveUrl("~/views/users/search.aspx") %>"><span class="sub-nav-text">Search Users</span></a></li>
        <li id="createuser"><a  href="<%= ResolveUrl("~/views/users/create.aspx") %>"><span class="sub-nav-text">New User</span></a></li>
-             <li id="searchusergroup">     <a  href="<%= ResolveUrl("~/views/users/searchgroups.aspx") %>"><span class="sub-nav-text">Search User Groups</span></a></li>
-       <li id="createusergroup"><a  href="<%= ResolveUrl("~/views/users/creategroups.aspx") %>"><span class="sub-nav-text">New User Group</span></a></li>
+        
       
        </ul>
         </div>

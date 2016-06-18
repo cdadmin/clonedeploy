@@ -29,8 +29,7 @@ public partial class views_admin_dp_edit : Admin
             : distributionPoint.RoPassword;
         distributionPoint.IsPrimary = Convert.ToInt16(chkPrimary.Checked);
         distributionPoint.PhysicalPath = chkPrimary.Checked ? txtPhysicalPath.Text : "";
-        distributionPoint.IsBackend = Convert.ToInt16(chkBackend.Checked);
-        distributionPoint.BackendServer = chkBackend.Checked ? txtBackendServer.Text : "";
+       
 
         var result = BLL.DistributionPoint.UpdateDistributionPoint(distributionPoint);
         EndUserMessage = result.IsValid ? "Successfully Updated Distribution Point" : result.Message;
@@ -41,10 +40,7 @@ public partial class views_admin_dp_edit : Admin
         PhysicalPath.Visible = chkPrimary.Checked;
     }
 
-    protected void chkBackend_OnCheckedChanged(object sender, EventArgs e)
-    {
-        BackendServer.Visible = chkBackend.Checked;
-    }
+
 
     protected void PopulateForm()
     {
@@ -62,8 +58,7 @@ public partial class views_admin_dp_edit : Admin
         chkPrimary.Checked = Convert.ToBoolean(distributionPoint.IsPrimary);
         if (chkPrimary.Checked) PhysicalPath.Visible = true;
         txtPhysicalPath.Text = distributionPoint.PhysicalPath;
-        chkBackend.Checked = Convert.ToBoolean(distributionPoint.IsBackend);
-        if (chkBackend.Checked) BackendServer.Visible = true;
+
         txtBackendServer.Text = distributionPoint.BackendServer;
 
 

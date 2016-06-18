@@ -12,7 +12,7 @@ public partial class views_images_profiles_create : Images
     protected void buttonCreateProfile_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.CreateProfile);
-        var defaultProfile = BLL.ImageProfile.SeedDefaultImageProfile();
+        var defaultProfile = BLL.ImageProfile.SeedDefaultImageProfile(Image);
         defaultProfile.ImageId = Image.Id;
         defaultProfile.Name = txtProfileName.Text;
         defaultProfile.Description = txtProfileDesc.Text;

@@ -29,16 +29,9 @@ namespace views.images
                 Enabled = 1
             };
 
-            image.Type = ddlEnvironment.Text == "osx" ? "Block" : ddlImageType.Text;
-            if (ddlEnvironment.Text == "osx")
-            {
-                image.OsxType = ddlOsxImageType.Text;
-                if (image.OsxType == "thin")
-                {
-                    image.OsxThinOs = ddlThinOS.Text;
-                    image.OsxThinRecovery = ddlThinRecovery.Text;
-                }
-            }
+            image.Type = ddlEnvironment.Text == "macOS" ? "Block" : ddlImageType.Text;
+            image.OsxType = ddlEnvironment.Text == "macOS" ? "thick" : "";
+           
            
             var result = BLL.Image.AddImage(image);
             if (result.IsValid)
@@ -55,16 +48,15 @@ namespace views.images
 
         protected void ddlEnvironment_OnSelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ddlEnvironment.Text == "osx")
+            if (ddlEnvironment.Text == "macOS")
             {
                 imageType.Visible = false;
-                osxImageType.Visible = true;
+               
             }
             else
             {
                 imageType.Visible = true;
-                osxImageType.Visible = false;
-                thinImage.Visible = false;
+               
             }
         }
 

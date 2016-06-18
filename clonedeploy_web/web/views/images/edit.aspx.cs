@@ -39,13 +39,14 @@ namespace views.images
             txtImageDesc.Text = Image.Description;
             ddlImageType.Text = Image.Type;
             ddlEnvironment.Text = Image.Environment;
-            if (Image.Environment == "osx")
+            if (Image.Environment == "macOS")
             {
-                osxImageType.Visible = true;
+                osxImageType.Visible = false;
+                imageType.Visible = false;
                 ddlOsxImageType.Text = Image.OsxType;
                 if (Image.OsxType == "thin")
                 {
-                    thinImage.Visible = true;
+                    thinImage.Visible = false;
                     ddlThinOS.DataSource = Utility.GetThinImages();
                     ddlThinOS.DataBind();
                     ddlThinRecovery.DataSource = Utility.GetThinImages();

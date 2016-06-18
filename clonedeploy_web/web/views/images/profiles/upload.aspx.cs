@@ -30,6 +30,7 @@ public partial class views_images_profiles_upload : Images
         imageProfile.Compression = ddlCompAlg.Text;
         imageProfile.CompressionLevel = ddlCompLevel.Text;
         imageProfile.UploadSchemaOnly = Convert.ToInt16(chkSchemaOnly.Checked);
+        imageProfile.WimMulticastEnabled = Convert.ToInt16(chkWimMulticast.Checked);
         var result = BLL.ImageProfile.UpdateProfile(imageProfile);
         EndUserMessage = result.IsValid ? "Successfully Updated Image Profile" : result.Message;
     }
@@ -140,12 +141,30 @@ public partial class views_images_profiles_upload : Images
 
     protected void DisplayLayout()
     {
+        if (Image.Environment == "macOS")
+        {
+            divCompression.Visible = false;
+            divGpt.Visible = false;
+            divShrink.Visible = false;
+            divWimMulticast.Visible = false;
+        }
+        else if (Image.Environment == "linux" && Image.Type == "Block")
+        {
+            divWimMulticast.Visible = false;
+
+        }
+        else if (Image.Environment == "linux" && Image.Type == "File")
+        {
+            divCompression.Visible = false;
+            divShrink.Visible = false;
+        }
         chkRemoveGpt.Checked = Convert.ToBoolean(ImageProfile.RemoveGPT);
         chkUpNoShrink.Checked = Convert.ToBoolean(ImageProfile.SkipShrinkVolumes);
         chkUpNoShrinkLVM.Checked = Convert.ToBoolean(ImageProfile.SkipShrinkLvm);
         ddlCompAlg.Text = ImageProfile.Compression;
         ddlCompLevel.Text = ImageProfile.CompressionLevel;
         chkSchemaOnly.Checked = Convert.ToBoolean(ImageProfile.UploadSchemaOnly);
+        chkWimMulticast.Checked = Convert.ToBoolean(ImageProfile.WimMulticastEnabled);
         if (!string.IsNullOrEmpty(ImageProfile.CustomUploadSchema))
         {
             chkCustomUpload.Checked = true;

@@ -14,6 +14,7 @@
                 $('#apple').addClass("nav-current");
             });
         </script>
+    <p class="margin-bottom-10 bold">Enter the IP Address that your CloneDeploy Proxy DHCP Server is bound to.  It may or may not be the same as your CloneDeploy Server IP.</p>
     <div class="size-4 column">
                 NetBoot Server IP:
      </div>
@@ -21,8 +22,15 @@
                <asp:TextBox runat="server" Id="txtServerIp" ></asp:TextBox>
             </div>
             <br class="clear"/>
+    <br/><br/>
     
-  
+        <p class="bold">Enter an Id and NetBoot name for each NetBoot Image your CloneDeploy Proxy DHCP Server will provide.</p>
+        <p class="bold">An Id can be any number between 1 - 65535.</p>
+        <p class="bold">1–4095 indicates a local image unique to the server.</p>
+        <p class="bold">4096–65535 is a duplicate, identical image stored on multiple servers for load balancing.</p>
+
+  <br class="clear"/>
+    <br/>
     <div class="size-1 column">
     <asp:GridView ID="gvNetBoot" runat="server" AutoGenerateColumns="false"  CssClass="Gridview" ShowFooter="True" OnRowDeleting="OnRowDeleting">
 <Columns>
@@ -67,7 +75,10 @@
 </Columns>
 </asp:GridView>
         </div>
-
+    <br class="clear" />
+    <asp:Label runat="server" ID="directions" CssClass="bold"></asp:Label>
+    <br/>
+    <p class="bold">Copy and Paste this string into your CloneDeploy Proxy DHCP config.ini file, for the apple-vendor-specific-information key</p>
     <asp:TextBox runat="server" ID="txtOut"></asp:TextBox>
 </asp:Content>
 

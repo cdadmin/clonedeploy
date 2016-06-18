@@ -34,8 +34,8 @@ function process_hard_drives()
  
     drive_size_bytes=$(expr $lbs '*' $drive_size_block)
 	
-    log "Get hd_schema:  profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$drive_size_bytes&schemaHds=$imaged_schema_drives"
-    hd_schema=$($curlAuth --data "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$drive_size_bytes&schemaHds=$(remove_whitespace $imaged_schema_drives)" "${web}CheckHdRequirements" $curlEnd)
+    log "Get hd_schema:  profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$drive_size_bytes&schemaHds=$imaged_schema_drives&clientLbs=$lbs"
+    hd_schema=$($curlAuth --data "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$drive_size_bytes&schemaHds=$(remove_whitespace $imaged_schema_drives)&clientLbs=$lbs" "${web}CheckHdRequirements" $curlEnd)
     log "$hd_schema"
 	
     image_hd_to_use=$(parse_json "$hd_schema" .SchemaHdNumber)
@@ -241,19 +241,19 @@ function download_image()
 			
   if [ "$multicast" = "true" ]; then
     if [ "$decompress_multicast_on_client" = "true" ]; then
-	    log "cd_reporter $computer_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
-      cd_reporter $computer_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
+	    log "cd_reporter $computer_id partclone $is_ondemand & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
+      cd_reporter $computer_id partclone $is_ondemand & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
 	else #dcompress on server
-      log "cd_reporter $computer_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
-      cd_reporter $computer_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
+      log "cd_reporter $computer_id partclone $is_ondemand & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
+      cd_reporter $computer_id partclone $is_ondemand & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
     fi
   else #unicast
     if [ "$partCompAlg" = "none" ]; then #no compression
-	   cd_reporter $computer_id partclone & partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -s $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).uncp -o $destination
-	   log "cd_reporter $computer_id partclone & partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -s $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).uncp -o $destination"
+	   cd_reporter $computer_id partclone $is_ondemand & partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -s $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).uncp -o $destination
+	   log "cd_reporter $computer_id partclone $is_ondemand & partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -s $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).uncp -o $destination"
 	else #compression in use
-      log "cd_reporter $computer_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
-      cd_reporter $computer_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
+      log "cd_reporter $computer_id partclone $is_ondemand & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
+      cd_reporter $computer_id partclone $is_ondemand & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
 	fi
   fi
 			
@@ -267,10 +267,12 @@ function download_image()
 	  mkfs.$(parse_json "$current_object" .FileSystem) -f $destination &>> $CLIENT_LOG
 	elif [ "$(parse_json "$current_object" .FileSystem)" = "xfs" ]; then
 	  log "mkfs.$(parse_json "$current_object" .FileSystem) -f $destination"
+	  wim_arguments=" --unix-data"
 	  mkfs.$(parse_json "$current_object" .FileSystem) -f $destination &>> $CLIENT_LOG
 	  xfs_admin -U $(parse_json "$current_object" .Uuid) $destination &>> $CLIENT_LOG
 	else #ext filesystems
 	  log "mkfs.$(parse_json "$current_object" .FileSystem) -F $destination"
+	  wim_arguments=" --unix-data"
 	  mkfs.$(parse_json "$current_object" .FileSystem) -F $destination &>> $CLIENT_LOG
 	  tune2fs $destination -U $(parse_json "$current_object" .Uuid) &>> $CLIENT_LOG
 	fi
@@ -284,11 +286,11 @@ function download_image()
 	fi
 	
 	if [ "$multicast" = "true" ]; then
-	  log "cd_reporter $computer_id wimdown & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 $destination"
-	  cd_reporter $computer_id wimdown & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 $destination 2>> $CLIENT_LOG | tee /tmp/wim.progress
+	  log "cd_reporter $computer_id wimdown $is_ondemand & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 $destination $wim_arguments"
+	  cd_reporter $computer_id wimdown $is_ondemand & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 $destination $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress
 	else
-	  log "cd_reporter $computer_id wimdown & wimapply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination"
-	  cd_reporter $computer_id wimdown & wimapply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination 2>> $CLIENT_LOG | tee /tmp/wim.progress
+	  log "cd_reporter $computer_id wimdown $is_ondemand & wimapply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination $wim_arguments"
+	  cd_reporter $computer_id wimdown $is_ondemand & wimapply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress
 	fi
   fi 
 }

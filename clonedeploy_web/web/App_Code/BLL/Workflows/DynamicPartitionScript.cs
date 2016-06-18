@@ -49,7 +49,11 @@ namespace BLL.Workflows
                                                                      8;
                 foreach (var partition in clientSchema.PrimaryAndExtendedPartitions)
                 {
-                    partition.Size = partition.Size/8;
+                    //efi partition on 4k drive cannot be smaller than this, and it is smaller on a 512 drive
+                    if (partition.FsId.ToLower() == "ef00")
+                        partition.Size = 66560;
+                    else
+                        partition.Size = partition.Size/8;
                     partition.Start = partition.Size/8;
                 }
                                                                                                                                      

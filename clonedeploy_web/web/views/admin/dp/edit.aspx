@@ -111,15 +111,7 @@
     <br class="clear"/>
      </div>
 
-     <div class="size-4 column">
-        Uses Backend Storage:
-    </div>
-    <div class="size-5 column">
-        <asp:CheckBox ID="chkBackend" runat="server" OnCheckedChanged="chkBackend_OnCheckedChanged" AutoPostBack="True" />
-    </div>
-
-    <br class="clear"/>
-      <br />
+   
     
     <div id="BackendServer" runat="server" Visible="False">
       <div class="size-4 column">

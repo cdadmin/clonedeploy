@@ -17,7 +17,7 @@
      <div class="size-4 column">
                 Build Type:
             </div>
-            <div class="size-4 column">
+            <div class="size-5 column">
                 <asp:DropDownList ID="ddlBuildType" runat="server" CssClass="ddlist" >
                     <asp:ListItem>ISO</asp:ListItem>
                     <asp:ListItem>USB</asp:ListItem>

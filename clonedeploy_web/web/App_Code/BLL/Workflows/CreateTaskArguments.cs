@@ -168,6 +168,7 @@ namespace BLL.Workflows
                 AppendString("compression_algorithm=" + _imageProfile.Compression);
                 AppendString("compression_level=-" + _imageProfile.CompressionLevel);
                 if (Convert.ToBoolean(_imageProfile.UploadSchemaOnly)) AppendString("upload_schema_only=true");
+                if (_imageProfile.Image.Type == "File" && Convert.ToBoolean(_imageProfile.WimMulticastEnabled)) AppendString("web_wim_args=--pipable");
                 if (!string.IsNullOrEmpty(_imageProfile.CustomUploadSchema))
                 {
                     AppendString("custom_upload_schema=true");
@@ -199,7 +200,8 @@ namespace BLL.Workflows
                 if (Convert.ToBoolean(_imageProfile.OsxInstallMunki)) AppendString("install_munki=true");
                 AppendString("osx_target_volume=" + "\"" + _imageProfile.OsxTargetVolume + "\"");
                 AppendString("munki_repo_url=" + "\"" + _imageProfile.MunkiRepoUrl + "\"");
-
+                if(!string.IsNullOrEmpty(_imageProfile.MunkiAuthUsername) && !string.IsNullOrEmpty(_imageProfile.MunkiAuthPassword))
+                    AppendString("munki_requires_auth=true");
                 if (Convert.ToBoolean(_imageProfile.ChangeName)) AppendString("change_computer_name=true");
                 if (Convert.ToBoolean(_imageProfile.SkipExpandVolumes)) AppendString("skip_expand_volumes=true");
                 if (Convert.ToBoolean(_imageProfile.FixBcd)) AppendString("fix_bcd=true");

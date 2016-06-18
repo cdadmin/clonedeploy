@@ -9,9 +9,10 @@ public partial class views_images_profiles_pxe : Images
         if (!IsPostBack)
         {
             ddlKernel.DataSource = Utility.GetKernels();
-            ddlBootImage.DataSource = Utility.GetBootImages();
+            ddlBootImage.DataSource = Utility.GetBootImages();       
             ddlKernel.DataBind();
             ddlBootImage.DataBind();
+            ddlBootImage.SelectedValue = Settings.DefaultInit;
             ddlKernel.Text = ImageProfile.Kernel;
             ddlBootImage.Text = ImageProfile.BootImage;
             txtKernelArgs.Text = ImageProfile.KernelArguments;

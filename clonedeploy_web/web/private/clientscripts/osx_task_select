@@ -15,6 +15,9 @@ for mac_address in $mac_address_list; do
   else
     if [ "$(parse_json "$checkInStatus" .Result)" != "true" ]; then
       log "`parse_json "$checkInStatus" .Message`" "display"
+	  if [ "`parse_json "$checkInStatus" .Message`" = "An Active Task Was Not Found For This Computer" ]; then
+	    computer_is_registered=true
+	  fi
       sleep 1
       echo
       continue
@@ -29,11 +32,15 @@ for mac_address in $mac_address_list; do
 done
 
 if [ -z "$mac" ]; then
+  if [ "$computer_is_registered" != "true" ]; then
+    . /usr/local/bin/osx_register
+  fi
+  echo
   log "Could Not Find An Active Web Task For This Computer." "display"
   echo
   log "Falling Back To On Demand Mode" "display"
   mac=$(networksetup -listallhardwareports | grep "Ethernet Address:" | cut -d " " -f 3 | head -n1)
-  sleep 10
+  sleep 7
   . /usr/local/bin/osx_ond
 fi
 

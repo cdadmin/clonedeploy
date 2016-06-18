@@ -10,11 +10,12 @@ public partial class views_admin_bootmenu_isogen : Admin
     {
         if (!IsPostBack)
         {
-            ddlKernel.DataSource = Utility.GetKernels();
-            ddlBootImage.DataSource = Utility.GetBootImages();
+            ddlKernel.DataSource = Utility.GetKernels();      
+            ddlBootImage.DataSource = Utility.GetBootImages();           
             ddlKernel.DataBind();
             ddlBootImage.DataBind();
-          
+            ddlKernel.SelectedValue = Settings.DefaultKernel64;
+            ddlBootImage.SelectedValue = Settings.DefaultInit;
         }
     }
     protected void btnGenerate_OnClick(object sender, EventArgs e)

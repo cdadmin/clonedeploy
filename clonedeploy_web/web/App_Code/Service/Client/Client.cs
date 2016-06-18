@@ -40,7 +40,7 @@ namespace Service.Client
         [WebMethod]
         public void GetPartLayout(string imageProfileId, string hdToGet, string newHdSize, string clientHd, string taskType, string partitionPrefix, string lbs)
         {
-            //if (!Authorize()) return;
+            if (!Authorize()) return;
 
             var partLayout = new ClientPartitionScript
             {
@@ -109,6 +109,13 @@ namespace Service.Client
         }
 
         [WebMethod]
+        public void GetMunkiBasicAuth(string profileId)
+        {
+            if (!Authorize()) return;
+            HttpContext.Current.Response.Write(new Service.Client.Logic().GetMunkiBasicAuth(Convert.ToInt32(profileId)));
+        }
+
+        [WebMethod]
         public void AddComputer(string name, string mac)
         {
             if (!Authorize()) return;        
@@ -123,12 +130,19 @@ namespace Service.Client
         }
 
         [WebMethod]
-        public void ListImages(string userId)
+        public void AddImageOsxEnv(string name)
+        {
+            if (!Authorize()) return;
+            HttpContext.Current.Response.Write(new Service.Client.Logic().AddImageOsxEnv(name));
+        }
+
+        [WebMethod]
+        public void ListImages(string userId, string environment)
         {
             if (!Authorize()) return;
             if (string.IsNullOrEmpty(userId))
                 userId = "0";
-            HttpContext.Current.Response.Write(new Service.Client.Logic().ImageList(Convert.ToInt32(userId)));
+            HttpContext.Current.Response.Write(new Service.Client.Logic().ImageList(environment,Convert.ToInt32(userId)));
         }
 
         [WebMethod]
@@ -222,10 +236,10 @@ namespace Service.Client
         }
 
         [WebMethod]
-        public void CheckHdRequirements(string profileId, string clientHdNumber, string newHdSize, string schemaHds)
+        public void CheckHdRequirements(string profileId, string clientHdNumber, string newHdSize, string schemaHds, string clientLbs)
         {
             if (!Authorize()) return;
-            HttpContext.Current.Response.Write(new Service.Client.Logic().CheckHdRequirements(Convert.ToInt32(profileId),Convert.ToInt32(clientHdNumber),newHdSize,schemaHds));
+            HttpContext.Current.Response.Write(new Service.Client.Logic().CheckHdRequirements(Convert.ToInt32(profileId),Convert.ToInt32(clientHdNumber),newHdSize,schemaHds,Convert.ToInt32(clientLbs)));
         }
 
         [WebMethod]
