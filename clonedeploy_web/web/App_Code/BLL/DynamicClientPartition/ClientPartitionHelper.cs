@@ -393,11 +393,14 @@ namespace BLL.DynamicClientPartition
                     if (imageFile != null) break;
                 }
                 if (Path.GetExtension(imageFile) == ".wim")
-                    logicalVolumeHelper.MinSizeBlk = (lv.UsedMb * 1024 * 1024) / lbsByte;
-                if (lv.VolumeSize > lv.UsedMb)
-                    logicalVolumeHelper.MinSizeBlk = lv.VolumeSize*1024*1024/lbsByte;
+                    logicalVolumeHelper.MinSizeBlk = (lv.UsedMb*1024*1024)/lbsByte;
                 else
-                    logicalVolumeHelper.MinSizeBlk = lv.UsedMb*1024*1024/lbsByte;
+                {
+                    if (lv.VolumeSize > lv.UsedMb)
+                        logicalVolumeHelper.MinSizeBlk = lv.VolumeSize*1024*1024/lbsByte;
+                    else
+                        logicalVolumeHelper.MinSizeBlk = lv.UsedMb*1024*1024/lbsByte;
+                }
             }
 
             return logicalVolumeHelper;
