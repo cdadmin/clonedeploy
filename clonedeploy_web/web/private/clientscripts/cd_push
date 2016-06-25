@@ -76,39 +76,39 @@ function process_lvm()
   local volume_group="$(parse_json "$current_partition" .VolumeGroup.Name)"
   local make_swap_result
   local current_logical_volume
-  local volume_group
-  local unescaped_lv_name
+  local escaped_lv_name
   
+   volume_group=$(echo $volume_group | sed 's/-/--/g')
   while [  "$(( $array_index + 1 ))" -lt "$(parse_json "$current_partition" .VolumeGroup.LogicalVolumeCount)" ]; do
     array_index=$(( $array_index + 1))
     clear_and_move_down
     current_logical_volume="$(parse_json "$current_partition" .VolumeGroup.LogicalVolumes[$array_index])"
 	log "$current_logical_volume"
-    unescaped_lv_name=$(echo $(parse_json "$current_logical_volume" .Name) | sed 's/--/-/g')
+    escaped_lv_name=$(echo $(parse_json "$current_logical_volume" .Name) | sed 's/-/--/g')
 	
 	if [ "$(parse_json "$current_logical_volume" .FileSystem)" = "swap" ]; then
-      log "Creating Swap On $volume_group-$unescaped_lv_name"
+      log "Creating Swap On $volume_group-$escaped_lv_name"
       log "$(parse_json "$current_logical_volume" .Uuid)"
-      mkswap /dev/mapper/$volume_group-$unescaped_lv_name -U $(parse_json "$current_logical_volume" .Uuid) &>> /tmp/makeswap
+      mkswap /dev/mapper/$volume_group-$escaped_lv_name -U $(parse_json "$current_logical_volume" .Uuid) &>> /tmp/makeswap
       cat /tmp/makeswap >>$CLIENT_LOG
       make_swap_result=$(cat /tmp/makeswap | grep "parsing UUID failed")
       if [ "$?" = "0" ]; then
         log " ...... Swap Creation Failed, Creating Swap With New UUID "
-        mkswap /dev/mapper/$volume_group-$unescaped_lv_name &>> $CLIENT_LOG
+        mkswap /dev/mapper/$volume_group-$escaped_lv_name &>> $CLIENT_LOG
       fi
       continue
     fi
 				
-    download_image "$current_logical_volume" "$volume_group-$unescaped_lv_name"
+    download_image "$current_logical_volume" "$volume_group-$escaped_lv_name"
 	
 	if [ "$skip_expand_volumes" != "true" ]; then 
       if [ "$(parse_json "$current_logical_volume" .ImageType)" = "Block" ]; then
-        expand_volume /dev/mapper/$volume_group-$unescaped_lv_name $(parse_json "$current_logical_volume" .FileSystem)  
+        expand_volume /dev/mapper/$volume_group-$escaped_lv_name $(parse_json "$current_logical_volume" .FileSystem)  
       fi
     fi
 	
 	if [ "$file_copy" = "True" ]; then
-	  process_file_copy "$current_logical_volume" "$volume_group-$unescaped_lv_name"
+	  process_file_copy "$current_logical_volume" "$volume_group-$escaped_lv_name"
 	fi
     clear_and_move_down
   done
@@ -211,6 +211,7 @@ function download_image()
     
   if [ "$file_name_prefix" != "part" ]; then
     destination="/dev/mapper/$file_name_prefix"
+	file_name_prefix=$(echo $file_name_prefix | sed 's/--/-/g')
   else
     destination=${hard_drive}${partition_prefix}$(parse_json "$current_object" .Number)
     file_name_prefix=part"$(parse_json "$current_object" .Number)"
