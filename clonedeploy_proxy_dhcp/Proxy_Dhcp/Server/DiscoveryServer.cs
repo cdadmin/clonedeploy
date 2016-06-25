@@ -589,6 +589,7 @@ namespace CloneDeploy_Proxy_Dhcp.Server
             var strVendorInformation = ByteArrayToString(vendorOptions);
             var imageIdHex = strVendorInformation.Substring(strVendorInformation.Length - 4);
             var targetNbi = RootPath.Replace("[nbi_id]", imageIdHex);
+            var targetAppleBootFile = AppleBootFile.Replace("[nbi_id]", imageIdHex);
             Trace.TraceInformation("{0} Sending Dhcp Acknowledge.", Thread.CurrentThread.ManagedThreadId);
 
             var response = new DhcpMessage
@@ -618,7 +619,7 @@ namespace CloneDeploy_Proxy_Dhcp.Server
                 response.NextServerAddress = !string.IsNullOrEmpty(UserNextServer)
                     ? IPAddress.Parse(UserNextServer).GetAddressBytes()
                     : _mDhcpInterfaceAddress.GetAddressBytes();
-                response.BootFileName = Encoding.UTF8.GetBytes(AppleBootFile);
+                response.BootFileName = Encoding.UTF8.GetBytes(targetAppleBootFile);
             }
 
             if (m_Reservations.ContainsKey(clientHardwareAddress))
