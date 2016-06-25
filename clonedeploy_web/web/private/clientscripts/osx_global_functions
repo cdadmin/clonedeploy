@@ -214,7 +214,7 @@ function mount_smb()
 	  return 0
 	fi
 	
-	smbInfo=$($curlAuth --data "dpId=$dp_id&task=$task" "${web}DistributionPoint" $curlEnd)
+	smbInfo=$($curlAuth --data "dpId=$dp_id&task=$image_direction" "${web}DistributionPoint" $curlEnd)
 	#fix path that was originally only used for initrd
 	share_path=$(echo "$(parse_json "$smbInfo" .SharePath)" | sed 's~//~~g')
     mount -t smbfs //"$(parse_json "$smbInfo" .Domain)"\;"$(parse_json "$smbInfo" .Username)":"$(parse_json "$smbInfo" .Password)"@"$share_path" /storage 2>/tmp/mntstat
