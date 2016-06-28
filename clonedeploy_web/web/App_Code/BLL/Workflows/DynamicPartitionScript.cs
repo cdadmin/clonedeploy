@@ -393,7 +393,7 @@ namespace BLL.Workflows
                     continue; //osx automatically creates the efi partition and boot partition if needed
 
                 partitionScript += "\"" + partition.FsType + "\"" + " " + "\"" + partition.Type + "\"" + " " +
-                                  partition.Size + "s ";
+                                  partition.Size + "DBS ";
             }
 
             partitionScript += "\"" + "Free Space" + "\"" + " " + "\"" + "" + "\"" + " " + "R" + " 2>>/tmp/clientlog.log\' > /tmp/createPartitions\n";
