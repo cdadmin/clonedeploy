@@ -563,7 +563,7 @@ namespace Service.Client
             if(environment == "macOS")
                 images = images.Where(x => x.Environment == "macOS").ToList();
             else if(environment == "linux")
-                images = images.Where(x => x.Environment == "linux").ToList();
+                images = images.Where(x => x.Environment != "macOS").ToList();
             foreach (var image in images)
                 imageList.Images.Add(image.Id + " " + image.Name);
 
