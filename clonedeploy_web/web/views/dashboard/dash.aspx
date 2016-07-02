@@ -12,34 +12,7 @@
         <asp:Label ID="lblDenied" runat="server"></asp:Label>
     </p>
     
-   <div class="DashDiv">
-    <p class="DashTotalComputers">
-      <a class="icon-host" href="/clonedeploy/views/computers/search.aspx">
-           <asp:Label ID="lblTotalComputers" runat="server"></asp:Label>
-      </a>
-    </p>
-    
-    <p class="DashTotalGroups">
-      <a class="icon-group" href="/clonedeploy/views/groups/search.aspx">
-        <asp:Label ID="lblTotalGroups" runat="server"></asp:Label>
-      </a>
-    </p>
-    
-    <p class="DashTotalImages">
-      <a class="icon-image" href="/clonedeploy/views/images/search.aspx">
-        <asp:Label ID="lblTotalImages" runat="server"></asp:Label>
-         <!-- ||
-        <asp:Label ID="lblTotalImagesSize" runat="server">TotalSize: </asp:Label> -->
-      </a>
-    </p>
-    
-    <p class="DashDistributionPoints">
-        <asp:Label ID="lblTotalDP" runat="server"></asp:Label>
-        <asp:Label ID="lblDPfree" runat="server"></asp:Label>
-    </p>
-    
-
-</div>
+   
     
 
 </asp:Content>

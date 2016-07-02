@@ -29,8 +29,6 @@
     <link href="~/content/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="~/content/css/layout.css" rel="stylesheet" type="text/css" />
 
-    <!-- percent circle source: http://circle.firchow.net/ -->
-    <link rel="stylesheet" href="~/content/css/circle.css">
 
 </head>
 <body>
@@ -60,7 +58,7 @@
 
             <div class="nav">
                 <div id="title">
-                    <a href="<%= ResolveUrl("~/views/dashboard/dash.aspx") %>" class="icon-host"><h1>CloneDeploy</h1></a>
+                    <h1>CloneDeploy</h1>
                     <span class="version">1.1.1</span>
                 </div>
 
