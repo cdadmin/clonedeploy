@@ -30,6 +30,7 @@
         <asp:DropDownList ID="ddlEnvironment" runat="server" CssClass="ddlist" AutoPostBack="True" OnSelectedIndexChanged="ddlEnvironment_OnSelectedIndexChanged">
             <asp:ListItem>linux</asp:ListItem>
             <asp:ListItem>macOS</asp:ListItem>
+            <asp:ListItem>winpe</asp:ListItem>
         </asp:DropDownList>
     </div>
     <br class="clear"/>

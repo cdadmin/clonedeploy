@@ -105,7 +105,7 @@ namespace BLL.Workflows
         private void AppendString(string value)
         {
             _activeTaskArguments.Append(value);
-            _activeTaskArguments.Append(" ");
+            _activeTaskArguments.Append(_imageProfile.Image.Environment == "winpe" ? "\r\n" : " ");
         }
 
         public string Run(string multicastPort = "")

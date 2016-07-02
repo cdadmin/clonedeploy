@@ -1,0 +1,1 @@
+Write-Host name from new file $computer_name
