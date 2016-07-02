@@ -57,7 +57,10 @@
         secondary: $children.slice(1, $children.length)
       };
       
-      this.linkWidth = $widestLink.outerWidth() + 'px';
+      if ($widestLink == null && $(link) != null) {
+        $widestLink = $(link);
+        this.linkWidth = $widestLink.outerWidth() + 'px';
+      }
       this.linkHeight = $(this.links.primary).outerHeight() + 'px'; 
       
       this.$toggleDiv = $('<div class="spb-toggle">').append(settings.toggleDivContent);
