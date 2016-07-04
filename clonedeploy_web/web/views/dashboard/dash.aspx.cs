@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices; //for DllImport, move to another file later
+#if __MonoCS__  
+using Mono.Unix; // requires reference to  Mono.Posix.dll
+#endif
 using BasePages;
 
 namespace views.dashboard
@@ -26,24 +29,21 @@ namespace views.dashboard
         {
             freespace = 0;
             total = 0;
-            // not implemented
-            /*
-            if (string.IsNullOrEmpty(folderName))
+            
+            UnixDriveInfo[] drives = UnixDriveInfo.GetDrives();
+            int idx = -1, count = -1;
+            for (int i = 0; i < drives.Length; ++i)
             {
-                throw new ArgumentNullException("folderName");
+              if (folderName.StartsWith (drives[i].Name) && drives[i].Name.Length > count)
+              {
+                count = drives[i].Name.Length;
+                idx = i;
+              }
             }
-  
-            ulong free = 0, dummy1 = 0, dummy2 = 0;
-    
-            if (GetDiskFreeSpaceEx(folderName, out free, out dummy1, out dummy2))
-            {
-                freespace = free;
-                return true;
-            }
-            else
-            {
-                return false;
-            }*/
+            
+            // Drive for path is: drives[idx].Name
+            freespace = (ulong)drives[idx].AvailableFreeSpace;
+            total = (ulong)drives[idx].TotalSize; 
         }   
         #else
         
