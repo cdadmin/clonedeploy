@@ -20,6 +20,72 @@ namespace views.dashboard
             PopulateStats();
         }
 
+        // if running on Mono
+        #if __MonoCS__     
+        public static bool DriveFreeBytes(string folderName, out ulong freespace, out ulong total)
+        {
+            freespace = 0;
+            total = 0;
+            // not implemented
+            /*
+            if (string.IsNullOrEmpty(folderName))
+            {
+                throw new ArgumentNullException("folderName");
+            }
+  
+            ulong free = 0, dummy1 = 0, dummy2 = 0;
+    
+            if (GetDiskFreeSpaceEx(folderName, out free, out dummy1, out dummy2))
+            {
+                freespace = free;
+                return true;
+            }
+            else
+            {
+                return false;
+            }*/
+        }   
+        #else
+        
+        // using GetDiskFreeSpaceEx because this handles mountpoints, quota and UNC 
+        // there are reports that old CIFS doesn't support unc-share to a mountpoint, needs Windows 2008/SMB2        
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetDiskFreeSpaceEx(string lpDirectoryName,
+        out ulong lpFreeBytesAvailable,
+        out ulong lpTotalNumberOfBytes,
+        out ulong lpTotalNumberOfFreeBytes);
+    
+        public static bool DriveFreeBytes(string folderName, out ulong freespace, out ulong total)
+        {
+            freespace = 0;
+            total = 0;
+            if (string.IsNullOrEmpty(folderName))
+            {
+                throw new ArgumentNullException("folderName");
+            }
+    
+            if (!folderName.EndsWith("\\"))
+            {
+                folderName += '\\';
+            }
+    
+            ulong free = 0, tot = 0, dummy2 = 0;
+    
+            if (GetDiskFreeSpaceEx(folderName, out free, out tot, out dummy2))
+            {
+                freespace = free;
+                total = tot;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }   
+        #endif
+
+
         protected void PopulateStats()
         {
             //FixMe: get all the numbers in own function, don't slowly create full lists of unused stuff 
@@ -45,14 +111,10 @@ namespace views.dashboard
                   lblTotalDP.Text += "<br><br><h6><u>DP-Nr: " + (dpList.IndexOf(dp) + 1) + "</u></h6> <br> Path: " + dp.PhysicalPath;
                   if(System.IO.Directory.Exists(dp.PhysicalPath))
                   {
-                      ulong FreeBytesAvailable;
-                      ulong TotalNumberOfBytes;
-                      ulong TotalNumberOfFreeBytes;
-                      
-                      bool success = GetDiskFreeSpaceEx(dp.PhysicalPath,
-                                  out FreeBytesAvailable,
-                                  out TotalNumberOfBytes,
-                                  out TotalNumberOfFreeBytes);
+                      ulong freespace = 0;
+                      ulong total = 0;
+                      bool success = DriveFreeBytes(dp.PhysicalPath, out freespace, out total);
+                                                        
                       if(!success)
                       {
                       }
@@ -61,10 +123,10 @@ namespace views.dashboard
                         Int64 freePercent = 0;
                         Int64 usedPercent = 0;
                         
-                        if(TotalNumberOfBytes > 0 && FreeBytesAvailable > 0)
+                        if(total > 0 && freespace > 0)
                         {
-                          freePercent = (Int64)(0.5f + ((100f * Convert.ToInt64(FreeBytesAvailable)) / Convert.ToInt64(TotalNumberOfBytes)));
-                          usedPercent = (Int64)(0.5f + ((100f * Convert.ToInt64(TotalNumberOfBytes - FreeBytesAvailable)) / Convert.ToInt64(TotalNumberOfBytes))); 
+                          freePercent = (Int64)(0.5f + ((100f * Convert.ToInt64(freespace)) / Convert.ToInt64(total)));
+                          usedPercent = (Int64)(0.5f + ((100f * Convert.ToInt64(total - freespace)) / Convert.ToInt64(total))); 
                         }
                         
                         string percentFreeCircleDark = @"<div class='dark-area clearfix'><div class='clearfix'><div class='c100 p"+freePercent+" small dark'><span>"+freePercent+"%</span><div class='slice'><div class='bar'></div><div class='fill'></div></div></div></div><br>free</div>";
@@ -82,9 +144,9 @@ namespace views.dashboard
                         lblDPfree.Text += percentUsedCircleLight;
                         lblDPfree.Text += percentFreeCircleLightEnd;
                         
-                        lblDPfree.Text += String.Format(" Free Space:      {0,15:D}", SizeSuffix(Convert.ToInt64(FreeBytesAvailable)));
-                        lblDPfree.Text += String.Format(" || Total:     {0,15:D}", SizeSuffix(Convert.ToInt64(TotalNumberOfBytes)));
-
+                        lblDPfree.Text += String.Format(" Free Space:      {0,15:D}", SizeSuffix(Convert.ToInt64(freespace)));
+                        lblDPfree.Text += String.Format(" || Total:     {0,15:D}", SizeSuffix(Convert.ToInt64(total)));
+                        
                       }
                   }
                 }
@@ -106,40 +168,7 @@ namespace views.dashboard
             return string.Format("{0:n1} {1}", adjustedSize, SizeSuffixes[mag]);
         }
 
-    // using GetDiskFreeSpaceEx because this handles mountpoints, quota and UNC 
-    // there are reports that old CIFS doesn't support unc-share to a mountpoint, needs Windows 2008/SMB2    
-    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool GetDiskFreeSpaceEx(string lpDirectoryName,
-    out ulong lpFreeBytesAvailable,
-    out ulong lpTotalNumberOfBytes,
-    out ulong lpTotalNumberOfFreeBytes);
 
-    public static bool DriveFreeBytes(string folderName, out ulong freespace)
-    {
-        freespace = 0;
-        if (string.IsNullOrEmpty(folderName))
-        {
-            throw new ArgumentNullException("folderName");
-        }
-
-        if (!folderName.EndsWith("\\"))
-        {
-            folderName += '\\';
-        }
-
-        ulong free = 0, dummy1 = 0, dummy2 = 0;
-
-        if (GetDiskFreeSpaceEx(folderName, out free, out dummy1, out dummy2))
-        {
-            freespace = free;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
        
     }
 }
