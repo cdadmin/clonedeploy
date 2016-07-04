@@ -58,10 +58,6 @@ namespace views.dashboard
                       }
                       else
                       {
-                        //lblTotalDP.Text += String.Format(" || Free Bytes Available:      {0,15:D}", FreeBytesAvailable);
-                        //lblTotalDP.Text += String.Format(" || Total Number Of Bytes:     {0,15:D}", TotalNumberOfBytes);
-                        //lblTotalDP.Text += String.Format(" || Total Number Of FreeBytes: {0,15:D}", TotalNumberOfFreeBytes);
-
                         Int64 freePercent = 0;
                         Int64 usedPercent = 0;
                         
@@ -88,9 +84,7 @@ namespace views.dashboard
                         
                         lblDPfree.Text += String.Format(" Free Space:      {0,15:D}", SizeSuffix(Convert.ToInt64(FreeBytesAvailable)));
                         lblDPfree.Text += String.Format(" || Total:     {0,15:D}", SizeSuffix(Convert.ToInt64(TotalNumberOfBytes)));
-                        //lblDPfree.Text += String.Format(" || Total Free: {0,15:D}", SizeSuffix(Convert.ToInt64(TotalNumberOfFreeBytes)));
-                        
-                        
+
                       }
                   }
                 }
@@ -112,7 +106,8 @@ namespace views.dashboard
             return string.Format("{0:n1} {1}", adjustedSize, SizeSuffixes[mag]);
         }
 
-        
+    // using GetDiskFreeSpaceEx because this handles mountpoints, quota and UNC 
+    // there are reports that old CIFS doesn't support unc-share to a mountpoint, needs Windows 2008/SMB2    
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool GetDiskFreeSpaceEx(string lpDirectoryName,
