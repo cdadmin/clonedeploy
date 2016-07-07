@@ -97,10 +97,11 @@ while($loginCount -le 2)
 Encode-User-Token -userToken $env:userToken
  
 Write-Host " ** Downloading Core Scripts ** "
-foreach($scriptName in "winpe_task_select.ps1","winpe_global_functions.ps1","winpe_pull.ps1")
+foreach($scriptName in "winpe_task_select.ps1","winpe_global_functions.ps1","winpe_pull.ps1","winpe_ond.ps1","winpe_push.ps1")
 {
   $dl_result=$(curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded --data "scriptName=$scriptName" ${web}DownloadCoreScripts -o x:\$scriptName -w "%{http_code}" --connect-timeout 10 --stderr x:\dlerror.log)
   Check-Download -dlResult $dl_result -scriptName $scriptName
 }
+Write-Host " ...... Success"
 
 . x:\winpe_task_select.ps1

@@ -1,1 +1,3 @@
-Write-Host name from new file $computer_name
+. x:\winpe_global_functions.ps1
+
+Mount-SMB
