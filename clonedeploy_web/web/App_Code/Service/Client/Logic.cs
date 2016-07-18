@@ -116,7 +116,7 @@ namespace Service.Client
                 if (token == Settings.UniversalToken && !string.IsNullOrEmpty(Settings.UniversalToken))
                     return "true";
             }
-            else if (task == "debug" && Settings.OnDemandRequiresLogin == "Yes")
+            else if (task == "debug" && Settings.DebugRequiresLogin == "Yes")
             {
                 var user = BLL.User.GetUserByToken(token);
                 if (user != null)
