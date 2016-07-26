@@ -642,6 +642,70 @@ namespace Service.Client
             return JsonConvert.SerializeObject(result);
         }
 
+        public string GetProxyReservation(string mac)
+        {
+            var bootClientReservation = new Services.Client.ProxyReservation();
+
+            var computer = BLL.Computer.GetComputerFromMac(mac);
+            if (computer == null)
+            {
+                bootClientReservation.BootFile = "NotFound";
+                return JsonConvert.SerializeObject(bootClientReservation);
+            }
+            if (computer.ProxyReservation == 0)
+            {
+                bootClientReservation.BootFile = "NotEnabled";
+                return JsonConvert.SerializeObject(bootClientReservation);
+            }
+
+            var computerReservation = BLL.ComputerProxyReservation.GetComputerProxyReservation(computer.Id);
+            
+
+            bootClientReservation.NextServer = Helpers.ParameterReplace.Between(computerReservation.NextServer);
+            switch (computerReservation.BootFile)
+            {
+                case "bios_pxelinux":
+                    bootClientReservation.BootFile = @"proxy/bios/pxelinux.0";
+                    break;
+                case "bios_ipxe":
+                    bootClientReservation.BootFile = @"proxy/bios/undionly.kpxe";
+                    break;
+                case "bios_x86_winpe":
+                    bootClientReservation.BootFile = @"proxy/bios/pxeboot.n12";
+                    bootClientReservation.BcdFile = @"/boot/BCDx86";
+                    break;
+                case "bios_x64_winpe":
+                    bootClientReservation.BootFile = @"proxy/bios/pxeboot.n12";
+                    bootClientReservation.BcdFile = @"/boot/BCDx64";
+                    break;
+                case "efi_x86_syslinux":
+                    bootClientReservation.BootFile = @"proxy/efi32/syslinux.efi";
+                    break;
+                case "efi_x86_ipxe":
+                    bootClientReservation.BootFile = @"proxy/efi32/ipxe.efi";
+                    break;
+                case "efi_x86_winpe":
+                    bootClientReservation.BootFile = @"proxy/efi32/bootmgfw.efi";
+                    bootClientReservation.BcdFile = @"/boot/BCDx86";
+                    break;
+                case "efi_x64_syslinux":
+                    bootClientReservation.BootFile = @"proxy/efi64/syslinux.efi";
+                    break;
+                case "efi_x64_ipxe":
+                    bootClientReservation.BootFile = @"proxy/efi64/ipxe.efi";
+                    break;
+                case "efi_x64_winpe":
+                    bootClientReservation.BootFile = @"proxy/efi64/bootmgfw.efi";
+                    bootClientReservation.BcdFile = @"/boot/BCDx64";
+                    break;
+                case "efi_x64_grub":
+                    bootClientReservation.BootFile = @"proxy/efi64/bootx64.efi";
+                    break;
+            }
+
+            return JsonConvert.SerializeObject(bootClientReservation);
+        }
+
        
     }
 }

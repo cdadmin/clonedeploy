@@ -99,4 +99,11 @@ namespace Services.Client
         public string DestinationPartition { get; set; }
         public string FolderCopyType { get; set; }
     }
+
+    public class ProxyReservation
+    {
+        public string NextServer { get; set; }
+        public string BootFile { get; set; }
+        public string BcdFile { get; set; }
+    }
 }

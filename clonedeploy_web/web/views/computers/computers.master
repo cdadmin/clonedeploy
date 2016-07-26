@@ -43,6 +43,10 @@
                 <a href="<%= ResolveUrl("~/views/computers/groups.aspx") %>?computerid=<%= Computer.Id %>">
                     <span class="sub-nav-text">Group Membership</span></a>
             </li>
+            <li id="proxy">
+                <a href="<%= ResolveUrl("~/views/computers/proxy.aspx") %>?computerid=<%= Computer.Id %>">
+                    <span class="sub-nav-text">Proxy DHCP Reservation</span></a>
+            </li>
 
         </ul>
 

@@ -48,6 +48,7 @@ namespace DAL
         DAL.IGenericRepository<Models.MunkiManifestIncludedManifest> MunkiIncludedManifestRepository { get; }
         DAL.IGenericRepository<Models.ComputerMunki> ComputerMunkiRepository { get; }
         DAL.IGenericRepository<Models.GroupMunki> GroupMunkiRepository { get; }
+        DAL.IGenericRepository<Models.ComputerProxyReservation> ComputerProxyRepository { get; }
         bool Save();
         
     }

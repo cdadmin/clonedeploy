@@ -238,7 +238,7 @@ namespace Service.Client
         [WebMethod]
         public void CheckHdRequirements(string profileId, string clientHdNumber, string newHdSize, string schemaHds, string clientLbs)
         {
-            if (!Authorize()) return;
+            //if (!Authorize()) return;
             HttpContext.Current.Response.Write(new Service.Client.Logic().CheckHdRequirements(Convert.ToInt32(profileId),Convert.ToInt32(clientHdNumber),newHdSize,schemaHds,Convert.ToInt32(clientLbs)));
         }
 
@@ -357,6 +357,13 @@ namespace Service.Client
         {
             //No auth
             HttpContext.Current.Response.Write(BLL.Computer.GetComputerFromMac(mac).Name);
+        }
+
+        [WebMethod]
+        public void GetProxyReservation(string mac)
+        {
+            //No auth
+            HttpContext.Current.Response.Write(new Logic().GetProxyReservation(mac));
         }   
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using System.Web.Http.ModelBinding;
 using Models;
 
 namespace DAL
@@ -52,7 +53,7 @@ namespace DAL
         public DbSet<Models.MunkiManifestIncludedManifest> MunkiManifestIncludedManifests { get; set; }
         public DbSet<Models.ComputerMunki> ComputerMunkis { get; set; }
         public DbSet<Models.GroupMunki> GroupMunkis { get; set; }
-     
+        public DbSet<Models.ComputerProxyReservation> ProxyReservations { get; set; }
 
     }
 
