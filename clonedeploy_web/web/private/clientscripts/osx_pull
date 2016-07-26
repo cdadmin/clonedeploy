@@ -284,7 +284,7 @@ function upload_image()
           volume_name=$(diskutil cs info $logical_volume | grep "LV Name:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
 		  
 		  #preventing uploading the same logical volume again.  If the volume group is spanned across multiple disks, it will be recognized multiple times
-		  if [ -e "$image_path/part${volume_group_name}-${volume_name}.dmg" ]; then
+		  if [ -e "$image_path/${volume_group_name}-${volume_name}.dmg" ]; then
 		    continue
 		  fi
 		  touch /tmp/osx.progress
