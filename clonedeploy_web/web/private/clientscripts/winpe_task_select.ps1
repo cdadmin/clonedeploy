@@ -1,5 +1,22 @@
 . x:\winpe_global_functions.ps1
+Write-Host
+
+if(Test-Path $clientLog) { rm $clientLog }
 log -message $([System.Environment]::OSVersion.Version)
+log -message $(gwmi win32_operatingsystem | select OSArchitecture)
+$efi=Confirm-SecureBootUEFI
+if($efi -eq $false)
+{
+    log -message "EFI Enabled / Secure Boot Disabled"
+}
+elseif($efi -eq $true)
+{
+    log -message "EFI Enabled / Secure Boot Enabled"
+}
+else
+{
+    log -message "Using Legacy BIOS"
+}
 
 $nicList = Get-WmiObject -Class "Win32_NetworkAdapterConfiguration" -Filter "IpEnabled = TRUE"
 
@@ -39,7 +56,7 @@ ForEach ($nic in $nicList)
                 New-Variable -Name $arg[0] -Value $arg[1] -Scope Global -Force
                 $pos++
             }
-            curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded --data "computerId=$computer_id" ${web}UpdateStatusInProgress  --connect-timeout 10 --stderr -
+            
            
             $mac=$nic.MacAddress
             log -message " ...... Success" -isDisplay "true"

@@ -7,10 +7,21 @@ function log($message, $isDisplay)
     {
         Write-Host $message | tee -Append -FilePath $clientLog
     }
-	else
-    {
-		Add-Content $clientLog $message
-	}
+    Add-Content $clientLog $message
+}
+
+function Checkout()
+{
+    $computerIdBytes = [System.Text.Encoding]::UTF8.GetBytes($computer_id)
+    $computerIdEncoded =[Convert]::ToBase64String($computerIdBytes)
+    (Get-Content $clientLog) -replace ("`0","") | Set-Content $clientLog
+	$logBytes = [System.IO.File]::ReadAllBytes("$clientLog")
+    $logEncoded =[Convert]::ToBase64String($logBytes)
+    $imageDirectionBytes = [System.Text.Encoding]::UTF8.GetBytes($image_direction)
+    $imageDirectionEncoded =[Convert]::ToBase64String($imageDirectionBytes)
+    $macBytes = [System.Text.Encoding]::UTF8.GetBytes($mac)
+    $macEncoded =[Convert]::ToBase64String($macBytes)
+    curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded -F computerId="$computerIdEncoded" -F logContents="$logEncoded" -F subType="$imageDirectionEncoded" -F mac="$macEncoded" "${web}UploadLog" --connect-timeout 10 --stderr -
 }
 
 function error($message, $rebootTime)
@@ -32,7 +43,8 @@ function error($message, $rebootTime)
 
     $computerIdBytes = [System.Text.Encoding]::UTF8.GetBytes($computer_id)
     $computerIdEncoded =[Convert]::ToBase64String($computerIdBytes)
-	$logBytes = [System.IO.File]::ReadAllBytes("x:\clientlog.log")
+    (Get-Content $clientLog) -replace ("`0","") | Set-Content $clientLog
+	$logBytes = [System.IO.File]::ReadAllBytes("$clientLog")
     $logEncoded =[Convert]::ToBase64String($logBytes)
     $imageDirectionBytes = [System.Text.Encoding]::UTF8.GetBytes($image_direction)
     $imageDirectionEncoded =[Convert]::ToBase64String($imageDirectionBytes)
@@ -65,7 +77,7 @@ function error($message, $rebootTime)
 
 function Mount-SMB()
 {
-    log " ** Mounting SMB Share **" "true"
+    log " ** Mounting SMB Share ** " "true"
 	
 	$smbInfo=$(curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded --data "dpId=$dp_id&task=$image_direction" ${web}DistributionPoint  --connect-timeout 10 --stderr -)
 	$smbInfo=$smbInfo | ConvertFrom-Json
@@ -77,26 +89,58 @@ function Mount-SMB()
     }
 	#fix path that was originally only used for initrd
 	$share_path=$smbInfo.SharePath -replace ("/"),("\")
-    Write-Host $share_path $smbInfo.Domain $smbInfo.Username $smbInfo.Password
-    net use s: /Delete > $null
-    net use s: \\192.168.1.10\jon /user:$($smbInfo.Domain)\jon $smbInfo.Password 2>x:\mntstat
+    net use s: /Delete /Yes > $null
+    Start-Sleep 2
+    net use s: $share_path /user:$($smbInfo.Domain)\$($smbInfo.Username) $smbInfo.Password 2>x:\mntstat >> $clientLog
     
 		
 		if(!$?)
         {
-			Get-Content x:\mntstat >> $clientLog
+			Get-Content x:\mntstat | Out-File $clientLog -Append
 			error -message "Could Not Mount SMB Share: $(Get-Content x:\mntstat)"		
         }
 		else
         {
-			log " ...... Success" "display"
-
-			cd s:\images\$img_name;
+            Start-Sleep 2
+			log -message " ...... Success" -isDisplay "true"
+            Write-Host
+			cd s:\images\$img_name
 			if(!$?)
             {
-				error "Could Not Change Directory To s:\images\$image_name Check Permissions"
+				error "Could Not Change Directory To s:\images\$image_name Verify The Directory Exists And Permissions Are Correct"
 			}
 		}
-	echo
-	sleep 2
+	Start-Sleep 2
 }
+
+function Get-Hard-Drives($taskType)
+{
+    log " ** Looking For Hard Drive(s) **" "true"
+    log " ** Displaying Available Devices ** "
+    Get-Disk | Out-File $clientLog -Append
+    if($custom_hard_drives)
+    {
+        #Todo - finish custom hard drives
+        log " ...... Hard Drive(s) Set By Image Profile: $hard_drives"
+    }
+    else
+    {
+        if($taskType -eq "upload")
+        {
+            $Global:HardDrives=$(get-disk | where-object {$_.NumberOfPartitions -gt 0 -and $_.BusType -ne "USB"} | Sort-Object Number)
+        }
+        else
+        {
+            $Global:HardDrives=$(get-disk | where-object {$_.BusType -ne "USB"} | Sort-Object Number)
+        }
+    }
+
+    if(@($Global:HardDrives).count -eq 0)
+    {
+        error "Could Not Find A Hard Drive Attached To This Computer."
+    }
+
+    log " ...... Found $(@($Global:HardDrives).count) Drives" "true"
+    Write-Host
+}
+
