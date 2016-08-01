@@ -453,9 +453,10 @@ namespace Service.Client
         public string GetSysprepTag(int tagId)
         {
             var tag = BLL.SysprepTag.GetSysprepTag(tagId);
-            tag.OpeningTag = Utility.EscapeCharacter(tag.OpeningTag, new[] {">", "<"});
-            tag.ClosingTag = Utility.EscapeCharacter(tag.ClosingTag, new[] {">", "<", "/"});
-            return JsonConvert.SerializeObject(tag);
+            //tag.OpeningTag = Utility.EscapeCharacter(tag.OpeningTag, new[] {">", "<"});
+            //tag.ClosingTag = Utility.EscapeCharacter(tag.ClosingTag, new[] {">", "<", "/"});
+            //tag.Contents = Utility.EscapeCharacter(tag.Contents, new[] {">", "<", "/", "\""});
+            return JsonConvert.SerializeObject(tag, new JsonSerializerSettings { StringEscapeHandling = StringEscapeHandling.Default});
         }
 
         public string GetFileCopySchema(int profileId)

@@ -147,7 +147,7 @@ namespace BLL.DynamicClientPartition
                 else
                 {
                     string imageFile = null;
-                    foreach (var ext in new[] { "ntfs", "fat", "extfs", "hfsp", "imager", "xfs" })
+                    foreach (var ext in new[] { "ntfs", "fat", "extfs", "hfsp", "imager", "winpe","xfs" })
                     {
                         try
                         {

@@ -312,7 +312,9 @@ namespace Service.Client
         public void GetSysprepTag(int tagId)
         {
             if (!Authorize()) return;
-            HttpContext.Current.Response.Write(new Logic().GetSysprepTag(tagId));
+            var tag = new Logic().GetSysprepTag(tagId);
+            tag = Utility.EscapeCharacter(tag, new[] {">", "<", "/"});       
+            HttpContext.Current.Response.Write(tag);
 
         }
 

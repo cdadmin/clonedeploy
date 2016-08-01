@@ -130,7 +130,7 @@ public partial class views_admin_bootmenu_applenetboot : BasePages.Admin
             vendorOptions.Append(name.Text.Length.ToString("X2"));
             vendorOptions.Append(":");
             vendorOptions.Append(StringToHex(name.Text));
-
+            vendorOptions.Append(":");
             listIds.Add(nbiIdHex);
 
             if (nbiIdHex != "0F49" && nbiIdHex != "98DB")

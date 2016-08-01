@@ -12,7 +12,11 @@ function Create-Image-Schema()
     foreach($hardDrive in $Global:HardDrives)
     {
         $hardDriveCounter++
-        $hardDriveJson="{`"name`":`"$($hardDrive.Number)`",`"size`":`"$($hardDrive.Size / $hardDrive.LogicalSectorSize)`",`"table`":`"$($hardDrive.PartitionStyle)`",`"boot`":`"$boot_partition`",`"lbs`":`"$($hardDrive.LogicalSectorSize)`",`"pbs`":`"$($hardDrive.PhysicalSectorSize)`",`"guid`":`"$($hardDrive.Guid)`",`"active`":`"true`",`"partitions`": [ "
+        if($Global:bootType -ne "efi")
+        {
+            $bootPartition=$(Get-Partition -DiskNumber $hardDrive.Number | Where-Object {$_.IsActive -eq $true})
+        }
+        $hardDriveJson="{`"name`":`"$($hardDrive.Number)`",`"size`":`"$($hardDrive.Size / $hardDrive.LogicalSectorSize)`",`"table`":`"$($hardDrive.PartitionStyle)`",`"boot`":`"$bootPartition`",`"lbs`":`"$($hardDrive.LogicalSectorSize)`",`"pbs`":`"$($hardDrive.PhysicalSectorSize)`",`"guid`":`"$($hardDrive.Guid)`",`"active`":`"true`",`"partitions`": [ "
         
         $partitionCounter=0
         foreach($partition in Get-Partition -DiskNumber $hardDrive.Number | Sort-Object PartitionNumber)
@@ -107,8 +111,8 @@ function Upload-Image()
 
             $reporterProc=$(Start-Process powershell "x:\winpe_reporter.ps1 -web $web -computerId $computer_id -partitionNumber $($partition.PartitionNumber)" -NoNewWindow -PassThru)
             
-            log "wimcapture $($updatedPartition.DriveLetter):\ $imagePath\part$($partition.PartitionNumber).ntfs.wim 2>>$clientLog > x:\wim.progress"
-            wimcapture "$($updatedPartition.DriveLetter):\" "$imagePath\part$($partition.PartitionNumber).ntfs.wim" 2>>$clientLog > x:\wim.progress
+            log "wimcapture $($updatedPartition.DriveLetter):\ $imagePath\part$($partition.PartitionNumber).winpe.wim 2>>$clientLog > x:\wim.progress"
+            wimcapture "$($updatedPartition.DriveLetter):\" "$imagePath\part$($partition.PartitionNumber).winpe.wim" 2>>$clientLog > x:\wim.progress
             
           
             Stop-Process $reporterProc

@@ -7,14 +7,17 @@ log -message $(gwmi win32_operatingsystem | select OSArchitecture)
 $efi=Confirm-SecureBootUEFI
 if($efi -eq $false)
 {
+    $Global:bootType="efi"
     log -message "EFI Enabled / Secure Boot Disabled"
 }
 elseif($efi -eq $true)
 {
+    $Global:bootType="efi"
     log -message "EFI Enabled / Secure Boot Enabled"
 }
 else
 {
+    $Global:bootType="bios"
     log -message "Using Legacy BIOS"
 }
 
