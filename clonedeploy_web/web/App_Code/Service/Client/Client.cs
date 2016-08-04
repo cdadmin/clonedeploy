@@ -313,7 +313,6 @@ namespace Service.Client
         {
             if (!Authorize()) return;
             var tag = new Logic().GetSysprepTag(tagId);
-            tag = Utility.EscapeCharacter(tag, new[] {">", "<", "/"});       
             HttpContext.Current.Response.Write(tag);
 
         }

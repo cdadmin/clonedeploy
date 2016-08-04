@@ -127,7 +127,9 @@ namespace BLL.Workflows
             foreach (var sysprepTag in ImageProfileSysprepTag.SearchImageProfileSysprepTags(_imageProfile.Id))
                 sysprepTags += sysprepTag.SysprepId + " ";
 
+            sysprepTags = sysprepTags.Trim();
             sysprepTags += "\"";
+            
             var areFilesToCopy = ImageProfileFileFolder.SearchImageProfileFileFolders(_imageProfile.Id).Any();
 
             //On demand computer may be null if not registered

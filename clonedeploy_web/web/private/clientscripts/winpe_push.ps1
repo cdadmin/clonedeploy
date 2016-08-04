@@ -89,7 +89,7 @@ function Process-Partitions()
   	
 
 }
-function Reg-Value-Exists($regObject, $value)
+function Reg-Key-Exists($regObject, $value)
 {
     try 
     {
@@ -119,9 +119,13 @@ function Process-Sysprep-Tags()
         {
             foreach($tagId in -Split $sysprep_tags.trim("`""))
             {
-                $tag=$(curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded --data "tag_Id=$tagId" ${web}GetSysprepTag --connect-timeout 10 --stderr -)
+                $tag=$(curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded --data "tagId=$tagId" ${web}GetSysprepTag --connect-timeout 10 --stderr -)
 	            log " ** Running Custom Sysprep Tag With Id $tagId ** " "true"
+                Write-Host "pretag"
+                Write-Host $tag
 	            $tag=$tag | ConvertFrom-Json
+                Write-Host "posttag"
+                $tag.Contents=$(Invoke-Expression $tag.Contents)
                 if(!$?)
                 {
                     $Error[0].Exception.Message
@@ -254,6 +258,9 @@ function Process-Hard-Drives()
 	    Create-Partition-Layout
     }
 }
+
+Process-Sysprep-Tags
+Exit
 
 if($isOnDemand)
 {

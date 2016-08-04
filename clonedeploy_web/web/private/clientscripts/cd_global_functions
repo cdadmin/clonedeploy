@@ -313,6 +313,7 @@ function process_sysprep_tags()
   log " ** Processing Sysprep Tags On $partition ** " "display"
   sleep 5
   mkdir /mnt/ntfs &> /dev/null	
+  umount /mnt/ntfs
   ntfs-3g -o force,rw,remove_hiberfile $partition /mnt/ntfs &>/dev/null
   if [ "$?" != "0" ]; then
     log "Could Not Mount NTFS To Change Answer File"
@@ -326,9 +327,7 @@ function process_sysprep_tags()
 	  log "$sysprep_tag_json"
 	  content_var=$(eval echo $(parse_json "$sysprep_tag_json" .Contents))
 	  log "$content_var"
-	  #xx~xx is a hack to fix a problem where the content_var begins with a number
-	  perl -0777 -i -pe "s/($(parse_json "$sysprep_tag_json" .OpeningTag)).*($(parse_json "$sysprep_tag_json" .ClosingTag))/\$1xx~xx$content_var\$2/si" /mnt/ntfs/Windows/Panther/unattend.xml 
-	  sed -i 's/xx~xx//g' /mnt/ntfs/Windows/Panther/unattend.xml
+	  perl -0777 -i -pe "s/($(parse_json "$sysprep_tag_json" .OpeningTag)).*($(parse_json "$sysprep_tag_json" .ClosingTag))/\${1}$content_var\${2}/si" /mnt/ntfs/Windows/Panther/unattend.xml 
 	done
 	#Not sure if this elif is really needed
   elif [ -f "/mnt/ntfs/Windows/System32/sysprep/Panther/unattend.xml" ]; then
@@ -338,14 +337,12 @@ function process_sysprep_tags()
 	  log "$sysprep_tag_json"
 	  content_var=$(eval echo $(parse_json "$sysprep_tag_json" .Contents))
 	  log "$content_var"
-	  #xx~xx is a hack to fix a problem where the content_var begins with a number
-	  perl -0777 -i -pe "s/($(parse_json "$sysprep_tag_json" .OpeningTag)).*($(parse_json "$sysprep_tag_json" .ClosingTag))/\$1xx~xx$content_var\$2/si" /mnt/ntfs/Windows/System32/sysprep/Panther/unattend.xml
-	  sed -i 's/xx~xx//g' /mnt/ntfs/Windows/System32/sysprep/Panther/unattend.xml
+	  perl -0777 -i -pe "s/($(parse_json "$sysprep_tag_json" .OpeningTag)).*($(parse_json "$sysprep_tag_json" .ClosingTag))/\${1}$content_var\${2}/si" /mnt/ntfs/Windows/System32/sysprep/Panther/unattend.xml
     done
   else
     log " ...... Could Not Find Answer File"
   fi
-  umount /mnt/ntfs
+  #umount /mnt/ntfs
 }
 
 function process_file_copy()
