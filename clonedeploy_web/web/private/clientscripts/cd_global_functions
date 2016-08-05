@@ -89,7 +89,7 @@ function checkout()
 	sleep 1;
 	
 	if [ "$task_completed_action" = "Power Off" ]; then
-		poweroff;
+		poweroff -f;
 	elif [ "$task_completed_action" = "Exit To Shell" ]; then
 		/bin/bash
 	else
@@ -126,7 +126,7 @@ function error()
 	  sleep 60
 	fi
 	if [ "$task_completed_action" = "Power Off" ]; then
-		poweroff;
+		poweroff -f;
 	elif [ "$task_completed_action" = "Exit To Shell" ]; then
 		/bin/bash;
 	else
