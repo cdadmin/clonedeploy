@@ -60,14 +60,16 @@
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="PageActions">
     <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
     </asp:ContentPlaceHolder>
-
+    
+    <ul class="dropdown-menu">
+             <asp:ContentPlaceHolder ID="AdditionalActions" runat="server"></asp:ContentPlaceHolder>
       <asp:LinkButton ID="btnDelete" runat="server"  OnClick="btnDelete_Click">Delete Image</asp:LinkButton>
        
          <asp:LinkButton ID="btnApproveImage" runat="server" OnClick="btnApprove_Click" Visible="False">Approve Image</asp:LinkButton>
   
    
      <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
-
+        </ul>
 </asp:Content>
 
 <asp:Content runat="server" ID="PageNav" ContentPlaceHolderID="PageNav">

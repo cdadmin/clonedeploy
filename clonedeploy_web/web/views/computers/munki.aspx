@@ -6,12 +6,20 @@
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>" target="_blank">Help</a>
+    <li role="separator" class="divider"></li>
+     <li><a href="<%= ResolveUrl("~/views/help/index.html")%>" target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-       <asp:LinkButton ID="btnAddSelected" runat="server" OnClick="btnAddSelected_OnClick" Text="Update Templates " />
-     <asp:LinkButton runat="server" Id="effective" OnClick="effective_OnClick" Text="View Effective Manifest"></asp:LinkButton>
+       <asp:LinkButton ID="btnAddSelected" runat="server" OnClick="btnAddSelected_OnClick" Text="Update Templates" CssClass="btn btn-default" />
+      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+  </button>
 </asp:Content>
+
+<asp:Content runat="server" ID="AdditionalActions" ContentPlaceHolderID="AdditionalActions">
+    <li><asp:LinkButton runat="server" Id="effective" OnClick="effective_OnClick" Text="View Effective Manifest"></asp:LinkButton></li>
+</asp:Content>
+
 <asp:Content ID="Content4" ContentPlaceHolderID="SubContent" Runat="Server">
      <script type="text/javascript">
         $(document).ready(function() {

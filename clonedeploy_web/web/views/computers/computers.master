@@ -68,14 +68,17 @@
 
     <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
     </asp:ContentPlaceHolder>
-
-        <asp:LinkButton ID="LinkButton1" runat="server"  OnClick="btnUpload_Click" Text="Upload Computer "></asp:LinkButton>
-        <asp:LinkButton ID="LinkButton2" runat="server" OnClick="btnDeploy_Click" Text="Deploy Computer"></asp:LinkButton>
-        <asp:LinkButton ID="LinkButton3" runat="server"  OnClick="btnDelete_Click" Text="Delete Computer"></asp:LinkButton>
+    
+        <ul class="dropdown-menu">
+             <asp:ContentPlaceHolder ID="AdditionalActions" runat="server"></asp:ContentPlaceHolder>
+        <li><asp:LinkButton ID="LinkButton1" runat="server"  OnClick="btnUpload_Click" Text="Upload Computer "></asp:LinkButton></li>
+        <li><asp:LinkButton ID="LinkButton2" runat="server" OnClick="btnDeploy_Click" Text="Deploy Computer"></asp:LinkButton></li>
+        <li><asp:LinkButton ID="LinkButton3" runat="server"  OnClick="btnDelete_Click" Text="Delete Computer"></asp:LinkButton></li>
     
 
  
         <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
+            </ul>
 
 </asp:Content>
 

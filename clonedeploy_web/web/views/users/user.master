@@ -46,11 +46,14 @@
     <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
     </asp:ContentPlaceHolder>
    
+    <ul class="dropdown-menu">
+             <asp:ContentPlaceHolder ID="AdditionalActions" runat="server"></asp:ContentPlaceHolder>
       <asp:LinkButton ID="btnDelete" runat="server"  Text="Delete User" OnClick="btnDelete_Click"></asp:LinkButton>
             <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
    
  
      <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
+        </ul>
        
 </asp:Content>
 

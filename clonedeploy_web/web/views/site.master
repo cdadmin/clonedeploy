@@ -18,10 +18,10 @@
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery.jBreadCrumb.1.1.js") %>" charset="utf-8"></script>
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery.easing.1.3.js") %>" charset="utf-8"></script>
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery-labelauty.js") %>" charset="utf-8"></script>
-    <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery.splitdropbutton.js") %>" charset="utf-8"></script>
      <script type="text/javascript" src="<%= ResolveUrl("~/content/js/scrollsaver.js") %>" charset="utf-8"></script>
+     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/bootstrap.min.js") %>" charset="utf-8"></script>
 
-
+      <link href="~/content/css/splitbutton.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="~/content/css/BreadCrumb.css" />
 
     <link href="~/content/js/jquery-labelauty.css" rel="stylesheet" type="text/css" />
@@ -130,7 +130,7 @@
                     </div>
                     
                       <div class="actions_container">
-                            <div class="split-btn">
+                            <div class="btn-group">
                         <asp:ContentPlaceHolder ID="PageActions" runat="server">
                         </asp:ContentPlaceHolder>
                                 </div>
@@ -139,7 +139,6 @@
                  
 
                     <div id="content-main">
-                         
                         <br class="clear" />
                        <div class="page-nav">
                            <ul class="page-nav-menu">
@@ -183,11 +182,6 @@
                 var menuTop = document.getElementById('menu-mobile');
                 classie.toggle(menuTop, 'nav-menu-mobile-open');
             });
-
-            $('.split-btn').splitdropbutton({
-                toggleDivContent: '' // optional html content for the clickable toggle div
-            });
-
         });
     </script>
 </body>

@@ -31,12 +31,13 @@
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="PageActions">
     <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
     </asp:ContentPlaceHolder>
-
+    <ul class="dropdown-menu">
+             <asp:ContentPlaceHolder ID="AdditionalActions" runat="server"></asp:ContentPlaceHolder>
             <asp:ContentPlaceHolder ID="ActionsLeftSub" runat="server"></asp:ContentPlaceHolder>
 
 
      <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
-
+        </ul>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">  
