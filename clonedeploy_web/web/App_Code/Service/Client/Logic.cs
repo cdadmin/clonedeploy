@@ -116,7 +116,7 @@ namespace Service.Client
                 if (token == Settings.UniversalToken && !string.IsNullOrEmpty(Settings.UniversalToken))
                     return "true";
             }
-            else if (task == "debug" && Settings.OnDemandRequiresLogin == "Yes")
+            else if (task == "debug" && Settings.DebugRequiresLogin == "Yes")
             {
                 var user = BLL.User.GetUserByToken(token);
                 if (user != null)
@@ -558,37 +558,75 @@ namespace Service.Client
 
         public string ImageList(string environment,int userId = 0)
         {
-            var imageList = new Services.Client.ImageList { Images = new List<string>() };
-
             var images = BLL.Image.GetOnDemandImageList(userId);
-            if(environment == "macOS")
-                images = images.Where(x => x.Environment == "macOS").ToList();
-            else if(environment == "linux")
-                images = images.Where(x => x.Environment != "macOS").ToList();
-            foreach (var image in images)
-                imageList.Images.Add(image.Id + " " + image.Name);
+            if (environment == "winpe")
+            {
+                images = images.Where(x => x.Environment == "winpe").ToList();
+                var imageList = new List<Services.Client.WinPEImageList>();
+                foreach (var image in images)
+                {
+                    var winpeImage = new Services.Client.WinPEImageList();
+                    winpeImage.ImageId = image.Id.ToString();
+                    winpeImage.ImageName = image.Name;
+                    imageList.Add(winpeImage);
+                }
+                return JsonConvert.SerializeObject(imageList);
+            }
+            else
+            {
+                var imageList = new Services.Client.ImageList {Images = new List<string>()};              
+                if (environment == "macOS")
+                    images = images.Where(x => x.Environment == "macOS").ToList();
+                else if (environment == "linux")
+                    images = images.Where(x => x.Environment != "macOS" && x.Environment != "winpe").ToList();
+                foreach (var image in images)
+                    imageList.Images.Add(image.Id + " " + image.Name);
 
-            if (imageList.Images.Count == 0)
-                imageList.Images.Add(-1 + " " + "No_Images_Found");
-            return JsonConvert.SerializeObject(imageList);
+                if (imageList.Images.Count == 0)
+                    imageList.Images.Add(-1 + " " + "No_Images_Found");
+                return JsonConvert.SerializeObject(imageList);
+            }
         }
 
         public string ImageProfileList(int imageId)
         {
-            var imageProfileList = new Services.Client.ImageProfileList { ImageProfiles = new List<string>() };
-
-            int profileCounter = 0;
-            foreach (var imageProfile in BLL.ImageProfile.SearchProfiles(Convert.ToInt32(imageId)))
+            var selectedImage = BLL.Image.GetImage(imageId);
+            if (selectedImage.Environment == "winpe")
             {
-                profileCounter++;
-                imageProfileList.ImageProfiles.Add(imageProfile.Id + " " + imageProfile.Name);
-                if (profileCounter == 1)
-                    imageProfileList.FirstProfileId = imageProfile.Id.ToString();
+                var imageProfileList = new Services.Client.WinPEProfileList { ImageProfiles = new List<WinPEProfile>() };
+                int profileCounter = 0;
+                foreach (var imageProfile in BLL.ImageProfile.SearchProfiles(Convert.ToInt32(imageId)).OrderBy(x => x.Name))
+                {
+                    profileCounter++;
+                    var winpeProfile = new Services.Client.WinPEProfile();
+                    winpeProfile.ProfileId = imageProfile.Id.ToString();
+                    winpeProfile.ProfileName = imageProfile.Name;
+                    imageProfileList.ImageProfiles.Add(winpeProfile);
+                    
+                    if (profileCounter == 1)
+                        imageProfileList.FirstProfileId = imageProfile.Id.ToString();
+                }
+                imageProfileList.Count = profileCounter.ToString();
+                return JsonConvert.SerializeObject(imageProfileList);
+            
             }
+            else
+            {
+                var imageProfileList = new Services.Client.ImageProfileList {ImageProfiles = new List<string>()};
 
-            imageProfileList.Count = profileCounter.ToString();
+                int profileCounter = 0;
+                foreach (var imageProfile in BLL.ImageProfile.SearchProfiles(Convert.ToInt32(imageId)))
+                {
+                    profileCounter++;
+                    imageProfileList.ImageProfiles.Add(imageProfile.Id + " " + imageProfile.Name);
+                    if (profileCounter == 1)
+                        imageProfileList.FirstProfileId = imageProfile.Id.ToString();
+                }
 
-            return JsonConvert.SerializeObject(imageProfileList);
+                imageProfileList.Count = profileCounter.ToString();
+                return JsonConvert.SerializeObject(imageProfileList);
+            }
+            
         }
 
         public string MulicastSessionList()
@@ -610,6 +648,25 @@ namespace Service.Client
                 Name = imageName,
                 Environment = "linux",
                 Type = "Block",
+                Enabled = 1,
+                IsVisible = 1,
+                Os = "",
+                Description = ""
+            };
+            var result = BLL.Image.AddImage(image);
+            if (result.IsValid)
+                result.Message = image.Id.ToString();
+
+            return JsonConvert.SerializeObject(result);
+        }
+
+        public string AddImageWinPEEnv(string imageName)
+        {
+            var image = new Models.Image()
+            {
+                Name = imageName,
+                Environment = "winpe",
+                Type = "File",
                 Enabled = 1,
                 IsVisible = 1,
                 Os = "",

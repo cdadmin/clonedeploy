@@ -19,9 +19,9 @@ function Checkout()
     $logEncoded =[Convert]::ToBase64String($logBytes)
     $imageDirectionBytes = [System.Text.Encoding]::UTF8.GetBytes($image_direction)
     $imageDirectionEncoded =[Convert]::ToBase64String($imageDirectionBytes)
-    $macBytes = [System.Text.Encoding]::UTF8.GetBytes($mac)
+    $macBytes = [System.Text.Encoding]::UTF8.GetBytes($script:mac)
     $macEncoded =[Convert]::ToBase64String($macBytes)
-    curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded -F computerId="$computerIdEncoded" -F logContents="$logEncoded" -F subType="$imageDirectionEncoded" -F mac="$macEncoded" "${web}UploadLog" --connect-timeout 10 --stderr -
+    curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded -F computerId="$computerIdEncoded" -F logContents="$logEncoded" -F subType="$imageDirectionEncoded" -F mac="$macEncoded" "${script:web}UploadLog" --connect-timeout 10 --stderr -
 }
 
 function error($message, $rebootTime)
@@ -38,7 +38,7 @@ function error($message, $rebootTime)
 	}
     else
     {
-        curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded --data "computerId=$computer_id&error=$1" ${web}ErrorEmail  --connect-timeout 10 --stderr -
+        curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id&error=$1" ${script:web}ErrorEmail  --connect-timeout 10 --stderr -
 	}
 
     $computerIdBytes = [System.Text.Encoding]::UTF8.GetBytes($computer_id)
@@ -48,9 +48,9 @@ function error($message, $rebootTime)
     $logEncoded =[Convert]::ToBase64String($logBytes)
     $imageDirectionBytes = [System.Text.Encoding]::UTF8.GetBytes($image_direction)
     $imageDirectionEncoded =[Convert]::ToBase64String($imageDirectionBytes)
-    $macBytes = [System.Text.Encoding]::UTF8.GetBytes($mac)
+    $macBytes = [System.Text.Encoding]::UTF8.GetBytes($script:mac)
     $macEncoded =[Convert]::ToBase64String($macBytes)
-    curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded -F computerId="$computerIdEncoded" -F logContents="$logEncoded" -F subType="$imageDirectionEncoded" -F mac="$macEncoded" "${web}UploadLog" --connect-timeout 10 --stderr -
+    curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded -F computerId="$computerIdEncoded" -F logContents="$logEncoded" -F subType="$imageDirectionEncoded" -F mac="$macEncoded" "${script:web}UploadLog" --connect-timeout 10 --stderr -
 	
 	if($rebootTime)
     {
@@ -79,7 +79,7 @@ function Mount-SMB()
 {
     log " ** Mounting SMB Share ** " "true"
 	
-	$smbInfo=$(curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded --data "dpId=$dp_id&task=$image_direction" ${web}DistributionPoint  --connect-timeout 10 --stderr -)
+	$smbInfo=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "dpId=$dp_id&task=$image_direction" ${script:web}DistributionPoint  --connect-timeout 10 --stderr -)
 	$smbInfo=$smbInfo | ConvertFrom-Json
     if(!$?)
     {
@@ -88,28 +88,27 @@ function Mount-SMB()
         error "Could Not Parse SMB Info"
     }
 	#fix path that was originally only used for initrd
-	$share_path=$smbInfo.SharePath -replace ("/"),("\")
-    net use s: /Delete /Yes > $null
+	$sharePath=$smbInfo.SharePath -replace ("/"),("\")
+    net use s: /Delete /Yes 2>&1 >> $null
     Start-Sleep 2
-    net use s: $share_path /user:$($smbInfo.Domain)\$($smbInfo.Username) $smbInfo.Password 2>x:\mntstat >> $clientLog
+    net use s: $sharePath /user:$($smbInfo.Domain)\$($smbInfo.Username) $smbInfo.Password 2>x:\mntstat >> $clientLog
     
-		
-		if(!$?)
+	if(!$?)
+    {
+	    Get-Content x:\mntstat | Out-File $clientLog -Append
+		error -message "Could Not Mount SMB Share: $(Get-Content x:\mntstat)"		
+    }
+	else
+    {
+        Start-Sleep 2
+	    log -message " ...... Success" -isDisplay "true"
+        Write-Host
+		cd s:\images\$img_name
+	    if(!$?)
         {
-			Get-Content x:\mntstat | Out-File $clientLog -Append
-			error -message "Could Not Mount SMB Share: $(Get-Content x:\mntstat)"		
-        }
-		else
-        {
-            Start-Sleep 2
-			log -message " ...... Success" -isDisplay "true"
-            Write-Host
-			cd s:\images\$img_name
-			if(!$?)
-            {
-				error "Could Not Change Directory To s:\images\$image_name Verify The Directory Exists And Permissions Are Correct"
-			}
-		}
+	        error "Could Not Change Directory To s:\images\$image_name Verify The Directory Exists And Permissions Are Correct"
+	    }
+    }
 	Start-Sleep 2
 }
 
@@ -127,20 +126,20 @@ function Get-Hard-Drives($taskType)
     {
         if($taskType -eq "upload")
         {
-            $Global:HardDrives=$(get-disk | where-object {$_.NumberOfPartitions -gt 0 -and $_.BusType -ne "USB"} | Sort-Object Number)
+            $script:HardDrives=$(get-disk | where-object {$_.NumberOfPartitions -gt 0 -and $_.BusType -ne "USB"} | Sort-Object Number)
         }
         else
         {
-            $Global:HardDrives=$(get-disk | where-object {$_.BusType -ne "USB"} | Sort-Object Number)
+            $script:HardDrives=$(get-disk | where-object {$_.BusType -ne "USB"} | Sort-Object Number)
         }
     }
 
-    if(@($Global:HardDrives).count -eq 0)
+    if(@($script:HardDrives).count -eq 0)
     {
         error "Could Not Find A Hard Drive Attached To This Computer."
     }
 
-    log " ...... Found $(@($Global:HardDrives).count) Drives" "true"
+    log " ...... Found $(@($script:HardDrives).count) Drives" "true"
     Write-Host
 }
 

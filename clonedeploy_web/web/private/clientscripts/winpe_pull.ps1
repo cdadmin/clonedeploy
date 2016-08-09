@@ -9,10 +9,10 @@ function Create-Image-Schema()
     $hardDriveCounter=0
     $imageSchema="{`"harddrives`": [ "
     
-    foreach($hardDrive in $Global:HardDrives)
+    foreach($hardDrive in $script:HardDrives)
     {
         $hardDriveCounter++
-        if($Global:bootType -ne "efi")
+        if($script:bootType -ne "efi")
         {
             $bootPartition=$(Get-Partition -DiskNumber $hardDrive.Number | Where-Object {$_.IsActive -eq $true})
         }
@@ -79,7 +79,7 @@ function Create-Image-Schema()
 function Upload-Image()
 {
     $currentHdNumber=-1
-     foreach($hardDrive in $Global:HardDrives)
+     foreach($hardDrive in $script:HardDrives)
      {
         $currentHdNumber++
         $imagePath="s:\images\$image_name\hd$currentHdNumber"
@@ -102,21 +102,24 @@ function Upload-Image()
              
 	        if($computer_id)
             {    
-                curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded --data "computerId=$computer_id&partition=$($partition.PartitionNumber)" ${web}UpdateProgressPartition  --connect-timeout 10 --stderr -
+                curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id&partition=$($partition.PartitionNumber)" ${script:web}UpdateProgressPartition  --connect-timeout 10 --stderr -
             }
             Start-Sleep 7
             Write-Host
     
             log " ...... partitionNumber: $($partition.PartitionNumber)"
 
-            $reporterProc=$(Start-Process powershell "x:\winpe_reporter.ps1 -web $web -computerId $computer_id -partitionNumber $($partition.PartitionNumber)" -NoNewWindow -PassThru)
-            
+            if(!$script:isOnDemand)
+            {
+                $reporterProc=$(Start-Process powershell "x:\winpe_reporter.ps1 -web $script:web -computerId $computer_id -partitionNumber $($partition.PartitionNumber)" -NoNewWindow -PassThru)
+            }
             log "wimcapture $($updatedPartition.DriveLetter):\ $imagePath\part$($partition.PartitionNumber).winpe.wim 2>>$clientLog > x:\wim.progress"
             wimcapture "$($updatedPartition.DriveLetter):\" "$imagePath\part$($partition.PartitionNumber).winpe.wim" 2>>$clientLog > x:\wim.progress
             
-          
-            Stop-Process $reporterProc
-
+            if(!$script:isOnDemand)
+            {
+                Stop-Process $reporterProc
+            }
             if($notAutoMounted)
             {
                 mountvol.exe q:\ /d
@@ -129,14 +132,14 @@ Mount-SMB
 
 Get-Hard-Drives("upload")
 
-if(!$isOnDemand)
+if(!$script:isOnDemand)
 {
     log " ** Updating Client Status To In-Progress ** "
-    curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded --data "computerId=$computer_id" ${web}UpdateStatusInProgress  --connect-timeout 10 --stderr -
+    curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id" ${script:web}UpdateStatusInProgress  --connect-timeout 10 --stderr -
 }
 
 log " ** Removing All Files For Existing Image: $image_name ** "
-curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded --data "profileId=$profile_id" ${web}DeleteImage  --connect-timeout 10 --stderr -
+curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "profileId=$profile_id" ${script:web}DeleteImage  --connect-timeout 10 --stderr -
 
 Create-Image-Schema
 

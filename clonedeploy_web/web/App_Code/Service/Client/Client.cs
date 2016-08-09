@@ -137,6 +137,13 @@ namespace Service.Client
         }
 
         [WebMethod]
+        public void AddImageWinPEEnv(string name)
+        {
+            if (!Authorize()) return;
+            HttpContext.Current.Response.Write(new Service.Client.Logic().AddImageWinPEEnv(name));
+        }
+
+        [WebMethod]
         public void ListImages(string userId, string environment)
         {
             if (!Authorize()) return;

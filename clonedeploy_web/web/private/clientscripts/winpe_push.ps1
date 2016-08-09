@@ -3,7 +3,7 @@
 function Create-Partition-Layout()
 {
     Clear-Disk $hardDrive.Number -RemoveData -RemoveOEM -Confirm:$false
-    if($Global:bootType -eq "efi")
+    if($script:bootType -eq "efi")
     {
         Initialize-Disk $hardDrive.Number –PartitionStyle GPT
     }
@@ -15,12 +15,12 @@ function Create-Partition-Layout()
     if($partition_method -eq "script")
     {
         log " ** Creating Partition Table On $($hardDrive.Number) From Custom Script ** " "true"
-        curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded --data "profileId=$profile_id" ${web}GetCustomPartitionScript --connect-timeout 10 --stderr - > x:\newPartLayout.ps1
+        curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "profileId=$profile_id" ${script:web}GetCustomPartitionScript --connect-timeout 10 --stderr - > x:\newPartLayout.ps1
     }
     else
     {
-        log "imageProfileId=$profile_id&hdToGet=$Global:imageHdToUse&newHDSize=$($hardDrive.Size)&clientHD=$($hardDrive.Number)&taskType=deploy&partitionPrefix=&lbs=$($hardDrive.LogicalSectorSize) ${web}GetPartLayout" 
-        curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded --data "imageProfileId=$profile_id&hdToGet=$Global:imageHdToUse&newHDSize=$($hardDrive.Size)&clientHD=$($hardDrive.Number)&taskType=deploy&partitionPrefix=&lbs=$($hardDrive.LogicalSectorSize)" ${web}GetPartLayout --connect-timeout 10 --stderr - > x:\newPartLayout.ps1
+        log "imageProfileId=$profile_id&hdToGet=$script:imageHdToUse&newHDSize=$($hardDrive.Size)&clientHD=$($hardDrive.Number)&taskType=deploy&partitionPrefix=&lbs=$($hardDrive.LogicalSectorSize) ${script:web}GetPartLayout" 
+        curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "imageProfileId=$profile_id&hdToGet=$script:imageHdToUse&newHDSize=$($hardDrive.Size)&clientHD=$($hardDrive.Number)&taskType=deploy&partitionPrefix=&lbs=$($hardDrive.LogicalSectorSize)" ${script:web}GetPartLayout --connect-timeout 10 --stderr - > x:\newPartLayout.ps1
 	    if($(Get-Content x:\newPartLayout.ps1) -eq "failed")
         {
 	        error "Could Not Dynamically Create Partition Layout"
@@ -32,7 +32,7 @@ function Create-Partition-Layout()
     . x:\newPartLayout.ps1
 
     #Find and mount system partition
-    if($Global:bootType -eq "efi")
+    if($script:bootType -eq "efi")
     {
         #Not sure why but powershell cannot format the system partition as fat32 - use diskpart instead
         $sysPartition=$(Get-Partition -DiskNumber $($hardDrive.Number) | Where-Object {$_.Type -eq "System"})
@@ -108,7 +108,7 @@ function Download-Image()
 {
     log " ** Starting Image Download For Hard Drive $($hardDrive.Number) Partition $($currentPartition.Number)" "true"
     Set-Partition -DiskNumber $($hardDrive.Number) -PartitionNumber $($currentPartition.Number) -NewDriveLetter C 2>&1 >> $clientLog
-    wimapply.cmd $Global:imagePath\part$($currentPartition.Number).winpe.wim C:
+    wimapply.cmd $script:imagePath\part$($currentPartition.Number).winpe.wim C:
 }
 
 function Process-Sysprep-Tags()
@@ -119,7 +119,7 @@ function Process-Sysprep-Tags()
         {
             foreach($tagId in -Split $sysprep_tags.trim("`""))
             {
-                $tag=$(curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded --data "tagId=$tagId" ${web}GetSysprepTag --connect-timeout 10 --stderr -)
+                $tag=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "tagId=$tagId" ${script:web}GetSysprepTag --connect-timeout 10 --stderr -)
 	            log " ** Running Custom Sysprep Tag With Id $tagId ** " "true"
                 Write-Host "pretag"
                 Write-Host $tag
@@ -145,7 +145,7 @@ function Process-Scripts($scripts)
     log "processing scripts" "true"
     foreach($script in -Split $scripts.trim("`""))
     {
-        curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded --data "scriptId=$script" ${web}GetCustomScript --connect-timeout 10 --stderr - > x:\script$($script).ps1
+        curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "scriptId=$script" ${script:web}GetCustomScript --connect-timeout 10 --stderr - > x:\script$($script).ps1
 	    log " ** Running Custom Script With Id $script ** " "true"
 	    sleep 5
 	    #source script in sub shell so the values of the core script do not get overwritten
@@ -218,35 +218,35 @@ function Process-Hard-Drives()
 {
     Get-Hard-Drives("deploy")
 
-    $imagedSchemaDrives=""
+    $script:imagedSchemaDrives=""
     $currentHdNumber=-1
 
-    foreach($hardDrive in $Global:HardDrives)
+    foreach($hardDrive in $script:HardDrives)
     {
         log " ** Processing Hard Drive $($hardDrive.Number)" "true"
         $currentHdNumber++
 
-        log "Get hd_schema:  profileId=$profile_id&clientHdNumber=$currentHdNumber&newHdSize=$($hardDrive.Size)&schemaHds=$imagedSchemaDrives&clientLbs=$($hardDrive.LogicalSectorSize)"
-        $Global:hdSchema=$(curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded --data "profileId=$profile_id&clientHdNumber=$currentHdNumber&newHdSize=$($hardDrive.Size)&schemaHds=$imaged_schema_drives&clientLbs=$($hardDrive.LogicalSectorSize)" ${web}CheckHdRequirements --connect-timeout 10 --stderr -)
+        log "Get hd_schema:  profileId=$profile_id&clientHdNumber=$currentHdNumber&newHdSize=$($hardDrive.Size)&schemaHds=$script:imagedSchemaDrives&clientLbs=$($hardDrive.LogicalSectorSize)"
+        $script:hdSchema=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "profileId=$profile_id&clientHdNumber=$currentHdNumber&newHdSize=$($hardDrive.Size)&schemaHds=$script:imaged_schema_drives&clientLbs=$($hardDrive.LogicalSectorSize)" ${script:web}CheckHdRequirements --connect-timeout 10 --stderr -)
        
-        log "$Global:hdSchema"
-	    $Global:hdSchema=$Global:hdSchema | ConvertFrom-Json
+        log "$script:hdSchema"
+	    $script:hdSchema=$script:hdSchema | ConvertFrom-Json
         if(!$?)
         {
             $Error[0].Exception.Message
-            $Global:hdSchema
+            $script:hdSchema
             error "Could Not Parse HD Schema"
         }
-        $Global:imageHdToUse=$Global:hdSchema.SchemaHdNumber
-        $Global:imagePath="s:\images\$image_name\hd$Global:imageHdToUse"
+        $script:imageHdToUse=$script:hdSchema.SchemaHdNumber
+        $script:imagePath="s:\images\$image_name\hd$script:imageHdToUse"
         
-        if($Global:hdSchema.IsValid -eq "true" -or $Global:hdSchema.IsValid -eq "original" )
+        if($script:hdSchema.IsValid -eq "true" -or $script:hdSchema.IsValid -eq "original" )
         {
             log " ...... HD Meets The Minimum Sized Required"
         }
-        elseif($Global:hdSchema.IsValid -eq  "false" )
+        elseif($script:hdSchema.IsValid -eq  "false" )
         {
-            log " ...... $($Global:hdSchema.Message)" "true"
+            log " ...... $($script:hdSchema.Message)" "true"
             Start-Sleep 10
             continue	
         }
@@ -259,10 +259,8 @@ function Process-Hard-Drives()
     }
 }
 
-Process-Sysprep-Tags
-Exit
 
-if($isOnDemand)
+if($script:isOnDemand)
 {
     log " ** Using On Demand Mode ** "	
 }
@@ -271,7 +269,7 @@ else
     Write-Host " ** Checking Current Queue ** " 	
     while($true)
     {
-        $queueStatus=$(curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded --data "computerId=$computer_id" ${web}CheckQueue --connect-timeout 10 --stderr -)
+        $queueStatus=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id" ${script:web}CheckQueue --connect-timeout 10 --stderr -)
 	    $queueStatus=$queueStatus | ConvertFrom-Json
         if(!$?)
         {
@@ -306,7 +304,7 @@ Mount-SMB
  if($file_copy -eq "True")
     {
         log "file_copy_schema: profileId=$profile_id"
-	    $fileCopySchema=$(curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded --data "profileId=$profile_id" ${web}GetFileCopySchema --connect-timeout 10 --stderr -)
+	    $fileCopySchema=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "profileId=$profile_id" ${script:web}GetFileCopySchema --connect-timeout 10 --stderr -)
         $fileCopySchema=$fileCopySchema | ConvertFrom-Json
         if(!$?)
         {

@@ -2,6 +2,25 @@
 
 namespace Services.Client
 {
+    public class WinPEImageList
+    {
+        public string ImageId { get; set; }
+        public string ImageName { get; set; }
+    }
+
+    public class WinPEProfileList
+    {
+        public string Count { get; set; }
+        public string FirstProfileId { get; set; }
+        public List<WinPEProfile> ImageProfiles { get; set; }      
+    }
+
+    public class WinPEProfile
+    {
+        public string ProfileId { get; set; }
+        public string ProfileName { get; set; }
+    }
+
     public class ImageList
     {
         public List<string> Images  { get; set; }

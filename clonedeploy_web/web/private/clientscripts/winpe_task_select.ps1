@@ -7,17 +7,17 @@ log -message $(gwmi win32_operatingsystem | select OSArchitecture)
 $efi=Confirm-SecureBootUEFI
 if($efi -eq $false)
 {
-    $Global:bootType="efi"
+    $script:bootType="efi"
     log -message "EFI Enabled / Secure Boot Disabled"
 }
 elseif($efi -eq $true)
 {
-    $Global:bootType="efi"
+    $script:bootType="efi"
     log -message "EFI Enabled / Secure Boot Enabled"
 }
 else
 {
-    $Global:bootType="bios"
+    $script:bootType="bios"
     log -message "Using Legacy BIOS"
 }
 
@@ -26,7 +26,7 @@ $nicList = Get-WmiObject -Class "Win32_NetworkAdapterConfiguration" -Filter "IpE
 ForEach ($nic in $nicList) 
 {
     log -message " ** Looking For Active Task For $($nic.MacAddress) **"  -isDisplay "true"
-    $checkInStatus=$(curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded --data "computerMac=$($nic.MacAddress)" ${web}CheckIn  --connect-timeout 10 --stderr -)
+    $checkInStatus=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerMac=$($nic.MacAddress)" ${script:web}CheckIn  --connect-timeout 10 --stderr -)
     $checkInStatus=$checkInStatus | ConvertFrom-Json
     if(!$?)
     {
@@ -56,29 +56,27 @@ ForEach ($nic in $nicList)
             while($pos -lt $arr.Count - 1)
             {
                 $arg=$arr[$pos] -split '='
-                New-Variable -Name $arg[0] -Value $arg[1] -Scope Global -Force
+                New-Variable -Name $arg[0] -Value $arg[1] -Scope Script -Force
                 $pos++
             }
-            
-           
-            $mac=$nic.MacAddress
+                      
+            $script:mac=$nic.MacAddress
             log -message " ...... Success" -isDisplay "true"
             break;
         }
     }
 }
 
-if(!$mac)
+if(!$script:mac)
 {
   if($computerIsRegistered -ne "true")
   {
     . x:\winpe_register.ps1
   }
-  Write-Host
-  log -message "Could Not Find An Active Web Task For This Computer." -isDisplay "true"
-  Write-Host
-  log -message "Falling Back To On Demand Mode" -isDisplay "true"
-  $mac=$nicList[0].MacAddress
+
+  log -message " ...... Could Not Find An Active Web Task For This Computer." -isDisplay "true"
+  log -message " ...... Falling Back To On Demand Mode" -isDisplay "true"
+  $script:mac=$nicList.MacAddress | select -first 1
   Start-Sleep -s 7
   . x:\winpe_ond.ps1
 }

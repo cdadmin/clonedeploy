@@ -10,7 +10,7 @@ while(Test-Path x:\wim.progress)
 
     $post=$(cat x:\wim.progress -tail 1)
     Write-Host $post 
-    $result=$(curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded --data "computerId=$computerId&progress=$post&progressType=wim" ${web}UpdateProgress --connect-timeout 10 --stderr -)
+    $result=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computerId&progress=$post&progressType=wim" ${script:web}UpdateProgress --connect-timeout 10 --stderr -)
     
     Start-Sleep 2
 }

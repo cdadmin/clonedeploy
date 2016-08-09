@@ -1,15 +1,11 @@
-﻿$web=$(Get-Content x:\windows\system32\web.txt).Trim()
+﻿$script:web=$(Get-Content x:\windows\system32\web.txt).Trim()
+$script:curlOptions="-sSk"
 powercfg /s 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
-
-function Set-Curl-Options()
-{
-  $env:curlOptions="-sSk"
-}
 
 function Encode-User-Token($userToken)
 {
-    $userTokenBytes = [System.Text.Encoding]::UTF8.GetBytes($userToken)
-    $env:userTokenEncoded =[Convert]::ToBase64String($userTokenBytes)
+    $private:userTokenBytes = [System.Text.Encoding]::UTF8.GetBytes($userToken)
+    $script:userTokenEncoded =[Convert]::ToBase64String($private:userTokenBytes)
 }
 
 function Check-Download($dlResult, $scriptName)
@@ -25,59 +21,58 @@ function Check-Download($dlResult, $scriptName)
 
 function Test-Server-Conn()
 {
-  $connResult=$(curl.exe  $env:curlOptions "${web}Test" --connect-timeout 10 --stderr -)
+  $connResult=$(curl.exe  $script:curlOptions "${script:web}Test" --connect-timeout 10 --stderr -)
   if("$connResult" -ne "true") 
   {
     $connResult
     Write-Host
-    Write-Host "Could Not Contact CloneDeploy Server.  Try Entering ${web}Test In A Web Browser. "
-    
+    Write-Host "Could Not Contact CloneDeploy Server.  Try Entering ${script:web}Test In A Web Browser. "
     
     exit 1
   }
 }
 
-Set-Curl-Options
+
 Test-Server-Conn
 clear
 Write-Host " ** CloneDeploy Login To Continue Or Close Window To Cancel ** "
 Write-Host
 Write-Host
-$loginCount = 1
-while($loginCount -le 2)
+$private:loginCount = 1
+while($private:loginCount -le 2)
 {
-    $username = Read-Host -Prompt "username"
-    $password = Read-Host -Prompt "password" -AsSecureString
-    $decodedpassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($password))
+    $private:username = Read-Host -Prompt "username"
+    $private:password = Read-Host -Prompt "password" -AsSecureString
+    $private:decodedpassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($private:password))
  
-    $usernameBytes = [System.Text.Encoding]::UTF8.GetBytes($username)
-    $usernameEncoded =[Convert]::ToBase64String($usernameBytes)
+    $private:usernameBytes = [System.Text.Encoding]::UTF8.GetBytes($private:username)
+    $private:usernameEncoded =[Convert]::ToBase64String($private:usernameBytes)
 
-    $passwordBytes = [System.Text.Encoding]::UTF8.GetBytes($decodedpassword)
-    $passwordEncoded =[Convert]::ToBase64String($passwordBytes)
+    $private:passwordBytes = [System.Text.Encoding]::UTF8.GetBytes($private:decodedpassword)
+    $private:passwordEncoded =[Convert]::ToBase64String($private:passwordBytes)
 
-    $loginResult=$(curl.exe -sSk -F username="$usernameEncoded" -F password="$passwordEncoded" -F clientIP="" -F task="" "${web}ConsoleLogin" --connect-timeout 10 --stderr -)
-    $loginResult=$loginResult | ConvertFrom-Json
+    $private:loginResult=$(curl.exe -sSk -F username="$private:usernameEncoded" -F password="$private:passwordEncoded" -F clientIP="" -F task="" "${script:web}ConsoleLogin" --connect-timeout 10 --stderr -)
+    $private:loginResult=$private:loginResult | ConvertFrom-Json
     if(!$?)
     {
         $Error[0].Exception.Message
-        $loginResult
+        $private:loginResult
         exit 1
     }
     else
     {
-        if($loginResult.valid -eq "true")
+        if($private:loginResult.valid -eq "true")
         {
             Write-Host
             Write-Host " ...... Login Successful"
             Write-Host
-            $env:userToken=$loginResult.user_token
-            $env:userId=$loginResult.user_id
+            $private:userToken=$private:loginResult.user_token
+            $script:userId=$private:loginResult.user_id
             break
         }
         else
         {
-            if($loginCount -eq 2)
+            if($private:loginCount -eq 2)
             {
                 Write-Host 
                 Write-Host " ...... Incorrect Login...Exiting"
@@ -92,17 +87,18 @@ while($loginCount -le 2)
             }
         }
     }
-    $loginCount++
+    $private:loginCount++
 }
 
-Encode-User-Token -userToken $env:userToken
+Encode-User-Token -userToken $private:userToken
  
 Write-Host " ** Downloading Core Scripts ** "
-foreach($scriptName in "winpe_task_select.ps1","winpe_global_functions.ps1","winpe_pull.ps1","winpe_ond.ps1","winpe_push.ps1","winpe_reporter.ps1")
+foreach($scriptName in "winpe_task_select.ps1","winpe_global_functions.ps1","winpe_pull.ps1","winpe_ond.ps1","winpe_push.ps1","winpe_reporter.ps1","winpe_menu.ps1")
 {
-  $dl_result=$(curl.exe $env:curlOptions -H Authorization:$env:userTokenEncoded --data "scriptName=$scriptName" ${web}DownloadCoreScripts -o x:\$scriptName -w "%{http_code}" --connect-timeout 10 --stderr x:\dlerror.log)
-  Check-Download -dlResult $dl_result -scriptName $scriptName
+  $private:dlResult=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "scriptName=$scriptName" ${script:web}DownloadCoreScripts -o x:\$scriptName -w "%{http_code}" --connect-timeout 10 --stderr x:\dlerror.log)
+  Check-Download -dlResult $private:dlResult -scriptName $scriptName
 }
 Write-Host " ...... Success"
 
 . x:\winpe_task_select.ps1
+
