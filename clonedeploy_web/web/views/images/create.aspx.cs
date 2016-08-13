@@ -30,6 +30,7 @@ namespace views.images
             };
 
             image.Type = ddlEnvironment.Text == "macOS" ? "Block" : ddlImageType.Text;
+            image.Type = ddlEnvironment.Text == "winpe" ? "File" : ddlImageType.Text;
             image.OsxType = ddlEnvironment.Text == "macOS" ? "thick" : "";
            
            
@@ -48,7 +49,7 @@ namespace views.images
 
         protected void ddlEnvironment_OnSelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ddlEnvironment.Text == "macOS")
+            if (ddlEnvironment.Text == "macOS" || ddlEnvironment.Text == "winpe")
             {
                 imageType.Visible = false;
                

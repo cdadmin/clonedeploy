@@ -58,11 +58,21 @@ public partial class views_admin_bootmenu_defaultmenu : Admin
         }
         else
         {
+            var pxeMode = Settings.PxeMode;
+            if (pxeMode.Contains("winpe"))
+            {
+                lblNoMenu.Visible = true;
+                btnSubmitDefaultProxy.Visible = false;
+                btnSubmitDefault.Visible = false;
+                return;
+            }
+
             btnSubmitDefaultProxy.Visible = false;
             btnSubmitDefault.Visible = true;
             bootPasswords.Visible = true;
             divStandardMode.Visible = true;
-            var pxeMode = Settings.PxeMode;
+            
+          
             if (pxeMode.Contains("ipxe"))
             {
                 passboxes.Visible = false;

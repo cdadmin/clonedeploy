@@ -19,33 +19,44 @@
     </asp:ContentPlaceHolder>
 </asp:Content>
 
-<asp:Content ID="Content2" ContentPlaceHolderID="PageNavSub" Runat="Server">
+<asp:Content ID="Content2" ContentPlaceHolderID="PageNavSub" runat="Server">
     <div id="divProfiles" runat="server">
-     <li id="search"><a  href="<%= ResolveUrl("~/views/images/profiles/search.aspx") %>?imageid=<%= Image.Id %>&cat=profiles"><span class="sub-nav-text">Search Profiles</span></a></li>
-    <li id="create"><a href="<%= ResolveUrl("~/views/images/profiles/create.aspx")  %>?imageid=<%= Image.Id %>&cat=profiles"><span class="sub-nav-text">New Profile</span></a></li>
+        <li id="search"><a href="<%= ResolveUrl("~/views/images/profiles/search.aspx") %>?imageid=<%= Image.Id %>&cat=profiles"><span class="sub-nav-text">Search Profiles</span></a></li>
+        <li id="create"><a href="<%= ResolveUrl("~/views/images/profiles/create.aspx")  %>?imageid=<%= Image.Id %>&cat=profiles"><span class="sub-nav-text">New Profile</span></a></li>
     </div>
     <div id="linux_profile" runat="server">
-     <li id="general"><a  href="<%= ResolveUrl("~/views/images/profiles/general.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">General</span></a></li>
-     <li id="pxe"><a  href="<%= ResolveUrl("~/views/images/profiles/pxe.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">PXE Boot Options</span></a></li>
-     <li id="task"><a  href="<%= ResolveUrl("~/views/images/profiles/task.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Task Options</span></a></li>
-    <li id="upload"><a  href="<%= ResolveUrl("~/views/images/profiles/upload.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Upload Options</span></a></li>
-    <li id="deploy"><a href="<%= ResolveUrl("~/views/images/profiles/deploy.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Deploy Options</span></a></li>
-    <li id="multicast"><a href="<%= ResolveUrl("~/views/images/profiles/multicast.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Multicast Options</span></a></li>
-    <li id="scripts"><a href="<%= ResolveUrl("~/views/images/profiles/scripts.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Scripts</span></a></li>
-     <li id="sysprep"><a href="<%= ResolveUrl("~/views/images/profiles/sysprep.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Sysprep</span></a></li>
-    <li  id="filecopy"><a href="<%= ResolveUrl("~/views/images/profiles/filecopy.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">File Copy</span></a></li>
+        <li id="general"><a href="<%= ResolveUrl("~/views/images/profiles/general.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">General</span></a></li>
+        <li id="pxe"><a href="<%= ResolveUrl("~/views/images/profiles/pxe.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">PXE Boot Options</span></a></li>
+        <li id="task"><a href="<%= ResolveUrl("~/views/images/profiles/task.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Task Options</span></a></li>
+        <li id="upload"><a href="<%= ResolveUrl("~/views/images/profiles/upload.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Upload Options</span></a></li>
+        <li id="deploy"><a href="<%= ResolveUrl("~/views/images/profiles/deploy.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Deploy Options</span></a></li>
+        <li id="multicast"><a href="<%= ResolveUrl("~/views/images/profiles/multicast.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Multicast Options</span></a></li>
+        <li id="scripts"><a href="<%= ResolveUrl("~/views/images/profiles/scripts.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Scripts</span></a></li>
+        <li id="sysprep"><a href="<%= ResolveUrl("~/views/images/profiles/sysprep.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Sysprep</span></a></li>
+        <li id="filecopy"><a href="<%= ResolveUrl("~/views/images/profiles/filecopy.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">File Copy</span></a></li>
     </div>
     <div id="osx_profile" runat="server">
-         <li id="general"><a  href="<%= ResolveUrl("~/views/images/profiles/general.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">General</span></a></li>
-    
-     <li id="task"><a  href="<%= ResolveUrl("~/views/images/profiles/task.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Task Options</span></a></li>
-    
-         <li id="upload"><a  href="<%= ResolveUrl("~/views/images/profiles/upload.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Upload Options</span></a></li>
-    <li id="deploy"><a href="<%= ResolveUrl("~/views/images/profiles/deploy.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Deploy Options</span></a></li>
-   
-    <li id="scripts"><a href="<%= ResolveUrl("~/views/images/profiles/scripts.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Scripts</span></a></li>
-    
-    <li  id="filecopy"><a href="<%= ResolveUrl("~/views/images/profiles/filecopy.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">File Copy</span></a></li>
+        <li id="general"><a href="<%= ResolveUrl("~/views/images/profiles/general.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">General</span></a></li>
+        <li id="task"><a href="<%= ResolveUrl("~/views/images/profiles/task.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Task Options</span></a></li>
+
+        <li id="upload"><a href="<%= ResolveUrl("~/views/images/profiles/upload.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Upload Options</span></a></li>
+        <li id="deploy"><a href="<%= ResolveUrl("~/views/images/profiles/deploy.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Deploy Options</span></a></li>
+
+        <li id="scripts"><a href="<%= ResolveUrl("~/views/images/profiles/scripts.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Scripts</span></a></li>
+
+        <li id="filecopy"><a href="<%= ResolveUrl("~/views/images/profiles/filecopy.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">File Copy</span></a></li>
+    </div>
+    <div id="winpe_profile" runat="server">
+        <li id="general"><a href="<%= ResolveUrl("~/views/images/profiles/general.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">General</span></a></li>
+        <li id="task"><a href="<%= ResolveUrl("~/views/images/profiles/task.aspx") %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Task Options</span></a></li>
+
+        <li id="upload"><a href="<%= ResolveUrl("~/views/images/profiles/upload.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Upload Options</span></a></li>
+        <li id="deploy"><a href="<%= ResolveUrl("~/views/images/profiles/deploy.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Deploy Options</span></a></li>
+        <li id="multicast"><a href="<%= ResolveUrl("~/views/images/profiles/multicast.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Multicast Options</span></a></li>
+        <li id="scripts"><a href="<%= ResolveUrl("~/views/images/profiles/scripts.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Scripts</span></a></li>
+        <li id="sysprep"><a href="<%= ResolveUrl("~/views/images/profiles/sysprep.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">Sysprep</span></a></li>
+        <li id="filecopy"><a href="<%= ResolveUrl("~/views/images/profiles/filecopy.aspx")  %>?imageid=<%= Image.Id %>&profileid=<%= ImageProfile.Id %>&cat=profiles"><span class="sub-nav-text">File Copy</span></a></li>  
+
     </div>
 </asp:Content>
 

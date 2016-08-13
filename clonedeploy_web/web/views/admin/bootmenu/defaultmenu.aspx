@@ -6,8 +6,11 @@
     <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
-    <asp:LinkButton ID="btnSubmitDefault" runat="server" Text="Create Boot Files " OnClick="btnSubmit_Click"  OnClientClick="get_shas();"/>
-    <asp:LinkButton ID="btnSubmitDefaultProxy" runat="server" Text="Create Boot Files " OnClick="btnSubmit_Click"  OnClientClick="get_shas_proxy();"/>
+    <asp:LinkButton ID="btnSubmitDefault" runat="server" Text="Create Boot Files " OnClick="btnSubmit_Click"  OnClientClick="get_shas();" CssClass="btn btn-default"/>
+    <asp:LinkButton ID="btnSubmitDefaultProxy" runat="server" Text="Create Boot Files " OnClick="btnSubmit_Click"  OnClientClick="get_shas_proxy();" CssClass="btn btn-default"/>
+     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+  </button>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="SubContent2" Runat="Server">
 
@@ -40,7 +43,7 @@
 <asp:HiddenField ID="diagshaProxy" runat="server"/>
 
 
-
+<asp:Label ID="lblNoMenu" runat="server" Visible="False" Text="Boot Menus Are Not Used When Proxy DHCP Is Set To No And The PXE Mode Is Set To WinPE"></asp:Label>
 <div id="divStandardMode" runat="server" visible="false">
     <div id="bootPasswords" runat="server" visible="false" style="margin-top: 0;">
 

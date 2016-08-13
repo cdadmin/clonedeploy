@@ -4,6 +4,7 @@ using System.Drawing;
 using BasePages;
 using Helpers;
 using Models;
+using System.IO;
 
 public partial class views_admin_pxe : Admin
 {
@@ -126,6 +127,29 @@ public partial class views_admin_pxe : Admin
 
     protected bool ValidateSettings()
     {
+        if (ddlProxyDHCP.Text == "No" && ddlPXEMode.Text.Contains("winpe"))
+        {
+            if (
+               !new Helpers.FileOps().FileExists(Settings.TftpPath + Path.DirectorySeparatorChar + "boot" +
+                                                 Path.DirectorySeparatorChar + "boot.sdi"))
+            {
+                EndUserMessage =
+                    "Cannot Use WinPE.  You Have Not Updated Your tftpboot Folder With CloneDeploy PE Maker";
+                return false;
+            }
+        }
+        else if (ddlProxyDHCP.Text == "Yes" && ( ddlProxyBios.Text.Contains("winpe") || ddlProxyEfi32.Text.Contains("winpe") || ddlProxyEfi64.Text.Contains("winpe") ))
+        {
+            if (
+                !new Helpers.FileOps().FileExists(Settings.TftpPath + Path.DirectorySeparatorChar + "boot" +
+                                                  Path.DirectorySeparatorChar + "boot.sdi"))
+            {
+                EndUserMessage =
+                    "Cannot Use WinPE.  You Have Not Updated Your tftpboot Folder With CloneDeploy PE Maker";
+                return false;
+            }
+        }
+
         if (BLL.ActiveImagingTask.AllActiveCountAdmin() > 0)
         {
             EndUserMessage = "Settings Cannot Be Changed While Tasks Are Active";

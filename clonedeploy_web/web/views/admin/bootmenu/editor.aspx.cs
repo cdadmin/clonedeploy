@@ -241,7 +241,13 @@ public partial class views_admin_bootmenu_editor : Admin
             else
             {
                 proxyEditor.Visible = false;
-
+                if (mode.Contains("winpe"))
+                {
+                    btnSaveEditor.Visible = false;
+                    lblNoMenu.Visible = true;
+                    srvEdit.Visible = false;
+                    return;
+                }
                 if (mode.Contains("ipxe"))
                 {
                     grubShaGen.Visible = false;

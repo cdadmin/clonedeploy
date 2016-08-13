@@ -2,23 +2,28 @@
 Write-Host
 
 if(Test-Path $clientLog) { rm $clientLog }
+log -message "WinPE Version:"
 log -message $([System.Environment]::OSVersion.Version)
+log -message "System Architecture:"
 log -message $(gwmi win32_operatingsystem | select OSArchitecture)
-$efi=Confirm-SecureBootUEFI
-if($efi -eq $false)
+try
 {
-    $script:bootType="efi"
-    log -message "EFI Enabled / Secure Boot Disabled"
+    $efi=Confirm-SecureBootUEFI 2>&1 >> $clientLog
+    if($efi -eq $false)
+    {
+        $script:bootType="efi"
+        log -message "EFI Enabled / Secure Boot Disabled"
+    }
+    elseif($efi -eq $true)
+    {
+        $script:bootType="efi"
+        log -message "EFI Enabled / Secure Boot Enabled"
+    }
 }
-elseif($efi -eq $true)
+catch
 {
-    $script:bootType="efi"
-    log -message "EFI Enabled / Secure Boot Enabled"
-}
-else
-{
-    $script:bootType="bios"
-    log -message "Using Legacy BIOS"
+     $script:bootType="bios"
+     log -message "Using Legacy BIOS"
 }
 
 $nicList = Get-WmiObject -Class "Win32_NetworkAdapterConfiguration" -Filter "IpEnabled = TRUE"
@@ -79,6 +84,10 @@ if(!$script:mac)
   $script:mac=$nicList.MacAddress | select -first 1
   Start-Sleep -s 7
   . x:\winpe_ond.ps1
+}
+else
+{
+    $script:isOnDemand=$false
 }
 
 Write-Host
