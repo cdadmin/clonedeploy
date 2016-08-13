@@ -8,7 +8,10 @@
      <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
-     <asp:LinkButton ID="buttonUpdateMulticast" runat="server" OnClick="buttonUpdateMulticast_OnClick" Text="Update Multicast Options " />
+     <asp:LinkButton ID="buttonUpdateMulticast" runat="server" OnClick="buttonUpdateMulticast_OnClick" Text="Update Multicast Options" CssClass="btn btn-default" />
+     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+  </button>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="SubContent2" Runat="Server">
       <script type="text/javascript">

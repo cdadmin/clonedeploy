@@ -9,7 +9,10 @@
     <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
-    <asp:LinkButton ID="btnUpdateSysprep" runat="server" OnClick="btnUpdateSysprep_OnClick" Text="Update Sysprep Options "  />
+    <asp:LinkButton ID="btnUpdateSysprep" runat="server" OnClick="btnUpdateSysprep_OnClick" Text="Update Sysprep Options" CssClass="btn btn-default"  />
+     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+  </button>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
      <script type="text/javascript">

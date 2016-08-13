@@ -11,7 +11,10 @@
     <a href="<%= ResolveUrl("~/views/help/index.html") %>"  target="_blank">Help</a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
-      <a class="confirm actions green" href="#">Delete Selected Profiles &nbsp;</a>
+      <a class="confirm btn btn-default" href="#">Delete Selected Profiles</a>
+     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+  </button>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
     <script type="text/javascript">

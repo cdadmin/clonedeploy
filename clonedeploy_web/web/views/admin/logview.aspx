@@ -9,7 +9,10 @@
 </asp:Content>
 
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
-   <asp:LinkButton ID="btnExportLog" runat="server" Text="Export Log"  OnClick="btnExportLog_Click"></asp:LinkButton>
+   <asp:LinkButton ID="btnExportLog" runat="server" Text="Export Log"  OnClick="btnExportLog_Click" CssClass="btn btn-default"></asp:LinkButton>
+     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+  </button>
 </asp:Content>
 
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">

@@ -81,10 +81,10 @@
     </asp:ContentPlaceHolder>
     
     <ul class="dropdown-menu">
-             <asp:ContentPlaceHolder ID="AdditionalActions" runat="server"></asp:ContentPlaceHolder>
-        <asp:LinkButton ID="btnMulticast" runat="server" OnClick="btnMulticast_Click"  Text="Multicast Group"></asp:LinkButton>
-        <asp:LinkButton ID="btnUnicast" runat="server" OnClick="btnUnicast_Click"  Text="Unicast Group"></asp:LinkButton>
-        <asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click"  Text="Delete Group"></asp:LinkButton>
+        <asp:ContentPlaceHolder ID="AdditionalActions" runat="server"></asp:ContentPlaceHolder>
+        <li><asp:LinkButton ID="btnMulticast" runat="server" OnClick="btnMulticast_Click"  Text="Multicast Group"></asp:LinkButton></li>
+        <li><asp:LinkButton ID="btnUnicast" runat="server" OnClick="btnUnicast_Click"  Text="Unicast Group"></asp:LinkButton></li>
+        <li><asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click"  Text="Delete Group"></asp:LinkButton></li>
         <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
 
 

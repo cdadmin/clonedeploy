@@ -9,7 +9,10 @@
 </asp:Content>
 
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
-   <asp:LinkButton ID="btnExportSql" runat="server" Text="Full Database Dump " OnClick="btnExportSql_Click" />
+   <asp:LinkButton ID="btnExportSql" runat="server" Text="Full Database Dump " OnClick="btnExportSql_Click" CssClass="btn btn-default" />
+     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+  </button>
     <asp:LinkButton ID="btnExportCsv" runat="server" Text="CSV Export" OnClick="btnExportCsv_Click" />
 </asp:Content>
 
