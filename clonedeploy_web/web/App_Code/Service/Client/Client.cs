@@ -160,10 +160,10 @@ namespace Service.Client
         }
 
         [WebMethod]
-        public void ListMulticasts()
+        public void ListMulticasts(string environment)
         {
             if (!Authorize()) return;
-            HttpContext.Current.Response.Write(new Service.Client.Logic().MulicastSessionList());
+            HttpContext.Current.Response.Write(new Service.Client.Logic().MulicastSessionList(environment));
         }
 
         [WebMethod]

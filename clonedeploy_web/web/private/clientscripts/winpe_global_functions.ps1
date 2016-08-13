@@ -12,6 +12,7 @@ function log($message, $isDisplay)
 
 function Checkout()
 {
+    log " ** Closing Active Task ** " "true"
     $computerIdBytes = [System.Text.Encoding]::UTF8.GetBytes($computer_id)
     $computerIdEncoded =[Convert]::ToBase64String($computerIdBytes)
     (Get-Content $clientLog) -replace ("`0","") | Set-Content $clientLog
@@ -22,6 +23,32 @@ function Checkout()
     $macBytes = [System.Text.Encoding]::UTF8.GetBytes($script:mac)
     $macEncoded =[Convert]::ToBase64String($macBytes)
     curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded -F computerId="$computerIdEncoded" -F logContents="$logEncoded" -F subType="$imageDirectionEncoded" -F mac="$macEncoded" "${script:web}UploadLog" --connect-timeout 10 --stderr -
+
+    if($multicast -eq "true")
+    {
+        curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "portBase=$multicast_port" "${script:web}MulticastCheckOut" --connect-timeout 10 --stderr -
+        pause
+	}
+
+    if(!$script:isOnDemand)
+    {
+        curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id" "${script:web}CheckOut" --connect-timeout 10 --stderr -
+        pause
+    }
+
+    if($task_completed_action.trim("`"") -eq "Power Off")
+    {
+		wpeutil shutdown
+    }
+
+	elseif($task_completed_action.trim("`"") -eq "Exit To Shell")
+    {
+		[Environment]::Exit(0)
+    }
+	else
+    {
+		wpeutil reboot
+	} 
 }
 
 function error($message, $rebootTime)
@@ -60,18 +87,19 @@ function error($message, $rebootTime)
     {
 	  Start-Sleep -s 60
 	}
-	if($task_completed_action -eq "Power Off")
+	if($task_completed_action.trim("`"") -eq "Power Off")
     {
 		shutdown
     }
 
-	elseif($task_completed_action -eq "Exit To Shell")
+	elseif($task_completed_action.trim("`"") -eq "Exit To Shell")
     {
-		exit
+		[Environment]::Exit(0)
     }
 	else
     {
 		reboot
+
 	} 
 }
 

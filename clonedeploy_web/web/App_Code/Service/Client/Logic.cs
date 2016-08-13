@@ -629,16 +629,31 @@ namespace Service.Client
             
         }
 
-        public string MulicastSessionList()
+        public string MulicastSessionList(string environment)
         {
-            var multicastList = new Services.Client.MulticastList() { Multicasts = new List<string>() };
-
-            foreach (var multicast in BLL.ActiveMulticastSession.GetOnDemandList())
+            if (environment == "winpe")
             {
-                multicastList.Multicasts.Add(multicast.Port + " " + multicast.Name);
+                var multicastList = new List<Services.Client.WinPEMulticastList>();
+                foreach (var multicast in BLL.ActiveMulticastSession.GetOnDemandList())
+                {
+                    var multicastSession = new Services.Client.WinPEMulticastList();
+                    multicastSession.Port = multicast.Port.ToString();
+                    multicastSession.Name = multicast.Name;
+                    multicastList.Add(multicastSession);
+                }
+                return JsonConvert.SerializeObject(multicastList);
             }
+            else
+            {
+                var multicastList = new Services.Client.MulticastList() {Multicasts = new List<string>()};
 
-            return JsonConvert.SerializeObject(multicastList);
+                foreach (var multicast in BLL.ActiveMulticastSession.GetOnDemandList())
+                {
+                    multicastList.Multicasts.Add(multicast.Port + " " + multicast.Name);
+                }
+
+                return JsonConvert.SerializeObject(multicastList);
+            }
         }
 
         public string AddImage(string imageName)

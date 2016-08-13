@@ -153,6 +153,17 @@ namespace BLL.Workflows
                     }
                 }   
             }
+            else //mbr
+            {
+                foreach (var partition in clientSchema.PrimaryAndExtendedPartitions)
+                {
+                    var isActive = "";
+                    if (partition.Number == ImageSchema.HardDrives[HdNumberToGet].Boot)
+                        isActive = "-IsActive";
+                    partitionScript +=
+                          "New-Partition " + ClientHd + " -MbrType " + partition.Type + " -Size " + partition.Size * ImageSchema.HardDrives[HdNumberToGet].Lbs / 1024 / 1024 + "MB " + isActive + " | Format-Volume -FileSystem " + partition.FsType + " 2>&1 >> $clientLog\r\n";
+                }
+            }
 
             return partitionScript;
         }

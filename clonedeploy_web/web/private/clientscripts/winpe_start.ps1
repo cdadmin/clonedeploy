@@ -24,8 +24,11 @@ function Test-Server-Conn()
   $connResult=$(curl.exe  $script:curlOptions "${script:web}Test" --connect-timeout 10 --stderr -)
   if("$connResult" -ne "true") 
   {
-    $connResult
+    Write-Host $connResult
     Write-Host
+    Write-Host "Displaying Available Network Interfaces"
+    $nicList = Get-WmiObject -Class "Win32_NetworkAdapterConfiguration"
+    $nicList | fl description, macaddress, ipaddress, ipenabled, dhcpenabled
     Write-Host "Could Not Contact CloneDeploy Server.  Try Entering ${script:web}Test In A Web Browser. "
     
     exit 1
@@ -93,6 +96,7 @@ while($private:loginCount -le 2)
 Encode-User-Token -userToken $private:userToken
  
 Write-Host " ** Downloading Core Scripts ** "
+clear
 foreach($scriptName in "winpe_task_select.ps1","winpe_global_functions.ps1","winpe_pull.ps1","winpe_ond.ps1","winpe_push.ps1","winpe_reporter.ps1","winpe_menu.ps1")
 {
   $private:dlResult=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "scriptName=$scriptName" ${script:web}DownloadCoreScripts -o x:\$scriptName -w "%{http_code}" --connect-timeout 10 --stderr x:\dlerror.log)

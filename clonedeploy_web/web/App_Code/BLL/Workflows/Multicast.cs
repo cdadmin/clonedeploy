@@ -200,7 +200,7 @@ namespace BLL.Workflows
                 {
                     if (!part.Active) continue;
                     string imageFile = null;
-                    foreach (var ext in new[] {".ntfs", ".fat", ".extfs", ".hfsp", ".imager", ".xfs"})
+                    foreach (var ext in new[] {".ntfs", ".fat", ".extfs", ".hfsp", ".imager", ".winpe", ".xfs"})
                     {
                         try
                         {
@@ -243,6 +243,19 @@ namespace BLL.Workflows
 
                     if (imageFile == null)
                         continue;
+                    if (_imageProfile.Image.Environment == "winpe" &&
+                        schema.HardDrives[schemaCounter].Table.ToLower() == "gpt")
+                    {
+                        if (part.Type.ToLower() == "system" || part.Type.ToLower() == "recovery" ||
+                            part.Type.ToLower() == "reserved")
+                            continue;
+                    }
+                    if (_imageProfile.Image.Environment == "winpe" &&
+                        schema.HardDrives[schemaCounter].Table.ToLower() == "mbr")
+                    {
+                        if (part.Number == schema.HardDrives[schemaCounter].Boot && schema.HardDrives[schemaCounter].Partitions.Length > 1)
+                            continue;
+                    }
                     x++;
 
                     string minReceivers;

@@ -48,7 +48,7 @@ elseif($taskType -eq "upload")
 {
     clear
     $newExistingTable=[ordered]@{"new"="New";"existing"="Existing";}
-    $newOrExisting=$(fShowMenu "New Or Existing?" $newExistingTable)
+    $newOrExisting=$(fShowMenu "New Or Existing Image?" $newExistingTable)
     
     if($newOrExisting -eq "new")
     {
@@ -136,7 +136,22 @@ elseif($taskType -eq "upload")
 
 elseif($taskType -eq "multicast")
 {
-    Write-Host "muli"
+    $multicastList=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "environment=winpe" ${script:web}ListMulticasts --connect-timeout 10 --stderr -)
+    $multicastList = $multicastList | ConvertFrom-Json
+    $multicastTable=[ordered]@{}
+    foreach($multicast in $multicastList)
+    {
+        $multicastTable.Add($multicast.Port,$multicast.Name)
+    }
+    clear
+    $multicastId=$(fShowMenu "Select A Multicast Session" $multicastTable)
+
+    if(!$multicastId)
+    {
+	  error "No Multicast Session Was Selected Or There Are No Active Sessions"
+	}
+
+    $script:ondArgs=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "mac=$script:mac&objectId=$multicastId&task=multicast" ${script:web}GetOnDemandArguments --connect-timeout 10 --stderr -)
 }
 
 else
@@ -144,22 +159,20 @@ else
     error "Could Not Determine Task Type"
 }
 
-Write-Host $script:ondArgs
+log -message $script:ondArgs
 $arr = $script:ondArgs -split '\r\n'
 $pos = 0
-while($pos -lt $arr.Count - 1)
+while($pos -lt $arr.Count)
 {
     $arg=$arr[$pos] -split '='
     New-Variable -Name $arg[0] -Value $arg[1] -Scope Script -Force
     $pos++
 }
 
-
-
+clear
 if($image_direction -eq "pull")
 {
-  Write-Host "pull"
-  #. x:\winpe_pull.ps1
+  . x:\winpe_pull.ps1
 }
 elseif($image_direction -eq "push")
 {

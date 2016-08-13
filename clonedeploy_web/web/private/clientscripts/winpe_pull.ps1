@@ -16,7 +16,7 @@ function Create-Image-Schema()
         {
             $bootPartition=$(Get-Partition -DiskNumber $hardDrive.Number | Where-Object {$_.IsActive -eq $true})
         }
-        $hardDriveJson="{`"name`":`"$($hardDrive.Number)`",`"size`":`"$($hardDrive.Size / $hardDrive.LogicalSectorSize)`",`"table`":`"$($hardDrive.PartitionStyle)`",`"boot`":`"$bootPartition`",`"lbs`":`"$($hardDrive.LogicalSectorSize)`",`"pbs`":`"$($hardDrive.PhysicalSectorSize)`",`"guid`":`"$($hardDrive.Guid)`",`"active`":`"true`",`"partitions`": [ "
+        $hardDriveJson="{`"name`":`"$($hardDrive.Number)`",`"size`":`"$($hardDrive.Size / $hardDrive.LogicalSectorSize)`",`"table`":`"$($hardDrive.PartitionStyle)`",`"boot`":`"$($bootPartition.PartitionNumber)`",`"lbs`":`"$($hardDrive.LogicalSectorSize)`",`"pbs`":`"$($hardDrive.PhysicalSectorSize)`",`"guid`":`"$($hardDrive.Guid)`",`"active`":`"true`",`"partitions`": [ "
         
         $partitionCounter=0
         foreach($partition in Get-Partition -DiskNumber $hardDrive.Number | Sort-Object PartitionNumber)
@@ -87,7 +87,8 @@ function Upload-Image()
 
         foreach($partition in Get-Partition -DiskNumber $hardDrive.Number | Sort-Object PartitionNumber)
         {
-            log " ** Uploading Image For Partition $($partition.PartitionNumber) ** " "true"
+            log " ** Starting Image Upload For Hard Drive $($hardDrive.Number) Partition $($partition.PartitionNumber)" "true"
+
             $notAutoMounted=$false
             $partitionCounter++
             if(!$partition.DriveLetter)
@@ -98,10 +99,11 @@ function Upload-Image()
             $updatedPartition=$(Get-Partition -DiskNumber $($hardDrive.Number) -PartitionNumber $($partition.PartitionNumber)) 
 
             if(!$updatedPartition.DriveLetter) { continue }
-            clear
+            
              
-	        if($computer_id)
-            {    
+	        if($computer_id -and !$script:isOnDemand)
+            {   
+                log "curl.exe  --data `"computerId=$computer_id&partition=$($partition.PartitionNumber)`" ${script:web}UpdateProgressPartition  --connect-timeout 10 --stderr -"
                 curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id&partition=$($partition.PartitionNumber)" ${script:web}UpdateProgressPartition  --connect-timeout 10 --stderr -
             }
             Start-Sleep 7
@@ -109,17 +111,13 @@ function Upload-Image()
     
             log " ...... partitionNumber: $($partition.PartitionNumber)"
 
-            if(!$script:isOnDemand)
-            {
-                $reporterProc=$(Start-Process powershell "x:\winpe_reporter.ps1 -web $script:web -computerId $computer_id -partitionNumber $($partition.PartitionNumber)" -NoNewWindow -PassThru)
-            }
-            log "wimcapture $($updatedPartition.DriveLetter):\ $imagePath\part$($partition.PartitionNumber).winpe.wim 2>>$clientLog > x:\wim.progress"
-            wimcapture "$($updatedPartition.DriveLetter):\" "$imagePath\part$($partition.PartitionNumber).winpe.wim" 2>>$clientLog > x:\wim.progress
+            $reporterProc=$(Start-Process powershell "x:\winpe_reporter.ps1 -web $script:web -computerId $computer_id -partitionNumber $($partition.PartitionNumber) -direction Uploading -curlOptions $script:curlOptions -userTokenEncoded $script:userTokenEncoded -isOnDemand $script:isOnDemand" -NoNewWindow -PassThru)
             
-            if(!$script:isOnDemand)
-            {
-                Stop-Process $reporterProc
-            }
+            log "wimcapture $($updatedPartition.DriveLetter):\ $imagePath\part$($partition.PartitionNumber).winpe.wim $web_wim_args 2>>$clientLog > x:\wim.progress"
+            wimcapture "$($updatedPartition.DriveLetter):\" "$imagePath\part$($partition.PartitionNumber).winpe.wim" $web_wim_args 2>>$clientLog > x:\wim.progress
+            
+            Stop-Process $reporterProc
+            
             if($notAutoMounted)
             {
                 mountvol.exe q:\ /d

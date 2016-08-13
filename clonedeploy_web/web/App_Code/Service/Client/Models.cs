@@ -2,6 +2,12 @@
 
 namespace Services.Client
 {
+    public class WinPEMulticastList
+    {
+        public string Port { get; set; }
+        public string Name { get; set; }
+    }
+
     public class WinPEImageList
     {
         public string ImageId { get; set; }

@@ -39,6 +39,12 @@ function Create-Partition-Layout()
         "select disk $($hardDrive.Number)","select partition $($sysPartition.PartitionNumber)","format fs=fat32" | diskpart 2>&1 >> $clientLog
         $sysPartition | Set-Partition -NewDriveLetter Q 2>&1 >> $clientLog
     }
+    else #legacy bios
+    {
+        $bootPartition=$(Get-Partition -DiskNumber $hardDrive.Number | Where-Object {$_.IsActive -eq $true})
+        $bootPartition | Set-Partition -NewDriveLetter Q 2>&1 >> $clientLog
+        log "boot partition is $($bootPartition.PartitionNumber)" "true"
+    }
     
     log " ** New Partition Table Is ** "
     Get-Partition -DiskNumber $hardDrive.Number | Out-File $clientLog -Append
@@ -64,30 +70,44 @@ function Process-Partitions()
             {
                 continue
             }
-            else
-            {
-                Download-Image
-
-                Process-File-Copy
-
-                if(Test-Path c:\Windows)
-                {
-                    $script:windowsPartition=$(Get-Partition -DiskNumber $($hardDrive.Number) -PartitionNumber $($currentPartition.Number))
-                
-                    bcdboot c:\Windows
-
-                    Change-Computer-Name
-
-                    Process-Sysprep-Tags
-                }
-
-                mountvol.exe c:\ /d
+        }
+        else #mbr
+        {
+           
+            if(($($currentPartition.Number) -eq $bootPartition.PartitionNumber) -and $($hdSchema.PhysicalPartitionCount) -gt 1 )
+            {               
+                continue
             }
         }
-	
-    }
-  	
+          
+                 
+        Download-Image
+        
+        if($file_copy -eq "True")
+        {
+            Process-File-Copy
+        }
 
+        if(Test-Path c:\Windows)
+        {
+            $script:windowsPartition=$(Get-Partition -DiskNumber $($hardDrive.Number) -PartitionNumber $($currentPartition.Number))
+                
+            bcdboot c:\Windows /s q: >> $clientLog 
+
+            if($change_computer_name -eq "true")
+            {
+                Change-Computer-Name
+            }
+
+            if($sysprep_tags.trim("`""))
+            {
+                Process-Sysprep-Tags
+            }
+        }
+
+        mountvol.exe c:\ /d
+    }
+	
 }
 function Reg-Key-Exists($regObject, $value)
 {
@@ -107,42 +127,63 @@ function Reg-Key-Exists($regObject, $value)
 function Download-Image()
 {
     log " ** Starting Image Download For Hard Drive $($hardDrive.Number) Partition $($currentPartition.Number)" "true"
+
+    if($computer_id)
+    {    
+        curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id&partition=$($currentPartition.Number)" ${script:web}UpdateProgressPartition  --connect-timeout 10 --stderr -
+    }
     Set-Partition -DiskNumber $($hardDrive.Number) -PartitionNumber $($currentPartition.Number) -NewDriveLetter C 2>&1 >> $clientLog
-    wimapply.cmd $script:imagePath\part$($currentPartition.Number).winpe.wim C:
+
+    $reporterProc=$(Start-Process powershell "x:\winpe_reporter.ps1 -web $script:web -computerId $computer_id -partitionNumber $($currentPartition.Number) -direction Deploying -curlOptions $script:curlOptions -userTokenEncoded $script:userTokenEncoded -isOnDemand $script:isOnDemand" -NoNewWindow -PassThru)
+    
+    if($multicast -eq "true")
+    {
+        log "udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 C: 2>>$clientLog > x:\wim.progress"
+        $udpProc=$(Start-Process cmd "/c udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 C: 2>>x:\wim.log > x:\wim.progress" -NoNewWindow -PassThru)
+        Start-Sleep 5
+        $wimProc=$(Get-Process wimlib-imagex)
+        Wait-Process $wimProc.Id
+    }
+    else
+    {
+        log "wimapply $script:imagePath\part$($currentPartition.Number).winpe.wim C: 2>>$clientLog > x:\wim.progress"
+        wimapply $script:imagePath\part$($currentPartition.Number).winpe.wim C: 2>>$clientLog > x:\wim.progress
+    }
+    
+    Start-Sleep 5
+    Stop-Process $reporterProc
+    
 }
 
 function Process-Sysprep-Tags()
 {
-    if($sysprep_tags.trim("`""))
+    if(Test-Path C:\Windows\Panther\unattend.xml)
     {
-        if(Test-Path C:\Windows\Panther\unattend.xml)
+        foreach($tagId in -Split $sysprep_tags.trim("`""))
         {
-            foreach($tagId in -Split $sysprep_tags.trim("`""))
+            $tag=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "tagId=$tagId" ${script:web}GetSysprepTag --connect-timeout 10 --stderr -)
+	        log " ** Running Custom Sysprep Tag With Id $tagId ** " "true"
+            Write-Host "pretag"
+            Write-Host $tag
+	        $tag=$tag | ConvertFrom-Json
+            Write-Host "posttag"
+            $tag.Contents=$(Invoke-Expression $tag.Contents)
+            if(!$?)
             {
-                $tag=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "tagId=$tagId" ${script:web}GetSysprepTag --connect-timeout 10 --stderr -)
-	            log " ** Running Custom Sysprep Tag With Id $tagId ** " "true"
-                Write-Host "pretag"
-                Write-Host $tag
-	            $tag=$tag | ConvertFrom-Json
-                Write-Host "posttag"
-                $tag.Contents=$(Invoke-Expression $tag.Contents)
-                if(!$?)
-                {
-                    $Error[0].Exception.Message
-                    $tag
-                    log "Could Not Parse Sysprep Tag"
-                    continue
-                }
-                sleep 5
-                perl -0777 "-i.bak" -pe "s/($($tag.OpeningTag)).*($($tag.ClosingTag))/`${1}$($tag.Contents)`${2}/si" c:\Windows\Panther\unattend.xml   
+                $Error[0].Exception.Message
+                $tag
+                log "Could Not Parse Sysprep Tag"
+                continue
             }
+            sleep 5
+            perl -0777 "-i.bak" -pe "s/($($tag.OpeningTag)).*($($tag.ClosingTag))/`${1}$($tag.Contents)`${2}/si" c:\Windows\Panther\unattend.xml   
         }
     }
+    
 }
 
 function Process-Scripts($scripts)
 {
-    log "processing scripts" "true"
     foreach($script in -Split $scripts.trim("`""))
     {
         curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "scriptId=$script" ${script:web}GetCustomScript --connect-timeout 10 --stderr - > x:\script$($script).ps1
@@ -155,8 +196,7 @@ function Process-Scripts($scripts)
 
 function Process-File-Copy()
 {
-     if($file_copy -eq "True")
-     {
+     
         foreach($file in $fileCopySchema.FilesAndFolders)
         {
             if($file.DestinationPartition -eq $currentPartition.Number)
@@ -178,7 +218,7 @@ function Process-File-Copy()
                 }
             }
         }
-    }
+    
 }
 
 function Change-Computer-Name()
@@ -188,6 +228,7 @@ function Change-Computer-Name()
     {
         log " ** Sysprep Answer File Found. Updating Computer Name ** " "true"
         perl -0777 "-i.bak" -pe "s/(\<ComputerName\>).*(\<\/ComputerName\>)/`${1}$computer_name`${2}/si" c:\Windows\Panther\unattend.xml
+        rm c:\Windows\Panther\unattend.xml.bak
     }
     else
     {
@@ -211,6 +252,7 @@ function Change-Computer-Name()
                 $private:regObj | Set-ItemProperty -Name "ComputerName" -Value $computer_name
             }
         }
+        reg unload HKLM\CloneDeploy
     }
 }
 
@@ -266,30 +308,33 @@ if($script:isOnDemand)
 }
 else
 {
-    Write-Host " ** Checking Current Queue ** " 	
-    while($true)
+    if($multicast -ne "true")
     {
-        $queueStatus=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id" ${script:web}CheckQueue --connect-timeout 10 --stderr -)
-	    $queueStatus=$queueStatus | ConvertFrom-Json
-        if(!$?)
+        Write-Host " ** Checking Current Queue ** " 	
+        while($true)
         {
-            $Error[0].Exception.Message
-            $queueStatus
-            error "Could Not Parse Queue Status"
+            $queueStatus=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id" ${script:web}CheckQueue --connect-timeout 10 --stderr -)
+	        $queueStatus=$queueStatus | ConvertFrom-Json
+            if(!$?)
+            {
+                $Error[0].Exception.Message
+                $queueStatus
+                error "Could Not Parse Queue Status"
+            }
+            if($queueStatus.Result -eq "true")
+            {
+                break
+            }
+            else
+            {
+                Write-Host "** Queue Is Full, Waiting For Open Slot ** "
+		        Write-Host " ...... Current Position $($queueStatus.Position)"
+		        Start-Sleep 5
+            }	
         }
-        if($queueStatus.Result -eq "true")
-        {
-            break
-        }
-        else
-        {
-            Write-Host "** Queue Is Full, Waiting For Open Slot ** "
-		    Write-Host " ...... Current Position $($queueStatus.Position)"
-		    Start-Sleep 5
-        }	
-    }
 	    Write-Host " ...... Complete"
 		Write-Host	  		
+    }
 }
 
   Start-Sleep 2
@@ -319,7 +364,9 @@ Mount-SMB
 
 Process-Hard-Drives
 
-  if($post_scripts.trim("`""))
-  {
-	Process-Scripts "$post_scripts"
-  }
+if($post_scripts.trim("`""))
+{
+    Process-Scripts "$post_scripts"
+}
+
+CheckOut

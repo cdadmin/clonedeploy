@@ -458,14 +458,17 @@ namespace BLL.DynamicClientPartition
                         imageFile =
                             Directory.GetFiles(
                                 imagePath + Path.DirectorySeparatorChar, "part" + partition.Number + "." + ext + ".*")
-                                .FirstOrDefault();
-                        physicalPartition.PartcloneFileSystem = ext;
+                                .FirstOrDefault();  
                     }
                     catch (Exception ex)
                     {
                         Logger.Log(ex.Message);
                     }
-                    if (imageFile != null) break;
+                    if (imageFile != null)
+                    {
+                        physicalPartition.PartcloneFileSystem = ext;
+                        break;
+                    }
                 }
                 switch (Path.GetExtension(imageFile))
                 {
@@ -510,13 +513,17 @@ namespace BLL.DynamicClientPartition
                                         imagePath + Path.DirectorySeparatorChar,
                                         partition.VolumeGroup.Name + "-" + logicalVolume.Name + "." + ext + ".*")
                                         .FirstOrDefault();
-                                clientLogicalVolume.PartcloneFileSystem = ext;
+                                
                             }
                             catch (Exception ex)
                             {
                                 Logger.Log(ex.Message);
                             }
-                            if (imageFile != null) break;
+                            if (imageFile != null)
+                            {
+                                clientLogicalVolume.PartcloneFileSystem = ext;
+                                break;
+                            }
                         }
                         switch (Path.GetExtension(imageFile))
                         {

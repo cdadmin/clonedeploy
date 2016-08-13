@@ -1,16 +1,21 @@
-param([string]$web,[string]$computerId,[string]$partitionNumber)
+param([string]$web,[string]$computerId,[string]$partitionNumber,[string]$direction,[string]$curlOptions,[string]$userTokenEncoded,[string]$isOnDemand)
 
 . x:\winpe_global_functions.ps1
+
+ Write-Host " ** $direction Image For Partition $partitionNumber ** "
+ Write-Host
 
 while(Test-Path x:\wim.progress)
 {
     clear
-    Write-Host " ** Uploading Image For Partition $partitionNumber ** "
+    Write-Host " ** $direction Image For Partition $partitionNumber ** "
     Write-Host
+    $post=$(Get-Content x:\wim.progress | Select -last 1)
+    Write-Host $post
 
-    $post=$(cat x:\wim.progress -tail 1)
-    Write-Host $post 
-    $result=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computerId&progress=$post&progressType=wim" ${script:web}UpdateProgress --connect-timeout 10 --stderr -)
-    
-    Start-Sleep 2
+    if($isOnDemand -eq "false")
+    {
+        $result=$(curl.exe $curlOptions -H Authorization:$userTokenEncoded --data "computerId=$computerId&progress=$post&progressType=wim" ${web}UpdateProgress --connect-timeout 10 --stderr -)
+    }
+    Start-Sleep -s 2
 }
