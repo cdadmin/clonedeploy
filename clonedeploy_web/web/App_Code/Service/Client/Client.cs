@@ -40,7 +40,7 @@ namespace Service.Client
         [WebMethod]
         public void GetPartLayout(string imageProfileId, string hdToGet, string newHdSize, string clientHd, string taskType, string partitionPrefix, string lbs)
         {
-            if (!Authorize()) return;
+            //if (!Authorize()) return;
 
             var partLayout = new ClientPartitionScript
             {
@@ -169,7 +169,7 @@ namespace Service.Client
         [WebMethod]
         public void CheckIn(string computerMac)
         {
-            if (!Authorize()) return;
+           if (!Authorize()) return;
            HttpContext.Current.Response.Write(new Service.Client.Logic().CheckIn(computerMac));
         }
 
@@ -209,6 +209,14 @@ namespace Service.Client
             if (!Authorize()) return;
             new Service.Client.Logic().CheckOut(Convert.ToInt32(computerId));
         }
+
+        [WebMethod]
+        public void PermanentTaskCheckOut(string computerId)
+        {
+            if (!Authorize()) return;
+            new Service.Client.Logic().PermanentTaskCheckOut(Convert.ToInt32(computerId));
+        }
+
 
         [WebMethod]
         public void UploadLog()

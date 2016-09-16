@@ -36,6 +36,12 @@ namespace BLL.Workflows
                 case "Custom Layout":
                     return "partition_method=layout";
                     break;
+                case "Standard":
+                    return "partition_method=standard";
+                    break;
+                case "Standard Core Storage":
+                    return "partition_method=standardCS";
+                    break;
                 default:
                     return "";
             }

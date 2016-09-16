@@ -154,6 +154,15 @@ namespace Service.Client
             {
                 checkIn.Result = "true";
                 checkIn.TaskArguments = computerTask.Arguments;
+                var image = BLL.Image.GetImage(computer.ImageId);
+                if (image != null)
+                {
+                    if (image.Environment == "")
+                        image.Environment = "linux";
+                    checkIn.ImageEnvironment = image.Environment;
+                }
+                
+                checkIn.TaskType = computerTask.Type;
                 return JsonConvert.SerializeObject(checkIn);
             }
             else
@@ -236,6 +245,20 @@ namespace Service.Client
                 BLL.ActiveImagingTask.SendTaskCompletedEmail(computerTask);
         }
 
+        public void PermanentTaskCheckOut(int computerId)
+        {
+            var computerTask = BLL.ActiveImagingTask.GetTask(computerId);
+            computerTask.Status = "0";
+            computerTask.Partition = "";
+            computerTask.Completed = "";
+            computerTask.Elapsed = "";
+            computerTask.Rate = "";
+            computerTask.Remaining = "";
+            BLL.ActiveImagingTask.UpdateActiveImagingTask(computerTask);
+           
+            BLL.ActiveImagingTask.SendTaskCompletedEmail(computerTask);
+        }
+
         public void UploadLog(int computerId, string logContents, string subType, string computerMac)
         {
             var computerLog = new Models.ComputerLog
@@ -259,12 +282,12 @@ namespace Service.Client
             if (thisComputerTask.Status == "2")
             {
                 //Check if the queue is open yet
-                var inUse = BLL.ActiveImagingTask.GetCurrentQueue();
+                var inUse = BLL.ActiveImagingTask.GetCurrentQueue(thisComputerTask.Type);
                 var totalCapacity = Convert.ToInt32(Settings.QueueSize);
                 if (inUse < totalCapacity)
                 {
                     //queue is open, is this computer next
-                    var firstTaskInQueue = BLL.ActiveImagingTask.GetNextComputerInQueue();
+                    var firstTaskInQueue = BLL.ActiveImagingTask.GetNextComputerInQueue(thisComputerTask.Type);
                     if (firstTaskInQueue.ComputerId == computerId)
                     {
                         ChangeStatusInProgress(computerId);
@@ -292,7 +315,7 @@ namespace Service.Client
             {
                 //New computer checking queue for the first time
 
-                var inUse = BLL.ActiveImagingTask.GetCurrentQueue();
+                var inUse = BLL.ActiveImagingTask.GetCurrentQueue(thisComputerTask.Type);
                 var totalCapacity = Convert.ToInt32(Settings.QueueSize);
                 if (inUse < totalCapacity)
                 {
@@ -306,7 +329,7 @@ namespace Service.Client
                 else
                 {
                     //place into queue
-                    var lastQueuedTask = BLL.ActiveImagingTask.GetLastQueuedTask();
+                    var lastQueuedTask = BLL.ActiveImagingTask.GetLastQueuedTask(thisComputerTask.Type);
                     if (lastQueuedTask == null)
                         thisComputerTask.QueuePosition = 1;
                     else
@@ -355,7 +378,7 @@ namespace Service.Client
             var newHdBytes = Convert.ToInt64(newHdSize);
             var minimumSize = partitionHelper.HardDrive(result.SchemaHdNumber,newHdBytes);
 
-            if (clientLbs != 0) //if zero should be from the osx imaging environment
+            if (clientLbs != 0) //if zero should be from the osx imaging environment or winpe
             {
                 if (clientLbs != imageSchema.HardDrives[result.SchemaHdNumber].Lbs)
                 {

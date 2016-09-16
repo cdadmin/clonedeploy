@@ -71,7 +71,7 @@
     <br class="clear"/>
     <div class="size-4 column">
         <p style="margin-bottom: 5px;">Imaging Client Token:
-        <asp:LinkButton ID="btnGenKey" runat="server" Text="Generate" OnClick="btnGenKey_OnClick" CssClass="generic-btn" /></p>
+        <asp:LinkButton ID="btnGenKey" runat="server" Text="Generate" OnClick="btnGenKey_OnClick" CssClass="btn btn-default right" /></p>
     </div>
     <div class="size-9 column">
         <asp:TextBox ID="txtToken" runat="server" CssClass="textbox"></asp:TextBox>
@@ -81,7 +81,7 @@
      <br/>
     <div class="size-4 column">
          <p style="margin-bottom: 5px;">API Id:
-        <asp:LinkButton ID="btnGenId" runat="server" Text="Generate" OnClick="btnGenId_OnClick" CssClass="generic-btn" /></p>
+        <asp:LinkButton ID="btnGenId" runat="server" Text="Generate" OnClick="btnGenId_OnClick" CssClass="btn btn-default right" /></p>
     </div>
     <div class="size-9 column">
         <asp:TextBox ID="txtApiId" runat="server" CssClass="textbox"></asp:TextBox>
@@ -90,7 +90,7 @@
     <br />
     <div class="size-4 column">
          <p style="margin-bottom: 5px;">API Key:
-        <asp:LinkButton ID="btnGenApiKey" runat="server" Text="Generate" OnClick="btnGenApiKey_OnClick" CssClass="generic-btn" /></p>
+        <asp:LinkButton ID="btnGenApiKey" runat="server" Text="Generate" OnClick="btnGenApiKey_OnClick" CssClass="btn btn-default right" /></p>
     </div>
     <div class="size-9 column">
         <asp:TextBox ID="txtApiKey" runat="server" CssClass="textbox"></asp:TextBox>

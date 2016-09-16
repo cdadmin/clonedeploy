@@ -21,7 +21,7 @@
                 $('#<%= txtAfterSha.ClientID %>').val(syslinux_sha512(document.getElementById('<%= txtBeforeSha.ClientID %>').value));
             }
         </script>
-    <asp:Label ID="lblNoMenu" runat="server" Visible="False" Text="Boot Menus Are Not Used When Proxy DHCP Is Set To No And The PXE Mode Is Set To WinPE"></asp:Label>
+    
         <div id="proxyEditor" runat="server" visible="false">
             <div class="size-4 column">
                 Select A Menu To Edit:

@@ -1,21 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-public partial class views_tasks_activeunicast : BasePages.Tasks
+public partial class views_tasks_activepermanent : BasePages.Tasks
 {
     protected void Page_Load(object sender, EventArgs e)
     {
         if (IsPostBack) return;
         ViewState["clickTracker"] = "1";
         PopulateGrid();
-        lblTotal.Text = BLL.ActiveImagingTask.ActiveUnicastCount(CloneDeployCurrentUser.Id,"unicast") + " Total Unicast(s)";
+        lblTotal.Text = BLL.ActiveImagingTask.ActiveUnicastCount(CloneDeployCurrentUser.Id,"permanent_push") + " Total Permanent Task(s)";
 
     }
     protected void Timer_Tick(object sender, EventArgs e)
     {
         PopulateGrid();
-        lblTotal.Text = BLL.ActiveImagingTask.ActiveUnicastCount(CloneDeployCurrentUser.Id,"unicast") + " Total Unicast(s)";
+        lblTotal.Text = BLL.ActiveImagingTask.ActiveUnicastCount(CloneDeployCurrentUser.Id,"permanent_push") + " Total Permanent Task(s)";
         UpdatePanel1.Update();
     }
 
@@ -36,7 +39,7 @@ public partial class views_tasks_activeunicast : BasePages.Tasks
 
     private void PopulateGrid()
     {
-        gvUcTasks.DataSource = BLL.ActiveImagingTask.ReadUnicasts(CloneDeployCurrentUser.Id,"unicast");
+        gvUcTasks.DataSource = BLL.ActiveImagingTask.ReadUnicasts(CloneDeployCurrentUser.Id,"permanent_push");
         gvUcTasks.DataBind();
     }
 }

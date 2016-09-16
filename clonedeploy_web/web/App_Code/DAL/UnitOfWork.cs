@@ -49,6 +49,13 @@ namespace DAL
         private IGenericRepository<Models.ComputerMunki> _computerMunkiRepository;
         private IGenericRepository<Models.GroupMunki> _groupMunkiRepository;
         private IGenericRepository<Models.ComputerProxyReservation> _computerProxyRepository;
+        private IGenericRepository<Models.BootEntry> _bootEntryRepository;
+
+
+        public IGenericRepository<Models.BootEntry> BootEntryRepository
+        {
+            get { return _bootEntryRepository ?? (_bootEntryRepository = new GenericRepository<Models.BootEntry>(_context)); }
+        }
 
         public IGenericRepository<Models.ComputerProxyReservation> ComputerProxyRepository
         {

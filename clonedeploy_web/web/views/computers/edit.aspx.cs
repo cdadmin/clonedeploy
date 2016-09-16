@@ -64,6 +64,15 @@ namespace views.computers
         {           
             if (ddlComputerImage.Text == "Select Image") return;
             PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlComputerImage.SelectedValue));
+            try
+            {
+                ddlImageProfile.SelectedIndex = 1;
+            }
+            catch 
+            {
+                //ignore
+            }
+           
         }
     }
 }

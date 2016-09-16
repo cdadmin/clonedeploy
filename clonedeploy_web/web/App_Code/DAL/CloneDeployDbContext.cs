@@ -54,6 +54,7 @@ namespace DAL
         public DbSet<Models.ComputerMunki> ComputerMunkis { get; set; }
         public DbSet<Models.GroupMunki> GroupMunkis { get; set; }
         public DbSet<Models.ComputerProxyReservation> ProxyReservations { get; set; }
+        public DbSet<Models.BootEntry> BootEntries { get; set; }
 
     }
 

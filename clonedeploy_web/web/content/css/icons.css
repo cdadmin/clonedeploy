@@ -11,3 +11,8 @@
 .icon-mobile-nav:before{content:"\e014";font-size:48px;line-height:.5;color: #fff;}
 .icon-mobile-nav{font-family: 'Flaticon';position: absolute;top: 0;speak:none;font-size:2em;text-decoration:none;color: #fff;line-height:2;-webkit-font-smoothing: antialiased;}
 
+.DashDiv a:before{font-family:Flaticon;speak:none;font-style:normal;font-weight:normal;text-indent:0;top:0px;left:0;width:100%;height:100%;font-size:1em;-webkit-font-smoothing:antialiased;}
+a.icon-image:before{content:"\e009";font-size:4.0em;margin-left: 5px;}
+a.icon-host:before{content:"\e017";font-size:4.0em;margin-left: 20px; }
+a.icon-group:before{content:"\e003";font-size:4.0em;margin-left: 5px;}
+.testlbl{}

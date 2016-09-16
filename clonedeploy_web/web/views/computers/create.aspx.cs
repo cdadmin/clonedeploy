@@ -61,6 +61,14 @@ namespace views.computers
         protected void ddlComputerImage_OnSelectedIndexChanged(object sender, EventArgs e)
         {
             PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlComputerImage.SelectedValue));
+            try
+            {
+                ddlImageProfile.SelectedIndex = 1;
+            }
+            catch
+            {
+                //ignore
+            }
         }
     }
 }

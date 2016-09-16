@@ -55,6 +55,18 @@ ForEach ($nic in $nicList)
         else
         {
             Start-Sleep -s 1
+
+            #This is checked outside of the task arguments because if the environment doesn't match the arguments won't parse
+            if($checkInStatus.ImageEnvironment -ne "winpe")
+            {
+                error "The Imaging Environment For The Image Does Not Match The Currently Loaded Environment"
+            }
+
+            if($checkInStatus.TaskType -eq "permanent_push")
+            {
+                $script:isPermanentTask=$true
+            }
+
             log -message $checkInStatus.TaskArguments
             $arr = $checkInStatus.TaskArguments -split '\r\n'
             $pos = 0
@@ -74,6 +86,7 @@ ForEach ($nic in $nicList)
 
 if(!$script:mac)
 {
+  $script:mac=$nicList.MacAddress | select -first 1
   if($computerIsRegistered -ne "true")
   {
     . x:\winpe_register.ps1
@@ -81,7 +94,7 @@ if(!$script:mac)
 
   log -message " ...... Could Not Find An Active Web Task For This Computer." -isDisplay "true"
   log -message " ...... Falling Back To On Demand Mode" -isDisplay "true"
-  $script:mac=$nicList.MacAddress | select -first 1
+  
   Start-Sleep -s 7
   . x:\winpe_ond.ps1
 }

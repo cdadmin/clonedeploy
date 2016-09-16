@@ -27,13 +27,18 @@ function Checkout()
     if($multicast -eq "true")
     {
         curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "portBase=$multicast_port" "${script:web}MulticastCheckOut" --connect-timeout 10 --stderr -
-        pause
 	}
 
     if(!$script:isOnDemand)
     {
-        curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id" "${script:web}CheckOut" --connect-timeout 10 --stderr -
-        pause
+        if(!$script:isPermanentTask)
+        {
+            curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id" "${script:web}CheckOut" --connect-timeout 10 --stderr -
+        }
+        else
+        {
+            curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id" "${script:web}PermanentTaskCheckOut" --connect-timeout 10 --stderr -
+        }
     }
 
     if($task_completed_action.trim("`"") -eq "Power Off")
@@ -145,7 +150,7 @@ function Get-Hard-Drives($taskType)
     log " ** Looking For Hard Drive(s) **" "true"
     log " ** Displaying Available Devices ** "
     Get-Disk | Out-File $clientLog -Append
-    if($custom_hard_drives)
+    if($custom_hard_drives.trim("`""))
     {
         #Todo - finish custom hard drives
         log " ...... Hard Drive(s) Set By Image Profile: $hard_drives"

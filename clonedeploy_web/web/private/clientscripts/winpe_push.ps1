@@ -12,12 +12,34 @@ function Create-Partition-Layout()
         Initialize-Disk $hardDrive.Number –PartitionStyle MBR
     }
 
-    if($partition_method -eq "script")
+    if($partition_method -eq "standard")
+    {
+        log " ** Creating A Standard Windows Partition Layout ** "
+        if($script:bootType -eq "efi")
+        {
+            "select disk $($hardDrive.Number)","create partition efi size=260","format quick fs=fat32 label=`"System`"","assign letter=`"Q`"", `
+            "create partition msr size=16", `
+            "create partition primary","shrink minimum=500","format quick fs=ntfs label=`"Windows`"", `
+            "create partition primary","format quick fs=ntfs label=`"Recovery tools`"","assign letter=`"R`"","set id=`"de94bba4-06d1-4d40-a16a-bfd50179d6ac`"","gpt attributes=0x8000000000000001" `
+            | diskpart 2>&1 >> $clientLog    
+            $script:targetPartition=$(Get-Partition -DiskNumber $hardDrive.Number -PartitionNumber 3 )
+        }
+        else
+        {
+            "select disk $($hardDrive.Number)","create partition primary size=100","format quick fs=ntfs label=`"System`"","assign letter=`"Q`"", "active", `
+            "create partition primary","shrink minimum=500","format quick fs=ntfs label=`"Windows`"", `
+            "create partition primary","format quick fs=ntfs label=`"Recovery`"","assign letter=`"R`"","set id=27" `
+            | diskpart 2>&1 >> $clientLog    
+            $script:targetPartition=$(Get-Partition -DiskNumber $hardDrive.Number -PartitionNumber 2 )
+        }
+
+    }
+    elseif($partition_method -eq "script")
     {
         log " ** Creating Partition Table On $($hardDrive.Number) From Custom Script ** " "true"
         curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "profileId=$profile_id" ${script:web}GetCustomPartitionScript --connect-timeout 10 --stderr - > x:\newPartLayout.ps1
     }
-    else
+    else #dynamic
     {
         log "imageProfileId=$profile_id&hdToGet=$script:imageHdToUse&newHDSize=$($hardDrive.Size)&clientHD=$($hardDrive.Number)&taskType=deploy&partitionPrefix=&lbs=$($hardDrive.LogicalSectorSize) ${script:web}GetPartLayout" 
         curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "imageProfileId=$profile_id&hdToGet=$script:imageHdToUse&newHDSize=$($hardDrive.Size)&clientHD=$($hardDrive.Number)&taskType=deploy&partitionPrefix=&lbs=$($hardDrive.LogicalSectorSize)" ${script:web}GetPartLayout --connect-timeout 10 --stderr - > x:\newPartLayout.ps1
@@ -27,23 +49,26 @@ function Create-Partition-Layout()
 	    }
 	}
 
-	log " ** Partition Creation Script ** "
-    Get-Content x:\newPartLayout.ps1 | Out-File $clientLog -Append
-    . x:\newPartLayout.ps1
+    if($partition_method -ne "standard")
+    {
+	    log " ** Partition Creation Script ** "
+        Get-Content x:\newPartLayout.ps1 | Out-File $clientLog -Append
+        . x:\newPartLayout.ps1
 
-    #Find and mount system partition
-    if($script:bootType -eq "efi")
-    {
-        #Not sure why but powershell cannot format the system partition as fat32 - use diskpart instead
-        $sysPartition=$(Get-Partition -DiskNumber $($hardDrive.Number) | Where-Object {$_.Type -eq "System"})
-        "select disk $($hardDrive.Number)","select partition $($sysPartition.PartitionNumber)","format fs=fat32" | diskpart 2>&1 >> $clientLog
-        $sysPartition | Set-Partition -NewDriveLetter Q 2>&1 >> $clientLog
-    }
-    else #legacy bios
-    {
-        $bootPartition=$(Get-Partition -DiskNumber $hardDrive.Number | Where-Object {$_.IsActive -eq $true})
-        $bootPartition | Set-Partition -NewDriveLetter Q 2>&1 >> $clientLog
-        log "boot partition is $($bootPartition.PartitionNumber)" "true"
+        #Find and mount system partition
+        if($script:bootType -eq "efi")
+        {
+            #Not sure why but powershell cannot format the system partition as fat32 - use diskpart instead
+            $sysPartition=$(Get-Partition -DiskNumber $($hardDrive.Number) | Where-Object {$_.Type -eq "System"})
+            "select disk $($hardDrive.Number)","select partition $($sysPartition.PartitionNumber)","format fs=fat32" | diskpart 2>&1 >> $clientLog
+            $sysPartition | Set-Partition -NewDriveLetter Q 2>&1 >> $clientLog
+        }
+        else #legacy bios
+        {
+            $bootPartition=$(Get-Partition -DiskNumber $hardDrive.Number | Where-Object {$_.IsActive -eq $true})
+            $bootPartition | Set-Partition -NewDriveLetter Q 2>&1 >> $clientLog
+            log "boot partition is $($bootPartition.PartitionNumber)" "true"
+        }
     }
     
     log " ** New Partition Table Is ** "
@@ -61,22 +86,34 @@ function Process-Partitions()
         $arrayIndex++
         clear
         $currentPartition=$($hdSchema.PhysicalPartitions[$arrayIndex])
+
+        if($partition_method -eq "standard")
+        {
+            #Change the destination partition to be the target Partition defined in the Create-Partition-Layout function
+            $script:stdPartSource=$currentPartition.Number
+            $currentPartition.Number=$script:targetPartition.PartitionNumber
+        }
+
         log $currentPartition
     
 
-        if($($hdSchema.PartitionType) -eq "gpt")
+        #No need to check these for a standard partition layout, only 1 partition ever gets deployed
+        if($partition_method -ne "standard")
         {
-            if($($currentPartition.Type) -eq "system" -or $($currentPartition.Type) -eq "recovery" -or $($currentPartition.Type) -eq "reserved")
+            if($($hdSchema.PartitionType) -eq "gpt")
             {
-                continue
+                if($($currentPartition.Type) -eq "system" -or $($currentPartition.Type) -eq "recovery" -or $($currentPartition.Type) -eq "reserved")
+                {
+                    continue
+                }
             }
-        }
-        else #mbr
-        {
-           
-            if(($($currentPartition.Number) -eq $bootPartition.PartitionNumber) -and $($hdSchema.PhysicalPartitionCount) -gt 1 )
-            {               
-                continue
+            else #mbr
+            {
+            
+                if(($($currentPartition.Number) -eq $bootPartition.PartitionNumber) -and $($hdSchema.PhysicalPartitionCount) -gt 1 )
+                {               
+                    continue
+                }
             }
         }
           
@@ -94,7 +131,7 @@ function Process-Partitions()
                 
             bcdboot c:\Windows /s q: >> $clientLog 
 
-            if($change_computer_name -eq "true")
+            if($change_computer_name -eq "true" -and $computer_name)
             {
                 Change-Computer-Name
             }
@@ -128,7 +165,7 @@ function Download-Image()
 {
     log " ** Starting Image Download For Hard Drive $($hardDrive.Number) Partition $($currentPartition.Number)" "true"
 
-    if($computer_id)
+    if(!$script:isOnDemand)
     {    
         curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id&partition=$($currentPartition.Number)" ${script:web}UpdateProgressPartition  --connect-timeout 10 --stderr -
     }
@@ -146,8 +183,17 @@ function Download-Image()
     }
     else
     {
-        log "wimapply $script:imagePath\part$($currentPartition.Number).winpe.wim C: 2>>$clientLog > x:\wim.progress"
-        wimapply $script:imagePath\part$($currentPartition.Number).winpe.wim C: 2>>$clientLog > x:\wim.progress
+        if($script:stdPartSource)
+        {
+            $wimSource=$script:stdPartSource
+        }
+        else
+        {
+            $wimSource=$currentPartition.Number
+        }
+
+        log "wimapply $script:imagePath\part$wimSource.winpe.wim C: 2>>$clientLog > x:\wim.progress"
+        wimapply $script:imagePath\part$wimSource.winpe.wim C: 2>>$clientLog > x:\wim.progress
     }
     
     Start-Sleep 5
@@ -163,11 +209,8 @@ function Process-Sysprep-Tags()
         {
             $tag=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "tagId=$tagId" ${script:web}GetSysprepTag --connect-timeout 10 --stderr -)
 	        log " ** Running Custom Sysprep Tag With Id $tagId ** " "true"
-            Write-Host "pretag"
             Write-Host $tag
 	        $tag=$tag | ConvertFrom-Json
-            Write-Host "posttag"
-            $tag.Contents=$(Invoke-Expression $tag.Contents)
             if(!$?)
             {
                 $Error[0].Exception.Message
@@ -175,6 +218,8 @@ function Process-Sysprep-Tags()
                 log "Could Not Parse Sysprep Tag"
                 continue
             }
+            $tag.Contents=$(Invoke-Expression $tag.Contents)
+            
             sleep 5
             perl -0777 "-i.bak" -pe "s/($($tag.OpeningTag)).*($($tag.ClosingTag))/`${1}$($tag.Contents)`${2}/si" c:\Windows\Panther\unattend.xml   
         }
@@ -199,7 +244,7 @@ function Process-File-Copy()
      
         foreach($file in $fileCopySchema.FilesAndFolders)
         {
-            if($file.DestinationPartition -eq $currentPartition.Number)
+            if(($file.DestinationPartition -eq $currentPartition.Number) -or $partition_method -eq "standard" )
             {
                 if(Test-Path "s:\resources\$($file.SourcePath)" -PathType Leaf)
                 {
@@ -268,7 +313,7 @@ function Process-Hard-Drives()
         log " ** Processing Hard Drive $($hardDrive.Number)" "true"
         $currentHdNumber++
 
-        log "Get hd_schema:  profileId=$profile_id&clientHdNumber=$currentHdNumber&newHdSize=$($hardDrive.Size)&schemaHds=$script:imagedSchemaDrives&clientLbs=$($hardDrive.LogicalSectorSize)"
+        log "Get hd_schema:  profileId=$profile_id&clientHdNumber=$currentHdNumber&newHdSize=$($hardDrive.Size)&schemaHds=$script:imagedSchemaDrives&clientLbs=0"
         $script:hdSchema=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "profileId=$profile_id&clientHdNumber=$currentHdNumber&newHdSize=$($hardDrive.Size)&schemaHds=$script:imaged_schema_drives&clientLbs=$($hardDrive.LogicalSectorSize)" ${script:web}CheckHdRequirements --connect-timeout 10 --stderr -)
        
         log "$script:hdSchema"

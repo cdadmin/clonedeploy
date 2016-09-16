@@ -46,7 +46,10 @@
 <asp:Label ID="lblNoMenu" runat="server" Visible="False" Text="Boot Menus Are Not Used When Proxy DHCP Is Set To No And The PXE Mode Is Set To WinPE"></asp:Label>
 <div id="divStandardMode" runat="server" visible="false">
     <div id="bootPasswords" runat="server" visible="false" style="margin-top: 0;">
-
+         <div class="size-4 column">
+        <h4>PXE Mode - <%=noProxyLbl %></h4>
+    </div>
+    <br class="clear"/>
         <div class="size-4 column">
             Kernel:
         </div>
@@ -132,9 +135,11 @@
 
 <div id="divProxyDHCP" runat="server" visible="false">
     <div class="size-4 column">
-        <h4>BIOS</h4>
+        <h4>BIOS - <%=biosLbl %></h4>
     </div>
     <br class="clear"/>
+    <asp:Label runat="server" id="lblBiosHidden" Visible="False"></asp:Label>
+    <div id="divProxyBios" runat="server">
     <div class="size-4 column">
         Kernel:
     </div>
@@ -142,6 +147,7 @@
         <asp:DropDownList ID="ddlBiosKernel" runat="server" CssClass="ddlist">
         </asp:DropDownList>
     </div>
+     
     <br class="clear"/>
     <div class="size-4 column">
         Boot Image:
@@ -150,11 +156,15 @@
         <asp:DropDownList ID="ddlBiosBootImage" runat="server" CssClass="ddlist">
         </asp:DropDownList>
     </div>
+        </div>
     <br class="clear"/>
+        
     <div class="size-4 column">
-        <h4>EFI 32</h4>
+        <h4>EFI32 - <%=efi32Lbl %></h4>
     </div>
     <br class="clear"/>
+     <asp:Label runat="server" id="lblEfi32Hidden" Visible="False"></asp:Label>
+    <div id="divProxyEfi32" runat="server">
     <div class="size-4 column">
         Kernel:
     </div>
@@ -170,11 +180,14 @@
         <asp:DropDownList ID="ddlEfi32BootImage" runat="server" CssClass="ddlist">
         </asp:DropDownList>
     </div>
+        </div>
     <br class="clear"/>
     <div class="size-4 column">
-        <h4>EFI64</h4>
+        <h4>EFI64 - <%=efi64Lbl %></h4>
     </div>
     <br class="clear"/>
+     <asp:Label runat="server" id="lblEfi64Hidden" Visible="False"></asp:Label>
+    <div id="divProxyEfi64" runat="server" >
     <div class="size-4 column">
         Kernel:
     </div>
@@ -182,6 +195,7 @@
         <asp:DropDownList ID="ddlEfi64Kernel" runat="server" CssClass="ddlist">
         </asp:DropDownList>
     </div>
+        
     <br class="clear"/>
     <div class="size-4 column">
         Boot Image:
@@ -190,6 +204,7 @@
         <asp:DropDownList ID="ddlEfi64BootImage" runat="server" CssClass="ddlist">
         </asp:DropDownList>
     </div>
+        </div>
     <br class="clear"/>
     <br/>
     <div id="proxyPassBoxes" runat="server" visible="false" style="margin-top: 20px;">

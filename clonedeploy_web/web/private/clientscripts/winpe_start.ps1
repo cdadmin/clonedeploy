@@ -1,4 +1,6 @@
-﻿$script:web=$(Get-Content x:\windows\system32\web.txt).Trim()
+﻿. x:\winpe_menu.ps1
+
+$script:web=$(Get-Content x:\windows\system32\web.txt).Trim()
 $script:curlOptions="-sSk"
 powercfg /s 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
 
@@ -24,17 +26,67 @@ function Test-Server-Conn()
   $connResult=$(curl.exe  $script:curlOptions "${script:web}Test" --connect-timeout 10 --stderr -)
   if("$connResult" -ne "true") 
   {
-    Write-Host $connResult
+    clear
     Write-Host
-    Write-Host "Displaying Available Network Interfaces"
-    $nicList = Get-WmiObject -Class "Win32_NetworkAdapterConfiguration"
-    $nicList | fl description, macaddress, ipaddress, ipenabled, dhcpenabled
-    Write-Host "Could Not Contact CloneDeploy Server.  Try Entering ${script:web}Test In A Web Browser. "
     
-    exit 1
+    Write-Host "Could Not Contact CloneDeploy Server.  Possible Reasons:"
+    Write-Host "The CloneDeploy Web Service Is Not Functioning."  
+    Write-Host "Try Entering ${script:web}Test In A Web Browser. "
+    Write-Host "A Driver Could Not Be Found For This NIC."
+    Write-Host "The Computer Did Not Receive An Ip Address."
+
+    $taskTable=[ordered]@{"display"="Display Available NICs";"static"="Assign Static IP";"shutdown"="Shutdown";"exit"="Exit To Shell";}
+    
+    while($true)
+    {
+        Write-Host
+        $taskType=$(fShowMenu "Select An Action" $taskTable)
+        if($taskType -eq "display")
+        {
+            clear
+            Write-Host "Displaying Available Network Interfaces"
+            $nicList = Get-WmiObject -Class "Win32_NetworkAdapterConfiguration"
+            $nicList | fl description, macaddress, ipaddress, ipenabled, dhcpenabled
+        }
+        elseif($taskType -eq "static")
+        {
+            Assign-Static-IP
+            break
+        }
+        elseif($taskType -eq "exit")
+        {
+            [Environment]::Exit(1)
+        }
+        elseif($taskType -eq "shutdown")
+        {
+            wpeutil shutdown
+        }
+    }
   }
 }
 
+
+function Assign-Static-IP()
+{
+    $nicSelection=@{}
+    $nicList = Get-WmiObject -Class "Win32_NetworkAdapterConfiguration"
+    foreach($nic in $nicList)
+    {
+        $nicSelection.Add("$($nic.Index)","$($nic.Description)")
+    }
+    Write-Host
+    $selectedNic=$(fShowMenu "Select A NIC" $nicSelection)
+    Write-Host
+    $ip = Read-Host -Prompt "Ipv4 Address "
+    $subnet = Read-Host -Prompt " Subnet Mask "
+    $gateway = Read-Host -Prompt "     Gateway "
+    $dns = Read-Host -Prompt "         DNS "
+
+    netsh int ipv4 set address "$selectedNic" static $ip $subnet $gateway
+    netsh int ipv4 set dns "$selectedNic" static $dns
+    Start-Sleep -s 5
+    Test-Server-Conn
+}
 
 Test-Server-Conn
 clear
@@ -94,10 +146,10 @@ while($private:loginCount -le 2)
 }
 
 Encode-User-Token -userToken $private:userToken
- 
-Write-Host " ** Downloading Core Scripts ** "
 clear
-foreach($scriptName in "winpe_task_select.ps1","winpe_global_functions.ps1","winpe_pull.ps1","winpe_ond.ps1","winpe_push.ps1","winpe_reporter.ps1","winpe_menu.ps1")
+
+Write-Host " ** Downloading Core Scripts ** "
+foreach($scriptName in "winpe_task_select.ps1","winpe_global_functions.ps1","winpe_pull.ps1","winpe_ond.ps1","winpe_push.ps1","winpe_reporter.ps1","winpe_menu.ps1","winpe_register.ps1")
 {
   $private:dlResult=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "scriptName=$scriptName" ${script:web}DownloadCoreScripts -o x:\$scriptName -w "%{http_code}" --connect-timeout 10 --stderr x:\dlerror.log)
   Check-Download -dlResult $private:dlResult -scriptName $scriptName

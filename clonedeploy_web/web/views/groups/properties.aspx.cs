@@ -44,6 +44,12 @@ public partial class views_groups_properties : BasePages.Groups
             chkCustom3.Checked = Convert.ToBoolean(_groupProperty.CustomAttribute3Enabled);
             chkCustom4.Checked = Convert.ToBoolean(_groupProperty.CustomAttribute4Enabled);
             chkCustom5.Checked = Convert.ToBoolean(_groupProperty.CustomAttribute5Enabled);
+            chkBootFile.Checked = Convert.ToBoolean(_groupProperty.BootFileEnabled);
+            chkTftp.Checked = Convert.ToBoolean(_groupProperty.TftpServerEnabled);
+            chkProxyReservation.Checked = Convert.ToBoolean(_groupProperty.ProxyEnabledEnabled);
+            chkProxyEnabled.Checked = Convert.ToBoolean(_groupProperty.ProxyEnabled);
+            txtTftp.Text = _groupProperty.TftpServer;
+            ddlBootFile.Text = _groupProperty.BootFile;
         }
     }
 
@@ -82,6 +88,12 @@ public partial class views_groups_properties : BasePages.Groups
             CustomAttribute3Enabled = Convert.ToInt16(chkCustom3.Checked),
             CustomAttribute4Enabled = Convert.ToInt16(chkCustom4.Checked),
             CustomAttribute5Enabled = Convert.ToInt16(chkCustom5.Checked),
+            ProxyEnabledEnabled = Convert.ToInt16(chkProxyReservation.Checked),
+            BootFileEnabled = Convert.ToInt16(chkBootFile.Checked),
+            TftpServerEnabled = Convert.ToInt16(chkTftp.Checked),
+            ProxyEnabled = Convert.ToInt16(chkProxyEnabled.Checked),
+            TftpServer = txtTftp.Text,
+            BootFile = ddlBootFile.Text
         };
 
         if (_groupProperty == null)

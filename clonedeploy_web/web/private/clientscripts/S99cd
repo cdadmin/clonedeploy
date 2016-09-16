@@ -18,35 +18,10 @@ echo 3 > /proc/sys/kernel/printk
 
 function start_network()
 {
-    if [ "$nic_debug" = "1" ]; then
-	  clear_and_move_down
-	  echo "Current Kernel: "
-	  uname -a
-	  echo
-	  
-	  echo "Current Boot Image:"
-	  cat /etc/cd_version
-	  echo
-	  
-	  echo "Interfaces: "
-	  ifconfig -a
-	  echo
-	  read key_pressed
-	  
-	  clear_and_move_down
-	  echo "Hardware Ids: "
-	  lspci -nn
-	  lsusb
-	  echo
-	  
-	  echo " Press Any Key To Continue "
-	  read key_pressed
-	fi
-	
+   
 	if [ -z "$net_if" ]; then
 		export net_if=eth0
 	fi
-	export mac=$(cat /sys/class/net/$net_if/address)
 	
 	echo " ** Starting Network On Interface $net_if ** "
 	echo
@@ -59,20 +34,101 @@ function start_network()
 	  ifup lo
 	fi
 	
-	  ip link set $net_if up
-	  for timeout in 10 20 30; do
-	    udhcpc -i $net_if -t 5 -T $timeout -n
+	ip link set $net_if up
+	for timeout in 3 3; do
+	  udhcpc -i $net_if -t 3 -T $timeout -n
+	  if [ "$?" = "0" ]; then
+	    link_up="true"
+	    break;
+	  fi
+	done
+	
+	if [ "$link_up" != "true" ]; then
+	  #look for others
+	  for interface in `ls /sys/class/net | grep -v "lo" | grep -v "$net_if" | sed 's/@//'`; do
+	    echo
+	    echo " ** Starting Network On Interface $interface ** "
+	    udhcpc -i $interface -t 3 -T 3 -n
 	    if [ "$?" = "0" ]; then
+	      link_up="true"
+		  net_if=$interface
 	      break;
 	    fi
 	  done
-	
-	clientIP=$(ifconfig | grep $net_if -A2 | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}')
-	
-	if [ "$nic_debug" = "1" ]; then
-	  echo " Press Any Key To Continue "
-	  read key_pressed
 	fi
+	
+	export mac=$(cat /sys/class/net/$net_if/address)
+	clientIP=$(ifconfig | grep $net_if -A2 | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}')
+
+}
+
+function test_conn()
+{
+  connResult=$($curlCommand "${web}Test" $curlEnd)
+  if [ "$connResult" != "true" ]; then 
+    clear_and_move_down
+    echo "Could Not Contact CloneDeploy Server.  Possible Reasons:"
+    echo "The CloneDeploy Web Service Is Not Functioning."  
+    echo "Try Entering ${web}Test In A Web Browser. "
+    echo "A Driver Could Not Be Found For This NIC."
+    echo "The Computer Did Not Receive An Ip Address."
+
+	echo -n "Press Enter To Continue"
+	read enter
+	
+    while true; do
+      echo 
+      taskType=$(dialog --backtitle "CloneDeploy" --title "Select A Task" --clear --menu "" 20 60 15 1 "Display Available NICs" 2 "Assign Static IP" 3 Shutdown  --stdout)
+      if [ "$taskType" = "1" ]; then
+        clear_and_move_down
+        echo "Displaying Available Network Interfaces"
+		echo
+        ifconfig -a 
+		echo -n "Press Enter To Continue"
+		read enter
+      elif [ "$taskType" = "2" ]; then
+        assign_static_ip
+        break
+      else
+		poweroff -f
+	  fi
+	done
+  fi
+}
+
+function assign_static_ip()
+{
+    interface_list=""
+	for interface in `ls /sys/class/net | grep -v "lo" | sed 's/@//'`; do
+	  interface_list="$interface_list $interface -"
+	done
+	
+	net_if=$(dialog --backtitle "CloneDeploy" --title "Select An Interface" --clear --menu "" 20 60 15 $interface_list  --stdout)
+	clear_and_move_down
+	echo -n "   IP Address: "
+	read ip_address
+	echo -n "Subnet Mask: "
+	read ip_netmask
+	echo -n "      Gateway: "
+	read ip_gateway
+	echo -n "             DNS:"
+	read ip_dns
+	
+	echo "auto lo" > /etc/network/interfaces
+	echo "iface lo inet loopback" >> /etc/network/interfaces
+	echo "iface $net_if inet static" >> /etc/network/interfaces
+	echo "address $ip_address" >> /etc/network/interfaces
+	echo "netmask $ip_netmask" >> /etc/network/interfaces
+	echo "gateway $ip_gateway" >> /etc/network/interfaces
+	echo "$ip_dns" >> /etc/resolv.conf
+	
+	ifdown $net_if
+	ifup $net_if
+	sleep 5
+	
+	export mac=$(cat /sys/class/net/$net_if/address)
+	clientIP=$(ifconfig | grep $net_if -A2 | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}')
+	test_conn
 }
 
 function check_download()
@@ -116,6 +172,8 @@ elif [ "$reset_network" = "2" ]; then
 fi
 
 start_network
+test_conn
+
 if [ "$task" = "diag" ]; then
 	/bin/cd_diag
 	reboot -f

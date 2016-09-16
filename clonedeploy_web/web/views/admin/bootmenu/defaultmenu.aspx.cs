@@ -6,6 +6,11 @@ using Helpers;
 
 public partial class views_admin_bootmenu_defaultmenu : Admin
 {
+    public string biosLbl;
+    public string efi32Lbl;
+    public string efi64Lbl;
+    public string noProxyLbl;
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack) PopulateForm();
@@ -21,8 +26,29 @@ public partial class views_admin_bootmenu_defaultmenu : Admin
             btnSubmitDefaultProxy.Visible = true;
             btnSubmitDefault.Visible = false;
             var biosFile = Settings.ProxyBiosFile;
+            biosLbl = biosFile;
             var efi32File = Settings.ProxyEfi32File;
+            efi32Lbl = efi32File;
             var efi64File = Settings.ProxyEfi64File;
+            efi64Lbl = efi64File;
+            if (biosFile.Contains("winpe"))
+            {
+                divProxyBios.Visible = false;
+                lblBiosHidden.Text = "Bios Boot Menus Are Not Used When Proxy Bios Is Set To WinPE";
+                lblBiosHidden.Visible = true;
+            }
+            if (efi32File.Contains("winpe"))
+            {
+                divProxyEfi32.Visible = false;
+                lblEfi32Hidden.Text = "Efi32 Boot Menus Are Not Used When Proxy Efi32 Is Set To WinPE";
+                lblEfi32Hidden.Visible = true;
+            }
+            if (efi64File.Contains("winpe"))
+            {
+                divProxyEfi64.Visible = false;
+                lblEfi64Hidden.Text = "Efi64 Boot Menus Are Not Used When Proxy Efi64 Is Set To WinPE";
+                lblEfi64Hidden.Visible = true;
+            }
             if (biosFile.Contains("linux") || efi32File.Contains("linux") || efi64File.Contains("linux"))
                 proxyPassBoxes.Visible = true;
             if (biosFile.Contains("ipxe") || efi32File.Contains("ipxe") || efi64File.Contains("ipxe"))
@@ -59,6 +85,7 @@ public partial class views_admin_bootmenu_defaultmenu : Admin
         else
         {
             var pxeMode = Settings.PxeMode;
+            noProxyLbl = pxeMode;
             if (pxeMode.Contains("winpe"))
             {
                 lblNoMenu.Visible = true;

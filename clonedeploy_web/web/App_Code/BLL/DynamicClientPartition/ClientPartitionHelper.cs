@@ -22,7 +22,7 @@ namespace BLL.DynamicClientPartition
             if (imageProfile != null)
             {
                 _imageProfile = imageProfile;
-                if (imageProfile.PartitionMethod == "Dynamic" && !string.IsNullOrEmpty(imageProfile.CustomSchema))
+                if ((imageProfile.PartitionMethod == "Dynamic" || imageProfile.PartitionMethod == "Standard" || imageProfile.PartitionMethod == "Standard Core Storage") && !string.IsNullOrEmpty(imageProfile.CustomSchema))
                 {
                     schema = imageProfile.CustomSchema;
                 }
@@ -561,6 +561,10 @@ namespace BLL.DynamicClientPartition
             return _imageSchema.HardDrives[schemaHdNumber].Partitions.Count(partition => partition.Active);
         }
 
+        public List<string> GetPartitionNumbers(int schemaHdNumber)
+        {
+            return _imageSchema.HardDrives[schemaHdNumber].Partitions.Select(part => part.Number).ToList();
+        }
         public string CheckForLvm(int schemaHdNumber)
         {
             return (from part in _imageSchema.HardDrives[schemaHdNumber].Partitions

@@ -35,13 +35,25 @@ public partial class views_admin_bootmenu_editor : Admin
 
             if (proxyDhcp == "Yes")
             {
+                btnSaveEditor.Visible = true;
+              
+                srvEdit.Visible = true;
+
                 var biosFile = Settings.ProxyBiosFile;
                 var efi32File = Settings.ProxyEfi32File;
                 var efi64File = Settings.ProxyEfi64File;
                 proxyEditor.Visible = true;
                 if (ddlEditProxyType.Text == "bios")
                 {
-                    if (biosFile.Contains("ipxe"))
+                     if (biosFile.Contains("winpe"))
+                    {
+                        btnSaveEditor.Visible = false;
+                        lblFileName1.Text = "Bios Boot Menus Are Not Used With WinPE";
+                       
+                        srvEdit.Visible = false;
+                        return;
+                    }
+                    else if (biosFile.Contains("ipxe"))
                         path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
                                ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
                                Path.DirectorySeparatorChar + "default.ipxe";
@@ -53,7 +65,15 @@ public partial class views_admin_bootmenu_editor : Admin
 
                 if (ddlEditProxyType.Text == "efi32")
                 {
-                    if (efi32File.Contains("ipxe"))
+                    if (efi32File.Contains("winpe"))
+                    {
+                        btnSaveEditor.Visible = false;
+                        lblFileName1.Text = "Efi32 Boot Menus Are Not Used With WinPE";
+                      
+                        srvEdit.Visible = false;
+                        return;
+                    }
+                    else if (efi32File.Contains("ipxe"))
                         path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
                                ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
                                Path.DirectorySeparatorChar + "default.ipxe";
@@ -65,7 +85,15 @@ public partial class views_admin_bootmenu_editor : Admin
 
                 if (ddlEditProxyType.Text == "efi64")
                 {
-                    if (efi64File.Contains("ipxe"))
+                    if (efi64File.Contains("winpe"))
+                    {
+                        btnSaveEditor.Visible = false;
+                        lblFileName1.Text = "Efi64 Boot Menus Are Not Used With WinPE";
+                       
+                        srvEdit.Visible = false;
+                        return;
+                    }
+                    else if (efi64File.Contains("ipxe"))
                         path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
                                ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
                                Path.DirectorySeparatorChar + "default.ipxe";
@@ -196,13 +224,26 @@ public partial class views_admin_bootmenu_editor : Admin
 
             if (proxyDhcp == "Yes")
             {
+                btnSaveEditor.Visible = true;
+               
+                srvEdit.Visible = true;
+
                 var biosFile = Settings.ProxyBiosFile;
                 var efi32File = Settings.ProxyEfi32File;
                 var efi64File = Settings.ProxyEfi64File;
                 proxyEditor.Visible = true;
                 if (ddlEditProxyType.Text == "bios")
                 {
-                    if (biosFile.Contains("ipxe"))
+
+                    if (biosFile.Contains("winpe"))
+                    {
+                        btnSaveEditor.Visible = false;
+                        lblFileName1.Text = "Bios Boot Menus Are Not Used With WinPE";
+                       
+                        srvEdit.Visible = false;
+                        return;
+                    }
+                    else if (biosFile.Contains("ipxe"))
                         path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
                                ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
                                Path.DirectorySeparatorChar + "default.ipxe";
@@ -214,7 +255,15 @@ public partial class views_admin_bootmenu_editor : Admin
 
                 if (ddlEditProxyType.Text == "efi32")
                 {
-                    if (efi32File.Contains("ipxe"))
+                    if (efi32File.Contains("winpe"))
+                    {
+                        btnSaveEditor.Visible = false;
+                        lblFileName1.Text = "Efi32 Boot Menus Are Not Used With WinPE";
+                       
+                        srvEdit.Visible = false;
+                        return;
+                    }
+                    else if (efi32File.Contains("ipxe"))
                         path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
                                ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
                                Path.DirectorySeparatorChar + "default.ipxe";
@@ -226,7 +275,15 @@ public partial class views_admin_bootmenu_editor : Admin
 
                 if (ddlEditProxyType.Text == "efi64")
                 {
-                    if (efi64File.Contains("ipxe"))
+                    if (efi64File.Contains("winpe"))
+                    {
+                        btnSaveEditor.Visible = false;
+                        lblFileName1.Text = "Efi64 Boot Menus Are Not Used With WinPE";
+                        
+                        srvEdit.Visible = false;
+                        return;
+                    }
+                    else if (efi64File.Contains("ipxe"))
                         path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
                                ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
                                Path.DirectorySeparatorChar + "default.ipxe";
@@ -244,7 +301,8 @@ public partial class views_admin_bootmenu_editor : Admin
                 if (mode.Contains("winpe"))
                 {
                     btnSaveEditor.Visible = false;
-                    lblNoMenu.Visible = true;
+                    lblFileName1.Text = "Boot Menus Are Not Used With WinPE";
+                  
                     srvEdit.Visible = false;
                     return;
                 }

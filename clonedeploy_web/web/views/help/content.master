@@ -1,0 +1,50 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/views/help/help.master" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="Navigation" Runat="Server">
+   <ul class="nav navbar-nav">
+   <li id="computer"><a href="<%= ResolveUrl("~/views/help/computer.aspx") %>">Computers</a>
+       <ul class="nav navbar-nav">
+           <li id="computer-new"><a href="<%= ResolveUrl("~/views/help/computer-new.aspx") %>">New / Edit</a></li>
+           <li id="computer-search"><a href="<%= ResolveUrl("~/views/help/computer-search.aspx") %>">Search</a></li>
+          <li id="computer-import"><a href="<%= ResolveUrl("~/views/help/computer-import.aspx") %>">Import</a></li>
+           <li id="computer-bootmenu"><a href="<%= ResolveUrl("~/views/help/computer-bootmenu.aspx") %>">Boot Menu</a></li>    
+           <li id="computer-munki"><a href="<%= ResolveUrl("~/views/help/computer-munki.aspx") %>">Munki Templates</a></li>
+           <li id="computer-group"><a href="<%= ResolveUrl("~/views/help/computer-group.aspx") %>">Group Membership</a></li>
+           <li id="computer-proxy"><a href="<%= ResolveUrl("~/views/help/computer-proxy.aspx") %>">Proxy DHCP Reservation</a></li>
+       </ul>
+       </li>
+   <li id="group"><a href="<%= ResolveUrl("~/views/help/group.aspx") %>">Groups</a>
+       <ul class="nav navbar-nav">
+           <li id="group-new"><a href="<%= ResolveUrl("~/views/help/group-new.aspx") %>">New / Edit</a></li>
+           <li id="group-search"><a href="<%= ResolveUrl("~/views/help/group-search.aspx") %>">Search</a></li>
+          <li id="group-import"><a href="<%= ResolveUrl("~/views/help/group-import.aspx") %>">Import</a></li>
+           <li id="group-bootmenu"><a href="<%= ResolveUrl("~/views/help/group-bootmenu.aspx") %>">Boot Menu</a></li>    
+           <li id="group-munki"><a href="<%= ResolveUrl("~/views/help/group-munki.aspx") %>">Munki Templates</a></li>
+           <li id="group-group"><a href="<%= ResolveUrl("~/views/help/group-group.aspx") %>">Group Membership</a></li>
+           <li id="group-proxy"><a href="<%= ResolveUrl("~/views/help/group-proxy.aspx") %>">Proxy DHCP Reservation</a></li>
+       </ul>
+       </li>
+   <li><a href="#">Images</a></li>
+   <li><a href="#">Tasks</a></li>
+   <li><a href="#">Global</a></li>
+   <li id="admin"><a href="<%= ResolveUrl("~/views/help/admin.aspx") %>">Admin</a>
+       <ul class="nav navbar-nav">
+           <li id="admin-server"><a href="<%= ResolveUrl("~/views/help/admin-server.aspx") %>">Server</a></li>
+           <li id="admin-dp"><a href="<%= ResolveUrl("~/views/help/admin-dp.aspx") %>">Distribution Points</a></li>
+           <li id="admin-client"><a href="<%= ResolveUrl("~/views/help/admin-client.aspx") %>">Client</a></li>
+           <li id="admin-pxe"><a href="<%= ResolveUrl("~/views/help/admin-pxe.aspx") %>">PXE</a></li>
+           <li id="admin-multicast"><a href="<%= ResolveUrl("~/views/help/admin-multicast.aspx") %>">Multicast</a></li>
+           <li id="admin-security"><a href="<%= ResolveUrl("~/views/help/admin-security.aspx") %>">Security</a></li>
+           <li id="admin-email"><a href="<%= ResolveUrl("~/views/help/admin-email.aspx") %>">E-mail</a></li>
+           <li id="admin-bootmenu"><a href="<%= ResolveUrl("~/views/help/admin-bootmenu.aspx") %>">Boot Menu</a></li>
+           <li id="admin-munki"><a href="<%= ResolveUrl("~/views/help/admin-munki.aspx") %>">Munki</a></li>
+           <li id="admin-logs"><a href="<%= ResolveUrl("~/views/help/admin-logs.aspx") %>">Logs</a></li>
+           <li id="admin-export"><a href="<%= ResolveUrl("~/views/help/admin-export.aspx") %>">Export</a></li>
+       </ul>
+   </li>
+  </ul>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="Content" Runat="Server">
+    <asp:ContentPlaceHolder ID="subcontent" runat="server"></asp:ContentPlaceHolder>
+</asp:Content>
+

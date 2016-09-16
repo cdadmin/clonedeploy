@@ -11,6 +11,7 @@ namespace BasePages
     {
         public SysprepTag SysprepTag { get; set; }
         public BootTemplate BootTemplate { get; set; }
+        public BootEntry BootEntry { get; set; }
         public FileFolder FileFolder { get; set; }
         public MunkiManifestTemplate ManifestTemplate { get; set; }
         protected override void OnInit(EventArgs e)
@@ -18,8 +19,10 @@ namespace BasePages
             base.OnInit(e);
             SysprepTag = !string.IsNullOrEmpty(Request["syspreptagid"]) ? BLL.SysprepTag.GetSysprepTag(Convert.ToInt32(Request.QueryString["syspreptagid"])) : null;
             BootTemplate = !string.IsNullOrEmpty(Request["templateid"]) ? BLL.BootTemplate.GetBootTemplate(Convert.ToInt32(Request.QueryString["templateid"])) : null;
+            BootEntry = !string.IsNullOrEmpty(Request["entryid"]) ? BLL.BootEntry.GetBootEntry(Convert.ToInt32(Request.QueryString["entryid"])) : null;
             FileFolder = !string.IsNullOrEmpty(Request["fileid"]) ? BLL.FileFolder.GetFileFolder(Convert.ToInt32(Request.QueryString["fileid"])) : null;
             ManifestTemplate = !string.IsNullOrEmpty(Request["manifestid"]) ? BLL.MunkiManifestTemplate.GetManifest(Convert.ToInt32(Request.QueryString["manifestid"])) : null;
+
             RequiresAuthorization(Authorizations.ReadGlobal);
         }
 

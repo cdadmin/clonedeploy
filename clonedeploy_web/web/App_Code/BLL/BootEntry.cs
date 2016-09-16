@@ -3,16 +3,17 @@ using System.Linq;
 
 namespace BLL
 {
-    public static class Site
+    public class BootEntry
     {
-        public static Models.ValidationResult AddSite(Models.Site site)
+
+        public static Models.ValidationResult AddBootEntry(Models.BootEntry bootEntry)
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                var validationResult = ValidateSite(site, true);
+                var validationResult = ValidateEntry(bootEntry, true);
                 if (validationResult.IsValid)
                 {
-                    uow.SiteRepository.Insert(site);
+                    uow.BootEntryRepository.Insert(bootEntry);
                     validationResult.IsValid = uow.Save();
                 }
 
@@ -24,43 +25,45 @@ namespace BLL
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.SiteRepository.Count();
+                return uow.BootEntryRepository.Count();
             }
         }
 
-        public static bool DeleteSite(int siteId)
+        public static bool DeleteBootEntry(int BootEntryId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                uow.SiteRepository.Delete(siteId);
+                uow.BootEntryRepository.Delete(BootEntryId);
                 return uow.Save();
             }
         }
 
-        public static Models.Site GetSite(int siteId)
+        public static Models.BootEntry GetBootEntry(int BootEntryId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.SiteRepository.GetById(siteId);
+                return uow.BootEntryRepository.GetById(BootEntryId);
             }
         }
 
-        public static List<Models.Site> SearchSites(string searchString = "")
+        public static List<Models.BootEntry> SearchBootEntrys(string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.SiteRepository.Get(searchString);
+                return
+                    uow.BootEntryRepository.Get(
+                        s => s.Name.Contains(searchString), orderBy: (q => q.OrderBy(t => t.Name)));
             }
         }
 
-        public static Models.ValidationResult UpdateSite(Models.Site site)
+        public static Models.ValidationResult UpdateBootEntry(Models.BootEntry bootEntry)
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                var validationResult = ValidateSite(site, false);
+                var validationResult = ValidateEntry(bootEntry, false);
                 if (validationResult.IsValid)
                 {
-                    uow.SiteRepository.Update(site, site.Id);
+                    uow.BootEntryRepository.Update(bootEntry, bootEntry.Id);
                     validationResult.IsValid = uow.Save();
                 }
 
@@ -68,25 +71,25 @@ namespace BLL
             }
         }
 
-        public static Models.ValidationResult ValidateSite(Models.Site site, bool isNewSite)
+        public static Models.ValidationResult ValidateEntry(Models.BootEntry bootEntry, bool isNewEntry)
         {
             var validationResult = new Models.ValidationResult();
 
-            if (string.IsNullOrEmpty(site.Name))
+            if (string.IsNullOrEmpty(bootEntry.Name))
             {
                 validationResult.IsValid = false;
-                validationResult.Message = "Site Name Is Not Valid";
+                validationResult.Message = "Boot Entry Name Is Not Valid";
                 return validationResult;
             }
 
-            if (isNewSite)
+            if (isNewEntry)
             {
                 using (var uow = new DAL.UnitOfWork())
                 {
-                    if (uow.SiteRepository.Exists(h => h.Name == site.Name))
+                    if (uow.BootEntryRepository.Exists(h => h.Name == bootEntry.Name))
                     {
                         validationResult.IsValid = false;
-                        validationResult.Message = "This Site Already Exists";
+                        validationResult.Message = "This Boot Entry Already Exists";
                         return validationResult;
                     }
                 }
@@ -95,13 +98,13 @@ namespace BLL
             {
                 using (var uow = new DAL.UnitOfWork())
                 {
-                    var originalSite = uow.SiteRepository.GetById(site.Id);
-                    if (originalSite.Name != site.Name)
+                    var originalTemplate = uow.BootEntryRepository.GetById(bootEntry.Id);
+                    if (originalTemplate.Name != bootEntry.Name)
                     {
-                        if (uow.SiteRepository.Exists(h => h.Name == site.Name))
+                        if (uow.BootEntryRepository.Exists(h => h.Name == bootEntry.Name))
                         {
                             validationResult.IsValid = false;
-                            validationResult.Message = "This Site Already Exists";
+                            validationResult.Message = "This Boot Template Already Exists";
                             return validationResult;
                         }
                     }
@@ -111,6 +114,5 @@ namespace BLL
             return validationResult;
         }
 
-      
     }
 }
