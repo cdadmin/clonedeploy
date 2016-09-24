@@ -29,6 +29,9 @@ namespace DAL
         DAL.IGenericRepository<Models.UserRight> UserRightRepository { get; }
         DAL.IGenericRepository<Models.UserGroupManagement> UserGroupManagementRepository { get; }
         DAL.IGenericRepository<Models.UserImageManagement> UserImageManagementRepository { get; }
+        DAL.IGenericRepository<Models.UserGroupRight> UserGroupRightRepository { get; }
+        DAL.IGenericRepository<Models.UserGroupGroupManagement> UserGroupGroupManagementRepository { get; }
+        DAL.IGenericRepository<Models.UserGroupImageManagement> UserGroupImageManagementRepository { get; }
         DAL.IGenericRepository<Models.UserLockout> UserLockoutRepository { get; }
         DAL.IGenericRepository<Models.GroupProperty> GroupPropertyRepository { get; }
         DAL.BuildingRepository BuildingRepository { get; }
@@ -48,6 +51,9 @@ namespace DAL
         DAL.IGenericRepository<Models.MunkiManifestIncludedManifest> MunkiIncludedManifestRepository { get; }
         DAL.IGenericRepository<Models.ComputerMunki> ComputerMunkiRepository { get; }
         DAL.IGenericRepository<Models.GroupMunki> GroupMunkiRepository { get; }
+        DAL.IGenericRepository<Models.ComputerProxyReservation> ComputerProxyRepository { get; }
+        DAL.IGenericRepository<Models.BootEntry> BootEntryRepository { get; }
+        DAL.IGenericRepository<Models.CloneDeployUserGroup> UserGroupRepository { get; } 
         bool Save();
         
     }

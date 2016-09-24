@@ -36,6 +36,12 @@ namespace BLL.Workflows
                 case "Custom Layout":
                     return "partition_method=layout";
                     break;
+                case "Standard":
+                    return "partition_method=standard";
+                    break;
+                case "Standard Core Storage":
+                    return "partition_method=standardCS";
+                    break;
                 default:
                     return "";
             }
@@ -105,7 +111,7 @@ namespace BLL.Workflows
         private void AppendString(string value)
         {
             _activeTaskArguments.Append(value);
-            _activeTaskArguments.Append(" ");
+            _activeTaskArguments.Append(_imageProfile.Image.Environment == "winpe" ? "\r\n" : " ");
         }
 
         public string Run(string multicastPort = "")
@@ -127,7 +133,9 @@ namespace BLL.Workflows
             foreach (var sysprepTag in ImageProfileSysprepTag.SearchImageProfileSysprepTags(_imageProfile.Id))
                 sysprepTags += sysprepTag.SysprepId + " ";
 
+            sysprepTags = sysprepTags.Trim();
             sysprepTags += "\"";
+            
             var areFilesToCopy = ImageProfileFileFolder.SearchImageProfileFileFolders(_imageProfile.Id).Any();
 
             //On demand computer may be null if not registered
@@ -160,7 +168,7 @@ namespace BLL.Workflows
                 AppendString("dp_id=" + DistributionPoint.GetPrimaryDistributionPoint().Id);
                 //Added for OSX NBI suppport
                 AppendString("image_direction=pull");
-
+                AppendString("osx_target_volume=" + "\"" + _imageProfile.OsxTargetVolume + "\"");
                 AppendString("image_type=" + _imageProfile.Image.Type);
                 if (Convert.ToBoolean(_imageProfile.RemoveGPT)) AppendString("remove_gpt_structures=true");
                 if (Convert.ToBoolean(_imageProfile.SkipShrinkVolumes)) AppendString("skip_shrink_volumes=true");

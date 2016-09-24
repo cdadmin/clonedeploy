@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Activities.Expressions;
 using System.Linq;
 using BLL.DynamicClientPartition;
 
@@ -101,12 +102,71 @@ namespace BLL.Workflows
             {
                 return LinuxLayout();
             }
-            else
+            else if(imageProfile.Image.Environment == "macOS")
             {
                 return OsxNbiLayout();
             }           
+            else if (imageProfile.Image.Environment == "winpe")
+            {
+                return WinPELayout();
+            }
+            else
+            {
+                return "failed";
+            }
         }
 
+        private string WinPELayout()
+        {
+            string partitionScript = null;
+            if (ImageSchema.HardDrives[HdNumberToGet].Table.ToLower() == "gpt")
+            {
+                foreach (var partition in clientSchema.PrimaryAndExtendedPartitions)
+                {
+                    if (partition.Type.ToLower() == "recovery")
+                    {
+                        partitionScript +=
+                            "New-Partition " + ClientHd + " -GptType '{de94bba4-06d1-4d40-a16a-bfd50179d6ac}' -Size " + partition.Size * ImageSchema.HardDrives[HdNumberToGet].Lbs / 1024 / 1024 + "MB | Format-Volume -FileSystem NTFS -NewFileSystemLabel WindowsRE 2>&1 >> $clientLog\r\n";
+                    }
+                    else if (partition.Type.ToLower() == "system")
+                    {
+                        long partitionSize = 0;
+                        if (clientBlockSize >= 4096 &&
+                            (partition.Size*ImageSchema.HardDrives[HdNumberToGet].Lbs/1024/1024) < 260)
+                            partitionSize = 260;
+                        else
+                        {
+                            partitionSize = partition.Size*ImageSchema.HardDrives[HdNumberToGet].Lbs/1024/1024;
+                        }
+                        partitionScript +=
+                            "New-Partition " + ClientHd + " -GptType '{c12a7328-f81f-11d2-ba4b-00a0c93ec93b}' -Size " + partitionSize + "MB 2>&1 >> $clientLog\r\n";// | Format-Volume -FileSystem FAT32 -NewFileSystemLabel System\r\n";
+                    }
+                    else if (partition.Type.ToLower() == "reserved")
+                    {
+                        partitionScript +=
+                            "New-Partition " + ClientHd + " -GptType '{e3c9e316-0b5c-4db8-817d-f92df00215ae}' -Size " + partition.Size * ImageSchema.HardDrives[HdNumberToGet].Lbs / 1024 / 1024 + "MB 2>&1 >> $clientLog\r\n";
+                    }
+                    else if (partition.Type.ToLower() == "basic")
+                    {
+                        partitionScript +=
+                           "New-Partition " + ClientHd + " -GptType '{ebd0a0a2-b9e5-4433-87c0-68b6b72699c7}' -Size " + partition.Size * ImageSchema.HardDrives[HdNumberToGet].Lbs / 1024 / 1024 + "MB | Format-Volume -FileSystem NTFS 2>&1 >> $clientLog\r\n";
+                    }
+                }   
+            }
+            else //mbr
+            {
+                foreach (var partition in clientSchema.PrimaryAndExtendedPartitions)
+                {
+                    var isActive = "";
+                    if (partition.Number == ImageSchema.HardDrives[HdNumberToGet].Boot)
+                        isActive = "-IsActive";
+                    partitionScript +=
+                          "New-Partition " + ClientHd + " -MbrType " + partition.Type + " -Size " + partition.Size * ImageSchema.HardDrives[HdNumberToGet].Lbs / 1024 / 1024 + "MB " + isActive + " | Format-Volume -FileSystem " + partition.FsType + " 2>&1 >> $clientLog\r\n";
+                }
+            }
+
+            return partitionScript;
+        }
         private string LinuxLayout()
         {
             string partitionScript = null;
@@ -413,7 +473,7 @@ namespace BLL.Workflows
                         partitionScript += "echo \"" + part.VolumeGroup.Name + ":" + ClientHd + partitionPrefix +
                                            part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] +
                                            ":" + part.VolumeGroup.Uuid + ":" + rlv.Name +
-                                           ":" + rlv.Size + ":" + rlv.FsType + ":" + rlv.Uuid + "\" >> /tmp/corestorage\n";
+                                           ":" + rlv.Size * clientBlockSize + ":" + rlv.FsType + ":" + rlv.Uuid + "\" >> /tmp/corestorage\n";
                     }
                 }
             }

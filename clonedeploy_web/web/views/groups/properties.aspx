@@ -6,10 +6,14 @@
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>" target="_blank">Help</a>
+    <li role="separator" class="divider"></li>
+     <li><a href="<%= ResolveUrl("~/views/help/groups-properties.aspx")%>" target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-      <asp:LinkButton ID="btnSubmit" runat="server" Text="Update Properties" OnClick="btnSubmit_OnClick"/>
+      <asp:LinkButton ID="btnSubmit" runat="server" Text="Update Properties" OnClick="btnSubmit_OnClick" CssClass="btn btn-default"/>
+       <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+  </button>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent" Runat="Server">
@@ -141,5 +145,56 @@
     <div class="size-12 column">
         <asp:CheckBox runat="server" Id="chkCustom5"/>
     </div>
+    <br class="clear" />
+     <div class="size-4 column">
+        Enable Proxy DHCP Reservation:
+    </div>
+    <div class="size-5 column">
+        <asp:CheckBox ID="chkProxyEnabled" runat="server"></asp:CheckBox>
+
+    </div>
+      <div class="size-12 column">
+        <asp:CheckBox runat="server" Id="chkProxyReservation"/>
+    </div>
+    <br class="clear"/>
+   
+
+    <div class="size-4 column">
+        TFTP Server IP:
+
+    </div>
+    <div class="size-5 column">
+        <asp:TextBox runat="server" ID="txtTftp" CssClass="textbox" Text="[server-ip]"></asp:TextBox>
+    </div>
+
+     <div class="size-12 column">
+        <asp:CheckBox runat="server" Id="chkTftp"/>
+    </div>
+    <br class="clear"/>
+
+    <div class="size-4 column">
+        Boot File:
+    </div>
+
+    <div class="size-5 column">
+        <asp:DropDownList ID="ddlBootFile" runat="server" CssClass="ddlist">
+            <asp:ListItem>bios_pxelinux</asp:ListItem>
+            <asp:ListItem>bios_ipxe</asp:ListItem>
+             <asp:ListItem>bios_x86_winpe</asp:ListItem>
+             <asp:ListItem>bios_x64_winpe</asp:ListItem>
+             <asp:ListItem>efi_x86_syslinux</asp:ListItem>
+            <asp:ListItem>efi_x86_ipxe</asp:ListItem>
+            <asp:ListItem>efi_x86_winpe</asp:ListItem>
+            <asp:ListItem>efi_x64_syslinux</asp:ListItem>
+            <asp:ListItem>efi_x64_ipxe</asp:ListItem>
+            <asp:ListItem>efi_x64_grub</asp:ListItem>
+            <asp:ListItem>efi_x64_winpe</asp:ListItem>
+           
+        </asp:DropDownList>
+    </div>
+      <div class="size-12 column">
+        <asp:CheckBox runat="server" Id="chkBootFile"/>
+    </div>
+    <br class="clear"/>
 </asp:Content>
 

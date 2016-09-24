@@ -39,7 +39,12 @@ namespace views.images
             txtImageDesc.Text = Image.Description;
             ddlImageType.Text = Image.Type;
             ddlEnvironment.Text = Image.Environment;
-            if (Image.Environment == "macOS")
+
+            if (Image.Environment == "winpe")
+            {
+                imageType.Visible = false;
+            }
+            else if (Image.Environment == "macOS")
             {
                 osxImageType.Visible = false;
                 imageType.Visible = false;

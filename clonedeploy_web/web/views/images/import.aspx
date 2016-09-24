@@ -9,7 +9,10 @@
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-      <asp:LinkButton ID="btnImport" runat="server" Text="Upload" OnClick="ButtonImport_Click" />
+      <asp:LinkButton ID="btnImport" runat="server" Text="Upload" OnClick="ButtonImport_Click" CssClass="btn btn-default" />
+     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+  </button>
 </asp:Content>
 
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">

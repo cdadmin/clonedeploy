@@ -40,7 +40,7 @@ namespace Service.Client
         [WebMethod]
         public void GetPartLayout(string imageProfileId, string hdToGet, string newHdSize, string clientHd, string taskType, string partitionPrefix, string lbs)
         {
-            if (!Authorize()) return;
+            //if (!Authorize()) return;
 
             var partLayout = new ClientPartitionScript
             {
@@ -137,6 +137,13 @@ namespace Service.Client
         }
 
         [WebMethod]
+        public void AddImageWinPEEnv(string name)
+        {
+            if (!Authorize()) return;
+            HttpContext.Current.Response.Write(new Service.Client.Logic().AddImageWinPEEnv(name));
+        }
+
+        [WebMethod]
         public void ListImages(string userId, string environment)
         {
             if (!Authorize()) return;
@@ -153,16 +160,16 @@ namespace Service.Client
         }
 
         [WebMethod]
-        public void ListMulticasts()
+        public void ListMulticasts(string environment)
         {
             if (!Authorize()) return;
-            HttpContext.Current.Response.Write(new Service.Client.Logic().MulicastSessionList());
+            HttpContext.Current.Response.Write(new Service.Client.Logic().MulicastSessionList(environment));
         }
 
         [WebMethod]
         public void CheckIn(string computerMac)
         {
-            if (!Authorize()) return;
+           if (!Authorize()) return;
            HttpContext.Current.Response.Write(new Service.Client.Logic().CheckIn(computerMac));
         }
 
@@ -204,6 +211,14 @@ namespace Service.Client
         }
 
         [WebMethod]
+        public void PermanentTaskCheckOut(string computerId)
+        {
+            if (!Authorize()) return;
+            new Service.Client.Logic().PermanentTaskCheckOut(Convert.ToInt32(computerId));
+        }
+
+
+        [WebMethod]
         public void UploadLog()
         {
             if (!Authorize()) return;
@@ -238,7 +253,7 @@ namespace Service.Client
         [WebMethod]
         public void CheckHdRequirements(string profileId, string clientHdNumber, string newHdSize, string schemaHds, string clientLbs)
         {
-            if (!Authorize()) return;
+            //if (!Authorize()) return;
             HttpContext.Current.Response.Write(new Service.Client.Logic().CheckHdRequirements(Convert.ToInt32(profileId),Convert.ToInt32(clientHdNumber),newHdSize,schemaHds,Convert.ToInt32(clientLbs)));
         }
 
@@ -312,7 +327,8 @@ namespace Service.Client
         public void GetSysprepTag(int tagId)
         {
             if (!Authorize()) return;
-            HttpContext.Current.Response.Write(new Logic().GetSysprepTag(tagId));
+            var tag = new Logic().GetSysprepTag(tagId);
+            HttpContext.Current.Response.Write(tag);
 
         }
 
@@ -357,6 +373,13 @@ namespace Service.Client
         {
             //No auth
             HttpContext.Current.Response.Write(BLL.Computer.GetComputerFromMac(mac).Name);
+        }
+
+        [WebMethod]
+        public void GetProxyReservation(string mac)
+        {
+            //No auth
+            HttpContext.Current.Response.Write(new Logic().GetProxyReservation(mac));
         }   
     }
 }

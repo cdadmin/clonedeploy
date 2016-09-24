@@ -33,6 +33,11 @@ public partial class views_users_acl : BasePages.Users
 
     protected void buttonUpdate_OnClick(object sender, EventArgs e)
     {
+        if (CloneDeployUser.UserGroupId != -1)
+        {
+            EndUserMessage = "Cannot Update. This User's ACL Is Controlled By A Group";
+            return;
+        }
         BLL.UserRight.DeleteUserRights(CloneDeployUser.Id);
         var listOfRights = _listCheckBoxes.Where(x => x.Checked).Select(box => new Models.UserRight {UserId = CloneDeployUser.Id, Right = box.ID}).ToList();
         EndUserMessage = BLL.UserRight.AddUserRights(listOfRights)

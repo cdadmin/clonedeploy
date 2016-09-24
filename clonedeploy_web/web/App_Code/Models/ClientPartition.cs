@@ -33,6 +33,7 @@
         public string Name { get; set; }
         public string Pv { get; set; }
         public string Uuid { get; set; }
+        public bool IsFusion { get; set; }
     }
 
     public class ExtendedPartitionHelper

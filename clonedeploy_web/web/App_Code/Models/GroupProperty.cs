@@ -80,6 +80,24 @@ namespace Models
         [Column("custom_5_enabled", Order = 24)]
         public int CustomAttribute5Enabled { get; set; }
 
+        [Column("proxy_enabled_enabled", Order = 25)]
+        public int ProxyEnabledEnabled { get; set; }
+
+        [Column("tftp_server_enabled", Order = 26)]
+        public int TftpServerEnabled { get; set; }
+
+        [Column("bootfile_enabled", Order = 27)]
+        public int BootFileEnabled { get; set; }
+
+        [Column("proxy_enabled", Order = 28)]
+        public int ProxyEnabled { get; set; }
+
+        [Column("tftp_server", Order = 29)]
+        public string TftpServer { get; set; }
+
+        [Column("bootfile", Order = 30)]
+        public string BootFile { get; set; }
+
 
      
 

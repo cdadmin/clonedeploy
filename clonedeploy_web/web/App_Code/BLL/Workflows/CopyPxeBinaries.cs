@@ -30,6 +30,10 @@ namespace BLL.Workflows
 
         private readonly string[] _grubEfi64Files = {"bootx64.efi", "grubx64.efi"};
 
+        private readonly string[] _winPEBiosFiles = { "bootmgr.exe", "pxeboot.n12" };
+
+        private readonly string[] _winPEEfiFiles = { "bootmgfw.efi" };
+
         private readonly string _sourceRootPath = Settings.TftpPath + "static" + Path.DirectorySeparatorChar;
 
         public bool CopyFiles()
@@ -94,6 +98,39 @@ namespace BLL.Workflows
                 if (!CopyCommand("grub", "", "", "", file, file)) return false;
                 if(efi64File == "grub" && file == "bootx64.efi")
                     if (!CopyCommand("grub", "", "", "efi64", file, BootFile)) return false;
+            }
+
+            if (
+                new Helpers.FileOps().FileExists(Settings.TftpPath + Path.DirectorySeparatorChar + "boot" +
+                                                 Path.DirectorySeparatorChar + "boot.sdi"))
+            {
+                foreach (var file in _winPEEfiFiles)
+                {
+                    if (!CopyCommand("winpe", "", "winpe_efi_64", "efi64", file, file)) return false;
+                    if (!CopyCommand("winpe", "", "winpe_efi_32", "efi32", file, file)) return false;
+                    if (efi64File == "winpe_efi")
+                    {
+                        if (!CopyCommand("winpe", "", "winpe_efi_64", "efi64", file, BootFile)) return false;
+                    }
+                    if (efi32File == "winpe_efi")
+                    {
+                        if (!CopyCommand("winpe", "", "winpe_efi_32", "efi32", file, BootFile)) return false;
+                    }
+
+                }
+                foreach (var file in _winPEBiosFiles)
+                {
+                    if (file == "bootmgr.exe")
+                    {
+                        if (!CopyCommand("winpe", "", "winpe", "", file, file)) return false;
+                    }
+                    if (!CopyCommand("winpe", "", "winpe", "bios", file, file)) return false;
+                
+                    if (biosFile == "winpe" && file == "pxeboot.n12")
+                    {
+                        if (!CopyCommand("winpe", "", "winpe", "bios", file, BootFile)) return false;
+                    }
+                }
             }
 
             return true;
@@ -175,8 +212,83 @@ namespace BLL.Workflows
                         {
                             if (!CopyCommand("grub", "", "", "", file, file)) return false;
                         }
-
                     }
+                    break;
+                case "winpe_bios32":
+                    try
+                    {
+                        File.Copy(Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCDx86",
+                            Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCD",true);
+                        new FileOps().SetUnixPermissions(Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCD");
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(ex.Message);
+                        return false;
+                    }
+                    foreach (var file in _winPEBiosFiles)
+                    {
+                        if (file == "pxeboot.n12")
+                        {
+                            if (!CopyCommand("winpe", "", "winpe", "", file, BootFile)) return false;
+                        }
+                        else
+                        {
+                            if (!CopyCommand("winpe", "", "winpe", "", file, file)) return false;
+                        }
+                    }
+                    break;
+                case "winpe_bios64":
+                    try
+                    {
+                        File.Copy(Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCDx64",
+                            Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCD",true);
+                        new FileOps().SetUnixPermissions(Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCD");
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(ex.Message);
+                        return false;
+                    }
+                    foreach (var file in _winPEBiosFiles)
+                    {
+                        if (file == "pxeboot.n12")
+                        {
+                            if (!CopyCommand("winpe", "", "winpe", "", file, BootFile)) return false;
+                        }
+                        else
+                        {
+                            if (!CopyCommand("winpe", "", "winpe", "", file, file)) return false;
+                        }
+                    }
+                    break;
+                case "winpe_efi32":
+                    try
+                    {
+                        File.Copy(Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCDx86",
+                            Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCD",true);
+                        new FileOps().SetUnixPermissions(Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCD");
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(ex.Message);
+                        return false;
+                    }
+                    if (!CopyCommand("winpe", "", "winpe_efi_32", "", "bootmgfw.efi", BootFile)) return false;
+                    break;
+                case "winpe_efi64":
+                    try
+                    {
+                        File.Copy(Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCDx64",
+                            Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCD",true);
+                        new FileOps().SetUnixPermissions(Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCD");
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(ex.Message);
+                        return false;
+                    }
+                    if (!CopyCommand("winpe", "", "winpe_efi_64", "", "bootmgfw.efi", BootFile)) return false;
                     break;
             }
             return true;
@@ -185,7 +297,7 @@ namespace BLL.Workflows
         private bool CopyCommand(string pxeType, string mode, string sArch, string dArch, string sName, string dName)
         {
             var destinationRootPath = Settings.TftpPath;
-            if(mode == "proxy" || (pxeType == "grub" && dArch == "efi64"))
+            if (mode == "proxy" || (pxeType == "grub" && dArch == "efi64") || (pxeType == "winpe" && dArch == "efi64") || (pxeType == "winpe" && dArch == "efi32") || pxeType == "winpe" && dArch == "bios")
                 destinationRootPath += "proxy" + Path.DirectorySeparatorChar;
             try
             {

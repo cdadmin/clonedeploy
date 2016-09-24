@@ -2,6 +2,31 @@
 
 namespace Services.Client
 {
+    public class WinPEMulticastList
+    {
+        public string Port { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class WinPEImageList
+    {
+        public string ImageId { get; set; }
+        public string ImageName { get; set; }
+    }
+
+    public class WinPEProfileList
+    {
+        public string Count { get; set; }
+        public string FirstProfileId { get; set; }
+        public List<WinPEProfile> ImageProfiles { get; set; }      
+    }
+
+    public class WinPEProfile
+    {
+        public string ProfileId { get; set; }
+        public string ProfileName { get; set; }
+    }
+
     public class ImageList
     {
         public List<string> Images  { get; set; }
@@ -24,6 +49,8 @@ namespace Services.Client
         public string Result { get; set; }
         public string Message { get; set; }
         public string TaskArguments { get; set; }
+        public string ImageEnvironment { get; set; }
+        public string TaskType { get; set; }
     }
 
     public class SMB
@@ -98,5 +125,12 @@ namespace Services.Client
         public string DestinationFolder { get; set; }
         public string DestinationPartition { get; set; }
         public string FolderCopyType { get; set; }
+    }
+
+    public class ProxyReservation
+    {
+        public string NextServer { get; set; }
+        public string BootFile { get; set; }
+        public string BcdFile { get; set; }
     }
 }

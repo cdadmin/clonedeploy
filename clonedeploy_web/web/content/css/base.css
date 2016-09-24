@@ -158,9 +158,11 @@ Table.gv_vg{margin-left:30px;border-left:2px solid #e8e8e8;border-bottom:2px sol
 .width_50{width:50px;}
 .width_30{width:20px;}
 .width_100{ width: 100px;}
+.width_140{ width: 140px;}
 .height_800{ height: 800px;}
 .height_600{ height: 600px;}
 .height_400{ height: 400px;}
+
 .height_1200{ height: 1200px;}
 .height_18{ height: 18px !important;margin-bottom: 0 !important;}
 .max_width300 { max-width: 300px;overflow: hidden;}

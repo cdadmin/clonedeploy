@@ -5,10 +5,14 @@
     </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>"  target="_blank">Help</a>
+      <li role="separator" class="divider"></li>
+     <li><a href="<%= ResolveUrl("~/views/help/users-search.aspx")%>"  target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-          <a class="confirm actions green" href="#">Delete Selected Users  &nbsp;</a>
+          <a class="confirm btn btn-default" href="#">Delete Selected Users</a>
+     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+  </button>
 
 </asp:Content>
 
@@ -46,8 +50,12 @@
             <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/users/edit.aspx?userid={0}" Text="View" ItemStyle-CssClass="chkboxwidth"/>
             <asp:BoundField DataField="Id" HeaderText="userID" SortExpression="Id" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"/>
-            <asp:BoundField DataField="Membership" HeaderText="Membership" SortExpression="Membership" ItemStyle-CssClass="mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
-            
+            <asp:BoundField DataField="Membership" HeaderText="Role" SortExpression="Membership" ItemStyle-CssClass="width_200" />
+              <asp:TemplateField ItemStyle-CssClass="mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller" HeaderText="Group">
+                <ItemTemplate>
+                    <asp:Label ID="lblImage" runat="server" Text='<%# Bind("UserGroup.Name") %>'/>
+                </ItemTemplate>
+            </asp:TemplateField>
         </Columns>
         <EmptyDataTemplate>
             No Users Found

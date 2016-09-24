@@ -9,7 +9,10 @@
     <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
-    <asp:LinkButton ID="btnUpdateTask" runat="server" OnClick="btnUpdateTask_OnClick" Text="Update Task Options" />
+    <asp:LinkButton ID="btnUpdateTask" runat="server" OnClick="btnUpdateTask_OnClick" Text="Update Task Options" CssClass="btn btn-default" />
+     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+  </button>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
      <script type="text/javascript">
@@ -18,24 +21,6 @@
         });
     </script>
     
-    <div id="nolinuxhide" runat="server">
-     <div class="size-9 column">
-        Don't Download Core Scripts
-    </div>
-    <div class="size-8 column">
-        <asp:CheckBox ID="chkGlobalNoCore" runat="server" CssClass="textbox"></asp:CheckBox>
-    </div>
-    <br class="clear"/>
-    
-    <div class="size-9 column">
-        Don't Set Hardware Clock
-    </div>
-    <div class="size-8 column">
-        <asp:CheckBox ID="chkGlobalNoClock" runat="server" CssClass="textbox"></asp:CheckBox>
-    </div>
-    
-      <br class="clear"/>
-    </div>
     <div class="size-9 column">
         Web Cancelable
     </div>
@@ -48,7 +33,7 @@
     <div class="size-9 column">
         Task Completed Action
     </div>
-    <div class="size-8 column">
+    <div class="size-5 column">
         <asp:DropDownList ID="ddlTaskComplete" runat="server" CssClass="ddlist">
             <asp:ListItem>Reboot</asp:ListItem>
             <asp:ListItem>Power Off</asp:ListItem>

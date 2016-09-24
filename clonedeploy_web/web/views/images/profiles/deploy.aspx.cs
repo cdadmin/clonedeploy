@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.DirectoryServices.ActiveDirectory;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BasePages;
@@ -9,39 +11,55 @@ using Newtonsoft.Json;
 
 public partial class views_images_profiles_deploy : Images
 {
+    private DropDownList ddlObject;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (IsPostBack) return;
+        if (Image.Environment == "macOS")
+            ddlObject = ddlPartitionMethodMac;
+        else if (Image.Environment == "winpe")
+            ddlObject = ddlPartitionMethodWin;
+        else
+            ddlObject = ddlPartitionMethodLin;
 
-       
+        if (IsPostBack) return;
         chkDownNoExpand.Checked = Convert.ToBoolean(ImageProfile.SkipExpandVolumes);
         chkChangeName.Checked = Convert.ToBoolean(ImageProfile.ChangeName);
         chkAlignBCD.Checked = Convert.ToBoolean(ImageProfile.FixBcd);
         chkRunFixBoot.Checked = Convert.ToBoolean(ImageProfile.FixBootloader);
-        ddlPartitionMethod.Text = ImageProfile.PartitionMethod;
+
+        if (Image.Environment == "macOS")
+        {
+            divBoot.Visible = false;
+            divExpandVol.Visible = false;
+            ForceDiv.Visible = false;
+            DivPartDdlMac.Visible = true;
+            ddlPartitionMethodMac.Text = ImageProfile.PartitionMethod;
+        }
+        else if (Image.Environment == "winpe")
+        {
+            divExpandVol.Visible = false;
+            divBoot.Visible = false;
+            ForceDiv.Visible = false;
+            divOsx.Visible = false;
+            DivPartDdlWin.Visible = true;
+            ddlPartitionMethodWin.Text = ImageProfile.PartitionMethod;
+        }
+        else if (Image.Environment == "linux" || Image.Environment == "")
+        {
+            if(Image.Type == "File")
+                divExpandVol.Visible = false;
+            divOsx.Visible = false;
+            DivPartDdlLin.Visible = true;
+            ddlPartitionMethodLin.Text = ImageProfile.PartitionMethod;
+            if (chkDownForceDynamic.Checked) ddlPartitionMethodLin.Enabled = false;
+            ForceDiv.Visible = ddlPartitionMethodLin.Text == "Dynamic";
+        }
         chkDownForceDynamic.Checked = Convert.ToBoolean(ImageProfile.ForceDynamicPartitions);
         chkInstallMunki.Checked = Convert.ToBoolean(ImageProfile.OsxInstallMunki);
         txtMunkiRepoUrl.Text = ImageProfile.MunkiRepoUrl;
         txtTargetVolume.Text = ImageProfile.OsxTargetVolume;
         txtMunkiUsername.Text = ImageProfile.MunkiAuthUsername;
 
-        if (chkDownForceDynamic.Checked) ddlPartitionMethod.Enabled = false;
-        ForceDiv.Visible = ddlPartitionMethod.Text == "Dynamic";
-        if (Image.Environment == "macOS")
-        {
-            divBoot.Visible = false;
-            divExpandVol.Visible = false;
-            ForceDiv.Visible = false;
-        }
-        else if (Image.Environment == "linux" && Image.Type == "File")
-        {
-            divExpandVol.Visible = false;
-            divOsx.Visible = false;
-        }
-        else
-        {
-            divOsx.Visible = false;
-        }
         DisplayLayout();
     }
 
@@ -56,51 +74,111 @@ public partial class views_images_profiles_deploy : Images
         imageProfile.OsxInstallMunki = Convert.ToInt16(chkInstallMunki.Checked);
         imageProfile.MunkiRepoUrl = txtMunkiRepoUrl.Text;
         imageProfile.OsxTargetVolume = txtTargetVolume.Text;
-        imageProfile.PartitionMethod = ddlPartitionMethod.Text;
+        if(Image.Environment == "macOS")
+            imageProfile.PartitionMethod = ddlPartitionMethodMac.Text;
+        else if (Image.Environment == "winpe")
+            imageProfile.PartitionMethod = ddlPartitionMethodWin.Text;
+        else
+            imageProfile.PartitionMethod = ddlPartitionMethodLin.Text;
         imageProfile.ForceDynamicPartitions = Convert.ToInt16(chkDownForceDynamic.Checked);
         imageProfile.MunkiAuthUsername = txtMunkiUsername.Text;
         if(!string.IsNullOrEmpty(txtMunkiPassword.Text))
             imageProfile.MunkiAuthPassword = new Helpers.Encryption().EncryptText(txtMunkiPassword.Text);
-        switch (ddlPartitionMethod.SelectedIndex)
+
+        switch (ddlObject.Text)
         {
-            case 0:
+            case "Use Original MBR / GPT":
                 imageProfile.CustomSchema = chkModifySchema.Checked ? SetCustomSchema() : "";
                 break;
-            case 1:
+            case "Dynamic":
                 
                 imageProfile.CustomSchema = chkModifySchema.Checked ? SetCustomSchema() : "";
                 break;
-            case 2:
+            case "Custom Script":
                 var fixedLineEnding = scriptEditorText.Value.Replace("\r\n", "\n");
                 imageProfile.CustomPartitionScript = fixedLineEnding;
                 imageProfile.CustomSchema = chkModifySchema.Checked ? SetCustomSchema() : "";
                 break;
-           
+            case "Standard Core Storage":
+                imageProfile.CustomSchema = chkModifySchema.Checked ? SetCustomSchema() : "";
+                break;
+            case "Standard":
+                if (Image.Environment == "winpe")
+                {
+                    imageProfile.CustomSchema = SetCustomSchema();
+                }
+                else
+                {
+                    imageProfile.CustomSchema = chkModifySchema.Checked ? SetCustomSchema() : "";
+                }
+                break;
             default:
                 imageProfile.CustomPartitionScript = "";
                 break;
         }
-        var result = BLL.ImageProfile.UpdateProfile(imageProfile);
-        EndUserMessage = result.IsValid ? "Successfully Updated Image Profile" : result.Message;
+
+
+        var isSchemaError = false;
+        if (imageProfile.PartitionMethod == "Standard" && Image.Environment == "winpe")
+        {
+            var customSchema = JsonConvert.DeserializeObject<Models.ImageSchema.ImageSchema>(imageProfile.CustomSchema);
+            
+            foreach (var hd in customSchema.HardDrives)
+            {
+                var activePartCounter = hd.Partitions.Count(part => part.Active);
+                if (activePartCounter == 0)
+                {
+
+                    EndUserMessage =
+                        "When Using A Standard Partition Layout One Partition With The Operating System Must Be Active.";
+                    isSchemaError = true;
+                    break;
+                }
+                if (activePartCounter > 1)
+                {
+                   
+                    EndUserMessage =
+                        "When Using A Standard Partition Layout Only One Partition With The Operating System Can Be Active.";
+                    isSchemaError = true;
+                    break;
+                }
+            }
+        }
+
+        if (!isSchemaError)
+        {
+            var result = BLL.ImageProfile.UpdateProfile(imageProfile);
+            EndUserMessage = result.IsValid ? "Successfully Updated Image Profile" : result.Message;
+        }
     }
 
 
     protected void ddlPartitionMethod_OnSelectedIndexChanged(object sender, EventArgs e)
     {
-        ForceDiv.Visible = ddlPartitionMethod.Text == "Dynamic";
-        if (Image.Environment == "macOS")
+       
+        if (Image.Environment == "winpe")
         {
-            
             ForceDiv.Visible = false;
+            if (ddlObject.Text == "Standard" || ddlObject.Text == "Standard Core Storage")
+            {
+                chkModifySchema.Checked = true;
+                chkModifySchema.Enabled = false;
+            }
+            
+        }
+        else
+        {
+            ForceDiv.Visible = ddlPartitionMethodLin.Text == "Dynamic";
         }
         DisplayLayout();
     }
 
     protected void DisplayLayout()
     {
-        switch (ddlPartitionMethod.SelectedIndex)
+       
+        switch (ddlObject.Text)
         {
-            case 2:
+            case "Custom Script":
                 customScript.Visible = true;
                 scriptEditorText.Value = ImageProfile.CustomPartitionScript;
                 if (!string.IsNullOrEmpty(ImageProfile.CustomSchema) || chkModifySchema.Checked)
@@ -161,7 +239,7 @@ public partial class views_images_profiles_deploy : Images
 
         foreach (GridViewRow row in gv.Rows)
         {
-            if (ddlPartitionMethod.Text != "Dynamic")
+            if (ddlObject.Text != "Dynamic")
             {
                 foreach (GridViewRow partRow in gv.Rows)
                 {
@@ -201,6 +279,7 @@ public partial class views_images_profiles_deploy : Images
 
     protected void btnVG_Click(object sender, EventArgs e)
     {
+
         var control = sender as Control;
         if (control == null) return;
         var gvRow = (GridViewRow)control.Parent.Parent;
@@ -229,7 +308,7 @@ public partial class views_images_profiles_deploy : Images
             btn.Text = "+";
         }
 
-        if (ddlPartitionMethod.Text != "Dynamic")
+        if (ddlObject.Text != "Dynamic")
         {
             foreach (GridViewRow lv in gv.Rows)
             {
@@ -258,12 +337,12 @@ public partial class views_images_profiles_deploy : Images
     {
         if (chkDownForceDynamic.Checked)
         {
-            ddlPartitionMethod.Enabled = false;
-            ddlPartitionMethod.Text = "Dynamic";
+            ddlPartitionMethodLin.Enabled = false;
+            ddlPartitionMethodLin.Text = "Dynamic";
         }
         else
         {
-            ddlPartitionMethod.Enabled = true;
+            ddlPartitionMethodLin.Enabled = true;
         }
     }
 

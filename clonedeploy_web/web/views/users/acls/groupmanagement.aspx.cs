@@ -40,6 +40,12 @@ public partial class views_users_acls_groupmanagement : BasePages.Users
 
     protected void buttonUpdate_OnClick(object sender, EventArgs e)
     {
+        if (CloneDeployUser.UserGroupId != -1)
+        {
+            EndUserMessage = "Cannot Update. This User's Group Management Is Controlled By A Group";
+            return;
+        }
+
         var list = new List<Models.UserGroupManagement>();
         foreach (GridViewRow row in gvGroups.Rows)
         {

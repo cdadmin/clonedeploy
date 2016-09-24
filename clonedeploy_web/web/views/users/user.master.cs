@@ -9,22 +9,40 @@ namespace views.masters
     {
         private Users UsersBasePage { get; set; }
         public CloneDeployUser CloneDeployUser { get; set; }
-        
+        public CloneDeployUserGroup CloneDeployUserGroup { get; set; }
         protected void Page_Load(object sender, EventArgs e)
         {
             UsersBasePage = (Page as Users);
             CloneDeployUser = UsersBasePage.CloneDeployUser;
-            if (CloneDeployUser == null) //level 2
+            CloneDeployUserGroup = UsersBasePage.CloneDeployUserGroup;
+            if (CloneDeployUser == null && CloneDeployUserGroup == null) //level 1
             {
                 Level2.Visible = false;
+                Level2Group.Visible = false;
                 Level3.Visible = false;
                 btnDelete.Visible = false;
             }
             else
             {
+                if (CloneDeployUser == null)
+                {
+                    Level2.Visible = false;
+                    btnDelete.Visible = false;
+                    btnDeleteGroup.Visible = true;
+                }
+                if (CloneDeployUserGroup == null)
+                {
+                    Level2Group.Visible = false;
+                    btnDelete.Visible = true;
+                    btnDeleteGroup.Visible = false;
+                }
+
                 Level1.Visible = false;
                 if (Request.QueryString["level"] == "3")
+                {
                     Level2.Visible = false;
+                    Level2Group.Visible = false;
+                }
             }
 
             if (UsersBasePage.CloneDeployCurrentUser.Membership == "User")
@@ -48,16 +66,43 @@ namespace views.masters
             }
         }
 
+        protected void btnDeleteGroup_Click(object sender, EventArgs e)
+        {
+            UsersBasePage.RequiresAuthorization(Authorizations.Administrator);
+           
+                lblTitle.Text = "Delete This User Group?";
+                Page.ClientScript.RegisterStartupScript(GetType(), "modalscript",
+                    "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
+                    true);
+            
+        }
+
         protected void OkButton_Click(object sender, EventArgs e)
         {
-            if (BLL.User.DeleteUser(CloneDeployUser.Id))
+            if (CloneDeployUser != null)
             {
-                PageBaseMaster.EndUserMessage = "Successfully Deleted User";
-                Response.Redirect("~/views/users/search.aspx");
+
+                if (BLL.User.DeleteUser(CloneDeployUser.Id))
+                {
+                    PageBaseMaster.EndUserMessage = "Successfully Deleted User";
+                    Response.Redirect("~/views/users/search.aspx");
+                }
+                else
+                {
+                    PageBaseMaster.EndUserMessage = "Could Not Delete User";
+                }
             }
-            else
+            else if (CloneDeployUserGroup != null)
             {
-                PageBaseMaster.EndUserMessage = "Could Not Delete User";
+                if (BLL.UserGroup.DeleteUserGroup(CloneDeployUserGroup.Id))
+                {
+                    PageBaseMaster.EndUserMessage = "Successfully Deleted User Group";
+                    Response.Redirect("~/views/users/searchgroup.aspx");
+                }
+                else
+                {
+                    PageBaseMaster.EndUserMessage = "Could Not Delete User Group";
+                }
             }
 
         }       

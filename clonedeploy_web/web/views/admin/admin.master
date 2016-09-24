@@ -75,6 +75,11 @@
                     <span class="nav-text">Export</span>
                 </a>
             </li>
+              <li id="clobber">
+                <a href="<%= ResolveUrl("~/views/admin/clobber.aspx") %>" >
+                    <span class="nav-text">Clobber Mode</span>
+                </a>
+            </li>
             
         </ul>
         </div>
@@ -97,12 +102,11 @@
     <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
     </asp:ContentPlaceHolder>
    
-
+    <ul class="dropdown-menu">
+             <asp:ContentPlaceHolder ID="AdditionalActions" runat="server"></asp:ContentPlaceHolder>
           <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>   
-
-
      <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
-
+        </ul>
 </asp:Content>
 
 <asp:Content runat="server" ID="PageNav" ContentPlaceHolderID="PageNav">

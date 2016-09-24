@@ -23,6 +23,9 @@ namespace DAL
         private IGenericRepository<Models.UserRight> _userRightRepository;
         private IGenericRepository<Models.UserImageManagement> _userImageManagementRepository;
         private IGenericRepository<Models.UserGroupManagement> _userGroupManagementRepository;
+        private IGenericRepository<Models.UserGroupRight> _userGroupRightRepository;
+        private IGenericRepository<Models.UserGroupImageManagement> _userGroupImageManagementRepository;
+        private IGenericRepository<Models.UserGroupGroupManagement> _userGroupGroupManagementRepository;
         private IGenericRepository<Models.UserLockout> _userLockoutRepository;
         private IGenericRepository<Models.GroupProperty> _groupPropertyRepository;
         private RoomRepository _roomRepository;
@@ -48,6 +51,25 @@ namespace DAL
         private DAL.IGenericRepository<Models.MunkiManifestIncludedManifest> _munkiIncludedManifestRepository;
         private IGenericRepository<Models.ComputerMunki> _computerMunkiRepository;
         private IGenericRepository<Models.GroupMunki> _groupMunkiRepository;
+        private IGenericRepository<Models.ComputerProxyReservation> _computerProxyRepository;
+        private IGenericRepository<Models.BootEntry> _bootEntryRepository;
+        private IGenericRepository<Models.CloneDeployUserGroup> _userGroupRepository;
+
+
+        public IGenericRepository<Models.CloneDeployUserGroup> UserGroupRepository
+        {
+            get { return _userGroupRepository ?? (_userGroupRepository = new GenericRepository<Models.CloneDeployUserGroup>(_context)); }
+        }
+
+        public IGenericRepository<Models.BootEntry> BootEntryRepository
+        {
+            get { return _bootEntryRepository ?? (_bootEntryRepository = new GenericRepository<Models.BootEntry>(_context)); }
+        }
+
+        public IGenericRepository<Models.ComputerProxyReservation> ComputerProxyRepository
+        {
+            get { return _computerProxyRepository ?? (_computerProxyRepository = new GenericRepository<Models.ComputerProxyReservation>(_context)); }
+        }
 
         public IGenericRepository<Models.ComputerMunki> ComputerMunkiRepository
         {
@@ -145,6 +167,19 @@ namespace DAL
             get { return _userImageManagementRepository ?? (_userImageManagementRepository = new GenericRepository<Models.UserImageManagement>(_context)); }
 
         }
+
+        public IGenericRepository<Models.UserGroupGroupManagement> UserGroupGroupManagementRepository
+        {
+            get { return _userGroupGroupManagementRepository ?? (_userGroupGroupManagementRepository = new GenericRepository<Models.UserGroupGroupManagement>(_context)); }
+
+        }
+
+        public IGenericRepository<Models.UserGroupImageManagement> UserGroupImageManagementRepository
+        {
+            get { return _userGroupImageManagementRepository ?? (_userGroupImageManagementRepository = new GenericRepository<Models.UserGroupImageManagement>(_context)); }
+
+        }
+
         public ComputerRepository ComputerRepository
         {
             get { return _computerRepository ?? (_computerRepository = new ComputerRepository(_context)); }
@@ -204,6 +239,12 @@ namespace DAL
         {
             get { return _userRightRepository ?? (_userRightRepository = new GenericRepository<Models.UserRight>(_context)); }
         }
+
+        public IGenericRepository<Models.UserGroupRight> UserGroupRightRepository
+        {
+            get { return _userGroupRightRepository ?? (_userGroupRightRepository = new GenericRepository<Models.UserGroupRight>(_context)); }
+        }
+
 
         public RoomRepository RoomRepository
         {

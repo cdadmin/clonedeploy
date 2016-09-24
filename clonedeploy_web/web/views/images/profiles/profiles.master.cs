@@ -18,6 +18,7 @@ public partial class views_masters_Profile : MasterBaseMaster
         {
             osx_profile.Visible = false;
             linux_profile.Visible = false;
+            winpe_profile.Visible = false;
             return;
         }
         if (Image == null) Response.Redirect("~/", true);
@@ -26,11 +27,19 @@ public partial class views_masters_Profile : MasterBaseMaster
         {
             osx_profile.Visible = true;
             linux_profile.Visible = false;
+            winpe_profile.Visible = false;
         }
-        else
+        else if(Image.Environment == "linux" || Image.Environment == "")
         {
             osx_profile.Visible = false;
             linux_profile.Visible = true;
+            winpe_profile.Visible = false;
+        }
+        else if (Image.Environment == "winpe")
+        {
+            osx_profile.Visible = false;
+            linux_profile.Visible = false;
+            winpe_profile.Visible = true;
         }
     } 
 }

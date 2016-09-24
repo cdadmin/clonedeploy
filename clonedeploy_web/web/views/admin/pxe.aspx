@@ -5,11 +5,15 @@
 </asp:Content>
 
 <asp:Content runat="server" ID="Help" ContentPlaceHolderID="Help">
-      <a href="<%= ResolveUrl("~/views/help/index.html")%>"  target="_blank">Help</a>
+     <li role="separator" class="divider"></li>
+      <li><a href="<%= ResolveUrl("~/views/help/admin-pxe.aspx")%>"  target="_blank">Help</a></li>
 </asp:Content>
 
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
-     <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update PXE Settings " OnClick="btnUpdateSettings_OnClick" />
+     <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update PXE Settings " OnClick="btnUpdateSettings_OnClick" CssClass="btn btn-default"/>
+     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+  </button>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent" Runat="Server">
@@ -44,6 +48,10 @@
         <asp:ListItem>ipxe_efi_snponly32</asp:ListItem>
         <asp:ListItem>ipxe_efi_snponly64</asp:ListItem>
         <asp:ListItem>grub</asp:ListItem>
+        <asp:ListItem>winpe_bios32</asp:ListItem>
+        <asp:ListItem>winpe_bios64</asp:ListItem>
+        <asp:ListItem>winpe_efi32</asp:ListItem>
+        <asp:ListItem>winpe_efi64</asp:ListItem>
     </asp:DropDownList>
 </div>
 <br class="clear"/>
@@ -55,6 +63,7 @@
     <asp:DropDownList ID="ddlProxyBios" runat="server" CssClass="ddlist">
         <asp:ListItem>pxelinux</asp:ListItem>
         <asp:ListItem>ipxe</asp:ListItem>
+        <asp:ListItem>winpe</asp:ListItem>
     </asp:DropDownList>
 </div>
 <br class="clear"/>
@@ -67,6 +76,7 @@
         <asp:ListItem>ipxe_efi</asp:ListItem>
         <asp:ListItem>ipxe_snp</asp:ListItem>
         <asp:ListItem>ipxe_snponly</asp:ListItem>
+        <asp:ListItem>winpe_efi</asp:ListItem>
     </asp:DropDownList>
 </div>
 <br class="clear"/>
@@ -80,6 +90,7 @@
         <asp:ListItem>ipxe_snp</asp:ListItem>
         <asp:ListItem>ipxe_snponly</asp:ListItem>
         <asp:ListItem>grub</asp:ListItem>
+        <asp:ListItem>winpe_efi</asp:ListItem>
     </asp:DropDownList>
 </div>
      <div id="confirmbox" class="confirm-box-outer">

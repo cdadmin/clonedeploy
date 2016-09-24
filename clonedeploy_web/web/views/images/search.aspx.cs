@@ -116,5 +116,27 @@ namespace views.images
         {
             PopulateGrid();
         }
+
+        protected void btnApproveImage_OnClick(object sender, EventArgs e)
+        {
+            var approveCount = 0;
+            foreach (GridViewRow row in gvImages.Rows)
+            {
+                var cb = (CheckBox)row.FindControl("chkSelector");
+                if (cb == null || !cb.Checked) continue;
+                var dataKey = gvImages.DataKeys[row.RowIndex];
+                if (dataKey == null) continue;
+                var image = BLL.Image.GetImage(Convert.ToInt32(dataKey.Value));
+                RequiresAuthorizationOrManagedImage(Authorizations.ApproveImage, image.Id);
+                image.Approved = 1;
+                if (BLL.Image.UpdateImage(image, image.Name).IsValid)
+                {
+                    approveCount++;
+                    BLL.Image.SendImageApprovedEmail(image.Id);
+                }
+            }
+            EndUserMessage = "Successfully Approved " + approveCount + " Images";
+            PopulateGrid();
+        }
     }
 }

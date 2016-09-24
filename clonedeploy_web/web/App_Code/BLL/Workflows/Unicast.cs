@@ -28,9 +28,9 @@ namespace BLL.Workflows
 
             if (_imageProfile.Image == null) return "The Image Does Not Exist";
 
-            if (_direction == "push")
+            if (_direction == "push" || _direction == "permanent_push")
             {
-                var validation = Image.CheckApprovalAndChecksum(_imageProfile.Image);
+                var validation = Image.CheckApprovalAndChecksum(_imageProfile.Image,_userId);
                 if (!validation.IsValid) return validation.Message;
             }
 
@@ -42,11 +42,12 @@ namespace BLL.Workflows
 
             _activeTask = new Models.ActiveImagingTask
             {
-                Type = "unicast",
                 ComputerId = _computer.Id,
                 Direction = _direction,
                 UserId = _userId
             };
+
+            _activeTask.Type = _direction == "permanent_push" ? "permanent_push" : "unicast";
 
             if (!ActiveImagingTask.AddActiveImagingTask(_activeTask))
                 return "Could Not Create The Database Entry For This Task";

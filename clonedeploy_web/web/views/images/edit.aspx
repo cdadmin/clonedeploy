@@ -10,7 +10,10 @@
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-       <asp:LinkButton ID="btnUpdateImage" runat="server" OnClick="btnUpdateImage_Click" Text="Update Image " />
+       <asp:LinkButton ID="btnUpdateImage" runat="server" OnClick="btnUpdateImage_Click" Text="Update Image" CssClass="btn btn-default"/>
+     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+  </button>
 </asp:Content>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
 
@@ -34,6 +37,7 @@
         <asp:DropDownList ID="ddlEnvironment" runat="server" CssClass="ddlist">
             <asp:ListItem>linux</asp:ListItem>
             <asp:ListItem>macOS</asp:ListItem>
+            <asp:ListItem>winpe</asp:ListItem>
         </asp:DropDownList>
     </div>
     <br class="clear"/>
@@ -108,7 +112,7 @@
     <br class="clear"/>
     <br />
     <div class="size-4 column">
-        Visible In On Demand:
+        Visible On Demand:
     </div>
     <div class="size-5 column">
         <asp:CheckBox ID="chkVisible" runat="server"/>

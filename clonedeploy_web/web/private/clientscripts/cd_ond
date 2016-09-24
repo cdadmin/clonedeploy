@@ -80,7 +80,7 @@ elif [ "$taskType" = "2" ]; then
   ond_args="${ond_args} task=pull"
 		
 elif [ "$taskType" = "3" ]; then
-	multicastList=`$curlAuth "${web}ListMulticasts" $curlEnd`
+	multicastList=`$curlAuth  --data "environment=linux" "${web}ListMulticasts" $curlEnd`
 	multicastId=$(dialog --backtitle "CloneDeploy" --title "Select A Multicast Session" --clear --menu "" 20 60 15 `parse_json "$multicastList" .Multicasts[]` --stdout)
 	if [ -z "$multicastId"]; then
 	  error "No Multicast Session Was Selected Or There Are No Active Sessions"

@@ -125,6 +125,20 @@ namespace Service.Client
                         return "true";
                 }
             }
+            else if (task == "clobber" && Settings.ClobberRequiresLogin == "No")
+            {
+                if (token == Settings.UniversalToken && !string.IsNullOrEmpty(Settings.UniversalToken))
+                    return "true";
+            }
+            else if (task == "clobber" && Settings.ClobberRequiresLogin == "Yes")
+            {
+                var user = BLL.User.GetUserByToken(token);
+                if (user != null)
+                {
+                    if (new BLL.Authorize(user, Authorizations.ImageDeployTask).IsAuthorized())
+                        return "true";
+                }
+            }
            
             return "false";
         }
@@ -154,6 +168,15 @@ namespace Service.Client
             {
                 checkIn.Result = "true";
                 checkIn.TaskArguments = computerTask.Arguments;
+                var image = BLL.Image.GetImage(computer.ImageId);
+                if (image != null)
+                {
+                    if (image.Environment == "")
+                        image.Environment = "linux";
+                    checkIn.ImageEnvironment = image.Environment;
+                }
+                
+                checkIn.TaskType = computerTask.Type;
                 return JsonConvert.SerializeObject(checkIn);
             }
             else
@@ -236,6 +259,20 @@ namespace Service.Client
                 BLL.ActiveImagingTask.SendTaskCompletedEmail(computerTask);
         }
 
+        public void PermanentTaskCheckOut(int computerId)
+        {
+            var computerTask = BLL.ActiveImagingTask.GetTask(computerId);
+            computerTask.Status = "0";
+            computerTask.Partition = "";
+            computerTask.Completed = "";
+            computerTask.Elapsed = "";
+            computerTask.Rate = "";
+            computerTask.Remaining = "";
+            BLL.ActiveImagingTask.UpdateActiveImagingTask(computerTask);
+           
+            BLL.ActiveImagingTask.SendTaskCompletedEmail(computerTask);
+        }
+
         public void UploadLog(int computerId, string logContents, string subType, string computerMac)
         {
             var computerLog = new Models.ComputerLog
@@ -259,12 +296,12 @@ namespace Service.Client
             if (thisComputerTask.Status == "2")
             {
                 //Check if the queue is open yet
-                var inUse = BLL.ActiveImagingTask.GetCurrentQueue();
+                var inUse = BLL.ActiveImagingTask.GetCurrentQueue(thisComputerTask.Type);
                 var totalCapacity = Convert.ToInt32(Settings.QueueSize);
                 if (inUse < totalCapacity)
                 {
                     //queue is open, is this computer next
-                    var firstTaskInQueue = BLL.ActiveImagingTask.GetNextComputerInQueue();
+                    var firstTaskInQueue = BLL.ActiveImagingTask.GetNextComputerInQueue(thisComputerTask.Type);
                     if (firstTaskInQueue.ComputerId == computerId)
                     {
                         ChangeStatusInProgress(computerId);
@@ -292,7 +329,7 @@ namespace Service.Client
             {
                 //New computer checking queue for the first time
 
-                var inUse = BLL.ActiveImagingTask.GetCurrentQueue();
+                var inUse = BLL.ActiveImagingTask.GetCurrentQueue(thisComputerTask.Type);
                 var totalCapacity = Convert.ToInt32(Settings.QueueSize);
                 if (inUse < totalCapacity)
                 {
@@ -306,7 +343,7 @@ namespace Service.Client
                 else
                 {
                     //place into queue
-                    var lastQueuedTask = BLL.ActiveImagingTask.GetLastQueuedTask();
+                    var lastQueuedTask = BLL.ActiveImagingTask.GetLastQueuedTask(thisComputerTask.Type);
                     if (lastQueuedTask == null)
                         thisComputerTask.QueuePosition = 1;
                     else
@@ -355,7 +392,7 @@ namespace Service.Client
             var newHdBytes = Convert.ToInt64(newHdSize);
             var minimumSize = partitionHelper.HardDrive(result.SchemaHdNumber,newHdBytes);
 
-            if (clientLbs != 0) //if zero should be from the osx imaging environment
+            if (clientLbs != 0) //if zero should be from the osx imaging environment or winpe
             {
                 if (clientLbs != imageSchema.HardDrives[result.SchemaHdNumber].Lbs)
                 {
@@ -455,6 +492,7 @@ namespace Service.Client
             var tag = BLL.SysprepTag.GetSysprepTag(tagId);
             tag.OpeningTag = Utility.EscapeCharacter(tag.OpeningTag, new[] {">", "<"});
             tag.ClosingTag = Utility.EscapeCharacter(tag.ClosingTag, new[] {">", "<", "/"});
+            tag.Contents = Utility.EscapeCharacter(tag.Contents, new[] {">", "<", "/", "\""});
             return JsonConvert.SerializeObject(tag);
         }
 
@@ -557,49 +595,102 @@ namespace Service.Client
 
         public string ImageList(string environment,int userId = 0)
         {
-            var imageList = new Services.Client.ImageList { Images = new List<string>() };
-
             var images = BLL.Image.GetOnDemandImageList(userId);
-            if(environment == "macOS")
-                images = images.Where(x => x.Environment == "macOS").ToList();
-            else if(environment == "linux")
-                images = images.Where(x => x.Environment != "macOS").ToList();
-            foreach (var image in images)
-                imageList.Images.Add(image.Id + " " + image.Name);
+            if (environment == "winpe")
+            {
+                images = images.Where(x => x.Environment == "winpe").ToList();
+                var imageList = new List<Services.Client.WinPEImageList>();
+                foreach (var image in images)
+                {
+                    var winpeImage = new Services.Client.WinPEImageList();
+                    winpeImage.ImageId = image.Id.ToString();
+                    winpeImage.ImageName = image.Name;
+                    imageList.Add(winpeImage);
+                }
+                return JsonConvert.SerializeObject(imageList);
+            }
+            else
+            {
+                var imageList = new Services.Client.ImageList {Images = new List<string>()};              
+                if (environment == "macOS")
+                    images = images.Where(x => x.Environment == "macOS").ToList();
+                else if (environment == "linux")
+                    images = images.Where(x => x.Environment != "macOS" && x.Environment != "winpe").ToList();
+                foreach (var image in images)
+                    imageList.Images.Add(image.Id + " " + image.Name);
 
-            if (imageList.Images.Count == 0)
-                imageList.Images.Add(-1 + " " + "No_Images_Found");
-            return JsonConvert.SerializeObject(imageList);
+                if (imageList.Images.Count == 0)
+                    imageList.Images.Add(-1 + " " + "No_Images_Found");
+                return JsonConvert.SerializeObject(imageList);
+            }
         }
 
         public string ImageProfileList(int imageId)
         {
-            var imageProfileList = new Services.Client.ImageProfileList { ImageProfiles = new List<string>() };
-
-            int profileCounter = 0;
-            foreach (var imageProfile in BLL.ImageProfile.SearchProfiles(Convert.ToInt32(imageId)))
+            var selectedImage = BLL.Image.GetImage(imageId);
+            if (selectedImage.Environment == "winpe")
             {
-                profileCounter++;
-                imageProfileList.ImageProfiles.Add(imageProfile.Id + " " + imageProfile.Name);
-                if (profileCounter == 1)
-                    imageProfileList.FirstProfileId = imageProfile.Id.ToString();
+                var imageProfileList = new Services.Client.WinPEProfileList { ImageProfiles = new List<WinPEProfile>() };
+                int profileCounter = 0;
+                foreach (var imageProfile in BLL.ImageProfile.SearchProfiles(Convert.ToInt32(imageId)).OrderBy(x => x.Name))
+                {
+                    profileCounter++;
+                    var winpeProfile = new Services.Client.WinPEProfile();
+                    winpeProfile.ProfileId = imageProfile.Id.ToString();
+                    winpeProfile.ProfileName = imageProfile.Name;
+                    imageProfileList.ImageProfiles.Add(winpeProfile);
+                    
+                    if (profileCounter == 1)
+                        imageProfileList.FirstProfileId = imageProfile.Id.ToString();
+                }
+                imageProfileList.Count = profileCounter.ToString();
+                return JsonConvert.SerializeObject(imageProfileList);
+            
             }
+            else
+            {
+                var imageProfileList = new Services.Client.ImageProfileList {ImageProfiles = new List<string>()};
 
-            imageProfileList.Count = profileCounter.ToString();
+                int profileCounter = 0;
+                foreach (var imageProfile in BLL.ImageProfile.SearchProfiles(Convert.ToInt32(imageId)))
+                {
+                    profileCounter++;
+                    imageProfileList.ImageProfiles.Add(imageProfile.Id + " " + imageProfile.Name);
+                    if (profileCounter == 1)
+                        imageProfileList.FirstProfileId = imageProfile.Id.ToString();
+                }
 
-            return JsonConvert.SerializeObject(imageProfileList);
+                imageProfileList.Count = profileCounter.ToString();
+                return JsonConvert.SerializeObject(imageProfileList);
+            }
+            
         }
 
-        public string MulicastSessionList()
+        public string MulicastSessionList(string environment)
         {
-            var multicastList = new Services.Client.MulticastList() { Multicasts = new List<string>() };
-
-            foreach (var multicast in BLL.ActiveMulticastSession.GetOnDemandList())
+            if (environment == "winpe")
             {
-                multicastList.Multicasts.Add(multicast.Port + " " + multicast.Name);
+                var multicastList = new List<Services.Client.WinPEMulticastList>();
+                foreach (var multicast in BLL.ActiveMulticastSession.GetOnDemandList())
+                {
+                    var multicastSession = new Services.Client.WinPEMulticastList();
+                    multicastSession.Port = multicast.Port.ToString();
+                    multicastSession.Name = multicast.Name;
+                    multicastList.Add(multicastSession);
+                }
+                return JsonConvert.SerializeObject(multicastList);
             }
+            else
+            {
+                var multicastList = new Services.Client.MulticastList() {Multicasts = new List<string>()};
 
-            return JsonConvert.SerializeObject(multicastList);
+                foreach (var multicast in BLL.ActiveMulticastSession.GetOnDemandList())
+                {
+                    multicastList.Multicasts.Add(multicast.Port + " " + multicast.Name);
+                }
+
+                return JsonConvert.SerializeObject(multicastList);
+            }
         }
 
         public string AddImage(string imageName)
@@ -609,6 +700,25 @@ namespace Service.Client
                 Name = imageName,
                 Environment = "linux",
                 Type = "Block",
+                Enabled = 1,
+                IsVisible = 1,
+                Os = "",
+                Description = ""
+            };
+            var result = BLL.Image.AddImage(image);
+            if (result.IsValid)
+                result.Message = image.Id.ToString();
+
+            return JsonConvert.SerializeObject(result);
+        }
+
+        public string AddImageWinPEEnv(string imageName)
+        {
+            var image = new Models.Image()
+            {
+                Name = imageName,
+                Environment = "winpe",
+                Type = "File",
                 Enabled = 1,
                 IsVisible = 1,
                 Os = "",
@@ -640,6 +750,70 @@ namespace Service.Client
                 result.Message = image.Id.ToString();
 
             return JsonConvert.SerializeObject(result);
+        }
+
+        public string GetProxyReservation(string mac)
+        {
+            var bootClientReservation = new Services.Client.ProxyReservation();
+
+            var computer = BLL.Computer.GetComputerFromMac(mac);
+            if (computer == null)
+            {
+                bootClientReservation.BootFile = "NotFound";
+                return JsonConvert.SerializeObject(bootClientReservation);
+            }
+            if (computer.ProxyReservation == 0)
+            {
+                bootClientReservation.BootFile = "NotEnabled";
+                return JsonConvert.SerializeObject(bootClientReservation);
+            }
+
+            var computerReservation = BLL.ComputerProxyReservation.GetComputerProxyReservation(computer.Id);
+            
+
+            bootClientReservation.NextServer = Helpers.ParameterReplace.Between(computerReservation.NextServer);
+            switch (computerReservation.BootFile)
+            {
+                case "bios_pxelinux":
+                    bootClientReservation.BootFile = @"proxy/bios/pxelinux.0";
+                    break;
+                case "bios_ipxe":
+                    bootClientReservation.BootFile = @"proxy/bios/undionly.kpxe";
+                    break;
+                case "bios_x86_winpe":
+                    bootClientReservation.BootFile = @"proxy/bios/pxeboot.n12";
+                    bootClientReservation.BcdFile = @"/boot/BCDx86";
+                    break;
+                case "bios_x64_winpe":
+                    bootClientReservation.BootFile = @"proxy/bios/pxeboot.n12";
+                    bootClientReservation.BcdFile = @"/boot/BCDx64";
+                    break;
+                case "efi_x86_syslinux":
+                    bootClientReservation.BootFile = @"proxy/efi32/syslinux.efi";
+                    break;
+                case "efi_x86_ipxe":
+                    bootClientReservation.BootFile = @"proxy/efi32/ipxe.efi";
+                    break;
+                case "efi_x86_winpe":
+                    bootClientReservation.BootFile = @"proxy/efi32/bootmgfw.efi";
+                    bootClientReservation.BcdFile = @"/boot/BCDx86";
+                    break;
+                case "efi_x64_syslinux":
+                    bootClientReservation.BootFile = @"proxy/efi64/syslinux.efi";
+                    break;
+                case "efi_x64_ipxe":
+                    bootClientReservation.BootFile = @"proxy/efi64/ipxe.efi";
+                    break;
+                case "efi_x64_winpe":
+                    bootClientReservation.BootFile = @"proxy/efi64/bootmgfw.efi";
+                    bootClientReservation.BcdFile = @"/boot/BCDx64";
+                    break;
+                case "efi_x64_grub":
+                    bootClientReservation.BootFile = @"proxy/efi64/bootx64.efi";
+                    break;
+            }
+
+            return JsonConvert.SerializeObject(bootClientReservation);
         }
 
        

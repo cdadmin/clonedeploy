@@ -4,8 +4,16 @@
     <li>Sites</li>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="Help" Runat="Server">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
+     <li role="separator" class="divider"></li>
+    <li><a href="<%= ResolveUrl("~/views/help/global-sites.aspx") %>"   target="_blank">Help</a></li>
 </asp:Content>
+
+<asp:Content ID="Content4" ContentPlaceHolderID="SubPageActionsRight" Runat="Server">
+     <button type="button" class="btn btn-default dropdown-toggle width_140" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+  </button>
+</asp:Content>
+
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
@@ -40,33 +48,33 @@
                     <asp:Label ID="lblDp" runat="server" Text='<%# Eval("DistributionPoint.DisplayName") %>'></asp:Label>
                 </ItemTemplate>
                 <EditItemTemplate>
-                    <asp:DropDownList ID="ddlDp" runat="server"></asp:DropDownList>
+                    <asp:DropDownList ID="ddlDp" runat="server" CssClass="ddlist"></asp:DropDownList>
                 </EditItemTemplate>
                 <FooterTemplate>
-                    <asp:DropDownList ID="ddlDpAdd" runat="server"></asp:DropDownList>
+                    <asp:DropDownList ID="ddlDpAdd" runat="server" CssClass="ddlist"></asp:DropDownList>
                 </FooterTemplate>
             </asp:TemplateField>
 
             <asp:TemplateField ShowHeader="False">
                 <EditItemTemplate>
                     <asp:LinkButton ID="LinkButton1" runat="server" CausesValidation="True"
-                                    CommandName="Update" Text="Update">
+                                    CommandName="Update" Text="Update" CssClass="btn btn-default">
                     </asp:LinkButton>
                     &nbsp;<asp:LinkButton ID="LinkButton2" runat="server" CausesValidation="False"
-                                          CommandName="Cancel" Text="Cancel">
+                                          CommandName="Cancel" Text="Cancel" CssClass="btn btn-default">
                     </asp:LinkButton>
                 </EditItemTemplate>
                 <ItemTemplate>
                     <asp:LinkButton ID="LinkButton1" runat="server" CausesValidation="False"
-                                    CommandName="Edit" Text="Edit">
+                                    CommandName="Edit" Text="Edit" CssClass="btn btn-default">
                     </asp:LinkButton>
                     <asp:LinkButton ID="LinkButton3" runat="server" CausesValidation="False"
-                                    CommandName="Delete" Text="Delete">
+                                    CommandName="Delete" Text="Delete" CssClass="btn btn-default">
                     </asp:LinkButton>
                 </ItemTemplate>
                 <FooterTemplate>
 
-                    <asp:LinkButton ID="btnAdd1" runat="server" Text="Add" OnClick="Insert" CssClass="submits"/>
+                    <asp:LinkButton ID="btnAdd1" runat="server" Text="Add" OnClick="Insert" CssClass="btn btn-default"/>
                 </FooterTemplate>
             </asp:TemplateField>
             <asp:TemplateField></asp:TemplateField>

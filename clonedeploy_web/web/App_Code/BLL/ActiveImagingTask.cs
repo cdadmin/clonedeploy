@@ -143,13 +143,13 @@ namespace BLL
             }
         }
 
-        public static string ActiveUnicastCount(int userId)
+        public static string ActiveUnicastCount(int userId, string taskType)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 return BLL.User.IsAdmin(userId)
-                    ? uow.ActiveImagingTaskRepository.Count(t => t.Type == "unicast")
-                    : uow.ActiveImagingTaskRepository.Count(t => t.Type == "unicast" && t.UserId == userId);
+                    ? uow.ActiveImagingTaskRepository.Count(t => t.Type == taskType)
+                    : uow.ActiveImagingTaskRepository.Count(t => t.Type == taskType && t.UserId == userId);
             }
         }
 
@@ -171,7 +171,7 @@ namespace BLL
             }
         }
 
-        public static List<Models.ActiveImagingTask> ReadUnicasts(int userId)
+        public static List<Models.ActiveImagingTask> ReadUnicasts(int userId, string taskType)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -179,12 +179,12 @@ namespace BLL
                 List<Models.ActiveImagingTask> activeImagingTasks;
                 if (BLL.User.IsAdmin(userId))
                 {
-                    activeImagingTasks = uow.ActiveImagingTaskRepository.Get(t => t.Type == "unicast",
+                    activeImagingTasks = uow.ActiveImagingTaskRepository.Get(t => t.Type == taskType,
                         orderBy: q => q.OrderBy(t => t.ComputerId));
                 }
                 else
                 {
-                    activeImagingTasks = uow.ActiveImagingTaskRepository.Get(t => t.Type == "unicast" && t.UserId == userId,
+                    activeImagingTasks = uow.ActiveImagingTaskRepository.Get(t => t.Type == taskType && t.UserId == userId,
                         orderBy: q => q.OrderBy(t => t.ComputerId));
                 }
                 foreach (var task in activeImagingTasks)
@@ -219,22 +219,22 @@ namespace BLL
             }
         }
 
-        public static int GetCurrentQueue()
+        public static int GetCurrentQueue(string qType)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 return
-                    Convert.ToInt32(uow.ActiveImagingTaskRepository.Count(x => x.Status == "3" && x.Type == "unicast"));
+                    Convert.ToInt32(uow.ActiveImagingTaskRepository.Count(x => x.Status == "3" && x.Type == qType));
 
             }
         }
 
-        public static Models.ActiveImagingTask GetLastQueuedTask()
+        public static Models.ActiveImagingTask GetLastQueuedTask(string qType)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 return
-                    uow.ActiveImagingTaskRepository.Get(x => x.Status == "2" && x.Type == "unicast",
+                    uow.ActiveImagingTaskRepository.Get(x => x.Status == "2" && x.Type == qType,
                         orderBy: q => q.OrderByDescending(t => t.QueuePosition)).FirstOrDefault();
             }
         }
@@ -250,12 +250,12 @@ namespace BLL
             }
         }
 
-        public static Models.ActiveImagingTask GetNextComputerInQueue()
+        public static Models.ActiveImagingTask GetNextComputerInQueue(string qType)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 return
-                    uow.ActiveImagingTaskRepository.Get(x => x.Status == "2" && x.Type == "unicast",
+                    uow.ActiveImagingTaskRepository.Get(x => x.Status == "2" && x.Type == qType,
                         orderBy: q => q.OrderBy(t => t.QueuePosition)).FirstOrDefault();
             }
         }

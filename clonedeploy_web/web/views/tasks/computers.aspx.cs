@@ -17,8 +17,30 @@ namespace views.tasks
                 PopulateGrid();
         }
 
+        protected void btnPermanentDeploy_Click(object sender, EventArgs e)
+        {
+            SingleOkButton.Visible = true;
+            var control = sender as Control;
+            if (control != null)
+            {
+                var gvRow = (GridViewRow)control.Parent.Parent;
+                var dataKey = gvComputers.DataKeys[gvRow.RowIndex];
+                if (dataKey != null)
+                {
+                    var computer = BLL.Computer.GetComputer(Convert.ToInt32(dataKey.Value));
+                    Session["computerID"] = computer.Id;
+                    Session["direction"] = "permanent_push";
+                    lblTitle.Text = "Permanent Deploy The Selected Computer?";
+                    gvConfirm.DataSource = new List<Models.Computer> { computer };
+                }
+            }
+            gvConfirm.DataBind();
+           DisplayConfirm();
+        }
+
         protected void btnDeploy_Click(object sender, EventArgs e)
         {
+            SingleOkButton.Visible = true;
             var control = sender as Control;
             if (control != null)
             {
@@ -34,13 +56,12 @@ namespace views.tasks
                 }
             }
             gvConfirm.DataBind();
-            ClientScript.RegisterStartupScript(GetType(), "modalscript",
-                "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
-                true);
+            DisplayConfirm();
         }
 
         protected void btnUpload_Click(object sender, EventArgs e)
         {
+            SingleOkButton.Visible = true;
             var control = sender as Control;
             if (control != null)
             {
@@ -56,11 +77,15 @@ namespace views.tasks
                 }
             }
             gvConfirm.DataBind();
-            ClientScript.RegisterStartupScript(GetType(), "modalscript",
-                "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });;",
-                true);
+            DisplayConfirm();
         }
 
+        private void DisplayConfirm()
+        {
+            ClientScript.RegisterStartupScript(GetType(), "modalscript",
+              "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });;",
+              true);
+        }
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
@@ -73,18 +98,85 @@ namespace views.tasks
             gvComputers.DataBind();
         }
 
-        protected void OkButton_Click(object sender, EventArgs e)
+        protected void btnListDeploy_Click(object sender, EventArgs e)
+        {
+            MultiOkButton.Visible = true;
+            Session["action"] = "push";
+            lblTitle.Text = "Deploy The Selected Computers?";
+            DisplayConfirm();
+        }
+
+        protected void btnListUpload_Click(object sender, EventArgs e)
+        {
+            MultiOkButton.Visible = true;
+            Session["action"] = "pull";
+            lblTitle.Text = "Upload The Selected Computers?";
+            DisplayConfirm();
+        }
+
+        protected void btnListPermanentDeploy_Click(object sender, EventArgs e)
+        {
+            MultiOkButton.Visible = true;
+            Session["action"] = "permanent_push";
+            lblTitle.Text = "Permanent Deploy The Selected Computers?";
+            DisplayConfirm();
+        }
+
+        protected void MultiOkButton_Click(object sender, EventArgs e)
+        {
+            var action = (string)(Session["action"]);
+            Session.Remove("action");
+
+            var selectedComputers = new List<int>();
+            
+            foreach (GridViewRow row in gvComputers.Rows)
+            {
+                var cb = (CheckBox)row.FindControl("chkSelector");
+                if (cb == null || !cb.Checked) continue;
+                var dataKey = gvComputers.DataKeys[row.RowIndex];
+                if (dataKey == null) continue;
+                selectedComputers.Add(Convert.ToInt32(dataKey.Value));
+            }
+           
+            var sucessCount = 0;
+            switch (action)
+            {
+                case "push": case "permanent_push":
+                    {
+                        foreach (var computerId in selectedComputers)
+                        {
+                            var computer = BLL.Computer.GetComputer(computerId);
+                            RequiresAuthorizationOrManagedComputer(Authorizations.ImageDeployTask, computer.Id);
+                            if (new BLL.Workflows.Unicast(computer, action, CloneDeployCurrentUser.Id)
+                                .Start().Contains("Successfully"))
+                                sucessCount++;
+                            EndUserMessage = "Successfully Started " + sucessCount + " Tasks";
+                        }
+                    }
+                    break;
+                case "pull":
+                    {
+                        foreach (var computerId in selectedComputers)
+                        {
+                            var computer = BLL.Computer.GetComputer(computerId);
+                            RequiresAuthorizationOrManagedComputer(Authorizations.ImageUploadTask, computer.Id);
+                            if (new BLL.Workflows.Unicast(computer, action, CloneDeployCurrentUser.Id)
+                                .Start().Contains("Successfully"))
+                                sucessCount++;
+                            EndUserMessage = "Successfully Started " + sucessCount + " Tasks";
+                        } 
+                    }
+                    break;
+            }
+        }
+        protected void SingleOkButton_Click(object sender, EventArgs e)
         {
             var computer = BLL.Computer.GetComputer(Convert.ToInt32(Session["computerID"]));
-
-
             var direction = (string) (Session["direction"]);
 
-            if (direction == "push")
+            if (direction == "push" || direction == "permanent_push")
             {
-                RequiresAuthorizationOrManagedComputer(Authorizations.ImageDeployTask, computer.Id);
-                var image = BLL.Image.GetImage(computer.ImageId);
-                Session["imageID"] = image.Id;        
+                RequiresAuthorizationOrManagedComputer(Authorizations.ImageDeployTask, computer.Id);    
                 EndUserMessage = new BLL.Workflows.Unicast(computer,direction,CloneDeployCurrentUser.Id).Start();               
              
             }
@@ -95,13 +187,6 @@ namespace views.tasks
             }
             Session.Remove("computerID");
             Session.Remove("direction");
-        }
-
-        protected void OkButtonChecksum_Click(object sender, EventArgs e)
-        {
-            var imageId = (string) (Session["imageID"]);
-            Response.Redirect("~/views/images/specs.aspx?imageid=" + imageId, false);
-            Session.Remove("imageID");
         }
 
         protected void PopulateGrid()
@@ -123,6 +208,11 @@ namespace views.tasks
         protected void ddlLimit_OnSelectedIndexChanged(object sender, EventArgs e)
         {
            PopulateGrid();
+        }
+
+        protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
+        {
+            ChkAll(gvComputers);
         }
     }
 }

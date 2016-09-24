@@ -19,7 +19,7 @@ namespace views.tasks
         {
             //PopulateImagesDdl(ddlComputerImage);
 
-            ddlComputerImage.DataSource = BLL.Image.SearchImagesForUser(CloneDeployCurrentUser.Id).Where(x => x.Environment == "linux").Select(i => new { i.Id, i.Name }).OrderBy(x => x.Name).ToList();
+            ddlComputerImage.DataSource = BLL.Image.SearchImagesForUser(CloneDeployCurrentUser.Id).Where(x => x.Environment == "linux" || x.Environment == "winpe" || string.IsNullOrEmpty(x.Environment)).Select(i => new { i.Id, i.Name }).OrderBy(x => x.Name).ToList();
             ddlComputerImage.DataValueField = "Id";
             ddlComputerImage.DataTextField = "Name";
             ddlComputerImage.DataBind();

@@ -11,7 +11,10 @@
     <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
-    <asp:LinkButton ID="btnUpdateDeploy" runat="server" OnClick="btnUpdateDeploy_OnClick" Text="Update Deploy Options "  OnClientClick="update_click()"/>
+    <asp:LinkButton ID="btnUpdateDeploy" runat="server" OnClick="btnUpdateDeploy_OnClick" Text="Update Deploy Options "  OnClientClick="update_click()" CssClass="btn btn-default"/>
+     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+  </button>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
@@ -96,18 +99,49 @@
 </div>
 <br class="clear"/>
         </div>
+
+<div id="DivPartDdlLin" runat="server" Visible="False">
 <div class="size-9 column">
     Create Partitions Method
 </div>
 <div class="size-5 column">
-    <asp:dropdownlist ID="ddlPartitionMethod" runat="server" CssClass="ddlist" OnSelectedIndexChanged="ddlPartitionMethod_OnSelectedIndexChanged" AutoPostBack="True">
+    <asp:dropdownlist ID="ddlPartitionMethodLin" runat="server" CssClass="ddlist" OnSelectedIndexChanged="ddlPartitionMethod_OnSelectedIndexChanged" AutoPostBack="True">
         <asp:ListItem>Use Original MBR / GPT</asp:ListItem>
         <asp:ListItem>Dynamic</asp:ListItem>
         <asp:ListItem>Custom Script</asp:ListItem>
     </asp:dropdownlist>
 </div>
 <br class="clear"/>
+    </div>
 
+    <div id="DivPartDdlWin" runat="server" Visible="False">
+<div class="size-9 column">
+    Create Partitions Method
+</div>
+<div class="size-5 column">
+    <asp:dropdownlist ID="ddlPartitionMethodWin" runat="server" CssClass="ddlist" OnSelectedIndexChanged="ddlPartitionMethod_OnSelectedIndexChanged" AutoPostBack="True">
+        <asp:ListItem>Standard</asp:ListItem>
+        <asp:ListItem>Dynamic</asp:ListItem>
+        <asp:ListItem>Custom Script</asp:ListItem>
+    </asp:dropdownlist>
+</div>
+<br class="clear"/>
+    </div>
+    
+    <div id="DivPartDdlMac" runat="server" Visible="False">
+<div class="size-9 column">
+    Create Partitions Method
+</div>
+<div class="size-5 column">
+    <asp:dropdownlist ID="ddlPartitionMethodMac" runat="server" CssClass="ddlist" OnSelectedIndexChanged="ddlPartitionMethod_OnSelectedIndexChanged" AutoPostBack="True">
+        <asp:ListItem>Standard</asp:ListItem>
+        <asp:ListItem>Standard Core Storage</asp:ListItem>
+        <asp:ListItem>Dynamic</asp:ListItem>
+        <asp:ListItem>Custom Script</asp:ListItem>
+    </asp:dropdownlist>
+</div>
+<br class="clear"/>
+    </div>    
 
 <div id="ForceDiv" runat="server" Visible="False">
 <div class="size-9 column">

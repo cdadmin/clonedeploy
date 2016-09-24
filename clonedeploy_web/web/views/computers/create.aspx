@@ -4,11 +4,15 @@
     <li>New</li>
     </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-<a href="<%= ResolveUrl("~/views/help/index.html")%>" class="" target="_blank">Help</a>
+    <li role="separator" class="divider"></li>
+    <li><a href="<%= ResolveUrl("~/views/help/computers-newedit.aspx")%>" class="" target="_blank">Help</a></li>
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-     <asp:LinkButton ID="buttonAddComputer" runat="server" OnClick="ButtonAddComputer_Click" Text="Add Computer " />
+     <asp:LinkButton ID="buttonAddComputer" runat="server" OnClick="ButtonAddComputer_Click" Text="Add Computer" CssClass="btn btn-default" />
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+  </button>
 
 </asp:Content>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">

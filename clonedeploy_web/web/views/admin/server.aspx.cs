@@ -84,11 +84,7 @@ public partial class views_admin_server : Admin
 
     protected bool ValidateSettings()
     {
-        if (ActiveImagingTask.AllActiveCountAdmin() > 0)
-        {
-            EndUserMessage = "Settings Cannot Be Changed While Tasks Are Active";
-            return false;
-        }
+        
 
         if (!chkOverride.Checked)
         {

@@ -1,0 +1,99 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/views/help/help.master" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="Navigation" Runat="Server">
+   <ul class="nav navbar-nav">
+   <li id="computers"><h4>Computers</h4>
+       <ul class="nav navbar-nav">
+           <li id="computers-newedit"><a href="<%= ResolveUrl("~/views/help/computers-newedit.aspx") %>">New / Edit</a></li>
+           <li id="computers-search"><a href="<%= ResolveUrl("~/views/help/computers-search.aspx") %>">Search</a></li>
+          <li id="computers-import"><a href="<%= ResolveUrl("~/views/help/computers-import.aspx") %>">Import</a></li>
+           <li id="computers-bootmenu"><a href="<%= ResolveUrl("~/views/help/computers-bootmenu.aspx") %>">Boot Menu</a></li>
+            <li id="computers-logs"><a href="<%= ResolveUrl("~/views/help/computers-logs.aspx") %>">Logs</a></li> 
+           <li id="computers-munki"><a href="<%= ResolveUrl("~/views/help/computers-munki.aspx") %>">Munki Templates</a></li>
+           <li id="computers-group"><a href="<%= ResolveUrl("~/views/help/computers-group.aspx") %>">Group Membership</a></li>
+           <li id="computers-proxy"><a href="<%= ResolveUrl("~/views/help/computers-proxy.aspx") %>">Proxy DHCP Reservation</a></li>
+       </ul>
+       </li>
+   <li id="groups"><h4>Groups</h4>
+       <ul class="nav navbar-nav">
+           <li id="groups-newedit"><a href="<%= ResolveUrl("~/views/help/groups-newedit.aspx") %>">New / Edit</a></li>
+           <li id="groups-search"><a href="<%= ResolveUrl("~/views/help/groups-search.aspx") %>">Search</a></li>
+          <li id="groups-import"><a href="<%= ResolveUrl("~/views/help/groups-import.aspx") %>">Import</a></li>
+           <li id="groups-addmembers"><a href="<%= ResolveUrl("~/views/help/groups-addmembers.aspx") %>">Add Members</a></li>    
+           <li id="groups-removemembers"><a href="<%= ResolveUrl("~/views/help/groups-removemembers.aspx") %>">Remove Members</a></li>
+           <li id="groups-smart"><a href="<%= ResolveUrl("~/views/help/groups-smart.aspx") %>">Smart Criteria</a></li>
+           <li id="groups-current"><a href="<%= ResolveUrl("~/views/help/groups-currentmembers.aspx") %>">Current Members</a></li>
+           <li id="groups-multicast"><a href="<%= ResolveUrl("~/views/help/groups-multicast.aspx") %>">Multicast Options</a></li>
+           <li id="groups-properties"><a href="<%= ResolveUrl("~/views/help/groups-properties.aspx") %>">Computer Properties</a></li>
+           <li id="groups-bootmenu"><a href="<%= ResolveUrl("~/views/help/groups-bootmenu.aspx") %>">Boot Menu</a></li>
+           <li id="groups-munki"><a href="<%= ResolveUrl("~/views/help/groups-munki.aspx") %>">Munki Templates</a></li>
+       </ul>
+       </li>
+   <li id="images"><h4>Images</h4>
+        <ul class="nav navbar-nav">
+           <li id="images-newedit"><a href="<%= ResolveUrl("~/views/help/images-newedit.aspx") %>">New / Edit</a></li>
+           <li id="images-search"><a href="<%= ResolveUrl("~/views/help/images-search.aspx") %>">Search</a></li>
+          <li id="images-import"><a href="<%= ResolveUrl("~/views/help/images-import.aspx") %>">Import</a></li>
+            </ul>
+   </li>
+   <li id="tasks"><h4>Tasks</h4>
+       <ul class="nav navbar-nav">
+           <li id="tasks-activeunicast"><a href="<%= ResolveUrl("~/views/help/tasks-activeunicast.aspx") %>">Active Unicasts</a></li>
+            <li id="tasks-activemulticast"><a href="<%= ResolveUrl("~/views/help/tasks-activemulticast.aspx") %>">Active Multicasts</a></li>
+            <li id="tasks-all"><a href="<%= ResolveUrl("~/views/help/tasks-all.aspx") %>">All Active Tasks</a></li>
+            <li id="tasks-activepermanent"><a href="<%= ResolveUrl("~/views/help/tasks-activepermanent.aspx") %>">Active Permanent Tasks</a></li>
+           <li id="tasks-startcomputer"><a href="<%= ResolveUrl("~/views/help/tasks-startcomputer.aspx") %>">Start Computer Task</a></li>
+            <li id="tasks-startgroup"><a href="<%= ResolveUrl("~/views/help/tasks-startgroup.aspx") %>">Start Group Task</a></li>
+            <li id="tasks-startond"><a href="<%= ResolveUrl("~/views/help/tasks-startond.aspx") %>">Start On Demand Multicast</a></li>
+       </ul>
+   </li>
+
+   <li id="users"><h4>Users</h4>
+       <ul class="nav navbar-nav">
+           <li id="users-search"><a href="<%= ResolveUrl("~/views/help/users-search.aspx") %>">Search</a></li>
+           <li id="users-newedit"><a href="<%= ResolveUrl("~/views/help/users-newedit.aspx") %>">New / Edit</a></li>
+           <li id="users-acl"><a href="<%= ResolveUrl("~/views/help/users-acl.aspx") %>">ACLs</a></li>
+           <li id="users-groupmgmt"><a href="<%= ResolveUrl("~/views/help/users-groupmgmt.aspx") %>">Group Based Computer Management</a></li>
+           <li id="users-imagemgmt"><a href="<%= ResolveUrl("~/views/help/users-imagemgmt.aspx") %>">Image Management</a></li>
+            <li id="users-searchgroups"><a href="<%= ResolveUrl("~/views/help/users-searchgroups.aspx") %>">Search Groups</a></li>
+           <li id="users-neweditgroups"><a href="<%= ResolveUrl("~/views/help/users-neweditgroups.aspx") %>">New / Edit Groups</a></li>
+           <li id="users-groupaddmembers"><a href="<%= ResolveUrl("~/views/help/users-groupaddmembers.aspx") %>">Add Group Members</a></li>
+             <li id="users-groupremovemembers"><a href="<%= ResolveUrl("~/views/help/users-groupremovemembers.aspx") %>">Remove Group Members</a></li>
+            <li id="users-resetpass"><a href="<%= ResolveUrl("~/views/help/users-resetpass.aspx") %>">Reset Password</a></li>
+           </ul>
+       </li>
+   <li id="global"><h4>Global Properties</h4>
+         <ul class="nav navbar-nav">
+              <li id="global-scripts"><a href="<%= ResolveUrl("~/views/help/global-scripts.aspx") %>">Imaging Scripts</a></li>
+             <li id="global-sysprep"><a href="<%= ResolveUrl("~/views/help/global-sysprep.aspx") %>">Sysprep Tags</a></li>
+             <li id="global-files"><a href="<%= ResolveUrl("~/views/help/global-files.aspx") %>">Files And Folders</a></li>
+             <li id="global-bootmenutemplates"><a href="<%= ResolveUrl("~/views/help/global-bootmenutemplates.aspx") %>">Boot Menu Templates</a></li>
+             <li id="global-sites"><a href="<%= ResolveUrl("~/views/help/global-sites.aspx") %>">Sites</a></li>
+             <li id="global-buildings"><a href="<%= ResolveUrl("~/views/help/global-buildings.aspx") %>">Buildings</a></li>
+             <li id="global-rooms"><a href="<%= ResolveUrl("~/views/help/global-rooms.aspx") %>">Rooms</a></li>
+             <li id="global-munki"><a href="<%= ResolveUrl("~/views/help/global-munki.aspx") %>">Munki</a></li>
+             <li id="global-profileupdater"><a href="<%= ResolveUrl("~/views/help/global-profileupdater.aspx") %>">Image Profile Updater</a></li>
+             </ul>
+       </li>
+   <li id="admin"><h4>Admin</h4>
+       <ul class="nav navbar-nav">
+           <li id="admin-server"><a href="<%= ResolveUrl("~/views/help/admin-server.aspx") %>">Server</a></li>
+           <li id="admin-dp"><a href="<%= ResolveUrl("~/views/help/admin-dp.aspx") %>">Distribution Points</a></li>
+           <li id="admin-client"><a href="<%= ResolveUrl("~/views/help/admin-client.aspx") %>">Client</a></li>
+           <li id="admin-pxe"><a href="<%= ResolveUrl("~/views/help/admin-pxe.aspx") %>">PXE</a></li>
+           <li id="admin-multicast"><a href="<%= ResolveUrl("~/views/help/admin-multicast.aspx") %>">Multicast</a></li>
+           <li id="admin-security"><a href="<%= ResolveUrl("~/views/help/admin-security.aspx") %>">Security</a></li>
+           <li id="admin-email"><a href="<%= ResolveUrl("~/views/help/admin-email.aspx") %>">E-mail</a></li>
+           <li id="admin-bootmenu"><a href="<%= ResolveUrl("~/views/help/admin-bootmenu.aspx") %>">Boot Menu</a></li>
+           <li id="admin-munki"><a href="<%= ResolveUrl("~/views/help/admin-munki.aspx") %>">Munki</a></li>
+           <li id="admin-logs"><a href="<%= ResolveUrl("~/views/help/admin-logs.aspx") %>">Logs</a></li>
+           <li id="admin-export"><a href="<%= ResolveUrl("~/views/help/admin-export.aspx") %>">Export</a></li>
+           <li id="admin-clobber"><a href="<%= ResolveUrl("~/views/help/admin-clobber.aspx") %>">Clobber Mode</a></li>
+       </ul>
+   </li>
+  </ul>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="Content" Runat="Server">
+    <asp:ContentPlaceHolder ID="subcontent" runat="server"></asp:ContentPlaceHolder>
+</asp:Content>
+

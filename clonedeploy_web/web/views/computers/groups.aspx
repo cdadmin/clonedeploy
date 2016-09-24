@@ -6,10 +6,13 @@
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>" target="_blank">Help</a>
+  <li role="separator" class="divider"></li>
+    <li><a href="<%= ResolveUrl("~/views/help/computers-group.aspx")%>" class="" target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-    
+     <button type="button" class="btn btn-default dropdown-toggle width_140" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+    <span class="caret"></span>
+  </button>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="SubContent" Runat="Server">
      <script type="text/javascript">

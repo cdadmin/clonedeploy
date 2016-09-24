@@ -30,7 +30,8 @@ namespace views.computers
                 CustomAttribute2 = txtCustom2.Text,
                 CustomAttribute3 = txtCustom3.Text,
                 CustomAttribute4 = txtCustom4.Text,
-                CustomAttribute5 = txtCustom5.Text
+                CustomAttribute5 = txtCustom5.Text,
+                ProxyReservation = Computer.ProxyReservation
             };
 
             var result = BLL.Computer.UpdateComputer(computer);
@@ -63,6 +64,15 @@ namespace views.computers
         {           
             if (ddlComputerImage.Text == "Select Image") return;
             PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlComputerImage.SelectedValue));
+            try
+            {
+                ddlImageProfile.SelectedIndex = 1;
+            }
+            catch 
+            {
+                //ignore
+            }
+           
         }
     }
 }

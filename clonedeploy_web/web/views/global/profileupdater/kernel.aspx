@@ -4,10 +4,14 @@
     <li>Image Profile Updater</li>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="Help" Runat="Server">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
+    <li role="separator" class="divider"></li>
+    <li><a href="<%= ResolveUrl("~/views/help/global-profileupdater.aspx") %>"   target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-       <asp:LinkButton ID="btnUpdateKernel" runat="server" OnClick="btnUpdateKernel_OnClick" Text="Update Image Profiles " />
+       <asp:LinkButton ID="btnUpdateKernel" runat="server" OnClick="btnUpdateKernel_OnClick" Text="Update Image Profiles" CssClass="btn btn-default" />
+     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+  </button>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">

@@ -1,6 +1,8 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using Helpers;
 
 namespace BLL.Workflows
@@ -20,6 +22,8 @@ namespace BLL.Workflows
         public string Kernel { get; set; }
         public string OndPwd { get; set; }
         public string Type { get; set; }
+        readonly Regex _alphaNumericSpace = new Regex("[^a-zA-Z0-9 ]");
+        readonly Regex _alphaNumericNoSpace = new Regex("[^a-zA-Z0-9]");
 
         public void CreateGlobalDefaultBootMenu()
         {
@@ -52,6 +56,9 @@ namespace BLL.Workflows
 
         private void CreateGrubMenu()
         {
+            var customMenuEntries = BLL.BootEntry.SearchBootEntrys().Where(x => x.Type == "grub" && x.Active == 1).OrderBy(x => x.Order).ThenBy(x => x.Name);
+            var defaultCustomEntry = customMenuEntries.FirstOrDefault(x => x.Default == 1);
+
             var grubMenu = new StringBuilder();
 
             grubMenu.Append("insmod password_pbkdf2" + NewLineChar);
@@ -106,6 +113,15 @@ namespace BLL.Workflows
                 grubMenu.Append("configfile /proxy/efi64/pxelinux.cfg/$mac.cfg" + NewLineChar);
                 grubMenu.Append("fi" + NewLineChar);
             }
+
+            if (defaultCustomEntry != null)
+            {
+                grubMenu.Append("" + NewLineChar);
+                grubMenu.Append("menuentry \"" + _alphaNumericSpace.Replace(defaultCustomEntry.Name,"") + "\" --unrestricted {" + NewLineChar);
+                grubMenu.Append(defaultCustomEntry.Content + NewLineChar);
+                grubMenu.Append("}" + NewLineChar);
+            }
+
             grubMenu.Append("" + NewLineChar);
             grubMenu.Append("menuentry \"Boot To Local Machine\" --unrestricted {" + NewLineChar);
             grubMenu.Append("exit" + NewLineChar);
@@ -156,6 +172,19 @@ namespace BLL.Workflows
             grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
 
+            foreach (var customEntry in customMenuEntries)
+            {
+                if (defaultCustomEntry != null && customEntry.Id == defaultCustomEntry.Id)
+                    continue;
+
+                grubMenu.Append("" + NewLineChar);
+                grubMenu.Append("menuentry \"" + _alphaNumericSpace.Replace(customEntry.Name, "") +
+                                "\" --user {" + NewLineChar);
+                grubMenu.Append(customEntry.Content + NewLineChar);
+                grubMenu.Append("}" + NewLineChar);
+
+                grubMenu.Append("" + NewLineChar);
+            }
 
             var path = Settings.TftpPath + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
 
@@ -164,8 +193,10 @@ namespace BLL.Workflows
 
         private void CreateIpxeMenu()
         {
-            var ipxeMenu = new StringBuilder();
+            var customMenuEntries = BLL.BootEntry.SearchBootEntrys().Where(x => x.Type == "ipxe" && x.Active == 1).OrderBy(x => x.Order).ThenBy(x => x.Name);
+            var defaultCustomEntry = customMenuEntries.FirstOrDefault(x => x.Default == 1);
 
+            var ipxeMenu = new StringBuilder();
 
             ipxeMenu.Append("#!ipxe" + NewLineChar);
             ipxeMenu.Append("chain 01-${net0/mac:hexhyp}.ipxe || chain 01-${net1/mac:hexhyp}.ipxe || goto Menu" + NewLineChar);
@@ -177,7 +208,17 @@ namespace BLL.Workflows
             ipxeMenu.Append("item register Add Computer" + NewLineChar);
             ipxeMenu.Append("item ond On Demand" + NewLineChar);
             ipxeMenu.Append("item diag Diagnostics" + NewLineChar);
-            ipxeMenu.Append("choose --default boot --timeout 5000 target && goto ${target}" + NewLineChar);
+            foreach (var customEntry in customMenuEntries)
+            {
+                ipxeMenu.Append("item " + _alphaNumericNoSpace.Replace(customEntry.Name, "") + " " +
+                                _alphaNumericSpace.Replace(customEntry.Name, "") + NewLineChar);
+            }
+            if(defaultCustomEntry == null)
+                ipxeMenu.Append("choose --default bootLocal --timeout 5000 target && goto ${target}" + NewLineChar);
+            else
+            {
+                ipxeMenu.Append("choose --default " + _alphaNumericNoSpace.Replace(defaultCustomEntry.Name,"") + " --timeout 5000 target && goto ${target}" + NewLineChar);
+            }
             ipxeMenu.Append("" + NewLineChar);
 
             if (Settings.IpxeRequiresLogin == "True")
@@ -267,6 +308,13 @@ namespace BLL.Workflows
 
             }
 
+            //Set Custom Menu Entries
+            foreach (var customEntry in customMenuEntries)
+            {
+                ipxeMenu.Append(":" + _alphaNumericNoSpace.Replace(customEntry.Name, "") + NewLineChar);
+                ipxeMenu.Append(customEntry.Content + NewLineChar);
+            }
+
             string path;
             if (Type == "standard")
                 path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default.ipxe";
@@ -279,6 +327,8 @@ namespace BLL.Workflows
 
         private void CreateSyslinuxMenu()
         {
+            var customMenuEntries = BLL.BootEntry.SearchBootEntrys().Where(x => x.Type == "syslinux/pxelinux" && x.Active == 1).OrderBy(x => x.Order).ThenBy(x => x.Name);
+            var defaultCustomEntry = customMenuEntries.FirstOrDefault(x => x.Default == 1);
             var sysLinuxMenu = new StringBuilder();
 
             sysLinuxMenu.Append("DEFAULT vesamenu.c32" + NewLineChar);
@@ -300,7 +350,8 @@ namespace BLL.Workflows
             sysLinuxMenu.Append("" + NewLineChar);
             sysLinuxMenu.Append("LABEL local" + NewLineChar);
             sysLinuxMenu.Append("localboot 0" + NewLineChar);
-            sysLinuxMenu.Append("MENU DEFAULT" + NewLineChar);
+            if(defaultCustomEntry == null)
+                sysLinuxMenu.Append("MENU DEFAULT" + NewLineChar);
             sysLinuxMenu.Append("MENU LABEL Boot To Local Machine" + NewLineChar);
             sysLinuxMenu.Append("" + NewLineChar);
 
@@ -356,6 +407,17 @@ namespace BLL.Workflows
 
             sysLinuxMenu.Append("MENU LABEL Diagnostics" + NewLineChar);
             sysLinuxMenu.Append("" + NewLineChar);
+
+            //Insert active custom boot menu entries
+            foreach (var customEntry in customMenuEntries)
+            {
+                sysLinuxMenu.Append("LABEL " + _alphaNumericSpace.Replace(customEntry.Name,"") + NewLineChar);
+                sysLinuxMenu.Append(customEntry.Content + NewLineChar);
+                if(defaultCustomEntry != null && customEntry.Id == defaultCustomEntry.Id)
+                    sysLinuxMenu.Append("MENU DEFAULT" + NewLineChar);
+                sysLinuxMenu.Append("MENU LABEL " + _alphaNumericSpace.Replace(customEntry.Name, "") + NewLineChar);
+                sysLinuxMenu.Append("" + NewLineChar);
+            }
 
             sysLinuxMenu.Append("PROMPT 0" + NewLineChar);
             sysLinuxMenu.Append("TIMEOUT 50" + NewLineChar);

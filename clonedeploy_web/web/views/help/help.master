@@ -1,20 +1,23 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="help.master.cs" Inherits="views_help_help" %>
+﻿<%@ Master Language="C#" %>
 
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
-    <asp:ContentPlaceHolder id="head" runat="server">
-    </asp:ContentPlaceHolder>
+    <title>CloneDeploy Docs</title>
+     <link href="~/views/help/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery-1.9.1.js") %>"></script>
 </head>
 <body>
-    <form id="form1" runat="server">
-    <div>
-        <asp:ContentPlaceHolder id="ContentPlaceHolder1" runat="server">
-        
+    
+    <div class="navbar navbar-inverse navbar-fixed-left">
+        <asp:ContentPlaceHolder id="Navigation" runat="server">    
         </asp:ContentPlaceHolder>
     </div>
-    </form>
+    
+    <div class="container">
+        <asp:ContentPlaceHolder ID="Content" runat="server"></asp:ContentPlaceHolder>
+    </div>
+  
 </body>
 </html>

@@ -110,7 +110,12 @@ namespace BLL
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.UserRepository.Get(u => u.Name.Contains(searchString));
+                var users = uow.UserRepository.Get(u => u.Name.Contains(searchString));
+                foreach (var user in users)
+                {
+                    user.UserGroup = BLL.UserGroup.GetUserGroup(user.UserGroupId);
+                }
+                return users;
             }
         }
 

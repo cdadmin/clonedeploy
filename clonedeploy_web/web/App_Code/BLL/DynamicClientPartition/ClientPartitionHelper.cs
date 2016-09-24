@@ -22,7 +22,7 @@ namespace BLL.DynamicClientPartition
             if (imageProfile != null)
             {
                 _imageProfile = imageProfile;
-                if (imageProfile.PartitionMethod == "Dynamic" && !string.IsNullOrEmpty(imageProfile.CustomSchema))
+                if ((imageProfile.PartitionMethod == "Dynamic" || imageProfile.PartitionMethod == "Standard" || imageProfile.PartitionMethod == "Standard Core Storage") && !string.IsNullOrEmpty(imageProfile.CustomSchema))
                 {
                     schema = imageProfile.CustomSchema;
                 }
@@ -147,7 +147,7 @@ namespace BLL.DynamicClientPartition
                 else
                 {
                     string imageFile = null;
-                    foreach (var ext in new[] { "ntfs", "fat", "extfs", "hfsp", "imager", "xfs" })
+                    foreach (var ext in new[] { "ntfs", "fat", "extfs", "hfsp", "imager", "winpe","xfs" })
                     {
                         try
                         {
@@ -325,7 +325,9 @@ namespace BLL.DynamicClientPartition
 
                 var logicalVolumeHelper = LogicalVolume(logicalVolume, lbsByte, newHdSize,hdNumberToGet);
                 volumeGroupHelper.MinSizeBlk += logicalVolumeHelper.MinSizeBlk;
-
+                //assume fusion drive
+                if (logicalVolume.FsType.ToLower().Contains("hfs") && newHdSize <= 121332826112)
+                    volumeGroupHelper.IsFusion = true;
 
             }
 
@@ -396,10 +398,22 @@ namespace BLL.DynamicClientPartition
                     logicalVolumeHelper.MinSizeBlk = (lv.UsedMb*1024*1024)/lbsByte;
                 else
                 {
-                    if (lv.VolumeSize > lv.UsedMb)
-                        logicalVolumeHelper.MinSizeBlk = lv.VolumeSize*1024*1024/lbsByte;
+                    //fix me - a hack when using core storage with dynamic partitions on macos environment
+                    if (lv.FsType.ToLower().Contains("hfs") && newHdSize <= 121332826112)
+                    {
+                        //assume fusion, set minsize to full size of drive
+                        logicalVolumeHelper.MinSizeBlk = Convert.ToInt64(newHdSize*.8)/lbsByte;
+                        
+                    }
                     else
-                        logicalVolumeHelper.MinSizeBlk = lv.UsedMb*1024*1024/lbsByte;
+                    {
+                        if (lv.VolumeSize > lv.UsedMb)
+                            logicalVolumeHelper.MinSizeBlk = lv.VolumeSize*1024*1024/lbsByte;
+                        else
+                            logicalVolumeHelper.MinSizeBlk = lv.UsedMb*1024*1024/lbsByte;
+                    }
+
+
                 }
             }
 
@@ -458,14 +472,17 @@ namespace BLL.DynamicClientPartition
                         imageFile =
                             Directory.GetFiles(
                                 imagePath + Path.DirectorySeparatorChar, "part" + partition.Number + "." + ext + ".*")
-                                .FirstOrDefault();
-                        physicalPartition.PartcloneFileSystem = ext;
+                                .FirstOrDefault();  
                     }
                     catch (Exception ex)
                     {
                         Logger.Log(ex.Message);
                     }
-                    if (imageFile != null) break;
+                    if (imageFile != null)
+                    {
+                        physicalPartition.PartcloneFileSystem = ext;
+                        break;
+                    }
                 }
                 switch (Path.GetExtension(imageFile))
                 {
@@ -510,13 +527,17 @@ namespace BLL.DynamicClientPartition
                                         imagePath + Path.DirectorySeparatorChar,
                                         partition.VolumeGroup.Name + "-" + logicalVolume.Name + "." + ext + ".*")
                                         .FirstOrDefault();
-                                clientLogicalVolume.PartcloneFileSystem = ext;
+                                
                             }
                             catch (Exception ex)
                             {
                                 Logger.Log(ex.Message);
                             }
-                            if (imageFile != null) break;
+                            if (imageFile != null)
+                            {
+                                clientLogicalVolume.PartcloneFileSystem = ext;
+                                break;
+                            }
                         }
                         switch (Path.GetExtension(imageFile))
                         {
@@ -554,6 +575,10 @@ namespace BLL.DynamicClientPartition
             return _imageSchema.HardDrives[schemaHdNumber].Partitions.Count(partition => partition.Active);
         }
 
+        public List<string> GetPartitionNumbers(int schemaHdNumber)
+        {
+            return _imageSchema.HardDrives[schemaHdNumber].Partitions.Select(part => part.Number).ToList();
+        }
         public string CheckForLvm(int schemaHdNumber)
         {
             return (from part in _imageSchema.HardDrives[schemaHdNumber].Partitions

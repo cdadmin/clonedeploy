@@ -2,6 +2,9 @@
 
 . /usr/local/bin/osx_global_functions
 
+log "OS X Client Version:"
+chroot "/Volumes/Macintosh HD" sw_vers >> $CLIENT_LOG
+
 function create_image_schema()
 {
   log " ** Creating Image Schema ** " "display"
@@ -205,6 +208,10 @@ function shrink_volume()
 	local total_free_bytes
 	local padding
 	
+	if [[ "$shrunk_volumes" == *"$volume_to_shrink"* ]]; then
+	  return 0
+	fi
+		  
       log " ...... Shrinking Volume On $volume_to_shrink (This May Take A Few Minutes) " "display"
 	  echo
 	  diskutil repairVolume $volume_to_shrink 2>> $CLIENT_LOG
@@ -272,6 +279,7 @@ function upload_image()
     
 	partition_is_pv=$(diskutil info $partition | grep "PV UUID" -c)
 	if [ "$partition_is_pv" = "1" ]; then
+		log " ...... Partition Is Part Of Core Storage" "display"
 	   vg_uuid=$(diskutil info $partition | grep "LVG UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
         volume_group_name=$(diskutil cs list | grep "$vg_uuid" -A5 | grep Name: | cut -d : -f2 | sed -e 's/^[ \t]*//')
         get_logical_volumes_for_vg         
@@ -284,9 +292,10 @@ function upload_image()
           volume_name=$(diskutil cs info $logical_volume | grep "LV Name:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
 		  
 		  #preventing uploading the same logical volume again.  If the volume group is spanned across multiple disks, it will be recognized multiple times
-		  if [ -e "$image_path/part${volume_group_name}-${volume_name}.dmg" ]; then
+		  if [[ "$imaged_lvs" == *"$logical_volume"* ]]; then
 		    continue
 		  fi
+		  log " ...... Uploading Logical Volume $logical_volume" "display"
 		  touch /tmp/osx.progress
 	      . osx_reporter & hdiutil create -srcDevice $logical_volume -format UDZO -layout GPTSPUD -puppetstrings "$image_path/${volume_group_name}-${volume_name}".dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress
 	      log " . osx_reporter & hdiutil create -srcDevice $logical_volume -format UDZO -layout GPTSPUD -puppetstrings $image_path/${volume_group_name}-${volume_name}.dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress"
@@ -294,6 +303,7 @@ function upload_image()
 	      asr imagescan --source "$image_path/${volume_group_name}-${volume_name}".dmg | tee /tmp/osx.progress
 	      killall osx_reporter &>/dev/null
 	      rm /tmp/osx.progress
+		  imaged_lvs="$imaged_lvs $logical_volume"
 		done	
     else
 	  touch /tmp/osx.progress
@@ -368,9 +378,11 @@ function process_hard_drives()
   done
 
   log " shrunk_volumes: $shrunk_volumes"
+  unique_shrunk_volumes=$(echo $shrunk_volumes | xargs -n1 | sort -u | xargs)
+  log " unique_shrunk_volumes: $unique_shrunk_volumes"
   log " ** Expanding Resized Volumes **" "display"
   echo
-  for shrunk_volume in $shrunk_volumes; do
+  for shrunk_volume in $unique_shrunk_volumes; do
     if /usr/sbin/diskutil info $shrunk_volume | grep "Logical Volume" > /dev/null; then
 	  diskutil cs resizeVolume $shrunk_volume 0b 2>> $CLIENT_LOG
 	else

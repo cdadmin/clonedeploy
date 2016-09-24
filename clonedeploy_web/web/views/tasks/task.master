@@ -13,6 +13,7 @@
              <li id="unicast"><a href="<%= ResolveUrl("~/views/tasks/activeunicast.aspx") %>" ><span class="sub-nav-text">Active Unicasts</span></a></li>
             <li id="multicast"><a href="<%= ResolveUrl("~/views/tasks/activemulticast.aspx") %>" ><span class="sub-nav-text">Active Multicasts</span></a></li>
              <li id="all"><a href="<%= ResolveUrl("~/views/tasks/active.aspx") %>" ><span class="sub-nav-text">All Active Tasks</span></a></li>
+            <li id="permanent"><a href="<%= ResolveUrl("~/views/tasks/activepermanent.aspx") %>" ><span class="sub-nav-text">Active Permanent Tasks</span></a></li>
             <li id="computer"><a href="<%= ResolveUrl("~/views/tasks/computers.aspx") %>" ><span class="sub-nav-text">Start Computer Task</span></a></li>
             <li id="group"><a href="<%= ResolveUrl("~/views/tasks/groups.aspx") %>" ><span class="sub-nav-text">Start Group Task</span></a></li>
             <li id="ond"><a href="<%= ResolveUrl("~/views/tasks/ondemand.aspx") %>"><span class="sub-nav-text">Start On Demand Multicast</span></a></li>
@@ -31,12 +32,13 @@
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="PageActions">
     <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
     </asp:ContentPlaceHolder>
-
+    <ul class="dropdown-menu">
+             <asp:ContentPlaceHolder ID="AdditionalActions" runat="server"></asp:ContentPlaceHolder>
             <asp:ContentPlaceHolder ID="ActionsLeftSub" runat="server"></asp:ContentPlaceHolder>
 
 
      <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
-
+        </ul>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">  

@@ -54,6 +54,9 @@ namespace Models
         [Column("custom_attr_5", Order = 16)]
         public string CustomAttribute5 { get; set; }
 
+        [Column("proxy_reservation_enabled", Order = 17)]
+        public int ProxyReservation { get; set; }
+
         [NotMapped]
         public virtual Models.ActiveImagingTask ActiveImagingTask { get; set; }
 

@@ -24,6 +24,9 @@
 .container .size-setting.column{width:420px;margin-bottom: 10px;}
 .container .offset-1{padding-left:200px;}
 .container .size-fullgrid.column{ width:calc(100% - 5px);overflow-x: auto; border-top: 1px solid #eee;margin-top: 10px;padding-top: 10px;}
+.column-left{ float: left; width: 30%; }
+.column-right{ float: right; width: 33%; }
+.column-center{ display: inline-block; width: 33%; }
 
 #title{ width: 300px;float: left;margin-left: 50px;}
 .navmenu{ float: right;}
@@ -96,7 +99,7 @@ body{ overflow-x: initial; }
 .nav{display:none;}
 .nav-bar-mobile{display:inline;}
 .nav-menu-mobile{ display: inline;}
-
+.column-left,.column-center,.column-right { width: 100%;}
 
 .sub-nav-text{ font-size: 18px;}
 
@@ -144,7 +147,7 @@ body{ overflow-x: initial; }
 .sub-nav li { display: inline-block;margin-left: 0; }
 .sub-nav li a { width: auto;}
 #leftnav{ width: 100%;}
-
+.column-left,.column-center,.column-right { width: 100%;}
 .breadCrumb ul li {width:100%}
 .breadCrumb ul li.first a{ font-size: 24px;}
 a.actions{width: 250px; margin-left: 5px;}

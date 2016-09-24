@@ -59,7 +59,19 @@ namespace BLL
                     computer.CustomAttribute4 = groupProperty.CustomAttribute4;
                 if (Convert.ToBoolean(groupProperty.CustomAttribute5Enabled))
                     computer.CustomAttribute5 = groupProperty.CustomAttribute5;
+                if (Convert.ToBoolean(groupProperty.ProxyEnabledEnabled))
+                    computer.ProxyReservation = groupProperty.ProxyEnabled;
+              
                 BLL.Computer.UpdateComputer(computer);
+                if (Convert.ToBoolean(groupProperty.TftpServerEnabled) || Convert.ToBoolean(groupProperty.BootFileEnabled))
+                {
+                    var computerProxy = BLL.ComputerProxyReservation.GetComputerProxyReservation(computer.Id);
+                    if (Convert.ToBoolean(groupProperty.TftpServerEnabled))
+                        computerProxy.NextServer = groupProperty.TftpServer;
+                    if (Convert.ToBoolean(groupProperty.BootFileEnabled))
+                        computerProxy.BootFile = groupProperty.BootFile;
+                    BLL.ComputerProxyReservation.UpdateComputerProxyReservation(computerProxy);
+                }
             }
         }
 

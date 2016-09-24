@@ -5,9 +5,15 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="Help" Runat="Server">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
+    <li role="separator" class="divider"></li>
+    <li><a href="<%= ResolveUrl("~/views/help/global-buildings.aspx") %>"   target="_blank">Help</a></li>
 </asp:Content>
 
+<asp:Content ID="Content4" ContentPlaceHolderID="SubPageActionsRight" Runat="Server">
+     <button type="button" class="btn btn-default dropdown-toggle width_140" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+  </button>
+</asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">

@@ -30,6 +30,7 @@ public partial class views_admin_security : Admin
         ddlOndLogin.Text = Settings.OnDemandRequiresLogin;
         ddlDebugLogin.Text = Settings.DebugRequiresLogin;
         ddlRegisterLogin.Text = Settings.RegisterRequiresLogin;
+        ddlClobberLogin.Text = Settings.ClobberRequiresLogin;
 
         if (ddlDebugLogin.Text == "No" || ddlOndLogin.Text == "No" || ddlRegisterLogin.Text == "No" ||
             ddlWebTasksLogin.Text == "No")
@@ -52,7 +53,6 @@ public partial class views_admin_security : Admin
     protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.UpdateAdmin);
-        if (!ValidateSettings()) return;
         if (ddlDebugLogin.Text == "Yes" && ddlOndLogin.Text == "Yes" && ddlRegisterLogin.Text == "Yes" &&
             ddlWebTasksLogin.Text == "Yes")
             txtToken.Text = "";
@@ -101,6 +101,12 @@ public partial class views_admin_security : Admin
                 Name = "Register Requires Login",
                 Value = ddlRegisterLogin.Text,
                 Id = BLL.Setting.GetSetting("Register Requires Login").Id
+            });
+            listSettings.Add(new Setting
+            {
+                Name = "Clobber Requires Login",
+                Value = ddlClobberLogin.Text,
+                Id = BLL.Setting.GetSetting("Clobber Requires Login").Id
             });
         
 
@@ -192,22 +198,11 @@ public partial class views_admin_security : Admin
         Response.Redirect("~/views/admin/bootmenu/defaultmenu.aspx?level=2");
     }
 
-    protected bool ValidateSettings()
-    {
-        if (ActiveImagingTask.AllActiveCountAdmin() > 0)
-        {
-            EndUserMessage = "Settings Cannot Be Changed While Tasks Are Active";
-            return false;
-        }
-
-        return true;
-    }
-
     protected void LoginsChanged(object sender, EventArgs e)
     {
         var ddl = sender as DropDownList;
         if (ddlDebugLogin.Text == "No" || ddlOndLogin.Text == "No" || ddlRegisterLogin.Text == "No" ||
-            ddlWebTasksLogin.Text == "No")
+            ddlWebTasksLogin.Text == "No" || ddlClobberLogin.Text == "No")
         {
             universal.Visible = true;
             if (ddl != null && ddl.Text == "No")

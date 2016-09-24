@@ -46,14 +46,9 @@ namespace views.masters
 
         public void Page_Load(object sender, EventArgs e)
         {
-            LogOut.Text = HttpContext.Current.User.Identity.Name;
+           
         }
 
-        protected void LogOut_OnClick(object sender, EventArgs e)
-        {
-            FormsAuthentication.SignOut();
-            Session.Clear();
-            Response.Redirect("~/", true);
-        }
+       
     }
 }

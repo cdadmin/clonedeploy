@@ -148,12 +148,18 @@ public partial class views_images_profiles_upload : Images
             divShrink.Visible = false;
             divWimMulticast.Visible = false;
         }
-        else if (Image.Environment == "linux" && Image.Type == "Block")
+        else if (Image.Environment == "winpe")
+        {
+            divCompression.Visible = false;
+            divGpt.Visible = false;
+            divShrink.Visible = false;
+        }
+        else if (Image.Environment == "linux" && Image.Type == "Block" || Image.Environment == "" && Image.Type == "Block")
         {
             divWimMulticast.Visible = false;
 
         }
-        else if (Image.Environment == "linux" && Image.Type == "File")
+        else if (Image.Environment == "linux" && Image.Type == "File" || Image.Environment == "" && Image.Type == "File")
         {
             divCompression.Visible = false;
             divShrink.Visible = false;

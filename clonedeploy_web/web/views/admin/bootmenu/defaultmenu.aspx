@@ -3,11 +3,15 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubHelp" Runat="Server">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
+     <li role="separator" class="divider"></li>
+    <li><a href="<%= ResolveUrl("~/views/help/admin-bootmenu.aspx") %>"   target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
-    <asp:LinkButton ID="btnSubmitDefault" runat="server" Text="Create Boot Files " OnClick="btnSubmit_Click"  OnClientClick="get_shas();"/>
-    <asp:LinkButton ID="btnSubmitDefaultProxy" runat="server" Text="Create Boot Files " OnClick="btnSubmit_Click"  OnClientClick="get_shas_proxy();"/>
+    <asp:LinkButton ID="btnSubmitDefault" runat="server" Text="Create Boot Files " OnClick="btnSubmit_Click"  OnClientClick="get_shas();" CssClass="btn btn-default"/>
+    <asp:LinkButton ID="btnSubmitDefaultProxy" runat="server" Text="Create Boot Files " OnClick="btnSubmit_Click"  OnClientClick="get_shas_proxy();" CssClass="btn btn-default"/>
+     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+  </button>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="SubContent2" Runat="Server">
 
@@ -40,10 +44,13 @@
 <asp:HiddenField ID="diagshaProxy" runat="server"/>
 
 
-
+<asp:Label ID="lblNoMenu" runat="server" Visible="False" Text="Boot Menus Are Not Used When Proxy DHCP Is Set To No And The PXE Mode Is Set To WinPE"></asp:Label>
 <div id="divStandardMode" runat="server" visible="false">
     <div id="bootPasswords" runat="server" visible="false" style="margin-top: 0;">
-
+         <div class="size-4 column">
+        <h4>PXE Mode - <%=noProxyLbl %></h4>
+    </div>
+    <br class="clear"/>
         <div class="size-4 column">
             Kernel:
         </div>
@@ -129,9 +136,11 @@
 
 <div id="divProxyDHCP" runat="server" visible="false">
     <div class="size-4 column">
-        <h4>BIOS</h4>
+        <h4>BIOS - <%=biosLbl %></h4>
     </div>
     <br class="clear"/>
+    <asp:Label runat="server" id="lblBiosHidden" Visible="False"></asp:Label>
+    <div id="divProxyBios" runat="server">
     <div class="size-4 column">
         Kernel:
     </div>
@@ -139,6 +148,7 @@
         <asp:DropDownList ID="ddlBiosKernel" runat="server" CssClass="ddlist">
         </asp:DropDownList>
     </div>
+     
     <br class="clear"/>
     <div class="size-4 column">
         Boot Image:
@@ -147,11 +157,15 @@
         <asp:DropDownList ID="ddlBiosBootImage" runat="server" CssClass="ddlist">
         </asp:DropDownList>
     </div>
+        </div>
     <br class="clear"/>
+        
     <div class="size-4 column">
-        <h4>EFI 32</h4>
+        <h4>EFI32 - <%=efi32Lbl %></h4>
     </div>
     <br class="clear"/>
+     <asp:Label runat="server" id="lblEfi32Hidden" Visible="False"></asp:Label>
+    <div id="divProxyEfi32" runat="server">
     <div class="size-4 column">
         Kernel:
     </div>
@@ -167,11 +181,14 @@
         <asp:DropDownList ID="ddlEfi32BootImage" runat="server" CssClass="ddlist">
         </asp:DropDownList>
     </div>
+        </div>
     <br class="clear"/>
     <div class="size-4 column">
-        <h4>EFI64</h4>
+        <h4>EFI64 - <%=efi64Lbl %></h4>
     </div>
     <br class="clear"/>
+     <asp:Label runat="server" id="lblEfi64Hidden" Visible="False"></asp:Label>
+    <div id="divProxyEfi64" runat="server" >
     <div class="size-4 column">
         Kernel:
     </div>
@@ -179,6 +196,7 @@
         <asp:DropDownList ID="ddlEfi64Kernel" runat="server" CssClass="ddlist">
         </asp:DropDownList>
     </div>
+        
     <br class="clear"/>
     <div class="size-4 column">
         Boot Image:
@@ -187,6 +205,7 @@
         <asp:DropDownList ID="ddlEfi64BootImage" runat="server" CssClass="ddlist">
         </asp:DropDownList>
     </div>
+        </div>
     <br class="clear"/>
     <br/>
     <div id="proxyPassBoxes" runat="server" visible="false" style="margin-top: 20px;">

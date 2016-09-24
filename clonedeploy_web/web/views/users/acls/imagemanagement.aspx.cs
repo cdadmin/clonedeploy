@@ -40,6 +40,12 @@ public partial class views_users_acls_imagemanagement : BasePages.Users
 
     protected void buttonUpdate_OnClick(object sender, EventArgs e)
     {
+        if (CloneDeployUser.UserGroupId != -1)
+        {
+            EndUserMessage = "Cannot Update. This User's Image Management Is Controlled By A Group";
+            return;
+        }
+
         var list = new List<Models.UserImageManagement>();
         foreach (GridViewRow row in gvImages.Rows)
         {
