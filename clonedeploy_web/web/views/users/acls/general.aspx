@@ -5,7 +5,8 @@
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="SubHelp">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
+      <li role="separator" class="divider"></li>
+    <li><a href="<%= ResolveUrl("~/views/help/users-acl.aspx") %>"   target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
      <asp:LinkButton ID="buttonUpdate" runat="server" OnClick="buttonUpdate_OnClick" Text="Update Access Control" CssClass="btn btn-default"  />

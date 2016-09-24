@@ -261,6 +261,26 @@ namespace Helpers
         {
             get { return Setting.GetSetting("Munki SMB Domain").Value; }
         }
+
+        public static string ClobberEnabled
+        {
+            get { return Setting.GetSetting("Clobber Enabled").Value; }
+        }
+
+        public static string ClobberProfileId
+        {
+            get { return Setting.GetSetting("Clobber ProfileId").Value; }
+        }
+
+        public static string ClobberRequiresLogin
+        {
+            get { return Setting.GetSetting("Clobber Requires Login").Value; }
+        }
+
+        public static string ClobberPromptComputerName
+        {
+            get { return Setting.GetSetting("Clobber Prompt Computer Name").Value; }
+        }
     
     }
 }

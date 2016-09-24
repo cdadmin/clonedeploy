@@ -5,7 +5,8 @@
     </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>"  target="_blank">Help</a>
+      <li role="separator" class="divider"></li>
+     <li><a href="<%= ResolveUrl("~/views/help/users-resetpass.aspx")%>"  target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
          <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_Click" Text="Update User" CssClass="btn btn-default" />

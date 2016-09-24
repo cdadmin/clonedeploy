@@ -2,7 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices; //for DllImport, move to another file later
+using System.Runtime.InteropServices;
+using System.Web;
+using System.Web.Security;
+//for DllImport, move to another file later
 #if __MonoCS__  
 using Mono.Unix; // requires reference to  Mono.Posix.dll
 #endif
@@ -18,11 +21,19 @@ namespace views.dashboard
                 Response.Redirect("~/views/login/firstrun.aspx");
 
             if (Request.QueryString["access"] == "denied")
-                lblDenied.Text = "You Are Not Authorized For That Action";
-            
+            {
+                lblDenied.Text = "You Are Not Authorized For That Action<br><br>";
+              
+            }
+            LogOut.Text = HttpContext.Current.User.Identity.Name;
             PopulateStats();
         }
-
+        protected void LogOut_OnClick(object sender, EventArgs e)
+        {
+            FormsAuthentication.SignOut();
+            Session.Clear();
+            Response.Redirect("~/", true);
+        }
         // if running on Mono
         #if __MonoCS__     
         public static bool DriveFreeBytes(string folderName, out ulong freespace, out ulong total)
@@ -89,71 +100,70 @@ namespace views.dashboard
         protected void PopulateStats()
         {
             //FixMe: get all the numbers in own function, don't slowly create full lists of unused stuff 
-        
-            List<Models.Computer> computersList = BLL.Computer.SearchComputersForUser(CloneDeployCurrentUser.Id, 999999 ,"");
+
+            List<Models.Computer> computersList = BLL.Computer.SearchComputersForUser(CloneDeployCurrentUser.Id, 999999,
+                "");
             lblTotalComputers.Text = computersList.Count + " Total Computer(s)";
-            
-            List<Models.Image> imagesList = BLL.Image.SearchImagesForUser(CloneDeployCurrentUser.Id, "").OrderBy(x => x.Name).ToList();
+
+            List<Models.Image> imagesList =
+                BLL.Image.SearchImagesForUser(CloneDeployCurrentUser.Id, "").OrderBy(x => x.Name).ToList();
             lblTotalImages.Text = imagesList.Count + " Total Image(s)";
-            
-            List<Models.Group> groupsList = BLL.Group.SearchGroupsForUser(CloneDeployCurrentUser.Id,"");
+
+            List<Models.Group> groupsList = BLL.Group.SearchGroupsForUser(CloneDeployCurrentUser.Id, "");
             lblTotalGroups.Text = groupsList.Count + " Total Group(s)";
+
+            var primaryDp = BLL.DistributionPoint.GetPrimaryDistributionPoint();
             
-            List<Models.DistributionPoint> dpList = BLL.DistributionPoint.SearchDistributionPoints("");
-            lblTotalDP.Text = "<br><h4><u>Distribution Points</u></h4>" + dpList.Count + " Total DistributionPoint(s)";
-            
-            if(dpList != null && dpList.Count > 0)
+            lblTotalDP.Text += "<br> Path: " + primaryDp.PhysicalPath;
+
+            try
             {
-              foreach (var dp in dpList)
-              {
-                if (!String.IsNullOrEmpty(dp.PhysicalPath) && dp.PhysicalPath.Length >= 2)
+                if (System.IO.Directory.Exists(primaryDp.PhysicalPath))
                 {
-                  lblTotalDP.Text += "<br><br><h6><u>DP-Nr: " + (dpList.IndexOf(dp) + 1) + "</u></h6> <br> Path: " + dp.PhysicalPath;
-                  if(System.IO.Directory.Exists(dp.PhysicalPath))
-                  {
-                      ulong freespace = 0;
-                      ulong total = 0;
-                      bool success = DriveFreeBytes(dp.PhysicalPath, out freespace, out total);
-                                                        
-                      if(!success)
-                      {
-                      }
-                      else
-                      {
+                    ulong freespace = 0;
+                    ulong total = 0;
+                    bool success = DriveFreeBytes(primaryDp.PhysicalPath, out freespace, out total);
+
+                    if (!success)
+                    {
+                    }
+                    else
+                    {
                         Int64 freePercent = 0;
                         Int64 usedPercent = 0;
-                        
-                        if(total > 0 && freespace > 0)
-                        {
-                          freePercent = (Int64)(0.5f + ((100f * Convert.ToInt64(freespace)) / Convert.ToInt64(total)));
-                          usedPercent = (Int64)(0.5f + ((100f * Convert.ToInt64(total - freespace)) / Convert.ToInt64(total))); 
-                        }
-                        
-                        string percentFreeCircleDark = @"<div class='dark-area clearfix'><div class='clearfix'><div class='c100 p"+freePercent+" small dark'><span>"+freePercent+"%</span><div class='slice'><div class='bar'></div><div class='fill'></div></div></div></div><br>free</div>";
-                        string percentUsedCircleDark = @"<div class='dark-area clearfix'><div class='clearfix'><div class='c100 p"+usedPercent+" small dark'><span>"+usedPercent+"%</span><div class='slice'><div class='bar'></div><div class='fill'></div></div></div></div><br>used</div>";
 
-                        //lblDPfree.Text += percentFreeCircleDark;
-                        
+                        if (total > 0 && freespace > 0)
+                        {
+                            freePercent = (Int64) (0.5f + ((100f*Convert.ToInt64(freespace))/Convert.ToInt64(total)));
+                            usedPercent =
+                                (Int64) (0.5f + ((100f*Convert.ToInt64(total - freespace))/Convert.ToInt64(total)));
+                        }
+
                         string percentFreeCircleLightStart = @"<div class='clearfix'><table><tr>";
-                        string percentFreeCircleLight = @"<td><div>free</div><div class='c100 p"+freePercent+" small'><span>"+freePercent+"%</span><div class='slice'><div class='bar'></div><div class='fill'></div></div></div></td>";
-                        string percentUsedCircleLight = @"<td><div>used</div><div class='c100 p"+usedPercent+" small'><span>"+usedPercent+"%</span><div class='slice'><div class='bar'></div><div class='fill'></div></div></div></td>";
+                        string percentFreeCircleLight = @"<td><div>free</div><div class='c100 p" + freePercent +
+                                                        " small'><span>" + freePercent +
+                                                        "%</span><div class='slice'><div class='bar'></div><div class='fill'></div></div></div></td>";
+                        string percentUsedCircleLight = @"<td><div>used</div><div class='c100 p" + usedPercent +
+                                                        " small'><span>" + usedPercent +
+                                                        "%</span><div class='slice'><div class='bar'></div><div class='fill'></div></div></div></td>";
                         string percentFreeCircleLightEnd = @"</tr></table></div>";
 
                         lblDPfree.Text += percentFreeCircleLightStart;
                         lblDPfree.Text += percentFreeCircleLight;
                         lblDPfree.Text += percentUsedCircleLight;
                         lblDPfree.Text += percentFreeCircleLightEnd;
-                        
-                        lblDPfree.Text += String.Format(" Free Space:      {0,15:D}", SizeSuffix(Convert.ToInt64(freespace)));
+
+                        lblDPfree.Text += String.Format(" Free Space:      {0,15:D}",
+                            SizeSuffix(Convert.ToInt64(freespace)));
                         lblDPfree.Text += String.Format(" || Total:     {0,15:D}", SizeSuffix(Convert.ToInt64(total)));
-                        
-                      }
-                  }
+
+                    }
                 }
-                
-              }
             }
-            
+            catch
+            {
+                //ignore
+            }
         }
 
         static readonly string[] SizeSuffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };

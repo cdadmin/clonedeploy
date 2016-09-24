@@ -8,7 +8,7 @@
 
     <asp:Content runat="server" ContentPlaceHolderID="Help">
         <li role="separator" class="divider"></li>
-     <li><a href="<%= ResolveUrl("~/views/help/index.html")%>" target="_blank">Help</a></li>
+     <li><a href="<%= ResolveUrl("~/views/help/groups-bootmenu.aspx")%>" target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
   <asp:LinkButton ID="buttonUpdate" runat="server" OnClick="buttonUpdate_OnClick" Text="Update Menu" OnClientClick="update_click()" CssClass="btn btn-default"/>

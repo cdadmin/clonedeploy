@@ -18,7 +18,7 @@ namespace BLL
             //
         }
 
-        public bool Authenticate(string username, string pwd)
+        public bool Authenticate(string username, string pwd, string ldapGroup=null)
         {
             if (Settings.LdapEnabled != "1") return false;
 
@@ -33,8 +33,6 @@ namespace BLL
                 entry.AuthenticationType = AuthenticationTypes.Secure;
             else if (Settings.LdapAuthType == "SSL")
                 entry.AuthenticationType = AuthenticationTypes.SecureSocketsLayer;
-
-
             try
             {
                 // Bind to the native AdsObject to force authentication.
@@ -49,59 +47,32 @@ namespace BLL
                 {
                     return false;
                 }
+
                 // Update the new path to the user in the directory
                 path = result.Path;
                 _filterAttribute = (String)result.Properties["cn"][0];
-
-                var groups = new List<String>();
-                try
-                {
-                    //SearchResult groupResult = search.FindOne();
-                    int propertyCount = result.Properties["memberOf"].Count;
-                    String dn;
-                    int equalsIndex, commaIndex;
-
-                    for (int propertyCounter = 0; propertyCounter < propertyCount;
-                         propertyCounter++)
-                    {
-                        dn = (String)result.Properties["memberOf"][propertyCounter];
-
-                        equalsIndex = dn.IndexOf("=", 1);
-                        commaIndex = dn.IndexOf(",", 1);
-                        if (-1 == equalsIndex)
-                        {
-                            continue;
-                            //return null;
-                        }
-                        groups.Add(dn.Substring((equalsIndex + 1),
-                                          (commaIndex - equalsIndex) - 1));
-                    
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("Error obtaining group names. " +
-                      ex.Message);
-                }
             }
             catch (Exception ex)
             {
                 Logger.Log("Could Not Authenticate User: " + username + " " + ex.Message);
                 return false;
             }
-            //GetGroups(_filterAttribute, path);
-            return true;
 
-
+            if (ldapGroup != null)
+            {
+                return GetGroups(_filterAttribute, path,ldapGroup);
+            }
+            else
+                return true;
         }
 
-        public string GetGroups(string _filterAttribute, string _path)
+
+
+        public bool GetGroups(string _filterAttribute, string _path, string ldapGroup)
         {
-            var groups = new List<String>();
             DirectorySearcher search = new DirectorySearcher(_path);
             search.Filter = "(cn=" + _filterAttribute + ")";
-            search.PropertiesToLoad.Add("memberOf");
-            StringBuilder groupNames = new StringBuilder();
+            search.PropertiesToLoad.Add("memberOf");        
             try
             {
                 SearchResult result = search.FindOne();
@@ -118,19 +89,21 @@ namespace BLL
                     commaIndex = dn.IndexOf(",", 1);
                     if (-1 == equalsIndex)
                     {
-                        return null;
+                        return false;
                     }
-                    groups.Add(dn.Substring((equalsIndex + 1),
-                                      (commaIndex - equalsIndex) - 1));
-                    groupNames.Append("|");
+                    if (String.Equals(ldapGroup, dn.Substring((equalsIndex + 1),
+                        (commaIndex - equalsIndex) - 1), StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        return true;
+                    }
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception("Error obtaining group names. " +
-                  ex.Message);
+                Logger.Log("Error obtaining group names. " + ex.Message);
+                return false;
             }
-            return groupNames.ToString();
+            return false;
         }
     }
 }

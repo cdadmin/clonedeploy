@@ -49,5 +49,11 @@ namespace Models
 
         [Column("clonedeploy_user_is_ldap", Order = 14)]
         public int IsLdapUser { get; set; }
+
+        [Column("clonedeploy_usergroup_id", Order = 15)]
+        public int UserGroupId { get; set; }
+
+        [NotMapped]
+        public virtual Models.CloneDeployUserGroup UserGroup { get; set; }
     }
 }

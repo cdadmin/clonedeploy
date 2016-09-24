@@ -3,10 +3,11 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="subcontent" Runat="Server">
      <script type="text/javascript">
          $(document).ready(function () {
-             $('#admin').addClass("nav-current");
+             $('#global').addClass("nav-current");
+             $('#global-sites').addClass("nav-current-sub");
          });
         </script>
-    <h1>Admin</h1>
+    <h1>Global->Sites</h1>
    
 </asp:Content>
 

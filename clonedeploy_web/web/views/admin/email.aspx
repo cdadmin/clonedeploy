@@ -5,7 +5,8 @@
 </asp:Content>
 
 <asp:Content runat="server" ID="Help" ContentPlaceHolderID="Help">
-      <a href="<%= ResolveUrl("~/views/help/index.html")%>"  target="_blank">Help</a>
+     <li role="separator" class="divider"></li>
+      <li><a href="<%= ResolveUrl("~/views/help/admin-email.aspx")%>"  target="_blank">Help</a></li>
 </asp:Content>
 
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
@@ -13,7 +14,12 @@
      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <span class="caret"></span>
   </button>
-<asp:LinkButton ID="btnTestEmail" runat="server" Text="Send Test Message" OnClick="btnTestMessage_Click" />
+
+</asp:Content>
+
+<asp:Content runat="server" ID="additional" ContentPlaceHolderID="AdditionalActions">
+    <li><asp:LinkButton ID="btnTestEmail" runat="server" Text="Send Test Message" OnClick="btnTestMessage_Click" /></li>
+
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent" Runat="Server">

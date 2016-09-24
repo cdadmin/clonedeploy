@@ -4,7 +4,8 @@
     <li>All Active Tasks</li>
     </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>"  target="_blank">Help</a>
+     <li role="separator" class="divider"></li>
+     <li><a href="<%= ResolveUrl("~/views/help/tasks-all.aspx")%>"  target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
      <asp:LinkButton ID="cancelTasks" runat="server" Text="Cancel All Tasks "  OnClick="cancelTasks_Click" CssClass="btn btn-default"/>

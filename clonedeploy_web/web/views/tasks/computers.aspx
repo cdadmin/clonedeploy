@@ -4,11 +4,12 @@
      <li>Start Computer Task</li>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="Help" Runat="Server">
-    <li><a href="<%= ResolveUrl("~/views/help/index.html")%>"  target="_blank">Help</a></li>
+     <li role="separator" class="divider"></li>
+    <li><a href="<%= ResolveUrl("~/views/help/tasks-startcomputer.aspx")%>"  target="_blank">Help</a></li>
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-     <asp:LinkButton ID="btnListDeploy" runat="server" OnClick="btnListDeploy_Click" Text="Deploy Selected" CssClass="btn btn-default"></asp:LinkButton>
+     <asp:LinkButton ID="btnListDeploy" runat="server" OnClick="btnListDeploy_Click" Text="Deploy Selected" CssClass="btn btn-default width_200"></asp:LinkButton>
     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <span class="caret"></span>
   </button>

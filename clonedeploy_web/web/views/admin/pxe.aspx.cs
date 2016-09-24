@@ -150,12 +150,6 @@ public partial class views_admin_pxe : Admin
             }
         }
 
-        if (BLL.ActiveImagingTask.AllActiveCountAdmin() > 0)
-        {
-            EndUserMessage = "Settings Cannot Be Changed While Tasks Are Active";
-            return false;
-        }
-
         return true;
     }
 }

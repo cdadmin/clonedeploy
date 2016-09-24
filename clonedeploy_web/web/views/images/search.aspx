@@ -12,6 +12,11 @@
      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <span class="caret"></span>
   </button>
+    
+</asp:Content>
+
+<asp:Content runat="server" ContentPlaceHolderID="AdditionalActions">
+    <li><asp:LinkButton ID="btnApproveImage" runat="server" OnClick="btnApproveImage_OnClick">Approve Selected Images</asp:LinkButton></li>
 </asp:Content>
 
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
@@ -69,8 +74,8 @@
                     <asp:Label ID="lblSize" runat="server" CausesValidation="false" CssClass="lbl_file"></asp:Label>
                 </ItemTemplate>
             </asp:TemplateField>
-          <asp:BoundField DataField="Environment" HeaderText="Imaging Environment"  ></asp:BoundField>
-
+          <asp:BoundField DataField="Environment" HeaderText="Imaging Environment" ItemStyle-CssClass="width_200"></asp:BoundField>
+            <asp:BoundField DataField="Approved" HeaderText="Approved" ItemStyle-CssClass="width_200"></asp:BoundField>
             
 
 

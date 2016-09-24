@@ -5,7 +5,8 @@
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="SubHelp" Runat="Server">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
+    <li role="separator" class="divider"></li>
+    <li><a href="<%= ResolveUrl("~/views/help/global-scripts.aspx") %>"   target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
     <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Update Script "  OnClientClick="update_click()" CssClass="btn btn-default"/>

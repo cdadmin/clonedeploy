@@ -6,8 +6,8 @@
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-    <li role="separator" class="divider"></li>
-    <li><a href="<%= ResolveUrl("~/views/help/index.html")%>" target="_blank">Help</a></li>
+   <li role="separator" class="divider"></li>
+    <li><a href="<%= ResolveUrl("~/views/help/computers-proxy.aspx")%>" class="" target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
     <asp:LinkButton ID="buttonUpdate" runat="server" OnClick="buttonUpdate_OnClick" Text="Update Computer" CssClass="btn btn-default" />

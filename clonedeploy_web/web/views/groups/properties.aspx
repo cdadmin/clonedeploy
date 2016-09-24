@@ -7,7 +7,7 @@
 
 <asp:Content runat="server" ContentPlaceHolderID="Help">
     <li role="separator" class="divider"></li>
-     <li><a href="<%= ResolveUrl("~/views/help/index.html")%>" target="_blank">Help</a></li>
+     <li><a href="<%= ResolveUrl("~/views/help/groups-properties.aspx")%>" target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
       <asp:LinkButton ID="btnSubmit" runat="server" Text="Update Properties" OnClick="btnSubmit_OnClick" CssClass="btn btn-default"/>

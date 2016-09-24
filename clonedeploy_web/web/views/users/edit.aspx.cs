@@ -22,6 +22,12 @@ namespace views.users
                 return;
             }
 
+            if (CloneDeployUser.UserGroupId != -1 && ddluserMembership.Text != CloneDeployUser.Membership)
+            {
+                EndUserMessage = "This User's Role Is Controlled By A Group";
+                return;
+            }
+
             var updatedUser = CloneDeployUser;
             if (!string.IsNullOrEmpty(txtUserPwd.Text))
             {

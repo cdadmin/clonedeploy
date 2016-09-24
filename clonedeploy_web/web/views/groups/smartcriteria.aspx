@@ -6,7 +6,8 @@
 </asp:Content>
 
     <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>" target="_blank">Help</a>
+         <li role="separator" class="divider"></li>
+     <li><a href="<%= ResolveUrl("~/views/help/groups-smart.aspx")%>" target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
    <asp:LinkButton ID="btnUpdate" runat="server" Text="Update Criteria" OnClick="btnUpdate_OnClick" CssClass="btn btn-default" />

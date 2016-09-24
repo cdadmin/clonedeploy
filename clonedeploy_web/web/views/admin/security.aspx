@@ -5,7 +5,8 @@
 </asp:Content>
 
 <asp:Content runat="server" ID="Help" ContentPlaceHolderID="Help">
-    <a href="<%= ResolveUrl("~/views/help/index.html")%>" target="_blank">Help</a>
+     <li role="separator" class="divider"></li>
+    <li><a href="<%= ResolveUrl("~/views/help/admin-security.aspx")%>" target="_blank">Help</a></li>
 </asp:Content>
 
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
@@ -86,6 +87,16 @@
     </div>
     <div class="size-setting column">
         <asp:DropDownList ID="ddlWebTasksLogin" runat="server" CssClass="ddlist" AutoPostBack="True" OnSelectedIndexChanged="LoginsChanged">
+            <asp:ListItem>Yes</asp:ListItem>
+            <asp:ListItem>No</asp:ListItem>
+        </asp:DropDownList>
+    </div>
+    <br class="clear" />
+     <div class="size-4 column">
+        Clobber Mode Requires Login:
+    </div>
+    <div class="size-setting column">
+        <asp:DropDownList ID="ddlClobberLogin" runat="server" CssClass="ddlist" AutoPostBack="True" OnSelectedIndexChanged="LoginsChanged">
             <asp:ListItem>Yes</asp:ListItem>
             <asp:ListItem>No</asp:ListItem>
         </asp:DropDownList>

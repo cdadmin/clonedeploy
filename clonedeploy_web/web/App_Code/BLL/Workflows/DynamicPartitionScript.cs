@@ -473,7 +473,7 @@ namespace BLL.Workflows
                         partitionScript += "echo \"" + part.VolumeGroup.Name + ":" + ClientHd + partitionPrefix +
                                            part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] +
                                            ":" + part.VolumeGroup.Uuid + ":" + rlv.Name +
-                                           ":" + rlv.Size + ":" + rlv.FsType + ":" + rlv.Uuid + "\" >> /tmp/corestorage\n";
+                                           ":" + rlv.Size * clientBlockSize + ":" + rlv.FsType + ":" + rlv.Uuid + "\" >> /tmp/corestorage\n";
                     }
                 }
             }

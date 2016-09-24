@@ -82,9 +82,11 @@ namespace BLL.DynamicClientPartition
                 if (!LogicalPartitionLayout())
                     return null;
 
-            if (VolumeGroupHelpers.Any())
-                if (!LogicalVolumeLayout())
-                    return null;
+
+                if (VolumeGroupHelpers.Any())
+                    if (!LogicalVolumeLayout())
+                        return null;
+            
 
 
             //Order partitions based of block start
@@ -469,6 +471,14 @@ namespace BLL.DynamicClientPartition
                             var logicalVolumeHelper = new ClientPartitionHelper(_imageProfile).LogicalVolume(lv, LbsByte,_newHdSize,HdNumberToGet);
                             double percentOfPvForThisLv = (double)logicalVolumeHelper.MinSizeBlk / volumeGroup.AgreedPvSizeBlk;
                             var tmpClientPartitionSizeLvBlk = logicalVolumeHelper.MinSizeBlk;
+
+                            if (volumeGroup.IsFusion)
+                            {
+                                clientPartitionLv.Size = 0;
+                                LogicalVolumes.Add(clientPartitionLv);
+                                singleLvVerified = true;
+                                continue;
+                            }
 
                             if (upSizeLock.ContainsKey(lv.Name))
                                 tmpClientPartitionSizeLvBlk = upSizeLock[lv.Name];

@@ -3,7 +3,8 @@
     <li>Image Management</li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubHelp">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
+      <li role="separator" class="divider"></li>
+    <li><a href="<%= ResolveUrl("~/views/help/users-imagemgmt.aspx") %>"   target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
      <asp:LinkButton ID="buttonUpdate" runat="server" OnClick="buttonUpdate_OnClick" Text="Update Image Management" CssClass="btn btn-default"  />

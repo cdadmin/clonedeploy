@@ -7,7 +7,8 @@
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>" target="_blank">Help</a>
+     <li role="separator" class="divider"></li>
+     <li><a href="<%= ResolveUrl("~/views/help/groups-removemembers.aspx")%>" target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
        <asp:LinkButton ID="btnRemoveSelected" runat="server" OnClick="btnRemoveSelected_OnClick" Text="Remove Selected Computers" CssClass="btn btn-default"/>

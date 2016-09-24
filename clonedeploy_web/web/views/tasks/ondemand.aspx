@@ -5,7 +5,8 @@
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>" data-info="Help" target="_blank">Help</a>
+     <li role="separator" class="divider"></li>
+     <li><a href="<%= ResolveUrl("~/views/help/tasks-startond.aspx")%>" data-info="Help" target="_blank">Help</a></li>
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">

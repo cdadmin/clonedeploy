@@ -125,6 +125,20 @@ namespace Service.Client
                         return "true";
                 }
             }
+            else if (task == "clobber" && Settings.ClobberRequiresLogin == "No")
+            {
+                if (token == Settings.UniversalToken && !string.IsNullOrEmpty(Settings.UniversalToken))
+                    return "true";
+            }
+            else if (task == "clobber" && Settings.ClobberRequiresLogin == "Yes")
+            {
+                var user = BLL.User.GetUserByToken(token);
+                if (user != null)
+                {
+                    if (new BLL.Authorize(user, Authorizations.ImageDeployTask).IsAuthorized())
+                        return "true";
+                }
+            }
            
             return "false";
         }

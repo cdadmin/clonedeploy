@@ -40,6 +40,9 @@ namespace DAL
         public DbSet<Models.UserRight> UserRight { get; set; }
         public DbSet<Models.UserGroupManagement> UserGroupManagements { get; set; }
         public DbSet<Models.UserImageManagement> UserImageManagements { get; set; }
+        public DbSet<Models.UserGroupRight> UserGroupRight { get; set; }
+        public DbSet<Models.UserGroupGroupManagement> UserGroupGroupManagements { get; set; }
+        public DbSet<Models.UserGroupImageManagement> UserGroupImageManagements { get; set; }
         public DbSet<Models.UserLockout> UserLockouts { get; set; }
         public DbSet<Models.GroupProperty> GroupProperties { get; set; }
         public DbSet<Models.FileFolder> FilesFolders { get; set; }
@@ -55,6 +58,7 @@ namespace DAL
         public DbSet<Models.GroupMunki> GroupMunkis { get; set; }
         public DbSet<Models.ComputerProxyReservation> ProxyReservations { get; set; }
         public DbSet<Models.BootEntry> BootEntries { get; set; }
+        public DbSet<Models.CloneDeployUserGroup> UserGroups { get; set; }
 
     }
 

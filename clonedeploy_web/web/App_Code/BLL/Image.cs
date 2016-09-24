@@ -282,7 +282,7 @@ namespace BLL
             }
         }
 
-        public static Models.ValidationResult CheckApprovalAndChecksum(Models.Image image)
+        public static Models.ValidationResult CheckApprovalAndChecksum(Models.Image image,int userId)
         {
             var validationResult = new Models.ValidationResult();
             if (image == null)
@@ -301,11 +301,15 @@ namespace BLL
 
             if (Settings.RequireImageApproval.ToLower() == "true")
             {
-                if (!Convert.ToBoolean(image.Approved))
+                var user = BLL.User.GetUser(userId);
+                if (user.Membership != "Administrator") //administrators don't need image approval
                 {
-                    validationResult.IsValid = false;
-                    validationResult.Message = "Image Has Not Been Approved";
-                    return validationResult;
+                    if (!Convert.ToBoolean(image.Approved))
+                    {
+                        validationResult.IsValid = false;
+                        validationResult.Message = "Image Has Not Been Approved";
+                        return validationResult;
+                    }
                 }
             }
 

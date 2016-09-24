@@ -5,7 +5,8 @@
     <li>General</li>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubHelp" Runat="Server">
-       <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
+    <li role="separator" class="divider"></li>
+      <li><a href="<%= ResolveUrl("~/views/help/global-munki.aspx") %>"   target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
      <asp:LinkButton ID="buttonUpdateGeneral" runat="server" OnClick="buttonUpdateGeneral_OnClick" Text="Update Template" CssClass="btn btn-default"  />

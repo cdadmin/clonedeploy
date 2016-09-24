@@ -3,10 +3,11 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubHelp" Runat="Server">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
+     <li role="separator" class="divider"></li>
+    <li><a href="<%= ResolveUrl("~/views/help/admin-bootmenu.aspx") %>"   target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
-    <asp:LinkButton ID="btnSubmitDefault" runat="server" Text="Generate" OnClick="btnSubmitDefault_OnClick" CssClass="btn btn-default"  />
+    <asp:LinkButton ID="btnSubmitDefault" runat="server" Text="Generate" OnClick="btnSubmitDefault_OnClick" CssClass="btn btn-default width_100"  />
      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <span class="caret"></span>
   </button>

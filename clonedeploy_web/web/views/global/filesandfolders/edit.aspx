@@ -4,7 +4,8 @@
      <li><%= FileFolder.Name %></li>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubHelp" Runat="Server">
-     <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
+    <li role="separator" class="divider"></li>
+     <li><a href="<%= ResolveUrl("~/views/help/global-files.aspx") %>"   target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
       <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Update File / Folder" CssClass="btn btn-default"  />

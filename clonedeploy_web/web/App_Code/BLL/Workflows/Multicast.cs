@@ -49,7 +49,7 @@ namespace BLL.Workflows
 
             if (_imageProfile.Image == null) return "The Image Does Not Exist";
 
-            var validation = Image.CheckApprovalAndChecksum(_imageProfile.Image);
+            var validation = Image.CheckApprovalAndChecksum(_imageProfile.Image,_userId);
             if (!validation.IsValid) return validation.Message;
 
             _multicastSession.Port = Port.GetNextPort();

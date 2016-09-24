@@ -118,6 +118,7 @@ public partial class views_admin_bootmenu_applenetboot : BasePages.Admin
         vendorOptions.Append(":");
 
         List<string> listIds = new List<string>();
+        var counter = 1;
         foreach (GridViewRow row in gvNetBoot.Rows)
         {
             var imageId = (Label) row.FindControl("lblImageId");
@@ -130,11 +131,13 @@ public partial class views_admin_bootmenu_applenetboot : BasePages.Admin
             vendorOptions.Append(name.Text.Length.ToString("X2"));
             vendorOptions.Append(":");
             vendorOptions.Append(StringToHex(name.Text));
+            if (counter != gvNetBoot.Rows.Count)
             vendorOptions.Append(":");
             listIds.Add(nbiIdHex);
 
             if (nbiIdHex != "0F49" && nbiIdHex != "98DB")
                 directions.Text += "Place the " + name.Text + " nbi in " + publicFolder + Path.DirectorySeparatorChar + nbiIdHex + "<br>";
+            counter++;
         }
 
         var duplicateIds = listIds.GroupBy(x => x)

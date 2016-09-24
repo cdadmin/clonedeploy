@@ -6,7 +6,8 @@
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>" target="_blank">Help</a>
+     <li role="separator" class="divider"></li>
+     <li><a href="<%= ResolveUrl("~/views/help/groups-munki.aspx")%>" target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
        <asp:LinkButton ID="btnAddSelected" runat="server" OnClick="btnAddSelected_OnClick" Text="Update Templates " CssClass="btn btn-default" />

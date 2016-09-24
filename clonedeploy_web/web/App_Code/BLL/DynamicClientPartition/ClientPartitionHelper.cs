@@ -325,7 +325,9 @@ namespace BLL.DynamicClientPartition
 
                 var logicalVolumeHelper = LogicalVolume(logicalVolume, lbsByte, newHdSize,hdNumberToGet);
                 volumeGroupHelper.MinSizeBlk += logicalVolumeHelper.MinSizeBlk;
-
+                //assume fusion drive
+                if (logicalVolume.FsType.ToLower().Contains("hfs") && newHdSize <= 121332826112)
+                    volumeGroupHelper.IsFusion = true;
 
             }
 
@@ -396,10 +398,22 @@ namespace BLL.DynamicClientPartition
                     logicalVolumeHelper.MinSizeBlk = (lv.UsedMb*1024*1024)/lbsByte;
                 else
                 {
-                    if (lv.VolumeSize > lv.UsedMb)
-                        logicalVolumeHelper.MinSizeBlk = lv.VolumeSize*1024*1024/lbsByte;
+                    //fix me - a hack when using core storage with dynamic partitions on macos environment
+                    if (lv.FsType.ToLower().Contains("hfs") && newHdSize <= 121332826112)
+                    {
+                        //assume fusion, set minsize to full size of drive
+                        logicalVolumeHelper.MinSizeBlk = Convert.ToInt64(newHdSize*.8)/lbsByte;
+                        
+                    }
                     else
-                        logicalVolumeHelper.MinSizeBlk = lv.UsedMb*1024*1024/lbsByte;
+                    {
+                        if (lv.VolumeSize > lv.UsedMb)
+                            logicalVolumeHelper.MinSizeBlk = lv.VolumeSize*1024*1024/lbsByte;
+                        else
+                            logicalVolumeHelper.MinSizeBlk = lv.UsedMb*1024*1024/lbsByte;
+                    }
+
+
                 }
             }
 

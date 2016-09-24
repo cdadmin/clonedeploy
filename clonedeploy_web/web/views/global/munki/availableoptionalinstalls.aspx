@@ -5,7 +5,8 @@
     <li>Optional Installs</li>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubHelp" Runat="Server">
-      <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
+    <li role="separator" class="divider"></li>
+      <li><a href="<%= ResolveUrl("~/views/help/global-munki.aspx") %>"   target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
      <asp:LinkButton ID="buttonUpdate" runat="server" OnClick="buttonUpdate_OnClick" Text="Update Template" CssClass="btn btn-default"  />
@@ -16,13 +17,13 @@
 
 <asp:Content runat="server" ID="TopNav" ContentPlaceHolderID="SubPageNavSub">
     <li id="assignedmanagedinstalls"><a  href="<%= ResolveUrl("~/views/global/munki/assignedoptionalinstalls.aspx") %>?manifestid=<%= ManifestTemplate.Id %>&cat=sub2"><span class="sub-nav-text">Assigned Optional Installs</span></a></li>
-   <li id="availablemanagedinstalls"><a  href="<%= ResolveUrl("~/views/global/munki/availableoptionalinstalls.aspx") %>?manifestid=<%= ManifestTemplate.Id %>&cat=sub2"><span class="sub-nav-text">Available Optional Installs</span></a></li>
+   <li id="availableoptionalinstalls"><a  href="<%= ResolveUrl("~/views/global/munki/availableoptionalinstalls.aspx") %>?manifestid=<%= ManifestTemplate.Id %>&cat=sub2"><span class="sub-nav-text">Available Optional Installs</span></a></li>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="SubContent2" Runat="Server">
      <script type="text/javascript">
         $(document).ready(function() {
             $('#optionalinstalls').addClass("nav-current");
-            $('#available').addClass("nav-current");
+            $('#availableoptionalinstalls').addClass("nav-current");
             $("[id*=gvPkgInfos] td").hover(function () {
                 $("td", $(this).closest("tr")).addClass("hover_row");
             }, function () {

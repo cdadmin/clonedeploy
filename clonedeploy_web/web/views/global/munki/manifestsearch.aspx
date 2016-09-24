@@ -4,7 +4,8 @@
      <li>Search</li>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubHelp" Runat="Server">
-     <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
+    <li role="separator" class="divider"></li>
+      <li><a href="<%= ResolveUrl("~/views/help/global-munki.aspx") %>"   target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
     <a class="confirm btn btn-default" href="#">Delete Selected Templates </a>

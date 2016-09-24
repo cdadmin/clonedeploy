@@ -3,9 +3,9 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
 <li>Edit</li>
 </asp:Content>
-
-<asp:Content runat="server" ContentPlaceHolderID="SubHelp">
-     <a href="<%= ResolveUrl("~/views/help/index.html")%>"  target="_blank">Help</a>
+<asp:Content ID="Content3" ContentPlaceHolderID="SubHelp" Runat="Server">
+     <li role="separator" class="divider"></li>
+    <li><a href="<%= ResolveUrl("~/views/help/admin-dp.aspx") %>"   target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
      <asp:LinkButton ID="buttonUpdateDp" runat="server" OnClick="buttonUpdateDp_OnClick" Text="Update Distribution Point " CssClass="btn btn-default"  />

@@ -75,6 +75,11 @@
                     <span class="nav-text">Export</span>
                 </a>
             </li>
+              <li id="clobber">
+                <a href="<%= ResolveUrl("~/views/admin/clobber.aspx") %>" >
+                    <span class="nav-text">Clobber Mode</span>
+                </a>
+            </li>
             
         </ul>
         </div>

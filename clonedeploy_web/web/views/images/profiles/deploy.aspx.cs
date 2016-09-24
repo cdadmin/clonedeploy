@@ -100,10 +100,17 @@ public partial class views_images_profiles_deploy : Images
                 imageProfile.CustomSchema = chkModifySchema.Checked ? SetCustomSchema() : "";
                 break;
             case "Standard Core Storage":
-                imageProfile.CustomSchema = SetCustomSchema();
+                imageProfile.CustomSchema = chkModifySchema.Checked ? SetCustomSchema() : "";
                 break;
             case "Standard":
-                imageProfile.CustomSchema = SetCustomSchema();
+                if (Image.Environment == "winpe")
+                {
+                    imageProfile.CustomSchema = SetCustomSchema();
+                }
+                else
+                {
+                    imageProfile.CustomSchema = chkModifySchema.Checked ? SetCustomSchema() : "";
+                }
                 break;
             default:
                 imageProfile.CustomPartitionScript = "";
@@ -112,7 +119,7 @@ public partial class views_images_profiles_deploy : Images
 
 
         var isSchemaError = false;
-        if (imageProfile.PartitionMethod == "Standard" || imageProfile.PartitionMethod == "Standard Core Storage")
+        if (imageProfile.PartitionMethod == "Standard" && Image.Environment == "winpe")
         {
             var customSchema = JsonConvert.DeserializeObject<Models.ImageSchema.ImageSchema>(imageProfile.CustomSchema);
             
@@ -149,7 +156,7 @@ public partial class views_images_profiles_deploy : Images
     protected void ddlPartitionMethod_OnSelectedIndexChanged(object sender, EventArgs e)
     {
        
-        if (Image.Environment == "macOS" || Image.Environment == "winpe")
+        if (Image.Environment == "winpe")
         {
             ForceDiv.Visible = false;
             if (ddlObject.Text == "Standard" || ddlObject.Text == "Standard Core Storage")

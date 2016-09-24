@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Helpers;
+using Models;
 using Newtonsoft.Json;
 
 namespace Security
@@ -70,7 +71,40 @@ namespace Security
 
             //Check if user exists in Clone Deploy
             var user = BLL.User.GetUser(userName);
-            if (user == null) return validationResult;
+            if (user == null)
+            {
+                //Check For a first time LDAP User Group Login
+                if (Settings.LdapEnabled == "1")
+                {
+                    foreach (var ldapGroup in BLL.UserGroup.GetLdapGroups())
+                    {
+                        if (new BLL.Ldap().Authenticate(userName, password, ldapGroup.GroupLdapName))
+                        {
+                            //user is a valid ldap user via ldap group that has not yet logged in.
+                            //Add the user and allow login.                         
+                            var cdUser = new CloneDeployUser
+                            {
+                                Name = userName,
+                                Salt = Helpers.Utility.CreateSalt(64),
+                                Token = Utility.GenerateKey(),
+                                IsLdapUser = 1
+                            };
+                            //Create a local random db pass, should never actually be possible to use.
+                            cdUser.Password = Helpers.Utility.CreatePasswordHash(new System.Guid().ToString(), cdUser.Salt);
+                            if (BLL.User.AddUser(cdUser).IsValid)
+                            {
+                                //add user to group
+                                var newUser = BLL.User.GetUser(userName);
+                                BLL.UserGroup.AddNewGroupMember(ldapGroup,newUser);
+                            }
+                            validationResult.Message = "Success";
+                            validationResult.IsValid = true;
+                            break;
+                        }
+                    }
+                }
+                return validationResult;
+            }
 
             if (BLL.UserLockout.AccountIsLocked(user.Id))
             {
@@ -82,7 +116,45 @@ namespace Security
             //Check against AD
             if (user.IsLdapUser == 1 && Settings.LdapEnabled == "1")
             {
-                if (new BLL.Ldap().Authenticate(userName, password)) validationResult.IsValid = true;
+                //Check if user is authenticated against an ldap group
+                if (user.UserGroupId != -1)
+                {
+                    //user is part of a group, is the group an ldap group?
+                    var userGroup = BLL.UserGroup.GetUserGroup(user.UserGroupId);
+                    if (userGroup.IsLdapGroup == 1)
+                    {
+                        //the group is an ldap group
+                        //make sure user is still in that ldap group
+                        if (new BLL.Ldap().Authenticate(userName, password, userGroup.GroupLdapName))
+                        {
+                            validationResult.IsValid = true;
+                        }
+                        else
+                        {
+                            //user is either not in that group anymore, not in the directory, or bad password
+                            validationResult.IsValid = false;
+
+                            if (new BLL.Ldap().Authenticate(userName, password))
+                            {
+                                //password was good but user is no longer in the group
+                                //delete the user
+                                BLL.User.DeleteUser(user.Id);
+                            }  
+                        }
+                    }
+                    else
+                    {
+                        //the group is not an ldap group
+                        //still need to check creds against directory
+                        if (new BLL.Ldap().Authenticate(userName, password)) validationResult.IsValid = true;
+                    }
+                }
+                else
+                {
+                    //user is not part of a group, check creds against directory
+                    if (new BLL.Ldap().Authenticate(userName, password)) validationResult.IsValid = true;
+                }
+               
             }
             else if (user.IsLdapUser == 1 && Settings.LdapEnabled != "1")
             {

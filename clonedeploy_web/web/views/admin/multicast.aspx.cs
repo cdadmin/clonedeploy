@@ -81,14 +81,6 @@ public partial class views_admin_multicast : Admin
 
     protected bool ValidateSettings()
     {
-        if (ActiveImagingTask.AllActiveCountAdmin() > 0)
-        {
-            EndUserMessage = "Settings Cannot Be Changed While Tasks Are Active";
-            return false;
-        }
-
-       
-
         var startPort = Convert.ToInt32(txtStartPort.Text);
         var endPort = Convert.ToInt32(txtEndPort.Text);
 

@@ -3,7 +3,8 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubHelp" Runat="Server">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
+     <li role="separator" class="divider"></li>
+    <li><a href="<%= ResolveUrl("~/views/help/admin-bootmenu.aspx") %>"   target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
     <asp:LinkButton ID="btnSaveEditor" runat="server" Text="Save Changes" OnClick="saveEditor_Click"   OnClientClick="update_click()" CssClass="btn btn-default"/>
