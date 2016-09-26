@@ -142,9 +142,18 @@ namespace BLL
                        fileName + ".ipxe";
             else if (mode.Contains("grub"))
             {
-                fileName = isActiveOrCustom ? pxeComputerMac : "grub";
-                path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
-                       fileName + ".cfg";
+                
+                if (isActiveOrCustom)
+                {
+                    path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                      pxeComputerMac + ".cfg";
+                }
+                else
+                {
+                    path = Settings.TftpPath + "grub" + Path.DirectorySeparatorChar 
+                      + "grub.cfg";
+                }
+               
             }
             else
                 path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +

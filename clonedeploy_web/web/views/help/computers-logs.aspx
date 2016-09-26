@@ -8,6 +8,8 @@
          });
         </script>
     <h1>Computers->Logs</h1>
-   
+   <p>The logs page displays the imaging logs for both deploy and upload tasks.  If a computer is registered with CloneDeploy and On Demand Mode
+       was used, the logs will still show up in this location.  The logs can also be exported for use in the Forums.
+   </p>
 </asp:Content>
 

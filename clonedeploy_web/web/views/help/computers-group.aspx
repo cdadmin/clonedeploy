@@ -8,6 +8,6 @@
          });
         </script>
     <h1>Computers->Group Membership</h1>
-   
+   <p>Displays a list of all groups that the computer belongs to.  No changes can be made here.  It is for informational purposes only.</p>
 </asp:Content>
 

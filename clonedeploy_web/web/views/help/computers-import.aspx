@@ -8,6 +8,7 @@
          });
         </script>
     <h1>Computers->Import</h1>
-   
+   <p>The import page allows you to import a list of computers from a csv.  The expected header is:</p>
+    <p><b>Name,Mac,Description,CustomAttribute1,CustomAttribute2,CustomAttribute3,CustomAttribute4,CustomAttribute5</b></p>
 </asp:Content>
 
