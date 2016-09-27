@@ -8,6 +8,6 @@
          });
         </script>
     <h1>Groups->Boot Menu</h1>
-   
+   <p>Sets a custom boot menu for all computers in a group.  See <a href="<%= ResolveUrl("~/views/help/computers-bootmenu.aspx") %>">Computers->Boot Menu</a> for more info.</p>
 </asp:Content>
 

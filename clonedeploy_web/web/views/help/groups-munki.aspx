@@ -8,6 +8,6 @@
          });
         </script>
     <h1>Groups->Munki</h1>
-   
+   <p>Sets the Munki Templates for all computers in a group.  See <a href="<%= ResolveUrl("~/views/help/computers-munki.aspx") %>">Computers->Munki Templates</a> for more info.</p>
 </asp:Content>
 

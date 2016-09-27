@@ -35,8 +35,8 @@ function start_network()
 	fi
 	
 	ip link set $net_if up
-	for timeout in 3 3; do
-	  udhcpc -i $net_if -t 3 -T $timeout -n
+	for timeout in 15 60; do
+	  udhcpc -i $net_if -t 2 -T $timeout -n
 	  if [ "$?" = "0" ]; then
 	    link_up="true"
 	    break;

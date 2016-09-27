@@ -8,6 +8,7 @@
          });
         </script>
     <h1>Groups->Import</h1>
-   
+   <p>Import allows you to import a list of groups from a CSV file.  It does not include group members.  The expected header is:</p>
+    <p><b>Name,Description,Type,SmartCriteria</b></p>
 </asp:Content>
 

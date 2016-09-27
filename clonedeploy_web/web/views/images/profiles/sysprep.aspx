@@ -6,7 +6,8 @@
     <li>Sysprep Tags</li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubHelp">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
+    <li role="separator" class="divider"></li>
+     <li><a href="<%= ResolveUrl("~/views/help/images-sysprep.aspx")%>"  target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
     <asp:LinkButton ID="btnUpdateSysprep" runat="server" OnClick="btnUpdateSysprep_OnClick" Text="Update Sysprep Options" CssClass="btn btn-default"  />

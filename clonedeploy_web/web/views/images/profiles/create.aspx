@@ -6,7 +6,8 @@
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="SubHelp">
-    <a href="<%= ResolveUrl("~/views/help/index.html") %>"   target="_blank">Help</a>
+     <li role="separator" class="divider"></li>
+     <li><a href="<%= ResolveUrl("~/views/help/images-profiles.aspx")%>"  target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
       <asp:LinkButton ID="buttonCreateProfile" runat="server" OnClick="buttonCreateProfile_OnClick" Text="Create Profile" CssClass="btn btn-default"/>

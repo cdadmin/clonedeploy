@@ -8,6 +8,6 @@
          });
         </script>
     <h1>Tasks->Start Group Task</h1>
-   
+   <p>Allows a user to start a deploy task for all group members using either a multicast or unicast.</p>
 </asp:Content>
 

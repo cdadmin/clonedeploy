@@ -34,6 +34,19 @@
            <li id="images-newedit"><a href="<%= ResolveUrl("~/views/help/images-newedit.aspx") %>">New / Edit</a></li>
            <li id="images-search"><a href="<%= ResolveUrl("~/views/help/images-search.aspx") %>">Search</a></li>
           <li id="images-import"><a href="<%= ResolveUrl("~/views/help/images-import.aspx") %>">Import</a></li>
+            <li id="images-schema"><a href="<%= ResolveUrl("~/views/help/images-schema.aspx") %>">Schema</a></li>
+            <li id="profiles"><a href="<%= ResolveUrl("~/views/help/images-profiles.aspx") %>">Profiles</a>
+                <ul class="nav navbar-nav">
+                    <li id="images-taskoptions"><a href="<%= ResolveUrl("~/views/help/images-taskoptions.aspx") %>">Task Options</a></li>
+                    <li id="images-pxeoptions"><a href="<%= ResolveUrl("~/views/help/images-pxeoptions.aspx") %>">PXE Boot Options</a></li>
+                    <li id="images-uploadoptions"><a href="<%= ResolveUrl("~/views/help/images-uploadoptions.aspx") %>">Upload Options</a></li>
+                    <li id="images-deployoptions"><a href="<%= ResolveUrl("~/views/help/images-deployoptions.aspx") %>">Deploy Options</a></li>
+                    <li id="images-multicastoptions"><a href="<%= ResolveUrl("~/views/help/images-multicastoptions.aspx") %>">Multicast Options</a></li>
+                    <li id="images-scripts"><a href="<%= ResolveUrl("~/views/help/images-scripts.aspx") %>">Scripts</a></li>
+                    <li id="images-sysprep"><a href="<%= ResolveUrl("~/views/help/images-sysprep.aspx") %>">Sysprep Options</a></li>
+                    <li id="images-filecopy"><a href="<%= ResolveUrl("~/views/help/images-filecopy.aspx") %>">File Copy</a></li>
+                </ul>
+            </li>
             </ul>
    </li>
    <li id="tasks"><h4>Tasks</h4>

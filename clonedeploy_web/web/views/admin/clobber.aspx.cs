@@ -43,7 +43,9 @@ public partial class views_admin_clobber : BasePages.Admin
      
     }
 
-    protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
+   
+
+    protected void ButtonConfirm_Click(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.UpdateAdmin);
 

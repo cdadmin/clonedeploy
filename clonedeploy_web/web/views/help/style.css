@@ -4,11 +4,10 @@ html,body,div,span,h1,h2,h3,h4,h5,h6,p{margin:0;padding:0;border:0;font-size:100
 body{background:#fff;font-size:14px;font-family:opensans, "Calibri Light", "Helvetica Neue", Helvetica, Arial;color:#444;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;margin-right: 50px;}
 a, a:visited { color: #333; text-decoration: none; outline: 0; }
 a:hover, a:focus { color: #000; }
-p a, p a:visited { line-height: inherit; }
+p a, p a:visited { color: blue; }
 a img{border: 0;}
 ul{ list-style-type: none;padding-left: 20px;}
-p{ margin-bottom: 15px;}
-
+p{ margin-bottom: 15px;line-height: 26px;}
 
 h1,h2,h3,h4,h5,h6{font-family:opensans, Calibri, Arial, sans-serif;font-weight:normal;}
 h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{font-weight:inherit;}

@@ -8,6 +8,6 @@
          });
         </script>
     <h1>Groups->Add Members</h1>
-   
+   <p>Allows you to manually add specific computers to a standard group. This page is only visible for standard groups.</p>
 </asp:Content>
 

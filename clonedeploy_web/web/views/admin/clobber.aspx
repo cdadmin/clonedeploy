@@ -10,7 +10,7 @@
 </asp:Content>
 
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
-    <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update Clobber Settings" OnClick="btnUpdateSettings_OnClick" CssClass=" btn btn-default" />
+      <a class="confirm btn btn-default" href="#">Update Clobber Settings</a>
      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <span class="caret"></span>
   </button>
@@ -53,4 +53,16 @@
     <asp:CheckBox runat="server" id="chkPromptName"/>
 </div>
     <br class="clear"/>
+    
+    <div id="confirmbox" class="confirm-box-outer">
+        <div class="confirm-box-inner">
+            <h4>
+                <asp:Label ID="lblTitle" runat="server" Text="Are You Sure You Want To Change Clobber Settings?<br>You Could Potentially Image Non Targeted Computers."></asp:Label>
+            </h4>
+            <div class="confirm-box-btns">
+                <asp:LinkButton ID="ConfirmButton" OnClick="ButtonConfirm_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
+                <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no"/>
+            </div>
+        </div>
+    </div>
 </asp:Content>
