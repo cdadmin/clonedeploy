@@ -6,7 +6,7 @@
 
 <asp:Content runat="server" ContentPlaceHolderID="Help">
       <li role="separator" class="divider"></li>
-     <li><a href="<%= ResolveUrl("~/views/help/users-newedit.aspx")%>"  target="_blank">Help</a></li>
+     <li><a href="<%= ResolveUrl("~/views/help/users-newedit.aspx#ausers")%>"  target="_blank">Help</a></li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
      <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_Click" Text="Add User" CssClass="btn btn-default width_100" />

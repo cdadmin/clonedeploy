@@ -8,6 +8,8 @@
          });
         </script>
     <h1>Users->Remove Group Members</h1>
-   
+   <p>Allows you to remove existing group members from the group.  If a user is removed, that user will have the current permission assigned to the
+       group when the user was removed.
+   </p>
 </asp:Content>
 

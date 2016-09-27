@@ -8,6 +8,8 @@
          });
         </script>
     <h1>Users->Add Group Members</h1>
-   
+   <p>Allows you to select which users are part of the group.  A user can only be a member of a single group.  Users cannot
+       be added to LDAP groups, they are always managed by the directory server.
+   </p>
 </asp:Content>
 

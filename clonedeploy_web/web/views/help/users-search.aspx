@@ -8,6 +8,8 @@
          });
         </script>
     <h1>Users->Search</h1>
-   
+   <p>The search screen is the default view when you select Users. It displays all of the current users. 
+       The search bar implies a wildcard before and after the string you enter. Leave it blank for all users. 
+       You can also use this view to delete multiple users as well as view additional options for an individual user.</p>
 </asp:Content>
 
