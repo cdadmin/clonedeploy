@@ -48,7 +48,7 @@ function start_network()
 	  for interface in `ls /sys/class/net | grep -v "lo" | grep -v "$net_if" | sed 's/@//'`; do
 	    echo
 	    echo " ** Starting Network On Interface $interface ** "
-	    udhcpc -i $interface -t 3 -T 3 -n
+	    udhcpc -i $interface -t 3 -T 20 -n
 	    if [ "$?" = "0" ]; then
 	      link_up="true"
 		  net_if=$interface
@@ -178,11 +178,9 @@ if [ "$task" = "diag" ]; then
 	/bin/cd_diag
 	reboot -f
 fi
-#Set hardware clock
-if [ "$skip_clock" != "true" ]; then	
-	localDateTime=$($curlCommand ${web}GetLocalDateTime $curlEnd)
-	hwclock --localtime --set --date "$localDateTime"
-	
+
+
+if [ "$skip_clock" != "true" ]; then		
 	utcDateTime=$($curlCommand ${web}GetUtcDateTime $curlEnd)
 	date -s "$utcDateTime" &>> /dev/null
 fi
@@ -262,9 +260,13 @@ if [ "$skip_core_download" != "true" ]; then
 	sleep 2
 fi
 
-if [ "$task" = "push" ]; then	
+if [ "$task" = "push" ] || [ "$task" = "permanent_push" ]; then	
 	/bin/cd_push
 
+elif [ "$task" = "clobber" ]; then	
+	check_auth
+	/bin/cd_push
+	
 elif [ "$task" = "pull" ]; then	
 	/bin/cd_pull
 

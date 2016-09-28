@@ -8,6 +8,6 @@
          });
         </script>
     <h1>Global->Rooms</h1>
-   
+   <p>Rooms are an optional way to represent a physical grouping of computers.  Those computers can be then be assigned their own distribution point for downloading images.  </p>
 </asp:Content>
 

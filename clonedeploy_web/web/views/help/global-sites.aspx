@@ -8,6 +8,6 @@
          });
         </script>
     <h1>Global->Sites</h1>
-   
+   <p>Sites are an optional way to represent a physical grouping of computers.  Those computers can be then be assigned their own distribution point for downloading images.  </p>
 </asp:Content>
 
