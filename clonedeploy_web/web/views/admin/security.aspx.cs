@@ -33,7 +33,7 @@ public partial class views_admin_security : Admin
         ddlClobberLogin.Text = Settings.ClobberRequiresLogin;
 
         if (ddlDebugLogin.Text == "No" || ddlOndLogin.Text == "No" || ddlRegisterLogin.Text == "No" ||
-            ddlWebTasksLogin.Text == "No")
+            ddlWebTasksLogin.Text == "No" || ddlClobberLogin.Text == "No")
             universal.Visible = true;
 
         //These require pxe boot menu or client iso to be recreated 
@@ -43,6 +43,7 @@ public partial class views_admin_security : Admin
         ViewState["ondLogin"] = ddlOndLogin.Text;
         ViewState["registerLogin"] = ddlRegisterLogin.Text;
         ViewState["webTaskLogin"] = ddlWebTasksLogin.Text;
+        ViewState["clobberLogin"] = ddlClobberLogin.Text;
     }
 
     protected void btnGenerate_Click(object sender, EventArgs e)
@@ -54,7 +55,7 @@ public partial class views_admin_security : Admin
     {
         RequiresAuthorization(Authorizations.UpdateAdmin);
         if (ddlDebugLogin.Text == "Yes" && ddlOndLogin.Text == "Yes" && ddlRegisterLogin.Text == "Yes" &&
-            ddlWebTasksLogin.Text == "Yes")
+            ddlWebTasksLogin.Text == "Yes" && ddlClobberLogin.Text == "Yes")
             txtToken.Text = "";
         var listSettings = new List<Setting>
         {
@@ -142,6 +143,11 @@ public partial class views_admin_security : Admin
                 newBootMenu = true;
                 newClientIso = true;
             }
+            if ((string)ViewState["clobberLogin"] != ddlClobberLogin.Text)
+            {
+                newBootMenu = true;
+                newClientIso = true;
+            }
 
             if ((string) ViewState["forceSSL"] != ddlSSL.Text)
             {
@@ -208,7 +214,8 @@ public partial class views_admin_security : Admin
             if (ddl != null && ddl.Text == "No")
             {
                 lblDiscouraged.Text =
-                    "This Is Highly Discouraged Unless You Are Operating In An Isolated Network.  The Universal Token Is Stored In Plain Text In All PXE Boot Files";
+                    "This Is Highly Discouraged Unless You Are Operating In An Isolated Network. <br> The Universal Token Is Stored In Plain Text In All PXE Boot Files." +
+                    "<br> Remember To Generate The Universal Token.<br><br>";
                 Page.ClientScript.RegisterStartupScript(GetType(), "modalscript",
                     "$(function() {  var menuTop = document.getElementById('discouraged'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
                     true);

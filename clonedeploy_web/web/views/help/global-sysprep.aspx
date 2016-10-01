@@ -13,20 +13,38 @@
        opening sysprep tag and the closing sysprep tag and the contents of what you want in between them.  
        Example:  Opening Tag: &lt;ComputerName&gt; Closing Tag &lt;/ComputerName&gt;.  Once defined the tags can then be assigned in the image profile.
        The contents can contain anything you want including variables such as custom attributes.  The contents can also contain other
-       nested xml tags.  When using variables with Sysprep Tags or special character, everything other than the variable must be enclosed in
-       single quotes.</p>
-        <h3>Valid Contents Examples</h3>
-    <p>my new value</p>
-    <p>$cust_attr_1</p>
-    <p>'My' $cust_attr_1 'value'</p>
-    <p>'&lt;credentials&gt;
-        <br />
-        &lt;username&gt;'$cust_attr_1'&lt;/username&gt;
-        <br />
-         &lt;password&gt;'$cust_attr_2'&lt;/password&gt;
-        <br/>
-        &lt;/credentials&gt;'
-    </p> 
-
+       nested xml tags.  The formatting is slightly different depending on which imaging environment you are using.</p>
+    
+        <h3>Linux Imaging Environment Examples</h3>
+    
+     <p>Variables should always be enclosed in braces.  If your tag contents are only on one line, you can enter it exactly as you wish.  Be careful not to press enter at the end of the line.<br/>
+         If the tag contents expand across multiple lines, the contents must be wrapped in single quotes.  If a variable is used in a multiline tag contents, you must exclude it from the single quotes.  See valid examples below.
+         </p>
+    <pre>my new value</pre>
+    <pre>${cust_attr_1}</pre>
+    <pre>My${cust_attr_1}value</pre>
+    <pre>'
+&lt;OOBE&gt;
+&lt;HideEULAPage&gt;'${cust_attr_1}'&lt;/HideEULAPage&gt;
+&lt;/OOBE&gt;
+'</pre>
+ <pre>'
+&lt;OOBE&gt;
+&lt;HideEULAPage&gt;true&lt;/HideEULAPage&gt;
+&lt;/OOBE&gt;
+'</pre>
+    
+      <h3>WinPE Imaging Environment Examples</h3>
+    
+     <p>Variables should always be enclosed in braces.  Other than that, there is no need for any special formatting.  See examples below.</p>
+    <pre>my new value</pre>
+    <pre>${cust_attr_1}</pre>
+    <pre>My${cust_attr_1}value</pre>
+    <pre>&lt;OOBE&gt;
+&lt;HideEULAPage&gt;${cust_attr_1}&lt;/HideEULAPage&gt;
+&lt;/OOBE&gt;</pre>
+ <pre>&lt;OOBE&gt;
+&lt;HideEULAPage&gt;true&lt;/HideEULAPage&gt;
+&lt;/OOBE&gt;</pre>
 </asp:Content>
 

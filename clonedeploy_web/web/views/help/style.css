@@ -8,7 +8,7 @@ p a, p a:visited { color: blue; }
 a img{border: 0;}
 ul{ list-style-type: none;padding-left: 20px;}
 p{ margin-bottom: 15px;line-height: 26px;}
-
+pre { background: #eee;}
 h1,h2,h3,h4,h5,h6{font-family:opensans, Calibri, Arial, sans-serif;font-weight:normal;}
 h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{font-weight:inherit;}
 h1{display:inline-block;font-weight:normal;letter-spacing:.1em;margin-top:5px;font-size:32px; color: #3D4F5D;margin-left: 0px;margin-bottom: 10px;text-decoration: underline;}

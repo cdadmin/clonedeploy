@@ -56,6 +56,7 @@ namespace Models
             Map(m => m.Name).Name("Name");
             Map(m => m.Description).Name("Description");
             Map(m => m.Type).Name("Type");
+            Map(m => m.Environment).Name("Environment");
         }
     }
 }

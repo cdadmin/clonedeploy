@@ -73,8 +73,12 @@ function checkout()
 		log " ...... $mccheckoutResult"
 	fi
 		
-	if [ "$is_ondemand" != "true" ]; then
-	  checkout_status=$($curlAuth --data "computerId=$computer_id" "${web}CheckOut" $curlEnd)
+	if [ "$is_ondemand" != "true" ] && [ "$task" != "clobber" ]; then
+	  if [ "$task" = "permanent_push" ]; then
+	    checkout_status=$($curlAuth --data "computerId=$computer_id" "${web}PermanentTaskCheckOut" $curlEnd)
+	  else
+	    checkout_status=$($curlAuth --data "computerId=$computer_id" "${web}CheckOut" $curlEnd)
+	  fi
 	  log " ...... $checkout_status" "display"
 	else
 	  if [ -z "$computer_id"  ]; then
@@ -213,6 +217,11 @@ function get_hard_drives()
 		for hdd in $all_hard_drives; do
 		  disk_label=$(fdisk -l $hdd | grep -i "disklabel type" | tr -d ' ' | awk -F ':' '{print $2}')
 		  log "disk_label: $disk_label $hdd"
+		  #Exclude usb drive
+		  drive_name=$(echo "$hdd" | sed 's/\/dev\//''/g')
+		  if readlink /sys/block/$drive_name | grep -q -m 1 "usb"; then
+		    continue
+		  fi
 		  #Only get hard drives with valid disk labels
 		  if [ "$disk_label" = "dos" ] || [ "$disk_label" = "gpt" ]; then
 		    #only get hard drives that have partitions.  No reason to try and upload a disk without partitions
@@ -229,7 +238,16 @@ function get_hard_drives()
 		done
 	  else #deploy
 	    #When deploying it is very possible the hard drive won't have a disk label so don't use the method used for uploads
-	    hard_drives=`lsblk -ipdno KNAME | grep -v boot`
+	    all_hard_drives=`lsblk -ipdno KNAME | grep -v boot`
+		for hdd in $all_hard_drives; do
+		  #Exclude usb drive
+		  drive_name=$(echo "$hdd" | sed 's/\/dev\//''/g')
+		  if readlink /sys/block/$drive_name | grep -q -m 1 "usb"; then
+		    continue
+		  else
+		    hard_drives="$hard_drives $hdd "
+		  fi
+		done
 	  fi
 	fi
 	
@@ -281,9 +299,9 @@ function mount_smb()
 		else
 			log " ...... Success" "display"
 
-			cd /storage/images/$imgName;
+			cd /storage/images/$image_name;
 			if [ "$?" != "0" ]; then
-				error "Could Not Change Directory To /images/$imgName Check Permissions"
+				error "Could Not Change Directory To /images/$image_name Check Permissions"
 			fi
 			break
 		fi
@@ -323,21 +341,22 @@ function process_sysprep_tags()
   if [ -f "/mnt/ntfs/Windows/Panther/unattend.xml" ]; then
     log " ...... Found Answer File At /Windows/Panther/unattend.xml, Updating Answer File" "display"
 	for tag_id in $sysprep_tags; do
-      sysprep_tag_json=$($curlAuth --data "tagId=$tag_id" "${web}GetSysprepTag" $curlEnd)
+      sysprep_tag_json=$($curlAuth --data "tagId=$tag_id&imageEnvironment=lin" "${web}GetSysprepTag" $curlEnd)
 	  log "$sysprep_tag_json"
-	  content_var=$(eval echo $(parse_json "$sysprep_tag_json" .Contents))
-	  log "$content_var"
-	  perl -0777 -i -pe "s/($(parse_json "$sysprep_tag_json" .OpeningTag)).*($(parse_json "$sysprep_tag_json" .ClosingTag))/\${1}$content_var\${2}/si" /mnt/ntfs/Windows/Panther/unattend.xml 
+	  eval echo -e $(parse_json "$sysprep_tag_json" .Contents) > /tmp/syspreptag
+	  cat /tmp/syspreptag >> $CLIENT_LOG
+	  perl -0777 -i -pe "s/($(parse_json "$sysprep_tag_json" .OpeningTag)).*($(parse_json "$sysprep_tag_json" .ClosingTag))/\${1}$(cat /tmp/syspreptag)\${2}/si" /mnt/ntfs/Windows/Panther/unattend.xml 
 	done
+	unix2dos /mnt/ntfs/Windows/Panther/unattend.xml
 	#Not sure if this elif is really needed
   elif [ -f "/mnt/ntfs/Windows/System32/sysprep/Panther/unattend.xml" ]; then
      log " ...... Found Answer File At /Windows/System32/sysprep/Panther/unattend.xml"
 	 for tag_id in $sysprep_tags; do
-      sysprep_tag_json=$($curlAuth --data "tagId=$tag_id" "${web}GetSysprepTag" $curlEnd)
+     sysprep_tag_json=$($curlAuth --data "tagId=$tag_id&imageEnvironment=lin" "${web}GetSysprepTag" $curlEnd)
 	  log "$sysprep_tag_json"
-	  content_var=$(eval echo $(parse_json "$sysprep_tag_json" .Contents))
-	  log "$content_var"
-	  perl -0777 -i -pe "s/($(parse_json "$sysprep_tag_json" .OpeningTag)).*($(parse_json "$sysprep_tag_json" .ClosingTag))/\${1}$content_var\${2}/si" /mnt/ntfs/Windows/System32/sysprep/Panther/unattend.xml
+	  eval echo -e $(parse_json "$sysprep_tag_json" .Contents) > /tmp/syspreptag
+	  cat /tmp/syspreptag >> $CLIENT_LOG
+	  perl -0777 -i -pe "s/($(parse_json "$sysprep_tag_json" .OpeningTag)).*($(parse_json "$sysprep_tag_json" .ClosingTag))/\${1}$(cat /tmp/syspreptag)\${2}/si" /mnt/ntfs/Windows/System32/sysprep/Panther/unattend.xml
     done
   else
     log " ...... Could Not Find Answer File"

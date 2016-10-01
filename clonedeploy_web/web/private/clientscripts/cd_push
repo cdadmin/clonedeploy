@@ -782,14 +782,33 @@ function change_computer_name()
 
 function main()
 {
- 
   log_boot_args
 
   if [ "$is_ondemand" = "true" ]; then
     log " ** Using On Demand Mode ** "
 	for arg in "$ondemand_arguments"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
+  elif [ "$task" = "clobber" ]; then
+    log " ** Using Clobber Mode ** "
+	clobber_args=$($curlAuth --data "mac=$mac&objectId=$imageProfileId&task=push" "${web}GetOnDemandArguments" $curlEnd)
+    for arg in "$clobber_args"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
+	if [ "$computer_name" = "" ] || [ "$computer_name" = "null" ]; then
+	  if [ "$name_prompt" = "true" ]; then
+		echo "This Computer Was Not Found In The Database, Enter A Name For It Now:"
+		echo "Leave Blank To Skip Computer Renaming"
+		echo
+		read computer_name
+		echo
+		if [ -n "$computer_name" ]; then
+		  computer_name=$computer_name
+		fi
+	  fi
+	fi
   else
     checkin
+  fi
+  
+  if [ "$is_ondemand" != "true" ]; then
+  if [ "$task" = "push" ] || [ "$task" = "permanent_push" ]; then	
 	if [ "$multicast" = "true" ]; then
 	  $curlAuth --data "computerId=$computer_id" "${web}UpdateStatusInProgress" $curlEnd
 	else
@@ -808,7 +827,8 @@ function main()
 		echo
 	fi	  		
   fi
-
+  fi
+   
   sleep 2
 
   mount_smb

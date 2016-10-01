@@ -8,6 +8,7 @@
          });
         </script>
     <h1>Images->Import</h1>
-   
+    <p>Import allows you to import a list of images from a CSV file.  The expected header is:</p>
+    <p><b>Name,Description,Type,Environment</b></p>
 </asp:Content>
 

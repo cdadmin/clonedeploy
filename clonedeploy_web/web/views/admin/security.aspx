@@ -105,7 +105,7 @@
     <div id="universal" runat="server" visible="False">
         <div class="size-4 column">
             Universal Token:
-    <asp:LinkButton ID="btnGenKey" runat="server" Text="Generate" OnClick="btnGenerate_Click" CssClass="submits" Style="margin: 0" />
+    <asp:LinkButton ID="btnGenKey" runat="server" Text="Generate" OnClick="btnGenerate_Click" CssClass="btn btn-default right" />
         </div>
         <div class="size-setting column">
             <asp:TextBox ID="txtToken" runat="server" CssClass="textbox"></asp:TextBox>
@@ -180,8 +180,8 @@
     </div>
     <div id="discouraged" class="confirm-box-outer">
         <div class="confirm-box-inner">
-            <p style="font-size: 18px;">
-                <asp:Label ID="lblDiscouraged" runat="server" CssClass="modaltitle"></asp:Label>
+            <p style="font-size: 18px; text-align: center;">
+                <asp:Label ID="lblDiscouraged" runat="server" CssClass="modaltitle" ></asp:Label>
             </p>
 
             <div class="confirm-box-btns">

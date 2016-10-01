@@ -2,6 +2,7 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="Breadcrumb" Runat="Server">
     <h4>CloneDeploy Initial Setup</h4>
+    <br/>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubNav" Runat="Server">
     &nbsp;
@@ -57,6 +58,6 @@
     <br class="clear"/>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="PageActions" Runat="Server">
-      <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Finalize Setup" />
+      <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Finalize Setup" CssClass="btn btn-default"/>
 </asp:Content>
 

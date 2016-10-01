@@ -34,29 +34,42 @@ function start_network()
 	  ifup lo
 	fi
 	
-	ip link set $net_if up
-	for timeout in 15 60; do
-	  udhcpc -i $net_if -t 2 -T $timeout -n
-	  if [ "$?" = "0" ]; then
-	    link_up="true"
-	    break;
-	  fi
-	done
+	#predefined static ip
+	if [ -n "$cd_net_ip" ]; then
+	  echo "iface $net_if inet static" >> /etc/network/interfaces
+	  echo "address $cd_net_ip" >> /etc/network/interfaces
+	  echo "netmask $cd_net_netmask" >> /etc/network/interfaces
+	  echo "gateway $cd_net_gateway" >> /etc/network/interfaces
+	  echo "$cd_net_dns" >> /etc/resolv.conf
+	  ifdown $net_if
+	  ifup $net_if
+	  sleep 5
 	
-	if [ "$link_up" != "true" ]; then
-	  #look for others
-	  for interface in `ls /sys/class/net | grep -v "lo" | grep -v "$net_if" | sed 's/@//'`; do
-	    echo
-	    echo " ** Starting Network On Interface $interface ** "
-	    udhcpc -i $interface -t 3 -T 20 -n
+	#dhcp
+	else
+	  ip link set $net_if up
+	  for timeout in 15 60; do
+	    udhcpc -i $net_if -t 2 -T $timeout -n
 	    if [ "$?" = "0" ]; then
 	      link_up="true"
-		  net_if=$interface
 	      break;
 	    fi
 	  done
-	fi
 	
+	  if [ "$link_up" != "true" ]; then
+	    #look for others
+	    for interface in `ls /sys/class/net | grep -v "lo" | grep -v "$net_if" | sed 's/@//'`; do
+	      echo
+	      echo " ** Starting Network On Interface $interface ** "
+	      udhcpc -i $interface -t 3 -T 20 -n
+	      if [ "$?" = "0" ]; then
+	        link_up="true"
+		    net_if=$interface
+	        break;
+	      fi
+	    done
+	  fi
+	fi
 	export mac=$(cat /sys/class/net/$net_if/address)
 	clientIP=$(ifconfig | grep $net_if -A2 | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}')
 

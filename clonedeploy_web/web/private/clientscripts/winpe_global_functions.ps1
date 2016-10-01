@@ -150,10 +150,24 @@ function Get-Hard-Drives($taskType)
     log " ** Looking For Hard Drive(s) **" "true"
     log " ** Displaying Available Devices ** "
     Get-Disk | Out-File $clientLog -Append
-    if($custom_hard_drives.trim("`""))
+    if($custom_hard_drives)
     {
-        #Todo - finish custom hard drives
-        log " ...... Hard Drive(s) Set By Image Profile: $hard_drives"
+        if($custom_hard_drives.trim("`""))
+        {
+            #Todo - finish custom hard drives
+            log " ...... Hard Drive(s) Set By Image Profile: $hard_drives"
+        }
+        else
+        {
+            if($taskType -eq "upload")
+            {
+                $script:HardDrives=$(get-disk | where-object {$_.NumberOfPartitions -gt 0 -and $_.BusType -ne "USB"} | Sort-Object Number)
+            }
+            else
+            {
+                $script:HardDrives=$(get-disk | where-object {$_.BusType -ne "USB"} | Sort-Object Number)
+            }
+        }
     }
     else
     {
@@ -173,6 +187,12 @@ function Get-Hard-Drives($taskType)
     }
 
     log " ...... Found $(@($script:HardDrives).count) Drives" "true"
+
+    foreach($hardDrive in $script:HardDrives)
+    {
+        log " ** Displaying Current Partition Table On $($hardDrive.Number)"
+        Get-Partition -DiskNumber $hardDrive.Number | Out-File $clientLog -Append
+    }
     Write-Host
 }
 

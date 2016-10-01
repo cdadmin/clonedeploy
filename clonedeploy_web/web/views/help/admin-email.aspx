@@ -8,6 +8,6 @@
          });
         </script>
     <h1>Admin->Email</h1>
-   
+   <p>If you want user's to be able to receive email notifications, you must first setup the email server settings.  These are standard SMTP settings.</p>
 </asp:Content>
 

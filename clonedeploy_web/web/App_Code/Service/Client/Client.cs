@@ -324,10 +324,10 @@ namespace Service.Client
         }
 
         [WebMethod]
-        public void GetSysprepTag(int tagId)
+        public void GetSysprepTag(int tagId, string imageEnvironment)
         {
-            if (!Authorize()) return;
-            var tag = new Logic().GetSysprepTag(tagId);
+            //if (!Authorize()) return;
+            var tag = new Logic().GetSysprepTag(tagId,imageEnvironment);
             HttpContext.Current.Response.Write(tag);
 
         }

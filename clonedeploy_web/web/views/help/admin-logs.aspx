@@ -8,6 +8,6 @@
          });
         </script>
     <h1>Admin->Logs</h1>
-   
+   <p>The logs page allows you to view the exception log, multicast log, and the imaging log for computers that were not registred with CloneDeploy</p>
 </asp:Content>
 

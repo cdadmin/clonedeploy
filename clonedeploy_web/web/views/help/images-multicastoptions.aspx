@@ -8,6 +8,6 @@
          });
         </script>
     <h1>Images->Multicast Options</h1>
-   
+   <p>Allows you to set custom arguments on the server and client to control multicast behavior.  More information is available under the Multicast Arguments documentation.</p>
 </asp:Content>
 

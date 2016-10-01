@@ -8,6 +8,6 @@
          });
         </script>
     <h1>Admin->Export</h1>
-   
+   <p>Exports CSV file of all computers, groups, and images.  Not really that useful to be honest, most information is not exported.</p>
 </asp:Content>
 

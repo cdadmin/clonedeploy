@@ -8,6 +8,8 @@
          });
         </script>
     <h1>Images->PXE Options</h1>
-   
+   <p>Specifies the kernel and boot image that are used when pxe booting computers that have this image profile assigned and an active
+       task has been created.
+   </p>
 </asp:Content>
 

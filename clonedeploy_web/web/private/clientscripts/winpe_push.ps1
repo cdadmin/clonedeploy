@@ -203,13 +203,13 @@ function Download-Image()
 
 function Process-Sysprep-Tags()
 {
-    if(Test-Path C:\Windows\Panther\unattend.xml)
+    if(Test-Path c:\Windows\Panther\unattend.xml)
     {
         foreach($tagId in -Split $sysprep_tags.trim("`""))
         {
-            $tag=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "tagId=$tagId" ${script:web}GetSysprepTag --connect-timeout 10 --stderr -)
+            $tag=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "tagId=$tagId&imageEnvironment=win" ${script:web}GetSysprepTag --connect-timeout 10 --stderr -)
 	        log " ** Running Custom Sysprep Tag With Id $tagId ** " "true"
-            Write-Host $tag
+            log $tag
 	        $tag=$tag | ConvertFrom-Json
             if(!$?)
             {
@@ -218,8 +218,9 @@ function Process-Sysprep-Tags()
                 log "Could Not Parse Sysprep Tag"
                 continue
             }
-            $tag.Contents=$(Invoke-Expression $tag.Contents)
             
+            $tag.Contents=$($ExecutionContext.InvokeCommand.ExpandString($tag.Contents))
+            log $tag.Contents
             sleep 5
             perl -0777 "-i.bak" -pe "s/($($tag.OpeningTag)).*($($tag.ClosingTag))/`${1}$($tag.Contents)`${2}/si" c:\Windows\Panther\unattend.xml   
         }
@@ -241,7 +242,7 @@ function Process-Scripts($scripts)
 
 function Process-File-Copy()
 {
-     
+     log " ** Processing File Copy ** " "true"
         foreach($file in $fileCopySchema.FilesAndFolders)
         {
             if(($file.DestinationPartition -eq $currentPartition.Number) -or $partition_method -eq "standard" )

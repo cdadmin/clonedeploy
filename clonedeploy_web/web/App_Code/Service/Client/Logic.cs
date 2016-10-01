@@ -79,7 +79,11 @@ namespace Service.Client
                     return Settings.DebugRequiresLogin;
                 case "register":
                     return Settings.RegisterRequiresLogin;
+                case "clobber":
+                    return Settings.ClobberRequiresLogin;
                 case "push":
+                    return Settings.WebTaskRequiresLogin;
+                case "permanent_push":
                     return Settings.WebTaskRequiresLogin;
                 case "pull":
                     return Settings.WebTaskRequiresLogin;
@@ -487,12 +491,22 @@ namespace Service.Client
             return script.Contents;
         }
 
-        public string GetSysprepTag(int tagId)
+        public string GetSysprepTag(int tagId, string imageEnvironment)
         {
             var tag = BLL.SysprepTag.GetSysprepTag(tagId);
             tag.OpeningTag = Utility.EscapeCharacter(tag.OpeningTag, new[] {">", "<"});
             tag.ClosingTag = Utility.EscapeCharacter(tag.ClosingTag, new[] {">", "<", "/"});
             tag.Contents = Utility.EscapeCharacter(tag.Contents, new[] {">", "<", "/", "\""});
+
+            var a = tag.Contents.Replace("\r", imageEnvironment == "win" ? "" : "\\r");
+            var b = a.Replace("\n", "\\n");
+
+            if (b.Length >= 5)
+            {
+                if (b.Substring(b.Length - 5) == "\\r\\n'")
+                    b = b.Substring(0, b.Length - 1) + "\\r\\n'";
+            }
+            tag.Contents = b;
             return JsonConvert.SerializeObject(tag);
         }
 

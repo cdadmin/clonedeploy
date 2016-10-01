@@ -25,7 +25,7 @@ namespace BLL.Workflows
             if (_promptComputerName)
                 namePromptArg = " name_prompt=true";
 
-            var userToken = Settings.WebTaskRequiresLogin == "No" ? Settings.UniversalToken : "";
+            var userToken = Settings.ClobberRequiresLogin == "No" ? Settings.UniversalToken : "";
             const string newLineChar = "\n";
 
 
@@ -33,7 +33,7 @@ namespace BLL.Workflows
             ipxe.Append("#!ipxe" + newLineChar);
             ipxe.Append("kernel " + webPath + "IpxeBoot?filename=" + _imageProfile.Kernel +
                         "&type=kernel" + " initrd=" + _imageProfile.BootImage +
-                        " root=/dev/ram0 rw ramdisk_size=156000 task=clobber" + namePromptArg +
+                        " root=/dev/ram0 rw ramdisk_size=156000 task=clobber " + "imageProfileId=" + _imageProfile.Id + namePromptArg +
                         " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" + userToken + " " + globalComputerArgs +
                         " " + _imageProfile.KernelArguments + newLineChar);
             ipxe.Append("imgfetch --name " + _imageProfile.BootImage + " " + webPath +
@@ -46,7 +46,7 @@ namespace BLL.Workflows
             sysLinux.Append("LABEL clonedeploy" + newLineChar);
             sysLinux.Append("KERNEL kernels" + Path.DirectorySeparatorChar + _imageProfile.Kernel + newLineChar);
             sysLinux.Append("APPEND initrd=images" + Path.DirectorySeparatorChar + _imageProfile.BootImage +
-                            " root=/dev/ram0 rw ramdisk_size=156000 task=clobber" + namePromptArg +
+                            " root=/dev/ram0 rw ramdisk_size=156000 task=clobber " + "imageProfileId=" + _imageProfile.Id + namePromptArg +
                             " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" + userToken + " " + globalComputerArgs +
                             " " + _imageProfile.KernelArguments + newLineChar);
 
@@ -58,7 +58,7 @@ namespace BLL.Workflows
             grub.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
                         newLineChar);
             grub.Append("linux /kernels/" + _imageProfile.Kernel +
-                        " root=/dev/ram0 rw ramdisk_size=156000 task=clobber" + namePromptArg + " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" +
+                        " root=/dev/ram0 rw ramdisk_size=156000 task=clobber " + "imageProfileId=" + _imageProfile.Id + namePromptArg + " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" +
                         userToken + " " +
                         globalComputerArgs + " " + _imageProfile.KernelArguments + newLineChar);
             grub.Append("initrd /images/" + _imageProfile.BootImage + newLineChar);

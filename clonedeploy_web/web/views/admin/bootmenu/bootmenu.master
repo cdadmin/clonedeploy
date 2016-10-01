@@ -17,7 +17,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="PageNavSub" Runat="Server">
         <li id="default"><a  href="<%= ResolveUrl("~/views/admin/bootmenu/defaultmenu.aspx") %>?level=2"><span class="sub-nav-text">Default Menu</span></a></li>
     <li id="edit"><a href="<%= ResolveUrl("~/views/admin/bootmenu/editor.aspx")  %>?level=2"><span class="sub-nav-text">Editor</span></a></li>
-     <li id="iso"><a href="<%= ResolveUrl("~/views/admin/bootmenu/isogen.aspx")  %>?level=2"><span class="sub-nav-text">LIE ISO / USB Generator</span></a></li>
+     <li id="iso"><a href="<%= ResolveUrl("~/views/admin/bootmenu/isogen.aspx")  %>?level=2"><span class="sub-nav-text">ISO / USB Generator</span></a></li>
      <li id="apple"><a href="<%= ResolveUrl("~/views/admin/bootmenu/applenetboot.aspx")  %>?level=2"><span class="sub-nav-text">Apple NetBoot</span></a></li>
 </asp:Content>
 
