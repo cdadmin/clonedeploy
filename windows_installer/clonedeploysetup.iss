@@ -1,5 +1,5 @@
 #define MyAppName "CloneDeploy"
-#define MyAppVersion "1.1.0"
+#define MyAppVersion "1.2.0"
 #define MyAppPublisher "CloneDeploy"
 #define MyAppURL "http://clonedeploy.org"
 
@@ -23,7 +23,7 @@ OutputBaseFilename=setup
 Compression=lzma
 SolidCompression=true
 Uninstallable=true
-VersionInfoVersion=1.1.0
+VersionInfoVersion=1.2.0
 VersionInfoCompany=CloneDeploy
 VersionInfoDescription=CloneDeploy Server Setup
 VersionInfoCopyright=2016
@@ -31,7 +31,7 @@ AlwaysRestart=false
 RestartIfNeededByRun=false
 AppContact=http://clonedeploy.org
 UninstallDisplayName=CloneDeploy Server
-AppVerName=1.1.0
+AppVerName=1.2.0
 AppComments=CloneDeploy
 MinVersion=0,6.1
 SetupLogging=yes
