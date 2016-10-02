@@ -1,8 +1,4 @@
--- MySQL dump 10.13  Distrib 5.6.24, for Win64 (x86_64)
---
--- Host: localhost    Database: clonedeploy
--- ------------------------------------------------------
--- Server version	5.7.8-rc-log
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -15,6 +11,7 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+ALTER USER 'root'@'localhost' PASSWORD EXPIRE NEVER
 --
 -- Table structure for table `active_imaging_tasks`
 --
@@ -89,7 +86,7 @@ CREATE TABLE `admin_settings` (
   `admin_setting_value` varchar(255) DEFAULT NULL,
   `admin_setting_category` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`admin_setting_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -98,7 +95,7 @@ CREATE TABLE `admin_settings` (
 
 LOCK TABLES `admin_settings` WRITE;
 /*!40000 ALTER TABLE `admin_settings` DISABLE KEYS */;
-INSERT INTO `admin_settings` VALUES (1,'AD Login Domain','',NULL),(2,'Client Receiver Args','',NULL),(3,'Debug Requires Login','Yes',NULL),(4,'Default Computer View','all',NULL),(5,'Force SSL','No',NULL),(6,'Global Computer Args','',NULL),(7,'Ipxe Requires Login','False',NULL),(8,'Multicast Decompression','client',NULL),(9,'On Demand','Enabled',NULL),(10,'On Demand Requires Login','Yes',NULL),(11,'Proxy Bios File','pxelinux',NULL),(12,'Proxy Dhcp','No',NULL),(13,'Proxy Efi32 File','syslinux',NULL),(14,'Proxy Efi64 File','syslinux',NULL),(15,'PXE Mode','pxelinux',NULL),(16,'Queue Size','2',NULL),(17,'Register Requires Login','Yes',NULL),(18,'Require Image Approval','True',NULL),(19,'Sender Args','',NULL),(20,'Server IP','',NULL),(21,'Smtp Enabled','0',NULL),(22,'Smtp Mail From',NULL,NULL),(23,'Smtp Mail To',NULL,NULL),(24,'Smtp Password Encrypted',NULL,NULL),(25,'Smtp Port',NULL,NULL),(26,'Smtp Server',NULL,NULL),(27,'Smtp Ssl','No',NULL),(28,'Smtp Username',NULL,NULL),(29,'Tftp Path','',NULL),(30,'Udpcast End Port','10000',NULL),(31,'Udpcast Start Port','9000',NULL),(32,'Universal Token','',NULL),(33,'Web Path','http://[server-ip]/clonedeploy/service/client.asmx/',NULL),(34,'Web Server Port','80',NULL),(35,'Web Task Requires Login','Yes',NULL),(36,'Ldap Server','',NULL),(37,'Ldap Port','',NULL),(38,'Ldap Auth Attribute','',NULL),(39,'Ldap Base DN','',NULL),(40,'Ldap Auth Type','',NULL),(41,'Ldap Enabled','',NULL),(42,'Munki Base Path','',NULL),(43,'Munki Path Type','Local',NULL),(44,'Munki SMB Username','',NULL),(45,'Munki SMB Password Encrypted','',NULL),(46,'Munki SMB Domain','',NULL);
+INSERT INTO `admin_settings` VALUES (1,'AD Login Domain','',NULL),(2,'Client Receiver Args','',NULL),(3,'Debug Requires Login','Yes',NULL),(4,'Default Computer View','all',NULL),(5,'Force SSL','No',NULL),(6,'Global Computer Args','',NULL),(7,'Ipxe Requires Login','False',NULL),(8,'Multicast Decompression','client',NULL),(9,'On Demand','Enabled',NULL),(10,'On Demand Requires Login','Yes',NULL),(11,'Proxy Bios File','pxelinux',NULL),(12,'Proxy Dhcp','No',NULL),(13,'Proxy Efi32 File','syslinux',NULL),(14,'Proxy Efi64 File','syslinux',NULL),(15,'PXE Mode','pxelinux',NULL),(16,'Queue Size','2',NULL),(17,'Register Requires Login','Yes',NULL),(18,'Require Image Approval','True',NULL),(19,'Sender Args','',NULL),(20,'Server IP','192.168.56.1',NULL),(21,'Smtp Enabled','0',NULL),(22,'Smtp Mail From',NULL,NULL),(23,'Smtp Mail To',NULL,NULL),(24,'Smtp Password Encrypted',NULL,NULL),(25,'Smtp Port',NULL,NULL),(26,'Smtp Server',NULL,NULL),(27,'Smtp Ssl','No',NULL),(28,'Smtp Username',NULL,NULL),(29,'Tftp Path','',NULL),(30,'Udpcast End Port','10000',NULL),(31,'Udpcast Start Port','9000',NULL),(32,'Universal Token','',NULL),(33,'Web Path','http://[server-ip]/clonedeploy/service/client.asmx/',NULL),(34,'Web Server Port','80',NULL),(35,'Web Task Requires Login','Yes',NULL),(36,'Ldap Server','',NULL),(37,'Ldap Port','',NULL),(38,'Ldap Auth Attribute','',NULL),(39,'Ldap Base DN','',NULL),(40,'Ldap Auth Type','Secure',NULL),(41,'Ldap Enabled','0',NULL),(42,'Munki Base Path','',NULL),(43,'Munki Path Type','',NULL),(44,'Munki SMB Username','',NULL),(45,'Munki SMB Password Encrypted','',NULL),(46,'Munki SMB Domain','',NULL),(47,'Clobber Enabled','0',NULL),(48,'Clobber ProfileId','',NULL),(49,'Clobber Requires Login','Yes',NULL),(50,'Clobber Prompt Computer Name','0',NULL);
 /*!40000 ALTER TABLE `admin_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -125,6 +122,35 @@ CREATE TABLE `applications` (
 LOCK TABLES `applications` WRITE;
 /*!40000 ALTER TABLE `applications` DISABLE KEYS */;
 /*!40000 ALTER TABLE `applications` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `boot_menu_entries`
+--
+
+DROP TABLE IF EXISTS `boot_menu_entries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `boot_menu_entries` (
+  `boot_menu_entry_id` int(11) NOT NULL AUTO_INCREMENT,
+  `boot_menu_entry_name` varchar(45) DEFAULT NULL,
+  `boot_menu_entry_description` longtext,
+  `boot_menu_entry_type` varchar(45) DEFAULT NULL,
+  `boot_menu_entry_order` int(11) DEFAULT '0',
+  `boot_menu_entry_content` longtext,
+  `boot_menu_entry_is_active` tinyint(4) DEFAULT '0',
+  `boot_menu_entry_is_default` tinyint(4) DEFAULT '0',
+  PRIMARY KEY (`boot_menu_entry_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `boot_menu_entries`
+--
+
+LOCK TABLES `boot_menu_entries` WRITE;
+/*!40000 ALTER TABLE `boot_menu_entries` DISABLE KEYS */;
+/*!40000 ALTER TABLE `boot_menu_entries` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -231,6 +257,32 @@ LOCK TABLES `clonedeploy_user_group_mgmt` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `clonedeploy_user_groups`
+--
+
+DROP TABLE IF EXISTS `clonedeploy_user_groups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `clonedeploy_user_groups` (
+  `clonedeploy_user_group_id` int(11) NOT NULL AUTO_INCREMENT,
+  `clonedeploy_user_group_name` varchar(45) DEFAULT NULL,
+  `clonedeploy_user_group_role` varchar(45) DEFAULT NULL,
+  `clonedeploy_user_group_ldap` tinyint(4) DEFAULT '0',
+  `clonedeploy_user_group_ldapname` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`clonedeploy_user_group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `clonedeploy_user_groups`
+--
+
+LOCK TABLES `clonedeploy_user_groups` WRITE;
+/*!40000 ALTER TABLE `clonedeploy_user_groups` DISABLE KEYS */;
+/*!40000 ALTER TABLE `clonedeploy_user_groups` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `clonedeploy_user_image_mgmt`
 --
 
@@ -304,6 +356,78 @@ LOCK TABLES `clonedeploy_user_rights` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `clonedeploy_usergroup_group_mgmt`
+--
+
+DROP TABLE IF EXISTS `clonedeploy_usergroup_group_mgmt`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `clonedeploy_usergroup_group_mgmt` (
+  `clonedeploy_usergroup_group_mgmt_id` int(11) NOT NULL AUTO_INCREMENT,
+  `usergroup_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL,
+  PRIMARY KEY (`clonedeploy_usergroup_group_mgmt_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `clonedeploy_usergroup_group_mgmt`
+--
+
+LOCK TABLES `clonedeploy_usergroup_group_mgmt` WRITE;
+/*!40000 ALTER TABLE `clonedeploy_usergroup_group_mgmt` DISABLE KEYS */;
+/*!40000 ALTER TABLE `clonedeploy_usergroup_group_mgmt` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `clonedeploy_usergroup_image_mgmt`
+--
+
+DROP TABLE IF EXISTS `clonedeploy_usergroup_image_mgmt`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `clonedeploy_usergroup_image_mgmt` (
+  `clonedeploy_usergroup_image_mgmt_id` int(11) NOT NULL AUTO_INCREMENT,
+  `usergroup_id` int(11) NOT NULL,
+  `image_id` int(11) NOT NULL,
+  PRIMARY KEY (`clonedeploy_usergroup_image_mgmt_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `clonedeploy_usergroup_image_mgmt`
+--
+
+LOCK TABLES `clonedeploy_usergroup_image_mgmt` WRITE;
+/*!40000 ALTER TABLE `clonedeploy_usergroup_image_mgmt` DISABLE KEYS */;
+/*!40000 ALTER TABLE `clonedeploy_usergroup_image_mgmt` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `clonedeploy_usergroup_rights`
+--
+
+DROP TABLE IF EXISTS `clonedeploy_usergroup_rights`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `clonedeploy_usergroup_rights` (
+  `clonedeploy_usergroup_right_id` int(11) NOT NULL AUTO_INCREMENT,
+  `usergroup_id` int(11) NOT NULL,
+  `usergroup_right` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`clonedeploy_usergroup_right_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `clonedeploy_usergroup_rights`
+--
+
+LOCK TABLES `clonedeploy_usergroup_rights` WRITE;
+/*!40000 ALTER TABLE `clonedeploy_usergroup_rights` DISABLE KEYS */;
+/*!40000 ALTER TABLE `clonedeploy_usergroup_rights` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `clonedeploy_users`
 --
 
@@ -325,6 +449,7 @@ CREATE TABLE `clonedeploy_users` (
   `clonedeploy_user_api_id` varchar(45) DEFAULT NULL,
   `clonedeploy_user_api_key` varchar(45) DEFAULT NULL,
   `clonedeploy_user_is_ldap` tinyint(4) DEFAULT '0',
+  `clonedeploy_usergroup_id` int(11) DEFAULT '-1',
   PRIMARY KEY (`clonedeploy_user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -335,7 +460,7 @@ CREATE TABLE `clonedeploy_users` (
 
 LOCK TABLES `clonedeploy_users` WRITE;
 /*!40000 ALTER TABLE `clonedeploy_users` DISABLE KEYS */;
-INSERT INTO `clonedeploy_users` VALUES (1,'clonedeploy','BWv6Qra79AdyvAQjG1Op5G9k1/httkKj+eU7ap9uqks=','6UoGwLEuu527C9mBMk+DfR8ZcpYaeIQuGM3rEWAwqT/ZFqVBxRs1hz8v+C6xNC3WSiZseg8h84Jgd3DBr2DtaQ==','Administrator','',NULL,1,1,1,1,NULL,NULL,0);
+INSERT INTO `clonedeploy_users` VALUES (1,'clonedeploy','K2X58/PExEJMF2PmtcK5Wgz6HVRB+paPF30JIOZvgG8=','1iobxjZtR++hzgM2xLiDRgrfF0/sibaJaLCWgoTV46qBLL+ZFBp3dnxPEU7ZvsTk7PMgDbO/la/IBZ2SQBaXdw==','Administrator','','11aee8db-ccfe-4d43-b53e-1a77c611485a',1,1,1,1,NULL,NULL,0,-1);
 /*!40000 ALTER TABLE `clonedeploy_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -361,7 +486,7 @@ CREATE TABLE `clonedeploy_version` (
 
 LOCK TABLES `clonedeploy_version` WRITE;
 /*!40000 ALTER TABLE `clonedeploy_version` DISABLE KEYS */;
-INSERT INTO `clonedeploy_version` VALUES (1,'1.1.0','101',0);
+INSERT INTO `clonedeploy_version` VALUES (1,'1.2.0','102',0);
 /*!40000 ALTER TABLE `clonedeploy_version` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -610,6 +735,31 @@ LOCK TABLES `computer_printers` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `computer_proxy_reservations`
+--
+
+DROP TABLE IF EXISTS `computer_proxy_reservations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `computer_proxy_reservations` (
+  `computer_proxy_reservation_id` int(11) NOT NULL AUTO_INCREMENT,
+  `computer_id` int(11) DEFAULT NULL,
+  `next_server` varchar(45) DEFAULT NULL,
+  `boot_file` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`computer_proxy_reservation_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `computer_proxy_reservations`
+--
+
+LOCK TABLES `computer_proxy_reservations` WRITE;
+/*!40000 ALTER TABLE `computer_proxy_reservations` DISABLE KEYS */;
+/*!40000 ALTER TABLE `computer_proxy_reservations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `computer_users`
 --
 
@@ -655,6 +805,7 @@ CREATE TABLE `computers` (
   `custom_attr_3` varchar(255) DEFAULT NULL,
   `custom_attr_4` varchar(255) DEFAULT NULL,
   `custom_attr_5` varchar(255) DEFAULT NULL,
+  `proxy_reservation_enabled` tinyint(4) DEFAULT '0',
   PRIMARY KEY (`computer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -786,6 +937,12 @@ CREATE TABLE `group_computer_properties` (
   `custom_3_enabled` tinyint(4) DEFAULT '0',
   `custom_4_enabled` tinyint(4) DEFAULT '0',
   `custom_5_enabled` tinyint(4) DEFAULT '0',
+  `proxy_enabled_enabled` tinyint(4) DEFAULT '0',
+  `tftp_server_enabled` tinyint(4) DEFAULT '0',
+  `bootfile_enabled` tinyint(4) DEFAULT '0',
+  `proxy_enabled` tinyint(4) DEFAULT '0',
+  `tftp_server` varchar(45) DEFAULT NULL,
+  `bootfile` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`group_computer_property_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1467,4 +1624,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-06-16 21:10:17
+-- Dump completed on 2016-09-30 23:10:53
