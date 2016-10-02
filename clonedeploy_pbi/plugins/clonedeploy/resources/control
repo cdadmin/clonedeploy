@@ -1,3 +1,0 @@
-#!/bin/sh
-
-exec /usr/pbi/clonedeploy-$(uname -m)/bin/python2.7 /usr/pbi/clonedeploy-$(uname -m)/control.py $*

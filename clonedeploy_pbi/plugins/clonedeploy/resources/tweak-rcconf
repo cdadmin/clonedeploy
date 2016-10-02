@@ -1,8 +1,0 @@
-#!/bin/sh
-
-clonedeploy_path=/usr/pbi/clonedeploy-$(uname -m)
-tmpfile=$(mktemp /tmp/.XXXXXX)
-
-grep -v 'apache22_' /etc/rc.conf > ${tmpfile}
-cat ${clonedeploy_path}/etc/rc.conf >> ${tmpfile}
-mv ${tmpfile} /etc/rc.conf
