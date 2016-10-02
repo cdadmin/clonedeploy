@@ -40,7 +40,7 @@ namespace Service.Client
         [WebMethod]
         public void GetPartLayout(string imageProfileId, string hdToGet, string newHdSize, string clientHd, string taskType, string partitionPrefix, string lbs)
         {
-            //if (!Authorize()) return;
+            if (!Authorize()) return;
 
             var partLayout = new ClientPartitionScript
             {
@@ -253,7 +253,7 @@ namespace Service.Client
         [WebMethod]
         public void CheckHdRequirements(string profileId, string clientHdNumber, string newHdSize, string schemaHds, string clientLbs)
         {
-            //if (!Authorize()) return;
+            if (!Authorize()) return;
             HttpContext.Current.Response.Write(new Service.Client.Logic().CheckHdRequirements(Convert.ToInt32(profileId),Convert.ToInt32(clientHdNumber),newHdSize,schemaHds,Convert.ToInt32(clientLbs)));
         }
 
@@ -326,7 +326,7 @@ namespace Service.Client
         [WebMethod]
         public void GetSysprepTag(int tagId, string imageEnvironment)
         {
-            //if (!Authorize()) return;
+            if (!Authorize()) return;
             var tag = new Logic().GetSysprepTag(tagId,imageEnvironment);
             HttpContext.Current.Response.Write(tag);
 
