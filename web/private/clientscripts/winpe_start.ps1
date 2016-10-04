@@ -72,7 +72,7 @@ function Assign-Static-IP()
     $nicList = Get-WmiObject -Class "Win32_NetworkAdapterConfiguration"
     foreach($nic in $nicList)
     {
-        $nicSelection.Add("$($nic.Index)","$($nic.Description)")
+        $nicSelection.Add("$($nic.InterfaceIndex)","$($nic.Description)")
     }
     Write-Host
     $selectedNic=$(fShowMenu "Select A NIC" $nicSelection)
