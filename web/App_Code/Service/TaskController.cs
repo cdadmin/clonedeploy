@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Web.Http;
-using Models;
+﻿using System.Web.Http;
 
 namespace Service
 {

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using BasePages;
 using Helpers;
 using Models;
-using ActiveImagingTask = BLL.ActiveImagingTask;
 
 public partial class views_admin_multicast : Admin
 {
