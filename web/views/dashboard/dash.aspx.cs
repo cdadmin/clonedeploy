@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -55,6 +54,7 @@ namespace views.dashboard
             // Drive for path is: drives[idx].Name
             freespace = (ulong)drives[idx].AvailableFreeSpace;
             total = (ulong)drives[idx].TotalSize; 
+            return true;
         }   
         #else
         
