@@ -121,30 +121,39 @@ namespace Security
                 {
                     //user is part of a group, is the group an ldap group?
                     var userGroup = BLL.UserGroup.GetUserGroup(user.UserGroupId);
-                    if (userGroup.IsLdapGroup == 1)
+                    if (userGroup != null)
                     {
-                        //the group is an ldap group
-                        //make sure user is still in that ldap group
-                        if (new BLL.Ldap().Authenticate(userName, password, userGroup.GroupLdapName))
+                        if (userGroup.IsLdapGroup == 1)
                         {
-                            validationResult.IsValid = true;
+                            //the group is an ldap group
+                            //make sure user is still in that ldap group
+                            if (new BLL.Ldap().Authenticate(userName, password, userGroup.GroupLdapName))
+                            {
+                                validationResult.IsValid = true;
+                            }
+                            else
+                            {
+                                //user is either not in that group anymore, not in the directory, or bad password
+                                validationResult.IsValid = false;
+
+                                if (new BLL.Ldap().Authenticate(userName, password))
+                                {
+                                    //password was good but user is no longer in the group
+                                    //delete the user
+                                    BLL.User.DeleteUser(user.Id);
+                                }
+                            }
                         }
                         else
                         {
-                            //user is either not in that group anymore, not in the directory, or bad password
-                            validationResult.IsValid = false;
-
-                            if (new BLL.Ldap().Authenticate(userName, password))
-                            {
-                                //password was good but user is no longer in the group
-                                //delete the user
-                                BLL.User.DeleteUser(user.Id);
-                            }  
+                            //the group is not an ldap group
+                            //still need to check creds against directory
+                            if (new BLL.Ldap().Authenticate(userName, password)) validationResult.IsValid = true;
                         }
                     }
                     else
                     {
-                        //the group is not an ldap group
+                        //group didn't exist for some reason
                         //still need to check creds against directory
                         if (new BLL.Ldap().Authenticate(userName, password)) validationResult.IsValid = true;
                     }
