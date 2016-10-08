@@ -47,7 +47,8 @@ namespace views.users
                 NotifyError = chkError.Checked ? 1 : 0,
                 NotifyComplete = chkComplete.Checked ? 1 : 0,
                 NotifyImageApproved = chkApproved.Checked ? 1 : 0,
-                IsLdapUser = chkldap.Checked ? 1: 0
+                IsLdapUser = chkldap.Checked ? 1: 0,
+                UserGroupId = -1
             };
 
             user.Password = Helpers.Utility.CreatePasswordHash(txtUserPwd.Text, user.Salt);
