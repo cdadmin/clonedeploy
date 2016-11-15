@@ -39,7 +39,7 @@ namespace views.users
             updatedUser.NotifyImageApproved = chkApproved.Checked ? 1 : 0;
 
             var result = BLL.User.UpdateUser(updatedUser);
-            EndUserMessage = !result.IsValid ? result.Message : "Successfully Updated User";
+            EndUserMessage = !result.Success ? result.Message : "Successfully Updated User";
         }
 
         private void PopulateForm()

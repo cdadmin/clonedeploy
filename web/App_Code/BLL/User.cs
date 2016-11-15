@@ -9,15 +9,15 @@ namespace BLL
     public class User
     {
 
-        public static Models.ValidationResult AddUser(CloneDeployUser user)
+        public static Models.ActionResult AddUser(CloneDeployUser user)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateUser(user, true);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.UserRepository.Insert(user);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
@@ -119,28 +119,28 @@ namespace BLL
             }
         }
 
-        public static Models.ValidationResult UpdateUser(CloneDeployUser user)
+        public static Models.ActionResult UpdateUser(CloneDeployUser user)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateUser(user, false);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.UserRepository.Update(user, user.Id);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
             }
         }
 
-        public static Models.ValidationResult ValidateUser(Models.CloneDeployUser user, bool isNewUser)
+        public static Models.ActionResult ValidateUser(Models.CloneDeployUser user, bool isNewUser)
         {
-            var validationResult = new Models.ValidationResult();
+            var validationResult = new Models.ActionResult();
 
             if (string.IsNullOrEmpty(user.Name) || !user.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {
-                validationResult.IsValid = false;
+                validationResult.Success = false;
                 validationResult.Message = "User Name Is Not Valid";
                 return validationResult;
             }
@@ -149,7 +149,7 @@ namespace BLL
             {
                 if (string.IsNullOrEmpty(user.Password))
                 {
-                    validationResult.IsValid = false;
+                    validationResult.Success = false;
                     validationResult.Message = "Password Is Not Valid";
                     return validationResult;
                 }
@@ -158,7 +158,7 @@ namespace BLL
                 {
                     if (uow.UserRepository.Exists(h => h.Name == user.Name))
                     {
-                        validationResult.IsValid = false;
+                        validationResult.Success = false;
                         validationResult.Message = "This User Already Exists";
                         return validationResult;
                     }
@@ -173,7 +173,7 @@ namespace BLL
                     {
                         if (uow.UserRepository.Exists(h => h.Name == user.Name))
                         {
-                            validationResult.IsValid = false;
+                            validationResult.Success = false;
                             validationResult.Message = "This User Already Exists";
                             return validationResult;
                         }

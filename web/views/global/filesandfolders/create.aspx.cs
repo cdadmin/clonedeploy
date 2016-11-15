@@ -19,7 +19,7 @@ public partial class views_global_filesandfolders_create : BasePages.Global
         };
 
         var result = BLL.FileFolder.AddFileFolder(fileFolder);
-        if (!result.IsValid)
+        if (!result.Success)
             EndUserMessage = result.Message;
         else
         {

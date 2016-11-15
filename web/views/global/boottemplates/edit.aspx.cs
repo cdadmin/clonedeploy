@@ -27,7 +27,7 @@ public partial class views_global_boottemplates_edit : BasePages.Global
         };
 
         var result = BLL.BootTemplate.UpdateBootTemplate(bootTemplate);
-        EndUserMessage = !result.IsValid ? result.Message : "Successfully Updated Boot Menu Template";
+        EndUserMessage = !result.Success ? result.Message : "Successfully Updated Boot Menu Template";
        
     }
 }

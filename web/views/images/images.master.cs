@@ -44,7 +44,7 @@ namespace views.masters
         {
             imagesBasePage.RequiresAuthorizationOrManagedImage(Authorizations.ApproveImage,Image.Id);
             Image.Approved = 1;
-            PageBaseMaster.EndUserMessage = BLL.Image.UpdateImage(Image, Image.Name).IsValid
+            PageBaseMaster.EndUserMessage = BLL.Image.UpdateImage(Image, Image.Name).Success
                 ? "Successfully Approved Image"
                 : "Could Not Approve Image";
             BLL.Image.SendImageApprovedEmail(Image.Id);
@@ -53,7 +53,7 @@ namespace views.masters
         protected void OkButton_Click(object sender, EventArgs e)
         {
             var result = BLL.Image.DeleteImage(Image);
-            if (result.IsValid)
+            if (result.Success)
             {
                 PageBaseMaster.EndUserMessage = "Successfully Deleted Image";
                 Response.Redirect("~/views/images/search.aspx");

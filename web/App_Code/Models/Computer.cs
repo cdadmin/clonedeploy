@@ -82,11 +82,19 @@ namespace Models
             return new cdapi(token).Execute<Computer>(request);
         }
 
-        public ValidationResult DeleteCall(string token,int id)
+        public ActionResult PostCall(string token, Models.Computer comp)
+        {
+            var request = new RestRequest(Method.POST);
+            request.AddJsonBody(comp);
+            request.Resource = "Computer/Post/";
+            return new cdapi(token).Execute<ActionResult>(request);
+        }
+
+        public ActionResult DeleteCall(string token,int id)
         {
             var request = new RestRequest(Method.DELETE);
             request.Resource = string.Format("Computer/Delete/{0}",id);
-            return new cdapi(token).Execute<ValidationResult>(request);
+            return new cdapi(token).Execute<ActionResult>(request);
         }
 
     }

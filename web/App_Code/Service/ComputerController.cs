@@ -22,33 +22,20 @@ namespace Service
         {
 
             base.OnAuthorization(actionContext);
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-
-            // Get the claims values
-            //var name = identity.Claims.Where(c => c.Type == ClaimTypes.Name)
-            //                   .Select(c => c.Value).SingleOrDefault();
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;     
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                               .Select(c => c.Value).SingleOrDefault();
 
-            //Computer model = (Computer)actionContext.ActionArguments["value"];
-            foreach (var t in actionContext.ActionArguments)
-            {
-                Logger.Log(t.Key);
-            }
-
-            //string param1 = (string)actionContext.ActionArguments["param1"];
-
-
             var objectId = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
 
-            bool authorized = false;
+            var authorized = false;
             switch (Permission)
             {
-                case "ComputerSearch":
+                case "ComputerSearch": case "ComputerCreate":
                     if (new BLL.Auth(Convert.ToInt32(userId), Permission).IsAuthorized())
                         authorized = true;
                     break;
-                case "ComputerDelete":
+                case "ComputerDelete": case "ComputerUpdate": case "ComputerRead":
                     if (new BLL.Auth(Convert.ToInt32(userId), Permission).ComputerManagement(objectId))
                         authorized = true;
                     break;
@@ -68,61 +55,62 @@ namespace Service
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                              .Select(c => c.Value).SingleOrDefault();
-            Logger.Log("limit" + limit + "search" + searchstring);
+          
             if(string.IsNullOrEmpty(searchstring))   
                 return BLL.Computer.SearchComputersForUser(Convert.ToInt32(userId),limit);
             else
                 return BLL.Computer.SearchComputersForUser(Convert.ToInt32(userId), limit,searchstring); 
 
         }
-    
+
+        [ComputerAuthAttribute(Permission = "ComputerRead")]
         public Computer Get(int id)
         {      
             return BLL.Computer.GetComputer(id);
         }
 
+        [ComputerAuthAttribute(Permission = "ComputerRead")]
         public Computer GetFromMac(string mac)
         {
           
             return BLL.Computer.GetComputerFromMac(mac);
         }
 
+        [ComputerAuthAttribute(Permission = "ComputerCreate")]
         public HttpResponseMessage Post(Models.Computer computer)
         {
             var result = BLL.Computer.AddComputer(computer);
-            if (result.IsValid)
+            if (result.Success)
             {
-                computer = BLL.Computer.GetComputer(result.ObjectId);
-                var response = Request.CreateResponse<Models.Computer>(HttpStatusCode.Created, computer);
-
+                var response = Request.CreateResponse<Models.ActionResult>(HttpStatusCode.Created, result);
                 string uri = Url.Link("DefaultApi", new {id = result.ObjectId});
                 response.Headers.Location = new Uri(uri);
-
                 return response;
             }
             else
             {
-                Logger.Log("Could Not Create Computer" + JsonConvert.SerializeObject(computer));
-                Logger.Log(result.Message);
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                var response = Request.CreateResponse<Models.ActionResult>(HttpStatusCode.NotFound, result);
+                throw new HttpResponseException(response);
             }
         }
 
-        public Models.ValidationResult Put(Models.Computer value)
+        [ComputerAuthAttribute(Permission = "ComputerUpdate")]
+        public Models.ActionResult Put(Models.Computer value)
         {
            
             return BLL.Computer.UpdateComputer(value);
         }
 
         [ComputerAuthAttribute(Permission = "ComputerDelete")]
-        public Models.ValidationResult Delete(int id)
+        public Models.ActionResult Delete(int id)
         {
-            if (BLL.Computer.GetComputer(id) == null)
+            var result = BLL.Computer.DeleteComputer(id);
+            if (!result.Success)
             {
-                Logger.Log("Could Not Delete Computer With Id" + id + ".  The Computer Was not Found");
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                var response = Request.CreateResponse<Models.ActionResult>(HttpStatusCode.NotFound, result);
+                throw new HttpResponseException(response);
             }
-            return BLL.Computer.DeleteComputer(id);
+            return result;
         }
     }
 }

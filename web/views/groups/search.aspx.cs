@@ -21,7 +21,7 @@ namespace views.groups
                 where dataKey != null
                 select dataKey)
             {
-                if (BLL.Group.DeleteGroup(Convert.ToInt32(dataKey.Value)).IsValid)
+                if (BLL.Group.DeleteGroup(Convert.ToInt32(dataKey.Value)).Success)
                     deletedCount++;
             }
             EndUserMessage = "Deleted " + deletedCount + " Group(s)";

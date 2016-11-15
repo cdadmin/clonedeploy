@@ -20,6 +20,6 @@ public partial class views_images_profiles_task : Images
         imageProfile.WebCancel = Convert.ToInt16(chkWebCancel.Checked);
         imageProfile.TaskCompletedAction = ddlTaskComplete.Text;
         var result = BLL.ImageProfile.UpdateProfile(imageProfile);
-        EndUserMessage = result.IsValid ? "Successfully Updated Image Profile" : result.Message;
+        EndUserMessage = result.Success ? "Successfully Updated Image Profile" : result.Message;
     }
 }

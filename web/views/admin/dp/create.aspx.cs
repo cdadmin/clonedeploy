@@ -30,7 +30,7 @@ public partial class views_admin_dp_create : Admin
         };
 
         var result = BLL.DistributionPoint.AddDistributionPoint(distributionPoint);
-        if (result.IsValid)
+        if (result.Success)
         {
             EndUserMessage = "Successfully Created Distribution Point";
             Response.Redirect("~/views/admin/dp/edit.aspx?level=2&dpid=" + distributionPoint.Id);

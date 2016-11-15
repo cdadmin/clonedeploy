@@ -29,7 +29,7 @@ public partial class views_groups_multicast : BasePages.Groups
 
 
         var result = BLL.Group.UpdateGroup(group);
-        EndUserMessage = !result.IsValid ? result.Message : "Successfully Updated Group";
+        EndUserMessage = !result.Success ? result.Message : "Successfully Updated Group";
     }
 
     protected void ddlGroupImage_OnSelectedIndexChanged(object sender, EventArgs e)

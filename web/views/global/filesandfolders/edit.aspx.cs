@@ -25,7 +25,7 @@ public partial class views_global_filesandfolders_edit : BasePages.Global
 
         
         var result = BLL.FileFolder.UpdateFileFolder(FileFolder);
-        EndUserMessage = !result.IsValid ? result.Message : "Successfully Updated File / Folder";
+        EndUserMessage = !result.Success ? result.Message : "Successfully Updated File / Folder";
 
     }
 }

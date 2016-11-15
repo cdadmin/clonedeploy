@@ -6,15 +6,15 @@ namespace BLL
     public class Script
     {
 
-        public static Models.ValidationResult AddScript(Models.Script script)
+        public static Models.ActionResult AddScript(Models.Script script)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateScript(script, true);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.ScriptRepository.Insert(script);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
@@ -54,28 +54,28 @@ namespace BLL
             }
         }
 
-        public static Models.ValidationResult UpdateScript(Models.Script script)
+        public static Models.ActionResult UpdateScript(Models.Script script)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateScript(script, false);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.ScriptRepository.Update(script, script.Id);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
             }
         }
 
-        public static Models.ValidationResult ValidateScript(Models.Script script, bool isNewScript)
+        public static Models.ActionResult ValidateScript(Models.Script script, bool isNewScript)
         {
-            var validationResult = new Models.ValidationResult();
+            var validationResult = new Models.ActionResult();
 
             if (string.IsNullOrEmpty(script.Name) || !script.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {
-                validationResult.IsValid = false;
+                validationResult.Success = false;
                 validationResult.Message = "Script Name Is Not Valid";
                 return validationResult;
             }
@@ -86,7 +86,7 @@ namespace BLL
                 {
                     if (uow.ScriptRepository.Exists(h => h.Name == script.Name))
                     {
-                        validationResult.IsValid = false;
+                        validationResult.Success = false;
                         validationResult.Message = "This Script Already Exists";
                         return validationResult;
                     }
@@ -101,7 +101,7 @@ namespace BLL
                     {
                         if (uow.ScriptRepository.Exists(h => h.Name == script.Name))
                         {
-                            validationResult.IsValid = false;
+                            validationResult.Success = false;
                             validationResult.Message = "This Script Already Exists";
                             return validationResult;
                         }

@@ -39,7 +39,7 @@ namespace views.computers
                 if (cb == null || !cb.Checked) continue;
                 var dataKey = gvComputers.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
-                if (new Models.Computer().DeleteCall(Request.Cookies["Token"].Value, Convert.ToInt32(dataKey.Value)).IsValid)
+                if (new Models.Computer().DeleteCall(Request.Cookies["Token"].Value, Convert.ToInt32(dataKey.Value)).Success)
                     deletedCount++;
                 
 

@@ -29,7 +29,7 @@ namespace views.masters
             {            
                 var auth = new Authenticate();
                 var validationResult = auth.GlobalLogin(Request.QueryString["username"], Request.QueryString["password"], "Web");
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     var cloneDeployUser = BLL.User.GetUser(Request.QueryString["username"]);
                     cloneDeployUser.Salt = "";

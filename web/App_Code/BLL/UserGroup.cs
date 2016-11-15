@@ -7,15 +7,15 @@ namespace BLL
     public class UserGroup
     {
 
-        public static Models.ValidationResult AddUserGroup(CloneDeployUserGroup userGroup)
+        public static Models.ActionResult AddUserGroup(CloneDeployUserGroup userGroup)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateUser(userGroup, true);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.UserGroupRepository.Insert(userGroup);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
@@ -73,15 +73,15 @@ namespace BLL
             }
         }
 
-        public static Models.ValidationResult UpdateUser(CloneDeployUserGroup userGroup)
+        public static Models.ActionResult UpdateUser(CloneDeployUserGroup userGroup)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateUser(userGroup, false);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.UserGroupRepository.Update(userGroup, userGroup.Id);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
@@ -179,9 +179,9 @@ namespace BLL
 
        
 
-        public static Models.ValidationResult ValidateUser(Models.CloneDeployUserGroup userGroup, bool isNewUserGroup)
+        public static Models.ActionResult ValidateUser(Models.CloneDeployUserGroup userGroup, bool isNewUserGroup)
         {
-            var validationResult = new Models.ValidationResult();
+            var validationResult = new Models.ActionResult();
 
             if (isNewUserGroup)
             {
@@ -189,7 +189,7 @@ namespace BLL
                 {
                     if (uow.UserGroupRepository.Exists(h => h.Name == userGroup.Name))
                     {
-                        validationResult.IsValid = false;
+                        validationResult.Success = false;
                         validationResult.Message = "This User Group Already Exists";
                         return validationResult;
                     }
@@ -204,7 +204,7 @@ namespace BLL
                     {
                         if (uow.UserGroupRepository.Exists(h => h.Name == userGroup.Name))
                         {
-                            validationResult.IsValid = false;
+                            validationResult.Success = false;
                             validationResult.Message = "This User Group Already Exists";
                             return validationResult;
                         }

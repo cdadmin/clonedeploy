@@ -32,7 +32,7 @@ public partial class views_images_profiles_upload : Images
         imageProfile.UploadSchemaOnly = Convert.ToInt16(chkSchemaOnly.Checked);
         imageProfile.WimMulticastEnabled = Convert.ToInt16(chkWimMulticast.Checked);
         var result = BLL.ImageProfile.UpdateProfile(imageProfile);
-        EndUserMessage = result.IsValid ? "Successfully Updated Image Profile" : result.Message;
+        EndUserMessage = result.Success ? "Successfully Updated Image Profile" : result.Message;
     }
 
     protected void chkCustomUpload_OnCheckedChanged(object sender, EventArgs e)

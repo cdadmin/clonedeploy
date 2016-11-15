@@ -16,7 +16,7 @@ namespace Security
            
             var validationResult = GlobalLogin(username, password, "Console");
             
-            if (!validationResult.IsValid)
+            if (!validationResult.Success)
             {
                 result.Add("valid", "false");
                 result.Add("user_id", "");
@@ -48,7 +48,7 @@ namespace Security
             }
             var globalComputerArgs = Settings.GlobalComputerArgs;
             var validationResult = GlobalLogin(username, password, "iPXE");
-            if (!validationResult.IsValid) return "goto Menu";
+            if (!validationResult.Success) return "goto Menu";
             var lines = "#!ipxe" + newLineChar;
             lines += "kernel " + Settings.WebPath + "IpxeBoot?filename=" + kernel + "&type=kernel" +
                      " initrd=" + bootImage + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
@@ -61,12 +61,12 @@ namespace Security
             return lines;
         }
 
-        public Models.ValidationResult GlobalLogin(string userName, string password, string loginType)
+        public Models.ActionResult GlobalLogin(string userName, string password, string loginType)
         {
-            var validationResult = new Models.ValidationResult
+            var validationResult = new Models.ActionResult
             {
                 Message = "Login Was Not Successful",
-                IsValid = false
+                Success = false
             };
 
             //Check if user exists in Clone Deploy
@@ -91,14 +91,14 @@ namespace Security
                             };
                             //Create a local random db pass, should never actually be possible to use.
                             cdUser.Password = Helpers.Utility.CreatePasswordHash(new System.Guid().ToString(), cdUser.Salt);
-                            if (BLL.User.AddUser(cdUser).IsValid)
+                            if (BLL.User.AddUser(cdUser).Success)
                             {
                                 //add user to group
                                 var newUser = BLL.User.GetUser(userName);
                                 BLL.UserGroup.AddNewGroupMember(ldapGroup,newUser);
                             }
                             validationResult.Message = "Success";
-                            validationResult.IsValid = true;
+                            validationResult.Success = true;
                             break;
                         }
                     }
@@ -129,12 +129,12 @@ namespace Security
                             //make sure user is still in that ldap group
                             if (new BLL.Ldap().Authenticate(userName, password, userGroup.GroupLdapName))
                             {
-                                validationResult.IsValid = true;
+                                validationResult.Success = true;
                             }
                             else
                             {
                                 //user is either not in that group anymore, not in the directory, or bad password
-                                validationResult.IsValid = false;
+                                validationResult.Success = false;
 
                                 if (new BLL.Ldap().Authenticate(userName, password))
                                 {
@@ -148,36 +148,36 @@ namespace Security
                         {
                             //the group is not an ldap group
                             //still need to check creds against directory
-                            if (new BLL.Ldap().Authenticate(userName, password)) validationResult.IsValid = true;
+                            if (new BLL.Ldap().Authenticate(userName, password)) validationResult.Success = true;
                         }
                     }
                     else
                     {
                         //group didn't exist for some reason
                         //still need to check creds against directory
-                        if (new BLL.Ldap().Authenticate(userName, password)) validationResult.IsValid = true;
+                        if (new BLL.Ldap().Authenticate(userName, password)) validationResult.Success = true;
                     }
                 }
                 else
                 {
                     //user is not part of a group, check creds against directory
-                    if (new BLL.Ldap().Authenticate(userName, password)) validationResult.IsValid = true;
+                    if (new BLL.Ldap().Authenticate(userName, password)) validationResult.Success = true;
                 }
                
             }
             else if (user.IsLdapUser == 1 && Settings.LdapEnabled != "1")
             {
                 //prevent ldap user from logging in with local pass if ldap auth gets turned off
-                validationResult.IsValid = false;
+                validationResult.Success = false;
             }
             //Check against local DB
             else
             {
                 var hash = Helpers.Utility.CreatePasswordHash(password, user.Salt);
-                if (user.Password == hash) validationResult.IsValid = true;
+                if (user.Password == hash) validationResult.Success = true;
             }
            
-            if (validationResult.IsValid)
+            if (validationResult.Success)
             {
                 BLL.UserLockout.DeleteUserLockouts(user.Id);
                 validationResult.Message = "Success";

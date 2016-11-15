@@ -34,7 +34,7 @@ public partial class views_groups_smartcriteria : BasePages.Groups
         var group = Group;
         group.SmartCriteria = txtContains.Text;
         var result = BLL.Group.UpdateGroup(group);
-        EndUserMessage = result.IsValid ? "Successfully Updated Smart Criteria" : result.Message;
+        EndUserMessage = result.Success ? "Successfully Updated Smart Criteria" : result.Message;
         BLL.Group.UpdateSmartMembership(group);
     }
 }

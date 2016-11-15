@@ -22,6 +22,6 @@ public partial class views_images_profiles_general : Images
         imageProfile.Name = txtProfileName.Text;
         imageProfile.Description = txtProfileDesc.Text;
         var result = BLL.ImageProfile.UpdateProfile(imageProfile);
-        EndUserMessage = result.IsValid ? "Successfully Updated Image Profile" : result.Message;
+        EndUserMessage = result.Success ? "Successfully Updated Image Profile" : result.Message;
     }
 }

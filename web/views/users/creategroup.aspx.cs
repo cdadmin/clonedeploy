@@ -21,7 +21,7 @@ public partial class views_users_creategroup : BasePages.Users
             userGroup.GroupLdapName = txtLdapGroupName.Text;
 
         var result = BLL.UserGroup.AddUserGroup(userGroup);
-        if (!result.IsValid)
+        if (!result.Success)
             EndUserMessage = result.Message;
         else
         {

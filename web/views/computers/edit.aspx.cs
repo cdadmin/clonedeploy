@@ -35,7 +35,7 @@ namespace views.computers
             };
 
             var result = BLL.Computer.UpdateComputer(computer);
-            EndUserMessage = !result.IsValid ? result.Message : "Successfully Updated Computer";
+            EndUserMessage = !result.Success ? result.Message : "Successfully Updated Computer";
         }
 
         protected void PopulateForm()

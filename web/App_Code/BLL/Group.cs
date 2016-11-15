@@ -10,15 +10,15 @@ namespace BLL
     public class Group
     {
 
-        public static Models.ValidationResult AddGroup(Models.Group group, int userId)
+        public static Models.ActionResult AddGroup(Models.Group group, int userId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateGroup(group, true);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.GroupRepository.Insert(group);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
 
                     //If Group management is being used add this group to the allowed users list 
                     var userManagedGroups = BLL.UserGroupManagement.Get(userId);
@@ -58,9 +58,9 @@ namespace BLL
         }
 
       
-        public static Models.ValidationResult DeleteGroup(int groupId)
+        public static Models.ActionResult DeleteGroup(int groupId)
         {
-            var result = new ValidationResult();
+            var result = new ActionResult();
             using (var uow = new DAL.UnitOfWork())
             {
                 BLL.GroupMembership.DeleteAllMembershipsForGroup(groupId);
@@ -68,7 +68,7 @@ namespace BLL
                 BLL.GroupBootMenu.DeleteGroup(groupId);
                 BLL.GroupProperty.DeleteGroup(groupId);
                 uow.GroupRepository.Delete(groupId);
-                result.IsValid = uow.Save();
+                result.Success = uow.Save();
                 return result;
             }
         }
@@ -125,15 +125,15 @@ namespace BLL
             return BLL.GroupMembership.AddMembership(memberships);
         }
 
-        public static Models.ValidationResult UpdateGroup(Models.Group group)
+        public static Models.ActionResult UpdateGroup(Models.Group group)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateGroup(group, false);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.GroupRepository.Update(group, group.Id);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
@@ -160,7 +160,7 @@ namespace BLL
                 var records = csv.GetRecords<Models.Group>();
                 foreach (var group in records)
                 {
-                    if (AddGroup(group,userId).IsValid)
+                    if (AddGroup(group,userId).Success)
                         importCounter++;
                 }
             }
@@ -191,13 +191,13 @@ namespace BLL
                 UpdateSmartMembership(group);
         }
 
-        public static Models.ValidationResult ValidateGroup(Models.Group group, bool isNewGroup)
+        public static Models.ActionResult ValidateGroup(Models.Group group, bool isNewGroup)
         {
-            var validationResult = new Models.ValidationResult();
+            var validationResult = new Models.ActionResult();
 
             if (string.IsNullOrEmpty(group.Name) || !group.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {
-                validationResult.IsValid = false;
+                validationResult.Success = false;
                 validationResult.Message = "Group Name Is Not Valid";
                 return validationResult;
             }
@@ -208,7 +208,7 @@ namespace BLL
                 {
                     if (uow.GroupRepository.Exists(h => h.Name == group.Name))
                     {
-                        validationResult.IsValid = false;
+                        validationResult.Success = false;
                         validationResult.Message = "This Group Already Exists";
                         return validationResult;
                     }
@@ -223,7 +223,7 @@ namespace BLL
                     {
                         if (uow.GroupRepository.Exists(h => h.Name == group.Name))
                         {
-                            validationResult.IsValid = false;
+                            validationResult.Success = false;
                             validationResult.Message = "This Group Already Exists";
                             return validationResult;
                         }

@@ -16,7 +16,7 @@ public partial class views_users_editgroup : BasePages.Users
                 CloneDeployUserGroup.GroupLdapName = txtLdapGroupName.Text;
           
             var result = BLL.UserGroup.UpdateUser(CloneDeployUserGroup);
-            EndUserMessage = !result.IsValid ? result.Message : "Successfully Updated User Group";
+            EndUserMessage = !result.Success ? result.Message : "Successfully Updated User Group";
             
 
         }

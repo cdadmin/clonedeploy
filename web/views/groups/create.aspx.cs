@@ -24,7 +24,7 @@ namespace views.groups
             };
 
             var result = BLL.Group.AddGroup(group,CloneDeployCurrentUser.Id);
-            if (!result.IsValid)
+            if (!result.Success)
                 EndUserMessage = result.Message;
             else
             {

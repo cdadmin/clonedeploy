@@ -5,15 +5,15 @@ namespace BLL
     public class Building
     {
 
-        public static  Models.ValidationResult AddBuilding(Models.Building building)
+        public static  Models.ActionResult AddBuilding(Models.Building building)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateBuilding(building, true);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.BuildingRepository.Insert(building);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
@@ -54,28 +54,28 @@ namespace BLL
             }
         }
 
-        public static  Models.ValidationResult UpdateBuilding(Models.Building building)
+        public static  Models.ActionResult UpdateBuilding(Models.Building building)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateBuilding(building, false);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.BuildingRepository.Update(building, building.Id);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
             }
         }
 
-        public static  Models.ValidationResult ValidateBuilding(Models.Building building, bool isNewBuilding)
+        public static  Models.ActionResult ValidateBuilding(Models.Building building, bool isNewBuilding)
         {
-            var validationResult = new Models.ValidationResult();
+            var validationResult = new Models.ActionResult();
 
             if (string.IsNullOrEmpty(building.Name) || building.Name.Contains(" "))
             {
-                validationResult.IsValid = false;
+                validationResult.Success = false;
                 validationResult.Message = "Building Name Is Not Valid";
                 return validationResult;
             }
@@ -86,7 +86,7 @@ namespace BLL
                 {
                     if (uow.BuildingRepository.Exists(h => h.Name == building.Name))
                     {
-                        validationResult.IsValid = false;
+                        validationResult.Success = false;
                         validationResult.Message = "This Building Already Exists";
                         return validationResult;
                     }
@@ -101,7 +101,7 @@ namespace BLL
                     {
                         if (uow.BuildingRepository.Exists(h => h.Name == building.Name))
                         {
-                            validationResult.IsValid = false;
+                            validationResult.Success = false;
                             validationResult.Message = "This Building Already Exists";
                             return validationResult;
                         }

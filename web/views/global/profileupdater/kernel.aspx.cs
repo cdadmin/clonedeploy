@@ -40,7 +40,7 @@ public partial class views_global_profileupdater_kernel : BasePages.Global
 
             var imageProfile = BLL.ImageProfile.ReadProfile(Convert.ToInt32(dataKey.Value));
             imageProfile.Kernel = ddlKernel.Text;
-            if (BLL.ImageProfile.UpdateProfile(imageProfile).IsValid)
+            if (BLL.ImageProfile.UpdateProfile(imageProfile).Success)
             {
                 updateCount++;
             }

@@ -23,7 +23,7 @@ public partial class views_global_sysprep_edit : BasePages.Global
         };
       
         var result = BLL.SysprepTag.UpdateSysprepTag(sysprepTag);
-        EndUserMessage = result.IsValid ? "Successfully Updated Sysprep Tag" : result.Message;
+        EndUserMessage = result.Success ? "Successfully Updated Sysprep Tag" : result.Message;
     }
 
     protected void PopulateForm()

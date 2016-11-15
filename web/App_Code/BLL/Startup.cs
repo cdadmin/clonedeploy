@@ -27,7 +27,7 @@ namespace OAuth20
             var auth = new Authenticate();
 
             var validationResult = auth.GlobalLogin(context.UserName, context.Password, "Web");
-            if ((validationResult.IsValid))
+            if ((validationResult.Success))
             {
                 ClaimsIdentity oAuthIdentity = new ClaimsIdentity(context.Options.AuthenticationType);
                 context.Validated(oAuthIdentity);

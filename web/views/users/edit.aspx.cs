@@ -55,7 +55,7 @@ namespace views.users
             updatedUser.ApiKey = txtApiKey.Text;
            
             var result = BLL.User.UpdateUser(updatedUser);
-            EndUserMessage = !result.IsValid ? result.Message : "Successfully Updated User";
+            EndUserMessage = !result.Success ? result.Message : "Successfully Updated User";
             
 
         }

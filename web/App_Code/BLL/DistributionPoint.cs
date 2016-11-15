@@ -8,16 +8,16 @@ namespace BLL
     public class DistributionPoint
     {
 
-        public static Models.ValidationResult AddDistributionPoint(Models.DistributionPoint distributionPoint)       
+        public static Models.ActionResult AddDistributionPoint(Models.DistributionPoint distributionPoint)       
         {
 
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateDistributionPoint(distributionPoint, true);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.DistributionPointRepository.Insert(distributionPoint);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
@@ -66,24 +66,24 @@ namespace BLL
             }
         }
 
-        public static Models.ValidationResult UpdateDistributionPoint(Models.DistributionPoint distributionPoint)
+        public static Models.ActionResult UpdateDistributionPoint(Models.DistributionPoint distributionPoint)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateDistributionPoint(distributionPoint, false);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.DistributionPointRepository.Update(distributionPoint, distributionPoint.Id);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
             }
         }
 
-        public static Models.ValidationResult ValidateDistributionPoint(Models.DistributionPoint distributionPoint, bool isNewDistributionPoint)
+        public static Models.ActionResult ValidateDistributionPoint(Models.DistributionPoint distributionPoint, bool isNewDistributionPoint)
         {
-            var validationResult = new Models.ValidationResult();
+            var validationResult = new Models.ActionResult();
 
             
 
@@ -93,7 +93,7 @@ namespace BLL
 
             if (string.IsNullOrEmpty(distributionPoint.DisplayName) || distributionPoint.DisplayName.Contains(" "))
             {
-                validationResult.IsValid = false;
+                validationResult.Success = false;
                 validationResult.Message = "Distribution Point Name Is Not Valid";
                 return validationResult;
             }
@@ -103,7 +103,7 @@ namespace BLL
                 var primaryDp = GetPrimaryDistributionPoint();
                 if (primaryDp != null && Convert.ToBoolean(distributionPoint.IsPrimary))
                 {
-                    validationResult.IsValid = false;
+                    validationResult.Success = false;
                     validationResult.Message = "There Can Only Be One Primary Distribution Point";
                     return validationResult;
                 }
@@ -112,7 +112,7 @@ namespace BLL
                 {
                     if (uow.DistributionPointRepository.Exists(h => h.DisplayName == distributionPoint.DisplayName))
                     {
-                        validationResult.IsValid = false;
+                        validationResult.Success = false;
                         validationResult.Message = "This Distribution Point Already Exists";
                         return validationResult;
                     }
@@ -127,7 +127,7 @@ namespace BLL
                     {
                         if (uow.DistributionPointRepository.Exists(h => h.DisplayName == distributionPoint.DisplayName))
                         {
-                            validationResult.IsValid = false;
+                            validationResult.Success = false;
                             validationResult.Message = "This Distribution Point Already Exists";
                             return validationResult;
                         }

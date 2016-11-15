@@ -19,7 +19,7 @@ namespace views.groups
             };
 
             var result = BLL.Group.UpdateGroup(group);
-            EndUserMessage = !result.IsValid ? result.Message : "Successfully Updated Group";              
+            EndUserMessage = !result.Success ? result.Message : "Successfully Updated Group";              
         }
 
         protected void Page_Load(object sender, EventArgs e)

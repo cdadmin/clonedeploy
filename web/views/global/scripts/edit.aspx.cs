@@ -22,7 +22,7 @@ public partial class views_admin_scripts_edit : BasePages.Global
         var fixedLineEnding = scriptEditor.Value.Replace("\r\n", "\n");
         script.Contents = fixedLineEnding;
         var result = BLL.Script.UpdateScript(script);
-        if (result.IsValid)
+        if (result.Success)
             EndUserMessage = "Successfully Updated Script";
         else
         

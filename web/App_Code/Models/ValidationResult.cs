@@ -1,15 +1,16 @@
 ﻿namespace Models
 {
-    public class ValidationResult
+    public class ActionResult
     {
-        public ValidationResult()
+        public ActionResult()
         {
-            IsValid = true;
+            Success = true;
             Message = string.Empty;
         }
 
-        public bool IsValid { get; set; }
+        public bool Success { get; set; }
         public string Message { get; set; }
         public int ObjectId { get; set; }
+        public string Object { get; set; }
     }
 }

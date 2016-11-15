@@ -11,24 +11,24 @@ namespace BLL
 {
     public static class Image
     {
-        public static Models.ValidationResult AddImage(Models.Image image)
+        public static Models.ActionResult AddImage(Models.Image image)
         {
             var validationResult = ValidateImage(image, true);
             using (var uow = new DAL.UnitOfWork())
             {
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
-                    validationResult.IsValid = false;
+                    validationResult.Success = false;
                     uow.ImageRepository.Insert(image);
                     if (uow.Save())
                     {
-                        validationResult.IsValid = true;
+                        validationResult.Success = true;
                     }
 
                 }
                
             }
-            if (validationResult.IsValid)
+            if (validationResult.Success)
             {
                 var defaultProfile = BLL.ImageProfile.SeedDefaultImageProfile(image);
                 defaultProfile.ImageId = image.Id;
@@ -51,15 +51,15 @@ namespace BLL
 
 
 
-        public static Models.ValidationResult DeleteImage(Models.Image image)
+        public static Models.ActionResult DeleteImage(Models.Image image)
         {
-            var result = new Models.ValidationResult(){IsValid = false};
+            var result = new Models.ActionResult(){Success = false};
             using (var uow = new DAL.UnitOfWork())
             {
                 if (Convert.ToBoolean(image.Protected))
                 {
                     result.Message = "This Image Is Protected And Cannot Be Deleted";
-                    result.IsValid = false;
+                    result.Success = false;
                     return result;
                 }
 
@@ -74,13 +74,13 @@ namespace BLL
                         if (Directory.Exists(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name))
                             Directory.Delete(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name, true);
 
-                        result.IsValid = true;
+                        result.Success = true;
                     }
                     catch (Exception ex)
                     {
                         Logger.Log(ex.Message);
                         result.Message = "Could Not Delete Image Folder";
-                        result.IsValid = false;
+                        result.Success = false;
 
                     }
 
@@ -88,7 +88,7 @@ namespace BLL
                 else
                 {
                     result.Message = "Could Not Delete Image";
-                    result.IsValid = false;
+                    result.Success = false;
                 }
                 return result;
                 
@@ -191,14 +191,14 @@ namespace BLL
             }
         }
 
-        public static Models.ValidationResult UpdateImage(Models.Image image, string originalName)
+        public static Models.ActionResult UpdateImage(Models.Image image, string originalName)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateImage(image, false);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
-                    validationResult.IsValid = false;
+                    validationResult.Success = false;
                     uow.ImageRepository.Update(image, image.Id);
                     if (uow.Save())
                     {
@@ -207,7 +207,7 @@ namespace BLL
                             try
                             {
                                 new FileOps().RenameFolder(originalName, image.Name);
-                                validationResult.IsValid = true;
+                                validationResult.Success = true;
                             }
                             catch (Exception ex)
                             {
@@ -217,7 +217,7 @@ namespace BLL
                         }
                         else
                         {
-                            validationResult.IsValid = true;
+                            validationResult.Success = true;
                         }
                     }
 
@@ -266,7 +266,7 @@ namespace BLL
                 var records = csv.GetRecords<Models.Image>();
                 foreach (var image in records)
                 {
-                    if (AddImage(image).IsValid)
+                    if (AddImage(image).Success)
                         importCounter++;
                 }
             }
@@ -282,19 +282,19 @@ namespace BLL
             }
         }
 
-        public static Models.ValidationResult CheckApprovalAndChecksum(Models.Image image,int userId)
+        public static Models.ActionResult CheckApprovalAndChecksum(Models.Image image,int userId)
         {
-            var validationResult = new Models.ValidationResult();
+            var validationResult = new Models.ActionResult();
             if (image == null)
             {
-                validationResult.IsValid = false;
+                validationResult.Success = false;
                 validationResult.Message = "Image Does Not Exist";
                 return validationResult;
             }
 
             if (image.Enabled == 0)
             {
-                validationResult.IsValid = false;
+                validationResult.Success = false;
                 validationResult.Message = "Image Is Not Enabled";
                 return validationResult;
             }
@@ -306,7 +306,7 @@ namespace BLL
                 {
                     if (!Convert.ToBoolean(image.Approved))
                     {
-                        validationResult.IsValid = false;
+                        validationResult.Success = false;
                         validationResult.Message = "Image Has Not Been Approved";
                         return validationResult;
                     }
@@ -315,17 +315,17 @@ namespace BLL
 
           
 
-            validationResult.IsValid = true;
+            validationResult.Success = true;
             return validationResult;
         }
 
-        public static Models.ValidationResult ValidateImage(Models.Image image, bool isNewImage)
+        public static Models.ActionResult ValidateImage(Models.Image image, bool isNewImage)
         {
-            var validationResult = new Models.ValidationResult();
+            var validationResult = new Models.ActionResult();
 
             if (string.IsNullOrEmpty(image.Name) || !image.Name.All(c => char.IsLetterOrDigit(c) || c == '_' || c == '-'))
             {
-                validationResult.IsValid = false;
+                validationResult.Success = false;
                 validationResult.Message = "Image Name Is Not Valid";
                 return validationResult;
             }
@@ -336,7 +336,7 @@ namespace BLL
                 {
                     if (uow.ImageRepository.Exists(h => h.Name == image.Name))
                     {
-                        validationResult.IsValid = false;
+                        validationResult.Success = false;
                         validationResult.Message = "This Image Already Exists";
                         return validationResult;
                     }
@@ -351,7 +351,7 @@ namespace BLL
                     {
                         if (uow.ImageRepository.Exists(h => h.Name == image.Name))
                         {
-                            validationResult.IsValid = false;
+                            validationResult.Success = false;
                             validationResult.Message = "This Image Already Exists";
                             return validationResult;
                         }

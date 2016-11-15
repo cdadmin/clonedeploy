@@ -48,7 +48,7 @@ namespace views.masters
                 case "delete":
                     groupBasePage.RequiresAuthorizationOrManagedGroup(Authorizations.DeleteGroup,Group.Id);
                     var result = BLL.Group.DeleteGroup(Group.Id);
-                    if (result.IsValid)
+                    if (result.Success)
                     {
                         PageBaseMaster.EndUserMessage = "Successfully Deleted Group";
                         Response.Redirect("~/views/groups/search.aspx");

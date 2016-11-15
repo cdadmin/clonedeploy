@@ -20,7 +20,7 @@ public partial class views_global_munki_manifestcreate : BasePages.Global
         };
 
         var result = BLL.MunkiManifestTemplate.AddManifest(manifestTemplate);
-        if (result.IsValid)
+        if (result.Success)
         {
             EndUserMessage = "Successfully Created Manifest Template";
             Response.Redirect("~/views/global/munki/general.aspx?cat=sub2&manifestid=" + manifestTemplate.Id);

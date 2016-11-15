@@ -24,7 +24,7 @@ public partial class views_global_boottemplates_createentry : BasePages.Global
 
       
         var result = BLL.BootEntry.AddBootEntry(bootEntry);
-        if (!result.IsValid)
+        if (!result.Success)
             EndUserMessage = result.Message;
         else
         {

@@ -17,7 +17,7 @@ public partial class views_images_profiles_create : Images
         defaultProfile.Name = txtProfileName.Text;
         defaultProfile.Description = txtProfileDesc.Text;
         var result = BLL.ImageProfile.AddProfile(defaultProfile);
-        if (result.IsValid)
+        if (result.Success)
         {
             EndUserMessage = "Successfully Created Image Profile";
             Response.Redirect("~/views/images/profiles/general.aspx?imageid=" + defaultProfile.ImageId + "&profileid=" +

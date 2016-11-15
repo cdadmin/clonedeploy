@@ -38,15 +38,15 @@ namespace views.computers
                 
             };
 
-
-            var result = BLL.Computer.AddComputer(computer);
-            if (!result.IsValid)
+            var result = new Models.Computer().PostCall(Request.Cookies["Token"].Value,computer);
+          
+            if (!result.Success)
                 EndUserMessage = result.Message;
             else
             {
                 EndUserMessage = "Successfully Created Computer";
                 if (!createAnother.Checked)
-                    Response.Redirect("~/views/computers/edit.aspx?computerid=" + computer.Id);
+                    Response.Redirect(string.Format("~/views/computers/edit.aspx?computerid={0}",result.ObjectId));
             }
         }
 

@@ -6,15 +6,15 @@ namespace BLL
     public class MunkiManifestTemplate
     {
 
-        public static Models.ValidationResult AddManifest(Models.MunkiManifestTemplate manifest)
+        public static Models.ActionResult AddManifest(Models.MunkiManifestTemplate manifest)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateManifest(manifest, true);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.MunkiManifestRepository.Insert(manifest);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
@@ -58,28 +58,28 @@ namespace BLL
             }
         }
 
-        public static  Models.ValidationResult UpdateManifest(Models.MunkiManifestTemplate manifest)
+        public static  Models.ActionResult UpdateManifest(Models.MunkiManifestTemplate manifest)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateManifest(manifest, false);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.MunkiManifestRepository.Update(manifest, manifest.Id);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
             }
         }
 
-        public static  Models.ValidationResult ValidateManifest(Models.MunkiManifestTemplate manifest, bool isNewManifest)
+        public static  Models.ActionResult ValidateManifest(Models.MunkiManifestTemplate manifest, bool isNewManifest)
         {
-            var validationResult = new Models.ValidationResult();
+            var validationResult = new Models.ActionResult();
 
             if (string.IsNullOrEmpty(manifest.Name) || manifest.Name.Contains(" "))
             {
-                validationResult.IsValid = false;
+                validationResult.Success = false;
                 validationResult.Message = "Manifest Name Is Not Valid";
                 return validationResult;
             }
@@ -90,7 +90,7 @@ namespace BLL
                 {
                     if (uow.MunkiManifestRepository.Exists(h => h.Name == manifest.Name))
                     {
-                        validationResult.IsValid = false;
+                        validationResult.Success = false;
                         validationResult.Message = "This Manifest Already Exists";
                         return validationResult;
                     }
@@ -105,7 +105,7 @@ namespace BLL
                     {
                         if (uow.MunkiManifestRepository.Exists(h => h.Name == manifest.Name))
                         {
-                            validationResult.IsValid = false;
+                            validationResult.Success = false;
                             validationResult.Message = "This Manifest Already Exists";
                             return validationResult;
                         }

@@ -6,15 +6,15 @@ namespace BLL
     public class PartitionLayout
     {
 
-        public static Models.ValidationResult AddPartitionLayout(Models.PartitionLayout partitionLayout)
+        public static Models.ActionResult AddPartitionLayout(Models.PartitionLayout partitionLayout)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidatePartitionLayout(partitionLayout, true);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.PartitionLayoutRepository.Insert(partitionLayout);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
@@ -57,28 +57,28 @@ namespace BLL
             }
         }
 
-        public static Models.ValidationResult UpdatePartitionLayout(Models.PartitionLayout partitionLayout)
+        public static Models.ActionResult UpdatePartitionLayout(Models.PartitionLayout partitionLayout)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidatePartitionLayout(partitionLayout, false);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.PartitionLayoutRepository.Update(partitionLayout, partitionLayout.Id);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
             }
         }
 
-        public static Models.ValidationResult ValidatePartitionLayout(Models.PartitionLayout partitionLayout, bool isNewPartitionLayout)
+        public static Models.ActionResult ValidatePartitionLayout(Models.PartitionLayout partitionLayout, bool isNewPartitionLayout)
         {
-            var validationResult = new Models.ValidationResult();
+            var validationResult = new Models.ActionResult();
 
             if (string.IsNullOrEmpty(partitionLayout.Name) || partitionLayout.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {
-                validationResult.IsValid = false;
+                validationResult.Success = false;
                 validationResult.Message = "Partition Layout Name Is Not Valid";
                 return validationResult;
             }
@@ -89,7 +89,7 @@ namespace BLL
                 {
                     if (uow.PartitionLayoutRepository.Exists(h => h.Name == partitionLayout.Name))
                     {
-                        validationResult.IsValid = false;
+                        validationResult.Success = false;
                         validationResult.Message = "This Partition Layout Already Exists";
                         return validationResult;
                     }
@@ -104,7 +104,7 @@ namespace BLL
                     {
                         if (uow.PartitionLayoutRepository.Exists(h => h.Name == partitionLayout.Name))
                         {
-                            validationResult.IsValid = false;
+                            validationResult.Success = false;
                             validationResult.Message = "This Partition Layout Already Exists";
                             return validationResult;
                         }

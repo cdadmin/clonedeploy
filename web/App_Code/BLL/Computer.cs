@@ -4,26 +4,29 @@ using System.IO;
 using System.Linq;
 using CsvHelper;
 using Helpers;
+using Models;
+using Newtonsoft.Json;
 
 namespace BLL
 {
 
     public class Computer
     {
-        public static Models.ValidationResult AddComputer(Models.Computer computer)
+        public static Models.ActionResult AddComputer(Models.Computer computer)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 computer.Mac = Utility.FixMac(computer.Mac);
                 var validationResult = ValidateComputer(computer, "new");
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     
                     uow.ComputerRepository.Insert(computer);
-                    validationResult.IsValid = uow.Save();
-                    if (validationResult.IsValid)
+                    validationResult.Success = uow.Save();
+                    if (validationResult.Success)
                     {
                         validationResult.ObjectId = computer.Id;
+                        validationResult.Object = JsonConvert.SerializeObject(computer);
                         BLL.Group.UpdateAllSmartGroupsMembers();
                     }
 
@@ -63,19 +66,27 @@ namespace BLL
         }
 
 
-        public static Models.ValidationResult DeleteComputer(int id)
+        public static Models.ActionResult DeleteComputer(int id)
         {
             var computer = GetComputer(id);
+            if (computer == null)
+            {
+                var message = string.Format("Could Not Delete Computer With Id {0}.  The Computer Was not Found",id);
+                Logger.Log(message);
+                return new ActionResult() {Success = false, Message = message, ObjectId = id};
+            }
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateComputer(computer, "delete");
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     BLL.GroupMembership.DeleteComputerMemberships(computer.Id);
                     BLL.ComputerBootMenu.DeleteComputerBootMenus(computer.Id);
                     BLL.ComputerLog.DeleteComputerLogs(computer.Id);
                     uow.ComputerRepository.Delete(computer.Id);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
+                    validationResult.ObjectId = computer.Id;
+                    validationResult.Object = JsonConvert.SerializeObject(computer);
                 }
                 return validationResult;
             }
@@ -174,17 +185,17 @@ namespace BLL
             }
         }
 
-        public static Models.ValidationResult UpdateComputer(Models.Computer computer)
+        public static Models.ActionResult UpdateComputer(Models.Computer computer)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 computer.Mac = Utility.FixMac(computer.Mac);
                 var validationResult = ValidateComputer(computer, "update");
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.ComputerRepository.Update(computer, computer.Id);
-                    validationResult.IsValid = uow.Save();
-                    if (validationResult.IsValid) BLL.Group.UpdateAllSmartGroupsMembers();
+                    validationResult.Success = uow.Save();
+                    if (validationResult.Success) BLL.Group.UpdateAllSmartGroupsMembers();
                 }
 
                 return validationResult;
@@ -209,7 +220,7 @@ namespace BLL
                 var records = csv.GetRecords<Models.Computer>();
                 foreach (var computer in records)
                 {
-                    if (AddComputer(computer).IsValid)
+                    if (AddComputer(computer).Success)
                         importCounter++;
                 }
             }
@@ -239,9 +250,9 @@ namespace BLL
             return listOfComputers;
         }
 
-        public static Models.ValidationResult ValidateComputer(Models.Computer computer, string type)
+        public static Models.ActionResult ValidateComputer(Models.Computer computer, string type)
         {
-            var validationResult = new Models.ValidationResult {IsValid = false};
+            var validationResult = new Models.ActionResult {Success = false};
             if (type == "new" || type == "update")
             {
                 if (string.IsNullOrEmpty(computer.Name) || computer.Name.Any(c => c == ' '))
@@ -304,7 +315,7 @@ namespace BLL
 
             }
 
-            validationResult.IsValid = true;
+            validationResult.Success = true;
             return validationResult;
         }
 

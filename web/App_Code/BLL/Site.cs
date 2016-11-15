@@ -4,15 +4,15 @@ namespace BLL
 {
     public static class Site
     {
-        public static Models.ValidationResult AddSite(Models.Site site)
+        public static Models.ActionResult AddSite(Models.Site site)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateSite(site, true);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.SiteRepository.Insert(site);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
@@ -52,28 +52,28 @@ namespace BLL
             }
         }
 
-        public static Models.ValidationResult UpdateSite(Models.Site site)
+        public static Models.ActionResult UpdateSite(Models.Site site)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateSite(site, false);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.SiteRepository.Update(site, site.Id);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
             }
         }
 
-        public static Models.ValidationResult ValidateSite(Models.Site site, bool isNewSite)
+        public static Models.ActionResult ValidateSite(Models.Site site, bool isNewSite)
         {
-            var validationResult = new Models.ValidationResult();
+            var validationResult = new Models.ActionResult();
 
             if (string.IsNullOrEmpty(site.Name))
             {
-                validationResult.IsValid = false;
+                validationResult.Success = false;
                 validationResult.Message = "Site Name Is Not Valid";
                 return validationResult;
             }
@@ -84,7 +84,7 @@ namespace BLL
                 {
                     if (uow.SiteRepository.Exists(h => h.Name == site.Name))
                     {
-                        validationResult.IsValid = false;
+                        validationResult.Success = false;
                         validationResult.Message = "This Site Already Exists";
                         return validationResult;
                     }
@@ -99,7 +99,7 @@ namespace BLL
                     {
                         if (uow.SiteRepository.Exists(h => h.Name == site.Name))
                         {
-                            validationResult.IsValid = false;
+                            validationResult.Success = false;
                             validationResult.Message = "This Site Already Exists";
                             return validationResult;
                         }

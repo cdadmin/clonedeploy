@@ -22,7 +22,7 @@ public partial class views_global_munki_general : BasePages.Global
         ManifestTemplate.Description = txtManifestDesc.Text;
        
         var result = BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
-        EndUserMessage = result.IsValid ? "Successfully Updated Manifest Template" : result.Message;
+        EndUserMessage = result.Success ? "Successfully Updated Manifest Template" : result.Message;
     }
 
 }

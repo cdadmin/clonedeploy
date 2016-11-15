@@ -35,7 +35,7 @@ namespace views.images
            
            
             var result = BLL.Image.AddImage(image);
-            if (result.IsValid)
+            if (result.Success)
             {
                 EndUserMessage = "Successfully Added Image";
                 Response.Redirect("~/views/images/edit.aspx?imageid=" + image.Id);

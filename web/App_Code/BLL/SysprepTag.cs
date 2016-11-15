@@ -6,15 +6,15 @@ namespace BLL
     public static class SysprepTag
     {
 
-        public static Models.ValidationResult AddSysprepTag(Models.SysprepTag sysprepTag)
+        public static Models.ActionResult AddSysprepTag(Models.SysprepTag sysprepTag)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateSysprepTag(sysprepTag, true);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.SysprepTagRepository.Insert(sysprepTag);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
@@ -57,15 +57,15 @@ namespace BLL
             }
         }
 
-        public static Models.ValidationResult UpdateSysprepTag(Models.SysprepTag sysprepTag)
+        public static Models.ActionResult UpdateSysprepTag(Models.SysprepTag sysprepTag)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateSysprepTag(sysprepTag, false);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.SysprepTagRepository.Update(sysprepTag, sysprepTag.Id);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
@@ -75,13 +75,13 @@ namespace BLL
 
         }
 
-        public static Models.ValidationResult ValidateSysprepTag(Models.SysprepTag sysprepTag, bool isNewSysprepTag)
+        public static Models.ActionResult ValidateSysprepTag(Models.SysprepTag sysprepTag, bool isNewSysprepTag)
         {
-            var validationResult = new Models.ValidationResult();
+            var validationResult = new Models.ActionResult();
 
             if (string.IsNullOrEmpty(sysprepTag.Name) || !sysprepTag.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {
-                validationResult.IsValid = false;
+                validationResult.Success = false;
                 validationResult.Message = "Sysprep Tag Name Is Not Valid";
                 return validationResult;
             }
@@ -92,7 +92,7 @@ namespace BLL
                 {
                     if (uow.SysprepTagRepository.Exists(h => h.Name == sysprepTag.Name))
                     {
-                        validationResult.IsValid = false;
+                        validationResult.Success = false;
                         validationResult.Message = "This Sysprep Tag Already Exists";
                         return validationResult;
                     }
@@ -107,7 +107,7 @@ namespace BLL
                     {
                         if (uow.SysprepTagRepository.Exists(h => h.Name == sysprepTag.Name))
                         {
-                            validationResult.IsValid = false;
+                            validationResult.Success = false;
                             validationResult.Message = "This Sysprep Tag Already Exists";
                             return validationResult;
                         }

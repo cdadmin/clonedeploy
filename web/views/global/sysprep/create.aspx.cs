@@ -22,7 +22,7 @@ public partial class views_global_sysprep_create : BasePages.Global
         };
 
         var result = BLL.SysprepTag.AddSysprepTag(sysPrepTag);
-        if (result.IsValid)
+        if (result.Success)
         {
             EndUserMessage = "Successfully Created Sysprep Tag";
             Response.Redirect("~/views/global/sysprep/edit.aspx?cat=sub1&syspreptagid=" + sysPrepTag.Id);

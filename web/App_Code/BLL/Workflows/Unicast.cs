@@ -31,7 +31,7 @@ namespace BLL.Workflows
             if (_direction == "push" || _direction == "permanent_push")
             {
                 var validation = Image.CheckApprovalAndChecksum(_imageProfile.Image,_userId);
-                if (!validation.IsValid) return validation.Message;
+                if (!validation.Success) return validation.Message;
             }
 
             var dp = BLL.DistributionPoint.GetPrimaryDistributionPoint();

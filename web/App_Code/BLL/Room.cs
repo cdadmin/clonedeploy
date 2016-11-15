@@ -6,15 +6,15 @@ namespace BLL
     public static class Room
     {
     
-        public static Models.ValidationResult AddRoom(Models.Room room)
+        public static Models.ActionResult AddRoom(Models.Room room)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateRoom(room, true);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.RoomRepository.Insert(room);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
@@ -54,28 +54,28 @@ namespace BLL
             }
         }
 
-        public static Models.ValidationResult UpdateRoom(Models.Room room)
+        public static Models.ActionResult UpdateRoom(Models.Room room)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateRoom(room, false);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.RoomRepository.Update(room, room.Id);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
             }
         }
 
-        public static Models.ValidationResult ValidateRoom(Models.Room room, bool isNewRoom)
+        public static Models.ActionResult ValidateRoom(Models.Room room, bool isNewRoom)
         {
-            var validationResult = new Models.ValidationResult();
+            var validationResult = new Models.ActionResult();
 
             if (string.IsNullOrEmpty(room.Name) || !room.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {
-                validationResult.IsValid = false;
+                validationResult.Success = false;
                 validationResult.Message = "Room Name Is Not Valid";
                 return validationResult;
             }
@@ -86,7 +86,7 @@ namespace BLL
                 {
                     if (uow.RoomRepository.Exists(h => h.Name == room.Name))
                     {
-                        validationResult.IsValid = false;
+                        validationResult.Success = false;
                         validationResult.Message = "This Room Already Exists";
                         return validationResult;
                     }
@@ -101,7 +101,7 @@ namespace BLL
                     {
                         if (uow.RoomRepository.Exists(h => h.Name == room.Name))
                         {
-                            validationResult.IsValid = false;
+                            validationResult.Success = false;
                             validationResult.Message = "This Room Already Exists";
                             return validationResult;
                         }

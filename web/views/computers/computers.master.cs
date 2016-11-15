@@ -57,7 +57,7 @@ namespace views.computers
                 case "delete":
                     ComputerBasePage.RequiresAuthorizationOrManagedComputer(Authorizations.DeleteComputer,Computer.Id);
                     var result = BLL.Computer.DeleteComputer(Computer.Id);
-                    if (result.IsValid)
+                    if (result.Success)
                     {
                         PageBaseMaster.EndUserMessage = "Successfully Deleted Computer";
                         Response.Redirect("~/views/computers/search.aspx");

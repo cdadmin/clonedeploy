@@ -19,6 +19,6 @@ public partial class views_images_profiles_Default : Images
         ImageProfile.SenderArguments = txtSender.Text;
         ImageProfile.ReceiverArguments = txtReceiver.Text;
         var result = BLL.ImageProfile.UpdateProfile(ImageProfile);
-        EndUserMessage = result.IsValid ? "Successfully Updated Image Profile" : result.Message;
+        EndUserMessage = result.Success ? "Successfully Updated Image Profile" : result.Message;
     }
 }

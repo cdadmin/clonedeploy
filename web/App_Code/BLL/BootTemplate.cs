@@ -6,15 +6,15 @@ namespace BLL
     public class BootTemplate
     {
 
-        public static Models.ValidationResult AddBootTemplate(Models.BootTemplate bootTemplate)
+        public static Models.ActionResult AddBootTemplate(Models.BootTemplate bootTemplate)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateTemplate(bootTemplate, true);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.BootTemplateRepository.Insert(bootTemplate);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
@@ -56,28 +56,28 @@ namespace BLL
             }
         }
 
-        public static Models.ValidationResult UpdateBootTemplate(Models.BootTemplate bootTemplate)
+        public static Models.ActionResult UpdateBootTemplate(Models.BootTemplate bootTemplate)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateTemplate(bootTemplate, false);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.BootTemplateRepository.Update(bootTemplate, bootTemplate.Id);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
             }
         }
 
-        public static Models.ValidationResult ValidateTemplate(Models.BootTemplate bootTemplate, bool isNewTemplate)
+        public static Models.ActionResult ValidateTemplate(Models.BootTemplate bootTemplate, bool isNewTemplate)
         {
-            var validationResult = new Models.ValidationResult();
+            var validationResult = new Models.ActionResult();
 
             if (string.IsNullOrEmpty(bootTemplate.Name) || bootTemplate.Name.Contains(" "))
             {
-                validationResult.IsValid = false;
+                validationResult.Success = false;
                 validationResult.Message = "Template Name Is Not Valid";
                 return validationResult;
             }
@@ -88,7 +88,7 @@ namespace BLL
                 {
                     if (uow.BootTemplateRepository.Exists(h => h.Name == bootTemplate.Name))
                     {
-                        validationResult.IsValid = false;
+                        validationResult.Success = false;
                         validationResult.Message = "This Boot Template Already Exists";
                         return validationResult;
                     }
@@ -103,7 +103,7 @@ namespace BLL
                     {
                         if (uow.BootTemplateRepository.Exists(h => h.Name == bootTemplate.Name))
                         {
-                            validationResult.IsValid = false;
+                            validationResult.Success = false;
                             validationResult.Message = "This Boot Template Already Exists";
                             return validationResult;
                         }

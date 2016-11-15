@@ -720,7 +720,7 @@ namespace Service.Client
                 Description = ""
             };
             var result = BLL.Image.AddImage(image);
-            if (result.IsValid)
+            if (result.Success)
                 result.Message = image.Id.ToString();
 
             return JsonConvert.SerializeObject(result);
@@ -739,7 +739,7 @@ namespace Service.Client
                 Description = ""
             };
             var result = BLL.Image.AddImage(image);
-            if (result.IsValid)
+            if (result.Success)
                 result.Message = image.Id.ToString();
 
             return JsonConvert.SerializeObject(result);
@@ -760,7 +760,7 @@ namespace Service.Client
 
             };
             var result = BLL.Image.AddImage(image);
-            if (result.IsValid)
+            if (result.Success)
                 result.Message = image.Id.ToString();
 
             return JsonConvert.SerializeObject(result);

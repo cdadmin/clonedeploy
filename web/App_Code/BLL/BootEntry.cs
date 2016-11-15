@@ -6,15 +6,15 @@ namespace BLL
     public class BootEntry
     {
 
-        public static Models.ValidationResult AddBootEntry(Models.BootEntry bootEntry)
+        public static Models.ActionResult AddBootEntry(Models.BootEntry bootEntry)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateEntry(bootEntry, true);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.BootEntryRepository.Insert(bootEntry);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
@@ -56,28 +56,28 @@ namespace BLL
             }
         }
 
-        public static Models.ValidationResult UpdateBootEntry(Models.BootEntry bootEntry)
+        public static Models.ActionResult UpdateBootEntry(Models.BootEntry bootEntry)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateEntry(bootEntry, false);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.BootEntryRepository.Update(bootEntry, bootEntry.Id);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
             }
         }
 
-        public static Models.ValidationResult ValidateEntry(Models.BootEntry bootEntry, bool isNewEntry)
+        public static Models.ActionResult ValidateEntry(Models.BootEntry bootEntry, bool isNewEntry)
         {
-            var validationResult = new Models.ValidationResult();
+            var validationResult = new Models.ActionResult();
 
             if (string.IsNullOrEmpty(bootEntry.Name))
             {
-                validationResult.IsValid = false;
+                validationResult.Success = false;
                 validationResult.Message = "Boot Entry Name Is Not Valid";
                 return validationResult;
             }
@@ -88,7 +88,7 @@ namespace BLL
                 {
                     if (uow.BootEntryRepository.Exists(h => h.Name == bootEntry.Name))
                     {
-                        validationResult.IsValid = false;
+                        validationResult.Success = false;
                         validationResult.Message = "This Boot Entry Already Exists";
                         return validationResult;
                     }
@@ -103,7 +103,7 @@ namespace BLL
                     {
                         if (uow.BootEntryRepository.Exists(h => h.Name == bootEntry.Name))
                         {
-                            validationResult.IsValid = false;
+                            validationResult.Success = false;
                             validationResult.Message = "This Boot Template Already Exists";
                             return validationResult;
                         }

@@ -35,7 +35,7 @@ public partial class views_global_boottemplates_editentry : BasePages.Global
         };
 
         var result = BLL.BootEntry.UpdateBootEntry(bootEntry);
-        EndUserMessage = !result.IsValid ? result.Message : "Successfully Updated Boot Menu Entry";
+        EndUserMessage = !result.Success ? result.Message : "Successfully Updated Boot Menu Entry";
 
     }
 }

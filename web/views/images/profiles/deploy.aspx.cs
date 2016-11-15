@@ -147,7 +147,7 @@ public partial class views_images_profiles_deploy : Images
         if (!isSchemaError)
         {
             var result = BLL.ImageProfile.UpdateProfile(imageProfile);
-            EndUserMessage = result.IsValid ? "Successfully Updated Image Profile" : result.Message;
+            EndUserMessage = result.Success ? "Successfully Updated Image Profile" : result.Message;
         }
     }
 

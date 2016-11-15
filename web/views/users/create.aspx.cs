@@ -53,7 +53,7 @@ namespace views.users
 
             user.Password = Helpers.Utility.CreatePasswordHash(txtUserPwd.Text, user.Salt);
             var result = BLL.User.AddUser(user);
-            if (!result.IsValid)
+            if (!result.Success)
                 EndUserMessage = result.Message;
             else
             {

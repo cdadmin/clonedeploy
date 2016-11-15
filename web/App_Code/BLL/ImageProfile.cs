@@ -6,15 +6,15 @@ namespace BLL
 {
     public static class ImageProfile
     {
-        public static Models.ValidationResult AddProfile(Models.ImageProfile profile)
+        public static Models.ActionResult AddProfile(Models.ImageProfile profile)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateImageProfile(profile, true);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.ImageProfileRepository.Insert(profile);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
@@ -67,15 +67,15 @@ namespace BLL
             
         }
 
-        public static Models.ValidationResult UpdateProfile(Models.ImageProfile profile)
+        public static Models.ActionResult UpdateProfile(Models.ImageProfile profile)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateImageProfile(profile, false);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.ImageProfileRepository.Update(profile, profile.Id);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
@@ -92,13 +92,13 @@ namespace BLL
             }
         }
 
-        public static Models.ValidationResult ValidateImageProfile(Models.ImageProfile imageProfile, bool isNewImageProfile)
+        public static Models.ActionResult ValidateImageProfile(Models.ImageProfile imageProfile, bool isNewImageProfile)
         {
-            var validationResult = new Models.ValidationResult();
+            var validationResult = new Models.ActionResult();
 
             if (string.IsNullOrEmpty(imageProfile.Name) || !imageProfile.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {
-                validationResult.IsValid = false;
+                validationResult.Success = false;
                 validationResult.Message = "Image Profile Name Is Not Valid";
                 return validationResult;
             }
@@ -109,7 +109,7 @@ namespace BLL
                 {
                     if (uow.ImageProfileRepository.Exists(h => h.Name == imageProfile.Name && h.ImageId == imageProfile.ImageId))
                     {
-                        validationResult.IsValid = false;
+                        validationResult.Success = false;
                         validationResult.Message = "This Image Profile Already Exists";
                         return validationResult;
                     }
@@ -124,7 +124,7 @@ namespace BLL
                     {
                         if (uow.ImageProfileRepository.Exists(h => h.Name == imageProfile.Name && h.ImageId == imageProfile.ImageId))
                         {
-                            validationResult.IsValid = false;
+                            validationResult.Success = false;
                             validationResult.Message = "This Image Profile Already Exists";
                             return validationResult;
                         }

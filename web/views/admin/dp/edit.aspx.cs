@@ -32,7 +32,7 @@ public partial class views_admin_dp_edit : Admin
        
 
         var result = BLL.DistributionPoint.UpdateDistributionPoint(distributionPoint);
-        EndUserMessage = result.IsValid ? "Successfully Updated Distribution Point" : result.Message;
+        EndUserMessage = result.Success ? "Successfully Updated Distribution Point" : result.Message;
     }
 
     protected void chkPrimary_OnCheckedChanged(object sender, EventArgs e)

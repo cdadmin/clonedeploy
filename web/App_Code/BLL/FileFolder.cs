@@ -7,15 +7,15 @@ namespace BLL
     public class FileFolder
     {
 
-        public static Models.ValidationResult AddFileFolder(Models.FileFolder fileFolder)
+        public static Models.ActionResult AddFileFolder(Models.FileFolder fileFolder)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateTemplate(fileFolder, true);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.FileFolderRepository.Insert(fileFolder);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
@@ -57,28 +57,28 @@ namespace BLL
             }
         }
 
-        public static Models.ValidationResult UpdateFileFolder(Models.FileFolder fileFolder)
+        public static Models.ActionResult UpdateFileFolder(Models.FileFolder fileFolder)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateTemplate(fileFolder, false);
-                if (validationResult.IsValid)
+                if (validationResult.Success)
                 {
                     uow.FileFolderRepository.Update(fileFolder, fileFolder.Id);
-                    validationResult.IsValid = uow.Save();
+                    validationResult.Success = uow.Save();
                 }
 
                 return validationResult;
             }
         }
 
-        public static Models.ValidationResult ValidateTemplate(Models.FileFolder fileFolder, bool isNewTemplate)
+        public static Models.ActionResult ValidateTemplate(Models.FileFolder fileFolder, bool isNewTemplate)
         {
-            var validationResult = new Models.ValidationResult();
+            var validationResult = new Models.ActionResult();
 
             if (string.IsNullOrEmpty(fileFolder.Name))
             {
-                validationResult.IsValid = false;
+                validationResult.Success = false;
                 validationResult.Message = "Name Is Not Valid";
                 return validationResult;
             }
@@ -105,7 +105,7 @@ namespace BLL
                 {
                     if (uow.FileFolderRepository.Exists(h => h.Name == fileFolder.Name))
                     {
-                        validationResult.IsValid = false;
+                        validationResult.Success = false;
                         validationResult.Message = "File / Folder Name Already Exists";
                         return validationResult;
                     }
@@ -120,7 +120,7 @@ namespace BLL
                     {
                         if (uow.FileFolderRepository.Exists(h => h.Name == fileFolder.Name))
                         {
-                            validationResult.IsValid = false;
+                            validationResult.Success = false;
                             validationResult.Message = "File / Folder Already Exists";
                             return validationResult;
                         }

@@ -38,9 +38,19 @@ namespace views.login
             }
         }
 
-        public static string GetToken(string userName, string password)
+        public Models.Token GetToken(string userName, string password)
         {
-            var pairs = new List<KeyValuePair<string, string>>
+            var client = new RestClient("http://localhost/clonedeploy/");
+            var request = new RestRequest("Token", Method.POST);
+          
+            request.AddParameter("grant_type", "password");
+            request.AddParameter("userName", userName);
+            request.AddParameter("password", password);
+           
+
+            var response = client.Execute<Models.Token>(request);
+            return response.Data;
+            /*var pairs = new List<KeyValuePair<string, string>>
                         {
                             new KeyValuePair<string, string>( "grant_type", "password" ), 
                             new KeyValuePair<string, string>( "userName", userName ), 
@@ -52,22 +62,21 @@ namespace views.login
                 var response =
                     client.PostAsync("http://localhost/clonedeploy/Token", content).Result;
                 return response.Content.ReadAsStringAsync().Result;
-            }
+            }*/
         }
         protected void CrucibleLogin_Authenticate(object sender, AuthenticateEventArgs e)
         {
             var token = GetToken(CrucibleLogin.UserName, CrucibleLogin.Password);
-           
-            var tokens = JsonConvert.DeserializeObject<Models.Token>(token);
+          
             System.Web.HttpContext.Current.Response.Cookies.Add(new System.Web.HttpCookie("Token")
             {
-                Value = tokens.access_token,
+                Value = token.access_token,
                 HttpOnly = true
             });
             var auth = new Authenticate();
 
             var validationResult = auth.GlobalLogin(CrucibleLogin.UserName, CrucibleLogin.Password, "Web");
-            if ((validationResult.IsValid))
+            if ((validationResult.Success))
             {
                 var cloneDeployUser = BLL.User.GetUser(CrucibleLogin.UserName);
                 cloneDeployUser.Salt = "";

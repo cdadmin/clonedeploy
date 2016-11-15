@@ -42,7 +42,7 @@ public partial class views_users_removemembers : BasePages.Users
                 var user = BLL.User.GetUser(Convert.ToInt32(dataKey.Value));
                 user.UserGroupId = -1;
 
-                if (BLL.User.UpdateUser(user).IsValid)
+                if (BLL.User.UpdateUser(user).Success)
                     successCount++;
             }
         }

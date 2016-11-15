@@ -20,7 +20,7 @@ public partial class views_admin_scripts_create : BasePages.Global
         var fixedLineEnding = scriptEditor.Value.Replace("\r\n", "\n");
         script.Contents = fixedLineEnding;
         var result = BLL.Script.AddScript(script);
-        if (result.IsValid)
+        if (result.Success)
         {
             EndUserMessage = "Successfully Created Script";
             Response.Redirect("~/views/global/scripts/edit.aspx?cat=sub1&scriptid=" + script.Id);

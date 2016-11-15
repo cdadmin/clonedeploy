@@ -63,7 +63,7 @@ namespace views.images
                 var dataKey = gvImages.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
                 var image = BLL.Image.GetImage(Convert.ToInt32(dataKey.Value));
-                if (BLL.Image.DeleteImage(image).IsValid) deleteCount++;
+                if (BLL.Image.DeleteImage(image).Success) deleteCount++;
             }
             EndUserMessage = "Successfully Deleted " + deleteCount + " Images";
 
@@ -129,7 +129,7 @@ namespace views.images
                 var image = BLL.Image.GetImage(Convert.ToInt32(dataKey.Value));
                 RequiresAuthorizationOrManagedImage(Authorizations.ApproveImage, image.Id);
                 image.Approved = 1;
-                if (BLL.Image.UpdateImage(image, image.Name).IsValid)
+                if (BLL.Image.UpdateImage(image, image.Name).Success)
                 {
                     approveCount++;
                     BLL.Image.SendImageApprovedEmail(image.Id);
