@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Helpers;
+using Models;
+using Newtonsoft.Json;
+using RestSharp;
 using Security;
 
 namespace views.login
@@ -33,8 +38,32 @@ namespace views.login
             }
         }
 
+        public static string GetToken(string userName, string password)
+        {
+            var pairs = new List<KeyValuePair<string, string>>
+                        {
+                            new KeyValuePair<string, string>( "grant_type", "password" ), 
+                            new KeyValuePair<string, string>( "userName", userName ), 
+                            new KeyValuePair<string, string> ( "password", password )
+                        };
+            var content = new FormUrlEncodedContent(pairs);
+            using (var client = new HttpClient())
+            {
+                var response =
+                    client.PostAsync("http://localhost/clonedeploy/Token", content).Result;
+                return response.Content.ReadAsStringAsync().Result;
+            }
+        }
         protected void CrucibleLogin_Authenticate(object sender, AuthenticateEventArgs e)
         {
+            var token = GetToken(CrucibleLogin.UserName, CrucibleLogin.Password);
+           
+            var tokens = JsonConvert.DeserializeObject<Models.Token>(token);
+            System.Web.HttpContext.Current.Response.Cookies.Add(new System.Web.HttpCookie("Token")
+            {
+                Value = tokens.access_token,
+                HttpOnly = true
+            });
             var auth = new Authenticate();
 
             var validationResult = auth.GlobalLogin(CrucibleLogin.UserName, CrucibleLogin.Password, "Web");

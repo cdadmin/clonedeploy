@@ -1,6 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using CsvHelper.Configuration;
+using RestSharp;
 
 namespace Models
 {
@@ -62,8 +64,45 @@ namespace Models
 
         [NotMapped]
         public virtual Models.Image Image { get; set; }
+
+        public List<Computer> GetCall(string token,int limit,string searchstring)
+        {
+            var request = new RestRequest();
+            request.Resource = "Computer/Get";
+            request.AddParameter("limit", limit);
+            request.AddParameter("searchstring", searchstring);
+            return new cdapi(token).Execute<List<Computer>>(request);
+        }
+
+        public Computer PutCall(string token, Models.Computer comp)
+        {
+            var request = new RestRequest(Method.PUT);
+            request.AddJsonBody(comp);
+            request.Resource = "Computer/Put/";
+            return new cdapi(token).Execute<Computer>(request);
+        }
+
+        public ValidationResult DeleteCall(string token,int id)
+        {
+            var request = new RestRequest(Method.DELETE);
+            request.Resource = string.Format("Computer/Delete/{0}",id);
+            return new cdapi(token).Execute<ValidationResult>(request);
+        }
+
     }
 
+  
+    public static class Extension
+    {
+        public static string IsPoetryOrNovel(this Computer computer)
+        {
+            return computer.BuildingId.ToString();
+        }
+
+        
+
+      
+    }
     public sealed class ComputerCsvMap : CsvClassMap<Models.Computer>
     {
         public ComputerCsvMap()

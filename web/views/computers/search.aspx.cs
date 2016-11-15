@@ -39,9 +39,9 @@ namespace views.computers
                 if (cb == null || !cb.Checked) continue;
                 var dataKey = gvComputers.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
-                
-                if(BLL.Computer.DeleteComputer(BLL.Computer.GetComputer(Convert.ToInt32(dataKey.Value))).IsValid)
+                if (new Models.Computer().DeleteCall(Request.Cookies["Token"].Value, Convert.ToInt32(dataKey.Value)).IsValid)
                     deletedCount++;
+                
 
             }
             EndUserMessage = "Deleted " + deletedCount + " Computer(s)";
@@ -83,8 +83,9 @@ namespace views.computers
         {    
             var limit = 0;
             limit = ddlLimit.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimit.Text);
+
            
-            var listOfComputers = BLL.Computer.SearchComputersForUser(CloneDeployCurrentUser.Id, limit ,txtSearch.Text);
+            var listOfComputers = new Models.Computer().GetCall(Request.Cookies["Token"].Value,limit,txtSearch.Text);
             listOfComputers = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
             if (ddlSite.SelectedValue != "-1")
                 listOfComputers = listOfComputers.Where(c => c.SiteId == Convert.ToInt32(ddlSite.SelectedValue)).ToList();

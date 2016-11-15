@@ -63,8 +63,9 @@ namespace BLL
         }
 
 
-        public static Models.ValidationResult DeleteComputer(Models.Computer computer)
-        {        
+        public static Models.ValidationResult DeleteComputer(int id)
+        {
+            var computer = GetComputer(id);
             using (var uow = new DAL.UnitOfWork())
             {
                 var validationResult = ValidateComputer(computer, "delete");
@@ -134,6 +135,7 @@ namespace BLL
 
         public static List<Models.Computer> SearchComputersForUser(int userId,int limit, string searchString = "")
         {
+
             if(BLL.User.GetUser(userId).Membership == "Administrator")
                 return SearchComputers(searchString,limit);
 
