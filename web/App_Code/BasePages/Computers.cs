@@ -10,10 +10,10 @@ namespace BasePages
 
         protected override void OnInit(EventArgs e)
         {
-
+            
             base.OnInit(e);
             Computer = !string.IsNullOrEmpty(Request.QueryString["computerid"])
-                ? BLL.Computer.GetComputer(Convert.ToInt32(Request.QueryString["computerid"]))
+                ? new APICall().ComputerApi.Get(Convert.ToInt32(Request.QueryString["computerid"]))
                 : null;
             if (Computer == null)
                 RequiresAuthorization(Authorizations.SearchComputer);

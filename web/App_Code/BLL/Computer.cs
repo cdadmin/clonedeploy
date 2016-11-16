@@ -20,7 +20,6 @@ namespace BLL
                 var validationResult = ValidateComputer(computer, "new");
                 if (validationResult.Success)
                 {
-                    
                     uow.ComputerRepository.Insert(computer);
                     validationResult.Success = uow.Save();
                     if (validationResult.Success)
@@ -44,16 +43,23 @@ namespace BLL
             }
         }
 
-        public static string ComputerCountUser(int userId)
+        public static ApiDTO ComputerCountUser(int userId)
         {
+            var apiDTO = new ApiDTO();
             if (BLL.User.GetUser(userId).Membership == "Administrator")
-                return TotalCount();
+            {
+                apiDTO.Value = TotalCount();
+                return apiDTO;
+            }
 
             var userManagedGroups = BLL.UserGroupManagement.Get(userId);
 
             //If count is zero image management is not being used return total count
             if (userManagedGroups.Count == 0)
-                return TotalCount();
+            {
+                apiDTO.Value = TotalCount();
+                return apiDTO;
+            }
             else
             {
                 var computerCount = 0;
@@ -61,7 +67,8 @@ namespace BLL
                 {
                     computerCount += Convert.ToInt32(BLL.GroupMembership.GetGroupMemberCount(managedGroup.GroupId));
                 }
-                return computerCount.ToString();
+                apiDTO.Value = computerCount.ToString();
+                return apiDTO;
             }
         }
 
@@ -146,7 +153,7 @@ namespace BLL
 
         public static List<Models.Computer> SearchComputersForUser(int userId,int limit, string searchString = "")
         {
-
+            if(limit== 0) limit=Int32.MaxValue;
             if(BLL.User.GetUser(userId).Membership == "Administrator")
                 return SearchComputers(searchString,limit);
 
@@ -187,6 +194,14 @@ namespace BLL
 
         public static Models.ActionResult UpdateComputer(Models.Computer computer)
         {
+            var existingcomputer = GetComputer(computer.Id);
+            if (existingcomputer == null)
+            {
+                var message = string.Format("Could Not Update Computer With Id {0}.  The Computer Was not Found", computer.Id);
+                Logger.Log(message);
+                return new ActionResult() { Success = false, Message = message, ObjectId = computer.Id };
+            }
+
             using (var uow = new DAL.UnitOfWork())
             {
                 computer.Mac = Utility.FixMac(computer.Mac);
@@ -195,6 +210,8 @@ namespace BLL
                 {
                     uow.ComputerRepository.Update(computer, computer.Id);
                     validationResult.Success = uow.Save();
+                    validationResult.ObjectId = computer.Id;
+                    validationResult.Object = JsonConvert.SerializeObject(computer);
                     if (validationResult.Success) BLL.Group.UpdateAllSmartGroupsMembers();
                 }
 
@@ -273,9 +290,14 @@ namespace BLL
                 {
                     using (var uow = new DAL.UnitOfWork())
                     {
-                        if (uow.ComputerRepository.Exists(h => h.Name == computer.Name || h.Mac == computer.Mac))
+                        if (uow.ComputerRepository.Exists(h => h.Name == computer.Name))
                         {
-                            validationResult.Message = "This Computer Already Exists";
+                            validationResult.Message = "A Computer With This Name Already Exists";
+                            return validationResult;
+                        }
+                        if (uow.ComputerRepository.Exists(h => h.Mac == computer.Mac))
+                        {
+                            validationResult.Message = "A Computer With This MAC Already Exists";
                             return validationResult;
                         }
                     }
@@ -289,7 +311,7 @@ namespace BLL
                         {
                             if (uow.ComputerRepository.Exists(h => h.Name == computer.Name))
                             {
-                                validationResult.Message = "This Computer Already Exists";
+                                validationResult.Message = "A Computer With This Name Already Exists";
                                 return validationResult;
                             }
                         }
@@ -297,7 +319,7 @@ namespace BLL
                         {
                             if (uow.ComputerRepository.Exists(h => h.Mac == computer.Mac))
                             {
-                                validationResult.Message = "This Computer Already Exists";
+                                validationResult.Message = "A Computer With This MAC Already Exists";
                                 return validationResult;
                             }
                         }

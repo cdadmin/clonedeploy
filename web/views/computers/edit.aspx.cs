@@ -34,7 +34,7 @@ namespace views.computers
                 ProxyReservation = Computer.ProxyReservation
             };
 
-            var result = BLL.Computer.UpdateComputer(computer);
+            var result = new APICall().ComputerApi.Put(computer.Id, computer); 
             EndUserMessage = !result.Success ? result.Message : "Successfully Updated Computer";
         }
 

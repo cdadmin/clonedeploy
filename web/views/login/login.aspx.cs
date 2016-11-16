@@ -38,7 +38,7 @@ namespace views.login
             }
         }
 
-        public Models.Token GetToken(string userName, string password)
+       /* public Models.Token GetToken(string userName, string password)
         {
             var client = new RestClient("http://localhost/clonedeploy/");
             var request = new RestRequest("Token", Method.POST);
@@ -47,27 +47,14 @@ namespace views.login
             request.AddParameter("userName", userName);
             request.AddParameter("password", password);
            
-
             var response = client.Execute<Models.Token>(request);
             return response.Data;
-            /*var pairs = new List<KeyValuePair<string, string>>
-                        {
-                            new KeyValuePair<string, string>( "grant_type", "password" ), 
-                            new KeyValuePair<string, string>( "userName", userName ), 
-                            new KeyValuePair<string, string> ( "password", password )
-                        };
-            var content = new FormUrlEncodedContent(pairs);
-            using (var client = new HttpClient())
-            {
-                var response =
-                    client.PostAsync("http://localhost/clonedeploy/Token", content).Result;
-                return response.Content.ReadAsStringAsync().Result;
-            }*/
-        }
+        }*/
+
         protected void CrucibleLogin_Authenticate(object sender, AuthenticateEventArgs e)
         {
-            var token = GetToken(CrucibleLogin.UserName, CrucibleLogin.Password);
-          
+            //var token = GetToken(CrucibleLogin.UserName, CrucibleLogin.Password);
+            var token = new APICall().TokenApi.Get(CrucibleLogin.UserName, CrucibleLogin.Password);
             System.Web.HttpContext.Current.Response.Cookies.Add(new System.Web.HttpCookie("Token")
             {
                 Value = token.access_token,

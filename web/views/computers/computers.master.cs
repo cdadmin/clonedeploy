@@ -56,7 +56,7 @@ namespace views.computers
             {
                 case "delete":
                     ComputerBasePage.RequiresAuthorizationOrManagedComputer(Authorizations.DeleteComputer,Computer.Id);
-                    var result = BLL.Computer.DeleteComputer(Computer.Id);
+                    var result = new APICall().ComputerApi.Delete(Computer.Id);
                     if (result.Success)
                     {
                         PageBaseMaster.EndUserMessage = "Successfully Deleted Computer";

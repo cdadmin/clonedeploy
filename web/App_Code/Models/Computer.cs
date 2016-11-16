@@ -64,45 +64,12 @@ namespace Models
 
         [NotMapped]
         public virtual Models.Image Image { get; set; }
-
-        public List<Computer> GetCall(string token,int limit,string searchstring)
-        {
-            var request = new RestRequest();
-            request.Resource = "Computer/Get";
-            request.AddParameter("limit", limit);
-            request.AddParameter("searchstring", searchstring);
-            return new cdapi(token).Execute<List<Computer>>(request);
-        }
-
-        public Computer PutCall(string token, Models.Computer comp)
-        {
-            var request = new RestRequest(Method.PUT);
-            request.AddJsonBody(comp);
-            request.Resource = "Computer/Put/";
-            return new cdapi(token).Execute<Computer>(request);
-        }
-
-        public ActionResult PostCall(string token, Models.Computer comp)
-        {
-            var request = new RestRequest(Method.POST);
-            request.AddJsonBody(comp);
-            request.Resource = "Computer/Post/";
-            return new cdapi(token).Execute<ActionResult>(request);
-        }
-
-        public ActionResult DeleteCall(string token,int id)
-        {
-            var request = new RestRequest(Method.DELETE);
-            request.Resource = string.Format("Computer/Delete/{0}",id);
-            return new cdapi(token).Execute<ActionResult>(request);
-        }
-
     }
 
   
     public static class Extension
     {
-        public static string IsPoetryOrNovel(this Computer computer)
+        public static string Test(this Computer computer)
         {
             return computer.BuildingId.ToString();
         }

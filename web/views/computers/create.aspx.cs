@@ -9,8 +9,6 @@ namespace views.computers
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-           
-
             if (!IsPostBack) PopulateForm();
         }
 
@@ -38,7 +36,7 @@ namespace views.computers
                 
             };
 
-            var result = new Models.Computer().PostCall(Request.Cookies["Token"].Value,computer);
+            var result = new APICall().ComputerApi.Post(computer);
           
             if (!result.Success)
                 EndUserMessage = result.Message;

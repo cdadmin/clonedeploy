@@ -7,10 +7,8 @@ using System.Security.Claims;
 using System.Threading;
 using System.Web.Http;
 using System.Web.Http.Controllers;
-using System.Web.Http.Validation;
-using Helpers;
+using System.Web.Http.Results;
 using Models;
-using Newtonsoft.Json;
 
 namespace Service
 {
@@ -20,14 +18,14 @@ namespace Service
 
         public override void OnAuthorization(HttpActionContext actionContext)
         {
-
             base.OnAuthorization(actionContext);
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;     
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                               .Select(c => c.Value).SingleOrDefault();
 
-            var objectId = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
+            if (userId == null) return;
 
+           
             var authorized = false;
             switch (Permission)
             {
@@ -36,81 +34,109 @@ namespace Service
                         authorized = true;
                     break;
                 case "ComputerDelete": case "ComputerUpdate": case "ComputerRead":
+                    var objectId = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
                     if (new BLL.Auth(Convert.ToInt32(userId), Permission).ComputerManagement(objectId))
                         authorized = true;
                     break;
+                case "NotRequired":
+                    authorized = true;
+                    break;
             }
 
-            if(!authorized)
-                actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized);
-
+            if (!authorized)
+            {
+                var response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized, new ActionResult() { Success = false, Message = "Unauthorized" });
+                throw new HttpResponseException(response);
+            }
         }
     }
+
     public class ComputerController : ApiController
     {
-
         [ComputerAuthAttribute(Permission = "ComputerSearch")]
         public IEnumerable<Models.Computer> Get(int limit=0,string searchstring="")
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                              .Select(c => c.Value).SingleOrDefault();
-          
-            if(string.IsNullOrEmpty(searchstring))   
-                return BLL.Computer.SearchComputersForUser(Convert.ToInt32(userId),limit);
-            else
-                return BLL.Computer.SearchComputersForUser(Convert.ToInt32(userId), limit,searchstring); 
+
+            return string.IsNullOrEmpty(searchstring)
+                ? BLL.Computer.SearchComputersForUser(Convert.ToInt32(userId), limit)
+                : BLL.Computer.SearchComputersForUser(Convert.ToInt32(userId), limit, searchstring);
 
         }
 
-        [ComputerAuthAttribute(Permission = "ComputerRead")]
-        public Computer Get(int id)
-        {      
-            return BLL.Computer.GetComputer(id);
-        }
-
-        [ComputerAuthAttribute(Permission = "ComputerRead")]
-        public Computer GetFromMac(string mac)
+        [ComputerAuthAttribute(Permission = "ComputerSearch")]
+        public ApiDTO GetCount()
         {
-          
-            return BLL.Computer.GetComputerFromMac(mac);
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                             .Select(c => c.Value).SingleOrDefault();
+  
+            return BLL.Computer.ComputerCountUser(Convert.ToInt32(userId));               
+        }
+
+        [ComputerAuthAttribute(Permission = "ComputerRead")]
+        public IHttpActionResult Get(int id)
+        {      
+            var computer = BLL.Computer.GetComputer(id);
+            if (computer == null)
+                return NotFound();
+            else
+                return Ok(computer);
+        }
+
+        [ComputerAuthAttribute(Permission = "ComputerRead")]
+        public IHttpActionResult GetFromMac(string mac)
+        {
+            var computer = BLL.Computer.GetComputerFromMac(mac);
+            if (computer == null)
+                return NotFound();
+            else
+                return Ok(computer);
         }
 
         [ComputerAuthAttribute(Permission = "ComputerCreate")]
         public HttpResponseMessage Post(Models.Computer computer)
         {
-            var result = BLL.Computer.AddComputer(computer);
-            if (result.Success)
+            var actionResult = BLL.Computer.AddComputer(computer);
+            if (actionResult.Success)
             {
-                var response = Request.CreateResponse<Models.ActionResult>(HttpStatusCode.Created, result);
-                string uri = Url.Link("DefaultApi", new {id = result.ObjectId});
+                var response = Request.CreateResponse(HttpStatusCode.Created, actionResult);
+                string uri = Url.Link("DefaultApi", new {id = actionResult.ObjectId});
                 response.Headers.Location = new Uri(uri);
                 return response;
             }
             else
             {
-                var response = Request.CreateResponse<Models.ActionResult>(HttpStatusCode.NotFound, result);
+                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
                 throw new HttpResponseException(response);
             }
         }
 
         [ComputerAuthAttribute(Permission = "ComputerUpdate")]
-        public Models.ActionResult Put(Models.Computer value)
+        public Models.ActionResult Put(int id,Models.Computer computer)
         {
-           
-            return BLL.Computer.UpdateComputer(value);
+            computer.Id = id;
+            var actionResult = BLL.Computer.UpdateComputer(computer);
+            if (!actionResult.Success)
+            {
+                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
+                throw new HttpResponseException(response);
+            }
+            return actionResult;
         }
 
         [ComputerAuthAttribute(Permission = "ComputerDelete")]
         public Models.ActionResult Delete(int id)
         {
-            var result = BLL.Computer.DeleteComputer(id);
-            if (!result.Success)
+            var actionResult = BLL.Computer.DeleteComputer(id);
+            if (!actionResult.Success)
             {
-                var response = Request.CreateResponse<Models.ActionResult>(HttpStatusCode.NotFound, result);
+                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
                 throw new HttpResponseException(response);
             }
-            return result;
+            return actionResult;
         }
     }
 }

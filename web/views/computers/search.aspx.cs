@@ -30,8 +30,10 @@ namespace views.computers
         {
             //Gridview is only populated with only allowed computers to view via group management
             //Don't need to worry about rechecking group management
-            RequiresAuthorization(Authorizations.DeleteComputer);
+            //RequiresAuthorization(Authorizations.DeleteComputer);
+            var call = new APICall();
             var deletedCount = 0;
+
             foreach (GridViewRow row in gvComputers.Rows)
             {
                
@@ -39,7 +41,7 @@ namespace views.computers
                 if (cb == null || !cb.Checked) continue;
                 var dataKey = gvComputers.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
-                if (new Models.Computer().DeleteCall(Request.Cookies["Token"].Value, Convert.ToInt32(dataKey.Value)).Success)
+                if (call.ComputerApi.Delete(Convert.ToInt32(dataKey.Value)).Success)
                     deletedCount++;
                 
 
@@ -84,8 +86,9 @@ namespace views.computers
             var limit = 0;
             limit = ddlLimit.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimit.Text);
 
-           
-            var listOfComputers = new Models.Computer().GetCall(Request.Cookies["Token"].Value,limit,txtSearch.Text);
+            var call = new APICall();
+            var listOfComputers = call.ComputerApi.Get(limit, txtSearch.Text);
+            
             listOfComputers = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
             if (ddlSite.SelectedValue != "-1")
                 listOfComputers = listOfComputers.Where(c => c.SiteId == Convert.ToInt32(ddlSite.SelectedValue)).ToList();
@@ -118,7 +121,7 @@ namespace views.computers
             gvComputers.DataBind();
             
         
-            lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + BLL.Computer.ComputerCountUser(CloneDeployCurrentUser.Id) + " Computer(s)";
+            lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + call.ComputerApi.GetCount().Value + " Computer(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)
