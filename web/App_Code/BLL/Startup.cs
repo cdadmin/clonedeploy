@@ -31,16 +31,12 @@ namespace OAuth20
             {
                 ClaimsIdentity oAuthIdentity = new ClaimsIdentity(context.Options.AuthenticationType);
                 context.Validated(oAuthIdentity);
-
-                oAuthIdentity.AddClaim(new Claim(ClaimTypes.Name, context.UserName));
-                //oAuthIdentity.AddClaim(new Claim("sub", context.UserName));
-                //oAuthIdentity.AddClaim(new Claim("role", "Admin"));
                 oAuthIdentity.AddClaim(new Claim("user_id", BLL.User.GetUser(context.UserName).Id.ToString()));
                 context.Validated(oAuthIdentity);
             }
             else
             {
-                context.SetError("invalid_grant", "The user name or password is incorrect.");
+                context.SetError("invalid_grant", validationResult.Message);
                 return;
             }
         }

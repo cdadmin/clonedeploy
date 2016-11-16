@@ -38,34 +38,26 @@ namespace views.login
             }
         }
 
-       /* public Models.Token GetToken(string userName, string password)
-        {
-            var client = new RestClient("http://localhost/clonedeploy/");
-            var request = new RestRequest("Token", Method.POST);
-          
-            request.AddParameter("grant_type", "password");
-            request.AddParameter("userName", userName);
-            request.AddParameter("password", password);
-           
-            var response = client.Execute<Models.Token>(request);
-            return response.Data;
-        }*/
-
         protected void CrucibleLogin_Authenticate(object sender, AuthenticateEventArgs e)
         {
-            //var token = GetToken(CrucibleLogin.UserName, CrucibleLogin.Password);
+          //Get token
             var token = new APICall().TokenApi.Get(CrucibleLogin.UserName, CrucibleLogin.Password);
-            System.Web.HttpContext.Current.Response.Cookies.Add(new System.Web.HttpCookie("Token")
+            if (token == null)
+            {
+                lblError.Text = "Unknown API Error";
+                return;
+            }
+
+            HttpContext.Current.Response.Cookies.Add(new System.Web.HttpCookie("clonedeploy_token")
             {
                 Value = token.access_token,
                 HttpOnly = true
             });
-            var auth = new Authenticate();
-
-            var validationResult = auth.GlobalLogin(CrucibleLogin.UserName, CrucibleLogin.Password, "Web");
-            if ((validationResult.Success))
+           
+            if (token.access_token != null)
             {
-                var cloneDeployUser = BLL.User.GetUser(CrucibleLogin.UserName);
+                //verify token is valid
+                var cloneDeployUser = new APICall().CloneDeployUserApi.GetByName(CrucibleLogin.UserName);
                 cloneDeployUser.Salt = "";
                 cloneDeployUser.Password = "";
 
@@ -75,7 +67,7 @@ namespace views.login
             else
             {
                 e.Authenticated = false;
-                lblError.Text = validationResult.Message;
+                lblError.Text = token.error_description;
                 lblError.Visible = true;
             }
         }

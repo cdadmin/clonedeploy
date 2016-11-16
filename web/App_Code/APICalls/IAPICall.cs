@@ -7,4 +7,5 @@ public interface IAPICall
 {
     IGenericAPI<Models.Computer> ComputerApi { get; }
     TokenApi TokenApi { get; }
+    User CloneDeployUserApi { get; }
 }

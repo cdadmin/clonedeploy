@@ -106,7 +106,7 @@ namespace BLL
             }
         }
 
-        public static List<CloneDeployUser> SearchUsers(string searchString)
+        public static List<CloneDeployUser> SearchUsers(string searchString="")
         {
             using (var uow = new DAL.UnitOfWork())
             {

@@ -65,7 +65,7 @@ namespace Security
         {
             var validationResult = new Models.ActionResult
             {
-                Message = "Login Was Not Successful",
+                Message = "Incorrect Username Or Password",
                 Success = false
             };
 

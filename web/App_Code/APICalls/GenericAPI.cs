@@ -18,7 +18,7 @@ public class GenericAPI<T> : IGenericAPI<T> where T : new()
     {
         _request = new RestRequest();
         _resource = resource;
-        _token = HttpContext.Current.Request.Cookies["Token"].Value;
+        _token = HttpContext.Current.Request.Cookies["clonedeploy_token"].Value;
     }
 
     protected TClass Execute<TClass>(RestRequest request) where TClass : new()

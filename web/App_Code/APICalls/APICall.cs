@@ -15,4 +15,9 @@ public class APICall : IAPICall
     {
         get { return new TokenApi("Token"); }
     }
+
+    public User CloneDeployUserApi
+    {
+        get { return new User("User"); }
+    }
 }
