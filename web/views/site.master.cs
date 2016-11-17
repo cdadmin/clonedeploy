@@ -32,8 +32,6 @@ namespace views.masters
                 if (validationResult.Success)
                 {
                     var cloneDeployUser = BLL.User.GetUser(Request.QueryString["username"]);
-                    cloneDeployUser.Salt = "";
-                    cloneDeployUser.Password = "";
                     Session["CloneDeployUser"] = cloneDeployUser;
                     FormsAuthentication.SetAuthCookie(cloneDeployUser.Name, false);
                     Response.Redirect(Request.Url.GetLeftPart(UriPartial.Path),true);

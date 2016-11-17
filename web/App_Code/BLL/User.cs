@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Helpers;
 using Models;
+using Newtonsoft.Json;
 
 namespace BLL
 {
@@ -104,6 +105,36 @@ namespace BLL
             {
                 return uow.UserRepository.GetFirstOrDefault(u => u.Name == userName);
             }
+        }
+
+        public static ActionResult GetUserForLogin(int userId)
+        {
+            var actionResult = new ActionResult();
+            using (var uow = new DAL.UnitOfWork())
+            {
+                var user = uow.UserRepository.GetById(userId);
+                if (user != null)
+                {
+                    user.Token = string.Empty;
+                    user.ApiId = string.Empty;
+                    user.ApiKey = string.Empty;
+                    user.Password = string.Empty;
+                    user.Salt = string.Empty;             
+                    actionResult.ObjectId = user.Id;
+                    actionResult.Success = true;
+                    actionResult.Object = JsonConvert.SerializeObject(user);
+                }
+                else
+                {
+                    actionResult.Success = false;
+                    actionResult.Message = "Could Not Find User";
+                }
+
+                
+
+                return actionResult;
+            }
+           
         }
 
         public static List<CloneDeployUser> SearchUsers(string searchString="")

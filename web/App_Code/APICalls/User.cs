@@ -14,11 +14,11 @@ public class User: GenericAPI<Models.CloneDeployUser>
 		
 	}
 
-    public Models.CloneDeployUser GetByName(string name)
+    public Models.ActionResult GetForLogin(int id)
     {
         _request.Method = Method.GET;
-        _request.Resource = string.Format("api/{0}/GetByName/", _resource);
-        _request.AddParameter("name", name);
-        return Execute<Models.CloneDeployUser>(_request);
+        _request.Resource = string.Format("api/{0}/GetForLogin/{1}", _resource,id);
+        return Execute<Models.ActionResult>(_request);
+        
     }
 }

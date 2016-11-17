@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
-using System.Web;
+using Helpers;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -22,7 +23,7 @@ public class TokenApi
 
     public Models.Token Get(string username, string password)
     {
-        _client.BaseUrl = new Uri("http://localhost/clonedeploy/");
+        _client.BaseUrl = new Uri(ConfigurationManager.AppSettings["api_base_url"]);
         _request.Method = Method.POST;
         _request.Resource = _resource;
         _request.AddParameter("grant_type", "password");
@@ -30,8 +31,18 @@ public class TokenApi
         _request.AddParameter("password", password);
 
         var response = _client.Execute<Models.Token>(_request);
+        var token = response.Data ?? new Models.Token();
 
-        var token = new Models.Token();
+        var user = BLL.User.GetUser(username);
+        if(user != null)
+        token.user_id = user.Id;
+
+        if (response.ErrorException != null)
+        {
+            const string message = "Error retrieving response: ";
+            Logger.Log(message + response.ErrorException);
+        }
+
         switch (response.StatusCode)
         {
             case HttpStatusCode.OK:
@@ -47,5 +58,6 @@ public class TokenApi
                 return token;
 
         }
+        
     }
 }

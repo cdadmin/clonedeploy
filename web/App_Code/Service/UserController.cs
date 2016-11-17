@@ -32,12 +32,17 @@ namespace Service
                 case "Administrator":
                     if (new BLL.Auth(Convert.ToInt32(userId), Permission).IsAuthorized())
                         authorized = true;
-                    break;            
+                    break;
+                case "CallerOnly":
+                    var objectId = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
+                    if (objectId == Convert.ToInt32(userId))
+                        authorized = true;
+                    break;
             }
 
             if (!authorized)
             {
-                var response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized, new ActionResult() { Success = false, Message = "Unauthorized" });
+                var response = actionContext.Request.CreateResponse(HttpStatusCode.Forbidden, new ActionResult() { Success = false, Message = "Forbidden" });
                 throw new HttpResponseException(response);
             }
         }
@@ -45,6 +50,7 @@ namespace Service
 
     public class UserController : ApiController
     {
+
         [UserAuthAttribute(Permission = "Administrator")]
         public IEnumerable<Models.CloneDeployUser> Get(string searchstring="")
         {
@@ -58,14 +64,18 @@ namespace Service
 
         }
 
-        [UserAuthAttribute(Permission = "Administrator")]
-        public IHttpActionResult GetByName(string name)
+        [UserAuthAttribute(Permission = "CallerOnly")]
+        public ActionResult GetForLogin(int id)
         {
-            var user = BLL.User.GetUser(name);
-            if (user == null)
-                return NotFound();
-            else
-                return Ok(user);
+            var actionResult = BLL.User.GetUserForLogin(id);
+            if (!actionResult.Success)
+            {
+                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
+                throw new HttpResponseException(response);
+            }
+            return actionResult;
+
+         
         }
 
      

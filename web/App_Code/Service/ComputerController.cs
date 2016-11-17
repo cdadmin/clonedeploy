@@ -45,7 +45,7 @@ namespace Service
 
             if (!authorized)
             {
-                var response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized, new ActionResult() { Success = false, Message = "Unauthorized" });
+                var response = actionContext.Request.CreateResponse(HttpStatusCode.Forbidden, new ActionResult() { Success = false, Message = "Forbidden" });
                 throw new HttpResponseException(response);
             }
         }
