@@ -450,7 +450,7 @@ namespace BLL.DynamicClientPartition
             }
         }
 
-        public List<Services.Client.PhysicalPartition> GetActivePartitions(int schemaHdNumber, Models.ImageProfile imageProfile)
+        /*public List<Services.Client.PhysicalPartition> GetActivePartitions(int schemaHdNumber, Models.ImageProfile imageProfile)
         {
             var listPhysicalPartition = new List<Services.Client.PhysicalPartition>();
             var imagePath = Settings.PrimaryStoragePath + Path.DirectorySeparatorChar + "images" + Path.DirectorySeparatorChar + imageProfile.Image.Name + Path.DirectorySeparatorChar + "hd" +
@@ -568,7 +568,7 @@ namespace BLL.DynamicClientPartition
             }
 
             return listPhysicalPartition;
-        }
+        }*/
 
         public int GetActivePartitionCount(int schemaHdNumber)
         {

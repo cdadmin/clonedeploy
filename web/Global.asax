@@ -1,20 +1,14 @@
 ﻿<%@ Application Language="C#" %>
 <%@ Import Namespace="System.Web.Http" %>
 <%@ Import Namespace="System.Web.Routing" %>
-
+<%@ Import Namespace="Helpers" %>
 
 
 <script runat="server">
  
     void Application_Start(object sender, EventArgs e)
     {  
-        GlobalConfiguration.Configuration.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
-        RouteTable.Routes.MapHttpRoute(
-            name: "DefaultApi",
-            routeTemplate: "api/{controller}/{action}/{id}",
-            defaults: new {id = System.Web.Http.RouteParameter.Optional}
-            );
-        
+  
     }
 
     void Application_End(object sender, EventArgs e) 
@@ -25,6 +19,7 @@
         
     void Application_Error(object sender, EventArgs e) 
     { 
+       
         // Code that runs when an unhandled error occurs
 
     }

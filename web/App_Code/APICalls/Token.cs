@@ -25,7 +25,7 @@ public class TokenApi
     {
         _client.BaseUrl = new Uri(ConfigurationManager.AppSettings["api_base_url"]);
         _request.Method = Method.POST;
-        _request.Resource = _resource;
+        _request.Resource = string.Format("api/{0}",_resource);
         _request.AddParameter("grant_type", "password");
         _request.AddParameter("userName", username);
         _request.AddParameter("password", password);
