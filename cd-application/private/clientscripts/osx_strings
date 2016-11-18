@@ -1,0 +1,27 @@
+#!/bin/bash
+#diskutil seems to change often, handle different versions of diskutil
+
+os_version=$(sw_vers -productVersion | cut -d. -f1 -f2)
+
+if [ "$os_version" = "10.11" ]; then
+  hd_size_param="Total Size:"
+  partition_size_param="Total Size:"
+fi
+
+if [ "$os_version" = "10.12" ]; then
+  hd_size_param="Disk Size:"
+  partition_size_param="Disk Size:"
+fi
+
+function get_volume_min_size()
+{
+  local volume_to_shrink="$1"
+  
+  if [ "$os_version" = "10.11" ]; then
+    echo "$(diskutil resizeVolume $volume_to_shrink limits 2>> $CLIENT_LOG | grep "Minimum" | cut -d "(" -f2 | cut -d " " -f1)"
+  fi
+  
+  if [ "$os_version" = "10.12" ]; then
+    echo "$(diskutil resizeVolume $volume_to_shrink limits 2>> $CLIENT_LOG | grep "Recommended minimum size" | cut -d "(" -f3 | cut -d " " -f1)"
+  fi
+}

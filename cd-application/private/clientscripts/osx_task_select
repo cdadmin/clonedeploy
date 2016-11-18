@@ -1,0 +1,56 @@
+#!/bin/bash
+
+. /usr/local/bin/osx_global_functions
+
+log "OS X NBI Version:"
+sw_vers >> $CLIENT_LOG
+
+mac_address_list=$(networksetup -listallhardwareports | grep "Ethernet Address:" | cut -d " " -f 3)
+
+for mac_address in $mac_address_list; do
+  log " ** Looking For Active Task For $mac_address ** " "display"
+  checkInStatus=$($curlAuth --data "computerMac=$mac_address" "${web}CheckIn" $curlEnd)
+  if [  "$?" != "0" ]; then
+    echo "$checkInStatus"
+  else
+    if [ "$(parse_json "$checkInStatus" .Result)" != "true" ]; then
+      log "`parse_json "$checkInStatus" .Message`" "display"
+	  if [ "`parse_json "$checkInStatus" .Message`" = "An Active Task Was Not Found For This Computer" ]; then
+	    computer_is_registered=true
+	  fi
+      sleep 1
+      echo
+      continue
+    else
+      sleep 1
+      for arg in "$(parse_json "$checkInStatus" .TaskArguments)"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
+      mac=$mac_address
+      log " ...... Success" "display"
+      break;
+    fi
+  fi
+done
+
+if [ -z "$mac" ]; then
+  if [ "$computer_is_registered" != "true" ]; then
+    . /usr/local/bin/osx_register
+  fi
+  echo
+  log "Could Not Find An Active Web Task For This Computer." "display"
+  echo
+  log "Falling Back To On Demand Mode" "display"
+  mac=$(networksetup -listallhardwareports | grep "Ethernet Address:" | cut -d " " -f 3 | head -n1)
+  sleep 7
+  . /usr/local/bin/osx_ond
+fi
+
+echo
+
+if [ "$image_direction" = "pull" ]; then
+  . /usr/local/bin/osx_pull
+elif [ "$image_direction" = "push" ]; then
+  . /usr/local/bin/osx_push
+else
+  error "Could Not Determine Task Direction"
+fi  
+

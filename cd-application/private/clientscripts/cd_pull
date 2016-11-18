@@ -1,0 +1,726 @@
+#!/bin/bash
+
+. /bin/cd_global_functions
+
+if [ "$started_from_init" != "true" ]; then
+	error "Script Cannot Be Started This Way, Exports Are Not Set."
+fi
+
+################################################################
+#  Run Various Tasks On NTFS Partitions.
+#  Clear mounted devices in registry
+#  Save a copy of the BCD store
+#  Global Get:
+#    partition
+#	  image_path
+#  Global Set:
+#    none
+#  Arguments:
+#    none
+################################################################
+function ntfs_tasks()
+{
+  mkdir -p /mnt/ntfs 2>> /dev/null
+  log " ** Clearing Mounted Devices On $partition ** "
+  ntfs-3g -o force,rw,remove_hiberfile $partition /mnt/ntfs 2>> $CLIENT_LOG
+  reged -e /mnt/ntfs/Windows/System32/config/SYSTEM &>>$CLIENT_LOG <<MOUNT
+cd \MountedDevices
+delallv
+q
+y
+MOUNT
+  log " ...... Complete"
+  
+  if [ -f "/mnt/ntfs/Boot/BCD" ]; then
+    log " ** Saving Original BCD ** "
+    reged -x /mnt/ntfs/Boot/BCD . Objects /tmp/regbcd >>/dev/null
+    cat /tmp/regbcd >> $CLIENT_LOG
+  fi
+  log " ...... Complete"
+    
+  umount /mnt/ntfs &> /dev/null
+}
+
+function save_mbr_gpt()
+{
+  log " ** Checking For Partition Table Types Before Upload On $hard_drive ** "
+    gpt_status=`gdisk -l $hard_drive <<< "q" 2>> $CLIENT_LOG | grep 'GPT:' | awk '{$1=""; print $0}' | sed 's/^ //'`
+    if [ "$gpt_status" = "present" ]; then
+      usingGPT=true
+      mbr_status=`gdisk -l $hard_drive <<< "q" 2>> $CLIENT_LOG | grep 'MBR:' | awk '{$1=""; print $0}' | sed 's/^ //'`
+      if [ "$mbr_status" = "MBR only" ]; then
+        error "This Hard Drive Appears To Have Both GPT And MBR.  CloneDeploy Does Not Know What To Use.  You Must First Convert The Drive To One Or The Other Before Uploading"
+      fi
+    elif [ "$gpt_status" = "damaged" ]; then
+      error "The GPT Table Is Damaged And Cannot Be Saved.  You Must Fix This Before Uploading This Image"
+    fi
+    log " ...... gpt_status: $gpt_status mbr_status: $mbr_status" 
+  
+  log " ** Saving MBR / GPT On $hard_drive ** " "display"  
+
+  if [ "$usingGPT" = "true" ]; then
+    checkPartStart=$(gdisk $hard_drive -l | awk '/^ / {print $2+0}' | grep -vw "0" | sort -n | head -n1)
+  else
+    checkPartStart=$(parted -s $hard_drive unit s print all | grep "Disk /dev/" -m1 -A50 | awk -F' ' '{print $2+0}' | grep -vw "0" | sort -n | head -n1)
+  fi
+
+  toSave=$(( $checkPartStart - 1 ))
+    
+  log " ...... drive: $drive checkPartStart: $checkPartStart toSave: $toSave "
+    
+	dd_drive_name=$(echo $hard_drive | cut -d "/" -f 3)
+    dd_lbs=$(cat /sys/block/$dd_drive_name/queue/logical_block_size)
+    dd if=$hard_drive of=$image_path/table count=$toSave bs=$dd_lbs &>> $CLIENT_LOG 
+    if [ -s "$image_path/table" ]; then
+      log " ...... Success" "display"
+    else
+      error "Could Not Save MBR /GPT .  Check Permissions."
+    fi
+  
+  echo
+  sleep 5
+}
+
+################################################################
+#  Get logical volumes for current volume group
+#  Global Get:
+#    volume_group
+#	 custom_logical_volumes
+#  Global Set:
+#    logical_volumes
+#    logical_volume_count 
+#  Arguments:
+#    none
+################################################################
+function get_logical_volumes()
+{
+  local lvs
+  local logical_volume
+  logical_volumes=""
+  if [ -n "$custom_logical_volumes" ]; then
+    logical_volumes=`echo "$custom_logical_volumes" | grep "$volume_group"`
+    log " ...... Logical Volumes Set By Image Profile: $logical_volumes" "display"    
+  else
+    lvs=$(lvs --noheadings | grep "$volume_group" | awk '/^ / {print $1}')  
+    #Escape - in vg or lv
+    #escaped_volume_group=$(echo $volume_group | sed 's/-/--/g')
+    for logical_volume in $lvs; do
+      escaped_logical_volume=$(echo $logical_volume | sed 's/-/--/g')
+      logical_volumes="$logical_volumes $escaped_logical_volume"
+    done
+  fi
+                  
+  logical_volume_count=0
+  for logical_volume in $logical_volumes; do
+    logical_volume_count=$(( $logical_volume_count + 1 ))
+  done
+}
+
+################################################################
+#  Get partition list for current hard drive
+#  Global Get:
+#    custom_partitions
+#	 hard_drive
+#  Global Set:
+#    partitions
+#    partition_count  
+#  Arguments:
+#    display_onscreen - true|false - output log info to screen
+################################################################
+function get_partitions()
+{
+  local display_onscreen="$1"
+  local partition
+  
+  if [ "$display_onscreen" = "true" ]; then
+    log " ** Determining Partition Count On $hard_drive ** " "display"
+  fi
+  
+  partitions=""
+  if [ -n "$custom_partitions" ]; then
+    for partition in $custom_partitions; do
+      echo "$partition" | grep $hard_drive
+      if [ "$?" = "0" ]; then
+        partitions="$partitions $partition"
+      fi
+    done
+	if [ "$display_onscreen" = "true" ]; then
+	  log " ...... Partitions Set By Image Profile: $partitions" "display"
+    fi
+  else
+    #added grep -v boot to exclude boot partitions on emmc drives.  Not sure if this may effect anything else
+    partitions=$(lsblk -ipno KNAME | grep "$hard_drive" | grep -vw "$hard_drive" | grep -v "boot" 2>> $CLIENT_LOG)  
+  fi
+    
+  partition_count=0  
+  for partition in $partitions; do
+    partition_count=$(( $partition_count + 1 ))
+  done
+  
+  if [ "$display_onscreen" = "true" ]; then
+    log " ...... Found $partition_count Partition(s)" "display"
+  fi
+}
+
+################################################################
+#  Shrink the filesystem to smallest usable size
+#  Global Get:
+#    filesystem_type
+#	 image_type
+#  Global Set:
+#    shrunk_volumes
+#  Arguments:
+#    volume_to_shrink - The partition or logical volume that
+#      contains the volume to shrink
+################################################################
+function shrink_volume()
+{
+	local volume_to_shrink="$1"
+	
+	local new_extfs_size
+	local extfs_total_blocks
+	local extfs_block_size
+	local extfs_volume_size_bytes
+    if [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ]; then
+      newextsize="";
+      log " ...... Shrinking EXT Volume On $volume_to_shrink (This May Take A Few Minutes) " "display"
+      e2fsck -fp "$volume_to_shrink" &> /dev/null
+      extfs_total_blocks=`resize2fs -P "$volume_to_shrink" 2>/dev/null | awk -F': ' '{print $2}'`;
+      extfs_block_size=`dumpe2fs -h "$volume_to_shrink" 2>/dev/null | grep "^Block size:" | awk '{print $3}'`;
+      extfs_volume_size_bytes=`expr $extfs_total_blocks '*' $extfs_block_size`;
+      new_extfs_size=`expr $extfs_volume_size_bytes '*' 103 '/' 100 '/' 1024 '/' 1024`; #Give 3% padding 
+  
+      resize2fs $volume_to_shrink ${new_extfs_size}M &>> $CLIENT_LOG
+      
+      if [ ! "$?" = "0" ]; then
+        log "Warning, EXT File System Did Not Shrink Properly. " "display"
+      else   
+        shrunk_volumes="$shrunk_volumes $volume_to_shrink "
+        log " ...... Success" "display"
+      fi
+
+      log " ...... extfs_total_blocks: $extfs_total_blocks extfs_block_size: $extfs_block_size new_extfs_size $new_extfs_size"
+
+    local ntfs_check
+	local ntfs_volume_size_bytes
+	local new_ntfs_size
+    elif [ "$filesystem_type" = "ntfs" ]; then
+      if [ "$image_type" = "File" ]; then #If we are doing a file based clone, the volume does not need to be shrunk
+        return 0
+      fi
+      log " ...... Shrinking NTFS Volume On $volume_to_shrink (This May Take A Few Minutes) " "display"
+      ntfs_check=`ntfsresize -i $volume_to_shrink | grep "chkdsk /f"`
+      if [ "$?" = "0" ]; then
+        error "$ntfs_check"
+      fi
+      
+      ntfsfix -b -d $volume_to_shrink &>>$CLIENT_LOG
+      ntfs_volume_size_mb=`ntfsresize -f -i -P $volume_to_shrink | grep "bytes or" | cut -d" " -f8`;
+      new_ntfs_size=`expr $ntfs_volume_size_mb '*' 103 '/' 100` # Give 3% padding
+
+      ntfsresize -f -s ${new_ntfs_size}M $volume_to_shrink &>> $CLIENT_LOG << CONFIRM 
+y
+CONFIRM
+      if [ ! "$?" = "0" ]; then
+        log "Warning, NTFS File System Did Not Shrink Properly. " "display"
+      else
+        shrunk_volumes="$shrunk_volumes $volume_to_shrink "
+        log " ...... Success" "display"
+      fi
+      log " ...... ntfssize: $ntfssize"
+      
+      ntfsfix -b -d $volume_to_shrink &>>$CLIENT_LOG
+    fi
+  
+}
+
+################################################################
+#  Calculates the sizes of hard drive and partition and shrinks
+#    any applicable volumes
+#  Global Get:
+#    filesystem_type
+#	 image_type
+#  Global Set:
+#    shrunk_volumes
+#    hd_has_lvm
+#  Arguments:
+#    volume_to_shrink - The partition or logical volume that
+#      contains the volume to shrink
+################################################################
+function create_image_schema()
+{
+  clear_and_move_down
+  log " ** Creating Image Schema ** " "display"
+  echo
+  sleep 5
+  
+  #Only used on EFI systems.
+  mount -t efivarfs none /sys/firmware/efi/efivars &>>$CLIENT_LOG
+  
+  hard_drive_counter=0
+  image_schema="{\"harddrives\": [ "
+  for hard_drive in $hard_drives; do
+    if [ "$remove_gpt_structures" = "true" ]; then
+	  sgdisk -z $hard_drive
+	fi
+	
+    hard_drive_counter=$(( $hard_drive_counter + 1 ))
+    drive_name="";logical_block_size="";physical_block_size="";hard_drive_size_block="";boot_partition="";gpt_status="";mbr_status="";layout_type="";hard_drive_guid="";
+    drive_name=$(echo $hard_drive | cut -d "/" -f 3)
+    logical_block_size=$(cat /sys/block/$drive_name/queue/logical_block_size)
+    physical_block_size=$(cat /sys/block/$drive_name/queue/physical_block_size)
+    hard_drive_size_block=$(blockdev --getsz $hard_drive) #Always outputs for 512 byte sectors, needs changed for other sector sizes
+    if [ "$logical_block_size" = "4096" ]; then
+	  hard_drive_size_block=$(( $hard_drive_size_block / 8 ))
+	fi
+	boot_partition=$(sfdisk $hard_drive -l | grep "*" | grep "dev" | cut -d" " -f1 | sed "s~$hard_drive~~g" | sed 's/[^0-9]//g')
+    gpt_status=`gdisk -l $hard_drive <<< "q" 2>> $CLIENT_LOG | grep 'GPT:' | awk '{$1=""; print $0}' | sed 's/^ //'`
+    if [ "$gpt_status" = "present" ]; then
+      mbr_status=`gdisk -l $hard_drive <<< "q" 2>> $CLIENT_LOG| grep 'MBR:' | awk '{$1=""; print $0}' | sed 's/^ //'`
+      layout_type="gpt"
+      hard_drive_guid=`gdisk -l $hard_drive | grep GUID | awk -F': ' '{print $2}'`
+	  log "Current NVRAM Entries"
+	  efibootmgr -v &>> $CLIENT_LOG
+      if [ "$mbr_status" = "MBR only" ]; then
+        error "This Hard Drive Appears To Have Both GPT And MBR.  CloneDeploy Does Not Know What To Use.  You Must First Convert The Drive To One Or The Other Before Uploading"
+      fi
+    else
+      layout_type="mbr"
+    fi
+    hard_drive_json="{\"name\":\"$hard_drive\",\"size\":\"$hard_drive_size_block\",\"table\":\"$layout_type\",\"boot\":\"$boot_partition\",\"lbs\":\"$logical_block_size\",\"pbs\":\"$physical_block_size\",\"guid\":\"$hard_drive_guid\",\"active\":\"true\",\"partitions\": [ "
+    
+    get_partitions "false"
+    
+    partition_counter=0
+    for partition in $partitions; do
+      partition_counter=$(( $partition_counter + 1 ))
+      filesystem_type="";partition_uuid="";partition_guid="";partclone_type="";partition_used_mb="";partition_start="";partition_end="";partition_size="";partition_type="";partition_number="";
+      partition_number=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
+	  partition_prefix=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[0-9]*//g'`
+      filesystem_type=`blkid -po udev $partition | grep FS_TYPE | awk -F'=' '{print $2}'`
+      partition_uuid=`blkid -po udev $partition | grep ID_FS_UUID= | awk -F'=' '{print $2}'`
+      
+      if [ "$layout_type" = "gpt" ]; then
+        partition_guid=`sgdisk $hard_drive -i$partition_number | grep "unique GUID" | awk -F ' ' '{print $4}'`
+      fi
+      
+      #In addition to setting partclone type, clean filesystems for better compatibility moving forward
+      if [ "$filesystem_type" = "ntfs" ]; then
+        ntfsfix -b -d $partition &>/dev/null
+        partclone_type="ntfs"
+          
+      elif [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ]; then
+        e2fsck -fp $partition &> /dev/null
+        partclone_type="extfs"
+      elif [ "$filesystem_type" = "xfs" ]; then
+        partclone_type="xfs"
+	  elif [ "$filesystem_type" = "hfsplus" ]; then
+        partclone_type="hfsp"
+      else
+        partclone_type="imager"
+      fi
+          
+      partition_start=$(parted -s $hard_drive unit s print all | grep "Number  Start" -m1 -A50 | grep " $partition_number " -m 1 | awk -F' ' '{print $2}' | sed 's/s//g')
+      partition_end=$(parted -s $hard_drive unit s print all | grep "Number  Start" -m1 -A50 | grep " $partition_number " -m 1 | awk -F' ' '{print $3}' | sed 's/s//g')
+      partition_size=$(parted -s $hard_drive unit s print all | grep "Number  Start" -m1 -A50 | grep " $partition_number " -m 1 | awk -F' ' '{print $4}' | sed 's/s//g')
+      partition_size_bytes=$(parted -s $hard_drive unit b print all | grep "Number  Start" -m1 -A50 | grep " $partition_number " -m 1 | awk -F' ' '{print $4}' | sed 's/B//g')
+      #GPT does not have a concept of partition type only mbr has primary, extended, or logical
+      if [ "$layout_type" = "mbr" ]; then
+        partition_type=$(parted -s $hard_drive unit s print all | grep "Number  Start" -m1 -A50 | grep " $partition_number " -m 1| awk -F' ' '{print $5}')
+        fsid=$(sfdisk --part-type $hard_drive $partition_number | sed 's/ //g' 2>> $CLIENT_LOG)
+      else
+        fsid=$(gdisk $hard_drive -l | grep " $partition_number " | awk '/^ / {print $6}')
+        #find any matching boot entry in the nvram for this partition.  Find them all incase of multiboot systems	
+		efi_bootloader=$(efibootmgr -v | grep -i "$partition_guid" | grep -o "File(.*)" | cut -d "(" -f2 | cut -d ")" -f1 | uniq | sed 's/\\/\\\\/g')
+
+      fi
+
+      if [ "$skip_shrink_volumes" != "true" ] && [ "$upload_schema_only" != "true" ]; then 
+        if [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ] || [ "$filesystem_type" = "ntfs" ]; then
+          if [[ ! "$custom_fixed_partitions" == *"$partition"* ]]; then
+		    if [ "$image_type" = "Block" ] &&  [ "$partition_size_bytes" -gt "5368709120" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
+              shrink_volume $partition
+            fi			  
+          fi
+        fi
+      fi
+
+      partclone.$partclone_type -SIic -s $partition -O /dev/null >& /tmp/$partition_number.size
+      log "$partition Volume Size"
+      cat /tmp/$partition_number.size | grep volume_size >> $CLIENT_LOG
+      cat /tmp/$partition_number.size | grep used_size >> $CLIENT_LOG
+      volume_size=`cat /tmp/$partition_number.size | grep volume_size | cut -d"," -f 1 | cut -d ":" -f 2` #sed 's/ *$//'
+      volume_used_mb=`cat /tmp/$partition_number.size | grep used_size | cut -d"," -f 2 | cut -d ":" -f 2` #sed 's/ *$//'
+      volume_size=$(( $volume_size * 1000 * 1000 ))
+	  volume_size=$(( $volume_size / 1024 / 1024 ))
+	  volume_used_mb=$(( $volume_used_mb * 1000 * 1000 ))
+	  volume_used_mb=$(( $volume_used_mb / 1024 / 1024 ))
+	  
+      partition_json="{\"number\":\"$partition_number\",\"start\":\"$partition_start\",\"end\":\"$partition_end\",\"size\":\"$partition_size\",\"volumesize\":\"$volume_size\",\"type\":\"$partition_type\",\"usedmb\":\"$volume_used_mb\",\"fsType\":\"$filesystem_type\",\"fsid\":\"$fsid\",\"uuid\":\"$partition_uuid\",\"guid\":\"$partition_guid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\",\"prefix\":\"$partition_prefix\",\"efibootloader\":\"$efi_bootloader\",\"volumegroup\": { "
+      
+      #experimental lvm support
+      if [ "$lvmResize" != "false" ]; then
+        if [ "$fsid" = "8e" ] || [ "$fsid" = "8E00" ]; then
+          vgscan &>> $CLIENT_LOG    
+          volume_group=$(pvs --noheadings | grep $partition | awk '/^ / {print $2}')
+		  escaped_volume_group=$(echo $volume_group | sed 's/-/--/g')
+          if [ "$?" = "0" ]; then
+            hd_has_lvm="true"
+            log " ** Displaying LVM Information ** "
+            pvdisplay &>>$CLIENT_LOG
+            vgdisplay &>>$CLIENT_LOG
+            lvdisplay &>>$CLIENT_LOG
+          fi
+          vgchange -a y "$volume_group"
+          lvmVGUUID=$(vgs --noheadings -v  2>/dev/null | grep "$volume_group" | awk '/^ / {print $9}')
+          lvmVGSize=$(vgs --noheadings 2>/dev/null --units s | grep "$volume_group" | awk '/^ /  {print $6}' | sed 's/S//')
+          volume_group_json="\"name\":\"$volume_group\",\"size\":\"$lvmVGSize\",\"type\":\"vg\",\"physicalvolume\":\"$partition\",\"uuid\":\"$lvmVGUUID\",\"logicalvolumes\": [ "
+        
+          get_logical_volumes
+          
+          logical_volume_counter=0
+          for logical_volume in $logical_volumes; do
+		    if [ -n "$custom_logical_volumes" ]; then
+              logical_volume_device="/dev/mapper/$logical_volume"
+			  volume_name=$(echo $logical_volume | sed "s/${volume_group}-//")
+			  volume_name=$(echo $volume_name | sed 's/--/-/g')
+			else
+			    logical_volume_device="/dev/mapper/$escaped_volume_group-$logical_volume"
+				volume_name="$logical_volume"
+				volume_name=$(echo $volume_name | sed 's/--/-/g')
+			fi
+            logical_volume_counter=$(( $logical_volume_counter + 1 ))
+            filesystem_type=`blkid -po udev "$logical_volume_device" | grep FS_TYPE | awk -F'=' '{print $2}'`
+            logical_volume_uuid=`lvs --noheadings -v 2>/dev/null | grep "$volume_group" | grep "$volume_name" | awk '/^ / {print $10}'`
+            logical_volume_size_block=`lvs --noheadings --units s | grep "$volume_group" | grep "$volume_name" | awk '/^ / {print $4}' | sed 's/S//'`
+			logical_volume_size_bytes=`lvs --noheadings --units b | grep "$volume_group" | grep "$volume_name" | awk '/^ / {print $4}' | sed 's/B//'`
+
+            #In addition to setting partclone type, clean filesystems for better compatibility moving forward
+            if [ "$filesystem_type" = "ntfs" ]; then
+              ntfsfix -b -d "$logical_volume_device" &>/dev/null
+              ntfs-3g -o force,rw,remove_hiberfile "$logical_volume_device" /mnt/ntfs 2> /dev/null
+              umount /mnt/ntfs &> /dev/null
+              partclone_type="ntfs"
+          
+            elif [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ]; then
+              e2fsck -fp "$logical_volume_device" &> /dev/null
+              partclone_type="extfs"
+            elif [ "$filesystem_type" = "xfs" ]; then
+              partclone_type="xfs"
+			elif [ "$filesystem_type" = "hfsplus" ]; then
+              partclone_type="hfsp"
+            else
+              partclone_type="imager"
+            fi
+          
+            
+            if [ "$upload_schema_only" != "true" ] && [ "$skip_shrink_lvm" != "true" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
+              if [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ] || [ "$filesystem_type" = "ntfs" ]; then
+			    if [[ ! "$custom_fixed_logical_volumes" == *"$logical_volume_device"* ]]; then
+				  if [ "$image_type" = "Block" ] && [ "$logical_volume_size_bytes" -gt "5368709120" ]; then
+                    shrink_volume $logical_volume_device      
+				  fi
+				fi
+              fi
+            fi
+            
+            partclone.$partclone_type -SIic -s "$logical_volume_device" -O /dev/null >& /tmp/lv$logical_volume_counter.size
+            log "$logical_volume_device Volume Size"
+            cat /tmp/lv$logical_volume_counter.size | grep volume_size >> $CLIENT_LOG
+            cat /tmp/lv$logical_volume_counter.size | grep used_size >> $CLIENT_LOG
+            lv_volume_size=`cat /tmp/lv$logical_volume_counter.size | grep volume_size | cut -d"," -f 1 | cut -d ":" -f 2` #sed 's/ *$//'
+            lv_used_mb=`cat /tmp/lv$logical_volume_counter.size | grep used_size | cut -d"," -f 2 | cut -d ":" -f 2` #sed 's/ *$//'
+            lv_volume_size=$(( $lv_volume_size * 1000 * 1000 ))
+	        lv_volume_size=$(( $lv_volume_size / 1024 / 1024 ))
+            lv_used_mb=$(( $lv_used_mb * 1000 * 1000 ))
+	        lv_used_mb=$(( $lv_used_mb / 1024 / 1024 ))
+            logical_volume_json="{\"name\":\"$volume_name\",\"size\":\"$logical_volume_size_block\",\"volumesize\":\"$lv_volume_size\",\"type\":\"lv\",\"volumegroup\":\"$volume_group\",\"usedmb\":\"$lv_used_mb\",\"fstype\":\"$filesystem_type\",\"uuid\":\"$logical_volume_uuid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\"}"
+            if [ "$logical_volume_counter" = "$logical_volume_count" ]; then
+              logical_volume_json="$logical_volume_json] } }"
+            else
+              logical_volume_json="$logical_volume_json,"
+            fi
+          
+            complete_lv_json=$complete_lv_json$logical_volume_json
+          
+          done
+        
+          complete_vg_json=$volume_group_json$complete_lv_json
+        
+          if [ "$partition_counter" = "$partition_count" ]; then
+            complete_partition_json="$complete_partition_json$partition_json$complete_vg_json] }"
+          else
+            complete_partition_json="$complete_partition_json$partition_json$complete_vg_json,"
+          fi
+        else
+          partition_json="$partition_json} }"
+        
+          if [ "$partition_counter" = "$partition_count" ]; then
+            complete_partition_json="$complete_partition_json$partition_json] }"
+          else
+            complete_partition_json="$complete_partition_json$partition_json,"
+          fi
+        
+        fi
+      
+      else
+        partition_json="$partition_json} }"
+        
+        if [ "$partition_counter" = "$partition_count" ]; then
+          complete_partition_json="$complete_partition_json$partition_json] }"
+        else
+          complete_partition_json="$complete_partition_json$partition_json,"
+        fi
+      fi
+      
+    done
+    
+    complete_hd_json=$complete_hd_json$hard_drive_json$complete_partition_json
+    if [ "$hard_drive_counter" = "$hard_drive_count" ]; then
+      complete_hd_json="$complete_hd_json] }" 
+    else
+      complete_hd_json="$complete_hd_json,"
+    fi
+    
+    complete_partition_json=""
+  done
+  
+  image_schema=$image_schema$complete_hd_json
+  
+  log " ...... image_schema: $image_schema"  
+  log " ...... Complete" "display"
+  echo
+  sleep 2 
+  
+  echo $image_schema > /storage/images/$image_name/schema
+}
+
+
+################################################################
+#  Upload the image for the current hard drive
+#  Global Get:
+#    partitions
+#    compression_algorithm
+#    compression_level
+#	 computer_name
+#    web
+#    image_path
+#  Global Set:
+#    none
+#  Arguments:
+#    upload_type - physical | lvm
+################################################################
+function upload_image()
+{
+  local upload_type="$1"
+  local partition
+  local compression_extension
+  local compression_binary
+  local partition_number
+  local partclone_type
+  local mbr_filesystem_id
+  local gpt_filesystem_id
+  local output_name
+  local wim_arguments
+  local partclone_out
+  
+  if [ "$compression_algorithm" = "lz4" ]; then
+      compression_extension="lz4"
+	  partclone_out=" | "
+	  compression_out="lz4 $compression_level -c >"
+    elif [ "$compression_algorithm" = "gzip" ]; then
+      compression_extension="gz"
+	   partclone_out=" | "
+	   compression_out="gzip $compression_level -c >"
+	elif [ "$compression_algorithm" = "none" ]; then
+	  compression_extension="uncp"
+	   partclone_out="-o"
+	   compression_out=""
+    else
+      error "Could Not Determine Current Compression Algorithm: $compression_algorithm"
+  fi
+     
+  for partition in $partitions; do 
+    clear_and_move_down
+	wim_arguments=""
+    log " ** Starting Image Upload For $partition ** " "display" 
+	if [ -n "$computer_id" ]; then    
+	  null=$($curlAuth --data "computerId=$computer_id&partition=$partition" "${web}UpdateProgressPartition" $curlEnd)
+    fi
+    sleep 7
+    echo
+    
+    if [ "$upload_type" = "lvm" ]; then
+      partition_number=`echo $partition | sed 's/\/dev\/mapper\///g'`
+    else
+	  partition_number=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
+    fi
+
+    filesystem_type=`blkid -po udev $partition | grep FS_TYPE | awk -F'=' '{print $2}'`
+
+    log " ...... partition_number: $partition_number filesystem_type: $filesystem_type"
+    
+    if [ "$filesystem_type" = "ntfs" ]; then    
+      partclone_type="ntfs"
+	  wim_arguments=" $web_wim_args"
+      ntfs_tasks
+    elif [ "$filesystem_type" = "vfat" ]; then
+      partclone_type="fat"
+      
+    elif [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ]; then
+      partclone_type="extfs"
+      wim_arguments=" --unix-data $web_wim_args"
+    elif [ "$filesystem_type" = "hfsplus" ]; then
+      partclone_type="hfsp"
+      #I don't know why but partclone.hfsp used with lz4 results in a corrupted image file, always use gzip with hfs
+	  if [ "$compression_algorithm" = "lz4" ]; then
+        partclone_out="|"
+	    compression_out="gzip $compression_level -c >"
+        compression_extension="gz"
+      fi
+    elif [ "$filesystem_type" = "xfs" ]; then
+      partclone_type="xfs"
+      wim_arguments=" --unix-data $web_wim_args"
+    elif [ "$filesystem_type" = "swap" ]; then
+      log " ...... $partition Is A Swap Partition.  Skipping." "display"
+      sleep 2
+      continue  
+    else
+      if [ "$upload_type" = "physical" ]; then
+        mbr_filesystem_id=$(sfdisk --part-type $hard_drive $partition_number 2>> $CLIENT_LOG)
+        gpt_filesystem_id=$(gdisk $hard_drive -l | grep " $partition_number " | awk '/^ / {print $6}')
+      
+        if [ "$mbr_filesystem_id" = "8e" ] || [ "$gpt_filesystem_id" = "8E00" ]; then
+          if [ "$skip_shrink_lvm" != "true" ]; then
+            log " ...... $partition Is An LVM Physical Partition.  Skipping." "display"
+            log " ...... Logical Volumes Will Be Uploaded Last." "display"
+            sleep 5
+            continue
+          fi
+        fi
+      fi   
+      partclone_type="imager"
+    fi
+    
+    if [ "$upload_type" = "lvm" ]; then
+      output_name=$(echo $partition_number | sed 's/--/-/g')
+	else
+	  output_name=part$partition_number
+	fi
+  
+    if [ "$image_type" = "File" ] && [ -n "$wim_arguments" ]; then
+	  
+	  if [ "$filesystem_type" = "ntfs" ]; then
+	    wimsource="$partition"   
+	  else
+	    mkdir -p /mnt/wimsource 2>> $CLIENT_LOG
+	    mount $partition /mnt/wimsource 2> /dev/null
+		wimsource="/mnt/wimsource"
+      fi 	  
+	  touch /tmp/wim.progress
+	  log " ...... cd_reporter $computer_id wimup $is_ondemand & wimcapture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
+	  eval "cd_reporter $computer_id wimup $is_ondemand & wimcapture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
+	  rm /tmp/wim.progress
+	  umount /mnt/wimsource &> /dev/null
+    else
+	  touch /tmp/clone.progress
+	  log " ...... cd_reporter $computer_id partclone $is_ondemand & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension"    
+	  eval "cd_reporter $computer_id partclone $is_ondemand & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension"
+      rm /tmp/clone.progress
+      cat /var/log/partclone.log >> $CLIENT_LOG
+	  
+	  killall cd_reporter &>/dev/null
+	fi
+  done
+}
+
+function process_hard_drives()
+{
+  current_hd_number=-1
+  for hard_drive in $hard_drives; do
+    current_hd_number=$(( $current_hd_number + 1 ))
+
+    image_path=/storage/images/$image_name/hd$current_hd_number
+    mkdir $image_path 2>> $CLIENT_LOG
+	
+    save_mbr_gpt
+  
+    get_partitions "true"
+    
+    upload_image "physical"
+
+    if [ "$hd_has_lvm" = "true" ]; then
+	  for partition in $partitions; do
+	    volume_group=$(pvs --noheadings | grep $partition | awk '/^ / {print $2}')
+		if [ -z "$volume_group" ]; then
+		  continue
+		fi
+		get_logical_volumes
+        escaped_volume_group=$(echo $volume_group | sed 's/-/--/g')
+		for lv in $logical_volumes; do
+		  if [ -n "$custom_logical_volumes" ]; then
+		    lvs_to_upload="$lvs_to_upload /dev/mapper/$lv "
+		  else
+		    lvs_to_upload="$lvs_to_upload /dev/mapper/$escaped_volume_group-$lv "
+		  fi
+		done
+	  done
+      
+	  partitions=$lvs_to_upload     
+      upload_image "lvm"     
+    fi
+
+  done
+
+  log " shrunk_volumes: $shrunk_volumes"
+  for shrunk_volume in $shrunk_volumes; do
+    filesystem_type=`blkid -po udev $shrunk_volume | grep FS_TYPE | awk -F'=' '{print $2}'`
+    expand_volume $shrunk_volume $filesystem_type
+  done
+}
+
+function main()
+{
+  log_boot_args
+  
+  if [ "$is_ondemand" = "true" ]; then
+    log " ** On Demand Enabled ** "
+    for arg in "$ondemand_arguments"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
+  else
+    checkin
+  fi
+
+  if [ "$imageProtected" = "1" ]; then
+    error "This Image Is Protected And Cannot Be Overwritten"
+  fi
+
+  mount_smb
+
+  get_hard_drives "upload"
+
+  if [ "$is_ondemand" != "true" ]; then
+    log " ** Updating Client Status To In-Progress ** "
+    $curlAuth --data "computerId=$computer_id" "${web}UpdateStatusInProgress" $curlEnd
+  fi
+
+  log " ** Removing All Files For Existing Image: $image_name ** "
+    $curlAuth --data "profileId=$profile_id" "${web}DeleteImage" $curlEnd
+
+  create_image_schema
+  if [ "$upload_schema_only" = "true" ]; then
+    checkout
+  fi
+
+  if [ "$image_type" = "File" ]; then
+    export WIMLIB_IMAGEX_USE_UTF8=1
+  fi
+  
+  process_hard_drives
+  
+checkout
+}
+
+is_ondemand="$1"
+ondemand_arguments="$2"
+main "$@"
+  

@@ -1,0 +1,263 @@
+#!/bin/bash
+export LC_ALL=C
+export LANG=C
+CLIENT_LOG="/tmp/clientlog.log"
+
+function parse_json()
+{
+	echo `echo "$1" | jq "$2" -r`
+}
+
+function remove_whitespace() {
+    local var="$*"
+    var="${var#"${var%%[![:space:]]*}"}"   # remove leading whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"   # remove trailing whitespace characters
+    echo -n "$var"
+}
+
+function error()
+{
+  local reboot_time=$2
+	echo
+	log " ** An Error Has Occurred ** " "display"
+	log " ...... $1" "display"
+	echo
+	echo " ** Rebooting In One Minute ** "
+	
+	if [ -z "$computer_id"  ]; then
+	  computer_id="-1"
+	else
+	  $curlAuth --data "computerId=$computer_id&error=$1" "${web}ErrorEmail" $curlEnd
+	fi
+	
+	$curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/clientlog.log | base64)"  -F subType="$(echo -n $image_direction | base64)"  -F mac="$(echo -n $mac | base64)" "${web}UploadLog" $curlEnd	
+	
+	if [ -n "$reboot_time" ]; then
+	  sleep $reboot_time
+	else
+	  sleep 60
+	fi
+	if [ "$task_completed_action" = "Power Off" ]; then
+		shutdown
+	elif [ "$task_completed_action" = "Exit To Shell" ]; then
+		exit
+	else
+		reboot
+	fi 
+}
+
+function checkout()
+{
+	echo
+	log " ** Closing Active Task ** " "display"
+	cd /
+	sleep 10
+	umount /storage &> /dev/null
+	
+	if [ "$multicast" = "true" ]; then
+	mccheckoutResult=$($curlAuth --data "portBase=$multicast_port" "${web}MulticastCheckOut" $curlEnd)
+		log " ...... $mccheckoutResult"
+	fi
+		
+	if [ "$is_ondemand" != "true" ]; then
+	  checkout_status=$($curlAuth --data "computerId=$computer_id" "${web}CheckOut" $curlEnd)
+	  log " ...... $checkout_status" "display"
+	else
+	  if [ -z "$computer_id"  ]; then
+	  computer_id="-1"
+	  fi
+	fi
+	
+	echo
+		
+	$curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/clientlog.log | base64)"  -F subType="$(echo -n $image_direction | base64)"  -F mac="$(echo -n $mac | base64)" "${web}UploadLog" $curlEnd
+		
+	sleep 1;
+	
+	if [ "$task_completed_action" = "Power Off" ]; then
+		shutdown
+	elif [ "$task_completed_action" = "Exit To Shell" ]; then
+		exit
+	else
+		reboot
+	fi
+	
+}
+
+function clear_and_move_down()
+{
+	clear
+	local line=0
+	while [ "$line" -le "6" ]; do
+		line=$(( $line + 1 ))
+		echo
+	done
+}
+
+function log()
+{
+	echo "" >> $CLIENT_LOG;
+	if [ "$2" = "display" ]; then
+		echo "$1" | tee -a $CLIENT_LOG;
+	else
+		echo "$1" >> $CLIENT_LOG;
+	fi
+}
+
+function get_hard_drives()
+{
+	local task_type="$1"
+	local partitions
+	local partition_count
+	local partition
+	hard_drives=""
+	log " ** Looking For Hard Drive(s) ** "
+	log " ...... Displaying Available Devices "
+	diskutil list >> $CLIENT_LOG 2>&1
+	
+	if [ -n "$custom_hard_drives" ]; then
+		hard_drives="$custom_hard_drives"
+		log " ...... Hard Drive(s) Set By Image Profile: $hard_drives"	
+	else
+	  if [ "$task_type" = "upload" ]; then
+		all_hard_drives=$(diskutil list | grep "(internal\|(external" | cut -d " " -f1)
+		log "all_hard_drives: $all_hard_drives"
+		for hdd in $all_hard_drives; do
+		  disk_name=$(echo $hdd | sed 's~/dev/~~g')
+		    #only get hard drives that have partitions.  No reason to try and upload a disk without partitions this also exludes lv's since they don't have partitions
+			partition_count=0  
+            partition_count=$(diskutil list | grep ${disk_name} | grep -vw ${disk_name} -c)
+            if [ "$partition_count" -gt "0" ]; then
+              hard_drives="$hard_drives $hdd "
+            fi	    
+		done
+	  else #deploy
+	    #When deploying it is very possible the hard drive won't have a disk label so don't use the method used for uploads
+	    hard_drives=$(diskutil list | grep "(internal\|(external" | cut -d " " -f1)
+	  fi
+	fi
+	
+	hard_drive_count=0
+	for hdd in $hard_drives; do	
+		hard_drive_count=$(( $hard_drive_count + 1 ))
+	done
+		
+	log " ...... Found $hdCount Drive(s)" 
+	log " ...... Drive(s): $hard_drives" 
+	
+	if [ "$hard_drive_count" = "0" ]; then
+		error "Could Not Find A Hard Drive Attached To This Computer."
+	fi
+	sleep 2
+	echo
+}
+
+function get_partitions()
+{
+  local display_onscreen="$1"
+  local partition
+  
+  if [ "$display_onscreen" = "true" ]; then
+    log " ** Determining Partition Count On $hard_drive ** " "display"
+  fi
+  
+  partitions=""
+  if [ -n "$custom_partitions" ]; then
+    for partition in $custom_partitions; do
+      echo "$partition" | grep $hard_drive
+      if [ "$?" = "0" ]; then
+        partitions="$partitions $partition"
+      fi
+    done
+	if [ "$display_onscreen" = "true" ]; then
+	  log " ...... Partitions Set By Image Profile: $partitions" "display"
+    fi
+  else
+    drive_name=$(echo $hard_drive | cut -d "/" -f 3)
+    partitions_suffix=$(diskutil list | grep $drive_name | grep -vw $hard_drive | grep -vw $drive_name | grep -vi "volume on" | awk -F"$drive_name"  '{print $2}' )
+	for suffix in $partitions_suffix; do
+	  partitions="$partitions $hard_drive$suffix"
+	done
+  fi
+    
+  partition_count=0  
+  for partition in $partitions; do
+    partition_count=$(( $partition_count + 1 ))
+  done
+  
+  if [ "$display_onscreen" = "true" ]; then
+    log " ...... Found $partition_count Partition(s)" "display"
+	log " ...... $partitions"
+  fi
+}
+
+function process_scripts()
+{
+  local scripts="$1"
+  for script_id in $scripts; do
+    $curlAuth --data "scriptId=$script_id" "${web}GetCustomScript" $curlEnd > /tmp/custom_script
+	log " ** Running Custom Script With Id $script_id ** " "display"
+	sleep 5
+	#source script in sub shell so the values of the core script do not get overwritten
+	( . /tmp/custom_script )
+  done
+}
+
+function mount_smb()
+{
+	log " ** Mounting SMB Share **" "display"
+	mkdir /storage >> $CLIENT_LOG 2>&1
+	
+	mount | grep "on /storage" >> /dev/null 2>&1
+	if [ "$?" = "0" ]; then
+	  #already mounted
+	  log " ...... Success" "display"
+	  echo
+	  return 0
+	fi
+	
+	smbInfo=$($curlAuth --data "dpId=$dp_id&task=$image_direction" "${web}DistributionPoint" $curlEnd)
+	#fix path that was originally only used for initrd
+	share_path=$(echo "$(parse_json "$smbInfo" .SharePath)" | sed 's~//~~g')
+    mount -t smbfs //"$(parse_json "$smbInfo" .Domain)"\;"$(parse_json "$smbInfo" .Username)":"$(parse_json "$smbInfo" .Password)"@"$share_path" /storage 2>/tmp/mntstat
+		
+		if [ ! $? = "0" ]; then
+			cat /tmp/mntstat >> $CLIENT_LOG
+			error "Could Not Mount SMB Share: $(cat /tmp/mntstat)"		
+		else
+			log " ...... Success" "display"
+
+			cd /storage/images/$imgName;
+			if [ "$?" != "0" ]; then
+				error "Could Not Change Directory To /images/$imgName Check Permissions"
+			fi
+		fi
+	echo
+	sleep 2
+}
+
+function process_file_copy()
+{
+  local current_object="$1"
+  local object_type="$2"
+  local array_index=-1
+   log " ** Processing File Copy ** " "display"
+   sleep 5
+  while [  "$(( $array_index + 1 ))" -lt "$(parse_json "$file_copy_schema" .Count)" ]; do
+    array_index=$(( $array_index + 1))
+    current_file="$(parse_json "$file_copy_schema" .FilesAndFolders[$array_index])"
+    log "$current_file"
+	  
+	    log "Copying /storage/resources/$(parse_json "$current_file" .SourcePath)"
+		
+		  if [ -d "/storage/resources/$(parse_json "$current_file" .SourcePath)" ]; then
+		    if [ "$(parse_json "$current_file" .FolderCopyType)" = "Folder" ]; then
+		      cp -R "/storage/resources/$(parse_json "$current_file" .SourcePath)" "/Volumes/$osx_target_volume/$(parse_json "$current_file" .DestinationFolder)/" 2>>$CLIENT_LOG
+			else #FolderCopyType = contents
+			  cp -R "/storage/resources/$(parse_json "$current_file" .SourcePath)/." "/Volumes/$osx_target_volume/$(parse_json "$current_file" .DestinationFolder)/" 2>>$CLIENT_LOG
+			fi		
+		  else
+            cp "/storage/resources/$(parse_json "$current_file" .SourcePath)" "/Volumes/$osx_target_volume/$(parse_json "$current_file" .DestinationFolder)/" 2>>$CLIENT_LOG
+		  fi
+  done
+}
