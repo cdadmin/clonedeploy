@@ -1,0 +1,95 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/views/site.master" AutoEventWireup="true" Inherits="views.masters.ImageMaster" Codebehind="images.master.cs" %>
+
+
+
+<asp:Content ID="SubNav" ContentPlaceHolderID="SubNav" runat="Server">
+      <script type="text/javascript">
+          $(document).ready(function () {
+              $('#nav-images').addClass("nav-current");
+          });
+    </script>
+
+    <div class="sub-nav-top">
+        <div id="Level1" runat="server">
+        <ul>
+            <li id="search">
+                <a  href="<%= ResolveUrl("~/views/images/search.aspx") %>"><span class="sub-nav-text">Search</span></a>
+            </li>
+            <li id="create">
+                <a  href="<%= ResolveUrl("~/views/images/create.aspx") %>"><span class="sub-nav-text">New</span></a>
+            </li>
+              <li id="import">
+                <a  href="<%= ResolveUrl("~/views/images/import.aspx") %>"><span class="sub-nav-text">Import</span></a>
+            </li>
+        </ul>
+    </div>
+    <div id="Level2" runat="server">
+            <ul>
+                <li id="edit">
+
+                    <a href="<%= ResolveUrl("~/views/images/edit.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text">General</span></a>
+                </li>
+                <li id="profile">
+                    <a  href="<%= ResolveUrl("~/views/images/profiles/search.aspx") %>?imageid=<%= Image.Id %>&cat=profiles"><span class="sub-nav-text">Profiles</span></a>
+                </li>
+               
+                <li id="schema">
+                    <a  href="<%= ResolveUrl("~/views/images/schema.aspx") %>?imageid=<%= Image.Id %>"><span class="sub-nav-text">Schema</span></a>
+                </li>
+             
+            </ul>
+
+    </div>
+        
+
+            <ul>
+       
+      
+                </ul>
+
+    </div>
+</asp:Content>
+
+<asp:Content runat="server" ID="Breadcrumb" ContentPlaceHolderID="Breadcrumb">
+     <li><a href="<%= ResolveUrl("~/views/images/search.aspx") %>">Images</a></li>
+    <asp:ContentPlaceHolder ID="BreadcrumbSub" runat="server">
+        </asp:ContentPlaceHolder>
+</asp:Content>
+
+
+<asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="PageActions">
+    <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
+    </asp:ContentPlaceHolder>
+    
+    <ul class="dropdown-menu">
+             <asp:ContentPlaceHolder ID="AdditionalActions" runat="server"></asp:ContentPlaceHolder>
+      <li><asp:LinkButton ID="btnDelete" runat="server"  OnClick="btnDelete_Click">Delete Image</asp:LinkButton></li>
+       
+         <li><asp:LinkButton ID="btnApproveImage" runat="server" OnClick="btnApprove_Click" Visible="False">Approve Image</asp:LinkButton></li>
+  
+   
+     <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
+        </ul>
+</asp:Content>
+
+<asp:Content runat="server" ID="PageNav" ContentPlaceHolderID="PageNav">
+    <asp:ContentPlaceHolder runat="server" ID="PageNavSub"></asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content ID="MainContent" ContentPlaceHolderID="Content" runat="Server">
+     
+        <asp:ContentPlaceHolder ID="SubContent" runat="server">
+        </asp:ContentPlaceHolder>
+
+    <div id="confirmbox" class="confirm-box-outer">
+        <div class="confirm-box-inner">
+            <h4>
+                <asp:Label ID="lblTitle" runat="server" CssClass="modaltitle"></asp:Label>
+            </h4>
+            <div class="confirm-box-btns">
+                <asp:LinkButton ID="OkButton" OnClick="OkButton_Click" runat="server" Text="Yes" CssClass="confirm_yes" />
+                <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no" />
+            </div>
+        </div>
+    </div>
+</asp:Content>

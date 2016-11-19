@@ -1,0 +1,110 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/views/site.master" AutoEventWireup="true" Inherits="views.computers.ComputerMaster" Codebehind="computers.master.cs" %>
+<asp:Content ID="SubNav" ContentPlaceHolderID="SubNav" runat="Server">
+
+    <div id="Level1" runat="server">
+        <ul>
+            <li id="search">
+                <a href="<%= ResolveUrl("~/views/computers/search.aspx") %>">
+                    <span class="sub-nav-text">Search</span></a>
+            </li>
+            <li id="new">
+                <a href="<%= ResolveUrl("~/views/computers/create.aspx") %>">
+                    <span class="sub-nav-text">New</span></a>
+            </li>
+
+            <li id="import">
+                <a href="<%= ResolveUrl("~/views/computers/import.aspx") %>">
+                    <span class="sub-nav-text">Import</span></a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="Level2" runat="server">
+
+        <ul>
+            <li id="general">
+                <a href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?computerid=<%= Computer.Id %>">
+                    <span class="sub-nav-text">General</span></a>
+            </li>
+        
+            <li id="bootmenu">
+                <a href="<%= ResolveUrl("~/views/computers/bootmenu/active.aspx?level=3") %>&computerid=<%= Computer.Id %>">
+                    <span class="sub-nav-text">Boot Menu</span></a>
+            </li>
+            <li id="log">
+                <a href="<%= ResolveUrl("~/views/computers/log.aspx") %>?computerid=<%= Computer.Id %>">
+                    <span class="sub-nav-text">Logs</span></a>
+            </li>
+             <li id="munki">
+                <a href="<%= ResolveUrl("~/views/computers/munki.aspx") %>?computerid=<%= Computer.Id %>">
+                    <span class="sub-nav-text">Munki Templates</span></a>
+            </li>
+             <li id="groups">
+                <a href="<%= ResolveUrl("~/views/computers/groups.aspx") %>?computerid=<%= Computer.Id %>">
+                    <span class="sub-nav-text">Group Membership</span></a>
+            </li>
+            <li id="proxy">
+                <a href="<%= ResolveUrl("~/views/computers/proxy.aspx") %>?computerid=<%= Computer.Id %>">
+                    <span class="sub-nav-text">Proxy DHCP Reservation</span></a>
+            </li>
+
+        </ul>
+
+    </div>
+
+</asp:Content>
+
+<asp:Content runat="server" ID="Breadcrumb" ContentPlaceHolderID="Breadcrumb">
+    <li>
+        <a href="<%= ResolveUrl("~/views/computers/search.aspx") %>">Computers</a>
+    </li>
+    <asp:ContentPlaceHolder ID="BreadcrumbSub" runat="server">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+
+<asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="PageActions">
+
+
+    <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
+    </asp:ContentPlaceHolder>
+    
+        <ul class="dropdown-menu">
+             <asp:ContentPlaceHolder ID="AdditionalActions" runat="server"></asp:ContentPlaceHolder>
+        <li><asp:LinkButton ID="LinkButton1" runat="server"  OnClick="btnUpload_Click" Text="Upload Computer "></asp:LinkButton></li>
+        <li><asp:LinkButton ID="LinkButton2" runat="server" OnClick="btnDeploy_Click" Text="Deploy Computer"></asp:LinkButton></li>
+        <li><asp:LinkButton ID="LinkButton3" runat="server"  OnClick="btnDelete_Click" Text="Delete Computer"></asp:LinkButton></li>
+    
+
+ 
+        <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
+            </ul>
+
+</asp:Content>
+
+<asp:Content runat="server" ID="PageNav" ContentPlaceHolderID="PageNav">
+    <asp:ContentPlaceHolder runat="server" ID="PageNavSub"></asp:ContentPlaceHolder>
+</asp:Content>
+<asp:Content ID="MainContent" ContentPlaceHolderID="Content" runat="Server">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#nav-hosts').addClass("nav-current");
+        });
+    </script>
+    <asp:ContentPlaceHolder ID="SubContent" runat="server">
+    </asp:ContentPlaceHolder>
+
+    <br class="clear"/>
+    <div id="confirmbox" class="confirm-box-outer">
+        <div class="confirm-box-inner">
+            <h4>
+                <asp:Label ID="lblTitle" runat="server" CssClass="modaltitle"></asp:Label>
+            </h4>
+
+            <div class="confirm-box-btns">
+                <asp:LinkButton ID="buttonConfirm" OnClick="buttonConfirm_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
+                <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no"/>
+            </div>
+        </div>
+    </div>
+</asp:Content>

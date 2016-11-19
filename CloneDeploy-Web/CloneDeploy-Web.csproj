@@ -1,0 +1,2145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{CB120C38-1AD9-4D9E-B939-F3FAB2150F95}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CloneDeploy_Web</RootNamespace>
+    <AssemblyName>CloneDeploy-Web</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CsvHelper">
+      <HintPath>..\packages\CsvHelper.2.13.5.0\lib\net40-client\CsvHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Posix">
+      <HintPath>..\packages\Mono.Posix-4.5.4.5.0\lib\net45\Mono.Posix.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data">
+      <HintPath>..\packages\MySql.Data.6.9.7\lib\net45\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data.Entity.EF6">
+      <HintPath>..\packages\MySql.Data.Entity.6.9.7\lib\net45\MySql.Data.Entity.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="plist-cil">
+      <HintPath>..\packages\plist-cil.1.14\lib\plist-cil.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>..\packages\RestSharp.105.2.3\lib\net45\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="content\fonts\drop.eot" />
+    <Content Include="content\fonts\drop.ttf" />
+    <Content Include="content\fonts\drop.woff" />
+    <Content Include="content\fonts\flaticon.eot" />
+    <Content Include="content\fonts\flaticon.ttf" />
+    <Content Include="content\fonts\flaticon.woff" />
+    <Content Include="content\fonts\icomoon.eot" />
+    <Content Include="content\fonts\icomoon.ttf" />
+    <Content Include="content\fonts\icomoon.woff" />
+    <Content Include="content\fonts\icon2.eot" />
+    <Content Include="content\fonts\icon2.ttf" />
+    <Content Include="content\fonts\icon2.woff" />
+    <Content Include="content\fonts\OpenSans-Light.eot" />
+    <Content Include="content\fonts\OpenSans-Light.ttf" />
+    <Content Include="content\fonts\OpenSans-Regular.ttf" />
+    <Content Include="packages.config" />
+    <Content Include="private\clientscripts\cd_cancel" />
+    <Content Include="private\clientscripts\cd_diag" />
+    <Content Include="private\clientscripts\cd_global_functions" />
+    <Content Include="private\clientscripts\cd_ond" />
+    <Content Include="private\clientscripts\cd_pull" />
+    <Content Include="private\clientscripts\cd_push" />
+    <Content Include="private\clientscripts\cd_register" />
+    <Content Include="private\clientscripts\cd_reporter" />
+    <Content Include="private\clientscripts\osx_cancel" />
+    <Content Include="private\clientscripts\osx_global_functions" />
+    <Content Include="private\clientscripts\osx_ond" />
+    <Content Include="private\clientscripts\osx_pull" />
+    <Content Include="private\clientscripts\osx_push" />
+    <Content Include="private\clientscripts\osx_register" />
+    <Content Include="private\clientscripts\osx_reporter" />
+    <Content Include="private\clientscripts\osx_strings" />
+    <Content Include="private\clientscripts\osx_task_select" />
+    <Content Include="private\clientscripts\S99cd" />
+    <Content Include="private\clientscripts\winpe_global_functions.ps1" />
+    <Content Include="private\clientscripts\winpe_menu.ps1" />
+    <Content Include="private\clientscripts\winpe_ond.ps1" />
+    <Content Include="private\clientscripts\winpe_pull.ps1" />
+    <Content Include="private\clientscripts\winpe_push.ps1" />
+    <Content Include="private\clientscripts\winpe_register.ps1" />
+    <Content Include="private\clientscripts\winpe_reporter.ps1" />
+    <Content Include="private\clientscripts\winpe_start.ps1" />
+    <Content Include="private\clientscripts\winpe_task_select.ps1" />
+    <Content Include="private\client_iso\.gitignore" />
+    <Content Include="private\exports\.gitignore" />
+    <Content Include="private\imports\.gitignore" />
+    <Content Include="private\logs\.gitignore" />
+    <Content Include="private\logs\exceptions.log" />
+    <Content Include="public\.gitignore" />
+    <Content Include="public\macos_nbis\.gitignore" />
+    <Content Include="public\web.config" />
+    <Content Include="views\admin\admin.master" />
+    <Content Include="views\admin\bootmenu\bootmenu.master" />
+    <Content Include="views\admin\dp\dp.master" />
+    <Content Include="views\computers\bootmenu\bootmenu.master" />
+    <Content Include="views\computers\computers.master" />
+    <Content Include="views\computers\inventory\inventory.master" />
+    <Content Include="views\global\boottemplates\boottemplates.master" />
+    <Content Include="views\global\filesandfolders\filesandfolders.master" />
+    <Content Include="views\global\global.master" />
+    <Content Include="views\global\munki\munki.master" />
+    <Content Include="views\global\partitions\partitions.master" />
+    <Content Include="views\global\scripts\scripts.master" />
+    <Content Include="views\global\sysprep\sysprep.master" />
+    <Content Include="views\groups\groups.master" />
+    <Content Include="views\help\content.master" />
+    <Content Include="views\help\help.master" />
+    <Content Include="views\images\images.master" />
+    <Content Include="views\images\profiles\profiles.master" />
+    <Content Include="views\site.master" />
+    <Content Include="views\tasks\task.master" />
+    <Content Include="views\users\acls\acls.master" />
+    <Content Include="views\users\groupacls\groupacls.master" />
+    <Content Include="views\users\user.master" />
+    <None Include="Properties\PublishProfiles\web.pubxml" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="content\css\base.css" />
+    <Content Include="content\css\BreadCrumb.css" />
+    <Content Include="content\css\circle.css" />
+    <Content Include="content\css\icons.css" />
+    <Content Include="content\css\layout.css" />
+    <Content Include="content\css\login.css" />
+    <Content Include="content\css\splitbutton.css" />
+    <Content Include="content\fonts\drop.svg" />
+    <Content Include="content\fonts\flaticon.svg" />
+    <Content Include="content\fonts\icomoon.svg" />
+    <Content Include="content\fonts\icon2.svg" />
+    <Content Include="content\fonts\license.txt" />
+    <Content Include="content\img\cd.png" />
+    <Content Include="content\img\Chevron.gif" />
+    <Content Include="content\img\ChevronOverlay.png" />
+    <Content Include="content\img\IconHome.gif" />
+    <Content Include="content\img\logo.png" />
+    <Content Include="content\img\mCSB_buttons.png" />
+    <Content Include="content\js\ace\src-min\ace.js" />
+    <Content Include="content\js\ace\src-min\ext-beautify.js" />
+    <Content Include="content\js\ace\src-min\ext-chromevox.js" />
+    <Content Include="content\js\ace\src-min\ext-elastic_tabstops_lite.js" />
+    <Content Include="content\js\ace\src-min\ext-emmet.js" />
+    <Content Include="content\js\ace\src-min\ext-error_marker.js" />
+    <Content Include="content\js\ace\src-min\ext-keybinding_menu.js" />
+    <Content Include="content\js\ace\src-min\ext-language_tools.js" />
+    <Content Include="content\js\ace\src-min\ext-linking.js" />
+    <Content Include="content\js\ace\src-min\ext-modelist.js" />
+    <Content Include="content\js\ace\src-min\ext-old_ie.js" />
+    <Content Include="content\js\ace\src-min\ext-searchbox.js" />
+    <Content Include="content\js\ace\src-min\ext-settings_menu.js" />
+    <Content Include="content\js\ace\src-min\ext-spellcheck.js" />
+    <Content Include="content\js\ace\src-min\ext-split.js" />
+    <Content Include="content\js\ace\src-min\ext-static_highlight.js" />
+    <Content Include="content\js\ace\src-min\ext-statusbar.js" />
+    <Content Include="content\js\ace\src-min\ext-textarea.js" />
+    <Content Include="content\js\ace\src-min\ext-themelist.js" />
+    <Content Include="content\js\ace\src-min\ext-whitespace.js" />
+    <Content Include="content\js\ace\src-min\keybinding-emacs.js" />
+    <Content Include="content\js\ace\src-min\keybinding-vim.js" />
+    <Content Include="content\js\ace\src-min\mode-sh.js" />
+    <Content Include="content\js\ace\src-min\snippets\abap.js" />
+    <Content Include="content\js\ace\src-min\snippets\abc.js" />
+    <Content Include="content\js\ace\src-min\snippets\actionscript.js" />
+    <Content Include="content\js\ace\src-min\snippets\ada.js" />
+    <Content Include="content\js\ace\src-min\snippets\apache_conf.js" />
+    <Content Include="content\js\ace\src-min\snippets\applescript.js" />
+    <Content Include="content\js\ace\src-min\snippets\asciidoc.js" />
+    <Content Include="content\js\ace\src-min\snippets\assembly_x86.js" />
+    <Content Include="content\js\ace\src-min\snippets\autohotkey.js" />
+    <Content Include="content\js\ace\src-min\snippets\batchfile.js" />
+    <Content Include="content\js\ace\src-min\snippets\c9search.js" />
+    <Content Include="content\js\ace\src-min\snippets\cirru.js" />
+    <Content Include="content\js\ace\src-min\snippets\clojure.js" />
+    <Content Include="content\js\ace\src-min\snippets\cobol.js" />
+    <Content Include="content\js\ace\src-min\snippets\coffee.js" />
+    <Content Include="content\js\ace\src-min\snippets\coldfusion.js" />
+    <Content Include="content\js\ace\src-min\snippets\csharp.js" />
+    <Content Include="content\js\ace\src-min\snippets\css.js" />
+    <Content Include="content\js\ace\src-min\snippets\curly.js" />
+    <Content Include="content\js\ace\src-min\snippets\c_cpp.js" />
+    <Content Include="content\js\ace\src-min\snippets\d.js" />
+    <Content Include="content\js\ace\src-min\snippets\dart.js" />
+    <Content Include="content\js\ace\src-min\snippets\diff.js" />
+    <Content Include="content\js\ace\src-min\snippets\django.js" />
+    <Content Include="content\js\ace\src-min\snippets\dockerfile.js" />
+    <Content Include="content\js\ace\src-min\snippets\dot.js" />
+    <Content Include="content\js\ace\src-min\snippets\eiffel.js" />
+    <Content Include="content\js\ace\src-min\snippets\ejs.js" />
+    <Content Include="content\js\ace\src-min\snippets\elixir.js" />
+    <Content Include="content\js\ace\src-min\snippets\elm.js" />
+    <Content Include="content\js\ace\src-min\snippets\erlang.js" />
+    <Content Include="content\js\ace\src-min\snippets\forth.js" />
+    <Content Include="content\js\ace\src-min\snippets\ftl.js" />
+    <Content Include="content\js\ace\src-min\snippets\gcode.js" />
+    <Content Include="content\js\ace\src-min\snippets\gherkin.js" />
+    <Content Include="content\js\ace\src-min\snippets\gitignore.js" />
+    <Content Include="content\js\ace\src-min\snippets\glsl.js" />
+    <Content Include="content\js\ace\src-min\snippets\golang.js" />
+    <Content Include="content\js\ace\src-min\snippets\groovy.js" />
+    <Content Include="content\js\ace\src-min\snippets\haml.js" />
+    <Content Include="content\js\ace\src-min\snippets\handlebars.js" />
+    <Content Include="content\js\ace\src-min\snippets\haskell.js" />
+    <Content Include="content\js\ace\src-min\snippets\haxe.js" />
+    <Content Include="content\js\ace\src-min\snippets\html.js" />
+    <Content Include="content\js\ace\src-min\snippets\html_ruby.js" />
+    <Content Include="content\js\ace\src-min\snippets\ini.js" />
+    <Content Include="content\js\ace\src-min\snippets\io.js" />
+    <Content Include="content\js\ace\src-min\snippets\jack.js" />
+    <Content Include="content\js\ace\src-min\snippets\jade.js" />
+    <Content Include="content\js\ace\src-min\snippets\java.js" />
+    <Content Include="content\js\ace\src-min\snippets\javascript.js" />
+    <Content Include="content\js\ace\src-min\snippets\json.js" />
+    <Content Include="content\js\ace\src-min\snippets\jsoniq.js" />
+    <Content Include="content\js\ace\src-min\snippets\jsp.js" />
+    <Content Include="content\js\ace\src-min\snippets\jsx.js" />
+    <Content Include="content\js\ace\src-min\snippets\julia.js" />
+    <Content Include="content\js\ace\src-min\snippets\latex.js" />
+    <Content Include="content\js\ace\src-min\snippets\lean.js" />
+    <Content Include="content\js\ace\src-min\snippets\less.js" />
+    <Content Include="content\js\ace\src-min\snippets\liquid.js" />
+    <Content Include="content\js\ace\src-min\snippets\lisp.js" />
+    <Content Include="content\js\ace\src-min\snippets\livescript.js" />
+    <Content Include="content\js\ace\src-min\snippets\live_script.js" />
+    <Content Include="content\js\ace\src-min\snippets\logiql.js" />
+    <Content Include="content\js\ace\src-min\snippets\lsl.js" />
+    <Content Include="content\js\ace\src-min\snippets\lua.js" />
+    <Content Include="content\js\ace\src-min\snippets\luapage.js" />
+    <Content Include="content\js\ace\src-min\snippets\lucene.js" />
+    <Content Include="content\js\ace\src-min\snippets\makefile.js" />
+    <Content Include="content\js\ace\src-min\snippets\markdown.js" />
+    <Content Include="content\js\ace\src-min\snippets\mask.js" />
+    <Content Include="content\js\ace\src-min\snippets\matlab.js" />
+    <Content Include="content\js\ace\src-min\snippets\mel.js" />
+    <Content Include="content\js\ace\src-min\snippets\mipsassembler.js" />
+    <Content Include="content\js\ace\src-min\snippets\mips_assembler.js" />
+    <Content Include="content\js\ace\src-min\snippets\mushcode.js" />
+    <Content Include="content\js\ace\src-min\snippets\mysql.js" />
+    <Content Include="content\js\ace\src-min\snippets\nix.js" />
+    <Content Include="content\js\ace\src-min\snippets\objectivec.js" />
+    <Content Include="content\js\ace\src-min\snippets\ocaml.js" />
+    <Content Include="content\js\ace\src-min\snippets\pascal.js" />
+    <Content Include="content\js\ace\src-min\snippets\perl.js" />
+    <Content Include="content\js\ace\src-min\snippets\pgsql.js" />
+    <Content Include="content\js\ace\src-min\snippets\php.js" />
+    <Content Include="content\js\ace\src-min\snippets\plain_text.js" />
+    <Content Include="content\js\ace\src-min\snippets\powershell.js" />
+    <Content Include="content\js\ace\src-min\snippets\praat.js" />
+    <Content Include="content\js\ace\src-min\snippets\prolog.js" />
+    <Content Include="content\js\ace\src-min\snippets\properties.js" />
+    <Content Include="content\js\ace\src-min\snippets\protobuf.js" />
+    <Content Include="content\js\ace\src-min\snippets\python.js" />
+    <Content Include="content\js\ace\src-min\snippets\r.js" />
+    <Content Include="content\js\ace\src-min\snippets\rdoc.js" />
+    <Content Include="content\js\ace\src-min\snippets\rhtml.js" />
+    <Content Include="content\js\ace\src-min\snippets\ruby.js" />
+    <Content Include="content\js\ace\src-min\snippets\rust.js" />
+    <Content Include="content\js\ace\src-min\snippets\sass.js" />
+    <Content Include="content\js\ace\src-min\snippets\scad.js" />
+    <Content Include="content\js\ace\src-min\snippets\scala.js" />
+    <Content Include="content\js\ace\src-min\snippets\scheme.js" />
+    <Content Include="content\js\ace\src-min\snippets\scss.js" />
+    <Content Include="content\js\ace\src-min\snippets\sh.js" />
+    <Content Include="content\js\ace\src-min\snippets\sjs.js" />
+    <Content Include="content\js\ace\src-min\snippets\smarty.js" />
+    <Content Include="content\js\ace\src-min\snippets\snippets.js" />
+    <Content Include="content\js\ace\src-min\snippets\soy_template.js" />
+    <Content Include="content\js\ace\src-min\snippets\space.js" />
+    <Content Include="content\js\ace\src-min\snippets\sql.js" />
+    <Content Include="content\js\ace\src-min\snippets\sqlserver.js" />
+    <Content Include="content\js\ace\src-min\snippets\stylus.js" />
+    <Content Include="content\js\ace\src-min\snippets\svg.js" />
+    <Content Include="content\js\ace\src-min\snippets\tcl.js" />
+    <Content Include="content\js\ace\src-min\snippets\tex.js" />
+    <Content Include="content\js\ace\src-min\snippets\text.js" />
+    <Content Include="content\js\ace\src-min\snippets\textile.js" />
+    <Content Include="content\js\ace\src-min\snippets\toml.js" />
+    <Content Include="content\js\ace\src-min\snippets\twig.js" />
+    <Content Include="content\js\ace\src-min\snippets\typescript.js" />
+    <Content Include="content\js\ace\src-min\snippets\vala.js" />
+    <Content Include="content\js\ace\src-min\snippets\vbscript.js" />
+    <Content Include="content\js\ace\src-min\snippets\velocity.js" />
+    <Content Include="content\js\ace\src-min\snippets\verilog.js" />
+    <Content Include="content\js\ace\src-min\snippets\vhdl.js" />
+    <Content Include="content\js\ace\src-min\snippets\xml.js" />
+    <Content Include="content\js\ace\src-min\snippets\xquery.js" />
+    <Content Include="content\js\ace\src-min\snippets\yaml.js" />
+    <Content Include="content\js\ace\src-min\theme-ambiance.js" />
+    <Content Include="content\js\ace\src-min\theme-chrome.js" />
+    <Content Include="content\js\ace\src-min\theme-idle_fingers.js" />
+    <Content Include="content\js\ace\src-min\worker-coffee.js" />
+    <Content Include="content\js\ace\src-min\worker-css.js" />
+    <Content Include="content\js\ace\src-min\worker-html.js" />
+    <Content Include="content\js\ace\src-min\worker-javascript.js" />
+    <Content Include="content\js\ace\src-min\worker-json.js" />
+    <Content Include="content\js\ace\src-min\worker-lua.js" />
+    <Content Include="content\js\ace\src-min\worker-php.js" />
+    <Content Include="content\js\ace\src-min\worker-xml.js" />
+    <Content Include="content\js\ace\src-min\worker-xquery.js" />
+    <Content Include="content\js\ace\src-noconflict\ace.js" />
+    <Content Include="content\js\ace\src-noconflict\ext-beautify.js" />
+    <Content Include="content\js\ace\src-noconflict\ext-chromevox.js" />
+    <Content Include="content\js\ace\src-noconflict\ext-elastic_tabstops_lite.js" />
+    <Content Include="content\js\ace\src-noconflict\ext-emmet.js" />
+    <Content Include="content\js\ace\src-noconflict\ext-error_marker.js" />
+    <Content Include="content\js\ace\src-noconflict\ext-keybinding_menu.js" />
+    <Content Include="content\js\ace\src-noconflict\ext-language_tools.js" />
+    <Content Include="content\js\ace\src-noconflict\ext-linking.js" />
+    <Content Include="content\js\ace\src-noconflict\ext-modelist.js" />
+    <Content Include="content\js\ace\src-noconflict\ext-old_ie.js" />
+    <Content Include="content\js\ace\src-noconflict\ext-searchbox.js" />
+    <Content Include="content\js\ace\src-noconflict\ext-settings_menu.js" />
+    <Content Include="content\js\ace\src-noconflict\ext-spellcheck.js" />
+    <Content Include="content\js\ace\src-noconflict\ext-split.js" />
+    <Content Include="content\js\ace\src-noconflict\ext-static_highlight.js" />
+    <Content Include="content\js\ace\src-noconflict\ext-statusbar.js" />
+    <Content Include="content\js\ace\src-noconflict\ext-textarea.js" />
+    <Content Include="content\js\ace\src-noconflict\ext-themelist.js" />
+    <Content Include="content\js\ace\src-noconflict\ext-whitespace.js" />
+    <Content Include="content\js\ace\src-noconflict\keybinding-emacs.js" />
+    <Content Include="content\js\ace\src-noconflict\keybinding-vim.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-abap.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-abc.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-actionscript.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-ada.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-apache_conf.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-applescript.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-asciidoc.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-assembly_x86.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-autohotkey.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-batchfile.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-c9search.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-cirru.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-clojure.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-cobol.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-coffee.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-coldfusion.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-csharp.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-css.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-curly.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-c_cpp.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-d.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-dart.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-diff.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-django.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-dockerfile.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-dot.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-eiffel.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-ejs.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-elixir.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-elm.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-erlang.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-forth.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-ftl.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-gcode.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-gherkin.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-gitignore.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-glsl.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-golang.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-groovy.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-haml.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-handlebars.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-haskell.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-haxe.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-html.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-html_ruby.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-ini.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-io.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-jack.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-jade.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-java.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-javascript.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-json.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-jsoniq.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-jsp.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-jsx.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-julia.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-latex.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-lean.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-less.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-liquid.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-lisp.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-livescript.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-live_script.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-logiql.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-lsl.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-lua.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-luapage.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-lucene.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-makefile.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-markdown.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-mask.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-matlab.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-mavens_mate_log.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-mel.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-mipsassembler.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-mips_assembler.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-mushcode.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-mysql.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-nix.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-objectivec.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-ocaml.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-pascal.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-perl.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-pgsql.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-php.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-plain_text.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-powershell.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-praat.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-prolog.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-properties.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-protobuf.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-python.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-r.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-rdoc.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-rhtml.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-ruby.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-rust.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-sass.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-scad.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-scala.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-scheme.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-scss.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-sh.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-sjs.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-smarty.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-snippets.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-soy_template.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-space.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-sql.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-sqlserver.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-stylus.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-svg.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-tcl.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-tex.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-text.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-textile.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-toml.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-twig.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-typescript.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-vala.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-vbscript.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-velocity.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-verilog.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-vhdl.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-xml.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-xquery.js" />
+    <Content Include="content\js\ace\src-noconflict\mode-yaml.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\abap.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\abc.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\actionscript.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\ada.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\apache_conf.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\applescript.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\asciidoc.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\assembly_x86.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\autohotkey.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\batchfile.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\c9search.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\cirru.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\clojure.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\cobol.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\coffee.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\coldfusion.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\csharp.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\css.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\curly.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\c_cpp.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\d.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\dart.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\diff.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\django.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\dockerfile.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\dot.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\eiffel.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\ejs.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\elixir.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\elm.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\erlang.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\forth.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\ftl.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\gcode.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\gherkin.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\gitignore.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\glsl.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\golang.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\groovy.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\haml.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\handlebars.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\haskell.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\haxe.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\html.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\html_ruby.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\ini.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\io.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\jack.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\jade.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\java.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\javascript.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\json.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\jsoniq.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\jsp.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\jsx.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\julia.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\latex.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\lean.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\less.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\liquid.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\lisp.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\livescript.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\live_script.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\logiql.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\lsl.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\lua.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\luapage.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\lucene.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\makefile.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\markdown.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\mask.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\matlab.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\mel.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\mipsassembler.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\mips_assembler.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\mushcode.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\mysql.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\nix.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\objectivec.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\ocaml.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\pascal.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\perl.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\pgsql.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\php.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\plain_text.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\powershell.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\praat.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\prolog.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\properties.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\protobuf.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\python.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\r.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\rdoc.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\rhtml.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\ruby.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\rust.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\sass.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\scad.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\scala.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\scheme.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\scss.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\sh.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\sjs.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\smarty.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\snippets.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\soy_template.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\space.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\sql.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\sqlserver.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\stylus.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\svg.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\tcl.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\tex.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\text.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\textile.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\toml.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\twig.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\typescript.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\vala.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\vbscript.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\velocity.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\verilog.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\vhdl.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\xml.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\xquery.js" />
+    <Content Include="content\js\ace\src-noconflict\snippets\yaml.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-ambiance.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-chaos.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-chrome.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-clouds.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-clouds_midnight.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-cobalt.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-crimson_editor.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-dawn.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-dreamweaver.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-eclipse.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-github.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-idle_fingers.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-iplastic.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-katzenmilch.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-kr_theme.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-kuroir.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-merbivore.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-merbivore_soft.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-monokai.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-mono_industrial.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-pastel_on_dark.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-solarized_dark.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-solarized_light.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-sqlserver.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-terminal.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-textmate.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-tomorrow.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-tomorrow_night.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-tomorrow_night_blue.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-tomorrow_night_bright.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-tomorrow_night_eighties.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-twilight.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-vibrant_ink.js" />
+    <Content Include="content\js\ace\src-noconflict\theme-xcode.js" />
+    <Content Include="content\js\ace\src-noconflict\worker-coffee.js" />
+    <Content Include="content\js\ace\src-noconflict\worker-css.js" />
+    <Content Include="content\js\ace\src-noconflict\worker-html.js" />
+    <Content Include="content\js\ace\src-noconflict\worker-javascript.js" />
+    <Content Include="content\js\ace\src-noconflict\worker-json.js" />
+    <Content Include="content\js\ace\src-noconflict\worker-lua.js" />
+    <Content Include="content\js\ace\src-noconflict\worker-php.js" />
+    <Content Include="content\js\ace\src-noconflict\worker-xml.js" />
+    <Content Include="content\js\ace\src-noconflict\worker-xquery.js" />
+    <Content Include="content\js\bootstrap.min.js" />
+    <Content Include="content\js\classie.js" />
+    <Content Include="content\js\images\input-checked.png" />
+    <Content Include="content\js\images\input-unchecked.png" />
+    <Content Include="content\js\jquery-1.9.1.js" />
+    <Content Include="content\js\jquery-labelauty.css" />
+    <Content Include="content\js\jquery-labelauty.js" />
+    <Content Include="content\js\jquery-migrate-1.2.1.min.js" />
+    <Content Include="content\js\jquery-ui.js" />
+    <Content Include="content\js\jquery.easing.1.3.js" />
+    <Content Include="content\js\jquery.jBreadCrumb.1.1.js" />
+    <Content Include="content\js\jquery.toastmessage.js" />
+    <Content Include="content\js\jquery.validate.js" />
+    <Content Include="content\js\jquery.watermark.min.js" />
+    <Content Include="content\js\scrollsaver.js" />
+    <Content Include="content\js\sha1.js" />
+    <Content Include="content\js\sha512.js" />
+    <Content Include="default.aspx" />
+    <Content Include="Global.asax" />
+    <Content Include="License.txt" />
+    <Content Include="private\apps\gzip.exe" />
+    <Content Include="private\apps\lz4.exe" />
+    <Content Include="private\apps\udp-receiver.exe" />
+    <Content Include="private\apps\udp-sender.exe" />
+    <Content Include="views\admin\bootmenu\applenetboot.aspx" />
+    <Content Include="views\admin\bootmenu\defaultmenu.aspx" />
+    <Content Include="views\admin\bootmenu\editor.aspx" />
+    <Content Include="views\admin\bootmenu\isogen.aspx" />
+    <Content Include="views\admin\chooser.aspx" />
+    <Content Include="views\admin\client.aspx" />
+    <Content Include="views\admin\clobber.aspx" />
+    <Content Include="views\admin\dp\create.aspx" />
+    <Content Include="views\admin\dp\edit.aspx" />
+    <Content Include="views\admin\dp\search.aspx" />
+    <Content Include="views\admin\email.aspx" />
+    <Content Include="views\admin\export.aspx" />
+    <Content Include="views\admin\logview.aspx" />
+    <Content Include="views\admin\multicast.aspx" />
+    <Content Include="views\admin\munki.aspx" />
+    <Content Include="views\admin\pxe.aspx" />
+    <Content Include="views\admin\security.aspx" />
+    <Content Include="views\admin\server.aspx" />
+    <Content Include="views\computers\bootmenu\active.aspx" />
+    <Content Include="views\computers\bootmenu\custom.aspx" />
+    <Content Include="views\computers\create.aspx" />
+    <Content Include="views\computers\edit.aspx" />
+    <Content Include="views\computers\groups.aspx" />
+    <Content Include="views\computers\import.aspx" />
+    <Content Include="views\computers\inventory\applications.aspx" />
+    <Content Include="views\computers\inventory\general.aspx" />
+    <Content Include="views\computers\inventory\hardware.aspx" />
+    <Content Include="views\computers\inventory\os.aspx" />
+    <Content Include="views\computers\inventory\printers.aspx" />
+    <Content Include="views\computers\inventory\userlogins.aspx" />
+    <Content Include="views\computers\log.aspx" />
+    <Content Include="views\computers\munki.aspx" />
+    <Content Include="views\computers\proxy.aspx" />
+    <Content Include="views\computers\search.aspx" />
+    <Content Include="views\dashboard\dash.aspx" />
+    <Content Include="views\global\boottemplates\create.aspx" />
+    <Content Include="views\global\boottemplates\createentry.aspx" />
+    <Content Include="views\global\boottemplates\edit.aspx" />
+    <Content Include="views\global\boottemplates\editentry.aspx" />
+    <Content Include="views\global\boottemplates\search.aspx" />
+    <Content Include="views\global\boottemplates\searchentry.aspx" />
+    <Content Include="views\global\buildings\search.aspx" />
+    <Content Include="views\global\chooser.aspx" />
+    <Content Include="views\global\filesandfolders\create.aspx" />
+    <Content Include="views\global\filesandfolders\edit.aspx" />
+    <Content Include="views\global\filesandfolders\search.aspx" />
+    <Content Include="views\global\munki\assignedcatalogs.aspx" />
+    <Content Include="views\global\munki\assignedmanagedinstalls.aspx" />
+    <Content Include="views\global\munki\assignedmanageduninstalls.aspx" />
+    <Content Include="views\global\munki\assignedmanagedupdates.aspx" />
+    <Content Include="views\global\munki\assignedmanifests.aspx" />
+    <Content Include="views\global\munki\assignedoptionalinstalls.aspx" />
+    <Content Include="views\global\munki\availablecatalogs.aspx" />
+    <Content Include="views\global\munki\availablemanagedinstalls.aspx" />
+    <Content Include="views\global\munki\availablemanageduninstalls.aspx" />
+    <Content Include="views\global\munki\availablemanagedupdates.aspx" />
+    <Content Include="views\global\munki\availablemanifests.aspx" />
+    <Content Include="views\global\munki\availableoptionalinstalls.aspx" />
+    <Content Include="views\global\munki\general.aspx" />
+    <Content Include="views\global\munki\manifestcreate.aspx" />
+    <Content Include="views\global\munki\manifestsearch.aspx" />
+    <Content Include="views\global\partitions\create.aspx" />
+    <Content Include="views\global\partitions\edit.aspx" />
+    <Content Include="views\global\partitions\search.aspx" />
+    <Content Include="views\global\profileupdater\kernel.aspx" />
+    <Content Include="views\global\rooms\search.aspx" />
+    <Content Include="views\global\scripts\create.aspx" />
+    <Content Include="views\global\scripts\edit.aspx" />
+    <Content Include="views\global\scripts\editcore.aspx" />
+    <Content Include="views\global\scripts\search.aspx" />
+    <Content Include="views\global\sites\search.aspx" />
+    <Content Include="views\global\sysprep\create.aspx" />
+    <Content Include="views\global\sysprep\edit.aspx" />
+    <Content Include="views\global\sysprep\search.aspx" />
+    <Content Include="views\groups\addmembers.aspx" />
+    <Content Include="views\groups\bootmenu.aspx" />
+    <Content Include="views\groups\create.aspx" />
+    <Content Include="views\groups\currentmembers.aspx" />
+    <Content Include="views\groups\edit.aspx" />
+    <Content Include="views\groups\import.aspx" />
+    <Content Include="views\groups\multicast.aspx" />
+    <Content Include="views\groups\munki.aspx" />
+    <Content Include="views\groups\properties.aspx" />
+    <Content Include="views\groups\removemembers.aspx" />
+    <Content Include="views\groups\search.aspx" />
+    <Content Include="views\groups\smartcriteria.aspx" />
+    <Content Include="views\help\admin-bootmenu.aspx" />
+    <Content Include="views\help\admin-client.aspx" />
+    <Content Include="views\help\admin-clobber.aspx" />
+    <Content Include="views\help\admin-dp.aspx" />
+    <Content Include="views\help\admin-email.aspx" />
+    <Content Include="views\help\admin-export.aspx" />
+    <Content Include="views\help\admin-logs.aspx" />
+    <Content Include="views\help\admin-multicast.aspx" />
+    <Content Include="views\help\admin-munki.aspx" />
+    <Content Include="views\help\admin-pxe.aspx" />
+    <Content Include="views\help\admin-security.aspx" />
+    <Content Include="views\help\admin-server.aspx" />
+    <Content Include="views\help\computers-bootmenu.aspx" />
+    <Content Include="views\help\computers-group.aspx" />
+    <Content Include="views\help\computers-import.aspx" />
+    <Content Include="views\help\computers-logs.aspx" />
+    <Content Include="views\help\computers-munki.aspx" />
+    <Content Include="views\help\computers-newedit.aspx" />
+    <Content Include="views\help\computers-proxy.aspx" />
+    <Content Include="views\help\computers-search.aspx" />
+    <Content Include="views\help\default.aspx" />
+    <Content Include="views\help\global-bootmenutemplates.aspx" />
+    <Content Include="views\help\global-buildings.aspx" />
+    <Content Include="views\help\global-files.aspx" />
+    <Content Include="views\help\global-munki.aspx" />
+    <Content Include="views\help\global-profileupdater.aspx" />
+    <Content Include="views\help\global-rooms.aspx" />
+    <Content Include="views\help\global-scripts.aspx" />
+    <Content Include="views\help\global-sites.aspx" />
+    <Content Include="views\help\global-sysprep.aspx" />
+    <Content Include="views\help\groups-addmembers.aspx" />
+    <Content Include="views\help\groups-bootmenu.aspx" />
+    <Content Include="views\help\groups-currentmembers.aspx" />
+    <Content Include="views\help\groups-import.aspx" />
+    <Content Include="views\help\groups-multicast.aspx" />
+    <Content Include="views\help\groups-munki.aspx" />
+    <Content Include="views\help\groups-newedit.aspx" />
+    <Content Include="views\help\groups-properties.aspx" />
+    <Content Include="views\help\groups-removemembers.aspx" />
+    <Content Include="views\help\groups-search.aspx" />
+    <Content Include="views\help\groups-smart.aspx" />
+    <Content Include="views\help\images-deployoptions.aspx" />
+    <Content Include="views\help\images-filecopy.aspx" />
+    <Content Include="views\help\images-import.aspx" />
+    <Content Include="views\help\images-multicastoptions.aspx" />
+    <Content Include="views\help\images-newedit.aspx" />
+    <Content Include="views\help\images-profiles.aspx" />
+    <Content Include="views\help\images-pxeoptions.aspx" />
+    <Content Include="views\help\images-schema.aspx" />
+    <Content Include="views\help\images-scripts.aspx" />
+    <Content Include="views\help\images-search.aspx" />
+    <Content Include="views\help\images-sysprep.aspx" />
+    <Content Include="views\help\images-taskoptions.aspx" />
+    <Content Include="views\help\images-uploadoptions.aspx" />
+    <Content Include="views\help\style.css" />
+    <Content Include="views\help\tasks-activemulticast.aspx" />
+    <Content Include="views\help\tasks-activepermanent.aspx" />
+    <Content Include="views\help\tasks-activeunicast.aspx" />
+    <Content Include="views\help\tasks-all.aspx" />
+    <Content Include="views\help\tasks-startcomputer.aspx" />
+    <Content Include="views\help\tasks-startgroup.aspx" />
+    <Content Include="views\help\tasks-startond.aspx" />
+    <Content Include="views\help\users-acl.aspx" />
+    <Content Include="views\help\users-groupaddmembers.aspx" />
+    <Content Include="views\help\users-groupmgmt.aspx" />
+    <Content Include="views\help\users-groupremovemembers.aspx" />
+    <Content Include="views\help\users-imagemgmt.aspx" />
+    <Content Include="views\help\users-newedit.aspx" />
+    <Content Include="views\help\users-neweditgroups.aspx" />
+    <Content Include="views\help\users-resetpass.aspx" />
+    <Content Include="views\help\users-search.aspx" />
+    <Content Include="views\help\users-searchgroups.aspx" />
+    <Content Include="views\images\create.aspx" />
+    <Content Include="views\images\edit.aspx" />
+    <Content Include="views\images\import.aspx" />
+    <Content Include="views\images\profiles\create.aspx" />
+    <Content Include="views\images\profiles\deploy.aspx" />
+    <Content Include="views\images\profiles\filecopy.aspx" />
+    <Content Include="views\images\profiles\general.aspx" />
+    <Content Include="views\images\profiles\multicast.aspx" />
+    <Content Include="views\images\profiles\pxe.aspx" />
+    <Content Include="views\images\profiles\scripts.aspx" />
+    <Content Include="views\images\profiles\search.aspx" />
+    <Content Include="views\images\profiles\sysprep.aspx" />
+    <Content Include="views\images\profiles\task.aspx" />
+    <Content Include="views\images\profiles\upload.aspx" />
+    <Content Include="views\images\schema.aspx" />
+    <Content Include="views\images\search.aspx" />
+    <Content Include="views\login\firstrun.aspx" />
+    <Content Include="views\login\login.aspx" />
+    <Content Include="views\tasks\active.aspx" />
+    <Content Include="views\tasks\activemulticast.aspx" />
+    <Content Include="views\tasks\activepermanent.aspx" />
+    <Content Include="views\tasks\activeunicast.aspx" />
+    <Content Include="views\tasks\computers.aspx" />
+    <Content Include="views\tasks\groups.aspx" />
+    <Content Include="views\tasks\ondemand.aspx" />
+    <Content Include="views\users\acls\general.aspx" />
+    <Content Include="views\users\acls\groupmanagement.aspx" />
+    <Content Include="views\users\acls\imagemanagement.aspx" />
+    <Content Include="views\users\addmembers.aspx" />
+    <Content Include="views\users\create.aspx" />
+    <Content Include="views\users\creategroup.aspx" />
+    <Content Include="views\users\edit.aspx" />
+    <Content Include="views\users\editgroup.aspx" />
+    <Content Include="views\users\groupacls\general.aspx" />
+    <Content Include="views\users\groupacls\groupmanagement.aspx" />
+    <Content Include="views\users\groupacls\imagemanagement.aspx" />
+    <Content Include="views\users\removemembers.aspx" />
+    <Content Include="views\users\resetpass.aspx" />
+    <Content Include="views\users\search.aspx" />
+    <Content Include="views\users\searchgroup.aspx" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="APICalls\APICall.cs" />
+    <Compile Include="APICalls\GenericAPI.cs" />
+    <Compile Include="APICalls\IAPICall.cs" />
+    <Compile Include="APICalls\IGenericAPI.cs" />
+    <Compile Include="APICalls\Token.cs" />
+    <Compile Include="APICalls\User.cs" />
+    <Compile Include="BasePages\Admin.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BasePages\Computers.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BasePages\Global.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BasePages\Groups.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BasePages\Images.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BasePages\MasterBaseMaster.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BasePages\PageBaseMaster.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BasePages\Profiles.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BasePages\Tasks.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BasePages\Users.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BLL\ActiveImagingTask.cs" />
+    <Compile Include="BLL\ActiveMulticastSession.cs" />
+    <Compile Include="BLL\Auth.cs" />
+    <Compile Include="BLL\Authenticate.cs" />
+    <Compile Include="BLL\Authorize.cs" />
+    <Compile Include="BLL\Bcd.cs" />
+    <Compile Include="BLL\BootEntry.cs" />
+    <Compile Include="BLL\BootTemplate.cs" />
+    <Compile Include="BLL\Building.cs" />
+    <Compile Include="BLL\CdVersion.cs" />
+    <Compile Include="BLL\Computer.cs" />
+    <Compile Include="BLL\ComputerBootMenu.cs" />
+    <Compile Include="BLL\ComputerLog.cs" />
+    <Compile Include="BLL\ComputerMunki.cs" />
+    <Compile Include="BLL\ComputerProxyReservation.cs" />
+    <Compile Include="BLL\DistributionPoint.cs" />
+    <Compile Include="BLL\DynamicClientPartition\ClientPartition.cs" />
+    <Compile Include="BLL\DynamicClientPartition\ClientPartitionHelper.cs" />
+    <Compile Include="BLL\FileFolder.cs" />
+    <Compile Include="BLL\Group.cs" />
+    <Compile Include="BLL\GroupBootMenu.cs" />
+    <Compile Include="BLL\GroupMembership.cs" />
+    <Compile Include="BLL\GroupMunki.cs" />
+    <Compile Include="BLL\GroupProperty.cs" />
+    <Compile Include="BLL\Image.cs" />
+    <Compile Include="BLL\ImageProfile.cs" />
+    <Compile Include="BLL\ImageProfileFileFolder.cs" />
+    <Compile Include="BLL\ImageProfilePartition.cs" />
+    <Compile Include="BLL\ImageProfileScript.cs" />
+    <Compile Include="BLL\ImageProfileSysprepTag.cs" />
+    <Compile Include="BLL\ImageSchema.cs" />
+    <Compile Include="BLL\Ldap.cs" />
+    <Compile Include="BLL\MunkiCatalog.cs" />
+    <Compile Include="BLL\MunkiIncludedManifest.cs" />
+    <Compile Include="BLL\MunkiManagedInstall.cs" />
+    <Compile Include="BLL\MunkiManagedUninstall.cs" />
+    <Compile Include="BLL\MunkiManagedUpdate.cs" />
+    <Compile Include="BLL\MunkiManifestTemplate.cs" />
+    <Compile Include="BLL\MunkiOptionalInstall.cs" />
+    <Compile Include="BLL\Partition.cs" />
+    <Compile Include="BLL\PartitionLayout.cs" />
+    <Compile Include="BLL\Port.cs" />
+    <Compile Include="BLL\Progress.cs" />
+    <Compile Include="BLL\Room.cs" />
+    <Compile Include="BLL\Script.cs" />
+    <Compile Include="BLL\Setting.cs" />
+    <Compile Include="BLL\Site.cs" />
+    <Compile Include="BLL\SysprepTag.cs" />
+    <Compile Include="BLL\User.cs" />
+    <Compile Include="BLL\UserGroup.cs" />
+    <Compile Include="BLL\UserGroupGroupManagement.cs" />
+    <Compile Include="BLL\UserGroupImageManagement.cs" />
+    <Compile Include="BLL\UserGroupManagement.cs" />
+    <Compile Include="BLL\UserGroupRight.cs" />
+    <Compile Include="BLL\UserImageManagement.cs" />
+    <Compile Include="BLL\UserLockout.cs" />
+    <Compile Include="BLL\UserRight.cs" />
+    <Compile Include="BLL\Workflows\CancelAllImagingTasks.cs" />
+    <Compile Include="BLL\Workflows\CleanTaskBootFiles.cs" />
+    <Compile Include="BLL\Workflows\ClobberBootMenu.cs" />
+    <Compile Include="BLL\Workflows\CopyPxeBinaries.cs" />
+    <Compile Include="BLL\Workflows\CreateTaskArguments.cs" />
+    <Compile Include="BLL\Workflows\DefaultBootMenu.cs" />
+    <Compile Include="BLL\Workflows\DynamicPartitionScript.cs" />
+    <Compile Include="BLL\Workflows\EffectiveMunkiTemplate.cs" />
+    <Compile Include="BLL\Workflows\IsoGen.cs" />
+    <Compile Include="BLL\Workflows\Multicast.cs" />
+    <Compile Include="BLL\Workflows\TaskBootMenu.cs" />
+    <Compile Include="BLL\Workflows\Unicast.cs" />
+    <Compile Include="DAL\ActiveImagingTaskRepository.cs" />
+    <Compile Include="DAL\BuildingRepository.cs" />
+    <Compile Include="DAL\CloneDeployDbContext.cs" />
+    <Compile Include="DAL\ComputerRepository.cs" />
+    <Compile Include="DAL\GenericRepository.cs" />
+    <Compile Include="DAL\GroupRepository.cs" />
+    <Compile Include="DAL\IGenericRepository.cs" />
+    <Compile Include="DAL\IUnitOfWork.cs" />
+    <Compile Include="DAL\RoomRepository.cs" />
+    <Compile Include="DAL\SiteRepository.cs" />
+    <Compile Include="DAL\UnitOfWork.cs" />
+    <Compile Include="Helpers\Authorizations.cs" />
+    <Compile Include="Helpers\Encryption.cs" />
+    <Compile Include="Helpers\FileOps.cs" />
+    <Compile Include="Helpers\Logger.cs" />
+    <Compile Include="Helpers\Mail.cs" />
+    <Compile Include="Helpers\ParameterReplace.cs" />
+    <Compile Include="Helpers\RegParser.cs" />
+    <Compile Include="Helpers\Settings.cs" />
+    <Compile Include="Helpers\UNCAccessWithCredentials.cs" />
+    <Compile Include="Helpers\Utility.cs" />
+    <Compile Include="Models\ActiveImagingTask.cs" />
+    <Compile Include="Models\ActiveMulticastSession.cs" />
+    <Compile Include="Models\ApiDTO.cs" />
+    <Compile Include="Models\Application.cs" />
+    <Compile Include="Models\BootEntry.cs" />
+    <Compile Include="Models\BootTemplate.cs" />
+    <Compile Include="Models\Building.cs" />
+    <Compile Include="Models\CdVersion.cs" />
+    <Compile Include="Models\ClientPartition.cs" />
+    <Compile Include="Models\Computer.cs" />
+    <Compile Include="Models\ComputerApplication.cs" />
+    <Compile Include="Models\ComputerBootMenu.cs" />
+    <Compile Include="Models\ComputerHardDrive.cs" />
+    <Compile Include="Models\ComputerInventory.cs" />
+    <Compile Include="Models\ComputerLog.cs" />
+    <Compile Include="Models\ComputerLogin.cs" />
+    <Compile Include="Models\ComputerMunki.cs" />
+    <Compile Include="Models\ComputerPrinter.cs" />
+    <Compile Include="Models\ComputerProxyReservation.cs" />
+    <Compile Include="Models\ComputerUser.cs" />
+    <Compile Include="Models\DistributionPoint.cs" />
+    <Compile Include="Models\FileFolder.cs" />
+    <Compile Include="Models\Group.cs" />
+    <Compile Include="Models\GroupBootMenu.cs" />
+    <Compile Include="Models\GroupMembership.cs" />
+    <Compile Include="Models\GroupMunki.cs" />
+    <Compile Include="Models\GroupProperty.cs" />
+    <Compile Include="Models\Image.cs" />
+    <Compile Include="Models\ImageProfile.cs" />
+    <Compile Include="Models\ImageProfileFileFolder.cs" />
+    <Compile Include="Models\ImageProfilePartitionLayout.cs" />
+    <Compile Include="Models\ImageProfileScript.cs" />
+    <Compile Include="Models\ImageProfileSysprepTag.cs" />
+    <Compile Include="Models\ImageSchema\GridView\ImageSchemaGridView.cs" />
+    <Compile Include="Models\ImageSchema\ImageSchema.cs" />
+    <Compile Include="Models\MunkiManifestCatalog.cs" />
+    <Compile Include="Models\MunkiManifestIncludedManifest.cs" />
+    <Compile Include="Models\MunkiManifestManagedInstall.cs" />
+    <Compile Include="Models\MunkiManifestManagedUninstall.cs" />
+    <Compile Include="Models\MunkiManifestManagedUpdate.cs" />
+    <Compile Include="Models\MunkiManifestOptionalInstall.cs" />
+    <Compile Include="Models\MunkiManifestTemplate.cs" />
+    <Compile Include="Models\Partition.cs" />
+    <Compile Include="Models\PartitionLayout.cs" />
+    <Compile Include="Models\Plist.cs" />
+    <Compile Include="Models\Port.cs" />
+    <Compile Include="Models\Room.cs" />
+    <Compile Include="Models\Script.cs" />
+    <Compile Include="Models\Setting.cs" />
+    <Compile Include="Models\Site.cs" />
+    <Compile Include="Models\SysprepTag.cs" />
+    <Compile Include="Models\Token.cs" />
+    <Compile Include="Models\User.cs" />
+    <Compile Include="Models\UserGroup.cs" />
+    <Compile Include="Models\UserGroupGroupManagement.cs" />
+    <Compile Include="Models\UserGroupImageManagement.cs" />
+    <Compile Include="Models\UserGroupManagement.cs" />
+    <Compile Include="Models\UserGroupRight.cs" />
+    <Compile Include="Models\UserImageManagement.cs" />
+    <Compile Include="Models\UserLockout.cs" />
+    <Compile Include="Models\UserRight.cs" />
+    <Compile Include="Models\ValidationResult.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="views\admin\admin.master.cs">
+      <DependentUpon>admin.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\admin.master.designer.cs">
+      <DependentUpon>admin.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\bootmenu\applenetboot.aspx.cs">
+      <DependentUpon>applenetboot.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\bootmenu\applenetboot.aspx.designer.cs">
+      <DependentUpon>applenetboot.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\bootmenu\bootmenu.master.cs">
+      <DependentUpon>bootmenu.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\bootmenu\bootmenu.master.designer.cs">
+      <DependentUpon>bootmenu.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\bootmenu\defaultmenu.aspx.cs">
+      <DependentUpon>defaultmenu.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\bootmenu\defaultmenu.aspx.designer.cs">
+      <DependentUpon>defaultmenu.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\bootmenu\editor.aspx.cs">
+      <DependentUpon>editor.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\bootmenu\editor.aspx.designer.cs">
+      <DependentUpon>editor.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\bootmenu\isogen.aspx.cs">
+      <DependentUpon>isogen.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\bootmenu\isogen.aspx.designer.cs">
+      <DependentUpon>isogen.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\chooser.aspx.cs">
+      <DependentUpon>chooser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\chooser.aspx.designer.cs">
+      <DependentUpon>chooser.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\client.aspx.cs">
+      <DependentUpon>client.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\client.aspx.designer.cs">
+      <DependentUpon>client.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\clobber.aspx.cs">
+      <DependentUpon>clobber.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\clobber.aspx.designer.cs">
+      <DependentUpon>clobber.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\dp\create.aspx.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\dp\create.aspx.designer.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\dp\dp.master.cs">
+      <DependentUpon>dp.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\dp\dp.master.designer.cs">
+      <DependentUpon>dp.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\dp\edit.aspx.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\dp\edit.aspx.designer.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\dp\search.aspx.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\dp\search.aspx.designer.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\email.aspx.cs">
+      <DependentUpon>email.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\email.aspx.designer.cs">
+      <DependentUpon>email.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\export.aspx.cs">
+      <DependentUpon>export.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\export.aspx.designer.cs">
+      <DependentUpon>export.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\logview.aspx.cs">
+      <DependentUpon>logview.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\logview.aspx.designer.cs">
+      <DependentUpon>logview.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\multicast.aspx.cs">
+      <DependentUpon>multicast.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\multicast.aspx.designer.cs">
+      <DependentUpon>multicast.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\munki.aspx.cs">
+      <DependentUpon>munki.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\munki.aspx.designer.cs">
+      <DependentUpon>munki.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\pxe.aspx.cs">
+      <DependentUpon>pxe.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\pxe.aspx.designer.cs">
+      <DependentUpon>pxe.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\security.aspx.cs">
+      <DependentUpon>security.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\security.aspx.designer.cs">
+      <DependentUpon>security.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\server.aspx.cs">
+      <DependentUpon>server.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\server.aspx.designer.cs">
+      <DependentUpon>server.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\computers\bootmenu\active.aspx.cs">
+      <DependentUpon>active.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\computers\bootmenu\active.aspx.designer.cs">
+      <DependentUpon>active.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\computers\bootmenu\bootmenu.master.cs">
+      <DependentUpon>bootmenu.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\computers\bootmenu\bootmenu.master.designer.cs">
+      <DependentUpon>bootmenu.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\computers\bootmenu\custom.aspx.cs">
+      <DependentUpon>custom.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\computers\bootmenu\custom.aspx.designer.cs">
+      <DependentUpon>custom.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\computers\computers.master.cs">
+      <DependentUpon>computers.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\computers\computers.master.designer.cs">
+      <DependentUpon>computers.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\computers\create.aspx.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\computers\create.aspx.designer.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\computers\edit.aspx.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\computers\edit.aspx.designer.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\computers\groups.aspx.cs">
+      <DependentUpon>groups.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\computers\groups.aspx.designer.cs">
+      <DependentUpon>groups.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\computers\import.aspx.cs">
+      <DependentUpon>import.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\computers\import.aspx.designer.cs">
+      <DependentUpon>import.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\computers\inventory\applications.aspx.cs">
+      <DependentUpon>applications.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\computers\inventory\applications.aspx.designer.cs">
+      <DependentUpon>applications.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\computers\inventory\general.aspx.cs">
+      <DependentUpon>general.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\computers\inventory\general.aspx.designer.cs">
+      <DependentUpon>general.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\computers\inventory\hardware.aspx.cs">
+      <DependentUpon>hardware.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\computers\inventory\hardware.aspx.designer.cs">
+      <DependentUpon>hardware.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\computers\inventory\inventory.master.cs">
+      <DependentUpon>inventory.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\computers\inventory\inventory.master.designer.cs">
+      <DependentUpon>inventory.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\computers\inventory\os.aspx.cs">
+      <DependentUpon>os.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\computers\inventory\os.aspx.designer.cs">
+      <DependentUpon>os.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\computers\inventory\printers.aspx.cs">
+      <DependentUpon>printers.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\computers\inventory\printers.aspx.designer.cs">
+      <DependentUpon>printers.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\computers\inventory\userlogins.aspx.cs">
+      <DependentUpon>userlogins.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\computers\inventory\userlogins.aspx.designer.cs">
+      <DependentUpon>userlogins.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\computers\log.aspx.cs">
+      <DependentUpon>log.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\computers\log.aspx.designer.cs">
+      <DependentUpon>log.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\computers\munki.aspx.cs">
+      <DependentUpon>munki.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\computers\munki.aspx.designer.cs">
+      <DependentUpon>munki.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\computers\proxy.aspx.cs">
+      <DependentUpon>proxy.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\computers\proxy.aspx.designer.cs">
+      <DependentUpon>proxy.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\computers\search.aspx.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\computers\search.aspx.designer.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\dashboard\dash.aspx.cs">
+      <DependentUpon>dash.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\dashboard\dash.aspx.designer.cs">
+      <DependentUpon>dash.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\boottemplates\boottemplates.master.cs">
+      <DependentUpon>boottemplates.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\boottemplates\boottemplates.master.designer.cs">
+      <DependentUpon>boottemplates.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\boottemplates\create.aspx.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\boottemplates\create.aspx.designer.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\boottemplates\createentry.aspx.cs">
+      <DependentUpon>createentry.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\boottemplates\createentry.aspx.designer.cs">
+      <DependentUpon>createentry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\boottemplates\edit.aspx.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\boottemplates\edit.aspx.designer.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\boottemplates\editentry.aspx.cs">
+      <DependentUpon>editentry.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\boottemplates\editentry.aspx.designer.cs">
+      <DependentUpon>editentry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\boottemplates\search.aspx.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\boottemplates\search.aspx.designer.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\boottemplates\searchentry.aspx.cs">
+      <DependentUpon>searchentry.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\boottemplates\searchentry.aspx.designer.cs">
+      <DependentUpon>searchentry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\buildings\search.aspx.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\buildings\search.aspx.designer.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\chooser.aspx.cs">
+      <DependentUpon>chooser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\chooser.aspx.designer.cs">
+      <DependentUpon>chooser.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\filesandfolders\create.aspx.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\filesandfolders\create.aspx.designer.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\filesandfolders\edit.aspx.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\filesandfolders\edit.aspx.designer.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\filesandfolders\filesandfolders.master.cs">
+      <DependentUpon>filesandfolders.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\filesandfolders\filesandfolders.master.designer.cs">
+      <DependentUpon>filesandfolders.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\filesandfolders\search.aspx.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\filesandfolders\search.aspx.designer.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\global.master.cs">
+      <DependentUpon>global.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\global.master.designer.cs">
+      <DependentUpon>global.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\munki\assignedcatalogs.aspx.cs">
+      <DependentUpon>assignedcatalogs.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\munki\assignedcatalogs.aspx.designer.cs">
+      <DependentUpon>assignedcatalogs.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\munki\assignedmanagedinstalls.aspx.cs">
+      <DependentUpon>assignedmanagedinstalls.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\munki\assignedmanagedinstalls.aspx.designer.cs">
+      <DependentUpon>assignedmanagedinstalls.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\munki\assignedmanageduninstalls.aspx.cs">
+      <DependentUpon>assignedmanageduninstalls.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\munki\assignedmanageduninstalls.aspx.designer.cs">
+      <DependentUpon>assignedmanageduninstalls.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\munki\assignedmanagedupdates.aspx.cs">
+      <DependentUpon>assignedmanagedupdates.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\munki\assignedmanagedupdates.aspx.designer.cs">
+      <DependentUpon>assignedmanagedupdates.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\munki\assignedmanifests.aspx.cs">
+      <DependentUpon>assignedmanifests.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\munki\assignedmanifests.aspx.designer.cs">
+      <DependentUpon>assignedmanifests.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\munki\assignedoptionalinstalls.aspx.cs">
+      <DependentUpon>assignedoptionalinstalls.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\munki\assignedoptionalinstalls.aspx.designer.cs">
+      <DependentUpon>assignedoptionalinstalls.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\munki\availablecatalogs.aspx.cs">
+      <DependentUpon>availablecatalogs.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\munki\availablecatalogs.aspx.designer.cs">
+      <DependentUpon>availablecatalogs.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\munki\availablemanagedinstalls.aspx.cs">
+      <DependentUpon>availablemanagedinstalls.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\munki\availablemanagedinstalls.aspx.designer.cs">
+      <DependentUpon>availablemanagedinstalls.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\munki\availablemanageduninstalls.aspx.cs">
+      <DependentUpon>availablemanageduninstalls.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\munki\availablemanageduninstalls.aspx.designer.cs">
+      <DependentUpon>availablemanageduninstalls.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\munki\availablemanagedupdates.aspx.cs">
+      <DependentUpon>availablemanagedupdates.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\munki\availablemanagedupdates.aspx.designer.cs">
+      <DependentUpon>availablemanagedupdates.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\munki\availablemanifests.aspx.cs">
+      <DependentUpon>availablemanifests.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\munki\availablemanifests.aspx.designer.cs">
+      <DependentUpon>availablemanifests.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\munki\availableoptionalinstalls.aspx.cs">
+      <DependentUpon>availableoptionalinstalls.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\munki\availableoptionalinstalls.aspx.designer.cs">
+      <DependentUpon>availableoptionalinstalls.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\munki\general.aspx.cs">
+      <DependentUpon>general.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\munki\general.aspx.designer.cs">
+      <DependentUpon>general.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\munki\manifestcreate.aspx.cs">
+      <DependentUpon>manifestcreate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\munki\manifestcreate.aspx.designer.cs">
+      <DependentUpon>manifestcreate.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\munki\manifestsearch.aspx.cs">
+      <DependentUpon>manifestsearch.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\munki\manifestsearch.aspx.designer.cs">
+      <DependentUpon>manifestsearch.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\munki\munki.master.cs">
+      <DependentUpon>munki.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\munki\munki.master.designer.cs">
+      <DependentUpon>munki.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\partitions\create.aspx.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\partitions\create.aspx.designer.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\partitions\edit.aspx.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\partitions\edit.aspx.designer.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\partitions\partitions.master.cs">
+      <DependentUpon>partitions.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\partitions\partitions.master.designer.cs">
+      <DependentUpon>partitions.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\partitions\search.aspx.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\partitions\search.aspx.designer.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\profileupdater\kernel.aspx.cs">
+      <DependentUpon>kernel.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\profileupdater\kernel.aspx.designer.cs">
+      <DependentUpon>kernel.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\rooms\search.aspx.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\rooms\search.aspx.designer.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\scripts\create.aspx.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\scripts\create.aspx.designer.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\scripts\edit.aspx.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\scripts\edit.aspx.designer.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\scripts\editcore.aspx.cs">
+      <DependentUpon>editcore.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\scripts\editcore.aspx.designer.cs">
+      <DependentUpon>editcore.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\scripts\scripts.master.cs">
+      <DependentUpon>scripts.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\scripts\scripts.master.designer.cs">
+      <DependentUpon>scripts.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\scripts\search.aspx.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\scripts\search.aspx.designer.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\sites\search.aspx.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\sites\search.aspx.designer.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\sysprep\create.aspx.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\sysprep\create.aspx.designer.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\sysprep\edit.aspx.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\sysprep\edit.aspx.designer.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\sysprep\search.aspx.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\sysprep\search.aspx.designer.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\sysprep\sysprep.master.cs">
+      <DependentUpon>sysprep.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\sysprep\sysprep.master.designer.cs">
+      <DependentUpon>sysprep.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\groups\addmembers.aspx.cs">
+      <DependentUpon>addmembers.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\groups\addmembers.aspx.designer.cs">
+      <DependentUpon>addmembers.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\groups\bootmenu.aspx.cs">
+      <DependentUpon>bootmenu.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\groups\bootmenu.aspx.designer.cs">
+      <DependentUpon>bootmenu.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\groups\create.aspx.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\groups\create.aspx.designer.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\groups\currentmembers.aspx.cs">
+      <DependentUpon>currentmembers.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\groups\currentmembers.aspx.designer.cs">
+      <DependentUpon>currentmembers.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\groups\edit.aspx.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\groups\edit.aspx.designer.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\groups\groups.master.cs">
+      <DependentUpon>groups.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\groups\groups.master.designer.cs">
+      <DependentUpon>groups.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\groups\import.aspx.cs">
+      <DependentUpon>import.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\groups\import.aspx.designer.cs">
+      <DependentUpon>import.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\groups\multicast.aspx.cs">
+      <DependentUpon>multicast.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\groups\multicast.aspx.designer.cs">
+      <DependentUpon>multicast.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\groups\munki.aspx.cs">
+      <DependentUpon>munki.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\groups\munki.aspx.designer.cs">
+      <DependentUpon>munki.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\groups\properties.aspx.cs">
+      <DependentUpon>properties.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\groups\properties.aspx.designer.cs">
+      <DependentUpon>properties.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\groups\removemembers.aspx.cs">
+      <DependentUpon>removemembers.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\groups\removemembers.aspx.designer.cs">
+      <DependentUpon>removemembers.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\groups\search.aspx.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\groups\search.aspx.designer.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\groups\smartcriteria.aspx.cs">
+      <DependentUpon>smartcriteria.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\groups\smartcriteria.aspx.designer.cs">
+      <DependentUpon>smartcriteria.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\images\create.aspx.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\images\create.aspx.designer.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\images\edit.aspx.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\images\edit.aspx.designer.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\images\images.master.cs">
+      <DependentUpon>images.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\images\images.master.designer.cs">
+      <DependentUpon>images.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\images\import.aspx.cs">
+      <DependentUpon>import.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\images\import.aspx.designer.cs">
+      <DependentUpon>import.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\images\profiles\create.aspx.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\images\profiles\create.aspx.designer.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\images\profiles\deploy.aspx.cs">
+      <DependentUpon>deploy.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\images\profiles\deploy.aspx.designer.cs">
+      <DependentUpon>deploy.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\images\profiles\filecopy.aspx.cs">
+      <DependentUpon>filecopy.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\images\profiles\filecopy.aspx.designer.cs">
+      <DependentUpon>filecopy.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\images\profiles\general.aspx.cs">
+      <DependentUpon>general.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\images\profiles\general.aspx.designer.cs">
+      <DependentUpon>general.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\images\profiles\multicast.aspx.cs">
+      <DependentUpon>multicast.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\images\profiles\multicast.aspx.designer.cs">
+      <DependentUpon>multicast.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\images\profiles\profiles.master.cs">
+      <DependentUpon>profiles.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\images\profiles\profiles.master.designer.cs">
+      <DependentUpon>profiles.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\images\profiles\pxe.aspx.cs">
+      <DependentUpon>pxe.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\images\profiles\pxe.aspx.designer.cs">
+      <DependentUpon>pxe.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\images\profiles\scripts.aspx.cs">
+      <DependentUpon>scripts.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\images\profiles\scripts.aspx.designer.cs">
+      <DependentUpon>scripts.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\images\profiles\search.aspx.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\images\profiles\search.aspx.designer.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\images\profiles\sysprep.aspx.cs">
+      <DependentUpon>sysprep.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\images\profiles\sysprep.aspx.designer.cs">
+      <DependentUpon>sysprep.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\images\profiles\task.aspx.cs">
+      <DependentUpon>task.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\images\profiles\task.aspx.designer.cs">
+      <DependentUpon>task.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\images\profiles\upload.aspx.cs">
+      <DependentUpon>upload.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\images\profiles\upload.aspx.designer.cs">
+      <DependentUpon>upload.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\images\schema.aspx.cs">
+      <DependentUpon>schema.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\images\schema.aspx.designer.cs">
+      <DependentUpon>schema.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\images\search.aspx.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\images\search.aspx.designer.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\login\firstrun.aspx.cs">
+      <DependentUpon>firstrun.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\login\firstrun.aspx.designer.cs">
+      <DependentUpon>firstrun.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\login\login.aspx.cs">
+      <DependentUpon>login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\login\login.aspx.designer.cs">
+      <DependentUpon>login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\site.master.cs">
+      <DependentUpon>site.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\site.master.designer.cs">
+      <DependentUpon>site.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\tasks\active.aspx.cs">
+      <DependentUpon>active.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\tasks\active.aspx.designer.cs">
+      <DependentUpon>active.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\tasks\activemulticast.aspx.cs">
+      <DependentUpon>activemulticast.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\tasks\activemulticast.aspx.designer.cs">
+      <DependentUpon>activemulticast.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\tasks\activepermanent.aspx.cs">
+      <DependentUpon>activepermanent.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\tasks\activepermanent.aspx.designer.cs">
+      <DependentUpon>activepermanent.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\tasks\activeunicast.aspx.cs">
+      <DependentUpon>activeunicast.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\tasks\activeunicast.aspx.designer.cs">
+      <DependentUpon>activeunicast.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\tasks\computers.aspx.cs">
+      <DependentUpon>computers.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\tasks\computers.aspx.designer.cs">
+      <DependentUpon>computers.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\tasks\groups.aspx.cs">
+      <DependentUpon>groups.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\tasks\groups.aspx.designer.cs">
+      <DependentUpon>groups.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\tasks\ondemand.aspx.cs">
+      <DependentUpon>ondemand.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\tasks\ondemand.aspx.designer.cs">
+      <DependentUpon>ondemand.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\tasks\task.master.cs">
+      <DependentUpon>task.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\tasks\task.master.designer.cs">
+      <DependentUpon>task.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\users\acls\acls.master.cs">
+      <DependentUpon>acls.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\users\acls\acls.master.designer.cs">
+      <DependentUpon>acls.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\users\acls\general.aspx.cs">
+      <DependentUpon>general.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\users\acls\general.aspx.designer.cs">
+      <DependentUpon>general.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\users\acls\groupmanagement.aspx.cs">
+      <DependentUpon>groupmanagement.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\users\acls\groupmanagement.aspx.designer.cs">
+      <DependentUpon>groupmanagement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\users\acls\imagemanagement.aspx.cs">
+      <DependentUpon>imagemanagement.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\users\acls\imagemanagement.aspx.designer.cs">
+      <DependentUpon>imagemanagement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\users\addmembers.aspx.cs">
+      <DependentUpon>addmembers.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\users\addmembers.aspx.designer.cs">
+      <DependentUpon>addmembers.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\users\create.aspx.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\users\create.aspx.designer.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\users\creategroup.aspx.cs">
+      <DependentUpon>creategroup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\users\creategroup.aspx.designer.cs">
+      <DependentUpon>creategroup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\users\edit.aspx.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\users\edit.aspx.designer.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\users\editgroup.aspx.cs">
+      <DependentUpon>editgroup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\users\editgroup.aspx.designer.cs">
+      <DependentUpon>editgroup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\users\groupacls\general.aspx.cs">
+      <DependentUpon>general.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\users\groupacls\general.aspx.designer.cs">
+      <DependentUpon>general.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\users\groupacls\groupacls.master.cs">
+      <DependentUpon>groupacls.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\users\groupacls\groupacls.master.designer.cs">
+      <DependentUpon>groupacls.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\users\groupacls\groupmanagement.aspx.cs">
+      <DependentUpon>groupmanagement.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\users\groupacls\groupmanagement.aspx.designer.cs">
+      <DependentUpon>groupmanagement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\users\groupacls\imagemanagement.aspx.cs">
+      <DependentUpon>imagemanagement.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\users\groupacls\imagemanagement.aspx.designer.cs">
+      <DependentUpon>imagemanagement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\users\removemembers.aspx.cs">
+      <DependentUpon>removemembers.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\users\removemembers.aspx.designer.cs">
+      <DependentUpon>removemembers.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\users\resetpass.aspx.cs">
+      <DependentUpon>resetpass.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\users\resetpass.aspx.designer.cs">
+      <DependentUpon>resetpass.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\users\search.aspx.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\users\search.aspx.designer.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\users\searchgroup.aspx.cs">
+      <DependentUpon>searchgroup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\users\searchgroup.aspx.designer.cs">
+      <DependentUpon>searchgroup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\users\user.master.cs">
+      <DependentUpon>user.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\users\user.master.designer.cs">
+      <DependentUpon>user.master</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\Generic\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>57605</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost/clonedeploy</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

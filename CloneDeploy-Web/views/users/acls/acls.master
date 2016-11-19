@@ -1,0 +1,29 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/views/users/user.master" AutoEventWireup="true" Inherits="views_users_acls_acls" Codebehind="acls.master.cs" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
+     <li><a href="<%= ResolveUrl("~/views/users/edit.aspx") %>?userid=<%= CloneDeployUser.Id %>" ><%= CloneDeployUser.Name %></a></li>
+    <li>ACLs</li>
+     <asp:ContentPlaceHolder runat="server" ID="BreadcrumbSub2">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content runat="server" ID="Help" ContentPlaceHolderID="Help">
+    <asp:ContentPlaceHolder runat="server" ID="SubHelp">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
+    <asp:ContentPlaceHolder runat="server" ID="ActionsRightSub">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="Level3" Runat="Server">
+       <li id="general"><a  href="<%= ResolveUrl("~/views/users/acls/general.aspx?level=3") %>&userid=<%= CloneDeployUser.Id %>"><span class="sub-nav-text">General</span></a></li>
+    <li id="group"><a href="<%= ResolveUrl("~/views/users/acls/groupmanagement.aspx?level=3")  %>&userid=<%= CloneDeployUser.Id %>"><span class="sub-nav-text">Group Based Computer Management</span></a></li>
+     <li id="image"><a href="<%= ResolveUrl("~/views/users/acls/imagemanagement.aspx?level=3")  %>&userid=<%= CloneDeployUser.Id %>"><span class="sub-nav-text">Image Management</span></a></li>
+</asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
+           <asp:ContentPlaceHolder runat="server" ID="SubContent2">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+

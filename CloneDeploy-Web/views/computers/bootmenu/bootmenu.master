@@ -1,0 +1,31 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/views/computers/computers.master" AutoEventWireup="true" Inherits="views_computers_bootmenu_bootmenu" Codebehind="bootmenu.master.cs" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
+    <li><a href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?computerid=<%= Computer.Id %>" ><%= Computer.Name %></a></li>
+    <li>Boot Menu</li>
+     <asp:ContentPlaceHolder runat="server" ID="BreadcrumbSub2">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content runat="server" ContentPlaceHolderID="PageNavSub">
+  <li id="active"><a  href="<%= ResolveUrl("~/views/computers/bootmenu/active.aspx?level=3") %>&computerid=<%= Computer.Id %>"><span class="sub-nav-text">Active</span></a></li>
+    <li id="custom"><a href="<%= ResolveUrl("~/views/computers/bootmenu/custom.aspx?level=3")  %>&computerid=<%= Computer.Id %>"><span class="sub-nav-text">Custom</span></a></li>
+</asp:Content>
+
+<asp:Content runat="server" ID="Help" ContentPlaceHolderID="Help">
+    <asp:ContentPlaceHolder runat="server" ID="SubHelp">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
+    <asp:ContentPlaceHolder runat="server" ID="ActionsRightSub">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+
+
+<asp:Content ID="Content2" ContentPlaceHolderID="SubContent" Runat="Server">
+       <asp:ContentPlaceHolder runat="server" ID="SubContent2">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
