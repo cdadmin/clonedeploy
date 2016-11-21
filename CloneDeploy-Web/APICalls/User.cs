@@ -1,28 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using RestSharp;
+﻿using RestSharp;
 
-/// <summary>
-/// Summary description for User
-/// </summary>
-public class User: GenericAPI<Models.CloneDeployUser>
+namespace CloneDeploy_Web.APICalls
 {
-	public User(string resource):base(resource)
-	{
-		
-	}
-
-    public Models.ActionResult GetForLogin(int id)
+    /// <summary>
+    /// Summary description for User
+    /// </summary>
+    public class User: GenericAPI<Models.CloneDeployUser>
     {
-        _request.Method = Method.GET;
-        _request.Resource = string.Format("api/{0}/GetForLogin/{1}", _resource,id);
-        var response = Execute<Models.ActionResult>(_request);
+        public User(string resource):base(resource)
+        {
+		
+        }
 
-        if (response.ObjectId == 0)
-            response.Success = false;
-        return response;
+        public Models.ActionResult GetForLogin(int id)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetForLogin/{1}", _resource,id);
+            var response = Execute<Models.ActionResult>(_request);
 
+            if (response.ObjectId == 0)
+                response.Success = false;
+            return response;
+
+        }
     }
 }

@@ -28,20 +28,17 @@ namespace CloneDeploy_App.Controllers
             var authorized = false;
             switch (Permission)
             {
-                case "ComputerSearch":
-                case "ComputerCreate":
+                case "GroupSearch":
+                case "GroupCreate":
                     if (new BLL.Auth(Convert.ToInt32(userId), Permission).IsAuthorized())
                         authorized = true;
                     break;
-                case "ComputerDelete":
-                case "ComputerUpdate":
-                case "ComputerRead":
+                case "GroupDelete":
+                case "GroupUpdate":
+                case "GroupRead":
                     var objectId = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
-                    if (new BLL.Auth(Convert.ToInt32(userId), Permission).ComputerManagement(objectId))
+                    if (new BLL.Auth(Convert.ToInt32(userId), Permission).GroupManagement(objectId))
                         authorized = true;
-                    break;
-                case "NotRequired":
-                    authorized = true;
                     break;
             }
 
@@ -55,20 +52,19 @@ namespace CloneDeploy_App.Controllers
 
     public class GroupController : ApiController
     {
-        [ComputerAuth(Permission = "GroupSearch")]
+        [GroupAuth(Permission = "GroupSearch")]
         public IEnumerable<Models.Group> Get(string searchstring = "")
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                              .Select(c => c.Value).SingleOrDefault();
-
             return string.IsNullOrEmpty(searchstring)
                 ? BLL.Group.SearchGroupsForUser(Convert.ToInt32(userId))
                 : BLL.Group.SearchGroupsForUser(Convert.ToInt32(userId), searchstring);
 
         }
 
-        [ComputerAuth(Permission = "ComputerSearch")]
+        [GroupAuth(Permission = "GroupSearch")]
         public ApiDTO GetCount()
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
@@ -78,27 +74,28 @@ namespace CloneDeploy_App.Controllers
             return BLL.Group.GroupCountUser(Convert.ToInt32(userId));
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
+        [GroupAuth(Permission = "GroupRead")]
         public IHttpActionResult Get(int id)
         {
-            var computer = BLL.Computer.GetComputer(id);
-            if (computer == null)
-                return NotFound();
+            var group = BLL.Group.GetGroup(id);
+            if (group == null)
+                return Content(HttpStatusCode.NotFound, new ActionResult());
             else
-                return Ok(computer);
+                return Ok(group);
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
-        public IHttpActionResult GetFromMac(string mac)
+        [GroupAuth(Permission = "GroupRead")]
+        public IHttpActionResult GetMemberCount(int id)
         {
-            var computer = BLL.Computer.GetComputerFromMac(mac);
-            if (computer == null)
-                return NotFound();
+            var group = BLL.GroupMembership.GetGroupMemberCount(id);
+            if (group == null)
+                return Content(HttpStatusCode.NotFound, new ActionResult());
             else
-                return Ok(computer);
+                return Ok(group);
         }
+       
 
-        //[ComputerAuthAttribute(Permission = "ComputerCreate")]
+        [ComputerAuthAttribute(Permission = "GroupCreate")]
         public ActionResult Post(Models.Computer computer)
         {
             var actionResult = BLL.Computer.AddComputer(computer);
@@ -110,7 +107,7 @@ namespace CloneDeploy_App.Controllers
             return actionResult;
         }
 
-        [ComputerAuth(Permission = "ComputerUpdate")]
+        [ComputerAuth(Permission = "GroupUpdate")]
         public Models.ActionResult Put(int id, Models.Computer computer)
         {
             computer.Id = id;
@@ -123,7 +120,7 @@ namespace CloneDeploy_App.Controllers
             return actionResult;
         }
 
-        [ComputerAuth(Permission = "ComputerDelete")]
+        [ComputerAuth(Permission = "GroupDelete")]
         public Models.ActionResult Delete(int id)
         {
             var actionResult = BLL.Computer.DeleteComputer(id);

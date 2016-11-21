@@ -893,6 +893,7 @@
     <Compile Include="APICalls\IAPICall.cs" />
     <Compile Include="APICalls\IGenericAPI.cs" />
     <Compile Include="APICalls\Token.cs" />
+    <Compile Include="APICalls\Group.cs" />
     <Compile Include="APICalls\User.cs" />
     <Compile Include="BasePages\Admin.cs">
       <SubType>ASPXCodeBehind</SubType>

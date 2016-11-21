@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_App.Models;
 
 namespace CloneDeploy_App.BLL
 {
@@ -35,11 +36,11 @@ namespace CloneDeploy_App.BLL
             return result;
         }
 
-        public static string GetGroupMemberCount(int groupId)
+        public static ApiDTO GetGroupMemberCount(int groupId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                return uow.GroupMembershipRepository.Count(g => g.GroupId == groupId);
+                return new ApiDTO(){Value=uow.GroupMembershipRepository.Count(g => g.GroupId == groupId)};
             }
         }
 

@@ -50,6 +50,25 @@ namespace BLL
             }
         }
 
+        public bool GroupManagement(int groupId)
+        {
+            if (_cloneDeployUser.Membership == "Administrator") return true;
+
+            //All user rights don't have the required right.  No need to check group membership.
+            if (_currentUserRights.All(right => right != _requiredRight)) return false;
+
+            var userGroupManagements = BLL.UserGroupManagement.Get(_cloneDeployUser.Id);
+            if (userGroupManagements.Count > 0)
+            {
+                //Group management is in use since at least 1 result was returned.  Now check if allowed
+                return BLL.Group.SearchGroupsForUser(_cloneDeployUser.Id).Any(x => x.Id == groupId);
+            }
+            else //Group management is not in use, use the global rights for the user
+            {
+                return IsAuthorized();
+            }
+        }
+
      
     }
 }

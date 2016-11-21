@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
+using CloneDeploy_Web.APICalls;
 using Helpers;
 
 namespace views.groups
@@ -68,7 +69,8 @@ namespace views.groups
 
         protected void PopulateGrid()
         {
-            gvGroups.DataSource = BLL.Group.SearchGroupsForUser(CloneDeployCurrentUser.Id,txtSearch.Text);
+            var call = new APICall();
+            gvGroups.DataSource = call.GroupApi.Get(txtSearch.Text);
             gvGroups.DataBind();
 
             foreach (GridViewRow row in gvGroups.Rows)
@@ -77,14 +79,14 @@ namespace views.groups
                 var lbl = row.FindControl("lblCount") as Label;
                 var dataKey = gvGroups.DataKeys[row.RowIndex];
                 if (dataKey != null)
-                    group = BLL.Group.GetGroup(Convert.ToInt32(dataKey.Value));
+                    group = call.GroupApi.Get(Convert.ToInt32(dataKey.Value));
                 if (lbl != null)
-                    lbl.Text = BLL.GroupMembership.GetGroupMemberCount(group.Id);
+                    lbl.Text = call.GroupApi.GetMemberCount(group.Id).Value;
                 
             }
 
 
-            lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + BLL.Group.GroupCountUser(CloneDeployCurrentUser.Id) + " Total Group(s)";
+            lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + call.GroupApi.GetCount().Value + " Total Group(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)

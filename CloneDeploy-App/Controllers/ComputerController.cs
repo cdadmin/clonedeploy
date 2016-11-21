@@ -58,7 +58,7 @@ namespace CloneDeploy_App.Controllers
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                              .Select(c => c.Value).SingleOrDefault();
-
+            
             return string.IsNullOrEmpty(searchstring)
                 ? BLL.Computer.SearchComputersForUser(Convert.ToInt32(userId), limit)
                 : BLL.Computer.SearchComputersForUser(Convert.ToInt32(userId), limit, searchstring);
@@ -95,7 +95,7 @@ namespace CloneDeploy_App.Controllers
                 return Ok(computer);
         }
 
-        //[ComputerAuthAttribute(Permission = "ComputerCreate")]
+        [ComputerAuthAttribute(Permission = "ComputerCreate")]
         public ActionResult Post(Models.Computer computer)
         {
             var actionResult = BLL.Computer.AddComputer(computer);
