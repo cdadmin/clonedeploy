@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Models
+namespace CloneDeploy_Web.Models
 {
     [Table("boot_menu_entries")]
     public class BootEntry

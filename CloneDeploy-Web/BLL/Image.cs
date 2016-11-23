@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using CloneDeploy_Web.Models;
 using CsvHelper;
 using Helpers;
 
@@ -11,7 +12,8 @@ namespace BLL
 {
     public static class Image
     {
-        public static Models.ActionResult AddImage(Models.Image image)
+        //moved
+        public static ActionResult AddImage(CloneDeploy_Web.Models.Image image)
         {
             var validationResult = ValidateImage(image, true);
             using (var uow = new DAL.UnitOfWork())
@@ -50,10 +52,10 @@ namespace BLL
         }
 
 
-
-        public static Models.ActionResult DeleteImage(Models.Image image)
+        //moved
+        public static ActionResult DeleteImage(CloneDeploy_Web.Models.Image image)
         {
-            var result = new Models.ActionResult(){Success = false};
+            var result = new ActionResult(){Success = false};
             using (var uow = new DAL.UnitOfWork())
             {
                 if (Convert.ToBoolean(image.Protected))
@@ -96,7 +98,8 @@ namespace BLL
 
         }
 
-        public static Models.Image GetImage(int imageId)
+        //Moved
+        public static CloneDeploy_Web.Models.Image GetImage(int imageId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -104,6 +107,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static void SendImageApprovedEmail(int imageId)
         {
             //Mail not enabled
@@ -122,6 +126,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string ImageCountUser(int userId)
         {
             if (BLL.User.GetUser(userId).Membership == "Administrator")
@@ -133,13 +138,14 @@ namespace BLL
             return userManagedImages.Count == 0 ? TotalCount() : userManagedImages.Count.ToString();
         }
 
-        public static List<Models.Image> SearchImagesForUser(int userId, string searchString = "")
+        //moved
+        public static List<CloneDeploy_Web.Models.Image> SearchImagesForUser(int userId, string searchString = "")
         {
             if (BLL.User.GetUser(userId).Membership == "Administrator")
                 return SearchImages(searchString);
 
            
-                var listOfImages = new List<Models.Image>();
+                var listOfImages = new List<CloneDeploy_Web.Models.Image>();
 
                 var userManagedImages = BLL.UserImageManagement.Get(userId);
                 if (userManagedImages.Count == 0)
@@ -158,8 +164,8 @@ namespace BLL
  
         }
 
-
-        public static List<Models.Image> GetOnDemandImageList(int userId = 0)
+        //move not needed
+        public static List<CloneDeploy_Web.Models.Image> GetOnDemandImageList(int userId = 0)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -175,7 +181,7 @@ namespace BLL
                         return uow.ImageRepository.Get(i => i.IsVisible == 1 && i.Enabled == 1, orderBy: (q => q.OrderBy(p => p.Name)));
                     else
                     {
-                         var listOfImages = new List<Models.Image>();
+                         var listOfImages = new List<CloneDeploy_Web.Models.Image>();
                          listOfImages.AddRange(userManagedImages.Select(managedImage => uow.ImageRepository.GetFirstOrDefault(i => i.IsVisible == 1 && i.Id == managedImage.ImageId && i.Enabled == 1)));
                         return listOfImages;
                     }
@@ -183,7 +189,8 @@ namespace BLL
             }
         }
 
-        public static List<Models.Image> SearchImages(string searchString = "")
+        //moved
+        public static List<CloneDeploy_Web.Models.Image> SearchImages(string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -191,7 +198,8 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult UpdateImage(Models.Image image, string originalName)
+        //moved
+        public static ActionResult UpdateImage(CloneDeploy_Web.Models.Image image, string originalName)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -226,6 +234,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static string Calculate_Hash(string fileName)
         {
             long read = 0;
@@ -248,8 +257,8 @@ namespace BLL
         }
 
         
-
-        public static string TotalCount()
+        //move not needed
+        private static string TotalCount()
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -262,8 +271,8 @@ namespace BLL
             var importCounter = 0;
             using (var csv = new CsvReader(new StreamReader(path)))
             {
-                csv.Configuration.RegisterClassMap<Models.ImageCsvMap>();
-                var records = csv.GetRecords<Models.Image>();
+                csv.Configuration.RegisterClassMap<ImageCsvMap>();
+                var records = csv.GetRecords<CloneDeploy_Web.Models.Image>();
                 foreach (var image in records)
                 {
                     if (AddImage(image).Success)
@@ -277,14 +286,15 @@ namespace BLL
         {
             using (var csv = new CsvWriter(new StreamWriter(path)))
             {
-                csv.Configuration.RegisterClassMap<Models.ImageCsvMap>();
+                csv.Configuration.RegisterClassMap<ImageCsvMap>();
                 csv.WriteRecords(SearchImages());
             }
         }
 
-        public static Models.ActionResult CheckApprovalAndChecksum(Models.Image image,int userId)
+        //move not needed
+        public static ActionResult CheckApprovalAndChecksum(CloneDeploy_Web.Models.Image image,int userId)
         {
-            var validationResult = new Models.ActionResult();
+            var validationResult = new ActionResult();
             if (image == null)
             {
                 validationResult.Success = false;
@@ -319,9 +329,10 @@ namespace BLL
             return validationResult;
         }
 
-        public static Models.ActionResult ValidateImage(Models.Image image, bool isNewImage)
+        //move not needed
+        public static ActionResult ValidateImage(CloneDeploy_Web.Models.Image image, bool isNewImage)
         {
-            var validationResult = new Models.ActionResult();
+            var validationResult = new ActionResult();
 
             if (string.IsNullOrEmpty(image.Name) || !image.Name.All(c => char.IsLetterOrDigit(c) || c == '_' || c == '-'))
             {

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using CloneDeploy_App.Models;
 using CsvHelper;
+using Newtonsoft.Json;
 
 namespace CloneDeploy_App.BLL
 {
@@ -19,7 +20,8 @@ namespace CloneDeploy_App.BLL
                 {
                     uow.GroupRepository.Insert(group);
                     validationResult.Success = uow.Save();
-
+                    validationResult.ObjectId = group.Id;
+                    validationResult.Object = JsonConvert.SerializeObject(group);
                     //If Group management is being used add this group to the allowed users list 
                     var userManagedGroups = BLL.UserGroupManagement.Get(userId);
                     if (userManagedGroups.Count > 0)
@@ -65,6 +67,7 @@ namespace CloneDeploy_App.BLL
       
         public static Models.ActionResult DeleteGroup(int groupId)
         {
+            var group = GetGroup(groupId);
             var result = new ActionResult();
             using (var uow = new DAL.UnitOfWork())
             {
@@ -74,6 +77,8 @@ namespace CloneDeploy_App.BLL
                 BLL.GroupProperty.DeleteGroup(groupId);
                 uow.GroupRepository.Delete(groupId);
                 result.Success = uow.Save();
+                result.ObjectId = group.Id;
+                result.Object = JsonConvert.SerializeObject(group);
                 return result;
             }
         }
@@ -139,6 +144,8 @@ namespace CloneDeploy_App.BLL
                 {
                     uow.GroupRepository.Update(group, group.Id);
                     validationResult.Success = uow.Save();
+                    validationResult.ObjectId = group.Id;
+                    validationResult.Object = JsonConvert.SerializeObject(group);
                 }
 
                 return validationResult;

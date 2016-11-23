@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 public partial class views_users_groupacls_groupmanagement : BasePages.Users
@@ -40,14 +41,14 @@ public partial class views_users_groupacls_groupmanagement : BasePages.Users
 
     protected void buttonUpdate_OnClick(object sender, EventArgs e)
     {
-        var list = new List<Models.UserGroupGroupManagement>();
+        var list = new List<UserGroupGroupManagement>();
         foreach (GridViewRow row in gvGroups.Rows)
         {
             var cb = (CheckBox)row.FindControl("chkSelector");
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvGroups.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            var userGroupManagement = new Models.UserGroupGroupManagement
+            var userGroupManagement = new UserGroupGroupManagement
             {
                 UserGroupId = CloneDeployUserGroup.Id,
                 GroupId = Convert.ToInt32(dataKey.Value)

@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_Web.Models;
 
 namespace DAL
 {
-    public class BuildingRepository : GenericRepository<Models.Building>
+    public class BuildingRepository : GenericRepository<Building>
     {
         private CloneDeployDbContext _context;
 
@@ -14,7 +15,7 @@ namespace DAL
         }
 
 
-        public List<Models.Building> Get(string searchString)
+        public List<Building> Get(string searchString)
         {
             return (from s in _context.Buildings
                     join d in _context.DistributionPoints on s.DistributionPointId equals d.Id into joined
@@ -26,7 +27,7 @@ namespace DAL
                         id = s.Id,
                         name = s.Name,
                         distributionPoint = j
-                    }).AsEnumerable().Select(x => new Models.Building()
+                    }).AsEnumerable().Select(x => new Building()
                     {
                         Id = x.id,
                         Name = x.name,

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CloneDeploy_App.Models;
+using Newtonsoft.Json;
 
 namespace CloneDeploy_App.BLL
 {
@@ -18,6 +20,8 @@ namespace CloneDeploy_App.BLL
                 {
                     uow.DistributionPointRepository.Insert(distributionPoint);
                     validationResult.Success = uow.Save();
+                    validationResult.ObjectId = distributionPoint.Id;
+                    validationResult.Object = JsonConvert.SerializeObject(distributionPoint);
                 }
 
                 return validationResult;
@@ -32,13 +36,21 @@ namespace CloneDeploy_App.BLL
             }
         }
 
-        public static bool DeleteDistributionPoint(int distributionPointId)
+        public static ActionResult DeleteDistributionPoint(int distributionPointId)
         {
+            var actionResult = new ActionResult();
+            var dp = GetDistributionPoint(distributionPointId);
+            
             using (var uow = new DAL.UnitOfWork())
             {
                 uow.DistributionPointRepository.Delete(distributionPointId);
-                return uow.Save();
+                actionResult.Success = uow.Save();
+                actionResult.ObjectId = dp.Id;
+                actionResult.Object = JsonConvert.SerializeObject(dp);
             }
+
+            return actionResult;
+            
         }
 
         public static Models.DistributionPoint GetDistributionPoint(int distributionPointId)
@@ -49,7 +61,7 @@ namespace CloneDeploy_App.BLL
             }
         }
 
-        public static List<Models.DistributionPoint> SearchDistributionPoints(string searchString)
+        public static List<Models.DistributionPoint> SearchDistributionPoints(string searchString="")
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -75,6 +87,8 @@ namespace CloneDeploy_App.BLL
                 {
                     uow.DistributionPointRepository.Update(distributionPoint, distributionPoint.Id);
                     validationResult.Success = uow.Save();
+                    validationResult.ObjectId = distributionPoint.Id;
+                    validationResult.Object = JsonConvert.SerializeObject(distributionPoint);
                 }
 
                 return validationResult;

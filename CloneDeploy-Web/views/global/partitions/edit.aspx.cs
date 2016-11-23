@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Models;
+using CloneDeploy_Web.Models;
 
 public partial class views_global_partitions_edit : BasePages.Global
 {
@@ -42,8 +42,8 @@ public partial class views_global_partitions_edit : BasePages.Global
 
         if(gvPartitions.Rows.Count == 0)
         {
-            var obj = new List<Models.Partition>();
-            obj.Add(new Models.Partition());
+            var obj = new List<Partition>();
+            obj.Add(new Partition());
             gvPartitions.DataSource = obj;
             gvPartitions.DataBind();
             
@@ -71,7 +71,7 @@ public partial class views_global_partitions_edit : BasePages.Global
     protected void Insert(object sender, EventArgs e)
     {
         GridViewRow gvRow = (GridViewRow)(sender as Control).Parent.Parent;
-        var partition = new Models.Partition
+        var partition = new Partition
         {
             LayoutId = Layout.Id,
             Type = ((DropDownList)gvRow.FindControl("ddlTypeAdd")).Text,
@@ -97,7 +97,7 @@ public partial class views_global_partitions_edit : BasePages.Global
     protected void OnRowUpdating(object sender, GridViewUpdateEventArgs e)
     {
         GridViewRow gvRow = gvPartitions.Rows[e.RowIndex];
-        var partition = new Models.Partition
+        var partition = new Partition
         {
             Id = Convert.ToInt32(gvPartitions.DataKeys[e.RowIndex].Values[0]),
             LayoutId = Layout.Id,
@@ -176,7 +176,7 @@ public partial class views_global_partitions_edit : BasePages.Global
             }
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                partitionNumber.SelectedValue = ((Models.Partition)(e.Row.DataItem)).Number.ToString();
+                partitionNumber.SelectedValue = ((Partition)(e.Row.DataItem)).Number.ToString();
             }
         }
     }

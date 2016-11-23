@@ -6,49 +6,13 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Threading;
 using System.Web.Http;
-using System.Web.Http.Controllers;
+using CloneDeploy_App.Controllers.Authorization;
+using CloneDeploy_App.DTOs;
 using CloneDeploy_App.Models;
 
 namespace CloneDeploy_App.Controllers
 {
-    public class GroupAuthAttribute : AuthorizeAttribute
-    {
-        public string Permission { get; set; }
-
-        public override void OnAuthorization(HttpActionContext actionContext)
-        {
-            base.OnAuthorization(actionContext);
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                              .Select(c => c.Value).SingleOrDefault();
-
-            if (userId == null) return;
-
-
-            var authorized = false;
-            switch (Permission)
-            {
-                case "GroupSearch":
-                case "GroupCreate":
-                    if (new BLL.Auth(Convert.ToInt32(userId), Permission).IsAuthorized())
-                        authorized = true;
-                    break;
-                case "GroupDelete":
-                case "GroupUpdate":
-                case "GroupRead":
-                    var objectId = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
-                    if (new BLL.Auth(Convert.ToInt32(userId), Permission).GroupManagement(objectId))
-                        authorized = true;
-                    break;
-            }
-
-            if (!authorized)
-            {
-                var response = actionContext.Request.CreateResponse(HttpStatusCode.Forbidden, new ActionResult() { Success = false, Message = "Forbidden" });
-                throw new HttpResponseException(response);
-            }
-        }
-    }
+    
 
     public class GroupController : ApiController
     {
@@ -84,6 +48,42 @@ namespace CloneDeploy_App.Controllers
                 return Ok(group);
         }
 
+        [HttpGet]
+        [GroupAuth(Permission = "GroupUpdate")]
+        public IHttpActionResult RemoveGroupMember(int id, int computerId)
+        {
+            var result = BLL.GroupMembership.DeleteMembership(computerId, id);
+            if (!result)
+                return NotFound();
+            else
+                return Ok();
+        }
+
+        [HttpGet]
+        [GroupAuth(Permission = "GroupUpdate")]
+        public IHttpActionResult RemoveMunkiTemplate(int id)
+        {
+            var result = BLL.GroupMunki.DeleteMunkiTemplates(id);
+            if (!result)
+                return NotFound();
+            else
+                return Ok();
+        }
+
+        [HttpGet]
+        [GroupAuth(Permission = "GroupRead")]
+        public List<GroupMunki> GetMunkiTemplates(int id)
+        {
+            return BLL.GroupMunki.Get(id);
+        }
+
+        [HttpGet]
+        [GroupAuth(Permission = "GroupRead")]
+        public GroupProperty GetGroupProperties(int id)
+        {
+            return BLL.GroupProperty.GetGroupProperty(id);
+        }
+
         [GroupAuth(Permission = "GroupRead")]
         public IHttpActionResult GetMemberCount(int id)
         {
@@ -95,10 +95,14 @@ namespace CloneDeploy_App.Controllers
         }
        
 
-        [ComputerAuthAttribute(Permission = "GroupCreate")]
-        public ActionResult Post(Models.Computer computer)
+        [GroupAuth(Permission = "GroupCreate")]
+        public ActionResult Post(Models.Group group)
         {
-            var actionResult = BLL.Computer.AddComputer(computer);
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                             .Select(c => c.Value).SingleOrDefault();
+
+            var actionResult = BLL.Group.AddGroup(group, Convert.ToInt32(userId));
             if (!actionResult.Success)
             {
                 var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
@@ -107,11 +111,11 @@ namespace CloneDeploy_App.Controllers
             return actionResult;
         }
 
-        [ComputerAuth(Permission = "GroupUpdate")]
-        public Models.ActionResult Put(int id, Models.Computer computer)
+        [GroupAuth(Permission = "GroupUpdate")]
+        public Models.ActionResult Put(int id, Models.Group group)
         {
-            computer.Id = id;
-            var actionResult = BLL.Computer.UpdateComputer(computer);
+            group.Id = id;
+            var actionResult = BLL.Group.UpdateGroup(group);
             if (!actionResult.Success)
             {
                 var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
@@ -120,16 +124,46 @@ namespace CloneDeploy_App.Controllers
             return actionResult;
         }
 
-        [ComputerAuth(Permission = "GroupDelete")]
+        [GroupAuth(Permission = "GroupDelete")]
         public Models.ActionResult Delete(int id)
         {
-            var actionResult = BLL.Computer.DeleteComputer(id);
+            var actionResult = BLL.Group.DeleteGroup(id);
             if (!actionResult.Success)
             {
                 var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
                 throw new HttpResponseException(response);
             }
             return actionResult;
+        }
+
+        [HttpPost]
+        [GroupAuth(Permission = "GroupUpdate")]
+        public ApiBoolDTO UpdateSmartMembership(Models.Group group)
+        {
+            var apiBoolDto = new ApiBoolDTO();
+            apiBoolDto.Value = BLL.Group.UpdateSmartMembership(group);
+           return apiBoolDto;
+        }
+
+        [HttpPost]
+        [TaskAuth(Permission = "ImageTaskDeploy")]
+        public ApiDTO StartGroupUnicast(Models.Group group)
+        {
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                             .Select(c => c.Value).SingleOrDefault();
+            var apiDto = new ApiDTO();
+            apiDto.Value = BLL.Group.StartGroupUnicast(group, Convert.ToInt32(userId)).ToString();
+            return apiDto;
+        }
+
+        [GroupAuth(Permission = "GroupRead")]
+        public IEnumerable<Models.Computer> GetGroupMembers(int id, string searchstring = "")
+        {
+            return string.IsNullOrEmpty(searchstring)
+                ? BLL.Group.GetGroupMembers(id)
+                : BLL.Group.GetGroupMembers(id, searchstring);
+
         }
     }
 }

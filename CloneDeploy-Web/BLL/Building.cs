@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using CloneDeploy_Web.Models;
 
 namespace BLL
 {
     public class Building
     {
-
-        public static  Models.ActionResult AddBuilding(Models.Building building)
+        //moved
+        public static  ActionResult AddBuilding(CloneDeploy_Web.Models.Building building)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -21,6 +22,7 @@ namespace BLL
 
         }
 
+        //moved
         public static  string TotalCount()
         {
             using (var uow = new DAL.UnitOfWork())
@@ -29,6 +31,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static  bool DeleteBuilding(int buildingId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -38,7 +41,8 @@ namespace BLL
             }
         }
 
-        public static  Models.Building GetBuilding(int buildingId)
+        //moved
+        public static  CloneDeploy_Web.Models.Building GetBuilding(int buildingId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -46,7 +50,8 @@ namespace BLL
             }
         }
 
-        public static  List<Models.Building> SearchBuildings(string searchString = "")
+        //moved
+        public static  List<CloneDeploy_Web.Models.Building> SearchBuildings(string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -54,7 +59,8 @@ namespace BLL
             }
         }
 
-        public static  Models.ActionResult UpdateBuilding(Models.Building building)
+        //moved
+        public static  ActionResult UpdateBuilding(CloneDeploy_Web.Models.Building building)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -69,9 +75,10 @@ namespace BLL
             }
         }
 
-        public static  Models.ActionResult ValidateBuilding(Models.Building building, bool isNewBuilding)
+        //move not needed
+        public static  ActionResult ValidateBuilding(CloneDeploy_Web.Models.Building building, bool isNewBuilding)
         {
-            var validationResult = new Models.ActionResult();
+            var validationResult = new ActionResult();
 
             if (string.IsNullOrEmpty(building.Name) || building.Name.Contains(" "))
             {

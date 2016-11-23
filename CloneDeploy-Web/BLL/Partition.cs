@@ -6,7 +6,7 @@ namespace BLL
     public class Partition
     {
 
-        public static bool AddPartition(Models.Partition partition)
+        public static bool AddPartition(CloneDeploy_Web.Models.Partition partition)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -33,7 +33,7 @@ namespace BLL
             }
         }
 
-        public static Models.Partition GetPartition(int partitionId)
+        public static CloneDeploy_Web.Models.Partition GetPartition(int partitionId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -42,7 +42,7 @@ namespace BLL
         }
 
       
-        public static List<Models.Partition> SearchPartitions(int layoutId)
+        public static List<CloneDeploy_Web.Models.Partition> SearchPartitions(int layoutId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -51,7 +51,7 @@ namespace BLL
             }
         }
 
-        public static bool UpdatePartition(Models.Partition partition)
+        public static bool UpdatePartition(CloneDeploy_Web.Models.Partition partition)
         {
             using (var uow = new DAL.UnitOfWork())
             {

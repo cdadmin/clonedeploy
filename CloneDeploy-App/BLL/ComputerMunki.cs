@@ -1,26 +1,32 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace CloneDeploy_App.BLL
 {
     public static class ComputerMunki
     {
-        public static bool AddMunkiTemplates(List<Models.ComputerMunki> listOfTemplates)
+        public static Models.ActionResult AddMunkiTemplates(Models.ComputerMunki computerMunki)
         {
+            var actionResult = new Models.ActionResult();
             using (var uow = new DAL.UnitOfWork())
             {
-                foreach (var template in listOfTemplates)
-                    uow.ComputerMunkiRepository.Insert(template);
-
-                return uow.Save();
+                uow.ComputerMunkiRepository.Insert(computerMunki);
+                actionResult.Success = uow.Save();
+                actionResult.ObjectId = computerMunki.Id;
+                actionResult.Object = JsonConvert.SerializeObject(computerMunki);
+                return actionResult;
             }
         }
 
-        public static bool DeleteMunkiTemplates(int computerId)
+        public static Models.ActionResult DeleteMunkiTemplates(int computerId)
         {
+            var actionResult = new Models.ActionResult();
             using (var uow = new DAL.UnitOfWork())
             {
                 uow.ComputerMunkiRepository.DeleteRange(x => x.ComputerId == computerId);
-                return uow.Save();
+                actionResult.Success = uow.Save();
+                actionResult.ObjectId = computerId;
+                return actionResult;
             }
         }
 

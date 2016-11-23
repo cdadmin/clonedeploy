@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 public partial class views_images_profiles_filecopy : Images
@@ -71,7 +72,7 @@ public partial class views_images_profiles_filecopy : Images
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<Models.FileFolder> listFilesFolders = (List<Models.FileFolder>)gvFile.DataSource;
+        List<FileFolder> listFilesFolders = (List<FileFolder>)gvFile.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -99,7 +100,7 @@ public partial class views_images_profiles_filecopy : Images
             var dataKey = gvFile.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
 
-            var profileFileFolder = new Models.ImageProfileFileFolder
+            var profileFileFolder = new ImageProfileFileFolder
             {
                 FileFolderId = Convert.ToInt32(dataKey.Value),
                 ProfileId = ImageProfile.Id,

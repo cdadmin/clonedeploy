@@ -4,7 +4,7 @@ namespace BLL
 {
     public static class UserGroupImageManagement
     {
-        public static bool AddUserGroupImageManagements(List<Models.UserGroupImageManagement> listOfImages)
+        public static bool AddUserGroupImageManagements(List<CloneDeploy_Web.Models.UserGroupImageManagement> listOfImages)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -24,7 +24,7 @@ namespace BLL
             }
         }
 
-        public static List<Models.UserGroupImageManagement> Get(int userGroupId)
+        public static List<CloneDeploy_Web.Models.UserGroupImageManagement> Get(int userGroupId)
         {
             using (var uow = new DAL.UnitOfWork())
             {

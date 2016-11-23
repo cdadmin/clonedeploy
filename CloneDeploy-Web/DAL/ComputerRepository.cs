@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_Web.Models;
 
 namespace DAL
 {
-    public class ComputerRepository : GenericRepository<Models.Computer>
+    public class ComputerRepository : GenericRepository<Computer>
     {
         private CloneDeployDbContext _context;
 
@@ -14,7 +15,7 @@ namespace DAL
             _context = context;
         }
 
-        public List<Models.Computer> Search(string searchString, int limit=Int32.MaxValue)
+        public List<Computer> Search(string searchString, int limit=Int32.MaxValue)
         {
             return (from h in _context.Computers
                     join t in _context.Images on h.ImageId equals t.Id into joined
@@ -30,7 +31,7 @@ namespace DAL
                         site = h.SiteId,
                         building = h.BuildingId,
                         room = h.RoomId
-                    }).AsEnumerable().Select(x => new Models.Computer()
+                    }).AsEnumerable().Select(x => new Computer()
                     {
                         Id = x.id,
                         Name = x.name,
@@ -44,7 +45,7 @@ namespace DAL
                     }).OrderBy(x => x.Name).Take(limit).ToList();
         }
 
-        public List<Models.Computer> GetComputersWithoutGroup(string searchString, int limit=Int32.MaxValue)
+        public List<Computer> GetComputersWithoutGroup(string searchString, int limit=Int32.MaxValue)
         {
             var list = (from c in _context.Computers.Where(x => x.Name.Contains(searchString))
 

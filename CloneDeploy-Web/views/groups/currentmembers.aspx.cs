@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
+using CloneDeploy_Web.Models;
 using Helpers;
-using Models;
 
 public partial class views_groups_currentmembers : Groups
 {

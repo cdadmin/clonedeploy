@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Models
+namespace CloneDeploy_Web.Models
 {
     [Table("clonedeploy_user_image_mgmt")]
     public class UserImageManagement

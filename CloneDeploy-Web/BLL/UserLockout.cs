@@ -11,7 +11,7 @@ namespace BLL
                 var userLockout = Get(userId);
                 if (userLockout == null)
                 {
-                    uow.UserLockoutRepository.Insert(new Models.UserLockout {UserId = userId, BadLoginCount = 1});
+                    uow.UserLockoutRepository.Insert(new CloneDeploy_Web.Models.UserLockout {UserId = userId, BadLoginCount = 1});
                    
                 }
                 else
@@ -60,7 +60,7 @@ namespace BLL
             }
         }
 
-        public static Models.UserLockout Get(int userId)
+        public static CloneDeploy_Web.Models.UserLockout Get(int userId)
         {
             using (var uow = new DAL.UnitOfWork())
             {

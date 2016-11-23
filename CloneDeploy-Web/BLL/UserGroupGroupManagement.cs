@@ -4,7 +4,7 @@ namespace BLL
 {
     public static class UserGroupGroupManagement
     {
-        public static bool AddUserGroupGroupManagements(List<Models.UserGroupGroupManagement> listOfGroups)
+        public static bool AddUserGroupGroupManagements(List<CloneDeploy_Web.Models.UserGroupGroupManagement> listOfGroups)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -33,7 +33,7 @@ namespace BLL
             }
         }
 
-        public static List<Models.UserGroupGroupManagement> Get(int userGroupId)
+        public static List<CloneDeploy_Web.Models.UserGroupGroupManagement> Get(int userGroupId)
         {
             using (var uow = new DAL.UnitOfWork())
             {

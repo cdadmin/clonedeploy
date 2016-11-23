@@ -5,6 +5,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using BasePages;
 using BLL;
+using CloneDeploy_Web.Models.ImageSchema.GridView;
 using Helpers;
 using Newtonsoft.Json;
 
@@ -120,7 +121,7 @@ public partial class views_images_profiles_deploy : Images
         var isSchemaError = false;
         if (imageProfile.PartitionMethod == "Standard" && Image.Environment == "winpe")
         {
-            var customSchema = JsonConvert.DeserializeObject<Models.ImageSchema.ImageSchema>(imageProfile.CustomSchema);
+            var customSchema = JsonConvert.DeserializeObject<CloneDeploy_Web.Models.ImageSchema.ImageSchema>(imageProfile.CustomSchema);
             
             foreach (var hd in customSchema.HardDrives)
             {
@@ -259,7 +260,7 @@ public partial class views_images_profiles_deploy : Images
             if (partitions[row.RowIndex].VolumeGroup == null) continue;
             if (partitions[row.RowIndex].VolumeGroup.Name == null) continue;
             var gvVg = (GridView)row.FindControl("gvVG");
-            gvVg.DataSource = new List<Models.ImageSchema.GridView.VolumeGroup>
+            gvVg.DataSource = new List<VolumeGroup>
                 {
                     partitions[row.RowIndex].VolumeGroup
                 };

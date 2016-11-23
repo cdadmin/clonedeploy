@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Models;
+using CloneDeploy_Web.Models;
 
 namespace BLL
 {
     public class UserGroup
     {
 
-        public static Models.ActionResult AddUserGroup(CloneDeployUserGroup userGroup)
+        public static ActionResult AddUserGroup(CloneDeployUserGroup userGroup)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -73,7 +73,7 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult UpdateUser(CloneDeployUserGroup userGroup)
+        public static ActionResult UpdateUser(CloneDeployUserGroup userGroup)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -89,7 +89,7 @@ namespace BLL
         }
 
 
-        public static List<Models.CloneDeployUserGroup> GetLdapGroups()
+        public static List<CloneDeployUserGroup> GetLdapGroups()
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -97,7 +97,7 @@ namespace BLL
             }
         }
 
-        public static List<Models.CloneDeployUser> GetGroupMembers(int userGroupId, string searchString = "")
+        public static List<CloneDeployUser> GetGroupMembers(int userGroupId, string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -112,7 +112,7 @@ namespace BLL
             foreach (var user in GetGroupMembers(userGroup.Id))
             {
                 var userRights =
-                    rights.Select(right => new Models.UserRight {UserId = user.Id, Right = right.Right}).ToList();
+                    rights.Select(right => new CloneDeploy_Web.Models.UserRight {UserId = user.Id, Right = right.Right}).ToList();
                 BLL.UserRight.DeleteUserRights(user.Id);
                 BLL.UserRight.AddUserRights(userRights);
             }
@@ -125,7 +125,7 @@ namespace BLL
             foreach (var user in GetGroupMembers(userGroup.Id))
             {
                 var userGroupManagement =
-                    groupManagement.Select(g => new Models.UserGroupManagement { GroupId = g.GroupId, UserId = user.Id })
+                    groupManagement.Select(g => new CloneDeploy_Web.Models.UserGroupManagement { GroupId = g.GroupId, UserId = user.Id })
                         .ToList();
                 BLL.UserGroupManagement.DeleteUserGroupManagements(user.Id);
                 BLL.UserGroupManagement.AddUserGroupManagements(userGroupManagement);    
@@ -139,7 +139,7 @@ namespace BLL
             foreach (var user in GetGroupMembers(userGroup.Id))
             {
                 var userImageManagement =
-                    imageManagement.Select(g => new Models.UserImageManagement { ImageId = g.ImageId, UserId = user.Id })
+                    imageManagement.Select(g => new CloneDeploy_Web.Models.UserImageManagement { ImageId = g.ImageId, UserId = user.Id })
                         .ToList();
                 BLL.UserImageManagement.DeleteUserImageManagements(user.Id);
                 BLL.UserImageManagement.AddUserImageManagements(userImageManagement);
@@ -158,20 +158,20 @@ namespace BLL
             var imageManagement = BLL.UserGroupImageManagement.Get(userGroup.Id);
 
             var userRights =
-                   rights.Select(right => new Models.UserRight { UserId = user.Id, Right = right.Right }).ToList();
+                   rights.Select(right => new CloneDeploy_Web.Models.UserRight { UserId = user.Id, Right = right.Right }).ToList();
             BLL.UserRight.DeleteUserRights(user.Id);
             BLL.UserRight.AddUserRights(userRights);
 
 
             var userGroupManagement =
-                groupManagement.Select(g => new Models.UserGroupManagement { GroupId = g.GroupId, UserId = user.Id })
+                groupManagement.Select(g => new CloneDeploy_Web.Models.UserGroupManagement { GroupId = g.GroupId, UserId = user.Id })
                     .ToList();
             BLL.UserGroupManagement.DeleteUserGroupManagements(user.Id);
             BLL.UserGroupManagement.AddUserGroupManagements(userGroupManagement);
 
 
             var userImageManagement =
-                imageManagement.Select(g => new Models.UserImageManagement { ImageId = g.ImageId, UserId = user.Id })
+                imageManagement.Select(g => new CloneDeploy_Web.Models.UserImageManagement { ImageId = g.ImageId, UserId = user.Id })
                     .ToList();
             BLL.UserImageManagement.DeleteUserImageManagements(user.Id);
             BLL.UserImageManagement.AddUserImageManagements(userImageManagement);
@@ -179,9 +179,9 @@ namespace BLL
 
        
 
-        public static Models.ActionResult ValidateUser(Models.CloneDeployUserGroup userGroup, bool isNewUserGroup)
+        public static ActionResult ValidateUser(CloneDeployUserGroup userGroup, bool isNewUserGroup)
         {
-            var validationResult = new Models.ActionResult();
+            var validationResult = new ActionResult();
 
             if (isNewUserGroup)
             {

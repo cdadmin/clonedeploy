@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_Web.Models;
 
 namespace DAL
 {
-    public class ActiveImagingTaskRepository : GenericRepository<Models.ActiveImagingTask>
+    public class ActiveImagingTaskRepository : GenericRepository<ActiveImagingTask>
     {
         private CloneDeployDbContext _context;
 
@@ -14,7 +15,7 @@ namespace DAL
         }
 
  
-        public List<Models.Computer> MulticastComputers(int multicastId)
+        public List<Computer> MulticastComputers(int multicastId)
         {
          
             return
@@ -25,7 +26,7 @@ namespace DAL
 
         }
 
-        public List<Models.ActiveImagingTask> MulticastProgress(int multicastId)
+        public List<ActiveImagingTask> MulticastProgress(int multicastId)
         {
 
             return

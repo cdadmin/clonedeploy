@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CloneDeploy_Web.Models;
 
 namespace BLL
 {
     public class DistributionPoint
     {
-
-        public static Models.ActionResult AddDistributionPoint(Models.DistributionPoint distributionPoint)       
+        //moved
+        public static ActionResult AddDistributionPoint(CloneDeploy_Web.Models.DistributionPoint distributionPoint)       
         {
 
             using (var uow = new DAL.UnitOfWork())
@@ -24,6 +25,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string TotalCount()
         {
             using (var uow = new DAL.UnitOfWork())
@@ -32,6 +34,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static bool DeleteDistributionPoint(int distributionPointId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -41,7 +44,8 @@ namespace BLL
             }
         }
 
-        public static Models.DistributionPoint GetDistributionPoint(int distributionPointId)
+        //moved
+        public static CloneDeploy_Web.Models.DistributionPoint GetDistributionPoint(int distributionPointId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -49,7 +53,8 @@ namespace BLL
             }
         }
 
-        public static List<Models.DistributionPoint> SearchDistributionPoints(string searchString)
+        //moved
+        public static List<CloneDeploy_Web.Models.DistributionPoint> SearchDistributionPoints(string searchString)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -58,7 +63,8 @@ namespace BLL
             }
         }
 
-        public static Models.DistributionPoint GetPrimaryDistributionPoint()
+        //moved
+        public static CloneDeploy_Web.Models.DistributionPoint GetPrimaryDistributionPoint()
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -66,7 +72,8 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult UpdateDistributionPoint(Models.DistributionPoint distributionPoint)
+        //moved
+        public static ActionResult UpdateDistributionPoint(CloneDeploy_Web.Models.DistributionPoint distributionPoint)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -81,9 +88,10 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult ValidateDistributionPoint(Models.DistributionPoint distributionPoint, bool isNewDistributionPoint)
+        //move not needed
+        public static ActionResult ValidateDistributionPoint(CloneDeploy_Web.Models.DistributionPoint distributionPoint, bool isNewDistributionPoint)
         {
-            var validationResult = new Models.ActionResult();
+            var validationResult = new ActionResult();
 
             
 

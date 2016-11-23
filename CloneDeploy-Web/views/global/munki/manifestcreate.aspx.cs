@@ -1,6 +1,6 @@
 ﻿using System;
+using CloneDeploy_Web.Models;
 using Helpers;
-using Models;
 
 public partial class views_global_munki_manifestcreate : BasePages.Global
 {

@@ -50,8 +50,9 @@ namespace CloneDeploy_App.BLL
 
 
 
-        public static Models.ActionResult DeleteImage(Models.Image image)
+        public static Models.ActionResult DeleteImage(int imageId)
         {
+            var image = GetImage(imageId);
             var result = new Models.ActionResult(){Success = false};
             using (var uow = new DAL.UnitOfWork())
             {
@@ -121,6 +122,7 @@ namespace CloneDeploy_App.BLL
             }
         }
 
+        
         public static string ImageCountUser(int userId)
         {
             if (BLL.User.GetUser(userId).Membership == "Administrator")
@@ -248,7 +250,7 @@ namespace CloneDeploy_App.BLL
 
         
 
-        public static string TotalCount()
+        private static string TotalCount()
         {
             using (var uow = new DAL.UnitOfWork())
             {

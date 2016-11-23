@@ -4,7 +4,8 @@ namespace BLL
 {
     public static class ComputerMunki
     {
-        public static bool AddMunkiTemplates(List<Models.ComputerMunki> listOfTemplates)
+        //moved
+        public static bool AddMunkiTemplates(List<CloneDeploy_Web.Models.ComputerMunki> listOfTemplates)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -15,6 +16,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static bool DeleteMunkiTemplates(int computerId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -24,7 +26,8 @@ namespace BLL
             }
         }
 
-        public static List<Models.ComputerMunki> Get(int computerId)
+        //moved
+        public static List<CloneDeploy_Web.Models.ComputerMunki> Get(int computerId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -32,7 +35,8 @@ namespace BLL
             }
         }
 
-        public static List<Models.ComputerMunki> GetComputersForManifestTemplate(int templateId)
+        //moved
+        public static List<CloneDeploy_Web.Models.ComputerMunki> GetComputersForManifestTemplate(int templateId)
         {
             using (var uow = new DAL.UnitOfWork())
             {

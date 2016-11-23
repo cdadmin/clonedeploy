@@ -1,6 +1,6 @@
 ﻿using System;
+using CloneDeploy_Web.Models;
 using Helpers;
-using Models;
 
 public partial class views_admin_scripts_create : BasePages.Global
 {

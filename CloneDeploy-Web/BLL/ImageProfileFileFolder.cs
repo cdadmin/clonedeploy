@@ -7,7 +7,7 @@ namespace BLL
     public class ImageProfileFileFolder
     {
 
-        public static bool AddImageProfileFileFolder(Models.ImageProfileFileFolder imageProfileFileFolder)
+        public static bool AddImageProfileFileFolder(CloneDeploy_Web.Models.ImageProfileFileFolder imageProfileFileFolder)
         {
             imageProfileFileFolder.DestinationFolder = Utility.WindowsToUnixFilePath(imageProfileFileFolder.DestinationFolder);
             if (imageProfileFileFolder.DestinationFolder.Trim().EndsWith("/") && imageProfileFileFolder.DestinationFolder.Length > 1)
@@ -32,7 +32,7 @@ namespace BLL
             }
         }
 
-        public static List<Models.ImageProfileFileFolder> SearchImageProfileFileFolders(int profileId)
+        public static List<CloneDeploy_Web.Models.ImageProfileFileFolder> SearchImageProfileFileFolders(int profileId)
         {
             using (var uow = new DAL.UnitOfWork())
             {

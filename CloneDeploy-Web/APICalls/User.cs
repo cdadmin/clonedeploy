@@ -16,7 +16,7 @@ namespace CloneDeploy_Web.APICalls
         {
             _request.Method = Method.GET;
             _request.Resource = string.Format("api/{0}/GetForLogin/{1}", _resource,id);
-            var response = Execute<Models.ActionResult>(_request);
+            var response = new ApiRequest().Execute<Models.ActionResult>(_request);
 
             if (response.ObjectId == 0)
                 response.Success = false;

@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BLL.DynamicClientPartition;
+using CloneDeploy_Web.Models.ImageSchema;
+using CloneDeploy_Web.Models.ImageSchema.GridView;
 using Helpers;
-using Models.ImageSchema;
 using Newtonsoft.Json;
+using HardDrive = CloneDeploy_Web.Models.ImageSchema.GridView.HardDrive;
+using LogicalVolume = CloneDeploy_Web.Models.ImageSchema.GridView.LogicalVolume;
 
 
 namespace BLL
@@ -13,9 +16,9 @@ namespace BLL
 
     public class ImageSchema
     {
-        private readonly Models.ImageSchema.GridView.ImageSchemaGridView _imageSchema;
+        private readonly ImageSchemaGridView _imageSchema;
 
-        public ImageSchema(Models.ImageProfile imageProfile, string schemaType, Models.Image image = null)
+        public ImageSchema(CloneDeploy_Web.Models.ImageProfile imageProfile, string schemaType, CloneDeploy_Web.Models.Image image = null)
         {
             string schema = null;
 
@@ -58,15 +61,15 @@ namespace BLL
 
             if (!string.IsNullOrEmpty(schema))
             {
-                _imageSchema = JsonConvert.DeserializeObject<Models.ImageSchema.GridView.ImageSchemaGridView>(schema);
+                _imageSchema = JsonConvert.DeserializeObject<ImageSchemaGridView>(schema);
             }
         }
 
-        public List<Models.ImageSchema.GridView.HardDrive> GetHardDrivesForGridView()
+        public List<HardDrive> GetHardDrivesForGridView()
         {
             if (_imageSchema == null) return null;
 
-            var hardDrives = new List<Models.ImageSchema.GridView.HardDrive>();
+            var hardDrives = new List<HardDrive>();
 
             foreach (var harddrive in _imageSchema.HardDrives)
             {
@@ -79,9 +82,9 @@ namespace BLL
             return hardDrives;
         }
 
-        public List<Models.ImageSchema.GridView.Partition> GetPartitionsForGridView(string selectedHd)
+        public List<CloneDeploy_Web.Models.ImageSchema.GridView.Partition> GetPartitionsForGridView(string selectedHd)
         {
-            var partitions = new List<Models.ImageSchema.GridView.Partition>();
+            var partitions = new List<CloneDeploy_Web.Models.ImageSchema.GridView.Partition>();
 
             foreach (var hardDrive in _imageSchema.HardDrives.Where(x => x.Name == selectedHd))
             {
@@ -104,9 +107,9 @@ namespace BLL
             return partitions;
         }
 
-        public List<Models.ImageSchema.GridView.LogicalVolume> GetLogicalVolumesForGridView(string selectedHd)
+        public List<LogicalVolume> GetLogicalVolumesForGridView(string selectedHd)
         {
-            var lvList = new List<Models.ImageSchema.GridView.LogicalVolume>();
+            var lvList = new List<LogicalVolume>();
 
             foreach (var partition in _imageSchema.HardDrives[Convert.ToInt32(selectedHd)].Partitions)
             {
@@ -133,7 +136,7 @@ namespace BLL
             return lvList;
         }
 
-        public static List<Models.ImageSchema.ImageFileInfo> GetPartitionImageFileInfoForGridView(Models.Image image,string selectedHd, string selectedPartition)
+        public static List<ImageFileInfo> GetPartitionImageFileInfoForGridView(CloneDeploy_Web.Models.Image image,string selectedHd, string selectedPartition)
         {
             try
             {
@@ -187,7 +190,7 @@ namespace BLL
             }
         }
 
-        public Models.ImageSchema.GridView.ImageSchemaGridView GetImageSchema()
+        public ImageSchemaGridView GetImageSchema()
         {
             return _imageSchema;
         }

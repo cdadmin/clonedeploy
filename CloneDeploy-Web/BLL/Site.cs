@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using CloneDeploy_Web.Models;
 
 namespace BLL
 {
     public static class Site
     {
-        public static Models.ActionResult AddSite(Models.Site site)
+        public static ActionResult AddSite(CloneDeploy_Web.Models.Site site)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -36,7 +37,7 @@ namespace BLL
             }
         }
 
-        public static Models.Site GetSite(int siteId)
+        public static CloneDeploy_Web.Models.Site GetSite(int siteId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -44,7 +45,7 @@ namespace BLL
             }
         }
 
-        public static List<Models.Site> SearchSites(string searchString = "")
+        public static List<CloneDeploy_Web.Models.Site> SearchSites(string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -52,7 +53,7 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult UpdateSite(Models.Site site)
+        public static ActionResult UpdateSite(CloneDeploy_Web.Models.Site site)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -67,9 +68,9 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult ValidateSite(Models.Site site, bool isNewSite)
+        public static ActionResult ValidateSite(CloneDeploy_Web.Models.Site site, bool isNewSite)
         {
-            var validationResult = new Models.ActionResult();
+            var validationResult = new ActionResult();
 
             if (string.IsNullOrEmpty(site.Name))
             {

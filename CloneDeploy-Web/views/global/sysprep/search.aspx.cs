@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 public partial class views_global_sysprep_search : BasePages.Global
@@ -36,7 +37,7 @@ public partial class views_global_sysprep_search : BasePages.Global
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<Models.SysprepTag> listSysprepTags = (List<Models.SysprepTag>)gvSysprepTags.DataSource;
+        List<SysprepTag> listSysprepTags = (List<SysprepTag>)gvSysprepTags.DataSource;
         switch (e.SortExpression)
         {
             case "Name":

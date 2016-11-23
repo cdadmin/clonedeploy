@@ -10,8 +10,8 @@ namespace BLL
 {
     public class ActiveMulticastSession
     {
-
-        public static bool AddActiveMulticastSession(Models.ActiveMulticastSession activeMulticastSession)
+        //move not needed
+        public static bool AddActiveMulticastSession(CloneDeploy_Web.Models.ActiveMulticastSession activeMulticastSession)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -34,7 +34,8 @@ namespace BLL
             }
         }
 
-        public static void SendMulticastCompletedEmail(Models.ActiveMulticastSession session)
+        //move not needed
+        public static void SendMulticastCompletedEmail(CloneDeploy_Web.Models.ActiveMulticastSession session)
         {
             //Mail not enabled
             if (Settings.SmtpEnabled == "0") return;
@@ -53,7 +54,9 @@ namespace BLL
                 }
             }
         }
-        public static Models.ActiveMulticastSession GetFromPort(int port)
+
+        //move not needed
+        public static CloneDeploy_Web.Models.ActiveMulticastSession GetFromPort(int port)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -61,6 +64,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static bool Delete(int multicastId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -110,7 +114,8 @@ namespace BLL
             }
         }
 
-        public static Models.ActiveMulticastSession Get(int multicastId)
+        //move not needed
+        public static CloneDeploy_Web.Models.ActiveMulticastSession Get(int multicastId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -118,7 +123,8 @@ namespace BLL
             }
         }
 
-        public static List<Models.ActiveMulticastSession> GetOnDemandList()
+        //move not needed
+        public static List<CloneDeploy_Web.Models.ActiveMulticastSession> GetOnDemandList()
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -126,7 +132,8 @@ namespace BLL
             }
         }
 
-        public static bool UpdateActiveMulticastSession(Models.ActiveMulticastSession activeMulticastSession)
+        //move not needed
+        public static bool UpdateActiveMulticastSession(CloneDeploy_Web.Models.ActiveMulticastSession activeMulticastSession)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -135,7 +142,8 @@ namespace BLL
             }
         }
 
-        public static List<Models.ActiveMulticastSession> GetAllMulticastSessions(int userId)
+        //moved
+        public static List<CloneDeploy_Web.Models.ActiveMulticastSession> GetAllMulticastSessions(int userId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -148,6 +156,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string ActiveCount(int userId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -159,6 +168,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static void DeleteAll()
         {
             using (var uow = new DAL.UnitOfWork())
@@ -168,6 +178,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static void KillProcess(int pid)
         {
             var searcher =
@@ -189,6 +200,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static void KillProcessLinux(int pid)
         {
             try

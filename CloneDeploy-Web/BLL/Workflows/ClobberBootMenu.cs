@@ -9,9 +9,9 @@ namespace BLL.Workflows
     public class ClobberBootMenu
     {
         private readonly bool _promptComputerName;
-        private readonly Models.ImageProfile _imageProfile;
+        private readonly CloneDeploy_Web.Models.ImageProfile _imageProfile;
 
-        public ClobberBootMenu(Models.ImageProfile imageProfile, bool promptComputerName)
+        public ClobberBootMenu(CloneDeploy_Web.Models.ImageProfile imageProfile, bool promptComputerName)
         {
             _promptComputerName = promptComputerName;
             _imageProfile = imageProfile;

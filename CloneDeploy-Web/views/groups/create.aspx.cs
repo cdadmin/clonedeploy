@@ -1,5 +1,6 @@
 ﻿using System;
 using BasePages;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 namespace views.groups
@@ -16,7 +17,7 @@ namespace views.groups
             RequiresAuthorization(Authorizations.CreateGroup); 
             if(ddlGroupType.Text == "smart")
                 RequiresAuthorization(Authorizations.CreateSmart);
-            var group = new Models.Group
+            var group = new Group
             {
                 Name = txtGroupName.Text,
                 Description = txtGroupDesc.Text,

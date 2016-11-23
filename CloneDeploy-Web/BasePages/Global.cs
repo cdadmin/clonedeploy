@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using Claunia.PropertyList;
+using CloneDeploy_Web.Models;
 using ConnectUNCWithCredentials;
 using Helpers;
-using Models;
 
 namespace BasePages
 {
@@ -26,12 +26,12 @@ namespace BasePages
             RequiresAuthorization(Authorizations.ReadGlobal);
         }
 
-        public Models.MunkiPackageInfo ReadPlist(string fileName)
+        public MunkiPackageInfo ReadPlist(string fileName)
         {
             try
             {
                 NSDictionary rootDict = (NSDictionary)PropertyListParser.Parse(fileName);
-                var plist = new Models.MunkiPackageInfo();
+                var plist = new MunkiPackageInfo();
                 plist.Name = rootDict.ObjectForKey("name").ToString();
                 plist.Version = rootDict.ObjectForKey("version").ToString();
                 return plist;

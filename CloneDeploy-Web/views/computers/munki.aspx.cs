@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web.APICalls;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 public partial class views_computers_munki : BasePages.Computers
@@ -16,12 +18,13 @@ public partial class views_computers_munki : BasePages.Computers
 
     protected void PopulateGrid()
     {
-        gvManifestTemplates.DataSource = BLL.MunkiManifestTemplate.SearchManifests();
+        var call = new APICall();
+        gvManifestTemplates.DataSource = call.MunkiManifestTemplateApi.Get("");
         gvManifestTemplates.DataBind();
 
 
-
-        var listOfTemplates = BLL.ComputerMunki.Get(Computer.Id);
+        var listOfTemplates = call.ComputerMunkiApi.Get(Computer.Id);
+  
         foreach (GridViewRow row in gvManifestTemplates.Rows)
         {
             var chkBox = (CheckBox)row.FindControl("chkSelector");
@@ -49,7 +52,7 @@ public partial class views_computers_munki : BasePages.Computers
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<Models.MunkiManifestTemplate> listManifestTemplates = (List<Models.MunkiManifestTemplate>)gvManifestTemplates.DataSource;
+        List<MunkiManifestTemplate> listManifestTemplates = (List<MunkiManifestTemplate>)gvManifestTemplates.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -66,14 +69,15 @@ public partial class views_computers_munki : BasePages.Computers
     protected void btnAddSelected_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorizationOrManagedGroup(Authorizations.UpdateComputer, Computer.Id);
-        var list = new List<Models.ComputerMunki>();
+        var call = new APICall();
+        var list = new List<ComputerMunki>();
         foreach (GridViewRow row in gvManifestTemplates.Rows)
         {
             var cb = (CheckBox)row.FindControl("chkSelector");
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvManifestTemplates.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            var template = new Models.ComputerMunki
+            var template = new ComputerMunki
             {
                 ComputerId = Computer.Id,
                 MunkiTemplateId = Convert.ToInt32(dataKey.Value)
@@ -81,19 +85,24 @@ public partial class views_computers_munki : BasePages.Computers
             list.Add(template);
 
         }
-
-        BLL.ComputerMunki.DeleteMunkiTemplates(Computer.Id);
+        call.ComputerMunkiApi.Delete(Computer.Id);
+     
         if (list.Count > 0)
         {
-            EndUserMessage = BLL.ComputerMunki.AddMunkiTemplates(list)
-            ? "Successfully Updated Munki Templates"
-            : "Could Not Update Munki Templates";
+            var successCount = 0;
+            foreach (var template in list)
+            {
+                var result = call.ComputerMunkiApi.Post(template);
+                if (result.Success) successCount++;
+            }
+            EndUserMessage = string.Format("Successfully Updated {0} Munki Templates",successCount);
         }
     }
     protected void effective_OnClick(object sender, EventArgs e)
     {
-        var effectiveManifest = new BLL.Workflows.EffectiveMunkiTemplate().Computer(Computer.Id);
-        Response.Write(Encoding.UTF8.GetString(effectiveManifest.ToArray()));
+        var effectiveManifest = new APICall().ComputerMunkiApi.GetEffectiveManifest(Computer.Id);
+
+        Response.Write(effectiveManifest);
         Response.ContentType = "text/plain";
         Response.End();
     }

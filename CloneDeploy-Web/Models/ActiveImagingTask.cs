@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Models
+namespace CloneDeploy_Web.Models
 {
     [Table("active_imaging_tasks", Schema = "public")]
     public class ActiveImagingTask
@@ -56,6 +56,6 @@ namespace Models
         public string Direction { get; set; }
 
         [NotMapped]
-        public virtual Models.Computer Computer { get; set; }
+        public virtual global::CloneDeploy_Web.Models.Computer Computer { get; set; }
     }
 }

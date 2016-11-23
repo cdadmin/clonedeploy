@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using CloneDeploy_Web.Models;
 
 namespace BLL
 {
     public class MunkiCatalog
     {
 
-        public static bool AddCatalogToTemplate(Models.MunkiManifestCatalog catalog)
+        public static bool AddCatalogToTemplate(MunkiManifestCatalog catalog)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -38,7 +39,7 @@ namespace BLL
             }
         }
 
-        public static Models.MunkiManifestCatalog GetCatalog(int catalogId)
+        public static MunkiManifestCatalog GetCatalog(int catalogId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -46,7 +47,7 @@ namespace BLL
             }
         }
 
-        public static  List<Models.MunkiManifestCatalog> GetAllCatalogsForMt(int manifestTemplateId)
+        public static  List<MunkiManifestCatalog> GetAllCatalogsForMt(int manifestTemplateId)
         {
             using (var uow = new DAL.UnitOfWork())
             {

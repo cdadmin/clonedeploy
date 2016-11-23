@@ -1,6 +1,6 @@
 ﻿using System;
+using CloneDeploy_Web.Models;
 using Helpers;
-using Models;
 
 public partial class views_global_sysprep_edit : BasePages.Global
 {

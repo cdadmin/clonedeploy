@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_Web.Models;
 
 namespace BLL
 {
     public static class Room
     {
     
-        public static Models.ActionResult AddRoom(Models.Room room)
+        public static ActionResult AddRoom(CloneDeploy_Web.Models.Room room)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -38,7 +39,7 @@ namespace BLL
             }
         }
 
-        public static Models.Room GetRoom(int roomId)
+        public static CloneDeploy_Web.Models.Room GetRoom(int roomId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -46,7 +47,7 @@ namespace BLL
             }
         }
 
-        public static List<Models.Room> SearchRooms(string searchString = "")
+        public static List<CloneDeploy_Web.Models.Room> SearchRooms(string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -54,7 +55,7 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult UpdateRoom(Models.Room room)
+        public static ActionResult UpdateRoom(CloneDeploy_Web.Models.Room room)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -69,9 +70,9 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult ValidateRoom(Models.Room room, bool isNewRoom)
+        public static ActionResult ValidateRoom(CloneDeploy_Web.Models.Room room, bool isNewRoom)
         {
-            var validationResult = new Models.ActionResult();
+            var validationResult = new ActionResult();
 
             if (string.IsNullOrEmpty(room.Name) || !room.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {

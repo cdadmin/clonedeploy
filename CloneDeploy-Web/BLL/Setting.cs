@@ -7,7 +7,7 @@ namespace BLL
         
        
 
-        public static Models.Setting GetSetting(string settingName)
+        public static CloneDeploy_Web.Models.Setting GetSetting(string settingName)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -17,7 +17,7 @@ namespace BLL
             }
         }
 
-        public static bool UpdateSetting(List<Models.Setting> listSettings)
+        public static bool UpdateSetting(List<CloneDeploy_Web.Models.Setting> listSettings)
         {
             using (var uow = new DAL.UnitOfWork())
             {

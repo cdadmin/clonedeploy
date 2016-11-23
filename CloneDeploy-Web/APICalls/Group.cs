@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using CloneDeploy_Web.Models;
+using RestSharp;
 
 namespace CloneDeploy_Web.APICalls
 {
@@ -16,10 +17,7 @@ namespace CloneDeploy_Web.APICalls
         {
             _request.Method = Method.GET;
             _request.Resource = string.Format("api/{0}/GetMemberCount/{1}", _resource,id);
-            return Execute<ApiDTO>(_request);
-
-        
-
+            return new ApiRequest().Execute<ApiDTO>(_request);
         }
     }
 }

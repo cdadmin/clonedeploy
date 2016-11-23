@@ -9,8 +9,8 @@ using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using CloneDeploy_Web.APICalls;
+using CloneDeploy_Web.Models;
 using Helpers;
-using Models;
 using Newtonsoft.Json;
 using RestSharp;
 using Security;
@@ -109,7 +109,7 @@ namespace views.login
                 }
                 else if (result.Success)
                 {
-                    var cloneDeployUser = JsonConvert.DeserializeObject<Models.CloneDeployUser>(result.Object);
+                    var cloneDeployUser = JsonConvert.DeserializeObject<CloneDeployUser>(result.Object);
                     Session["CloneDeployUser"] = cloneDeployUser;
                     e.Authenticated = true;
                 }

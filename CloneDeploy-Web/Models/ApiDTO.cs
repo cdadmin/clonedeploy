@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-/// <summary>
-/// Summary description for ApiResult
-/// </summary>
-public class ApiDTO
+﻿namespace CloneDeploy_Web.Models
 {
-    public string Value { get; set; }
+    /// <summary>
+    /// Summary description for ApiResult
+    /// </summary>
+    public class ApiDTO
+    {
+        public string Value { get; set; }
+    }
 }

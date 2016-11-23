@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_Web.Models;
 
 namespace DAL
 {
 
-    public class GroupRepository : GenericRepository<Models.Group>
+    public class GroupRepository : GenericRepository<Group>
     {
         private CloneDeployDbContext _context;
 
@@ -15,7 +16,7 @@ namespace DAL
         }
     
 
-        public List<Models.Computer> GetGroupMembers(int searchGroupId, string searchString)
+        public List<Computer> GetGroupMembers(int searchGroupId, string searchString)
         {
 
             return (from h in _context.Computers

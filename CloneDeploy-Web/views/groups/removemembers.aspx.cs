@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
+using CloneDeploy_Web.Models;
 using Helpers;
-using Models;
 
 public partial class views_groups_removemembers : Groups
 {
@@ -69,7 +69,7 @@ public partial class views_groups_removemembers : Groups
             var dataKey = gvComputers.DataKeys[row.RowIndex];
             if (dataKey != null)
             {
-                var membership = new Models.GroupMembership
+                var membership = new GroupMembership
                 {
                     ComputerId = Convert.ToInt32(dataKey.Value),
                     GroupId = Group.Id

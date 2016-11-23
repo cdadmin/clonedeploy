@@ -1,10 +1,11 @@
 ﻿using System;
 using BasePages;
+using CloneDeploy_Web.Models;
 
 public partial class views_users_acls_acls : BasePages.MasterBaseMaster
 {
     private BasePages.Users userBasePage { get; set; }
-    public Models.CloneDeployUser CloneDeployUser { get; set; }
+    public CloneDeployUser CloneDeployUser { get; set; }
 
     protected void Page_Load(object sender, EventArgs e)
     {

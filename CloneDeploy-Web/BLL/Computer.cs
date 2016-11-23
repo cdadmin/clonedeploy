@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CloneDeploy_Web.Models;
 using CsvHelper;
 using Helpers;
-using Models;
 using Newtonsoft.Json;
 
 namespace BLL
@@ -12,7 +12,8 @@ namespace BLL
 
     public class Computer
     {
-        public static Models.ActionResult AddComputer(Models.Computer computer)
+        //moved
+        public static ActionResult AddComputer(CloneDeploy_Web.Models.Computer computer)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -35,6 +36,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string TotalCount()
         {
             using (var uow = new DAL.UnitOfWork())
@@ -43,6 +45,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static ApiDTO ComputerCountUser(int userId)
         {
             var apiDTO = new ApiDTO();
@@ -72,8 +75,8 @@ namespace BLL
             }
         }
 
-
-        public static Models.ActionResult DeleteComputer(int id)
+        //moved
+        public static ActionResult DeleteComputer(int id)
         {
             var computer = GetComputer(id);
             if (computer == null)
@@ -100,9 +103,10 @@ namespace BLL
 
         }
 
-        public static Models.DistributionPoint GetDistributionPoint(Models.Computer computer)
+        //move not needed
+        public static CloneDeploy_Web.Models.DistributionPoint GetDistributionPoint(CloneDeploy_Web.Models.Computer computer)
         {
-            Models.DistributionPoint dp = null;
+            CloneDeploy_Web.Models.DistributionPoint dp = null;
 
             if (computer.RoomId != -1)
             {
@@ -132,7 +136,8 @@ namespace BLL
             return dp;
         }
 
-        public static Models.Computer GetComputer(int computerId)
+        //moved
+        public static CloneDeploy_Web.Models.Computer GetComputer(int computerId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -143,7 +148,8 @@ namespace BLL
             }
         }
 
-        public static Models.Computer GetComputerFromMac(string mac)
+        //moved
+        public static CloneDeploy_Web.Models.Computer GetComputerFromMac(string mac)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -151,13 +157,14 @@ namespace BLL
             }
         }
 
-        public static List<Models.Computer> SearchComputersForUser(int userId,int limit, string searchString = "")
+        //moved
+        public static List<CloneDeploy_Web.Models.Computer> SearchComputersForUser(int userId,int limit, string searchString = "")
         {
             if(limit== 0) limit=Int32.MaxValue;
             if(BLL.User.GetUser(userId).Membership == "Administrator")
                 return SearchComputers(searchString,limit);
 
-            var listOfComputers = new List<Models.Computer>();
+            var listOfComputers = new List<CloneDeploy_Web.Models.Computer>();
 
             var userManagedGroups = BLL.UserGroupManagement.Get(userId);
             if (userManagedGroups.Count == 0)
@@ -176,7 +183,8 @@ namespace BLL
             }
         }
 
-        public static List<Models.Computer> GetAll()
+        //move not needed
+        public static List<CloneDeploy_Web.Models.Computer> GetAll()
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -184,7 +192,8 @@ namespace BLL
             }
         }
 
-        public static List<Models.Computer> SearchComputers(string searchString, int limit)
+        //moved
+        public static List<CloneDeploy_Web.Models.Computer> SearchComputers(string searchString, int limit)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -192,7 +201,8 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult UpdateComputer(Models.Computer computer)
+        //moved
+        public static ActionResult UpdateComputer(CloneDeploy_Web.Models.Computer computer)
         {
             var existingcomputer = GetComputer(computer.Id);
             if (existingcomputer == null)
@@ -219,7 +229,8 @@ namespace BLL
             }
         }
 
-        public static IEnumerable<Models.Computer> ComputersWithCustomBootMenu()
+        //move not needed
+        public static IEnumerable<CloneDeploy_Web.Models.Computer> ComputersWithCustomBootMenu()
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -233,8 +244,8 @@ namespace BLL
             var importCounter = 0;
             using (var csv = new CsvReader(new StreamReader(path)))
             {
-                csv.Configuration.RegisterClassMap<Models.ComputerCsvMap>();
-                var records = csv.GetRecords<Models.Computer>();
+                csv.Configuration.RegisterClassMap<ComputerCsvMap>();
+                var records = csv.GetRecords<CloneDeploy_Web.Models.Computer>();
                 foreach (var computer in records)
                 {
                     if (AddComputer(computer).Success)
@@ -248,14 +259,15 @@ namespace BLL
         {
             using (var csv = new CsvWriter(new StreamWriter(path)))
             {
-                csv.Configuration.RegisterClassMap<Models.ComputerCsvMap>();
+                csv.Configuration.RegisterClassMap<ComputerCsvMap>();
                 csv.WriteRecords(GetAll());
             }
         }
 
-        public static List<Models.Computer> ComputersWithoutGroup(string searchString, int limit)
+        //moved
+        public static List<CloneDeploy_Web.Models.Computer> ComputersWithoutGroup(string searchString, int limit)
         {
-            List<Models.Computer> listOfComputers;
+            List<CloneDeploy_Web.Models.Computer> listOfComputers;
             using (var uow = new DAL.UnitOfWork())
             {
                 listOfComputers = uow.ComputerRepository.GetComputersWithoutGroup(searchString, limit);
@@ -267,9 +279,10 @@ namespace BLL
             return listOfComputers;
         }
 
-        public static Models.ActionResult ValidateComputer(Models.Computer computer, string type)
+        //move not needed
+        public static ActionResult ValidateComputer(CloneDeploy_Web.Models.Computer computer, string type)
         {
-            var validationResult = new Models.ActionResult {Success = false};
+            var validationResult = new ActionResult {Success = false};
             if (type == "new" || type == "update")
             {
                 if (string.IsNullOrEmpty(computer.Name) || computer.Name.Any(c => c == ' '))

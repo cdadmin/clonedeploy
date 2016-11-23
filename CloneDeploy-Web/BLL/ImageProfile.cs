@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 namespace BLL
 {
     public static class ImageProfile
     {
-        public static Models.ActionResult AddProfile(Models.ImageProfile profile)
+        public static ActionResult AddProfile(CloneDeploy_Web.Models.ImageProfile profile)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -21,7 +22,7 @@ namespace BLL
             }
         }
 
-        public static Models.ImageProfile ReadProfile(int profileId)
+        public static CloneDeploy_Web.Models.ImageProfile ReadProfile(int profileId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -41,7 +42,7 @@ namespace BLL
             }
         }
 
-        public static List<Models.ImageProfile> SearchProfiles(int imageId)
+        public static List<CloneDeploy_Web.Models.ImageProfile> SearchProfiles(int imageId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -50,9 +51,9 @@ namespace BLL
             }
         }
 
-        public static List<Models.ImageProfile> GetAllProfiles()
+        public static List<CloneDeploy_Web.Models.ImageProfile> GetAllProfiles()
         {
-            List<Models.ImageProfile> imageProfiles;
+            List<CloneDeploy_Web.Models.ImageProfile> imageProfiles;
             using (var uow = new DAL.UnitOfWork())
             {
                 imageProfiles = uow.ImageProfileRepository.Get(orderBy: (q => q.OrderBy(p => p.Name)));
@@ -67,7 +68,7 @@ namespace BLL
             
         }
 
-        public static Models.ActionResult UpdateProfile(Models.ImageProfile profile)
+        public static ActionResult UpdateProfile(CloneDeploy_Web.Models.ImageProfile profile)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -92,9 +93,9 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult ValidateImageProfile(Models.ImageProfile imageProfile, bool isNewImageProfile)
+        public static ActionResult ValidateImageProfile(CloneDeploy_Web.Models.ImageProfile imageProfile, bool isNewImageProfile)
         {
-            var validationResult = new Models.ActionResult();
+            var validationResult = new ActionResult();
 
             if (string.IsNullOrEmpty(imageProfile.Name) || !imageProfile.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {
@@ -135,9 +136,9 @@ namespace BLL
             return validationResult;
         }
 
-        public static Models.ImageProfile SeedDefaultImageProfile(Models.Image image)
+        public static CloneDeploy_Web.Models.ImageProfile SeedDefaultImageProfile(CloneDeploy_Web.Models.Image image)
         {
-            var imageProfile = new Models.ImageProfile();
+            var imageProfile = new CloneDeploy_Web.Models.ImageProfile();
             imageProfile.Kernel = Settings.DefaultKernel32;
             imageProfile.BootImage = "initrd.xz";
             imageProfile.Name = "default";
@@ -161,7 +162,7 @@ namespace BLL
             return imageProfile;
         }
 
-        public static void CloneProfile(Models.ImageProfile imageProfile)
+        public static void CloneProfile(CloneDeploy_Web.Models.ImageProfile imageProfile)
         {
             var originalName = imageProfile.Name;
             using (var uow = new DAL.UnitOfWork())

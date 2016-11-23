@@ -1,5 +1,5 @@
 ﻿using System;
-using Models;
+using CloneDeploy_Web.Models;
 
 public partial class views_global_partitions_create : BasePages.Global
 {

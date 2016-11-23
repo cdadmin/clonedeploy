@@ -4,11 +4,11 @@ namespace CloneDeploy_App.BLL
 {
     public static class GroupMunki
     {
-        public static bool AddMunkiTemplates(List<Models.GroupMunki> listOfTemplates)
+        public static bool AddMunkiTemplates(Models.GroupMunki template)
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                foreach (var template in listOfTemplates)
+               
                     uow.GroupMunkiRepository.Insert(template);
 
                 return uow.Save();

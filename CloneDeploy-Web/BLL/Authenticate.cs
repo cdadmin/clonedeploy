@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using CloneDeploy_Web.Models;
 using Helpers;
-using Models;
 using Newtonsoft.Json;
 
 namespace Security
@@ -61,9 +61,9 @@ namespace Security
             return lines;
         }
 
-        public Models.ActionResult GlobalLogin(string userName, string password, string loginType)
+        public ActionResult GlobalLogin(string userName, string password, string loginType)
         {
-            var validationResult = new Models.ActionResult
+            var validationResult = new ActionResult
             {
                 Message = "Incorrect Username Or Password",
                 Success = false

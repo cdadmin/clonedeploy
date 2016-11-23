@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using CloneDeploy_Web.Models;
 
 namespace BLL
 {
     public class MunkiIncludedManifest
     {
 
-        public static bool AddIncludedManifestToTemplate(Models.MunkiManifestIncludedManifest includedManifest)
+        public static bool AddIncludedManifestToTemplate(MunkiManifestIncludedManifest includedManifest)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -38,7 +39,7 @@ namespace BLL
             }
         }
 
-        public static Models.MunkiManifestIncludedManifest GetIncludedManifest(int includedManifestId)
+        public static MunkiManifestIncludedManifest GetIncludedManifest(int includedManifestId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -46,7 +47,7 @@ namespace BLL
             }
         }
 
-        public static  List<Models.MunkiManifestIncludedManifest> GetAllIncludedManifestsForMt(int manifestTemplateId)
+        public static  List<MunkiManifestIncludedManifest> GetAllIncludedManifestsForMt(int manifestTemplateId)
         {
             using (var uow = new DAL.UnitOfWork())
             {

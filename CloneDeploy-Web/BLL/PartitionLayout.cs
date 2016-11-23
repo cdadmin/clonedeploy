@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_Web.Models;
 
 namespace BLL
 {
     public class PartitionLayout
     {
 
-        public static Models.ActionResult AddPartitionLayout(Models.PartitionLayout partitionLayout)
+        public static ActionResult AddPartitionLayout(CloneDeploy_Web.Models.PartitionLayout partitionLayout)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -39,7 +40,7 @@ namespace BLL
             }
         }
 
-        public static Models.PartitionLayout GetPartitionLayout(int partitionLayoutId)
+        public static CloneDeploy_Web.Models.PartitionLayout GetPartitionLayout(int partitionLayoutId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -48,7 +49,7 @@ namespace BLL
         }
 
 
-        public static List<Models.PartitionLayout> SearchPartitionLayouts(string searchString)
+        public static List<CloneDeploy_Web.Models.PartitionLayout> SearchPartitionLayouts(string searchString)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -57,7 +58,7 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult UpdatePartitionLayout(Models.PartitionLayout partitionLayout)
+        public static ActionResult UpdatePartitionLayout(CloneDeploy_Web.Models.PartitionLayout partitionLayout)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -72,9 +73,9 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult ValidatePartitionLayout(Models.PartitionLayout partitionLayout, bool isNewPartitionLayout)
+        public static ActionResult ValidatePartitionLayout(CloneDeploy_Web.Models.PartitionLayout partitionLayout, bool isNewPartitionLayout)
         {
-            var validationResult = new Models.ActionResult();
+            var validationResult = new ActionResult();
 
             if (string.IsNullOrEmpty(partitionLayout.Name) || partitionLayout.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {

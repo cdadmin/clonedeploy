@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 public partial class views_admin_scripts_search : BasePages.Global
@@ -36,7 +37,7 @@ public partial class views_admin_scripts_search : BasePages.Global
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<Models.Script> listScripts = (List<Models.Script>)gvScripts.DataSource;
+        List<Script> listScripts = (List<Script>)gvScripts.DataSource;
         switch (e.SortExpression)
         {
             case "Name":

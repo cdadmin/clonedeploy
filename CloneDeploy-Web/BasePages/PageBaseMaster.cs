@@ -5,12 +5,13 @@ using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web.Models;
 
 namespace BasePages
 {
     public class PageBaseMaster : Page
     {
-        public Models.CloneDeployUser CloneDeployCurrentUser;
+        public CloneDeployUser CloneDeployCurrentUser;
         public List<string> CurrentUserRights;
 
         public static string EndUserMessage
@@ -32,7 +33,7 @@ namespace BasePages
                 Response.Redirect("~/views/login/login.aspx?session=expired", true);
             }
 
-            CloneDeployCurrentUser = (Models.CloneDeployUser)currentUser;
+            CloneDeployCurrentUser = (CloneDeployUser)currentUser;
         }
 
         protected override void OnLoadComplete(EventArgs e)

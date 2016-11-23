@@ -2,42 +2,21 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Web;
+using CloneDeploy_Web.Models;
 using Helpers;
-using Models;
 using RestSharp;
 
 namespace CloneDeploy_Web.APICalls
 {
     public class GenericAPI<T> : IGenericAPI<T> where T : new()
     {
-        protected readonly RestRequest _request;
-        protected readonly string _token;
+        protected readonly RestRequest _request;     
         protected readonly string _resource;
 
         public GenericAPI(string resource)
         {
             _request = new RestRequest();
             _resource = resource;
-            var httpCookie = HttpContext.Current.Request.Cookies["cdtoken"];
-            if (httpCookie != null)
-                _token = httpCookie.Value;
-        }
-
-        protected TClass Execute<TClass>(RestRequest request) where TClass : new()
-        {
-            var client = new RestClient();
-            client.BaseUrl = new Uri(ConfigurationManager.AppSettings["api_base_url"]);
-
-            request.AddHeader("Authorization", "bearer " + _token);
-            var response = client.Execute<TClass>(request);
-    
-            if (response.ErrorException != null)
-            {
-                const string message = "Error retrieving response: ";
-                Logger.Log(message + response.ErrorException);
-                return default(TClass);
-            }
-            return response.Data;
         }
 
         public List<T> Get(int limit, string searchstring)
@@ -46,7 +25,7 @@ namespace CloneDeploy_Web.APICalls
             _request.Resource = string.Format("api/{0}/Get",_resource);
             _request.AddParameter("limit", limit);
             _request.AddParameter("searchstring", searchstring);
-            return Execute<List<T>>(_request);
+            return new ApiRequest().Execute<List<T>>(_request);
         }
 
         public List<T> Get(string searchstring)
@@ -54,21 +33,21 @@ namespace CloneDeploy_Web.APICalls
             _request.Method = Method.GET;
             _request.Resource = string.Format("api/{0}/Get", _resource);
             _request.AddParameter("searchstring", searchstring);
-            return Execute<List<T>>(_request);
+            return new ApiRequest().Execute<List<T>>(_request);
         }
 
         public T Get(int id)
         {
             _request.Method = Method.GET;
             _request.Resource = string.Format("api/{0}/Get/{1}",_resource, id);
-            return Execute<T>(_request);
+            return new ApiRequest().Execute<T>(_request);
         }
 
         public ApiDTO GetCount()
         {
             _request.Method = Method.GET;
             _request.Resource = string.Format("api/{0}/GetCount", _resource);
-            return Execute<ApiDTO>(_request);
+            return new ApiRequest().Execute<ApiDTO>(_request);
         }
 
         public ActionResult Put(int id,T tObject)
@@ -76,7 +55,7 @@ namespace CloneDeploy_Web.APICalls
             _request.Method = Method.PUT;
             _request.AddJsonBody(tObject);
             _request.Resource = string.Format("api/{0}/Put/{1}",_resource, id);
-            var response = Execute<ActionResult>(_request);
+            var response = new ApiRequest().Execute<ActionResult>(_request);
             if (response.ObjectId == 0)
                 response.Success = false;
             return response;
@@ -87,7 +66,7 @@ namespace CloneDeploy_Web.APICalls
             _request.Method = Method.POST;
             _request.AddJsonBody(tObject);
             _request.Resource = string.Format("api/{0}/Post/",_resource);
-            var response = Execute<ActionResult>(_request);
+            var response = new ApiRequest().Execute<ActionResult>(_request);
             if (response.ObjectId == 0)
                 response.Success = false;
             return response;
@@ -97,7 +76,7 @@ namespace CloneDeploy_Web.APICalls
         {
             _request.Method = Method.DELETE;
             _request.Resource = string.Format("api/{0}/Delete/{1}",_resource, id);
-            var response = Execute<ActionResult>(_request);
+            var response = new ApiRequest().Execute<ActionResult>(_request);
             if (response.ObjectId == 0)
                 response.Success = false;
             return response;

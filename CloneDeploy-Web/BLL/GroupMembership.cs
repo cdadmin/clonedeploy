@@ -5,9 +5,10 @@ namespace BLL
 {
     public class GroupMembership
     {
-        public static bool AddMembership(List<Models.GroupMembership> groupMemberships)
+        //moved
+        public static bool AddMembership(List<CloneDeploy_Web.Models.GroupMembership> groupMemberships)
         {
-            var group = new Models.Group();
+            var group = new CloneDeploy_Web.Models.Group();
             var result = false;
             using (var uow = new DAL.UnitOfWork())
             {
@@ -35,6 +36,7 @@ namespace BLL
             return result;
         }
 
+        //moved
         public static string GetGroupMemberCount(int groupId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -43,6 +45,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static bool DeleteAllMembershipsForGroup(int groupId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -52,8 +55,8 @@ namespace BLL
             }
         }
 
-
-        public static bool DeleteMembership(Models.GroupMembership groupMembership)
+        //moved
+        public static bool DeleteMembership(CloneDeploy_Web.Models.GroupMembership groupMembership)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -63,6 +66,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static bool DeleteComputerMemberships(int computerId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -72,7 +76,8 @@ namespace BLL
             }
         }
 
-        public static List<Models.GroupMembership> GetAllComputerMemberships(int computerId)
+        //moved
+        public static List<CloneDeploy_Web.Models.GroupMembership> GetAllComputerMemberships(int computerId)
         {
             using (var uow = new DAL.UnitOfWork())
             {

@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using CloneDeploy_Web.Models;
 
 namespace BLL
 {
     public class MunkiManagedUpdate
     {
 
-        public static bool AddManagedUpdateToTemplate(Models.MunkiManifestManagedUpdate managedUpdate)
+        public static bool AddManagedUpdateToTemplate(MunkiManifestManagedUpdate managedUpdate)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -38,7 +39,7 @@ namespace BLL
             }
         }
 
-        public static Models.MunkiManifestManagedUpdate GetManagedUpdate(int managedUpdateId)
+        public static MunkiManifestManagedUpdate GetManagedUpdate(int managedUpdateId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -46,7 +47,7 @@ namespace BLL
             }
         }
 
-        public static  List<Models.MunkiManifestManagedUpdate> GetAllManagedUpdatesForMt(int manifestTemplateId)
+        public static  List<MunkiManifestManagedUpdate> GetAllManagedUpdatesForMt(int manifestTemplateId)
         {
             using (var uow = new DAL.UnitOfWork())
             {

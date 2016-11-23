@@ -21,10 +21,10 @@ public partial class views_admin_client : Admin
     {
         RequiresAuthorization(Authorizations.UpdateAdmin);
 
-        List<Models.Setting> listSettings = new List<Models.Setting>
+        List<CloneDeploy_Web.Models.Setting> listSettings = new List<CloneDeploy_Web.Models.Setting>
         {
-            new Models.Setting {Name = "Queue Size", Value = txtQSize.Text, Id = Setting.GetSetting("Queue Size").Id},
-            new Models.Setting
+            new CloneDeploy_Web.Models.Setting {Name = "Queue Size", Value = txtQSize.Text, Id = Setting.GetSetting("Queue Size").Id},
+            new CloneDeploy_Web.Models.Setting
             {
                 Name = "Global Computer Args",
                 Value = txtGlobalComputerArgs.Text,

@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_Web.Models;
 
 namespace BLL
 {
     public class MunkiManifestTemplate
     {
 
-        public static Models.ActionResult AddManifest(Models.MunkiManifestTemplate manifest)
+        public static ActionResult AddManifest(CloneDeploy_Web.Models.MunkiManifestTemplate manifest)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -39,7 +40,7 @@ namespace BLL
             }
         }
 
-        public static  Models.MunkiManifestTemplate GetManifest(int manifestId)
+        public static  CloneDeploy_Web.Models.MunkiManifestTemplate GetManifest(int manifestId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -49,7 +50,7 @@ namespace BLL
 
        
 
-        public static  List<Models.MunkiManifestTemplate> SearchManifests(string searchString = "")
+        public static  List<CloneDeploy_Web.Models.MunkiManifestTemplate> SearchManifests(string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -58,7 +59,7 @@ namespace BLL
             }
         }
 
-        public static  Models.ActionResult UpdateManifest(Models.MunkiManifestTemplate manifest)
+        public static  ActionResult UpdateManifest(CloneDeploy_Web.Models.MunkiManifestTemplate manifest)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -73,9 +74,9 @@ namespace BLL
             }
         }
 
-        public static  Models.ActionResult ValidateManifest(Models.MunkiManifestTemplate manifest, bool isNewManifest)
+        public static  ActionResult ValidateManifest(CloneDeploy_Web.Models.MunkiManifestTemplate manifest, bool isNewManifest)
         {
-            var validationResult = new Models.ActionResult();
+            var validationResult = new ActionResult();
 
             if (string.IsNullOrEmpty(manifest.Name) || manifest.Name.Contains(" "))
             {

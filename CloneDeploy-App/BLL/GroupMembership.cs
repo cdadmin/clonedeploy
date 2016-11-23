@@ -54,12 +54,12 @@ namespace CloneDeploy_App.BLL
         }
 
 
-        public static bool DeleteMembership(Models.GroupMembership groupMembership)
+        public static bool DeleteMembership(int computerId, int groupId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 uow.GroupMembershipRepository.DeleteRange(
-                    g => g.ComputerId == groupMembership.ComputerId && g.GroupId == groupMembership.GroupId);
+                    g => g.ComputerId == computerId && g.GroupId == groupId);
                 return uow.Save();
             }
         }

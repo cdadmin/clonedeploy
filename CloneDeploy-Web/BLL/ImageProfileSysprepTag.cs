@@ -6,7 +6,7 @@ namespace BLL
     public class ImageProfileSysprepTag
     {
 
-        public static bool AddImageProfileSysprepTag(Models.ImageProfileSysprepTag imageProfileSysprepTag)
+        public static bool AddImageProfileSysprepTag(CloneDeploy_Web.Models.ImageProfileSysprepTag imageProfileSysprepTag)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -24,7 +24,7 @@ namespace BLL
             }
         }
 
-        public static List<Models.ImageProfileSysprepTag> SearchImageProfileSysprepTags(int profileId)
+        public static List<CloneDeploy_Web.Models.ImageProfileSysprepTag> SearchImageProfileSysprepTags(int profileId)
         {
             using (var uow = new DAL.UnitOfWork())
             {

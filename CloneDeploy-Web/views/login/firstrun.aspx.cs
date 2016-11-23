@@ -5,6 +5,7 @@ using System.IO;
 using BasePages;
 using BLL;
 using Helpers;
+using DistributionPoint = CloneDeploy_Web.Models.DistributionPoint;
 
 
 public partial class views_login_firstrun : PageBaseMaster
@@ -51,15 +52,15 @@ public partial class views_login_firstrun : PageBaseMaster
                 Path.DirectorySeparatorChar + "clonedeploy" +
                 Path.DirectorySeparatorChar + "tftpboot" + Path.DirectorySeparatorChar;
             }
-            var listSettings = new List<Models.Setting>
+            var listSettings = new List<CloneDeploy_Web.Models.Setting>
             {
-                new Models.Setting
+                new CloneDeploy_Web.Models.Setting
                 {
                     Name = "Server IP",
                     Value = txtServerIP.Text,
                     Id = Setting.GetSetting("Server IP").Id
                 },
-                new Models.Setting
+                new CloneDeploy_Web.Models.Setting
                 {
                     Name = "Tftp Path",
                     Value = tftpPath,
@@ -69,7 +70,7 @@ public partial class views_login_firstrun : PageBaseMaster
 
             if (unixDist == "bsd")
             {
-                listSettings.Add(new Models.Setting
+                listSettings.Add(new CloneDeploy_Web.Models.Setting
                 {
                     Name = "Sender Args",
                     Value = "--interface " + txtServerIP.Text,
@@ -78,7 +79,7 @@ public partial class views_login_firstrun : PageBaseMaster
             }
             Setting.UpdateSetting(listSettings);
 
-            var distributionPoint = new Models.DistributionPoint();
+            var distributionPoint = new DistributionPoint();
             distributionPoint.DisplayName = "Default";
             distributionPoint.Server = "[server-ip]";
             distributionPoint.Protocol = "SMB";

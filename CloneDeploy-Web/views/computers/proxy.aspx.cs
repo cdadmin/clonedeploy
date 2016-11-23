@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using CloneDeploy_Web.APICalls;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 public partial class views_computers_proxy : BasePages.Computers
@@ -13,7 +15,7 @@ public partial class views_computers_proxy : BasePages.Computers
     {
         chkEnabled.Checked = Computer.ProxyReservation == 1;
 
-        var reservation = BLL.ComputerProxyReservation.GetComputerProxyReservation(Computer.Id);
+        var reservation = new APICall().ComputerProxyReservationApi.Get(Computer.Id);
         if (reservation != null)
         {
             txtTftp.Text = reservation.NextServer;
@@ -23,6 +25,7 @@ public partial class views_computers_proxy : BasePages.Computers
 
     protected void buttonUpdate_OnClick(object sender, EventArgs e)
     {
+        var call = new APICall();
         if (chkEnabled.Checked)
         {
             if (Settings.ProxyDhcp == "No")
@@ -33,26 +36,25 @@ public partial class views_computers_proxy : BasePages.Computers
 
         }
 
+        //Cluster Issue
         if (ddlBootFile.Text.Contains("winpe"))
         {
-            if (
-                !new Helpers.FileOps().FileExists(Settings.TftpPath + Path.DirectorySeparatorChar + "boot" +
-                                                  Path.DirectorySeparatorChar + "boot.sdi"))
+            if (!call.FilesystemApi.BootSdiExists().Value)
             {
                 EndUserMessage =
-                    "Cannot Use WinPE.  You Have Not Updated Your tftpboot Folder With CloneDeploy PE Maker";
+                    "Cannot Use WinPE.  You Have Not Updated Your tftpboot Folder With CloneDeployPE Builder";
                 return;
             }
             
         }
 
-        BLL.ComputerProxyReservation.ToggleProxyReservation(Computer, chkEnabled.Checked);
-        var reservation = new Models.ComputerProxyReservation();
+        call.ComputerProxyReservationApi.Toggle(Computer.Id, chkEnabled.Checked);
+        var reservation = new ComputerProxyReservation();
         reservation.ComputerId = Computer.Id;
         reservation.NextServer = txtTftp.Text;
         reservation.BootFile = ddlBootFile.Text;
 
-        BLL.ComputerProxyReservation.UpdateComputerProxyReservation(reservation);
+        call.ComputerProxyReservationApi.Put(0,reservation);
 
         EndUserMessage = "Successfully Updated Computer Reservation";
     }

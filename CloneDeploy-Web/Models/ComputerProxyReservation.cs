@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Models
+namespace CloneDeploy_Web.Models
 {
     [Table("computer_proxy_reservations")]
     public class ComputerProxyReservation

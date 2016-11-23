@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 namespace BLL
 {
     public class FileFolder
     {
-
-        public static Models.ActionResult AddFileFolder(Models.FileFolder fileFolder)
+        //moved
+        public static ActionResult AddFileFolder(CloneDeploy_Web.Models.FileFolder fileFolder)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -22,6 +23,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string TotalCount()
         {
             using (var uow = new DAL.UnitOfWork())
@@ -30,6 +32,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static bool DeleteFileFolder(int FileFolderId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -39,7 +42,8 @@ namespace BLL
             }
         }
 
-        public static Models.FileFolder GetFileFolder(int FileFolderId)
+        //moved
+        public static CloneDeploy_Web.Models.FileFolder GetFileFolder(int FileFolderId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -47,7 +51,8 @@ namespace BLL
             }
         }
 
-        public static List<Models.FileFolder> SearchFileFolders(string searchString = "")
+        //moved
+        public static List<CloneDeploy_Web.Models.FileFolder> SearchFileFolders(string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -57,7 +62,8 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult UpdateFileFolder(Models.FileFolder fileFolder)
+        //moved
+        public static ActionResult UpdateFileFolder(CloneDeploy_Web.Models.FileFolder fileFolder)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -72,9 +78,10 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult ValidateTemplate(Models.FileFolder fileFolder, bool isNewTemplate)
+        //move not needed
+        public static ActionResult ValidateTemplate(CloneDeploy_Web.Models.FileFolder fileFolder, bool isNewTemplate)
         {
-            var validationResult = new Models.ActionResult();
+            var validationResult = new ActionResult();
 
             if (string.IsNullOrEmpty(fileFolder.Name))
             {

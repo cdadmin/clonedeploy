@@ -24,7 +24,7 @@
                 };
 
                 BLL.ComputerBootMenu.UpdateComputerBootMenu(computerBootMenu);
-                BLL.ComputerBootMenu.ToggleComputerBootMenu(computer, true);
+                BLL.ComputerBootMenu.ToggleComputerBootMenu(computer.Id, true);
             }
         }
 

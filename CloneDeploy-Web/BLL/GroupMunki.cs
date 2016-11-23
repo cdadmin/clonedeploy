@@ -4,17 +4,17 @@ namespace BLL
 {
     public static class GroupMunki
     {
-        public static bool AddMunkiTemplates(List<Models.GroupMunki> listOfTemplates)
+        //moved
+        public static bool AddMunkiTemplates(CloneDeploy_Web.Models.GroupMunki template)
         {
             using (var uow = new DAL.UnitOfWork())
             {
-                foreach (var template in listOfTemplates)
-                    uow.GroupMunkiRepository.Insert(template);
-
+                uow.GroupMunkiRepository.Insert(template);
                 return uow.Save();
             }
         }
 
+        //moved
         public static bool DeleteMunkiTemplates(int groupId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -24,7 +24,8 @@ namespace BLL
             }
         }
 
-        public static List<Models.GroupMunki> Get(int groupId)
+        //moved
+        public static List<CloneDeploy_Web.Models.GroupMunki> Get(int groupId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -32,7 +33,8 @@ namespace BLL
             }
         }
 
-        public static List<Models.GroupMunki> GetGroupsForManifestTemplate(int templateId)
+        //move not needed
+        public static List<CloneDeploy_Web.Models.GroupMunki> GetGroupsForManifestTemplate(int templateId)
         {
             using (var uow = new DAL.UnitOfWork())
             {

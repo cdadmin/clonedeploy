@@ -5,7 +5,8 @@ namespace BLL
 {
     public static class ComputerLog
     {
-        public static bool AddComputerLog(Models.ComputerLog computerLog)
+        //moved
+        public static bool AddComputerLog(CloneDeploy_Web.Models.ComputerLog computerLog)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -14,6 +15,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string TotalCount()
         {
             using (var uow = new DAL.UnitOfWork())
@@ -22,6 +24,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static bool DeleteComputerLog(int computerLogId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -31,7 +34,8 @@ namespace BLL
             }
         }
 
-        public static Models.ComputerLog GetComputerLog(int computerLogId)
+        //moved
+        public static CloneDeploy_Web.Models.ComputerLog GetComputerLog(int computerLogId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -40,7 +44,8 @@ namespace BLL
         }
 
       
-        public static List<Models.ComputerLog> Search(int computerId)
+        //moved
+        public static List<CloneDeploy_Web.Models.ComputerLog> Search(int computerId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -48,7 +53,8 @@ namespace BLL
             }
         }
 
-        public static List<Models.ComputerLog> SearchOnDemand(int limit)
+        //moved
+        public static List<CloneDeploy_Web.Models.ComputerLog> SearchOnDemand(int limit)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -56,6 +62,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static bool DeleteComputerLogs(int computerId)
         {
             using (var uow = new DAL.UnitOfWork())

@@ -6,7 +6,7 @@ namespace BLL
 {
     public class Port
     {
-        public static bool AddPort(Models.Port port)
+        public static bool AddPort(CloneDeploy_Web.Models.Port port)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -17,8 +17,8 @@ namespace BLL
 
         public static int GetNextPort()
         {
-            var lastPort = new Models.Port();
-            var nextPort = new Models.Port();
+            var lastPort = new CloneDeploy_Web.Models.Port();
+            var nextPort = new CloneDeploy_Web.Models.Port();
             using (var uow = new DAL.UnitOfWork())
             {
                 lastPort =

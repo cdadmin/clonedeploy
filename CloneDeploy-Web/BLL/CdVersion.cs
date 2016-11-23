@@ -12,7 +12,7 @@ namespace BLL
             }
         }
 
-        public static Models.CdVersion Get(int cdVersionId)
+        public static CloneDeploy_Web.Models.CdVersion Get(int cdVersionId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -20,7 +20,7 @@ namespace BLL
             }
         }
 
-        public static bool Update(Models.CdVersion cdVersion)
+        public static bool Update(CloneDeploy_Web.Models.CdVersion cdVersion)
         {
             using (var uow = new DAL.UnitOfWork())
             {

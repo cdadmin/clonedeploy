@@ -1,7 +1,7 @@
 ﻿using System;
 using BasePages;
 using Helpers;
-using Group = Models.Group;
+using Group = CloneDeploy_Web.Models.Group;
 
 namespace views.groups
 {

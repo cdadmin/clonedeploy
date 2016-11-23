@@ -1,34 +1,42 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_App.Helpers;
+using CloneDeploy_App.Models;
+using Newtonsoft.Json;
 
 namespace CloneDeploy_App.BLL
 {
     public static class ComputerLog
     {
-        public static bool AddComputerLog(Models.ComputerLog computerLog)
+        public static ActionResult AddComputerLog(Models.ComputerLog computerLog)
         {
+            var actionResult = new ActionResult();
             using (var uow = new DAL.UnitOfWork())
             {
                 uow.ComputerLogRepository.Insert(computerLog);
-                return uow.Save();
+                actionResult.Success = uow.Save();
+                actionResult.ObjectId = computerLog.Id;
             }
+            return actionResult;
         }
 
-        public static string TotalCount()
+        public static ActionResult DeleteComputerLog(int computerLogId)
         {
-            using (var uow = new DAL.UnitOfWork())
+            var computerLog = GetComputerLog(computerLogId);
+            if (computerLog == null)
             {
-                return uow.ComputerLogRepository.Count();
+                var message = string.Format("Could Not Delete Computer Log With Id {0}.  The Computer Log Was not Found", computerLogId);
+                Logger.Log(message);
+                return new ActionResult() { Success = false, Message = message, ObjectId = computerLogId };
             }
-        }
-
-        public static bool DeleteComputerLog(int computerLogId)
-        {
+            var actionResult = new ActionResult();
             using (var uow = new DAL.UnitOfWork())
             {
                 uow.ComputerLogRepository.Delete(computerLogId);
-                return uow.Save();
+                actionResult.Success = uow.Save();
+                actionResult.ObjectId = computerLogId;
             }
+            return actionResult;
         }
 
         public static Models.ComputerLog GetComputerLog(int computerLogId)
@@ -56,13 +64,25 @@ namespace CloneDeploy_App.BLL
             }
         }
 
-        public static bool DeleteComputerLogs(int computerId)
+        public static ActionResult DeleteComputerLogs(int computerId)
         {
+            var computer = GetComputerLog(computerId);
+            if (computer == null)
+            {
+                var message = string.Format("Could Not Delete Computer Logs For Computer With Id {0}.  The Computer Was not Found", computerId);
+                Logger.Log(message);
+                return new ActionResult() { Success = false, Message = message, ObjectId = computerId };
+            }
+            var actionResult = new ActionResult();
             using (var uow = new DAL.UnitOfWork())
             {
                 uow.ComputerLogRepository.DeleteRange(x => x.ComputerId == computerId);
-                return uow.Save();
+                actionResult.Success = uow.Save();
+                actionResult.ObjectId = computerId;
+                actionResult.Object = JsonConvert.SerializeObject(computer);
             }
+
+            return actionResult;
         }
     }
 }

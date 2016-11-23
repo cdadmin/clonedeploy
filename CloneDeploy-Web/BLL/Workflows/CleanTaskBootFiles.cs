@@ -6,11 +6,11 @@ namespace BLL.Workflows
 {
     public class CleanTaskBootFiles
     {
-        private readonly Models.Computer _computer;
+        private readonly CloneDeploy_Web.Models.Computer _computer;
         private readonly string _bootFile;
         private const string ConfigFolder = "pxelinux.cfg";
 
-        public CleanTaskBootFiles(Models.Computer computer)
+        public CleanTaskBootFiles(CloneDeploy_Web.Models.Computer computer)
         {
             _computer = computer;
             _bootFile = Utility.MacToPxeMac(_computer.Mac);

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using CloneDeploy_Web.Models;
 using Helpers;
-using Models;
 
 public partial class views_admin_munki : BasePages.Admin
 {

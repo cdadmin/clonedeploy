@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_Web.Models;
 
 namespace BLL
 {
     public class ImageProfilePartition
     {
 
-        public static bool AddImageProfilePartition(Models.ImageProfilePartitionLayout imageProfilePartition)
+        public static bool AddImageProfilePartition(ImageProfilePartitionLayout imageProfilePartition)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -24,7 +25,7 @@ namespace BLL
             }
         }
 
-        public static List<Models.ImageProfilePartitionLayout> SearchImageProfilePartitions(int profileId)
+        public static List<ImageProfilePartitionLayout> SearchImageProfilePartitions(int profileId)
         {
             using (var uow = new DAL.UnitOfWork())
             {

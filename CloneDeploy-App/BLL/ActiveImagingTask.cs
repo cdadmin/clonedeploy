@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using CloneDeploy_App.Helpers;
+using CloneDeploy_App.Models;
+using Newtonsoft.Json;
 
 namespace CloneDeploy_App.BLL
 {
@@ -17,23 +19,24 @@ namespace CloneDeploy_App.BLL
             }
         }
 
-        public static bool DeleteActiveImagingTask(int activeImagingTaskId)
+        public static ActionResult DeleteActiveImagingTask(int activeImagingTaskId)
         {
+            var actionResult = new ActionResult() {Success = false};
             using (var uow = new DAL.UnitOfWork())
             {
                 var activeImagingTask = uow.ActiveImagingTaskRepository.GetById(activeImagingTaskId);
                 var computer = uow.ComputerRepository.GetById(activeImagingTask.ComputerId);
 
                 uow.ActiveImagingTaskRepository.Delete(activeImagingTask.Id);
-                if (uow.Save())
+                actionResult.ObjectId = activeImagingTaskId;
+                actionResult.Object = JsonConvert.SerializeObject(activeImagingTask);
+                actionResult.Success = uow.Save();
+
+                if (actionResult.Success)
                 {
                     new BLL.Workflows.CleanTaskBootFiles(computer).CleanPxeBoot();
-                    return true;
                 }
-                else
-                {
-                    return false;
-                }
+                return actionResult;
             }
         }
 
@@ -203,11 +206,19 @@ namespace CloneDeploy_App.BLL
             }
         }
 
-        public static Models.ActiveImagingTask GetTask(int computerId)
+        public static Models.ActiveImagingTask GetTaskForComputer(int computerId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 return uow.ActiveImagingTaskRepository.GetFirstOrDefault(x => x.ComputerId == computerId);
+            }
+        }
+
+        public static Models.ActiveImagingTask GetTask(int taskId)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ActiveImagingTaskRepository.GetById(taskId);
             }
         }
         public static void DeleteAll()
@@ -241,7 +252,7 @@ namespace CloneDeploy_App.BLL
 
         public static string GetQueuePosition(int computerId)
         {
-            var computerTask = GetTask(computerId);
+            var computerTask = GetTaskForComputer(computerId);
             using (var uow = new DAL.UnitOfWork())
             {
                 return

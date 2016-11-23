@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web.Models;
 
 public partial class views_global_search : BasePages.Global
 {
@@ -45,7 +46,7 @@ public partial class views_global_search : BasePages.Global
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<Models.PartitionLayout> listLayouts = (List<Models.PartitionLayout>)gvLayout.DataSource;
+        List<PartitionLayout> listLayouts = (List<PartitionLayout>)gvLayout.DataSource;
         switch (e.SortExpression)
         {
             case "Name":

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
 using CloneDeploy_Web.APICalls;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 namespace views.groups
@@ -33,7 +34,7 @@ namespace views.groups
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
-            List<Models.Group> listGroups = (List<Models.Group>)gvGroups.DataSource;
+            List<Group> listGroups = (List<Group>)gvGroups.DataSource;
             switch (e.SortExpression)
             {
                 case "Name":
@@ -51,7 +52,7 @@ namespace views.groups
             gvGroups.DataBind();
             foreach (GridViewRow row in gvGroups.Rows)
             {
-                var group = new Models.Group();
+                var group = new Group();
                 var lbl = row.FindControl("lblCount") as Label;
                 var dataKey = gvGroups.DataKeys[row.RowIndex];
                 if (dataKey != null)
@@ -75,7 +76,7 @@ namespace views.groups
 
             foreach (GridViewRow row in gvGroups.Rows)
             {
-                var group = new Models.Group();
+                var group = new Group();
                 var lbl = row.FindControl("lblCount") as Label;
                 var dataKey = gvGroups.DataKeys[row.RowIndex];
                 if (dataKey != null)

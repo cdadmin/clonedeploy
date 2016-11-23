@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_App.Models;
+using Newtonsoft.Json;
 
 namespace CloneDeploy_App.BLL
 {
@@ -15,6 +17,8 @@ namespace CloneDeploy_App.BLL
                 {
                     uow.BootTemplateRepository.Insert(bootTemplate);
                     validationResult.Success = uow.Save();
+                    validationResult.Object = JsonConvert.SerializeObject(bootTemplate);
+                    validationResult.ObjectId = bootTemplate.Id;
                 }
 
                 return validationResult;
@@ -29,13 +33,19 @@ namespace CloneDeploy_App.BLL
             }
         }
 
-        public static bool DeleteBootTemplate(int BootTemplateId)
+        public static ActionResult DeleteBootTemplate(int BootTemplateId)
         {
+            var actionResult = new ActionResult();
+            var bootTemplate = GetBootTemplate(BootTemplateId);
             using (var uow = new DAL.UnitOfWork())
             {
                 uow.BootTemplateRepository.Delete(BootTemplateId);
-                return uow.Save();
+                actionResult.Success = uow.Save();
+                actionResult.Object = JsonConvert.SerializeObject(bootTemplate);
+                actionResult.ObjectId = bootTemplate.Id;
             }
+
+            return actionResult;
         }
 
         public static Models.BootTemplate GetBootTemplate(int BootTemplateId)
@@ -65,6 +75,8 @@ namespace CloneDeploy_App.BLL
                 {
                     uow.BootTemplateRepository.Update(bootTemplate, bootTemplate.Id);
                     validationResult.Success = uow.Save();
+                    validationResult.ObjectId = bootTemplate.Id;
+                    validationResult.Object = JsonConvert.SerializeObject(bootTemplate);
                 }
 
                 return validationResult;

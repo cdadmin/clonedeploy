@@ -4,13 +4,16 @@ namespace BLL
 {
     public class ComputerProxyReservation
     {
-        public static bool ToggleProxyReservation(Models.Computer computer, bool enable)
+        //moved
+        public static bool ToggleProxyReservation(CloneDeploy_Web.Models.Computer computer, bool enable)
         {
             computer.ProxyReservation = Convert.ToInt16(enable);
             BLL.Computer.UpdateComputer(computer);
             return true;
         }
-        public static Models.ComputerProxyReservation GetComputerProxyReservation(int computerId)
+
+        //moved
+        public static CloneDeploy_Web.Models.ComputerProxyReservation GetComputerProxyReservation(int computerId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -18,7 +21,8 @@ namespace BLL
             }
         }
 
-        public static bool UpdateComputerProxyReservation(Models.ComputerProxyReservation computerProxyReservation)
+        //moved
+        public static bool UpdateComputerProxyReservation(CloneDeploy_Web.Models.ComputerProxyReservation computerProxyReservation)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -36,6 +40,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static bool DeleteComputerProxyReservation(int computerId)
         {
             using (var uow = new DAL.UnitOfWork())

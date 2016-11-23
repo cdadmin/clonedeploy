@@ -6,7 +6,7 @@ namespace BLL.Workflows
 {
     public class ClientPartitionScript
     {
-        public Models.ImageSchema.ImageSchema ImageSchema { get; set; }
+        public CloneDeploy_Web.Models.ImageSchema.ImageSchema ImageSchema { get; set; }
         public string ClientHd { get; set; }
         public int HdNumberToGet { get; set; }
         public string NewHdSize { get; set; }
@@ -14,7 +14,7 @@ namespace BLL.Workflows
         public int profileId { get; set; }
         public string partitionPrefix { get; set; }
         public int clientBlockSize { get; set; }
-        private Models.ImageProfile imageProfile;
+        private CloneDeploy_Web.Models.ImageProfile imageProfile;
         private BLL.DynamicClientPartition.ClientPartition clientSchema;
         public string GeneratePartitionScript()
         {

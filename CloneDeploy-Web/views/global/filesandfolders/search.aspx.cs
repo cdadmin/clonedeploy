@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 public partial class views_global_filesandfolders_search : BasePages.Global
@@ -29,7 +30,7 @@ public partial class views_global_filesandfolders_search : BasePages.Global
     protected void gvFiles_OnSorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<Models.FileFolder> listSysprepTags = (List<Models.FileFolder>)gvFiles.DataSource;
+        List<FileFolder> listSysprepTags = (List<FileFolder>)gvFiles.DataSource;
         switch (e.SortExpression)
         {
             case "Name":

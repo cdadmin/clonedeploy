@@ -6,52 +6,23 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Threading;
 using System.Web.Http;
-using System.Web.Http.Controllers;
+using CloneDeploy_App.Controllers.Authorization;
+using CloneDeploy_App.DAL;
+using CloneDeploy_App.DTOs;
 using CloneDeploy_App.Models;
+using CloneDeploy_App.Service;
 
 namespace CloneDeploy_App.Controllers
 {
-    public class ComputerAuthAttribute : AuthorizeAttribute
-    {
-        public string Permission { get; set; }
-
-        public override void OnAuthorization(HttpActionContext actionContext)
-        {
-            base.OnAuthorization(actionContext);
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;     
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                              .Select(c => c.Value).SingleOrDefault();
-
-            if (userId == null) return;
-
-           
-            var authorized = false;
-            switch (Permission)
-            {
-                case "ComputerSearch": case "ComputerCreate":
-                    if (new BLL.Auth(Convert.ToInt32(userId), Permission).IsAuthorized())
-                        authorized = true;
-                    break;
-                case "ComputerDelete": case "ComputerUpdate": case "ComputerRead":
-                    var objectId = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
-                    if (new BLL.Auth(Convert.ToInt32(userId), Permission).ComputerManagement(objectId))
-                        authorized = true;
-                    break;
-                case "NotRequired":
-                    authorized = true;
-                    break;
-            }
-
-            if (!authorized)
-            {
-                var response = actionContext.Request.CreateResponse(HttpStatusCode.Forbidden, new ActionResult() { Success = false, Message = "Forbidden" });
-                throw new HttpResponseException(response);
-            }
-        }
-    }
-
     public class ComputerController : ApiController
     {
+        private readonly ComputerService _computerService;
+
+        public ComputerController()
+        {
+            _computerService = new ComputerService();
+        }
+
         [ComputerAuth(Permission = "ComputerSearch")]
         public IEnumerable<Models.Computer> Get(int limit=0,string searchstring="")
         {
@@ -60,8 +31,17 @@ namespace CloneDeploy_App.Controllers
                              .Select(c => c.Value).SingleOrDefault();
             
             return string.IsNullOrEmpty(searchstring)
-                ? BLL.Computer.SearchComputersForUser(Convert.ToInt32(userId), limit)
-                : BLL.Computer.SearchComputersForUser(Convert.ToInt32(userId), limit, searchstring);
+                ? _computerService.SearchComputersForUser(Convert.ToInt32(userId), limit)
+                : _computerService.SearchComputersForUser(Convert.ToInt32(userId), limit, searchstring);
+
+        }
+
+        [ComputerAuth(Permission = "ComputerSearch")]
+        public IEnumerable<Models.Computer> GetComputersWithoutGroup(int limit = 0, string searchstring = "")
+        {
+            return string.IsNullOrEmpty(searchstring)
+                ? _computerService.ComputersWithoutGroup(limit)
+                : _computerService.ComputersWithoutGroup(limit, searchstring);
 
         }
 
@@ -72,13 +52,13 @@ namespace CloneDeploy_App.Controllers
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                              .Select(c => c.Value).SingleOrDefault();
   
-            return BLL.Computer.ComputerCountUser(Convert.ToInt32(userId));               
+            return _computerService.ComputerCountUser(Convert.ToInt32(userId));               
         }
 
         [ComputerAuth(Permission = "ComputerRead")]
         public IHttpActionResult Get(int id)
         {      
-            var computer = BLL.Computer.GetComputer(id);
+            var computer = _computerService.GetComputer(id);
             if (computer == null)
                 return NotFound();
             else
@@ -86,9 +66,15 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ComputerAuth(Permission = "ComputerRead")]
+        public List<GroupMembership> GetGroupMemberships(int id)
+        {
+            return BLL.GroupMembership.GetAllComputerMemberships(id);
+        }
+
+        [ComputerAuth(Permission = "ComputerRead")]
         public IHttpActionResult GetFromMac(string mac)
         {
-            var computer = BLL.Computer.GetComputerFromMac(mac);
+            var computer = _computerService.GetComputerFromMac(mac);
             if (computer == null)
                 return NotFound();
             else
@@ -98,7 +84,7 @@ namespace CloneDeploy_App.Controllers
         [ComputerAuthAttribute(Permission = "ComputerCreate")]
         public ActionResult Post(Models.Computer computer)
         {
-            var actionResult = BLL.Computer.AddComputer(computer);
+            var actionResult = _computerService.AddComputer(computer);
             if (!actionResult.Success)
             {
                 var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
@@ -111,7 +97,7 @@ namespace CloneDeploy_App.Controllers
         public Models.ActionResult Put(int id,Models.Computer computer)
         {
             computer.Id = id;
-            var actionResult = BLL.Computer.UpdateComputer(computer);
+            var actionResult = _computerService.UpdateComputer(computer);
             if (!actionResult.Success)
             {
                 var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
@@ -123,13 +109,22 @@ namespace CloneDeploy_App.Controllers
         [ComputerAuth(Permission = "ComputerDelete")]
         public Models.ActionResult Delete(int id)
         {
-            var actionResult = BLL.Computer.DeleteComputer(id);
+            var actionResult = _computerService.DeleteComputer(id);
             if (!actionResult.Success)
             {
                 var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
                 throw new HttpResponseException(response);
             }
             return actionResult;
+        }
+
+        [HttpGet]
+        [ComputerAuth(Permission = "ComputerRead")]
+        public ApiBoolDTO IsComputerActive(int id)
+        {
+            var result = new ApiBoolDTO();
+            result.Value = BLL.ActiveImagingTask.IsComputerActive(id);
+            return result;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Models
+﻿namespace CloneDeploy_Web.Models
 {
     public class MunkiPackageInfo
     {

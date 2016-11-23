@@ -47,21 +47,21 @@ public partial class views_admin_clobber : BasePages.Admin
     {
         RequiresAuthorization(Authorizations.UpdateAdmin);
 
-        List<Models.Setting> listSettings = new List<Models.Setting>
+        List<CloneDeploy_Web.Models.Setting> listSettings = new List<CloneDeploy_Web.Models.Setting>
         {
-            new Models.Setting
+            new CloneDeploy_Web.Models.Setting
             {
                 Name = "Clobber Enabled",
                 Value = chkClobber.Checked ? "1" : "0",
                 Id = Setting.GetSetting("Clobber Enabled").Id
             },
-            new Models.Setting
+            new CloneDeploy_Web.Models.Setting
             {
                 Name = "Clobber Prompt Computer Name",
                 Value = chkPromptName.Checked ? "1" : "0",
                 Id = Setting.GetSetting("Clobber Prompt Computer Name").Id
             },
-            new Models.Setting
+            new CloneDeploy_Web.Models.Setting
             {
                 Name = "Clobber ProfileId",
                 Value = ddlImageProfile.SelectedValue,

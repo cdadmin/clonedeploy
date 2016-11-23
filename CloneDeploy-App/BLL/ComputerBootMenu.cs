@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using CloneDeploy_App.Helpers;
+using CloneDeploy_App.Models;
+using Newtonsoft.Json;
 
 namespace CloneDeploy_App.BLL
 {
     public class ComputerBootMenu
     {
-        public static bool ToggleComputerBootMenu(Models.Computer computer, bool enable)
+        public static bool ToggleComputerBootMenu(int computerId, bool enable)
         {
+            var computer = BLL.Computer.GetComputer(computerId);
             computer.CustomBootEnabled = Convert.ToInt16(enable);
             BLL.Computer.UpdateComputer(computer);
 
@@ -43,13 +46,20 @@ namespace CloneDeploy_App.BLL
             }
         }
 
-        public static bool DeleteComputerBootMenus(int computerId)
+        public static ActionResult DeleteComputerBootMenus(int computerId)
         {
+            var actionResult = new ActionResult();
+            var computer = BLL.Computer.GetComputer(computerId);
+
             using (var uow = new DAL.UnitOfWork())
             {
                 uow.ComputerBootMenuRepository.DeleteRange(x => x.ComputerId == computerId);
-                return uow.Save();
+                actionResult.Success = uow.Save();
+                actionResult.ObjectId = computerId;
+                actionResult.Object = JsonConvert.SerializeObject(computer);
             }
+            return actionResult;
+            
         }
 
         public static void DeleteBootFiles(Models.Computer computer)

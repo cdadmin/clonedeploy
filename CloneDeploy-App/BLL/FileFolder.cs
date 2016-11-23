@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CloneDeploy_App.Helpers;
+using CloneDeploy_App.Models;
+using Newtonsoft.Json;
 
 namespace CloneDeploy_App.BLL
 {
@@ -16,6 +18,8 @@ namespace CloneDeploy_App.BLL
                 {
                     uow.FileFolderRepository.Insert(fileFolder);
                     validationResult.Success = uow.Save();
+                    validationResult.ObjectId = fileFolder.Id;
+                    validationResult.Object = JsonConvert.SerializeObject(fileFolder);
                 }
 
                 return validationResult;
@@ -30,13 +34,20 @@ namespace CloneDeploy_App.BLL
             }
         }
 
-        public static bool DeleteFileFolder(int FileFolderId)
+        public static ActionResult DeleteFileFolder(int FileFolderId)
         {
+            var actionResult = new ActionResult();
+            var fileFolder = GetFileFolder(FileFolderId);
             using (var uow = new DAL.UnitOfWork())
             {
                 uow.FileFolderRepository.Delete(FileFolderId);
-                return uow.Save();
+                actionResult.Success = uow.Save();
+                actionResult.ObjectId = fileFolder.Id;
+                actionResult.Object = JsonConvert.SerializeObject(fileFolder);
             }
+
+            return actionResult;
+            
         }
 
         public static Models.FileFolder GetFileFolder(int FileFolderId)
@@ -66,6 +77,8 @@ namespace CloneDeploy_App.BLL
                 {
                     uow.FileFolderRepository.Update(fileFolder, fileFolder.Id);
                     validationResult.Success = uow.Save();
+                    validationResult.ObjectId = fileFolder.Id;
+                    validationResult.Object = JsonConvert.SerializeObject(fileFolder);
                 }
 
                 return validationResult;

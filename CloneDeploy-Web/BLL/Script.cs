@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_Web.Models;
 
 namespace BLL
 {
     public class Script
     {
 
-        public static Models.ActionResult AddScript(Models.Script script)
+        public static ActionResult AddScript(CloneDeploy_Web.Models.Script script)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -38,7 +39,7 @@ namespace BLL
             }
         }
 
-        public static Models.Script GetScript(int scriptId)
+        public static CloneDeploy_Web.Models.Script GetScript(int scriptId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -46,7 +47,7 @@ namespace BLL
             }
         }
 
-        public static List<Models.Script> SearchScripts(string searchString)
+        public static List<CloneDeploy_Web.Models.Script> SearchScripts(string searchString)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -54,7 +55,7 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult UpdateScript(Models.Script script)
+        public static ActionResult UpdateScript(CloneDeploy_Web.Models.Script script)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -69,9 +70,9 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult ValidateScript(Models.Script script, bool isNewScript)
+        public static ActionResult ValidateScript(CloneDeploy_Web.Models.Script script, bool isNewScript)
         {
-            var validationResult = new Models.ActionResult();
+            var validationResult = new ActionResult();
 
             if (string.IsNullOrEmpty(script.Name) || !script.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {

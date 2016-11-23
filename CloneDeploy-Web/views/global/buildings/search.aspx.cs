@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web.Models;
 using Helpers;
-using Models;
 
 public partial class views_global_buildings_search : BasePages.Global
 {

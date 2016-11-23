@@ -4,8 +4,9 @@ namespace CloneDeploy_App.BLL
 {
     public class ComputerProxyReservation
     {
-        public static bool ToggleProxyReservation(Models.Computer computer, bool enable)
+        public static bool ToggleProxyReservation(int computerId, bool enable)
         {
+            var computer = BLL.Computer.GetComputer(computerId);
             computer.ProxyReservation = Convert.ToInt16(enable);
             BLL.Computer.UpdateComputer(computer);
             return true;

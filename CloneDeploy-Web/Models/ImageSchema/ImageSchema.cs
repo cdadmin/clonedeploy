@@ -1,4 +1,4 @@
-﻿namespace Models.ImageSchema
+﻿namespace CloneDeploy_Web.Models.ImageSchema
 {
     public class ImageSchema
     {

@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_Web.Models;
 
 namespace BLL
 {
     public static class SysprepTag
     {
 
-        public static Models.ActionResult AddSysprepTag(Models.SysprepTag sysprepTag)
+        public static ActionResult AddSysprepTag(CloneDeploy_Web.Models.SysprepTag sysprepTag)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -38,7 +39,7 @@ namespace BLL
             }
         }
 
-        public static Models.SysprepTag GetSysprepTag(int sysprepTagId)
+        public static CloneDeploy_Web.Models.SysprepTag GetSysprepTag(int sysprepTagId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -46,7 +47,7 @@ namespace BLL
             }
         }
 
-        public static List<Models.SysprepTag> SearchSysprepTags(string searchString)
+        public static List<CloneDeploy_Web.Models.SysprepTag> SearchSysprepTags(string searchString)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -57,7 +58,7 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult UpdateSysprepTag(Models.SysprepTag sysprepTag)
+        public static ActionResult UpdateSysprepTag(CloneDeploy_Web.Models.SysprepTag sysprepTag)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -75,9 +76,9 @@ namespace BLL
 
         }
 
-        public static Models.ActionResult ValidateSysprepTag(Models.SysprepTag sysprepTag, bool isNewSysprepTag)
+        public static ActionResult ValidateSysprepTag(CloneDeploy_Web.Models.SysprepTag sysprepTag, bool isNewSysprepTag)
         {
-            var validationResult = new Models.ActionResult();
+            var validationResult = new ActionResult();
 
             if (string.IsNullOrEmpty(sysprepTag.Name) || !sysprepTag.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {

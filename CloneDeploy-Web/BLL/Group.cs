@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CloneDeploy_Web.Models;
 using CsvHelper;
-using Models;
 
 namespace BLL
 {
     public class Group
     {
-
-        public static Models.ActionResult AddGroup(Models.Group group, int userId)
+        //moved
+        public static ActionResult AddGroup(CloneDeploy_Web.Models.Group group, int userId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -24,9 +24,9 @@ namespace BLL
                     var userManagedGroups = BLL.UserGroupManagement.Get(userId);
                     if (userManagedGroups.Count > 0)
                         BLL.UserGroupManagement.AddUserGroupManagements(
-                            new List<Models.UserGroupManagement>
+                            new List<CloneDeploy_Web.Models.UserGroupManagement>
                             {
-                                new Models.UserGroupManagement
+                                new CloneDeploy_Web.Models.UserGroupManagement
                                 {
                                     GroupId = group.Id,
                                     UserId = userId
@@ -38,6 +38,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static string TotalCount()
         {
             using (var uow = new DAL.UnitOfWork())
@@ -46,6 +47,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string GroupCountUser(int userId)
         {
             if (BLL.User.GetUser(userId).Membership == "Administrator")
@@ -57,8 +59,8 @@ namespace BLL
             return userManagedGroups.Count == 0 ? TotalCount() : userManagedGroups.Count.ToString();
         }
 
-      
-        public static Models.ActionResult DeleteGroup(int groupId)
+        //moved
+        public static ActionResult DeleteGroup(int groupId)
         {
             var result = new ActionResult();
             using (var uow = new DAL.UnitOfWork())
@@ -73,7 +75,8 @@ namespace BLL
             }
         }
 
-        public static Models.Group GetGroup(int groupId)
+        //moved
+        public static CloneDeploy_Web.Models.Group GetGroup(int groupId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -84,7 +87,8 @@ namespace BLL
             }
         }
 
-        public static List<Models.Group> SearchGroupsForUser(int userId, string searchString = "")
+        //moved
+        public static List<CloneDeploy_Web.Models.Group> SearchGroupsForUser(int userId, string searchString = "")
         {
             if (BLL.User.GetUser(userId).Membership == "Administrator")
                 return SearchGroups(searchString);
@@ -106,7 +110,8 @@ namespace BLL
             }
         }
 
-        public static List<Models.Group> SearchGroups(string searchString = "")
+        //moved
+        public static List<CloneDeploy_Web.Models.Group> SearchGroups(string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -117,15 +122,17 @@ namespace BLL
             }
         }
 
-        public static bool UpdateSmartMembership(Models.Group group)
+        //moved
+        public static bool UpdateSmartMembership(CloneDeploy_Web.Models.Group group)
         {
             BLL.GroupMembership.DeleteAllMembershipsForGroup(group.Id);
             var computers = BLL.Computer.SearchComputers(group.SmartCriteria,Int32.MaxValue);
-            var memberships = computers.Select(computer => new Models.GroupMembership {GroupId = @group.Id, ComputerId = computer.Id}).ToList();
+            var memberships = computers.Select(computer => new CloneDeploy_Web.Models.GroupMembership {GroupId = @group.Id, ComputerId = computer.Id}).ToList();
             return BLL.GroupMembership.AddMembership(memberships);
         }
 
-        public static Models.ActionResult UpdateGroup(Models.Group group)
+        //moved
+        public static ActionResult UpdateGroup(CloneDeploy_Web.Models.Group group)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -140,7 +147,8 @@ namespace BLL
             }
         }
 
-        public static int StartGroupUnicast(Models.Group group, int userId)
+        //moved
+        public static int StartGroupUnicast(CloneDeploy_Web.Models.Group group, int userId)
         {
             var count = 0;
             foreach (var computer in GetGroupMembers(group.Id))
@@ -156,8 +164,8 @@ namespace BLL
             var importCounter = 0;
             using (var csv = new CsvReader(new StreamReader(path)))
             {
-                csv.Configuration.RegisterClassMap<Models.GroupCsvMap>();
-                var records = csv.GetRecords<Models.Group>();
+                csv.Configuration.RegisterClassMap<GroupCsvMap>();
+                var records = csv.GetRecords<CloneDeploy_Web.Models.Group>();
                 foreach (var group in records)
                 {
                     if (AddGroup(group,userId).Success)
@@ -171,12 +179,13 @@ namespace BLL
         {
             using (var csv = new CsvWriter(new StreamWriter(path)))
             {
-                csv.Configuration.RegisterClassMap<Models.GroupCsvMap>();
+                csv.Configuration.RegisterClassMap<GroupCsvMap>();
                 csv.WriteRecords(SearchGroups());
             }
         }
 
-        public static List<Models.Computer> GetGroupMembers(int groupId, string searchString = "")
+        //moved
+        public static List<CloneDeploy_Web.Models.Computer> GetGroupMembers(int groupId, string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -184,6 +193,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static void UpdateAllSmartGroupsMembers()
         {
             var groups = SearchGroups();
@@ -191,9 +201,10 @@ namespace BLL
                 UpdateSmartMembership(group);
         }
 
-        public static Models.ActionResult ValidateGroup(Models.Group group, bool isNewGroup)
+        //move not needed
+        public static ActionResult ValidateGroup(CloneDeploy_Web.Models.Group group, bool isNewGroup)
         {
-            var validationResult = new Models.ActionResult();
+            var validationResult = new ActionResult();
 
             if (string.IsNullOrEmpty(group.Name) || !group.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {

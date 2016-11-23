@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_App.Models;
+using Newtonsoft.Json;
 
 namespace CloneDeploy_App.BLL
 {
@@ -15,6 +17,8 @@ namespace CloneDeploy_App.BLL
                 {
                     uow.BootEntryRepository.Insert(bootEntry);
                     validationResult.Success = uow.Save();
+                    validationResult.ObjectId = bootEntry.Id;
+                    validationResult.Object = JsonConvert.SerializeObject(bootEntry);
                 }
 
                 return validationResult;
@@ -29,13 +33,19 @@ namespace CloneDeploy_App.BLL
             }
         }
 
-        public static bool DeleteBootEntry(int BootEntryId)
+        public static ActionResult DeleteBootEntry(int BootEntryId)
         {
+            var actionResult = new ActionResult();
+            var bootEntry = GetBootEntry(BootEntryId);
             using (var uow = new DAL.UnitOfWork())
             {
                 uow.BootEntryRepository.Delete(BootEntryId);
-                return uow.Save();
+                actionResult.Success = uow.Save();
+                actionResult.Object = JsonConvert.SerializeObject(bootEntry);
+                actionResult.ObjectId = bootEntry.Id;
             }
+
+            return actionResult;
         }
 
         public static Models.BootEntry GetBootEntry(int BootEntryId)
@@ -65,6 +75,8 @@ namespace CloneDeploy_App.BLL
                 {
                     uow.BootEntryRepository.Update(bootEntry, bootEntry.Id);
                     validationResult.Success = uow.Save();
+                    validationResult.ObjectId = bootEntry.Id;
+                    validationResult.Object = JsonConvert.SerializeObject(bootEntry);
                 }
 
                 return validationResult;

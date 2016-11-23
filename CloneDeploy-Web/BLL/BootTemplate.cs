@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_Web.Models;
 
 namespace BLL
 {
     public class BootTemplate
     {
-
-        public static Models.ActionResult AddBootTemplate(Models.BootTemplate bootTemplate)
+        //moved
+        public static ActionResult AddBootTemplate(CloneDeploy_Web.Models.BootTemplate bootTemplate)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -21,6 +22,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string TotalCount()
         {
             using (var uow = new DAL.UnitOfWork())
@@ -29,6 +31,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static bool DeleteBootTemplate(int BootTemplateId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -38,7 +41,8 @@ namespace BLL
             }
         }
 
-        public static Models.BootTemplate GetBootTemplate(int BootTemplateId)
+        //moved
+        public static CloneDeploy_Web.Models.BootTemplate GetBootTemplate(int BootTemplateId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -46,7 +50,8 @@ namespace BLL
             }
         }
 
-        public static List<Models.BootTemplate> SearchBootTemplates(string searchString = "")
+        //moved
+        public static List<CloneDeploy_Web.Models.BootTemplate> SearchBootTemplates(string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -56,7 +61,8 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult UpdateBootTemplate(Models.BootTemplate bootTemplate)
+        //moved
+        public static ActionResult UpdateBootTemplate(CloneDeploy_Web.Models.BootTemplate bootTemplate)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -71,9 +77,10 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult ValidateTemplate(Models.BootTemplate bootTemplate, bool isNewTemplate)
+        //move not needed
+        public static ActionResult ValidateTemplate(CloneDeploy_Web.Models.BootTemplate bootTemplate, bool isNewTemplate)
         {
-            var validationResult = new Models.ActionResult();
+            var validationResult = new ActionResult();
 
             if (string.IsNullOrEmpty(bootTemplate.Name) || bootTemplate.Name.Contains(" "))
             {

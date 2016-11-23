@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_Web.Models;
 using Helpers;
-using Models;
 using Newtonsoft.Json;
 
 namespace BLL.DynamicClientPartition
@@ -17,24 +17,24 @@ namespace BLL.DynamicClientPartition
 
     public class ClientPartition
     {
-        public ClientPartition(int hdToGet,string newHdSize, Models.ImageProfile imageProfile, string partitionPrefix)
+        public ClientPartition(int hdToGet,string newHdSize, CloneDeploy_Web.Models.ImageProfile imageProfile, string partitionPrefix)
         {
             _hdToGet = hdToGet;
             _newHdSize = (long)(Convert.ToInt64(newHdSize) * .99);
             _imageProfile = imageProfile;
-            PrimaryAndExtendedPartitions = new List<Models.ClientPartition>();
-            LogicalPartitions = new List<Models.ClientPartition>();
+            PrimaryAndExtendedPartitions = new List<CloneDeploy_Web.Models.ClientPartition>();
+            LogicalPartitions = new List<CloneDeploy_Web.Models.ClientPartition>();
             LogicalVolumes = new List<ClientLogicalVolume>();
             VolumeGroupHelpers = new List<ClientVolumeGroupHelper>();
             _imageSchema = new ClientPartitionHelper(_imageProfile).GetImageSchema();
         }
 
-        private readonly Models.ImageSchema.ImageSchema _imageSchema;
+        private readonly CloneDeploy_Web.Models.ImageSchema.ImageSchema _imageSchema;
         private string BootPart { get; set; }
         private int HdNumberToGet { get; set; }
 
         private readonly int _hdToGet;
-        private readonly Models.ImageProfile _imageProfile;
+        private readonly CloneDeploy_Web.Models.ImageProfile _imageProfile;
         private readonly long _newHdSize;
 
         private int LbsByte { get; set; }    
@@ -42,11 +42,11 @@ namespace BLL.DynamicClientPartition
        
 
         public int FirstPartitionStartSector { get; set; }
-        public List<Models.ClientPartition> PrimaryAndExtendedPartitions { get; set; }
-        public List<Models.ClientPartition> LogicalPartitions { get; set; }
-        public List<Models.ClientVolumeGroupHelper> VolumeGroupHelpers { get; set; }
-        public List<Models.ClientLogicalVolume> LogicalVolumes { get; set; }
-        public Models.ExtendedPartitionHelper ExtendedPartitionHelper { get; set; }
+        public List<CloneDeploy_Web.Models.ClientPartition> PrimaryAndExtendedPartitions { get; set; }
+        public List<CloneDeploy_Web.Models.ClientPartition> LogicalPartitions { get; set; }
+        public List<ClientVolumeGroupHelper> VolumeGroupHelpers { get; set; }
+        public List<ClientLogicalVolume> LogicalVolumes { get; set; }
+        public ExtendedPartitionHelper ExtendedPartitionHelper { get; set; }
         public string DebugStatus { get; set; }
         /// <summary>
         ///     Generates the partitioning layout used for the client when restoring an image.
@@ -135,7 +135,7 @@ namespace BLL.DynamicClientPartition
                     if (schemaPartition.Type.ToLower() == "logical")
                         continue;
 
-                    var clientPartition = new Models.ClientPartition
+                    var clientPartition = new CloneDeploy_Web.Models.ClientPartition
                     {
                         IsBoot = BootPart == schemaPartition.Number,
                         Number = schemaPartition.Number,
@@ -304,7 +304,7 @@ namespace BLL.DynamicClientPartition
                     if (part.Type.ToLower() != "logical")
                         continue;
 
-                    var clientPartition = new Models.ClientPartition
+                    var clientPartition = new CloneDeploy_Web.Models.ClientPartition
                     {
                         IsBoot = BootPart == part.Number,
                         Number = part.Number,

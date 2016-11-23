@@ -26,13 +26,13 @@ public partial class views_admin_server : Admin
     {
         RequiresAuthorization(Authorizations.UpdateAdmin);
         if (!ValidateSettings()) return;
-        var listSettings = new List<Models.Setting>
+        var listSettings = new List<CloneDeploy_Web.Models.Setting>
         {
-            new Models.Setting {Name = "Server IP", Value = txtIP.Text, Id = Setting.GetSetting("Server IP").Id},
-            new Models.Setting {Name = "Web Server Port", Value = txtPort.Text, Id = Setting.GetSetting("Web Server Port").Id},
-            new Models.Setting {Name = "Tftp Path", Value = txtTFTPPath.Text, Id = Setting.GetSetting("Tftp Path").Id},
-            new Models.Setting {Name = "Default Computer View", Value = ddlComputerView.Text, Id = Setting.GetSetting("Default Computer View").Id},
-            new Models.Setting {Name = "Web Path", Value = txtWebService.Text, Id = Setting.GetSetting("Web Path").Id}
+            new CloneDeploy_Web.Models.Setting {Name = "Server IP", Value = txtIP.Text, Id = Setting.GetSetting("Server IP").Id},
+            new CloneDeploy_Web.Models.Setting {Name = "Web Server Port", Value = txtPort.Text, Id = Setting.GetSetting("Web Server Port").Id},
+            new CloneDeploy_Web.Models.Setting {Name = "Tftp Path", Value = txtTFTPPath.Text, Id = Setting.GetSetting("Tftp Path").Id},
+            new CloneDeploy_Web.Models.Setting {Name = "Default Computer View", Value = ddlComputerView.Text, Id = Setting.GetSetting("Default Computer View").Id},
+            new CloneDeploy_Web.Models.Setting {Name = "Web Path", Value = txtWebService.Text, Id = Setting.GetSetting("Web Path").Id}
         };
 
         var newBootMenu = false;

@@ -36,7 +36,7 @@ namespace CloneDeploy_App.BLL
 
         public void UpdateProgress(int computerId, string progress, string progressType)
         {
-            var task = BLL.ActiveImagingTask.GetTask(computerId);
+            var task = BLL.ActiveImagingTask.GetTaskForComputer(computerId);
             if (progressType == "wim")
             {
                 task.Elapsed = progress;
@@ -58,7 +58,7 @@ namespace CloneDeploy_App.BLL
 
         public void UpdateProgressPartition(int computerId, string partition)
         {
-            var task = BLL.ActiveImagingTask.GetTask(computerId);
+            var task = BLL.ActiveImagingTask.GetTaskForComputer(computerId);
             task.Partition = partition;
             task.Elapsed = "Please Wait...";
             task.Remaining = "";
@@ -157,7 +157,7 @@ namespace CloneDeploy_App.BLL
                 return JsonConvert.SerializeObject(checkIn);
             }
 
-            var computerTask = BLL.ActiveImagingTask.GetTask(computer.Id);
+            var computerTask = BLL.ActiveImagingTask.GetTaskForComputer(computer.Id);
             if (computerTask == null)
             {
                 checkIn.Result = "false";
@@ -222,7 +222,7 @@ namespace CloneDeploy_App.BLL
 
         public void ChangeStatusInProgress(int computerId)
         {
-            var computerTask = BLL.ActiveImagingTask.GetTask(computerId);
+            var computerTask = BLL.ActiveImagingTask.GetTaskForComputer(computerId);
             computerTask.Status = "3";
             BLL.ActiveImagingTask.UpdateActiveImagingTask(computerTask);
         }
@@ -249,13 +249,13 @@ namespace CloneDeploy_App.BLL
 
         public void ErrorEmail(int computerId, string error)
         {
-            var computerTask = BLL.ActiveImagingTask.GetTask(computerId);
+            var computerTask = BLL.ActiveImagingTask.GetTaskForComputer(computerId);
             BLL.ActiveImagingTask.SendTaskErrorEmail(computerTask,error);
         }
 
         public void CheckOut(int computerId)
         {
-            var computerTask = BLL.ActiveImagingTask.GetTask(computerId);
+            var computerTask = BLL.ActiveImagingTask.GetTaskForComputer(computerId);
             BLL.ActiveImagingTask.DeleteActiveImagingTask(computerTask.Id);
             if(computerTask.Type == "unicast")
                 BLL.ActiveImagingTask.SendTaskCompletedEmail(computerTask);
@@ -263,7 +263,7 @@ namespace CloneDeploy_App.BLL
 
         public void PermanentTaskCheckOut(int computerId)
         {
-            var computerTask = BLL.ActiveImagingTask.GetTask(computerId);
+            var computerTask = BLL.ActiveImagingTask.GetTaskForComputer(computerId);
             computerTask.Status = "0";
             computerTask.Partition = "";
             computerTask.Completed = "";
@@ -294,7 +294,7 @@ namespace CloneDeploy_App.BLL
             var queueStatus = new QueueStatus();
 
             //Check if already part of the queue
-            var thisComputerTask = BLL.ActiveImagingTask.GetTask(computerId);
+            var thisComputerTask = BLL.ActiveImagingTask.GetTaskForComputer(computerId);
             if (thisComputerTask.Status == "2")
             {
                 //Check if the queue is open yet
@@ -566,7 +566,7 @@ namespace CloneDeploy_App.BLL
                 }
                 if (!prsRunning)
                 {
-                    if (BLL.ActiveMulticastSession.Delete(mcTask.Id))
+                    if (BLL.ActiveMulticastSession.Delete(mcTask.Id).Success)
                     {
                         result = "Success";
                         BLL.ActiveMulticastSession.SendMulticastCompletedEmail(mcTask);

@@ -1,7 +1,7 @@
 ﻿using System;
 using BasePages;
+using CloneDeploy_Web.Models;
 using Helpers;
-using Models;
 
 namespace views.users
 {

@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 namespace views.tasks
@@ -31,7 +32,7 @@ namespace views.tasks
                     Session["computerID"] = computer.Id;
                     Session["direction"] = "permanent_push";
                     lblTitle.Text = "Permanent Deploy The Selected Computer?";
-                    gvConfirm.DataSource = new List<Models.Computer> { computer };
+                    gvConfirm.DataSource = new List<Computer> { computer };
                 }
             }
             gvConfirm.DataBind();
@@ -52,7 +53,7 @@ namespace views.tasks
                     Session["computerID"] = computer.Id;
                     Session["direction"] = "push";
                     lblTitle.Text = "Deploy The Selected Computer?";
-                    gvConfirm.DataSource = new List<Models.Computer> { computer };
+                    gvConfirm.DataSource = new List<Computer> { computer };
                 }
             }
             gvConfirm.DataBind();
@@ -73,7 +74,7 @@ namespace views.tasks
                     Session["computerID"] = computer.Id;
                     Session["direction"] = "pull";
                     lblTitle.Text = "Upload The Selected Computer?";
-                    gvConfirm.DataSource = new List<Models.Computer> { computer };
+                    gvConfirm.DataSource = new List<Computer> { computer };
                 }
             }
             gvConfirm.DataBind();

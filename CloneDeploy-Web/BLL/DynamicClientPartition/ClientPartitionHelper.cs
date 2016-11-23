@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CloneDeploy_Web.Models;
+using CloneDeploy_Web.Models.ImageSchema;
 using Helpers;
-using Models;
 using Newtonsoft.Json;
 
 namespace BLL.DynamicClientPartition
@@ -13,9 +14,9 @@ namespace BLL.DynamicClientPartition
     /// </summary>
     public class ClientPartitionHelper
     {
-        private readonly Models.ImageSchema.ImageSchema _imageSchema;
-        private readonly Models.ImageProfile _imageProfile;
-        public ClientPartitionHelper(Models.ImageProfile imageProfile)
+        private readonly CloneDeploy_Web.Models.ImageSchema.ImageSchema _imageSchema;
+        private readonly CloneDeploy_Web.Models.ImageProfile _imageProfile;
+        public ClientPartitionHelper(CloneDeploy_Web.Models.ImageProfile imageProfile)
         {
             string schema = null;
      
@@ -42,7 +43,7 @@ namespace BLL.DynamicClientPartition
 
             if (!string.IsNullOrEmpty(schema))
             {
-                _imageSchema = JsonConvert.DeserializeObject<Models.ImageSchema.ImageSchema>(schema);
+                _imageSchema = JsonConvert.DeserializeObject<CloneDeploy_Web.Models.ImageSchema.ImageSchema>(schema);
             }
         }
 
@@ -344,7 +345,7 @@ namespace BLL.DynamicClientPartition
         ///     Calculates the minimum block size required for a single logical volume, assuming the logical volume cannot have any
         ///     children.
         /// </summary>
-        public PartitionHelper LogicalVolume(Models.ImageSchema.LogicalVolume lv, int lbsByte, long newHdSize, int hdNumberToGet)
+        public PartitionHelper LogicalVolume(LogicalVolume lv, int lbsByte, long newHdSize, int hdNumberToGet)
         {
             var logicalVolumeHelper = new PartitionHelper {MinSizeBlk = 0};
             if (lv.ForceFixedSize)
@@ -588,7 +589,7 @@ namespace BLL.DynamicClientPartition
                 select part).Any() ? "true" : "false";
         }
 
-        public Models.ImageSchema.ImageSchema GetImageSchema()
+        public CloneDeploy_Web.Models.ImageSchema.ImageSchema GetImageSchema()
         {
             return _imageSchema;
         }

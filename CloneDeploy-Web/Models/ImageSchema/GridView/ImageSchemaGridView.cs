@@ -1,4 +1,4 @@
-﻿namespace Models.ImageSchema.GridView
+﻿namespace CloneDeploy_Web.Models.ImageSchema.GridView
 {
     public class ImageSchemaGridView
     {

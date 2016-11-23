@@ -140,9 +140,9 @@ public partial class views_admin_bootmenu_defaultmenu : Admin
 
     protected void CreateProxyMenu()
     {
-        var listSettings = new List<Models.Setting>
+        var listSettings = new List<CloneDeploy_Web.Models.Setting>
         {
-            new Models.Setting
+            new CloneDeploy_Web.Models.Setting
             {
                 Name = "Ipxe Requires Login",
                 Value = chkIpxeProxy.Checked.ToString(),
@@ -182,9 +182,9 @@ public partial class views_admin_bootmenu_defaultmenu : Admin
 
     protected void CreateStandardMenu()
     {
-        var listSettings = new List<Models.Setting>
+        var listSettings = new List<CloneDeploy_Web.Models.Setting>
         {
-            new Models.Setting
+            new CloneDeploy_Web.Models.Setting
             {
                 Name = "Ipxe Requires Login",
                 Value = chkIpxeLogin.Checked.ToString(),

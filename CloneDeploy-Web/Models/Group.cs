@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using CsvHelper.Configuration;
 
-namespace Models
+namespace CloneDeploy_Web.Models
 {
     [Table("groups", Schema = "public")]
     public class Group

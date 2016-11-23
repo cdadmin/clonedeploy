@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using CloneDeploy_App.Models;
+using Newtonsoft.Json;
 
 namespace CloneDeploy_App.BLL
 {
@@ -14,6 +16,8 @@ namespace CloneDeploy_App.BLL
                 {
                     uow.BuildingRepository.Insert(building);
                     validationResult.Success = uow.Save();
+                    validationResult.ObjectId = building.Id;
+                    validationResult.Object = JsonConvert.SerializeObject(building);
                 }
 
                 return validationResult;
@@ -29,13 +33,18 @@ namespace CloneDeploy_App.BLL
             }
         }
 
-        public static  bool DeleteBuilding(int buildingId)
+        public static ActionResult DeleteBuilding(int buildingId)
         {
+            var actionResult = new ActionResult();
+            var building = GetBuilding(buildingId);
             using (var uow = new DAL.UnitOfWork())
             {
                 uow.BuildingRepository.Delete(buildingId);
-                return uow.Save();
+                actionResult.Success = uow.Save();
+                actionResult.ObjectId = buildingId;
+                actionResult.Object = JsonConvert.SerializeObject(building);
             }
+            return actionResult;
         }
 
         public static  Models.Building GetBuilding(int buildingId)
@@ -63,6 +72,8 @@ namespace CloneDeploy_App.BLL
                 {
                     uow.BuildingRepository.Update(building, building.Id);
                     validationResult.Success = uow.Save();
+                    validationResult.ObjectId = building.Id;
+                    validationResult.Object = JsonConvert.SerializeObject(building);
                 }
 
                 return validationResult;

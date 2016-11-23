@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_Web.Models;
 
 namespace BLL
 {
     public class BootEntry
     {
 
-        public static Models.ActionResult AddBootEntry(Models.BootEntry bootEntry)
+        //moved
+        public static ActionResult AddBootEntry(CloneDeploy_Web.Models.BootEntry bootEntry)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -21,6 +23,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string TotalCount()
         {
             using (var uow = new DAL.UnitOfWork())
@@ -29,6 +32,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static bool DeleteBootEntry(int BootEntryId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -38,7 +42,8 @@ namespace BLL
             }
         }
 
-        public static Models.BootEntry GetBootEntry(int BootEntryId)
+        //moved
+        public static CloneDeploy_Web.Models.BootEntry GetBootEntry(int BootEntryId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -46,7 +51,8 @@ namespace BLL
             }
         }
 
-        public static List<Models.BootEntry> SearchBootEntrys(string searchString = "")
+        //moved
+        public static List<CloneDeploy_Web.Models.BootEntry> SearchBootEntrys(string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -56,7 +62,8 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult UpdateBootEntry(Models.BootEntry bootEntry)
+        //moved
+        public static ActionResult UpdateBootEntry(CloneDeploy_Web.Models.BootEntry bootEntry)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -71,9 +78,10 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult ValidateEntry(Models.BootEntry bootEntry, bool isNewEntry)
+        //move not needed
+        public static ActionResult ValidateEntry(CloneDeploy_Web.Models.BootEntry bootEntry, bool isNewEntry)
         {
-            var validationResult = new Models.ActionResult();
+            var validationResult = new ActionResult();
 
             if (string.IsNullOrEmpty(bootEntry.Name))
             {

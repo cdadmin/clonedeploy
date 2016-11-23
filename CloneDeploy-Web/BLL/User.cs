@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_Web.Models;
 using Helpers;
-using Models;
 using Newtonsoft.Json;
 
 namespace BLL
@@ -10,7 +10,7 @@ namespace BLL
     public class User
     {
 
-        public static Models.ActionResult AddUser(CloneDeployUser user)
+        public static ActionResult AddUser(CloneDeployUser user)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -56,7 +56,7 @@ namespace BLL
             return user.Membership == "Administrator";
         }
 
-        public static Models.CloneDeployUser GetUserByToken(string token)
+        public static CloneDeployUser GetUserByToken(string token)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -64,7 +64,7 @@ namespace BLL
             }
         }
 
-        public static Models.CloneDeployUser GetUserByApiId(string apiId)
+        public static CloneDeployUser GetUserByApiId(string apiId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -150,7 +150,7 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult UpdateUser(CloneDeployUser user)
+        public static ActionResult UpdateUser(CloneDeployUser user)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -165,9 +165,9 @@ namespace BLL
             }
         }
 
-        public static Models.ActionResult ValidateUser(Models.CloneDeployUser user, bool isNewUser)
+        public static ActionResult ValidateUser(CloneDeployUser user, bool isNewUser)
         {
-            var validationResult = new Models.ActionResult();
+            var validationResult = new ActionResult();
 
             if (string.IsNullOrEmpty(user.Name) || !user.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {

@@ -4,7 +4,8 @@ namespace BLL
 {
     public static class GroupProperty
     {
-        public static void AddGroupProperty(Models.GroupProperty groupProperty)
+        //moved
+        public static void AddGroupProperty(CloneDeploy_Web.Models.GroupProperty groupProperty)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -15,7 +16,8 @@ namespace BLL
             UpdateComputerProperties(groupProperty);
         }
 
-        public static Models.GroupProperty GetGroupProperty(int groupId)
+        //moved
+        public static CloneDeploy_Web.Models.GroupProperty GetGroupProperty(int groupId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -23,7 +25,8 @@ namespace BLL
             }
         }
 
-        public static void UpdateGroupProperty(Models.GroupProperty groupProperty)
+        //moved
+        public static void UpdateGroupProperty(CloneDeploy_Web.Models.GroupProperty groupProperty)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -33,7 +36,8 @@ namespace BLL
             UpdateComputerProperties(groupProperty);
         }
 
-        public static void UpdateComputerProperties(Models.GroupProperty groupProperty)
+        //move not needed
+        public static void UpdateComputerProperties(CloneDeploy_Web.Models.GroupProperty groupProperty)
         {
             foreach (var computer in BLL.Group.GetGroupMembers(groupProperty.GroupId))
             {
@@ -75,6 +79,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static bool DeleteGroup(int groupId)
         {
             using (var uow = new DAL.UnitOfWork())

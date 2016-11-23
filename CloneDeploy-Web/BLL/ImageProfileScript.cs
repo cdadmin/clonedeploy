@@ -6,7 +6,7 @@ namespace BLL
     public class ImageProfileScript
     {
 
-        public static bool AddImageProfileScript(Models.ImageProfileScript imageProfileScript)
+        public static bool AddImageProfileScript(CloneDeploy_Web.Models.ImageProfileScript imageProfileScript)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -24,7 +24,7 @@ namespace BLL
             }
         }
 
-        public static List<Models.ImageProfileScript> SearchImageProfileScripts(int profileId)
+        public static List<CloneDeploy_Web.Models.ImageProfileScript> SearchImageProfileScripts(int profileId)
         {
             using (var uow = new DAL.UnitOfWork())
             {

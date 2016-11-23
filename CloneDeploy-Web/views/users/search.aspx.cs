@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 namespace views.users
@@ -66,7 +67,7 @@ namespace views.users
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
-            List<Models.CloneDeployUser> listUsers = (List<Models.CloneDeployUser>)gvUsers.DataSource;
+            List<CloneDeployUser> listUsers = (List<CloneDeployUser>)gvUsers.DataSource;
             switch (e.SortExpression)
             {
                 case "Name":

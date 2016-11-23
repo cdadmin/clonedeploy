@@ -9,6 +9,7 @@ namespace BLL
     public class ActiveImagingTask
     {
 
+        //moved
         public static bool IsComputerActive(int computerId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -17,6 +18,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static bool DeleteActiveImagingTask(int activeImagingTaskId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -37,7 +39,8 @@ namespace BLL
             }
         }
 
-        public static void SendTaskCompletedEmail(Models.ActiveImagingTask task)
+        //move not needed
+        public static void SendTaskCompletedEmail(CloneDeploy_Web.Models.ActiveImagingTask task)
         {
             //Mail not enabled
             if (Settings.SmtpEnabled == "0") return;
@@ -57,7 +60,8 @@ namespace BLL
             }
         }
 
-        public static void SendTaskErrorEmail(Models.ActiveImagingTask task, string error)
+        //move not needed
+        public static void SendTaskErrorEmail(CloneDeploy_Web.Models.ActiveImagingTask task, string error)
         {
             //Mail not enabled
             if (Settings.SmtpEnabled == "0") return;
@@ -77,7 +81,8 @@ namespace BLL
             }
         }
 
-        public static bool AddActiveImagingTask(Models.ActiveImagingTask activeImagingTask)
+        //move not needed
+        public static bool AddActiveImagingTask(CloneDeploy_Web.Models.ActiveImagingTask activeImagingTask)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -86,6 +91,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static void DeleteForMulticast(int multicastId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -95,7 +101,8 @@ namespace BLL
             }
         }
 
-        public static bool UpdateActiveImagingTask(Models.ActiveImagingTask activeImagingTask)
+        //move not needed
+        public static bool UpdateActiveImagingTask(CloneDeploy_Web.Models.ActiveImagingTask activeImagingTask)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -104,7 +111,8 @@ namespace BLL
             }
         }
 
-        public static List<Models.ActiveImagingTask> MulticastMemberStatus(int multicastId)
+        //moved
+        public static List<CloneDeploy_Web.Models.ActiveImagingTask> MulticastMemberStatus(int multicastId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -118,7 +126,9 @@ namespace BLL
             }
         }
 
-        public static List<Models.ActiveImagingTask> MulticastProgress(int multicastId)
+
+        //moved
+        public static List<CloneDeploy_Web.Models.ActiveImagingTask> MulticastProgress(int multicastId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -126,7 +136,8 @@ namespace BLL
             }
         }
 
-        public static List<Models.ActiveImagingTask> ReadAll(int userId)
+        //moved
+        public static List<CloneDeploy_Web.Models.ActiveImagingTask> ReadAll(int userId)
         {
 
             using (var uow = new DAL.UnitOfWork())
@@ -143,6 +154,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string ActiveUnicastCount(int userId, string taskType)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -153,6 +165,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string AllActiveCount(int userId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -163,6 +176,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static int AllActiveCountAdmin()
         {
             using (var uow = new DAL.UnitOfWork())
@@ -171,12 +185,13 @@ namespace BLL
             }
         }
 
-        public static List<Models.ActiveImagingTask> ReadUnicasts(int userId, string taskType)
+        //moved
+        public static List<CloneDeploy_Web.Models.ActiveImagingTask> ReadUnicasts(int userId, string taskType)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 //Admins see all tasks
-                List<Models.ActiveImagingTask> activeImagingTasks;
+                List<CloneDeploy_Web.Models.ActiveImagingTask> activeImagingTasks;
                 if (BLL.User.IsAdmin(userId))
                 {
                     activeImagingTasks = uow.ActiveImagingTaskRepository.Get(t => t.Type == taskType,
@@ -195,7 +210,8 @@ namespace BLL
             }
         }
 
-        public static List<Models.Computer> GetMulticastComputers(int multicastId)
+        //moved
+        public static List<CloneDeploy_Web.Models.Computer> GetMulticastComputers(int multicastId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -203,13 +219,16 @@ namespace BLL
             }
         }
 
-        public static Models.ActiveImagingTask GetTask(int computerId)
+        //move not needed
+        public static CloneDeploy_Web.Models.ActiveImagingTask GetTask(int computerId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
                 return uow.ActiveImagingTaskRepository.GetFirstOrDefault(x => x.ComputerId == computerId);
             }
         }
+
+        //move not needed
         public static void DeleteAll()
         {
             using (var uow = new DAL.UnitOfWork())
@@ -219,6 +238,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static int GetCurrentQueue(string qType)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -229,7 +249,8 @@ namespace BLL
             }
         }
 
-        public static Models.ActiveImagingTask GetLastQueuedTask(string qType)
+        //move not needed
+        public static CloneDeploy_Web.Models.ActiveImagingTask GetLastQueuedTask(string qType)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -239,6 +260,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static string GetQueuePosition(int computerId)
         {
             var computerTask = GetTask(computerId);
@@ -250,7 +272,8 @@ namespace BLL
             }
         }
 
-        public static Models.ActiveImagingTask GetNextComputerInQueue(string qType)
+        //move not needed
+        public static CloneDeploy_Web.Models.ActiveImagingTask GetNextComputerInQueue(string qType)
         {
             using (var uow = new DAL.UnitOfWork())
             {

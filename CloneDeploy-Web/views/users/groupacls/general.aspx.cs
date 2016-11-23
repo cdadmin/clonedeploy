@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 public partial class views_users_groupacls_general : BasePages.Users
@@ -34,7 +35,7 @@ public partial class views_users_groupacls_general : BasePages.Users
     protected void buttonUpdate_OnClick(object sender, EventArgs e)
     {
         BLL.UserGroupRight.DeleteUserGroupRights(CloneDeployUserGroup.Id);
-        var listOfRights = _listCheckBoxes.Where(x => x.Checked).Select(box => new Models.UserGroupRight { UserGroupId = CloneDeployUserGroup.Id, Right = box.ID }).ToList();
+        var listOfRights = _listCheckBoxes.Where(x => x.Checked).Select(box => new UserGroupRight { UserGroupId = CloneDeployUserGroup.Id, Right = box.ID }).ToList();
         BLL.UserGroupRight.AddUserGroupRights(listOfRights);
         BLL.UserGroup.UpdateAllGroupMembersAcls(CloneDeployUserGroup);
         EndUserMessage = "Updated ACLs";

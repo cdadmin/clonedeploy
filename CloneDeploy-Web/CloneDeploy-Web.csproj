@@ -889,6 +889,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="APICalls\APICall.cs" />
+    <Compile Include="APICalls\ApiRequest.cs" />
+    <Compile Include="APICalls\ComputerMunkiAPI.cs" />
+    <Compile Include="APICalls\ComputerProxyReservationAPI.cs" />
+    <Compile Include="APICalls\FilesystemAPI.cs" />
     <Compile Include="APICalls\GenericAPI.cs" />
     <Compile Include="APICalls\IAPICall.cs" />
     <Compile Include="APICalls\IGenericAPI.cs" />
@@ -1017,6 +1021,7 @@
     <Compile Include="Helpers\Utility.cs" />
     <Compile Include="Models\ActiveImagingTask.cs" />
     <Compile Include="Models\ActiveMulticastSession.cs" />
+    <Compile Include="Models\ApiBoolDTO.cs" />
     <Compile Include="Models\ApiDTO.cs" />
     <Compile Include="Models\Application.cs" />
     <Compile Include="Models\BootEntry.cs" />

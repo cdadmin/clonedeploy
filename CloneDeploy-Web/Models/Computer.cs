@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using CsvHelper.Configuration;
-using RestSharp;
 
-namespace Models
+namespace CloneDeploy_Web.Models
 {
     [Table("computers")]
     public class Computer
@@ -60,7 +58,7 @@ namespace Models
         public int ProxyReservation { get; set; }
 
         [NotMapped]
-        public virtual Models.ActiveImagingTask ActiveImagingTask { get; set; }
+        public virtual ActiveImagingTask ActiveImagingTask { get; set; }
 
         [NotMapped]
         public virtual Models.Image Image { get; set; }

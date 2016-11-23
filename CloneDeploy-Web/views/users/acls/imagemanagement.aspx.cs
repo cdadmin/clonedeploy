@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 public partial class views_users_acls_imagemanagement : BasePages.Users
@@ -46,14 +47,14 @@ public partial class views_users_acls_imagemanagement : BasePages.Users
             return;
         }
 
-        var list = new List<Models.UserImageManagement>();
+        var list = new List<UserImageManagement>();
         foreach (GridViewRow row in gvImages.Rows)
         {
             var cb = (CheckBox)row.FindControl("chkSelector");
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvImages.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            var userImageManagement = new Models.UserImageManagement
+            var userImageManagement = new UserImageManagement
             {
                 UserId = CloneDeployUser.Id,
                 ImageId = Convert.ToInt32(dataKey.Value)

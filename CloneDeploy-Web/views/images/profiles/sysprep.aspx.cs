@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 public partial class views_images_profiles_sysprep : Images
@@ -47,7 +48,7 @@ public partial class views_images_profiles_sysprep : Images
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<Models.SysprepTag> listSysprepTags = (List<Models.SysprepTag>)gvSysprep.DataSource;
+        List<SysprepTag> listSysprepTags = (List<SysprepTag>)gvSysprep.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -75,7 +76,7 @@ public partial class views_images_profiles_sysprep : Images
             var dataKey = gvSysprep.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
 
-            var profileSysPrep = new Models.ImageProfileSysprepTag
+            var profileSysPrep = new ImageProfileSysprepTag
             {
                 SysprepId = Convert.ToInt32(dataKey.Value),
                 ProfileId = ImageProfile.Id,

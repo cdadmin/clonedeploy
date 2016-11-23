@@ -5,6 +5,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using BasePages;
 using Helpers;
+using Image = CloneDeploy_Web.Models.Image;
 
 namespace views.images
 {
@@ -78,7 +79,7 @@ namespace views.images
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
-            List<Models.Image> listImages = (List<Models.Image>)gvImages.DataSource;
+            List<Image> listImages = (List<Image>)gvImages.DataSource;
             switch (e.SortExpression)
             {
                 case "Name":

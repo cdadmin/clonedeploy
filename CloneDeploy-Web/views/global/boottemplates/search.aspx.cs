@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 public partial class views_global_boottemplates_search : BasePages.Global
@@ -29,7 +30,7 @@ public partial class views_global_boottemplates_search : BasePages.Global
     protected void gvTemplates_OnSorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<Models.BootTemplate> listSysprepTags = (List<Models.BootTemplate>)gvTemplates.DataSource;
+        List<BootTemplate> listSysprepTags = (List<BootTemplate>)gvTemplates.DataSource;
         switch (e.SortExpression)
         {
             case "Name":

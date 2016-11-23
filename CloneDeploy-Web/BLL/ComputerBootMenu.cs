@@ -7,7 +7,8 @@ namespace BLL
 {
     public class ComputerBootMenu
     {
-        public static bool ToggleComputerBootMenu(Models.Computer computer, bool enable)
+        //moved
+        public static bool ToggleComputerBootMenu(CloneDeploy_Web.Models.Computer computer, bool enable)
         {
             computer.CustomBootEnabled = Convert.ToInt16(enable);
             BLL.Computer.UpdateComputer(computer);
@@ -17,7 +18,9 @@ namespace BLL
 
             return true;
         }
-        public static Models.ComputerBootMenu GetComputerBootMenu(int computerId)
+
+        //moved
+        public static CloneDeploy_Web.Models.ComputerBootMenu GetComputerBootMenu(int computerId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -25,7 +28,8 @@ namespace BLL
             }
         }
 
-        public static bool UpdateComputerBootMenu(Models.ComputerBootMenu computerBootMenu)
+        //moved
+        public static bool UpdateComputerBootMenu(CloneDeploy_Web.Models.ComputerBootMenu computerBootMenu)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -43,6 +47,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static bool DeleteComputerBootMenus(int computerId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -52,7 +57,8 @@ namespace BLL
             }
         }
 
-        public static void DeleteBootFiles(Models.Computer computer)
+        //move not needed
+        public static void DeleteBootFiles(CloneDeploy_Web.Models.Computer computer)
         {
             if (BLL.ActiveImagingTask.IsComputerActive(computer.Id)) return; //Files Will Be Processed When task is done
             var pxeMac = Utility.MacToPxeMac(computer.Mac);
@@ -80,7 +86,8 @@ namespace BLL
                        pxeMac + ext);
         }
 
-        public static void CreateBootFiles(Models.Computer computer)
+        //moved
+        public static void CreateBootFiles(CloneDeploy_Web.Models.Computer computer)
         {
             if (BLL.ActiveImagingTask.IsComputerActive(computer.Id)) return; //Files Will Be Processed When task is done
             var bootMenu = GetComputerBootMenu(computer.Id);
@@ -129,7 +136,8 @@ namespace BLL
             }
         }
 
-        public static string GetComputerNonProxyPath(Models.Computer computer, bool isActiveOrCustom)
+        //moved
+        public static string GetComputerNonProxyPath(CloneDeploy_Web.Models.Computer computer, bool isActiveOrCustom)
         {
             var mode = Settings.PxeMode;
             var pxeComputerMac = Utility.MacToPxeMac(computer.Mac);
@@ -162,7 +170,8 @@ namespace BLL
             return path;
         }
 
-        public static string GetComputerProxyPath(Models.Computer computer, bool isActiveOrCustom, string proxyType)
+        //moved
+        public static string GetComputerProxyPath(CloneDeploy_Web.Models.Computer computer, bool isActiveOrCustom, string proxyType)
         {
             var pxeComputerMac = Utility.MacToPxeMac(computer.Mac);
             string path = null;

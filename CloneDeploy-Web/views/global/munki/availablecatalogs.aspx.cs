@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 public partial class views_global_munki_availablecatalogs : BasePages.Global
@@ -49,7 +50,7 @@ public partial class views_global_munki_availablecatalogs : BasePages.Global
             var dataKey = gvCatalogs.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
 
-            var catalog = new Models.MunkiManifestCatalog()
+            var catalog = new MunkiManifestCatalog()
             {
                 Name = dataKey.Value.ToString(),
                 ManifestTemplateId = ManifestTemplate.Id,

@@ -1,4 +1,5 @@
 ﻿using System;
+using CloneDeploy_Web.Models;
 
 namespace DAL
 {
@@ -6,177 +7,177 @@ namespace DAL
     {
         private CloneDeployDbContext _context = new CloneDeployDbContext();
       
-        private IGenericRepository<Models.ActiveMulticastSession> _activeMulticastSessionRepository;
+        private IGenericRepository<ActiveMulticastSession> _activeMulticastSessionRepository;
         private BuildingRepository _buildingRepository;
-        private IGenericRepository<Models.DistributionPoint> _distributionPointRepository;
-        private IGenericRepository<Models.FileFolder> _fileFolderRepository;
-        private IGenericRepository<Models.ComputerBootMenu> _computerBootMenuRepository;
-        private IGenericRepository<Models.GroupBootMenu> _groupBootMenuRepository;
-        private IGenericRepository<Models.GroupMembership> _groupMembershipRepository;
-        private IGenericRepository<Models.Image> _imageRepository;
-        private IGenericRepository<Models.ImageProfilePartitionLayout> _imageProfilePartitionRepository;
-        private IGenericRepository<Models.ImageProfile> _imageProfileRepository;
-        private IGenericRepository<Models.Partition> _partitionRepository;
-        private IGenericRepository<Models.PartitionLayout> _partitionLayoutRepository;
-        private IGenericRepository<Models.Port> _portRepository;
-        private IGenericRepository<Models.ComputerLog> _computerLogRepository;
-        private IGenericRepository<Models.UserRight> _userRightRepository;
-        private IGenericRepository<Models.UserImageManagement> _userImageManagementRepository;
-        private IGenericRepository<Models.UserGroupManagement> _userGroupManagementRepository;
-        private IGenericRepository<Models.UserGroupRight> _userGroupRightRepository;
-        private IGenericRepository<Models.UserGroupImageManagement> _userGroupImageManagementRepository;
-        private IGenericRepository<Models.UserGroupGroupManagement> _userGroupGroupManagementRepository;
-        private IGenericRepository<Models.UserLockout> _userLockoutRepository;
-        private IGenericRepository<Models.GroupProperty> _groupPropertyRepository;
+        private IGenericRepository<DistributionPoint> _distributionPointRepository;
+        private IGenericRepository<FileFolder> _fileFolderRepository;
+        private IGenericRepository<ComputerBootMenu> _computerBootMenuRepository;
+        private IGenericRepository<GroupBootMenu> _groupBootMenuRepository;
+        private IGenericRepository<GroupMembership> _groupMembershipRepository;
+        private IGenericRepository<Image> _imageRepository;
+        private IGenericRepository<ImageProfilePartitionLayout> _imageProfilePartitionRepository;
+        private IGenericRepository<ImageProfile> _imageProfileRepository;
+        private IGenericRepository<Partition> _partitionRepository;
+        private IGenericRepository<PartitionLayout> _partitionLayoutRepository;
+        private IGenericRepository<Port> _portRepository;
+        private IGenericRepository<ComputerLog> _computerLogRepository;
+        private IGenericRepository<UserRight> _userRightRepository;
+        private IGenericRepository<UserImageManagement> _userImageManagementRepository;
+        private IGenericRepository<UserGroupManagement> _userGroupManagementRepository;
+        private IGenericRepository<UserGroupRight> _userGroupRightRepository;
+        private IGenericRepository<UserGroupImageManagement> _userGroupImageManagementRepository;
+        private IGenericRepository<UserGroupGroupManagement> _userGroupGroupManagementRepository;
+        private IGenericRepository<UserLockout> _userLockoutRepository;
+        private IGenericRepository<GroupProperty> _groupPropertyRepository;
         private RoomRepository _roomRepository;
-        private IGenericRepository<Models.Script> _scriptRepository;
-        private IGenericRepository<Models.Setting> _settingRepository;
+        private IGenericRepository<Script> _scriptRepository;
+        private IGenericRepository<Setting> _settingRepository;
         private SiteRepository _siteRepository;
-        private IGenericRepository<Models.SysprepTag> _sysprepTagRepository;
-        private IGenericRepository<Models.CloneDeployUser> _userRepository;
-        private IGenericRepository<Models.BootTemplate> _bootTemplateRepository;
-        private IGenericRepository<Models.CdVersion> _cdVersionRepository;
+        private IGenericRepository<SysprepTag> _sysprepTagRepository;
+        private IGenericRepository<CloneDeployUser> _userRepository;
+        private IGenericRepository<BootTemplate> _bootTemplateRepository;
+        private IGenericRepository<CdVersion> _cdVersionRepository;
         private ComputerRepository _computerRepository;
-        private IGenericRepository<Models.ImageProfileScript> _imageProfileScriptRepository;
-        private IGenericRepository<Models.ImageProfileFileFolder> _imageProfileFileFolderRepository;
-        private IGenericRepository<Models.ImageProfileSysprepTag> _imageProfileSysprepRepository;
+        private IGenericRepository<ImageProfileScript> _imageProfileScriptRepository;
+        private IGenericRepository<ImageProfileFileFolder> _imageProfileFileFolderRepository;
+        private IGenericRepository<ImageProfileSysprepTag> _imageProfileSysprepRepository;
         private GroupRepository _groupRepository;
         private ActiveImagingTaskRepository _activeImagingTaskRepository;
-        private IGenericRepository<Models.MunkiManifestTemplate> _munkiManifestRepository;
-        private IGenericRepository<Models.MunkiManifestCatalog> _munkiCatalogRepository;
-        private DAL.IGenericRepository<Models.MunkiManifestManagedInstall> _munkiManagedInstallRepository;
-        private DAL.IGenericRepository<Models.MunkiManifestManagedUnInstall> _munkiManagedUninstallRepository;
-        private DAL.IGenericRepository<Models.MunkiManifestManagedUpdate> _munkiManagedUpdateRepository;
-        private DAL.IGenericRepository<Models.MunkiManifestOptionInstall> _munkiOptionalInstallRepository;
-        private DAL.IGenericRepository<Models.MunkiManifestIncludedManifest> _munkiIncludedManifestRepository;
-        private IGenericRepository<Models.ComputerMunki> _computerMunkiRepository;
-        private IGenericRepository<Models.GroupMunki> _groupMunkiRepository;
-        private IGenericRepository<Models.ComputerProxyReservation> _computerProxyRepository;
-        private IGenericRepository<Models.BootEntry> _bootEntryRepository;
-        private IGenericRepository<Models.CloneDeployUserGroup> _userGroupRepository;
+        private IGenericRepository<MunkiManifestTemplate> _munkiManifestRepository;
+        private IGenericRepository<MunkiManifestCatalog> _munkiCatalogRepository;
+        private DAL.IGenericRepository<MunkiManifestManagedInstall> _munkiManagedInstallRepository;
+        private DAL.IGenericRepository<MunkiManifestManagedUnInstall> _munkiManagedUninstallRepository;
+        private DAL.IGenericRepository<MunkiManifestManagedUpdate> _munkiManagedUpdateRepository;
+        private DAL.IGenericRepository<MunkiManifestOptionInstall> _munkiOptionalInstallRepository;
+        private DAL.IGenericRepository<MunkiManifestIncludedManifest> _munkiIncludedManifestRepository;
+        private IGenericRepository<ComputerMunki> _computerMunkiRepository;
+        private IGenericRepository<GroupMunki> _groupMunkiRepository;
+        private IGenericRepository<ComputerProxyReservation> _computerProxyRepository;
+        private IGenericRepository<BootEntry> _bootEntryRepository;
+        private IGenericRepository<CloneDeployUserGroup> _userGroupRepository;
 
 
-        public IGenericRepository<Models.CloneDeployUserGroup> UserGroupRepository
+        public IGenericRepository<CloneDeployUserGroup> UserGroupRepository
         {
-            get { return _userGroupRepository ?? (_userGroupRepository = new GenericRepository<Models.CloneDeployUserGroup>(_context)); }
+            get { return _userGroupRepository ?? (_userGroupRepository = new GenericRepository<CloneDeployUserGroup>(_context)); }
         }
 
-        public IGenericRepository<Models.BootEntry> BootEntryRepository
+        public IGenericRepository<BootEntry> BootEntryRepository
         {
-            get { return _bootEntryRepository ?? (_bootEntryRepository = new GenericRepository<Models.BootEntry>(_context)); }
+            get { return _bootEntryRepository ?? (_bootEntryRepository = new GenericRepository<BootEntry>(_context)); }
         }
 
-        public IGenericRepository<Models.ComputerProxyReservation> ComputerProxyRepository
+        public IGenericRepository<ComputerProxyReservation> ComputerProxyRepository
         {
-            get { return _computerProxyRepository ?? (_computerProxyRepository = new GenericRepository<Models.ComputerProxyReservation>(_context)); }
+            get { return _computerProxyRepository ?? (_computerProxyRepository = new GenericRepository<ComputerProxyReservation>(_context)); }
         }
 
-        public IGenericRepository<Models.ComputerMunki> ComputerMunkiRepository
+        public IGenericRepository<ComputerMunki> ComputerMunkiRepository
         {
-            get { return _computerMunkiRepository ?? (_computerMunkiRepository = new GenericRepository<Models.ComputerMunki>(_context)); }
-
-        }
-
-        public IGenericRepository<Models.GroupMunki> GroupMunkiRepository
-        {
-            get { return _groupMunkiRepository ?? (_groupMunkiRepository = new GenericRepository<Models.GroupMunki>(_context)); }
+            get { return _computerMunkiRepository ?? (_computerMunkiRepository = new GenericRepository<ComputerMunki>(_context)); }
 
         }
 
-        public IGenericRepository<Models.GroupBootMenu> GroupBootMenuRepository
+        public IGenericRepository<GroupMunki> GroupMunkiRepository
         {
-            get { return _groupBootMenuRepository ?? (_groupBootMenuRepository = new GenericRepository<Models.GroupBootMenu>(_context)); }
+            get { return _groupMunkiRepository ?? (_groupMunkiRepository = new GenericRepository<GroupMunki>(_context)); }
 
         }
 
-        public IGenericRepository<Models.MunkiManifestCatalog> MunkiCatalogRepository
+        public IGenericRepository<GroupBootMenu> GroupBootMenuRepository
         {
-            get { return _munkiCatalogRepository ?? (_munkiCatalogRepository = new GenericRepository<Models.MunkiManifestCatalog>(_context)); }
+            get { return _groupBootMenuRepository ?? (_groupBootMenuRepository = new GenericRepository<GroupBootMenu>(_context)); }
 
         }
 
-        public IGenericRepository<Models.MunkiManifestManagedInstall> MunkiManagedInstallRepository
+        public IGenericRepository<MunkiManifestCatalog> MunkiCatalogRepository
         {
-            get { return _munkiManagedInstallRepository ?? (_munkiManagedInstallRepository = new GenericRepository<Models.MunkiManifestManagedInstall>(_context)); }
-        }
-
-        public IGenericRepository<Models.MunkiManifestManagedUnInstall> MunkiManagedUnInstallRepository
-        {
-            get { return _munkiManagedUninstallRepository ?? (_munkiManagedUninstallRepository = new GenericRepository<Models.MunkiManifestManagedUnInstall>(_context)); }
-        }
-
-        public IGenericRepository<Models.MunkiManifestManagedUpdate> MunkiManagedUpdateRepository
-        {
-            get { return _munkiManagedUpdateRepository ?? (_munkiManagedUpdateRepository = new GenericRepository<Models.MunkiManifestManagedUpdate>(_context)); }
-        }
-
-        public IGenericRepository<Models.MunkiManifestOptionInstall> MunkiOptionalInstallRepository
-        {
-            get { return _munkiOptionalInstallRepository ?? (_munkiOptionalInstallRepository = new GenericRepository<Models.MunkiManifestOptionInstall>(_context)); }
-        }
-
-        public IGenericRepository<Models.MunkiManifestIncludedManifest> MunkiIncludedManifestRepository
-        {
-            get { return _munkiIncludedManifestRepository ?? (_munkiIncludedManifestRepository = new GenericRepository<Models.MunkiManifestIncludedManifest>(_context)); }
-        }
-
-        public IGenericRepository<Models.MunkiManifestTemplate> MunkiManifestRepository
-        {
-            get { return _munkiManifestRepository ?? (_munkiManifestRepository = new GenericRepository<Models.MunkiManifestTemplate>(_context)); }
+            get { return _munkiCatalogRepository ?? (_munkiCatalogRepository = new GenericRepository<MunkiManifestCatalog>(_context)); }
 
         }
 
-        public IGenericRepository<Models.FileFolder> FileFolderRepository
+        public IGenericRepository<MunkiManifestManagedInstall> MunkiManagedInstallRepository
         {
-            get { return _fileFolderRepository ?? (_fileFolderRepository = new GenericRepository<Models.FileFolder>(_context)); }
+            get { return _munkiManagedInstallRepository ?? (_munkiManagedInstallRepository = new GenericRepository<MunkiManifestManagedInstall>(_context)); }
+        }
+
+        public IGenericRepository<MunkiManifestManagedUnInstall> MunkiManagedUnInstallRepository
+        {
+            get { return _munkiManagedUninstallRepository ?? (_munkiManagedUninstallRepository = new GenericRepository<MunkiManifestManagedUnInstall>(_context)); }
+        }
+
+        public IGenericRepository<MunkiManifestManagedUpdate> MunkiManagedUpdateRepository
+        {
+            get { return _munkiManagedUpdateRepository ?? (_munkiManagedUpdateRepository = new GenericRepository<MunkiManifestManagedUpdate>(_context)); }
+        }
+
+        public IGenericRepository<MunkiManifestOptionInstall> MunkiOptionalInstallRepository
+        {
+            get { return _munkiOptionalInstallRepository ?? (_munkiOptionalInstallRepository = new GenericRepository<MunkiManifestOptionInstall>(_context)); }
+        }
+
+        public IGenericRepository<MunkiManifestIncludedManifest> MunkiIncludedManifestRepository
+        {
+            get { return _munkiIncludedManifestRepository ?? (_munkiIncludedManifestRepository = new GenericRepository<MunkiManifestIncludedManifest>(_context)); }
+        }
+
+        public IGenericRepository<MunkiManifestTemplate> MunkiManifestRepository
+        {
+            get { return _munkiManifestRepository ?? (_munkiManifestRepository = new GenericRepository<MunkiManifestTemplate>(_context)); }
 
         }
 
-        public IGenericRepository<Models.GroupProperty> GroupPropertyRepository
+        public IGenericRepository<FileFolder> FileFolderRepository
         {
-            get { return _groupPropertyRepository ?? (_groupPropertyRepository = new GenericRepository<Models.GroupProperty>(_context)); }
+            get { return _fileFolderRepository ?? (_fileFolderRepository = new GenericRepository<FileFolder>(_context)); }
 
         }
 
-        public IGenericRepository<Models.UserLockout> UserLockoutRepository
+        public IGenericRepository<GroupProperty> GroupPropertyRepository
         {
-            get { return _userLockoutRepository ?? (_userLockoutRepository = new GenericRepository<Models.UserLockout>(_context)); }
+            get { return _groupPropertyRepository ?? (_groupPropertyRepository = new GenericRepository<GroupProperty>(_context)); }
 
         }
 
-        public IGenericRepository<Models.ActiveMulticastSession> ActiveMulticastSessionRepository
+        public IGenericRepository<UserLockout> UserLockoutRepository
         {
-            get { return _activeMulticastSessionRepository ?? (_activeMulticastSessionRepository = new GenericRepository<Models.ActiveMulticastSession>(_context)); }
+            get { return _userLockoutRepository ?? (_userLockoutRepository = new GenericRepository<UserLockout>(_context)); }
 
         }
 
-        public IGenericRepository<Models.ComputerBootMenu> ComputerBootMenuRepository
+        public IGenericRepository<ActiveMulticastSession> ActiveMulticastSessionRepository
         {
-            get { return _computerBootMenuRepository ?? (_computerBootMenuRepository = new GenericRepository<Models.ComputerBootMenu>(_context)); }
+            get { return _activeMulticastSessionRepository ?? (_activeMulticastSessionRepository = new GenericRepository<ActiveMulticastSession>(_context)); }
 
         }
 
-        public IGenericRepository<Models.UserGroupManagement> UserGroupManagementRepository
+        public IGenericRepository<ComputerBootMenu> ComputerBootMenuRepository
         {
-            get { return _userGroupManagementRepository ?? (_userGroupManagementRepository = new GenericRepository<Models.UserGroupManagement>(_context)); }
+            get { return _computerBootMenuRepository ?? (_computerBootMenuRepository = new GenericRepository<ComputerBootMenu>(_context)); }
 
         }
 
-        public IGenericRepository<Models.UserImageManagement> UserImageManagementRepository
+        public IGenericRepository<UserGroupManagement> UserGroupManagementRepository
         {
-            get { return _userImageManagementRepository ?? (_userImageManagementRepository = new GenericRepository<Models.UserImageManagement>(_context)); }
+            get { return _userGroupManagementRepository ?? (_userGroupManagementRepository = new GenericRepository<UserGroupManagement>(_context)); }
 
         }
 
-        public IGenericRepository<Models.UserGroupGroupManagement> UserGroupGroupManagementRepository
+        public IGenericRepository<UserImageManagement> UserImageManagementRepository
         {
-            get { return _userGroupGroupManagementRepository ?? (_userGroupGroupManagementRepository = new GenericRepository<Models.UserGroupGroupManagement>(_context)); }
+            get { return _userImageManagementRepository ?? (_userImageManagementRepository = new GenericRepository<UserImageManagement>(_context)); }
 
         }
 
-        public IGenericRepository<Models.UserGroupImageManagement> UserGroupImageManagementRepository
+        public IGenericRepository<UserGroupGroupManagement> UserGroupGroupManagementRepository
         {
-            get { return _userGroupImageManagementRepository ?? (_userGroupImageManagementRepository = new GenericRepository<Models.UserGroupImageManagement>(_context)); }
+            get { return _userGroupGroupManagementRepository ?? (_userGroupGroupManagementRepository = new GenericRepository<UserGroupGroupManagement>(_context)); }
+
+        }
+
+        public IGenericRepository<UserGroupImageManagement> UserGroupImageManagementRepository
+        {
+            get { return _userGroupImageManagementRepository ?? (_userGroupImageManagementRepository = new GenericRepository<UserGroupImageManagement>(_context)); }
 
         }
 
@@ -190,59 +191,59 @@ namespace DAL
             get { return _buildingRepository ?? (_buildingRepository = new BuildingRepository(_context)); }
         }
 
-        public IGenericRepository<Models.DistributionPoint> DistributionPointRepository
+        public IGenericRepository<DistributionPoint> DistributionPointRepository
         {
-            get { return _distributionPointRepository ?? (_distributionPointRepository = new GenericRepository<Models.DistributionPoint>(_context)); }
+            get { return _distributionPointRepository ?? (_distributionPointRepository = new GenericRepository<DistributionPoint>(_context)); }
         }
 
-        public IGenericRepository<Models.GroupMembership> GroupMembershipRepository
+        public IGenericRepository<GroupMembership> GroupMembershipRepository
         {
-            get { return _groupMembershipRepository ?? (_groupMembershipRepository = new GenericRepository<Models.GroupMembership>(_context)); }
+            get { return _groupMembershipRepository ?? (_groupMembershipRepository = new GenericRepository<GroupMembership>(_context)); }
         }
 
-        public IGenericRepository<Models.Image> ImageRepository
+        public IGenericRepository<Image> ImageRepository
         {
-            get { return _imageRepository ?? (_imageRepository = new GenericRepository<Models.Image>(_context)); }
+            get { return _imageRepository ?? (_imageRepository = new GenericRepository<Image>(_context)); }
         }
 
-        public IGenericRepository<Models.ImageProfilePartitionLayout> ImageProfilePartitionRepository
+        public IGenericRepository<ImageProfilePartitionLayout> ImageProfilePartitionRepository
         {
-            get { return _imageProfilePartitionRepository ?? (_imageProfilePartitionRepository = new GenericRepository<Models.ImageProfilePartitionLayout>(_context)); }
+            get { return _imageProfilePartitionRepository ?? (_imageProfilePartitionRepository = new GenericRepository<ImageProfilePartitionLayout>(_context)); }
         }
 
-        public IGenericRepository<Models.ImageProfile> ImageProfileRepository
+        public IGenericRepository<ImageProfile> ImageProfileRepository
         {
-            get { return _imageProfileRepository ?? (_imageProfileRepository = new GenericRepository<Models.ImageProfile>(_context)); }
+            get { return _imageProfileRepository ?? (_imageProfileRepository = new GenericRepository<ImageProfile>(_context)); }
         }
 
-        public IGenericRepository<Models.Partition> PartitionRepository
+        public IGenericRepository<Partition> PartitionRepository
         {
-            get { return _partitionRepository ?? (_partitionRepository = new GenericRepository<Models.Partition>(_context)); }
+            get { return _partitionRepository ?? (_partitionRepository = new GenericRepository<Partition>(_context)); }
         }
 
-        public IGenericRepository<Models.PartitionLayout> PartitionLayoutRepository
+        public IGenericRepository<PartitionLayout> PartitionLayoutRepository
         {
-            get { return _partitionLayoutRepository ?? (_partitionLayoutRepository = new GenericRepository<Models.PartitionLayout>(_context)); }
+            get { return _partitionLayoutRepository ?? (_partitionLayoutRepository = new GenericRepository<PartitionLayout>(_context)); }
         }
 
-        public IGenericRepository<Models.Port> PortRepository
+        public IGenericRepository<Port> PortRepository
         {
-            get { return _portRepository ?? (_portRepository = new GenericRepository<Models.Port>(_context)); }
+            get { return _portRepository ?? (_portRepository = new GenericRepository<Port>(_context)); }
         }
 
-        public IGenericRepository<Models.ComputerLog> ComputerLogRepository
+        public IGenericRepository<ComputerLog> ComputerLogRepository
         {
-            get { return _computerLogRepository ?? (_computerLogRepository = new GenericRepository<Models.ComputerLog>(_context)); }
+            get { return _computerLogRepository ?? (_computerLogRepository = new GenericRepository<ComputerLog>(_context)); }
         }
 
-        public IGenericRepository<Models.UserRight> UserRightRepository
+        public IGenericRepository<UserRight> UserRightRepository
         {
-            get { return _userRightRepository ?? (_userRightRepository = new GenericRepository<Models.UserRight>(_context)); }
+            get { return _userRightRepository ?? (_userRightRepository = new GenericRepository<UserRight>(_context)); }
         }
 
-        public IGenericRepository<Models.UserGroupRight> UserGroupRightRepository
+        public IGenericRepository<UserGroupRight> UserGroupRightRepository
         {
-            get { return _userGroupRightRepository ?? (_userGroupRightRepository = new GenericRepository<Models.UserGroupRight>(_context)); }
+            get { return _userGroupRightRepository ?? (_userGroupRightRepository = new GenericRepository<UserGroupRight>(_context)); }
         }
 
 
@@ -251,14 +252,14 @@ namespace DAL
             get { return _roomRepository ?? (_roomRepository = new RoomRepository(_context)); }
         }
 
-        public IGenericRepository<Models.Script> ScriptRepository
+        public IGenericRepository<Script> ScriptRepository
         {
-            get { return _scriptRepository ?? (_scriptRepository = new GenericRepository<Models.Script>(_context)); }
+            get { return _scriptRepository ?? (_scriptRepository = new GenericRepository<Script>(_context)); }
         }
 
-        public IGenericRepository<Models.Setting> SettingRepository
+        public IGenericRepository<Setting> SettingRepository
         {
-            get { return _settingRepository ?? (_settingRepository = new GenericRepository<Models.Setting>(_context)); }
+            get { return _settingRepository ?? (_settingRepository = new GenericRepository<Setting>(_context)); }
         }
 
         public SiteRepository SiteRepository
@@ -266,39 +267,39 @@ namespace DAL
             get { return _siteRepository ?? (_siteRepository = new SiteRepository(_context)); }
         }
 
-        public IGenericRepository<Models.SysprepTag> SysprepTagRepository
+        public IGenericRepository<SysprepTag> SysprepTagRepository
         {
-            get { return _sysprepTagRepository ?? (_sysprepTagRepository = new GenericRepository<Models.SysprepTag>(_context)); }
+            get { return _sysprepTagRepository ?? (_sysprepTagRepository = new GenericRepository<SysprepTag>(_context)); }
         }
 
-        public IGenericRepository<Models.CloneDeployUser> UserRepository
+        public IGenericRepository<CloneDeployUser> UserRepository
         {
-            get { return _userRepository ?? (_userRepository = new GenericRepository<Models.CloneDeployUser>(_context)); }
+            get { return _userRepository ?? (_userRepository = new GenericRepository<CloneDeployUser>(_context)); }
         }
 
-        public IGenericRepository<Models.BootTemplate> BootTemplateRepository
+        public IGenericRepository<BootTemplate> BootTemplateRepository
         {
-            get { return _bootTemplateRepository ?? (_bootTemplateRepository = new GenericRepository<Models.BootTemplate>(_context)); }
+            get { return _bootTemplateRepository ?? (_bootTemplateRepository = new GenericRepository<BootTemplate>(_context)); }
         }
 
-        public IGenericRepository<Models.ImageProfileScript> ImageProfileScriptRepository
+        public IGenericRepository<ImageProfileScript> ImageProfileScriptRepository
         {
-            get { return _imageProfileScriptRepository ?? (_imageProfileScriptRepository = new GenericRepository<Models.ImageProfileScript>(_context)); }
+            get { return _imageProfileScriptRepository ?? (_imageProfileScriptRepository = new GenericRepository<ImageProfileScript>(_context)); }
         }
 
-        public IGenericRepository<Models.CdVersion> CdVersionRepository
+        public IGenericRepository<CdVersion> CdVersionRepository
         {
-            get { return _cdVersionRepository ?? (_cdVersionRepository = new GenericRepository<Models.CdVersion>(_context)); }
+            get { return _cdVersionRepository ?? (_cdVersionRepository = new GenericRepository<CdVersion>(_context)); }
         }
 
-        public IGenericRepository<Models.ImageProfileFileFolder> ImageProfileFileFolderRepository
+        public IGenericRepository<ImageProfileFileFolder> ImageProfileFileFolderRepository
         {
-            get { return _imageProfileFileFolderRepository ?? (_imageProfileFileFolderRepository = new GenericRepository<Models.ImageProfileFileFolder>(_context)); }
+            get { return _imageProfileFileFolderRepository ?? (_imageProfileFileFolderRepository = new GenericRepository<ImageProfileFileFolder>(_context)); }
         }
 
-        public IGenericRepository<Models.ImageProfileSysprepTag> ImageProfileSysprepRepository
+        public IGenericRepository<ImageProfileSysprepTag> ImageProfileSysprepRepository
         {
-            get { return _imageProfileSysprepRepository ?? (_imageProfileSysprepRepository = new GenericRepository<Models.ImageProfileSysprepTag>(_context)); }
+            get { return _imageProfileSysprepRepository ?? (_imageProfileSysprepRepository = new GenericRepository<ImageProfileSysprepTag>(_context)); }
         }
 
         public GroupRepository GroupRepository

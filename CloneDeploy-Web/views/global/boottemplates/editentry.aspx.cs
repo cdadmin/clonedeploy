@@ -1,4 +1,5 @@
 ﻿using System;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 public partial class views_global_boottemplates_editentry : BasePages.Global
@@ -22,7 +23,7 @@ public partial class views_global_boottemplates_editentry : BasePages.Global
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.UpdateGlobal);
-        var bootEntry = new Models.BootEntry
+        var bootEntry = new BootEntry
         {
             Id = BootEntry.Id,
             Name = txtName.Text,

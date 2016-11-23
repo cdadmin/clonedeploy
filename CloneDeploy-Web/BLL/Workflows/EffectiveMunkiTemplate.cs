@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Claunia.PropertyList;
+using CloneDeploy_Web.Models;
 using ConnectUNCWithCredentials;
 using Helpers;
 
@@ -11,7 +12,7 @@ namespace BLL.Workflows
 {
     public class MunkiUpdateConfirm
     {
-        public List<Models.MunkiManifestTemplate> manifestTemplates { get; set; }
+        public List<CloneDeploy_Web.Models.MunkiManifestTemplate> manifestTemplates { get; set; }
         public int groupCount { get; set; }
         public int computerCount { get; set; }
     }
@@ -22,7 +23,7 @@ namespace BLL.Workflows
 
         public MunkiUpdateConfirm GetUpdateStats(int templateId)
         {
-            var includedTemplates = new List<Models.MunkiManifestTemplate>();
+            var includedTemplates = new List<CloneDeploy_Web.Models.MunkiManifestTemplate>();
             var groups = BLL.GroupMunki.GetGroupsForManifestTemplate(templateId);
             //get list of all templates that are used in these groups
 
@@ -151,7 +152,7 @@ namespace BLL.Workflows
             if (errorCount > 0)
                 return errorCount;
 
-            var includedTemplates = new List<Models.MunkiManifestTemplate>();
+            var includedTemplates = new List<CloneDeploy_Web.Models.MunkiManifestTemplate>();
             foreach (var munkiGroup in groups)
             {
                 foreach (var template in BLL.GroupMunki.Get(munkiGroup.GroupId))
@@ -255,7 +256,7 @@ namespace BLL.Workflows
 
         private NSArray GetCatalogs()
         {
-            var catalogs = new List<Models.MunkiManifestCatalog>();
+            var catalogs = new List<MunkiManifestCatalog>();
             foreach (var templateId in _templateIds)
             {
                 catalogs.AddRange(BLL.MunkiCatalog.GetAllCatalogsForMt(templateId));
@@ -309,7 +310,7 @@ namespace BLL.Workflows
 
         private NSArray GetIncludedManifests (string condition = null)
         {
-            var includedManifests = new List<Models.MunkiManifestIncludedManifest>();
+            var includedManifests = new List<MunkiManifestIncludedManifest>();
             foreach (var templateId in _templateIds)
             {
                 if(!string.IsNullOrEmpty(condition))
@@ -338,7 +339,7 @@ namespace BLL.Workflows
 
         private NSArray GetManagedInstalls(string condition = null)
         {
-            var managedInstalls = new List<Models.MunkiManifestManagedInstall>();
+            var managedInstalls = new List<MunkiManifestManagedInstall>();
             foreach (var templateId in _templateIds)
             {
                 if (!string.IsNullOrEmpty(condition))
@@ -372,7 +373,7 @@ namespace BLL.Workflows
 
         private NSArray GetManagedUninstalls(string condition = null)
         {
-            var managedUninstalls = new List<Models.MunkiManifestManagedUnInstall>();
+            var managedUninstalls = new List<MunkiManifestManagedUnInstall>();
             foreach (var templateId in _templateIds)
             {
                 if (!string.IsNullOrEmpty(condition))
@@ -406,7 +407,7 @@ namespace BLL.Workflows
 
         private NSArray GetManagedUpdates(string condition = null)
         {
-            var managedUpdates = new List<Models.MunkiManifestManagedUpdate>();
+            var managedUpdates = new List<MunkiManifestManagedUpdate>();
             foreach (var templateId in _templateIds)
             {
                 if (!string.IsNullOrEmpty(condition))
@@ -435,7 +436,7 @@ namespace BLL.Workflows
 
         private NSArray GetOptionlInstalls(string condition = null)
         {
-            var optionalInstalls = new List<Models.MunkiManifestOptionInstall>();
+            var optionalInstalls = new List<MunkiManifestOptionInstall>();
             foreach (var templateId in _templateIds)
             {
                 if (!string.IsNullOrEmpty(condition))

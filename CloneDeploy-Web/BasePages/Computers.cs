@@ -1,7 +1,7 @@
 ﻿using System;
 using CloneDeploy_Web.APICalls;
+using CloneDeploy_Web.Models;
 using Helpers;
-using Models;
 
 namespace BasePages
 {

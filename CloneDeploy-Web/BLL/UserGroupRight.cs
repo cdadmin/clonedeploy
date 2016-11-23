@@ -4,7 +4,7 @@ namespace BLL
 {
     public static class UserGroupRight
     {
-        public static bool AddUserGroupRights(List<Models.UserGroupRight> listOfRights)
+        public static bool AddUserGroupRights(List<CloneDeploy_Web.Models.UserGroupRight> listOfRights)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -24,7 +24,7 @@ namespace BLL
             }
         }
 
-        public static List<Models.UserGroupRight> Get(int userGroupId)
+        public static List<CloneDeploy_Web.Models.UserGroupRight> Get(int userGroupId)
         {
             using (var uow = new DAL.UnitOfWork())
             {

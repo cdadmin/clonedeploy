@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BasePages;
+using CloneDeploy_Web.Models.ImageSchema.GridView;
 using ImageSchema = BLL.ImageSchema;
 
 namespace views.images
@@ -80,7 +81,7 @@ namespace views.images
                 if (partitions[row.RowIndex].VolumeGroup == null) continue;
                 if (partitions[row.RowIndex].VolumeGroup.Name == null) continue;
                 var gvVg = (GridView) row.FindControl("gvVG");
-                gvVg.DataSource = new List<Models.ImageSchema.GridView.VolumeGroup>
+                gvVg.DataSource = new List<VolumeGroup>
                 {
                     partitions[row.RowIndex].VolumeGroup
                 };

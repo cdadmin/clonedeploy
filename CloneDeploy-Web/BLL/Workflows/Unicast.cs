@@ -5,13 +5,13 @@ namespace BLL.Workflows
 {
     public class Unicast
     {
-        private readonly Models.Computer _computer;
+        private readonly CloneDeploy_Web.Models.Computer _computer;
         private readonly string _direction;
-        private Models.ActiveImagingTask _activeTask;
-        private Models.ImageProfile _imageProfile;
+        private CloneDeploy_Web.Models.ActiveImagingTask _activeTask;
+        private CloneDeploy_Web.Models.ImageProfile _imageProfile;
         private readonly int _userId;
 
-        public Unicast(Models.Computer computer, string direction, int userId)
+        public Unicast(CloneDeploy_Web.Models.Computer computer, string direction, int userId)
         {
             _direction = direction;
             _computer = computer;
@@ -40,7 +40,7 @@ namespace BLL.Workflows
             if (ActiveImagingTask.IsComputerActive(_computer.Id))
                 return "This Computer Is Already Part Of An Active Task";
 
-            _activeTask = new Models.ActiveImagingTask
+            _activeTask = new CloneDeploy_Web.Models.ActiveImagingTask
             {
                 ComputerId = _computer.Id,
                 Direction = _direction,

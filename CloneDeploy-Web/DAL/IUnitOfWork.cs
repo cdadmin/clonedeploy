@@ -1,59 +1,60 @@
 ﻿using System;
+using CloneDeploy_Web.Models;
 
 namespace DAL
 {
     public interface IUnitOfWork: IDisposable
     {
       
-        DAL.IGenericRepository<Models.ActiveMulticastSession> ActiveMulticastSessionRepository { get; }
+        DAL.IGenericRepository<ActiveMulticastSession> ActiveMulticastSessionRepository { get; }
        
         DAL.RoomRepository RoomRepository { get; }
-        DAL.IGenericRepository<Models.DistributionPoint> DistributionPointRepository { get; }
-        DAL.IGenericRepository<Models.FileFolder> FileFolderRepository { get; }
-        DAL.IGenericRepository<Models.ComputerBootMenu> ComputerBootMenuRepository { get; }
-        DAL.IGenericRepository<Models.GroupBootMenu> GroupBootMenuRepository { get; }
-        DAL.IGenericRepository<Models.GroupMembership> GroupMembershipRepository { get; }
-        DAL.IGenericRepository<Models.Image> ImageRepository { get; }
-        DAL.IGenericRepository<Models.ImageProfilePartitionLayout> ImageProfilePartitionRepository { get; }
-        DAL.IGenericRepository<Models.ImageProfile> ImageProfileRepository { get; }
-        DAL.IGenericRepository<Models.Partition> PartitionRepository { get; }
-        DAL.IGenericRepository<Models.PartitionLayout> PartitionLayoutRepository { get; }
-        DAL.IGenericRepository<Models.Port> PortRepository { get; }
-        DAL.IGenericRepository<Models.Script> ScriptRepository { get; }
-        DAL.IGenericRepository<Models.Setting> SettingRepository { get; }
+        DAL.IGenericRepository<DistributionPoint> DistributionPointRepository { get; }
+        DAL.IGenericRepository<FileFolder> FileFolderRepository { get; }
+        DAL.IGenericRepository<ComputerBootMenu> ComputerBootMenuRepository { get; }
+        DAL.IGenericRepository<GroupBootMenu> GroupBootMenuRepository { get; }
+        DAL.IGenericRepository<GroupMembership> GroupMembershipRepository { get; }
+        DAL.IGenericRepository<Image> ImageRepository { get; }
+        DAL.IGenericRepository<ImageProfilePartitionLayout> ImageProfilePartitionRepository { get; }
+        DAL.IGenericRepository<ImageProfile> ImageProfileRepository { get; }
+        DAL.IGenericRepository<Partition> PartitionRepository { get; }
+        DAL.IGenericRepository<PartitionLayout> PartitionLayoutRepository { get; }
+        DAL.IGenericRepository<Port> PortRepository { get; }
+        DAL.IGenericRepository<Script> ScriptRepository { get; }
+        DAL.IGenericRepository<Setting> SettingRepository { get; }
         DAL.SiteRepository SiteRepository { get; }
-        DAL.IGenericRepository<Models.SysprepTag> SysprepTagRepository { get; }
-        DAL.IGenericRepository<Models.CloneDeployUser> UserRepository { get; }
-        DAL.IGenericRepository<Models.BootTemplate> BootTemplateRepository { get; }
-        DAL.IGenericRepository<Models.ComputerLog> ComputerLogRepository { get; }
-        DAL.IGenericRepository<Models.UserRight> UserRightRepository { get; }
-        DAL.IGenericRepository<Models.UserGroupManagement> UserGroupManagementRepository { get; }
-        DAL.IGenericRepository<Models.UserImageManagement> UserImageManagementRepository { get; }
-        DAL.IGenericRepository<Models.UserGroupRight> UserGroupRightRepository { get; }
-        DAL.IGenericRepository<Models.UserGroupGroupManagement> UserGroupGroupManagementRepository { get; }
-        DAL.IGenericRepository<Models.UserGroupImageManagement> UserGroupImageManagementRepository { get; }
-        DAL.IGenericRepository<Models.UserLockout> UserLockoutRepository { get; }
-        DAL.IGenericRepository<Models.GroupProperty> GroupPropertyRepository { get; }
+        DAL.IGenericRepository<SysprepTag> SysprepTagRepository { get; }
+        DAL.IGenericRepository<CloneDeployUser> UserRepository { get; }
+        DAL.IGenericRepository<BootTemplate> BootTemplateRepository { get; }
+        DAL.IGenericRepository<ComputerLog> ComputerLogRepository { get; }
+        DAL.IGenericRepository<UserRight> UserRightRepository { get; }
+        DAL.IGenericRepository<UserGroupManagement> UserGroupManagementRepository { get; }
+        DAL.IGenericRepository<UserImageManagement> UserImageManagementRepository { get; }
+        DAL.IGenericRepository<UserGroupRight> UserGroupRightRepository { get; }
+        DAL.IGenericRepository<UserGroupGroupManagement> UserGroupGroupManagementRepository { get; }
+        DAL.IGenericRepository<UserGroupImageManagement> UserGroupImageManagementRepository { get; }
+        DAL.IGenericRepository<UserLockout> UserLockoutRepository { get; }
+        DAL.IGenericRepository<GroupProperty> GroupPropertyRepository { get; }
         DAL.BuildingRepository BuildingRepository { get; }
         DAL.ComputerRepository ComputerRepository { get; }
-        DAL.IGenericRepository<Models.ImageProfileScript> ImageProfileScriptRepository { get; }
-        DAL.IGenericRepository<Models.ImageProfileFileFolder> ImageProfileFileFolderRepository { get; }
-        DAL.IGenericRepository<Models.ImageProfileSysprepTag> ImageProfileSysprepRepository { get; }
-        DAL.IGenericRepository<Models.CdVersion> CdVersionRepository { get; }
+        DAL.IGenericRepository<ImageProfileScript> ImageProfileScriptRepository { get; }
+        DAL.IGenericRepository<ImageProfileFileFolder> ImageProfileFileFolderRepository { get; }
+        DAL.IGenericRepository<ImageProfileSysprepTag> ImageProfileSysprepRepository { get; }
+        DAL.IGenericRepository<CdVersion> CdVersionRepository { get; }
         DAL.GroupRepository GroupRepository { get; }
         DAL.ActiveImagingTaskRepository ActiveImagingTaskRepository { get; }
-        DAL.IGenericRepository<Models.MunkiManifestTemplate> MunkiManifestRepository { get; }
-        DAL.IGenericRepository<Models.MunkiManifestCatalog> MunkiCatalogRepository { get; }
-        DAL.IGenericRepository<Models.MunkiManifestManagedInstall> MunkiManagedInstallRepository { get; }
-        DAL.IGenericRepository<Models.MunkiManifestManagedUnInstall> MunkiManagedUnInstallRepository { get; }
-        DAL.IGenericRepository<Models.MunkiManifestManagedUpdate> MunkiManagedUpdateRepository { get; }
-        DAL.IGenericRepository<Models.MunkiManifestOptionInstall> MunkiOptionalInstallRepository { get; }
-        DAL.IGenericRepository<Models.MunkiManifestIncludedManifest> MunkiIncludedManifestRepository { get; }
-        DAL.IGenericRepository<Models.ComputerMunki> ComputerMunkiRepository { get; }
-        DAL.IGenericRepository<Models.GroupMunki> GroupMunkiRepository { get; }
-        DAL.IGenericRepository<Models.ComputerProxyReservation> ComputerProxyRepository { get; }
-        DAL.IGenericRepository<Models.BootEntry> BootEntryRepository { get; }
-        DAL.IGenericRepository<Models.CloneDeployUserGroup> UserGroupRepository { get; } 
+        DAL.IGenericRepository<MunkiManifestTemplate> MunkiManifestRepository { get; }
+        DAL.IGenericRepository<MunkiManifestCatalog> MunkiCatalogRepository { get; }
+        DAL.IGenericRepository<MunkiManifestManagedInstall> MunkiManagedInstallRepository { get; }
+        DAL.IGenericRepository<MunkiManifestManagedUnInstall> MunkiManagedUnInstallRepository { get; }
+        DAL.IGenericRepository<MunkiManifestManagedUpdate> MunkiManagedUpdateRepository { get; }
+        DAL.IGenericRepository<MunkiManifestOptionInstall> MunkiOptionalInstallRepository { get; }
+        DAL.IGenericRepository<MunkiManifestIncludedManifest> MunkiIncludedManifestRepository { get; }
+        DAL.IGenericRepository<ComputerMunki> ComputerMunkiRepository { get; }
+        DAL.IGenericRepository<GroupMunki> GroupMunkiRepository { get; }
+        DAL.IGenericRepository<ComputerProxyReservation> ComputerProxyRepository { get; }
+        DAL.IGenericRepository<BootEntry> BootEntryRepository { get; }
+        DAL.IGenericRepository<CloneDeployUserGroup> UserGroupRepository { get; } 
         bool Save();
         
     }

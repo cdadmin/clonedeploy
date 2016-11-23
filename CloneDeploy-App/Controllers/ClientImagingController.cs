@@ -5,10 +5,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
 using System.Web.Http;
-using System.Web.Http.Controllers;
 using CloneDeploy_App.BLL;
 using CloneDeploy_App.BLL.Workflows;
-using CloneDeploy_App.DTOs;
+using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs.FormData;
 using CloneDeploy_App.Helpers;
 
@@ -22,23 +21,6 @@ namespace CloneDeploy_App.Controllers
     public class ClientImagingController :ApiController
     {
         private readonly HttpResponseMessage _response = new HttpResponseMessage(HttpStatusCode.OK);
-
-   
-
-        public class ClientAuthAttribute : AuthorizeAttribute
-        {
-            public string Permission { get; set; }
-
-            public override void OnAuthorization(HttpActionContext actionContext)
-            {
-                var userToken = Utility.Decode(HttpContext.Current.Request.Headers["Authorization"], "Authorization");
-                if (!new Logic().Authorize(userToken))
-                {
-                    var response = actionContext.Request.CreateResponse(HttpStatusCode.Forbidden);
-                    throw new HttpResponseException(response);
-                }
-            }
-        }
 
         [HttpGet]
         public HttpResponseMessage Test()

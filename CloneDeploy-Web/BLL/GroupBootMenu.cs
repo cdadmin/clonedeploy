@@ -2,8 +2,8 @@
 {
     public class GroupBootMenu
     {
-        
-        public static Models.GroupBootMenu GetGroupBootMenu(int groupId)
+        //moved
+        public static CloneDeploy_Web.Models.GroupBootMenu GetGroupBootMenu(int groupId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -11,11 +11,12 @@
             }
         }
 
-        public static void UpdateGroupMemberBootMenus(Models.GroupBootMenu groupBootMenu)
+        //move not needed
+        public static void UpdateGroupMemberBootMenus(CloneDeploy_Web.Models.GroupBootMenu groupBootMenu)
         {
             foreach (var computer in BLL.Group.GetGroupMembers(groupBootMenu.GroupId))
             {
-                var computerBootMenu = new Models.ComputerBootMenu
+                var computerBootMenu = new CloneDeploy_Web.Models.ComputerBootMenu
                 {
                     ComputerId = computer.Id,
                     BiosMenu = groupBootMenu.BiosMenu,
@@ -28,7 +29,8 @@
             }
         }
 
-        public static bool UpdateGroupBootMenu(Models.GroupBootMenu groupBootMenu)
+        //moved
+        public static bool UpdateGroupBootMenu(CloneDeploy_Web.Models.GroupBootMenu groupBootMenu)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -52,6 +54,7 @@
             return true;
         }
 
+        //move not needed
         public static bool DeleteGroup(int groupId)
         {
             using (var uow = new DAL.UnitOfWork())

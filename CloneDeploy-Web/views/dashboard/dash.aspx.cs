@@ -9,6 +9,7 @@ using System.Web.Security;
 using Mono.Unix; // requires reference to  Mono.Posix.dll
 #endif
 using BasePages;
+using CloneDeploy_Web.Models;
 
 namespace views.dashboard
 {
@@ -101,15 +102,15 @@ namespace views.dashboard
         {
             //FixMe: get all the numbers in own function, don't slowly create full lists of unused stuff 
 
-            List<Models.Computer> computersList = BLL.Computer.SearchComputersForUser(CloneDeployCurrentUser.Id, 999999,
+            List<Computer> computersList = BLL.Computer.SearchComputersForUser(CloneDeployCurrentUser.Id, 999999,
                 "");
             lblTotalComputers.Text = computersList.Count + " Total Computer(s)";
 
-            List<Models.Image> imagesList =
+            List<Image> imagesList =
                 BLL.Image.SearchImagesForUser(CloneDeployCurrentUser.Id, "").OrderBy(x => x.Name).ToList();
             lblTotalImages.Text = imagesList.Count + " Total Image(s)";
 
-            List<Models.Group> groupsList = BLL.Group.SearchGroupsForUser(CloneDeployCurrentUser.Id, "");
+            List<Group> groupsList = BLL.Group.SearchGroupsForUser(CloneDeployCurrentUser.Id, "");
             lblTotalGroups.Text = groupsList.Count + " Total Group(s)";
 
             var primaryDp = BLL.DistributionPoint.GetPrimaryDistributionPoint();

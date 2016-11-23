@@ -8,11 +8,11 @@ namespace BLL.Workflows
 {
     public class TaskBootMenu
     {
-        private readonly Models.Computer _computer;
+        private readonly CloneDeploy_Web.Models.Computer _computer;
         private readonly string _direction;
-        private readonly Models.ImageProfile _imageProfile;
+        private readonly CloneDeploy_Web.Models.ImageProfile _imageProfile;
 
-        public TaskBootMenu(Models.Computer computer, Models.ImageProfile imageProfile, string direction)
+        public TaskBootMenu(CloneDeploy_Web.Models.Computer computer, CloneDeploy_Web.Models.ImageProfile imageProfile, string direction)
         {
             _computer = computer;
             _direction = direction;

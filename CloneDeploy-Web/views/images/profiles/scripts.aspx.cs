@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 public partial class views_images_profiles_scripts : Images
@@ -49,7 +50,7 @@ public partial class views_images_profiles_scripts : Images
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<Models.Script> listScripts = (List<Models.Script>)gvScripts.DataSource;
+        List<Script> listScripts = (List<Script>)gvScripts.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -79,7 +80,7 @@ public partial class views_images_profiles_scripts : Images
             var dataKey = gvScripts.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
            
-            var profileScript = new Models.ImageProfileScript()
+            var profileScript = new ImageProfileScript()
             {
                 ScriptId = Convert.ToInt32(dataKey.Value),
                 ProfileId = ImageProfile.Id,

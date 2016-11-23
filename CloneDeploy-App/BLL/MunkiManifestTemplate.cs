@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_App.Helpers;
+using CloneDeploy_App.Models;
+using Newtonsoft.Json;
 
 namespace CloneDeploy_App.BLL
 {
@@ -30,12 +33,23 @@ namespace CloneDeploy_App.BLL
             }
         }
 
-        public static  bool DeleteManifest(int manifestId)
+        public static Models.ActionResult DeleteManifest(int manifestId)
         {
+            var manifest = GetManifest(manifestId);
+            if (manifest == null)
+            {
+                var message = string.Format("Could Not Delete Manifest Template With Id {0}.  The Manifest Template Was not Found", manifestId);
+                Logger.Log(message);
+                return new ActionResult() { Success = false, Message = message, ObjectId = manifestId };
+            }
             using (var uow = new DAL.UnitOfWork())
             {
+                var actionResult = new ActionResult();
                 uow.MunkiManifestRepository.Delete(manifestId);
-                return uow.Save();
+                actionResult.Success = uow.Save();
+                actionResult.ObjectId = manifest.Id;
+                actionResult.Object = JsonConvert.SerializeObject(manifest);
+                return actionResult;
             }
         }
 

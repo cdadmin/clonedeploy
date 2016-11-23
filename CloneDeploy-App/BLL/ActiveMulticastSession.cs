@@ -5,6 +5,8 @@ using System.Linq;
 using System.Management;
 using System.Threading;
 using CloneDeploy_App.Helpers;
+using CloneDeploy_App.Models;
+using Newtonsoft.Json;
 
 namespace CloneDeploy_App.BLL
 {
@@ -61,15 +63,19 @@ namespace CloneDeploy_App.BLL
             }
         }
 
-        public static bool Delete(int multicastId)
+        public static ActionResult Delete(int multicastId)
         {
+            var actionResult = new ActionResult(){Success = false};
             using (var uow = new DAL.UnitOfWork())
             {
                 var multicast = uow.ActiveMulticastSessionRepository.GetById(multicastId);
                 var computers = uow.ActiveImagingTaskRepository.MulticastComputers(multicastId);
 
+                actionResult.Object = JsonConvert.SerializeObject(multicast);
+                actionResult.ObjectId = multicast.Id;
                 uow.ActiveMulticastSessionRepository.Delete(multicastId);
-                if (uow.Save())
+                actionResult.Success = uow.Save();
+                if (actionResult.Success)
                 {
                     ActiveImagingTask.DeleteForMulticast(multicastId);
 
@@ -99,14 +105,18 @@ namespace CloneDeploy_App.BLL
                     {
                         Logger.Log(ex.ToString());
                         //Message.Text = "Could Not Kill Process.  Check The Exception Log For More Info";
+                        actionResult.Success = false;
                     }
-                    return true;
+
                 }
                 else
                 {
                     //Message.Text = "Could Not Delete Task";
-                    return false;
+
                 }
+
+                return actionResult;
+               
             }
         }
 

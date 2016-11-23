@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 public partial class views_groups_munki : BasePages.Groups
@@ -49,7 +50,7 @@ public partial class views_groups_munki : BasePages.Groups
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<Models.MunkiManifestTemplate> listManifestTemplates = (List<Models.MunkiManifestTemplate>)gvManifestTemplates.DataSource;
+        List<MunkiManifestTemplate> listManifestTemplates = (List<MunkiManifestTemplate>)gvManifestTemplates.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -66,14 +67,14 @@ public partial class views_groups_munki : BasePages.Groups
     protected void btnAddSelected_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorizationOrManagedGroup(Authorizations.UpdateGroup, Group.Id);
-        var list = new List<Models.GroupMunki>();
+        var list = new List<GroupMunki>();
         foreach (GridViewRow row in gvManifestTemplates.Rows)
         {
             var cb = (CheckBox)row.FindControl("chkSelector");
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvManifestTemplates.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            var template = new Models.GroupMunki
+            var template = new GroupMunki
             {
                 GroupId = Group.Id,
                 MunkiTemplateId = Convert.ToInt32(dataKey.Value)

@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using CloneDeploy_Web.Models;
 
 namespace BLL
 {
     public class MunkiOptionalInstall
     {
 
-        public static bool AddOptionalInstallToTemplate(Models.MunkiManifestOptionInstall optionalInstall)
+        public static bool AddOptionalInstallToTemplate(MunkiManifestOptionInstall optionalInstall)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -38,7 +39,7 @@ namespace BLL
             }
         }
 
-        public static Models.MunkiManifestOptionInstall GetOptionalInstall(int optionalInstallId)
+        public static MunkiManifestOptionInstall GetOptionalInstall(int optionalInstallId)
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -46,7 +47,7 @@ namespace BLL
             }
         }
 
-        public static  List<Models.MunkiManifestOptionInstall> GetAllOptionalInstallsForMt(int manifestTemplateId)
+        public static  List<MunkiManifestOptionInstall> GetAllOptionalInstallsForMt(int manifestTemplateId)
         {
             using (var uow = new DAL.UnitOfWork())
             {

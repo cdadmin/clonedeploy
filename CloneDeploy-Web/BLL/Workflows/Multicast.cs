@@ -14,16 +14,16 @@ namespace BLL.Workflows
     {
         private readonly string _clientCount;
         private readonly bool _isOnDemand;
-        private readonly Models.ActiveMulticastSession _multicastSession;
-        private List<Models.Computer> _computers;
-        private readonly Models.Group _group;
-        private Models.ImageProfile _imageProfile;
+        private readonly CloneDeploy_Web.Models.ActiveMulticastSession _multicastSession;
+        private List<CloneDeploy_Web.Models.Computer> _computers;
+        private readonly CloneDeploy_Web.Models.Group _group;
+        private CloneDeploy_Web.Models.ImageProfile _imageProfile;
         private readonly int _userId;
         //Constructor For Starting Multicast For Group
-        public Multicast(Models.Group group,int userId)
+        public Multicast(CloneDeploy_Web.Models.Group group,int userId)
         {
-            _computers = new List<Models.Computer>();
-            _multicastSession = new Models.ActiveMulticastSession();
+            _computers = new List<CloneDeploy_Web.Models.Computer>();
+            _multicastSession = new CloneDeploy_Web.Models.ActiveMulticastSession();
             _isOnDemand = false;
             _group = group;
             _userId = userId;
@@ -31,13 +31,13 @@ namespace BLL.Workflows
         }
 
         //Constructor For Starting Multicast For On Demand
-        public Multicast(Models.ImageProfile imageProfile, string clientCount, int userId)
+        public Multicast(CloneDeploy_Web.Models.ImageProfile imageProfile, string clientCount, int userId)
         {
-            _multicastSession = new Models.ActiveMulticastSession();
+            _multicastSession = new CloneDeploy_Web.Models.ActiveMulticastSession();
             _isOnDemand = true;
             _imageProfile = imageProfile;
             _clientCount = clientCount;
-            _group = new Models.Group{ImageProfileId = _imageProfile.Id};
+            _group = new CloneDeploy_Web.Models.Group{ImageProfileId = _imageProfile.Id};
             _userId = userId;
             _multicastSession.ImageProfileId = imageProfile.Id;
         }
@@ -123,7 +123,7 @@ namespace BLL.Workflows
             foreach (var computer in _computers)
             {
                 if (ActiveImagingTask.IsComputerActive(computer.Id)) return false;
-                var activeTask = new Models.ActiveImagingTask
+                var activeTask = new CloneDeploy_Web.Models.ActiveImagingTask
                 {
                     Type = "multicast",
                     ComputerId = computer.Id,

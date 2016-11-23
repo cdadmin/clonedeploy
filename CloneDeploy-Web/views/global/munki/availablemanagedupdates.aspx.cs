@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web.Models;
 using Helpers;
 
 public partial class views_global_munki_availablemanagedupdates : BasePages.Global
@@ -16,7 +17,7 @@ public partial class views_global_munki_availablemanagedupdates : BasePages.Glob
     {
         var availableLimit = ddlLimitAvailable.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimitAvailable.Text);
 
-        var listOfPackages = new List<Models.MunkiPackageInfo>();
+        var listOfPackages = new List<MunkiPackageInfo>();
          var pkgInfos = GetMunkiResources("pkgsinfo");
         if (pkgInfos != null)
         {
@@ -58,7 +59,7 @@ public partial class views_global_munki_availablemanagedupdates : BasePages.Glob
             var dataKey = gvPkgInfos.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
 
-            var managedUpdate = new Models.MunkiManifestManagedUpdate
+            var managedUpdate = new MunkiManifestManagedUpdate
             {
                 Name = dataKey.Value.ToString(),
                 ManifestTemplateId = ManifestTemplate.Id,

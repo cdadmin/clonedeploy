@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using CsvHelper.Configuration;
 
-namespace Models
+namespace CloneDeploy_Web.Models
 {
     [Table("images")]
     public class Image
