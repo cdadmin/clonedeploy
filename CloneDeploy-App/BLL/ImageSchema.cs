@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CloneDeploy_App.BLL.DynamicClientPartition;
+using CloneDeploy_App.DTOs;
 using CloneDeploy_App.Helpers;
 using CloneDeploy_App.Models.ImageSchema;
 using Newtonsoft.Json;
@@ -14,14 +15,14 @@ namespace CloneDeploy_App.BLL
     {
         private readonly Models.ImageSchema.GridView.ImageSchemaGridView _imageSchema;
 
-        public ImageSchema(Models.ImageProfile imageProfile, string schemaType, Models.Image image = null)
+        public ImageSchema(ImageSchemaRequestDTO schemaRequest)
         {
             string schema = null;
 
             //Only To display the main image specs file when not using a profile.
-            if (image != null)
+            if (schemaRequest.image != null)
             {
-                var path = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name + Path.DirectorySeparatorChar + "schema";
+                var path = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + schemaRequest.image.Name + Path.DirectorySeparatorChar + "schema";
                 if (File.Exists(path))
                 {
                     using (StreamReader reader = new StreamReader(path))
@@ -31,19 +32,19 @@ namespace CloneDeploy_App.BLL
                 }
             }
 
-            if (imageProfile != null)
+            if (schemaRequest.imageProfile != null)
             {
-                if (!string.IsNullOrEmpty(imageProfile.CustomSchema) && schemaType == "deploy")
+                if (!string.IsNullOrEmpty(schemaRequest.imageProfile.CustomSchema) && schemaRequest.schemaType == "deploy")
                 {
-                    schema = imageProfile.CustomSchema;
+                    schema = schemaRequest.imageProfile.CustomSchema;
                 }
-                else if (!string.IsNullOrEmpty(imageProfile.CustomUploadSchema) && schemaType == "upload")
+                else if (!string.IsNullOrEmpty(schemaRequest.imageProfile.CustomUploadSchema) && schemaRequest.schemaType == "upload")
                 {
-                    schema = imageProfile.CustomUploadSchema;
+                    schema = schemaRequest.imageProfile.CustomUploadSchema;
                 }
                 else
                 {
-                    var path = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + imageProfile.Image.Name + Path.DirectorySeparatorChar +
+                    var path = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + schemaRequest.imageProfile.Image.Name + Path.DirectorySeparatorChar +
                                "schema";
                     if (File.Exists(path))
                     {
@@ -158,6 +159,7 @@ namespace CloneDeploy_App.BLL
             }
         }
 
+        
         public static string ImageSizeOnServerForGridView(string imageName, string hdNumber)
         {
             try

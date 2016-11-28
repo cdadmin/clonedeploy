@@ -9,7 +9,7 @@ namespace BLL
 {
     public class User
     {
-
+        //moved
         public static ActionResult AddUser(CloneDeployUser user)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -25,6 +25,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string TotalCount()
         {
             using (var uow = new DAL.UnitOfWork())
@@ -33,6 +34,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static int GetAdminCount()
         {
             using (var uow = new DAL.UnitOfWork())
@@ -41,6 +43,7 @@ namespace BLL
             }
         }
       
+        //moved
         public static bool DeleteUser(int userId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -50,12 +53,14 @@ namespace BLL
             }
         }
 
+        //moved
         public static bool IsAdmin(int userId)
         {
             var user = GetUser(userId);
             return user.Membership == "Administrator";
         }
 
+        //move not needed
         public static CloneDeployUser GetUserByToken(string token)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -64,6 +69,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static CloneDeployUser GetUserByApiId(string apiId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -72,6 +78,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static void SendLockOutEmail(int userId)
         {
             //Mail not enabled
@@ -91,6 +98,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static CloneDeployUser GetUser(int userId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -99,6 +107,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static CloneDeployUser GetUser(string userName)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -107,6 +116,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static ActionResult GetUserForLogin(int userId)
         {
             var actionResult = new ActionResult();
@@ -137,6 +147,7 @@ namespace BLL
            
         }
 
+        //moved
         public static List<CloneDeployUser> SearchUsers(string searchString="")
         {
             using (var uow = new DAL.UnitOfWork())
@@ -150,6 +161,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static ActionResult UpdateUser(CloneDeployUser user)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -165,6 +177,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static ActionResult ValidateUser(CloneDeployUser user, bool isNewUser)
         {
             var validationResult = new ActionResult();

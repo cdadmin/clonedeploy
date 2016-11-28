@@ -4,6 +4,7 @@ namespace BLL
 {
     public class UserLockout
     {
+        //move not needed
         public static void ProcessBadLogin(int userId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -29,6 +30,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static bool AccountIsLocked(int userId)
         {
             var userLockout = Get(userId);
@@ -51,6 +53,7 @@ namespace BLL
 
         }
 
+        //move not needed
         public static bool DeleteUserLockouts(int userId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -60,6 +63,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static CloneDeploy_Web.Models.UserLockout Get(int userId)
         {
             using (var uow = new DAL.UnitOfWork())

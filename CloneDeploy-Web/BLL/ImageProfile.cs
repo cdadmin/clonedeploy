@@ -7,6 +7,7 @@ namespace BLL
 {
     public static class ImageProfile
     {
+        //moved
         public static ActionResult AddProfile(CloneDeploy_Web.Models.ImageProfile profile)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -21,7 +22,7 @@ namespace BLL
                 return validationResult;
             }
         }
-
+        //moved
         public static CloneDeploy_Web.Models.ImageProfile ReadProfile(int profileId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -33,6 +34,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static bool DeleteProfile(int profileId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -42,6 +44,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static List<CloneDeploy_Web.Models.ImageProfile> SearchProfiles(int imageId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -51,6 +54,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static List<CloneDeploy_Web.Models.ImageProfile> GetAllProfiles()
         {
             List<CloneDeploy_Web.Models.ImageProfile> imageProfiles;
@@ -68,6 +72,7 @@ namespace BLL
             
         }
 
+        //moved
         public static ActionResult UpdateProfile(CloneDeploy_Web.Models.ImageProfile profile)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -84,6 +89,7 @@ namespace BLL
 
         }
 
+        //move not needed
         public static bool DeleteImage(int imageId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -93,6 +99,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static ActionResult ValidateImageProfile(CloneDeploy_Web.Models.ImageProfile imageProfile, bool isNewImageProfile)
         {
             var validationResult = new ActionResult();
@@ -136,6 +143,7 @@ namespace BLL
             return validationResult;
         }
 
+        //moved
         public static CloneDeploy_Web.Models.ImageProfile SeedDefaultImageProfile(CloneDeploy_Web.Models.Image image)
         {
             var imageProfile = new CloneDeploy_Web.Models.ImageProfile();
@@ -162,6 +170,7 @@ namespace BLL
             return imageProfile;
         }
 
+        //moved
         public static void CloneProfile(CloneDeploy_Web.Models.ImageProfile imageProfile)
         {
             var originalName = imageProfile.Name;

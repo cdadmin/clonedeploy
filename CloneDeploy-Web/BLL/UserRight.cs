@@ -4,6 +4,7 @@ namespace BLL
 {
     public static class UserRight
     {
+        //moved
         public static bool AddUserRights(List<CloneDeploy_Web.Models.UserRight> listOfRights)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -15,6 +16,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static bool DeleteUserRights(int userId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -24,6 +26,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static List<CloneDeploy_Web.Models.UserRight> Get(int userId)
         {
             using (var uow = new DAL.UnitOfWork())

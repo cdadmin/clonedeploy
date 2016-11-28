@@ -8,6 +8,7 @@ using System.Threading;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using CloneDeploy_App.Controllers.Authorization;
+using CloneDeploy_App.DTOs;
 using CloneDeploy_App.Models;
 
 namespace CloneDeploy_App.Controllers
@@ -76,6 +77,127 @@ namespace CloneDeploy_App.Controllers
             return actionResult;
         }
 
+        [UserAuth(Permission = "Administrator")]
+        public ApiDTO GetCount()
+        {
+            var ApiDTO = new ApiDTO();
+            ApiDTO.Value = BLL.User.TotalCount();
+            return ApiDTO;
+        }
+
+        [UserAuth(Permission = "Administrator")]
+        public ApiDTO GetAdminCount()
+        {
+            var ApiDTO = new ApiDTO();
+            ApiDTO.Value = BLL.User.GetAdminCount().ToString();
+            return ApiDTO;
+        }
+
+        [UserAuth(Permission = "Administrator")]
+        public ActionResult Post(Models.CloneDeployUser user)
+        {
+            var actionResult = BLL.User.AddUser(user);
+            if (!actionResult.Success)
+            {
+                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
+                throw new HttpResponseException(response);
+            }
+            return actionResult;
+        }
+
+        [UserAuth(Permission = "Administrator")]
+        public Models.ActionResult Put(int id, Models.CloneDeployUser user)
+        {
+            user.Id = id;
+            var actionResult = BLL.User.UpdateUser(user);
+            if (!actionResult.Success)
+            {
+                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
+                throw new HttpResponseException(response);
+            }
+            return actionResult;
+        }
+
+        [UserAuth(Permission = "Administrator")]
+        public ApiBoolDTO Delete(int id)
+        {
+            var apiBoolDto = new ApiBoolDTO();
+            apiBoolDto.Value = BLL.User.DeleteUser(id);
+            return apiBoolDto;
+        }
+
+        [UserAuth(Permission = "Administrator")]
+        public ApiBoolDTO IsAdmin(int id)
+        {
+            var apiBoolDto = new ApiBoolDTO();
+            apiBoolDto.Value = BLL.User.IsAdmin(id);
+            return apiBoolDto;
+        }
+
+        [UserAuth(Permission = "Administrator")]
+        public IHttpActionResult Get(int id)
+        {
+            var result = BLL.User.GetUser(id);
+            if (result == null)
+                return NotFound();
+            else
+                return Ok(result);
+        }
+
+        [UserAuth(Permission = "Administrator")]
+        public IHttpActionResult GetByName(string username)
+        {
+            var result = BLL.User.GetUser(username);
+            if (result == null)
+                return NotFound();
+            else
+                return Ok(result);
+        }
+
+        [UserAuth(Permission = "Administrator")]
+        public IEnumerable<Models.UserRight> GetRights(int id)
+        {
+            return BLL.UserRight.Get(id);        
+        }
+
+        [UserAuth(Permission = "Administrator")]
+        public ApiBoolDTO DeleteRights(int id)
+        {
+            var apiBoolDto = new ApiBoolDTO();
+            apiBoolDto.Value= BLL.UserRight.DeleteUserRights(id);
+            return apiBoolDto;
+
+        }
+
+        [UserAuth(Permission = "Administrator")]
+        public IEnumerable<Models.UserImageManagement> GetImageManagements(int id)
+        {
+            return BLL.UserImageManagement.Get(id);
+        }
+
+        [UserAuth(Permission = "Administrator")]
+        public ApiBoolDTO DeleteImageManagements(int id)
+        {
+            var apiBoolDto = new ApiBoolDTO();
+            apiBoolDto.Value = BLL.UserImageManagement.DeleteUserImageManagements(id);
+            return apiBoolDto;
+
+        }
+
+        [UserAuth(Permission = "Administrator")]
+        public IEnumerable<Models.UserGroupManagement> GetGroupManagements(int id)
+        {
+            return BLL.UserGroupManagement.Get(id);
+        }
+
+        [UserAuth(Permission = "Administrator")]
+        public ApiBoolDTO DeleteGroupManagements(int id)
+        {
+            var apiBoolDto = new ApiBoolDTO();
+            apiBoolDto.Value = BLL.UserGroupManagement.DeleteUserGroupManagements(id);
+            return apiBoolDto;
+
+        }
    
 
      

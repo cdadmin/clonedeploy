@@ -7,6 +7,7 @@ namespace BLL
     public static class Room
     {
     
+        //moved
         public static ActionResult AddRoom(CloneDeploy_Web.Models.Room room)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -22,6 +23,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string TotalCount()
         {
             using (var uow = new DAL.UnitOfWork())
@@ -30,6 +32,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static bool DeleteRoom(int roomId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -39,6 +42,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static CloneDeploy_Web.Models.Room GetRoom(int roomId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -47,6 +51,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static List<CloneDeploy_Web.Models.Room> SearchRooms(string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())
@@ -55,6 +60,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static ActionResult UpdateRoom(CloneDeploy_Web.Models.Room room)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -70,6 +76,8 @@ namespace BLL
             }
         }
 
+
+        //moved not needed
         public static ActionResult ValidateRoom(CloneDeploy_Web.Models.Room room, bool isNewRoom)
         {
             var validationResult = new ActionResult();

@@ -6,6 +6,7 @@ namespace BLL
     public class MunkiManagedUpdate
     {
 
+        //moved
         public static bool AddManagedUpdateToTemplate(MunkiManifestManagedUpdate managedUpdate)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -30,6 +31,7 @@ namespace BLL
 
         }
 
+        //moved
         public static bool DeleteManagedUpdateFromTemplate(int managedUpdateId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -39,6 +41,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static MunkiManifestManagedUpdate GetManagedUpdate(int managedUpdateId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -47,6 +50,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static  List<MunkiManifestManagedUpdate> GetAllManagedUpdatesForMt(int manifestTemplateId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -55,6 +59,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string TotalCount(int manifestTemplateId)
         {
             using (var uow = new DAL.UnitOfWork())

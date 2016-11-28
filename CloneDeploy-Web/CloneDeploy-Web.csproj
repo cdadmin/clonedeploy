@@ -142,7 +142,6 @@
     <Content Include="views\global\filesandfolders\filesandfolders.master" />
     <Content Include="views\global\global.master" />
     <Content Include="views\global\munki\munki.master" />
-    <Content Include="views\global\partitions\partitions.master" />
     <Content Include="views\global\scripts\scripts.master" />
     <Content Include="views\global\sysprep\sysprep.master" />
     <Content Include="views\groups\groups.master" />
@@ -746,9 +745,6 @@
     <Content Include="views\global\munki\general.aspx" />
     <Content Include="views\global\munki\manifestcreate.aspx" />
     <Content Include="views\global\munki\manifestsearch.aspx" />
-    <Content Include="views\global\partitions\create.aspx" />
-    <Content Include="views\global\partitions\edit.aspx" />
-    <Content Include="views\global\partitions\search.aspx" />
     <Content Include="views\global\profileupdater\kernel.aspx" />
     <Content Include="views\global\rooms\search.aspx" />
     <Content Include="views\global\scripts\create.aspx" />
@@ -956,7 +952,6 @@
     <Compile Include="BLL\Image.cs" />
     <Compile Include="BLL\ImageProfile.cs" />
     <Compile Include="BLL\ImageProfileFileFolder.cs" />
-    <Compile Include="BLL\ImageProfilePartition.cs" />
     <Compile Include="BLL\ImageProfileScript.cs" />
     <Compile Include="BLL\ImageProfileSysprepTag.cs" />
     <Compile Include="BLL\ImageSchema.cs" />
@@ -968,8 +963,6 @@
     <Compile Include="BLL\MunkiManagedUpdate.cs" />
     <Compile Include="BLL\MunkiManifestTemplate.cs" />
     <Compile Include="BLL\MunkiOptionalInstall.cs" />
-    <Compile Include="BLL\Partition.cs" />
-    <Compile Include="BLL\PartitionLayout.cs" />
     <Compile Include="BLL\Port.cs" />
     <Compile Include="BLL\Progress.cs" />
     <Compile Include="BLL\Room.cs" />
@@ -1579,34 +1572,6 @@
     </Compile>
     <Compile Include="views\global\munki\munki.master.designer.cs">
       <DependentUpon>munki.master</DependentUpon>
-    </Compile>
-    <Compile Include="views\global\partitions\create.aspx.cs">
-      <DependentUpon>create.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\global\partitions\create.aspx.designer.cs">
-      <DependentUpon>create.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\global\partitions\edit.aspx.cs">
-      <DependentUpon>edit.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\global\partitions\edit.aspx.designer.cs">
-      <DependentUpon>edit.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\global\partitions\partitions.master.cs">
-      <DependentUpon>partitions.master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\global\partitions\partitions.master.designer.cs">
-      <DependentUpon>partitions.master</DependentUpon>
-    </Compile>
-    <Compile Include="views\global\partitions\search.aspx.cs">
-      <DependentUpon>search.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\global\partitions\search.aspx.designer.cs">
-      <DependentUpon>search.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\global\profileupdater\kernel.aspx.cs">
       <DependentUpon>kernel.aspx</DependentUpon>

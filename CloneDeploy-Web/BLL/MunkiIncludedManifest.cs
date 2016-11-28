@@ -5,7 +5,7 @@ namespace BLL
 {
     public class MunkiIncludedManifest
     {
-
+        //moved
         public static bool AddIncludedManifestToTemplate(MunkiManifestIncludedManifest includedManifest)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -30,6 +30,7 @@ namespace BLL
 
         }
 
+        //moved
         public static bool DeleteIncludedManifestFromTemplate(int includedManifestId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -39,6 +40,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static MunkiManifestIncludedManifest GetIncludedManifest(int includedManifestId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -47,6 +49,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static  List<MunkiManifestIncludedManifest> GetAllIncludedManifestsForMt(int manifestTemplateId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -55,6 +58,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string TotalCount(int manifestTemplateId)
         {
             using (var uow = new DAL.UnitOfWork())

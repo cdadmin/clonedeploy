@@ -6,7 +6,7 @@ namespace BLL
 {
     public class Script
     {
-
+        //moved
         public static ActionResult AddScript(CloneDeploy_Web.Models.Script script)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -22,6 +22,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string TotalCount()
         {
             using (var uow = new DAL.UnitOfWork())
@@ -30,6 +31,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static bool DeleteScript(int scriptId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -39,6 +41,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static CloneDeploy_Web.Models.Script GetScript(int scriptId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -47,7 +50,8 @@ namespace BLL
             }
         }
 
-        public static List<CloneDeploy_Web.Models.Script> SearchScripts(string searchString)
+        //moved
+        public static List<CloneDeploy_Web.Models.Script> SearchScripts(string searchString="")
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -55,6 +59,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static ActionResult UpdateScript(CloneDeploy_Web.Models.Script script)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -70,6 +75,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static ActionResult ValidateScript(CloneDeploy_Web.Models.Script script, bool isNewScript)
         {
             var validationResult = new ActionResult();

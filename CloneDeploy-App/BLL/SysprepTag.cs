@@ -5,7 +5,7 @@ namespace CloneDeploy_App.BLL
 {
     public static class SysprepTag
     {
-
+        //moved
         public static Models.ActionResult AddSysprepTag(Models.SysprepTag sysprepTag)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -21,6 +21,7 @@ namespace CloneDeploy_App.BLL
             }
         }
 
+        //moved
         public static string TotalCount()
         {
             using (var uow = new DAL.UnitOfWork())
@@ -29,6 +30,7 @@ namespace CloneDeploy_App.BLL
             }
         }
 
+        //moved
         public static bool DeleteSysprepTag(int sysprepTagId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -38,6 +40,7 @@ namespace CloneDeploy_App.BLL
             }
         }
 
+        //moved
         public static Models.SysprepTag GetSysprepTag(int sysprepTagId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -46,7 +49,8 @@ namespace CloneDeploy_App.BLL
             }
         }
 
-        public static List<Models.SysprepTag> SearchSysprepTags(string searchString)
+        //moved
+        public static List<Models.SysprepTag> SearchSysprepTags(string searchString="")
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -57,6 +61,7 @@ namespace CloneDeploy_App.BLL
             }
         }
 
+        //moved
         public static Models.ActionResult UpdateSysprepTag(Models.SysprepTag sysprepTag)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -75,6 +80,7 @@ namespace CloneDeploy_App.BLL
 
         }
 
+        //move not needed
         public static Models.ActionResult ValidateSysprepTag(Models.SysprepTag sysprepTag, bool isNewSysprepTag)
         {
             var validationResult = new Models.ActionResult();

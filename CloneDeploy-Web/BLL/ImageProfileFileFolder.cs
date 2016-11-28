@@ -6,7 +6,7 @@ namespace BLL
 {
     public class ImageProfileFileFolder
     {
-
+        //moved
         public static bool AddImageProfileFileFolder(CloneDeploy_Web.Models.ImageProfileFileFolder imageProfileFileFolder)
         {
             imageProfileFileFolder.DestinationFolder = Utility.WindowsToUnixFilePath(imageProfileFileFolder.DestinationFolder);
@@ -23,6 +23,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static bool DeleteImageProfileFileFolders(int profileId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -32,6 +33,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static List<CloneDeploy_Web.Models.ImageProfileFileFolder> SearchImageProfileFileFolders(int profileId)
         {
             using (var uow = new DAL.UnitOfWork())

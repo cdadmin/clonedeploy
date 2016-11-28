@@ -5,7 +5,7 @@ namespace BLL
 {
     public class MunkiOptionalInstall
     {
-
+        //moved
         public static bool AddOptionalInstallToTemplate(MunkiManifestOptionInstall optionalInstall)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -30,6 +30,7 @@ namespace BLL
 
         }
 
+        //moved
         public static bool DeleteOptionalInstallFromTemplate(int optionalInstallId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -39,6 +40,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static MunkiManifestOptionInstall GetOptionalInstall(int optionalInstallId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -47,6 +49,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static  List<MunkiManifestOptionInstall> GetAllOptionalInstallsForMt(int manifestTemplateId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -55,6 +58,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string TotalCount(int manifestTemplateId)
         {
             using (var uow = new DAL.UnitOfWork())

@@ -77,5 +77,89 @@ namespace CloneDeploy_App.Controllers
             }
             return actionResult;
         }
+
+        [GlobalAuth(Permission = "GlobalRead")]
+        public IEnumerable<Models.MunkiManifestCatalog> GetManifestCatalogs(int id)
+        {
+            return BLL.MunkiCatalog.GetAllCatalogsForMt(id);
+        }
+
+        [GlobalAuth(Permission = "GlobalRead")]
+        public ApiDTO GetCatalogCount(int id)
+        {
+            var ApiDTO = new ApiDTO();
+            ApiDTO.Value = BLL.MunkiCatalog.TotalCount(id);
+            return ApiDTO;
+        }
+
+        [GlobalAuth(Permission = "GlobalRead")]
+        public IEnumerable<Models.MunkiManifestIncludedManifest> GetManifestIncludedManifests(int id)
+        {
+            return BLL.MunkiIncludedManifest.GetAllIncludedManifestsForMt(id);
+        }
+
+        [GlobalAuth(Permission = "GlobalRead")]
+        public ApiDTO GetIncludedManifestCount(int id)
+        {
+            var ApiDTO = new ApiDTO();
+            ApiDTO.Value = BLL.MunkiIncludedManifest.TotalCount(id);
+            return ApiDTO;
+        }
+
+        [GlobalAuth(Permission = "GlobalRead")]
+        public IEnumerable<Models.MunkiManifestManagedInstall> GetManifestManagedInstalls(int id)
+        {
+            return BLL.MunkiManagedInstall.GetAllManagedInstallsForMt(id);
+        }
+
+        [GlobalAuth(Permission = "GlobalRead")]
+        public ApiDTO GetManagedInstallCount(int id)
+        {
+            var ApiDTO = new ApiDTO();
+            ApiDTO.Value = BLL.MunkiManagedInstall.TotalCount(id);
+            return ApiDTO;
+        }
+
+        [GlobalAuth(Permission = "GlobalRead")]
+        public IEnumerable<Models.MunkiManifestManagedUnInstall> GetManifestManagedUninstalls(int id)
+        {
+            return BLL.MunkiManagedUninstall.GetAllManagedUnInstallsForMt(id);
+        }
+
+        [GlobalAuth(Permission = "GlobalRead")]
+        public ApiDTO GetManagedUninstallCount(int id)
+        {
+            var ApiDTO = new ApiDTO();
+            ApiDTO.Value = BLL.MunkiManagedUninstall.TotalCount(id);
+            return ApiDTO;
+        }
+
+        [GlobalAuth(Permission = "GlobalRead")]
+        public IEnumerable<Models.MunkiManifestManagedUpdate> GetManifestManagedUpdates(int id)
+        {
+            return BLL.MunkiManagedUpdate.GetAllManagedUpdatesForMt(id);
+        }
+
+        [GlobalAuth(Permission = "GlobalRead")]
+        public ApiDTO GetManagedUpdateCount(int id)
+        {
+            var ApiDTO = new ApiDTO();
+            ApiDTO.Value = BLL.MunkiManagedUpdate.TotalCount(id);
+            return ApiDTO;
+        }
+
+        [GlobalAuth(Permission = "GlobalRead")]
+        public IEnumerable<Models.MunkiManifestOptionInstall> GetManifestOptionalInstalls(int id)
+        {
+            return BLL.MunkiOptionalInstall.GetAllOptionalInstallsForMt(id);
+        }
+
+        [GlobalAuth(Permission = "GlobalRead")]
+        public ApiDTO GetOptionalInstallCount(int id)
+        {
+            var ApiDTO = new ApiDTO();
+            ApiDTO.Value = BLL.MunkiOptionalInstall.TotalCount(id);
+            return ApiDTO;
+        }
     }
 }

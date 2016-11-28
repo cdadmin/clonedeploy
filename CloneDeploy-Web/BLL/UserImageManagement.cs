@@ -4,6 +4,7 @@ namespace BLL
 {
     public static class UserImageManagement
     {
+        //moved
         public static bool AddUserImageManagements(List<CloneDeploy_Web.Models.UserImageManagement> listOfImages)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -15,6 +16,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static bool DeleteUserImageManagements(int userId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -24,6 +26,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static List<CloneDeploy_Web.Models.UserImageManagement> Get(int userId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -32,6 +35,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static bool DeleteImage(int imageId)
         {
             using (var uow = new DAL.UnitOfWork())

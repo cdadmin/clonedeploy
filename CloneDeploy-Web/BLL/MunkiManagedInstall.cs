@@ -5,7 +5,7 @@ namespace BLL
 {
     public class MunkiManagedInstall
     {
-
+        //moved
         public static bool AddManagedInstallToTemplate(MunkiManifestManagedInstall managedInstall)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -30,6 +30,7 @@ namespace BLL
 
         }
 
+        //moved
         public static bool DeleteManagedInstallFromTemplate(int managedInstallId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -39,6 +40,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static MunkiManifestManagedInstall GetManagedInstall(int managedInstallId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -47,6 +49,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static  List<MunkiManifestManagedInstall> GetAllManagedInstallsForMt(int manifestTemplateId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -55,6 +58,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string TotalCount(int manifestTemplateId)
         {
             using (var uow = new DAL.UnitOfWork())

@@ -5,6 +5,7 @@ namespace BLL
 {
     public static class Site
     {
+        //moved
         public static ActionResult AddSite(CloneDeploy_Web.Models.Site site)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -20,6 +21,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string TotalCount()
         {
             using (var uow = new DAL.UnitOfWork())
@@ -28,6 +30,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static bool DeleteSite(int siteId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -37,6 +40,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static CloneDeploy_Web.Models.Site GetSite(int siteId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -45,6 +49,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static List<CloneDeploy_Web.Models.Site> SearchSites(string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())
@@ -53,6 +58,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static ActionResult UpdateSite(CloneDeploy_Web.Models.Site site)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -68,6 +74,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static ActionResult ValidateSite(CloneDeploy_Web.Models.Site site, bool isNewSite)
         {
             var validationResult = new ActionResult();

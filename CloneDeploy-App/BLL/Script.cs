@@ -46,7 +46,7 @@ namespace CloneDeploy_App.BLL
             }
         }
 
-        public static List<Models.Script> SearchScripts(string searchString)
+        public static List<Models.Script> SearchScripts(string searchString="")
         {
             using (var uow = new DAL.UnitOfWork())
             {

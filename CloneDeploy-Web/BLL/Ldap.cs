@@ -16,6 +16,7 @@ namespace BLL
             //
         }
 
+        //move not needed
         public bool Authenticate(string username, string pwd, string ldapGroup=null)
         {
             if (Settings.LdapEnabled != "1") return false;
@@ -65,7 +66,7 @@ namespace BLL
         }
 
 
-
+        //move not needed
         public bool GetGroups(string _filterAttribute, string _path, string ldapGroup)
         {
             DirectorySearcher search = new DirectorySearcher(_path);

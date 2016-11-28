@@ -5,7 +5,7 @@ namespace BLL
 {
     public class MunkiCatalog
     {
-
+        //moved
         public static bool AddCatalogToTemplate(MunkiManifestCatalog catalog)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -30,6 +30,7 @@ namespace BLL
 
         }
 
+        //moved
         public static bool DeleteCatalogFromTemplate(int catalogId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -39,6 +40,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static MunkiManifestCatalog GetCatalog(int catalogId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -47,6 +49,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static  List<MunkiManifestCatalog> GetAllCatalogsForMt(int manifestTemplateId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -55,6 +58,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string TotalCount(int manifestTemplateId)
         {
             using (var uow = new DAL.UnitOfWork())

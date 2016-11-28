@@ -65,6 +65,7 @@ namespace BLL
             }
         }
 
+        //moved
         public List<HardDrive> GetHardDrivesForGridView()
         {
             if (_imageSchema == null) return null;
@@ -82,6 +83,7 @@ namespace BLL
             return hardDrives;
         }
 
+        //moved
         public List<CloneDeploy_Web.Models.ImageSchema.GridView.Partition> GetPartitionsForGridView(string selectedHd)
         {
             var partitions = new List<CloneDeploy_Web.Models.ImageSchema.GridView.Partition>();
@@ -107,6 +109,7 @@ namespace BLL
             return partitions;
         }
 
+        //moved
         public List<LogicalVolume> GetLogicalVolumesForGridView(string selectedHd)
         {
             var lvList = new List<LogicalVolume>();
@@ -136,6 +139,7 @@ namespace BLL
             return lvList;
         }
 
+        //moved
         public static List<ImageFileInfo> GetPartitionImageFileInfoForGridView(CloneDeploy_Web.Models.Image image,string selectedHd, string selectedPartition)
         {
             try
@@ -162,6 +166,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string ImageSizeOnServerForGridView(string imageName, string hdNumber)
         {
             try
@@ -176,6 +181,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string MinimumClientSizeForGridView(int profileId, int hdNumber)
         {
             try
@@ -190,6 +196,7 @@ namespace BLL
             }
         }
 
+        //moved
         public ImageSchemaGridView GetImageSchema()
         {
             return _imageSchema;

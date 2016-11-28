@@ -8,7 +8,7 @@ namespace Tasks
         public string Progress { get; set; }
 
      
-
+        //moved not needed
         public void UpdateProgressPartition(string computerName, string partition)
         {
             var activeTask = new ActiveImagingTask
