@@ -7,7 +7,8 @@ using System.Web;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+
 
 namespace CloneDeploy_App.Controllers
 {
@@ -15,7 +16,7 @@ namespace CloneDeploy_App.Controllers
     {
       
         [UserAuth(Permission = "Administrator")]
-        public ApiBoolDTO Post(List<Models.UserImageManagement> listOfImages )
+        public ApiBoolDTO Post(List<UserImageManagementEntity> listOfImages)
         {
             var apiBoolDto = new ApiBoolDTO();
             apiBoolDto.Value = BLL.UserImageManagement.AddUserImageManagements(listOfImages);

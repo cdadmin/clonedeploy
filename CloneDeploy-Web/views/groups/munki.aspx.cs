@@ -84,11 +84,16 @@ public partial class views_groups_munki : BasePages.Groups
         }
 
         BLL.GroupMunki.DeleteMunkiTemplates(Group.Id);
+        var successCount = 0;
         if(list.Count > 0)
         {
-            EndUserMessage = BLL.GroupMunki.AddMunkiTemplates(list)
-            ? "Successfully Updated Munki Templates"
-            : "Could Not Update Munki Templates";
+            foreach (var mt in list)
+            {
+                if (BLL.GroupMunki.AddMunkiTemplates(mt))
+                    successCount++;
+
+            }
+            EndUserMessage = string.Format("Successfully Updated {0} Munki Templates",successCount);
         }
     }
 

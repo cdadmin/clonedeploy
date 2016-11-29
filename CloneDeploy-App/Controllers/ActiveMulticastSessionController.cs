@@ -8,7 +8,9 @@ using System.Threading;
 using System.Web;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+
 
 namespace CloneDeploy_App.Controllers
 {
@@ -70,7 +72,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [TaskAuth(Permission = "ImageTaskMulticast")]
-        public Models.ActionResult Delete(int id)
+        public ActionResultEntity Delete(int id)
         {
             var actionResult = BLL.ActiveMulticastSession.Delete(id);
             if (!actionResult.Success)

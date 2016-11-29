@@ -8,7 +8,8 @@ using System.Threading;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Controllers;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+
 
 namespace CloneDeploy_App.Controllers.Authorization
 {
@@ -48,7 +49,7 @@ namespace CloneDeploy_App.Controllers.Authorization
 
             if (!authorized)
             {
-                var response = actionContext.Request.CreateResponse(HttpStatusCode.Forbidden, new ActionResult() { Success = false, Message = "Forbidden" });
+                var response = actionContext.Request.CreateResponse(HttpStatusCode.Forbidden, new ActionResultEntity() { Success = false, Message = "Forbidden" });
                 throw new HttpResponseException(response);
             }
         }

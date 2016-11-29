@@ -5,9 +5,11 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+
 
 namespace CloneDeploy_App.Controllers
 {
@@ -26,9 +28,9 @@ namespace CloneDeploy_App.Controllers
 
 
         [GroupAuth(Permission = "GroupUpdate")]
-        public Models.ActionResult Put(Models.GroupBootMenu groupBootMenu)
+        public ActionResultEntity Put(GroupBootMenuEntity groupBootMenu)
         {
-            var actionResult = new ActionResult();
+            var actionResult = new ActionResultEntity();
             actionResult.Success = BLL.GroupBootMenu.UpdateGroupBootMenu(groupBootMenu);
             if (!actionResult.Success)
             {

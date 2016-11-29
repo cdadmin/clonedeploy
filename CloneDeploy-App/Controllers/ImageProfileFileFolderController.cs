@@ -5,16 +5,18 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+
 
 namespace CloneDeploy_App.Controllers
 {
     public class ImageProfileFileFolderController: ApiController
     {
         [ImageProfileAuth(Permission = "ImageProfileSearch")]
-        public IEnumerable<Models.ImageProfileFileFolder> Get(int profileId)
+        public IEnumerable<ImageProfileFileFolderEntity> Get(int profileId)
         {
             
              return BLL.ImageProfileFileFolder.SearchImageProfileFileFolders(profileId);
@@ -22,7 +24,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ImageProfileAuth(Permission = "ImageProfileCreate")]
-        public ApiBoolDTO Post(Models.ImageProfileFileFolder imageProfileFileFolder)
+        public ApiBoolDTO Post(ImageProfileFileFolderEntity imageProfileFileFolder)
         {
             var apiBoolDto = new ApiBoolDTO();
             apiBoolDto.Value = BLL.ImageProfileFileFolder.AddImageProfileFileFolder(imageProfileFileFolder);

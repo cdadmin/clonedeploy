@@ -5,15 +5,18 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+
 
 namespace CloneDeploy_App.Controllers
 {
     public class FileFolderController: ApiController
     {
         [GlobalAuth(Permission = "GlobalRead")]
-        public IEnumerable<Models.FileFolder> Get(string searchstring = "")
+        public IEnumerable<FileFolderEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? BLL.FileFolder.SearchFileFolders()
@@ -40,7 +43,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalCreate")]
-        public ActionResult Post(Models.FileFolder fileFolder)
+        public ActionResultEntity Post(FileFolderEntity fileFolder)
         {
             var actionResult = BLL.FileFolder.AddFileFolder(fileFolder);
             if (!actionResult.Success)
@@ -52,7 +55,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalUpdate")]
-        public Models.ActionResult Put(int id, Models.FileFolder fileFolder)
+        public ActionResultEntity Put(int id, FileFolderEntity fileFolder)
         {
             fileFolder.Id = id;
             var actionResult = BLL.FileFolder.UpdateFileFolder(fileFolder);
@@ -65,7 +68,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalDelete")]
-        public Models.ActionResult Delete(int id)
+        public ActionResultEntity Delete(int id)
         {
             var actionResult = BLL.FileFolder.DeleteFileFolder(id);
             if (!actionResult.Success)

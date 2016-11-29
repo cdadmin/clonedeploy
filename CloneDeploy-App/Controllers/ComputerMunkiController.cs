@@ -8,8 +8,11 @@ using System.Text;
 using System.Threading;
 using System.Web;
 using System.Web.Http;
+using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+
 
 namespace CloneDeploy_App.Controllers
 {
@@ -46,7 +49,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ComputerAuth(Permission = "ComputerCreate")]
-        public ActionResult Post(Models.ComputerMunki computerMunki)
+        public ActionResultEntity Post(ComputerMunkiEntity computerMunki)
         {
             var actionResult = BLL.ComputerMunki.AddMunkiTemplates(computerMunki);
             if (!actionResult.Success)
@@ -58,7 +61,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ComputerAuth(Permission = "ComputerDelete")]
-        public Models.ActionResult Delete(int id)
+        public ActionResultEntity Delete(int id)
         {
             var actionResult = BLL.ComputerMunki.DeleteMunkiTemplates(id);
             if (!actionResult.Success)

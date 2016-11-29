@@ -7,10 +7,11 @@ using System.Security.Claims;
 using System.Threading;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
-using CloneDeploy_App.DAL;
 using CloneDeploy_App.DTOs;
-using CloneDeploy_App.Models;
-using CloneDeploy_App.Service;
+using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
+
 
 namespace CloneDeploy_App.Controllers
 {
@@ -24,7 +25,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ComputerAuth(Permission = "ComputerSearch")]
-        public IEnumerable<Models.Computer> Get(int limit=0,string searchstring="")
+        public IEnumerable<ComputerEntity> Get(int limit=0,string searchstring="")
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
@@ -37,7 +38,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ComputerAuth(Permission = "ComputerSearch")]
-        public IEnumerable<Models.Computer> GetComputersWithoutGroup(int limit = 0, string searchstring = "")
+        public IEnumerable<ComputerEntity> GetComputersWithoutGroup(int limit = 0, string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _computerService.ComputersWithoutGroup(limit)
@@ -66,7 +67,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ComputerAuth(Permission = "ComputerRead")]
-        public List<GroupMembership> GetGroupMemberships(int id)
+        public List<GroupMembershipEntity> GetGroupMemberships(int id)
         {
             return BLL.GroupMembership.GetAllComputerMemberships(id);
         }
@@ -82,7 +83,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ComputerAuthAttribute(Permission = "ComputerCreate")]
-        public ActionResult Post(Models.Computer computer)
+        public ActionResultEntity Post(ComputerEntity computer)
         {
             var actionResult = _computerService.AddComputer(computer);
             if (!actionResult.Success)
@@ -94,7 +95,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ComputerAuth(Permission = "ComputerUpdate")]
-        public Models.ActionResult Put(int id,Models.Computer computer)
+        public ActionResultEntity Put(int id,ComputerEntity computer)
         {
             computer.Id = id;
             var actionResult = _computerService.UpdateComputer(computer);
@@ -107,7 +108,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ComputerAuth(Permission = "ComputerDelete")]
-        public Models.ActionResult Delete(int id)
+        public ActionResultEntity Delete(int id)
         {
             var actionResult = _computerService.DeleteComputer(id);
             if (!actionResult.Success)

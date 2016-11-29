@@ -5,16 +5,18 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+
 
 namespace CloneDeploy_App.Controllers
 {
     public class ImageProfileSysprepTagController: ApiController
     {
         [ImageProfileAuth(Permission = "ImageProfileSearch")]
-        public IEnumerable<Models.ImageProfileSysprepTag> Get(int profileId)
+        public IEnumerable<ImageProfileSysprepTagEntity> Get(int profileId)
         {
             
              return BLL.ImageProfileSysprepTag.SearchImageProfileSysprepTags(profileId);
@@ -22,7 +24,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ImageProfileAuth(Permission = "ImageProfileCreate")]
-        public ApiBoolDTO Post(Models.ImageProfileSysprepTag imageProfileFileFolder)
+        public ApiBoolDTO Post(ImageProfileSysprepTagEntity imageProfileFileFolder)
         {
             var apiBoolDto = new ApiBoolDTO();
             apiBoolDto.Value = BLL.ImageProfileSysprepTag.AddImageProfileSysprepTag(imageProfileFileFolder);

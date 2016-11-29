@@ -8,15 +8,16 @@ using System.Threading;
 using System.Web;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
-using CloneDeploy_App.DTOs;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+
 
 namespace CloneDeploy_App.Controllers
 {
     public class ActiveImagingTaskController: ApiController
     {
         [ComputerAuth(Permission = "ComputerSearch")]
-        public IEnumerable<Models.ActiveImagingTask> GetUnicasts(string taskType)
+        public IEnumerable<ActiveImagingTaskEntity> GetUnicasts(string taskType)
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
@@ -27,7 +28,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [TaskAuth(Permission = "ImageTaskDelete")]
-        public Models.ActionResult Delete(int id)
+        public ActionResultEntity Delete(int id)
         {
             var actionResult = BLL.ActiveImagingTask.DeleteActiveImagingTask(id);
             if (!actionResult.Success)

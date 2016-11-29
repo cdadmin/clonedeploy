@@ -4,6 +4,7 @@ namespace BLL
 {
     public static class UserGroupGroupManagement
     {
+        //moved
         public static bool AddUserGroupGroupManagements(List<CloneDeploy_Web.Models.UserGroupGroupManagement> listOfGroups)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -15,6 +16,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static bool DeleteUserGroupGroupManagements(int userGroupId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -24,6 +26,7 @@ namespace BLL
             }
         }
 
+        //move not needed
         public static bool DeleteGroup(int groupId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -33,6 +36,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static List<CloneDeploy_Web.Models.UserGroupGroupManagement> Get(int userGroupId)
         {
             using (var uow = new DAL.UnitOfWork())

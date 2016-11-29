@@ -6,9 +6,12 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Threading;
 using System.Web.Http;
+using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+
 
 namespace CloneDeploy_App.Controllers
 {
@@ -17,7 +20,7 @@ namespace CloneDeploy_App.Controllers
     public class GroupController : ApiController
     {
         [GroupAuth(Permission = "GroupSearch")]
-        public IEnumerable<Models.Group> Get(string searchstring = "")
+        public IEnumerable<GroupEntity> Get(string searchstring = "")
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
@@ -43,7 +46,7 @@ namespace CloneDeploy_App.Controllers
         {
             var group = BLL.Group.GetGroup(id);
             if (group == null)
-                return Content(HttpStatusCode.NotFound, new ActionResult());
+                return Content(HttpStatusCode.NotFound, new ActionResultEntity());
             else
                 return Ok(group);
         }
@@ -72,14 +75,14 @@ namespace CloneDeploy_App.Controllers
 
         [HttpGet]
         [GroupAuth(Permission = "GroupRead")]
-        public List<GroupMunki> GetMunkiTemplates(int id)
+        public List<GroupMunkiEntity> GetMunkiTemplates(int id)
         {
             return BLL.GroupMunki.Get(id);
         }
 
         [HttpGet]
         [GroupAuth(Permission = "GroupRead")]
-        public GroupProperty GetGroupProperties(int id)
+        public GroupPropertyEntity GetGroupProperties(int id)
         {
             return BLL.GroupProperty.GetGroupProperty(id);
         }
@@ -89,14 +92,14 @@ namespace CloneDeploy_App.Controllers
         {
             var group = BLL.GroupMembership.GetGroupMemberCount(id);
             if (group == null)
-                return Content(HttpStatusCode.NotFound, new ActionResult());
+                return Content(HttpStatusCode.NotFound, new ActionResultEntity());
             else
                 return Ok(group);
         }
        
 
         [GroupAuth(Permission = "GroupCreate")]
-        public ActionResult Post(Models.Group group)
+        public ActionResultEntity Post(GroupEntity group)
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
@@ -112,7 +115,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GroupAuth(Permission = "GroupUpdate")]
-        public Models.ActionResult Put(int id, Models.Group group)
+        public ActionResultEntity Put(int id, GroupEntity group)
         {
             group.Id = id;
             var actionResult = BLL.Group.UpdateGroup(group);
@@ -125,7 +128,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GroupAuth(Permission = "GroupDelete")]
-        public Models.ActionResult Delete(int id)
+        public ActionResultEntity Delete(int id)
         {
             var actionResult = BLL.Group.DeleteGroup(id);
             if (!actionResult.Success)
@@ -138,7 +141,7 @@ namespace CloneDeploy_App.Controllers
 
         [HttpPost]
         [GroupAuth(Permission = "GroupUpdate")]
-        public ApiBoolDTO UpdateSmartMembership(Models.Group group)
+        public ApiBoolDTO UpdateSmartMembership(GroupEntity group)
         {
             var apiBoolDto = new ApiBoolDTO();
             apiBoolDto.Value = BLL.Group.UpdateSmartMembership(group);
@@ -147,7 +150,7 @@ namespace CloneDeploy_App.Controllers
 
         [HttpPost]
         [TaskAuth(Permission = "ImageTaskDeploy")]
-        public ApiDTO StartGroupUnicast(Models.Group group)
+        public ApiDTO StartGroupUnicast(GroupEntity group)
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
@@ -158,7 +161,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GroupAuth(Permission = "GroupRead")]
-        public IEnumerable<Models.Computer> GetGroupMembers(int id, string searchstring = "")
+        public IEnumerable<ComputerEntity> GetGroupMembers(int id, string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? BLL.Group.GetGroupMembers(id)

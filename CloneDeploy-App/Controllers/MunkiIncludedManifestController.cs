@@ -7,14 +7,15 @@ using System.Web;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+
 
 namespace CloneDeploy_App.Controllers
 {
     public class MunkiIncludedManifestController: ApiController
     {
         [GlobalAuth(Permission = "GlobalRead")]
-        public Models.MunkiManifestIncludedManifest Get(int id)
+        public MunkiManifestIncludedManifestEntity Get(int id)
         {
             
              return BLL.MunkiIncludedManifest.GetIncludedManifest(id);
@@ -22,7 +23,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalCreate")]
-        public ApiBoolDTO Post(Models.MunkiManifestIncludedManifest manifest)
+        public ApiBoolDTO Post(MunkiManifestIncludedManifestEntity manifest)
         {
             var apiBoolDto = new ApiBoolDTO();
             apiBoolDto.Value = BLL.MunkiIncludedManifest.AddIncludedManifestToTemplate(manifest);

@@ -5,9 +5,12 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+
 
 namespace CloneDeploy_App.Controllers
 {
@@ -34,9 +37,9 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ComputerAuth(Permission = "ComputerUpdate")]
-        public Models.ActionResult Put(Models.ComputerBootMenu computerBootMenu)
+        public ActionResultEntity Put(ComputerBootMenuEntity computerBootMenu)
         {
-            var actionResult = new ActionResult();
+            var actionResult = new ActionResultEntity();
             actionResult.Success = BLL.ComputerBootMenu.UpdateComputerBootMenu(computerBootMenu);
             if (!actionResult.Success)
             {
@@ -47,7 +50,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ComputerAuth(Permission = "ComputerDelete")]
-        public Models.ActionResult Delete(int id)
+        public ActionResultEntity Delete(int id)
         {
             var actionResult = BLL.ComputerBootMenu.DeleteComputerBootMenus(id);
             if (!actionResult.Success)
@@ -60,7 +63,7 @@ namespace CloneDeploy_App.Controllers
 
         [HttpPost]
         [ComputerAuth(Permission = "ComputerUpdate")]
-        public ApiBoolDTO CreateCustomBootFiles(Models.Computer computer)
+        public ApiBoolDTO CreateCustomBootFiles(ComputerEntity computer)
         {
             var result = new ApiBoolDTO(){Value = true};
             BLL.ComputerBootMenu.CreateBootFiles(computer);
@@ -70,7 +73,7 @@ namespace CloneDeploy_App.Controllers
 
         [HttpPost]
         [ComputerAuth(Permission = "ComputerRead")]
-        public ApiDTO GetProxyPath(Models.Computer computer, bool isActiveOrCustom, string proxyType)
+        public ApiDTO GetProxyPath(ComputerEntity computer, bool isActiveOrCustom, string proxyType)
         {
             var result = new ApiDTO();
             result.Value = BLL.ComputerBootMenu.GetComputerProxyPath(computer, isActiveOrCustom,proxyType);
@@ -79,7 +82,7 @@ namespace CloneDeploy_App.Controllers
 
         [HttpPost]
         [ComputerAuth(Permission = "ComputerRead")]
-        public ApiDTO GetNonProxyPath(Models.Computer computer, bool isActiveOrCustom)
+        public ApiDTO GetNonProxyPath(ComputerEntity computer, bool isActiveOrCustom)
         {
             var result = new ApiDTO();
             result.Value = BLL.ComputerBootMenu.GetComputerNonProxyPath(computer, isActiveOrCustom);

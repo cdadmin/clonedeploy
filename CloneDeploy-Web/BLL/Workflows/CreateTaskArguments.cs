@@ -26,22 +26,16 @@ namespace BLL.Workflows
             {
                 case "Use Original MBR / GPT":
                     return "partition_method=original";
-                    break;
                 case "Dynamic":
                     return "partition_method=dynamic";
-                    break;
                 case "Custom Script":
                     return "partition_method=script";
-                    break;
                 case "Custom Layout":
                     return "partition_method=layout";
-                    break;
                 case "Standard":
                     return "partition_method=standard";
-                    break;
                 case "Standard Core Storage":
                     return "partition_method=standardCS";
-                    break;
                 default:
                     return "";
             }

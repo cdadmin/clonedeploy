@@ -5,15 +5,18 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+
 
 namespace CloneDeploy_App.Controllers
 {
     public class BootEntryController: ApiController
     {
         [GlobalAuth(Permission = "GlobalRead")]
-        public IEnumerable<Models.BootEntry> Get(string searchstring = "")
+        public IEnumerable<BootEntryEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? BLL.BootEntry.SearchBootEntrys()
@@ -40,7 +43,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalCreate")]
-        public ActionResult Post(Models.BootEntry bootEntry)
+        public ActionResultEntity Post(BootEntryEntity bootEntry)
         {
             var actionResult = BLL.BootEntry.AddBootEntry(bootEntry);
             if (!actionResult.Success)
@@ -52,7 +55,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalUpdate")]
-        public Models.ActionResult Put(int id, Models.BootEntry bootEntry)
+        public ActionResultEntity Put(int id, BootEntryEntity bootEntry)
         {
             bootEntry.Id = id;
             var actionResult = BLL.BootEntry.UpdateBootEntry(bootEntry);
@@ -65,7 +68,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalDelete")]
-        public Models.ActionResult Delete(int id)
+        public ActionResultEntity Delete(int id)
         {
             var actionResult = BLL.BootEntry.DeleteBootEntry(id);
             if (!actionResult.Success)

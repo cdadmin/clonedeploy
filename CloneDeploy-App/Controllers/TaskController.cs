@@ -4,9 +4,10 @@ namespace CloneDeploy_App.Controllers
 {
     public class TaskController : ApiController
     {
+        /*
         public string StartComputerUpload(int id)
         {
-             var userId = BLL.Authorize.ApiAuth();
+
             return new BLL.Workflows.Unicast(BLL.Computer.GetComputer(id), "pull", userId).Start();
         }
 
@@ -41,7 +42,7 @@ namespace CloneDeploy_App.Controllers
             var userId = BLL.Authorize.ApiAuth();
             var group = BLL.Group.GetGroup(id);
             return BLL.Group.StartGroupUnicast(group, userId).ToString();
-        }
+        }*/
        
     }
 }

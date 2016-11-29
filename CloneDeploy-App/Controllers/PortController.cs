@@ -7,7 +7,8 @@ using System.Web;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+
 
 namespace CloneDeploy_App.Controllers
 {
@@ -16,7 +17,7 @@ namespace CloneDeploy_App.Controllers
        
 
         [AdminAuth(Permission = "AdminUpdate")]
-        public ApiBoolDTO Post(Models.Port port)
+        public ApiBoolDTO Post(PortEntity port)
         {
             var apiBoolDto = new ApiBoolDTO();
             apiBoolDto.Value = BLL.Port.AddPort(port);

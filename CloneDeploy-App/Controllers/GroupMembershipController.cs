@@ -8,7 +8,8 @@ using System.Threading;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+
 
 namespace CloneDeploy_App.Controllers
 {
@@ -17,7 +18,7 @@ namespace CloneDeploy_App.Controllers
     public class GroupMembershipController : ApiController
     {    
         [GroupAuth]
-        public ApiBoolDTO Post(List<Models.GroupMembership> groupMemberships)
+        public ApiBoolDTO Post(List<GroupMembershipEntity> groupMemberships)
         {
            var apiBoolDto = new ApiBoolDTO();
 

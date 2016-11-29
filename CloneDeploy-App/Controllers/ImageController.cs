@@ -8,14 +8,16 @@ using System.Threading;
 using System.Web;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+
 
 namespace CloneDeploy_App.Controllers
 {
     public class ImageController: ApiController
     {
         [ImageAuth(Permission = "ImageSearch")]
-        public IEnumerable<Models.Image> Get(string searchstring = "")
+        public IEnumerable<ImageEntity> Get(string searchstring = "")
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
@@ -26,7 +28,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ImageAuth(Permission = "ImageSearch")]
-        public IEnumerable<Models.Image> Search(string searchstring = "")
+        public IEnumerable<ImageEntity> Search(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? BLL.Image.SearchImages()
@@ -62,7 +64,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ImageAuth(Permission = "ImageCreate")]
-        public ActionResult Post(Models.Image image)
+        public ActionResultEntity Post(ImageEntity image)
         {
             var actionResult = BLL.Image.AddImage(image);
             if (!actionResult.Success)
@@ -74,7 +76,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalUpdate")]
-        public Models.ActionResult Put(int id, Models.Image image, string originalName)
+        public ActionResultEntity Put(int id, ImageEntity image, string originalName)
         {
             image.Id = id;
             var actionResult = BLL.Image.UpdateImage(image,originalName);
@@ -87,7 +89,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ImageAuth(Permission = "ImageDelete")]
-        public Models.ActionResult Delete(int id)
+        public ActionResultEntity Delete(int id)
         {
             var actionResult = BLL.Image.DeleteImage(id);
             if (!actionResult.Success)

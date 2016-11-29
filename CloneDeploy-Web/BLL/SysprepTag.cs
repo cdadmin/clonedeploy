@@ -6,7 +6,7 @@ namespace BLL
 {
     public static class SysprepTag
     {
-
+        //moved
         public static ActionResult AddSysprepTag(CloneDeploy_Web.Models.SysprepTag sysprepTag)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -22,6 +22,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string TotalCount()
         {
             using (var uow = new DAL.UnitOfWork())
@@ -30,6 +31,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static bool DeleteSysprepTag(int sysprepTagId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -39,6 +41,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static CloneDeploy_Web.Models.SysprepTag GetSysprepTag(int sysprepTagId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -47,6 +50,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static List<CloneDeploy_Web.Models.SysprepTag> SearchSysprepTags(string searchString)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -58,6 +62,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static ActionResult UpdateSysprepTag(CloneDeploy_Web.Models.SysprepTag sysprepTag)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -76,6 +81,7 @@ namespace BLL
 
         }
 
+        //move not needed
         public static ActionResult ValidateSysprepTag(CloneDeploy_Web.Models.SysprepTag sysprepTag, bool isNewSysprepTag)
         {
             var validationResult = new ActionResult();

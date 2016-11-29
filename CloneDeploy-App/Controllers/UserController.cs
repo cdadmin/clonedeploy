@@ -7,9 +7,12 @@ using System.Security.Claims;
 using System.Threading;
 using System.Web.Http;
 using System.Web.Http.Controllers;
+using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+
 
 namespace CloneDeploy_App.Controllers
 {
@@ -43,7 +46,7 @@ namespace CloneDeploy_App.Controllers
 
             if (!authorized)
             {
-                var response = actionContext.Request.CreateResponse(HttpStatusCode.Forbidden, new ActionResult() { Success = false, Message = "Forbidden" });
+                var response = actionContext.Request.CreateResponse(HttpStatusCode.Forbidden, new ActionResultEntity() { Success = false, Message = "Forbidden" });
                 throw new HttpResponseException(response);
             }
         }
@@ -53,7 +56,7 @@ namespace CloneDeploy_App.Controllers
     {
 
         [UserAuth(Permission = "Administrator")]
-        public IEnumerable<Models.CloneDeployUser> Get(string searchstring="")
+        public IEnumerable<CloneDeployUserEntity> Get(string searchstring = "")
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
@@ -66,7 +69,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [UserAuth(Permission = "CallerOnly")]
-        public ActionResult GetForLogin(int id)
+        public ActionResultEntity GetForLogin(int id)
         {
             var actionResult = BLL.User.GetUserForLogin(id);
             if (!actionResult.Success)
@@ -94,7 +97,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ActionResult Post(Models.CloneDeployUser user)
+        public ActionResultEntity Post(CloneDeployUserEntity user)
         {
             var actionResult = BLL.User.AddUser(user);
             if (!actionResult.Success)
@@ -106,7 +109,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [UserAuth(Permission = "Administrator")]
-        public Models.ActionResult Put(int id, Models.CloneDeployUser user)
+        public ActionResultEntity Put(int id, CloneDeployUserEntity user)
         {
             user.Id = id;
             var actionResult = BLL.User.UpdateUser(user);
@@ -155,7 +158,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [UserAuth(Permission = "Administrator")]
-        public IEnumerable<Models.UserRight> GetRights(int id)
+        public IEnumerable<UserRightEntity> GetRights(int id)
         {
             return BLL.UserRight.Get(id);        
         }
@@ -170,7 +173,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [UserAuth(Permission = "Administrator")]
-        public IEnumerable<Models.UserImageManagement> GetImageManagements(int id)
+        public IEnumerable<UserImageManagementEntity> GetImageManagements(int id)
         {
             return BLL.UserImageManagement.Get(id);
         }
@@ -185,7 +188,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [UserAuth(Permission = "Administrator")]
-        public IEnumerable<Models.UserGroupManagement> GetGroupManagements(int id)
+        public IEnumerable<UserGroupManagementEntity> GetGroupManagements(int id)
         {
             return BLL.UserGroupManagement.Get(id);
         }

@@ -5,16 +5,19 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+
 
 namespace CloneDeploy_App.Controllers
 {
     public class ScriptController: ApiController
     {
         [GlobalAuth(Permission = "GlobalRead")]
-        public IEnumerable<Models.Script> Get(string searchstring = "")
+        public IEnumerable<ScriptEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? BLL.Script.SearchScripts()
@@ -41,7 +44,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalCreate")]
-        public ActionResult Post(Models.Script script)
+        public ActionResultEntity Post(ScriptEntity script)
         {
             var actionResult = BLL.Script.AddScript(script);
             if (!actionResult.Success)
@@ -53,7 +56,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalUpdate")]
-        public Models.ActionResult Put(int id, Models.Script script)
+        public ActionResultEntity Put(int id, ScriptEntity script)
         {
             script.Id = id;
             var actionResult = BLL.Script.UpdateScript(script);

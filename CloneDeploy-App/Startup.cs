@@ -1,0 +1,64 @@
+﻿using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using CloneDeploy_App.BLL;
+using Microsoft.Owin;
+using Microsoft.Owin.Security.OAuth;
+using Owin;
+
+[assembly: OwinStartup(typeof(Startup))]
+
+namespace CloneDeploy_App.BLL
+{
+    public class SimpleAuthorizationServerProvider : OAuthAuthorizationServerProvider
+    {
+        public override Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
+        {
+            context.Validated();
+            return Task.FromResult<object>(null);
+        }
+
+        public override Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
+        {
+
+            context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "*" });
+            var auth = new Authenticate();
+
+            var validationResult = auth.GlobalLogin(context.UserName, context.Password, "Web");
+            if ((validationResult.Success))
+            {
+                ClaimsIdentity oAuthIdentity = new ClaimsIdentity(context.Options.AuthenticationType);
+                context.Validated(oAuthIdentity);
+                oAuthIdentity.AddClaim(new Claim("user_id", BLL.User.GetUser(context.UserName).Id.ToString()));
+                context.Validated(oAuthIdentity);
+            }
+            else
+            {
+                context.SetError("invalid_grant", validationResult.Message);
+
+            }
+            return Task.FromResult<object>(null);
+        }
+    }
+    public class Startup
+    {
+        public static OAuthAuthorizationServerOptions OAuthOptions { get; private set; }
+
+        public void Configuration(IAppBuilder app)
+        {
+            OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions()
+            {
+                AllowInsecureHttp = true,
+                TokenEndpointPath = new PathString("/token"),
+                AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),
+                Provider = new SimpleAuthorizationServerProvider()
+            };
+
+            // Token Generation
+            app.UseOAuthAuthorizationServer(OAuthServerOptions);
+            app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
+
+
+        }
+    }
+}

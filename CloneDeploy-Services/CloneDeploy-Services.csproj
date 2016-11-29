@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1F6BFFED-303F-4991-B44C-F70BFFF0A0D4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CloneDeploy_Services</RootNamespace>
+    <AssemblyName>CloneDeploy-Services</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CsvHelper">
+      <HintPath>..\packages\CsvHelper.2.13.5.0\lib\net40-client\CsvHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Posix">
+      <HintPath>..\packages\Mono.Posix-4.5.4.5.0\lib\net45\Mono.Posix.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="plist-cil">
+      <HintPath>..\packages\plist-cil.1.14\lib\plist-cil.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BLL\ActiveImagingTask.cs" />
+    <Compile Include="BLL\ActiveMulticastSession.cs" />
+    <Compile Include="BLL\Auth.cs" />
+    <Compile Include="BLL\Authenticate.cs" />
+    <Compile Include="BLL\Authorize.cs" />
+    <Compile Include="BLL\Bcd.cs" />
+    <Compile Include="BLL\BootEntry.cs" />
+    <Compile Include="BLL\BootTemplate.cs" />
+    <Compile Include="BLL\Building.cs" />
+    <Compile Include="BLL\CdVersion.cs" />
+    <Compile Include="BLL\ClientImaging.cs" />
+    <Compile Include="BLL\Computer.cs" />
+    <Compile Include="BLL\ComputerBootMenu.cs" />
+    <Compile Include="BLL\ComputerLog.cs" />
+    <Compile Include="BLL\ComputerMunki.cs" />
+    <Compile Include="BLL\ComputerProxyReservation.cs" />
+    <Compile Include="BLL\DistributionPoint.cs" />
+    <Compile Include="BLL\DynamicClientPartition\ClientPartition.cs" />
+    <Compile Include="BLL\DynamicClientPartition\ClientPartitionHelper.cs" />
+    <Compile Include="BLL\FileFolder.cs" />
+    <Compile Include="BLL\Group.cs" />
+    <Compile Include="BLL\GroupBootMenu.cs" />
+    <Compile Include="BLL\GroupMembership.cs" />
+    <Compile Include="BLL\GroupMunki.cs" />
+    <Compile Include="BLL\GroupProperty.cs" />
+    <Compile Include="BLL\Image.cs" />
+    <Compile Include="BLL\ImageProfile.cs" />
+    <Compile Include="BLL\ImageProfileFileFolder.cs" />
+    <Compile Include="BLL\ImageProfileScript.cs" />
+    <Compile Include="BLL\ImageProfileSysprepTag.cs" />
+    <Compile Include="BLL\ImageSchema.cs" />
+    <Compile Include="BLL\Ldap.cs" />
+    <Compile Include="BLL\MunkiCatalog.cs" />
+    <Compile Include="BLL\MunkiIncludedManifest.cs" />
+    <Compile Include="BLL\MunkiManagedInstall.cs" />
+    <Compile Include="BLL\MunkiManagedUninstall.cs" />
+    <Compile Include="BLL\MunkiManagedUpdate.cs" />
+    <Compile Include="BLL\MunkiManifestTemplate.cs" />
+    <Compile Include="BLL\MunkiOptionalInstall.cs" />
+    <Compile Include="BLL\Port.cs" />
+    <Compile Include="BLL\Progress.cs" />
+    <Compile Include="BLL\Room.cs" />
+    <Compile Include="BLL\Script.cs" />
+    <Compile Include="BLL\Setting.cs" />
+    <Compile Include="BLL\Site.cs" />
+    <Compile Include="BLL\SysprepTag.cs" />
+    <Compile Include="BLL\User.cs" />
+    <Compile Include="BLL\UserGroup.cs" />
+    <Compile Include="BLL\UserGroupGroupManagement.cs" />
+    <Compile Include="BLL\UserGroupImageManagement.cs" />
+    <Compile Include="BLL\UserGroupManagement.cs" />
+    <Compile Include="BLL\UserGroupRight.cs" />
+    <Compile Include="BLL\UserImageManagement.cs" />
+    <Compile Include="BLL\UserLockout.cs" />
+    <Compile Include="BLL\UserRight.cs" />
+    <Compile Include="BLL\Workflows\CancelAllImagingTasks.cs" />
+    <Compile Include="BLL\Workflows\CleanTaskBootFiles.cs" />
+    <Compile Include="BLL\Workflows\ClobberBootMenu.cs" />
+    <Compile Include="BLL\Workflows\CopyPxeBinaries.cs" />
+    <Compile Include="BLL\Workflows\CreateTaskArguments.cs" />
+    <Compile Include="BLL\Workflows\DefaultBootMenu.cs" />
+    <Compile Include="BLL\Workflows\DynamicPartitionScript.cs" />
+    <Compile Include="BLL\Workflows\EffectiveMunkiTemplate.cs" />
+    <Compile Include="BLL\Workflows\IsoGen.cs" />
+    <Compile Include="BLL\Workflows\Multicast.cs" />
+    <Compile Include="BLL\Workflows\TaskBootMenu.cs" />
+    <Compile Include="BLL\Workflows\Unicast.cs" />
+    <Compile Include="ComputerService.cs" />
+    <Compile Include="Helpers\Authorizations.cs" />
+    <Compile Include="Helpers\Encryption.cs" />
+    <Compile Include="Helpers\FileOps.cs" />
+    <Compile Include="Helpers\Logger.cs" />
+    <Compile Include="Helpers\Mail.cs" />
+    <Compile Include="Helpers\ParameterReplace.cs" />
+    <Compile Include="Helpers\RegParser.cs" />
+    <Compile Include="Helpers\Settings.cs" />
+    <Compile Include="Helpers\UNCAccessWithCredentials.cs" />
+    <Compile Include="Helpers\Utility.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CloneDeploy-DataModel\CloneDeploy-DataModel.csproj">
+      <Project>{67c7f110-f0fd-4ea2-8ec3-5118a718b0b4}</Project>
+      <Name>CloneDeploy-DataModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CloneDeploy-Entities\CloneDeploy-Entities.csproj">
+      <Project>{453080da-87a4-4f5f-aa1f-2c49e37d2f21}</Project>
+      <Name>CloneDeploy-Entities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

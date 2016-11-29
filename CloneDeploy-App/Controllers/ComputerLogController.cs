@@ -7,15 +7,17 @@ using System.Security.Claims;
 using System.Threading;
 using System.Web;
 using System.Web.Http;
+using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+
 
 namespace CloneDeploy_App.Controllers
 {
     public class ComputerLogController:ApiController
     {
         [ComputerAuth(Permission = "ComputerRead")]
-        public IEnumerable<Models.ComputerLog> GetComputerLogs(int id)
+        public IEnumerable<ComputerLogEntity> GetComputerLogs(int id)
         {       
             return BLL.ComputerLog.Search(id);
         }
@@ -31,13 +33,13 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ComputerAuth(Permission = "AdminRead")]
-        public IEnumerable<Models.ComputerLog> GetOnDemandLogs(int limit=0)
+        public IEnumerable<ComputerLogEntity> GetOnDemandLogs(int limit = 0)
         {
             return BLL.ComputerLog.SearchOnDemand(limit);
         }
 
         [ComputerAuth(Permission = "ComputerCreate")]
-        public ActionResult Post(Models.ComputerLog computerLog)
+        public ActionResultEntity Post(ComputerLogEntity computerLog)
         {
             var actionResult = BLL.ComputerLog.AddComputerLog(computerLog);
             if (!actionResult.Success)
@@ -49,7 +51,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ComputerAuth(Permission = "ComputerDelete")]
-        public Models.ActionResult Delete(int id)
+        public ActionResultEntity Delete(int id)
         {
             var actionResult = BLL.ComputerLog.DeleteComputerLog(id);
             if (!actionResult.Success)
@@ -61,7 +63,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ComputerAuth(Permission = "ComputerDelete")]
-        public Models.ActionResult DeleteAllComputerLogs(int id)
+        public ActionResultEntity DeleteAllComputerLogs(int id)
         {
             var actionResult = BLL.ComputerLog.DeleteComputerLogs(id);
             if (!actionResult.Success)

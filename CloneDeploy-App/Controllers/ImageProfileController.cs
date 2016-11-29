@@ -7,16 +7,18 @@ using System.Security.Claims;
 using System.Threading;
 using System.Web;
 using System.Web.Http;
+using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+
 
 namespace CloneDeploy_App.Controllers
 {
     public class ImageProfileController: ApiController
     {
         [ImageProfileAuth(Permission = "ImageProfileSearch")]
-        public IEnumerable<Models.ImageProfile> GetByImage(int imageId)
+        public IEnumerable<ImageProfileEntity> GetByImage(int imageId)
         {
             return BLL.ImageProfile.SearchProfiles(imageId);
 
@@ -48,7 +50,7 @@ namespace CloneDeploy_App.Controllers
        
 
         [ImageProfileAuth(Permission = "ImageProfileCreate")]
-        public ActionResult Post(Models.ImageProfile imageProfile)
+        public ActionResultEntity Post(ImageProfileEntity imageProfile)
         {
             var actionResult = BLL.ImageProfile.AddProfile(imageProfile);
             if (!actionResult.Success)
@@ -61,7 +63,7 @@ namespace CloneDeploy_App.Controllers
 
         [HttpPost]
         [ImageProfileAuth(Permission = "ImageProfileCreate")]
-        public ImageProfile Seed(Models.Image image)
+        public ImageProfileEntity Seed(ImageEntity image)
         {
            return BLL.ImageProfile.SeedDefaultImageProfile(image);
           
@@ -70,14 +72,14 @@ namespace CloneDeploy_App.Controllers
 
         [HttpPost]
         [ImageProfileAuth(Permission = "ImageProfileCreate")]
-        public IHttpActionResult Clone(Models.ImageProfile imageProfile)
+        public IHttpActionResult Clone(ImageProfileEntity imageProfile)
         {
             BLL.ImageProfile.CloneProfile(imageProfile);
             return Ok();
         }
 
         [GlobalAuth(Permission = "GlobalUpdate")]
-        public Models.ActionResult Put(int id, Models.ImageProfile imageProfile)
+        public ActionResultEntity Put(int id, ImageProfileEntity imageProfile)
         {
             imageProfile.Id = id;
             var actionResult = BLL.ImageProfile.UpdateProfile(imageProfile);

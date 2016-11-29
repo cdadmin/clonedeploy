@@ -7,14 +7,15 @@ using System.Web;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+
 
 namespace CloneDeploy_App.Controllers
 {
     public class MunkiManagedUpdateController: ApiController
     {
         [GlobalAuth(Permission = "GlobalRead")]
-        public Models.MunkiManifestManagedUpdate Get(int id)
+        public MunkiManifestManagedUpdateEntity Get(int id)
         {
 
             return BLL.MunkiManagedUpdate.GetManagedUpdate(id);
@@ -22,7 +23,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalCreate")]
-        public ApiBoolDTO Post(Models.MunkiManifestManagedUpdate managedInstall)
+        public ApiBoolDTO Post(MunkiManifestManagedUpdateEntity managedInstall)
         {
             var apiBoolDto = new ApiBoolDTO();
             apiBoolDto.Value = BLL.MunkiManagedUpdate.AddManagedUpdateToTemplate(managedInstall);

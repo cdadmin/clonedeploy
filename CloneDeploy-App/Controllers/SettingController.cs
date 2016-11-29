@@ -7,7 +7,8 @@ using System.Web;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+
 
 namespace CloneDeploy_App.Controllers
 {
@@ -24,7 +25,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalUpdate")]
-        public ApiBoolDTO Put(List<Models.Setting> listSettings)
+        public ApiBoolDTO Put(List<SettingEntity> listSettings)
         {
             var apiBoolDto = new ApiBoolDTO();
             apiBoolDto.Value = BLL.Setting.UpdateSetting(listSettings);

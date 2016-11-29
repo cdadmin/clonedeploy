@@ -5,16 +5,19 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+
 
 namespace CloneDeploy_App.Controllers
 {
     public class SysprepTagController: ApiController
     {
         [GlobalAuth(Permission = "GlobalRead")]
-        public IEnumerable<Models.SysprepTag> Get(string searchstring = "")
+        public IEnumerable<SysprepTagEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? BLL.SysprepTag.SearchSysprepTags()
@@ -41,7 +44,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalCreate")]
-        public ActionResult Post(Models.SysprepTag sysprepTag)
+        public ActionResultEntity Post(SysprepTagEntity sysprepTag)
         {
             var actionResult = BLL.SysprepTag.AddSysprepTag(sysprepTag);
             if (!actionResult.Success)
@@ -53,7 +56,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalUpdate")]
-        public Models.ActionResult Put(int id, Models.SysprepTag sysprepTag)
+        public ActionResultEntity Put(int id, SysprepTagEntity sysprepTag)
         {
             sysprepTag.Id = id;
             var actionResult = BLL.SysprepTag.UpdateSysprepTag(sysprepTag);

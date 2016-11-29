@@ -7,15 +7,18 @@ using System.Security.Claims;
 using System.Threading;
 using System.Web;
 using System.Web.Http;
+using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+
 
 namespace CloneDeploy_App.Controllers
 {
     public class MunkiManifestTemplateController: ApiController
     {
         [GlobalAuth(Permission = "GlobalRead")]
-        public IEnumerable<Models.MunkiManifestTemplate> Get(string searchstring = "")
+        public IEnumerable<MunkiManifestTemplateEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? BLL.MunkiManifestTemplate.SearchManifests()
@@ -42,7 +45,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalCreate")]
-        public ActionResult Post(Models.MunkiManifestTemplate manifest)
+        public ActionResultEntity Post(MunkiManifestTemplateEntity manifest)
         {
             var actionResult = BLL.MunkiManifestTemplate.AddManifest(manifest);
             if (!actionResult.Success)
@@ -54,7 +57,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalUpdate")]
-        public Models.ActionResult Put(int id, Models.MunkiManifestTemplate manifest)
+        public ActionResultEntity Put(int id, MunkiManifestTemplateEntity manifest)
         {
             manifest.Id = id;
             var actionResult = BLL.MunkiManifestTemplate.UpdateManifest(manifest);
@@ -67,7 +70,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalDelete")]
-        public Models.ActionResult Delete(int id)
+        public ActionResultEntity Delete(int id)
         {
             var actionResult = BLL.MunkiManifestTemplate.DeleteManifest(id);
             if (!actionResult.Success)
@@ -79,7 +82,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public IEnumerable<Models.MunkiManifestCatalog> GetManifestCatalogs(int id)
+        public IEnumerable<MunkiManifestCatalogEntity> GetManifestCatalogs(int id)
         {
             return BLL.MunkiCatalog.GetAllCatalogsForMt(id);
         }
@@ -93,7 +96,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public IEnumerable<Models.MunkiManifestIncludedManifest> GetManifestIncludedManifests(int id)
+        public IEnumerable<MunkiManifestIncludedManifestEntity> GetManifestIncludedManifests(int id)
         {
             return BLL.MunkiIncludedManifest.GetAllIncludedManifestsForMt(id);
         }
@@ -107,7 +110,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public IEnumerable<Models.MunkiManifestManagedInstall> GetManifestManagedInstalls(int id)
+        public IEnumerable<MunkiManifestManagedInstallEntity> GetManifestManagedInstalls(int id)
         {
             return BLL.MunkiManagedInstall.GetAllManagedInstallsForMt(id);
         }
@@ -121,7 +124,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public IEnumerable<Models.MunkiManifestManagedUnInstall> GetManifestManagedUninstalls(int id)
+        public IEnumerable<MunkiManifestManagedUnInstallEntity> GetManifestManagedUninstalls(int id)
         {
             return BLL.MunkiManagedUninstall.GetAllManagedUnInstallsForMt(id);
         }
@@ -135,7 +138,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public IEnumerable<Models.MunkiManifestManagedUpdate> GetManifestManagedUpdates(int id)
+        public IEnumerable<MunkiManifestManagedUpdateEntity> GetManifestManagedUpdates(int id)
         {
             return BLL.MunkiManagedUpdate.GetAllManagedUpdatesForMt(id);
         }
@@ -149,7 +152,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public IEnumerable<Models.MunkiManifestOptionInstall> GetManifestOptionalInstalls(int id)
+        public IEnumerable<MunkiManifestOptionInstallEntity> GetManifestOptionalInstalls(int id)
         {
             return BLL.MunkiOptionalInstall.GetAllOptionalInstallsForMt(id);
         }

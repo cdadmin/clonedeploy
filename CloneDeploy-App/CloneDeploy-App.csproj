@@ -125,81 +125,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="BLL\ActiveImagingTask.cs" />
-    <Compile Include="BLL\ActiveMulticastSession.cs" />
-    <Compile Include="BLL\Auth.cs" />
-    <Compile Include="BLL\Authenticate.cs" />
-    <Compile Include="BLL\Authorize.cs" />
-    <Compile Include="BLL\Bcd.cs" />
-    <Compile Include="BLL\BootEntry.cs" />
-    <Compile Include="BLL\BootTemplate.cs" />
-    <Compile Include="BLL\Building.cs" />
-    <Compile Include="BLL\CdVersion.cs" />
-    <Compile Include="BLL\ClientImaging.cs" />
-    <Compile Include="BLL\Computer.cs" />
-    <Compile Include="BLL\ComputerBootMenu.cs" />
-    <Compile Include="BLL\ComputerLog.cs" />
-    <Compile Include="BLL\ComputerMunki.cs" />
-    <Compile Include="BLL\ComputerProxyReservation.cs" />
-    <Compile Include="BLL\DistributionPoint.cs" />
-    <Compile Include="BLL\DynamicClientPartition\ClientPartition.cs" />
-    <Compile Include="BLL\DynamicClientPartition\ClientPartitionHelper.cs" />
-    <Compile Include="BLL\FileFolder.cs" />
-    <Compile Include="BLL\Group.cs" />
-    <Compile Include="BLL\GroupBootMenu.cs" />
-    <Compile Include="BLL\GroupMembership.cs" />
-    <Compile Include="BLL\GroupMunki.cs" />
-    <Compile Include="BLL\GroupProperty.cs" />
-    <Compile Include="BLL\Image.cs" />
-    <Compile Include="BLL\ImageProfile.cs" />
-    <Compile Include="BLL\ImageProfileFileFolder.cs" />
-    <Compile Include="BLL\ImageProfileScript.cs" />
-    <Compile Include="BLL\ImageProfileSysprepTag.cs" />
-    <Compile Include="BLL\ImageSchema.cs" />
-    <Compile Include="BLL\Ldap.cs" />
-    <Compile Include="BLL\MunkiCatalog.cs" />
-    <Compile Include="BLL\MunkiIncludedManifest.cs" />
-    <Compile Include="BLL\MunkiManagedInstall.cs" />
-    <Compile Include="BLL\MunkiManagedUninstall.cs" />
-    <Compile Include="BLL\MunkiManagedUpdate.cs" />
-    <Compile Include="BLL\MunkiManifestTemplate.cs" />
-    <Compile Include="BLL\MunkiOptionalInstall.cs" />
-    <Compile Include="BLL\Partition.cs" />
-    <Compile Include="BLL\PartitionLayout.cs" />
-    <Compile Include="BLL\Port.cs" />
-    <Compile Include="BLL\Progress.cs" />
-    <Compile Include="BLL\Room.cs" />
-    <Compile Include="BLL\Script.cs" />
-    <Compile Include="BLL\Setting.cs" />
-    <Compile Include="BLL\Site.cs" />
-    <Compile Include="BLL\Startup.cs" />
-    <Compile Include="BLL\SysprepTag.cs" />
-    <Compile Include="BLL\User.cs" />
-    <Compile Include="BLL\UserGroup.cs" />
-    <Compile Include="BLL\UserGroupGroupManagement.cs" />
-    <Compile Include="BLL\UserGroupImageManagement.cs" />
-    <Compile Include="BLL\UserGroupManagement.cs" />
-    <Compile Include="BLL\UserGroupRight.cs" />
-    <Compile Include="BLL\UserImageManagement.cs" />
-    <Compile Include="BLL\UserLockout.cs" />
-    <Compile Include="BLL\UserRight.cs" />
-    <Compile Include="BLL\Workflows\CancelAllImagingTasks.cs" />
-    <Compile Include="BLL\Workflows\CleanTaskBootFiles.cs" />
-    <Compile Include="BLL\Workflows\ClobberBootMenu.cs" />
-    <Compile Include="BLL\Workflows\CopyPxeBinaries.cs" />
-    <Compile Include="BLL\Workflows\CreateTaskArguments.cs" />
-    <Compile Include="BLL\Workflows\DefaultBootMenu.cs" />
-    <Compile Include="BLL\Workflows\DynamicPartitionScript.cs" />
-    <Compile Include="BLL\Workflows\EffectiveMunkiTemplate.cs" />
-    <Compile Include="BLL\Workflows\IsoGen.cs" />
-    <Compile Include="BLL\Workflows\Multicast.cs" />
-    <Compile Include="BLL\Workflows\TaskBootMenu.cs" />
-    <Compile Include="BLL\Workflows\Unicast.cs" />
     <Compile Include="Controllers\Authorization\AdminAuth.cs" />
     <Compile Include="Controllers\Authorization\ImageProfileAuth.cs" />
     <Compile Include="Controllers\Authorization\ImageAuth.cs" />
+    <Compile Include="Controllers\UserGroupController.cs" />
+    <Compile Include="Controllers\UserGroupGroupManagementController.cs" />
     <Compile Include="Controllers\UserGroupManagementController.cs" />
+    <Compile Include="Controllers\UserGroupImageManagementController.cs" />
     <Compile Include="Controllers\UserImageManagementController.cs" />
+    <Compile Include="Controllers\UserGroupRightController.cs" />
     <Compile Include="Controllers\UserRightController.cs" />
     <Compile Include="Controllers\SysprepTagController.cs" />
     <Compile Include="Controllers\SiteController.cs" />
@@ -228,8 +162,6 @@
     <Compile Include="Controllers\BootTemplateController.cs" />
     <Compile Include="Controllers\ComputerBootMenuController.cs" />
     <Compile Include="Controllers\GroupMembershipController.cs" />
-    <Compile Include="DTOs\ImageSchemaRequestDTO.cs" />
-    <Compile Include="Service\ComputerService.cs" />
     <Compile Include="Controllers\ActiveImagingTaskController.cs" />
     <Compile Include="Controllers\ActiveMulticastSessionController.cs" />
     <Compile Include="Controllers\Authorization\ClientAuth.cs" />
@@ -248,17 +180,6 @@
     <Compile Include="Controllers\MunkiManifestTemplateController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Controllers\UserController.cs" />
-    <Compile Include="DAL\ActiveImagingTaskRepository.cs" />
-    <Compile Include="DAL\BuildingRepository.cs" />
-    <Compile Include="DAL\CloneDeployDbContext.cs" />
-    <Compile Include="DAL\ComputerRepository.cs" />
-    <Compile Include="DAL\GenericRepository.cs" />
-    <Compile Include="DAL\GroupRepository.cs" />
-    <Compile Include="DAL\IGenericRepository.cs" />
-    <Compile Include="DAL\IUnitOfWork.cs" />
-    <Compile Include="DAL\RoomRepository.cs" />
-    <Compile Include="DAL\SiteRepository.cs" />
-    <Compile Include="DAL\UnitOfWork.cs" />
     <Compile Include="DTOs\ApiBoolDTO.cs" />
     <Compile Include="DTOs\FormData\AddComputerDTO.cs" />
     <Compile Include="DTOs\FormData\ComputerIdDTO.cs" />
@@ -282,83 +203,11 @@
     <Compile Include="DTOs\FormData\ScriptNameDTO.cs" />
     <Compile Include="DTOs\FormData\SysprepDTO.cs" />
     <Compile Include="DTOs\FormData\TaskDTO.cs" />
-    <Compile Include="DTOs\Models.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\Authorizations.cs" />
-    <Compile Include="Helpers\Encryption.cs" />
-    <Compile Include="Helpers\FileOps.cs" />
-    <Compile Include="Helpers\Logger.cs" />
-    <Compile Include="Helpers\Mail.cs" />
-    <Compile Include="Helpers\ParameterReplace.cs" />
-    <Compile Include="Helpers\RegParser.cs" />
-    <Compile Include="Helpers\Settings.cs" />
-    <Compile Include="Helpers\UNCAccessWithCredentials.cs" />
-    <Compile Include="Helpers\Utility.cs" />
-    <Compile Include="Models\ActiveImagingTask.cs" />
-    <Compile Include="Models\ActiveMulticastSession.cs" />
-    <Compile Include="Models\ApiDTO.cs" />
-    <Compile Include="Models\Application.cs" />
-    <Compile Include="Models\BootEntry.cs" />
-    <Compile Include="Models\BootTemplate.cs" />
-    <Compile Include="Models\Building.cs" />
-    <Compile Include="Models\CdVersion.cs" />
-    <Compile Include="Models\ClientPartition.cs" />
-    <Compile Include="Models\Computer.cs" />
-    <Compile Include="Models\ComputerApplication.cs" />
-    <Compile Include="Models\ComputerBootMenu.cs" />
-    <Compile Include="Models\ComputerHardDrive.cs" />
-    <Compile Include="Models\ComputerInventory.cs" />
-    <Compile Include="Models\ComputerLog.cs" />
-    <Compile Include="Models\ComputerLogin.cs" />
-    <Compile Include="Models\ComputerMunki.cs" />
-    <Compile Include="Models\ComputerPrinter.cs" />
-    <Compile Include="Models\ComputerProxyReservation.cs" />
-    <Compile Include="Models\ComputerUser.cs" />
-    <Compile Include="Models\DistributionPoint.cs" />
-    <Compile Include="Models\FileFolder.cs" />
-    <Compile Include="Models\Group.cs" />
-    <Compile Include="Models\GroupBootMenu.cs" />
-    <Compile Include="Models\GroupMembership.cs" />
-    <Compile Include="Models\GroupMunki.cs" />
-    <Compile Include="Models\GroupProperty.cs" />
-    <Compile Include="Models\Image.cs" />
-    <Compile Include="Models\ImageProfile.cs" />
-    <Compile Include="Models\ImageProfileFileFolder.cs" />
-    <Compile Include="Models\ImageProfilePartitionLayout.cs" />
-    <Compile Include="Models\ImageProfileScript.cs" />
-    <Compile Include="Models\ImageProfileSysprepTag.cs" />
-    <Compile Include="Models\ImageSchema\GridView\ImageSchemaGridView.cs" />
-    <Compile Include="Models\ImageSchema\ImageSchema.cs" />
-    <Compile Include="Models\MunkiManifestCatalog.cs" />
-    <Compile Include="Models\MunkiManifestIncludedManifest.cs" />
-    <Compile Include="Models\MunkiManifestManagedInstall.cs" />
-    <Compile Include="Models\MunkiManifestManagedUninstall.cs" />
-    <Compile Include="Models\MunkiManifestManagedUpdate.cs" />
-    <Compile Include="Models\MunkiManifestOptionalInstall.cs" />
-    <Compile Include="Models\MunkiManifestTemplate.cs" />
-    <Compile Include="Models\Partition.cs" />
-    <Compile Include="Models\PartitionLayout.cs" />
-    <Compile Include="Models\Plist.cs" />
-    <Compile Include="Models\Port.cs" />
-    <Compile Include="Models\Room.cs" />
-    <Compile Include="Models\Script.cs" />
-    <Compile Include="Models\Setting.cs" />
-    <Compile Include="Models\Site.cs" />
-    <Compile Include="Models\SysprepTag.cs" />
-    <Compile Include="Models\Token.cs" />
-    <Compile Include="Models\User.cs" />
-    <Compile Include="Models\UserGroup.cs" />
-    <Compile Include="Models\UserGroupGroupManagement.cs" />
-    <Compile Include="Models\UserGroupImageManagement.cs" />
-    <Compile Include="Models\UserGroupManagement.cs" />
-    <Compile Include="Models\UserGroupRight.cs" />
-    <Compile Include="Models\UserImageManagement.cs" />
-    <Compile Include="Models\UserLockout.cs" />
-    <Compile Include="Models\UserRight.cs" />
-    <Compile Include="Models\ValidationResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -404,6 +253,16 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CloneDeploy-Entities\CloneDeploy-Entities.csproj">
+      <Project>{453080da-87a4-4f5f-aa1f-2c49e37d2f21}</Project>
+      <Name>CloneDeploy-Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CloneDeploy-Services\CloneDeploy-Services.csproj">
+      <Project>{1f6bffed-303f-4991-b44c-f70bfff0a0d4}</Project>
+      <Name>CloneDeploy-Services</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

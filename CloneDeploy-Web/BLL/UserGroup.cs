@@ -6,7 +6,7 @@ namespace BLL
 {
     public class UserGroup
     {
-
+        //moved
         public static ActionResult AddUserGroup(CloneDeployUserGroup userGroup)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -22,6 +22,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string TotalCount()
         {
             using (var uow = new DAL.UnitOfWork())
@@ -30,6 +31,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static string MemberCount(int userGroupId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -39,6 +41,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static bool DeleteUserGroup(int userGroupId)
         {
             var groupMembers = GetGroupMembers(userGroupId);
@@ -55,7 +58,7 @@ namespace BLL
             }
         }
 
-
+        //moved
         public static CloneDeployUserGroup GetUserGroup(int userGroupId)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -65,7 +68,8 @@ namespace BLL
         }
 
       
-        public static List<CloneDeployUserGroup> SearchUserGroups(string searchString)
+        //moved
+        public static List<CloneDeployUserGroup> SearchUserGroups(string searchString="")
         {
             using (var uow = new DAL.UnitOfWork())
             {
@@ -73,6 +77,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static ActionResult UpdateUser(CloneDeployUserGroup userGroup)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -88,7 +93,7 @@ namespace BLL
             }
         }
 
-
+        //move not needed
         public static List<CloneDeployUserGroup> GetLdapGroups()
         {
             using (var uow = new DAL.UnitOfWork())
@@ -97,6 +102,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static List<CloneDeployUser> GetGroupMembers(int userGroupId, string searchString = "")
         {
             using (var uow = new DAL.UnitOfWork())
@@ -105,6 +111,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static void UpdateAllGroupMembersAcls(CloneDeployUserGroup userGroup)
         {
             var rights = BLL.UserGroupRight.Get(userGroup.Id);     
@@ -118,6 +125,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static void UpdateAllGroupMembersGroupMgmt(CloneDeployUserGroup userGroup)
         {        
             var groupManagement = BLL.UserGroupGroupManagement.Get(userGroup.Id);
@@ -132,6 +140,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static void UpdateAllGroupMembersImageMgmt(CloneDeployUserGroup userGroup)
         {
             var imageManagement = BLL.UserGroupImageManagement.Get(userGroup.Id);
@@ -146,6 +155,7 @@ namespace BLL
             }
         }
 
+        //moved
         public static void AddNewGroupMember(CloneDeployUserGroup userGroup, CloneDeployUser user)
         {
             user.Membership = userGroup.Membership;
@@ -178,7 +188,7 @@ namespace BLL
         }
 
        
-
+        //move not needed
         public static ActionResult ValidateUser(CloneDeployUserGroup userGroup, bool isNewUserGroup)
         {
             var validationResult = new ActionResult();

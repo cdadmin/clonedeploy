@@ -5,15 +5,18 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
-using CloneDeploy_App.Models;
+using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+
 
 namespace CloneDeploy_App.Controllers
 {
     public class BuildingController: ApiController
     {
         [GlobalAuth(Permission = "GlobalRead")]
-        public IEnumerable<Models.Building> Get(string searchstring = "")
+        public IEnumerable<BuildingEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? BLL.Building.SearchBuildings()
@@ -40,7 +43,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalCreate")]
-        public ActionResult Post(Models.Building building)
+        public ActionResultEntity Post(BuildingEntity building)
         {
             var actionResult = BLL.Building.AddBuilding(building);
             if (!actionResult.Success)
@@ -52,7 +55,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalUpdate")]
-        public Models.ActionResult Put(int id, Models.Building building)
+        public ActionResultEntity Put(int id, BuildingEntity building)
         {
             building.Id = id;
             var actionResult = BLL.Building.UpdateBuilding(building);
@@ -65,7 +68,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalDelete")]
-        public Models.ActionResult Delete(int id)
+        public ActionResultEntity Delete(int id)
         {
             var actionResult = BLL.Building.DeleteBuilding(id);
             if (!actionResult.Success)
