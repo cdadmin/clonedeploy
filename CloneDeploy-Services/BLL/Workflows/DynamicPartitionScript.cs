@@ -6,7 +6,7 @@ namespace CloneDeploy_App.BLL.Workflows
 {
     public class ClientPartitionScript
     {
-        public CloneDeploy_Entities.DTOs.ImageSchema ImageSchema { get; set; }
+        public CloneDeploy_Entities.DTOs.ImageSchemaBE.ImageSchema ImageSchema { get; set; }
         public string ClientHd { get; set; }
         public int HdNumberToGet { get; set; }
         public string NewHdSize { get; set; }

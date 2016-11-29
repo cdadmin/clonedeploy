@@ -22,45 +22,30 @@ namespace CloneDeploy_Services
             _uow = new UnitOfWork();
         }
 
-
-        public ActionResultEntity AddComputer(ComputerEntity computer)
+        public int AddComputer(ComputerEntity computer)
         {
-            using (var uow = new UnitOfWork())
+            computer.Mac = Utility.FixMac(computer.Mac);
+            var validationResult = ValidateComputer(computer, "new");
+            if (validationResult.Success)
             {
-                computer.Mac = Utility.FixMac(computer.Mac);
-                var validationResult = ValidateComputer(computer, "new");
-                if (validationResult.Success)
-                {
-                    uow.ComputerRepository.Insert(computer);
-                    validationResult.Success = uow.Save();
-                    if (validationResult.Success)
-                    {
-                        validationResult.ObjectId = computer.Id;
-                        validationResult.Object = JsonConvert.SerializeObject(computer);
-                        Group.UpdateAllSmartGroupsMembers();
-                    }
-
-                }
-
-                return validationResult;
+                _uow.ComputerRepository.Insert(computer);
+                _uow.Save();
+                Group.UpdateAllSmartGroupsMembers();
             }
+            return computer.Id;
         }
 
         public string TotalCount()
         {
-            using (var uow = new UnitOfWork())
-            {
-                return uow.ComputerRepository.Count();
-            }
+
+            return _uow.ComputerRepository.Count();
         }
 
-        public ApiDTO ComputerCountUser(int userId)
+        public string ComputerCountUser(int userId)
         {
-            var apiDTO = new ApiDTO();
             if (User.GetUser(userId).Membership == "Administrator")
             {
-                apiDTO.Value = TotalCount();
-                return apiDTO;
+                return TotalCount();
             }
 
             var userManagedGroups = UserGroupManagement.Get(userId);
@@ -68,8 +53,7 @@ namespace CloneDeploy_Services
             //If count is zero image management is not being used return total count
             if (userManagedGroups.Count == 0)
             {
-                apiDTO.Value = TotalCount();
-                return apiDTO;
+                return TotalCount();
             }
             else
             {
@@ -78,37 +62,29 @@ namespace CloneDeploy_Services
                 {
                     computerCount += Convert.ToInt32(GroupMembership.GetGroupMemberCount(managedGroup.GroupId));
                 }
-                apiDTO.Value = computerCount.ToString();
-                return apiDTO;
+                return computerCount.ToString();
             }
         }
 
 
-        public ActionResultEntity DeleteComputer(int id)
+        public bool DeleteComputer(int id)
         {
             var computer = GetComputer(id);
-            if (computer == null)
-            {
-                var message = string.Format("Could Not Delete Computer With Id {0}.  The Computer Was not Found",id);
-                Logger.Log(message);
-                return new ActionResultEntity() { Success = false, Message = message, ObjectId = id };
-            }
-            using (var uow = new UnitOfWork())
-            {
-                var validationResult = ValidateComputer(computer, "delete");
-                if (validationResult.Success)
-                {
-                    GroupMembership.DeleteComputerMemberships(computer.Id);
-                    ComputerBootMenu.DeleteComputerBootMenus(computer.Id);
-                    ComputerLog.DeleteComputerLogs(computer.Id);
-                    uow.ComputerRepository.Delete(computer.Id);
-                    validationResult.Success = uow.Save();
-                    validationResult.ObjectId = computer.Id;
-                    validationResult.Object = JsonConvert.SerializeObject(computer);
-                }
-                return validationResult;
-            }
+            if (computer == null) return false;
 
+
+            var validationResult = ValidateComputer(computer, "delete");
+            if (validationResult.Success)
+            {
+                GroupMembership.DeleteComputerMemberships(computer.Id);
+                ComputerBootMenu.DeleteComputerBootMenus(computer.Id);
+                ComputerLog.DeleteComputerLogs(computer.Id);
+                _uow.ComputerRepository.Delete(computer.Id);
+                _uow.Save();
+                return true;
+
+            }
+            return false;
         }
 
         public DistributionPointEntity GetDistributionPoint(ComputerEntity computer)
@@ -145,21 +121,17 @@ namespace CloneDeploy_Services
 
         public ComputerEntity GetComputer(int computerId)
         {
-            using (var uow = new UnitOfWork())
-            {
-                var computer = uow.ComputerRepository.GetById(computerId);
-                if (computer != null)
-                    computer.Image = Image.GetImage(computer.ImageId);
-                return computer;
-            }
+            var computer = _uow.ComputerRepository.GetById(computerId);
+            if (computer != null)
+                computer.Image = Image.GetImage(computer.ImageId);
+            return computer;
         }
 
         public ComputerEntity GetComputerFromMac(string mac)
         {
-            using (var uow = new UnitOfWork())
-            {
-                return uow.ComputerRepository.GetFirstOrDefault(p => p.Mac == mac);
-            }
+
+            return _uow.ComputerRepository.GetFirstOrDefault(p => p.Mac == mac);
+
         }
 
         public List<ComputerEntity> SearchComputersForUser(int userId, int limit, string searchString = "")
@@ -189,54 +161,41 @@ namespace CloneDeploy_Services
 
         public List<ComputerEntity> GetAll()
         {
-            using (var uow = new UnitOfWork())
-            {
-                return uow.ComputerRepository.Get();
-            }
+
+            return _uow.ComputerRepository.Get();
         }
 
         public List<ComputerEntity> SearchComputers(string searchString, int limit)
         {
-            using (var uow = new UnitOfWork())
-            {
-                return uow.ComputerRepository.Search(searchString, limit);
-            }
+
+            return _uow.ComputerRepository.Search(searchString, limit);
         }
 
-        public ActionResultEntity UpdateComputer(ComputerEntity computer)
+        public bool UpdateComputer(ComputerEntity computer)
         {
             var existingcomputer = GetComputer(computer.Id);
-            if (existingcomputer == null)
+            if (existingcomputer == null) return false;
+
+
+            computer.Mac = Utility.FixMac(computer.Mac);
+            var validationResult = ValidateComputer(computer, "update");
+            if (validationResult.Success)
             {
-                var message = string.Format("Could Not Update Computer With Id {0}.  The Computer Was not Found", computer.Id);
-                Logger.Log(message);
-                return new ActionResultEntity() { Success = false, Message = message, ObjectId = computer.Id };
+                _uow.ComputerRepository.Update(computer, computer.Id);
+                _uow.Save();
+                Group.UpdateAllSmartGroupsMembers();
+                return true;
             }
 
-            using (var uow = new UnitOfWork())
-            {
-                computer.Mac = Utility.FixMac(computer.Mac);
-                var validationResult = ValidateComputer(computer, "update");
-                if (validationResult.Success)
-                {
-                    uow.ComputerRepository.Update(computer, computer.Id);
-                    validationResult.Success = uow.Save();
-                    validationResult.ObjectId = computer.Id;
-                    validationResult.Object = JsonConvert.SerializeObject(computer);
-                    if (validationResult.Success) Group.UpdateAllSmartGroupsMembers();
-                }
-
-                return validationResult;
-            }
+            return false;
         }
 
         public IEnumerable<ComputerEntity> ComputersWithCustomBootMenu()
         {
-            using (var uow = new UnitOfWork())
-            {
-                return uow.ComputerRepository.Get(x => x.CustomBootEnabled == 1);
 
-            } 
+            return _uow.ComputerRepository.Get(x => x.CustomBootEnabled == 1);
+
+
         }
 
         public int ImportCsv(string path)
@@ -248,7 +207,7 @@ namespace CloneDeploy_Services
                 var records = csv.GetRecords<ComputerEntity>();
                 foreach (var computer in records)
                 {
-                    if (AddComputer(computer).Success)
+                    if (AddComputer(computer) > 0 )
                         importCounter++;
                 }
             }
@@ -264,14 +223,9 @@ namespace CloneDeploy_Services
             }
         }
 
-        public List<ComputerEntity> ComputersWithoutGroup(int limit, string searchString="")
+        public List<ComputerEntity> ComputersWithoutGroup(int limit, string searchString = "")
         {
-            List<ComputerEntity> listOfComputers;
-            using (var uow = new UnitOfWork())
-            {
-                listOfComputers = uow.ComputerRepository.GetComputersWithoutGroup(searchString, limit);
-                
-            }
+            var listOfComputers = _uow.ComputerRepository.GetComputersWithoutGroup(searchString, limit);
             foreach (var computer in listOfComputers)
                 computer.Image = Image.GetImage(computer.ImageId);
 
@@ -299,28 +253,26 @@ namespace CloneDeploy_Services
 
                 if (type == "new")
                 {
-                    using (var uow = new UnitOfWork())
-                    {
-                        if (uow.ComputerRepository.Exists(h => h.Name == computer.Name))
+                    
+                        if (_uow.ComputerRepository.Exists(h => h.Name == computer.Name))
                         {
                             validationResult.Message = "A Computer With This Name Already Exists";
                             return validationResult;
                         }
-                        if (uow.ComputerRepository.Exists(h => h.Mac == computer.Mac))
+                        if (_uow.ComputerRepository.Exists(h => h.Mac == computer.Mac))
                         {
                             validationResult.Message = "A Computer With This MAC Already Exists";
                             return validationResult;
                         }
-                    }
+                    
                 }
                 else
                 {
-                    using (var uow = new UnitOfWork())
-                    {
-                        var originalComputer = uow.ComputerRepository.GetById(computer.Id);
+                 
+                        var originalComputer = _uow.ComputerRepository.GetById(computer.Id);
                         if (originalComputer.Name != computer.Name)
                         {
-                            if (uow.ComputerRepository.Exists(h => h.Name == computer.Name))
+                            if (_uow.ComputerRepository.Exists(h => h.Name == computer.Name))
                             {
                                 validationResult.Message = "A Computer With This Name Already Exists";
                                 return validationResult;
@@ -328,13 +280,13 @@ namespace CloneDeploy_Services
                         }
                         else if (originalComputer.Mac != computer.Mac)
                         {
-                            if (uow.ComputerRepository.Exists(h => h.Mac == computer.Mac))
+                            if (_uow.ComputerRepository.Exists(h => h.Mac == computer.Mac))
                             {
                                 validationResult.Message = "A Computer With This MAC Already Exists";
                                 return validationResult;
                             }
                         }
-                    }
+                    
                 }
             }
 

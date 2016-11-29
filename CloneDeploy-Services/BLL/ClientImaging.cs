@@ -8,7 +8,7 @@ using CloneDeploy_App.DTOs;
 using CloneDeploy_App.Helpers;
 using Newtonsoft.Json;
 using CloneDeploy_Entities;
-using CloneDeploy_Entities.DTOs.Client;
+using CloneDeploy_Entities.DTOs.ClientImaging;
 
 namespace CloneDeploy_App.BLL
 {

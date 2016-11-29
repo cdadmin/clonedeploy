@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CloneDeploy_App.Helpers;
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs.ClientPartition;
 using Newtonsoft.Json;
 
 namespace CloneDeploy_App.BLL.DynamicClientPartition
@@ -22,14 +23,14 @@ namespace CloneDeploy_App.BLL.DynamicClientPartition
             _hdToGet = hdToGet;
             _newHdSize = (long)(Convert.ToInt64(newHdSize) * .99);
             _imageProfile = imageProfile;
-            PrimaryAndExtendedPartitions = new List<CloneDeploy_Entities.ClientPartition>();
-            LogicalPartitions = new List<CloneDeploy_Entities.ClientPartition>();
-            LogicalVolumes = new List<CloneDeploy_Entities.ClientLogicalVolume>();
-            VolumeGroupHelpers = new List<CloneDeploy_Entities.ClientVolumeGroupHelper>();
+            PrimaryAndExtendedPartitions = new List<CloneDeploy_Entities.DTOs.ClientPartition.ClientPartition>();
+            LogicalPartitions = new List<CloneDeploy_Entities.DTOs.ClientPartition.ClientPartition>();
+            LogicalVolumes = new List<ClientLogicalVolume>();
+            VolumeGroupHelpers = new List<ClientVolumeGroupHelper>();
             _imageSchema = new ClientPartitionHelper(_imageProfile).GetImageSchema();
         }
 
-        private readonly CloneDeploy_Entities.DTOs.ImageSchema _imageSchema;
+        private readonly CloneDeploy_Entities.DTOs.ImageSchemaBE.ImageSchema _imageSchema;
         private string BootPart { get; set; }
         private int HdNumberToGet { get; set; }
 
@@ -42,10 +43,10 @@ namespace CloneDeploy_App.BLL.DynamicClientPartition
        
 
         public int FirstPartitionStartSector { get; set; }
-        public List<CloneDeploy_Entities.ClientPartition> PrimaryAndExtendedPartitions { get; set; }
-        public List<CloneDeploy_Entities.ClientPartition> LogicalPartitions { get; set; }
-        public List<CloneDeploy_Entities.ClientVolumeGroupHelper> VolumeGroupHelpers { get; set; }
-        public List<CloneDeploy_Entities.ClientLogicalVolume> LogicalVolumes { get; set; }
+        public List<CloneDeploy_Entities.DTOs.ClientPartition.ClientPartition> PrimaryAndExtendedPartitions { get; set; }
+        public List<CloneDeploy_Entities.DTOs.ClientPartition.ClientPartition> LogicalPartitions { get; set; }
+        public List<ClientVolumeGroupHelper> VolumeGroupHelpers { get; set; }
+        public List<ClientLogicalVolume> LogicalVolumes { get; set; }
         public ExtendedPartitionHelper ExtendedPartitionHelper { get; set; }
         public string DebugStatus { get; set; }
         /// <summary>
@@ -135,7 +136,7 @@ namespace CloneDeploy_App.BLL.DynamicClientPartition
                     if (schemaPartition.Type.ToLower() == "logical")
                         continue;
 
-                    var clientPartition = new CloneDeploy_Entities.ClientPartition
+                    var clientPartition = new CloneDeploy_Entities.DTOs.ClientPartition.ClientPartition
                     {
                         IsBoot = BootPart == schemaPartition.Number,
                         Number = schemaPartition.Number,
@@ -304,7 +305,7 @@ namespace CloneDeploy_App.BLL.DynamicClientPartition
                     if (part.Type.ToLower() != "logical")
                         continue;
 
-                    var clientPartition = new CloneDeploy_Entities.ClientPartition
+                    var clientPartition = new CloneDeploy_Entities.DTOs.ClientPartition.ClientPartition
                     {
                         IsBoot = BootPart == part.Number,
                         Number = part.Number,

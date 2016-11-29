@@ -180,29 +180,6 @@
     <Compile Include="Controllers\MunkiManifestTemplateController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Controllers\UserController.cs" />
-    <Compile Include="DTOs\ApiBoolDTO.cs" />
-    <Compile Include="DTOs\FormData\AddComputerDTO.cs" />
-    <Compile Include="DTOs\FormData\ComputerIdDTO.cs" />
-    <Compile Include="DTOs\FormData\ComputerMacDTO.cs" />
-    <Compile Include="DTOs\FormData\DpDTO.cs" />
-    <Compile Include="DTOs\FormData\EnvironmentDTO.cs" />
-    <Compile Include="DTOs\FormData\ErrorEmailDTO.cs" />
-    <Compile Include="DTOs\FormData\HdReqs.cs" />
-    <Compile Include="DTOs\FormData\ImageIdDTO.cs" />
-    <Compile Include="DTOs\FormData\ImageListDTO.cs" />
-    <Compile Include="DTOs\FormData\MacDTO.cs" />
-    <Compile Include="DTOs\FormData\NameDTO.cs" />
-    <Compile Include="DTOs\FormData\OnDemandDTO.cs" />
-    <Compile Include="DTOs\FormData\OriginalLVM.cs" />
-    <Compile Include="DTOs\FormData\PartitionDTO.cs" />
-    <Compile Include="DTOs\FormData\PortDTO.cs" />
-    <Compile Include="DTOs\FormData\ProfileDTO.cs" />
-    <Compile Include="DTOs\FormData\ProgressDTO.cs" />
-    <Compile Include="DTOs\FormData\ProgressPartitionDTO.cs" />
-    <Compile Include="DTOs\FormData\ScriptIdDTO.cs" />
-    <Compile Include="DTOs\FormData\ScriptNameDTO.cs" />
-    <Compile Include="DTOs\FormData\SysprepDTO.cs" />
-    <Compile Include="DTOs\FormData\TaskDTO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

@@ -8,7 +8,11 @@ using CloneDeploy_App.Helpers;
 using Newtonsoft.Json;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Entities.DTOs.GridView;
+using CloneDeploy_Entities.DTOs.ImageSchemaBE;
+using CloneDeploy_Entities.DTOs.ImageSchemaFE;
+using HardDrive = CloneDeploy_Entities.DTOs.ImageSchemaFE.HardDrive;
+using LogicalVolume = CloneDeploy_Entities.DTOs.ImageSchemaFE.LogicalVolume;
+using Partition = CloneDeploy_Entities.DTOs.ImageSchemaFE.Partition;
 
 namespace CloneDeploy_App.BLL
 {
@@ -64,11 +68,11 @@ namespace CloneDeploy_App.BLL
             }
         }
 
-        public List<CloneDeploy_Entities.DTOs.GridView.HardDrive> GetHardDrivesForGridView()
+        public List<HardDrive> GetHardDrivesForGridView()
         {
             if (_imageSchema == null) return null;
 
-            var hardDrives = new List<CloneDeploy_Entities.DTOs.GridView.HardDrive>();
+            var hardDrives = new List<HardDrive>();
 
             foreach (var harddrive in _imageSchema.HardDrives)
             {
@@ -81,9 +85,9 @@ namespace CloneDeploy_App.BLL
             return hardDrives;
         }
 
-        public List<CloneDeploy_Entities.DTOs.GridView.Partition> GetPartitionsForGridView(string selectedHd)
+        public List<Partition> GetPartitionsForGridView(string selectedHd)
         {
-            var partitions = new List<CloneDeploy_Entities.DTOs.GridView.Partition>();
+            var partitions = new List<Partition>();
 
             foreach (var hardDrive in _imageSchema.HardDrives.Where(x => x.Name == selectedHd))
             {
@@ -106,9 +110,9 @@ namespace CloneDeploy_App.BLL
             return partitions;
         }
 
-        public List<CloneDeploy_Entities.DTOs.GridView.LogicalVolume> GetLogicalVolumesForGridView(string selectedHd)
+        public List<LogicalVolume> GetLogicalVolumesForGridView(string selectedHd)
         {
-            var lvList = new List<CloneDeploy_Entities.DTOs.GridView.LogicalVolume>();
+            var lvList = new List<LogicalVolume>();
 
             foreach (var partition in _imageSchema.HardDrives[Convert.ToInt32(selectedHd)].Partitions)
             {
@@ -135,7 +139,7 @@ namespace CloneDeploy_App.BLL
             return lvList;
         }
 
-        public static List<CloneDeploy_Entities.DTOs.ImageFileInfo> GetPartitionImageFileInfoForGridView(ImageEntity image, string selectedHd, string selectedPartition)
+        public static List<ImageFileInfo> GetPartitionImageFileInfoForGridView(ImageEntity image, string selectedHd, string selectedPartition)
         {
             try
             {
@@ -190,7 +194,7 @@ namespace CloneDeploy_App.BLL
             }
         }
 
-        public CloneDeploy_Entities.DTOs.GridView.ImageSchemaGridView GetImageSchema()
+        public ImageSchemaGridView GetImageSchema()
         {
             return _imageSchema;
         }

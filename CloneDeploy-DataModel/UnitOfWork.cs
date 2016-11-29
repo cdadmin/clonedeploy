@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity.Infrastructure.Interception;
+using System.Data.Entity.Validation;
 using CloneDeploy_Entities;
 
 namespace CloneDeploy_DataModel
@@ -312,9 +315,27 @@ namespace CloneDeploy_DataModel
             get { return _activeImagingTaskRepository ?? (_activeImagingTaskRepository = new ActiveImagingTaskRepository(_context)); }
         }
 
-        public bool Save()
+        public void Save()
         {
-            return _context.SaveChanges() > 0;
+         
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                foreach (var eve in ex.EntityValidationErrors)
+                {
+                    Logger.Logger.Log(string.Format("{0}: Entity of type \"{1}\" in state \"{2}\" has the following validation errors:", DateTime.Now, eve.Entry.Entity.GetType().Name, eve.Entry.State));
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Logger.Logger.Log(string.Format("- Property: \"{0}\", Error: \"{1}\"", ve.PropertyName, ve.ErrorMessage));
+                    }
+                }
+              
+
+                throw ex;
+            }
         }
 
         private bool disposed = false;

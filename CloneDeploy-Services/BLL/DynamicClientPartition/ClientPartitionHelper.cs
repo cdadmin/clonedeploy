@@ -4,7 +4,8 @@ using System.IO;
 using System.Linq;
 using CloneDeploy_App.Helpers;
 using CloneDeploy_Entities;
-using CloneDeploy_Entities.DTOs.Client;
+using CloneDeploy_Entities.DTOs.ClientImaging;
+using CloneDeploy_Entities.DTOs.ClientPartition;
 using Newtonsoft.Json;
 
 namespace CloneDeploy_App.BLL.DynamicClientPartition
@@ -14,7 +15,7 @@ namespace CloneDeploy_App.BLL.DynamicClientPartition
     /// </summary>
     public class ClientPartitionHelper
     {
-        private readonly CloneDeploy_Entities.DTOs.ImageSchema _imageSchema;
+        private readonly CloneDeploy_Entities.DTOs.ImageSchemaBE.ImageSchema _imageSchema;
         private readonly ImageProfileEntity _imageProfile;
         public ClientPartitionHelper(ImageProfileEntity imageProfile)
         {
@@ -43,7 +44,7 @@ namespace CloneDeploy_App.BLL.DynamicClientPartition
 
             if (!string.IsNullOrEmpty(schema))
             {
-                _imageSchema = JsonConvert.DeserializeObject<CloneDeploy_Entities.DTOs.ImageSchema>(schema);
+                _imageSchema = JsonConvert.DeserializeObject<CloneDeploy_Entities.DTOs.ImageSchemaBE.ImageSchema>(schema);
             }
         }
 
@@ -345,7 +346,7 @@ namespace CloneDeploy_App.BLL.DynamicClientPartition
         ///     Calculates the minimum block size required for a single logical volume, assuming the logical volume cannot have any
         ///     children.
         /// </summary>
-        public PartitionHelper LogicalVolume(CloneDeploy_Entities.DTOs.LogicalVolume lv, int lbsByte, long newHdSize, int hdNumberToGet)
+        public PartitionHelper LogicalVolume(CloneDeploy_Entities.DTOs.ImageSchemaBE.LogicalVolume lv, int lbsByte, long newHdSize, int hdNumberToGet)
         {
             var logicalVolumeHelper = new PartitionHelper {MinSizeBlk = 0};
             if (lv.ForceFixedSize)
@@ -589,7 +590,7 @@ namespace CloneDeploy_App.BLL.DynamicClientPartition
                 select part).Any() ? "true" : "false";
         }
 
-        public CloneDeploy_Entities.DTOs.ImageSchema GetImageSchema()
+        public CloneDeploy_Entities.DTOs.ImageSchemaBE.ImageSchema GetImageSchema()
         {
             return _imageSchema;
         }
