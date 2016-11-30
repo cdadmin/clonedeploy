@@ -34,6 +34,10 @@ namespace CloneDeploy_Services
                 actionResult.Id = computer.Id;
                 Group.UpdateAllSmartGroupsMembers();
             }
+            else
+            {
+                actionResult.ErrorMessage = validationResult.ErrorMessage;
+            }
             return actionResult;
         }
 

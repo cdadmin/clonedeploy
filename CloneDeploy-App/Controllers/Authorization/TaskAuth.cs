@@ -33,14 +33,14 @@ namespace CloneDeploy_App.Controllers.Authorization
             {
                 case "GroupSearch":
                 case "GroupCreate":
-                    if (new BLL.Auth(Convert.ToInt32(userId), Permission).IsAuthorized())
+                    if (new BLL.AuthorizationServices(Convert.ToInt32(userId), Permission).IsAuthorized())
                         authorized = true;
                     break;
                 case "ImageTaskDelete":
                     var objectId = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
                     var activeImagingTask = new ActiveImagingTaskServices().GetTask(objectId);
                     var computer = new ComputerServices().GetComputer(activeImagingTask.ComputerId);
-                    if (new BLL.Auth(Convert.ToInt32(userId), "ImageTaskDeploy").ComputerManagement(computer.Id))
+                    if (new BLL.AuthorizationServices(Convert.ToInt32(userId), "ImageTaskDeploy").ComputerManagement(computer.Id))
                         authorized = true;
                     break;
             }

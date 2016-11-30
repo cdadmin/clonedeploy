@@ -8,7 +8,7 @@ namespace CloneDeploy_App.BLL
     /// <summary>
     ///     Summary description for Authenticate
     /// </summary>
-    public class Authenticate
+    public class AuthenticationServices
     {
         public string ConsoleLogin(string username, string password, string task, string ip)
         {

@@ -31,7 +31,7 @@ namespace CloneDeploy_App.Controllers.Authorization
             switch (Permission)
             {
                 case "Administrator":
-                    if (new BLL.Auth(Convert.ToInt32(userId), Permission).IsAuthorized())
+                    if (new BLL.AuthorizationServices(Convert.ToInt32(userId), Permission).IsAuthorized())
                         authorized = true;
                     break;
                 case "CallerOnly":

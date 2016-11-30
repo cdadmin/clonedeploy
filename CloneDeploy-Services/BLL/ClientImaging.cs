@@ -112,7 +112,7 @@ namespace CloneDeploy_App.BLL
                 var user = BLL.User.GetUserByToken(token);
                 if (user != null)
                 {
-                    if (new BLL.Authorize(user, Authorizations.AllowOnd).IsAuthorized())
+                    if (new BLL.AuthorizationServices(user.Id, Authorizations.AllowOnd).IsAuthorized())
                         return "true";
                 }
             }
@@ -126,7 +126,7 @@ namespace CloneDeploy_App.BLL
                 var user = BLL.User.GetUserByToken(token);
                 if (user != null)
                 {
-                    if (new BLL.Authorize(user, Authorizations.AllowDebug).IsAuthorized())
+                    if (new BLL.AuthorizationServices(user.Id, Authorizations.AllowDebug).IsAuthorized())
                         return "true";
                 }
             }
@@ -140,7 +140,7 @@ namespace CloneDeploy_App.BLL
                 var user = BLL.User.GetUserByToken(token);
                 if (user != null)
                 {
-                    if (new BLL.Authorize(user, Authorizations.ImageDeployTask).IsAuthorized())
+                    if (new BLL.AuthorizationServices(user.Id, Authorizations.ImageDeployTask).IsAuthorized())
                         return "true";
                 }
             }

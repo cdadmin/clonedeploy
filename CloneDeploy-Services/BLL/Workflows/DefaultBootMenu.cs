@@ -56,7 +56,7 @@ namespace CloneDeploy_App.BLL.Workflows
 
         private void CreateGrubMenu()
         {
-            var customMenuEntries = BLL.BootEntry.SearchBootEntrys().Where(x => x.Type == "grub" && x.Active == 1).OrderBy(x => x.Order).ThenBy(x => x.Name);
+            var customMenuEntries = BLL.BootEntryServices.SearchBootEntrys().Where(x => x.Type == "grub" && x.Active == 1).OrderBy(x => x.Order).ThenBy(x => x.Name);
             var defaultCustomEntry = customMenuEntries.FirstOrDefault(x => x.Default == 1);
 
             var grubMenu = new StringBuilder();
@@ -193,7 +193,7 @@ namespace CloneDeploy_App.BLL.Workflows
 
         private void CreateIpxeMenu()
         {
-            var customMenuEntries = BLL.BootEntry.SearchBootEntrys().Where(x => x.Type == "ipxe" && x.Active == 1).OrderBy(x => x.Order).ThenBy(x => x.Name);
+            var customMenuEntries = BLL.BootEntryServices.SearchBootEntrys().Where(x => x.Type == "ipxe" && x.Active == 1).OrderBy(x => x.Order).ThenBy(x => x.Name);
             var defaultCustomEntry = customMenuEntries.FirstOrDefault(x => x.Default == 1);
 
             var ipxeMenu = new StringBuilder();
@@ -327,7 +327,7 @@ namespace CloneDeploy_App.BLL.Workflows
 
         private void CreateSyslinuxMenu()
         {
-            var customMenuEntries = BLL.BootEntry.SearchBootEntrys().Where(x => x.Type == "syslinux/pxelinux" && x.Active == 1).OrderBy(x => x.Order).ThenBy(x => x.Name);
+            var customMenuEntries = BLL.BootEntryServices.SearchBootEntrys().Where(x => x.Type == "syslinux/pxelinux" && x.Active == 1).OrderBy(x => x.Order).ThenBy(x => x.Name);
             var defaultCustomEntry = customMenuEntries.FirstOrDefault(x => x.Default == 1);
             var sysLinuxMenu = new StringBuilder();
 

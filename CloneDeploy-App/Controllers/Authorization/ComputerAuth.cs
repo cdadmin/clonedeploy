@@ -32,14 +32,14 @@ namespace CloneDeploy_App.Controllers.Authorization
             {
                 case "ComputerSearch":
                 case "ComputerCreate":
-                    if (new BLL.Auth(Convert.ToInt32(userId), Permission).IsAuthorized())
+                    if (new BLL.AuthorizationServices(Convert.ToInt32(userId), Permission).IsAuthorized())
                         authorized = true;
                     break;
                 case "ComputerDelete":
                 case "ComputerUpdate":
                 case "ComputerRead":
                     var objectId = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
-                    if (new BLL.Auth(Convert.ToInt32(userId), Permission).ComputerManagement(objectId))
+                    if (new BLL.AuthorizationServices(Convert.ToInt32(userId), Permission).ComputerManagement(objectId))
                         authorized = true;
                     break;
                 case "NotRequired":

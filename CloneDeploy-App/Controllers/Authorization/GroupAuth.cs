@@ -32,14 +32,14 @@ namespace CloneDeploy_App.Controllers.Authorization
             {
                 case "GroupSearch":
                 case "GroupCreate":
-                    if (new BLL.Auth(Convert.ToInt32(userId), Permission).IsAuthorized())
+                    if (new BLL.AuthorizationServices(Convert.ToInt32(userId), Permission).IsAuthorized())
                         authorized = true;
                     break;
                 case "GroupDelete":
                 case "GroupUpdate":
                 case "GroupRead":
                     var objectId = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
-                    if (new BLL.Auth(Convert.ToInt32(userId), Permission).GroupManagement(objectId))
+                    if (new BLL.AuthorizationServices(Convert.ToInt32(userId), Permission).GroupManagement(objectId))
                         authorized = true;
                     break;
             }

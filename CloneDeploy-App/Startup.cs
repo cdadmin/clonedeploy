@@ -22,7 +22,7 @@ namespace CloneDeploy_App.BLL
         {
 
             context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "*" });
-            var auth = new Authenticate();
+            var auth = new AuthenticationServices();
 
             var validationResult = auth.GlobalLogin(context.UserName, context.Password, "Web");
             if ((validationResult.Success))

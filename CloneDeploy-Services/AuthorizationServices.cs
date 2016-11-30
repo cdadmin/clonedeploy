@@ -6,14 +6,14 @@ using CloneDeploy_Services;
 
 namespace CloneDeploy_App.BLL
 {
-    public class Auth
+    public class AuthorizationServices
     {
 
         private readonly CloneDeployUserEntity _cloneDeployUser;
         private readonly List<string> _currentUserRights;
         private readonly string _requiredRight;
 
-        public Auth(int userId, string requiredRight )
+        public AuthorizationServices(int userId, string requiredRight )
         {
             _cloneDeployUser = BLL.User.GetUser(userId);
             _currentUserRights = BLL.UserRight.Get(userId).Select(right => right.Right).ToList();

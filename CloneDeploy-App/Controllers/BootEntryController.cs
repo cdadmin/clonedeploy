@@ -9,43 +9,49 @@ using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class BootEntryController: ApiController
     {
+         private readonly BootEntryServices _bootEntryServices;
+
+        public BootEntryController()
+        {
+            _bootEntryServices = new BootEntryServices();
+        }
+
         [GlobalAuth(Permission = "GlobalRead")]
         public IEnumerable<BootEntryEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
-                ? BLL.BootEntry.SearchBootEntrys()
-                : BLL.BootEntry.SearchBootEntrys(searchstring);
+                ? _bootEntryServices.SearchBootEntrys()
+                : _bootEntryServices.SearchBootEntrys(searchstring);
 
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public ApiDTO GetCount()
+        public ApiStringResponseDTO GetCount()
         {
-            var ApiDTO = new ApiDTO();
-            ApiDTO.Value = BLL.BootEntry.TotalCount();
-            return ApiDTO;
+
+            return new ApiStringResponseDTO() {Value = _bootEntryServices.TotalCount()};
+
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public IHttpActionResult Get(int id)
+        public BootEntryEntity Get(int id)
         {
-            var result = BLL.BootEntry.GetBootEntry(id);
-            if (result == null)
-                return NotFound();
-            else
-                return Ok(result);
+            var result = _bootEntryServices.GetBootEntry(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [GlobalAuth(Permission = "GlobalCreate")]
         public ActionResultEntity Post(BootEntryEntity bootEntry)
         {
-            var actionResult = BLL.BootEntry.AddBootEntry(bootEntry);
+            var actionResult = BLL.BootEntryServices.AddBootEntry(bootEntry);
             if (!actionResult.Success)
             {
                 var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
@@ -58,7 +64,7 @@ namespace CloneDeploy_App.Controllers
         public ActionResultEntity Put(int id, BootEntryEntity bootEntry)
         {
             bootEntry.Id = id;
-            var actionResult = BLL.BootEntry.UpdateBootEntry(bootEntry);
+            var actionResult = BLL.BootEntryServices.UpdateBootEntry(bootEntry);
             if (!actionResult.Success)
             {
                 var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
@@ -70,7 +76,7 @@ namespace CloneDeploy_App.Controllers
         [GlobalAuth(Permission = "GlobalDelete")]
         public ActionResultEntity Delete(int id)
         {
-            var actionResult = BLL.BootEntry.DeleteBootEntry(id);
+            var actionResult = BLL.BootEntryServices.DeleteBootEntry(id);
             if (!actionResult.Success)
             {
                 var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);

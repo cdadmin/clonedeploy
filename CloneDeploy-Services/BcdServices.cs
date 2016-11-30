@@ -7,7 +7,7 @@ using CloneDeploy_Entities;
 
 namespace CloneDeploy_App.BLL
 {
-    public class Bcd
+    public class BcdServices
     {
         /*http://www.geoffchappell.com/notes/windows/boot/bcd/objects.htm
         None of these are used but may be handy in the future

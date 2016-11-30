@@ -57,11 +57,10 @@
   <ItemGroup>
     <Compile Include="ActiveImagingTaskServices.cs" />
     <Compile Include="ActiveMulticastSessionServices.cs" />
-    <Compile Include="BLL\Auth.cs" />
-    <Compile Include="BLL\Authenticate.cs" />
-    <Compile Include="BLL\Authorize.cs" />
-    <Compile Include="BLL\Bcd.cs" />
-    <Compile Include="BLL\BootEntry.cs" />
+    <Compile Include="AuthorizationServices.cs" />
+    <Compile Include="AuthenticationServices.cs" />
+    <Compile Include="BcdServices.cs" />
+    <Compile Include="BootEntryServices.cs" />
     <Compile Include="BLL\BootTemplate.cs" />
     <Compile Include="BLL\Building.cs" />
     <Compile Include="BLL\CdVersion.cs" />

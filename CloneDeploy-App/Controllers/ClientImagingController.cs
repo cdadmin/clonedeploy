@@ -114,7 +114,7 @@ namespace CloneDeploy_App.Controllers
             var password = Utility.Decode(HttpContext.Current.Request.Form["password"], "password");
             var task = Utility.Decode(HttpContext.Current.Request.Form["task"], "task");
 
-            _response.Content = new StringContent(new Authenticate().ConsoleLogin(username, password, task, ip), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new AuthenticationServices().ConsoleLogin(username, password, task, ip), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -300,7 +300,7 @@ namespace CloneDeploy_App.Controllers
         {
             var bcd = Utility.Decode(HttpContext.Current.Request.Form["bcd"], "bcd");
             var offsetBytes = Utility.Decode(HttpContext.Current.Request.Form["offsetBytes"], "offsetBytes");
-            _response.Content = new StringContent(new BLL.Bcd().UpdateEntry(bcd, Convert.ToInt64(offsetBytes)), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new BLL.BcdServices().UpdateEntry(bcd, Convert.ToInt64(offsetBytes)), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -334,7 +334,7 @@ namespace CloneDeploy_App.Controllers
             var bootImage = HttpContext.Current.Request.Form["bootImage"];
             var task = HttpContext.Current.Request.Form["task"];
 
-            _response.Content = new StringContent(new Authenticate().IpxeLogin(username, password, kernel, bootImage, task), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new AuthenticationServices().IpxeLogin(username, password, kernel, bootImage, task), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
