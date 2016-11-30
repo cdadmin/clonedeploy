@@ -18,16 +18,6 @@ namespace CloneDeploy_App.Controllers
 {
     public class ComputerMunkiController:ApiController
     {
-        
-        [ComputerAuth(Permission = "ComputerRead")]
-        public IHttpActionResult Get(int id)
-        {
-            var munkiTemplates = BLL.ComputerMunki.Get(id);
-            if (munkiTemplates == null)
-                return NotFound();
-            else
-                return Ok(munkiTemplates);
-        }
 
         [ComputerAuth(Permission = "GlobalRead")]
         public IHttpActionResult GetTemplateComputers(int id)
@@ -39,14 +29,7 @@ namespace CloneDeploy_App.Controllers
                 return Ok(munkiComputers);
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
-        public IHttpActionResult GetEffectiveManifest(int id)
-        {
-            var result = new ApiDTO();
-            var effectiveManifest = new BLL.Workflows.EffectiveMunkiTemplate().Computer(id);
-            result.Value = Encoding.UTF8.GetString(effectiveManifest.ToArray());
-            return Ok(result);
-        }
+        
 
         [ComputerAuth(Permission = "ComputerCreate")]
         public ActionResultEntity Post(ComputerMunkiEntity computerMunki)
@@ -60,16 +43,6 @@ namespace CloneDeploy_App.Controllers
             return actionResult;
         }
 
-        [ComputerAuth(Permission = "ComputerDelete")]
-        public ActionResultEntity Delete(int id)
-        {
-            var actionResult = BLL.ComputerMunki.DeleteMunkiTemplates(id);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
-        }
+       
     }
 }

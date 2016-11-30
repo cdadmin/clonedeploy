@@ -20,7 +20,8 @@ namespace CloneDeploy_App.BLL
                     uow.GroupMembershipRepository.Insert(membership);
                     group = BLL.Group.GetGroup(membership.GroupId);
                 }
-                result = uow.Save();
+                uow.Save();
+                result = true;
             }
 
             if (group.SetDefaultProperties == 1)
@@ -51,7 +52,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.GroupMembershipRepository.DeleteRange(x => x.GroupId == groupId);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 
@@ -62,7 +64,8 @@ namespace CloneDeploy_App.BLL
             {
                 uow.GroupMembershipRepository.DeleteRange(
                     g => g.ComputerId == computerId && g.GroupId == groupId);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 
@@ -71,7 +74,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.GroupMembershipRepository.DeleteRange(x => x.ComputerId == computerId);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 

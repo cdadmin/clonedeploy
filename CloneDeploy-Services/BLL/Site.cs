@@ -13,7 +13,8 @@ namespace CloneDeploy_App.BLL
                 if (validationResult.Success)
                 {
                     uow.SiteRepository.Insert(site);
-                    validationResult.Success = uow.Save();
+                    uow.Save();
+                    validationResult.Success = true;
                 }
 
                 return validationResult;
@@ -33,7 +34,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.SiteRepository.Delete(siteId);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 
@@ -61,7 +63,8 @@ namespace CloneDeploy_App.BLL
                 if (validationResult.Success)
                 {
                     uow.SiteRepository.Update(site, site.Id);
-                    validationResult.Success = uow.Save();
+                    uow.Save();
+                    validationResult.Success = true;
                 }
 
                 return validationResult;

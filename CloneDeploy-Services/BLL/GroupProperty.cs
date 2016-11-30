@@ -1,6 +1,8 @@
 ﻿using System;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
+using CloneDeploy_Services;
+
 namespace CloneDeploy_App.BLL
 {
     public static class GroupProperty
@@ -62,8 +64,8 @@ namespace CloneDeploy_App.BLL
                     computer.CustomAttribute5 = groupProperty.CustomAttribute5;
                 if (Convert.ToBoolean(groupProperty.ProxyEnabledEnabled))
                     computer.ProxyReservation = groupProperty.ProxyEnabled;
-              
-                BLL.Computer.UpdateComputer(computer);
+
+                new ComputerServices().UpdateComputer(computer);
                 if (Convert.ToBoolean(groupProperty.TftpServerEnabled) || Convert.ToBoolean(groupProperty.BootFileEnabled))
                 {
                     var computerProxy = BLL.ComputerProxyReservation.GetComputerProxyReservation(computer.Id);
@@ -81,7 +83,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.GroupPropertyRepository.DeleteRange(x => x.GroupId == groupId);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
        

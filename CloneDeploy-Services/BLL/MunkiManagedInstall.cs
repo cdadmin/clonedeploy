@@ -23,8 +23,8 @@ namespace CloneDeploy_App.BLL
                     uow.MunkiManagedInstallRepository.Update(managedInstall, managedInstall.Id);
                 }
 
-
-                return uow.Save();
+                uow.Save();
+                return true;
 
             }
 
@@ -35,7 +35,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.MunkiManagedInstallRepository.Delete(managedInstallId);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 

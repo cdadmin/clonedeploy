@@ -8,6 +8,7 @@ using System.Web;
 using CloneDeploy_App.BLL.DynamicClientPartition;
 using CloneDeploy_App.Helpers;
 using CloneDeploy_Entities;
+using CloneDeploy_Services;
 
 namespace CloneDeploy_App.BLL.Workflows
 {
@@ -82,32 +83,33 @@ namespace CloneDeploy_App.BLL.Workflows
                 return "The group Does Not Have Any Members";
             }
 
-            if (!ActiveMulticastSession.AddActiveMulticastSession(_multicastSession))
+            var activeMulticastSessionServices = new ActiveMulticastSessionServices();
+            if (!activeMulticastSessionServices.AddActiveMulticastSession(_multicastSession))
             {
                 return "Could Not Create Multicast Database Task.  An Existing Task May Be Running.";
             }
 
             if (!CreateComputerTasks())
             {
-                ActiveMulticastSession.Delete(_multicastSession.Id);
+                activeMulticastSessionServices.Delete(_multicastSession.Id);
                 return "Could Not Create Computer Database Tasks.  A Computer May Have An Existing Task.";
             }
 
             if (!CreatePxeFiles())
             {
-                ActiveMulticastSession.Delete(_multicastSession.Id);
+                activeMulticastSessionServices.Delete(_multicastSession.Id);
                 return "Could Not Create Computer Boot Files";
             }
 
             if (!CreateTaskArguments())
             {
-                ActiveMulticastSession.Delete(_multicastSession.Id);
+                activeMulticastSessionServices.Delete(_multicastSession.Id);
                 return "Could Not Create Computer Task Arguments";
             }
 
             if (!StartMulticastSender())
             {
-                ActiveMulticastSession.Delete(_multicastSession.Id);
+                activeMulticastSessionServices.Delete(_multicastSession.Id);
                 return "Could Not Start The Multicast Application";
             }
 
@@ -121,9 +123,10 @@ namespace CloneDeploy_App.BLL.Workflows
         {
             var error = false;
             var activeTaskIds = new List<int>();
+            var activeImagingTaskServices = new ActiveImagingTaskServices();
             foreach (var computer in _computers)
             {
-                if (ActiveImagingTask.IsComputerActive(computer.Id)) return false;
+                if (new ComputerServices().IsComputerActive(computer.Id)) return false;
                 var activeTask = new ActiveImagingTaskEntity
                 {
                     Type = "multicast",
@@ -134,7 +137,7 @@ namespace CloneDeploy_App.BLL.Workflows
                     
                 };
 
-                if (ActiveImagingTask.AddActiveImagingTask(activeTask))
+                if (activeImagingTaskServices.AddActiveImagingTask(activeTask))
                 {
                     activeTaskIds.Add(activeTask.Id);
                     computer.ActiveImagingTask = activeTask;
@@ -148,7 +151,7 @@ namespace CloneDeploy_App.BLL.Workflows
             if (error)
             {
                 foreach (var taskId in activeTaskIds)
-                    ActiveImagingTask.DeleteActiveImagingTask(taskId);
+                    activeImagingTaskServices.DeleteActiveImagingTask(taskId);
 
                 return false;
             }
@@ -171,7 +174,7 @@ namespace CloneDeploy_App.BLL.Workflows
             {
                 computer.ActiveImagingTask.Arguments =
                     new CreateTaskArguments(computer, _imageProfile, "multicast").Run(_multicastSession.Port.ToString());
-                if (!ActiveImagingTask.UpdateActiveImagingTask(computer.ActiveImagingTask))
+                if (!new ActiveImagingTaskServices().UpdateActiveImagingTask(computer.ActiveImagingTask))
                     return false;
             }
             return true;
@@ -430,17 +433,18 @@ namespace CloneDeploy_App.BLL.Workflows
                 return false;
             }
 
+            var activeMulticastSessionServices = new ActiveMulticastSessionServices();
             if (_isOnDemand)
             {
                 _multicastSession.Pid = sender.Id;
                 _multicastSession.Name = _group.Name;
-                ActiveMulticastSession.AddActiveMulticastSession(_multicastSession);
+                activeMulticastSessionServices.AddActiveMulticastSession(_multicastSession);
             }
             else
             {
                 
                 _multicastSession.Pid = sender.Id;
-                ActiveMulticastSession.UpdateActiveMulticastSession(_multicastSession);
+                activeMulticastSessionServices.UpdateActiveMulticastSession(_multicastSession);
             }
 
             return true;

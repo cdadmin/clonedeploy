@@ -1,4 +1,6 @@
 ﻿using CloneDeploy_Entities;
+using CloneDeploy_Services;
+
 namespace CloneDeploy_App.BLL
 {
     public class TaskProgress
@@ -18,7 +20,7 @@ namespace CloneDeploy_App.BLL
                 Rate = "",
                 Partition = partition,
             };
-            BLL.ActiveImagingTask.UpdateActiveImagingTask(activeTask);
+            new ActiveImagingTaskServices().UpdateActiveImagingTask(activeTask);
         }
     }
 }

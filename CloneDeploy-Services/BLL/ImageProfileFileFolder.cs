@@ -20,7 +20,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.ImageProfileFileFolderRepository.Insert(imageProfileFileFolder);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 
@@ -29,7 +30,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.ImageProfileFileFolderRepository.DeleteRange(x => x.ProfileId == profileId);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 

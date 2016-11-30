@@ -20,32 +20,7 @@ namespace CloneDeploy_App.Controllers
 {
     public class ImageSchemaController: ApiController
     {
-        [ImageAuth(Permission = "ImageRead")]
-        public IEnumerable<ImageFileInfo> GetPartitionFileInfo(ImageEntity image, string selectedHd, string selectedPartition)
-        {
-
-            return BLL.ImageSchema.GetPartitionImageFileInfoForGridView(image, selectedHd, selectedPartition);
-
-        }
-
-        [ImageAuth(Permission = "ImageRead")]
-        public ApiDTO GetServerImageSize(string imageName, string hdNumber)
-        {
-            var apiDto = new ApiDTO();
-            apiDto.Value =  BLL.ImageSchema.ImageSizeOnServerForGridView(imageName, hdNumber);
-            return apiDto;
-
-        }
-
-        [ImageAuth(Permission = "ImageRead")]
-        public ApiDTO GetMinimumClientSize(int profileId, int hdNumber)
-        {
-            var apiDto = new ApiDTO();
-            apiDto.Value = BLL.ImageSchema.MinimumClientSizeForGridView(profileId, hdNumber);
-            return apiDto;
-
-        }
-
+       
         [ImageAuth(Permission = "ImageRead")]
         public ImageSchemaGridView GetSchema(ImageSchemaRequestDTO schemaRequest)
         {
@@ -65,7 +40,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ImageAuth(Permission = "ImageRead")]
-        public IEnumerable<LogicalVolume> GetLogiclVolumes(ImageSchemaRequestDTO schemaRequest, string selectedHd)
+        public IEnumerable<LogicalVolume> GetLogicalVolumes(ImageSchemaRequestDTO schemaRequest, string selectedHd)
         {
             return new BLL.ImageSchema(schemaRequest).GetLogicalVolumesForGridView(selectedHd);
         }

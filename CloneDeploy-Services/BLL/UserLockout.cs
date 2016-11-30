@@ -57,7 +57,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.UserLockoutRepository.DeleteRange(x => x.UserId == userId);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 

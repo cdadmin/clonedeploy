@@ -17,7 +17,8 @@ namespace CloneDeploy_App.BLL
                 if (validationResult.Success)
                 {
                     uow.BootEntryRepository.Insert(bootEntry);
-                    validationResult.Success = uow.Save();
+                    uow.Save();
+                    validationResult.Success = true;
                     validationResult.ObjectId = bootEntry.Id;
                     validationResult.Object = JsonConvert.SerializeObject(bootEntry);
                 }
@@ -41,7 +42,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.BootEntryRepository.Delete(BootEntryId);
-                actionResult.Success = uow.Save();
+                uow.Save();
+                actionResult.Success = true;
                 actionResult.Object = JsonConvert.SerializeObject(bootEntry);
                 actionResult.ObjectId = bootEntry.Id;
             }
@@ -75,7 +77,8 @@ namespace CloneDeploy_App.BLL
                 if (validationResult.Success)
                 {
                     uow.BootEntryRepository.Update(bootEntry, bootEntry.Id);
-                    validationResult.Success = uow.Save();
+                    uow.Save();
+                    validationResult.Success = true;
                     validationResult.ObjectId = bootEntry.Id;
                     validationResult.Object = JsonConvert.SerializeObject(bootEntry);
                 }

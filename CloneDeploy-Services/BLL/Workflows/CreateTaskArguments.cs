@@ -4,6 +4,7 @@ using System.Text;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_App.Helpers;
 using CloneDeploy_Entities;
+using CloneDeploy_Services;
 
 namespace CloneDeploy_App.BLL.Workflows
 {
@@ -28,22 +29,21 @@ namespace CloneDeploy_App.BLL.Workflows
             {
                 case "Use Original MBR / GPT":
                     return "partition_method=original";
-                    break;
+
                 case "Dynamic":
                     return "partition_method=dynamic";
-                    break;
+
                 case "Custom Script":
                     return "partition_method=script";
-                    break;
+
                 case "Custom Layout":
                     return "partition_method=layout";
-                    break;
+
                 case "Standard":
                     return "partition_method=standard";
-                    break;
+
                 case "Standard Core Storage":
                     return "partition_method=standardCS";
-                    break;
                 default:
                     return "";
             }
@@ -196,7 +196,7 @@ namespace CloneDeploy_App.BLL.Workflows
                 //Support For on demand 
                 if (_computer != null)
                 {
-                    AppendString("dp_id=" + Computer.GetDistributionPoint(_computer).Id);
+                    AppendString("dp_id=" + new ComputerServices().GetDistributionPoint(_computer.Id).Id);
                     if(!string.IsNullOrEmpty(_computer.CustomAttribute1))
                         AppendString("cust_attr_1=" + "\"" + _computer.CustomAttribute1 + "\"");
                     if (!string.IsNullOrEmpty(_computer.CustomAttribute2))

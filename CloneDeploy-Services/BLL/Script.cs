@@ -15,7 +15,8 @@ namespace CloneDeploy_App.BLL
                 if (validationResult.Success)
                 {
                     uow.ScriptRepository.Insert(script);
-                    validationResult.Success = uow.Save();
+                    uow.Save();
+                    validationResult.Success = true;
                 }
 
                 return validationResult;
@@ -35,7 +36,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.ScriptRepository.Delete(scriptId);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 
@@ -63,7 +65,8 @@ namespace CloneDeploy_App.BLL
                 if (validationResult.Success)
                 {
                     uow.ScriptRepository.Update(script, script.Id);
-                    validationResult.Success = uow.Save();
+                    uow.Save();
+                    validationResult.Success = true;
                 }
 
                 return validationResult;

@@ -12,7 +12,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.ImageProfileScriptRepository.Insert(imageProfileScript);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 
@@ -21,7 +22,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.ImageProfileScriptRepository.DeleteRange(x => x.ProfileId == profileId);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 

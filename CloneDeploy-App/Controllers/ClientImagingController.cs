@@ -9,7 +9,9 @@ using CloneDeploy_App.BLL;
 using CloneDeploy_App.BLL.Workflows;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.Helpers;
+using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.FormData;
+using CloneDeploy_Services;
 
 namespace CloneDeploy_App.Controllers
 {
@@ -390,7 +392,7 @@ namespace CloneDeploy_App.Controllers
         [HttpPost]
         public HttpResponseMessage GetComputerName(MacDTO macDto)
         {
-            _response.Content = new StringContent(BLL.Computer.GetComputerFromMac(macDto.mac).Name, System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ComputerServices().GetComputerFromMac(macDto.mac).Name, System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -400,5 +402,7 @@ namespace CloneDeploy_App.Controllers
             _response.Content = new StringContent(new Logic().GetProxyReservation(macDto.mac), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
+
+       
     }
 }

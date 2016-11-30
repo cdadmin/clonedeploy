@@ -16,27 +16,10 @@ namespace CloneDeploy_App.Controllers
     public class ComputerProxyReservationController : ApiController
     {
 
-        [ComputerAuth(Permission = "ComputerRead")]
-        public IHttpActionResult Get(int id)
-        {
-            var reservation = BLL.ComputerProxyReservation.GetComputerProxyReservation(id);
-            if (reservation == null)
-                return NotFound();
-            else
-                return Ok(reservation);
-        }
-
-        [HttpGet]
-        [ComputerAuth(Permission = "ComputerUpdate")]
-        public ApiBoolDTO Toggle(int id, bool status)
-        {
-            var result = new ApiBoolDTO();
-            result.Value = BLL.ComputerProxyReservation.ToggleProxyReservation(id, status);
-            return result;
-        }
+      
 
         [ComputerAuth(Permission = "ComputerUpdate")]
-        public ActionResultEntity Put(ComputerProxyReservationEntity computerProxyReservation)
+        public ActionResultEntity Post(ComputerProxyReservationEntity computerProxyReservation)
         {
             var actionResult = new ActionResultEntity();
             actionResult.Success = BLL.ComputerProxyReservation.UpdateComputerProxyReservation(computerProxyReservation);

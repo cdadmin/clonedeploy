@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Infrastructure.Interception;
 using System.Data.Entity.Validation;
 using CloneDeploy_Entities;
@@ -317,7 +318,6 @@ namespace CloneDeploy_DataModel
 
         public void Save()
         {
-         
             try
             {
                 _context.SaveChanges();
@@ -332,9 +332,12 @@ namespace CloneDeploy_DataModel
                         Logger.Logger.Log(string.Format("- Property: \"{0}\", Error: \"{1}\"", ve.PropertyName, ve.ErrorMessage));
                     }
                 }
-              
-
-                throw ex;
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                Logger.Logger.Log(ex.Message);
+                throw;
             }
         }
 

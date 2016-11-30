@@ -36,7 +36,7 @@ namespace views.computers
             };
 
             var result = new APICall().ComputerApi.Put(computer.Id, computer); 
-            EndUserMessage = !result.Success ? result.Message : "Successfully Updated Computer";
+            EndUserMessage = !result.Success ? result.ErrorMessage : "Successfully Updated Computer";
         }
 
         protected void PopulateForm()

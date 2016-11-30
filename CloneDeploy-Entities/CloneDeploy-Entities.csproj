@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="ActiveImagingTask.cs" />
     <Compile Include="ActiveMulticastSession.cs" />
+    <Compile Include="DTOs\ValidationResultDTO.cs" />
     <Compile Include="DTOs\ApiBoolDTO.cs" />
     <Compile Include="DTOs\ApiDTO.cs" />
     <Compile Include="Application.cs" />
@@ -47,6 +48,7 @@
     <Compile Include="BootTemplate.cs" />
     <Compile Include="Building.cs" />
     <Compile Include="CdVersion.cs" />
+    <Compile Include="DTOs\ApiStringResponseDTO.cs" />
     <Compile Include="DTOs\ClientImaging\CheckIn.cs" />
     <Compile Include="DTOs\ClientImaging\FileFolderCopy.cs" />
     <Compile Include="DTOs\ClientImaging\FileFolderCopySchema.cs" />
@@ -81,6 +83,7 @@
     <Compile Include="DTOs\ClientPartition\ClientVolumeGroupHelper.cs" />
     <Compile Include="DTOs\ClientPartition\ExtendedPartitionHelper.cs" />
     <Compile Include="DTOs\ClientPartition\PartitionHelper.cs" />
+    <Compile Include="DTOs\ActionResultDTO.cs" />
     <Compile Include="DTOs\FormData\AddComputerDTO.cs" />
     <Compile Include="DTOs\FormData\ComputerIdDTO.cs" />
     <Compile Include="DTOs\FormData\ComputerMacDTO.cs" />
@@ -154,7 +157,9 @@
     <Compile Include="UserImageManagement.cs" />
     <Compile Include="UserLockout.cs" />
     <Compile Include="UserRight.cs" />
-    <Compile Include="ValidationResult.cs" />
+    <Compile Include="ValidationResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

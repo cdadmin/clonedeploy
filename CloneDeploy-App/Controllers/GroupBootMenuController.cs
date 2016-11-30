@@ -16,19 +16,11 @@ namespace CloneDeploy_App.Controllers
     public class GroupBootMenuController : ApiController
     {
 
-        [GroupAuth(Permission = "GroupRead")]
-        public IHttpActionResult Get(int id)
-        {
-            var result = BLL.GroupBootMenu.GetGroupBootMenu(id);
-            if (result == null)
-                return NotFound();
-            else
-                return Ok(result);
-        }
+      
 
 
         [GroupAuth(Permission = "GroupUpdate")]
-        public ActionResultEntity Put(GroupBootMenuEntity groupBootMenu)
+        public ActionResultEntity Post(GroupBootMenuEntity groupBootMenu)
         {
             var actionResult = new ActionResultEntity();
             actionResult.Success = BLL.GroupBootMenu.UpdateGroupBootMenu(groupBootMenu);

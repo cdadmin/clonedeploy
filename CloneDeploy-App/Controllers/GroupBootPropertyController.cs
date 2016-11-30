@@ -22,8 +22,9 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GroupAuth]
-        public IHttpActionResult Put(GroupPropertyEntity groupProperty)
+        public IHttpActionResult Put(int id,GroupPropertyEntity groupProperty)
         {
+            groupProperty.Id = id;
             BLL.GroupProperty.UpdateGroupProperty(groupProperty);
            return Ok();
         }

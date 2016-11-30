@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using CloneDeploy_App.Helpers;
+using CloneDeploy_Services;
 
 namespace CloneDeploy_App.BLL.Workflows
 {
@@ -40,8 +41,8 @@ namespace CloneDeploy_App.BLL.Workflows
                 }
             }
 
-            BLL.ActiveImagingTask.DeleteAll();
-            BLL.ActiveMulticastSession.DeleteAll();
+            new ActiveImagingTaskServices().DeleteAll();
+            new ActiveMulticastSessionServices().DeleteAll();
           
             if (Environment.OSVersion.ToString().Contains("Unix"))
             {
@@ -86,7 +87,7 @@ namespace CloneDeploy_App.BLL.Workflows
             }
 
             //Recreate any custom boot menu's that were just deleted
-            foreach (var computer in BLL.Computer.ComputersWithCustomBootMenu())
+            foreach (var computer in new ComputerServices().ComputersWithCustomBootMenu())
             {
                 BLL.ComputerBootMenu.CreateBootFiles(computer);
             }

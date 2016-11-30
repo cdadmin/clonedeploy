@@ -9,6 +9,7 @@ using CloneDeploy_App.Helpers;
 using Newtonsoft.Json;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs.ClientImaging;
+using CloneDeploy_Services;
 
 namespace CloneDeploy_App.BLL
 {
@@ -32,13 +33,13 @@ namespace CloneDeploy_App.BLL
                 Name = name,
                 Mac = mac,
             };
-            var result = BLL.Computer.AddComputer(computer);
+            var result = new ComputerServices().AddComputer(computer);
             return JsonConvert.SerializeObject(result);
         }
 
         public void UpdateProgress(int computerId, string progress, string progressType)
         {
-            var task = BLL.ActiveImagingTask.GetTaskForComputer(computerId);
+            var task = new ComputerServices().GetTaskForComputer(computerId);
             if (progressType == "wim")
             {
                 task.Elapsed = progress;
@@ -55,18 +56,18 @@ namespace CloneDeploy_App.BLL
                 task.Rate = values[4];
             }
 
-            BLL.ActiveImagingTask.UpdateActiveImagingTask(task);
+            new ActiveImagingTaskServices().UpdateActiveImagingTask(task);
         }
 
         public void UpdateProgressPartition(int computerId, string partition)
         {
-            var task = BLL.ActiveImagingTask.GetTaskForComputer(computerId);
+            var task = new ComputerServices().GetTaskForComputer(computerId);
             task.Partition = partition;
             task.Elapsed = "Please Wait...";
             task.Remaining = "";
             task.Completed = "";
             task.Rate = "";
-            BLL.ActiveImagingTask.UpdateActiveImagingTask(task);
+            new ActiveImagingTaskServices().UpdateActiveImagingTask(task);
         }
 
         public string IsLoginRequired(string task)
@@ -151,7 +152,7 @@ namespace CloneDeploy_App.BLL
         {
             var checkIn = new CheckIn();
 
-            var computer = BLL.Computer.GetComputerFromMac(computerMac);
+            var computer = new ComputerServices().GetComputerFromMac(computerMac);
             if (computer == null)
             {
                 checkIn.Result = "false";
@@ -159,7 +160,7 @@ namespace CloneDeploy_App.BLL
                 return JsonConvert.SerializeObject(checkIn);
             }
 
-            var computerTask = BLL.ActiveImagingTask.GetTaskForComputer(computer.Id);
+            var computerTask = new ComputerServices().GetTaskForComputer(computer.Id);
             if (computerTask == null)
             {
                 checkIn.Result = "false";
@@ -168,7 +169,7 @@ namespace CloneDeploy_App.BLL
             }
 
             computerTask.Status = "1";
-            if (BLL.ActiveImagingTask.UpdateActiveImagingTask(computerTask))
+            if (new ActiveImagingTaskServices().UpdateActiveImagingTask(computerTask))
             {
                 checkIn.Result = "true";
                 checkIn.TaskArguments = computerTask.Arguments;
@@ -224,9 +225,9 @@ namespace CloneDeploy_App.BLL
 
         public void ChangeStatusInProgress(int computerId)
         {
-            var computerTask = BLL.ActiveImagingTask.GetTaskForComputer(computerId);
+            var computerTask = new ComputerServices().GetTaskForComputer(computerId);
             computerTask.Status = "3";
-            BLL.ActiveImagingTask.UpdateActiveImagingTask(computerTask);
+            new ActiveImagingTaskServices().UpdateActiveImagingTask(computerTask);
         }
 
         public void DeleteImage(int profileId)
@@ -251,30 +252,32 @@ namespace CloneDeploy_App.BLL
 
         public void ErrorEmail(int computerId, string error)
         {
-            var computerTask = BLL.ActiveImagingTask.GetTaskForComputer(computerId);
-            BLL.ActiveImagingTask.SendTaskErrorEmail(computerTask,error);
+            var computerTask = new ComputerServices().GetTaskForComputer(computerId);
+            new ActiveImagingTaskServices().SendTaskErrorEmail(computerTask,error);
         }
 
         public void CheckOut(int computerId)
         {
-            var computerTask = BLL.ActiveImagingTask.GetTaskForComputer(computerId);
-            BLL.ActiveImagingTask.DeleteActiveImagingTask(computerTask.Id);
+            var computerTask = new ComputerServices().GetTaskForComputer(computerId);
+            var activeImagingTaskServices = new ActiveImagingTaskServices();
+            activeImagingTaskServices.DeleteActiveImagingTask(computerTask.Id);
             if(computerTask.Type == "unicast")
-                BLL.ActiveImagingTask.SendTaskCompletedEmail(computerTask);
+                activeImagingTaskServices.SendTaskCompletedEmail(computerTask);
         }
 
         public void PermanentTaskCheckOut(int computerId)
         {
-            var computerTask = BLL.ActiveImagingTask.GetTaskForComputer(computerId);
+            var computerTask = new ComputerServices().GetTaskForComputer(computerId);
+            var activeImagingTaskServices = new ActiveImagingTaskServices();
             computerTask.Status = "0";
             computerTask.Partition = "";
             computerTask.Completed = "";
             computerTask.Elapsed = "";
             computerTask.Rate = "";
             computerTask.Remaining = "";
-            BLL.ActiveImagingTask.UpdateActiveImagingTask(computerTask);
+            activeImagingTaskServices.UpdateActiveImagingTask(computerTask);
            
-            BLL.ActiveImagingTask.SendTaskCompletedEmail(computerTask);
+            activeImagingTaskServices.SendTaskCompletedEmail(computerTask);
         }
 
         public void UploadLog(int computerId, string logContents, string subType, string computerMac)
@@ -294,18 +297,19 @@ namespace CloneDeploy_App.BLL
         public string CheckQueue(int computerId)
         {
             var queueStatus = new QueueStatus();
+            var activeImagingTaskServices = new ActiveImagingTaskServices();
 
             //Check if already part of the queue
-            var thisComputerTask = BLL.ActiveImagingTask.GetTaskForComputer(computerId);
+            var thisComputerTask = new ComputerServices().GetTaskForComputer(computerId);
             if (thisComputerTask.Status == "2")
             {
                 //Check if the queue is open yet
-                var inUse = BLL.ActiveImagingTask.GetCurrentQueue(thisComputerTask.Type);
+                var inUse = activeImagingTaskServices.GetCurrentQueue(thisComputerTask.Type);
                 var totalCapacity = Convert.ToInt32(Settings.QueueSize);
                 if (inUse < totalCapacity)
                 {
                     //queue is open, is this computer next
-                    var firstTaskInQueue = BLL.ActiveImagingTask.GetNextComputerInQueue(thisComputerTask.Type);
+                    var firstTaskInQueue = activeImagingTaskServices.GetNextComputerInQueue(thisComputerTask.Type);
                     if (firstTaskInQueue.ComputerId == computerId)
                     {
                         ChangeStatusInProgress(computerId);
@@ -317,7 +321,7 @@ namespace CloneDeploy_App.BLL
                     {
                         //not time for this computer yet
                         queueStatus.Result = "false";
-                        queueStatus.Position = BLL.ActiveImagingTask.GetQueuePosition(computerId); 
+                        queueStatus.Position = new ComputerServices().GetQueuePosition(computerId); 
                         return JsonConvert.SerializeObject(queueStatus);
                     }
                 }
@@ -325,7 +329,7 @@ namespace CloneDeploy_App.BLL
                 {
                     //queue not open yet
                     queueStatus.Result = "false";
-                    queueStatus.Position = BLL.ActiveImagingTask.GetQueuePosition(computerId);
+                    queueStatus.Position = new ComputerServices().GetQueuePosition(computerId);
                     return JsonConvert.SerializeObject(queueStatus);
                 }
             }
@@ -333,7 +337,7 @@ namespace CloneDeploy_App.BLL
             {
                 //New computer checking queue for the first time
 
-                var inUse = BLL.ActiveImagingTask.GetCurrentQueue(thisComputerTask.Type);
+                var inUse = activeImagingTaskServices.GetCurrentQueue(thisComputerTask.Type);
                 var totalCapacity = Convert.ToInt32(Settings.QueueSize);
                 if (inUse < totalCapacity)
                 {
@@ -347,16 +351,16 @@ namespace CloneDeploy_App.BLL
                 else
                 {
                     //place into queue
-                    var lastQueuedTask = BLL.ActiveImagingTask.GetLastQueuedTask(thisComputerTask.Type);
+                    var lastQueuedTask = activeImagingTaskServices.GetLastQueuedTask(thisComputerTask.Type);
                     if (lastQueuedTask == null)
                         thisComputerTask.QueuePosition = 1;
                     else
                         thisComputerTask.QueuePosition = lastQueuedTask.QueuePosition + 1;
                     thisComputerTask.Status = "2";
-                    BLL.ActiveImagingTask.UpdateActiveImagingTask(thisComputerTask);
+                    activeImagingTaskServices.UpdateActiveImagingTask(thisComputerTask);
 
                     queueStatus.Result = "false";
-                    queueStatus.Position = BLL.ActiveImagingTask.GetQueuePosition(computerId);
+                    queueStatus.Position = new ComputerServices().GetQueuePosition(computerId);
                     return JsonConvert.SerializeObject(queueStatus);
 
                 }
@@ -482,7 +486,7 @@ namespace CloneDeploy_App.BLL
 
         public string CheckForCancelledTask(int computerId)
         {
-            return BLL.ActiveImagingTask.IsComputerActive(computerId) ? "false" : "true";
+            return new ComputerServices().IsComputerActive(computerId) ? "false" : "true";
         }
 
         public string GetCustomScript(int scriptId)
@@ -534,7 +538,8 @@ namespace CloneDeploy_App.BLL
         public string MulticastCheckout(string portBase)
         {
             string result = null;
-            var mcTask = BLL.ActiveMulticastSession.GetFromPort(Convert.ToInt32(portBase));
+            var activeMulticastSessionServices = new ActiveMulticastSessionServices();
+            var mcTask = activeMulticastSessionServices.GetFromPort(Convert.ToInt32(portBase));
                
             if (mcTask != null)
             {
@@ -568,10 +573,10 @@ namespace CloneDeploy_App.BLL
                 }
                 if (!prsRunning)
                 {
-                    if (BLL.ActiveMulticastSession.Delete(mcTask.Id).Success)
+                    if (activeMulticastSessionServices.Delete(mcTask.Id).Success)
                     {
                         result = "Success";
-                        BLL.ActiveMulticastSession.SendMulticastCompletedEmail(mcTask);
+                        activeMulticastSessionServices.SendMulticastCompletedEmail(mcTask);
                     }
                 }
                 else
@@ -591,7 +596,7 @@ namespace CloneDeploy_App.BLL
         public string GetOnDemandArguments(string mac, int objectId, string task)
         {
             ImageProfileEntity imageProfile;
-            var computer = BLL.Computer.GetComputerFromMac(mac);
+            var computer = new ComputerServices().GetComputerFromMac(mac);
             if (task == "push" || task == "pull")
             {
                 imageProfile = BLL.ImageProfile.ReadProfile(objectId);
@@ -599,7 +604,7 @@ namespace CloneDeploy_App.BLL
             }
             else //Multicast
             {
-                var multicast = BLL.ActiveMulticastSession.GetFromPort(objectId);
+                var multicast = new ActiveMulticastSessionServices().GetFromPort(objectId);
                 imageProfile = BLL.ImageProfile.ReadProfile(multicast.ImageProfileId);
                 return new BLL.Workflows.CreateTaskArguments(computer, imageProfile, task).Run(objectId.ToString());
             }
@@ -685,7 +690,7 @@ namespace CloneDeploy_App.BLL
             if (environment == "winpe")
             {
                 var multicastList = new List<WinPEMulticastList>();
-                foreach (var multicast in BLL.ActiveMulticastSession.GetOnDemandList())
+                foreach (var multicast in new ActiveMulticastSessionServices().GetOnDemandList())
                 {
                     var multicastSession = new WinPEMulticastList();
                     multicastSession.Port = multicast.Port.ToString();
@@ -698,7 +703,7 @@ namespace CloneDeploy_App.BLL
             {
                 var multicastList = new MulticastList() {Multicasts = new List<string>()};
 
-                foreach (var multicast in BLL.ActiveMulticastSession.GetOnDemandList())
+                foreach (var multicast in new ActiveMulticastSessionServices().GetOnDemandList())
                 {
                     multicastList.Multicasts.Add(multicast.Port + " " + multicast.Name);
                 }
@@ -770,7 +775,7 @@ namespace CloneDeploy_App.BLL
         {
             var bootClientReservation = new ProxyReservation();
 
-            var computer = BLL.Computer.GetComputerFromMac(mac);
+            var computer = new ComputerServices().GetComputerFromMac(mac);
             if (computer == null)
             {
                 bootClientReservation.BootFile = "NotFound";

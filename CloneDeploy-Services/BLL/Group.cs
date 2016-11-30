@@ -5,6 +5,7 @@ using System.Linq;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 using CsvHelper;
 using Newtonsoft.Json;
 
@@ -21,7 +22,8 @@ namespace CloneDeploy_App.BLL
                 if (validationResult.Success)
                 {
                     uow.GroupRepository.Insert(group);
-                    validationResult.Success = uow.Save();
+                    uow.Save();
+                    validationResult.Success = true;
                     validationResult.ObjectId = group.Id;
                     validationResult.Object = JsonConvert.SerializeObject(group);
                     //If Group management is being used add this group to the allowed users list 
@@ -78,7 +80,8 @@ namespace CloneDeploy_App.BLL
                 BLL.GroupBootMenu.DeleteGroup(groupId);
                 BLL.GroupProperty.DeleteGroup(groupId);
                 uow.GroupRepository.Delete(groupId);
-                result.Success = uow.Save();
+                uow.Save();
+                result.Success = true;
                 result.ObjectId = group.Id;
                 result.Object = JsonConvert.SerializeObject(group);
                 return result;
@@ -132,7 +135,7 @@ namespace CloneDeploy_App.BLL
         public static bool UpdateSmartMembership(GroupEntity group)
         {
             BLL.GroupMembership.DeleteAllMembershipsForGroup(group.Id);
-            var computers = BLL.Computer.SearchComputers(group.SmartCriteria,Int32.MaxValue);
+            var computers = new ComputerServices().SearchComputers(group.SmartCriteria, Int32.MaxValue);
             var memberships = computers.Select(computer => new GroupMembershipEntity { GroupId = @group.Id, ComputerId = computer.Id }).ToList();
             return BLL.GroupMembership.AddMembership(memberships);
         }
@@ -145,7 +148,8 @@ namespace CloneDeploy_App.BLL
                 if (validationResult.Success)
                 {
                     uow.GroupRepository.Update(group, group.Id);
-                    validationResult.Success = uow.Save();
+                    uow.Save();
+                    validationResult.Success = true;
                     validationResult.ObjectId = group.Id;
                     validationResult.Object = JsonConvert.SerializeObject(group);
                 }

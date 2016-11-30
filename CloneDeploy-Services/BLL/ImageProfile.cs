@@ -15,7 +15,8 @@ namespace CloneDeploy_App.BLL
                 if (validationResult.Success)
                 {
                     uow.ImageProfileRepository.Insert(profile);
-                    validationResult.Success = uow.Save();
+                    uow.Save();
+                    validationResult.Success = true;
                 }
 
                 return validationResult;
@@ -38,7 +39,10 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.ImageProfileRepository.Delete(profileId);
-                return uow.Save();
+                
+                uow.Save();
+                return true;
+                
             }
         }
 
@@ -76,7 +80,8 @@ namespace CloneDeploy_App.BLL
                 if (validationResult.Success)
                 {
                     uow.ImageProfileRepository.Update(profile, profile.Id);
-                    validationResult.Success = uow.Save();
+                    uow.Save();
+                    validationResult.Success = true;
                 }
 
                 return validationResult;
@@ -89,7 +94,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.ImageProfileRepository.DeleteRange(x => x.ImageId == imageId);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 
@@ -136,8 +142,9 @@ namespace CloneDeploy_App.BLL
             return validationResult;
         }
 
-        public static ImageProfileEntity SeedDefaultImageProfile(ImageEntity image)
+        public static ImageProfileEntity SeedDefaultImageProfile(int imageId)
         {
+            var image = BLL.Image.GetImage(imageId);
             var imageProfile = new ImageProfileEntity();
             imageProfile.Kernel = Settings.DefaultKernel32;
             imageProfile.BootImage = "initrd.xz";

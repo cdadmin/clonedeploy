@@ -18,7 +18,8 @@ namespace CloneDeploy_App.BLL
                 if (validationResult.Success)
                 {
                     uow.MunkiManifestRepository.Insert(manifest);
-                    validationResult.Success = uow.Save();
+                    uow.Save();
+                    validationResult.Success = true;
                 }
 
                 return validationResult;
@@ -47,7 +48,8 @@ namespace CloneDeploy_App.BLL
             {
                 var actionResult = new ActionResultEntity();
                 uow.MunkiManifestRepository.Delete(manifestId);
-                actionResult.Success = uow.Save();
+                uow.Save();
+                actionResult.Success = true;
                 actionResult.ObjectId = manifest.Id;
                 actionResult.Object = JsonConvert.SerializeObject(manifest);
                 return actionResult;
@@ -81,7 +83,8 @@ namespace CloneDeploy_App.BLL
                 if (validationResult.Success)
                 {
                     uow.MunkiManifestRepository.Update(manifest, manifest.Id);
-                    validationResult.Success = uow.Save();
+                    uow.Save();
+                    validationResult.Success = true;
                 }
 
                 return validationResult;

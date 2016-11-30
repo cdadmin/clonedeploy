@@ -64,7 +64,7 @@ namespace views.computers
                         Response.Redirect("~/views/computers/search.aspx");
                     }
                     else
-                        PageBaseMaster.EndUserMessage = result.Message;
+                        PageBaseMaster.EndUserMessage = result.ErrorMessage;
                     break;
                 case "push":
                 {

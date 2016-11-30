@@ -1,6 +1,7 @@
 ﻿using System;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
+using CloneDeploy_Services;
 
 namespace CloneDeploy_App.BLL
 {
@@ -8,9 +9,10 @@ namespace CloneDeploy_App.BLL
     {
         public static bool ToggleProxyReservation(int computerId, bool enable)
         {
-            var computer = BLL.Computer.GetComputer(computerId);
+            var computerServices = new ComputerServices();
+            var computer = computerServices.GetComputer(computerId);
             computer.ProxyReservation = Convert.ToInt16(enable);
-            BLL.Computer.UpdateComputer(computer);
+            computerServices.UpdateComputer(computer);
             return true;
         }
         public static ComputerProxyReservationEntity GetComputerProxyReservation(int computerId)
@@ -35,7 +37,8 @@ namespace CloneDeploy_App.BLL
                 else
                     uow.ComputerProxyRepository.Insert(computerProxyReservation);
 
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 
@@ -44,7 +47,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.ComputerProxyRepository.DeleteRange(x => x.ComputerId == computerId);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
     }

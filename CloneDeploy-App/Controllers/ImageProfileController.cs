@@ -11,19 +11,13 @@ using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class ImageProfileController: ApiController
     {
-        [ImageProfileAuth(Permission = "ImageProfileSearch")]
-        public IEnumerable<ImageProfileEntity> GetByImage(int imageId)
-        {
-            return BLL.ImageProfile.SearchProfiles(imageId);
-
-        }
-
 
         [ImageProfileAuth(Permission = "ImageProfileSearch")]
         public IHttpActionResult GetAll()
@@ -61,14 +55,7 @@ namespace CloneDeploy_App.Controllers
             return actionResult;
         }
 
-        [HttpPost]
-        [ImageProfileAuth(Permission = "ImageProfileCreate")]
-        public ImageProfileEntity Seed(ImageEntity image)
-        {
-           return BLL.ImageProfile.SeedDefaultImageProfile(image);
-          
-           
-        }
+    
 
         [HttpPost]
         [ImageProfileAuth(Permission = "ImageProfileCreate")]
@@ -98,6 +85,39 @@ namespace CloneDeploy_App.Controllers
             apiBoolDto.Value = BLL.ImageProfile.DeleteProfile(id);
             return apiBoolDto;
           
+        }
+
+        [ImageProfileAuth(Permission = "ImageProfileSearch")]
+        public IEnumerable<ImageProfileFileFolderEntity> GetFileFolder(int profileId)
+        {
+
+            return BLL.ImageProfileFileFolder.SearchImageProfileFileFolders(profileId);
+
+        }
+
+        [ImageProfileAuth(Permission = "ImageProfileSearch")]
+        public IEnumerable<ImageProfileScriptEntity> GetScript(int profileId)
+        {
+
+            return BLL.ImageProfileScript.SearchImageProfileScripts(profileId);
+
+        }
+
+        [ImageProfileAuth(Permission = "ImageProfileSearch")]
+        public IEnumerable<ImageProfileSysprepTagEntity> GetSysprepTag(int profileId)
+        {
+
+            return BLL.ImageProfileSysprepTag.SearchImageProfileSysprepTags(profileId);
+
+        }
+
+        [ImageAuth(Permission = "ImageRead")]
+        public ApiDTO GetMinimumClientSize(int profileId, int hdNumber)
+        {
+            var apiDto = new ApiDTO();
+            apiDto.Value = BLL.ImageSchema.MinimumClientSizeForGridView(profileId, hdNumber);
+            return apiDto;
+
         }
     }
 }

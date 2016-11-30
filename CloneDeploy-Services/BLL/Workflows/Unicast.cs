@@ -1,5 +1,6 @@
 ﻿using CloneDeploy_App.Helpers;
 using CloneDeploy_Entities;
+using CloneDeploy_Services;
 
 namespace CloneDeploy_App.BLL.Workflows
 {
@@ -37,7 +38,7 @@ namespace CloneDeploy_App.BLL.Workflows
             var dp = BLL.DistributionPoint.GetPrimaryDistributionPoint();
             if (dp == null) return "Could Not Find A Primary Distribution Point";
 
-            if (ActiveImagingTask.IsComputerActive(_computer.Id))
+            if (new ComputerServices().IsComputerActive(_computer.Id))
                 return "This Computer Is Already Part Of An Active Task";
 
             _activeTask = new ActiveImagingTaskEntity
@@ -49,19 +50,22 @@ namespace CloneDeploy_App.BLL.Workflows
 
             _activeTask.Type = _direction == "permanent_push" ? "permanent_push" : "unicast";
 
-            if (!ActiveImagingTask.AddActiveImagingTask(_activeTask))
+
+            var activeImagingTaskServices = new ActiveImagingTaskServices();
+
+            if (!activeImagingTaskServices.AddActiveImagingTask(_activeTask))
                 return "Could Not Create The Database Entry For This Task";
 
             if (!new TaskBootMenu(_computer, _imageProfile, _direction).CreatePxeBootFiles())
             {
-                ActiveImagingTask.DeleteActiveImagingTask(_activeTask.Id);
+                activeImagingTaskServices.DeleteActiveImagingTask(_activeTask.Id);
                 return "Could Not Create PXE Boot File";
             }
 
             _activeTask.Arguments = new CreateTaskArguments(_computer, _imageProfile, _direction).Run();
-            if (!ActiveImagingTask.UpdateActiveImagingTask(_activeTask))
+            if (!activeImagingTaskServices.UpdateActiveImagingTask(_activeTask))
             {
-                ActiveImagingTask.DeleteActiveImagingTask(_activeTask.Id);
+                activeImagingTaskServices.DeleteActiveImagingTask(_activeTask.Id);
                 return "Could Not Create Task Arguments";
             }
 

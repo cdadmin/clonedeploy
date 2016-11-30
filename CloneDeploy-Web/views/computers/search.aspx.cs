@@ -88,7 +88,7 @@ namespace views.computers
             limit = ddlLimit.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimit.Text);
 
             var call = new APICall();
-            var listOfComputers = call.ComputerApi.Get(limit, txtSearch.Text);
+            var listOfComputers = call.ComputerApi.GetAll(limit, txtSearch.Text);
             
             listOfComputers = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
             if (ddlSite.SelectedValue != "-1")
@@ -122,7 +122,7 @@ namespace views.computers
             gvComputers.DataBind();
             
         
-            lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + call.ComputerApi.GetCount().Value + " Computer(s)";
+            lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + call.ComputerApi.GetCount() + " Computer(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)

@@ -28,7 +28,8 @@ namespace CloneDeploy_App.BLL
             {
 
                 uow.CdVersionRepository.Update(cdVersion, cdVersion.Id);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 

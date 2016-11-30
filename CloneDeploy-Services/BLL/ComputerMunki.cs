@@ -13,7 +13,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.ComputerMunkiRepository.Insert(computerMunki);
-                actionResult.Success = uow.Save();
+                uow.Save();
+                actionResult.Success = true;
                 actionResult.ObjectId = computerMunki.Id;
                 actionResult.Object = JsonConvert.SerializeObject(computerMunki);
                 return actionResult;
@@ -26,7 +27,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.ComputerMunkiRepository.DeleteRange(x => x.ComputerId == computerId);
-                actionResult.Success = uow.Save();
+                uow.Save();
+                actionResult.Success = true;
                 actionResult.ObjectId = computerId;
                 return actionResult;
             }

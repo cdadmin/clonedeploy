@@ -10,6 +10,7 @@ using System.Web.Http;
 using System.Web.Http.Controllers;
 
 using CloneDeploy_Entities;
+using CloneDeploy_Services;
 
 namespace CloneDeploy_App.Controllers.Authorization
 {
@@ -37,8 +38,8 @@ namespace CloneDeploy_App.Controllers.Authorization
                     break;
                 case "ImageTaskDelete":
                     var objectId = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
-                    var activeImagingTask = BLL.ActiveImagingTask.GetTask(objectId);
-                    var computer = BLL.Computer.GetComputer(activeImagingTask.ComputerId);
+                    var activeImagingTask = new ActiveImagingTaskServices().GetTask(objectId);
+                    var computer = new ComputerServices().GetComputer(activeImagingTask.ComputerId);
                     if (new BLL.Auth(Convert.ToInt32(userId), "ImageTaskDeploy").ComputerManagement(computer.Id))
                         authorized = true;
                     break;

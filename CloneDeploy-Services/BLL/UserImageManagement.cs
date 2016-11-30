@@ -11,8 +11,8 @@ namespace CloneDeploy_App.BLL
             {
                 foreach (var image in listOfImages)
                     uow.UserImageManagementRepository.Insert(image);
-
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 
@@ -21,7 +21,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.UserImageManagementRepository.DeleteRange(x => x.UserId == userId);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 
@@ -38,7 +39,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.UserImageManagementRepository.DeleteRange(x => x.ImageId == imageId);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
     }

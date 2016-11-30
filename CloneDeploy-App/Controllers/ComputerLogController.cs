@@ -17,12 +17,6 @@ namespace CloneDeploy_App.Controllers
     public class ComputerLogController:ApiController
     {
         [ComputerAuth(Permission = "ComputerRead")]
-        public IEnumerable<ComputerLogEntity> GetComputerLogs(int id)
-        {       
-            return BLL.ComputerLog.Search(id);
-        }
-
-        [ComputerAuth(Permission = "ComputerRead")]
         public IHttpActionResult Get(int id)
         {
             var log = BLL.ComputerLog.GetComputerLog(id);
@@ -62,16 +56,6 @@ namespace CloneDeploy_App.Controllers
             return actionResult;
         }
 
-        [ComputerAuth(Permission = "ComputerDelete")]
-        public ActionResultEntity DeleteAllComputerLogs(int id)
-        {
-            var actionResult = BLL.ComputerLog.DeleteComputerLogs(id);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
-        }
+      
     }
 }

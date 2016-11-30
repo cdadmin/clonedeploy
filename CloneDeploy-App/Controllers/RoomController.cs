@@ -44,9 +44,9 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalCreate")]
-        public ActionResultEntity Post(RoomEntity bootEntry)
+        public ActionResultEntity Post(RoomEntity room)
         {
-            var actionResult = BLL.Room.AddRoom(bootEntry);
+            var actionResult = BLL.Room.AddRoom(room);
             if (!actionResult.Success)
             {
                 var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
@@ -56,10 +56,10 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalUpdate")]
-        public ActionResultEntity Put(int id, RoomEntity bootEntry)
+        public ActionResultEntity Put(int id, RoomEntity room)
         {
-            bootEntry.Id = id;
-            var actionResult = BLL.Room.UpdateRoom(bootEntry);
+            room.Id = id;
+            var actionResult = BLL.Room.UpdateRoom(room);
             if (!actionResult.Success)
             {
                 var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);

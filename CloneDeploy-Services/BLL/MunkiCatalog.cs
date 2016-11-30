@@ -23,8 +23,8 @@ namespace CloneDeploy_App.BLL
                     uow.MunkiCatalogRepository.Update(catalog, catalog.Id);
                 }
 
-
-                return uow.Save();
+                uow.Save();
+                return true;
 
             }
 
@@ -35,7 +35,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.MunkiCatalogRepository.Delete(catalogId);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 

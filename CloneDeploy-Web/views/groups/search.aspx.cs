@@ -87,7 +87,7 @@ namespace views.groups
             }
 
 
-            lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + call.GroupApi.GetCount().Value + " Total Group(s)";
+            lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + call.GroupApi.GetCount() + " Total Group(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)

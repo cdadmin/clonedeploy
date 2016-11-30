@@ -10,6 +10,7 @@ using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Entities.DTOs.ImageSchemaBE;
 
 
 namespace CloneDeploy_App.Controllers
@@ -98,6 +99,37 @@ namespace CloneDeploy_App.Controllers
                 throw new HttpResponseException(response);
             }
             return actionResult;
+        }
+
+        [ImageProfileAuth(Permission = "ImageProfileSearch")]
+        public IEnumerable<ImageProfileEntity> GetImageProfiles(int imageId)
+        {
+            return BLL.ImageProfile.SearchProfiles(imageId);
+
+        }
+
+        [HttpPost]
+        [ImageProfileAuth(Permission = "ImageProfileCreate")]
+        public ImageProfileEntity SeedDefaultProfile(int id)
+        {
+            return BLL.ImageProfile.SeedDefaultImageProfile(id);
+        }
+
+        [ImageAuth(Permission = "ImageRead")]
+        public IEnumerable<ImageFileInfo> GetPartitionFileInfo(int id, string selectedHd, string selectedPartition)
+        {
+
+            return BLL.ImageSchema.GetPartitionImageFileInfoForGridView(id, selectedHd, selectedPartition);
+
+        }
+
+        [ImageAuth(Permission = "ImageRead")]
+        public ApiDTO GetImageSizeOnServer(string imageName, string hdNumber)
+        {
+            var apiDto = new ApiDTO();
+            apiDto.Value = BLL.ImageSchema.ImageSizeOnServerForGridView(imageName, hdNumber);
+            return apiDto;
+
         }
     }
 }

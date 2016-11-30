@@ -20,17 +20,17 @@ namespace CloneDeploy_App.BLL
                 {
                     validationResult.Success = false;
                     uow.ImageRepository.Insert(image);
-                    if (uow.Save())
-                    {
+                    uow.Save();
+                    
                         validationResult.Success = true;
-                    }
+                    
 
                 }
                
             }
             if (validationResult.Success)
             {
-                var defaultProfile = BLL.ImageProfile.SeedDefaultImageProfile(image);
+                var defaultProfile = BLL.ImageProfile.SeedDefaultImageProfile(image.Id);
                 defaultProfile.ImageId = image.Id;
                 BLL.ImageProfile.AddProfile(defaultProfile);
 
@@ -65,8 +65,8 @@ namespace CloneDeploy_App.BLL
                 }
 
                 uow.ImageRepository.Delete(image.Id);
-                if (uow.Save())
-                {
+                uow.Save();
+               
                     if (string.IsNullOrEmpty(image.Name)) return result;
                     BLL.UserImageManagement.DeleteImage(image.Id);
                     BLL.ImageProfile.DeleteImage(image.Id);
@@ -85,12 +85,7 @@ namespace CloneDeploy_App.BLL
 
                     }
 
-                }
-                else
-                {
-                    result.Message = "Could Not Delete Image";
-                    result.Success = false;
-                }
+              
                 return result;
                 
             }
@@ -202,8 +197,8 @@ namespace CloneDeploy_App.BLL
                 {
                     validationResult.Success = false;
                     uow.ImageRepository.Update(image, image.Id);
-                    if (uow.Save())
-                    {
+                    uow.Save();
+                    
                         if (image.Name != originalName)
                         {
                             try
@@ -221,7 +216,7 @@ namespace CloneDeploy_App.BLL
                         {
                             validationResult.Success = true;
                         }
-                    }
+                    
 
                 }
                 return validationResult;

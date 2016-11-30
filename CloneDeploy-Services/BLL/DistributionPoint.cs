@@ -20,7 +20,8 @@ namespace CloneDeploy_App.BLL
                 if (validationResult.Success)
                 {
                     uow.DistributionPointRepository.Insert(distributionPoint);
-                    validationResult.Success = uow.Save();
+                    uow.Save();
+                    validationResult.Success = true;
                     validationResult.ObjectId = distributionPoint.Id;
                     validationResult.Object = JsonConvert.SerializeObject(distributionPoint);
                 }
@@ -45,7 +46,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.DistributionPointRepository.Delete(distributionPointId);
-                actionResult.Success = uow.Save();
+                uow.Save();
+                actionResult.Success = true;
                 actionResult.ObjectId = dp.Id;
                 actionResult.Object = JsonConvert.SerializeObject(dp);
             }
@@ -87,7 +89,8 @@ namespace CloneDeploy_App.BLL
                 if (validationResult.Success)
                 {
                     uow.DistributionPointRepository.Update(distributionPoint, distributionPoint.Id);
-                    validationResult.Success = uow.Save();
+                    uow.Save();
+                    validationResult.Success = true;
                     validationResult.ObjectId = distributionPoint.Id;
                     validationResult.Object = JsonConvert.SerializeObject(distributionPoint);
                 }

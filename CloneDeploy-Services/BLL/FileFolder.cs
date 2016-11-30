@@ -18,7 +18,8 @@ namespace CloneDeploy_App.BLL
                 if (validationResult.Success)
                 {
                     uow.FileFolderRepository.Insert(fileFolder);
-                    validationResult.Success = uow.Save();
+                    uow.Save();
+                    validationResult.Success = true;
                     validationResult.ObjectId = fileFolder.Id;
                     validationResult.Object = JsonConvert.SerializeObject(fileFolder);
                 }
@@ -42,7 +43,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.FileFolderRepository.Delete(FileFolderId);
-                actionResult.Success = uow.Save();
+                uow.Save();
+                actionResult.Success = true;
                 actionResult.ObjectId = fileFolder.Id;
                 actionResult.Object = JsonConvert.SerializeObject(fileFolder);
             }
@@ -77,7 +79,8 @@ namespace CloneDeploy_App.BLL
                 if (validationResult.Success)
                 {
                     uow.FileFolderRepository.Update(fileFolder, fileFolder.Id);
-                    validationResult.Success = uow.Save();
+                    uow.Save();
+                    validationResult.Success = true;
                     validationResult.ObjectId = fileFolder.Id;
                     validationResult.Object = JsonConvert.SerializeObject(fileFolder);
                 }

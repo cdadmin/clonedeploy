@@ -6,6 +6,7 @@ using System.Text;
 using Claunia.PropertyList;
 using CloneDeploy_App.Helpers;
 using CloneDeploy_Entities;
+using CloneDeploy_Services;
 
 namespace CloneDeploy_App.BLL.Workflows
 {
@@ -111,7 +112,7 @@ namespace CloneDeploy_App.BLL.Workflows
                 foreach (var munkiComputer in computers)
                 {
                     var effectiveManifest = new BLL.Workflows.EffectiveMunkiTemplate().Computer(munkiComputer.ComputerId);
-                    var computer = BLL.Computer.GetComputer(munkiComputer.ComputerId);
+                    var computer = new ComputerServices().GetComputer(munkiComputer.ComputerId);
                     if (!WritePath(basePath + computer.Name, Encoding.UTF8.GetString(effectiveManifest.ToArray())))
                         errorCount++;
                 }
@@ -130,7 +131,7 @@ namespace CloneDeploy_App.BLL.Workflows
                         {
                             var effectiveManifest =
                                 new BLL.Workflows.EffectiveMunkiTemplate().Computer(munkiComputer.ComputerId);
-                            var computer = BLL.Computer.GetComputer(munkiComputer.ComputerId);
+                            var computer = new ComputerServices().GetComputer(munkiComputer.ComputerId);
 
 
                             if (

@@ -10,77 +10,71 @@ using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class ActiveMulticastSessionController: ApiController
     {
+        private readonly ActiveMulticastSessionServices _activeMulticastSessionServices;
+
+
+        public ActiveMulticastSessionController()
+        {
+            _activeMulticastSessionServices = new ActiveMulticastSessionServices();
+        }
+
         [TaskAuth(Permission = "ImageTaskMulticast")]
-        public IHttpActionResult GetAll()
+        public IEnumerable<ActiveMulticastSessionEntity> GetAll()
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                              .Select(c => c.Value).SingleOrDefault();
 
-            var sessions = BLL.ActiveMulticastSession.GetAllMulticastSessions(Convert.ToInt32(userId));
-            if (sessions == null)
-                return NotFound();
-            else
-                return Ok(sessions);
+            return _activeMulticastSessionServices.GetAllMulticastSessions(Convert.ToInt32(userId));
+          
         }
 
         [TaskAuth(Permission = "ImageTaskMulticast")]
-        public ApiDTO GetCount()
+        public ApiStringResponseDTO GetCount()
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                              .Select(c => c.Value).SingleOrDefault();
-            var apiDTO = new ApiDTO();
-            apiDTO.Value = BLL.ActiveMulticastSession.ActiveCount(Convert.ToInt32(userId));
-            return apiDTO;
-        }
 
-        [TaskAuth(Permission = "ImageTaskMulticast")]
-        public IHttpActionResult GetMemberStatus(int id)
-        {
-            var memberStatus = BLL.ActiveImagingTask.MulticastMemberStatus(id);
-            if (memberStatus == null)
-                return NotFound();
-            else
-                return Ok(memberStatus);
-        }
-
-        [TaskAuth(Permission = "ImageTaskMulticast")]
-        public IHttpActionResult GetComputers(int id)
-        {
-            var computers = BLL.ActiveImagingTask.GetMulticastComputers(id);
-            if (computers == null)
-                return NotFound();
-            else
-                return Ok(computers);
-        }
-
-        [TaskAuth(Permission = "ImageTaskMulticast")]
-        public IHttpActionResult GetProgress(int id)
-        {
-            var progress = BLL.ActiveImagingTask.MulticastProgress(id);
-            if (progress == null)
-                return NotFound();
-            else
-                return Ok(progress);
-        }
-
-        [TaskAuth(Permission = "ImageTaskMulticast")]
-        public ActionResultEntity Delete(int id)
-        {
-            var actionResult = BLL.ActiveMulticastSession.Delete(id);
-            if (!actionResult.Success)
+            return new ApiStringResponseDTO()
             {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+                Value = _activeMulticastSessionServices.ActiveCount(Convert.ToInt32(userId))
+            };
+
+        }
+
+        [TaskAuth(Permission = "ImageTaskMulticast")]
+        public IEnumerable<ActiveImagingTaskEntity> GetMemberStatus(int id)
+        {
+            return new ActiveImagingTaskServices().MulticastMemberStatus(id);       
+        }
+
+        [TaskAuth(Permission = "ImageTaskMulticast")]
+        public IEnumerable<ComputerEntity> GetComputers(int id)
+        {
+            return new ActiveImagingTaskServices().GetMulticastComputers(id);
+        }
+
+        [TaskAuth(Permission = "ImageTaskMulticast")]
+        public IEnumerable<ActiveImagingTaskEntity> GetProgress(int id)
+        {
+            return new ActiveImagingTaskServices().MulticastProgress(id);
+           
+        }
+
+        [TaskAuth(Permission = "ImageTaskMulticast")]
+        public ActionResultDTO Delete(int id)
+        {
+            var result = _activeMulticastSessionServices.Delete(id);
+            if (result.Id == 0) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound, result));
+            return result;
         }
     }
 }

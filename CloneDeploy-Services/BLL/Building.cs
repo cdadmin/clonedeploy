@@ -16,7 +16,8 @@ namespace CloneDeploy_App.BLL
                 if (validationResult.Success)
                 {
                     uow.BuildingRepository.Insert(building);
-                    validationResult.Success = uow.Save();
+                    uow.Save();
+                    validationResult.Success = true;
                     validationResult.ObjectId = building.Id;
                     validationResult.Object = JsonConvert.SerializeObject(building);
                 }
@@ -41,7 +42,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.BuildingRepository.Delete(buildingId);
-                actionResult.Success = uow.Save();
+                uow.Save();
+                actionResult.Success = true;
                 actionResult.ObjectId = buildingId;
                 actionResult.Object = JsonConvert.SerializeObject(building);
             }
@@ -72,7 +74,8 @@ namespace CloneDeploy_App.BLL
                 if (validationResult.Success)
                 {
                     uow.BuildingRepository.Update(building, building.Id);
-                    validationResult.Success = uow.Save();
+                    uow.Save();
+                    validationResult.Success = true;
                     validationResult.ObjectId = building.Id;
                     validationResult.Object = JsonConvert.SerializeObject(building);
                 }

@@ -23,8 +23,8 @@ namespace CloneDeploy_App.BLL
                     uow.MunkiIncludedManifestRepository.Update(includedManifest, includedManifest.Id);
                 }
 
-
-                return uow.Save();
+                uow.Save();
+                return true;
 
             }
 
@@ -35,7 +35,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.MunkiIncludedManifestRepository.Delete(includedManifestId);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 

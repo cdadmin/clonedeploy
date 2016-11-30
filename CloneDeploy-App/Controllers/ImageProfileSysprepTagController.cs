@@ -15,13 +15,7 @@ namespace CloneDeploy_App.Controllers
 {
     public class ImageProfileSysprepTagController: ApiController
     {
-        [ImageProfileAuth(Permission = "ImageProfileSearch")]
-        public IEnumerable<ImageProfileSysprepTagEntity> Get(int profileId)
-        {
-            
-             return BLL.ImageProfileSysprepTag.SearchImageProfileSysprepTags(profileId);
-
-        }
+       
 
         [ImageProfileAuth(Permission = "ImageProfileCreate")]
         public ApiBoolDTO Post(ImageProfileSysprepTagEntity imageProfileFileFolder)

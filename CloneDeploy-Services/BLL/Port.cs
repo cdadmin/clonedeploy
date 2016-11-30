@@ -12,7 +12,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.PortRepository.Insert(port);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 

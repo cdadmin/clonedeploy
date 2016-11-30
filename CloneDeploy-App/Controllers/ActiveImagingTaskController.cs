@@ -10,12 +10,20 @@ using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class ActiveImagingTaskController: ApiController
     {
+        private readonly ActiveImagingTaskServices _activeImagingTaskServices;
+
+        public ActiveImagingTaskController()
+        {
+            _activeImagingTaskServices = new ActiveImagingTaskServices();
+        }
+
         [ComputerAuth(Permission = "ComputerSearch")]
         public IEnumerable<ActiveImagingTaskEntity> GetUnicasts(string taskType)
         {
@@ -23,55 +31,53 @@ namespace CloneDeploy_App.Controllers
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                              .Select(c => c.Value).SingleOrDefault();
 
-            return BLL.ActiveImagingTask.ReadUnicasts(Convert.ToInt32(userId), taskType);
+            return _activeImagingTaskServices.ReadUnicasts(Convert.ToInt32(userId), taskType);
 
         }
 
         [TaskAuth(Permission = "ImageTaskDelete")]
-        public ActionResultEntity Delete(int id)
+        public ActionResultDTO Delete(int id)
         {
-            var actionResult = BLL.ActiveImagingTask.DeleteActiveImagingTask(id);
-            if (!actionResult.Success)
+            var result = _activeImagingTaskServices.DeleteActiveImagingTask(id);
+            if (result.Id == 0) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound, result));
+            return result;
+        }
+
+        [TaskAuth(Permission = "ImageTaskDeploy")]
+        public IEnumerable<ActiveImagingTaskEntity> GetActiveTasks()
+        {
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                             .Select(c => c.Value).SingleOrDefault();
+            return _activeImagingTaskServices.ReadAll(Convert.ToInt32(userId));
+        }
+
+        [TaskAuth(Permission = "ImageTaskDeploy")]
+        public ApiStringResponseDTO GetActiveUnicastCount(string taskType)
+        {
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                             .Select(c => c.Value).SingleOrDefault();
+
+            return new ApiStringResponseDTO()
             {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+                Value = _activeImagingTaskServices.ActiveUnicastCount(Convert.ToInt32(userId), taskType)
+            };
+
         }
 
         [TaskAuth(Permission = "ImageTaskDeploy")]
-        public IHttpActionResult GetActiveTasks()
+        public ApiStringResponseDTO GetAllActiveCount()
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                              .Select(c => c.Value).SingleOrDefault();
-            var tasks = BLL.ActiveImagingTask.ReadAll(Convert.ToInt32(userId));
-            if (tasks == null)
-                return NotFound();
-            else
-                return Ok(tasks);
-        }
 
-        [TaskAuth(Permission = "ImageTaskDeploy")]
-        public ApiDTO GetActiveUnicastCount(string taskType)
-        {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                             .Select(c => c.Value).SingleOrDefault();
-            var apiDto = new ApiDTO();
-            apiDto.Value = BLL.ActiveImagingTask.ActiveUnicastCount(Convert.ToInt32(userId), taskType);
-            return apiDto;
-        }
+            return new ApiStringResponseDTO()
+            {
+                Value = _activeImagingTaskServices.AllActiveCount(Convert.ToInt32(userId))
+            };
 
-        [TaskAuth(Permission = "ImageTaskDeploy")]
-        public ApiDTO GetAllActiveCount()
-        {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                             .Select(c => c.Value).SingleOrDefault();
-            var apiDto = new ApiDTO();
-            apiDto.Value = BLL.ActiveImagingTask.AllActiveCount(Convert.ToInt32(userId));
-            return apiDto;
         }
 
      

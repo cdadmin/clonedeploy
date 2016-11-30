@@ -139,8 +139,9 @@ namespace CloneDeploy_App.BLL
             return lvList;
         }
 
-        public static List<ImageFileInfo> GetPartitionImageFileInfoForGridView(ImageEntity image, string selectedHd, string selectedPartition)
+        public static List<ImageFileInfo> GetPartitionImageFileInfoForGridView(int imageId, string selectedHd, string selectedPartition)
         {
+            var image = BLL.Image.GetImage(imageId);
             try
             {
                 var imageFile =

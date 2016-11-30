@@ -44,8 +44,9 @@ namespace CloneDeploy_App.BLL
                 else
                     uow.GroupBootMenuRepository.Insert(groupBootMenu);
 
-                if (!uow.Save()) return false;
-              
+                uow.Save();
+                
+
             }
 
             UpdateGroupMemberBootMenus(groupBootMenu);
@@ -59,7 +60,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.GroupBootMenuRepository.DeleteRange(x => x.GroupId == groupId);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 

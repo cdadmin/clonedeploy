@@ -16,7 +16,8 @@ namespace CloneDeploy_App.BLL
                 if (validationResult.Success)
                 {
                     uow.UserGroupRepository.Insert(userGroup);
-                    validationResult.Success = uow.Save();
+                    uow.Save();
+                    validationResult.Success = true;
                 }
 
                 return validationResult;
@@ -52,7 +53,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.UserGroupRepository.Delete(userGroupId);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 
@@ -82,7 +84,8 @@ namespace CloneDeploy_App.BLL
                 if (validationResult.Success)
                 {
                     uow.UserGroupRepository.Update(userGroup, userGroup.Id);
-                    validationResult.Success = uow.Save();
+                    uow.Save();
+                    validationResult.Success = true;
                 }
 
                 return validationResult;

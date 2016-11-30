@@ -40,12 +40,12 @@ namespace views.computers
             var result = new APICall().ComputerApi.Post(computer);
           
             if (!result.Success)
-                EndUserMessage = result.Message;
+                EndUserMessage = result.ErrorMessage;
             else
             {
                 EndUserMessage = "Successfully Created Computer";
                 if (!createAnother.Checked)
-                    Response.Redirect(string.Format("~/views/computers/edit.aspx?computerid={0}",result.ObjectId));
+                    Response.Redirect(string.Format("~/views/computers/edit.aspx?computerid={0}",result.Id));
             }
         }
 

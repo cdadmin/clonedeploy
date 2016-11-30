@@ -15,13 +15,7 @@ namespace CloneDeploy_App.Controllers
 {
     public class ImageProfileFileFolderController: ApiController
     {
-        [ImageProfileAuth(Permission = "ImageProfileSearch")]
-        public IEnumerable<ImageProfileFileFolderEntity> Get(int profileId)
-        {
-            
-             return BLL.ImageProfileFileFolder.SearchImageProfileFileFolders(profileId);
-
-        }
+        
 
         [ImageProfileAuth(Permission = "ImageProfileCreate")]
         public ApiBoolDTO Post(ImageProfileFileFolderEntity imageProfileFileFolder)

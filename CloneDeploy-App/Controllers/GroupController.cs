@@ -168,5 +168,15 @@ namespace CloneDeploy_App.Controllers
                 : BLL.Group.GetGroupMembers(id, searchstring);
 
         }
+
+        [GroupAuth(Permission = "GroupRead")]
+        public IHttpActionResult GetCustomBootMenu(int id)
+        {
+            var result = BLL.GroupBootMenu.GetGroupBootMenu(id);
+            if (result == null)
+                return NotFound();
+            else
+                return Ok(result);
+        }
     }
 }

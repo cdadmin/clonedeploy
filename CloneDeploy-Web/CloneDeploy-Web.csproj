@@ -1012,10 +1012,12 @@
     <Compile Include="Helpers\Settings.cs" />
     <Compile Include="Helpers\UNCAccessWithCredentials.cs" />
     <Compile Include="Helpers\Utility.cs" />
+    <Compile Include="Models\ActionResultDTO.cs" />
     <Compile Include="Models\ActiveImagingTask.cs" />
     <Compile Include="Models\ActiveMulticastSession.cs" />
     <Compile Include="Models\ApiBoolDTO.cs" />
     <Compile Include="Models\ApiDTO.cs" />
+    <Compile Include="Models\ApiStringResponseDTO.cs" />
     <Compile Include="Models\Application.cs" />
     <Compile Include="Models\BootEntry.cs" />
     <Compile Include="Models\BootTemplate.cs" />
@@ -1074,7 +1076,9 @@
     <Compile Include="Models\UserImageManagement.cs" />
     <Compile Include="Models\UserLockout.cs" />
     <Compile Include="Models\UserRight.cs" />
-    <Compile Include="Models\ValidationResult.cs" />
+    <Compile Include="Models\ValidationResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="views\admin\admin.master.cs">
       <DependentUpon>admin.master</DependentUpon>

@@ -5,6 +5,7 @@ using CloneDeploy_App.Helpers;
 using CloneDeploy_DataModel;
 using Newtonsoft.Json;
 using CloneDeploy_Entities;
+using CloneDeploy_Services;
 
 namespace CloneDeploy_App.BLL
 {
@@ -12,22 +13,17 @@ namespace CloneDeploy_App.BLL
     {
         public static bool ToggleComputerBootMenu(int computerId, bool enable)
         {
-            var computer = BLL.Computer.GetComputer(computerId);
+            var computerServices = new ComputerServices();
+            var computer = computerServices.GetComputer(computerId);
             computer.CustomBootEnabled = Convert.ToInt16(enable);
-            BLL.Computer.UpdateComputer(computer);
+            computerServices.UpdateComputer(computer);
 
             if(enable)
             CreateBootFiles(computer);
 
             return true;
         }
-        public static ComputerBootMenuEntity GetComputerBootMenu(int computerId)
-        {
-            using (var uow = new UnitOfWork())
-            {
-                return uow.ComputerBootMenuRepository.GetFirstOrDefault(p => p.ComputerId == computerId);
-            }
-        }
+      
 
         public static bool UpdateComputerBootMenu(ComputerBootMenuEntity computerBootMenu)
         {
@@ -43,29 +39,16 @@ namespace CloneDeploy_App.BLL
                 else
                     uow.ComputerBootMenuRepository.Insert(computerBootMenu);
 
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 
-        public static ActionResultEntity DeleteComputerBootMenus(int computerId)
-        {
-            var actionResult = new ActionResultEntity();
-            var computer = BLL.Computer.GetComputer(computerId);
-
-            using (var uow = new UnitOfWork())
-            {
-                uow.ComputerBootMenuRepository.DeleteRange(x => x.ComputerId == computerId);
-                actionResult.Success = uow.Save();
-                actionResult.ObjectId = computerId;
-                actionResult.Object = JsonConvert.SerializeObject(computer);
-            }
-            return actionResult;
-            
-        }
+       
 
         public static void DeleteBootFiles(ComputerEntity computer)
         {
-            if (BLL.ActiveImagingTask.IsComputerActive(computer.Id)) return; //Files Will Be Processed When task is done
+            if (new ComputerServices().IsComputerActive(computer.Id)) return; //Files Will Be Processed When task is done
             var pxeMac = Utility.MacToPxeMac(computer.Mac);
             List<Tuple<string, string>> list = new List<Tuple<string, string>>
                 {
@@ -93,8 +76,8 @@ namespace CloneDeploy_App.BLL
 
         public static void CreateBootFiles(ComputerEntity computer)
         {
-            if (BLL.ActiveImagingTask.IsComputerActive(computer.Id)) return; //Files Will Be Processed When task is done
-            var bootMenu = GetComputerBootMenu(computer.Id);
+            if (new ComputerServices().IsComputerActive(computer.Id)) return; //Files Will Be Processed When task is done
+            var bootMenu = new ComputerServices().GetComputerBootMenu(computer.Id);
             if (bootMenu == null) return;
             var pxeMac = Utility.MacToPxeMac(computer.Mac);
             string path;

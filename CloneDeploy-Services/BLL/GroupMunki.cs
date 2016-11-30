@@ -12,7 +12,9 @@ namespace CloneDeploy_App.BLL
                
                     uow.GroupMunkiRepository.Insert(template);
 
-                return uow.Save();
+                uow.Save();
+                return true;
+
             }
         }
 
@@ -21,7 +23,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.GroupMunkiRepository.DeleteRange(x => x.GroupId == groupId);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 

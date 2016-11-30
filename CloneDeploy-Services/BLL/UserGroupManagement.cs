@@ -11,8 +11,8 @@ namespace CloneDeploy_App.BLL
             {
                 foreach (var group in listOfGroups)
                     uow.UserGroupManagementRepository.Insert(group);
-
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 
@@ -21,7 +21,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.UserGroupManagementRepository.DeleteRange(x => x.UserId == userId);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 
@@ -30,7 +31,8 @@ namespace CloneDeploy_App.BLL
             using (var uow = new UnitOfWork())
             {
                 uow.UserGroupManagementRepository.DeleteRange(x => x.GroupId == groupId);
-                return uow.Save();
+                uow.Save();
+                return true;
             }
         }
 
