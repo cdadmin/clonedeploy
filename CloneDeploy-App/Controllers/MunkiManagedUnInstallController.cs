@@ -8,37 +8,28 @@ using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class MunkiManagedUnInstallController: ApiController
     {
+         private readonly MunkiManagedUninstallServices _munkiManagedUninstallServices;
+
+        public MunkiManagedUnInstallController()
+        {
+            _munkiManagedUninstallServices = new MunkiManagedUninstallServices();
+        }
+
         [GlobalAuth(Permission = "GlobalRead")]
         public MunkiManifestManagedUnInstallEntity Get(int id)
         {
 
-            return BLL.MunkiManagedUninstall.GetManagedUnInstall(id);
+            return _munkiManagedUninstallServices.GetManagedUnInstall(id);
 
-        }
-
-        [GlobalAuth(Permission = "GlobalCreate")]
-        public ApiBoolDTO Post(MunkiManifestManagedUnInstallEntity managedUninstall)
-        {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.MunkiManagedUninstall.AddManagedUnInstallToTemplate(managedUninstall);
-          
-            return apiBoolDto;
         }
 
        
-
-        [GlobalAuth(Permission = "GlobalDelete")]
-        public ApiBoolDTO Delete(int id)
-        {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.MunkiManagedUninstall.DeleteManagedUnInstallFromTemplate(id);
-           return apiBoolDto;
-        }
     }
 }

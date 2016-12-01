@@ -9,19 +9,24 @@ using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 namespace CloneDeploy_App.Controllers
 {
     public class UserGroupRightController: ApiController
     {
+        private readonly UserGroupRightServices _userGroupRightServices;
+
+        public UserGroupRightController()
+        {
+            _userGroupRightServices = new UserGroupRightServices();
+        }
       
         [UserAuth(Permission = "Administrator")]
-        public ApiBoolDTO Post(List<UserGroupRightEntity> listOfRights)
+        public ActionResultDTO Post(List<UserGroupRightEntity> listOfRights)
         {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.UserGroupRight.AddUserGroupRights(listOfRights);
-
-            return apiBoolDto;
+            return _userGroupRightServices.AddUserGroupRights(listOfRights);
         }
 
         

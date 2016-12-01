@@ -12,6 +12,7 @@ using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
@@ -19,162 +20,141 @@ namespace CloneDeploy_App.Controllers
    
     public class UserGroupController : ApiController
     {
+        private readonly UserGroupServices _userGroupServices;
+
+        public UserGroupController()
+        {
+            _userGroupServices = new UserGroupServices();
+        }
 
         [UserAuth(Permission = "Administrator")]
         public IEnumerable<CloneDeployUserGroupEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
-                ? BLL.UserGroup.SearchUserGroups()
-                : BLL.UserGroup.SearchUserGroups(searchstring);
+                ? _userGroupServices.SearchUserGroups()
+                : _userGroupServices.SearchUserGroups(searchstring);
 
         }
 
         [UserAuth(Permission = "Administrator")]
-        public IHttpActionResult Get(int id)
+        public CloneDeployUserGroupEntity Get(int id)
         {
-            var result = BLL.UserGroup.GetUserGroup(id);
-            if (result == null)
-                return NotFound();
-            else
-                return Ok(result);
+            var result = _userGroupServices.GetUserGroup(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
        
 
         [UserAuth(Permission = "Administrator")]
-        public ApiDTO GetCount()
+        public ApiStringResponseDTO GetCount()
         {
-            var ApiDTO = new ApiDTO();
-            ApiDTO.Value = BLL.UserGroup.TotalCount();
-            return ApiDTO;
+            return new ApiStringResponseDTO() {Value = _userGroupServices.TotalCount()};
         }
 
       
 
         [UserAuth(Permission = "Administrator")]
-        public ActionResultEntity Post(CloneDeployUserGroupEntity userGroup)
+        public ActionResultDTO Post(CloneDeployUserGroupEntity userGroup)
         {
-            var actionResult = BLL.UserGroup.AddUserGroup(userGroup);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            return _userGroupServices.AddUserGroup(userGroup);
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ActionResultEntity Put(int id, CloneDeployUserGroupEntity userGroup)
+        public ActionResultDTO Put(int id, CloneDeployUserGroupEntity userGroup)
         {
             userGroup.Id = id;
-            var actionResult = BLL.UserGroup.UpdateUser(userGroup);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _userGroupServices.UpdateUser(userGroup);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ApiBoolDTO Delete(int id)
+        public ActionResultDTO Delete(int id)
         {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.UserGroup.DeleteUserGroup(id);
-            return apiBoolDto;
+            var result = _userGroupServices.DeleteUserGroup(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ApiDTO GetMemberCount(int id)
+        public ApiStringResponseDTO GetMemberCount(int id)
         {
-            var apiDto = new ApiDTO();
-            apiDto.Value = BLL.UserGroup.MemberCount(id);
-            return apiDto;
+            return new ApiStringResponseDTO() {Value = _userGroupServices.MemberCount(id)};
         }
 
         [UserAuth(Permission = "Administrator")]
         public IEnumerable<CloneDeployUserEntity> GetGroupMembers(int id, string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
-                ? BLL.UserGroup.GetGroupMembers(id)
-                : BLL.UserGroup.GetGroupMembers(id,searchstring);
+                ? _userGroupServices.GetGroupMembers(id)
+                : _userGroupServices.GetGroupMembers(id,searchstring);
 
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ApiDTO UpdateMemberAcls(CloneDeployUserGroupEntity userGroup)
+        public ApiBoolResponseDTO UpdateMemberAcls(CloneDeployUserGroupEntity userGroup)
         {
-            var apiDto = new ApiDTO();
-            BLL.UserGroup.UpdateAllGroupMembersAcls(userGroup);
-            return apiDto;
+            return new ApiBoolResponseDTO() {Value = _userGroupServices.UpdateAllGroupMembersAcls(userGroup)};
+
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ApiDTO UpdateMemberGroups(CloneDeployUserGroupEntity userGroup)
+        public ApiBoolResponseDTO UpdateMemberGroups(CloneDeployUserGroupEntity userGroup)
         {
-            var apiDto = new ApiDTO();
-            BLL.UserGroup.UpdateAllGroupMembersGroupMgmt(userGroup);
-            return apiDto;
+            return new ApiBoolResponseDTO() {Value = _userGroupServices.UpdateAllGroupMembersGroupMgmt(userGroup)};
+
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ApiDTO UpdateMemberImages(CloneDeployUserGroupEntity userGroup)
+        public ApiBoolResponseDTO UpdateMemberImages(CloneDeployUserGroupEntity userGroup)
         {
-            var apiDto = new ApiDTO();
-            BLL.UserGroup.UpdateAllGroupMembersImageMgmt(userGroup);
-            return apiDto;
+            return new ApiBoolResponseDTO() {Value = _userGroupServices.UpdateAllGroupMembersImageMgmt(userGroup)};
+
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ApiDTO AddNewMember(CloneDeployUserGroupEntity userGroup, CloneDeployUserEntity user)
+        public ApiBoolResponseDTO AddNewMember(CloneDeployUserGroupEntity userGroup, CloneDeployUserEntity user)
         {
-            var apiDto = new ApiDTO();
-            BLL.UserGroup.AddNewGroupMember(userGroup,user);
-            return apiDto;
+            return new ApiBoolResponseDTO() {Value = _userGroupServices.AddNewGroupMember(userGroup, user)};
         }
 
         [UserAuth(Permission = "Administrator")]
         public IEnumerable<UserGroupRightEntity> GetRights(int id)
         {
-            return BLL.UserGroupRight.Get(id);
+            return _userGroupServices.GetUserGroupRights(id);
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ApiBoolDTO DeleteRights(int id)
+        public ApiBoolResponseDTO DeleteRights(int id)
         {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.UserGroupRight.DeleteUserGroupRights(id);
-            return apiBoolDto;
+            return new ApiBoolResponseDTO() {Value = _userGroupServices.DeleteUserGroupRights(id)};
 
         }
 
         [UserAuth(Permission = "Administrator")]
         public IEnumerable<UserGroupImageManagementEntity> GetImageManagements(int id)
         {
-            return BLL.UserGroupImageManagement.Get(id);
+            return _userGroupServices.GetUserGroupImageManagements(id);
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ApiBoolDTO DeleteImageManagements(int id)
+        public ApiBoolResponseDTO DeleteImageManagements(int id)
         {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.UserGroupImageManagement.DeleteUserGroupImageManagements(id);
-            return apiBoolDto;
+            return new ApiBoolResponseDTO() {Value = _userGroupServices.DeleteUserGroupImageManagements(id)};
 
         }
 
         [UserAuth(Permission = "Administrator")]
         public IEnumerable<UserGroupGroupManagementEntity> GetGroupManagements(int id)
         {
-            return BLL.UserGroupGroupManagement.Get(id);
+            return _userGroupServices.GetUserGroupGroupManagements(id);
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ApiBoolDTO DeleteGroupManagements(int id)
+        public ApiBoolResponseDTO DeleteGroupManagements(int id)
         {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.UserGroupGroupManagement.DeleteUserGroupGroupManagements(id);
-            return apiBoolDto;
+            return new ApiBoolResponseDTO() {Value = _userGroupServices.DeleteUserGroupGroupManagements(id)};
 
         }
      

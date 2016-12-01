@@ -10,70 +10,64 @@ using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class SysprepTagController: ApiController
     {
+        private readonly SysprepTagServices _sysprepTagServices;
+
+        public SysprepTagController()
+        {
+            _sysprepTagServices = new SysprepTagServices();
+        }
+
         [GlobalAuth(Permission = "GlobalRead")]
         public IEnumerable<SysprepTagEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
-                ? BLL.SysprepTag.SearchSysprepTags()
-                : BLL.SysprepTag.SearchSysprepTags(searchstring);
+                ? _sysprepTagServices.SearchSysprepTags()
+                : _sysprepTagServices.SearchSysprepTags(searchstring);
 
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public ApiDTO GetCount()
+        public ApiStringResponseDTO GetCount()
         {
-            var ApiDTO = new ApiDTO();
-            ApiDTO.Value = BLL.SysprepTag.TotalCount();
-            return ApiDTO;
+            return new ApiStringResponseDTO() {Value = _sysprepTagServices.TotalCount()};
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public IHttpActionResult Get(int id)
+        public SysprepTagEntity Get(int id)
         {
-            var result = BLL.SysprepTag.GetSysprepTag(id);
-            if (result == null)
-                return NotFound();
-            else
-                return Ok(result);
+            var result = _sysprepTagServices.GetSysprepTag(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [GlobalAuth(Permission = "GlobalCreate")]
-        public ActionResultEntity Post(SysprepTagEntity sysprepTag)
+        public ActionResultDTO Post(SysprepTagEntity sysprepTag)
         {
-            var actionResult = BLL.SysprepTag.AddSysprepTag(sysprepTag);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            return _sysprepTagServices.AddSysprepTag(sysprepTag);
         }
 
         [GlobalAuth(Permission = "GlobalUpdate")]
-        public ActionResultEntity Put(int id, SysprepTagEntity sysprepTag)
+        public ActionResultDTO Put(int id, SysprepTagEntity sysprepTag)
         {
             sysprepTag.Id = id;
-            var actionResult = BLL.SysprepTag.UpdateSysprepTag(sysprepTag);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _sysprepTagServices.UpdateSysprepTag(sysprepTag);
+             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [GlobalAuth(Permission = "GlobalDelete")]
-        public ApiBoolDTO Delete(int id)
+        public ActionResultDTO Delete(int id)
         {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.SysprepTag.DeleteSysprepTag(id);
-           return apiBoolDto;
+            var result = _sysprepTagServices.DeleteSysprepTag(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
     }
 }

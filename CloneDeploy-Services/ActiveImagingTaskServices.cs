@@ -43,7 +43,7 @@ namespace CloneDeploy_Services
             //Mail not enabled
             if (Settings.SmtpEnabled == "0") return;
             task.Computer = new ComputerServices().GetComputer(task.ComputerId);
-            foreach (var user in CloneDeploy_App.BLL.User.SearchUsers("").Where(x => x.NotifyComplete == 1 && !string.IsNullOrEmpty(x.Email)))
+            foreach (var user in UserServices.SearchUsers("").Where(x => x.NotifyComplete == 1 && !string.IsNullOrEmpty(x.Email)))
             {
                 if (task.UserId == user.Id)
                 {
@@ -63,7 +63,7 @@ namespace CloneDeploy_Services
             //Mail not enabled
             if (Settings.SmtpEnabled == "0") return;
             task.Computer = new ComputerServices().GetComputer(task.ComputerId);
-            foreach (var user in CloneDeploy_App.BLL.User.SearchUsers("").Where(x => x.NotifyError == 1 && !string.IsNullOrEmpty(x.Email)))
+            foreach (var user in UserServices.SearchUsers("").Where(x => x.NotifyError == 1 && !string.IsNullOrEmpty(x.Email)))
             {
                 if (task.UserId == user.Id)
                 {
@@ -129,7 +129,7 @@ namespace CloneDeploy_Services
 
             
                 //Admins see all tasks
-                var activeImagingTasks = CloneDeploy_App.BLL.User.IsAdmin(userId)
+                var activeImagingTasks = UserServices.IsAdmin(userId)
                     ? _uow.ActiveImagingTaskRepository.Get(orderBy: q => q.OrderBy(t => t.Id))
                     : _uow.ActiveImagingTaskRepository.Get(x => x.UserId == userId, orderBy: q => q.OrderBy(t => t.Id));
                 foreach (var task in activeImagingTasks)
@@ -143,7 +143,7 @@ namespace CloneDeploy_Services
         public  string ActiveUnicastCount(int userId, string taskType)
         {
            
-                return CloneDeploy_App.BLL.User.IsAdmin(userId)
+                return UserServices.IsAdmin(userId)
                     ? _uow.ActiveImagingTaskRepository.Count(t => t.Type == taskType)
                     : _uow.ActiveImagingTaskRepository.Count(t => t.Type == taskType && t.UserId == userId);
             
@@ -152,7 +152,7 @@ namespace CloneDeploy_Services
         public  string AllActiveCount(int userId)
         {
            
-                return CloneDeploy_App.BLL.User.IsAdmin(userId)
+                return UserServices.IsAdmin(userId)
                     ? _uow.ActiveImagingTaskRepository.Count()
                     : _uow.ActiveImagingTaskRepository.Count(x => x.UserId == userId);
             
@@ -170,7 +170,7 @@ namespace CloneDeploy_Services
            
                 //Admins see all tasks
                 List<ActiveImagingTaskEntity> activeImagingTasks;
-                if (CloneDeploy_App.BLL.User.IsAdmin(userId))
+                if (UserServices.IsAdmin(userId))
                 {
                     activeImagingTasks = _uow.ActiveImagingTaskRepository.Get(t => t.Type == taskType,
                         orderBy: q => q.OrderBy(t => t.ComputerId));

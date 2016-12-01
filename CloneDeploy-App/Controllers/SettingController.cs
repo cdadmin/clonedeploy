@@ -8,29 +8,31 @@ using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class SettingController: ApiController
     {
-        [AdminAuth(Permission = "AdminRead")]
-        public IHttpActionResult Get(string name)
+        private readonly SettingServices _settingServices;
+
+        public SettingController()
         {
-            var result = BLL.Setting.GetSetting(name);
-            if (result == null)
-                return NotFound();
-            else
-                return Ok(result);
+            _settingServices = new SettingServices();
+        }
+
+        [AdminAuth(Permission = "AdminRead")]
+        public SettingEntity GetSetting(string name)
+        {
+            return _settingServices.GetSetting(name);          
         }
 
         [GlobalAuth(Permission = "GlobalUpdate")]
-        public ApiBoolDTO Put(List<SettingEntity> listSettings)
+        public ApiBoolResponseDTO UpdateSettings(List<SettingEntity> listSettings)
         {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.Setting.UpdateSetting(listSettings);
+            return new ApiBoolResponseDTO() {Value = _settingServices.UpdateSetting(listSettings)};
             
-            return apiBoolDto;
         }
     }
 }

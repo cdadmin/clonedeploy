@@ -10,6 +10,7 @@ using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
@@ -17,21 +18,17 @@ namespace CloneDeploy_App.Controllers
     public class ComputerBootMenuController : ApiController
     {
 
-       
+        private readonly ComputerBootMenuServices _computerBootMenuServices;
 
-       
+        public ComputerBootMenuController()
+        {
+            _computerBootMenuServices = new ComputerBootMenuServices();
+        }
 
         [ComputerAuth(Permission = "ComputerUpdate")]
-        public ActionResultEntity Post(ComputerBootMenuEntity computerBootMenu)
+        public ApiBoolResponseDTO Post(ComputerBootMenuEntity computerBootMenu)
         {
-            var actionResult = new ActionResultEntity();
-            actionResult.Success = BLL.ComputerBootMenu.UpdateComputerBootMenu(computerBootMenu);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            return new ApiBoolResponseDTO() {Value = _computerBootMenuServices.UpdateComputerBootMenu(computerBootMenu)};
         }
 
        

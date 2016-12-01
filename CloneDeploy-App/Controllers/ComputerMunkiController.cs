@@ -12,6 +12,7 @@ using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
@@ -19,28 +20,27 @@ namespace CloneDeploy_App.Controllers
     public class ComputerMunkiController:ApiController
     {
 
-        [ComputerAuth(Permission = "GlobalRead")]
-        public IHttpActionResult GetTemplateComputers(int id)
+        private readonly ComputerMunkiServices _computerMunkiServices;
+
+        public ComputerMunkiController()
         {
-            var munkiComputers = BLL.ComputerMunki.GetComputersForManifestTemplate(id);
-            if (munkiComputers == null)
-                return NotFound();
-            else
-                return Ok(munkiComputers);
+            _computerMunkiServices = new ComputerMunkiServices();
         }
 
-        
+        [ComputerAuth(Permission = "GlobalRead")]
+        public IEnumerable<ComputerMunkiEntity> GetTemplateComputers(int id)
+        {
+            var result = _computerMunkiServices.GetComputersForManifestTemplate(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
+        }
 
         [ComputerAuth(Permission = "ComputerCreate")]
-        public ActionResultEntity Post(ComputerMunkiEntity computerMunki)
+        public ActionResultDTO Post(ComputerMunkiEntity computerMunki)
         {
-            var actionResult = BLL.ComputerMunki.AddMunkiTemplates(computerMunki);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _computerMunkiServices.AddMunkiTemplates(computerMunki);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
        

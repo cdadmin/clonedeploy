@@ -92,7 +92,7 @@ namespace CloneDeploy_App.Controllers
         [ComputerAuth(Permission = "ComputerRead")]
         public List<GroupMembershipEntity> GetGroupMemberships(int id)
         {
-            return BLL.GroupMembership.GetAllComputerMemberships(id);
+            return _computerService.GetAllComputerMemberships(id);
         }
 
         [ComputerAuth(Permission = "ComputerRead")]
@@ -134,107 +134,90 @@ namespace CloneDeploy_App.Controllers
 
         [HttpPost]
         [ComputerAuth(Permission = "ComputerUpdate")]
-        public ApiBoolDTO CreateCustomBootFiles(ComputerEntity computer)
+        public ApiBoolResponseDTO CreateCustomBootFiles(ComputerEntity computer)
         {
-            var result = new ApiBoolDTO() { Value = true };
-            BLL.ComputerBootMenu.CreateBootFiles(computer);
-
-            return result;
+            return new ApiBoolResponseDTO() {Value = _computerService.CreateBootFiles(computer)};
         }
 
         [HttpPost]
         [ComputerAuth(Permission = "ComputerRead")]
-        public ApiDTO GetProxyPath(ComputerEntity computer, bool isActiveOrCustom, string proxyType)
+        public ApiStringResponseDTO GetProxyPath(ComputerEntity computer, bool isActiveOrCustom, string proxyType)
         {
-            var result = new ApiDTO();
-            result.Value = BLL.ComputerBootMenu.GetComputerProxyPath(computer, isActiveOrCustom, proxyType);
-            return result;
+            return new ApiStringResponseDTO()
+            {
+                Value = _computerService.GetComputerProxyPath(computer, isActiveOrCustom, proxyType)
+            };
         }
 
         [HttpPost]
         [ComputerAuth(Permission = "ComputerRead")]
-        public ApiDTO GetNonProxyPath(ComputerEntity computer, bool isActiveOrCustom)
+        public ApiStringResponseDTO GetNonProxyPath(ComputerEntity computer, bool isActiveOrCustom)
         {
-            var result = new ApiDTO();
-            result.Value = BLL.ComputerBootMenu.GetComputerNonProxyPath(computer, isActiveOrCustom);
-            return result;
+            return new ApiStringResponseDTO()
+            {
+                Value = _computerService.GetComputerNonProxyPath(computer, isActiveOrCustom)
+            };
         }
 
         [ComputerAuth(Permission = "ComputerRead")]
         public IEnumerable<ComputerLogEntity> GetComputerLogs(int id)
         {
-            return BLL.ComputerLog.Search(id);
+            return _computerService.SearchComputerLogs(id);
         }
 
         [ComputerAuth(Permission = "ComputerDelete")]
-        public ActionResultEntity DeleteAllComputerLogs(int id)
+        public ActionResultDTO DeleteAllComputerLogs(int id)
         {
-            var actionResult = BLL.ComputerLog.DeleteComputerLogs(id);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _computerService.DeleteComputerLogs(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [ComputerAuth(Permission = "ComputerRead")]
-        public IHttpActionResult GetMunkiTemplates(int id)
+        public IEnumerable<ComputerMunkiEntity> GetMunkiTemplates(int id)
         {
-            var munkiTemplates = BLL.ComputerMunki.Get(id);
-            if (munkiTemplates == null)
-                return NotFound();
-            else
-                return Ok(munkiTemplates);
+            return _computerService.GetMunkiTemplates(id);       
         }
 
         [ComputerAuth(Permission = "ComputerRead")]
-        public IHttpActionResult GetEffectiveManifest(int id)
+        public ApiStringResponseDTO GetEffectiveManifest(int id)
         {
-            var result = new ApiDTO();
             var effectiveManifest = new BLL.Workflows.EffectiveMunkiTemplate().Computer(id);
-            result.Value = Encoding.UTF8.GetString(effectiveManifest.ToArray());
-            return Ok(result);
+            return new ApiStringResponseDTO() {Value = Encoding.UTF8.GetString(effectiveManifest.ToArray())};
         }
 
         [ComputerAuth(Permission = "ComputerDelete")]
-        public ActionResultEntity DeleteMunkiTemplates(int id)
+        public ActionResultDTO DeleteMunkiTemplates(int id)
         {
-            var actionResult = BLL.ComputerMunki.DeleteMunkiTemplates(id);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _computerService.DeleteMunkiTemplates(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [ComputerAuth(Permission = "ComputerRead")]
-        public IHttpActionResult GetProxyReservation(int id)
+        public ComputerProxyReservationEntity GetProxyReservation(int id)
         {
-            var reservation = BLL.ComputerProxyReservation.GetComputerProxyReservation(id);
-            if (reservation == null)
-                return NotFound();
-            else
-                return Ok(reservation);
-        }
-
-        [HttpGet]
-        [ComputerAuth(Permission = "ComputerUpdate")]
-        public ApiBoolDTO ToggleProxyReservation(int id, bool status)
-        {
-            var result = new ApiBoolDTO();
-            result.Value = BLL.ComputerProxyReservation.ToggleProxyReservation(id, status);
+            var result = _computerService.GetComputerProxyReservation(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
         }
 
         [HttpGet]
         [ComputerAuth(Permission = "ComputerUpdate")]
-        public ApiBoolDTO Toggle(int id, bool status)
+        public ApiBoolResponseDTO ToggleProxyReservation(int id, bool status)
         {
-            var result = new ApiBoolDTO();
-            result.Value = BLL.ComputerBootMenu.ToggleComputerBootMenu(id, status);
-            return result;
+
+            return new ApiBoolResponseDTO() {Value = _computerService.ToggleProxyReservation(id, status)};
+
+        }
+
+        [HttpGet]
+        [ComputerAuth(Permission = "ComputerUpdate")]
+        public ApiBoolResponseDTO Toggle(int id, bool status)
+        {
+
+            return new ApiBoolResponseDTO() {Value = _computerService.ToggleComputerBootMenu(id, status)};
+
         }
     }
 }

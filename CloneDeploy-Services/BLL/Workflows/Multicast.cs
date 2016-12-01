@@ -46,21 +46,21 @@ namespace CloneDeploy_App.BLL.Workflows
 
         public string Create()
         {
-            _imageProfile = ImageProfile.ReadProfile(_group.ImageProfileId);
+            _imageProfile = ImageProfileServices.ReadProfile(_group.ImageProfileId);
             if (_imageProfile == null) return "The Image Profile Does Not Exist";
 
             if (_imageProfile.Image == null) return "The Image Does Not Exist";
 
-            var validation = Image.CheckApprovalAndChecksum(_imageProfile.Image,_userId);
+            var validation = ImageServices.CheckApprovalAndChecksum(_imageProfile.Image,_userId);
             if (!validation.Success) return validation.Message;
 
-            _multicastSession.Port = Port.GetNextPort();
+            _multicastSession.Port = PortServices.GetNextPort();
             if (_multicastSession.Port == 0)
             {
                 return "Could Not Determine Current Port Base";
             }
 
-            var dp = BLL.DistributionPoint.GetPrimaryDistributionPoint();
+            var dp = DistributionPointServices.GetPrimaryDistributionPoint();
             if (dp == null) return "Could Not Find A Primary Distribution Point";
 
             _multicastSession.UserId = _userId;
@@ -77,7 +77,7 @@ namespace CloneDeploy_App.BLL.Workflows
 
             //Continue On If multicast is for a group
             _multicastSession.Name = _group.Name;
-            _computers = Group.GetGroupMembers(_group.Id);
+            _computers = GroupServices.GetGroupMembers(_group.Id);
             if (_computers.Count < 1)
             {
                 return "The group Does Not Have Any Members";

@@ -8,37 +8,26 @@ using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class MunkiCatalogController: ApiController
     {
-        [GlobalAuth(Permission = "GlobalRead")]
-        public MunkiManifestCatalogEntity Get(int id)
-        {
-            
-             return BLL.MunkiCatalog.GetCatalog(id);
+        private readonly MunkiCatalogServices _munkiCatalogServices;
 
+        public MunkiCatalogController()
+        {
+            _munkiCatalogServices = new MunkiCatalogServices();
         }
 
-        [GlobalAuth(Permission = "GlobalCreate")]
-        public ApiBoolDTO Post(MunkiManifestCatalogEntity catalog)
-        {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.MunkiCatalog.AddCatalogToTemplate(catalog);
-          
-            return apiBoolDto;
+        [GlobalAuth(Permission = "GlobalRead")]
+        public MunkiManifestCatalogEntity Get(int id)
+        {           
+             return _munkiCatalogServices.GetCatalog(id);
         }
 
        
-
-        [GlobalAuth(Permission = "GlobalDelete")]
-        public ApiBoolDTO Delete(int id)
-        {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.MunkiCatalog.DeleteCatalogFromTemplate(id);
-           return apiBoolDto;
-        }
     }
 }

@@ -10,50 +10,49 @@ using System.Web.Http;
 using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class ComputerLogController:ApiController
     {
-        [ComputerAuth(Permission = "ComputerRead")]
-        public IHttpActionResult Get(int id)
+        private readonly ComputerLogServices _computerLogServices;
+
+        public ComputerLogController()
         {
-            var log = BLL.ComputerLog.GetComputerLog(id);
-            if (log == null)
-                return NotFound();
-            else
-                return Ok(log);
+            _computerLogServices = new ComputerLogServices();
+        }
+
+        [ComputerAuth(Permission = "ComputerRead")]
+        public ComputerLogEntity Get(int id)
+        {
+            var result = _computerLogServices.GetComputerLog(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [ComputerAuth(Permission = "AdminRead")]
         public IEnumerable<ComputerLogEntity> GetOnDemandLogs(int limit = 0)
         {
-            return BLL.ComputerLog.SearchOnDemand(limit);
+            return _computerLogServices.SearchOnDemand(limit);
         }
 
         [ComputerAuth(Permission = "ComputerCreate")]
-        public ActionResultEntity Post(ComputerLogEntity computerLog)
+        public ActionResultDTO Post(ComputerLogEntity computerLog)
         {
-            var actionResult = BLL.ComputerLog.AddComputerLog(computerLog);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _computerLogServices.AddComputerLog(computerLog);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [ComputerAuth(Permission = "ComputerDelete")]
-        public ActionResultEntity Delete(int id)
+        public ActionResultDTO Delete(int id)
         {
-            var actionResult = BLL.ComputerLog.DeleteComputerLog(id);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _computerLogServices.DeleteComputerLog(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
       

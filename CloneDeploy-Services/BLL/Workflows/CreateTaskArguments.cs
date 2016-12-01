@@ -54,7 +54,7 @@ namespace CloneDeploy_App.BLL.Workflows
             var imageSchemaRequest = new ImageSchemaRequestDTO();
             imageSchemaRequest.imageProfile = _imageProfile;
             imageSchemaRequest.schemaType = "upload";
-            var customSchema = new BLL.ImageSchema(imageSchemaRequest).GetImageSchema();
+            var customSchema = new ImageSchemaFEServices(imageSchemaRequest).GetImageSchema();
             var customHardDrives = new StringBuilder();
             customHardDrives.Append("custom_hard_drives=\"");
             var customPartitions = new StringBuilder();
@@ -105,7 +105,7 @@ namespace CloneDeploy_App.BLL.Workflows
             var imageSchemaRequest = new ImageSchemaRequestDTO();
             imageSchemaRequest.imageProfile = _imageProfile;
             imageSchemaRequest.schemaType = "deploy";
-            var customSchema = new BLL.ImageSchema(imageSchemaRequest).GetImageSchema();
+            var customSchema = new ImageSchemaFEServices(imageSchemaRequest).GetImageSchema();
             var customHardDrives = new StringBuilder();
             customHardDrives.Append("custom_hard_drives=\"");
                     
@@ -126,7 +126,7 @@ namespace CloneDeploy_App.BLL.Workflows
         {
             string preScripts = "\"";
             string postScripts = "\"";
-            foreach (var script in ImageProfileScript.SearchImageProfileScripts(_imageProfile.Id))
+            foreach (var script in ImageProfileScriptServices.SearchImageProfileScripts(_imageProfile.Id))
             {
                 if (Convert.ToBoolean(script.RunPre))
                     preScripts += script.ScriptId + " ";
@@ -138,13 +138,13 @@ namespace CloneDeploy_App.BLL.Workflows
             preScripts += "\"";
 
             string sysprepTags = "\"";
-            foreach (var sysprepTag in ImageProfileSysprepTag.SearchImageProfileSysprepTags(_imageProfile.Id))
+            foreach (var sysprepTag in ImageProfileSysprepTagServices.SearchImageProfileSysprepTags(_imageProfile.Id))
                 sysprepTags += sysprepTag.SysprepId + " ";
 
             sysprepTags = sysprepTags.Trim();
             sysprepTags += "\"";
             
-            var areFilesToCopy = ImageProfileFileFolder.SearchImageProfileFileFolders(_imageProfile.Id).Any();
+            var areFilesToCopy = ImageProfileFileFolderService.SearchImageProfileFileFolders(_imageProfile.Id).Any();
 
             //On demand computer may be null if not registered
             if (_computer != null)
@@ -173,7 +173,7 @@ namespace CloneDeploy_App.BLL.Workflows
             if (_direction == "pull")
             {
                 //Upload currently only support going to the primary distribution point
-                AppendString("dp_id=" + DistributionPoint.GetPrimaryDistributionPoint().Id);
+                AppendString("dp_id=" + DistributionPointServices.GetPrimaryDistributionPoint().Id);
                 //Added for OSX NBI suppport
                 AppendString("image_direction=pull");
                 AppendString("osx_target_volume=" + "\"" + _imageProfile.OsxTargetVolume + "\"");
@@ -209,7 +209,7 @@ namespace CloneDeploy_App.BLL.Workflows
                         AppendString("cust_attr_5=" + "\"" + _computer.CustomAttribute5 + "\"");
                 }
                 else
-                    AppendString("dp_id=" + DistributionPoint.GetPrimaryDistributionPoint().Id);
+                    AppendString("dp_id=" + DistributionPointServices.GetPrimaryDistributionPoint().Id);
 
                 //Added for OSX NBI suppport
                 AppendString("image_direction=push");

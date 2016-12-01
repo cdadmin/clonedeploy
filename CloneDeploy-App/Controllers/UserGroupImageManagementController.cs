@@ -8,20 +8,25 @@ using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class UserGroupImageManagementController: ApiController
     {
-      
-        [UserAuth(Permission = "Administrator")]
-        public ApiBoolDTO Post(List<UserGroupImageManagementEntity> listOfImages)
-        {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.UserGroupImageManagement.AddUserGroupImageManagements(listOfImages);
+        private readonly UserGroupImageManagementServices _userGroupImageManagementServices;
 
-            return apiBoolDto;
+        public UserGroupImageManagementController()
+        {
+            _userGroupImageManagementServices = new UserGroupImageManagementServices();
+        }
+
+        [UserAuth(Permission = "Administrator")]
+        public ActionResultDTO Post(List<UserGroupImageManagementEntity> listOfImages)
+        {
+            return _userGroupImageManagementServices.AddUserGroupImageManagements(listOfImages);
         }
 
         

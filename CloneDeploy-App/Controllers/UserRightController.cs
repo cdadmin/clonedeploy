@@ -8,20 +8,25 @@ using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class UserRightController: ApiController
     {
-      
-        [UserAuth(Permission = "Administrator")]
-        public ApiBoolDTO Post(List<UserRightEntity> listOfRights)
-        {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.UserRight.AddUserRights(listOfRights);
+        private readonly UserRightServices _userRightServices;
 
-            return apiBoolDto;
+        public UserRightController()
+        {
+            _userRightServices = new UserRightServices();
+        }
+
+        [UserAuth(Permission = "Administrator")]
+        public ActionResultDTO Post(List<UserRightEntity> listOfRights)
+        {
+            return _userRightServices.AddUserRights(listOfRights);
         }
 
         

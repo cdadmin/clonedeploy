@@ -9,6 +9,8 @@ using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
@@ -16,20 +18,18 @@ namespace CloneDeploy_App.Controllers
     public class GroupBootMenuController : ApiController
     {
 
-      
+        private readonly GroupBootMenuServices _groupBootMenuServices;
 
+        public GroupBootMenuController()
+        {
+            _groupBootMenuServices = new GroupBootMenuServices();
+            
+        }
 
         [GroupAuth(Permission = "GroupUpdate")]
-        public ActionResultEntity Post(GroupBootMenuEntity groupBootMenu)
+        public ActionResultDTO Post(GroupBootMenuEntity groupBootMenu)
         {
-            var actionResult = new ActionResultEntity();
-            actionResult.Success = BLL.GroupBootMenu.UpdateGroupBootMenu(groupBootMenu);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            return _groupBootMenuServices.UpdateGroupBootMenu(groupBootMenu);
         }
 
        

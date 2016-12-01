@@ -8,15 +8,24 @@ using System.Threading;
 using System.Web;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
+using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.ImageSchemaBE;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class ImageController: ApiController
     {
+        private readonly ImageServices _imageServices;
+
+        public ImageController()
+        {
+            _imageServices = new ImageServices();
+        }
+
         [ImageAuth(Permission = "ImageSearch")]
         public IEnumerable<ImageEntity> Get(string searchstring = "")
         {
@@ -24,112 +33,95 @@ namespace CloneDeploy_App.Controllers
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                              .Select(c => c.Value).SingleOrDefault();
             return string.IsNullOrEmpty(searchstring)
-                ? BLL.Image.SearchImagesForUser(Convert.ToInt32(userId))
-                : BLL.Image.SearchImagesForUser(Convert.ToInt32(userId),searchstring);
+                ? _imageServices.SearchImagesForUser(Convert.ToInt32(userId))
+                : _imageServices.SearchImagesForUser(Convert.ToInt32(userId),searchstring);
         }
 
         [ImageAuth(Permission = "ImageSearch")]
         public IEnumerable<ImageEntity> Search(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
-                ? BLL.Image.SearchImages()
-                : BLL.Image.SearchImages(searchstring);
+                ? _imageServices.SearchImages()
+                : _imageServices.SearchImages(searchstring);
         }
 
         [ImageAuth(Permission = "ImageSearch")]
-        public ApiDTO GetCount()
+        public ApiStringResponseDTO GetCount()
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                              .Select(c => c.Value).SingleOrDefault();
-            var ApiDTO = new ApiDTO();
-            ApiDTO.Value = BLL.Image.ImageCountUser(Convert.ToInt32(userId));
-            return ApiDTO;
+
+            return new ApiStringResponseDTO() {Value = _imageServices.ImageCountUser(Convert.ToInt32(userId))};
+
         }
 
         [ImageAuth(Permission = "ImageRead")]
-        public IHttpActionResult Get(int id)
+        public ImageEntity Get(int id)
         {
-            var result = BLL.Image.GetImage(id);
-            if (result == null)
-                return NotFound();
-            else
-                return Ok(result);
+            var result = _imageServices.GetImage(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [ImageAuth]
-        public IHttpActionResult SendImageApprovedMail(int id)
+        public ApiBoolResponseDTO SendImageApprovedMail(int id)
         {
-            BLL.Image.SendImageApprovedEmail(id);
-            return Ok();
+            _imageServices.SendImageApprovedEmail(id);
+            return new ApiBoolResponseDTO(){Value = true};
         }
 
         [ImageAuth(Permission = "ImageCreate")]
-        public ActionResultEntity Post(ImageEntity image)
+        public ActionResultDTO Post(ImageEntity image)
         {
-            var actionResult = BLL.Image.AddImage(image);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _imageServices.AddImage(image);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [GlobalAuth(Permission = "GlobalUpdate")]
-        public ActionResultEntity Put(int id, ImageEntity image, string originalName)
+        public ActionResultDTO Put(int id, ImageEntity image, string originalName)
         {
             image.Id = id;
-            var actionResult = BLL.Image.UpdateImage(image,originalName);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _imageServices.UpdateImage(image,originalName);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [ImageAuth(Permission = "ImageDelete")]
-        public ActionResultEntity Delete(int id)
+        public ActionResultDTO Delete(int id)
         {
-            var actionResult = BLL.Image.DeleteImage(id);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _imageServices.DeleteImage(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [ImageProfileAuth(Permission = "ImageProfileSearch")]
         public IEnumerable<ImageProfileEntity> GetImageProfiles(int imageId)
         {
-            return BLL.ImageProfile.SearchProfiles(imageId);
-
+            return _imageServices.SearchProfiles(imageId);
         }
 
         [HttpPost]
         [ImageProfileAuth(Permission = "ImageProfileCreate")]
         public ImageProfileEntity SeedDefaultProfile(int id)
         {
-            return BLL.ImageProfile.SeedDefaultImageProfile(id);
+            return _imageServices.SeedDefaultImageProfile(id);
         }
 
         [ImageAuth(Permission = "ImageRead")]
         public IEnumerable<ImageFileInfo> GetPartitionFileInfo(int id, string selectedHd, string selectedPartition)
         {
 
-            return BLL.ImageSchema.GetPartitionImageFileInfoForGridView(id, selectedHd, selectedPartition);
+            return ImageSchemaFEServices.GetPartitionImageFileInfoForGridView(id, selectedHd, selectedPartition);
 
         }
 
         [ImageAuth(Permission = "ImageRead")]
-        public ApiDTO GetImageSizeOnServer(string imageName, string hdNumber)
+        public ApiStringResponseDTO GetImageSizeOnServer(string imageName, string hdNumber)
         {
-            var apiDto = new ApiDTO();
-            apiDto.Value = BLL.ImageSchema.ImageSizeOnServerForGridView(imageName, hdNumber);
-            return apiDto;
 
+            return new ApiStringResponseDTO() {Value = _imageServices.ImageSizeOnServerForGridView(imageName, hdNumber)};
         }
     }
 }

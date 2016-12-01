@@ -176,7 +176,6 @@
     <Compile Include="Controllers\FileSystemController.cs" />
     <Compile Include="Controllers\GroupController.cs" />
     <Compile Include="Controllers\MunkiManifestTemplateController.cs" />
-    <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

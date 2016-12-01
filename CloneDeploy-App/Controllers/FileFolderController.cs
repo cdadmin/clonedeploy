@@ -9,74 +9,68 @@ using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class FileFolderController: ApiController
     {
+        private readonly FileFolderServices _fileFolderServices;
+
+        public FileFolderController()
+        {
+            _fileFolderServices = new FileFolderServices();
+        }
+
         [GlobalAuth(Permission = "GlobalRead")]
         public IEnumerable<FileFolderEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
-                ? BLL.FileFolder.SearchFileFolders()
-                : BLL.FileFolder.SearchFileFolders(searchstring);
+                ? _fileFolderServices.SearchFileFolders()
+                : _fileFolderServices.SearchFileFolders(searchstring);
 
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public ApiDTO GetCount()
+        public ApiStringResponseDTO GetCount()
         {
-            var ApiDTO = new ApiDTO();
-            ApiDTO.Value = BLL.FileFolder.TotalCount();
-            return ApiDTO;
+
+            return new ApiStringResponseDTO() {Value = _fileFolderServices.TotalCount()};
+
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public IHttpActionResult Get(int id)
+        public FileFolderEntity Get(int id)
         {
-            var result = BLL.FileFolder.GetFileFolder(id);
-            if (result == null)
-                return NotFound();
-            else
-                return Ok(result);
+            var result = _fileFolderServices.GetFileFolder(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [GlobalAuth(Permission = "GlobalCreate")]
-        public ActionResultEntity Post(FileFolderEntity fileFolder)
+        public ActionResultDTO Post(FileFolderEntity fileFolder)
         {
-            var actionResult = BLL.FileFolder.AddFileFolder(fileFolder);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _fileFolderServices.AddFileFolder(fileFolder);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [GlobalAuth(Permission = "GlobalUpdate")]
-        public ActionResultEntity Put(int id, FileFolderEntity fileFolder)
+        public ActionResultDTO Put(int id, FileFolderEntity fileFolder)
         {
             fileFolder.Id = id;
-            var actionResult = BLL.FileFolder.UpdateFileFolder(fileFolder);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _fileFolderServices.UpdateFileFolder(fileFolder);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [GlobalAuth(Permission = "GlobalDelete")]
-        public ActionResultEntity Delete(int id)
+        public ActionResultDTO Delete(int id)
         {
-            var actionResult = BLL.FileFolder.DeleteFileFolder(id);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _fileFolderServices.DeleteFileFolder(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
     }
 }

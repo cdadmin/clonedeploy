@@ -24,25 +24,25 @@ namespace CloneDeploy_App.BLL.Workflows
         public MunkiUpdateConfirm GetUpdateStats(int templateId)
         {
             var includedTemplates = new List<MunkiManifestTemplateEntity>();
-            var groups = BLL.GroupMunki.GetGroupsForManifestTemplate(templateId);
+            var groups = GroupMunkiServices.GetGroupsForManifestTemplate(templateId);
             //get list of all templates that are used in these groups
 
             int totalComputerCount = 0;
             foreach (var munkiGroup in groups)
             {
-                totalComputerCount += Convert.ToInt32(BLL.GroupMembership.GetGroupMemberCount(munkiGroup.GroupId));
-                foreach (var template in BLL.GroupMunki.Get(munkiGroup.GroupId))
+                totalComputerCount += Convert.ToInt32(GroupMembershipServices.GetGroupMemberCount(munkiGroup.GroupId));
+                foreach (var template in GroupMunkiServices.Get(munkiGroup.GroupId))
                 {
-                    includedTemplates.Add(BLL.MunkiManifestTemplate.GetManifest(template.MunkiTemplateId));
+                    includedTemplates.Add(MunkiManifestTemplateServices.GetManifest(template.MunkiTemplateId));
                 }
             }
 
-            var computers = BLL.ComputerMunki.GetComputersForManifestTemplate(templateId);
+            var computers = ComputerMunkiServices.GetComputersForManifestTemplate(templateId);
             foreach (var computer in computers)
             {
-                foreach (var template in BLL.ComputerMunki.Get(computer.ComputerId))
+                foreach (var template in ComputerMunkiServices.Get(computer.ComputerId))
                 {
-                    includedTemplates.Add(BLL.MunkiManifestTemplate.GetManifest(template.MunkiTemplateId));
+                    includedTemplates.Add(MunkiManifestTemplateServices.GetManifest(template.MunkiTemplateId));
                 }
             }
             totalComputerCount += computers.Count;
@@ -62,13 +62,13 @@ namespace CloneDeploy_App.BLL.Workflows
             var errorCount = 0;
             string basePath = Settings.MunkiBasePath + Path.DirectorySeparatorChar + "manifests" + Path.DirectorySeparatorChar;
 
-            var groups = BLL.GroupMunki.GetGroupsForManifestTemplate(templateId);
+            var groups = GroupMunkiServices.GetGroupsForManifestTemplate(templateId);
             if (Settings.MunkiPathType == "Local")
             {
                 foreach (var munkiGroup in groups)
                 {
                     var effectiveManifest = new BLL.Workflows.EffectiveMunkiTemplate().Group(munkiGroup.GroupId);
-                    var computersInGroup = BLL.Group.GetGroupMembers(munkiGroup.GroupId);
+                    var computersInGroup = GroupServices.GetGroupMembers(munkiGroup.GroupId);
                     foreach (var computer in computersInGroup)
                     {
                         if (!WritePath(basePath + computer.Name, Encoding.UTF8.GetString(effectiveManifest.ToArray())))
@@ -87,7 +87,7 @@ namespace CloneDeploy_App.BLL.Workflows
                         foreach (var munkiGroup in groups)
                         {
                             var effectiveManifest = new BLL.Workflows.EffectiveMunkiTemplate().Group(munkiGroup.GroupId);
-                            var computersInGroup = BLL.Group.GetGroupMembers(munkiGroup.GroupId);
+                            var computersInGroup = GroupServices.GetGroupMembers(munkiGroup.GroupId);
                             foreach (var computer in computersInGroup)
                             {
                                 if (!WritePath(basePath + computer.Name, Encoding.UTF8.GetString(effectiveManifest.ToArray())))
@@ -100,13 +100,13 @@ namespace CloneDeploy_App.BLL.Workflows
                         Logger.Log("Failed to connect to " + Settings.MunkiBasePath + "\r\nLastError = " + unc.LastError);
                         foreach (var munkiGroup in groups)
                         {
-                            var computersInGroup = BLL.Group.GetGroupMembers(munkiGroup.GroupId);
+                            var computersInGroup = GroupServices.GetGroupMembers(munkiGroup.GroupId);
                             errorCount += computersInGroup.Count();
                         }
                     }
                 }
             }
-            var computers = BLL.ComputerMunki.GetComputersForManifestTemplate(templateId);
+            var computers = ComputerMunkiServices.GetComputersForManifestTemplate(templateId);
             if (Settings.MunkiPathType == "Local")
             {
                 foreach (var munkiComputer in computers)
@@ -155,24 +155,24 @@ namespace CloneDeploy_App.BLL.Workflows
             var includedTemplates = new List<MunkiManifestTemplateEntity>();
             foreach (var munkiGroup in groups)
             {
-                foreach (var template in BLL.GroupMunki.Get(munkiGroup.GroupId))
+                foreach (var template in GroupMunkiServices.Get(munkiGroup.GroupId))
                 {
-                    includedTemplates.Add(BLL.MunkiManifestTemplate.GetManifest(template.MunkiTemplateId));
+                    includedTemplates.Add(MunkiManifestTemplateServices.GetManifest(template.MunkiTemplateId));
                 }
             }
 
             foreach (var computer in computers)
             {
-                foreach (var template in BLL.ComputerMunki.Get(computer.ComputerId))
+                foreach (var template in ComputerMunkiServices.Get(computer.ComputerId))
                 {
-                    includedTemplates.Add(BLL.MunkiManifestTemplate.GetManifest(template.MunkiTemplateId));
+                    includedTemplates.Add(MunkiManifestTemplateServices.GetManifest(template.MunkiTemplateId));
                 }
             }
 
             foreach (var template in includedTemplates)
             {
                 template.ChangesApplied = 1;
-                BLL.MunkiManifestTemplate.UpdateManifest(template);
+                MunkiManifestTemplateServices.UpdateManifest(template);
             }
 
             return 0;
@@ -182,7 +182,7 @@ namespace CloneDeploy_App.BLL.Workflows
         {
             _templateIds = new List<int>();
 
-            var groupTemplates = BLL.GroupMunki.Get(groupId);
+            var groupTemplates = GroupMunkiServices.Get(groupId);
             foreach (var template in groupTemplates)
             {
                 _templateIds.Add(template.MunkiTemplateId);
@@ -195,15 +195,15 @@ namespace CloneDeploy_App.BLL.Workflows
         {
             _templateIds = new List<int>();
 
-            var computerTemplates = BLL.ComputerMunki.Get(computerId);
+            var computerTemplates = ComputerMunkiServices.Get(computerId);
             foreach (var template in computerTemplates)
             {
                 _templateIds.Add(template.MunkiTemplateId);
             }
-            var memberships = BLL.GroupMembership.GetAllComputerMemberships(computerId);
+            var memberships = GroupMembershipServices.GetAllComputerMemberships(computerId);
             foreach (var membership in memberships)
             {
-                var groupTemplates = BLL.GroupMunki.Get(membership.GroupId);
+                var groupTemplates = GroupMunkiServices.Get(membership.GroupId);
                 foreach (var template in groupTemplates)
                 {
                     _templateIds.Add(template.MunkiTemplateId);
@@ -259,7 +259,7 @@ namespace CloneDeploy_App.BLL.Workflows
             var catalogs = new List<MunkiManifestCatalogEntity>();
             foreach (var templateId in _templateIds)
             {
-                catalogs.AddRange(BLL.MunkiCatalog.GetAllCatalogsForMt(templateId));
+                catalogs.AddRange(MunkiCatalogServices.GetAllCatalogsForMt(templateId));
             }
 
             var orderedCatalogs = catalogs.Distinct().OrderBy(x => x.Priority).ThenBy(x => x.Name).ToList();
@@ -314,11 +314,11 @@ namespace CloneDeploy_App.BLL.Workflows
             foreach (var templateId in _templateIds)
             {
                 if(!string.IsNullOrEmpty(condition))
-                includedManifests.AddRange(BLL.MunkiIncludedManifest.GetAllIncludedManifestsForMt(templateId)
+                includedManifests.AddRange(MunkiIncludedManifestServices.GetAllIncludedManifestsForMt(templateId)
                     .Where(x => x.Condition == condition));
                 else
                 {
-                    includedManifests.AddRange(BLL.MunkiIncludedManifest.GetAllIncludedManifestsForMt(templateId)
+                    includedManifests.AddRange(MunkiIncludedManifestServices.GetAllIncludedManifestsForMt(templateId)
                    .Where(x => string.IsNullOrEmpty(x.Condition)));
                 }
 
@@ -344,11 +344,11 @@ namespace CloneDeploy_App.BLL.Workflows
             {
                 if (!string.IsNullOrEmpty(condition))
                     managedInstalls.AddRange(
-                        BLL.MunkiManagedInstall.GetAllManagedInstallsForMt(templateId)
+                        MunkiManagedInstallServices.GetAllManagedInstallsForMt(templateId)
                             .Where(x => x.Condition == condition));
                 else
                 {
-                    managedInstalls.AddRange(BLL.MunkiManagedInstall.GetAllManagedInstallsForMt(templateId)
+                    managedInstalls.AddRange(MunkiManagedInstallServices.GetAllManagedInstallsForMt(templateId)
                         .Where(x => string.IsNullOrEmpty(x.Condition)));
                 }
             }
@@ -378,11 +378,11 @@ namespace CloneDeploy_App.BLL.Workflows
             {
                 if (!string.IsNullOrEmpty(condition))
                     managedUninstalls.AddRange(
-                        BLL.MunkiManagedUninstall.GetAllManagedUnInstallsForMt(templateId)
+                        MunkiManagedUninstallServices.GetAllManagedUnInstallsForMt(templateId)
                             .Where(x => x.Condition == condition));
                 else
                 {
-                    managedUninstalls.AddRange(BLL.MunkiManagedUninstall.GetAllManagedUnInstallsForMt(templateId)
+                    managedUninstalls.AddRange(MunkiManagedUninstallServices.GetAllManagedUnInstallsForMt(templateId)
                         .Where(x => string.IsNullOrEmpty(x.Condition)));
                 }
             }
@@ -412,11 +412,11 @@ namespace CloneDeploy_App.BLL.Workflows
             {
                 if (!string.IsNullOrEmpty(condition))
                     managedUpdates.AddRange(
-                        BLL.MunkiManagedUpdate.GetAllManagedUpdatesForMt(templateId)
+                        MunkiManagedUpdateServices.GetAllManagedUpdatesForMt(templateId)
                             .Where(x => x.Condition == condition));
                 else
                 {
-                    managedUpdates.AddRange(BLL.MunkiManagedUpdate.GetAllManagedUpdatesForMt(templateId)
+                    managedUpdates.AddRange(MunkiManagedUpdateServices.GetAllManagedUpdatesForMt(templateId)
                         .Where(x => string.IsNullOrEmpty(x.Condition)));
                 }
             }
@@ -441,11 +441,11 @@ namespace CloneDeploy_App.BLL.Workflows
             {
                 if (!string.IsNullOrEmpty(condition))
                     optionalInstalls.AddRange(
-                        BLL.MunkiOptionalInstall.GetAllOptionalInstallsForMt(templateId)
+                        MunkiOptionalInstallServices.GetAllOptionalInstallsForMt(templateId)
                             .Where(x => x.Condition == condition));
                 else
                 {
-                    optionalInstalls.AddRange(BLL.MunkiOptionalInstall.GetAllOptionalInstallsForMt(templateId)
+                    optionalInstalls.AddRange(MunkiOptionalInstallServices.GetAllOptionalInstallsForMt(templateId)
                         .Where(x => string.IsNullOrEmpty(x.Condition)));
                 }
             }
@@ -476,31 +476,31 @@ namespace CloneDeploy_App.BLL.Workflows
             {
 
                 allConditions.AddRange(
-                    BLL.MunkiManagedInstall.GetAllManagedInstallsForMt(templateId)
+                    MunkiManagedInstallServices.GetAllManagedInstallsForMt(templateId)
                         .Where(x => !string.IsNullOrEmpty(x.Condition))
                         .Select(x => x.Condition)
                         .ToList());
 
                 allConditions.AddRange(
-                    BLL.MunkiManagedUninstall.GetAllManagedUnInstallsForMt(templateId)
+                    MunkiManagedUninstallServices.GetAllManagedUnInstallsForMt(templateId)
                         .Where(x => !string.IsNullOrEmpty(x.Condition))
                         .Select(x => x.Condition)
                         .ToList());
 
                 allConditions.AddRange(
-                    BLL.MunkiOptionalInstall.GetAllOptionalInstallsForMt(templateId)
+                    MunkiOptionalInstallServices.GetAllOptionalInstallsForMt(templateId)
                         .Where(x => !string.IsNullOrEmpty(x.Condition))
                         .Select(x => x.Condition)
                         .ToList());
 
                 allConditions.AddRange(
-                    BLL.MunkiManagedUpdate.GetAllManagedUpdatesForMt(templateId)
+                    MunkiManagedUpdateServices.GetAllManagedUpdatesForMt(templateId)
                         .Where(x => !string.IsNullOrEmpty(x.Condition))
                         .Select(x => x.Condition)
                         .ToList());
 
                 allConditions.AddRange(
-                    BLL.MunkiIncludedManifest.GetAllIncludedManifestsForMt(templateId)
+                    MunkiIncludedManifestServices.GetAllIncludedManifestsForMt(templateId)
                         .Where(x => !string.IsNullOrEmpty(x.Condition))
                         .Select(x => x.Condition)
                         .ToList());

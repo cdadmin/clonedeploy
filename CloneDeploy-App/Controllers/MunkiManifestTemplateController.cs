@@ -9,160 +9,278 @@ using System.Web;
 using System.Web.Http;
 using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
+using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class MunkiManifestTemplateController: ApiController
     {
+         private readonly MunkiManifestTemplateServices _munkiManifestTemplateServices;
+
+        public MunkiManifestTemplateController()
+        {
+            _munkiManifestTemplateServices = new MunkiManifestTemplateServices();
+        }
+
         [GlobalAuth(Permission = "GlobalRead")]
         public IEnumerable<MunkiManifestTemplateEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
-                ? BLL.MunkiManifestTemplate.SearchManifests()
-                : BLL.MunkiManifestTemplate.SearchManifests(searchstring);
+                ? _munkiManifestTemplateServices.SearchManifests()
+                : _munkiManifestTemplateServices.SearchManifests(searchstring);
 
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public ApiDTO GetCount()
+        public ApiStringResponseDTO GetCount()
         {
-            var ApiDTO = new ApiDTO();
-            ApiDTO.Value = BLL.MunkiManifestTemplate.TotalCount();
-            return ApiDTO;
+            return new ApiStringResponseDTO() {Value = _munkiManifestTemplateServices.TotalCount()};
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public IHttpActionResult Get(int id)
+        public MunkiManifestTemplateEntity Get(int id)
         {
-            var manifest = BLL.MunkiManifestTemplate.GetManifest(id);
-            if (manifest == null)
-                return NotFound();
-            else
-                return Ok(manifest);
+            var result = _munkiManifestTemplateServices.GetManifest(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [GlobalAuth(Permission = "GlobalCreate")]
-        public ActionResultEntity Post(MunkiManifestTemplateEntity manifest)
+        public ActionResultDTO Post(MunkiManifestTemplateEntity manifest)
         {
-            var actionResult = BLL.MunkiManifestTemplate.AddManifest(manifest);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            return _munkiManifestTemplateServices.AddManifest(manifest);
         }
 
         [GlobalAuth(Permission = "GlobalUpdate")]
-        public ActionResultEntity Put(int id, MunkiManifestTemplateEntity manifest)
+        public ActionResultDTO Put(int id, MunkiManifestTemplateEntity manifest)
         {
             manifest.Id = id;
-            var actionResult = BLL.MunkiManifestTemplate.UpdateManifest(manifest);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _munkiManifestTemplateServices.UpdateManifest(manifest);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [GlobalAuth(Permission = "GlobalDelete")]
-        public ActionResultEntity Delete(int id)
+        public ActionResultDTO Delete(int id)
         {
-            var actionResult = BLL.MunkiManifestTemplate.DeleteManifest(id);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _munkiManifestTemplateServices.DeleteManifest(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
+           
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
         public IEnumerable<MunkiManifestCatalogEntity> GetManifestCatalogs(int id)
         {
-            return BLL.MunkiCatalog.GetAllCatalogsForMt(id);
+            return _munkiManifestTemplateServices.GetAllCatalogsForMt(id);
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public ApiDTO GetCatalogCount(int id)
+        public ApiStringResponseDTO GetCatalogCount(int id)
         {
-            var ApiDTO = new ApiDTO();
-            ApiDTO.Value = BLL.MunkiCatalog.TotalCount(id);
-            return ApiDTO;
+            return new ApiStringResponseDTO() {Value = _munkiManifestTemplateServices.GetCatalogTotalCount(id)};
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
         public IEnumerable<MunkiManifestIncludedManifestEntity> GetManifestIncludedManifests(int id)
         {
-            return BLL.MunkiIncludedManifest.GetAllIncludedManifestsForMt(id);
+            return _munkiManifestTemplateServices.GetAllIncludedManifestsForMt(id);
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public ApiDTO GetIncludedManifestCount(int id)
+        public ApiStringResponseDTO GetIncludedManifestCount(int id)
         {
-            var ApiDTO = new ApiDTO();
-            ApiDTO.Value = BLL.MunkiIncludedManifest.TotalCount(id);
-            return ApiDTO;
+            return new ApiStringResponseDTO() {Value = _munkiManifestTemplateServices.GetIncludedManifestTotalCount(id)};
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
         public IEnumerable<MunkiManifestManagedInstallEntity> GetManifestManagedInstalls(int id)
         {
-            return BLL.MunkiManagedInstall.GetAllManagedInstallsForMt(id);
+             return _munkiManifestTemplateServices.GetAllManagedInstallsForMt(id);
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public ApiDTO GetManagedInstallCount(int id)
+        public ApiStringResponseDTO GetManagedInstallCount(int id)
         {
-            var ApiDTO = new ApiDTO();
-            ApiDTO.Value = BLL.MunkiManagedInstall.TotalCount(id);
-            return ApiDTO;
+
+            return new ApiStringResponseDTO() {Value = _munkiManifestTemplateServices.GetManagedInstallTotalCount(id)};
+
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
         public IEnumerable<MunkiManifestManagedUnInstallEntity> GetManifestManagedUninstalls(int id)
         {
-            return BLL.MunkiManagedUninstall.GetAllManagedUnInstallsForMt(id);
+            return _munkiManifestTemplateServices.GetAllManagedUnInstallsForMt(id);
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public ApiDTO GetManagedUninstallCount(int id)
+        public ApiStringResponseDTO GetManagedUninstallCount(int id)
         {
-            var ApiDTO = new ApiDTO();
-            ApiDTO.Value = BLL.MunkiManagedUninstall.TotalCount(id);
-            return ApiDTO;
+
+            return new ApiStringResponseDTO() {Value = _munkiManifestTemplateServices.GetManagedUninstallTotalCount(id)};
+
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
         public IEnumerable<MunkiManifestManagedUpdateEntity> GetManifestManagedUpdates(int id)
         {
-            return BLL.MunkiManagedUpdate.GetAllManagedUpdatesForMt(id);
+            return _munkiManifestTemplateServices.GetAllManagedUpdatesForMt(id);
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public ApiDTO GetManagedUpdateCount(int id)
+        public ApiStringResponseDTO GetManagedUpdateCount(int id)
         {
-            var ApiDTO = new ApiDTO();
-            ApiDTO.Value = BLL.MunkiManagedUpdate.TotalCount(id);
-            return ApiDTO;
+            return new ApiStringResponseDTO() {Value = _munkiManifestTemplateServices.GetManagedUpdateTotalCount(id)};
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
         public IEnumerable<MunkiManifestOptionInstallEntity> GetManifestOptionalInstalls(int id)
         {
-            return BLL.MunkiOptionalInstall.GetAllOptionalInstallsForMt(id);
+            return _munkiManifestTemplateServices.GetAllOptionalInstallsForMt(id);
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public ApiDTO GetOptionalInstallCount(int id)
+        public ApiStringResponseDTO GetOptionalInstallCount(int id)
         {
-            var ApiDTO = new ApiDTO();
-            ApiDTO.Value = BLL.MunkiOptionalInstall.TotalCount(id);
-            return ApiDTO;
+            return new ApiStringResponseDTO() {Value = _munkiManifestTemplateServices.GetOptionalInstallTotalCount(id)};
         }
+
+        [GlobalAuth(Permission = "GlobalCreate")]
+        public ApiBoolResponseDTO AddCatalogToTemplate(MunkiManifestCatalogEntity catalog)
+        {
+            return new ApiBoolResponseDTO() {Value = _munkiManifestTemplateServices.AddCatalogToTemplate(catalog)};
+        }
+
+
+
+        [GlobalAuth(Permission = "GlobalDelete")]
+        public ApiBoolResponseDTO DeleteCatalogsFromTemplate(int id)
+        {
+
+            return new ApiBoolResponseDTO() {Value = _munkiManifestTemplateServices.DeleteCatalogFromTemplate(id)};
+
+        }
+
+        [GlobalAuth(Permission = "GlobalCreate")]
+        public ApiBoolResponseDTO AddManifestToTemplate(MunkiManifestIncludedManifestEntity manifest)
+            {
+
+                return new ApiBoolResponseDTO()
+                {
+                    Value = _munkiManifestTemplateServices.AddIncludedManifestToTemplate(manifest)
+                };
+
+            }
+
+
+
+        [GlobalAuth(Permission = "GlobalDelete")]
+        public ApiBoolResponseDTO DeleteManifestsFromTemplate(int id)
+        {
+
+            return new ApiBoolResponseDTO()
+            {
+                Value = _munkiManifestTemplateServices.DeleteIncludedManifestFromTemplate(id)
+            };
+
+        }
+
+        [GlobalAuth(Permission = "GlobalCreate")]
+        public ApiBoolResponseDTO AddManagedInstallToTemplate(MunkiManifestManagedInstallEntity managedInstall)
+        {
+
+            return new ApiBoolResponseDTO()
+            {
+                Value = _munkiManifestTemplateServices.AddManagedInstallToTemplate(managedInstall)
+            };
+
+        }
+
+
+
+        [GlobalAuth(Permission = "GlobalDelete")]
+        public ApiBoolResponseDTO DeleteManagedInstallsFromTemplate(int id)
+        {
+
+            return new ApiBoolResponseDTO()
+            {
+                Value = _munkiManifestTemplateServices.DeleteManagedInstallFromTemplate(id)
+            };
+
+        }
+
+        [GlobalAuth(Permission = "GlobalCreate")]
+        public ApiBoolResponseDTO AddManagedUninstallsToTemplate(MunkiManifestManagedUnInstallEntity managedUninstall)
+        {
+
+            return new ApiBoolResponseDTO()
+            {
+                Value = _munkiManifestTemplateServices.AddManagedUnInstallToTemplate(managedUninstall)
+            };
+
+        }
+
+
+
+        [GlobalAuth(Permission = "GlobalDelete")]
+        public ApiBoolResponseDTO DeleteManageUninstallsFromTemplate(int id)
+        {
+
+            return new ApiBoolResponseDTO()
+            {
+                Value = _munkiManifestTemplateServices.DeleteManagedUnInstallFromTemplate(id)
+            };
+
+        }
+
+        [GlobalAuth(Permission = "GlobalCreate")]
+        public ApiBoolResponseDTO AddManagedUpdateToTemplate(MunkiManifestManagedUpdateEntity managedUpdate)
+        {
+
+            return new ApiBoolResponseDTO()
+            {
+                Value = _munkiManifestTemplateServices.AddManagedUpdateToTemplate(managedUpdate)
+            };
+
+        }
+
+
+
+        [GlobalAuth(Permission = "GlobalDelete")]
+        public ApiBoolResponseDTO RemoveManagedUpdatesFromTemplate(int id)
+        {
+
+            return new ApiBoolResponseDTO() {Value = _munkiManifestTemplateServices.DeleteManagedUpdateFromTemplate(id)};
+
+        }
+
+        [GlobalAuth(Permission = "GlobalCreate")]
+        public ApiBoolResponseDTO AddOptionalInstallToTemplate(MunkiManifestOptionInstallEntity optionalInstall)
+        {
+
+            return new ApiBoolResponseDTO()
+            {
+                Value = _munkiManifestTemplateServices.AddOptionalInstallToTemplate(optionalInstall)
+            };
+
+
+        }
+
+
+
+        [GlobalAuth(Permission = "GlobalDelete")]
+        public ApiBoolResponseDTO DeleteOptonalInstallsFromTemplate(int id)
+            {
+
+                return new ApiBoolResponseDTO()
+                {
+                    Value = _munkiManifestTemplateServices.DeleteOptionalInstallFromTemplate(id)
+                };
+
+            }
     }
 }

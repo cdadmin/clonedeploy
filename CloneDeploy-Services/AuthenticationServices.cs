@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using CloneDeploy_App.Helpers;
 using CloneDeploy_Entities;
+using CloneDeploy_Services;
 using Newtonsoft.Json;
 
 namespace CloneDeploy_App.BLL
@@ -24,7 +25,7 @@ namespace CloneDeploy_App.BLL
             }
             else
             {
-                var cloneDeployUser = BLL.User.GetUser(username);
+                var cloneDeployUser = UserServices.GetUser(username);
                 result.Add("valid", "true");
                 result.Add("user_id", cloneDeployUser.Id.ToString());
                 result.Add("user_token", cloneDeployUser.Token);
@@ -70,13 +71,13 @@ namespace CloneDeploy_App.BLL
             };
 
             //Check if user exists in Clone Deploy
-            var user = BLL.User.GetUser(userName);
+            var user = UserServices.GetUser(userName);
             if (user == null)
             {
                 //Check For a first time LDAP User Group Login
                 if (Settings.LdapEnabled == "1")
                 {
-                    foreach (var ldapGroup in BLL.UserGroup.GetLdapGroups())
+                    foreach (var ldapGroup in UserGroupServices.GetLdapGroups())
                     {
                         if (new BLL.Ldap().Authenticate(userName, password, ldapGroup.GroupLdapName))
                         {
@@ -91,11 +92,11 @@ namespace CloneDeploy_App.BLL
                             };
                             //Create a local random db pass, should never actually be possible to use.
                             cdUser.Password = Helpers.Utility.CreatePasswordHash(new System.Guid().ToString(), cdUser.Salt);
-                            if (BLL.User.AddUser(cdUser).Success)
+                            if (UserServices.AddUser(cdUser).Success)
                             {
                                 //add user to group
-                                var newUser = BLL.User.GetUser(userName);
-                                BLL.UserGroup.AddNewGroupMember(ldapGroup,newUser);
+                                var newUser = UserServices.GetUser(userName);
+                                UserGroupServices.AddNewGroupMember(ldapGroup,newUser);
                             }
                             validationResult.Message = "Success";
                             validationResult.Success = true;
@@ -106,9 +107,9 @@ namespace CloneDeploy_App.BLL
                 return validationResult;
             }
 
-            if (BLL.UserLockout.AccountIsLocked(user.Id))
+            if (BLL.UserLockoutServices.AccountIsLocked(user.Id))
             {
-                BLL.UserLockout.ProcessBadLogin(user.Id);
+                BLL.UserLockoutServices.ProcessBadLogin(user.Id);
                 validationResult.Message = "Account Is Locked";
                 return validationResult;
             }
@@ -120,7 +121,7 @@ namespace CloneDeploy_App.BLL
                 if (user.UserGroupId != -1)
                 {
                     //user is part of a group, is the group an ldap group?
-                    var userGroup = BLL.UserGroup.GetUserGroup(user.UserGroupId);
+                    var userGroup = UserGroupServices.GetUserGroup(user.UserGroupId);
                     if (userGroup != null)
                     {
                         if (userGroup.IsLdapGroup == 1)
@@ -140,7 +141,7 @@ namespace CloneDeploy_App.BLL
                                 {
                                     //password was good but user is no longer in the group
                                     //delete the user
-                                    BLL.User.DeleteUser(user.Id);
+                                    UserServices.DeleteUser(user.Id);
                                 }
                             }
                         }
@@ -179,13 +180,13 @@ namespace CloneDeploy_App.BLL
            
             if (validationResult.Success)
             {
-                BLL.UserLockout.DeleteUserLockouts(user.Id);
+                BLL.UserLockoutServices.DeleteUserLockouts(user.Id);
                 validationResult.Message = "Success";
                 return validationResult;
             }
             else
             {
-                BLL.UserLockout.ProcessBadLogin(user.Id);
+                BLL.UserLockoutServices.ProcessBadLogin(user.Id);
                 return validationResult;
             }
         }

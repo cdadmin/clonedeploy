@@ -15,12 +15,15 @@ namespace CloneDeploy_App.Controllers
     {
         [HttpGet]
         [ComputerAuth(Permission = "ComputerSearch")]
-        public ApiBoolDTO BootSdiExists()
+        public ApiBoolResponseDTO BootSdiExists()
         {
-            var result = new ApiBoolDTO();
-            result.Value = new Helpers.FileOps().FileExists(Settings.TftpPath + Path.DirectorySeparatorChar + "boot" +
-                                                          Path.DirectorySeparatorChar + "boot.sdi");
-            return result;
+
+            return new ApiBoolResponseDTO
+            {
+                Value = new Helpers.FileOps().FileExists(Settings.TftpPath + Path.DirectorySeparatorChar + "boot" +
+                                                         Path.DirectorySeparatorChar + "boot.sdi")
+            };
+            
         }
     }
 }

@@ -40,9 +40,9 @@
   <ItemGroup>
     <Compile Include="ActiveImagingTask.cs" />
     <Compile Include="ActiveMulticastSession.cs" />
+    <Compile Include="DTOs\ApiIntResponseDTO.cs" />
     <Compile Include="DTOs\ValidationResultDTO.cs" />
     <Compile Include="DTOs\ApiBoolDTO.cs" />
-    <Compile Include="DTOs\ApiDTO.cs" />
     <Compile Include="Application.cs" />
     <Compile Include="BootEntry.cs" />
     <Compile Include="BootTemplate.cs" />
@@ -157,9 +157,6 @@
     <Compile Include="UserImageManagement.cs" />
     <Compile Include="UserLockout.cs" />
     <Compile Include="UserRight.cs" />
-    <Compile Include="ValidationResult.cs">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

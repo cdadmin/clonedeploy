@@ -20,7 +20,7 @@ namespace CloneDeploy_App.BLL
             if (token == Settings.UniversalToken && !string.IsNullOrEmpty(Settings.UniversalToken))
                 return true;
             
-            var user = BLL.User.GetUserByToken(token);
+            var user = UserServices.GetUserByToken(token);
             if (user != null)
                 return true;
 
@@ -109,7 +109,7 @@ namespace CloneDeploy_App.BLL
             }
             else if (task == "ond" && Settings.OnDemandRequiresLogin == "Yes")
             {
-                var user = BLL.User.GetUserByToken(token);
+                var user = UserServices.GetUserByToken(token);
                 if (user != null)
                 {
                     if (new BLL.AuthorizationServices(user.Id, Authorizations.AllowOnd).IsAuthorized())
@@ -123,7 +123,7 @@ namespace CloneDeploy_App.BLL
             }
             else if (task == "debug" && Settings.DebugRequiresLogin == "Yes")
             {
-                var user = BLL.User.GetUserByToken(token);
+                var user = UserServices.GetUserByToken(token);
                 if (user != null)
                 {
                     if (new BLL.AuthorizationServices(user.Id, Authorizations.AllowDebug).IsAuthorized())
@@ -137,7 +137,7 @@ namespace CloneDeploy_App.BLL
             }
             else if (task == "clobber" && Settings.ClobberRequiresLogin == "Yes")
             {
-                var user = BLL.User.GetUserByToken(token);
+                var user = UserServices.GetUserByToken(token);
                 if (user != null)
                 {
                     if (new BLL.AuthorizationServices(user.Id, Authorizations.ImageDeployTask).IsAuthorized())
@@ -173,7 +173,7 @@ namespace CloneDeploy_App.BLL
             {
                 checkIn.Result = "true";
                 checkIn.TaskArguments = computerTask.Arguments;
-                var image = BLL.Image.GetImage(computer.ImageId);
+                var image = ImageServices.GetImage(computer.ImageId);
                 if (image != null)
                 {
                     if (image.Environment == "")
@@ -196,7 +196,7 @@ namespace CloneDeploy_App.BLL
 
         public string GetMunkiBasicAuth(int profileId)
         {
-            var imageProfile = BLL.ImageProfile.ReadProfile(profileId);
+            var imageProfile = ImageProfileServices.ReadProfile(profileId);
             var authString = imageProfile.MunkiAuthUsername + ":" + imageProfile.MunkiAuthPassword;
             return Helpers.Utility.Encode(authString);
         }
@@ -204,7 +204,7 @@ namespace CloneDeploy_App.BLL
         public string DistributionPoint(int dpId, string task)
         {
             var smb = new SMB();
-            var dp = BLL.DistributionPoint.GetDistributionPoint(dpId);
+            var dp = DistributionPointServices.GetDistributionPoint(dpId);
             smb.SharePath = "//" + ParameterReplace.Between(dp.Server) + "/" + dp.ShareName;
             smb.Domain = dp.Domain;
             if (task == "pull")
@@ -232,11 +232,11 @@ namespace CloneDeploy_App.BLL
 
         public void DeleteImage(int profileId)
         {
-            var profile = BLL.ImageProfile.ReadProfile(profileId);
+            var profile = ImageProfileServices.ReadProfile(profileId);
             if (string.IsNullOrEmpty(profile.Image.Name)) return;
             //Remove existing custom deploy schema, it may not match newly updated image
             profile.CustomSchema = string.Empty;
-            BLL.ImageProfile.UpdateProfile(profile);
+            ImageProfileServices.UpdateProfile(profile);
             try
             {
                 if (Directory.Exists(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + profile.Image.Name))
@@ -372,7 +372,7 @@ namespace CloneDeploy_App.BLL
         {
             var result = new HardDriveSchema();
             
-            var imageProfile = BLL.ImageProfile.ReadProfile(profileId);
+            var imageProfile = ImageProfileServices.ReadProfile(profileId);
             var partitionHelper = new ClientPartitionHelper(imageProfile);
             var imageSchema = partitionHelper.GetImageSchema();
 
@@ -455,7 +455,7 @@ namespace CloneDeploy_App.BLL
         {
             string result = null;
 
-            var imageProfile = BLL.ImageProfile.ReadProfile(profileId);
+            var imageProfile = ImageProfileServices.ReadProfile(profileId);
             var hdNumberToGet = Convert.ToInt32(hdToGet);
             var partitionHelper = new ClientPartitionHelper(imageProfile);
             var imageSchema = partitionHelper.GetImageSchema();
@@ -491,13 +491,13 @@ namespace CloneDeploy_App.BLL
 
         public string GetCustomScript(int scriptId)
         {
-            var script = BLL.Script.GetScript(scriptId);
+            var script = ScriptServices.GetScript(scriptId);
             return script.Contents;
         }
 
         public string GetSysprepTag(int tagId, string imageEnvironment)
         {
-            var tag = BLL.SysprepTag.GetSysprepTag(tagId);
+            var tag = SysprepTagServices.GetSysprepTag(tagId);
             tag.OpeningTag = Utility.EscapeCharacter(tag.OpeningTag, new[] {">", "<"});
             tag.ClosingTag = Utility.EscapeCharacter(tag.ClosingTag, new[] {">", "<", "/"});
             tag.Contents = Utility.EscapeCharacter(tag.Contents, new[] {">", "<", "/", "\""});
@@ -518,10 +518,10 @@ namespace CloneDeploy_App.BLL
         {
             var fileFolderSchema = new FileFolderCopySchema() {FilesAndFolders = new List<FileFolderCopy>()};
             var counter = 0;
-            foreach (var profileFileFolder in ImageProfileFileFolder.SearchImageProfileFileFolders(profileId))
+            foreach (var profileFileFolder in ImageProfileFileFolderService.SearchImageProfileFileFolders(profileId))
             {
                 counter++;
-                var fileFolder = BLL.FileFolder.GetFileFolder(profileFileFolder.FileFolderId);
+                var fileFolder = FileFolderServices.GetFileFolder(profileFileFolder.FileFolderId);
 
                 var clientFileFolder = new FileFolderCopy();
                 clientFileFolder.SourcePath = fileFolder.Path;
@@ -590,7 +590,7 @@ namespace CloneDeploy_App.BLL
 
         public string GetCustomPartitionScript(int profileId)
         {
-            return BLL.ImageProfile.ReadProfile(profileId).CustomPartitionScript;
+            return ImageProfileServices.ReadProfile(profileId).CustomPartitionScript;
         }
 
         public string GetOnDemandArguments(string mac, int objectId, string task)
@@ -599,13 +599,13 @@ namespace CloneDeploy_App.BLL
             var computer = new ComputerServices().GetComputerFromMac(mac);
             if (task == "push" || task == "pull")
             {
-                imageProfile = BLL.ImageProfile.ReadProfile(objectId);
+                imageProfile = ImageProfileServices.ReadProfile(objectId);
                 return new BLL.Workflows.CreateTaskArguments(computer, imageProfile, task).Run();
             }
             else //Multicast
             {
                 var multicast = new ActiveMulticastSessionServices().GetFromPort(objectId);
-                imageProfile = BLL.ImageProfile.ReadProfile(multicast.ImageProfileId);
+                imageProfile = ImageProfileServices.ReadProfile(multicast.ImageProfileId);
                 return new BLL.Workflows.CreateTaskArguments(computer, imageProfile, task).Run(objectId.ToString());
             }
 
@@ -614,7 +614,7 @@ namespace CloneDeploy_App.BLL
 
         public string ImageList(string environment,int userId = 0)
         {
-            var images = BLL.Image.GetOnDemandImageList(userId);
+            var images = ImageServices.GetOnDemandImageList(userId);
             if (environment == "winpe")
             {
                 images = images.Where(x => x.Environment == "winpe").ToList();
@@ -646,12 +646,12 @@ namespace CloneDeploy_App.BLL
 
         public string ImageProfileList(int imageId)
         {
-            var selectedImage = BLL.Image.GetImage(imageId);
+            var selectedImage = ImageServices.GetImage(imageId);
             if (selectedImage.Environment == "winpe")
             {
                 var imageProfileList = new WinPEProfileList { ImageProfiles = new List<WinPEProfile>() };
                 int profileCounter = 0;
-                foreach (var imageProfile in BLL.ImageProfile.SearchProfiles(Convert.ToInt32(imageId)).OrderBy(x => x.Name))
+                foreach (var imageProfile in ImageProfileServices.SearchProfiles(Convert.ToInt32(imageId)).OrderBy(x => x.Name))
                 {
                     profileCounter++;
                     var winpeProfile = new WinPEProfile();
@@ -671,7 +671,7 @@ namespace CloneDeploy_App.BLL
                 var imageProfileList = new ImageProfileList {ImageProfiles = new List<string>()};
 
                 int profileCounter = 0;
-                foreach (var imageProfile in BLL.ImageProfile.SearchProfiles(Convert.ToInt32(imageId)))
+                foreach (var imageProfile in ImageProfileServices.SearchProfiles(Convert.ToInt32(imageId)))
                 {
                     profileCounter++;
                     imageProfileList.ImageProfiles.Add(imageProfile.Id + " " + imageProfile.Name);
@@ -724,7 +724,7 @@ namespace CloneDeploy_App.BLL
                 Os = "",
                 Description = ""
             };
-            var result = BLL.Image.AddImage(image);
+            var result = ImageServices.AddImage(image);
             if (result.Success)
                 result.Message = image.Id.ToString();
 
@@ -743,7 +743,7 @@ namespace CloneDeploy_App.BLL
                 Os = "",
                 Description = ""
             };
-            var result = BLL.Image.AddImage(image);
+            var result = ImageServices.AddImage(image);
             if (result.Success)
                 result.Message = image.Id.ToString();
 
@@ -764,7 +764,7 @@ namespace CloneDeploy_App.BLL
                 Description = ""
 
             };
-            var result = BLL.Image.AddImage(image);
+            var result = ImageServices.AddImage(image);
             if (result.Success)
                 result.Message = image.Id.ToString();
 
@@ -787,7 +787,7 @@ namespace CloneDeploy_App.BLL
                 return JsonConvert.SerializeObject(bootClientReservation);
             }
 
-            var computerReservation = BLL.ComputerProxyReservation.GetComputerProxyReservation(computer.Id);
+            var computerReservation = ComputerProxyReservationServices.GetComputerProxyReservation(computer.Id);
             
 
             bootClientReservation.NextServer = Helpers.ParameterReplace.Between(computerReservation.NextServer);

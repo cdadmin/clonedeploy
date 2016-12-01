@@ -2,6 +2,7 @@
 using System.IO;
 using CloneDeploy_App.Helpers;
 using CloneDeploy_Entities;
+using CloneDeploy_Services;
 
 namespace CloneDeploy_App.BLL.Workflows
 {
@@ -69,7 +70,7 @@ namespace CloneDeploy_App.BLL.Workflows
             }
 
             if(Convert.ToBoolean(_computer.CustomBootEnabled))
-                BLL.ComputerBootMenu.CreateBootFiles(_computer);
+                ComputerBootMenuServices.CreateBootFiles(_computer);
 
         }
     }

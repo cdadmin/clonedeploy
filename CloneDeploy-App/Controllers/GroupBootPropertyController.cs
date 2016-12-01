@@ -9,24 +9,33 @@ using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 namespace CloneDeploy_App.Controllers
 {
     public class GroupPropertyController : ApiController
     {
-        [GroupAuth]
-        public IHttpActionResult Post(GroupPropertyEntity groupProperty)
+        private readonly GroupPropertyServices _groupPropertyServices;
+
+        public GroupPropertyController()
         {
-            BLL.GroupProperty.AddGroupProperty(groupProperty);
-            return Ok();
+            _groupPropertyServices = new GroupPropertyServices();
         }
 
         [GroupAuth]
-        public IHttpActionResult Put(int id,GroupPropertyEntity groupProperty)
+        public ActionResultDTO Post(GroupPropertyEntity groupProperty)
+        {
+            return _groupPropertyServices.AddGroupProperty(groupProperty);
+        }
+
+        [GroupAuth]
+        public ActionResultDTO Put(int id,GroupPropertyEntity groupProperty)
         {
             groupProperty.Id = id;
-            BLL.GroupProperty.UpdateGroupProperty(groupProperty);
-           return Ok();
+            var result = _groupPropertyServices.UpdateGroupProperty(groupProperty);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
        

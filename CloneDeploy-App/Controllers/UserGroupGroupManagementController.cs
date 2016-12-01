@@ -8,20 +8,25 @@ using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class UserGroupGroupManagementController: ApiController
     {
-      
-        [UserAuth(Permission = "Administrator")]
-        public ApiBoolDTO Post(List<UserGroupGroupManagementEntity> listOfGroups)
-        {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.UserGroupGroupManagement.AddUserGroupGroupManagements(listOfGroups);
+        private readonly UserGroupGroupManagementServices _userGroupGroupManagementServices;
 
-            return apiBoolDto;
+        public UserGroupGroupManagementController()
+        {
+            _userGroupGroupManagementServices = new UserGroupGroupManagementServices();
+        }
+
+        [UserAuth(Permission = "Administrator")]
+        public ActionResultDTO Post(List<UserGroupGroupManagementEntity> listOfGroups)
+        {
+            return _userGroupGroupManagementServices.AddUserGroupGroupManagements(listOfGroups);
         }
 
         

@@ -12,78 +12,70 @@ using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class ImageProfileController: ApiController
     {
+        private readonly ImageProfileServices _imageProfileServices;
 
-        [ImageProfileAuth(Permission = "ImageProfileSearch")]
-        public IHttpActionResult GetAll()
+        public ImageProfileController()
         {
-            var result = BLL.ImageProfile.GetAllProfiles();
-            if (result == null)
-                return NotFound();
-            else
-                return Ok(result);
+            _imageProfileServices = new ImageProfileServices();
+
         }
 
-      
+
+        [ImageProfileAuth(Permission = "ImageProfileSearch")]
+        public IEnumerable<ImageProfileEntity> GetAll()
+        {
+            return _imageProfileServices.GetAllProfiles();
+        }
 
         [ImageProfileAuth(Permission = "ImageProfileRead")]
-        public IHttpActionResult Get(int id)
+        public ImageProfileEntity Get(int id)
         {
-            var result = BLL.ImageProfile.ReadProfile(id);
-            if (result == null)
-                return NotFound();
-            else
-                return Ok(result);
+            var result = _imageProfileServices.ReadProfile(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
        
 
         [ImageProfileAuth(Permission = "ImageProfileCreate")]
-        public ActionResultEntity Post(ImageProfileEntity imageProfile)
+        public ActionResultDTO Post(ImageProfileEntity imageProfile)
         {
-            var actionResult = BLL.ImageProfile.AddProfile(imageProfile);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            return _imageProfileServices.AddProfile(imageProfile);
+           
         }
 
     
 
         [HttpPost]
         [ImageProfileAuth(Permission = "ImageProfileCreate")]
-        public IHttpActionResult Clone(ImageProfileEntity imageProfile)
+        public ApiBoolResponseDTO Clone(int id)
         {
-            BLL.ImageProfile.CloneProfile(imageProfile);
-            return Ok();
+            _imageProfileServices.CloneProfile(id);
+            return new ApiBoolResponseDTO() {Value = true};
         }
 
         [GlobalAuth(Permission = "GlobalUpdate")]
-        public ActionResultEntity Put(int id, ImageProfileEntity imageProfile)
+        public ActionResultDTO Put(int id, ImageProfileEntity imageProfile)
         {
             imageProfile.Id = id;
-            var actionResult = BLL.ImageProfile.UpdateProfile(imageProfile);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _imageProfileServices.UpdateProfile(imageProfile);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [ImageProfileAuth(Permission = "ImageProfileDelete")]
-        public ApiBoolDTO Delete(int id)
+        public ActionResultDTO Delete(int id)
         {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.ImageProfile.DeleteProfile(id);
-            return apiBoolDto;
+            var result = _imageProfileServices.DeleteProfile(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
           
         }
 
@@ -91,7 +83,7 @@ namespace CloneDeploy_App.Controllers
         public IEnumerable<ImageProfileFileFolderEntity> GetFileFolder(int profileId)
         {
 
-            return BLL.ImageProfileFileFolder.SearchImageProfileFileFolders(profileId);
+            return _imageProfileServices.SearchImageProfileFileFolders(profileId);
 
         }
 
@@ -99,7 +91,7 @@ namespace CloneDeploy_App.Controllers
         public IEnumerable<ImageProfileScriptEntity> GetScript(int profileId)
         {
 
-            return BLL.ImageProfileScript.SearchImageProfileScripts(profileId);
+            return _imageProfileServices.SearchImageProfileScripts(profileId);
 
         }
 
@@ -107,17 +99,40 @@ namespace CloneDeploy_App.Controllers
         public IEnumerable<ImageProfileSysprepTagEntity> GetSysprepTag(int profileId)
         {
 
-            return BLL.ImageProfileSysprepTag.SearchImageProfileSysprepTags(profileId);
+            return _imageProfileServices.SearchImageProfileSysprepTags(profileId);
 
         }
 
         [ImageAuth(Permission = "ImageRead")]
-        public ApiDTO GetMinimumClientSize(int profileId, int hdNumber)
+        public ApiStringResponseDTO GetMinimumClientSize(int profileId, int hdNumber)
         {
-            var apiDto = new ApiDTO();
-            apiDto.Value = BLL.ImageSchema.MinimumClientSizeForGridView(profileId, hdNumber);
-            return apiDto;
+            return new ApiStringResponseDTO()
+            {
+                Value = _imageProfileServices.MinimumClientSizeForGridView(profileId, hdNumber)
+            };
 
         }
+
+        [ImageProfileAuth(Permission = "ImageProfileDelete")]
+        public ActionResultDTO RemoveProfileFileFolders(int id)
+        {
+            
+            return _imageProfileServices.DeleteImageProfileFileFolders(id);
+
+        }
+
+        [ImageProfileAuth(Permission = "ImageProfileDelete")]
+        public ActionResultDTO RemoveProfileScripts(int id)
+        {
+            return _imageProfileServices.DeleteImageProfileScripts(id);
+
+        }
+
+        [ImageProfileAuth(Permission = "ImageProfileDelete")]
+        public ApiBoolResponseDTO RemoveProfileSysprepTags(int id)
+        {
+            return new ApiBoolResponseDTO() {Value = _imageProfileServices.DeleteImageProfileSysprepTags(id)};
+        }
+       
     }
 }

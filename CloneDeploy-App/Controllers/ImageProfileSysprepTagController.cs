@@ -9,31 +9,32 @@ using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class ImageProfileSysprepTagController: ApiController
     {
+        private readonly ImageProfileSysprepTagServices _imageProfileSysprepTagServices;
+
+        public ImageProfileSysprepTagController()
+        {
+            _imageProfileSysprepTagServices = new ImageProfileSysprepTagServices();
+        }
        
 
         [ImageProfileAuth(Permission = "ImageProfileCreate")]
-        public ApiBoolDTO Post(ImageProfileSysprepTagEntity imageProfileFileFolder)
+        public ActionResultDTO Post(ImageProfileSysprepTagEntity imageProfileFileFolder)
         {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.ImageProfileSysprepTag.AddImageProfileSysprepTag(imageProfileFileFolder);
-          
-            return apiBoolDto;
+
+            return _imageProfileSysprepTagServices.AddImageProfileSysprepTag(imageProfileFileFolder);
+
         }
 
        
 
-        [ImageProfileAuth(Permission = "ImageProfileDelete")]
-        public ApiBoolDTO Delete(int id)
-        {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.ImageProfileSysprepTag.DeleteImageProfileSysprepTags(id);
-           return apiBoolDto;
-        }
+       
     }
 }

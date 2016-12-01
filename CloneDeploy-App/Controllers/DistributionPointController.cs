@@ -9,84 +9,76 @@ using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class DistributionPointController: ApiController
     {
+        private readonly DistributionPointServices _distributionPointServices;
+
+        public DistributionPointController()
+        {
+            _distributionPointServices = new DistributionPointServices();
+        }
+
         [AdminAuth(Permission = "AdminRead")]
-        public IEnumerable<DistributionPointEntity> Get(string searchstring = "")
+        public IEnumerable<DistributionPointEntity> GetAll(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
-                ? BLL.DistributionPoint.SearchDistributionPoints()
-                : BLL.DistributionPoint.SearchDistributionPoints(searchstring);
+                ? _distributionPointServices.SearchDistributionPoints()
+                : _distributionPointServices.SearchDistributionPoints(searchstring);
 
         }
 
         [AdminAuth(Permission = "AdminRead")]
-        public ApiDTO GetCount()
+        public ApiStringResponseDTO GetCount()
         {
-            var ApiDTO = new ApiDTO();
-            ApiDTO.Value = BLL.DistributionPoint.TotalCount();
-            return ApiDTO;
+
+            return new ApiStringResponseDTO() {Value = _distributionPointServices.TotalCount()};
+
         }
 
         [AdminAuth(Permission = "AdminRead")]
-        public IHttpActionResult Get(int id)
+        public DistributionPointEntity Get(int id)
         {
-            var result = BLL.DistributionPoint.GetDistributionPoint(id);
-            if (result == null)
-                return NotFound();
-            else
-                return Ok(result);
+            var result = _distributionPointServices.GetDistributionPoint(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [AdminAuth(Permission = "AdminRead")]
-        public IHttpActionResult GetPrimary()
+        public DistributionPointEntity GetPrimary()
         {
-            var result = BLL.DistributionPoint.GetPrimaryDistributionPoint();
-            if (result == null)
-                return NotFound();
-            else
-                return Ok(result);
+            var result = _distributionPointServices.GetPrimaryDistributionPoint();
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [AdminAuth(Permission = "AdminUpdate")]
-        public ActionResultEntity Post(DistributionPointEntity distributionPoint)
+        public ActionResultDTO Post(DistributionPointEntity distributionPoint)
         {
-            var actionResult = BLL.DistributionPoint.AddDistributionPoint(distributionPoint);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _distributionPointServices.AddDistributionPoint(distributionPoint);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [AdminAuth(Permission = "AdminUpdate")]
-        public ActionResultEntity Put(int id, DistributionPointEntity distributionPoint)
+        public ActionResultDTO Put(int id, DistributionPointEntity distributionPoint)
         {
             distributionPoint.Id = id;
-            var actionResult = BLL.DistributionPoint.UpdateDistributionPoint(distributionPoint);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _distributionPointServices.UpdateDistributionPoint(distributionPoint);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [AdminAuth(Permission = "AdminUpdate")]
-        public ActionResultEntity Delete(int id)
+        public ActionResultDTO Delete(int id)
         {
-            var actionResult = BLL.DistributionPoint.DeleteDistributionPoint(id);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _distributionPointServices.DeleteDistributionPoint(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
     }
 }

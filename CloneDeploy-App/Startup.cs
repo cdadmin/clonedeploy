@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using CloneDeploy_App.BLL;
+using CloneDeploy_Services;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.OAuth;
 using Owin;
@@ -29,7 +30,7 @@ namespace CloneDeploy_App.BLL
             {
                 ClaimsIdentity oAuthIdentity = new ClaimsIdentity(context.Options.AuthenticationType);
                 context.Validated(oAuthIdentity);
-                oAuthIdentity.AddClaim(new Claim("user_id", BLL.User.GetUser(context.UserName).Id.ToString()));
+                oAuthIdentity.AddClaim(new Claim("user_id", UserServices.GetUser(context.UserName).Id.ToString()));
                 context.Validated(oAuthIdentity);
             }
             else

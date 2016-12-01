@@ -11,19 +11,25 @@ using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class GroupMunkiController:ApiController
     {
-        [GroupAuth(Permission = "GroupCreate")]
-        public ApiBoolDTO Post(GroupMunkiEntity groupMunki)
+        private readonly GroupMunkiServices _groupMunkiServices;
+
+        public GroupMunkiController()
         {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.GroupMunki.AddMunkiTemplates(groupMunki);
-           
-            return apiBoolDto;
+            _groupMunkiServices = new GroupMunkiServices();
+        }
+
+        [GroupAuth(Permission = "GroupCreate")]
+        public ActionResultDTO Post(GroupMunkiEntity groupMunki)
+        {
+            return  _groupMunkiServices.AddMunkiTemplates(groupMunki);
         }
 
     

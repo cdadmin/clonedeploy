@@ -42,7 +42,7 @@ namespace CloneDeploy_Services
             //Mail not enabled
             if (Settings.SmtpEnabled == "0") return;
 
-            foreach (var user in CloneDeploy_App.BLL.User.SearchUsers("").Where(x => x.NotifyComplete == 1 && !string.IsNullOrEmpty(x.Email)))
+            foreach (var user in UserServices.SearchUsers("").Where(x => x.NotifyComplete == 1 && !string.IsNullOrEmpty(x.Email)))
             {
                 if (session.UserId == user.Id)
                 {
@@ -138,7 +138,7 @@ namespace CloneDeploy_Services
         public  List<ActiveMulticastSessionEntity> GetAllMulticastSessions(int userId)
         {
           
-                if(CloneDeploy_App.BLL.User.IsAdmin(userId))
+                if(UserServices.IsAdmin(userId))
                 return _uow.ActiveMulticastSessionRepository.Get(orderBy: (q => q.OrderBy(t => t.Name)));
                 else
                 {
@@ -150,7 +150,7 @@ namespace CloneDeploy_Services
         public  string ActiveCount(int userId)
         {
            
-                return CloneDeploy_App.BLL.User.IsAdmin(userId)
+                return UserServices.IsAdmin(userId)
                     ? _uow.ActiveMulticastSessionRepository.Count()
                     : _uow.ActiveMulticastSessionRepository.Count(x => x.UserId == userId);
 

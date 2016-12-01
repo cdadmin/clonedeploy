@@ -9,26 +9,28 @@ using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     
-
     public class GroupMembershipController : ApiController
-    {    
-        [GroupAuth]
-        public ApiBoolDTO Post(List<GroupMembershipEntity> groupMemberships)
-        {
-           var apiBoolDto = new ApiBoolDTO();
+    {
 
-            apiBoolDto.Value = BLL.GroupMembership.AddMembership(groupMemberships);
-            if (!apiBoolDto.Value)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound);
-                throw new HttpResponseException(response);
-            }
-            return apiBoolDto;
+        private readonly GroupMembershipServices _groupMembershipServices;
+
+        public GroupMembershipController()
+        {
+            _groupMembershipServices = new GroupMembershipServices();
+        }
+
+        [GroupAuth]
+        public ActionResultDTO Post(List<GroupMembershipEntity> groupMemberships)
+        {
+            return  _groupMembershipServices.AddMembership(groupMemberships);
+          
         }
     }
 }

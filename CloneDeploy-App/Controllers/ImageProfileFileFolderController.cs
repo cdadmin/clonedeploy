@@ -9,31 +9,28 @@ using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class ImageProfileFileFolderController: ApiController
     {
-        
+        private readonly ImageProfileFileFolderService _imageProfileFileFolderService;
+
+        public ImageProfileFileFolderController()
+        {
+            _imageProfileFileFolderService = new ImageProfileFileFolderService();
+        }
 
         [ImageProfileAuth(Permission = "ImageProfileCreate")]
-        public ApiBoolDTO Post(ImageProfileFileFolderEntity imageProfileFileFolder)
+        public ActionResultDTO Post(ImageProfileFileFolderEntity imageProfileFileFolder)
         {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.ImageProfileFileFolder.AddImageProfileFileFolder(imageProfileFileFolder);
-          
-            return apiBoolDto;
+            return _imageProfileFileFolderService.AddImageProfileFileFolder(imageProfileFileFolder);
         }
 
        
-
-        [ImageProfileAuth(Permission = "ImageProfileDelete")]
-        public ApiBoolDTO Delete(int id)
-        {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.ImageProfileFileFolder.DeleteImageProfileFileFolders(id);
-           return apiBoolDto;
-        }
+       
     }
 }

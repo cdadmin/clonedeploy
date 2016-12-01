@@ -9,31 +9,31 @@ using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class ImageProfileScriptController: ApiController
     {
-       
+        private readonly ImageProfileScriptServices _imageProfileScriptServices;
+
+        public ImageProfileScriptController()
+        {
+            _imageProfileScriptServices = new ImageProfileScriptServices();
+        }
 
         [ImageProfileAuth(Permission = "ImageProfileCreate")]
-        public ApiBoolDTO Post(ImageProfileScriptEntity imageProfileFileFolder)
+        public ActionResultDTO Post(ImageProfileScriptEntity imageProfileFileFolder)
         {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.ImageProfileScript.AddImageProfileScript(imageProfileFileFolder);
-          
-            return apiBoolDto;
+            
+            return _imageProfileScriptServices.AddImageProfileScript(imageProfileFileFolder);
+
         }
 
        
 
-        [ImageProfileAuth(Permission = "ImageProfileDelete")]
-        public ApiBoolDTO Delete(int id)
-        {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.ImageProfileScript.DeleteImageProfileScripts(id);
-           return apiBoolDto;
-        }
+      
     }
 }

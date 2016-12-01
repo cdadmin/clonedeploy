@@ -11,6 +11,7 @@ using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
@@ -19,6 +20,14 @@ namespace CloneDeploy_App.Controllers
 
     public class GroupController : ApiController
     {
+        private readonly GroupServices _groupServices;
+
+        public GroupController()
+        {
+            _groupServices = new GroupServices();
+        }
+
+
         [GroupAuth(Permission = "GroupSearch")]
         public IEnumerable<GroupEntity> Get(string searchstring = "")
         {
@@ -26,157 +35,132 @@ namespace CloneDeploy_App.Controllers
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                              .Select(c => c.Value).SingleOrDefault();
             return string.IsNullOrEmpty(searchstring)
-                ? BLL.Group.SearchGroupsForUser(Convert.ToInt32(userId))
-                : BLL.Group.SearchGroupsForUser(Convert.ToInt32(userId), searchstring);
+                ? _groupServices.SearchGroupsForUser(Convert.ToInt32(userId))
+                : _groupServices.SearchGroupsForUser(Convert.ToInt32(userId), searchstring);
 
         }
 
         [GroupAuth(Permission = "GroupSearch")]
-        public ApiDTO GetCount()
+        public ApiStringResponseDTO GetCount()
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                              .Select(c => c.Value).SingleOrDefault();
 
-            return BLL.Group.GroupCountUser(Convert.ToInt32(userId));
+            return new ApiStringResponseDTO() {Value = _groupServices.GroupCountUser(Convert.ToInt32(userId))};
         }
 
         [GroupAuth(Permission = "GroupRead")]
-        public IHttpActionResult Get(int id)
+        public GroupEntity Get(int id)
         {
-            var group = BLL.Group.GetGroup(id);
-            if (group == null)
-                return Content(HttpStatusCode.NotFound, new ActionResultEntity());
-            else
-                return Ok(group);
+            var result = _groupServices.GetGroup(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [HttpGet]
         [GroupAuth(Permission = "GroupUpdate")]
-        public IHttpActionResult RemoveGroupMember(int id, int computerId)
+        public ApiBoolResponseDTO RemoveGroupMember(int id, int computerId)
         {
-            var result = BLL.GroupMembership.DeleteMembership(computerId, id);
-            if (!result)
-                return NotFound();
-            else
-                return Ok();
+            return new ApiBoolResponseDTO() {Value = _groupServices.DeleteMembership(computerId, id)};
         }
 
         [HttpGet]
         [GroupAuth(Permission = "GroupUpdate")]
-        public IHttpActionResult RemoveMunkiTemplate(int id)
+        public ApiBoolResponseDTO RemoveMunkiTemplate(int id)
         {
-            var result = BLL.GroupMunki.DeleteMunkiTemplates(id);
-            if (!result)
-                return NotFound();
-            else
-                return Ok();
+            return new ApiBoolResponseDTO() {Value = _groupServices.DeleteMunkiTemplates(id)};
         }
 
         [HttpGet]
         [GroupAuth(Permission = "GroupRead")]
-        public List<GroupMunkiEntity> GetMunkiTemplates(int id)
+        public IEnumerable<GroupMunkiEntity> GetMunkiTemplates(int id)
         {
-            return BLL.GroupMunki.Get(id);
+            return _groupServices.Get(id);
         }
 
         [HttpGet]
         [GroupAuth(Permission = "GroupRead")]
         public GroupPropertyEntity GetGroupProperties(int id)
         {
-            return BLL.GroupProperty.GetGroupProperty(id);
+            var result = _groupServices.GetGroupProperty(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [GroupAuth(Permission = "GroupRead")]
-        public IHttpActionResult GetMemberCount(int id)
+        public ApiStringResponseDTO GetMemberCount(int id)
         {
-            var group = BLL.GroupMembership.GetGroupMemberCount(id);
-            if (group == null)
-                return Content(HttpStatusCode.NotFound, new ActionResultEntity());
-            else
-                return Ok(group);
+            return new ApiStringResponseDTO() {Value = _groupServices.GetGroupMemberCount(id)};
         }
        
 
         [GroupAuth(Permission = "GroupCreate")]
-        public ActionResultEntity Post(GroupEntity group)
+        public ActionResultDTO Post(GroupEntity group)
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                              .Select(c => c.Value).SingleOrDefault();
 
-            var actionResult = BLL.Group.AddGroup(group, Convert.ToInt32(userId));
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _groupServices.AddGroup(group, Convert.ToInt32(userId));
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [GroupAuth(Permission = "GroupUpdate")]
-        public ActionResultEntity Put(int id, GroupEntity group)
+        public ActionResultDTO Put(int id, GroupEntity group)
         {
             group.Id = id;
-            var actionResult = BLL.Group.UpdateGroup(group);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _groupServices.UpdateGroup(group);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [GroupAuth(Permission = "GroupDelete")]
-        public ActionResultEntity Delete(int id)
+        public ActionResultDTO Delete(int id)
         {
-            var actionResult = BLL.Group.DeleteGroup(id);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _groupServices.DeleteGroup(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [HttpPost]
         [GroupAuth(Permission = "GroupUpdate")]
-        public ApiBoolDTO UpdateSmartMembership(GroupEntity group)
+        public ApiBoolResponseDTO UpdateSmartMembership(GroupEntity group)
         {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.Group.UpdateSmartMembership(group);
-           return apiBoolDto;
+            return new ApiBoolResponseDTO() {Value = _groupServices.UpdateSmartMembership(group)};
         }
 
         [HttpPost]
         [TaskAuth(Permission = "ImageTaskDeploy")]
-        public ApiDTO StartGroupUnicast(GroupEntity group)
+        public ApiIntResponseDTO StartGroupUnicast(GroupEntity group)
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                              .Select(c => c.Value).SingleOrDefault();
-            var apiDto = new ApiDTO();
-            apiDto.Value = BLL.Group.StartGroupUnicast(group, Convert.ToInt32(userId)).ToString();
-            return apiDto;
+
+            return new ApiIntResponseDTO()
+            {
+                Value = _groupServices.StartGroupUnicast(group, Convert.ToInt32(userId))
+            };
+
         }
 
         [GroupAuth(Permission = "GroupRead")]
         public IEnumerable<ComputerEntity> GetGroupMembers(int id, string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
-                ? BLL.Group.GetGroupMembers(id)
-                : BLL.Group.GetGroupMembers(id, searchstring);
+                ? _groupServices.GetGroupMembers(id)
+                : _groupServices.GetGroupMembers(id, searchstring);
 
         }
 
         [GroupAuth(Permission = "GroupRead")]
-        public IHttpActionResult GetCustomBootMenu(int id)
+        public GroupBootMenuEntity GetCustomBootMenu(int id)
         {
-            var result = BLL.GroupBootMenu.GetGroupBootMenu(id);
-            if (result == null)
-                return NotFound();
-            else
-                return Ok(result);
+            var result = _groupServices.GetGroupBootMenu(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
     }
 }

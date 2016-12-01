@@ -9,74 +9,66 @@ using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class BuildingController: ApiController
     {
+        private readonly BuildingServices _buildingServices;
+
+        public BuildingController()
+        {
+            _buildingServices = new BuildingServices();
+        }
+
         [GlobalAuth(Permission = "GlobalRead")]
-        public IEnumerable<BuildingEntity> Get(string searchstring = "")
+        public IEnumerable<BuildingEntity> GetAll(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
-                ? BLL.Building.SearchBuildings()
-                : BLL.Building.SearchBuildings(searchstring);
+                ? _buildingServices.SearchBuildings()
+                : _buildingServices.SearchBuildings(searchstring);
 
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public ApiDTO GetCount()
+        public ApiStringResponseDTO GetCount()
         {
-            var ApiDTO = new ApiDTO();
-            ApiDTO.Value = BLL.Building.TotalCount();
-            return ApiDTO;
+            return new ApiStringResponseDTO() {Value = _buildingServices.TotalCount()};
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public IHttpActionResult Get(int id)
+        public BuildingEntity Get(int id)
         {
-            var result = BLL.Building.GetBuilding(id);
-            if (result == null)
-                return NotFound();
-            else
-                return Ok(result);
+            var result = _buildingServices.GetBuilding(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [GlobalAuth(Permission = "GlobalCreate")]
-        public ActionResultEntity Post(BuildingEntity building)
+        public ActionResultDTO Post(BuildingEntity building)
         {
-            var actionResult = BLL.Building.AddBuilding(building);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _buildingServices.AddBuilding(building);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [GlobalAuth(Permission = "GlobalUpdate")]
-        public ActionResultEntity Put(int id, BuildingEntity building)
+        public ActionResultDTO Put(int id, BuildingEntity building)
         {
             building.Id = id;
-            var actionResult = BLL.Building.UpdateBuilding(building);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _buildingServices.UpdateBuilding(building);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [GlobalAuth(Permission = "GlobalDelete")]
-        public ActionResultEntity Delete(int id)
+        public ActionResultDTO Delete(int id)
         {
-            var actionResult = BLL.Building.DeleteBuilding(id);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _buildingServices.DeleteBuilding(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
     }
 }

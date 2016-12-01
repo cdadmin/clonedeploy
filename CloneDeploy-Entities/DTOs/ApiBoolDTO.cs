@@ -5,7 +5,7 @@ using System.Web;
 
 namespace CloneDeploy_App.DTOs
 {
-    public class ApiBoolDTO
+    public class ApiBoolResponseDTO
     {
         public bool Value { get; set; }
     }

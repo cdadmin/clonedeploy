@@ -8,37 +8,28 @@ using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
 {
     public class MunkiManagedInstallController: ApiController
     {
+         private readonly MunkiManagedInstallServices _munkiManagedInstallServices;
+
+        public MunkiManagedInstallController()
+        {
+            _munkiManagedInstallServices = new MunkiManagedInstallServices();
+        }
+
         [GlobalAuth(Permission = "GlobalRead")]
         public MunkiManifestManagedInstallEntity Get(int id)
         {
 
-            return BLL.MunkiManagedInstall.GetManagedInstall(id);
+            return _munkiManagedInstallServices.GetManagedInstall(id);
 
         }
 
-        [GlobalAuth(Permission = "GlobalCreate")]
-        public ApiBoolDTO Post(MunkiManifestManagedInstallEntity managedInstall)
-        {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.MunkiManagedInstall.AddManagedInstallToTemplate(managedInstall);
-          
-            return apiBoolDto;
-        }
-
-       
-
-        [GlobalAuth(Permission = "GlobalDelete")]
-        public ApiBoolDTO Delete(int id)
-        {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.MunkiManagedInstall.DeleteManagedInstallFromTemplate(id);
-           return apiBoolDto;
-        }
+      
     }
 }

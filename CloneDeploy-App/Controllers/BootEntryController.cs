@@ -49,40 +49,26 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalCreate")]
-        public ActionResultEntity Post(BootEntryEntity bootEntry)
+        public ActionResultDTO Post(BootEntryEntity bootEntry)
         {
-            var actionResult = BLL.BootEntryServices.AddBootEntry(bootEntry);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            return _bootEntryServices.AddBootEntry(bootEntry);
         }
 
         [GlobalAuth(Permission = "GlobalUpdate")]
-        public ActionResultEntity Put(int id, BootEntryEntity bootEntry)
+        public ActionResultDTO Put(int id, BootEntryEntity bootEntry)
         {
             bootEntry.Id = id;
-            var actionResult = BLL.BootEntryServices.UpdateBootEntry(bootEntry);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _bootEntryServices.UpdateBootEntry(bootEntry);
+            if (result.Id == 0) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound, result));
+            return result;
         }
 
         [GlobalAuth(Permission = "GlobalDelete")]
-        public ActionResultEntity Delete(int id)
+        public ActionResultDTO Delete(int id)
         {
-            var actionResult = BLL.BootEntryServices.DeleteBootEntry(id);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _bootEntryServices.DeleteBootEntry(id);
+            if (result.Id == 0) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound, result));
+            return result;
         }
     }
 }

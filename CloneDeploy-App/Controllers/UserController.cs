@@ -12,6 +12,7 @@ using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 
 namespace CloneDeploy_App.Controllers
@@ -20,6 +21,13 @@ namespace CloneDeploy_App.Controllers
 
     public class UserController : ApiController
     {
+        private readonly UserServices _userServices;
+
+        public UserController()
+        {
+            _userServices = new UserServices();
+        }
+
 
         [UserAuth(Permission = "Administrator")]
         public IEnumerable<CloneDeployUserEntity> Get(string searchstring = "")
@@ -29,143 +37,110 @@ namespace CloneDeploy_App.Controllers
                              .Select(c => c.Value).SingleOrDefault();
 
             return string.IsNullOrEmpty(searchstring)
-                ? BLL.User.SearchUsers()
-                : BLL.User.SearchUsers(searchstring);
+                ? _userServices.SearchUsers()
+                : _userServices.SearchUsers(searchstring);
 
         }
 
         [UserAuth(Permission = "CallerOnly")]
-        public ActionResultEntity GetForLogin(int id)
+        public CloneDeployUserEntity GetForLogin(int id)
         {
-            var actionResult = BLL.User.GetUserForLogin(id);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            return _userServices.GetUserForLogin(id);
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ApiDTO GetCount()
+        public ApiStringResponseDTO GetCount()
         {
-            var ApiDTO = new ApiDTO();
-            ApiDTO.Value = BLL.User.TotalCount();
-            return ApiDTO;
+            return new ApiStringResponseDTO() {Value = _userServices.TotalCount()};
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ApiDTO GetAdminCount()
+        public ApiStringResponseDTO GetAdminCount()
         {
-            var ApiDTO = new ApiDTO();
-            ApiDTO.Value = BLL.User.GetAdminCount().ToString();
-            return ApiDTO;
+            return new ApiStringResponseDTO() {Value = _userServices.GetAdminCount().ToString()};
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ActionResultEntity Post(CloneDeployUserEntity user)
+        public ActionResultDTO Post(CloneDeployUserEntity user)
         {
-            var actionResult = BLL.User.AddUser(user);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            return  _userServices.AddUser(user);
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ActionResultEntity Put(int id, CloneDeployUserEntity user)
+        public ActionResultDTO Put(int id, CloneDeployUserEntity user)
         {
             user.Id = id;
-            var actionResult = BLL.User.UpdateUser(user);
-            if (!actionResult.Success)
-            {
-                var response = Request.CreateResponse(HttpStatusCode.NotFound, actionResult);
-                throw new HttpResponseException(response);
-            }
-            return actionResult;
+            var result = _userServices.UpdateUser(user);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ApiBoolDTO Delete(int id)
+        public ActionResultDTO Delete(int id)
         {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.User.DeleteUser(id);
-            return apiBoolDto;
+            var result = _userServices.DeleteUser(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ApiBoolDTO IsAdmin(int id)
+        public ApiBoolResponseDTO IsAdmin(int id)
         {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.User.IsAdmin(id);
-            return apiBoolDto;
+            return new ApiBoolResponseDTO() {Value = _userServices.IsAdmin(id)};
         }
 
         [UserAuth(Permission = "Administrator")]
-        public IHttpActionResult Get(int id)
+        public CloneDeployUserEntity Get(int id)
         {
-            var result = BLL.User.GetUser(id);
-            if (result == null)
-                return NotFound();
-            else
-                return Ok(result);
+            var result = _userServices.GetUser(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [UserAuth(Permission = "Administrator")]
-        public IHttpActionResult GetByName(string username)
+        public CloneDeployUserEntity GetByName(string username)
         {
-            var result = BLL.User.GetUser(username);
-            if (result == null)
-                return NotFound();
-            else
-                return Ok(result);
+            var result = _userServices.GetUser(username);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [UserAuth(Permission = "Administrator")]
         public IEnumerable<UserRightEntity> GetRights(int id)
         {
-            return BLL.UserRight.Get(id);        
+            return _userServices.GetUserRights(id);        
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ApiBoolDTO DeleteRights(int id)
+        public ApiBoolResponseDTO DeleteRights(int id)
         {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value= BLL.UserRight.DeleteUserRights(id);
-            return apiBoolDto;
+            return new ApiBoolResponseDTO() {Value = _userServices.DeleteUserRights(id)};
 
         }
 
         [UserAuth(Permission = "Administrator")]
         public IEnumerable<UserImageManagementEntity> GetImageManagements(int id)
         {
-            return BLL.UserImageManagement.Get(id);
+            return _userServices.GetUserImageManagements(id);
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ApiBoolDTO DeleteImageManagements(int id)
+        public ApiBoolResponseDTO DeleteImageManagements(int id)
         {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.UserImageManagement.DeleteUserImageManagements(id);
-            return apiBoolDto;
+            return new ApiBoolResponseDTO() {Value = _userServices.DeleteUserImageManagements(id)};
 
         }
 
         [UserAuth(Permission = "Administrator")]
         public IEnumerable<UserGroupManagementEntity> GetGroupManagements(int id)
         {
-            return BLL.UserGroupManagement.Get(id);
+            return _userServices.GetUserGroupManagements(id);
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ApiBoolDTO DeleteGroupManagements(int id)
+        public ApiBoolResponseDTO DeleteGroupManagements(int id)
         {
-            var apiBoolDto = new ApiBoolDTO();
-            apiBoolDto.Value = BLL.UserGroupManagement.DeleteUserGroupManagements(id);
-            return apiBoolDto;
-
+            return new ApiBoolResponseDTO() {Value = _userServices.DeleteUserGroupManagements(id)};
         }
    
 
