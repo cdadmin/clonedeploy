@@ -1,19 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web;
-using System.Web.Http;
-using CloneDeploy_ApiCalls;
-using CloneDeploy_App.BLL;
-using CloneDeploy_App.Controllers.Authorization;
-using CloneDeploy_Entities;
-using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Services;
+﻿using CloneDeploy_Entities;
+using RestSharp;
 
-
-namespace CloneDeploy_App.Controllers
+namespace CloneDeploy_ApiCalls
 {
     public class DistributionPointAPI:GenericAPI<DistributionPointEntity>
     {
@@ -24,12 +12,11 @@ namespace CloneDeploy_App.Controllers
     
        
 
-        [AdminAuth(Permission = "AdminRead")]
         public DistributionPointEntity GetPrimary()
         {
-            var result = _distributionPointServices.GetPrimaryDistributionPoint();
-            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
-            return result;
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetPrimary/", _resource);
+            return new ApiRequest().Execute<DistributionPointEntity>(_request);
         }
 
        

@@ -67,7 +67,7 @@ namespace CloneDeploy_App.Controllers
 
         [HttpGet]
         [GroupAuth(Permission = "GroupUpdate")]
-        public ApiBoolResponseDTO RemoveMunkiTemplate(int id)
+        public ApiBoolResponseDTO RemoveMunkiTemplates(int id)
         {
             return new ApiBoolResponseDTO() {Value = _groupServices.DeleteMunkiTemplates(id)};
         }
@@ -126,14 +126,14 @@ namespace CloneDeploy_App.Controllers
 
         [HttpPost]
         [GroupAuth(Permission = "GroupUpdate")]
-        public ActionResultDTO UpdateSmartMembership(GroupEntity group)
+        public ActionResultDTO UpdateSmartMembership(int id)
         {
-            return _groupServices.UpdateSmartMembership(group);
+            return _groupServices.UpdateSmartMembership(id);
         }
 
         [HttpPost]
         [TaskAuth(Permission = "ImageTaskDeploy")]
-        public ApiIntResponseDTO StartGroupUnicast(GroupEntity group)
+        public ApiIntResponseDTO StartGroupUnicast(int id)
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
@@ -141,7 +141,7 @@ namespace CloneDeploy_App.Controllers
 
             return new ApiIntResponseDTO()
             {
-                Value = _groupServices.StartGroupUnicast(group, Convert.ToInt32(userId))
+                Value = _groupServices.StartGroupUnicast(id, Convert.ToInt32(userId))
             };
 
         }

@@ -93,23 +93,23 @@ namespace CloneDeploy_App.Controllers
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ApiBoolResponseDTO UpdateMemberAcls(CloneDeployUserGroupEntity userGroup)
+        public ApiBoolResponseDTO UpdateMemberAcls(int id)
         {
-            return new ApiBoolResponseDTO() {Value = _userGroupServices.UpdateAllGroupMembersAcls(userGroup)};
+            return new ApiBoolResponseDTO() {Value = _userGroupServices.UpdateAllGroupMembersAcls(id)};
 
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ApiBoolResponseDTO UpdateMemberGroups(CloneDeployUserGroupEntity userGroup)
+        public ApiBoolResponseDTO UpdateMemberGroups(int id)
         {
-            return new ApiBoolResponseDTO() {Value = _userGroupServices.UpdateAllGroupMembersGroupMgmt(userGroup)};
+            return new ApiBoolResponseDTO() {Value = _userGroupServices.UpdateAllGroupMembersGroupMgmt(id)};
 
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ApiBoolResponseDTO UpdateMemberImages(CloneDeployUserGroupEntity userGroup)
+        public ApiBoolResponseDTO UpdateMemberImages(int id)
         {
-            return new ApiBoolResponseDTO() {Value = _userGroupServices.UpdateAllGroupMembersImageMgmt(userGroup)};
+            return new ApiBoolResponseDTO() {Value = _userGroupServices.UpdateAllGroupMembersImageMgmt(id)};
 
         }
 

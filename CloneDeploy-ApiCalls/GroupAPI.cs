@@ -1,4 +1,11 @@
-﻿using CloneDeploy_Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Security.Claims;
+using System.Threading;
+using CloneDeploy_App.DTOs;
+using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using RestSharp;
 
@@ -22,84 +29,73 @@ namespace CloneDeploy_ApiCalls
         }
 
 
-        [HttpGet]
-        [GroupAuth(Permission = "GroupUpdate")]
-        public ApiBoolResponseDTO RemoveGroupMember(int id, int computerId)
+
+        public bool RemoveGroupMember(int id, int computerId)
         {
-            return new ApiBoolResponseDTO() { Value = _groupServices.DeleteMembership(computerId, id) };
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/RemoveGroupMember/{1}", _resource, id);
+            _request.AddParameter("computerId", computerId);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
         }
 
-        [HttpGet]
-        [GroupAuth(Permission = "GroupUpdate")]
-        public ApiBoolResponseDTO RemoveMunkiTemplate(int id)
+
+        public bool RemoveMunkiTemplates(int id)
         {
-            return new ApiBoolResponseDTO() { Value = _groupServices.DeleteMunkiTemplates(id) };
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/RemoveMunkiTemplates/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
         }
 
-        [HttpGet]
-        [GroupAuth(Permission = "GroupRead")]
+
         public IEnumerable<GroupMunkiEntity> GetMunkiTemplates(int id)
         {
-            return _groupServices.GetGroupMunkiTemplates(id);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetMunkiTemplates/{1}", _resource, id);
+            return new ApiRequest().Execute<List<GroupMunkiEntity>>(_request);
         }
 
-        [HttpGet]
-        [GroupAuth(Permission = "GroupRead")]
+
         public GroupPropertyEntity GetGroupProperties(int id)
         {
-            var result = _groupServices.GetGroupProperty(id);
-            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
-            return result;
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetGroupProperties/{1}", _resource, id);
+            return new ApiRequest().Execute<GroupPropertyEntity>(_request);
         }
 
-        [GroupAuth(Permission = "GroupRead")]
-        public ApiStringResponseDTO GetMemberCount(int id)
+       
+
+        public ActionResultDTO UpdateSmartMembership(int id)
         {
-            return new ApiStringResponseDTO() { Value = _groupServices.GetGroupMemberCount(id) };
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/UpdateSmartMembership/{1}", _resource, id);
+            return new ApiRequest().Execute<ActionResultDTO>(_request);
         }
 
 
-
-
-
-
-        [HttpPost]
-        [GroupAuth(Permission = "GroupUpdate")]
-        public ActionResultDTO UpdateSmartMembership(GroupEntity group)
+        public int StartGroupUnicast(int id)
         {
-            return _groupServices.UpdateSmartMembership(group);
-        }
-
-        [HttpPost]
-        [TaskAuth(Permission = "ImageTaskDeploy")]
-        public ApiIntResponseDTO StartGroupUnicast(GroupEntity group)
-        {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                             .Select(c => c.Value).SingleOrDefault();
-
-            return new ApiIntResponseDTO()
-            {
-                Value = _groupServices.StartGroupUnicast(group, Convert.ToInt32(userId))
-            };
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/StartGroupUnicast/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiIntResponseDTO>(_request).Value;
 
         }
 
-        [GroupAuth(Permission = "GroupRead")]
+
         public IEnumerable<ComputerEntity> GetGroupMembers(int id, string searchstring = "")
         {
-            return string.IsNullOrEmpty(searchstring)
-                ? _groupServices.GetGroupMembers(id)
-                : _groupServices.GetGroupMembers(id, searchstring);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetGroupMembers/{1}", _resource, id);
+            _request.AddParameter("searchstring", searchstring);
+            return new ApiRequest().Execute<List<ComputerEntity>>(_request);
 
         }
 
-        [GroupAuth(Permission = "GroupRead")]
+
         public GroupBootMenuEntity GetCustomBootMenu(int id)
         {
-            var result = _groupServices.GetGroupBootMenu(id);
-            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
-            return result;
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetCustomBootMenu/{1}", _resource, id);
+            return new ApiRequest().Execute<GroupBootMenuEntity>(_request);
         }
     }
 }

@@ -80,35 +80,35 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ImageProfileAuth(Permission = "ImageProfileSearch")]
-        public IEnumerable<ImageProfileFileFolderEntity> GetFileFolder(int profileId)
+        public IEnumerable<ImageProfileFileFolderEntity> GetFileFolders(int id)
         {
 
-            return _imageProfileServices.SearchImageProfileFileFolders(profileId);
+            return _imageProfileServices.SearchImageProfileFileFolders(id);
 
         }
 
         [ImageProfileAuth(Permission = "ImageProfileSearch")]
-        public IEnumerable<ImageProfileScriptEntity> GetScript(int profileId)
+        public IEnumerable<ImageProfileScriptEntity> GetScripts(int id)
         {
 
-            return _imageProfileServices.SearchImageProfileScripts(profileId);
+            return _imageProfileServices.SearchImageProfileScripts(id);
 
         }
 
         [ImageProfileAuth(Permission = "ImageProfileSearch")]
-        public IEnumerable<ImageProfileSysprepTagEntity> GetSysprepTag(int profileId)
+        public IEnumerable<ImageProfileSysprepTagEntity> GetSysprepTags(int id)
         {
 
-            return _imageProfileServices.SearchImageProfileSysprepTags(profileId);
+            return _imageProfileServices.SearchImageProfileSysprepTags(id);
 
         }
 
         [ImageAuth(Permission = "ImageRead")]
-        public ApiStringResponseDTO GetMinimumClientSize(int profileId, int hdNumber)
+        public ApiStringResponseDTO GetMinimumClientSize(int id, int hdNumber)
         {
             return new ApiStringResponseDTO()
             {
-                Value = _imageProfileServices.MinimumClientSizeForGridView(profileId, hdNumber)
+                Value = _imageProfileServices.MinimumClientSizeForGridView(id, hdNumber)
             };
 
         }

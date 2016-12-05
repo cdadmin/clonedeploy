@@ -1,24 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web;
-using System.Web.Http;
-using CloneDeploy_ApiCalls;
-using CloneDeploy_App.Controllers.Authorization;
+﻿using System.Collections.Generic;
 using CloneDeploy_App.DTOs;
-using CloneDeploy_Entities;
-using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Entities.DTOs.ImageSchemaBE;
 using CloneDeploy_Entities.DTOs.ImageSchemaFE;
-using CloneDeploy_Services;
+using RestSharp;
 using HardDrive = CloneDeploy_Entities.DTOs.ImageSchemaFE.HardDrive;
 using LogicalVolume = CloneDeploy_Entities.DTOs.ImageSchemaFE.LogicalVolume;
 using Partition = CloneDeploy_Entities.DTOs.ImageSchemaFE.Partition;
 
 
-namespace CloneDeploy_App.Controllers
+namespace CloneDeploy_ApiCalls
 {
     public class ImageSchemaAPI : GenericAPI<ImageSchemaGridView>
     {
@@ -28,28 +17,39 @@ namespace CloneDeploy_App.Controllers
         }
     
 
-        [ImageAuth(Permission = "ImageRead")]
         public ImageSchemaGridView GetSchema(ImageSchemaRequestDTO schemaRequest)
         {
-            return new ImageSchemaFEServices(schemaRequest).GetImageSchema();
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetSchema", _resource);
+            _request.AddJsonBody(schemaRequest);
+            return new ApiRequest().Execute<ImageSchemaGridView>(_request);
         }
 
-        [ImageAuth(Permission = "ImageRead")]
         public IEnumerable<HardDrive> GetHardDrives(ImageSchemaRequestDTO schemaRequest)
         {
-            return new ImageSchemaFEServices(schemaRequest).GetHardDrivesForGridView();
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetHardDrives", _resource);
+            _request.AddJsonBody(schemaRequest);
+            return new ApiRequest().Execute<List<HardDrive>>(_request);
         }
 
-        [ImageAuth(Permission = "ImageRead")]
+
         public IEnumerable<Partition> GetPartitions(ImageSchemaRequestDTO schemaRequest, string selectedHd)
         {
-            return new ImageSchemaFEServices(schemaRequest).GetPartitionsForGridView(selectedHd);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetPartitions", _resource);
+            _request.AddJsonBody(schemaRequest);
+            _request.AddParameter("selectedHd", selectedHd);
+            return new ApiRequest().Execute<List<Partition>>(_request);
         }
 
-        [ImageAuth(Permission = "ImageRead")]
         public IEnumerable<LogicalVolume> GetLogicalVolumes(ImageSchemaRequestDTO schemaRequest, string selectedHd)
         {
-            return new ImageSchemaFEServices(schemaRequest).GetLogicalVolumesForGridView(selectedHd);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetLogicalVolumes", _resource);
+            _request.AddJsonBody(schemaRequest);
+            _request.AddParameter("selectedHd", selectedHd);
+            return new ApiRequest().Execute<List<LogicalVolume>>(_request);
         }
 
      

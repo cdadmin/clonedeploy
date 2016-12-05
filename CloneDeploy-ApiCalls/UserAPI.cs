@@ -1,4 +1,6 @@
-﻿using CloneDeploy_Entities;
+﻿using System.Collections.Generic;
+using CloneDeploy_App.DTOs;
+using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using RestSharp;
 
@@ -35,60 +37,70 @@ namespace CloneDeploy_ApiCalls
         }
 
 
-        [UserAuth(Permission = "Administrator")]
-        public ApiStringResponseDTO GetAdminCount()
+
+        public string GetAdminCount()
         {
-            return new ApiStringResponseDTO() { Value = _userServices.GetAdminCount().ToString() };
-        }
-
-
-
-        [UserAuth(Permission = "Administrator")]
-        public ApiBoolResponseDTO IsAdmin(int id)
-        {
-            return new ApiBoolResponseDTO() { Value = _userServices.IsAdmin(id) };
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetAdminCount/", _resource);
+            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
         }
 
 
 
 
+        public bool IsAdmin(int id)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/IsAdmin/", _resource);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+        }
 
-        [UserAuth(Permission = "Administrator")]
         public IEnumerable<UserRightEntity> GetRights(int id)
         {
-            return _userServices.GetUserRights(id);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetRights/{1}", _resource,id);
+            return new ApiRequest().Execute<List<UserRightEntity>>(_request);
         }
 
-        [UserAuth(Permission = "Administrator")]
-        public ApiBoolResponseDTO DeleteRights(int id)
+
+        public bool DeleteRights(int id)
         {
-            return new ApiBoolResponseDTO() { Value = _userServices.DeleteUserRights(id) };
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/DeleteRights/{1}", _resource,id);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
 
         }
 
-        [UserAuth(Permission = "Administrator")]
+
         public IEnumerable<UserImageManagementEntity> GetImageManagements(int id)
         {
-            return _userServices.GetUserImageManagements(id);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetImageManagements/{1}", _resource,id);
+            return new ApiRequest().Execute<List<UserImageManagementEntity>>(_request);
         }
 
-        [UserAuth(Permission = "Administrator")]
-        public ApiBoolResponseDTO DeleteImageManagements(int id)
+
+        public bool DeleteImageManagements(int id)
         {
-            return new ApiBoolResponseDTO() { Value = _userServices.DeleteUserImageManagements(id) };
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/DeleteImageManagements/{1}", _resource,id);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
 
         }
 
-        [UserAuth(Permission = "Administrator")]
         public IEnumerable<UserGroupManagementEntity> GetGroupManagements(int id)
         {
-            return _userServices.GetUserGroupManagements(id);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetGroupManagements/{1}", _resource,id);
+            return new ApiRequest().Execute<List<UserGroupManagementEntity>>(_request);
         }
 
-        [UserAuth(Permission = "Administrator")]
-        public ApiBoolResponseDTO DeleteGroupManagements(int id)
+
+        public bool DeleteGroupManagements(int id)
         {
-            return new ApiBoolResponseDTO() { Value = _userServices.DeleteUserGroupManagements(id) };
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/DeleteGroupManagements/", _resource,id);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
         }
     }
 }

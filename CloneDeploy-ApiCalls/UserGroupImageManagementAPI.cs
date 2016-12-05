@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web;
-using System.Web.Http;
-using CloneDeploy_ApiCalls;
-using CloneDeploy_App.Controllers.Authorization;
-using CloneDeploy_App.DTOs;
+﻿using System.Collections.Generic;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Services;
+using RestSharp;
 
-
-namespace CloneDeploy_App.Controllers
+namespace CloneDeploy_ApiCalls
 {
     public class UserGroupImageManagementAPI : GenericAPI<UserGroupImageManagementEntity>
     {
@@ -22,12 +12,13 @@ namespace CloneDeploy_App.Controllers
 		
         }
     
-      
-
-        [UserAuth(Permission = "Administrator")]
+     
         public ActionResultDTO Post(List<UserGroupImageManagementEntity> listOfImages)
         {
-            return _userGroupImageManagementServices.AddUserGroupImageManagements(listOfImages);
+            _request.Method = Method.POST;
+            _request.Resource = string.Format("api/{0}/Post/", _resource);
+            _request.AddJsonBody(listOfImages);
+            return new ApiRequest().Execute<ActionResultDTO>(_request);
         }
 
         

@@ -1,242 +1,252 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Threading;
-using System.Web;
-using System.Web.Http;
-using CloneDeploy_ApiCalls;
-using CloneDeploy_App.BLL;
-using CloneDeploy_App.Controllers.Authorization;
+﻿using System.Collections.Generic;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Services;
+using RestSharp;
 
-
-namespace CloneDeploy_App.Controllers
+namespace CloneDeploy_ApiCalls
 {
     public class MunkiManifestTemplateAPI : GenericAPI<MunkiManifestTemplateEntity>
     {
-        public MunkiManifestTemplateAPI(string resource):base(resource)
+        public MunkiManifestTemplateAPI(string resource) : base(resource)
         {
-		
+
         }
 
-        
 
-     
-
-        [GlobalAuth(Permission = "GlobalRead")]
         public IEnumerable<MunkiManifestCatalogEntity> GetManifestCatalogs(int id)
         {
-            return _munkiManifestTemplateServices.GetAllCatalogsForMt(id);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetManifestCatalogs/{1}", _resource,id);
+            return new ApiRequest().Execute<List<MunkiManifestCatalogEntity>>(_request);
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
-        public ApiStringResponseDTO GetCatalogCount(int id)
+
+        public string GetCatalogCount(int id)
         {
-            return new ApiStringResponseDTO() {Value = _munkiManifestTemplateServices.GetCatalogTotalCount(id)};
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetCatalogCount/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+
         public IEnumerable<MunkiManifestIncludedManifestEntity> GetManifestIncludedManifests(int id)
         {
-            return _munkiManifestTemplateServices.GetAllIncludedManifestsForMt(id);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetManifestIncludedManifests/{1}", _resource, id);
+            return new ApiRequest().Execute<List<MunkiManifestIncludedManifestEntity>>(_request);
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
-        public ApiStringResponseDTO GetIncludedManifestCount(int id)
+
+        public string GetIncludedManifestCount(int id)
         {
-            return new ApiStringResponseDTO() {Value = _munkiManifestTemplateServices.GetIncludedManifestTotalCount(id)};
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetIncludedManifestCount/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+
         public IEnumerable<MunkiManifestManagedInstallEntity> GetManifestManagedInstalls(int id)
         {
-             return _munkiManifestTemplateServices.GetAllManagedInstallsForMt(id);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetManifestManagedInstalls/{1}", _resource, id);
+            return new ApiRequest().Execute<List<MunkiManifestManagedInstallEntity>>(_request);
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
-        public ApiStringResponseDTO GetManagedInstallCount(int id)
+
+        public string GetManagedInstallCount(int id)
         {
 
-            return new ApiStringResponseDTO() {Value = _munkiManifestTemplateServices.GetManagedInstallTotalCount(id)};
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetManagedInstallCount/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
 
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+
         public IEnumerable<MunkiManifestManagedUnInstallEntity> GetManifestManagedUninstalls(int id)
         {
-            return _munkiManifestTemplateServices.GetAllManagedUnInstallsForMt(id);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetManifestManagedUninstalls/{1}", _resource, id);
+            return new ApiRequest().Execute<List<MunkiManifestManagedUnInstallEntity>>(_request);
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
-        public ApiStringResponseDTO GetManagedUninstallCount(int id)
+
+        public string GetManagedUninstallCount(int id)
         {
 
-            return new ApiStringResponseDTO() {Value = _munkiManifestTemplateServices.GetManagedUninstallTotalCount(id)};
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetManagedUninstallCount/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
 
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
         public IEnumerable<MunkiManifestManagedUpdateEntity> GetManifestManagedUpdates(int id)
         {
-            return _munkiManifestTemplateServices.GetAllManagedUpdatesForMt(id);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetManifestManagedUpdates/{1}", _resource, id);
+            return new ApiRequest().Execute<List<MunkiManifestManagedUpdateEntity>>(_request);
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
-        public ApiStringResponseDTO GetManagedUpdateCount(int id)
+
+        public string GetManagedUpdateCount(int id)
         {
-            return new ApiStringResponseDTO() {Value = _munkiManifestTemplateServices.GetManagedUpdateTotalCount(id)};
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetManagedUpdateCount/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+
         public IEnumerable<MunkiManifestOptionInstallEntity> GetManifestOptionalInstalls(int id)
         {
-            return _munkiManifestTemplateServices.GetAllOptionalInstallsForMt(id);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetManifestOptionalInstalls/{1}", _resource, id);
+            return new ApiRequest().Execute<List<MunkiManifestOptionInstallEntity>>(_request);
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
-        public ApiStringResponseDTO GetOptionalInstallCount(int id)
+
+        public string GetOptionalInstallCount(int id)
         {
-            return new ApiStringResponseDTO() {Value = _munkiManifestTemplateServices.GetOptionalInstallTotalCount(id)};
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetOptionalInstallCount/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
         }
 
-        [GlobalAuth(Permission = "GlobalCreate")]
-        public ApiBoolResponseDTO AddCatalogToTemplate(MunkiManifestCatalogEntity catalog)
+        public bool AddCatalogToTemplate(MunkiManifestCatalogEntity catalog)
         {
-            return new ApiBoolResponseDTO() {Value = _munkiManifestTemplateServices.AddCatalogToTemplate(catalog)};
+            _request.Method = Method.POST;
+            _request.Resource = string.Format("api/{0}/AddCatalogToTemplate/", _resource);
+            _request.AddJsonBody(catalog);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
         }
 
 
 
-        [GlobalAuth(Permission = "GlobalDelete")]
-        public ApiBoolResponseDTO DeleteCatalogsFromTemplate(int id)
+
+        public bool DeleteCatalogsFromTemplate(int id)
         {
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/DeleteCatalogsFromTemplate/{1}", _resource,id);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
 
-            return new ApiBoolResponseDTO() {Value = _munkiManifestTemplateServices.DeleteCatalogFromTemplate(id)};
 
         }
 
-        [GlobalAuth(Permission = "GlobalCreate")]
-        public ApiBoolResponseDTO AddManifestToTemplate(MunkiManifestIncludedManifestEntity manifest)
-            {
 
-                return new ApiBoolResponseDTO()
-                {
-                    Value = _munkiManifestTemplateServices.AddIncludedManifestToTemplate(manifest)
-                };
-
-            }
-
-
-
-        [GlobalAuth(Permission = "GlobalDelete")]
-        public ApiBoolResponseDTO DeleteManifestsFromTemplate(int id)
+        public bool AddManifestToTemplate(MunkiManifestIncludedManifestEntity manifest)
         {
 
-            return new ApiBoolResponseDTO()
-            {
-                Value = _munkiManifestTemplateServices.DeleteIncludedManifestFromTemplate(id)
-            };
+            _request.Method = Method.POST;
+            _request.Resource = string.Format("api/{0}/AddManifestToTemplate/", _resource);
+            _request.AddJsonBody(manifest);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
 
         }
 
-        [GlobalAuth(Permission = "GlobalCreate")]
-        public ApiBoolResponseDTO AddManagedInstallToTemplate(MunkiManifestManagedInstallEntity managedInstall)
+
+
+
+        public bool DeleteManifestsFromTemplate(int id)
         {
 
-            return new ApiBoolResponseDTO()
-            {
-                Value = _munkiManifestTemplateServices.AddManagedInstallToTemplate(managedInstall)
-            };
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/DeleteManifestsFromTemplate/{1}", _resource,id);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+
 
         }
 
 
-
-        [GlobalAuth(Permission = "GlobalDelete")]
-        public ApiBoolResponseDTO DeleteManagedInstallsFromTemplate(int id)
+        public bool AddManagedInstallToTemplate(MunkiManifestManagedInstallEntity managedInstall)
         {
 
-            return new ApiBoolResponseDTO()
-            {
-                Value = _munkiManifestTemplateServices.DeleteManagedInstallFromTemplate(id)
-            };
+            _request.Method = Method.POST;
+            _request.Resource = string.Format("api/{0}/AddManagedInstallToTemplate/", _resource);
+            _request.AddJsonBody(managedInstall);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
 
         }
 
-        [GlobalAuth(Permission = "GlobalCreate")]
-        public ApiBoolResponseDTO AddManagedUninstallsToTemplate(MunkiManifestManagedUnInstallEntity managedUninstall)
+
+
+
+        public bool DeleteManagedInstallsFromTemplate(int id)
+        {
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/DeleteManagedInstallsFromTemplate/{1}", _resource,id);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+
+
+        }
+
+
+        public bool AddManagedUninstallsToTemplate(MunkiManifestManagedUnInstallEntity managedUninstall)
         {
 
-            return new ApiBoolResponseDTO()
-            {
-                Value = _munkiManifestTemplateServices.AddManagedUnInstallToTemplate(managedUninstall)
-            };
+            _request.Method = Method.POST;
+            _request.Resource = string.Format("api/{0}/AddManagedUninstallsToTemplate/", _resource);
+            _request.AddJsonBody(managedUninstall);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
 
         }
 
 
 
-        [GlobalAuth(Permission = "GlobalDelete")]
-        public ApiBoolResponseDTO DeleteManageUninstallsFromTemplate(int id)
+        public bool DeleteManageUninstallsFromTemplate(int id)
+        {
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/DeleteManageUninstallsFromTemplate/{1}", _resource,id);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+
+
+        }
+
+
+        public bool AddManagedUpdateToTemplate(MunkiManifestManagedUpdateEntity managedUpdate)
         {
 
-            return new ApiBoolResponseDTO()
-            {
-                Value = _munkiManifestTemplateServices.DeleteManagedUnInstallFromTemplate(id)
-            };
+            _request.Method = Method.POST;
+            _request.Resource = string.Format("api/{0}/AddManagedUpdateToTemplate/", _resource);
+            _request.AddJsonBody(managedUpdate);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
 
         }
 
-        [GlobalAuth(Permission = "GlobalCreate")]
-        public ApiBoolResponseDTO AddManagedUpdateToTemplate(MunkiManifestManagedUpdateEntity managedUpdate)
+
+
+
+        public bool RemoveManagedUpdatesFromTemplate(int id)
+        {
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/RemoveManagedUpdatesFromTemplate/{1}", _resource,id);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+
+
+
+        }
+
+
+        public bool AddOptionalInstallToTemplate(MunkiManifestOptionInstallEntity optionalInstall)
         {
 
-            return new ApiBoolResponseDTO()
-            {
-                Value = _munkiManifestTemplateServices.AddManagedUpdateToTemplate(managedUpdate)
-            };
+            _request.Method = Method.POST;
+            _request.Resource = string.Format("api/{0}/AddOptionalInstallToTemplate/", _resource);
+            _request.AddJsonBody(optionalInstall);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+
 
         }
 
 
 
-        [GlobalAuth(Permission = "GlobalDelete")]
-        public ApiBoolResponseDTO RemoveManagedUpdatesFromTemplate(int id)
+        public bool DeleteOptonalInstallsFromTemplate(int id)
         {
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/DeleteOptonalInstallsFromTemplate/{1}", _resource,id);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
 
-            return new ApiBoolResponseDTO() {Value = _munkiManifestTemplateServices.DeleteManagedUpdateFromTemplate(id)};
-
-        }
-
-        [GlobalAuth(Permission = "GlobalCreate")]
-        public ApiBoolResponseDTO AddOptionalInstallToTemplate(MunkiManifestOptionInstallEntity optionalInstall)
-        {
-
-            return new ApiBoolResponseDTO()
-            {
-                Value = _munkiManifestTemplateServices.AddOptionalInstallToTemplate(optionalInstall)
-            };
 
 
         }
-
-
-
-        [GlobalAuth(Permission = "GlobalDelete")]
-        public ApiBoolResponseDTO DeleteOptonalInstallsFromTemplate(int id)
-            {
-
-                return new ApiBoolResponseDTO()
-                {
-                    Value = _munkiManifestTemplateServices.DeleteOptionalInstallFromTemplate(id)
-                };
-
-            }
     }
 }

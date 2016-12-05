@@ -127,11 +127,11 @@ namespace CloneDeploy_Services
                 return _uow.UserRepository.Get(x => x.UserGroupId == userGroupId && x.Name.Contains(searchString),orderBy: (q => q.OrderBy(p => p.Name)));
             
         }
-        public bool UpdateAllGroupMembersAcls(CloneDeployUserGroupEntity userGroup)
+        public bool UpdateAllGroupMembersAcls(int userGroupId)
         {
-            var rights = _userServices.GetUserRights(userGroup.Id);     
+            var rights = _userServices.GetUserRights(userGroupId);     
            
-            foreach (var user in GetGroupMembers(userGroup.Id))
+            foreach (var user in GetGroupMembers(userGroupId))
             {
                 var userRights =
                     rights.Select(right => new UserRightEntity { UserId = user.Id, Right = right.Right }).ToList();
@@ -142,11 +142,11 @@ namespace CloneDeploy_Services
             return true;
         }
 
-        public  bool UpdateAllGroupMembersGroupMgmt(CloneDeployUserGroupEntity userGroup)
+        public  bool UpdateAllGroupMembersGroupMgmt(int userGroupId)
         {        
-            var groupManagement = GetUserGroupGroupManagements(userGroup.Id);
+            var groupManagement = GetUserGroupGroupManagements(userGroupId);
 
-            foreach (var user in GetGroupMembers(userGroup.Id))
+            foreach (var user in GetGroupMembers(userGroupId))
             {
                 var userGroupManagement =
                     groupManagement.Select(g => new UserGroupManagementEntity { GroupId = g.GroupId, UserId = user.Id })
@@ -158,11 +158,11 @@ namespace CloneDeploy_Services
             return true;
         }
 
-        public  bool UpdateAllGroupMembersImageMgmt(CloneDeployUserGroupEntity userGroup)
+        public  bool UpdateAllGroupMembersImageMgmt(int userGroupId)
         {
-            var imageManagement = GetUserGroupImageManagements(userGroup.Id);
+            var imageManagement = GetUserGroupImageManagements(userGroupId);
 
-            foreach (var user in GetGroupMembers(userGroup.Id))
+            foreach (var user in GetGroupMembers(userGroupId))
             {
                 var userImageManagement =
                     imageManagement.Select(g => new UserImageManagementEntity { ImageId = g.ImageId, UserId = user.Id })

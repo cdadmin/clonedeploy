@@ -422,8 +422,9 @@ namespace CloneDeploy_Services
             return true;
         }
 
-        public string GetComputerNonProxyPath(ComputerEntity computer, bool isActiveOrCustom)
+        public string GetComputerNonProxyPath(int computerId, bool isActiveOrCustom)
         {
+            var computer = GetComputer(computerId);
             var mode = Settings.PxeMode;
             var pxeComputerMac = Utility.MacToPxeMac(computer.Mac);
             string path;
@@ -455,8 +456,9 @@ namespace CloneDeploy_Services
             return path;
         }
 
-        public string GetComputerProxyPath(ComputerEntity computer, bool isActiveOrCustom, string proxyType)
+        public string GetComputerProxyPath(int computerId, bool isActiveOrCustom, string proxyType)
         {
+            var computer = GetComputer(computerId);
             var pxeComputerMac = Utility.MacToPxeMac(computer.Mac);
             string path = null;
 

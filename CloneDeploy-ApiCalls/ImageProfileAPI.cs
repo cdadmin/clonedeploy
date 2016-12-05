@@ -1,22 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Threading;
-using System.Web;
-using System.Web.Http;
-using CloneDeploy_ApiCalls;
-using CloneDeploy_App.BLL;
-using CloneDeploy_App.Controllers.Authorization;
+﻿using System.Collections.Generic;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Services;
+using RestSharp;
 
-
-namespace CloneDeploy_App.Controllers
+namespace CloneDeploy_ApiCalls
 {
     public class ImageProfileAPI : GenericAPI<ImageProfileEntity>
     {
@@ -25,74 +13,76 @@ namespace CloneDeploy_App.Controllers
 		
         }
 
-
-     
-
-    
-
-        [HttpPost]
-        [ImageProfileAuth(Permission = "ImageProfileCreate")]
-        public ApiBoolResponseDTO Clone(int id)
+        public bool Clone(int id)
         {
-            _imageProfileServices.CloneProfile(id);
-            return new ApiBoolResponseDTO() {Value = true};
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/Clone/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
         }
 
     
 
-        [ImageProfileAuth(Permission = "ImageProfileSearch")]
-        public IEnumerable<ImageProfileFileFolderEntity> GetFileFolder(int profileId)
+        public IEnumerable<ImageProfileFileFolderEntity> GetFileFolders(int id)
         {
 
-            return _imageProfileServices.SearchImageProfileFileFolders(profileId);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetFileFolders/{1}", _resource, id);
+            return new ApiRequest().Execute<List<ImageProfileFileFolderEntity>>(_request);
 
         }
 
-        [ImageProfileAuth(Permission = "ImageProfileSearch")]
-        public IEnumerable<ImageProfileScriptEntity> GetScript(int profileId)
+        public IEnumerable<ImageProfileScriptEntity> GetScripts(int id)
         {
 
-            return _imageProfileServices.SearchImageProfileScripts(profileId);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetScripts/{1}", _resource, id);
+            return new ApiRequest().Execute<List<ImageProfileScriptEntity>>(_request);
 
         }
 
-        [ImageProfileAuth(Permission = "ImageProfileSearch")]
-        public IEnumerable<ImageProfileSysprepTagEntity> GetSysprepTag(int profileId)
-        {
 
-            return _imageProfileServices.SearchImageProfileSysprepTags(profileId);
+        public IEnumerable<ImageProfileSysprepTagEntity> GetSysprepTags(int id)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetSysprepTags/{1}", _resource, id);
+            return new ApiRequest().Execute<List<ImageProfileSysprepTagEntity>>(_request);
 
         }
 
-        [ImageAuth(Permission = "ImageRead")]
-        public ApiStringResponseDTO GetMinimumClientSize(int profileId, int hdNumber)
+
+        public string GetMinimumClientSize(int id, int hdNumber)
         {
-            return new ApiStringResponseDTO()
-            {
-                Value = _imageProfileServices.MinimumClientSizeForGridView(profileId, hdNumber)
-            };
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetMinimumClientSize/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
 
         }
 
-        [ImageProfileAuth(Permission = "ImageProfileDelete")]
+
         public ActionResultDTO RemoveProfileFileFolders(int id)
         {
-            
-            return _imageProfileServices.DeleteImageProfileFileFolders(id);
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/RemoveProfileFileFolders/{1}", _resource, id);
+            return new ApiRequest().Execute<ActionResultDTO>(_request);
+
 
         }
 
-        [ImageProfileAuth(Permission = "ImageProfileDelete")]
+
         public ActionResultDTO RemoveProfileScripts(int id)
         {
-            return _imageProfileServices.DeleteImageProfileScripts(id);
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/RemoveProfileScripts/{1}", _resource, id);
+            return new ApiRequest().Execute<ActionResultDTO>(_request);
 
         }
 
-        [ImageProfileAuth(Permission = "ImageProfileDelete")]
-        public ApiBoolResponseDTO RemoveProfileSysprepTags(int id)
+
+        public bool RemoveProfileSysprepTags(int id)
         {
-            return new ApiBoolResponseDTO() {Value = _imageProfileServices.DeleteImageProfileSysprepTags(id)};
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/RemoveProfileSysprepTags/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
         }
        
     }

@@ -135,8 +135,9 @@ namespace CloneDeploy_Services
             
         }
 
-        public  ActionResultDTO UpdateSmartMembership(GroupEntity group)
+        public  ActionResultDTO UpdateSmartMembership(int groupId)
         {
+            var group = GetGroup(groupId);
             DeleteAllMembershipsForGroup(group.Id);
             var computers = new ComputerServices().SearchComputers(group.SmartCriteria, Int32.MaxValue);
             var memberships = computers.Select(computer => new GroupMembershipEntity { GroupId = @group.Id, ComputerId = computer.Id }).ToList();
@@ -204,10 +205,10 @@ namespace CloneDeploy_Services
 
         }
 
-        public  int StartGroupUnicast(GroupEntity group, int userId)
+        public  int StartGroupUnicast(int groupId, int userId)
         {
             var count = 0;
-            foreach (var computer in GetGroupMembers(group.Id))
+            foreach (var computer in GetGroupMembers(groupId))
             {
                 if(new CloneDeploy_App.BLL.Workflows.Unicast(computer, "push",userId).Start() == "true")
                 count++;

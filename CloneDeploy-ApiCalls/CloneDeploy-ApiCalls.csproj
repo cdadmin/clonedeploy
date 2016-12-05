@@ -47,7 +47,7 @@
     <Compile Include="APICall.cs" />
     <Compile Include="ApiRequest.cs" />
     <Compile Include="ComputerAPI.cs" />
-    <Compile Include="ComputerLogController.cs" />
+    <Compile Include="ComputerLogAPI.cs" />
     <Compile Include="ComputerMunkiAPI.cs" />
     <Compile Include="DistributionPointAPI.cs" />
     <Compile Include="FilesystemAPI.cs" />
@@ -67,10 +67,10 @@
     <Compile Include="UserGroupAPI.cs" />
     <Compile Include="UserGroupGroupManagementAPI.cs" />
     <Compile Include="UserGroupImageManagementAPI.cs" />
-    <Compile Include="UserGroupManagementController.cs" />
-    <Compile Include="UserGroupRightController.cs" />
-    <Compile Include="UserImageManagementController.cs" />
-    <Compile Include="UserRightController.cs" />
+    <Compile Include="UserGroupManagementAPI.cs" />
+    <Compile Include="UserGroupRightAPI.cs" />
+    <Compile Include="UserImageManagementAPI.cs" />
+    <Compile Include="UserRightAPI.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CloneDeploy-Entities\CloneDeploy-Entities.csproj">

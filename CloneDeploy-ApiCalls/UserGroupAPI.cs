@@ -1,22 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Threading;
-using System.Web.Http;
-using System.Web.Http.Controllers;
-using CloneDeploy_ApiCalls;
-using CloneDeploy_App.BLL;
-using CloneDeploy_App.Controllers.Authorization;
+﻿using System.Collections.Generic;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Services;
+using RestSharp;
 
-
-namespace CloneDeploy_App.Controllers
+namespace CloneDeploy_ApiCalls
 {
    
     public class UserGroupAPI : GenericAPI<CloneDeployUserGroupEntity>
@@ -27,85 +15,107 @@ namespace CloneDeploy_App.Controllers
         }
 
       
-
-        [UserAuth(Permission = "Administrator")]
-        public ApiStringResponseDTO GetMemberCount(int id)
+        public string GetMemberCount(int id)
         {
-            return new ApiStringResponseDTO() {Value = _userGroupServices.MemberCount(id)};
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetMemberCount/{1}", _resource,id);
+            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
         }
 
-        [UserAuth(Permission = "Administrator")]
+
         public IEnumerable<CloneDeployUserEntity> GetGroupMembers(int id, string searchstring = "")
         {
-            return string.IsNullOrEmpty(searchstring)
-                ? _userGroupServices.GetGroupMembers(id)
-                : _userGroupServices.GetGroupMembers(id,searchstring);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetGroupMembers/{1}", _resource,id);
+            _request.AddParameter("searchstring", searchstring);
+            return new ApiRequest().Execute<List<CloneDeployUserEntity>>(_request);
 
         }
 
-        [UserAuth(Permission = "Administrator")]
-        public ApiBoolResponseDTO UpdateMemberAcls(CloneDeployUserGroupEntity userGroup)
+
+        public bool UpdateMemberAcls(int id)
         {
-            return new ApiBoolResponseDTO() {Value = _userGroupServices.UpdateAllGroupMembersAcls(userGroup)};
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/UpdateMemberAcls/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
 
         }
 
-        [UserAuth(Permission = "Administrator")]
-        public ApiBoolResponseDTO UpdateMemberGroups(CloneDeployUserGroupEntity userGroup)
+
+        public bool UpdateMemberGroups(int id)
         {
-            return new ApiBoolResponseDTO() {Value = _userGroupServices.UpdateAllGroupMembersGroupMgmt(userGroup)};
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/UpdateMemberGroups/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
 
         }
 
-        [UserAuth(Permission = "Administrator")]
-        public ApiBoolResponseDTO UpdateMemberImages(CloneDeployUserGroupEntity userGroup)
+
+        public bool UpdateMemberImages(int id)
         {
-            return new ApiBoolResponseDTO() {Value = _userGroupServices.UpdateAllGroupMembersImageMgmt(userGroup)};
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/UpdateMemberImages/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
 
         }
 
-        [UserAuth(Permission = "Administrator")]
-        public ApiBoolResponseDTO AddNewMember(CloneDeployUserGroupEntity userGroup, CloneDeployUserEntity user)
+
+        public bool AddNewMember(CloneDeployUserGroupEntity userGroup, CloneDeployUserEntity user)
         {
-            return new ApiBoolResponseDTO() {Value = _userGroupServices.AddNewGroupMember(userGroup, user)};
+            _request.Method = Method.POST;
+            _request.Resource = string.Format("api/{0}/AddNewMember/", _resource);
+            _request.AddJsonBody(userGroup);
+            _request.AddJsonBody(user);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
         }
 
-        [UserAuth(Permission = "Administrator")]
+
         public IEnumerable<UserGroupRightEntity> GetRights(int id)
         {
-            return _userGroupServices.GetUserGroupRights(id);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetRights/{1}", _resource, id);
+            return new ApiRequest().Execute<List<UserGroupRightEntity>>(_request);
         }
 
-        [UserAuth(Permission = "Administrator")]
-        public ApiBoolResponseDTO DeleteRights(int id)
+
+        public bool DeleteRights(int id)
         {
-            return new ApiBoolResponseDTO() {Value = _userGroupServices.DeleteUserGroupRights(id)};
-
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/DeleteRights/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
         }
 
-        [UserAuth(Permission = "Administrator")]
+
         public IEnumerable<UserGroupImageManagementEntity> GetImageManagements(int id)
         {
-            return _userGroupServices.GetUserGroupImageManagements(id);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetImageManagements/{1}", _resource, id);
+            return new ApiRequest().Execute<List<UserGroupImageManagementEntity>>(_request);
         }
 
-        [UserAuth(Permission = "Administrator")]
-        public ApiBoolResponseDTO DeleteImageManagements(int id)
+
+        public bool DeleteImageManagements(int id)
         {
-            return new ApiBoolResponseDTO() {Value = _userGroupServices.DeleteUserGroupImageManagements(id)};
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/DeleteImageManagements/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
 
         }
 
-        [UserAuth(Permission = "Administrator")]
+
         public IEnumerable<UserGroupGroupManagementEntity> GetGroupManagements(int id)
         {
-            return _userGroupServices.GetUserGroupGroupManagements(id);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetGroupManagements/{1}", _resource, id);
+            return new ApiRequest().Execute<List<UserGroupGroupManagementEntity>>(_request);
         }
 
-        [UserAuth(Permission = "Administrator")]
-        public ApiBoolResponseDTO DeleteGroupManagements(int id)
+
+        public bool DeleteGroupManagements(int id)
         {
-            return new ApiBoolResponseDTO() {Value = _userGroupServices.DeleteUserGroupGroupManagements(id)};
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/DeleteGroupManagements/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
 
         }
      

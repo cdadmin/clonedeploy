@@ -151,7 +151,7 @@
     <Compile Include="Controllers\ImageProfileFileFolderController.cs" />
     <Compile Include="Controllers\ImageProfileController.cs" />
     <Compile Include="Controllers\ImageController.cs" />
-    <Compile Include="Controllers\GroupBootPropertyController.cs" />
+    <Compile Include="Controllers\GroupPropertyController.cs" />
     <Compile Include="Controllers\GroupMunkiController.cs" />
     <Compile Include="Controllers\GroupBootMenuController.cs" />
     <Compile Include="Controllers\FileFolderController.cs" />

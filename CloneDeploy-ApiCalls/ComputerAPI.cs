@@ -1,21 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Text;
-using System.Threading;
-using System.Web.Http;
-using CloneDeploy_ApiCalls;
-using CloneDeploy_App.Controllers.Authorization;
+﻿using System.Collections.Generic;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Services;
+using RestSharp;
 
-
-namespace CloneDeploy_App.Controllers
+namespace CloneDeploy_ApiCalls
 {
     public class ComputerAPI :GenericAPI<ComputerEntity>
     {
@@ -24,143 +13,162 @@ namespace CloneDeploy_App.Controllers
 		
         }
 
-        [ComputerAuth(Permission = "ComputerSearch")]
-        public IEnumerable<ComputerEntity> GetComputersWithoutGroup(int limit = 0, string searchstring = "")
-        {
-            return string.IsNullOrEmpty(searchstring)
-                ? _computerService.ComputersWithoutGroup(limit)
-                : _computerService.ComputersWithoutGroup(limit, searchstring);
 
+        public IEnumerable<ComputerEntity> GetComputersWithoutGroup(int limit, string searchstring)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetComputersWithoutGroup", _resource);
+            _request.AddParameter("limit", limit);
+            _request.AddParameter("searchstring", searchstring);
+            return new ApiRequest().Execute<List<ComputerEntity>>(_request);
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
-        public List<GroupMembershipEntity> GetGroupMemberships(int id)
+
+        public IEnumerable<GroupMembershipEntity> GetGroupMemberships(int id)
         {
-            return _computerService.GetAllComputerMemberships(id);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetGroupMemberships/{1}", _resource,id);
+            return new ApiRequest().Execute<List<GroupMembershipEntity>>(_request);
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
+
         public ComputerEntity GetByMac(string mac)
         {
-            return _computerService.GetComputerFromMac(mac);       
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetByMac/", _resource);
+            _request.AddParameter("mac", mac);
+            return new ApiRequest().Execute<ComputerEntity>(_request);
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
         public DistributionPointEntity GetDistributionPoint(int id)
         {
-            return _computerService.GetDistributionPoint(id);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetDistributionPoint/{1}", _resource, id);
+            return new ApiRequest().Execute<DistributionPointEntity>(_request);
         }
 
-        [HttpGet]
-        [ComputerAuth(Permission = "ComputerRead")]
+
+
         public bool IsComputerActive(int id)
         {
-            return _computerService.IsComputerActive(id);       
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/IsComputerActive/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
+
         public ActiveImagingTaskEntity GetActiveTask(int id)
         {
-            return _computerService.GetTaskForComputer(id);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetActiveTask/{1}", _resource, id);
+            return new ApiRequest().Execute<ActiveImagingTaskEntity>(_request);
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
+
         public ComputerBootMenuEntity GetBootMenu(int id)
         {
-            return _computerService.GetComputerBootMenu(id);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetBootMenu/{1}", _resource, id);
+            return new ApiRequest().Execute<ComputerBootMenuEntity>(_request);
         }
 
-        [ComputerAuth(Permission = "ComputerDelete")]
         public ActionResultDTO DeleteBootMenus(int id)
         {
-            return _computerService.DeleteComputerBootMenus(id);
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/DeleteBootMenus/{1}", _resource, id);
+            return new ApiRequest().Execute<ActionResultDTO>(_request);
         }
 
-        [HttpPost]
-        [ComputerAuth(Permission = "ComputerUpdate")]
-        public ApiBoolResponseDTO CreateCustomBootFiles(ComputerEntity computer)
+
+        public bool CreateCustomBootFiles(ComputerEntity computer)
         {
-            return new ApiBoolResponseDTO() {Value = _computerService.CreateBootFiles(computer)};
+            _request.Method = Method.POST;
+            _request.Resource = string.Format("api/{0}/CreateCustomBootFiles/", _resource);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
         }
 
-        [HttpPost]
-        [ComputerAuth(Permission = "ComputerRead")]
-        public ApiStringResponseDTO GetProxyPath(ComputerEntity computer, bool isActiveOrCustom, string proxyType)
+
+        public string GetProxyPath(int id, bool isActiveOrCustom, string proxyType)
         {
-            return new ApiStringResponseDTO()
-            {
-                Value = _computerService.GetComputerProxyPath(computer, isActiveOrCustom, proxyType)
-            };
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetProxyPath/{1}", _resource, id);
+            _request.AddParameter("isActiveOrCustom", isActiveOrCustom);
+            _request.AddParameter("proxyType", proxyType);
+            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
         }
 
-        [HttpPost]
-        [ComputerAuth(Permission = "ComputerRead")]
-        public ApiStringResponseDTO GetNonProxyPath(ComputerEntity computer, bool isActiveOrCustom)
+
+        public string GetNonProxyPath(int id, bool isActiveOrCustom)
         {
-            return new ApiStringResponseDTO()
-            {
-                Value = _computerService.GetComputerNonProxyPath(computer, isActiveOrCustom)
-            };
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetNonProxyPath/{1}", _resource, id);
+            _request.AddParameter("isActiveOrCustom", isActiveOrCustom);
+            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
         public IEnumerable<ComputerLogEntity> GetComputerLogs(int id)
         {
-            return _computerService.SearchComputerLogs(id);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetComputerLogs/{1}", _resource, id);
+            return new ApiRequest().Execute<List<ComputerLogEntity>>(_request);
         }
 
-        [ComputerAuth(Permission = "ComputerDelete")]
+
         public ActionResultDTO DeleteAllComputerLogs(int id)
         {
-            var result = _computerService.DeleteComputerLogs(id);
-            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
-            return result;
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/DeleteAllComputerLogs/{1}", _resource, id);
+            return new ApiRequest().Execute<ActionResultDTO>(_request);
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
+
         public IEnumerable<ComputerMunkiEntity> GetMunkiTemplates(int id)
         {
-            return _computerService.GetMunkiTemplates(id);       
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetMunkiTemplates/{1}", _resource, id);
+            return new ApiRequest().Execute<List<ComputerMunkiEntity>>(_request);
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
-        public ApiStringResponseDTO GetEffectiveManifest(int id)
+
+        public string GetEffectiveManifest(int id)
         {
-            var effectiveManifest = new BLL.Workflows.EffectiveMunkiTemplate().Computer(id);
-            return new ApiStringResponseDTO() {Value = Encoding.UTF8.GetString(effectiveManifest.ToArray())};
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetEffectiveManifest/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
         }
 
-        [ComputerAuth(Permission = "ComputerDelete")]
+
         public ActionResultDTO DeleteMunkiTemplates(int id)
         {
-            var result = _computerService.DeleteMunkiTemplates(id);
-            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
-            return result;
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/DeleteMunkiTemplates/{1}", _resource, id);
+            return new ApiRequest().Execute<ActionResultDTO>(_request);
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
+
         public ComputerProxyReservationEntity GetProxyReservation(int id)
         {
-            var result = _computerService.GetComputerProxyReservation(id);
-            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
-            return result;
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetProxyReservation/{1}", _resource, id);
+            return new ApiRequest().Execute<ComputerProxyReservationEntity>(_request);
         }
 
-        [HttpGet]
-        [ComputerAuth(Permission = "ComputerUpdate")]
-        public ApiBoolResponseDTO ToggleProxyReservation(int id, bool status)
+
+        public bool ToggleProxyReservation(int id, bool status)
         {
-
-            return new ApiBoolResponseDTO() {Value = _computerService.ToggleProxyReservation(id, status)};
-
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/ToggleProxyReservation/{1}", _resource, id);
+            _request.AddParameter("status", status);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
         }
 
-        [HttpGet]
-        [ComputerAuth(Permission = "ComputerUpdate")]
-        public ApiBoolResponseDTO Toggle(int id, bool status)
-        {
 
-            return new ApiBoolResponseDTO() {Value = _computerService.ToggleComputerBootMenu(id, status)};
+        public bool ToggleBootMenu(int id, bool status)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/ToggleBootMenu/{1}", _resource, id);
+            _request.AddParameter("status", status);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
 
         }
     }

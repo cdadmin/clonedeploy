@@ -109,9 +109,9 @@ namespace CloneDeploy_App.Controllers
 
         [HttpGet]
         [ComputerAuth(Permission = "ComputerRead")]
-        public bool IsComputerActive(int id)
+        public ApiBoolResponseDTO IsComputerActive(int id)
         {
-            return _computerService.IsComputerActive(id);       
+            return new ApiBoolResponseDTO() {Value = _computerService.IsComputerActive(id)};
         }
 
         [ComputerAuth(Permission = "ComputerRead")]
@@ -141,21 +141,21 @@ namespace CloneDeploy_App.Controllers
 
         [HttpPost]
         [ComputerAuth(Permission = "ComputerRead")]
-        public ApiStringResponseDTO GetProxyPath(ComputerEntity computer, bool isActiveOrCustom, string proxyType)
+        public ApiStringResponseDTO GetProxyPath(int id, bool isActiveOrCustom, string proxyType)
         {
             return new ApiStringResponseDTO()
             {
-                Value = _computerService.GetComputerProxyPath(computer, isActiveOrCustom, proxyType)
+                Value = _computerService.GetComputerProxyPath(id, isActiveOrCustom, proxyType)
             };
         }
 
         [HttpPost]
         [ComputerAuth(Permission = "ComputerRead")]
-        public ApiStringResponseDTO GetNonProxyPath(ComputerEntity computer, bool isActiveOrCustom)
+        public ApiStringResponseDTO GetNonProxyPath(int id, bool isActiveOrCustom)
         {
             return new ApiStringResponseDTO()
             {
-                Value = _computerService.GetComputerNonProxyPath(computer, isActiveOrCustom)
+                Value = _computerService.GetComputerNonProxyPath(id, isActiveOrCustom)
             };
         }
 
@@ -213,7 +213,7 @@ namespace CloneDeploy_App.Controllers
 
         [HttpGet]
         [ComputerAuth(Permission = "ComputerUpdate")]
-        public ApiBoolResponseDTO Toggle(int id, bool status)
+        public ApiBoolResponseDTO ToggleBootMenu(int id, bool status)
         {
 
             return new ApiBoolResponseDTO() {Value = _computerService.ToggleComputerBootMenu(id, status)};

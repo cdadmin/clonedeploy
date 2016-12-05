@@ -1,20 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Threading;
-using System.Web;
-using System.Web.Http;
-using CloneDeploy_ApiCalls;
-using CloneDeploy_App.Controllers.Authorization;
+﻿using System.Collections.Generic;
 using CloneDeploy_Entities;
-using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Services;
+using RestSharp;
 
-
-namespace CloneDeploy_App.Controllers
+namespace CloneDeploy_ApiCalls
 {
     public class ActiveMulticastSessionAPI:GenericAPI<ActiveMulticastSessionEntity>
     {
@@ -27,18 +15,24 @@ namespace CloneDeploy_App.Controllers
 
         public IEnumerable<ActiveImagingTaskEntity> GetMemberStatus(int id)
         {
-           
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetUnicasts/{1}", _resource,id);
+            return new ApiRequest().Execute<List<ActiveImagingTaskEntity>>(_request);
         }
 
         public IEnumerable<ComputerEntity> GetComputers(int id)
         {
-          
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetComputers/{1}", _resource,id);
+            return new ApiRequest().Execute<List<ComputerEntity>>(_request);
         }
 
 
         public IEnumerable<ActiveImagingTaskEntity> GetProgress(int id)
         {
-           
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetUnicasts/{1}", _resource,id);
+            return new ApiRequest().Execute<List<ActiveImagingTaskEntity>>(_request);
            
         }
 

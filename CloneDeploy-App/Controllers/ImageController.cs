@@ -97,9 +97,9 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ImageProfileAuth(Permission = "ImageProfileSearch")]
-        public IEnumerable<ImageProfileEntity> GetImageProfiles(int imageId)
+        public IEnumerable<ImageProfileEntity> GetImageProfiles(int id)
         {
-            return _imageServices.SearchProfiles(imageId);
+            return _imageServices.SearchProfiles(id);
         }
 
         [HttpPost]

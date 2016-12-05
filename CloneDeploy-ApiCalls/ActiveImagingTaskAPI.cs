@@ -1,21 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Threading;
-using System.Web;
-using System.Web.Http;
-using CloneDeploy_ApiCalls;
-using CloneDeploy_App.Controllers.Authorization;
+﻿using System.Collections.Generic;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Services;
 using RestSharp;
 
-
-namespace CloneDeploy_App.Controllers
+namespace CloneDeploy_ApiCalls
 {
     public class ActiveImagingTaskAPI:GenericAPI<ActiveImagingTaskEntity>
     {
@@ -29,24 +17,31 @@ namespace CloneDeploy_App.Controllers
             _request.Method = Method.GET;
             _request.Resource = string.Format("api/{0}/GetUnicasts/", _resource);
             _request.AddParameter("tasktype", taskType);
-            return new ApiRequest().Execute<IEnumerable<ActiveImagingTaskEntity>>(_request);
+            return new ApiRequest().Execute<List<ActiveImagingTaskEntity>>(_request);
 
         }
 
         public IEnumerable<ActiveImagingTaskEntity> GetActiveTasks()
         {
-           
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetActiveTasks/", _resource);
+            return new ApiRequest().Execute<List<ActiveImagingTaskEntity>>(_request);
         }
 
-        public ApiStringResponseDTO GetActiveUnicastCount(string taskType)
+        public string GetActiveUnicastCount(string taskType)
         {
-         
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetActiveUnicastCount/", _resource);
+            _request.AddParameter("tasktype", taskType);
+            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
         }
 
 
-        public ApiStringResponseDTO GetAllActiveCount()
+        public string GetAllActiveCount()
         {
-           
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetAllActiveCount/", _resource);
+            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
 
         }
 

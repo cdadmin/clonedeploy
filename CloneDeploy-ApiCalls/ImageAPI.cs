@@ -1,22 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Threading;
-using System.Web;
-using System.Web.Http;
-using CloneDeploy_ApiCalls;
-using CloneDeploy_App.Controllers.Authorization;
+﻿using System.Collections.Generic;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.ImageSchemaBE;
-using CloneDeploy_Services;
+using RestSharp;
 
-
-namespace CloneDeploy_App.Controllers
+namespace CloneDeploy_ApiCalls
 {
     public class ImageAPI: GenericAPI<ImageEntity>
     {
@@ -24,56 +13,61 @@ namespace CloneDeploy_App.Controllers
         {
 		
         }
-    
-       
+         
 
-      
 
-        [ImageAuth(Permission = "ImageSearch")]
         public IEnumerable<ImageEntity> Search(string searchstring = "")
         {
-            return string.IsNullOrEmpty(searchstring)
-                ? _imageServices.SearchImages()
-                : _imageServices.SearchImages(searchstring);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/Search/", _resource);
+            _request.AddParameter("searchstring", searchstring);
+            return new ApiRequest().Execute<List<ImageEntity>>(_request);
         }
 
        
-
-        [ImageAuth]
-        public ApiBoolResponseDTO SendImageApprovedMail(int id)
+        public bool SendImageApprovedMail(int id)
         {
-            _imageServices.SendImageApprovedEmail(id);
-            return new ApiBoolResponseDTO(){Value = true};
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/SendImageApprovedMail/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
         }
 
      
-
-        [ImageProfileAuth(Permission = "ImageProfileSearch")]
-        public IEnumerable<ImageProfileEntity> GetImageProfiles(int imageId)
+        public IEnumerable<ImageProfileEntity> GetImageProfiles(int id)
         {
-            return _imageServices.SearchProfiles(imageId);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetImageProfiles/{1}", _resource, id);
+            return new ApiRequest().Execute<List<ImageProfileEntity>>(_request);
         }
 
-        [HttpPost]
-        [ImageProfileAuth(Permission = "ImageProfileCreate")]
+
         public ImageProfileEntity SeedDefaultProfile(int id)
         {
-            return _imageServices.SeedDefaultImageProfile(id);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/SeedDefaultProfile/{1}", _resource, id);
+            return new ApiRequest().Execute<ImageProfileEntity>(_request);
         }
 
-        [ImageAuth(Permission = "ImageRead")]
+
         public IEnumerable<ImageFileInfo> GetPartitionFileInfo(int id, string selectedHd, string selectedPartition)
         {
-
-            return _imageServices.GetPartitionImageFileInfoForGridView(id, selectedHd, selectedPartition);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetPartitionFileInfo/{1}", _resource, id);
+            _request.AddParameter("selectedHd", selectedHd);
+            _request.AddParameter("selectedPartition", selectedPartition);
+            return new ApiRequest().Execute<List<ImageFileInfo>>(_request);
 
         }
 
-        [ImageAuth(Permission = "ImageRead")]
-        public ApiStringResponseDTO GetImageSizeOnServer(string imageName, string hdNumber)
-        {
 
-            return new ApiStringResponseDTO() {Value = _imageServices.ImageSizeOnServerForGridView(imageName, hdNumber)};
+        public string GetImageSizeOnServer(string imageName, string hdNumber)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetImageSizeOnServer/", _resource);
+            _request.AddParameter("imageName", imageName);
+            _request.AddParameter("hdNumber", hdNumber);
+            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
+
         }
     }
 }

@@ -1,18 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web;
-using System.Web.Http;
-using CloneDeploy_ApiCalls;
-using CloneDeploy_App.Controllers.Authorization;
+﻿using System.Collections.Generic;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
-using CloneDeploy_Services;
+using RestSharp;
 
-
-namespace CloneDeploy_App.Controllers
+namespace CloneDeploy_ApiCalls
 {
     public class SettingAPI : GenericAPI<SettingEntity>
     {
@@ -21,18 +12,21 @@ namespace CloneDeploy_App.Controllers
 		
         }
     
-      
-
-        [AdminAuth(Permission = "AdminRead")]
         public SettingEntity GetSetting(string name)
         {
-            return _settingServices.GetSetting(name);          
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetSetting/", _resource);
+            _request.AddParameter("name", name);
+            return new ApiRequest().Execute<SettingEntity>(_request);
         }
 
-        [GlobalAuth(Permission = "GlobalUpdate")]
-        public ApiBoolResponseDTO UpdateSettings(List<SettingEntity> listSettings)
+
+        public bool UpdateSettings(List<SettingEntity> listSettings)
         {
-            return new ApiBoolResponseDTO() {Value = _settingServices.UpdateSetting(listSettings)};
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/UpdateSettings/", _resource);
+            _request.AddJsonBody(listSettings);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
             
         }
     }
