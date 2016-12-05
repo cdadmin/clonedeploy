@@ -5,14 +5,16 @@ using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using CloneDeploy_Web.Models;
+using CloneDeploy_ApiCalls;
+using CloneDeploy_Entities;
 
 namespace BasePages
 {
     public class PageBaseMaster : Page
     {
-        public CloneDeployUser CloneDeployCurrentUser;
+        public CloneDeployUserEntity CloneDeployCurrentUser;
         public List<string> CurrentUserRights;
+        public APICall Call;
 
         public static string EndUserMessage
         {
@@ -23,7 +25,7 @@ namespace BasePages
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
-
+            Call = new APICall();
             object currentUser = Session["CloneDeployUser"];
 
             if (currentUser == null )
@@ -33,7 +35,7 @@ namespace BasePages
                 Response.Redirect("~/views/login/login.aspx?session=expired", true);
             }
 
-            CloneDeployCurrentUser = (CloneDeployUser)currentUser;
+            CloneDeployCurrentUser = (CloneDeployUserEntity)currentUser;
         }
 
         protected override void OnLoadComplete(EventArgs e)

@@ -24,6 +24,12 @@ namespace CloneDeploy_App.BLL.Workflows
         public string Type { get; set; }
         readonly Regex _alphaNumericSpace = new Regex("[^a-zA-Z0-9 ]");
         readonly Regex _alphaNumericNoSpace = new Regex("[^a-zA-Z0-9]");
+        private BootEntryServices _bootEntryServices;
+
+        public DefaultBootMenu()
+        {
+            _bootEntryServices = new BootEntryServices();
+        }
 
         public void CreateGlobalDefaultBootMenu()
         {
@@ -56,7 +62,7 @@ namespace CloneDeploy_App.BLL.Workflows
 
         private void CreateGrubMenu()
         {
-            var customMenuEntries = BLL.BootEntryServices.SearchBootEntrys().Where(x => x.Type == "grub" && x.Active == 1).OrderBy(x => x.Order).ThenBy(x => x.Name);
+            var customMenuEntries = _bootEntryServices.SearchBootEntrys().Where(x => x.Type == "grub" && x.Active == 1).OrderBy(x => x.Order).ThenBy(x => x.Name);
             var defaultCustomEntry = customMenuEntries.FirstOrDefault(x => x.Default == 1);
 
             var grubMenu = new StringBuilder();
@@ -193,7 +199,7 @@ namespace CloneDeploy_App.BLL.Workflows
 
         private void CreateIpxeMenu()
         {
-            var customMenuEntries = BLL.BootEntryServices.SearchBootEntrys().Where(x => x.Type == "ipxe" && x.Active == 1).OrderBy(x => x.Order).ThenBy(x => x.Name);
+            var customMenuEntries = _bootEntryServices.SearchBootEntrys().Where(x => x.Type == "ipxe" && x.Active == 1).OrderBy(x => x.Order).ThenBy(x => x.Name);
             var defaultCustomEntry = customMenuEntries.FirstOrDefault(x => x.Default == 1);
 
             var ipxeMenu = new StringBuilder();
@@ -327,7 +333,7 @@ namespace CloneDeploy_App.BLL.Workflows
 
         private void CreateSyslinuxMenu()
         {
-            var customMenuEntries = BLL.BootEntryServices.SearchBootEntrys().Where(x => x.Type == "syslinux/pxelinux" && x.Active == 1).OrderBy(x => x.Order).ThenBy(x => x.Name);
+            var customMenuEntries = _bootEntryServices.SearchBootEntrys().Where(x => x.Type == "syslinux/pxelinux" && x.Active == 1).OrderBy(x => x.Order).ThenBy(x => x.Name);
             var defaultCustomEntry = customMenuEntries.FirstOrDefault(x => x.Default == 1);
             var sysLinuxMenu = new StringBuilder();
 

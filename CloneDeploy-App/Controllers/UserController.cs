@@ -43,7 +43,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [UserAuth(Permission = "CallerOnly")]
-        public CloneDeployUserEntity GetForLogin(int id)
+        public ApiObjectResponseDTO GetForLogin(int id)
         {
             return _userServices.GetUserForLogin(id);
         }

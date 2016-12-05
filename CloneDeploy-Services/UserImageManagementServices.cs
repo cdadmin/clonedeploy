@@ -29,13 +29,6 @@ namespace CloneDeploy_Services
 
       
 
-        public  bool DeleteAllForImage(int imageId)
-        {
-            
-                _uow.UserImageManagementRepository.DeleteRange(x => x.ImageId == imageId);
-                _uow.Save();
-                return true;
-            
-        }
+      
     }
 }

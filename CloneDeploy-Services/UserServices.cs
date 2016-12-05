@@ -119,22 +119,23 @@ namespace CloneDeploy_Services
             
         }
 
-        public  CloneDeployUserEntity GetUserForLogin(int userId)
+        public ApiObjectResponseDTO GetUserForLogin(int userId)
         {
-            
-          
-                var user = _uow.UserRepository.GetById(userId);
-                if (user != null)
-                {
-                    user.Token = string.Empty;
-                    user.ApiId = string.Empty;
-                    user.ApiKey = string.Empty;
-                    user.Password = string.Empty;
-                    user.Salt = string.Empty;             
+            var result = new ApiObjectResponseDTO();
+            var user = _uow.UserRepository.GetById(userId);
+            if (user != null)
+            {
+                user.Token = string.Empty;
+                user.ApiId = string.Empty;
+                user.ApiKey = string.Empty;
+                user.Password = string.Empty;
+                user.Salt = string.Empty;
+                result.Success = true;
+                result.Id = user.Id;
+                result.ObjectJson = JsonConvert.SerializeObject(user);
+            }
 
-                }
-
-            return user;
+            return result;
 
 
         }
@@ -145,7 +146,7 @@ namespace CloneDeploy_Services
                 var users = _uow.UserRepository.Get(u => u.Name.Contains(searchString));
                 foreach (var user in users)
                 {
-                    user.UserGroup = UserGroupServices.GetUserGroup(user.UserGroupId);
+                    user.UserGroup = new UserGroupServices().GetUserGroup(user.UserGroupId);
                 }
                 return users;
             

@@ -16,6 +16,7 @@ namespace CloneDeploy_Services
     {
         private readonly UnitOfWork _uow;
 
+        //private readonly UserServices _userServices = new UserServices();
         public ImageServices()
         {
             _uow = new UnitOfWork();
@@ -33,7 +34,7 @@ namespace CloneDeploy_Services
 
                 var defaultProfile = SeedDefaultImageProfile(image.Id);
                 defaultProfile.ImageId = image.Id;
-                ImageProfileServices.AddProfile(defaultProfile);
+                new ImageProfileServices().AddProfile(defaultProfile);
 
                 try
                 {
@@ -83,8 +84,8 @@ namespace CloneDeploy_Services
             _uow.Save();
 
             if (string.IsNullOrEmpty(image.Name)) return result;
-            UserImageManagementServices.DeleteAllForImage(image.Id);
-            ImageProfileServices.DeleteImage(image.Id);
+            DeleteAllUserManagementsForImage(image.Id);
+            DeleteAllProfilesForImage(image.Id);
             try
             {
                 if (Directory.Exists(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name))
@@ -121,7 +122,7 @@ namespace CloneDeploy_Services
             if (Settings.SmtpEnabled == "0") return;
 
             var image = GetImage(imageId);
-            foreach (var user in UserServices.SearchUsers("").Where(x => x.NotifyImageApproved == 1 && !string.IsNullOrEmpty(x.Email)))
+            foreach (var user in _userServices.SearchUsers("").Where(x => x.NotifyImageApproved == 1 && !string.IsNullOrEmpty(x.Email)))
             {
                 var mail = new CloneDeploy_App.Helpers.Mail
                 {
@@ -136,10 +137,10 @@ namespace CloneDeploy_Services
         
         public  string ImageCountUser(int userId)
         {
-            if (UserServices.GetUser(userId).Membership == "Administrator")
+            if (_userServices.GetUser(userId).Membership == "Administrator")
                 return TotalCount();
 
-            var userManagedImages = UserImageManagementServices.Get(userId);
+            var userManagedImages = _userServices.GetUserImageManagements(userId);
             
             //If count is zero image management is not being used return total count
             return userManagedImages.Count == 0 ? TotalCount() : userManagedImages.Count.ToString();
@@ -147,13 +148,13 @@ namespace CloneDeploy_Services
 
         public List<ImageEntity> SearchImagesForUser(int userId, string searchString = "")
         {
-            if (UserServices.GetUser(userId).Membership == "Administrator")
+            if (_userServices.GetUser(userId).Membership == "Administrator")
                 return SearchImages(searchString);
 
 
             var listOfImages = new List<ImageEntity>();
 
-            var userManagedImages = UserImageManagementServices.Get(userId);
+            var userManagedImages = _userServices.GetUserImageManagements(userId);
             if (userManagedImages.Count == 0)
                 return SearchImages(searchString);
 
@@ -181,10 +182,10 @@ namespace CloneDeploy_Services
                     return _uow.ImageRepository.Get(i => i.IsVisible == 1 && i.Enabled == 1, orderBy: (q => q.OrderBy(p => p.Name)));
                 else
                 {
-                    if (UserServices.GetUser(userId).Membership == "Administrator")
+                    if (_userServices.GetUser(userId).Membership == "Administrator")
                         return _uow.ImageRepository.Get(i => i.IsVisible == 1 && i.Enabled == 1, orderBy: (q => q.OrderBy(p => p.Name)));
 
-                    var userManagedImages = UserImageManagementServices.Get(userId);
+                    var userManagedImages = _userServices.GetUserImageManagements(userId);
                     if (userManagedImages.Count == 0)
                         return _uow.ImageRepository.Get(i => i.IsVisible == 1 && i.Enabled == 1, orderBy: (q => q.OrderBy(p => p.Name)));
                     else
@@ -239,6 +240,24 @@ namespace CloneDeploy_Services
 
             }
             return result;
+
+        }
+
+        public bool DeleteAllUserManagementsForImage(int imageId)
+        {
+
+            _uow.UserImageManagementRepository.DeleteRange(x => x.ImageId == imageId);
+            _uow.Save();
+            return true;
+
+        }
+
+        public bool DeleteAllProfilesForImage(int imageId)
+        {
+
+            _uow.ImageProfileRepository.DeleteRange(x => x.ImageId == imageId);
+            _uow.Save();
+            return true;
 
         }
 
@@ -316,7 +335,7 @@ namespace CloneDeploy_Services
 
             if (Settings.RequireImageApproval.ToLower() == "true")
             {
-                var user = UserServices.GetUser(userId);
+                var user = _userServices.GetUser(userId);
                 if (user.Membership != "Administrator") //administrators don't need image approval
                 {
                     if (!Convert.ToBoolean(image.Approved))

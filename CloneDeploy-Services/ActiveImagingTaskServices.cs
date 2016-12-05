@@ -13,10 +13,12 @@ namespace CloneDeploy_Services
     public class ActiveImagingTaskServices
     {
          private readonly UnitOfWork _uow;
+        private readonly UserServices _userServices;
 
         public ActiveImagingTaskServices()
         {
             _uow = new UnitOfWork();
+            _userServices = new UserServices();
         }
 
         public ActionResultDTO DeleteActiveImagingTask(int activeImagingTaskId)
@@ -38,12 +40,13 @@ namespace CloneDeploy_Services
 
         }
 
+        //be
         public  void SendTaskCompletedEmail(ActiveImagingTaskEntity task)
         {
             //Mail not enabled
             if (Settings.SmtpEnabled == "0") return;
             task.Computer = new ComputerServices().GetComputer(task.ComputerId);
-            foreach (var user in UserServices.SearchUsers("").Where(x => x.NotifyComplete == 1 && !string.IsNullOrEmpty(x.Email)))
+            foreach (var user in _userServices.SearchUsers("").Where(x => x.NotifyComplete == 1 && !string.IsNullOrEmpty(x.Email)))
             {
                 if (task.UserId == user.Id)
                 {
@@ -57,13 +60,13 @@ namespace CloneDeploy_Services
                 }
             }
         }
-
+        //be
         public  void SendTaskErrorEmail(ActiveImagingTaskEntity task, string error)
         {
             //Mail not enabled
             if (Settings.SmtpEnabled == "0") return;
             task.Computer = new ComputerServices().GetComputer(task.ComputerId);
-            foreach (var user in UserServices.SearchUsers("").Where(x => x.NotifyError == 1 && !string.IsNullOrEmpty(x.Email)))
+            foreach (var user in _userServices.SearchUsers("").Where(x => x.NotifyError == 1 && !string.IsNullOrEmpty(x.Email)))
             {
                 if (task.UserId == user.Id)
                 {
@@ -78,6 +81,7 @@ namespace CloneDeploy_Services
             }
         }
 
+        //be
         public  bool AddActiveImagingTask(ActiveImagingTaskEntity activeImagingTask)
         {
            
@@ -87,6 +91,7 @@ namespace CloneDeploy_Services
             
         }
 
+        //be
         public  void DeleteForMulticast(int multicastId)
         {
             
@@ -95,6 +100,7 @@ namespace CloneDeploy_Services
             
         }
 
+        //be
         public  bool UpdateActiveImagingTask(ActiveImagingTaskEntity activeImagingTask)
         {
            
@@ -129,7 +135,7 @@ namespace CloneDeploy_Services
 
             
                 //Admins see all tasks
-                var activeImagingTasks = UserServices.IsAdmin(userId)
+                var activeImagingTasks = _userServices.IsAdmin(userId)
                     ? _uow.ActiveImagingTaskRepository.Get(orderBy: q => q.OrderBy(t => t.Id))
                     : _uow.ActiveImagingTaskRepository.Get(x => x.UserId == userId, orderBy: q => q.OrderBy(t => t.Id));
                 foreach (var task in activeImagingTasks)
@@ -143,7 +149,7 @@ namespace CloneDeploy_Services
         public  string ActiveUnicastCount(int userId, string taskType)
         {
            
-                return UserServices.IsAdmin(userId)
+                return _userServices.IsAdmin(userId)
                     ? _uow.ActiveImagingTaskRepository.Count(t => t.Type == taskType)
                     : _uow.ActiveImagingTaskRepository.Count(t => t.Type == taskType && t.UserId == userId);
             
@@ -152,7 +158,7 @@ namespace CloneDeploy_Services
         public  string AllActiveCount(int userId)
         {
            
-                return UserServices.IsAdmin(userId)
+                return _userServices.IsAdmin(userId)
                     ? _uow.ActiveImagingTaskRepository.Count()
                     : _uow.ActiveImagingTaskRepository.Count(x => x.UserId == userId);
             
@@ -170,7 +176,7 @@ namespace CloneDeploy_Services
            
                 //Admins see all tasks
                 List<ActiveImagingTaskEntity> activeImagingTasks;
-                if (UserServices.IsAdmin(userId))
+                if (_userServices.IsAdmin(userId))
                 {
                     activeImagingTasks = _uow.ActiveImagingTaskRepository.Get(t => t.Type == taskType,
                         orderBy: q => q.OrderBy(t => t.ComputerId));

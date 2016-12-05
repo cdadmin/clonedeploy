@@ -89,7 +89,7 @@ namespace CloneDeploy_App.BLL.Workflows
             //Recreate any custom boot menu's that were just deleted
             foreach (var computer in new ComputerServices().ComputersWithCustomBootMenu())
             {
-                ComputerBootMenuServices.CreateBootFiles(computer);
+                new ComputerServices().CreateBootFiles(computer);
             }
             return true;
         }        

@@ -72,11 +72,12 @@ namespace CloneDeploy_Services
                 if (Convert.ToBoolean(groupProperty.ProxyEnabledEnabled))
                     computer.ProxyReservation = groupProperty.ProxyEnabled;
 
-                new ComputerServices().UpdateComputer(computer);
+                var computerServices = new ComputerServices();
+                computerServices.UpdateComputer(computer);
                 if (Convert.ToBoolean(groupProperty.TftpServerEnabled) || Convert.ToBoolean(groupProperty.BootFileEnabled))
                 {
                     var proxyServices = new ComputerProxyReservationServices();
-                    var computerProxy = proxyServices.GetComputerProxyReservation(computer.Id);
+                    var computerProxy = computerServices.GetComputerProxyReservation(computer.Id);
                     if (Convert.ToBoolean(groupProperty.TftpServerEnabled))
                         computerProxy.NextServer = groupProperty.TftpServer;
                     if (Convert.ToBoolean(groupProperty.BootFileEnabled))
@@ -86,14 +87,7 @@ namespace CloneDeploy_Services
             }
         }
 
-        public  bool DeleteGroup(int groupId)
-        {
-            
-                _uow.GroupPropertyRepository.DeleteRange(x => x.GroupId == groupId);
-                _uow.Save();
-                return true;
-            
-        }
+      
        
 
       

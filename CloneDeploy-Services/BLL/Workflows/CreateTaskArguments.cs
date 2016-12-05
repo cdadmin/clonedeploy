@@ -14,6 +14,8 @@ namespace CloneDeploy_App.BLL.Workflows
         private readonly ComputerEntity _computer;
         private readonly string _direction;
         private readonly ImageProfileEntity _imageProfile;
+        private readonly ImageProfileServices _imageProfileServices;
+        private readonly DistributionPointServices _distributionPointServices;
 
         public CreateTaskArguments(ComputerEntity computer, ImageProfileEntity imageProfile, string direction)
         {
@@ -21,6 +23,8 @@ namespace CloneDeploy_App.BLL.Workflows
             _imageProfile = imageProfile;
             _direction = direction;
             _activeTaskArguments = new StringBuilder();
+            _imageProfileServices = new ImageProfileServices();
+            _distributionPointServices = new DistributionPointServices();
         }
 
         private string SetPartitionMethod()
@@ -126,7 +130,7 @@ namespace CloneDeploy_App.BLL.Workflows
         {
             string preScripts = "\"";
             string postScripts = "\"";
-            foreach (var script in ImageProfileScriptServices.SearchImageProfileScripts(_imageProfile.Id))
+            foreach (var script in _imageProfileServices.SearchImageProfileScripts(_imageProfile.Id))
             {
                 if (Convert.ToBoolean(script.RunPre))
                     preScripts += script.ScriptId + " ";
@@ -138,13 +142,13 @@ namespace CloneDeploy_App.BLL.Workflows
             preScripts += "\"";
 
             string sysprepTags = "\"";
-            foreach (var sysprepTag in ImageProfileSysprepTagServices.SearchImageProfileSysprepTags(_imageProfile.Id))
+            foreach (var sysprepTag in _imageProfileServices.SearchImageProfileSysprepTags(_imageProfile.Id))
                 sysprepTags += sysprepTag.SysprepId + " ";
 
             sysprepTags = sysprepTags.Trim();
             sysprepTags += "\"";
             
-            var areFilesToCopy = ImageProfileFileFolderService.SearchImageProfileFileFolders(_imageProfile.Id).Any();
+            var areFilesToCopy = _imageProfileServices.SearchImageProfileFileFolders(_imageProfile.Id).Any();
 
             //On demand computer may be null if not registered
             if (_computer != null)
@@ -173,7 +177,7 @@ namespace CloneDeploy_App.BLL.Workflows
             if (_direction == "pull")
             {
                 //Upload currently only support going to the primary distribution point
-                AppendString("dp_id=" + DistributionPointServices.GetPrimaryDistributionPoint().Id);
+                AppendString("dp_id=" + _distributionPointServices.GetPrimaryDistributionPoint().Id);
                 //Added for OSX NBI suppport
                 AppendString("image_direction=pull");
                 AppendString("osx_target_volume=" + "\"" + _imageProfile.OsxTargetVolume + "\"");
@@ -209,7 +213,7 @@ namespace CloneDeploy_App.BLL.Workflows
                         AppendString("cust_attr_5=" + "\"" + _computer.CustomAttribute5 + "\"");
                 }
                 else
-                    AppendString("dp_id=" + DistributionPointServices.GetPrimaryDistributionPoint().Id);
+                    AppendString("dp_id=" + _distributionPointServices.GetPrimaryDistributionPoint().Id);
 
                 //Added for OSX NBI suppport
                 AppendString("image_direction=push");

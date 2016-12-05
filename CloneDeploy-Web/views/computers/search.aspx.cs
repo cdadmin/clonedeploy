@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
-using CloneDeploy_Web.APICalls;
-using CloneDeploy_Web.Models;
-using Helpers;
+using CloneDeploy_Entities;
 
 namespace views.computers
 {
@@ -32,7 +30,7 @@ namespace views.computers
             //Gridview is only populated with only allowed computers to view via group management
             //Don't need to worry about rechecking group management
             //RequiresAuthorization(Authorizations.DeleteComputer);
-            var call = new APICall();
+            
             var deletedCount = 0;
 
             foreach (GridViewRow row in gvComputers.Rows)
@@ -42,7 +40,7 @@ namespace views.computers
                 if (cb == null || !cb.Checked) continue;
                 var dataKey = gvComputers.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
-                if (call.ComputerApi.Delete(Convert.ToInt32(dataKey.Value)).Success)
+                if (Call.ComputerApi.Delete(Convert.ToInt32(dataKey.Value)).Success)
                     deletedCount++;
                 
 
@@ -56,7 +54,7 @@ namespace views.computers
         {
             PopulateGrid();
 
-            List<Computer> listComputers = (List<Computer>) gvComputers.DataSource;
+            List<ComputerEntity> listComputers = (List<ComputerEntity>) gvComputers.DataSource;
             switch (e.SortExpression)
             {
                 case "Name":
@@ -87,8 +85,8 @@ namespace views.computers
             var limit = 0;
             limit = ddlLimit.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimit.Text);
 
-            var call = new APICall();
-            var listOfComputers = call.ComputerApi.GetAll(limit, txtSearch.Text);
+            
+            var listOfComputers = Call.ComputerApi.GetAll(limit, txtSearch.Text);
             
             listOfComputers = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
             if (ddlSite.SelectedValue != "-1")
@@ -99,7 +97,7 @@ namespace views.computers
                 listOfComputers = listOfComputers.Where(c => c.RoomId == Convert.ToInt32(ddlRoom.SelectedValue)).ToList();
             if (ddlGroup.SelectedValue != "-1")
             {
-                var groupMembers = BLL.Group.GetGroupMembers(Convert.ToInt32(ddlGroup.SelectedValue));
+                var groupMembers = Call.GroupApi.GetGroupMembers(Convert.ToInt32(ddlGroup.SelectedValue));
 
                 listOfComputers =
                     (from groupMember in groupMembers
@@ -122,7 +120,7 @@ namespace views.computers
             gvComputers.DataBind();
             
         
-            lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + call.ComputerApi.GetCount() + " Computer(s)";
+            lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + Call.ComputerApi.GetCount() + " Computer(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)

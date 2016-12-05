@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using CloneDeploy_App.Helpers;
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 using Newtonsoft.Json;
 
@@ -11,6 +12,17 @@ namespace CloneDeploy_App.BLL
     /// </summary>
     public class AuthenticationServices
     {
+        private readonly UserServices _userServices;
+        private readonly UserGroupServices _userGroupServices;
+        private readonly UserLockoutServices _userLockoutServices;
+
+        public AuthenticationServices()
+        {
+            _userServices = new UserServices();
+            _userGroupServices = new UserGroupServices();
+            _userLockoutServices = new UserLockoutServices();
+        }
+
         public string ConsoleLogin(string username, string password, string task, string ip)
         {
             var result = new Dictionary<string, string>();
@@ -25,7 +37,7 @@ namespace CloneDeploy_App.BLL
             }
             else
             {
-                var cloneDeployUser = UserServices.GetUser(username);
+                var cloneDeployUser = _userServices.GetUser(username);
                 result.Add("valid", "true");
                 result.Add("user_id", cloneDeployUser.Id.ToString());
                 result.Add("user_token", cloneDeployUser.Token);
@@ -62,22 +74,24 @@ namespace CloneDeploy_App.BLL
             return lines;
         }
 
-        public ActionResultEntity GlobalLogin(string userName, string password, string loginType)
+        public ValidationResultDTO GlobalLogin(string userName, string password, string loginType)
         {
-            var validationResult = new ActionResultEntity
+            var validationResult = new ValidationResultDTO()
             {
-                Message = "Incorrect Username Or Password",
+                ErrorMessage = "Incorrect Username Or Password",
                 Success = false
             };
 
+           
+
             //Check if user exists in Clone Deploy
-            var user = UserServices.GetUser(userName);
+            var user = _userServices.GetUser(userName);
             if (user == null)
             {
                 //Check For a first time LDAP User Group Login
                 if (Settings.LdapEnabled == "1")
                 {
-                    foreach (var ldapGroup in UserGroupServices.GetLdapGroups())
+                    foreach (var ldapGroup in _userGroupServices.GetLdapGroups())
                     {
                         if (new BLL.Ldap().Authenticate(userName, password, ldapGroup.GroupLdapName))
                         {
@@ -92,13 +106,13 @@ namespace CloneDeploy_App.BLL
                             };
                             //Create a local random db pass, should never actually be possible to use.
                             cdUser.Password = Helpers.Utility.CreatePasswordHash(new System.Guid().ToString(), cdUser.Salt);
-                            if (UserServices.AddUser(cdUser).Success)
+                            if (_userServices.AddUser(cdUser).Success)
                             {
                                 //add user to group
-                                var newUser = UserServices.GetUser(userName);
-                                UserGroupServices.AddNewGroupMember(ldapGroup,newUser);
+                                var newUser = _userServices.GetUser(userName);
+                                _userGroupServices.AddNewGroupMember(ldapGroup,newUser);
                             }
-                            validationResult.Message = "Success";
+                            validationResult.ErrorMessage = "Success";
                             validationResult.Success = true;
                             break;
                         }
@@ -107,10 +121,10 @@ namespace CloneDeploy_App.BLL
                 return validationResult;
             }
 
-            if (BLL.UserLockoutServices.AccountIsLocked(user.Id))
+            if (_userLockoutServices.AccountIsLocked(user.Id))
             {
-                BLL.UserLockoutServices.ProcessBadLogin(user.Id);
-                validationResult.Message = "Account Is Locked";
+                _userLockoutServices.ProcessBadLogin(user.Id);
+                validationResult.ErrorMessage = "Account Is Locked";
                 return validationResult;
             }
 
@@ -121,7 +135,7 @@ namespace CloneDeploy_App.BLL
                 if (user.UserGroupId != -1)
                 {
                     //user is part of a group, is the group an ldap group?
-                    var userGroup = UserGroupServices.GetUserGroup(user.UserGroupId);
+                    var userGroup = _userGroupServices.GetUserGroup(user.UserGroupId);
                     if (userGroup != null)
                     {
                         if (userGroup.IsLdapGroup == 1)
@@ -141,7 +155,7 @@ namespace CloneDeploy_App.BLL
                                 {
                                     //password was good but user is no longer in the group
                                     //delete the user
-                                    UserServices.DeleteUser(user.Id);
+                                    _userServices.DeleteUser(user.Id);
                                 }
                             }
                         }
@@ -180,13 +194,13 @@ namespace CloneDeploy_App.BLL
            
             if (validationResult.Success)
             {
-                BLL.UserLockoutServices.DeleteUserLockouts(user.Id);
-                validationResult.Message = "Success";
+                _userLockoutServices.DeleteUserLockouts(user.Id);
+                validationResult.ErrorMessage = "Success";
                 return validationResult;
             }
             else
             {
-                BLL.UserLockoutServices.ProcessBadLogin(user.Id);
+                _userLockoutServices.ProcessBadLogin(user.Id);
                 return validationResult;
             }
         }

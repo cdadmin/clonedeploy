@@ -23,20 +23,13 @@ namespace CloneDeploy_Services
                 _uow.Save();
                 var actionResult = new ActionResultDTO();
             actionResult.Success = true;
+            return actionResult;
 
         }
 
        
 
-        //check this
-        public  bool DeleteAllForGroup(int groupId)
-        {
-           
-                _uow.UserGroupManagementRepository.DeleteRange(x => x.GroupId == groupId);
-                _uow.Save();
-                return true;
-            
-        }
+     
 
       
     }

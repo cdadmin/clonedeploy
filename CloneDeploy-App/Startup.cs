@@ -30,12 +30,12 @@ namespace CloneDeploy_App.BLL
             {
                 ClaimsIdentity oAuthIdentity = new ClaimsIdentity(context.Options.AuthenticationType);
                 context.Validated(oAuthIdentity);
-                oAuthIdentity.AddClaim(new Claim("user_id", UserServices.GetUser(context.UserName).Id.ToString()));
+                oAuthIdentity.AddClaim(new Claim("user_id", new UserServices().GetUser(context.UserName).Id.ToString()));
                 context.Validated(oAuthIdentity);
             }
             else
             {
-                context.SetError("invalid_grant", validationResult.Message);
+                context.SetError("invalid_grant", validationResult.ErrorMessage);
 
             }
             return Task.FromResult<object>(null);

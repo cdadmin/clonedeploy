@@ -32,15 +32,14 @@ namespace CloneDeploy_Services
 
             if (group.SetDefaultProperties == 1)
             {
-                var groupProperty = GroupPropertyServices.GetGroupProperty(group.Id);
-                GroupPropertyServices.UpdateComputerProperties(groupProperty);
+                var groupProperty = new GroupServices().GetGroupProperty(group.Id);
+                new GroupPropertyServices().UpdateComputerProperties(groupProperty);
             }
 
             if (group.SetDefaultBootMenu == 1)
             {
-                var gbmServices = new GroupBootMenuServices();
-                var groupBootMenu = gbmServices.GetGroupBootMenu(group.Id);
-                gbmServices.UpdateGroupMemberBootMenus(groupBootMenu);
+                var groupBootMenu = new GroupServices().GetGroupBootMenu(group.Id);
+                new GroupBootMenuServices().UpdateGroupMemberBootMenus(groupBootMenu);
             }
 
             return actionResult;
@@ -48,26 +47,12 @@ namespace CloneDeploy_Services
 
       
 
-        public  bool DeleteAllMembershipsForGroup(int groupId)
-        {
-            
-                _uow.GroupMembershipRepository.DeleteRange(x => x.GroupId == groupId);
-                _uow.Save();
-                return true;
-            
-        }
+       
 
 
         
 
-        public  bool DeleteComputerMemberships(int computerId)
-        {
-           
-                _uow.GroupMembershipRepository.DeleteRange(x => x.ComputerId == computerId);
-                _uow.Save();
-                return true;
-            
-        }
+      
 
      
 

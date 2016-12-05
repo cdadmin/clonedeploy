@@ -24,18 +24,18 @@ namespace CloneDeploy_App.BLL.Workflows
             if (_computer == null)
                 return "The Computer Does Not Exist";
 
-            _imageProfile = ImageProfileServices.ReadProfile(_computer.ImageProfileId);
+            _imageProfile = new ImageProfileServices().ReadProfile(_computer.ImageProfileId);
             if (_imageProfile == null) return "The Image Profile Does Not Exist";
 
             if (_imageProfile.Image == null) return "The Image Does Not Exist";
 
             if (_direction == "push" || _direction == "permanent_push")
             {
-                var validation = ImageServices.CheckApprovalAndChecksum(_imageProfile.Image,_userId);
-                if (!validation.Success) return validation.Message;
+                var validation = new ImageServices().CheckApprovalAndChecksum(_imageProfile.Image,_userId);
+                if (!validation.Success) return validation.ErrorMessage;
             }
 
-            var dp = DistributionPointServices.GetPrimaryDistributionPoint();
+            var dp = new DistributionPointServices().GetPrimaryDistributionPoint();
             if (dp == null) return "Could Not Find A Primary Distribution Point";
 
             if (new ComputerServices().IsComputerActive(_computer.Id))

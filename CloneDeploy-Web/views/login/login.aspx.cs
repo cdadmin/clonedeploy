@@ -8,7 +8,7 @@ using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using CloneDeploy_Web.APICalls;
+using CloneDeploy_ApiCalls;
 using CloneDeploy_Web.Models;
 using Helpers;
 using Newtonsoft.Json;
@@ -100,23 +100,23 @@ namespace views.login
                 }
                 else if (!result.Success)
                 {
-                    lblError.Text = result.Message == "Forbidden"
+                    lblError.Text = result.ErrorMessage == "Forbidden"
                         ? "Token Does Not Match Requested User"
-                        : result.Message;
+                        : result.ErrorMessage;
                     e.Authenticated = false;
                     lblError.Visible = true;
 
                 }
                 else if (result.Success)
                 {
-                    var cloneDeployUser = JsonConvert.DeserializeObject<CloneDeployUser>(result.Object);
+                    var cloneDeployUser = JsonConvert.DeserializeObject<CloneDeployUser>(result.ObjectJson);
                     Session["CloneDeployUser"] = cloneDeployUser;
                     e.Authenticated = true;
                 }
                 else
                 {
                     e.Authenticated = false;
-                    lblError.Text = result.Message;
+                    lblError.Text = result.ErrorMessage;
                     lblError.Visible = true;
                 }
             }

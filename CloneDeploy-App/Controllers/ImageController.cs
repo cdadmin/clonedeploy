@@ -113,7 +113,7 @@ namespace CloneDeploy_App.Controllers
         public IEnumerable<ImageFileInfo> GetPartitionFileInfo(int id, string selectedHd, string selectedPartition)
         {
 
-            return ImageSchemaFEServices.GetPartitionImageFileInfoForGridView(id, selectedHd, selectedPartition);
+            return _imageServices.GetPartitionImageFileInfoForGridView(id, selectedHd, selectedPartition);
 
         }
 

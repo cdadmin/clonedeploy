@@ -36,6 +36,8 @@ namespace CloneDeploy_Services
                 {
                     actionResult.ErrorMessage = validationResult.ErrorMessage;
                 }            
+            return actionResult;
+            
         }
 
         public  string TotalCount()

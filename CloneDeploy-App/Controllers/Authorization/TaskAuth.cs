@@ -10,6 +10,7 @@ using System.Web.Http;
 using System.Web.Http.Controllers;
 
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
 namespace CloneDeploy_App.Controllers.Authorization
@@ -47,7 +48,7 @@ namespace CloneDeploy_App.Controllers.Authorization
 
             if (!authorized)
             {
-                var response = actionContext.Request.CreateResponse(HttpStatusCode.Forbidden, new ActionResultEntity() { Success = false, Message = "Forbidden" });
+                var response = actionContext.Request.CreateResponse(HttpStatusCode.Forbidden, new ValidationResultDTO() { Success = false, ErrorMessage = "Forbidden" });
                 throw new HttpResponseException(response);
             }
         }

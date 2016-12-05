@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F5A4E04D-FA84-4ABB-9690-DF2539F425CD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CloneDeploy_ApiCalls</RootNamespace>
+    <AssemblyName>CloneDeploy-ApiCalls</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>..\packages\RestSharp.105.2.3\lib\net45\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ActiveImagingTaskAPI.cs" />
+    <Compile Include="ActiveMulticastSessionAPI.cs" />
+    <Compile Include="APICall.cs" />
+    <Compile Include="ApiRequest.cs" />
+    <Compile Include="ComputerAPI.cs" />
+    <Compile Include="ComputerLogController.cs" />
+    <Compile Include="ComputerMunkiAPI.cs" />
+    <Compile Include="DistributionPointAPI.cs" />
+    <Compile Include="FilesystemAPI.cs" />
+    <Compile Include="GenericAPI.cs" />
+    <Compile Include="GroupAPI.cs" />
+    <Compile Include="GroupMembershipAPI.cs" />
+    <Compile Include="IAPICall.cs" />
+    <Compile Include="IGenericAPI.cs" />
+    <Compile Include="ImageAPI.cs" />
+    <Compile Include="ImageProfileAPI.cs" />
+    <Compile Include="ImageSchemaAPI.cs" />
+    <Compile Include="MunkiManifestTemplateAPI.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SettingAPI.cs" />
+    <Compile Include="Token.cs" />
+    <Compile Include="UserAPI.cs" />
+    <Compile Include="UserGroupAPI.cs" />
+    <Compile Include="UserGroupGroupManagementAPI.cs" />
+    <Compile Include="UserGroupImageManagementAPI.cs" />
+    <Compile Include="UserGroupManagementController.cs" />
+    <Compile Include="UserGroupRightController.cs" />
+    <Compile Include="UserImageManagementController.cs" />
+    <Compile Include="UserRightController.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CloneDeploy-Entities\CloneDeploy-Entities.csproj">
+      <Project>{453080da-87a4-4f5f-aa1f-2c49e37d2f21}</Project>
+      <Name>CloneDeploy-Entities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

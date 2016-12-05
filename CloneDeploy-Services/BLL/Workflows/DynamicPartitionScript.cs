@@ -20,7 +20,7 @@ namespace CloneDeploy_App.BLL.Workflows
         private CloneDeploy_App.BLL.DynamicClientPartition.ClientPartition clientSchema;
         public string GeneratePartitionScript()
         {
-            imageProfile = ImageProfileServices.ReadProfile(profileId);
+            imageProfile = new ImageProfileServices().ReadProfile(profileId);
             ImageSchema = new CloneDeploy_App.BLL.DynamicClientPartition.ClientPartitionHelper(imageProfile).GetImageSchema();
 
 

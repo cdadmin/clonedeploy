@@ -32,7 +32,7 @@ namespace CloneDeploy_Services
                 _uow.Save();
                 actionResult.Success = true;
                 actionResult.Id = computer.Id;
-                GroupServices.UpdateAllSmartGroupsMembers();
+                new GroupServices().UpdateAllSmartGroupsMembers();
             }
             else
             {
@@ -49,12 +49,13 @@ namespace CloneDeploy_Services
 
         public string ComputerCountUser(int userId)
         {
-            if (UserServices.GetUser(userId).Membership == "Administrator")
+            var userServices = new UserServices();
+            if (userServices.GetUser(userId).Membership == "Administrator")
             {
                 return TotalCount();
             }
 
-            var userManagedGroups = UserGroupManagementServices.Get(userId);
+            var userManagedGroups = userServices.GetUserGroupManagements(userId);
 
             //If count is zero image management is not being used return total count
             if (userManagedGroups.Count == 0)
@@ -66,7 +67,7 @@ namespace CloneDeploy_Services
                 var computerCount = 0;
                 foreach (var managedGroup in userManagedGroups)
                 {
-                    computerCount += Convert.ToInt32(GroupMembershipServices.GetGroupMemberCount(managedGroup.GroupId));
+                    computerCount += Convert.ToInt32(new GroupServices().GetGroupMemberCount(managedGroup.GroupId));
                 }
                 return computerCount.ToString();
             }
@@ -82,9 +83,9 @@ namespace CloneDeploy_Services
             var result = new ActionResultDTO();
             if (validationResult.Success)
             {
-                GroupMembershipServices.DeleteComputerMemberships(computer.Id);
+                DeleteComputerMemberships(computer.Id);
                 DeleteComputerBootMenus(computer.Id);
-                ComputerLog.DeleteComputerLogs(computer.Id);
+                DeleteComputerLogs(computer.Id);
                 _uow.ComputerRepository.Delete(computer.Id);
                 _uow.Save();
                 result.Success = true;
@@ -100,32 +101,32 @@ namespace CloneDeploy_Services
         public DistributionPointEntity GetDistributionPoint(int computerId)
         {
             DistributionPointEntity dp = null;
-
+            var dpServices = new DistributionPointServices();
             var computer = GetComputer(computerId);
             if (computer.RoomId != -1)
             {
-                var room = RoomServices.GetRoom(computer.RoomId);
+                var room = new RoomServices().GetRoom(computer.RoomId);
                 if(room != null)
                 dp =
-                    DistributionPointServices.GetDistributionPoint(room.DistributionPointId);
+                    dpServices.GetDistributionPoint(room.DistributionPointId);
             }
             else if (computer.BuildingId != -1)
             {
-                var building = BuildingServices.GetBuilding(computer.BuildingId);
+                var building = new BuildingServices().GetBuilding(computer.BuildingId);
                 if (building != null)
                 dp =
-                    DistributionPointServices.GetDistributionPoint(building.DistributionPointId);
+                    dpServices.GetDistributionPoint(building.DistributionPointId);
             }
             else if (computer.SiteId != -1)
             {
-                var site = SiteServices.GetSite(computer.SiteId);
+                var site = new SiteServices().GetSite(computer.SiteId);
                 if (site != null)
                 dp =
-                    DistributionPointServices.GetDistributionPoint(site.DistributionPointId);
+                    dpServices.GetDistributionPoint(site.DistributionPointId);
             }
             
             if(dp == null)
-                dp = DistributionPointServices.GetPrimaryDistributionPoint();
+                dp = dpServices.GetPrimaryDistributionPoint();
 
             return dp;
         }
@@ -134,7 +135,7 @@ namespace CloneDeploy_Services
         {
             var computer = _uow.ComputerRepository.GetById(computerId);
             if (computer != null)
-                computer.Image = ImageServices.GetImage(computer.ImageId);
+                computer.Image = new ImageServices().GetImage(computer.ImageId);
             return computer;
         }
 
@@ -147,24 +148,25 @@ namespace CloneDeploy_Services
 
         public List<ComputerEntity> SearchComputersForUser(int userId, int limit, string searchString = "")
         {
+            var userServices = new UserServices();
             if(limit== 0) limit=Int32.MaxValue;
-            if(UserServices.GetUser(userId).Membership == "Administrator")
+            if(userServices.GetUser(userId).Membership == "Administrator")
                 return SearchComputers(searchString,limit);
 
             var listOfComputers = new List<ComputerEntity>();
 
-            var userManagedGroups = UserGroupManagementServices.Get(userId);
+            var userManagedGroups = userServices.GetUserGroupManagements(userId);
             if (userManagedGroups.Count == 0)
                 return SearchComputers(searchString,limit);
             else
             {
                 foreach (var managedGroup in userManagedGroups)
                 {
-                    listOfComputers.AddRange(GroupServices.GetGroupMembers(managedGroup.GroupId, searchString));
+                    listOfComputers.AddRange(new GroupServices().GetGroupMembers(managedGroup.GroupId, searchString));
                 }
 
                 foreach (var computer in listOfComputers)
-                    computer.Image = ImageServices.GetImage(computer.ImageId);
+                    computer.Image = new ImageServices().GetImage(computer.ImageId);
 
                 return listOfComputers;
             }
@@ -197,7 +199,7 @@ namespace CloneDeploy_Services
                 _uow.Save();
                 actionResult.Success = true;
                 actionResult.Id = computer.Id;
-                GroupServices.UpdateAllSmartGroupsMembers();
+                new GroupServices().UpdateAllSmartGroupsMembers();
 
             }
 
@@ -241,7 +243,7 @@ namespace CloneDeploy_Services
         {
             var listOfComputers = _uow.ComputerRepository.GetComputersWithoutGroup(searchString, limit);
             foreach (var computer in listOfComputers)
-                computer.Image = ImageServices.GetImage(computer.ImageId);
+                computer.Image = new ImageServices().GetImage(computer.ImageId);
 
             return listOfComputers;
         }
@@ -518,6 +520,15 @@ namespace CloneDeploy_Services
             return path;
         }
 
+        public bool DeleteComputerMemberships(int computerId)
+        {
+
+            _uow.GroupMembershipRepository.DeleteRange(x => x.ComputerId == computerId);
+            _uow.Save();
+            return true;
+
+        }
+
         public List<ComputerLogEntity> SearchComputerLogs(int computerId)
         {
 
@@ -527,7 +538,7 @@ namespace CloneDeploy_Services
 
         public ActionResultDTO DeleteComputerLogs(int computerId)
         {
-            var computer = GetComputerLog(computerId);
+            var computer = GetComputer(computerId);
             if (computer == null)
                 return new ActionResultDTO() { ErrorMessage = "Computer Not Found", Id = 0 };
 

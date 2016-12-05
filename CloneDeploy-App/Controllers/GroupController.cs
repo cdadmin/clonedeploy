@@ -29,7 +29,7 @@ namespace CloneDeploy_App.Controllers
 
 
         [GroupAuth(Permission = "GroupSearch")]
-        public IEnumerable<GroupEntity> Get(string searchstring = "")
+        public IEnumerable<GroupEntity> GetAll(string searchstring = "")
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
@@ -76,7 +76,7 @@ namespace CloneDeploy_App.Controllers
         [GroupAuth(Permission = "GroupRead")]
         public IEnumerable<GroupMunkiEntity> GetMunkiTemplates(int id)
         {
-            return _groupServices.Get(id);
+            return _groupServices.GetGroupMunkiTemplates(id);
         }
 
         [HttpGet]
@@ -126,9 +126,9 @@ namespace CloneDeploy_App.Controllers
 
         [HttpPost]
         [GroupAuth(Permission = "GroupUpdate")]
-        public ApiBoolResponseDTO UpdateSmartMembership(GroupEntity group)
+        public ActionResultDTO UpdateSmartMembership(GroupEntity group)
         {
-            return new ApiBoolResponseDTO() {Value = _groupServices.UpdateSmartMembership(group)};
+            return _groupServices.UpdateSmartMembership(group);
         }
 
         [HttpPost]

@@ -9,10 +9,12 @@ namespace CloneDeploy_Services
     public class UserGroupServices
     {
          private readonly UnitOfWork _uow;
+        private readonly UserServices _userServices;
 
         public UserGroupServices()
         {
             _uow = new UnitOfWork();
+            _userServices = new UserServices();
         }
 
         public  ActionResultDTO AddUserGroup(CloneDeployUserGroupEntity userGroup)
@@ -125,17 +127,16 @@ namespace CloneDeploy_Services
                 return _uow.UserRepository.Get(x => x.UserGroupId == userGroupId && x.Name.Contains(searchString),orderBy: (q => q.OrderBy(p => p.Name)));
             
         }
-
         public bool UpdateAllGroupMembersAcls(CloneDeployUserGroupEntity userGroup)
         {
-            var rights = UserGroupRightServices.Get(userGroup.Id);     
+            var rights = _userServices.GetUserRights(userGroup.Id);     
            
             foreach (var user in GetGroupMembers(userGroup.Id))
             {
                 var userRights =
                     rights.Select(right => new UserRightEntity { UserId = user.Id, Right = right.Right }).ToList();
-                UserRightServices.DeleteUserRights(user.Id);
-                UserRightServices.AddUserRights(userRights);
+                _userServices.DeleteUserRights(user.Id);
+                new UserRightServices().AddUserRights(userRights);
             }
 
             return true;
@@ -143,15 +144,15 @@ namespace CloneDeploy_Services
 
         public  bool UpdateAllGroupMembersGroupMgmt(CloneDeployUserGroupEntity userGroup)
         {        
-            var groupManagement = UserGroupGroupManagementServices.Get(userGroup.Id);
+            var groupManagement = GetUserGroupGroupManagements(userGroup.Id);
 
             foreach (var user in GetGroupMembers(userGroup.Id))
             {
                 var userGroupManagement =
                     groupManagement.Select(g => new UserGroupManagementEntity { GroupId = g.GroupId, UserId = user.Id })
                         .ToList();
-                UserGroupManagementServices.DeleteUserGroupManagements(user.Id);
-                UserGroupManagementServices.AddUserGroupManagements(userGroupManagement);    
+                _userServices.DeleteUserGroupManagements(user.Id);
+                new UserGroupManagementServices().AddUserGroupManagements(userGroupManagement);    
             }
 
             return true;
@@ -159,15 +160,15 @@ namespace CloneDeploy_Services
 
         public  bool UpdateAllGroupMembersImageMgmt(CloneDeployUserGroupEntity userGroup)
         {
-            var imageManagement = UserGroupImageManagementServices.Get(userGroup.Id);
+            var imageManagement = GetUserGroupImageManagements(userGroup.Id);
 
             foreach (var user in GetGroupMembers(userGroup.Id))
             {
                 var userImageManagement =
                     imageManagement.Select(g => new UserImageManagementEntity { ImageId = g.ImageId, UserId = user.Id })
                         .ToList();
-                UserImageManagementServices.DeleteUserImageManagements(user.Id);
-                UserImageManagementServices.AddUserImageManagements(userImageManagement);
+                _userServices.DeleteUserImageManagements(user.Id);
+                new UserImageManagementServices().AddUserImageManagements(userImageManagement);
             }
 
             return true;
@@ -180,28 +181,28 @@ namespace CloneDeploy_Services
             new UserServices().UpdateUser(user);
 
 
-            var rights = UserGroupRightServices.Get(userGroup.Id);
-            var groupManagement = UserGroupGroupManagementServices.Get(userGroup.Id);
-            var imageManagement = UserGroupImageManagementServices.Get(userGroup.Id);
+            var rights = GetUserGroupRights(userGroup.Id);
+            var groupManagement = GetUserGroupGroupManagements(userGroup.Id);
+            var imageManagement = GetUserGroupImageManagements(userGroup.Id);
 
             var userRights =
                    rights.Select(right => new UserRightEntity { UserId = user.Id, Right = right.Right }).ToList();
-            UserRightServices.DeleteUserRights(user.Id);
-            UserRightServices.AddUserRights(userRights);
+            _userServices.DeleteUserRights(user.Id);
+            new UserRightServices().AddUserRights(userRights);
 
 
             var userGroupManagement =
                 groupManagement.Select(g => new UserGroupManagementEntity { GroupId = g.GroupId, UserId = user.Id })
                     .ToList();
-            UserGroupManagementServices.DeleteUserGroupManagements(user.Id);
-            UserGroupManagementServices.AddUserGroupManagements(userGroupManagement);
+            _userServices.DeleteUserGroupManagements(user.Id);
+            new UserGroupManagementServices().AddUserGroupManagements(userGroupManagement);
 
 
             var userImageManagement =
                 imageManagement.Select(g => new UserImageManagementEntity { ImageId = g.ImageId, UserId = user.Id })
                     .ToList();
-            UserImageManagementServices.DeleteUserImageManagements(user.Id);
-            UserImageManagementServices.AddUserImageManagements(userImageManagement);
+            _userServices.DeleteUserImageManagements(user.Id);
+            new UserImageManagementServices().AddUserImageManagements(userImageManagement);
 
             return true;
         }

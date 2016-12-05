@@ -12,11 +12,15 @@ namespace CloneDeploy_App.BLL
         private readonly CloneDeployUserEntity _cloneDeployUser;
         private readonly List<string> _currentUserRights;
         private readonly string _requiredRight;
+        private readonly UserServices _userServices;
+
+
 
         public AuthorizationServices(int userId, string requiredRight )
         {
-            _cloneDeployUser = UserServices.GetUser(userId);
-            _currentUserRights = UserRightServices.Get(userId).Select(right => right.Right).ToList();
+            _userServices = new UserServices();
+            _cloneDeployUser = _userServices.GetUser(userId);
+            _currentUserRights = _userServices.GetUserRights(userId).Select(right => right.Right).ToList();
             _requiredRight = requiredRight;
         }
 
@@ -33,7 +37,7 @@ namespace CloneDeploy_App.BLL
             //All user rights don't have the required right.  No need to check group membership.
             if (_currentUserRights.All(right => right != _requiredRight)) return false;
 
-            var userGroupManagements = UserGroupManagementServices.Get(_cloneDeployUser.Id);      
+            var userGroupManagements = _userServices.GetUserGroupManagements(_cloneDeployUser.Id);      
             if (userGroupManagements.Count > 0)
             {
                 //Group management is in use since at least 1 result was returned.  Now check if allowed
@@ -53,11 +57,11 @@ namespace CloneDeploy_App.BLL
             //All user rights don't have the required right.  No need to check group membership.
             if (_currentUserRights.All(right => right != _requiredRight)) return false;
 
-            var userGroupManagements = UserGroupManagementServices.Get(_cloneDeployUser.Id);
+            var userGroupManagements = _userServices.GetUserGroupManagements(_cloneDeployUser.Id);
             if (userGroupManagements.Count > 0)
             {
                 //Group management is in use since at least 1 result was returned.  Now check if allowed
-                return GroupServices.SearchGroupsForUser(_cloneDeployUser.Id).Any(x => x.Id == groupId);
+                return new GroupServices().SearchGroupsForUser(_cloneDeployUser.Id).Any(x => x.Id == groupId);
             }
             else //Group management is not in use, use the global rights for the user
             {
@@ -72,11 +76,11 @@ namespace CloneDeploy_App.BLL
             //All user rights don't have the required right.  No need to check group membership.
             if (_currentUserRights.All(right => right != _requiredRight)) return false;
 
-            var userImageManagements = UserImageManagementServices.Get(_cloneDeployUser.Id);
+            var userImageManagements = _userServices.GetUserImageManagements(_cloneDeployUser.Id);
             if (userImageManagements.Count > 0)
             {
                 //Image management is in use since at least 1 result was returned.  Now check if allowed
-                return ImageServices.SearchImagesForUser(_cloneDeployUser.Id).Any(x => x.Id == imageId);
+                return new ImageServices().SearchImagesForUser(_cloneDeployUser.Id).Any(x => x.Id == imageId);
             }
             else //Image management is not in use, use the global rights for the user
             {

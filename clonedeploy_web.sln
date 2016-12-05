@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloneDeploy-Services", "Clo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloneDeploy-DataModel", "CloneDeploy-DataModel\CloneDeploy-DataModel.csproj", "{67C7F110-F0FD-4EA2-8EC3-5118A718B0B4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloneDeploy-ApiCalls", "CloneDeploy-ApiCalls\CloneDeploy-ApiCalls.csproj", "{F5A4E04D-FA84-4ABB-9690-DF2539F425CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{67C7F110-F0FD-4EA2-8EC3-5118A718B0B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67C7F110-F0FD-4EA2-8EC3-5118A718B0B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67C7F110-F0FD-4EA2-8EC3-5118A718B0B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5A4E04D-FA84-4ABB-9690-DF2539F425CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5A4E04D-FA84-4ABB-9690-DF2539F425CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5A4E04D-FA84-4ABB-9690-DF2539F425CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5A4E04D-FA84-4ABB-9690-DF2539F425CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

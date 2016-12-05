@@ -30,9 +30,9 @@ namespace CloneDeploy_Services
                     actionResult.Success = true;
                     actionResult.Id = group.Id;
                     //If Group management is being used add this group to the allowed users list 
-                    var userManagedGroups = UserGroupManagementServices.Get(userId);
+                    var userManagedGroups = new UserServices().GetUserGroupManagements(userId);
                     if (userManagedGroups.Count > 0)
-                        UserGroupManagementServices.AddUserGroupManagements(
+                        new UserGroupManagementServices().AddUserGroupManagements(
                             new List<UserGroupManagementEntity>
                             {
                                 new UserGroupManagementEntity
@@ -60,13 +60,13 @@ namespace CloneDeploy_Services
 
         public  string GroupCountUser(int userId)
         {
-           
-            if (UserServices.GetUser(userId).Membership == "Administrator")
+           var userServices = new UserServices();
+            if (userServices.GetUser(userId).Membership == "Administrator")
             {
                 return TotalCount();
             }
 
-            var userManagedGroups = UserGroupManagementServices.Get(userId);
+            var userManagedGroups = userServices.GetUserGroupManagements(userId);
 
             //If count is zero image management is not being used return total count
             return userManagedGroups.Count == 0 ? TotalCount() : userManagedGroups.Count.ToString();
@@ -80,10 +80,10 @@ namespace CloneDeploy_Services
                 return new ActionResultDTO() {ErrorMessage = "Group Not Found", Id = 0};
             var result = new ActionResultDTO();
 
-            GroupMembershipServices.DeleteAllMembershipsForGroup(groupId);
-            UserGroupManagementServices.DeleteAllForGroup(groupId);
-            GroupBootMenuServices.DeleteAllForGroup(groupId);
-            GroupPropertyServices.DeleteGroup(groupId);
+            DeleteAllMembershipsForGroup(groupId);
+            DeleteAllManagementsForGroup(groupId);
+            DeleteAllBootMenusForGroup(groupId);
+            DeleteAllPropertiesForGroup(groupId);
             _uow.GroupRepository.Delete(groupId);
             _uow.Save();
             result.Success = true;
@@ -98,17 +98,18 @@ namespace CloneDeploy_Services
            
                 var group = _uow.GroupRepository.GetById(groupId);
                 if (group != null)
-                    group.Image = ImageServices.GetImage(group.ImageId);
+                    group.Image = new ImageServices().GetImage(group.ImageId);
                 return group;
             
         }
 
         public  List<GroupEntity> SearchGroupsForUser(int userId, string searchString = "")
         {
-            if (UserServices.GetUser(userId).Membership == "Administrator")
+            var userServices = new UserServices();
+            if (userServices.GetUser(userId).Membership == "Administrator")
                 return SearchGroups(searchString);
 
-            var userManagedGroups = UserGroupManagementServices.Get(userId);
+            var userManagedGroups = userServices.GetUserGroupManagements(userId);
             if (userManagedGroups.Count == 0)
                 return SearchGroups(searchString);
 
@@ -117,7 +118,7 @@ namespace CloneDeploy_Services
               
                     var listOfGroups = userManagedGroups.Select(managedGroup => _uow.GroupRepository.GetFirstOrDefault(i => i.Name.Contains(searchString) && i.Id == managedGroup.GroupId)).ToList();
                     foreach (var group in listOfGroups)
-                        group.Image = ImageServices.GetImage(group.ImageId);
+                        group.Image = new ImageServices().GetImage(group.ImageId);
                     return listOfGroups;
                     
                 
@@ -129,17 +130,17 @@ namespace CloneDeploy_Services
             
                 var listOfGroups = _uow.GroupRepository.Get(g => g.Name.Contains(searchString));
                 foreach (var group in listOfGroups)
-                    group.Image = ImageServices.GetImage(group.ImageId);
+                    group.Image = new ImageServices().GetImage(group.ImageId);
                 return listOfGroups;
             
         }
 
-        public  bool UpdateSmartMembership(GroupEntity group)
+        public  ActionResultDTO UpdateSmartMembership(GroupEntity group)
         {
-            GroupMembershipServices.DeleteAllMembershipsForGroup(group.Id);
+            DeleteAllMembershipsForGroup(group.Id);
             var computers = new ComputerServices().SearchComputers(group.SmartCriteria, Int32.MaxValue);
             var memberships = computers.Select(computer => new GroupMembershipEntity { GroupId = @group.Id, ComputerId = computer.Id }).ToList();
-            return GroupMembershipServices.AddMembership(memberships);
+            return new GroupMembershipServices().AddMembership(memberships);
         }
 
         public  ActionResultDTO UpdateGroup(GroupEntity group)
@@ -163,6 +164,43 @@ namespace CloneDeploy_Services
                 }
 
             return result;
+
+        }
+
+        public bool DeleteAllPropertiesForGroup(int groupId)
+        {
+
+            _uow.GroupPropertyRepository.DeleteRange(x => x.GroupId == groupId);
+            _uow.Save();
+            return true;
+
+        }
+
+        public bool DeleteAllBootMenusForGroup(int groupId)
+        {
+
+            _uow.GroupBootMenuRepository.DeleteRange(x => x.GroupId == groupId);
+            _uow.Save();
+            return true;
+
+        }
+
+        //check this
+        public bool DeleteAllManagementsForGroup(int groupId)
+        {
+
+            _uow.UserGroupManagementRepository.DeleteRange(x => x.GroupId == groupId);
+            _uow.Save();
+            return true;
+
+        }
+
+        public bool DeleteAllMembershipsForGroup(int groupId)
+        {
+
+            _uow.GroupMembershipRepository.DeleteRange(x => x.GroupId == groupId);
+            _uow.Save();
+            return true;
 
         }
 
@@ -276,7 +314,7 @@ namespace CloneDeploy_Services
 
         }
 
-        public List<GroupMunkiEntity> Get(int groupId)
+        public List<GroupMunkiEntity> GetGroupMunkiTemplates(int groupId)
         {
 
             return _uow.GroupMunkiRepository.Get(x => x.GroupId == groupId);

@@ -27,9 +27,8 @@ namespace CloneDeploy_Services
                     Efi64Menu = groupBootMenu.Efi64Menu
                 };
 
-                var computerServices = new ComputerBootMenuServices();
-                computerServices.UpdateComputerBootMenu(computerBootMenu);
-                computerServices.ToggleComputerBootMenu(computer.Id, true);
+                new ComputerBootMenuServices().UpdateComputerBootMenu(computerBootMenu);
+                new ComputerServices().ToggleComputerBootMenu(computer.Id, true);
             }
         }
 
@@ -58,14 +57,7 @@ namespace CloneDeploy_Services
             return actionResult;
         }
 
-        public  bool DeleteAllForGroup(int groupId)
-        {
-            
-                _uow.GroupBootMenuRepository.DeleteRange(x => x.GroupId == groupId);
-                _uow.Save();
-                return true;
-            
-        }
+      
 
 
     }

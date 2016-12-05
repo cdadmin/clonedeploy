@@ -102,14 +102,7 @@ namespace CloneDeploy_Services
             return actionResult;
         }
 
-        public bool DeleteImage(int imageId)
-        {
-           
-                _uow.ImageProfileRepository.DeleteRange(x => x.ImageId == imageId);
-                _uow.Save();
-                return true;
-            
-        }
+      
 
         private ValidationResultDTO ValidateImageProfile(ImageProfileEntity imageProfile, bool isNewImageProfile)
         {

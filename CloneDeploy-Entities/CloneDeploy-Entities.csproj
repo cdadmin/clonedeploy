@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="ActiveImagingTask.cs" />
     <Compile Include="ActiveMulticastSession.cs" />
+    <Compile Include="DTOs\ApiObjectResponseDTO.cs" />
     <Compile Include="DTOs\ApiIntResponseDTO.cs" />
     <Compile Include="DTOs\ValidationResultDTO.cs" />
     <Compile Include="DTOs\ApiBoolDTO.cs" />
