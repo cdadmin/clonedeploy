@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Web.UI.WebControls;
-using Helpers;
 
 public partial class views_groups_smartcriteria : BasePages.Groups
 {

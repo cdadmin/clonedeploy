@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BasePages;
-using CloneDeploy_Web.Models.ImageSchema.GridView;
 using ImageSchema = BLL.ImageSchema;
 
 namespace views.images

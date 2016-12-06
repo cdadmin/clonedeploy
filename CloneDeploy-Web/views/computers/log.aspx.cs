@@ -16,7 +16,7 @@ namespace views.computers
 
         protected void PopulateLogs()
         {
-            gvLogs.DataSource = BLL.ComputerLog.Search(Computer.Id);
+            gvLogs.DataSource = Call.ComputerApi.GetComputerLogs(Computer.Id);
             gvLogs.DataBind();
         }
 
@@ -27,7 +27,7 @@ namespace views.computers
             var gvRow = (GridViewRow) control.Parent.Parent;
             var dataKey = gvLogs.DataKeys[gvRow.RowIndex];
             if (dataKey == null) return;
-            var log = BLL.ComputerLog.GetComputerLog(Convert.ToInt32(dataKey.Value));
+            var log = Call.ComputerLogApi.Get(Convert.ToInt32(dataKey.Value));
             Export(Computer.Name + "-" + log.SubType + ".txt", log.Contents);
         }
 
@@ -38,7 +38,7 @@ namespace views.computers
             var gvRow = (GridViewRow)control.Parent.Parent;
             var dataKey = gvLogs.DataKeys[gvRow.RowIndex];
             if (dataKey == null) return;
-            var log = BLL.ComputerLog.GetComputerLog(Convert.ToInt32(dataKey.Value));
+            var log = Call.ComputerLogApi.Get(Convert.ToInt32(dataKey.Value));
 
             SearchLogs.Visible = false;
             ViewLog.Visible = true;

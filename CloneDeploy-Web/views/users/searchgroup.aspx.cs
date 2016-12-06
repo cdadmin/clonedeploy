@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using System.Web.UI.WebControls;
-using Helpers;
 
 public partial class views_users_searchgroup : BasePages.Users
 {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Web.UI.WebControls;
-using Helpers;
 
 public partial class views_global_profileupdater_kernel : BasePages.Global
 {

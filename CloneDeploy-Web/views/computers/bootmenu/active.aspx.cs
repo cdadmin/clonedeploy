@@ -1,5 +1,4 @@
 ﻿using System;
-using Helpers;
 
 public partial class views_computers_bootmenu_active : BasePages.Computers
 {

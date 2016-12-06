@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace views.login {
+namespace CloneDeploy_Web.views.login {
     
     
     public partial class Default {

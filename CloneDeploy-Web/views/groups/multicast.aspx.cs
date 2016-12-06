@@ -1,5 +1,4 @@
 ﻿using System;
-using Helpers;
 
 public partial class views_groups_multicast : BasePages.Groups
 {

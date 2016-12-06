@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using CloneDeploy_Web.Models;
-using Helpers;
 
 public partial class views_global_munki_manifestsearch : BasePages.Global
 {

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Configuration;
 using System.IO;
 using System.Web;
 using BasePages;
-using Helpers;
-using MySql.Data.MySqlClient;
 
 namespace views.admin
 {

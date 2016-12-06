@@ -1,8 +1,8 @@
 ﻿using System;
 using BasePages;
-using CloneDeploy_Web.APICalls;
-using CloneDeploy_Web.Models;
-using Helpers;
+using CloneDeploy_ApiCalls;
+using CloneDeploy_App.Helpers;
+using CloneDeploy_Entities;
 
 namespace views.computers
 {
@@ -16,7 +16,7 @@ namespace views.computers
         protected void ButtonAddComputer_Click(object sender, EventArgs e)
         {
             RequiresAuthorization(Authorizations.CreateComputer);
-            var computer = new Computer
+            var computer = new ComputerEntity
             {
                 Name = txtComputerName.Text,
                 Mac = txtComputerMac.Text,

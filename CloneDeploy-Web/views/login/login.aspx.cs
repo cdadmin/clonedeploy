@@ -1,21 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Threading;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using CloneDeploy_ApiCalls;
-using CloneDeploy_Web.Models;
-using Helpers;
+using CloneDeploy_Entities;
 using Newtonsoft.Json;
-using RestSharp;
-using Security;
 
-namespace views.login
+namespace CloneDeploy_Web.views.login
 {
     public partial class Default : Page
     {
@@ -109,7 +101,7 @@ namespace views.login
                 }
                 else if (result.Success)
                 {
-                    var cloneDeployUser = JsonConvert.DeserializeObject<CloneDeployUser>(result.ObjectJson);
+                    var cloneDeployUser = JsonConvert.DeserializeObject<CloneDeployUserEntity>(result.ObjectJson);
                     Session["CloneDeployUser"] = cloneDeployUser;
                     e.Authenticated = true;
                 }

@@ -16,7 +16,7 @@ namespace CloneDeploy_Services
     {
         private readonly UnitOfWork _uow;
 
-        //private readonly UserServices _userServices = new UserServices();
+        private readonly UserServices _userServices = new UserServices();
         public ImageServices()
         {
             _uow = new UnitOfWork();

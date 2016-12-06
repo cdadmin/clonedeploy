@@ -252,7 +252,7 @@ namespace CloneDeploy_Services
         {
             var groups = SearchGroups();
             foreach (var group in groups.Where(x => x.Type == "smart"))
-                UpdateSmartMembership(group);
+                UpdateSmartMembership(group.Id);
         }
 
         private  ValidationResultDTO ValidateGroup(GroupEntity group, bool isNewGroup)

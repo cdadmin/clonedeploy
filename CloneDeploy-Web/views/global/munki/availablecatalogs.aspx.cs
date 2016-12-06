@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web.UI.WebControls;
-using CloneDeploy_Web.Models;
-using Helpers;
 
 public partial class views_global_munki_availablecatalogs : BasePages.Global
 {

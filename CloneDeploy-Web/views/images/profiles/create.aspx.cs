@@ -1,6 +1,5 @@
 ﻿using System;
 using BasePages;
-using Helpers;
 
 public partial class views_images_profiles_create : Images
 {

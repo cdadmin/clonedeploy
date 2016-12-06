@@ -1,20 +1,19 @@
 ﻿using System;
-using CloneDeploy_Web.APICalls;
-using CloneDeploy_Web.Models;
-using Helpers;
+using CloneDeploy_App.Helpers;
+using CloneDeploy_Entities;
 
 namespace BasePages
 {
     public class Computers : PageBaseMaster
     {
-        public Computer Computer { get; set; }
+        public ComputerEntity Computer { get; set; }
 
         protected override void OnInit(EventArgs e)
         {
             
             base.OnInit(e);
             Computer = !string.IsNullOrEmpty(Request.QueryString["computerid"])
-                ? new APICall().ComputerApi.Get(Convert.ToInt32(Request.QueryString["computerid"]))
+                ? Call.ComputerApi.Get(Convert.ToInt32(Request.QueryString["computerid"]))
                 : null;
             if (Computer == null)
                 RequiresAuthorization(Authorizations.SearchComputer);

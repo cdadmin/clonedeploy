@@ -1,6 +1,4 @@
 ﻿using System;
-using CloneDeploy_Web.Models;
-using Helpers;
 
 namespace BasePages
 {

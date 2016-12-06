@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using BasePages;
-using BLL;
-using Helpers;
 
 public partial class views_admin_bootmenu_defaultmenu : Admin
 {

@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web.UI.WebControls;
-using BLL;
-using Helpers;
 
 public partial class views_admin_clobber : BasePages.Admin
 {

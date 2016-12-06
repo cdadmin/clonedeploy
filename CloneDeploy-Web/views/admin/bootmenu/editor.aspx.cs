@@ -2,7 +2,6 @@
 using System.IO;
 using System.Net;
 using BasePages;
-using Helpers;
 
 public partial class views_admin_bootmenu_editor : Admin
 {

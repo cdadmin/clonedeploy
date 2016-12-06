@@ -884,6 +884,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Authorizations.cs" />
     <Compile Include="BasePages\Admin.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>

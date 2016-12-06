@@ -1,15 +1,15 @@
 ﻿using System;
 using BasePages;
-using CloneDeploy_Web.APICalls;
-using CloneDeploy_Web.Models;
-using Helpers;
+using CloneDeploy_ApiCalls;
+using CloneDeploy_App.Helpers;
+using CloneDeploy_Entities;
 
 namespace views.computers
 {
     public partial class ComputerMaster : MasterBaseMaster
     {
         private Computers ComputerBasePage { get; set; }
-        public Computer Computer { get; set; }
+        public ComputerEntity Computer { get; set; }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -57,7 +57,7 @@ namespace views.computers
             {
                 case "delete":
                     ComputerBasePage.RequiresAuthorizationOrManagedComputer(Authorizations.DeleteComputer,Computer.Id);
-                    var result = new APICall().ComputerApi.Delete(Computer.Id);
+                    var result = ComputerBasePage.Call.ComputerApi.Delete(Computer.Id);
                     if (result.Success)
                     {
                         PageBaseMaster.EndUserMessage = "Successfully Deleted Computer";

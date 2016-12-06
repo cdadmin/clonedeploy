@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BasePages;
-using Helpers;
 using Image = CloneDeploy_Web.Models.Image;
 
 namespace views.images

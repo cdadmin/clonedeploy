@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using BasePages;
-using BLL;
-using Helpers;
 
 public partial class views_admin_server : Admin
 {

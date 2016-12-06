@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using BasePages;
-using BLL.Workflows;
-using CloneDeploy_Web.Models;
-using Helpers;
 
 namespace views.masters
 {

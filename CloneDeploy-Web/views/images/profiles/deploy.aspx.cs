@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BasePages;
-using BLL;
-using CloneDeploy_Web.Models.ImageSchema.GridView;
-using Helpers;
 using Newtonsoft.Json;
 
 public partial class views_images_profiles_deploy : Images

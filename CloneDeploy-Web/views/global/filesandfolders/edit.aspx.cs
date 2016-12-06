@@ -1,5 +1,4 @@
 ﻿using System;
-using Helpers;
 
 public partial class views_global_filesandfolders_edit : BasePages.Global
 {

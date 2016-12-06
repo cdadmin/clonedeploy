@@ -1,6 +1,4 @@
 ﻿using System;
-using CloneDeploy_Web.Models;
-using Helpers;
 
 public partial class views_groups_properties : BasePages.Groups
 {

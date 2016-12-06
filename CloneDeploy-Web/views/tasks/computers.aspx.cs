@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using CloneDeploy_Web.Models;
-using Helpers;
 
 namespace views.tasks
 {

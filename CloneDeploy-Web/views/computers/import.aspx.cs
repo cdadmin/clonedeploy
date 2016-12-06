@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using BasePages;
-using Helpers;
 
 namespace views.computers
 {
