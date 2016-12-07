@@ -86,6 +86,14 @@ namespace CloneDeploy_ApiCalls
 
         }
 
+        public string StartMulticast(int id)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/StartMulticast/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
+
+        }
+
 
         public IEnumerable<ComputerEntity> GetGroupMembers(int id, string searchstring = "")
         {

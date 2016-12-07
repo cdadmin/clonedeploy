@@ -1,5 +1,7 @@
 ﻿using System;
 using BasePages;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 namespace views.groups
 {
@@ -15,16 +17,16 @@ namespace views.groups
             RequiresAuthorization(Authorizations.CreateGroup); 
             if(ddlGroupType.Text == "smart")
                 RequiresAuthorization(Authorizations.CreateSmart);
-            var group = new Group
+            var group = new GroupEntity
             {
                 Name = txtGroupName.Text,
                 Description = txtGroupDesc.Text,
                 Type = ddlGroupType.Text,
             };
 
-            var result = BLL.Group.AddGroup(group,CloneDeployCurrentUser.Id);
+            var result = Call.GroupApi.Post(group);
             if (!result.Success)
-                EndUserMessage = result.Message;
+                EndUserMessage = result.ErrorMessage;
             else
             {
                 EndUserMessage = "Successfully Created Group";

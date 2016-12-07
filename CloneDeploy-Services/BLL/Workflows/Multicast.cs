@@ -22,12 +22,12 @@ namespace CloneDeploy_App.BLL.Workflows
         private ImageProfileEntity _imageProfile;
         private readonly int _userId;
         //Constructor For Starting Multicast For Group
-        public Multicast(GroupEntity group, int userId)
+        public Multicast(int groupId, int userId)
         {
             _computers = new List<ComputerEntity>();
             _multicastSession = new ActiveMulticastSessionEntity();
             _isOnDemand = false;
-            _group = group;
+            _group = new GroupServices().GetGroup(groupId);
             _userId = userId;
 
         }

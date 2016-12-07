@@ -1,5 +1,7 @@
 ﻿using System;
 using BasePages;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 namespace views.groups
 {
@@ -14,9 +16,9 @@ namespace views.groups
         {
             chkDefault.Checked = Group.SetDefaultBootMenu == 1;
             PopulateBootTemplatesDdl(ddlTemplates);
-            var bootMenu = BLL.GroupBootMenu.GetGroupBootMenu(Group.Id);
+            var bootMenu = Call.GroupApi.GetCustomBootMenu(Group.Id);
 
-            if (Helpers.Settings.ProxyDhcp == "Yes")
+            if (Settings.ProxyDhcp == "Yes")
             {
                 divProxy.Visible = true;
                 if (bootMenu == null) return;
@@ -46,15 +48,15 @@ namespace views.groups
         {
             scriptEditor.Value = "";
             if (ddlTemplates.SelectedValue == "-1") return;
-            scriptEditor.Value = BLL.BootTemplate.GetBootTemplate(Convert.ToInt32(ddlTemplates.SelectedValue)).Contents;
+            scriptEditor.Value = Call.BootTemplateApi.Get(Convert.ToInt32(ddlTemplates.SelectedValue)).Contents;
         }
 
         protected void buttonUpdate_OnClick(object sender, EventArgs e)
         {
             RequiresAuthorizationOrManagedGroup(Authorizations.UpdateGroup, Group.Id); 
-            var bootMenu = BLL.GroupBootMenu.GetGroupBootMenu(Group.Id) ?? new CloneDeploy_Web.Models.GroupBootMenu();
+            var bootMenu = Call.GroupApi.GetCustomBootMenu(Group.Id) ?? new GroupBootMenuEntity();
             bootMenu.GroupId = Group.Id;
-            if (Helpers.Settings.ProxyDhcp == "Yes")
+            if (Settings.ProxyDhcp == "Yes")
             {
                 switch (ddlProxyMode.Text)
                 {
@@ -73,7 +75,7 @@ namespace views.groups
             {
                 bootMenu.BiosMenu = scriptEditor.Value.Replace("\r\n", "\n");
             }
-            EndUserMessage = BLL.GroupBootMenu.UpdateGroupBootMenu(bootMenu)
+            EndUserMessage = Call.GroupBootMenuApi.Post(bootMenu).Success
                 ? "Successfully Updated Custom Boot Menu"
                 : "Could Not Update Custom Boot Menu";
         }
@@ -82,7 +84,7 @@ namespace views.groups
         {
             var group = Group;
             group.SetDefaultBootMenu = Convert.ToInt16(chkDefault.Checked);
-            BLL.Group.UpdateGroup(group);
+            Call.GroupApi.Put(group.Id,group);
         }
 
         protected void ddlProxyMode_OnSelectedIndexChanged(object sender, EventArgs e)

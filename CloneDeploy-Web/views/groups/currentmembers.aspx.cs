@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_groups_currentmembers : Groups
 {
@@ -16,7 +18,7 @@ public partial class views_groups_currentmembers : Groups
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<Computer> listComputers = (List<Computer>)gvComputers.DataSource;
+        List<ComputerEntity> listComputers = (List<ComputerEntity>)gvComputers.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -36,10 +38,10 @@ public partial class views_groups_currentmembers : Groups
     protected void PopulateGrid()
     {
 
-        gvComputers.DataSource = BLL.Group.GetGroupMembers(Group.Id,txtSearch.Text);
+        gvComputers.DataSource = Call.GroupApi.GetGroupMembers(Group.Id,txtSearch.Text);
         gvComputers.DataBind();
 
-        lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + BLL.GroupMembership.GetGroupMemberCount(Group.Id) + " Total Computer(s)";
+        lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + Call.GroupApi.GetMemberCount(Group.Id) + " Total Computer(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)

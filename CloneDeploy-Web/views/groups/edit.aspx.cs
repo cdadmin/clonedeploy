@@ -1,6 +1,8 @@
 ﻿using System;
 using BasePages;
-using Group = CloneDeploy_Web.Models.Group;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
+
 
 namespace views.groups
 {
@@ -9,7 +11,7 @@ namespace views.groups
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             RequiresAuthorizationOrManagedGroup(Authorizations.UpdateGroup, Group.Id); 
-            var group = new Group
+            var group = new GroupEntity
             {
                 Id = Group.Id,
                 Name = txtGroupName.Text,
@@ -17,8 +19,8 @@ namespace views.groups
                 Description = txtGroupDesc.Text,
             };
 
-            var result = BLL.Group.UpdateGroup(group);
-            EndUserMessage = !result.Success ? result.Message : "Successfully Updated Group";              
+            var result = Call.GroupApi.Put(group.Id,group);
+            EndUserMessage = !result.Success ? result.ErrorMessage : "Successfully Updated Group";              
         }
 
         protected void Page_Load(object sender, EventArgs e)

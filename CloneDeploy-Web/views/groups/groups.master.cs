@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using BasePages;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 namespace views.masters
 {
     public partial class GroupMaster : MasterBaseMaster
     {
         private Groups groupBasePage { get; set; }
-        public Group Group { get; set; }
+        public GroupEntity Group { get; set; }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -44,23 +46,23 @@ namespace views.masters
             {
                 case "delete":
                     groupBasePage.RequiresAuthorizationOrManagedGroup(Authorizations.DeleteGroup,Group.Id);
-                    var result = BLL.Group.DeleteGroup(Group.Id);
+                    var result = groupBasePage.Call.GroupApi.Delete(Group.Id);
                     if (result.Success)
                     {
                         PageBaseMaster.EndUserMessage = "Successfully Deleted Group";
                         Response.Redirect("~/views/groups/search.aspx");
                     }
                     else
-                        PageBaseMaster.EndUserMessage = result.Message;
+                        PageBaseMaster.EndUserMessage = result.ErrorMessage;
                     break;
                 case "unicast":
                     groupBasePage.RequiresAuthorizationOrManagedGroup(Authorizations.ImageDeployTask,Group.Id);
-                    var successCount = BLL.Group.StartGroupUnicast(Group,groupBasePage.CloneDeployCurrentUser.Id);
+                    var successCount = groupBasePage.Call.GroupApi.StartGroupUnicast(Group.Id);
                     PageBaseMaster.EndUserMessage = "Succssfully Started " + successCount + " Tasks";
                     break;
                 case "multicast":
                     groupBasePage.RequiresAuthorizationOrManagedGroup(Authorizations.ImageMulticastTask, Group.Id);
-                    PageBaseMaster.EndUserMessage = new Multicast(Group,groupBasePage.CloneDeployCurrentUser.Id).Create();
+                    PageBaseMaster.EndUserMessage = groupBasePage.Call.GroupApi.StartMulticast(Group.Id);
                     break;
 
             }
@@ -83,7 +85,7 @@ namespace views.masters
         {
             Session["taskType"] = "multicast";
             lblTitle.Text = "Multicast The Selected Group?";
-            gvConfirm.DataSource = new List<Group> {Group};
+            gvConfirm.DataSource = new List<GroupEntity> {Group};
             gvConfirm.DataBind();
             DisplayConfirm();
         }
@@ -91,7 +93,7 @@ namespace views.masters
         {
             Session["taskType"] = "unicast";
             lblTitle.Text = "Unicast All The Computers In The Selected Group?";
-            gvConfirm.DataSource = new List<Group> { Group };
+            gvConfirm.DataSource = new List<GroupEntity> { Group };
             gvConfirm.DataBind();
             DisplayConfirm();
         }

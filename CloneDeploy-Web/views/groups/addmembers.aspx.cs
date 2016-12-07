@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_groups_addmembers : Groups
 {
@@ -23,7 +25,7 @@ public partial class views_groups_addmembers : Groups
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<Computer> listComputers = (List<Computer>)gvComputers.DataSource;
+        List<ComputerEntity> listComputers = (List<ComputerEntity>)gvComputers.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -44,15 +46,15 @@ public partial class views_groups_addmembers : Groups
     {
         var limit = 0;
         limit = ddlLimit.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimit.Text);
-        var listOfComputers = BLL.Computer.SearchComputersForUser(CloneDeployCurrentUser.Id,limit, txtSearch.Text);
+        var listOfComputers = Call.ComputerApi.GetAll(limit,txtSearch.Text);
         
         //If a user is using a managed group they can also see computers without any group, to add in.
-        listOfComputers.AddRange(BLL.Computer.ComputersWithoutGroup(txtSearch.Text,limit));
+        listOfComputers.AddRange(Call.ComputerApi.GetComputersWithoutGroup(limit,txtSearch.Text));
       
         gvComputers.DataSource = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
         gvComputers.DataBind();
 
-        lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + BLL.Computer.TotalCount() + " Total Computer(s)";
+        lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + Call.ComputerApi.GetCount() + " Total Computer(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)
@@ -71,11 +73,11 @@ public partial class views_groups_addmembers : Groups
             select gvComputers.DataKeys[row.RowIndex]
             into dataKey
             where dataKey != null
-            select new GroupMembership
+            select new GroupMembershipEntity
             {
                 ComputerId = Convert.ToInt32(dataKey.Value), GroupId = Group.Id
             }).ToList();
-        EndUserMessage = BLL.GroupMembership.AddMembership(memberships) ? "Successfully Added Group Members" : "Could Not Add Group Members";
+        EndUserMessage = Call.GroupMembershipApi.Post(memberships).Success ? "Successfully Added Group Members" : "Could Not Add Group Members";
     }
 
     protected void ddlLimit_OnSelectedIndexChanged(object sender, EventArgs e)

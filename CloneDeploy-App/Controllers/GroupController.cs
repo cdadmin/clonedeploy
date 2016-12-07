@@ -153,6 +153,16 @@ namespace CloneDeploy_App.Controllers
 
         }
 
+        [UserAuth(Permission = "Administrator")]
+        public ApiStringResponseDTO StartMulticast(int id)
+        {
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                             .Select(c => c.Value).SingleOrDefault();
+
+            return new ApiStringResponseDTO() { Value = new BLL.Workflows.Multicast(id, Convert.ToInt32(userId)).Create() };
+        }   
+
         [GroupAuth(Permission = "GroupRead")]
         public IEnumerable<ComputerEntity> GetGroupMembers(int id, string searchstring = "")
         {
