@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_global_sysprep_search : BasePages.Global
 {
@@ -14,10 +16,10 @@ public partial class views_global_sysprep_search : BasePages.Global
 
     protected void PopulateGrid()
     {
-        gvSysprepTags.DataSource = BLL.SysprepTag.SearchSysprepTags(txtSearch.Text);
+        gvSysprepTags.DataSource = Call.SysprepTagApi.GetAll(Int32.MaxValue,txtSearch.Text);
         gvSysprepTags.DataBind();
 
-        lblTotal.Text = gvSysprepTags.Rows.Count + " Result(s) / " + BLL.SysprepTag.TotalCount() + " Total Sysprep Tag(s)";
+        lblTotal.Text = gvSysprepTags.Rows.Count + " Result(s) / " + Call.SysprepTagApi.GetCount() + " Total Sysprep Tag(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)
@@ -35,7 +37,7 @@ public partial class views_global_sysprep_search : BasePages.Global
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<SysprepTag> listSysprepTags = (List<SysprepTag>)gvSysprepTags.DataSource;
+        List<SysprepTagEntity> listSysprepTags = (List<SysprepTagEntity>)gvSysprepTags.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -61,7 +63,7 @@ public partial class views_global_sysprep_search : BasePages.Global
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvSysprepTags.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            BLL.SysprepTag.DeleteSysprepTag(Convert.ToInt32(dataKey.Value));
+            Call.SysprepTagApi.Delete(Convert.ToInt32(dataKey.Value));
         }
 
         PopulateGrid();

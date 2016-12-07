@@ -26,7 +26,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public IEnumerable<ScriptEntity> Get(string searchstring = "")
+        public IEnumerable<ScriptEntity> GetAll(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _scriptServices.SearchScripts()

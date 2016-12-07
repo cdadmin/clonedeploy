@@ -1,4 +1,6 @@
 ﻿using System;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_global_boottemplates_create : BasePages.Global
 {
@@ -10,16 +12,16 @@ public partial class views_global_boottemplates_create : BasePages.Global
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.CreateGlobal);
-        var bootTemplate = new BootTemplate
+        var bootTemplate = new BootTemplateEntity
         {
             Name = txtName.Text,
             Description = txtDescription.Text,
             Contents = txtContents.Text
         };
 
-        var result = BLL.BootTemplate.AddBootTemplate(bootTemplate);
+        var result = Call.BootTemplateApi.Post(bootTemplate);
         if (!result.Success)
-            EndUserMessage = result.Message;
+            EndUserMessage = result.ErrorMessage;
         else
         {
             EndUserMessage = "Successfully Added Boot Menu Template";

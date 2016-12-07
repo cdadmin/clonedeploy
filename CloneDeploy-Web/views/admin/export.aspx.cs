@@ -2,6 +2,7 @@
 using System.IO;
 using System.Web;
 using BasePages;
+using CloneDeploy_Web;
 
 namespace views.admin
 {
@@ -17,9 +18,9 @@ namespace views.admin
             string exportPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
                          Path.DirectorySeparatorChar + "exports" + Path.DirectorySeparatorChar;
 
-           BLL.Computer.ExportCsv(exportPath + "computers.csv");
-           BLL.Group.ExportCsv(exportPath + "groups.csv");
-           BLL.Image.ExportCsv(exportPath + "images.csv");
+           Call.ComputerApi.Export(exportPath + "computers.csv");
+           Call.GroupApi.Export(exportPath + "groups.csv");
+           Call.ImageApi.Export(exportPath + "images.csv");
            EndUserMessage = "Export Complete";
         }
     }

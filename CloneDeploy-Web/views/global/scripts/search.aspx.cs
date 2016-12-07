@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_admin_scripts_search : BasePages.Global
 {
@@ -14,10 +16,10 @@ public partial class views_admin_scripts_search : BasePages.Global
 
     protected void PopulateGrid()
     {
-        gvScripts.DataSource = BLL.Script.SearchScripts(txtSearch.Text);
+        gvScripts.DataSource = Call.ScriptApi.GetAll(Int32.MaxValue,txtSearch.Text);
         gvScripts.DataBind();
 
-        lblTotal.Text = gvScripts.Rows.Count + " Result(s) / " + BLL.Script.TotalCount() + " Total Script(s)";
+        lblTotal.Text = gvScripts.Rows.Count + " Result(s) / " + Call.ScriptApi.GetCount() + " Total Script(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)
@@ -35,7 +37,7 @@ public partial class views_admin_scripts_search : BasePages.Global
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<Script> listScripts = (List<Script>)gvScripts.DataSource;
+        List<ScriptEntity> listScripts = (List<ScriptEntity>)gvScripts.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -57,7 +59,7 @@ public partial class views_admin_scripts_search : BasePages.Global
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvScripts.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            BLL.Script.DeleteScript(Convert.ToInt32(dataKey.Value));
+            Call.ScriptApi.Delete(Convert.ToInt32(dataKey.Value));
         }
 
         PopulateGrid();

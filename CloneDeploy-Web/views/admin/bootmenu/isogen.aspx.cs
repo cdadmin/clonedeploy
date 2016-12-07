@@ -2,6 +2,9 @@
 using System.IO;
 using System.Web;
 using BasePages;
+using CloneDeploy_App.Helpers;
+using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Web;
 
 public partial class views_admin_bootmenu_isogen : Admin
 {
@@ -9,8 +12,8 @@ public partial class views_admin_bootmenu_isogen : Admin
     {
         if (!IsPostBack)
         {
-            ddlKernel.DataSource = Utility.GetKernels();      
-            ddlBootImage.DataSource = Utility.GetBootImages();           
+            ddlKernel.DataSource = Call.FilesystemApi.GetKernels();      
+            ddlBootImage.DataSource = Call.FilesystemApi.GetBootImages();           
             ddlKernel.DataBind();
             ddlBootImage.DataBind();
             ddlKernel.SelectedValue = Settings.DefaultKernel64;
@@ -23,8 +26,14 @@ public partial class views_admin_bootmenu_isogen : Admin
                             Path.DirectorySeparatorChar + "client_iso" + Path.DirectorySeparatorChar + "output" +
                             Path.DirectorySeparatorChar;
 
+        var isoGenOptions = new IsoGenOptionsDTO();
+        isoGenOptions.bootImage = ddlBootImage.Text;
+        isoGenOptions.buildType = ddlBuildType.Text;
+        isoGenOptions.kernel = ddlKernel.Text;
+        isoGenOptions.arguments = txtKernelArgs.Text;
+
         if (
-            new BLL.Workflows.IsoGen(ddlBuildType.Text, ddlKernel.Text, ddlBootImage.Text, txtKernelArgs.Text).Generate())
+            Call.WorkflowApi.GenerateLinuxIsoConfig(isoGenOptions))
             EndUserMessage = "Complete.  Output Located At " + Utility.EscapeFilePaths(output);
         else
         {

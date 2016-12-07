@@ -1,4 +1,5 @@
 ﻿using System;
+using CloneDeploy_Web;
 
 public partial class views_global_munki_general : BasePages.Global
 {
@@ -20,8 +21,8 @@ public partial class views_global_munki_general : BasePages.Global
         ManifestTemplate.Name = txtManifestName.Text;
         ManifestTemplate.Description = txtManifestDesc.Text;
        
-        var result = BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
-        EndUserMessage = result.Success ? "Successfully Updated Manifest Template" : result.Message;
+        var result = Call.MunkiManifestTemplateApi.Put(ManifestTemplate.Id,ManifestTemplate);
+        EndUserMessage = result.Success ? "Successfully Updated Manifest Template" : result.ErrorMessage;
     }
 
 }

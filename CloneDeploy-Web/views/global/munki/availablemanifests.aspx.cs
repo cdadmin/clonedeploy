@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_global_munki_availablemanifests : BasePages.Global
 {
@@ -15,13 +17,13 @@ public partial class views_global_munki_availablemanifests : BasePages.Global
     {
         var availableLimit = ddlLimitAvailable.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimitAvailable.Text);
 
-        var listOfManifests = new List<MunkiPackageInfo>();
+        var listOfManifests = new List<MunkiPackageInfoEntity>();
         var manifests = GetMunkiResources("manifests");
         if (manifests != null)
         {
             foreach (var manifest in manifests)
             {
-                listOfManifests.Add(new MunkiPackageInfo {Name = manifest.Name});
+                listOfManifests.Add(new MunkiPackageInfoEntity() {Name = manifest.Name});
             }
 
             listOfManifests =
@@ -55,7 +57,7 @@ public partial class views_global_munki_availablemanifests : BasePages.Global
             var dataKey = gvPkgInfos.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
 
-            var includedManifest = new MunkiManifestIncludedManifest
+            var includedManifest = new MunkiManifestIncludedManifestEntity()
             {
                 Name = dataKey.Value.ToString(),
                 ManifestTemplateId = ManifestTemplate.Id,
@@ -64,14 +66,14 @@ public partial class views_global_munki_availablemanifests : BasePages.Global
             var condition = (TextBox)row.FindControl("txtCondition");
             includedManifest.Condition = condition.Text;
 
-            if (BLL.MunkiIncludedManifest.AddIncludedManifestToTemplate(includedManifest)) updateCount++;
+            if (Call.MunkiManifestTemplateApi.AddManifestToTemplate(includedManifest)) updateCount++;
         }
 
         if (updateCount > 0)
         {
             EndUserMessage = "Successfully Updated Included Manifests";
             ManifestTemplate.ChangesApplied = 0;
-            BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
+            Call.MunkiManifestTemplateApi.Put(ManifestTemplate.Id,ManifestTemplate);
         }
         else
         {

@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Web;
 
 public partial class views_admin_clobber : BasePages.Admin
 {
@@ -12,7 +16,7 @@ public partial class views_admin_clobber : BasePages.Admin
 
     protected void PopulateForm()
     {
-        ddlComputerImage.DataSource = BLL.Image.SearchImagesForUser(CloneDeployCurrentUser.Id).Where(x => x.Environment == "linux" || x.Environment == "").Select(i => new { i.Id, i.Name }).OrderBy(x => x.Name).ToList();
+        ddlComputerImage.DataSource = Call.ImageApi.GetAll(Int32.MaxValue,"").Where(x => x.Environment == "linux" || x.Environment == "").Select(i => new { i.Id, i.Name }).OrderBy(x => x.Name).ToList();
         ddlComputerImage.DataValueField = "Id";
         ddlComputerImage.DataTextField = "Name";
         ddlComputerImage.DataBind();
@@ -25,7 +29,7 @@ public partial class views_admin_clobber : BasePages.Admin
 
         try
         {
-            var imageProfile = BLL.ImageProfile.ReadProfile(Convert.ToInt32(Settings.ClobberProfileId));
+            var imageProfile = Call.ImageProfileApi.Get(Convert.ToInt32(Settings.ClobberProfileId));
             ddlComputerImage.SelectedValue = imageProfile.Image.Id.ToString();
             PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlComputerImage.SelectedValue));
             ddlImageProfile.SelectedValue = imageProfile.Id.ToString();
@@ -44,37 +48,37 @@ public partial class views_admin_clobber : BasePages.Admin
     {
         RequiresAuthorization(Authorizations.UpdateAdmin);
 
-        List<CloneDeploy_Web.Models.Setting> listSettings = new List<CloneDeploy_Web.Models.Setting>
+        List<SettingEntity> listSettings = new List<SettingEntity>
         {
-            new CloneDeploy_Web.Models.Setting
+            new SettingEntity
             {
                 Name = "Clobber Enabled",
                 Value = chkClobber.Checked ? "1" : "0",
-                Id = Setting.GetSetting("Clobber Enabled").Id
+                Id = Call.SettingApi.GetSetting("Clobber Enabled").Id
             },
-            new CloneDeploy_Web.Models.Setting
+            new SettingEntity
             {
                 Name = "Clobber Prompt Computer Name",
                 Value = chkPromptName.Checked ? "1" : "0",
-                Id = Setting.GetSetting("Clobber Prompt Computer Name").Id
+                Id = Call.SettingApi.GetSetting("Clobber Prompt Computer Name").Id
             },
-            new CloneDeploy_Web.Models.Setting
+            new SettingEntity
             {
                 Name = "Clobber ProfileId",
                 Value = ddlImageProfile.SelectedValue,
-                Id = Setting.GetSetting("Clobber ProfileId").Id
+                Id = Call.SettingApi.GetSetting("Clobber ProfileId").Id
             },
         };
 
-        var result = Setting.UpdateSetting(listSettings);
+        var result = Call.SettingApi.UpdateSettings(listSettings);
         if (result)
         {
             if (Settings.ClobberEnabled == "1")
             {
-                var imageProfile = BLL.ImageProfile.ReadProfile(Convert.ToInt32(Settings.ClobberProfileId));
+                var imageProfile = Call.ImageProfileApi.Get(Convert.ToInt32(Settings.ClobberProfileId));
                 bool promptForName = Settings.ClobberPromptComputerName == "1";
 
-                var bootMenuResult = new BLL.Workflows.ClobberBootMenu(imageProfile, promptForName).CreatePxeBootFiles();
+                var bootMenuResult = Call.WorkflowApi.CreateClobberBootMenu(imageProfile.Id, promptForName);
                 if (bootMenuResult)
                     EndUserMessage = "Successfully Enabled Clobber Mode";
             }
@@ -116,30 +120,30 @@ public partial class views_admin_clobber : BasePages.Admin
 
     protected void CreateProxyMenu()
     {
-        var defaultBootMenu = new BLL.Workflows.DefaultBootMenu();
-        defaultBootMenu.Kernel = "4.5";
-        defaultBootMenu.BootImage = "initrd.xz";
-        defaultBootMenu.Type = "bios";
-        defaultBootMenu.CreateGlobalDefaultBootMenu();
+        var defaultBootMenuOptions = new BootMenuGenOptionsDTO();
+        defaultBootMenuOptions.Kernel = "4.5";
+        defaultBootMenuOptions.BootImage = "initrd.xz";
+        defaultBootMenuOptions.Type = "bios";
+        Call.WorkflowApi.CreateDefaultBootMenu(defaultBootMenuOptions);
 
-        defaultBootMenu.Kernel = "4.5";
-        defaultBootMenu.BootImage = "initrd.xz";
-        defaultBootMenu.Type = "efi32";
-        defaultBootMenu.CreateGlobalDefaultBootMenu();
+        defaultBootMenuOptions.Kernel = "4.5";
+        defaultBootMenuOptions.BootImage = "initrd.xz";
+        defaultBootMenuOptions.Type = "efi32";
+        Call.WorkflowApi.CreateDefaultBootMenu(defaultBootMenuOptions);
 
-        defaultBootMenu.Kernel = "4.5x64";
-        defaultBootMenu.BootImage = "initrd.xz";
-        defaultBootMenu.Type = "efi64";
-        defaultBootMenu.CreateGlobalDefaultBootMenu();
+        defaultBootMenuOptions.Kernel = "4.5x64";
+        defaultBootMenuOptions.BootImage = "initrd.xz";
+        defaultBootMenuOptions.Type = "efi64";
+        Call.WorkflowApi.CreateDefaultBootMenu(defaultBootMenuOptions);
     }
 
     protected void CreateStandardMenu()
     {
-        var defaultBootMenu = new BLL.Workflows.DefaultBootMenu();
-        defaultBootMenu.Kernel = "4.5x64";
-        defaultBootMenu.BootImage = "initrd.xz";
-        defaultBootMenu.Type = "standard";
-        defaultBootMenu.CreateGlobalDefaultBootMenu();
+        var defaultBootMenuOptions = new BootMenuGenOptionsDTO();
+        defaultBootMenuOptions.Kernel = "4.5x64";
+        defaultBootMenuOptions.BootImage = "initrd.xz";
+        defaultBootMenuOptions.Type = "standard";
+        Call.WorkflowApi.CreateDefaultBootMenu(defaultBootMenuOptions);
 
 
     }

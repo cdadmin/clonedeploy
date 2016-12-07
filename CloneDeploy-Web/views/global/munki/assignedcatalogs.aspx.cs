@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web;
 
 public partial class views_global_munki_catalogs : BasePages.Global
 {
@@ -13,7 +15,7 @@ public partial class views_global_munki_catalogs : BasePages.Global
 
     protected void PopulateGrid()
     {
-        var templateCatalogs = BLL.MunkiCatalog.GetAllCatalogsForMt(ManifestTemplate.Id).Where(f => f.Name.IndexOf(TextBox1.Text, StringComparison.CurrentCultureIgnoreCase) != -1).OrderBy(x => x.Priority);
+        var templateCatalogs = Call.MunkiManifestTemplateApi.GetManifestCatalogs(ManifestTemplate.Id).Where(f => f.Name.IndexOf(TextBox1.Text, StringComparison.CurrentCultureIgnoreCase) != -1).OrderBy(x => x.Priority);
         gvTemplateCatalogs.DataSource = templateCatalogs;
         gvTemplateCatalogs.DataBind();
       
@@ -39,19 +41,19 @@ public partial class views_global_munki_catalogs : BasePages.Global
 
             if (!enabled.Checked)
             {
-                if(BLL.MunkiCatalog.DeleteCatalogFromTemplate(Convert.ToInt32(dataKey.Value)))
+                if(Call.MunkiManifestTemplateApi.DeleteCatalogsFromTemplate(Convert.ToInt32(dataKey.Value)))
                 updateCount++;
             }
             else
             {
-                var catalog = BLL.MunkiCatalog.GetCatalog(Convert.ToInt32(dataKey.Value));
+                var catalog = Call.MunkiManifestCatalogApi.Get(Convert.ToInt32(dataKey.Value));
               
                 var txtPriority = row.FindControl("txtPriority") as TextBox;
                 if (txtPriority != null)
                     if (!string.IsNullOrEmpty(txtPriority.Text))
                         catalog.Priority = Convert.ToInt32(txtPriority.Text);
 
-                if (BLL.MunkiCatalog.AddCatalogToTemplate(catalog)) updateCount++;
+                if (Call.MunkiManifestTemplateApi.AddCatalogToTemplate(catalog)) updateCount++;
             }       
         }
 
@@ -59,7 +61,7 @@ public partial class views_global_munki_catalogs : BasePages.Global
         {
             EndUserMessage = "Successfully Updated Catalogs";
             ManifestTemplate.ChangesApplied = 0;
-            BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
+            Call.MunkiManifestTemplateApi.Put(ManifestTemplate.Id,ManifestTemplate);
         }
         else
         {

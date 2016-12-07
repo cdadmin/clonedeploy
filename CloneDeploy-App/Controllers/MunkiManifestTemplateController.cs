@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
+using System.Text;
 using System.Threading;
 using System.Web;
 using System.Web.Http;
@@ -27,7 +28,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public IEnumerable<MunkiManifestTemplateEntity> Get(string searchstring = "")
+        public IEnumerable<MunkiManifestTemplateEntity> GetAll(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _munkiManifestTemplateServices.SearchManifests()
@@ -282,5 +283,24 @@ namespace CloneDeploy_App.Controllers
                 };
 
             }
+
+        [GlobalAuth(Permission = "GlobalRead")]
+        public ApiStringResponseDTO GetEffectiveManifest(int id)
+        {
+            var effectiveManifest = new BLL.Workflows.EffectiveMunkiTemplate().MunkiTemplate(id);
+            return new ApiStringResponseDTO() { Value = Encoding.UTF8.GetString(effectiveManifest.ToArray()) };
+        }
+
+        [GlobalAuth(Permission = "GlobalRead")]
+        public MunkiUpdateConfirmDTO GetUpdateStats(int id)
+        {
+            return new BLL.Workflows.EffectiveMunkiTemplate().GetUpdateStats(id);
+        }
+
+        [GlobalAuth(Permission = "GlobalRead")]
+        public ApiIntResponseDTO Apply(int id)
+        {
+            return new ApiIntResponseDTO() {Value = new BLL.Workflows.EffectiveMunkiTemplate().Apply(id)};
+        }
     }
 }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Web.UI.WebControls;
 using BasePages;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_admin_security : Admin
 {
@@ -54,64 +56,64 @@ public partial class views_admin_security : Admin
         if (ddlDebugLogin.Text == "Yes" && ddlOndLogin.Text == "Yes" && ddlRegisterLogin.Text == "Yes" &&
             ddlWebTasksLogin.Text == "Yes" && ddlClobberLogin.Text == "Yes")
             txtToken.Text = "";
-        var listSettings = new List<Setting>
+        var listSettings = new List<SettingEntity>
         {
            
-            new Setting
+            new SettingEntity
             {
                 Name = "Require Image Approval",
                 Value = chkImageApproval.Checked.ToString(),
-                Id = BLL.Setting.GetSetting("Require Image Approval").Id
+                Id = Call.SettingApi.GetSetting("Require Image Approval").Id
             },
-            new Setting {Name = "On Demand", Value = ddlOnd.Text, Id = BLL.Setting.GetSetting("On Demand").Id},
-            new Setting {Name = "Universal Token", Value = txtToken.Text, Id = BLL.Setting.GetSetting("Universal Token").Id},
-            new Setting {Name = "Force SSL", Value = ddlSSL.Text, Id = BLL.Setting.GetSetting("Force SSL").Id},
-            new Setting {Name = "Ldap Enabled", Value = Convert.ToInt16(chkldap.Checked).ToString(), Id = BLL.Setting.GetSetting("Ldap Enabled").Id},
-            new Setting {Name = "Ldap Server", Value = txtldapServer.Text, Id = BLL.Setting.GetSetting("Ldap Server").Id},
-            new Setting {Name = "Ldap Port", Value = txtldapPort.Text, Id = BLL.Setting.GetSetting("Ldap Port").Id},
-            new Setting {Name = "Ldap Auth Attribute", Value = txtldapAuthAttribute.Text, Id = BLL.Setting.GetSetting("Ldap Auth Attribute").Id},
-            new Setting {Name = "Ldap Base DN", Value = txtldapbasedn.Text, Id = BLL.Setting.GetSetting("Ldap Base DN").Id},
-            new Setting {Name = "Ldap Auth Type", Value = ddlldapAuthType.Text, Id = BLL.Setting.GetSetting("Ldap Auth Type").Id},
-            new Setting
+            new SettingEntity {Name = "On Demand", Value = ddlOnd.Text, Id = Call.SettingApi.GetSetting("On Demand").Id},
+            new SettingEntity {Name = "Universal Token", Value = txtToken.Text, Id = Call.SettingApi.GetSetting("Universal Token").Id},
+            new SettingEntity {Name = "Force SSL", Value = ddlSSL.Text, Id = Call.SettingApi.GetSetting("Force SSL").Id},
+            new SettingEntity {Name = "Ldap Enabled", Value = Convert.ToInt16(chkldap.Checked).ToString(), Id = Call.SettingApi.GetSetting("Ldap Enabled").Id},
+            new SettingEntity {Name = "Ldap Server", Value = txtldapServer.Text, Id = Call.SettingApi.GetSetting("Ldap Server").Id},
+            new SettingEntity {Name = "Ldap Port", Value = txtldapPort.Text, Id = Call.SettingApi.GetSetting("Ldap Port").Id},
+            new SettingEntity {Name = "Ldap Auth Attribute", Value = txtldapAuthAttribute.Text, Id = Call.SettingApi.GetSetting("Ldap Auth Attribute").Id},
+            new SettingEntity {Name = "Ldap Base DN", Value = txtldapbasedn.Text, Id = Call.SettingApi.GetSetting("Ldap Base DN").Id},
+            new SettingEntity {Name = "Ldap Auth Type", Value = ddlldapAuthType.Text, Id = Call.SettingApi.GetSetting("Ldap Auth Type").Id},
+            new SettingEntity
             {
                 Name = "Web Task Requires Login",
                 Value = ddlWebTasksLogin.Text,
-                Id = BLL.Setting.GetSetting("Web Task Requires Login").Id
+                Id = Call.SettingApi.GetSetting("Web Task Requires Login").Id
             }
         };
 
 
-       
-            listSettings.Add(new Setting
+
+        listSettings.Add(new SettingEntity
             {
                 Name = "On Demand Requires Login",
                 Value = ddlOndLogin.Text,
-                Id = BLL.Setting.GetSetting("On Demand Requires Login").Id
+                Id = Call.SettingApi.GetSetting("On Demand Requires Login").Id
             });
-            listSettings.Add(new Setting
+        listSettings.Add(new SettingEntity
             {
                 Name = "Debug Requires Login",
                 Value = ddlDebugLogin.Text,
-                Id = BLL.Setting.GetSetting("Debug Requires Login").Id
+                Id = Call.SettingApi.GetSetting("Debug Requires Login").Id
             });
-            listSettings.Add(new Setting
+        listSettings.Add(new SettingEntity
             {
                 Name = "Register Requires Login",
                 Value = ddlRegisterLogin.Text,
-                Id = BLL.Setting.GetSetting("Register Requires Login").Id
+                Id = Call.SettingApi.GetSetting("Register Requires Login").Id
             });
-            listSettings.Add(new Setting
+        listSettings.Add(new SettingEntity
             {
                 Name = "Clobber Requires Login",
                 Value = ddlClobberLogin.Text,
-                Id = BLL.Setting.GetSetting("Clobber Requires Login").Id
+                Id = Call.SettingApi.GetSetting("Clobber Requires Login").Id
             });
         
 
 
         var newBootMenu = false;
         var newClientIso = false;
-        if (BLL.Setting.UpdateSetting(listSettings))
+        if (Call.SettingApi.UpdateSettings(listSettings))
         {
             EndUserMessage = "Successfully Updated Settings";
             if ((string) ViewState["serverKey"] != txtToken.Text)
@@ -162,16 +164,16 @@ public partial class views_admin_security : Admin
                     if (webService.ToLower().Contains("https://"))
                         updatedWebService = webService.Replace("https://", "http://");
                 }
-                var sslSettingList = new List<Setting>
+                var sslSettingList = new List<SettingEntity>
                 {
-                    new Setting
+                    new SettingEntity
                     {
                         Name = "Web Path",
                         Value = updatedWebService,
-                        Id = BLL.Setting.GetSetting("Web Path").Id
+                        Id = Call.SettingApi.GetSetting("Web Path").Id
                     }
                 };
-                BLL.Setting.UpdateSetting(sslSettingList);
+                Call.SettingApi.UpdateSettings(sslSettingList);
             }
         }
         else

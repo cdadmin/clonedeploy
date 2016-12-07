@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using BasePages;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_admin_email : Admin
 {
@@ -23,23 +25,23 @@ public partial class views_admin_email : Admin
     protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.UpdateAdmin);
-        List<Setting> listSettings = new List<Setting>
+        List<SettingEntity> listSettings = new List<SettingEntity>
         {
-            new Setting {Name = "Smtp Server", Value = txtSmtpServer.Text, Id = BLL.Setting.GetSetting("Smtp Server").Id},
-            new Setting {Name = "Smtp Port", Value = txtSmtpPort.Text, Id = BLL.Setting.GetSetting("Smtp Port").Id},
-            new Setting {Name = "Smtp Username", Value = txtSmtpUsername.Text, Id = BLL.Setting.GetSetting("Smtp Username").Id},
-            new Setting {Name = "Smtp Mail From", Value = txtSmtpFrom.Text, Id = BLL.Setting.GetSetting("Smtp Mail From").Id},
-            new Setting {Name = "Smtp Mail To", Value = txtSmtpTo.Text, Id = BLL.Setting.GetSetting("Smtp Mail To").Id},
-            new Setting {Name = "Smtp Ssl", Value = ddlSmtpSsl.Text, Id = BLL.Setting.GetSetting("Smtp Ssl").Id}
+            new SettingEntity() {Name = "Smtp Server", Value = txtSmtpServer.Text, Id = Call.SettingApi.GetSetting("Smtp Server").Id},
+            new SettingEntity() {Name = "Smtp Port", Value = txtSmtpPort.Text, Id = Call.SettingApi.GetSetting("Smtp Port").Id},
+            new SettingEntity() {Name = "Smtp Username", Value = txtSmtpUsername.Text, Id =Call.SettingApi.GetSetting("Smtp Username").Id},
+            new SettingEntity() {Name = "Smtp Mail From", Value = txtSmtpFrom.Text, Id = Call.SettingApi.GetSetting("Smtp Mail From").Id},
+            new SettingEntity() {Name = "Smtp Mail To", Value = txtSmtpTo.Text, Id = Call.SettingApi.GetSetting("Smtp Mail To").Id},
+            new SettingEntity() {Name = "Smtp Ssl", Value = ddlSmtpSsl.Text, Id = Call.SettingApi.GetSetting("Smtp Ssl").Id}
 
         };
         if (!string.IsNullOrEmpty(txtSmtpPassword.Text))
-            listSettings.Add(new Setting { Name = "Smtp Password Encrypted", Value = new Helpers.Encryption().EncryptText(txtSmtpPassword.Text), Id = BLL.Setting.GetSetting("Smtp Password Encrypted").Id });
+            listSettings.Add(new SettingEntity { Name = "Smtp Password Encrypted", Value = new Encryption().EncryptText(txtSmtpPassword.Text), Id = Call.SettingApi.GetSetting("Smtp Password Encrypted").Id });
 
         var chkValue = chkEnabled.Checked ? "1" : "0";
-        listSettings.Add(new Setting { Name = "Smtp Enabled", Value = chkValue, Id = BLL.Setting.GetSetting("Smtp Enabled").Id });
+        listSettings.Add(new SettingEntity { Name = "Smtp Enabled", Value = chkValue, Id = Call.SettingApi.GetSetting("Smtp Enabled").Id });
 
-        EndUserMessage = BLL.Setting.UpdateSetting(listSettings) ? "Successfully Updated Settings" : "Could Not Update Settings";
+        EndUserMessage = Call.SettingApi.UpdateSettings(listSettings) ? "Successfully Updated Settings" : "Could Not Update Settings";
     }
 
     protected void btnTestMessage_Click(object sender, EventArgs e)

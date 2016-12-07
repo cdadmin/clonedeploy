@@ -1,4 +1,6 @@
 ﻿using System;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_global_boottemplates_edit : BasePages.Global
 {
@@ -17,7 +19,7 @@ public partial class views_global_boottemplates_edit : BasePages.Global
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.UpdateGlobal);
-        var bootTemplate = new BootTemplate
+        var bootTemplate = new BootTemplateEntity()
         {
             Id = BootTemplate.Id,
             Name = txtName.Text,
@@ -25,8 +27,8 @@ public partial class views_global_boottemplates_edit : BasePages.Global
             Contents = txtContents.Text
         };
 
-        var result = BLL.BootTemplate.UpdateBootTemplate(bootTemplate);
-        EndUserMessage = !result.Success ? result.Message : "Successfully Updated Boot Menu Template";
+        var result = Call.BootTemplateApi.Put(bootTemplate.Id,bootTemplate);
+        EndUserMessage = !result.Success ? result.ErrorMessage : "Successfully Updated Boot Menu Template";
        
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web;
 
 public partial class views_global_profileupdater_kernel : BasePages.Global
 {
@@ -19,10 +20,10 @@ public partial class views_global_profileupdater_kernel : BasePages.Global
 
     protected void PopulateGrid()
     {
-        ddlKernel.DataSource = Helpers.Utility.GetKernels();
+        ddlKernel.DataSource = Call.FilesystemApi.GetKernels();
         ddlKernel.DataBind();
         ddlKernel.SelectedValue = Settings.DefaultKernel64;
-        gvProfiles.DataSource = BLL.ImageProfile.GetAllProfiles();
+        gvProfiles.DataSource = Call.ImageProfileApi.GetAll(Int32.MaxValue, "");
         gvProfiles.DataBind();
     }
 
@@ -37,9 +38,9 @@ public partial class views_global_profileupdater_kernel : BasePages.Global
             var dataKey = gvProfiles.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
 
-            var imageProfile = BLL.ImageProfile.ReadProfile(Convert.ToInt32(dataKey.Value));
+            var imageProfile = Call.ImageProfileApi.Get(Convert.ToInt32(dataKey.Value));
             imageProfile.Kernel = ddlKernel.Text;
-            if (BLL.ImageProfile.UpdateProfile(imageProfile).Success)
+            if (Call.ImageProfileApi.Put(imageProfile.Id,imageProfile).Success)
             {
                 updateCount++;
             }

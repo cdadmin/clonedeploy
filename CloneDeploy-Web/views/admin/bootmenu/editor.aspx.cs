@@ -2,6 +2,8 @@
 using System.IO;
 using System.Net;
 using BasePages;
+using CloneDeploy_App.Helpers;
+using CloneDeploy_Web;
 
 public partial class views_admin_bootmenu_editor : Admin
 {
@@ -201,7 +203,7 @@ public partial class views_admin_bootmenu_editor : Admin
                     {
                         file.WriteLine(scriptEditorText.Value);
                     }
-                    new FileOps().SetUnixPermissions(path);
+                    Call.FilesystemApi.SetUnixPermissions(path);
                 }
                 EndUserMessage = "Successfully Updated Default Global Boot Menu";
             }

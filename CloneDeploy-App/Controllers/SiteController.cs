@@ -24,7 +24,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public IEnumerable<SiteEntity> Get(string searchstring = "")
+        public IEnumerable<SiteEntity> GetAll(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _siteServices.SearchSites()

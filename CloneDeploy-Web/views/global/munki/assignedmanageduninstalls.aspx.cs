@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web;
 
 
 public partial class views_global_munki_assignedmanageduninstalls : BasePages.Global
@@ -15,11 +17,11 @@ public partial class views_global_munki_assignedmanageduninstalls : BasePages.Gl
       
         var assignedLimit = ddlLimitAssigned.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimitAssigned.Text);
 
-        var templateInstalls = BLL.MunkiManagedUninstall.GetAllManagedUnInstallsForMt(ManifestTemplate.Id).Where(s => s.Name.IndexOf(txtSearchAssigned.Text, StringComparison.CurrentCultureIgnoreCase) != -1).OrderBy(x => x.Name).Take(assignedLimit);
+        var templateInstalls = Call.MunkiManifestTemplateApi.GetManifestManagedUninstalls(ManifestTemplate.Id).Where(s => s.Name.IndexOf(txtSearchAssigned.Text, StringComparison.CurrentCultureIgnoreCase) != -1).OrderBy(x => x.Name).Take(assignedLimit);
         gvTemplateInstalls.DataSource = templateInstalls;
         gvTemplateInstalls.DataBind();
 
-        lblTotalAssigned.Text = gvTemplateInstalls.Rows.Count + " Result(s) / " + BLL.MunkiManagedUninstall.TotalCount(ManifestTemplate.Id) + " Total Managed Uninstall(s)";
+        lblTotalAssigned.Text = gvTemplateInstalls.Rows.Count + " Result(s) / " + Call.MunkiManifestTemplateApi.GetManagedUninstallCount(ManifestTemplate.Id) + " Total Managed Uninstall(s)";
      
     }
 
@@ -39,20 +41,20 @@ public partial class views_global_munki_assignedmanageduninstalls : BasePages.Gl
 
             if (!enabled.Checked)
             {
-                if (BLL.MunkiManagedUninstall.DeleteManagedUnInstallFromTemplate(Convert.ToInt32(dataKey.Value)))
+                if (Call.MunkiManifestTemplateApi.DeleteManageUninstallsFromTemplate(Convert.ToInt32(dataKey.Value)))
                     updateCount++;
             }
 
             else
             {
-                var managedUnInstall = BLL.MunkiManagedUninstall.GetManagedUnInstall(Convert.ToInt32(dataKey.Value));
+                var managedUnInstall = Call.MunkiManifestManagedUnInstallEntityApi.Get(Convert.ToInt32(dataKey.Value));
 
                 var txtCondition = row.FindControl("txtCondition") as TextBox;
                 if (txtCondition != null)
                     if (txtCondition.Text != managedUnInstall.Condition)
                         managedUnInstall.Condition = txtCondition.Text;
 
-                if (BLL.MunkiManagedUninstall.AddManagedUnInstallToTemplate(managedUnInstall)) updateCount++;
+                if (Call.MunkiManifestTemplateApi.AddManagedUninstallsToTemplate(managedUnInstall)) updateCount++;
             } 
 
         }
@@ -61,7 +63,7 @@ public partial class views_global_munki_assignedmanageduninstalls : BasePages.Gl
         {
             EndUserMessage = "Successfully Updated Managed Uninstalls";
             ManifestTemplate.ChangesApplied = 0;
-            BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
+            Call.MunkiManifestTemplateApi.Put(ManifestTemplate.Id,ManifestTemplate);
         }
         else
         {

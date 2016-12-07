@@ -1,5 +1,7 @@
 ﻿using System;
 using BasePages;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_admin_dp_create : Admin
 {
@@ -11,7 +13,7 @@ public partial class views_admin_dp_create : Admin
     protected void buttonAddDp_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.UpdateAdmin);
-        var distributionPoint = new DistributionPoint
+        var distributionPoint = new DistributionPointEntity
         {
             DisplayName = txtDisplayName.Text,
             Server = txtServer.Text,
@@ -19,15 +21,15 @@ public partial class views_admin_dp_create : Admin
             ShareName = txtShareName.Text,
             Domain = txtDomain.Text,
             RwUsername = txtRwUsername.Text,
-            RwPassword = new Helpers.Encryption().EncryptText(txtRwPassword.Text),
+            RwPassword = new Encryption().EncryptText(txtRwPassword.Text),
             RoUsername = txtRoUsername.Text,
-            RoPassword = new Helpers.Encryption().EncryptText(txtRoPassword.Text),
+            RoPassword = new Encryption().EncryptText(txtRoPassword.Text),
             IsPrimary = Convert.ToInt16(chkPrimary.Checked),
             PhysicalPath = chkPrimary.Checked ? txtPhysicalPath.Text : "",           
            
         };
 
-        var result = BLL.DistributionPoint.AddDistributionPoint(distributionPoint);
+        var result = Call.DistributionPointApi.Post(distributionPoint);
         if (result.Success)
         {
             EndUserMessage = "Successfully Created Distribution Point";
@@ -36,7 +38,7 @@ public partial class views_admin_dp_create : Admin
         }
         else
         {
-            EndUserMessage = result.Message;
+            EndUserMessage = result.ErrorMessage;
         }
 
     }

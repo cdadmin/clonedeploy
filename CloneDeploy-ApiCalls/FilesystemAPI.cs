@@ -1,4 +1,5 @@
 ﻿using CloneDeploy_App.DTOs;
+using CloneDeploy_Entities.DTOs;
 using RestSharp;
 
 namespace CloneDeploy_ApiCalls
@@ -19,6 +20,68 @@ namespace CloneDeploy_ApiCalls
             _request.Method = Method.GET;
             _request.Resource = string.Format("api/{0}/BootSdiExists/", _resource);
             var response = new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+
+            return response;
+        }
+
+        public string ReadFileText(string path)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/ReadFileText/", _resource);
+            _request.AddParameter("path", path);
+            var response = new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
+
+            return response;
+
+        }
+
+        public bool SetUnixPermissions(string path)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/SetUnixPermissions/", _resource);
+            _request.AddParameter("path", path);
+            var response = new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+
+            return response;
+
+        }
+
+        public string[] GetKernels()
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetKernels/", _resource);
+            var response = new ApiRequest().Execute<ApiStringArrResponseDTO>(_request).Value;
+
+            return response;
+
+        }
+
+        public string[] GetBootImages()
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetBootImages/", _resource);
+            var response = new ApiRequest().Execute<ApiStringArrResponseDTO>(_request).Value;
+
+            return response;
+
+        }
+
+        public string[] GetLogs()
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetLogs/", _resource);
+            var response = new ApiRequest().Execute<ApiStringArrResponseDTO>(_request).Value;
+
+            return response;
+
+        }
+
+        public string[] GetScripts(string type)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetScripts/", _resource);
+            _request.AddParameter("type", type);
+            var response = new ApiRequest().Execute<ApiStringArrResponseDTO>(_request).Value;
 
             return response;
 

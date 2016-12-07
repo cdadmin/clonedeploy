@@ -1,4 +1,6 @@
 ﻿using System;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_global_munki_manifestcreate : BasePages.Global
 {
@@ -10,14 +12,14 @@ public partial class views_global_munki_manifestcreate : BasePages.Global
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.CreateGlobal);
-        var manifestTemplate = new MunkiManifestTemplate()
+        var manifestTemplate = new MunkiManifestTemplateEntity()
         {
             Name = txtManifestName.Text,
             Description = txtManifestDesc.Text,
           
         };
 
-        var result = BLL.MunkiManifestTemplate.AddManifest(manifestTemplate);
+        var result = Call.MunkiManifestTemplateApi.Post(manifestTemplate);
         if (result.Success)
         {
             EndUserMessage = "Successfully Created Manifest Template";
@@ -25,7 +27,7 @@ public partial class views_global_munki_manifestcreate : BasePages.Global
         }
         else
         {
-            EndUserMessage = result.Message;
+            EndUserMessage = result.ErrorMessage;
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web;
 
 public partial class views_global_munki_assignedmanifests : BasePages.Global
 {
@@ -14,11 +16,11 @@ public partial class views_global_munki_assignedmanifests : BasePages.Global
 
         var assignedLimit = ddlLimitAssigned.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimitAssigned.Text);
 
-        var templateInstalls = BLL.MunkiIncludedManifest.GetAllIncludedManifestsForMt(ManifestTemplate.Id).Where(s => s.Name.IndexOf(txtSearchAssigned.Text, StringComparison.CurrentCultureIgnoreCase) != -1).OrderBy(x => x.Name).Take(assignedLimit);
+        var templateInstalls = Call.MunkiManifestTemplateApi.GetManifestIncludedManifests(ManifestTemplate.Id).Where(s => s.Name.IndexOf(txtSearchAssigned.Text, StringComparison.CurrentCultureIgnoreCase) != -1).OrderBy(x => x.Name).Take(assignedLimit);
         gvTemplateInstalls.DataSource = templateInstalls;
         gvTemplateInstalls.DataBind();
 
-        lblTotalAssigned.Text = gvTemplateInstalls.Rows.Count + " Result(s) / " + BLL.MunkiIncludedManifest.TotalCount(ManifestTemplate.Id) + " Total Included Manifest(s)";
+        lblTotalAssigned.Text = gvTemplateInstalls.Rows.Count + " Result(s) / " + Call.MunkiManifestTemplateApi.GetIncludedManifestCount(ManifestTemplate.Id) + " Total Included Manifest(s)";
 
 
 
@@ -38,20 +40,20 @@ public partial class views_global_munki_assignedmanifests : BasePages.Global
 
             if (!enabled.Checked)
             {
-                if (BLL.MunkiIncludedManifest.DeleteIncludedManifestFromTemplate(Convert.ToInt32(dataKey.Value)))
+                if (Call.MunkiManifestTemplateApi.DeleteManifestsFromTemplate(Convert.ToInt32(dataKey.Value)))
                     updateCount++;
             }
 
             else
             {
-                var includedManifest = BLL.MunkiIncludedManifest.GetIncludedManifest(Convert.ToInt32(dataKey.Value));
+                var includedManifest = Call.MunkiManifestIncludedManifestApi.Get(Convert.ToInt32(dataKey.Value));
 
                 var txtCondition = row.FindControl("txtCondition") as TextBox;
                 if (txtCondition != null)
                     if (txtCondition.Text != includedManifest.Condition)
                         includedManifest.Condition = txtCondition.Text;
 
-                if (BLL.MunkiIncludedManifest.AddIncludedManifestToTemplate(includedManifest)) updateCount++;
+                if (Call.MunkiManifestTemplateApi.AddManifestToTemplate(includedManifest)) updateCount++;
             } 
         }
 
@@ -59,7 +61,7 @@ public partial class views_global_munki_assignedmanifests : BasePages.Global
         {
             EndUserMessage = "Successfully Updated Included Manifests";
             ManifestTemplate.ChangesApplied = 0;
-            BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
+            Call.MunkiManifestTemplateApi.Put(ManifestTemplate.Id,ManifestTemplate);
         }
         else
         {

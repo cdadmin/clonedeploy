@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BasePages;
+using CloneDeploy_Web;
 
 namespace views.admin
 {
@@ -38,7 +39,7 @@ namespace views.admin
                     var limit = ddlDbLimit.Text == "All" ? int.MaxValue : Convert.ToInt32(ddlDbLimit.Text);
                     dbView.Visible = true;
                     fileView.Visible = false;
-                    gvLogs.DataSource = BLL.ComputerLog.SearchOnDemand(limit);
+                    gvLogs.DataSource = Call.ComputerLogApi.GetOnDemandLogs(limit);
                     gvLogs.DataBind();
                 }
                 else
@@ -61,7 +62,7 @@ namespace views.admin
         {
             if (!IsPostBack)
             {
-                ddlLog.DataSource = Utility.GetLogs();
+                ddlLog.DataSource = Call.FilesystemApi.GetLogs();
                 ddlLog.DataBind();
                 ddlLog.Items.Insert(0, "Select A Log");
                 ddlLog.Items.Insert(1, "On Demand");
@@ -85,7 +86,7 @@ namespace views.admin
             var gvRow = (GridViewRow)control.Parent.Parent;
             var dataKey = gvLogs.DataKeys[gvRow.RowIndex];
             if (dataKey == null) return;
-            var log = BLL.ComputerLog.GetComputerLog(Convert.ToInt32(dataKey.Value));
+            var log = Call.ComputerLogApi.Get(Convert.ToInt32(dataKey.Value));
             Export(gvRow.Cells[2].Text + "-" + log.SubType + ".txt", log.Contents);
         }
 
@@ -96,7 +97,7 @@ namespace views.admin
             var gvRow = (GridViewRow)control.Parent.Parent;
             var dataKey = gvLogs.DataKeys[gvRow.RowIndex];
             if (dataKey == null) return;
-            var log = BLL.ComputerLog.GetComputerLog(Convert.ToInt32(dataKey.Value));
+            var log = Call.ComputerLogApi.Get(Convert.ToInt32(dataKey.Value));
 
             dbView.Visible = false;
             ViewLog.Visible = true;

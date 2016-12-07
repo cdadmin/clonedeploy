@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using BasePages;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_admin_multicast : Admin
 {
@@ -23,49 +25,49 @@ public partial class views_admin_multicast : Admin
         RequiresAuthorization(Authorizations.UpdateAdmin);
         if (ValidateSettings())
         {
-            List<Setting> listSettings = new List<Setting>
+            List<SettingEntity> listSettings = new List<SettingEntity>
             {
-                new Setting
+                new SettingEntity
                 {
                     Name = "Sender Args",
                     Value = txtSenderArgs.Text,
-                    Id = BLL.Setting.GetSetting("Sender Args").Id
+                    Id = Call.SettingApi.GetSetting("Sender Args").Id
                 },
-                new Setting
+                new SettingEntity
                 {
                     Name = "Udpcast Start Port",
                     Value = txtStartPort.Text,
-                    Id = BLL.Setting.GetSetting("Udpcast Start Port").Id
+                    Id = Call.SettingApi.GetSetting("Udpcast Start Port").Id
                 },
-                new Setting
+                new SettingEntity
                 {
                     Name = "Udpcast End Port",
                     Value = txtEndPort.Text,
-                    Id = BLL.Setting.GetSetting("Udpcast End Port").Id
+                    Id = Call.SettingApi.GetSetting("Udpcast End Port").Id
                 },
-                new Setting
+                new SettingEntity
                 {
                     Name = "Client Receiver Args",
                     Value = txtRecClientArgs.Text,
-                    Id = BLL.Setting.GetSetting("Client Receiver Args").Id
+                    Id = Call.SettingApi.GetSetting("Client Receiver Args").Id
                 },
-                new Setting
+                new SettingEntity
                 {
                     Name = "Multicast Decompression",
                     Value = ddlDecompress.Text,
-                    Id = BLL.Setting.GetSetting("Multicast Decompression").Id
+                    Id = Call.SettingApi.GetSetting("Multicast Decompression").Id
                 },
             };
 
-            if (BLL.Setting.UpdateSetting(listSettings))
+            if (Call.SettingApi.UpdateSettings(listSettings))
             {
                 EndUserMessage = "Successfully Updated Settings";
                 if ((string) (ViewState["startPort"]) != txtStartPort.Text)
                 {
                     var startPort = Convert.ToInt32(txtStartPort.Text);
                     startPort = startPort - 2;
-                    var port = new Port {Number = startPort};
-                    BLL.Port.AddPort(port);
+                    var port = new PortEntity {Number = startPort};
+                    Call.PortApi.Post(port);
                 }
             }
             else

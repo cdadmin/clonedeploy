@@ -119,6 +119,21 @@ namespace CloneDeploy_ApiCalls
             get { return new UserRightAPI("UserRight"); }
         }
 
+        public WorkflowAPI WorkflowApi
+        {
+            get { return new WorkflowAPI("Workflow"); }
+        }
+
+        public CdVersionAPI CdVersionApi
+        {
+            get { return new CdVersionAPI("CdVersion"); }
+        }
+
+        public AuthorizationAPI AuthorizationApi
+        {
+            get { return new AuthorizationAPI("Authorization"); }
+        }
+
 
         public IGenericAPI<BootEntryEntity> BootEntryApi
         {

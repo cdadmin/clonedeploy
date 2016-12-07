@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_global_rooms_search : BasePages.Global
 {
@@ -26,13 +28,13 @@ public partial class views_global_rooms_search : BasePages.Global
     }
     protected void BindGrid()
     {
-        gvRooms.DataSource = BLL.Room.SearchRooms(txtSearch.Text);
+        gvRooms.DataSource = Call.RoomApi.GetAll(Int32.MaxValue,txtSearch.Text);
         gvRooms.DataBind();
 
         if (gvRooms.Rows.Count == 0)
         {
-            var obj = new List<Room>();
-            obj.Add(new Room());
+            var obj = new List<RoomEntity>();
+            obj.Add(new RoomEntity());
             gvRooms.DataSource = obj;
             gvRooms.DataBind();
 
@@ -48,13 +50,13 @@ public partial class views_global_rooms_search : BasePages.Global
     {
         RequiresAuthorization(Authorizations.CreateGlobal);
         GridViewRow gvRow = (GridViewRow)(sender as Control).Parent.Parent;
-        var room = new Room
+        var room = new RoomEntity()
         {
             Name = ((TextBox)gvRow.FindControl("txtNameAdd")).Text,
             DistributionPointId = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDpAdd")).SelectedValue)
         };
 
-        BLL.Room.AddRoom(room);
+        Call.RoomApi.Post(room);
         BindGrid();
     }
 
@@ -69,14 +71,14 @@ public partial class views_global_rooms_search : BasePages.Global
     {
         RequiresAuthorization(Authorizations.UpdateGlobal);
         GridViewRow gvRow = gvRooms.Rows[e.RowIndex];
-        var room = new Room
+        var room = new RoomEntity()
         {
             Id = Convert.ToInt32(gvRooms.DataKeys[e.RowIndex].Values[0]),
             Name = ((TextBox)gvRow.FindControl("txtName")).Text,
             DistributionPointId = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDp")).SelectedValue)
 
         };
-        BLL.Room.UpdateRoom(room);
+        Call.RoomApi.Put(room.Id, room);
 
         gvRooms.EditIndex = -1;
         this.BindGrid();
@@ -91,7 +93,7 @@ public partial class views_global_rooms_search : BasePages.Global
     protected void OnRowDeleting(object sender, GridViewDeleteEventArgs e)
     {
         RequiresAuthorization(Authorizations.DeleteGlobal);
-        BLL.Room.DeleteRoom(Convert.ToInt32(gvRooms.DataKeys[e.RowIndex].Values[0]));
+        Call.RoomApi.Delete(Convert.ToInt32(gvRooms.DataKeys[e.RowIndex].Values[0]));
         BindGrid();
     }
 
@@ -112,7 +114,7 @@ public partial class views_global_rooms_search : BasePages.Global
             if (ddlDps != null)
             {
                 PopulateDistributionPointsDdl(ddlDps);
-                ddlDps.SelectedValue = ((Room)(e.Row.DataItem)).DistributionPoint.ToString();
+                ddlDps.SelectedValue = ((RoomEntity)(e.Row.DataItem)).DistributionPoint.ToString();
             }
         } 
     }

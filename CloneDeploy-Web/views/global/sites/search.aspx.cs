@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_global_sites_search : BasePages.Global
 {
@@ -26,13 +28,13 @@ public partial class views_global_sites_search : BasePages.Global
     }
     protected void BindGrid()
     {
-        gvSites.DataSource = BLL.Site.SearchSites(txtSearch.Text);
+        gvSites.DataSource = Call.SiteApi.GetAll(Int32.MaxValue,txtSearch.Text);
         gvSites.DataBind();
 
         if (gvSites.Rows.Count == 0)
         {
-            var obj = new List<Site>();
-            obj.Add(new Site());
+            var obj = new List<SiteEntity>();
+            obj.Add(new SiteEntity());
             gvSites.DataSource = obj;
             gvSites.DataBind();
 
@@ -48,13 +50,13 @@ public partial class views_global_sites_search : BasePages.Global
     {
         RequiresAuthorization(Authorizations.CreateGlobal);
         GridViewRow gvRow = (GridViewRow)(sender as Control).Parent.Parent;
-        var site = new Site
+        var site = new SiteEntity()
         {
             Name = ((TextBox)gvRow.FindControl("txtNameAdd")).Text,
             DistributionPointId = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDpAdd")).SelectedValue)
         };
 
-        BLL.Site.AddSite(site);
+        Call.SiteApi.Post(site);
         BindGrid();
     }
 
@@ -69,13 +71,13 @@ public partial class views_global_sites_search : BasePages.Global
     {
         RequiresAuthorization(Authorizations.UpdateGlobal);
         GridViewRow gvRow = gvSites.Rows[e.RowIndex];
-        var site = new Site
+        var site = new SiteEntity()
         {
             Id = Convert.ToInt32(gvSites.DataKeys[e.RowIndex].Values[0]),
             Name = ((TextBox)gvRow.FindControl("txtName")).Text,
             DistributionPointId = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDp")).SelectedValue)
         };
-        BLL.Site.UpdateSite(site);
+        Call.SiteApi.Put(site.Id,site);
 
         gvSites.EditIndex = -1;
         this.BindGrid();
@@ -90,7 +92,7 @@ public partial class views_global_sites_search : BasePages.Global
     protected void OnRowDeleting(object sender, GridViewDeleteEventArgs e)
     {
         RequiresAuthorization(Authorizations.DeleteGlobal);
-        BLL.Site.DeleteSite(Convert.ToInt32(gvSites.DataKeys[e.RowIndex].Values[0]));
+        Call.SiteApi.Delete(Convert.ToInt32(gvSites.DataKeys[e.RowIndex].Values[0]));
         BindGrid();
     }
 
@@ -112,7 +114,7 @@ public partial class views_global_sites_search : BasePages.Global
             if (ddlDps != null)
             {
                 PopulateDistributionPointsDdl(ddlDps);
-                ddlDps.SelectedValue = ((Site)(e.Row.DataItem)).DistributionPointId.ToString();
+                ddlDps.SelectedValue = ((SiteEntity)(e.Row.DataItem)).DistributionPointId.ToString();
             }
         } 
     }

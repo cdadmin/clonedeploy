@@ -1,4 +1,6 @@
 ﻿using System;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_global_boottemplates_editentry : BasePages.Global
 {
@@ -21,7 +23,7 @@ public partial class views_global_boottemplates_editentry : BasePages.Global
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.UpdateGlobal);
-        var bootEntry = new BootEntry
+        var bootEntry = new BootEntryEntity
         {
             Id = BootEntry.Id,
             Name = txtName.Text,
@@ -33,8 +35,8 @@ public partial class views_global_boottemplates_editentry : BasePages.Global
             Default = chkDefault.Checked ? 1 : 0
         };
 
-        var result = BLL.BootEntry.UpdateBootEntry(bootEntry);
-        EndUserMessage = !result.Success ? result.Message : "Successfully Updated Boot Menu Entry";
+        var result = Call.BootEntryApi.Put(bootEntry.Id,bootEntry);
+        EndUserMessage = !result.Success ? result.ErrorMessage : "Successfully Updated Boot Menu Entry";
 
     }
 }

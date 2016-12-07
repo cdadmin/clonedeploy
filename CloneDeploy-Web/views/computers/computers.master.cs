@@ -1,8 +1,8 @@
 ﻿using System;
 using BasePages;
 using CloneDeploy_ApiCalls;
-using CloneDeploy_App.Helpers;
 using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 namespace views.computers
 {
@@ -69,13 +69,13 @@ namespace views.computers
                 case "push":
                 {
                     ComputerBasePage.RequiresAuthorizationOrManagedComputer(Authorizations.ImageDeployTask, Computer.Id);
-                    PageBaseMaster.EndUserMessage = new BLL.Workflows.Unicast(Computer, action,ComputerBasePage.CloneDeployCurrentUser.Id).Start();
+                    PageBaseMaster.EndUserMessage = ComputerBasePage.Call.ComputerApi.StartDeploy(Computer.Id);
                 }
                     break;
                 case "pull":
                 {
                     ComputerBasePage.RequiresAuthorizationOrManagedComputer(Authorizations.ImageUploadTask, Computer.Id);
-                    PageBaseMaster.EndUserMessage = new BLL.Workflows.Unicast(Computer, action,ComputerBasePage.CloneDeployCurrentUser.Id).Start();
+                    PageBaseMaster.EndUserMessage = ComputerBasePage.Call.ComputerApi.StartUpload(Computer.Id);
                 }
                     break;
             }

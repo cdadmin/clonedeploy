@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web;
 
 public partial class views_global_boottemplates_searchentry : BasePages.Global
 {
@@ -12,10 +13,10 @@ public partial class views_global_boottemplates_searchentry : BasePages.Global
 
     protected void PopulateGrid()
     {
-        gvEntries.DataSource = BLL.BootEntry.SearchBootEntrys(txtSearch.Text);
+        gvEntries.DataSource = Call.BootEntryApi.GetAll(Int32.MaxValue,txtSearch.Text);
         gvEntries.DataBind();
 
-        lblTotal.Text = gvEntries.Rows.Count + " Result(s) / " + BLL.BootEntry.TotalCount() + " Total Boot Entry(s)";
+        lblTotal.Text = gvEntries.Rows.Count + " Result(s) / " + Call.BootEntryApi.GetCount() + " Total Boot Entry(s)";
     }
 
     protected void txtSearch_OnTextChanged(object sender, EventArgs e)
@@ -39,7 +40,7 @@ public partial class views_global_boottemplates_searchentry : BasePages.Global
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvEntries.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            BLL.BootEntry.DeleteBootEntry(Convert.ToInt32(dataKey.Value));
+            Call.BootEntryApi.Delete(Convert.ToInt32(dataKey.Value));
         }
 
         PopulateGrid();

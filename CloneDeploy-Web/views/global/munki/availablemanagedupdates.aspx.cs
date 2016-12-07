@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_global_munki_availablemanagedupdates : BasePages.Global
 {
@@ -15,7 +17,7 @@ public partial class views_global_munki_availablemanagedupdates : BasePages.Glob
     {
         var availableLimit = ddlLimitAvailable.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimitAvailable.Text);
 
-        var listOfPackages = new List<MunkiPackageInfo>();
+        var listOfPackages = new List<MunkiPackageInfoEntity>();
          var pkgInfos = GetMunkiResources("pkgsinfo");
         if (pkgInfos != null)
         {
@@ -57,7 +59,7 @@ public partial class views_global_munki_availablemanagedupdates : BasePages.Glob
             var dataKey = gvPkgInfos.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
 
-            var managedUpdate = new MunkiManifestManagedUpdate
+            var managedUpdate = new MunkiManifestManagedUpdateEntity()
             {
                 Name = dataKey.Value.ToString(),
                 ManifestTemplateId = ManifestTemplate.Id,
@@ -66,14 +68,14 @@ public partial class views_global_munki_availablemanagedupdates : BasePages.Glob
             var condition = (TextBox)row.FindControl("txtCondition");
             managedUpdate.Condition = condition.Text;
 
-            if (BLL.MunkiManagedUpdate.AddManagedUpdateToTemplate(managedUpdate)) updateCount++;
+            if (Call.MunkiManifestTemplateApi.AddManagedUpdateToTemplate(managedUpdate)) updateCount++;
         }
 
         if (updateCount > 0)
         {
             EndUserMessage = "Successfully Updated Managed Updates";
             ManifestTemplate.ChangesApplied = 0;
-            BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
+            Call.MunkiManifestTemplateApi.Put(ManifestTemplate.Id,ManifestTemplate);
         }
         else
         {

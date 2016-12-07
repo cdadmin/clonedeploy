@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
@@ -52,7 +53,7 @@ namespace BasePages
 
         protected void PopulateImagesDdl(DropDownList ddlImages)
         {
-            ddlImages.DataSource = BLL.Image.SearchImagesForUser(CloneDeployCurrentUser.Id).Select(i => new { i.Id, i.Name }).OrderBy(x => x.Name).ToList();
+            ddlImages.DataSource = Call.ImageApi.GetAll(Int32.MaxValue, "").Select(i => new { i.Id, i.Name }).OrderBy(x => x.Name).ToList();
             ddlImages.DataValueField = "Id";
             ddlImages.DataTextField = "Name";
             ddlImages.DataBind();
@@ -61,7 +62,7 @@ namespace BasePages
 
         protected void PopulateGroupsDdl(DropDownList ddlGroups)
         {
-            ddlGroups.DataSource = BLL.Group.SearchGroupsForUser(CloneDeployCurrentUser.Id).Select(i => new { i.Id, i.Name });
+            ddlGroups.DataSource = Call.GroupApi.GetAll(Int32.MaxValue, "").Select(i => new { i.Id, i.Name });
             ddlGroups.DataValueField = "Id";
             ddlGroups.DataTextField = "Name";
             ddlGroups.DataBind();
@@ -70,7 +71,7 @@ namespace BasePages
 
         protected void PopulateImageProfilesDdl(DropDownList ddlImageProfile, int value)
         {
-            ddlImageProfile.DataSource = BLL.ImageProfile.SearchProfiles(value).Select(i => new { i.Id, i.Name });
+            ddlImageProfile.DataSource = Call.ImageApi.GetImageProfiles(value).Select(i => new { i.Id, i.Name });
             ddlImageProfile.DataValueField = "Id";
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();
@@ -80,7 +81,7 @@ namespace BasePages
         protected void PopulateDistributionPointsDdl(DropDownList ddlDp)
         {
             ddlDp.DataSource =
-                BLL.DistributionPoint.SearchDistributionPoints("").Select(d => new {d.Id, d.DisplayName});
+                Call.DistributionPointApi.GetAll(Int32.MaxValue, "").Select(d => new {d.Id, d.DisplayName});
             ddlDp.DataValueField = "Id";
             ddlDp.DataTextField = "DisplayName";
             ddlDp.DataBind();
@@ -88,7 +89,7 @@ namespace BasePages
 
         protected void PopulateSitesDdl(DropDownList ddl)
         {
-            ddl.DataSource = BLL.Site.SearchSites().Select(i => new { i.Id, i.Name });
+            ddl.DataSource = Call.SiteApi.GetAll(Int32.MaxValue, "").Select(i => new { i.Id, i.Name });
             ddl.DataValueField = "Id";
             ddl.DataTextField = "Name";
             ddl.DataBind();
@@ -97,7 +98,7 @@ namespace BasePages
 
         protected void PopulateBuildingsDdl(DropDownList ddl)
         {
-            ddl.DataSource = BLL.Building.SearchBuildings().Select(i => new { i.Id, i.Name });
+            ddl.DataSource = Call.BuildingApi.GetAll(Int32.MaxValue, "").Select(i => new { i.Id, i.Name });
             ddl.DataValueField = "Id";
             ddl.DataTextField = "Name";
             ddl.DataBind();
@@ -106,7 +107,7 @@ namespace BasePages
 
         protected void PopulateRoomsDdl(DropDownList ddl)
         {
-            ddl.DataSource = BLL.Room.SearchRooms().Select(i => new { i.Id, i.Name });
+            ddl.DataSource = Call.RoomApi.GetAll(Int32.MaxValue,"").Select(i => new { i.Id, i.Name });
             ddl.DataValueField = "Id";
             ddl.DataTextField = "Name";
             ddl.DataBind();
@@ -115,7 +116,7 @@ namespace BasePages
 
         protected void PopulateBootTemplatesDdl(DropDownList ddl)
         {
-            ddl.DataSource = BLL.BootTemplate.SearchBootTemplates().Select(i => new { i.Id, i.Name });
+            ddl.DataSource = Call.BootTemplateApi.GetAll(Int32.MaxValue, "").Select(i => new { i.Id, i.Name });
             ddl.DataValueField = "Id";
             ddl.DataTextField = "Name";
             ddl.DataBind();
@@ -155,25 +156,25 @@ namespace BasePages
 
         public void RequiresAuthorization(string requiredRight)
         {
-            if(!new BLL.Authorize(CloneDeployCurrentUser, requiredRight).IsAuthorized())
+            if(!Call.AuthorizationApi.IsAuthorized(requiredRight))
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied",true);
         }
 
         public void RequiresAuthorizationOrManagedComputer(string requiredRight, int computerId)
         {
-            if (!new BLL.Authorize(CloneDeployCurrentUser, requiredRight).ComputerManagement(computerId))
+            if (!Call.AuthorizationApi.ComputerManagement(requiredRight,computerId))
             Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
         }
 
         public void RequiresAuthorizationOrManagedGroup(string requiredRight, int groupId)
         {
-            if (!new BLL.Authorize(CloneDeployCurrentUser, requiredRight).GroupManagement(groupId))
+            if (!Call.AuthorizationApi.GroupManagement(requiredRight,groupId))
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
         }
 
         public void RequiresAuthorizationOrManagedImage(string requiredRight, int imageId)
         {
-            if (!new BLL.Authorize(CloneDeployCurrentUser, requiredRight).ImageManagement(imageId))
+            if (!Call.AuthorizationApi.ImageManagement(requiredRight,imageId))
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
         }
     }

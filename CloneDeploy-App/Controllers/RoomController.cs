@@ -25,7 +25,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public IEnumerable<RoomEntity> Get(string searchstring = "")
+        public IEnumerable<RoomEntity> GetAll(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _roomServices.SearchRooms()

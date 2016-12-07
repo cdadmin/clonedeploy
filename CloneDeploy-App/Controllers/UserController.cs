@@ -30,7 +30,7 @@ namespace CloneDeploy_App.Controllers
 
 
         [UserAuth(Permission = "Administrator")]
-        public IEnumerable<CloneDeployUserEntity> Get(string searchstring = "")
+        public IEnumerable<CloneDeployUserEntity> GetAll(string searchstring = "")
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")

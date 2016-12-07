@@ -27,7 +27,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ImageAuth(Permission = "ImageSearch")]
-        public IEnumerable<ImageEntity> Get(string searchstring = "")
+        public IEnumerable<ImageEntity> GetAll(string searchstring = "")
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
@@ -94,6 +94,13 @@ namespace CloneDeploy_App.Controllers
             var result = _imageServices.DeleteImage(id);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
+        }
+
+        [ImageAuth(Permission = "ImageRead")]
+        public ApiBoolResponseDTO Export(string path)
+        {
+            _imageServices.ExportCsv(path);
+            return new ApiBoolResponseDTO() { Value = true };
         }
 
         [ImageProfileAuth(Permission = "ImageProfileSearch")]

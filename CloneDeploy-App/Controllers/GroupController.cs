@@ -58,6 +58,13 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
+        [GroupAuth(Permission = "GroupRead")]
+        public ApiBoolResponseDTO Export(string path)
+        {
+            _groupServices.ExportCsv(path);
+            return new ApiBoolResponseDTO() { Value = true };
+        }
+
         [HttpGet]
         [GroupAuth(Permission = "GroupUpdate")]
         public ApiBoolResponseDTO RemoveGroupMember(int id, int computerId)

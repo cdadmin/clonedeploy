@@ -915,7 +915,14 @@
     <Compile Include="BasePages\Users.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Encryption.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="Mail.cs" />
+    <Compile Include="ParameterReplace.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="UNCAccessWithCredentials.cs" />
+    <Compile Include="Utility.cs" />
     <Compile Include="views\admin\admin.master.cs">
       <DependentUpon>admin.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

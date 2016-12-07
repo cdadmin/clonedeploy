@@ -40,6 +40,14 @@ namespace CloneDeploy_ApiCalls
             return new ApiRequest().Execute<ComputerEntity>(_request);
         }
 
+        public ApiBoolResponseDTO Export(string path)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/Export/", _resource);
+            _request.AddParameter("path", path);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request);
+        }
+
         public DistributionPointEntity GetDistributionPoint(int id)
         {
             _request.Method = Method.GET;
@@ -80,10 +88,10 @@ namespace CloneDeploy_ApiCalls
         }
 
 
-        public bool CreateCustomBootFiles(ComputerEntity computer)
+        public bool CreateCustomBootFiles(int id)
         {
-            _request.Method = Method.POST;
-            _request.Resource = string.Format("api/{0}/CreateCustomBootFiles/", _resource);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/CreateCustomBootFiles/{1}", _resource,id);
             return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
         }
 
@@ -170,6 +178,29 @@ namespace CloneDeploy_ApiCalls
             _request.AddParameter("status", status);
             return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
 
+        }
+
+
+        public string StartUpload(int id)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/StartUpload/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
+        }
+
+
+        public string StartDeploy(int id)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/StartDeploy/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
+        }
+
+        public string StartPermanentDeploy(int id)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/StartPermanentDeploy/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
         }
     }
 }

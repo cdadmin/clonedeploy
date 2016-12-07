@@ -63,7 +63,7 @@
     <Compile Include="BootEntryServices.cs" />
     <Compile Include="BootTemplateServices.cs" />
     <Compile Include="BuildingServices.cs" />
-    <Compile Include="BLL\CdVersion.cs" />
+    <Compile Include="CdVersionServices.cs" />
     <Compile Include="BLL\ClientImaging.cs" />
     <Compile Include="ComputerBootMenuServices.cs" />
     <Compile Include="ComputerLogServices.cs" />

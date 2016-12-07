@@ -46,6 +46,7 @@
     <Compile Include="ActiveMulticastSessionAPI.cs" />
     <Compile Include="APICall.cs" />
     <Compile Include="ApiRequest.cs" />
+    <Compile Include="CdVersionAPI.cs" />
     <Compile Include="ComputerAPI.cs" />
     <Compile Include="ComputerLogAPI.cs" />
     <Compile Include="ComputerMunkiAPI.cs" />
@@ -71,6 +72,8 @@
     <Compile Include="UserGroupRightAPI.cs" />
     <Compile Include="UserImageManagementAPI.cs" />
     <Compile Include="UserRightAPI.cs" />
+    <Compile Include="AuthorizationAPI.cs" />
+    <Compile Include="WorkflowAPI.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CloneDeploy-Entities\CloneDeploy-Entities.csproj">

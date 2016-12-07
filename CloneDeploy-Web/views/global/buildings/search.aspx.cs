@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_global_buildings_search : BasePages.Global
 {
@@ -26,13 +28,13 @@ public partial class views_global_buildings_search : BasePages.Global
     }
     protected void BindGrid()
     {
-        gvBuildings.DataSource = BLL.Building.SearchBuildings(txtSearch.Text);
+        gvBuildings.DataSource = Call.BuildingApi.GetAll(Int32.MaxValue, txtSearch.Text);
         gvBuildings.DataBind();
 
         if (gvBuildings.Rows.Count == 0)
         {
-            var obj = new List<Building>();
-            obj.Add(new Building());
+            var obj = new List<BuildingEntity>();
+            obj.Add(new BuildingEntity());
             gvBuildings.DataSource = obj;
             gvBuildings.DataBind();
 
@@ -48,13 +50,13 @@ public partial class views_global_buildings_search : BasePages.Global
     {
         RequiresAuthorization(Authorizations.CreateGlobal);
         GridViewRow gvRow = (GridViewRow)(sender as Control).Parent.Parent;
-        var building = new Building
+        var building = new BuildingEntity()
         {
             Name = ((TextBox)gvRow.FindControl("txtNameAdd")).Text,
             DistributionPointId = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDpAdd")).SelectedValue)
         };
 
-        BLL.Building.AddBuilding(building);
+        Call.BuildingApi.Post(building);
         BindGrid();
     }
 
@@ -69,14 +71,14 @@ public partial class views_global_buildings_search : BasePages.Global
     {
         RequiresAuthorization(Authorizations.UpdateGlobal);
         GridViewRow gvRow = gvBuildings.Rows[e.RowIndex];
-        var building = new Building
+        var building = new BuildingEntity()
         {
             Id = Convert.ToInt32(gvBuildings.DataKeys[e.RowIndex].Values[0]),
             Name = ((TextBox)gvRow.FindControl("txtName")).Text,
             DistributionPointId = Convert.ToInt32(((DropDownList)gvRow.FindControl("ddlDp")).SelectedValue)
 
         };
-        BLL.Building.UpdateBuilding(building);
+        Call.BuildingApi.Put(building.Id,building);
 
         gvBuildings.EditIndex = -1;
         this.BindGrid();
@@ -91,7 +93,7 @@ public partial class views_global_buildings_search : BasePages.Global
     protected void OnRowDeleting(object sender, GridViewDeleteEventArgs e)
     {
         RequiresAuthorization(Authorizations.DeleteGlobal);
-        BLL.Building.DeleteBuilding(Convert.ToInt32(gvBuildings.DataKeys[e.RowIndex].Values[0]));
+        Call.BuildingApi.Delete(Convert.ToInt32(gvBuildings.DataKeys[e.RowIndex].Values[0]));
         BindGrid();
     }
 
@@ -112,7 +114,7 @@ public partial class views_global_buildings_search : BasePages.Global
             if (ddlDps != null)
             {
                 PopulateDistributionPointsDdl(ddlDps);
-                ddlDps.SelectedValue = ((Building)(e.Row.DataItem)).DistributionPointId.ToString();
+                ddlDps.SelectedValue = ((BuildingEntity)(e.Row.DataItem)).DistributionPointId.ToString();
             }
         } 
     }

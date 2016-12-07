@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_admin_dp_search : Admin
 {
@@ -22,7 +24,7 @@ public partial class views_admin_dp_search : Admin
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvDps.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            if (BLL.DistributionPoint.DeleteDistributionPoint(Convert.ToInt32(dataKey.Value)))
+            if (Call.DistributionPointApi.Delete(Convert.ToInt32(dataKey.Value)).Success)
                 deletedCount++;
         }
         EndUserMessage = "Successfully Deleted " + deletedCount + " Distribution Points";
@@ -34,7 +36,7 @@ public partial class views_admin_dp_search : Admin
     {
         PopulateGrid();
 
-        List<DistributionPoint> listDistributionPoints = (List<DistributionPoint>)gvDps.DataSource;
+        List<DistributionPointEntity> listDistributionPoints = (List<DistributionPointEntity>)gvDps.DataSource;
         switch (e.SortExpression)
         {
             case "DisplayName":
@@ -53,10 +55,10 @@ public partial class views_admin_dp_search : Admin
 
     protected void PopulateGrid()
     {
-        gvDps.DataSource = BLL.DistributionPoint.SearchDistributionPoints(txtSearch.Text);
+        gvDps.DataSource = Call.DistributionPointApi.GetAll(Int32.MaxValue,txtSearch.Text);
         gvDps.DataBind();
 
-        lblTotal.Text = gvDps.Rows.Count + " Result(s) / " + BLL.DistributionPoint.TotalCount() + " Distribution Points(s)";
+        lblTotal.Text = gvDps.Rows.Count + " Result(s) / " + Call.DistributionPointApi.GetCount() + " Distribution Points(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)

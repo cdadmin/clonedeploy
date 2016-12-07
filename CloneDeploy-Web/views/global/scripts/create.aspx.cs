@@ -1,4 +1,6 @@
 ﻿using System;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_admin_scripts_create : BasePages.Global
 {
@@ -10,14 +12,14 @@ public partial class views_admin_scripts_create : BasePages.Global
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.CreateGlobal);
-        var script = new Script
+        var script = new ScriptEntity()
         {
             Name = txtScriptName.Text,
             Description = txtScriptDesc.Text
         };
         var fixedLineEnding = scriptEditor.Value.Replace("\r\n", "\n");
         script.Contents = fixedLineEnding;
-        var result = BLL.Script.AddScript(script);
+        var result = Call.ScriptApi.Post(script);
         if (result.Success)
         {
             EndUserMessage = "Successfully Created Script";
@@ -25,7 +27,7 @@ public partial class views_admin_scripts_create : BasePages.Global
         }
         else
         {
-            EndUserMessage = result.Message;
+            EndUserMessage = result.ErrorMessage;
         }
 
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Web;
+using CloneDeploy_Web;
 
 public partial class views_admin_scripts_editcore : BasePages.Global
 {
@@ -9,7 +10,7 @@ public partial class views_admin_scripts_editcore : BasePages.Global
         RequiresAuthorization(Authorizations.Administrator);
         if (IsPostBack) return;
         scriptEditor.Value = "";
-        ddlCoreScripts.DataSource = Utility.GetScripts("core");
+        ddlCoreScripts.DataSource = Call.FilesystemApi.GetScripts("core");
         ddlCoreScripts.DataBind();
         ddlCoreScripts.Items.Insert(0, "Select A Script");
     }

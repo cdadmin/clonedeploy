@@ -1,4 +1,6 @@
 ﻿using System;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_global_sysprep_create : BasePages.Global
 {
@@ -10,7 +12,7 @@ public partial class views_global_sysprep_create : BasePages.Global
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.CreateGlobal);
-        var sysPrepTag = new SysprepTag()
+        var sysPrepTag = new SysprepTagEntity()
         {
             Name = txtName.Text,
             OpeningTag = txtOpenTag.Text,
@@ -19,7 +21,7 @@ public partial class views_global_sysprep_create : BasePages.Global
             Contents = txtContent.Text
         };
 
-        var result = BLL.SysprepTag.AddSysprepTag(sysPrepTag);
+        var result = Call.SysprepTagApi.Post(sysPrepTag);
         if (result.Success)
         {
             EndUserMessage = "Successfully Created Sysprep Tag";
@@ -27,7 +29,7 @@ public partial class views_global_sysprep_create : BasePages.Global
         }
         else
         {
-            EndUserMessage = result.Message;
+            EndUserMessage = result.ErrorMessage;
         }
     }
 }

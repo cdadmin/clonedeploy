@@ -24,7 +24,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
-        public IEnumerable<BootEntryEntity> Get(string searchstring = "")
+        public IEnumerable<BootEntryEntity> GetAll(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _bootEntryServices.SearchBootEntrys()

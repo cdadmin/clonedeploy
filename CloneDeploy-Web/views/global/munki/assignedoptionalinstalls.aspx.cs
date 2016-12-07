@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web;
 
 public partial class views_global_munki_assignedoptionalinstalls : BasePages.Global
 {
@@ -15,11 +17,11 @@ public partial class views_global_munki_assignedoptionalinstalls : BasePages.Glo
        
         var assignedLimit = ddlLimitAssigned.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimitAssigned.Text);
 
-        var templateInstalls = BLL.MunkiOptionalInstall.GetAllOptionalInstallsForMt(ManifestTemplate.Id).Where(s => s.Name.IndexOf(txtSearchAssigned.Text, StringComparison.CurrentCultureIgnoreCase) != -1).OrderBy(x => x.Name).Take(assignedLimit);
+        var templateInstalls = Call.MunkiManifestTemplateApi.GetManifestOptionalInstalls(ManifestTemplate.Id).Where(s => s.Name.IndexOf(txtSearchAssigned.Text, StringComparison.CurrentCultureIgnoreCase) != -1).OrderBy(x => x.Name).Take(assignedLimit);
         gvTemplateInstalls.DataSource = templateInstalls;
         gvTemplateInstalls.DataBind();
 
-        lblTotalAssigned.Text = gvTemplateInstalls.Rows.Count + " Result(s) / " + BLL.MunkiOptionalInstall.TotalCount(ManifestTemplate.Id) + " Total Optional Install(s)";
+        lblTotalAssigned.Text = gvTemplateInstalls.Rows.Count + " Result(s) / " + Call.MunkiManifestTemplateApi.GetOptionalInstallCount(ManifestTemplate.Id) + " Total Optional Install(s)";
 
 
      
@@ -39,20 +41,20 @@ public partial class views_global_munki_assignedoptionalinstalls : BasePages.Glo
 
             if (!enabled.Checked)
             {
-                if (BLL.MunkiOptionalInstall.DeleteOptionalInstallFromTemplate(Convert.ToInt32(dataKey.Value)))
+                if (Call.MunkiManifestTemplateApi.DeleteOptonalInstallsFromTemplate(Convert.ToInt32(dataKey.Value)))
                     updateCount++;
             }
 
             else
             {
-                var optionalInstall = BLL.MunkiOptionalInstall.GetOptionalInstall(Convert.ToInt32(dataKey.Value));
+                var optionalInstall = Call.MunkiManifestOptionInstallEntity.Get(Convert.ToInt32(dataKey.Value));
 
                 var txtCondition = row.FindControl("txtCondition") as TextBox;
                 if (txtCondition != null)
                     if (txtCondition.Text != optionalInstall.Condition)
                         optionalInstall.Condition = txtCondition.Text;
 
-                if (BLL.MunkiOptionalInstall.AddOptionalInstallToTemplate(optionalInstall)) updateCount++;
+                if (Call.MunkiManifestTemplateApi.AddOptionalInstallToTemplate(optionalInstall)) updateCount++;
             } 
        
         }
@@ -61,7 +63,7 @@ public partial class views_global_munki_assignedoptionalinstalls : BasePages.Glo
         {
             EndUserMessage = "Successfully Updated Optional Installs";
             ManifestTemplate.ChangesApplied = 0;
-            BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
+            Call.MunkiManifestTemplateApi.Put(ManifestTemplate.Id,ManifestTemplate);
         }
         else
         {

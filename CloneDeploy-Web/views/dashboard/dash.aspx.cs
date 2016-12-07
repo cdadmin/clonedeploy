@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Web;
 using System.Web.Security;
@@ -8,6 +9,7 @@ using System.Web.Security;
 using Mono.Unix; // requires reference to  Mono.Posix.dll
 #endif
 using BasePages;
+using CloneDeploy_Entities;
 
 namespace views.dashboard
 {
@@ -15,7 +17,7 @@ namespace views.dashboard
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!BLL.CdVersion.FirstRunCompleted())
+            if (!Call.CdVersionApi.IsFirstRunCompleted())
                 Response.Redirect("~/views/login/firstrun.aspx");
 
             if (Request.QueryString["access"] == "denied")
@@ -100,18 +102,17 @@ namespace views.dashboard
         {
             //FixMe: get all the numbers in own function, don't slowly create full lists of unused stuff 
 
-            List<Computer> computersList = BLL.Computer.SearchComputersForUser(CloneDeployCurrentUser.Id, 999999,
-                "");
+            List<ComputerEntity> computersList = Call.ComputerApi.GetAll(Int32.MaxValue, "");
             lblTotalComputers.Text = computersList.Count + " Total Computer(s)";
 
-            List<Image> imagesList =
-                BLL.Image.SearchImagesForUser(CloneDeployCurrentUser.Id, "").OrderBy(x => x.Name).ToList();
+            List<ImageEntity> imagesList =
+                Call.ImageApi.GetAll(Int32.MaxValue, "").OrderBy(x => x.Name).ToList();
             lblTotalImages.Text = imagesList.Count + " Total Image(s)";
 
-            List<Group> groupsList = BLL.Group.SearchGroupsForUser(CloneDeployCurrentUser.Id, "");
+            List<GroupEntity> groupsList = Call.GroupApi.GetAll(Int32.MaxValue, "");
             lblTotalGroups.Text = groupsList.Count + " Total Group(s)";
 
-            var primaryDp = BLL.DistributionPoint.GetPrimaryDistributionPoint();
+            var primaryDp = Call.DistributionPointApi.GetPrimary();
             
             lblTotalDP.Text += "<br> Path: " + primaryDp.PhysicalPath;
 

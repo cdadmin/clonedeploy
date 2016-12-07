@@ -1,5 +1,6 @@
 ﻿using System;
 using BasePages;
+using CloneDeploy_Web;
 
 public partial class views_admin_dp_edit : Admin
 {
@@ -11,7 +12,7 @@ public partial class views_admin_dp_edit : Admin
     protected void buttonUpdateDp_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.UpdateAdmin);
-        var distributionPoint = BLL.DistributionPoint.GetDistributionPoint(Convert.ToInt32(Request.QueryString["dpid"]));
+        var distributionPoint = Call.DistributionPointApi.Get(Convert.ToInt32(Request.QueryString["dpid"]));
 
         distributionPoint.DisplayName = txtDisplayName.Text;
         distributionPoint.Server = txtServer.Text;
@@ -20,18 +21,18 @@ public partial class views_admin_dp_edit : Admin
         distributionPoint.Domain = txtDomain.Text;
         distributionPoint.RwUsername = txtRwUsername.Text;
         distributionPoint.RwPassword = !string.IsNullOrEmpty(txtRwPassword.Text)
-            ? new Helpers.Encryption().EncryptText(txtRwPassword.Text)
+            ? new Encryption().EncryptText(txtRwPassword.Text)
             : distributionPoint.RwPassword;
         distributionPoint.RoUsername = txtRoUsername.Text;
         distributionPoint.RoPassword = !string.IsNullOrEmpty(txtRoPassword.Text)
-            ? new Helpers.Encryption().EncryptText(txtRoPassword.Text)
+            ? new Encryption().EncryptText(txtRoPassword.Text)
             : distributionPoint.RoPassword;
         distributionPoint.IsPrimary = Convert.ToInt16(chkPrimary.Checked);
         distributionPoint.PhysicalPath = chkPrimary.Checked ? txtPhysicalPath.Text : "";
-       
 
-        var result = BLL.DistributionPoint.UpdateDistributionPoint(distributionPoint);
-        EndUserMessage = result.Success ? "Successfully Updated Distribution Point" : result.Message;
+
+        var result = Call.DistributionPointApi.Put(distributionPoint.Id, distributionPoint);
+        EndUserMessage = result.Success ? "Successfully Updated Distribution Point" : result.ErrorMessage;
     }
 
     protected void chkPrimary_OnCheckedChanged(object sender, EventArgs e)
@@ -43,7 +44,7 @@ public partial class views_admin_dp_edit : Admin
 
     protected void PopulateForm()
     {
-        var distributionPoint = BLL.DistributionPoint.GetDistributionPoint(Convert.ToInt32(Request.QueryString["dpid"]));
+        var distributionPoint = Call.DistributionPointApi.Get(Convert.ToInt32(Request.QueryString["dpid"]));
 
         txtDisplayName.Text = distributionPoint.DisplayName;
         txtServer.Text = distributionPoint.Server;

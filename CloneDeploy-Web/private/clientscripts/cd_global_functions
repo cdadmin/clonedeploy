@@ -301,7 +301,7 @@ function mount_smb()
 
 			cd /storage/images/$image_name;
 			if [ "$?" != "0" ]; then
-				error "Could Not Change Directory To /images/$image_name Check Permissions"
+				error "Could Not Change Directory To /storage/images/$image_name Check Permissions"
 			fi
 			break
 		fi

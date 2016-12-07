@@ -40,6 +40,13 @@ namespace CloneDeploy_ApiCalls
             return new ApiRequest().Execute<List<ImageProfileEntity>>(_request);
         }
 
+        public ApiBoolResponseDTO Export(string path)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/Export/", _resource);
+            _request.AddParameter("path", path);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request);
+        }
 
         public ImageProfileEntity SeedDefaultProfile(int id)
         {

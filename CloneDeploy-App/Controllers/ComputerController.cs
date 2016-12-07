@@ -102,6 +102,13 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ComputerAuth(Permission = "ComputerRead")]
+        public ApiBoolResponseDTO Export(string path)
+        {
+            _computerService.ExportCsv(path);
+            return new ApiBoolResponseDTO() {Value = true};
+        }
+
+        [ComputerAuth(Permission = "ComputerRead")]
         public DistributionPointEntity GetDistributionPoint(int id)
         {
             return _computerService.GetDistributionPoint(id);
@@ -134,9 +141,9 @@ namespace CloneDeploy_App.Controllers
 
         [HttpPost]
         [ComputerAuth(Permission = "ComputerUpdate")]
-        public ApiBoolResponseDTO CreateCustomBootFiles(ComputerEntity computer)
+        public ApiBoolResponseDTO CreateCustomBootFiles(int id)
         {
-            return new ApiBoolResponseDTO() {Value = _computerService.CreateBootFiles(computer)};
+            return new ApiBoolResponseDTO() {Value = _computerService.CreateBootFiles(id)};
         }
 
         [HttpPost]
@@ -217,7 +224,36 @@ namespace CloneDeploy_App.Controllers
         {
 
             return new ApiBoolResponseDTO() {Value = _computerService.ToggleComputerBootMenu(id, status)};
+        }
 
+        [HttpGet]
+        [TaskAuth(Permission = "ImageTaskUpload")]
+        public ApiStringResponseDTO StartUpload(int id)
+        {
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                             .Select(c => c.Value).SingleOrDefault();
+            return new ApiStringResponseDTO() {Value = new BLL.Workflows.Unicast(id, "pull", Convert.ToInt32(userId)).Start()};
+        }
+
+        [HttpGet]
+        [TaskAuth(Permission = "ImageTaskDeploy")]
+        public ApiStringResponseDTO StartDeploy(int id)
+        {
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                             .Select(c => c.Value).SingleOrDefault();
+            return new ApiStringResponseDTO() { Value = new BLL.Workflows.Unicast(id, "push", Convert.ToInt32(userId)).Start() };
+        }
+
+        [HttpGet]
+        [TaskAuth(Permission = "ImageTaskDeploy")]
+        public ApiStringResponseDTO StartPermanentDeploy(int id)
+        {
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                             .Select(c => c.Value).SingleOrDefault();
+            return new ApiStringResponseDTO() { Value = new BLL.Workflows.Unicast(id, "permanent_push", Convert.ToInt32(userId)).Start() };
         }
     }
 }

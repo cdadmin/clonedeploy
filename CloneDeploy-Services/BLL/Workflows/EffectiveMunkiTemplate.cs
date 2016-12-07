@@ -6,16 +6,12 @@ using System.Text;
 using Claunia.PropertyList;
 using CloneDeploy_App.Helpers;
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
 namespace CloneDeploy_App.BLL.Workflows
 {
-    public class MunkiUpdateConfirm
-    {
-        public List<MunkiManifestTemplateEntity> manifestTemplates { get; set; }
-        public int groupCount { get; set; }
-        public int computerCount { get; set; }
-    }
+    
 
     public class EffectiveMunkiTemplate
     {
@@ -34,7 +30,7 @@ namespace CloneDeploy_App.BLL.Workflows
         }
         private List<int> _templateIds;
 
-        public MunkiUpdateConfirm GetUpdateStats(int templateId)
+        public MunkiUpdateConfirmDTO GetUpdateStats(int templateId)
         {
             var includedTemplates = new List<MunkiManifestTemplateEntity>();
             var groups = _groupMunkiServices.GetGroupsForManifestTemplate(templateId);
@@ -60,7 +56,7 @@ namespace CloneDeploy_App.BLL.Workflows
             }
             totalComputerCount += computers.Count;
             var distinctList = includedTemplates.GroupBy(x => x.Name).Select(s => s.First()).ToList();
-            var munkiConfirm = new MunkiUpdateConfirm();
+            var munkiConfirm = new MunkiUpdateConfirmDTO();
             munkiConfirm.manifestTemplates = distinctList;
             munkiConfirm.groupCount = groups.Count;
             munkiConfirm.computerCount = totalComputerCount;

@@ -28,7 +28,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [UserAuth(Permission = "Administrator")]
-        public IEnumerable<CloneDeployUserGroupEntity> Get(string searchstring = "")
+        public IEnumerable<CloneDeployUserGroupEntity> GetAll(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _userGroupServices.SearchUserGroups()

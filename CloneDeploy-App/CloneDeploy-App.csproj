@@ -126,6 +126,9 @@
     <Compile Include="Controllers\Authorization\UserAuth.cs" />
     <Compile Include="Controllers\Authorization\ImageProfileAuth.cs" />
     <Compile Include="Controllers\Authorization\ImageAuth.cs" />
+    <Compile Include="Controllers\CdVersionController.cs" />
+    <Compile Include="Controllers\AuthorizationController.cs" />
+    <Compile Include="Controllers\WorkflowController.cs" />
     <Compile Include="Controllers\UserGroupController.cs" />
     <Compile Include="Controllers\UserGroupGroupManagementController.cs" />
     <Compile Include="Controllers\UserGroupManagementController.cs" />

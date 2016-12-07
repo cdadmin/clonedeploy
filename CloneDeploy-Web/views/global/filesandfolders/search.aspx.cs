@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_global_filesandfolders_search : BasePages.Global
 {
@@ -14,10 +16,10 @@ public partial class views_global_filesandfolders_search : BasePages.Global
 
     protected void PopulateGrid()
     {
-        gvFiles.DataSource = BLL.FileFolder.SearchFileFolders(txtSearch.Text);
+        gvFiles.DataSource = Call.FileFolderApi.GetAll(Int32.MaxValue,txtSearch.Text);
         gvFiles.DataBind();
 
-        lblTotal.Text = gvFiles.Rows.Count + " Result(s) / " + BLL.FileFolder.TotalCount() + " Total File(s) / Folder(s)";
+        lblTotal.Text = gvFiles.Rows.Count + " Result(s) / " + Call.FileFolderApi.GetCount() + " Total File(s) / Folder(s)";
     }
 
     protected void txtSearch_OnTextChanged(object sender, EventArgs e)
@@ -28,7 +30,7 @@ public partial class views_global_filesandfolders_search : BasePages.Global
     protected void gvFiles_OnSorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<FileFolder> listSysprepTags = (List<FileFolder>)gvFiles.DataSource;
+        List<FileFolderEntity> listSysprepTags = (List<FileFolderEntity>)gvFiles.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -55,7 +57,7 @@ public partial class views_global_filesandfolders_search : BasePages.Global
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvFiles.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            BLL.FileFolder.DeleteFileFolder(Convert.ToInt32(dataKey.Value));
+            Call.FileFolderApi.Delete(Convert.ToInt32(dataKey.Value));
         }
 
         PopulateGrid();

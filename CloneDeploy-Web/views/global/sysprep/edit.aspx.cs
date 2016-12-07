@@ -1,4 +1,6 @@
 ﻿using System;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_global_sysprep_edit : BasePages.Global
 {
@@ -10,7 +12,7 @@ public partial class views_global_sysprep_edit : BasePages.Global
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.UpdateGlobal);
-        var sysprepTag = new SysprepTag
+        var sysprepTag = new SysprepTagEntity()
         {
             Id = SysprepTag.Id,
             Name = txtName.Text,
@@ -20,8 +22,8 @@ public partial class views_global_sysprep_edit : BasePages.Global
             Contents = txtContent.Text        
         };
       
-        var result = BLL.SysprepTag.UpdateSysprepTag(sysprepTag);
-        EndUserMessage = result.Success ? "Successfully Updated Sysprep Tag" : result.Message;
+        var result = Call.SysprepTagApi.Put(sysprepTag.Id,sysprepTag);
+        EndUserMessage = result.Success ? "Successfully Updated Sysprep Tag" : result.ErrorMessage;
     }
 
     protected void PopulateForm()

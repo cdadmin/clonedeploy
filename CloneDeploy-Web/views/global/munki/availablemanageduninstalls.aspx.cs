@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Hosting;
 using System.Web.UI.WebControls;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 
 public partial class views_global_munki_availablemanageduninstalls : BasePages.Global
@@ -17,7 +20,7 @@ public partial class views_global_munki_availablemanageduninstalls : BasePages.G
         var availableLimit = ddlLimitAvailable.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimitAvailable.Text);
      
 
-        var listOfPackages = new List<MunkiPackageInfo>();
+        var listOfPackages = new List<MunkiPackageInfoEntity>();
          var pkgInfos = GetMunkiResources("pkgsinfo");
         if (pkgInfos != null)
         {
@@ -59,7 +62,7 @@ public partial class views_global_munki_availablemanageduninstalls : BasePages.G
             var dataKey = gvPkgInfos.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
 
-            var managedUninstall = new MunkiManifestManagedUnInstall()
+            var managedUninstall = new MunkiManifestManagedUnInstallEntity()
             {
                 Name = dataKey.Value.ToString(),
                 ManifestTemplateId = ManifestTemplate.Id,
@@ -76,7 +79,7 @@ public partial class views_global_munki_availablemanageduninstalls : BasePages.G
 
             var condition = (TextBox)row.FindControl("txtCondition");
             managedUninstall.Condition = condition.Text;
-            if (BLL.MunkiManagedUninstall.AddManagedUnInstallToTemplate(managedUninstall)) updateCount++;
+            if (Call.MunkiManifestTemplateApi.AddManagedUninstallsToTemplate(managedUninstall)) updateCount++;
         }
 
 
@@ -84,7 +87,7 @@ public partial class views_global_munki_availablemanageduninstalls : BasePages.G
         {
             EndUserMessage = "Successfully Updated Managed Uninstalls";
             ManifestTemplate.ChangesApplied = 0;
-            BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
+            Call.MunkiManifestTemplateApi.Put(ManifestTemplate.Id,ManifestTemplate);
         }
         else
         {

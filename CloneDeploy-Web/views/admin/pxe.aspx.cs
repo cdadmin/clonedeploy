@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using BasePages;
 using System.IO;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_admin_pxe : Admin
 {
@@ -31,20 +33,20 @@ public partial class views_admin_pxe : Admin
         RequiresAuthorization(Authorizations.UpdateAdmin);
         if (ValidateSettings())
         {
-            var listSettings = new List<Setting>
+            var listSettings = new List<SettingEntity>
             {
-                new Setting {Name = "PXE Mode", Value = ddlPXEMode.Text, Id = BLL.Setting.GetSetting("PXE Mode").Id},
-                new Setting {Name = "Proxy Dhcp", Value = ddlProxyDHCP.Text,  Id = BLL.Setting.GetSetting("Proxy Dhcp").Id},
-                new Setting {Name = "Proxy Bios File", Value = ddlProxyBios.Text,  Id = BLL.Setting.GetSetting("Proxy Bios File").Id},
-                new Setting {Name = "Proxy Efi32 File", Value = ddlProxyEfi32.Text,  Id = BLL.Setting.GetSetting("Proxy Efi32 File").Id},
-                new Setting {Name = "Proxy Efi64 File", Value = ddlProxyEfi64.Text,  Id = BLL.Setting.GetSetting("Proxy Efi64 File").Id}
+                new SettingEntity {Name = "PXE Mode", Value = ddlPXEMode.Text, Id = Call.SettingApi.GetSetting("PXE Mode").Id},
+                new SettingEntity {Name = "Proxy Dhcp", Value = ddlProxyDHCP.Text,  Id = Call.SettingApi.GetSetting("Proxy Dhcp").Id},
+                new SettingEntity {Name = "Proxy Bios File", Value = ddlProxyBios.Text,  Id = Call.SettingApi.GetSetting("Proxy Bios File").Id},
+                new SettingEntity {Name = "Proxy Efi32 File", Value = ddlProxyEfi32.Text,  Id = Call.SettingApi.GetSetting("Proxy Efi32 File").Id},
+                new SettingEntity {Name = "Proxy Efi64 File", Value = ddlProxyEfi64.Text,  Id = Call.SettingApi.GetSetting("Proxy Efi64 File").Id}
             };
 
 
             var newBootMenu = false;
-            if (BLL.Setting.UpdateSetting(listSettings))
+            if (Call.SettingApi.UpdateSettings(listSettings))
             {
-                if (!new BLL.Workflows.CopyPxeBinaries().CopyFiles())
+                if (!Call.WorkflowApi.CopyPxeBinaries())
                 {
                     EndUserMessage = "Could Not Copy PXE Binaries";
                     return;
@@ -128,8 +130,7 @@ public partial class views_admin_pxe : Admin
         if (ddlProxyDHCP.Text == "No" && ddlPXEMode.Text.Contains("winpe"))
         {
             if (
-               !new Helpers.FileOps().FileExists(Settings.TftpPath + Path.DirectorySeparatorChar + "boot" +
-                                                 Path.DirectorySeparatorChar + "boot.sdi"))
+               ! Call.FilesystemApi.BootSdiExists())
             {
                 EndUserMessage =
                     "Cannot Use WinPE.  You Have Not Updated Your tftpboot Folder With CloneDeploy PE Maker";
@@ -139,8 +140,7 @@ public partial class views_admin_pxe : Admin
         else if (ddlProxyDHCP.Text == "Yes" && ( ddlProxyBios.Text.Contains("winpe") || ddlProxyEfi32.Text.Contains("winpe") || ddlProxyEfi64.Text.Contains("winpe") ))
         {
             if (
-                !new Helpers.FileOps().FileExists(Settings.TftpPath + Path.DirectorySeparatorChar + "boot" +
-                                                  Path.DirectorySeparatorChar + "boot.sdi"))
+                !Call.FilesystemApi.BootSdiExists())
             {
                 EndUserMessage =
                     "Cannot Use WinPE.  You Have Not Updated Your tftpboot Folder With CloneDeploy PE Maker";

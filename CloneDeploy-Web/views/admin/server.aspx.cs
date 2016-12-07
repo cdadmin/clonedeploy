@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using BasePages;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_admin_server : Admin
 {
@@ -24,18 +26,18 @@ public partial class views_admin_server : Admin
     {
         RequiresAuthorization(Authorizations.UpdateAdmin);
         if (!ValidateSettings()) return;
-        var listSettings = new List<CloneDeploy_Web.Models.Setting>
+        var listSettings = new List<SettingEntity>
         {
-            new CloneDeploy_Web.Models.Setting {Name = "Server IP", Value = txtIP.Text, Id = Setting.GetSetting("Server IP").Id},
-            new CloneDeploy_Web.Models.Setting {Name = "Web Server Port", Value = txtPort.Text, Id = Setting.GetSetting("Web Server Port").Id},
-            new CloneDeploy_Web.Models.Setting {Name = "Tftp Path", Value = txtTFTPPath.Text, Id = Setting.GetSetting("Tftp Path").Id},
-            new CloneDeploy_Web.Models.Setting {Name = "Default Computer View", Value = ddlComputerView.Text, Id = Setting.GetSetting("Default Computer View").Id},
-            new CloneDeploy_Web.Models.Setting {Name = "Web Path", Value = txtWebService.Text, Id = Setting.GetSetting("Web Path").Id}
+            new SettingEntity {Name = "Server IP", Value = txtIP.Text, Id = Call.SettingApi.GetSetting("Server IP").Id},
+            new SettingEntity {Name = "Web Server Port", Value = txtPort.Text, Id = Call.SettingApi.GetSetting("Web Server Port").Id},
+            new SettingEntity {Name = "Tftp Path", Value = txtTFTPPath.Text, Id = Call.SettingApi.GetSetting("Tftp Path").Id},
+            new SettingEntity {Name = "Default Computer View", Value = ddlComputerView.Text, Id = Call.SettingApi.GetSetting("Default Computer View").Id},
+            new SettingEntity {Name = "Web Path", Value = txtWebService.Text, Id = Call.SettingApi.GetSetting("Web Path").Id}
         };
 
         var newBootMenu = false;
         var newClientIso = false;
-        if (Setting.UpdateSetting(listSettings))
+        if (Call.SettingApi.UpdateSettings(listSettings))
         {
             EndUserMessage = "Successfully Updated Settings";
             if ((string) ViewState["serverIP"] != txtIP.Text)

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using BasePages;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_admin_client : Admin
 {
@@ -19,19 +21,19 @@ public partial class views_admin_client : Admin
     {
         RequiresAuthorization(Authorizations.UpdateAdmin);
 
-        List<CloneDeploy_Web.Models.Setting> listSettings = new List<CloneDeploy_Web.Models.Setting>
+        List<SettingEntity> listSettings = new List<SettingEntity>
         {
-            new CloneDeploy_Web.Models.Setting {Name = "Queue Size", Value = txtQSize.Text, Id = Setting.GetSetting("Queue Size").Id},
-            new CloneDeploy_Web.Models.Setting
+            new SettingEntity {Name = "Queue Size", Value = txtQSize.Text, Id = Call.SettingApi.GetSetting("Queue Size").Id},
+            new SettingEntity()
             {
                 Name = "Global Computer Args",
                 Value = txtGlobalComputerArgs.Text,
-                Id = Setting.GetSetting("Global Computer Args").Id
+                Id = Call.SettingApi.GetSetting("Global Computer Args").Id
             }
         };
 
 
-        EndUserMessage = Setting.UpdateSetting(listSettings)
+        EndUserMessage = Call.SettingApi.UpdateSettings(listSettings)
             ? "Successfully Updated Settings"
             : "Could Not Update Settings";
         if ((string) ViewState["globalArgs"] != txtGlobalComputerArgs.Text)

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_global_boottemplates_search : BasePages.Global
 {
@@ -14,10 +16,10 @@ public partial class views_global_boottemplates_search : BasePages.Global
 
     protected void PopulateGrid()
     {
-        gvTemplates.DataSource = BLL.BootTemplate.SearchBootTemplates(txtSearch.Text);
+        gvTemplates.DataSource = Call.BootTemplateApi.GetAll(Int32.MaxValue, txtSearch.Text);
         gvTemplates.DataBind();
 
-        lblTotal.Text = gvTemplates.Rows.Count + " Result(s) / " + BLL.BootTemplate.TotalCount() + " Total Boot Template(s)";
+        lblTotal.Text = gvTemplates.Rows.Count + " Result(s) / " + Call.BootTemplateApi.GetCount() + " Total Boot Template(s)";
     }
 
     protected void txtSearch_OnTextChanged(object sender, EventArgs e)
@@ -28,7 +30,7 @@ public partial class views_global_boottemplates_search : BasePages.Global
     protected void gvTemplates_OnSorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<BootTemplate> listSysprepTags = (List<BootTemplate>)gvTemplates.DataSource;
+        List<BootTemplateEntity> listSysprepTags = (List<BootTemplateEntity>)gvTemplates.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -56,7 +58,7 @@ public partial class views_global_boottemplates_search : BasePages.Global
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvTemplates.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            BLL.BootTemplate.DeleteBootTemplate(Convert.ToInt32(dataKey.Value));
+            Call.BootTemplateApi.Delete(Convert.ToInt32(dataKey.Value));
         }
 
         PopulateGrid();

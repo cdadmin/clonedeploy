@@ -1,4 +1,5 @@
 ﻿using System;
+using CloneDeploy_Web;
 
 public partial class views_global_filesandfolders_edit : BasePages.Global
 {
@@ -23,8 +24,8 @@ public partial class views_global_filesandfolders_edit : BasePages.Global
         fileFolder.Type = ddlType.Text;
 
         
-        var result = BLL.FileFolder.UpdateFileFolder(FileFolder);
-        EndUserMessage = !result.Success ? result.Message : "Successfully Updated File / Folder";
+        var result = Call.FileFolderApi.Put(fileFolder.Id,fileFolder);
+        EndUserMessage = !result.Success ? result.ErrorMessage : "Successfully Updated File / Folder";
 
     }
 }

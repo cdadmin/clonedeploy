@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_global_munki_availablecatalogs : BasePages.Global
 {
@@ -48,7 +50,7 @@ public partial class views_global_munki_availablecatalogs : BasePages.Global
             var dataKey = gvCatalogs.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
 
-            var catalog = new MunkiManifestCatalog()
+            var catalog = new MunkiManifestCatalogEntity()
             {
                 Name = dataKey.Value.ToString(),
                 ManifestTemplateId = ManifestTemplate.Id,
@@ -58,7 +60,7 @@ public partial class views_global_munki_availablecatalogs : BasePages.Global
                 if (!string.IsNullOrEmpty(txtPriority.Text))
                     catalog.Priority = Convert.ToInt32(txtPriority.Text);
 
-            if (BLL.MunkiCatalog.AddCatalogToTemplate(catalog)) updateCount++;
+            if (Call.MunkiManifestTemplateApi.AddCatalogToTemplate(catalog)) updateCount++;
         }
 
 
@@ -66,7 +68,7 @@ public partial class views_global_munki_availablecatalogs : BasePages.Global
         {
             EndUserMessage = "Successfully Updated Catalogs";
             ManifestTemplate.ChangesApplied = 0;
-            BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
+            Call.MunkiManifestTemplateApi.Put(ManifestTemplate.Id,ManifestTemplate);
         }
         else
         {

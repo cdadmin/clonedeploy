@@ -372,8 +372,9 @@ namespace CloneDeploy_Services
 
         }
 
-        public bool CreateBootFiles(ComputerEntity computer)
+        public bool CreateBootFiles(int id)
         {
+            var computer = GetComputer(id);
             if (new ComputerServices().IsComputerActive(computer.Id)) return false; //Files Will Be Processed When task is done
             var bootMenu = new ComputerServices().GetComputerBootMenu(computer.Id);
             if (bootMenu == null) return false;

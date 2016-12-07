@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_global_munki_manifestsearch : BasePages.Global
 {
@@ -18,17 +20,17 @@ public partial class views_global_munki_manifestsearch : BasePages.Global
 
     protected void PopulateGrid()
     {
-        gvManifestTemplates.DataSource = BLL.MunkiManifestTemplate.SearchManifests(txtSearch.Text);
+        gvManifestTemplates.DataSource = Call.MunkiManifestTemplateApi.GetAll(Int32.MaxValue, txtSearch.Text);
         gvManifestTemplates.DataBind();
 
-        lblTotal.Text = gvManifestTemplates.Rows.Count + " Result(s) / " + BLL.MunkiManifestTemplate.TotalCount() + " Total Manifest Template(s)";
+        lblTotal.Text = gvManifestTemplates.Rows.Count + " Result(s) / " + Call.MunkiManifestTemplateApi.GetCount() + " Total Manifest Template(s)";
 
         foreach (GridViewRow row in gvManifestTemplates.Rows)
         {
             var dataKey = gvManifestTemplates.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
             var lblApplied = (Label) row.FindControl("lblApplied");
-            var manifestTemplate = BLL.MunkiManifestTemplate.GetManifest(Convert.ToInt32(dataKey.Value));
+            var manifestTemplate = Call.MunkiManifestTemplateApi.Get(Convert.ToInt32(dataKey.Value));
             lblApplied.Text = manifestTemplate.ChangesApplied == 0 ? "No" : "Yes";
         }
     }
@@ -48,7 +50,7 @@ public partial class views_global_munki_manifestsearch : BasePages.Global
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<MunkiManifestTemplate> listManifestTemplates = (List<MunkiManifestTemplate>)gvManifestTemplates.DataSource;
+        List<MunkiManifestTemplateEntity> listManifestTemplates = (List<MunkiManifestTemplateEntity>)gvManifestTemplates.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -71,7 +73,7 @@ public partial class views_global_munki_manifestsearch : BasePages.Global
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvManifestTemplates.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            BLL.MunkiManifestTemplate.DeleteManifest(Convert.ToInt32(dataKey.Value));
+            Call.MunkiManifestTemplateApi.Delete(Convert.ToInt32(dataKey.Value));
         }
 
         PopulateGrid();
@@ -86,8 +88,8 @@ public partial class views_global_munki_manifestsearch : BasePages.Global
             var dataKey = gvManifestTemplates.DataKeys[gvRow.RowIndex];
             if (dataKey != null)
             {
-                var effectiveManifest = new BLL.Workflows.EffectiveMunkiTemplate().MunkiTemplate(Convert.ToInt32(dataKey.Value));
-                Response.Write(Encoding.UTF8.GetString(effectiveManifest.ToArray()));
+                var effectiveManifest = Call.MunkiManifestTemplateApi.GetEffectiveManifest(Convert.ToInt32(dataKey.Value));
+                Response.Write(effectiveManifest);
                 Response.ContentType = "text/plain";
                 Response.End();  
             }
@@ -105,7 +107,7 @@ public partial class views_global_munki_manifestsearch : BasePages.Global
             {
                 Session["manifestTemplateId"] = Convert.ToInt32(dataKey.Value);
                 var confirmStats =
-                    new BLL.Workflows.EffectiveMunkiTemplate().GetUpdateStats(Convert.ToInt32(dataKey.Value));
+                    Call.MunkiManifestTemplateApi.GetUpdateStats(Convert.ToInt32(dataKey.Value));
 
                 lblTitle.Text =
                     "Are You Sure?<br>";
@@ -127,7 +129,7 @@ public partial class views_global_munki_manifestsearch : BasePages.Global
     {
         var manifestTemplateId = (int) Session["manifestTemplateId"];
         Session.Remove("manifestTemplateId");
-        var failedCount = new BLL.Workflows.EffectiveMunkiTemplate().Apply(manifestTemplateId);
+        var failedCount = Call.MunkiManifestTemplateApi.Apply(manifestTemplateId);
 
         PopulateGrid();
         if (failedCount > 0)

@@ -27,6 +27,9 @@ namespace CloneDeploy_ApiCalls
         UserGroupRightAPI UserGroupRightApi { get; }
         UserImageManagementAPI UserImageManagementApi { get; }
         UserRightAPI UserRightApi { get; }
+        WorkflowAPI WorkflowApi { get; }
+        CdVersionAPI CdVersionApi { get; }
+        AuthorizationAPI AuthorizationApi { get; }
 
         IGenericAPI<BootEntryEntity> BootEntryApi { get; }
         IGenericAPI<BootTemplateEntity> BootTemplateApi { get; }

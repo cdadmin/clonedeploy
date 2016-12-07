@@ -4,6 +4,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using CloneDeploy_App.Helpers;
+using CloneDeploy_Entities.DTOs;
 
 namespace CloneDeploy_App.BLL.Workflows
 {
@@ -13,21 +14,14 @@ namespace CloneDeploy_App.BLL.Workflows
         private readonly string _globalComputerArgs = Settings.GlobalComputerArgs;
         private string _userToken { get; set; }
         private readonly string _webPath = Settings.WebPath;
-        public string AddPwd { get; set; }
-        public string BootImage { get; set; }
-        public string DebugPwd { get; set; }
-        public string DiagPwd { get; set; }
-        public string GrubPassword { get; set; }
-        public string GrubUserName { get; set; }
-        public string Kernel { get; set; }
-        public string OndPwd { get; set; }
-        public string Type { get; set; }
+        private readonly BootMenuGenOptionsDTO _defaultBoot;
         readonly Regex _alphaNumericSpace = new Regex("[^a-zA-Z0-9 ]");
         readonly Regex _alphaNumericNoSpace = new Regex("[^a-zA-Z0-9]");
-        private BootEntryServices _bootEntryServices;
+        private readonly BootEntryServices _bootEntryServices;
 
-        public DefaultBootMenu()
+        public DefaultBootMenu(BootMenuGenOptionsDTO defaultBootMenu)
         {
+            _defaultBoot = defaultBootMenu;
             _bootEntryServices = new BootEntryServices();
         }
 
@@ -43,7 +37,7 @@ namespace CloneDeploy_App.BLL.Workflows
 
             var mode = Settings.PxeMode;
 
-            if (Type == "standard")
+            if (_defaultBoot.Type == "standard")
             {
                 if (mode.Contains("ipxe"))
                     CreateIpxeMenu();
@@ -72,22 +66,22 @@ namespace CloneDeploy_App.BLL.Workflows
             grubMenu.Append("set default=0" + NewLineChar);
             grubMenu.Append("set timeout=10" + NewLineChar);
             grubMenu.Append("set pager=1" + NewLineChar);
-            if (!string.IsNullOrEmpty(GrubUserName) && !string.IsNullOrEmpty(GrubPassword))
+            if (!string.IsNullOrEmpty(_defaultBoot.GrubUserName) && !string.IsNullOrEmpty(_defaultBoot.GrubPassword))
             {
-                grubMenu.Append("set superusers=\"" + GrubUserName + "\"" + NewLineChar);
+                grubMenu.Append("set superusers=\"" + _defaultBoot.GrubUserName + "\"" + NewLineChar);
                 string sha = null;
                 try
                 {
                     sha =
                         new WebClient().DownloadString(
-                            "http://docs.clonedeploy.org/grub-pass-gen/encrypt.php?password=" + GrubPassword);
+                            "http://docs.clonedeploy.org/grub-pass-gen/encrypt.php?password=" + _defaultBoot.GrubPassword);
                     sha = sha.Replace("\n \n\n\n", "");
                 }
                 catch
                 {
                     Logger.Log("Could not generate sha for grub password.  Could not contact http://clonedeploy.org");
                 }
-                grubMenu.Append("password_pbkdf2 " + GrubUserName + " " + sha + "" + NewLineChar);
+                grubMenu.Append("password_pbkdf2 " + _defaultBoot.GrubUserName + " " + sha + "" + NewLineChar);
                 grubMenu.Append("export superusers" + NewLineChar);
                 grubMenu.Append("" + NewLineChar);
             }
@@ -107,7 +101,7 @@ namespace CloneDeploy_App.BLL.Workflows
             grubMenu.Append("" + NewLineChar);
 
 
-            if (Type == "standard")
+            if (_defaultBoot.Type == "standard")
             {
                 grubMenu.Append("if [ -s /pxelinux.cfg/$mac.cfg ]; then" + NewLineChar);
                 grubMenu.Append("configfile /pxelinux.cfg/$mac.cfg" + NewLineChar);
@@ -138,10 +132,10 @@ namespace CloneDeploy_App.BLL.Workflows
             grubMenu.Append("menuentry \"Client Console\" --user {" + NewLineChar);
             grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
                             NewLineChar);
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
+            grubMenu.Append("linux /kernels/" + _defaultBoot.Kernel + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
                             _webPath +
                             " USER_TOKEN=" + _userToken + " task=debug consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
-            grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
+            grubMenu.Append("initrd /images/" + _defaultBoot.BootImage + "" + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
 
             grubMenu.Append("" + NewLineChar);
@@ -149,10 +143,10 @@ namespace CloneDeploy_App.BLL.Workflows
             grubMenu.Append("menuentry \"On Demand Imaging\" --user {" + NewLineChar);
             grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
                             NewLineChar);
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
+            grubMenu.Append("linux /kernels/" + _defaultBoot.Kernel + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
                             _webPath +
                             " USER_TOKEN=" + _userToken + " task=ond consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
-            grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
+            grubMenu.Append("initrd /images/" + _defaultBoot.BootImage + "" + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
 
             grubMenu.Append("" + NewLineChar);
@@ -160,11 +154,11 @@ namespace CloneDeploy_App.BLL.Workflows
             grubMenu.Append("menuentry \"Add Computer\" --user {" + NewLineChar);
             grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
                             NewLineChar);
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
+            grubMenu.Append("linux /kernels/" + _defaultBoot.Kernel + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
                             _webPath +
                             " USER_TOKEN=" + _userToken + " task=register consoleblank=0 " + _globalComputerArgs + "" +
                             NewLineChar);
-            grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
+            grubMenu.Append("initrd /images/" + _defaultBoot.BootImage + "" + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
 
             grubMenu.Append("" + NewLineChar);
@@ -172,10 +166,10 @@ namespace CloneDeploy_App.BLL.Workflows
             grubMenu.Append("menuentry \"Diagnostics\" --user {" + NewLineChar);
             grubMenu.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
                             NewLineChar);
-            grubMenu.Append("linux /kernels/" + Kernel + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
+            grubMenu.Append("linux /kernels/" + _defaultBoot.Kernel + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
                             _webPath +
                             " USER_TOKEN=" + _userToken + " task=diag consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
-            grubMenu.Append("initrd /images/" + BootImage + "" + NewLineChar);
+            grubMenu.Append("initrd /images/" + _defaultBoot.BootImage + "" + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
 
             foreach (var customEntry in customMenuEntries)
@@ -258,8 +252,8 @@ namespace CloneDeploy_App.BLL.Workflows
                 ipxeMenu.Append("params" + NewLineChar);
                 ipxeMenu.Append("param uname ${username:uristring}" + NewLineChar);
                 ipxeMenu.Append("param pwd ${password:uristring}" + NewLineChar);
-                ipxeMenu.Append("param kernel " + Kernel + "" + NewLineChar);
-                ipxeMenu.Append("param bootImage " + BootImage + "" + NewLineChar);
+                ipxeMenu.Append("param kernel " + _defaultBoot.Kernel + "" + NewLineChar);
+                ipxeMenu.Append("param bootImage " + _defaultBoot.BootImage + "" + NewLineChar);
                 ipxeMenu.Append("param task " + "${task}" + "" + NewLineChar);
                 ipxeMenu.Append("echo Authenticating" + NewLineChar);
                 ipxeMenu.Append("chain --timeout 15000 " + Settings.WebPath + "IpxeLogin##params || goto Menu" +
@@ -272,42 +266,42 @@ namespace CloneDeploy_App.BLL.Workflows
                 ipxeMenu.Append("" + NewLineChar);
 
                 ipxeMenu.Append(":console" + NewLineChar);
-                ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + Kernel + "&type=kernel" +
-                                " initrd=" + BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
+                ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + _defaultBoot.Kernel + "&type=kernel" +
+                                " initrd=" + _defaultBoot.BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
                                 Settings.WebPath + " USER_TOKEN=" + _userToken + " task=debug" + " consoleblank=0 " +
                                 _globalComputerArgs + NewLineChar);
-                ipxeMenu.Append("imgfetch --name " + BootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
-                                BootImage + "&type=bootimage" + NewLineChar);
+                ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
+                                _defaultBoot.BootImage + "&type=bootimage" + NewLineChar);
                 ipxeMenu.Append("boot" + NewLineChar);
                 ipxeMenu.Append("" + NewLineChar);
 
                 ipxeMenu.Append(":register" + NewLineChar);
-                ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + Kernel + "&type=kernel" +
-                                " initrd=" + BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
+                ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + _defaultBoot.Kernel + "&type=kernel" +
+                                " initrd=" + _defaultBoot.BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
                                 Settings.WebPath + " USER_TOKEN=" + _userToken + " task=register" + " consoleblank=0 " +
                                 _globalComputerArgs + NewLineChar);
-                ipxeMenu.Append("imgfetch --name " + BootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
-                                BootImage + "&type=bootimage" + NewLineChar);
+                ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
+                                _defaultBoot.BootImage + "&type=bootimage" + NewLineChar);
                 ipxeMenu.Append("boot" + NewLineChar);
                 ipxeMenu.Append("" + NewLineChar);
 
                 ipxeMenu.Append(":ond" + NewLineChar);
-                ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + Kernel + "&type=kernel" +
-                                " initrd=" + BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
+                ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + _defaultBoot.Kernel + "&type=kernel" +
+                                " initrd=" + _defaultBoot.BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
                                 Settings.WebPath + " USER_TOKEN=" + _userToken + " task=ond" + " consoleblank=0 " +
                                 _globalComputerArgs + NewLineChar);
-                ipxeMenu.Append("imgfetch --name " + BootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
-                                BootImage + "&type=bootimage" + NewLineChar);
+                ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
+                                _defaultBoot.BootImage + "&type=bootimage" + NewLineChar);
                 ipxeMenu.Append("boot" + NewLineChar);
                 ipxeMenu.Append("" + NewLineChar);
 
                 ipxeMenu.Append(":diag" + NewLineChar);
-                ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + Kernel + "&type=kernel" +
-                                " initrd=" + BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
+                ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + _defaultBoot.Kernel + "&type=kernel" +
+                                " initrd=" + _defaultBoot.BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
                                 Settings.WebPath + " USER_TOKEN=" + _userToken + " task=diag" + " consoleblank=0 " +
                                 _globalComputerArgs + NewLineChar);
-                ipxeMenu.Append("imgfetch --name " + BootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
-                                BootImage + "&type=bootimage" + NewLineChar);
+                ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
+                                _defaultBoot.BootImage + "&type=bootimage" + NewLineChar);
                 ipxeMenu.Append("boot" + NewLineChar);
                 ipxeMenu.Append("" + NewLineChar);
 
@@ -322,10 +316,10 @@ namespace CloneDeploy_App.BLL.Workflows
             }
 
             string path;
-            if (Type == "standard")
+            if (_defaultBoot.Type == "standard")
                 path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default.ipxe";
             else
-                path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + Type +
+                path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + _defaultBoot.Type +
                        Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default.ipxe";
 
             new FileOps().WritePath(path, ipxeMenu.ToString());
@@ -362,11 +356,11 @@ namespace CloneDeploy_App.BLL.Workflows
             sysLinuxMenu.Append("" + NewLineChar);
 
             sysLinuxMenu.Append("LABEL Client Console" + NewLineChar);
-            if (!string.IsNullOrEmpty(DebugPwd) && DebugPwd != "Error: Empty password")
-                sysLinuxMenu.Append("MENU PASSWD " + DebugPwd + "" + NewLineChar);
+            if (!string.IsNullOrEmpty(_defaultBoot.DebugPwd) && _defaultBoot.DebugPwd != "Error: Empty password")
+                sysLinuxMenu.Append("MENU PASSWD " + _defaultBoot.DebugPwd + "" + NewLineChar);
 
-            sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
-            sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
+            sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + _defaultBoot.Kernel + "" + NewLineChar);
+            sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + _defaultBoot.BootImage +
                                 " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" + _webPath + " USER_TOKEN=" +
                                 _userToken +
                                 " task=debug consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
@@ -375,11 +369,11 @@ namespace CloneDeploy_App.BLL.Workflows
             sysLinuxMenu.Append("" + NewLineChar);
 
             sysLinuxMenu.Append("LABEL Add Computer" + NewLineChar);
-            if (!string.IsNullOrEmpty(AddPwd) && AddPwd != "Error: Empty password")
-                sysLinuxMenu.Append("MENU PASSWD " + AddPwd + "" + NewLineChar);
+            if (!string.IsNullOrEmpty(_defaultBoot.AddPwd) && _defaultBoot.AddPwd != "Error: Empty password")
+                sysLinuxMenu.Append("MENU PASSWD " + _defaultBoot.AddPwd + "" + NewLineChar);
 
-            sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
-            sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
+            sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + _defaultBoot.Kernel + "" + NewLineChar);
+            sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + _defaultBoot.BootImage +
                                 " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" + _webPath + " USER_TOKEN=" +
                                 _userToken +
                                 " task=register consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
@@ -388,11 +382,11 @@ namespace CloneDeploy_App.BLL.Workflows
             sysLinuxMenu.Append("" + NewLineChar);
 
             sysLinuxMenu.Append("LABEL On Demand" + NewLineChar);
-            if (!string.IsNullOrEmpty(OndPwd) && OndPwd != "Error: Empty password")
-                sysLinuxMenu.Append("MENU PASSWD " + OndPwd + "" + NewLineChar);
+            if (!string.IsNullOrEmpty(_defaultBoot.OndPwd) && _defaultBoot.OndPwd != "Error: Empty password")
+                sysLinuxMenu.Append("MENU PASSWD " + _defaultBoot.OndPwd + "" + NewLineChar);
 
-            sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
-            sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
+            sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + _defaultBoot.Kernel + "" + NewLineChar);
+            sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + _defaultBoot.BootImage +
                                 " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" + _webPath + " USER_TOKEN=" +
                                 _userToken +
                                 " task=ond consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
@@ -401,11 +395,11 @@ namespace CloneDeploy_App.BLL.Workflows
             sysLinuxMenu.Append("" + NewLineChar);
 
             sysLinuxMenu.Append("LABEL Diagnostics" + NewLineChar);
-            if (!string.IsNullOrEmpty(DiagPwd) && DiagPwd != "Error: Empty password")
-                sysLinuxMenu.Append("MENU PASSWD " + DiagPwd + "" + NewLineChar);
+            if (!string.IsNullOrEmpty(_defaultBoot.DiagPwd) && _defaultBoot.DiagPwd != "Error: Empty password")
+                sysLinuxMenu.Append("MENU PASSWD " + _defaultBoot.DiagPwd + "" + NewLineChar);
 
-            sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + Kernel + "" + NewLineChar);
-            sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + BootImage +
+            sysLinuxMenu.Append("kernel kernels" + Path.DirectorySeparatorChar + _defaultBoot.Kernel + "" + NewLineChar);
+            sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + _defaultBoot.BootImage +
                                 " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" + _webPath + " USER_TOKEN=" +
                                 _userToken +
                                 " task=diag consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
@@ -429,10 +423,10 @@ namespace CloneDeploy_App.BLL.Workflows
             sysLinuxMenu.Append("TIMEOUT 50" + NewLineChar);
 
             string path;
-            if (Type == "standard")
+            if (_defaultBoot.Type == "standard")
                 path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
             else
-                path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + Type +
+                path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + _defaultBoot.Type +
                        Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
 
             new FileOps().WritePath(path, sysLinuxMenu.ToString());

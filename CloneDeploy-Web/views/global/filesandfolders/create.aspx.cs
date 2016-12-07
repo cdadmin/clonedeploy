@@ -1,4 +1,6 @@
 ﻿using System;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_global_filesandfolders_create : BasePages.Global
 {
@@ -10,16 +12,16 @@ public partial class views_global_filesandfolders_create : BasePages.Global
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.CreateGlobal);
-        var fileFolder = new FileFolder
+        var fileFolder = new FileFolderEntity()
         {
             Name = txtName.Text,
             Path = txtPath.Text,
             Type = ddlType.Text
         };
 
-        var result = BLL.FileFolder.AddFileFolder(fileFolder);
+        var result = Call.FileFolderApi.Post(fileFolder);
         if (!result.Success)
-            EndUserMessage = result.Message;
+            EndUserMessage = result.ErrorMessage;
         else
         {
             EndUserMessage = "Successfully Added File / Folder";

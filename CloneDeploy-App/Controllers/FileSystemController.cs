@@ -7,6 +7,7 @@ using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
 using CloneDeploy_App.Helpers;
+using CloneDeploy_Entities.DTOs;
 
 
 namespace CloneDeploy_App.Controllers
@@ -25,5 +26,75 @@ namespace CloneDeploy_App.Controllers
             };
             
         }
+
+        [HttpGet]
+        [ComputerAuth(Permission = "ComputerSearch")]
+        public ApiStringResponseDTO ReadFileText(string path)
+        {
+
+            return new ApiStringResponseDTO
+            {
+                Value = new Helpers.FileOps().ReadAllText(path)
+            };
+
+        }
+
+        [HttpGet]
+        [ComputerAuth(Permission = "ComputerSearch")]
+        public ApiStringArrResponseDTO GetKernels()
+        {
+
+            return new ApiStringArrResponseDTO
+            {
+                Value = Utility.GetKernels()
+            };
+
+        }
+
+        [HttpGet]
+        [ComputerAuth(Permission = "ComputerSearch")]
+        public ApiStringArrResponseDTO GetBootImages()
+        {
+
+            return new ApiStringArrResponseDTO
+            {
+                Value = Utility.GetBootImages()
+            };
+
+        }
+
+        [HttpGet]
+        [ComputerAuth(Permission = "ComputerSearch")]
+        public ApiStringArrResponseDTO GetLogs()
+        {
+
+            return new ApiStringArrResponseDTO
+            {
+                Value = Utility.GetLogs()
+            };
+
+        }
+
+
+        [HttpGet]
+        [ComputerAuth(Permission = "ComputerSearch")]
+        public ApiBoolResponseDTO SetUnixPermissions(string path)
+        {
+           new FileOps().SetUnixPermissions(path);
+            return new ApiBoolResponseDTO() {Value = true};
+        }
+
+        [HttpGet]
+        [ComputerAuth(Permission = "ComputerSearch")]
+        public ApiStringArrResponseDTO GetScripts(string type)
+        {
+
+            return new ApiStringArrResponseDTO
+            {
+                Value = Utility.GetScripts(type)
+            };
+
+        }
+        
     }
 }

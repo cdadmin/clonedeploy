@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using CloneDeploy_App.Helpers;
 using CloneDeploy_Entities;
+using CloneDeploy_Services;
 
 namespace CloneDeploy_App.BLL.Workflows
 {
@@ -12,10 +13,10 @@ namespace CloneDeploy_App.BLL.Workflows
         private readonly bool _promptComputerName;
         private readonly ImageProfileEntity _imageProfile;
 
-        public ClobberBootMenu(ImageProfileEntity imageProfile, bool promptComputerName)
+        public ClobberBootMenu(int imageProfileId, bool promptComputerName)
         {
             _promptComputerName = promptComputerName;
-            _imageProfile = imageProfile;
+            _imageProfile = new ImageProfileServices().ReadProfile(imageProfileId);
         }
 
         public bool CreatePxeBootFiles()

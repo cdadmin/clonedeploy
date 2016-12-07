@@ -1,8 +1,10 @@
 ﻿using System;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_admin_scripts_edit : BasePages.Global
 {
-    public Script Script { get { return ReadProfile(); } }
+    public ScriptEntity Script { get { return ReadProfile(); } }
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack) PopulateForm();
@@ -11,7 +13,7 @@ public partial class views_admin_scripts_edit : BasePages.Global
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.UpdateGlobal);
-        var script = new Script
+        var script = new ScriptEntity()
         {
             Id = Script.Id,
             Name = txtScriptName.Text,
@@ -19,12 +21,12 @@ public partial class views_admin_scripts_edit : BasePages.Global
         };
         var fixedLineEnding = scriptEditor.Value.Replace("\r\n", "\n");
         script.Contents = fixedLineEnding;
-        var result = BLL.Script.UpdateScript(script);
+        var result = Call.ScriptApi.Put(script.Id,script);
         if (result.Success)
             EndUserMessage = "Successfully Updated Script";
         else
         
-            EndUserMessage = result.Message;
+            EndUserMessage = result.ErrorMessage;
 
     }
 
@@ -35,9 +37,9 @@ public partial class views_admin_scripts_edit : BasePages.Global
         scriptEditor.Value = Script.Contents;
     }
 
-    private Script ReadProfile()
+    private ScriptEntity ReadProfile()
     {
-        return BLL.Script.GetScript(Convert.ToInt32(Request.QueryString["scriptid"]));
+        return Call.ScriptApi.Get(Convert.ToInt32(Request.QueryString["scriptid"]));
 
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_computers_bootmenu_custom : BasePages.Computers
 {
@@ -11,7 +13,7 @@ public partial class views_computers_bootmenu_custom : BasePages.Computers
     {
         chkEnabled.Checked = Computer.CustomBootEnabled == 1;
         PopulateBootTemplatesDdl(ddlTemplates);
-        var bootMenu = BLL.ComputerBootMenu.GetComputerBootMenu(Computer.Id);
+        var bootMenu = Call.ComputerApi.GetBootMenu(Computer.Id);
         
 
         if (Settings.ProxyDhcp == "Yes")
@@ -44,13 +46,13 @@ public partial class views_computers_bootmenu_custom : BasePages.Computers
     {
         scriptEditor.Value = "";
         if (ddlTemplates.SelectedValue == "-1") return;
-        scriptEditor.Value = BLL.BootTemplate.GetBootTemplate(Convert.ToInt32(ddlTemplates.SelectedValue)).Contents;
+        scriptEditor.Value = Call.BootTemplateApi.Get(Convert.ToInt32(ddlTemplates.SelectedValue)).Contents;
     }
 
     protected void buttonUpdate_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorizationOrManagedComputer(Authorizations.UpdateComputer, Computer.Id);
-        var bootMenu = BLL.ComputerBootMenu.GetComputerBootMenu(Computer.Id) ?? new ComputerBootMenu();
+        var bootMenu = Call.ComputerApi.GetBootMenu(Computer.Id) ?? new ComputerBootMenuEntity();
         bootMenu.ComputerId = Computer.Id;
         if (Settings.ProxyDhcp == "Yes")
         {
@@ -71,18 +73,17 @@ public partial class views_computers_bootmenu_custom : BasePages.Computers
         {
             bootMenu.BiosMenu = scriptEditor.Value.Replace("\r\n", "\n");
         }
-        EndUserMessage = BLL.ComputerBootMenu.UpdateComputerBootMenu(bootMenu)
+        EndUserMessage = Call.ComputerBootMenuApi.Post(bootMenu).Success
             ? "Successfully Updated Custom Boot Menu"
             : "Could Not Update Custom Boot Menu";
 
-        if(chkEnabled.Checked)
-            BLL.ComputerBootMenu.CreateBootFiles(Computer);
+        if (chkEnabled.Checked)
+            Call.ComputerApi.CreateCustomBootFiles(Computer.Id);
     }
 
     protected void chkEnabled_OnCheckedChanged(object sender, EventArgs e)
     {
-        BLL.ComputerBootMenu.ToggleComputerBootMenu(Computer, chkEnabled.Checked);
-        
+        Call.ComputerApi.ToggleBootMenu(Computer.Id, chkEnabled.Checked);     
     }
 
     protected void ddlProxyMode_OnSelectedIndexChanged(object sender, EventArgs e)

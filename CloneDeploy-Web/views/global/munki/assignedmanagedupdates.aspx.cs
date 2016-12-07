@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web;
 
 public partial class views_global_munki_assignedmanagedupdates : BasePages.Global
 {
@@ -14,11 +16,11 @@ public partial class views_global_munki_assignedmanagedupdates : BasePages.Globa
 
         var assignedLimit = ddlLimitAssigned.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimitAssigned.Text);
 
-        var templateInstalls = BLL.MunkiManagedUpdate.GetAllManagedUpdatesForMt(ManifestTemplate.Id).Where(s => s.Name.IndexOf(txtSearchAssigned.Text, StringComparison.CurrentCultureIgnoreCase) != -1).OrderBy(x => x.Name).Take(assignedLimit);
+        var templateInstalls = Call.MunkiManifestTemplateApi.GetManifestManagedUpdates(ManifestTemplate.Id).Where(s => s.Name.IndexOf(txtSearchAssigned.Text, StringComparison.CurrentCultureIgnoreCase) != -1).OrderBy(x => x.Name).Take(assignedLimit);
         gvTemplateInstalls.DataSource = templateInstalls;
         gvTemplateInstalls.DataBind();
 
-        lblTotalAssigned.Text = gvTemplateInstalls.Rows.Count + " Result(s) / " + BLL.MunkiManagedUpdate.TotalCount(ManifestTemplate.Id) + " Total Managed Install(s)";
+        lblTotalAssigned.Text = gvTemplateInstalls.Rows.Count + " Result(s) / " + Call.MunkiManifestTemplateApi.GetManagedUpdateCount(ManifestTemplate.Id) + " Total Managed Install(s)";
 
 
 
@@ -38,19 +40,19 @@ public partial class views_global_munki_assignedmanagedupdates : BasePages.Globa
 
             if (!enabled.Checked)
             {
-                if (BLL.MunkiManagedUpdate.DeleteManagedUpdateFromTemplate(Convert.ToInt32(dataKey.Value)))
+                if (Call.MunkiManifestTemplateApi.RemoveManagedUpdatesFromTemplate(Convert.ToInt32(dataKey.Value)))
                     updateCount++;
             }
             else
             {
-                var managedUpdate = BLL.MunkiManagedUpdate.GetManagedUpdate(Convert.ToInt32(dataKey.Value));
+                var managedUpdate = Call.MunkiManifestManagedUpdateEntityApi.Get(Convert.ToInt32(dataKey.Value));
 
                 var txtCondition = row.FindControl("txtCondition") as TextBox;
                 if (txtCondition != null)
                     if (txtCondition.Text != managedUpdate.Condition)
                         managedUpdate.Condition = txtCondition.Text;
 
-                if (BLL.MunkiManagedUpdate.AddManagedUpdateToTemplate(managedUpdate)) updateCount++;
+                if (Call.MunkiManifestTemplateApi.AddManagedUpdateToTemplate(managedUpdate)) updateCount++;
             } 
 
         }
@@ -59,7 +61,7 @@ public partial class views_global_munki_assignedmanagedupdates : BasePages.Globa
         {
             EndUserMessage = "Successfully Updated Managed Updates";
             ManifestTemplate.ChangesApplied = 0;
-            BLL.MunkiManifestTemplate.UpdateManifest(ManifestTemplate);
+            Call.MunkiManifestTemplateApi.Put(ManifestTemplate.Id,ManifestTemplate);
         }
         else
         {

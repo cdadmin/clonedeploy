@@ -12,10 +12,10 @@ namespace CloneDeploy_App.BLL.Workflows
         private ImageProfileEntity _imageProfile;
         private readonly int _userId;
 
-        public Unicast(ComputerEntity computer, string direction, int userId)
+        public Unicast(int computerId, string direction, int userId)
         {
             _direction = direction;
-            _computer = computer;
+            _computer = new ComputerServices().GetComputer(computerId);
             _userId = userId;
         }
 

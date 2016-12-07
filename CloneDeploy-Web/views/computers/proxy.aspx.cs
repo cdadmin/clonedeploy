@@ -1,5 +1,6 @@
 ﻿using System;
 using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_computers_proxy : BasePages.Computers
 {
