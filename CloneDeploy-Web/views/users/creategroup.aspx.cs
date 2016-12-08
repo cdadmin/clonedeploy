@@ -1,4 +1,6 @@
 ﻿using System;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_users_creategroup : BasePages.Users
 {
@@ -9,7 +11,7 @@ public partial class views_users_creategroup : BasePages.Users
 
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
-        var userGroup = new CloneDeployUserGroup
+        var userGroup = new CloneDeployUserGroupEntity()
         {
             Name = txtGroupName.Text,
             Membership = ddlGroupMembership.Text,
@@ -18,9 +20,9 @@ public partial class views_users_creategroup : BasePages.Users
         if (chkldap.Checked)
             userGroup.GroupLdapName = txtLdapGroupName.Text;
 
-        var result = BLL.UserGroup.AddUserGroup(userGroup);
+        var result = Call.UserGroupApi.Post(userGroup);
         if (!result.Success)
-            EndUserMessage = result.Message;
+            EndUserMessage = result.ErrorMessage;
         else
         {
             EndUserMessage = "Successfully Created User Group";

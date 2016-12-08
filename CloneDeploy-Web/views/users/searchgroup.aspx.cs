@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web;
 
 public partial class views_users_searchgroup : BasePages.Users
 {
@@ -22,9 +24,9 @@ public partial class views_users_searchgroup : BasePages.Users
             var dataKey = gvGroups.DataKeys[row.RowIndex];
             if (dataKey != null)
             {
-                var userGroup = BLL.UserGroup.GetUserGroup(Convert.ToInt32(dataKey.Value));
+                var userGroup = Call.UserGroupApi.Get(Convert.ToInt32(dataKey.Value));
 
-                if (BLL.UserGroup.DeleteUserGroup(userGroup.Id))
+                if (Call.UserGroupApi.Delete(userGroup.Id).Success)
                     deletedCount++;
             }
         }
@@ -44,7 +46,7 @@ public partial class views_users_searchgroup : BasePages.Users
 
     protected void PopulateGrid()
     {
-        gvGroups.DataSource = BLL.UserGroup.SearchUserGroups(txtSearch.Text).OrderBy(x => x.Name);
+        gvGroups.DataSource = Call.UserGroupApi.GetAll(Int32.MaxValue,txtSearch.Text).OrderBy(x => x.Name);
         gvGroups.DataBind();
 
         foreach (GridViewRow row in gvGroups.Rows)
@@ -52,9 +54,9 @@ public partial class views_users_searchgroup : BasePages.Users
             var lbl = row.FindControl("lblCount") as Label;
             var dataKey = gvGroups.DataKeys[row.RowIndex];
             if (dataKey != null && lbl != null)
-                lbl.Text = BLL.UserGroup.MemberCount(Convert.ToInt32(dataKey.Value));
+                lbl.Text = Call.UserGroupApi.GetMemberCount(Convert.ToInt32(dataKey.Value));
         }
 
-        lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + BLL.UserGroup.TotalCount() + " Total Group(s)";
+        lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + Call.UserGroupApi.GetCount() + " Total Group(s)";
     }
 }

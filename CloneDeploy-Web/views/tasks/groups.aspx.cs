@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web;
 
 namespace views.tasks
 {
@@ -15,18 +16,17 @@ namespace views.tasks
         {
             var groupId = Convert.ToInt32(Session["groupID"]);
             var isUnicast = Convert.ToInt32(Session["isGroupUnicast"]);
-            var group = BLL.Group.GetGroup(groupId);
 
             if (isUnicast == 1)
             {
-                RequiresAuthorizationOrManagedGroup(Authorizations.ImageDeployTask, group.Id);
-                var successCount = BLL.Group.StartGroupUnicast(group, CloneDeployCurrentUser.Id);
+                RequiresAuthorizationOrManagedGroup(Authorizations.ImageDeployTask, groupId);
+                var successCount = Call.GroupApi.StartGroupUnicast(groupId);
                 EndUserMessage = "Started " + successCount + " Tasks";
             }
             else
             {
-                RequiresAuthorizationOrManagedGroup(Authorizations.ImageMulticastTask, group.Id);
-                EndUserMessage = new BLL.Workflows.Multicast(group,CloneDeployCurrentUser.Id).Create();
+                RequiresAuthorizationOrManagedGroup(Authorizations.ImageMulticastTask, groupId);
+                EndUserMessage = Call.GroupApi.StartMulticast(groupId);
             }
             Session.Remove("groupID");
             Session.Remove("isGroupUnicast");
@@ -42,7 +42,7 @@ namespace views.tasks
                 var dataKey = gvGroups.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var group = BLL.Group.GetGroup(Convert.ToInt32(dataKey.Value));
+                    var group = Call.GroupApi.Get(Convert.ToInt32(dataKey.Value));
                     Session["groupID"] = group.Id;
                     Session["isGroupUnicast"] = 0;
                     lblTitle.Text = "Start Multicast For Group " + group.Name + "?";
@@ -63,7 +63,7 @@ namespace views.tasks
                 var dataKey = gvGroups.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var group = BLL.Group.GetGroup(Convert.ToInt32(dataKey.Value));
+                    var group = Call.GroupApi.Get(Convert.ToInt32(dataKey.Value));
                   
                     Session["groupID"] = group.Id;
                     Session["isGroupUnicast"] = 1;
@@ -85,9 +85,9 @@ namespace views.tasks
 
         protected void PopulateGrid()
         {
-            gvGroups.DataSource = BLL.Group.SearchGroupsForUser(CloneDeployCurrentUser.Id, txtSearch.Text);
+            gvGroups.DataSource = Call.GroupApi.GetAll(Int32.MaxValue,txtSearch.Text);
             gvGroups.DataBind();
-            lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + BLL.Group.GroupCountUser(CloneDeployCurrentUser.Id) + " Total Group(s)";
+            lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + Call.GroupApi.GetCount() + " Total Group(s)";
         }
     }
 }

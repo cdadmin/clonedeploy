@@ -24,13 +24,14 @@ namespace CloneDeploy_App.Controllers
             _cdVersionServices = new CdVersionServices();
         }
 
-        [GlobalAuth]
+        [HttpGet]
+        [Authorize]
         public ApiBoolResponseDTO IsFirstRunCompleted()
         {
             return new ApiBoolResponseDTO() {Value = _cdVersionServices.FirstRunCompleted()};
         }
 
-        [GlobalAuth]
+        [Authorize]
         public CdVersionEntity Get(int id)
         {
             var result = _cdVersionServices.Get(id);
@@ -38,7 +39,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [GlobalAuth]
+         [Authorize]
         public ActionResultDTO Post(CdVersionEntity cdVersion)
         {
             return _cdVersionServices.Update(cdVersion);

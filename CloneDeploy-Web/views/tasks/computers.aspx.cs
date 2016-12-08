@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 namespace views.tasks
 {
@@ -25,11 +28,11 @@ namespace views.tasks
                 var dataKey = gvComputers.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var computer = BLL.Computer.GetComputer(Convert.ToInt32(dataKey.Value));
+                    var computer = Call.ComputerApi.Get(Convert.ToInt32(dataKey.Value));
                     Session["computerID"] = computer.Id;
                     Session["direction"] = "permanent_push";
                     lblTitle.Text = "Permanent Deploy The Selected Computer?";
-                    gvConfirm.DataSource = new List<Computer> { computer };
+                    gvConfirm.DataSource = new List<ComputerEntity> { computer };
                 }
             }
             gvConfirm.DataBind();
@@ -46,11 +49,11 @@ namespace views.tasks
                 var dataKey = gvComputers.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var computer = BLL.Computer.GetComputer(Convert.ToInt32(dataKey.Value));
+                    var computer = Call.ComputerApi.Get(Convert.ToInt32(dataKey.Value));
                     Session["computerID"] = computer.Id;
                     Session["direction"] = "push";
                     lblTitle.Text = "Deploy The Selected Computer?";
-                    gvConfirm.DataSource = new List<Computer> { computer };
+                    gvConfirm.DataSource = new List<ComputerEntity> { computer };
                 }
             }
             gvConfirm.DataBind();
@@ -67,11 +70,11 @@ namespace views.tasks
                 var dataKey = gvComputers.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var computer = BLL.Computer.GetComputer(Convert.ToInt32(dataKey.Value));
+                    var computer = Call.ComputerApi.Get(Convert.ToInt32(dataKey.Value));
                     Session["computerID"] = computer.Id;
                     Session["direction"] = "pull";
                     lblTitle.Text = "Upload The Selected Computer?";
-                    gvConfirm.DataSource = new List<Computer> { computer };
+                    gvConfirm.DataSource = new List<ComputerEntity> { computer };
                 }
             }
             gvConfirm.DataBind();
@@ -139,14 +142,25 @@ namespace views.tasks
             var sucessCount = 0;
             switch (action)
             {
-                case "push": case "permanent_push":
+                case "permanent_push":
+                      {
+                        foreach (var computerId in selectedComputers)
+                        {
+
+                            RequiresAuthorizationOrManagedComputer(Authorizations.ImageDeployTask, computerId);
+                            if (Call.ComputerApi.StartPermanentDeploy(computerId).Contains("Successfully"))
+                                sucessCount++;
+                            EndUserMessage = "Successfully Started " + sucessCount + " Tasks";
+                        }
+                    }
+                    break;
+                case "push": 
                     {
                         foreach (var computerId in selectedComputers)
                         {
-                            var computer = BLL.Computer.GetComputer(computerId);
-                            RequiresAuthorizationOrManagedComputer(Authorizations.ImageDeployTask, computer.Id);
-                            if (new BLL.Workflows.Unicast(computer, action, CloneDeployCurrentUser.Id)
-                                .Start().Contains("Successfully"))
+
+                            RequiresAuthorizationOrManagedComputer(Authorizations.ImageDeployTask, computerId);
+                            if (Call.ComputerApi.StartDeploy(computerId).Contains("Successfully"))
                                 sucessCount++;
                             EndUserMessage = "Successfully Started " + sucessCount + " Tasks";
                         }
@@ -156,10 +170,9 @@ namespace views.tasks
                     {
                         foreach (var computerId in selectedComputers)
                         {
-                            var computer = BLL.Computer.GetComputer(computerId);
-                            RequiresAuthorizationOrManagedComputer(Authorizations.ImageUploadTask, computer.Id);
-                            if (new BLL.Workflows.Unicast(computer, action, CloneDeployCurrentUser.Id)
-                                .Start().Contains("Successfully"))
+
+                            RequiresAuthorizationOrManagedComputer(Authorizations.ImageUploadTask, computerId);
+                            if (Call.ComputerApi.StartUpload(computerId).Contains("Successfully"))
                                 sucessCount++;
                             EndUserMessage = "Successfully Started " + sucessCount + " Tasks";
                         } 
@@ -169,19 +182,24 @@ namespace views.tasks
         }
         protected void SingleOkButton_Click(object sender, EventArgs e)
         {
-            var computer = BLL.Computer.GetComputer(Convert.ToInt32(Session["computerID"]));
+            var computerId = Convert.ToInt32(Session["computerID"]);
             var direction = (string) (Session["direction"]);
 
-            if (direction == "push" || direction == "permanent_push")
+            if (direction == "permanent_push")
             {
-                RequiresAuthorizationOrManagedComputer(Authorizations.ImageDeployTask, computer.Id);    
-                EndUserMessage = new BLL.Workflows.Unicast(computer,direction,CloneDeployCurrentUser.Id).Start();               
+                RequiresAuthorizationOrManagedComputer(Authorizations.ImageDeployTask, computerId);    
+                EndUserMessage = Call.ComputerApi.StartPermanentDeploy(computerId);               
              
+            }
+            else if (direction == "push")
+            {
+                RequiresAuthorizationOrManagedComputer(Authorizations.ImageDeployTask, computerId);
+                EndUserMessage = Call.ComputerApi.StartDeploy(computerId);               
             }
             else
             {
-                RequiresAuthorizationOrManagedComputer(Authorizations.ImageUploadTask, computer.Id);
-                EndUserMessage = new BLL.Workflows.Unicast(computer,direction,CloneDeployCurrentUser.Id).Start();
+                RequiresAuthorizationOrManagedComputer(Authorizations.ImageUploadTask, computerId);
+                EndUserMessage = Call.ComputerApi.StartUpload(computerId);
             }
             Session.Remove("computerID");
             Session.Remove("direction");
@@ -191,11 +209,11 @@ namespace views.tasks
         {
             var limit = 0;
             limit = ddlLimit.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimit.Text);
-            var listOfComputers = BLL.Computer.SearchComputersForUser(CloneDeployCurrentUser.Id,limit, txtSearch.Text);
+            var listOfComputers = Call.ComputerApi.GetAll(limit,txtSearch.Text);
             gvComputers.DataSource = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
             gvComputers.DataBind();
 
-            lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + BLL.Computer.ComputerCountUser(CloneDeployCurrentUser.Id) + " Total Computer(s)";
+            lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + Call.ComputerApi.GetCount() + " Total Computer(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)

@@ -23,25 +23,29 @@ namespace CloneDeploy_App.Controllers
     {
 
         [ImageAuth(Permission = "ImageRead")]
+        [HttpPost]
         public ImageSchemaGridView GetSchema(ImageSchemaRequestDTO schemaRequest)
         {
             return new ImageSchemaFEServices(schemaRequest).GetImageSchema();
         }
 
         [ImageAuth(Permission = "ImageRead")]
+        [HttpPost]
         public IEnumerable<HardDrive> GetHardDrives(ImageSchemaRequestDTO schemaRequest)
         {
             return new ImageSchemaFEServices(schemaRequest).GetHardDrivesForGridView();
         }
 
         [ImageAuth(Permission = "ImageRead")]
-        public IEnumerable<Partition> GetPartitions(ImageSchemaRequestDTO schemaRequest, string selectedHd)
+        [HttpPost]
+        public List<Partition> GetPartitions(ImageSchemaRequestDTO schemaRequest, string selectedHd)
         {
             return new ImageSchemaFEServices(schemaRequest).GetPartitionsForGridView(selectedHd);
         }
 
         [ImageAuth(Permission = "ImageRead")]
-        public IEnumerable<LogicalVolume> GetLogicalVolumes(ImageSchemaRequestDTO schemaRequest, string selectedHd)
+        [HttpPost]
+        public List<LogicalVolume> GetLogicalVolumes(ImageSchemaRequestDTO schemaRequest, string selectedHd)
         {
             return new ImageSchemaFEServices(schemaRequest).GetLogicalVolumesForGridView(selectedHd);
         }

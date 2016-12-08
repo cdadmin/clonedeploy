@@ -19,7 +19,7 @@ namespace CloneDeploy_ApiCalls
         public CloneDeployUserEntity GetByName(string username)
         {
             _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/Get/", _resource);
+            _request.Resource = string.Format("api/{0}/GetByName/", _resource);
             _request.AddParameter("username", username);
             return new ApiRequest().Execute<CloneDeployUserEntity>(_request);
         }
@@ -38,11 +38,11 @@ namespace CloneDeploy_ApiCalls
 
 
 
-        public string GetAdminCount()
+        public int GetAdminCount()
         {
             _request.Method = Method.GET;
             _request.Resource = string.Format("api/{0}/GetAdminCount/", _resource);
-            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
+            return new ApiRequest().Execute<ApiIntResponseDTO>(_request).Value;
         }
 
 

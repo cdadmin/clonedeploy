@@ -8,11 +8,11 @@ namespace views.tasks
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            cancelTasks.Visible = BLL.User.IsAdmin(CloneDeployCurrentUser.Id);
+            cancelTasks.Visible = Call.CloneDeployUserApi.IsAdmin(CloneDeployCurrentUser.Id);
             if (IsPostBack) return;
             ViewState["clickTracker"] = "1";
             PopulateGrid();
-            lblTotal.Text = BLL.ActiveImagingTask.AllActiveCount(CloneDeployCurrentUser.Id) + " Total Tasks(s)";
+            lblTotal.Text = Call.ActiveImagingTaskApi.GetAllActiveCount() + " Total Tasks(s)";
         }
 
         protected void btnCancel_Click(object sender, EventArgs e)
@@ -24,16 +24,16 @@ namespace views.tasks
                 var dataKey = gvTasks.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
 
-                    BLL.ActiveImagingTask.DeleteActiveImagingTask(Convert.ToInt32(dataKey.Value));
+                    Call.ActiveImagingTaskApi.Delete(Convert.ToInt32(dataKey.Value));
 
             }
-            gvTasks.DataSource = BLL.ActiveImagingTask.ReadAll(CloneDeployCurrentUser.Id);
+            gvTasks.DataSource = Call.ActiveImagingTaskApi.GetActiveTasks();
             gvTasks.DataBind();
         }
 
         protected void cancelTasks_Click(object sender, EventArgs e)
         {
-            CancelAllImagingTasks.Run();
+            Call.WorkflowApi.CancelAllImagingTasks();
             PopulateGrid();
         }
 
@@ -41,13 +41,13 @@ namespace views.tasks
         protected void Timer_Tick(object sender, EventArgs e)
         {
             PopulateGrid();
-            lblTotal.Text = BLL.ActiveImagingTask.AllActiveCount(CloneDeployCurrentUser.Id) + " Total Tasks(s)";
+            lblTotal.Text = Call.ActiveImagingTaskApi.GetAllActiveCount() + " Total Tasks(s)";
             UpdatePanel1.Update();
         }
 
         private void PopulateGrid()
         {
-            gvTasks.DataSource = BLL.ActiveImagingTask.ReadAll(CloneDeployCurrentUser.Id);
+            gvTasks.DataSource = Call.ActiveImagingTaskApi.GetActiveTasks();
             gvTasks.DataBind();
         }
       

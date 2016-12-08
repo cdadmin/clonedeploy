@@ -19,7 +19,8 @@ namespace CloneDeploy_App.Controllers
     
     public class AuthorizationController : ApiController
     {
-        [UserAuth]
+         [Authorize]
+        [HttpGet]
         public ApiBoolResponseDTO IsAuthorized(string requiredRight)
         {
              var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
@@ -31,7 +32,8 @@ namespace CloneDeploy_App.Controllers
             };
         }
 
-        [UserAuth]
+         [Authorize]
+         [HttpGet]
         public ApiBoolResponseDTO ComputerManagement(string requiredRight, int computerId)
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
@@ -43,7 +45,8 @@ namespace CloneDeploy_App.Controllers
             };
         }
 
-        [UserAuth]
+         [Authorize]
+         [HttpGet]
         public ApiBoolResponseDTO GroupManagement(string requiredRight, int groupId)
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
@@ -55,7 +58,8 @@ namespace CloneDeploy_App.Controllers
             };
         }
 
-        [UserAuth]
+         [Authorize]
+         [HttpGet]
         public ApiBoolResponseDTO ImageManagement(string requiredRight, int imageId)
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;

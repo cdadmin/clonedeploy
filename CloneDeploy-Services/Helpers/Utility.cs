@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
@@ -129,23 +130,24 @@ namespace CloneDeploy_App.Helpers
             return bootImageFiles;
         }
 
-        public static string[] GetKernels()
+        public static List<string> GetKernels()
         {
             var kernelPath = Settings.TftpPath + "kernels" + Path.DirectorySeparatorChar;
-            string[] kernelFiles = null;
+            //string[] kernelFiles = null;
+            var result = new List<string>();
             try
             {
-                kernelFiles = Directory.GetFiles(kernelPath, "*.*");
+                var kernelFiles = Directory.GetFiles(kernelPath, "*.*");
 
                 for (var x = 0; x < kernelFiles.Length; x++)
-                    kernelFiles[x] = Path.GetFileName(kernelFiles[x]);
+                    result.Add(Path.GetFileName(kernelFiles[x]));
             }
 
             catch (Exception ex)
             {
                 Logger.Log(ex.Message);
             }
-            return kernelFiles;
+            return result;
         }
 
         public static string[] GetThinImages()

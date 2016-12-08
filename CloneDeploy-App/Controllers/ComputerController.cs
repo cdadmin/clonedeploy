@@ -102,6 +102,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ComputerAuth(Permission = "ComputerRead")]
+        [HttpGet]
         public ApiBoolResponseDTO Export(string path)
         {
             _computerService.ExportCsv(path);
@@ -139,14 +140,14 @@ namespace CloneDeploy_App.Controllers
             return _computerService.DeleteComputerBootMenus(id);
         }
 
-        [HttpPost]
+        [HttpGet]
         [ComputerAuth(Permission = "ComputerUpdate")]
         public ApiBoolResponseDTO CreateCustomBootFiles(int id)
         {
             return new ApiBoolResponseDTO() {Value = _computerService.CreateBootFiles(id)};
         }
 
-        [HttpPost]
+
         [ComputerAuth(Permission = "ComputerRead")]
         public ApiStringResponseDTO GetProxyPath(int id, bool isActiveOrCustom, string proxyType)
         {
@@ -156,7 +157,7 @@ namespace CloneDeploy_App.Controllers
             };
         }
 
-        [HttpPost]
+
         [ComputerAuth(Permission = "ComputerRead")]
         public ApiStringResponseDTO GetNonProxyPath(int id, bool isActiveOrCustom)
         {

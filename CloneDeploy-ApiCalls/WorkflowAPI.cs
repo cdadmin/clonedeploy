@@ -53,5 +53,21 @@ namespace CloneDeploy_ApiCalls
             _request.Resource = string.Format("api/{0}/CopyPxeBinaries/", _resource);     
             return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
         }
+
+        public bool CancelAllImagingTasks()
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/CancelAllImagingTasks/", _resource);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+        }
+
+        public string StartOnDemandMulticast(int profileId, string clientCount)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/StartOnDemandMulticast/", _resource);
+            _request.AddParameter("profileId", profileId);
+            _request.AddParameter("clientCount", clientCount);
+            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
+        }
     }
 }

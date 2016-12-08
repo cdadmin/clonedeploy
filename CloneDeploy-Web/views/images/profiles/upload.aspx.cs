@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BasePages;
+using CloneDeploy_App.DTOs;
+using CloneDeploy_Entities.DTOs.ImageSchemaBE;
+using CloneDeploy_Web;
 using Newtonsoft.Json;
+using VolumeGroup = CloneDeploy_Entities.DTOs.ImageSchemaFE.VolumeGroup;
 
 public partial class views_images_profiles_upload : Images
 {
@@ -29,8 +33,8 @@ public partial class views_images_profiles_upload : Images
         imageProfile.CompressionLevel = ddlCompLevel.Text;
         imageProfile.UploadSchemaOnly = Convert.ToInt16(chkSchemaOnly.Checked);
         imageProfile.WimMulticastEnabled = Convert.ToInt16(chkWimMulticast.Checked);
-        var result = BLL.ImageProfile.UpdateProfile(imageProfile);
-        EndUserMessage = result.Success ? "Successfully Updated Image Profile" : result.Message;
+        var result = Call.ImageProfileApi.Put(imageProfile.Id,imageProfile);
+        EndUserMessage = result.Success ? "Successfully Updated Image Profile" : result.ErrorMessage;
     }
 
     protected void chkCustomUpload_OnCheckedChanged(object sender, EventArgs e)
@@ -57,8 +61,11 @@ public partial class views_images_profiles_upload : Images
         ViewState["selectedHD"] = gvRow.RowIndex.ToString();
         ViewState["selectedHDName"] = selectedHd;
 
-
-        var partitions = new ImageSchema(ImageProfile,"upload").GetPartitionsForGridView(selectedHd);
+        var schemaRequestOptions = new ImageSchemaRequestDTO();
+        schemaRequestOptions.image = null;
+        schemaRequestOptions.imageProfile = ImageProfile;
+        schemaRequestOptions.schemaType = "upload";
+        var partitions = Call.ImageSchemaApi.GetPartitions(schemaRequestOptions,selectedHd);
         var btn = (LinkButton)gvRow.FindControl("btnHd");
         if (gv.Visible == false)
         {
@@ -117,7 +124,11 @@ public partial class views_images_profiles_upload : Images
 
             var td = gvRow.FindControl("tdLVS");
             td.Visible = true;
-            gv.DataSource = new ImageSchema(ImageProfile,"upload").GetLogicalVolumesForGridView(selectedHd);
+            var schemaRequestOptions = new ImageSchemaRequestDTO();
+            schemaRequestOptions.image = null;
+            schemaRequestOptions.imageProfile = ImageProfile;
+            schemaRequestOptions.schemaType = "upload";
+            gv.DataSource = Call.ImageSchemaApi.GetLogicalVolumes(schemaRequestOptions,selectedHd);
             gv.DataBind();
             btn.Text = "-";
         }
@@ -133,7 +144,11 @@ public partial class views_images_profiles_upload : Images
 
     protected void PopulateHardDrives()
     {
-        gvHDs.DataSource = new ImageSchema(ImageProfile,"upload").GetHardDrivesForGridView();
+        var schemaRequestOptions = new ImageSchemaRequestDTO();
+        schemaRequestOptions.image = null;
+        schemaRequestOptions.imageProfile = ImageProfile;
+        schemaRequestOptions.schemaType = "upload";
+        gvHDs.DataSource = Call.ImageSchemaApi.GetHardDrives(schemaRequestOptions);
         gvHDs.DataBind();
     }
 
@@ -179,7 +194,11 @@ public partial class views_images_profiles_upload : Images
 
     protected string SetCustomUploadSchema()
     {
-        var schema = new BLL.ImageSchema(ImageProfile,"upload").GetImageSchema();
+        var schemaRequestOptions = new ImageSchemaRequestDTO();
+        schemaRequestOptions.image = null;
+        schemaRequestOptions.imageProfile = ImageProfile;
+        schemaRequestOptions.schemaType = "upload";
+        var schema = Call.ImageSchemaApi.GetSchema(schemaRequestOptions);
 
         var rowCounter = 0;
         foreach (GridViewRow row in gvHDs.Rows)

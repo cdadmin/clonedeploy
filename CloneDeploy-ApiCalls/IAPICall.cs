@@ -9,6 +9,7 @@ namespace CloneDeploy_ApiCalls
         ComputerAPI ComputerApi { get; }
         ComputerLogAPI ComputerLogApi { get; }
         ComputerMunkiAPI ComputerMunkiApi { get; }
+        GroupMunkiAPI GroupMunkiApi { get; }
         DistributionPointAPI DistributionPointApi { get; }
         FilesystemAPI FilesystemApi { get; }
         GroupAPI GroupApi { get; }

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
+using CloneDeploy_ApiCalls;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 namespace views.groups
 {
@@ -20,7 +23,7 @@ namespace views.groups
                 where dataKey != null
                 select dataKey)
             {
-                if (BLL.Group.DeleteGroup(Convert.ToInt32(dataKey.Value)).Success)
+                if (Call.GroupApi.Delete(Convert.ToInt32(dataKey.Value)).Success)
                     deletedCount++;
             }
             EndUserMessage = "Deleted " + deletedCount + " Group(s)";
@@ -31,7 +34,7 @@ namespace views.groups
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
-            List<Group> listGroups = (List<Group>)gvGroups.DataSource;
+            List<GroupEntity> listGroups = (List<GroupEntity>)gvGroups.DataSource;
             switch (e.SortExpression)
             {
                 case "Name":
@@ -49,13 +52,13 @@ namespace views.groups
             gvGroups.DataBind();
             foreach (GridViewRow row in gvGroups.Rows)
             {
-                var group = new Group();
+                var group = new GroupEntity();
                 var lbl = row.FindControl("lblCount") as Label;
                 var dataKey = gvGroups.DataKeys[row.RowIndex];
                 if (dataKey != null)
-                    group = BLL.Group.GetGroup(Convert.ToInt32(dataKey.Value));              
+                    group = Call.GroupApi.Get(Convert.ToInt32(dataKey.Value));
                 if (lbl != null)
-                    lbl.Text = BLL.GroupMembership.GetGroupMemberCount(group.Id);
+                    lbl.Text = Call.GroupApi.GetMemberCount(group.Id);
             }
         }
 
@@ -67,24 +70,23 @@ namespace views.groups
 
         protected void PopulateGrid()
         {
-            var call = new APICall();
-            gvGroups.DataSource = call.GroupApi.Get(txtSearch.Text);
+            gvGroups.DataSource = Call.GroupApi.GetAll(Int32.MaxValue, txtSearch.Text);
             gvGroups.DataBind();
 
             foreach (GridViewRow row in gvGroups.Rows)
             {
-                var group = new Group();
+                var group = new GroupEntity();
                 var lbl = row.FindControl("lblCount") as Label;
                 var dataKey = gvGroups.DataKeys[row.RowIndex];
                 if (dataKey != null)
-                    group = call.GroupApi.Get(Convert.ToInt32(dataKey.Value));
+                    group = Call.GroupApi.Get(Convert.ToInt32(dataKey.Value));
                 if (lbl != null)
-                    lbl.Text = call.GroupApi.GetMemberCount(group.Id).Value;
+                    lbl.Text = Call.GroupApi.GetMemberCount(group.Id);
                 
             }
 
 
-            lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + call.GroupApi.GetCount() + " Total Group(s)";
+            lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + Call.GroupApi.GetCount() + " Total Group(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)

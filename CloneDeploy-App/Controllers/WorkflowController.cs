@@ -19,6 +19,7 @@ namespace CloneDeploy_App.Controllers
     public class WorkflowController : ApiController
     {
         [UserAuth(Permission = "Administrator")]
+        [HttpPost]
         public ApiBoolResponseDTO CreateDefaultBootMenu(BootMenuGenOptionsDTO defaultMenuOptions)
         {
            new BLL.Workflows.DefaultBootMenu(defaultMenuOptions).CreateGlobalDefaultBootMenu();
@@ -26,6 +27,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [UserAuth(Permission = "Administrator")]
+        [HttpPost]
         public ApiBoolResponseDTO GenerateLinuxIsoConfig(IsoGenOptionsDTO isoOptions)
         {
             new BLL.Workflows.IsoGen(isoOptions).Generate();
@@ -33,6 +35,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [UserAuth(Permission = "Administrator")]
+        [HttpGet]
         public ApiBoolResponseDTO CreateClobberBootMenu(int profileId, bool promptComputerName)
         {
             new BLL.Workflows.ClobberBootMenu(profileId, promptComputerName).CreatePxeBootFiles();
@@ -40,10 +43,29 @@ namespace CloneDeploy_App.Controllers
         }
 
         [UserAuth(Permission = "Administrator")]
+        [HttpGet]
         public ApiBoolResponseDTO CopyPxeBinaries()
         {
             return new ApiBoolResponseDTO() {Value = new BLL.Workflows.CopyPxeBinaries().CopyFiles()};
         }
+
+        [UserAuth(Permission = "Administrator")]
+        [HttpGet]
+        public ApiBoolResponseDTO CancelAllImagingTasks()
+        {
+            return new ApiBoolResponseDTO() { Value = BLL.Workflows.CancelAllImagingTasks.Run() };
+        }
+
+        [UserAuth(Permission = "Administrator")]
+        [HttpGet]
+        public ApiStringResponseDTO StartOnDemandMulticast(int profileId, string clientCount)
+        {
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                             .Select(c => c.Value).SingleOrDefault();
+
+            return new ApiStringResponseDTO() { Value = new BLL.Workflows.Multicast(profileId, clientCount, Convert.ToInt32(userId)).Create() };
+        }   
 
        
     }

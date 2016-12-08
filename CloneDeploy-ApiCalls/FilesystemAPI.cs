@@ -1,4 +1,5 @@
-﻿using CloneDeploy_App.DTOs;
+﻿using System.Collections.Generic;
+using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities.DTOs;
 using RestSharp;
 
@@ -46,11 +47,11 @@ namespace CloneDeploy_ApiCalls
 
         }
 
-        public string[] GetKernels()
+        public List<string> GetKernels()
         {
             _request.Method = Method.GET;
             _request.Resource = string.Format("api/{0}/GetKernels/", _resource);
-            var response = new ApiRequest().Execute<ApiStringArrResponseDTO>(_request).Value;
+            var response = new ApiRequest().Execute<List<string>>(_request);
 
             return response;
 
@@ -81,6 +82,16 @@ namespace CloneDeploy_ApiCalls
             _request.Method = Method.GET;
             _request.Resource = string.Format("api/{0}/GetScripts/", _resource);
             _request.AddParameter("type", type);
+            var response = new ApiRequest().Execute<ApiStringArrResponseDTO>(_request).Value;
+
+            return response;
+
+        }
+
+        public string[] GetThinImages()
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetThinImages/", _resource);
             var response = new ApiRequest().Execute<ApiStringArrResponseDTO>(_request).Value;
 
             return response;

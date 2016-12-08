@@ -1,11 +1,13 @@
 ﻿using System;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_groups_properties : BasePages.Groups
 {
-    private GroupProperty _groupProperty;
+    private GroupPropertyEntity _groupProperty;
     protected void Page_Load(object sender, EventArgs e)
     {
-        _groupProperty = BLL.GroupProperty.GetGroupProperty(Group.Id);
+        _groupProperty = Call.GroupApi.GetGroupProperties(Group.Id);
         if (!IsPostBack) PopulateForm();
     }
 
@@ -61,7 +63,7 @@ public partial class views_groups_properties : BasePages.Groups
     {
         RequiresAuthorizationOrManagedGroup(Authorizations.UpdateGroup, Group.Id);
 
-        var groupProperty = new GroupProperty
+        var groupProperty = new GroupPropertyEntity()
         {
             GroupId = Group.Id,
             ImageId = Convert.ToInt32(ddlComputerImage.SelectedValue),
@@ -96,13 +98,13 @@ public partial class views_groups_properties : BasePages.Groups
 
         if (_groupProperty == null)
         {      
-            BLL.GroupProperty.AddGroupProperty(groupProperty);
+            Call.GroupPropertyApi.Post(groupProperty);
             EndUserMessage = "Successfully Updated Group Properties";
         }
         else
         {
             groupProperty.Id = _groupProperty.Id;
-            BLL.GroupProperty.UpdateGroupProperty(groupProperty);
+            Call.GroupPropertyApi.Put(groupProperty.Id,groupProperty);
             EndUserMessage = "Successfully Updated Group Properties";
         }
     }
@@ -111,6 +113,6 @@ public partial class views_groups_properties : BasePages.Groups
     {
         var group = Group;
         group.SetDefaultProperties = chkDefault.Checked ? 1 : 0;
-        BLL.Group.UpdateGroup(group);
+        Call.GroupApi.Put(group.Id,group);
     }
 }

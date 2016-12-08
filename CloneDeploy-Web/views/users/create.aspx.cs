@@ -1,5 +1,7 @@
 ﻿using System;
 using BasePages;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 namespace views.users
 {
@@ -34,11 +36,11 @@ namespace views.users
                 txtUserPwdConfirm.Text = txtUserPwd.Text;
             }
 
-            var user = new CloneDeployUser
+            var user = new CloneDeployUserEntity()
             {
                 Name = txtUserName.Text,
                 Membership = ddluserMembership.Text,
-                Salt = Helpers.Utility.CreateSalt(64),
+                Salt = Utility.CreateSalt(64),
                 Email = txtEmail.Text,
                 Token = txtToken.Text,
                 NotifyLockout = chkLockout.Checked ? 1 : 0,
@@ -49,10 +51,10 @@ namespace views.users
                 UserGroupId = -1
             };
 
-            user.Password = Helpers.Utility.CreatePasswordHash(txtUserPwd.Text, user.Salt);
-            var result = BLL.User.AddUser(user);
+            user.Password = Utility.CreatePasswordHash(txtUserPwd.Text, user.Salt);
+            var result = Call.CloneDeployUserApi.Post(user);
             if (!result.Success)
-                EndUserMessage = result.Message;
+                EndUserMessage = result.ErrorMessage;
             else
             {
                 EndUserMessage = "Successfully Created User";

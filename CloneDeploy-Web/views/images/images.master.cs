@@ -1,12 +1,14 @@
 ﻿using System;
 using BasePages;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 namespace views.masters
 {
     public partial class ImageMaster : MasterBaseMaster
     {
         private Images imagesBasePage { get; set; }
-        public Image Image { get; set; }
+        public ImageEntity Image { get; set; }
 
         public void Page_Load(object sender, EventArgs e)
         {
@@ -42,15 +44,15 @@ namespace views.masters
         {
             imagesBasePage.RequiresAuthorizationOrManagedImage(Authorizations.ApproveImage,Image.Id);
             Image.Approved = 1;
-            PageBaseMaster.EndUserMessage = BLL.Image.UpdateImage(Image, Image.Name).Success
+            PageBaseMaster.EndUserMessage = imagesBasePage.Call.ImageApi.Put(Image.Id,Image).Success
                 ? "Successfully Approved Image"
                 : "Could Not Approve Image";
-            BLL.Image.SendImageApprovedEmail(Image.Id);
+            imagesBasePage.Call.ImageApi.SendImageApprovedMail(Image.Id);
         }
 
         protected void OkButton_Click(object sender, EventArgs e)
         {
-            var result = BLL.Image.DeleteImage(Image);
+            var result = imagesBasePage.Call.ImageApi.Delete(Image.Id);
             if (result.Success)
             {
                 PageBaseMaster.EndUserMessage = "Successfully Deleted Image";
@@ -58,7 +60,7 @@ namespace views.masters
             }
             else
             {
-                PageBaseMaster.EndUserMessage = result.Message;
+                PageBaseMaster.EndUserMessage = result.ErrorMessage;
             }
         }
     }

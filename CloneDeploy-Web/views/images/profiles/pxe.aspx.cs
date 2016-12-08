@@ -1,5 +1,6 @@
 ﻿using System;
 using BasePages;
+using CloneDeploy_Web;
 
 public partial class views_images_profiles_pxe : Images
 {
@@ -7,8 +8,8 @@ public partial class views_images_profiles_pxe : Images
     {
         if (!IsPostBack)
         {
-            ddlKernel.DataSource = Utility.GetKernels();
-            ddlBootImage.DataSource = Utility.GetBootImages();       
+            ddlKernel.DataSource = Call.FilesystemApi.GetKernels();
+            ddlBootImage.DataSource = Call.FilesystemApi.GetBootImages();  
             ddlKernel.DataBind();
             ddlBootImage.DataBind();
             ddlBootImage.SelectedValue = Settings.DefaultInit;
@@ -25,7 +26,7 @@ public partial class views_images_profiles_pxe : Images
         imageProfile.Kernel = ddlKernel.Text;
         imageProfile.BootImage = ddlBootImage.Text;
         imageProfile.KernelArguments = txtKernelArgs.Text;
-        var result = BLL.ImageProfile.UpdateProfile(imageProfile);
-        EndUserMessage = result.Success ? "Successfully Updated Image Profile" : result.Message;
+        var result = Call.ImageProfileApi.Put(imageProfile.Id,imageProfile);
+        EndUserMessage = result.Success ? "Successfully Updated Image Profile" : result.ErrorMessage;
     }
 }

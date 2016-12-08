@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using BasePages;
+using CloneDeploy_Web;
 
 namespace views.images
 {
@@ -18,9 +19,9 @@ namespace views.images
             var csvFilePath = Server.MapPath("~") + Path.DirectorySeparatorChar + "private" + Path.DirectorySeparatorChar +
                               "imports" + Path.DirectorySeparatorChar + "images.csv";
             FileUpload.SaveAs(csvFilePath);
-            new FileOps().SetUnixPermissions(csvFilePath);
-            var successCount = BLL.Image.ImportCsv(csvFilePath);
-            EndUserMessage = "Successfully Imported " + successCount + " Images";
+            Call.FilesystemApi.SetUnixPermissions(csvFilePath);
+            //var successCount = BLL.Image.ImportCsv(csvFilePath);
+            //EndUserMessage = "Successfully Imported " + successCount + " Images";
 
         }       
     }

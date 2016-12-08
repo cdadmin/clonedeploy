@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web;
 
 public partial class views_users_addmembers : BasePages.Users
 {
@@ -16,9 +17,9 @@ public partial class views_users_addmembers : BasePages.Users
 
     protected void PopulateGrid()
     {
-        gvUsers.DataSource = BLL.User.SearchUsers(txtSearch.Text);
+        gvUsers.DataSource = Call.CloneDeployUserApi.GetAll(Int32.MaxValue,txtSearch.Text);
         gvUsers.DataBind();
-        lblTotal.Text = gvUsers.Rows.Count + " Result(s) / " + BLL.User.TotalCount() + " Total User(s)";
+        lblTotal.Text = gvUsers.Rows.Count + " Result(s) / " + Call.CloneDeployUserApi.GetCount() + " Total User(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)
@@ -39,7 +40,7 @@ public partial class views_users_addmembers : BasePages.Users
         //Don't remove all administrators
         if (CloneDeployUserGroup.Membership == "User")
         {
-            var existingAdminCount = BLL.User.GetAdminCount();
+            var existingAdminCount = Call.CloneDeployUserApi.GetAdminCount();
             var selectedAdminCount = 0;
             foreach (GridViewRow row in gvUsers.Rows)
             {
@@ -48,7 +49,7 @@ public partial class views_users_addmembers : BasePages.Users
                 var dataKey = gvUsers.DataKeys[row.RowIndex];
                 if (dataKey != null)
                 {
-                    var user = BLL.User.GetUser(Convert.ToInt32(dataKey.Value));
+                    var user = Call.CloneDeployUserApi.Get(Convert.ToInt32(dataKey.Value));
                     if (user.Membership == "Administrator")
                         selectedAdminCount++;
                 }
@@ -68,9 +69,9 @@ public partial class views_users_addmembers : BasePages.Users
             var dataKey = gvUsers.DataKeys[row.RowIndex];
             if (dataKey != null)
             {
-                var user = BLL.User.GetUser(Convert.ToInt32(dataKey.Value));
+                var user = Call.CloneDeployUserApi.Get(Convert.ToInt32(dataKey.Value));
 
-                BLL.UserGroup.AddNewGroupMember(CloneDeployUserGroup, user);
+                Call.UserGroupApi.AddNewMember(CloneDeployUserGroup,user);
                 successCount++;
 
             }

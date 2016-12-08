@@ -55,9 +55,9 @@ namespace CloneDeploy_App.Controllers
         }
 
         [UserAuth(Permission = "Administrator")]
-        public ApiStringResponseDTO GetAdminCount()
+        public ApiIntResponseDTO GetAdminCount()
         {
-            return new ApiStringResponseDTO() {Value = _userServices.GetAdminCount().ToString()};
+            return new ApiIntResponseDTO() {Value = _userServices.GetAdminCount()};
         }
 
         [UserAuth(Permission = "Administrator")]
@@ -84,6 +84,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [UserAuth(Permission = "Administrator")]
+        [HttpGet]
         public ApiBoolResponseDTO IsAdmin(int id)
         {
             return new ApiBoolResponseDTO() {Value = _userServices.IsAdmin(id)};

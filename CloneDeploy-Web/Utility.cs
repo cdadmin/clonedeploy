@@ -24,6 +24,23 @@ namespace CloneDeploy_Web
         {
             return Guid.NewGuid().ToString();
         }
+
+        public static string CreatePasswordHash(string pwd, string salt)
+        {
+            var saltAndPwd = string.Concat(pwd, salt);
+            HashAlgorithm hash = new SHA256Managed();
+            byte[] plainTextBytes = System.Text.Encoding.UTF8.GetBytes(saltAndPwd);
+            byte[] hashBytes = hash.ComputeHash(plainTextBytes);
+            return Convert.ToBase64String(hashBytes);
+        }
+
+        public static string CreateSalt(int byteSize)
+        {
+            var rng = new RNGCryptoServiceProvider();
+            var buff = new byte[byteSize];
+            rng.GetBytes(buff);
+            return Convert.ToBase64String(buff);
+        }
        
     }
 }

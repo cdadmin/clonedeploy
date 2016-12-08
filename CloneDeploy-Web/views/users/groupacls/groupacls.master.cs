@@ -1,10 +1,11 @@
 ﻿using System;
 using BasePages;
+using CloneDeploy_Entities;
 
 public partial class views_users_groupacls_groupacls : BasePages.MasterBaseMaster
 {
     private BasePages.Users userBasePage { get; set; }
-    public CloneDeployUserGroup CloneDeployUserGroup { get; set; }
+    public CloneDeployUserGroupEntity CloneDeployUserGroup { get; set; }
 
     protected void Page_Load(object sender, EventArgs e)
     {

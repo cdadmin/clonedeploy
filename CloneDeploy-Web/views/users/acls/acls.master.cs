@@ -1,10 +1,11 @@
 ﻿using System;
 using BasePages;
+using CloneDeploy_Entities;
 
 public partial class views_users_acls_acls : BasePages.MasterBaseMaster
 {
     private BasePages.Users userBasePage { get; set; }
-    public CloneDeployUser CloneDeployUser { get; set; }
+    public CloneDeployUserEntity CloneDeployUser { get; set; }
 
     protected void Page_Load(object sender, EventArgs e)
     {

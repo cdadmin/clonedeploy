@@ -19,7 +19,7 @@ namespace CloneDeploy_ApiCalls
 
         public ImageSchemaGridView GetSchema(ImageSchemaRequestDTO schemaRequest)
         {
-            _request.Method = Method.GET;
+            _request.Method = Method.POST;
             _request.Resource = string.Format("api/{0}/GetSchema", _resource);
             _request.AddJsonBody(schemaRequest);
             return new ApiRequest().Execute<ImageSchemaGridView>(_request);
@@ -27,25 +27,25 @@ namespace CloneDeploy_ApiCalls
 
         public IEnumerable<HardDrive> GetHardDrives(ImageSchemaRequestDTO schemaRequest)
         {
-            _request.Method = Method.GET;
+            _request.Method = Method.POST;
             _request.Resource = string.Format("api/{0}/GetHardDrives", _resource);
             _request.AddJsonBody(schemaRequest);
             return new ApiRequest().Execute<List<HardDrive>>(_request);
         }
 
 
-        public IEnumerable<Partition> GetPartitions(ImageSchemaRequestDTO schemaRequest, string selectedHd)
+        public List<Partition> GetPartitions(ImageSchemaRequestDTO schemaRequest, string selectedHd)
         {
-            _request.Method = Method.GET;
+            _request.Method = Method.POST;
             _request.Resource = string.Format("api/{0}/GetPartitions", _resource);
             _request.AddJsonBody(schemaRequest);
             _request.AddParameter("selectedHd", selectedHd);
             return new ApiRequest().Execute<List<Partition>>(_request);
         }
 
-        public IEnumerable<LogicalVolume> GetLogicalVolumes(ImageSchemaRequestDTO schemaRequest, string selectedHd)
+        public List<LogicalVolume> GetLogicalVolumes(ImageSchemaRequestDTO schemaRequest, string selectedHd)
         {
-            _request.Method = Method.GET;
+            _request.Method = Method.POST;
             _request.Resource = string.Format("api/{0}/GetLogicalVolumes", _resource);
             _request.AddJsonBody(schemaRequest);
             _request.AddParameter("selectedHd", selectedHd);

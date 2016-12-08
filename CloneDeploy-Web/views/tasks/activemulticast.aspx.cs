@@ -14,9 +14,9 @@ public partial class views_tasks_activemulticast : BasePages.Tasks
 
     private void PopulateGrid()
     {
-        gvMcTasks.DataSource = BLL.ActiveMulticastSession.GetAllMulticastSessions(CloneDeployCurrentUser.Id);
+        gvMcTasks.DataSource = Call.ActiveMulticastSessionApi.GetAll(Int32.MaxValue,"");
         gvMcTasks.DataBind();
-        lblTotal.Text = BLL.ActiveMulticastSession.ActiveCount(CloneDeployCurrentUser.Id) + " Total Multicast(s)";
+        lblTotal.Text = Call.ActiveMulticastSessionApi.GetCount() + " Total Multicast(s)";
         GetMcInfo();
     }
 
@@ -35,7 +35,7 @@ public partial class views_tasks_activemulticast : BasePages.Tasks
             var dataKey = gvMcTasks.DataKeys[gvRow.RowIndex];
             if (dataKey != null)
             {
-                BLL.ActiveMulticastSession.Delete(Convert.ToInt32(dataKey.Value));
+                Call.ActiveMulticastSessionApi.Delete(Convert.ToInt32(dataKey.Value));
             }
         }
         PopulateGrid();
@@ -62,7 +62,7 @@ public partial class views_tasks_activemulticast : BasePages.Tasks
                 var dataKey = gvMcTasks.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var table = BLL.ActiveImagingTask.MulticastMemberStatus(Convert.ToInt32(dataKey.Value));
+                    var table = Call.ActiveMulticastSessionApi.GetMemberStatus(Convert.ToInt32(dataKey.Value));
                     gv.DataSource = table;
                     gv.DataBind();
                 }
@@ -89,7 +89,7 @@ public partial class views_tasks_activemulticast : BasePages.Tasks
             }
             try
             {
-                var listActive = BLL.ActiveImagingTask.MulticastProgress(mcId);
+                var listActive = Call.ActiveMulticastSessionApi.GetProgress(mcId);
                 var lblPartition = row.FindControl("lblPartition") as Label;
                 var lblElapsed = row.FindControl("lblElapsed") as Label;
                 var lblRemaining = row.FindControl("lblRemaining") as Label;

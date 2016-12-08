@@ -2,7 +2,7 @@
 using System.IO;
 using System.Net;
 using BasePages;
-using CloneDeploy_App.Helpers;
+
 using CloneDeploy_Web;
 
 public partial class views_admin_bootmenu_editor : Admin

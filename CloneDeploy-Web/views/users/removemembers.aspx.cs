@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web;
 
 public partial class views_users_removemembers : BasePages.Users
 {
@@ -16,9 +17,9 @@ public partial class views_users_removemembers : BasePages.Users
 
     protected void PopulateGrid()
     {
-        gvUsers.DataSource = BLL.UserGroup.GetGroupMembers(CloneDeployUserGroup.Id,txtSearch.Text);
+        gvUsers.DataSource = Call.UserGroupApi.GetGroupMembers(CloneDeployUserGroup.Id,txtSearch.Text);
         gvUsers.DataBind();
-        lblTotal.Text = gvUsers.Rows.Count + " Result(s) / " + BLL.UserGroup.MemberCount(CloneDeployUserGroup.Id) + " Total User(s)";
+        lblTotal.Text = gvUsers.Rows.Count + " Result(s) / " + Call.UserGroupApi.GetMemberCount(CloneDeployUserGroup.Id) + " Total User(s)";
     }
 
     protected void search_Changed(object sender, EventArgs e)
@@ -38,10 +39,10 @@ public partial class views_users_removemembers : BasePages.Users
             var dataKey = gvUsers.DataKeys[row.RowIndex];
             if (dataKey != null)
             {
-                var user = BLL.User.GetUser(Convert.ToInt32(dataKey.Value));
+                var user = Call.CloneDeployUserApi.Get(Convert.ToInt32(dataKey.Value));
                 user.UserGroupId = -1;
 
-                if (BLL.User.UpdateUser(user).Success)
+                if (Call.CloneDeployUserApi.Put(user.Id,user).Success)
                     successCount++;
             }
         }

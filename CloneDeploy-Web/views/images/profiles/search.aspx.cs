@@ -4,6 +4,9 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BasePages;
+using CloneDeploy_App.DTOs;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 
 public partial class views_images_profiles_search : Images
@@ -25,7 +28,7 @@ public partial class views_images_profiles_search : Images
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvProfiles.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            if (BLL.ImageProfile.DeleteProfile(Convert.ToInt32(dataKey.Value)))
+            if (Call.ImageProfileApi.Delete(Convert.ToInt32(dataKey.Value)).Success)
                 deleteCounter++;
         }
         EndUserMessage = "Successfully Deleted " + deleteCounter + " Profiles";
@@ -43,7 +46,7 @@ public partial class views_images_profiles_search : Images
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        var listProfiles = (List<ImageProfile>)gvProfiles.DataSource;
+        var listProfiles = (List<ImageProfileEntity>)gvProfiles.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -59,7 +62,7 @@ public partial class views_images_profiles_search : Images
 
     protected void PopulateGrid()
     {
-        gvProfiles.DataSource = BLL.ImageProfile.SearchProfiles(Image.Id);
+        gvProfiles.DataSource = Call.ImageApi.GetImageProfiles(Image.Id);
         gvProfiles.DataBind();
             
         foreach (GridViewRow row in gvProfiles.Rows)
@@ -69,7 +72,7 @@ public partial class views_images_profiles_search : Images
             {
                 var dataKey = gvProfiles.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
-                lblClient.Text = BLL.ImageSchema.MinimumClientSizeForGridView(Convert.ToInt32(dataKey.Value), 0);
+                lblClient.Text = Call.ImageProfileApi.GetMinimumClientSize(Convert.ToInt32(dataKey.Value), 0);
             }
         }
 
@@ -103,8 +106,11 @@ public partial class views_images_profiles_search : Images
             var td = row.FindControl("tdHds");
             td.Visible = true;
             gvHDs.Visible = true;
-
-            gvHDs.DataSource = new BLL.ImageSchema(null, "deploy", BLL.Image.GetImage(Image.Id)).GetHardDrivesForGridView();
+            var schemaRequestOptions = new ImageSchemaRequestDTO();
+            schemaRequestOptions.image = Call.ImageApi.Get(Image.Id);
+            schemaRequestOptions.imageProfile = null;
+            schemaRequestOptions.schemaType = "deploy";
+            gvHDs.DataSource = Call.ImageSchemaApi.GetHardDrives(schemaRequestOptions);
             gvHDs.DataBind();
             btn.Text = "-";
         }
@@ -124,7 +130,7 @@ public partial class views_images_profiles_search : Images
             {
                 var dataKey = gvProfiles.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
-                lblClient.Text = BLL.ImageSchema.MinimumClientSizeForGridView(Convert.ToInt32(dataKey.Value), selectedHd);
+                lblClient.Text = Call.ImageProfileApi.GetMinimumClientSize(Convert.ToInt32(dataKey.Value), selectedHd);
             }
         }
     }
@@ -138,8 +144,7 @@ public partial class views_images_profiles_search : Images
             var dataKey = gvProfiles.DataKeys[gvRow.RowIndex];
             if (dataKey != null)
             {
-                var imageProfile = BLL.ImageProfile.ReadProfile(Convert.ToInt32(dataKey.Value));
-                BLL.ImageProfile.CloneProfile(imageProfile);
+                Call.ImageProfileApi.Clone(Convert.ToInt32(dataKey.Value));
             }
         }
         PopulateGrid();

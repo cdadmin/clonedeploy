@@ -1,5 +1,6 @@
 ﻿using System;
 using BasePages;
+using CloneDeploy_Web;
 
 public partial class views_images_profiles_create : Images
 {
@@ -11,11 +12,11 @@ public partial class views_images_profiles_create : Images
     protected void buttonCreateProfile_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.CreateProfile);
-        var defaultProfile = BLL.ImageProfile.SeedDefaultImageProfile(Image);
+        var defaultProfile = Call.ImageApi.SeedDefaultProfile(Image.Id);
         defaultProfile.ImageId = Image.Id;
         defaultProfile.Name = txtProfileName.Text;
         defaultProfile.Description = txtProfileDesc.Text;
-        var result = BLL.ImageProfile.AddProfile(defaultProfile);
+        var result = Call.ImageProfileApi.Post(defaultProfile);
         if (result.Success)
         {
             EndUserMessage = "Successfully Created Image Profile";
@@ -24,7 +25,7 @@ public partial class views_images_profiles_create : Images
         }
         else
         {
-            EndUserMessage = result.Message;
+            EndUserMessage = result.ErrorMessage;
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.UI.WebControls;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_users_groupacls_groupmanagement : BasePages.Users
 {
@@ -17,9 +19,9 @@ public partial class views_users_groupacls_groupmanagement : BasePages.Users
 
     protected void PopulateForm()
     {
-        var listOfGroups = BLL.UserGroupGroupManagement.Get(CloneDeployUserGroup.Id);
+        var listOfGroups = Call.UserGroupApi.GetGroupManagements(CloneDeployUserGroup.Id);
 
-        gvGroups.DataSource = BLL.Group.SearchGroups();
+        gvGroups.DataSource = Call.GroupApi.GetAll(Int32.MaxValue,"");
         gvGroups.DataBind();
 
         foreach (GridViewRow row in gvGroups.Rows)
@@ -39,14 +41,14 @@ public partial class views_users_groupacls_groupmanagement : BasePages.Users
 
     protected void buttonUpdate_OnClick(object sender, EventArgs e)
     {
-        var list = new List<UserGroupGroupManagement>();
+        var list = new List<UserGroupGroupManagementEntity>();
         foreach (GridViewRow row in gvGroups.Rows)
         {
             var cb = (CheckBox)row.FindControl("chkSelector");
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvGroups.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            var userGroupManagement = new UserGroupGroupManagement
+            var userGroupManagement = new UserGroupGroupManagementEntity()
             {
                 UserGroupId = CloneDeployUserGroup.Id,
                 GroupId = Convert.ToInt32(dataKey.Value)
@@ -55,9 +57,9 @@ public partial class views_users_groupacls_groupmanagement : BasePages.Users
 
         }
 
-        BLL.UserGroupGroupManagement.DeleteUserGroupGroupManagements(CloneDeployUserGroup.Id);
-        BLL.UserGroupGroupManagement.AddUserGroupGroupManagements(list);
-        BLL.UserGroup.UpdateAllGroupMembersGroupMgmt(CloneDeployUserGroup);
+        Call.UserGroupApi.DeleteGroupManagements(CloneDeployUserGroup.Id);
+        Call.UserGroupGroupManagementApi.Post(list);
+        Call.UserGroupApi.UpdateMemberGroups(CloneDeployUserGroup.Id);
         EndUserMessage = "Updated Group Management";
 
     }

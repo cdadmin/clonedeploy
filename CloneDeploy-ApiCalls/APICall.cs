@@ -29,6 +29,11 @@ namespace CloneDeploy_ApiCalls
             get { return new ComputerMunkiAPI("ComputerMunki"); }
         }
 
+        public GroupMunkiAPI GroupMunkiApi
+        {
+            get { return new GroupMunkiAPI("GroupMunki"); }
+        }
+
         public DistributionPointAPI DistributionPointApi
         {
             get { return new DistributionPointAPI("DistributionPoint"); }

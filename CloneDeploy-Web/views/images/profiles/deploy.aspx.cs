@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BasePages;
+using CloneDeploy_App.DTOs;
+using CloneDeploy_Entities.DTOs.ImageSchemaBE;
+using CloneDeploy_Web;
 using Newtonsoft.Json;
+using VolumeGroup = CloneDeploy_Entities.DTOs.ImageSchemaFE.VolumeGroup;
 
 public partial class views_images_profiles_deploy : Images
 {
     private DropDownList ddlObject;
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Image.Environment == "macOS")
@@ -79,7 +85,7 @@ public partial class views_images_profiles_deploy : Images
         imageProfile.ForceDynamicPartitions = Convert.ToInt16(chkDownForceDynamic.Checked);
         imageProfile.MunkiAuthUsername = txtMunkiUsername.Text;
         if(!string.IsNullOrEmpty(txtMunkiPassword.Text))
-            imageProfile.MunkiAuthPassword = new Helpers.Encryption().EncryptText(txtMunkiPassword.Text);
+            imageProfile.MunkiAuthPassword = new Encryption().EncryptText(txtMunkiPassword.Text);
 
         switch (ddlObject.Text)
         {
@@ -117,7 +123,7 @@ public partial class views_images_profiles_deploy : Images
         var isSchemaError = false;
         if (imageProfile.PartitionMethod == "Standard" && Image.Environment == "winpe")
         {
-            var customSchema = JsonConvert.DeserializeObject<CloneDeploy_Web.Models.ImageSchema.ImageSchema>(imageProfile.CustomSchema);
+            var customSchema = JsonConvert.DeserializeObject<ImageSchema>(imageProfile.CustomSchema);
             
             foreach (var hd in customSchema.HardDrives)
             {
@@ -143,8 +149,8 @@ public partial class views_images_profiles_deploy : Images
 
         if (!isSchemaError)
         {
-            var result = BLL.ImageProfile.UpdateProfile(imageProfile);
-            EndUserMessage = result.Success ? "Successfully Updated Image Profile" : result.Message;
+            var result = Call.ImageProfileApi.Put(imageProfile.Id,imageProfile);
+            EndUserMessage = result.Success ? "Successfully Updated Image Profile" : result.ErrorMessage;
         }
     }
 
@@ -210,8 +216,11 @@ public partial class views_images_profiles_deploy : Images
         ViewState["selectedHD"] = gvRow.RowIndex.ToString();
         ViewState["selectedHDName"] = selectedHd;
 
-
-        var partitions = new ImageSchema(ImageProfile,"deploy").GetPartitionsForGridView(selectedHd);
+        var schemaRequestOptions = new ImageSchemaRequestDTO();
+        schemaRequestOptions.image = null;
+        schemaRequestOptions.imageProfile = ImageProfile;
+        schemaRequestOptions.schemaType = "deploy";
+        var partitions = Call.ImageSchemaApi.GetPartitions(schemaRequestOptions,selectedHd);
         var btn = (LinkButton)gvRow.FindControl("btnHd");
         if (gv.Visible == false)
         {
@@ -291,7 +300,11 @@ public partial class views_images_profiles_deploy : Images
 
             var td = gvRow.FindControl("tdLVS");
             td.Visible = true;
-            gv.DataSource = new ImageSchema(ImageProfile,"deploy").GetLogicalVolumesForGridView(selectedHd);
+            var schemaRequestOptions = new ImageSchemaRequestDTO();
+            schemaRequestOptions.image = null;
+            schemaRequestOptions.imageProfile = ImageProfile;
+            schemaRequestOptions.schemaType = "deploy";
+            gv.DataSource = Call.ImageSchemaApi.GetLogicalVolumes(schemaRequestOptions, selectedHd);
             gv.DataBind();
             btn.Text = "-";
         }
@@ -325,7 +338,12 @@ public partial class views_images_profiles_deploy : Images
 
     protected void PopulateHardDrives()
     {
-        gvHDs.DataSource = new ImageSchema(ImageProfile,"deploy").GetHardDrivesForGridView();
+        var schemaRequestOptions = new ImageSchemaRequestDTO();
+        schemaRequestOptions.image = null;
+        schemaRequestOptions.imageProfile = ImageProfile;
+        schemaRequestOptions.schemaType = "deploy";
+
+        gvHDs.DataSource = Call.ImageSchemaApi.GetHardDrives(schemaRequestOptions);
         gvHDs.DataBind();
     }
 
@@ -357,7 +375,12 @@ public partial class views_images_profiles_deploy : Images
 
     protected string SetCustomSchema()
     {
-        var schema = new BLL.ImageSchema(ImageProfile,"deploy").GetImageSchema();
+        var schemaRequestOptions = new ImageSchemaRequestDTO();
+        schemaRequestOptions.image = null;
+        schemaRequestOptions.imageProfile = ImageProfile;
+        schemaRequestOptions.schemaType = "deploy";
+
+        var schema = Call.ImageSchemaApi.GetSchema(schemaRequestOptions);
 
         var rowCounter = 0;
         foreach (GridViewRow row in gvHDs.Rows)

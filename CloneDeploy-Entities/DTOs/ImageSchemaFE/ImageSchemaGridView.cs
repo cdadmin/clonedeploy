@@ -1,7 +1,9 @@
-﻿namespace CloneDeploy_Entities.DTOs.ImageSchemaFE
+﻿using System.Collections.Generic;
+
+namespace CloneDeploy_Entities.DTOs.ImageSchemaFE
 {
     public class ImageSchemaGridView
     {
-        public HardDrive[] HardDrives { get; set; }
+        public List<HardDrive> HardDrives { get; set; }
     }
 }

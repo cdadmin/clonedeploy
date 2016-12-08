@@ -602,7 +602,7 @@ namespace CloneDeploy_Services
             computerServices.UpdateComputer(computer);
 
             if (enable)
-                CreateBootFiles(computer);
+                CreateBootFiles(computer.Id);
 
             return true;
         }

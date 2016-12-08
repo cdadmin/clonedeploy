@@ -9,13 +9,13 @@ public partial class views_tasks_activeunicast : BasePages.Tasks
         if (IsPostBack) return;
         ViewState["clickTracker"] = "1";
         PopulateGrid();
-        lblTotal.Text = BLL.ActiveImagingTask.ActiveUnicastCount(CloneDeployCurrentUser.Id,"unicast") + " Total Unicast(s)";
+        lblTotal.Text = Call.ActiveImagingTaskApi.GetActiveUnicastCount("unicast") + " Total Unicast(s)";
 
     }
     protected void Timer_Tick(object sender, EventArgs e)
     {
         PopulateGrid();
-        lblTotal.Text = BLL.ActiveImagingTask.ActiveUnicastCount(CloneDeployCurrentUser.Id,"unicast") + " Total Unicast(s)";
+        lblTotal.Text = Call.ActiveImagingTaskApi.GetActiveUnicastCount("unicast") + " Total Unicast(s)";
         UpdatePanel1.Update();
     }
 
@@ -28,7 +28,7 @@ public partial class views_tasks_activeunicast : BasePages.Tasks
             var dataKey = gvUcTasks.DataKeys[gvRow.RowIndex];
             if (dataKey != null)
 
-                BLL.ActiveImagingTask.DeleteActiveImagingTask(Convert.ToInt32(dataKey.Value));
+               Call.ActiveImagingTaskApi.Delete(Convert.ToInt32(dataKey.Value));
 
         }
         PopulateGrid();
@@ -36,7 +36,7 @@ public partial class views_tasks_activeunicast : BasePages.Tasks
 
     private void PopulateGrid()
     {
-        gvUcTasks.DataSource = BLL.ActiveImagingTask.ReadUnicasts(CloneDeployCurrentUser.Id,"unicast");
+        gvUcTasks.DataSource = Call.ActiveImagingTaskApi.GetUnicasts("unicast");
         gvUcTasks.DataBind();
     }
 }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_images_profiles_scripts : Images
 {
@@ -16,7 +18,7 @@ public partial class views_images_profiles_scripts : Images
 
     protected void PopulateProfileScripts()
     {
-        var profileScripts = BLL.ImageProfileScript.SearchImageProfileScripts(ImageProfile.Id);
+        var profileScripts = Call.ImageProfileApi.GetScripts(ImageProfile.Id);
         foreach (GridViewRow row in gvScripts.Rows)
         {
             var pre = (CheckBox)row.FindControl("chkPre");
@@ -39,7 +41,7 @@ public partial class views_images_profiles_scripts : Images
 
     protected void PopulateGrid()
     {
-        gvScripts.DataSource = BLL.Script.SearchScripts("");
+        gvScripts.DataSource = Call.ScriptApi.GetAll(Int32.MaxValue, "");
         gvScripts.DataBind();
         PopulateProfileScripts();
     }
@@ -48,7 +50,7 @@ public partial class views_images_profiles_scripts : Images
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<Script> listScripts = (List<Script>)gvScripts.DataSource;
+        List<ScriptEntity> listScripts = (List<ScriptEntity>)gvScripts.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -65,7 +67,7 @@ public partial class views_images_profiles_scripts : Images
     protected void btnUpdateScripts_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorizationOrManagedImage(Authorizations.UpdateProfile, Image.Id);
-        var deleteResult = BLL.ImageProfileScript.DeleteImageProfileScripts((ImageProfile.Id));
+        var deleteResult = Call.ImageProfileApi.RemoveProfileScripts(ImageProfile.Id);
         var checkedCount = 0;
         foreach (GridViewRow row in gvScripts.Rows)
         {
@@ -78,7 +80,7 @@ public partial class views_images_profiles_scripts : Images
             var dataKey = gvScripts.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
            
-            var profileScript = new ImageProfileScript()
+            var profileScript = new ImageProfileScriptEntity()
             {
                 ScriptId = Convert.ToInt32(dataKey.Value),
                 ProfileId = ImageProfile.Id,
@@ -89,13 +91,13 @@ public partial class views_images_profiles_scripts : Images
             if(txtPriority != null)
                 if (!string.IsNullOrEmpty(txtPriority.Text))
                     profileScript.Priority = Convert.ToInt32(txtPriority.Text);
-            EndUserMessage = BLL.ImageProfileScript.AddImageProfileScript(profileScript)
+            EndUserMessage = Call.ImageProfileScriptApi.Post(profileScript).Success
                 ? "Successfully Updated Image Profile"
                 : "Could Not Update Image Profile";
         }
         if (checkedCount == 0)
         {
-            EndUserMessage = deleteResult ? "Successfully Updated Image Profile" : "Could Not Update Image Profile";
+            EndUserMessage = deleteResult.Success ? "Successfully Updated Image Profile" : "Could Not Update Image Profile";
         }
     }
 }

@@ -1,13 +1,15 @@
 ﻿using System;
 using BasePages;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 namespace views.masters
 {
     public partial class UserMaster : BasePages.MasterBaseMaster
     {
         private Users UsersBasePage { get; set; }
-        public CloneDeployUser CloneDeployUser { get; set; }
-        public CloneDeployUserGroup CloneDeployUserGroup { get; set; }
+        public CloneDeployUserEntity CloneDeployUser { get; set; }
+        public CloneDeployUserGroupEntity CloneDeployUserGroup { get; set; }
         protected void Page_Load(object sender, EventArgs e)
         {
             UsersBasePage = (Page as Users);
@@ -51,7 +53,7 @@ namespace views.masters
         protected void btnDelete_Click(object sender, EventArgs e)
         {
             UsersBasePage.RequiresAuthorization(Authorizations.Administrator);
-            if (BLL.User.GetAdminCount() == 1 && CloneDeployUser.Membership == "Administrator")
+            if (UsersBasePage.Call.CloneDeployUserApi.GetAdminCount() == 1 && CloneDeployUser.Membership == "Administrator")
             {
                 PageBaseMaster.EndUserMessage = "There Must Be At Least One Administrator";
             }
@@ -80,7 +82,7 @@ namespace views.masters
             if (CloneDeployUser != null)
             {
 
-                if (BLL.User.DeleteUser(CloneDeployUser.Id))
+                if (UsersBasePage.Call.CloneDeployUserApi.Delete(CloneDeployUser.Id).Success)
                 {
                     PageBaseMaster.EndUserMessage = "Successfully Deleted User";
                     Response.Redirect("~/views/users/search.aspx");
@@ -92,7 +94,7 @@ namespace views.masters
             }
             else if (CloneDeployUserGroup != null)
             {
-                if (BLL.UserGroup.DeleteUserGroup(CloneDeployUserGroup.Id))
+                if (UsersBasePage.Call.UserGroupApi.Delete(CloneDeployUserGroup.Id).Success)
                 {
                     PageBaseMaster.EndUserMessage = "Successfully Deleted User Group";
                     Response.Redirect("~/views/users/searchgroup.aspx");

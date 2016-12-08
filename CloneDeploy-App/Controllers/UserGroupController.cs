@@ -93,6 +93,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [UserAuth(Permission = "Administrator")]
+        [HttpGet]
         public ApiBoolResponseDTO UpdateMemberAcls(int id)
         {
             return new ApiBoolResponseDTO() {Value = _userGroupServices.UpdateAllGroupMembersAcls(id)};
@@ -100,6 +101,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [UserAuth(Permission = "Administrator")]
+        [HttpGet]
         public ApiBoolResponseDTO UpdateMemberGroups(int id)
         {
             return new ApiBoolResponseDTO() {Value = _userGroupServices.UpdateAllGroupMembersGroupMgmt(id)};
@@ -107,6 +109,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [UserAuth(Permission = "Administrator")]
+        [HttpGet]
         public ApiBoolResponseDTO UpdateMemberImages(int id)
         {
             return new ApiBoolResponseDTO() {Value = _userGroupServices.UpdateAllGroupMembersImageMgmt(id)};
@@ -114,6 +117,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [UserAuth(Permission = "Administrator")]
+        [HttpPost]
         public ApiBoolResponseDTO AddNewMember(CloneDeployUserGroupEntity userGroup, CloneDeployUserEntity user)
         {
             return new ApiBoolResponseDTO() {Value = _userGroupServices.AddNewGroupMember(userGroup, user)};

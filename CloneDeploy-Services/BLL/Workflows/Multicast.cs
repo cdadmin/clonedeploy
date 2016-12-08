@@ -33,15 +33,15 @@ namespace CloneDeploy_App.BLL.Workflows
         }
 
         //Constructor For Starting Multicast For On Demand
-        public Multicast(ImageProfileEntity imageProfile, string clientCount, int userId)
+        public Multicast(int imageProfileId, string clientCount, int userId)
         {
             _multicastSession = new ActiveMulticastSessionEntity();
             _isOnDemand = true;
-            _imageProfile = imageProfile;
+            _imageProfile = new ImageProfileServices().ReadProfile(imageProfileId);
             _clientCount = clientCount;
             _group = new GroupEntity { ImageProfileId = _imageProfile.Id };
             _userId = userId;
-            _multicastSession.ImageProfileId = imageProfile.Id;
+            _multicastSession.ImageProfileId = _imageProfile.Id;
         }
 
         public string Create()

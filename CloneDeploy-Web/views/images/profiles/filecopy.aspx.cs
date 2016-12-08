@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_images_profiles_filecopy : Images
 {
@@ -15,7 +17,7 @@ public partial class views_images_profiles_filecopy : Images
 
     protected void PopulateProfileScripts()
     {
-        var profileFiles = BLL.ImageProfileFileFolder.SearchImageProfileFileFolders(ImageProfile.Id);
+        var profileFiles = Call.ImageProfileApi.GetFileFolders(ImageProfile.Id);
         foreach (GridViewRow row in gvFile.Rows)
         {
             var enabled = (CheckBox)row.FindControl("chkEnabled");
@@ -45,7 +47,7 @@ public partial class views_images_profiles_filecopy : Images
 
     protected void PopulateGrid()
     {
-        gvFile.DataSource = BLL.FileFolder.SearchFileFolders();
+        gvFile.DataSource = Call.FileFolderApi.GetAll(Int32.MaxValue, "");
         gvFile.DataBind();
         if (Image.Environment == "macOS")
         {
@@ -70,7 +72,7 @@ public partial class views_images_profiles_filecopy : Images
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<FileFolder> listFilesFolders = (List<FileFolder>)gvFile.DataSource;
+        List<FileFolderEntity> listFilesFolders = (List<FileFolderEntity>)gvFile.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -87,7 +89,7 @@ public partial class views_images_profiles_filecopy : Images
     protected void btnUpdateFile_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorizationOrManagedImage(Authorizations.UpdateProfile, Image.Id);
-        var deleteResult = BLL.ImageProfileFileFolder.DeleteImageProfileFileFolders(ImageProfile.Id);
+        var deleteResult = Call.ImageProfileApi.RemoveProfileFileFolders(ImageProfile.Id);
         var checkedCount = 0;
         foreach (GridViewRow row in gvFile.Rows)
         {
@@ -98,7 +100,7 @@ public partial class views_images_profiles_filecopy : Images
             var dataKey = gvFile.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
 
-            var profileFileFolder = new ImageProfileFileFolder
+            var profileFileFolder = new ImageProfileFileFolderEntity()
             {
                 FileFolderId = Convert.ToInt32(dataKey.Value),
                 ProfileId = ImageProfile.Id,
@@ -116,11 +118,11 @@ public partial class views_images_profiles_filecopy : Images
             var ddlFolderMode = row.FindControl("ddlFolderMode") as DropDownList;
             if (ddlFolderMode != null)
                 profileFileFolder.FolderCopyType = ddlFolderMode.Text;
-            EndUserMessage = BLL.ImageProfileFileFolder.AddImageProfileFileFolder(profileFileFolder) ? "Successfully Updated Image Profile" : "Could Not Update Image Profile";
+            EndUserMessage = Call.ImageProfileFileFolderApi.Post(profileFileFolder).Success ? "Successfully Updated Image Profile" : "Could Not Update Image Profile";
         }
         if (checkedCount == 0)
         {
-            EndUserMessage = deleteResult ? "Successfully Updated Image Profile" : "Could Not Update Image Profile";
+            EndUserMessage = deleteResult.Success ? "Successfully Updated Image Profile" : "Could Not Update Image Profile";
         }
     }
 }

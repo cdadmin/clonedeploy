@@ -43,7 +43,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [TaskAuth(Permission = "ImageTaskDeploy")]
+        [Authorize]
         public IEnumerable<ActiveImagingTaskEntity> GetActiveTasks()
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;

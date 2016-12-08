@@ -1,5 +1,6 @@
 ﻿using System;
 using BasePages;
+using CloneDeploy_Web;
 
 public partial class views_images_profiles_general : Images
 {
@@ -20,7 +21,7 @@ public partial class views_images_profiles_general : Images
         var imageProfile = ImageProfile;
         imageProfile.Name = txtProfileName.Text;
         imageProfile.Description = txtProfileDesc.Text;
-        var result = BLL.ImageProfile.UpdateProfile(imageProfile);
-        EndUserMessage = result.Success ? "Successfully Updated Image Profile" : result.Message;
+        var result = Call.ImageProfileApi.Put(imageProfile.Id,imageProfile);
+        EndUserMessage = result.Success ? "Successfully Updated Image Profile" : result.ErrorMessage;
     }
 }

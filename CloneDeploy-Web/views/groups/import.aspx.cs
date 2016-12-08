@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using BasePages;
+using CloneDeploy_Web;
 
 namespace views.groups
 {
@@ -18,9 +19,9 @@ namespace views.groups
             var csvFilePath = Server.MapPath("~") + Path.DirectorySeparatorChar + "private" + Path.DirectorySeparatorChar +
                               "imports" + Path.DirectorySeparatorChar + "groups.csv";
             FileUpload.SaveAs(csvFilePath);
-            new FileOps().SetUnixPermissions(csvFilePath);
-            var successCount = BLL.Group.ImportCsv(csvFilePath,CloneDeployCurrentUser.Id);
-            EndUserMessage = "Successfully Imported " + successCount + " Groups";
+            Call.FilesystemApi.SetUnixPermissions(csvFilePath);
+            //var successCount = BLL.Group.ImportCsv(csvFilePath,CloneDeployCurrentUser.Id);
+            //EndUserMessage = "Successfully Imported " + successCount + " Groups";
 
         }       
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using BasePages;
+using CloneDeploy_Web;
 
 namespace views.users
 {
@@ -14,7 +15,7 @@ namespace views.users
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             
-            if (BLL.User.GetAdminCount() == 1 && ddluserMembership.Text != "Administrator" &&
+            if (Call.CloneDeployUserApi.GetAdminCount() == 1 && ddluserMembership.Text != "Administrator" &&
                 CloneDeployUser.Membership == "Administrator")
             {
                 EndUserMessage = "There Must Be At Least One Administrator";
@@ -32,8 +33,8 @@ namespace views.users
             {
                 if (txtUserPwd.Text == txtUserPwdConfirm.Text)
                 {
-                    updatedUser.Salt = Helpers.Utility.CreateSalt(64);
-                    updatedUser.Password = Helpers.Utility.CreatePasswordHash(txtUserPwd.Text, updatedUser.Salt);
+                    updatedUser.Salt = Utility.CreateSalt(64);
+                    updatedUser.Password = Utility.CreatePasswordHash(txtUserPwd.Text, updatedUser.Salt);
                 }
                 else
                 {
@@ -53,8 +54,8 @@ namespace views.users
             updatedUser.ApiId = txtApiId.Text;
             updatedUser.ApiKey = txtApiKey.Text;
            
-            var result = BLL.User.UpdateUser(updatedUser);
-            EndUserMessage = !result.Success ? result.Message : "Successfully Updated User";
+            var result = Call.CloneDeployUserApi.Put(updatedUser.Id,updatedUser);
+            EndUserMessage = !result.Success ? result.ErrorMessage : "Successfully Updated User";
             
 
         }

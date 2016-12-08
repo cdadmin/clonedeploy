@@ -1,5 +1,6 @@
 ﻿using System;
 using BasePages;
+using CloneDeploy_Web;
 
 public partial class views_images_profiles_task : Images
 {
@@ -18,7 +19,7 @@ public partial class views_images_profiles_task : Images
         var imageProfile = ImageProfile;
         imageProfile.WebCancel = Convert.ToInt16(chkWebCancel.Checked);
         imageProfile.TaskCompletedAction = ddlTaskComplete.Text;
-        var result = BLL.ImageProfile.UpdateProfile(imageProfile);
-        EndUserMessage = result.Success ? "Successfully Updated Image Profile" : result.Message;
+        var result = Call.ImageProfileApi.Put(imageProfile.Id,imageProfile);
+        EndUserMessage = result.Success ? "Successfully Updated Image Profile" : result.ErrorMessage;
     }
 }

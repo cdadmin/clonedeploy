@@ -1,5 +1,6 @@
 ﻿using System;
 using BasePages;
+using CloneDeploy_Web;
 
 namespace views.users
 {
@@ -17,13 +18,13 @@ namespace views.users
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            var updatedUser = BLL.User.GetUser(Convert.ToInt32(Session["UserId"]));
+            var updatedUser = Call.CloneDeployUserApi.Get(Convert.ToInt32(Session["UserId"]));
             if (!string.IsNullOrEmpty(txtUserPwd.Text))
             {
                 if (txtUserPwd.Text == txtUserPwdConfirm.Text)
                 {
-                    updatedUser.Salt = Helpers.Utility.CreateSalt(64);
-                    updatedUser.Password = Helpers.Utility.CreatePasswordHash(txtUserPwd.Text, updatedUser.Salt);
+                    updatedUser.Salt = Utility.CreateSalt(64);
+                    updatedUser.Password = Utility.CreatePasswordHash(txtUserPwd.Text, updatedUser.Salt);
                 }
                 else
                 {
@@ -38,8 +39,8 @@ namespace views.users
             updatedUser.NotifyComplete = chkComplete.Checked ? 1 : 0;
             updatedUser.NotifyImageApproved = chkApproved.Checked ? 1 : 0;
 
-            var result = BLL.User.UpdateUser(updatedUser);
-            EndUserMessage = !result.Success ? result.Message : "Successfully Updated User";
+            var result = Call.CloneDeployUserApi.Put(updatedUser.Id,updatedUser);
+            EndUserMessage = !result.Success ? result.ErrorMessage : "Successfully Updated User";
         }
 
         private void PopulateForm()

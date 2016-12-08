@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_images_profiles_sysprep : Images
 {
@@ -15,7 +17,7 @@ public partial class views_images_profiles_sysprep : Images
 
     protected void PopulateProfileScripts()
     {
-        var profileSyspreps = BLL.ImageProfileSysprepTag.SearchImageProfileSysprepTags(ImageProfile.Id);
+        var profileSyspreps = Call.ImageProfileApi.GetSysprepTags(ImageProfile.Id);
         foreach (GridViewRow row in gvSysprep.Rows)
         {
             var enabled = (CheckBox)row.FindControl("chkEnabled");
@@ -37,7 +39,7 @@ public partial class views_images_profiles_sysprep : Images
 
     protected void PopulateGrid()
     {
-        gvSysprep.DataSource = BLL.SysprepTag.SearchSysprepTags("");
+        gvSysprep.DataSource = Call.SysprepTagApi.GetAll(Int32.MaxValue,"");
         gvSysprep.DataBind();
         PopulateProfileScripts();
     }
@@ -46,7 +48,7 @@ public partial class views_images_profiles_sysprep : Images
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<SysprepTag> listSysprepTags = (List<SysprepTag>)gvSysprep.DataSource;
+        List<SysprepTagEntity> listSysprepTags = (List<SysprepTagEntity>)gvSysprep.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -63,7 +65,7 @@ public partial class views_images_profiles_sysprep : Images
     protected void btnUpdateSysprep_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorizationOrManagedImage(Authorizations.UpdateProfile, Image.Id);
-        var deleteResult = BLL.ImageProfileSysprepTag.DeleteImageProfileSysprepTags(ImageProfile.Id);
+        var deleteResult = Call.ImageProfileApi.RemoveProfileSysprepTags(ImageProfile.Id);
         var checkedCount = 0;
         foreach (GridViewRow row in gvSysprep.Rows)
         {
@@ -74,7 +76,7 @@ public partial class views_images_profiles_sysprep : Images
             var dataKey = gvSysprep.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
 
-            var profileSysPrep = new ImageProfileSysprepTag
+            var profileSysPrep = new ImageProfileSysprepTagEntity()
             {
                 SysprepId = Convert.ToInt32(dataKey.Value),
                 ProfileId = ImageProfile.Id,
@@ -84,7 +86,7 @@ public partial class views_images_profiles_sysprep : Images
                 if (!string.IsNullOrEmpty(txtPriority.Text))
                     profileSysPrep.Priority = Convert.ToInt32(txtPriority.Text);
             
-            EndUserMessage = BLL.ImageProfileSysprepTag.AddImageProfileSysprepTag(profileSysPrep) ? "Successfully Updated Image Profile" : "Could Not Update Image Profile";
+            EndUserMessage = Call.ImageProfileSysprepTagApi.Post(profileSysPrep).Success ? "Successfully Updated Image Profile" : "Could Not Update Image Profile";
         }
         if (checkedCount == 0)
         {

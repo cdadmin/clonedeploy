@@ -2,6 +2,7 @@
 
 using System;
 using BasePages;
+using CloneDeploy_Web;
 
 namespace views.images
 {
@@ -26,8 +27,8 @@ namespace views.images
             image.Protected = chkProtected.Checked ? 1 : 0;
             image.IsVisible = chkVisible.Checked ? 1 : 0;
 
-            var result = BLL.Image.UpdateImage(image, currentName);
-            EndUserMessage = result.Success ? "Successfully Updated Image" : result.Message;
+            var result = Call.ImageApi.Put(image.Id, image);
+            EndUserMessage = result.Success ? "Successfully Updated Image" : result.ErrorMessage;
         }
 
         protected void PopulateForm()
@@ -51,9 +52,9 @@ namespace views.images
                 if (Image.OsxType == "thin")
                 {
                     thinImage.Visible = false;
-                    ddlThinOS.DataSource = Utility.GetThinImages();
+                    ddlThinOS.DataSource = Call.FilesystemApi.GetThinImages();
                     ddlThinOS.DataBind();
-                    ddlThinRecovery.DataSource = Utility.GetThinImages();
+                    ddlThinRecovery.DataSource = Call.FilesystemApi.GetThinImages();
                     ddlThinRecovery.DataBind();
                     
                     ddlThinOS.Text = Image.OsxThinOs;

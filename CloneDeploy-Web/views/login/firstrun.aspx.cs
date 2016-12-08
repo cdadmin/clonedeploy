@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using BasePages;
+using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Web;
-using DistributionPoint = CloneDeploy_Web.Models.DistributionPoint;
+
 
 
 public partial class views_login_firstrun : PageBaseMaster
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if(BLL.CdVersion.FirstRunCompleted())
+        if(Call.CdVersionApi.IsFirstRunCompleted())
             Response.Redirect("~/views/dashboard/dash.aspx");
     }
 
@@ -20,11 +22,11 @@ public partial class views_login_firstrun : PageBaseMaster
         string unixDist = null;
         if (ValidateForm())
         {
-            var adminUser = BLL.User.GetUser("clonedeploy");
-            adminUser.Salt = Helpers.Utility.CreateSalt(64);
-            adminUser.Password = Helpers.Utility.CreatePasswordHash(txtUserPwd.Text, adminUser.Salt);
+            var adminUser = Call.CloneDeployUserApi.GetByName("clonedeploy");
+            adminUser.Salt = Utility.CreateSalt(64);
+            adminUser.Password = Utility.CreatePasswordHash(txtUserPwd.Text, adminUser.Salt);
             adminUser.Token = Utility.GenerateKey();
-            BLL.User.UpdateUser(adminUser);
+            Call.CloneDeployUserApi.Put(adminUser.Id,adminUser);
 
             string tftpPath = null;
             if (Environment.OSVersion.ToString().Contains("Unix"))
@@ -51,43 +53,43 @@ public partial class views_login_firstrun : PageBaseMaster
                 Path.DirectorySeparatorChar + "clonedeploy" +
                 Path.DirectorySeparatorChar + "tftpboot" + Path.DirectorySeparatorChar;
             }
-            var listSettings = new List<CloneDeploy_Web.Models.Setting>
+            var listSettings = new List<SettingEntity>
             {
-                new CloneDeploy_Web.Models.Setting
+                new SettingEntity()
                 {
                     Name = "Server IP",
                     Value = txtServerIP.Text,
-                    Id = Setting.GetSetting("Server IP").Id
+                    Id = Call.SettingApi.GetSetting("Server IP").Id
                 },
-                new CloneDeploy_Web.Models.Setting
+                new SettingEntity()
                 {
                     Name = "Tftp Path",
                     Value = tftpPath,
-                    Id = Setting.GetSetting("Tftp Path").Id
+                    Id = Call.SettingApi.GetSetting("Tftp Path").Id
                 }           
             };
 
             if (unixDist == "bsd")
             {
-                listSettings.Add(new CloneDeploy_Web.Models.Setting
+                listSettings.Add(new SettingEntity()
                 {
                     Name = "Sender Args",
                     Value = "--interface " + txtServerIP.Text,
-                    Id = BLL.Setting.GetSetting("Sender Args").Id
+                    Id = Call.SettingApi.GetSetting("Sender Args").Id
                 });
             }
-            Setting.UpdateSetting(listSettings);
+            Call.SettingApi.UpdateSettings(listSettings);
 
-            var distributionPoint = new DistributionPoint();
+            var distributionPoint = new DistributionPointEntity();
             distributionPoint.DisplayName = "Default";
             distributionPoint.Server = "[server-ip]";
             distributionPoint.Protocol = "SMB";
             distributionPoint.ShareName = "cd_share";
             distributionPoint.Domain = "Workgroup";
             distributionPoint.RwUsername = "cd_share_rw";
-            distributionPoint.RwPassword = new Helpers.Encryption().EncryptText(txtReadWrite.Text);
+            distributionPoint.RwPassword = new Encryption().EncryptText(txtReadWrite.Text);
             distributionPoint.RoUsername = "cd_share_ro";
-            distributionPoint.RoPassword = new Helpers.Encryption().EncryptText(txtReadOnly.Text);
+            distributionPoint.RoPassword = new Encryption().EncryptText(txtReadOnly.Text);
             distributionPoint.IsPrimary = 1;
             if (Environment.OSVersion.ToString().Contains("Unix"))
                 distributionPoint.PhysicalPath = unixDist == "bsd" ? "/usr/pbi/clonedeploy-amd64/cd_dp" : "/cd_dp";
@@ -97,18 +99,18 @@ public partial class views_login_firstrun : PageBaseMaster
                                                  Path.DirectorySeparatorChar + "clonedeploy" +
                                                  Path.DirectorySeparatorChar + "cd_dp";
             }
-            BLL.DistributionPoint.AddDistributionPoint(distributionPoint);
+            Call.DistributionPointApi.Post(distributionPoint);
 
-            var defaultBootMenu = new BLL.Workflows.DefaultBootMenu();
-            defaultBootMenu.Kernel = Settings.DefaultKernel32;
-            defaultBootMenu.BootImage = "initrd.xz";
-            defaultBootMenu.Type = "standard";
-            defaultBootMenu.CreateGlobalDefaultBootMenu();
+            var defaultBootMenuOptions = new BootMenuGenOptionsDTO();
+            defaultBootMenuOptions.Kernel = Settings.DefaultKernel32;
+            defaultBootMenuOptions.BootImage = "initrd.xz";
+            defaultBootMenuOptions.Type = "standard";
+            Call.WorkflowApi.CreateDefaultBootMenu(defaultBootMenuOptions);
 
-            var cdVersion = BLL.CdVersion.Get(1);
+            var cdVersion = Call.CdVersionApi.Get(1);
             cdVersion.FirstRunCompleted = 1;
 
-            if (BLL.CdVersion.Update(cdVersion))
+            if (Call.CdVersionApi.Put(cdVersion.Id,cdVersion).Success)
             {
                 EndUserMessage = "Setup Complete";
                 Response.Redirect("~/views/dashboard/dash.aspx");

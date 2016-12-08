@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_users_acl : BasePages.Users
 {
@@ -21,7 +23,7 @@ public partial class views_users_acl : BasePages.Users
 
     protected void PopulateForm()
     {
-        var listOfRights = BLL.UserRight.Get(CloneDeployUser.Id);
+        var listOfRights = Call.CloneDeployUserApi.GetRights(CloneDeployUser.Id);
         foreach (var right in listOfRights)
         {
             foreach (var box in _listCheckBoxes.Where(box => box.ID == right.Right))
@@ -37,9 +39,9 @@ public partial class views_users_acl : BasePages.Users
             EndUserMessage = "Cannot Update. This User's ACL Is Controlled By A Group";
             return;
         }
-        BLL.UserRight.DeleteUserRights(CloneDeployUser.Id);
-        var listOfRights = _listCheckBoxes.Where(x => x.Checked).Select(box => new UserRight {UserId = CloneDeployUser.Id, Right = box.ID}).ToList();
-        EndUserMessage = BLL.UserRight.AddUserRights(listOfRights)
+        Call.CloneDeployUserApi.DeleteRights(CloneDeployUser.Id);
+        var listOfRights = _listCheckBoxes.Where(x => x.Checked).Select(box => new UserRightEntity() {UserId = CloneDeployUser.Id, Right = box.ID}).ToList();
+        EndUserMessage = Call.UserRightApi.Post(listOfRights).Success
             ? "Successfully Updated User ACLs"
             : "Could Not Update User ACLs";
     }

@@ -53,7 +53,7 @@ namespace CloneDeploy_App.Controllers
 
     
 
-        [HttpPost]
+        [HttpGet]
         [ImageProfileAuth(Permission = "ImageProfileCreate")]
         public ApiBoolResponseDTO Clone(int id)
         {
@@ -114,6 +114,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ImageProfileAuth(Permission = "ImageProfileDelete")]
+        [HttpDelete]
         public ActionResultDTO RemoveProfileFileFolders(int id)
         {
             
@@ -122,6 +123,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ImageProfileAuth(Permission = "ImageProfileDelete")]
+        [HttpDelete]
         public ActionResultDTO RemoveProfileScripts(int id)
         {
             return _imageProfileServices.DeleteImageProfileScripts(id);
@@ -129,6 +131,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ImageProfileAuth(Permission = "ImageProfileDelete")]
+        [HttpDelete]
         public ApiBoolResponseDTO RemoveProfileSysprepTags(int id)
         {
             return new ApiBoolResponseDTO() {Value = _imageProfileServices.DeleteImageProfileSysprepTags(id)};

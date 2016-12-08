@@ -11,7 +11,7 @@ using RestSharp;
 
 namespace CloneDeploy_ApiCalls
 {
-    public class CdVersionAPI:GenericAPI<ComputerEntity>
+    public class CdVersionAPI:GenericAPI<CdVersionEntity>
     {
         public CdVersionAPI(string resource):base(resource)
         {

@@ -210,7 +210,7 @@ namespace CloneDeploy_Services
             var count = 0;
             foreach (var computer in GetGroupMembers(groupId))
             {
-                if(new CloneDeploy_App.BLL.Workflows.Unicast(computer, "push",userId).Start() == "true")
+                if(new CloneDeploy_App.BLL.Workflows.Unicast(computer.Id, "push",userId).Start() == "true")
                 count++;
             }
             return count;

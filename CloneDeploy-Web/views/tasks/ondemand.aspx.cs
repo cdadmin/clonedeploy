@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web;
 
 namespace views.tasks
 {
@@ -17,7 +19,13 @@ namespace views.tasks
         {
             //PopulateImagesDdl(ddlComputerImage);
 
-            ddlComputerImage.DataSource = BLL.Image.SearchImagesForUser(CloneDeployCurrentUser.Id).Where(x => x.Environment == "linux" || x.Environment == "winpe" || string.IsNullOrEmpty(x.Environment)).Select(i => new { i.Id, i.Name }).OrderBy(x => x.Name).ToList();
+            ddlComputerImage.DataSource =
+                Call.ImageApi.GetAll(Int32.MaxValue, "")
+                    .Where(
+                        x => x.Environment == "linux" || x.Environment == "winpe" || string.IsNullOrEmpty(x.Environment))
+                    .Select(i => new {i.Id, i.Name})
+                    .OrderBy(x => x.Name)
+                    .ToList();
             ddlComputerImage.DataValueField = "Id";
             ddlComputerImage.DataTextField = "Name";
             ddlComputerImage.DataBind();
@@ -33,8 +41,7 @@ namespace views.tasks
         {
             RequiresAuthorization(Authorizations.ImageMulticastTask);
             if (ddlComputerImage.Text == "Select Image") return;
-            var imageProfile = BLL.ImageProfile.ReadProfile(Convert.ToInt32(ddlImageProfile.SelectedValue));
-            EndUserMessage = new BLL.Workflows.Multicast(imageProfile, txtClientCount.Text,CloneDeployCurrentUser.Id).Create();
+            EndUserMessage = Call.WorkflowApi.StartOnDemandMulticast(Convert.ToInt32(ddlImageProfile.SelectedValue),txtClientCount.Text);
 
         }
     }

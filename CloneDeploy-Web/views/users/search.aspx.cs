@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using BasePages;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 namespace views.users
 {
@@ -34,7 +36,7 @@ namespace views.users
                 var dataKey = gvUsers.DataKeys[row.RowIndex];
                 if (dataKey != null)
                 {
-                    var user = BLL.User.GetUser(Convert.ToInt32(dataKey.Value));
+                    var user = Call.CloneDeployUserApi.Get(Convert.ToInt32(dataKey.Value));
 
                     if (user.Membership == "Administrator")
                     {
@@ -42,7 +44,7 @@ namespace views.users
                             "<br/>Administrators Must Be Changed To A User Before They Can Be Deleted";
                         break;
                     }
-                    if (BLL.User.DeleteUser(user.Id))
+                    if (Call.CloneDeployUserApi.Delete(user.Id).Success)
                         deletedCount++;
                 }
             }
@@ -65,7 +67,7 @@ namespace views.users
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
-            List<CloneDeployUser> listUsers = (List<CloneDeployUser>)gvUsers.DataSource;
+            List<CloneDeployUserEntity> listUsers = (List<CloneDeployUserEntity>)gvUsers.DataSource;
             switch (e.SortExpression)
             {
                 case "Name":
@@ -83,9 +85,9 @@ namespace views.users
 
         protected void PopulateGrid()
         {   
-            gvUsers.DataSource = BLL.User.SearchUsers(txtSearch.Text);
+            gvUsers.DataSource = Call.CloneDeployUserApi.GetAll(Int32.MaxValue,txtSearch.Text);
             gvUsers.DataBind();
-            lblTotal.Text = gvUsers.Rows.Count + " Result(s) / " + BLL.User.TotalCount() + " Total User(s)";
+            lblTotal.Text = gvUsers.Rows.Count + " Result(s) / " + Call.CloneDeployUserApi.GetCount() + " Total User(s)";
         }
 
        

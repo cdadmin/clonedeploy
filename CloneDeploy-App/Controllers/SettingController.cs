@@ -29,6 +29,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalUpdate")]
+        [HttpPost]
         public ApiBoolResponseDTO UpdateSettings(List<SettingEntity> listSettings)
         {
             return new ApiBoolResponseDTO() {Value = _settingServices.UpdateSetting(listSettings)};

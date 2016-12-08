@@ -151,6 +151,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalCreate")]
+        [HttpPost]
         public ApiBoolResponseDTO AddCatalogToTemplate(MunkiManifestCatalogEntity catalog)
         {
             return new ApiBoolResponseDTO() {Value = _munkiManifestTemplateServices.AddCatalogToTemplate(catalog)};
@@ -167,6 +168,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalCreate")]
+        [HttpPost]
         public ApiBoolResponseDTO AddManifestToTemplate(MunkiManifestIncludedManifestEntity manifest)
             {
 
@@ -191,6 +193,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalCreate")]
+        [HttpPost]
         public ApiBoolResponseDTO AddManagedInstallToTemplate(MunkiManifestManagedInstallEntity managedInstall)
         {
 
@@ -215,6 +218,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalCreate")]
+        [HttpPost]
         public ApiBoolResponseDTO AddManagedUninstallsToTemplate(MunkiManifestManagedUnInstallEntity managedUninstall)
         {
 
@@ -239,6 +243,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalCreate")]
+        [HttpPost]
         public ApiBoolResponseDTO AddManagedUpdateToTemplate(MunkiManifestManagedUpdateEntity managedUpdate)
         {
 
@@ -260,6 +265,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalCreate")]
+        [HttpPost]
         public ApiBoolResponseDTO AddOptionalInstallToTemplate(MunkiManifestOptionInstallEntity optionalInstall)
         {
 
@@ -298,6 +304,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
+        [HttpGet]
         public ApiIntResponseDTO Apply(int id)
         {
             return new ApiIntResponseDTO() {Value = new BLL.Workflows.EffectiveMunkiTemplate().Apply(id)};

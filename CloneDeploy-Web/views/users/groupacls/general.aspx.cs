@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_users_groupacls_general : BasePages.Users
 {
@@ -21,7 +23,7 @@ public partial class views_users_groupacls_general : BasePages.Users
 
     protected void PopulateForm()
     {
-        var listOfRights = BLL.UserGroupRight.Get(CloneDeployUserGroup.Id);
+        var listOfRights = Call.UserGroupApi.GetRights(CloneDeployUserGroup.Id);
         foreach (var right in listOfRights)
         {
             foreach (var box in _listCheckBoxes.Where(box => box.ID == right.Right))
@@ -32,10 +34,10 @@ public partial class views_users_groupacls_general : BasePages.Users
 
     protected void buttonUpdate_OnClick(object sender, EventArgs e)
     {
-        BLL.UserGroupRight.DeleteUserGroupRights(CloneDeployUserGroup.Id);
-        var listOfRights = _listCheckBoxes.Where(x => x.Checked).Select(box => new UserGroupRight { UserGroupId = CloneDeployUserGroup.Id, Right = box.ID }).ToList();
-        BLL.UserGroupRight.AddUserGroupRights(listOfRights);
-        BLL.UserGroup.UpdateAllGroupMembersAcls(CloneDeployUserGroup);
+        Call.UserGroupApi.DeleteRights(CloneDeployUserGroup.Id);
+        var listOfRights = _listCheckBoxes.Where(x => x.Checked).Select(box => new UserGroupRightEntity() { UserGroupId = CloneDeployUserGroup.Id, Right = box.ID }).ToList();
+        Call.UserGroupRightApi.Post(listOfRights);
+        Call.UserGroupApi.UpdateMemberAcls(CloneDeployUserGroup.Id);
         EndUserMessage = "Updated ACLs";
 
 

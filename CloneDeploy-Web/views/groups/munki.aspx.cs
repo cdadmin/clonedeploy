@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.UI.WebControls;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_groups_munki : BasePages.Groups
 {
@@ -15,12 +17,12 @@ public partial class views_groups_munki : BasePages.Groups
 
     protected void PopulateGrid()
     {
-        gvManifestTemplates.DataSource = BLL.MunkiManifestTemplate.SearchManifests();
+        gvManifestTemplates.DataSource = Call.MunkiManifestTemplateApi.GetAll(Int32.MaxValue,"");
         gvManifestTemplates.DataBind();
 
      
 
-        var listOfTemplates = BLL.GroupMunki.Get(Group.Id);
+        var listOfTemplates = Call.GroupApi.GetMunkiTemplates(Group.Id);
         foreach (GridViewRow row in gvManifestTemplates.Rows)
         {
             var chkBox = (CheckBox)row.FindControl("chkSelector");
@@ -48,7 +50,7 @@ public partial class views_groups_munki : BasePages.Groups
     protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
     {
         PopulateGrid();
-        List<MunkiManifestTemplate> listManifestTemplates = (List<MunkiManifestTemplate>)gvManifestTemplates.DataSource;
+        List<MunkiManifestTemplateEntity> listManifestTemplates = (List<MunkiManifestTemplateEntity>)gvManifestTemplates.DataSource;
         switch (e.SortExpression)
         {
             case "Name":
@@ -65,14 +67,14 @@ public partial class views_groups_munki : BasePages.Groups
     protected void btnAddSelected_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorizationOrManagedGroup(Authorizations.UpdateGroup, Group.Id);
-        var list = new List<GroupMunki>();
+        var list = new List<GroupMunkiEntity>();
         foreach (GridViewRow row in gvManifestTemplates.Rows)
         {
             var cb = (CheckBox)row.FindControl("chkSelector");
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvManifestTemplates.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            var template = new GroupMunki
+            var template = new GroupMunkiEntity()
             {
                 GroupId = Group.Id,
                 MunkiTemplateId = Convert.ToInt32(dataKey.Value)
@@ -81,13 +83,13 @@ public partial class views_groups_munki : BasePages.Groups
 
         }
 
-        BLL.GroupMunki.DeleteMunkiTemplates(Group.Id);
+        Call.GroupApi.RemoveMunkiTemplates(Group.Id);
         var successCount = 0;
         if(list.Count > 0)
         {
             foreach (var mt in list)
             {
-                if (BLL.GroupMunki.AddMunkiTemplates(mt))
+                if (Call.GroupMunkiApi.Post(mt).Success)
                     successCount++;
 
             }
@@ -97,8 +99,8 @@ public partial class views_groups_munki : BasePages.Groups
 
     protected void effective_OnClick(object sender, EventArgs e)
     {
-        var effectiveManifest = new BLL.Workflows.EffectiveMunkiTemplate().Group(Group.Id);
-        Response.Write(Encoding.UTF8.GetString(effectiveManifest.ToArray()));
+        var effectiveManifest = Call.GroupMunkiApi.GetEffectiveManifest(Group.Id);
+        Response.Write(effectiveManifest);
         Response.ContentType = "text/plain";
         Response.End();
     }

@@ -41,13 +41,11 @@ namespace CloneDeploy_App.Controllers
 
         [HttpGet]
         [ComputerAuth(Permission = "ComputerSearch")]
-        public ApiStringArrResponseDTO GetKernels()
+        public IEnumerable<string> GetKernels()
         {
 
-            return new ApiStringArrResponseDTO
-            {
-                Value = Utility.GetKernels()
-            };
+
+            return Utility.GetKernels();
 
         }
 
@@ -92,6 +90,18 @@ namespace CloneDeploy_App.Controllers
             return new ApiStringArrResponseDTO
             {
                 Value = Utility.GetScripts(type)
+            };
+
+        }
+
+        [HttpGet]
+        [ComputerAuth(Permission = "ComputerSearch")]
+        public ApiStringArrResponseDTO GetThinImages()
+        {
+
+            return new ApiStringArrResponseDTO
+            {
+                Value = Utility.GetThinImages()
             };
 
         }

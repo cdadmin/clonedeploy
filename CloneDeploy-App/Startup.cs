@@ -30,7 +30,8 @@ namespace CloneDeploy_App.BLL
             {
                 ClaimsIdentity oAuthIdentity = new ClaimsIdentity(context.Options.AuthenticationType);
                 context.Validated(oAuthIdentity);
-                oAuthIdentity.AddClaim(new Claim("user_id", new UserServices().GetUser(context.UserName).Id.ToString()));
+                var user = new UserServices().GetUser(context.UserName);
+                oAuthIdentity.AddClaim(new Claim("user_id", user.Id.ToString()));
                 context.Validated(oAuthIdentity);
             }
             else

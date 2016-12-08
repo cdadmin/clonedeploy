@@ -1,11 +1,12 @@
 ﻿using System;
 using BasePages;
+using CloneDeploy_Entities;
 
 public partial class views_masters_Profile : MasterBaseMaster
 {
     private Images imageBasePage { get; set; }
-    public ImageProfile ImageProfile { get; set; }
-    public Image Image { get; set; }
+    public ImageProfileEntity ImageProfile { get; set; }
+    public ImageEntity Image { get; set; }
 
     public void Page_Load(object sender, EventArgs e)
     {

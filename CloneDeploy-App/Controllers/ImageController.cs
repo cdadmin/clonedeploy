@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_App.DTOs;
+using CloneDeploy_App.Helpers;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.ImageSchemaBE;
@@ -64,7 +65,10 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
+      
+
         [ImageAuth]
+        [HttpGet]
         public ApiBoolResponseDTO SendImageApprovedMail(int id)
         {
             _imageServices.SendImageApprovedEmail(id);
@@ -97,6 +101,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [ImageAuth(Permission = "ImageRead")]
+        [HttpGet]
         public ApiBoolResponseDTO Export(string path)
         {
             _imageServices.ExportCsv(path);
@@ -109,7 +114,7 @@ namespace CloneDeploy_App.Controllers
             return _imageServices.SearchProfiles(id);
         }
 
-        [HttpPost]
+        [HttpGet]
         [ImageProfileAuth(Permission = "ImageProfileCreate")]
         public ImageProfileEntity SeedDefaultProfile(int id)
         {

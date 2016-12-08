@@ -70,7 +70,7 @@ namespace CloneDeploy_App.BLL.Workflows
             }
 
             if(Convert.ToBoolean(_computer.CustomBootEnabled))
-                new ComputerServices().CreateBootFiles(_computer);
+                new ComputerServices().CreateBootFiles(_computer.Id);
 
         }
     }

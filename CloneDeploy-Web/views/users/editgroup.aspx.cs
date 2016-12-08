@@ -1,4 +1,5 @@
 ﻿using System;
+using CloneDeploy_Web;
 
 public partial class views_users_editgroup : BasePages.Users
 {
@@ -14,8 +15,8 @@ public partial class views_users_editgroup : BasePages.Users
             if (chkldap.Checked)
                 CloneDeployUserGroup.GroupLdapName = txtLdapGroupName.Text;
           
-            var result = BLL.UserGroup.UpdateUser(CloneDeployUserGroup);
-            EndUserMessage = !result.Success ? result.Message : "Successfully Updated User Group";
+            var result = Call.UserGroupApi.Put(CloneDeployUserGroup.Id,CloneDeployUserGroup);
+            EndUserMessage = !result.Success ? result.ErrorMessage : "Successfully Updated User Group";
             
 
         }

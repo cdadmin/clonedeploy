@@ -1,4 +1,5 @@
 ﻿using System;
+using CloneDeploy_Web;
 
 public partial class views_groups_multicast : BasePages.Groups
 {
@@ -27,8 +28,8 @@ public partial class views_groups_multicast : BasePages.Groups
                 ? -1 : Convert.ToInt32(ddlImageProfile.SelectedValue);
 
 
-        var result = BLL.Group.UpdateGroup(group);
-        EndUserMessage = !result.Success ? result.Message : "Successfully Updated Group";
+        var result = Call.GroupApi.Put(group.Id,group);
+        EndUserMessage = !result.Success ? result.ErrorMessage : "Successfully Updated Group";
     }
 
     protected void ddlGroupImage_OnSelectedIndexChanged(object sender, EventArgs e)

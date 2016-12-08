@@ -1,5 +1,7 @@
 ﻿using System;
 using BasePages;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 namespace views.images
 {
@@ -16,7 +18,7 @@ namespace views.images
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             RequiresAuthorization(Authorizations.CreateImage);
-            var image = new Image
+            var image = new ImageEntity()
             {
                 Name = txtImageName.Text,
                 Os = "",
@@ -32,7 +34,7 @@ namespace views.images
             image.OsxType = ddlEnvironment.Text == "macOS" ? "thick" : "";
            
            
-            var result = BLL.Image.AddImage(image);
+            var result = Call.ImageApi.Post(image);
             if (result.Success)
             {
                 EndUserMessage = "Successfully Added Image";
@@ -40,7 +42,7 @@ namespace views.images
             }
             else
             {
-                EndUserMessage = result.Message;
+                EndUserMessage = result.ErrorMessage;
             }
 
         }
@@ -64,9 +66,9 @@ namespace views.images
             if (ddlOsxImageType.Text == "thin")
             {
                 thinImage.Visible = true;
-                ddlThinOS.DataSource = Utility.GetThinImages();
+                ddlThinOS.DataSource = Call.FilesystemApi.GetThinImages();
                 ddlThinOS.DataBind();
-                ddlThinRecovery.DataSource = Utility.GetThinImages();
+                ddlThinRecovery.DataSource = Call.FilesystemApi.GetThinImages();
                 ddlThinRecovery.DataBind();
             }
             else

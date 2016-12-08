@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.UI.WebControls;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_users_acls_imagemanagement : BasePages.Users
 {
@@ -17,9 +19,9 @@ public partial class views_users_acls_imagemanagement : BasePages.Users
 
     protected void PopulateForm()
     {
-        var listOfImages = BLL.UserImageManagement.Get(CloneDeployUser.Id);
+        var listOfImages = Call.CloneDeployUserApi.GetImageManagements(CloneDeployUser.Id);
 
-        gvImages.DataSource = BLL.Image.SearchImages();
+        gvImages.DataSource = Call.ImageApi.GetAll(Int32.MaxValue,"");
         gvImages.DataBind();
 
         foreach (GridViewRow row in gvImages.Rows)
@@ -45,14 +47,14 @@ public partial class views_users_acls_imagemanagement : BasePages.Users
             return;
         }
 
-        var list = new List<UserImageManagement>();
+        var list = new List<UserImageManagementEntity>();
         foreach (GridViewRow row in gvImages.Rows)
         {
             var cb = (CheckBox)row.FindControl("chkSelector");
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvImages.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            var userImageManagement = new UserImageManagement
+            var userImageManagement = new UserImageManagementEntity()
             {
                 UserId = CloneDeployUser.Id,
                 ImageId = Convert.ToInt32(dataKey.Value)
@@ -61,8 +63,8 @@ public partial class views_users_acls_imagemanagement : BasePages.Users
 
         }
 
-        BLL.UserImageManagement.DeleteUserImageManagements(CloneDeployUser.Id);
-        EndUserMessage = BLL.UserImageManagement.AddUserImageManagements(list)
+        Call.CloneDeployUserApi.DeleteImageManagements(CloneDeployUser.Id);
+        EndUserMessage = Call.UserImageManagementApi.Post(list).Success
             ? "Successfully Updated Image Management"
             : "Could Not Update Image Management";
 

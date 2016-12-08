@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.UI.WebControls;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 public partial class views_users_groupacls_imagemanagement : BasePages.Users
 {
@@ -17,9 +19,9 @@ public partial class views_users_groupacls_imagemanagement : BasePages.Users
 
     protected void PopulateForm()
     {
-        var listOfImages = BLL.UserGroupImageManagement.Get(CloneDeployUserGroup.Id);
+        var listOfImages = Call.UserGroupApi.GetImageManagements(CloneDeployUserGroup.Id);
 
-        gvImages.DataSource = BLL.Image.SearchImages();
+        gvImages.DataSource = Call.ImageApi.GetAll(Int32.MaxValue,"");
         gvImages.DataBind();
 
         foreach (GridViewRow row in gvImages.Rows)
@@ -39,14 +41,14 @@ public partial class views_users_groupacls_imagemanagement : BasePages.Users
 
     protected void buttonUpdate_OnClick(object sender, EventArgs e)
     {
-        var list = new List<UserGroupImageManagement>();
+        var list = new List<UserGroupImageManagementEntity>();
         foreach (GridViewRow row in gvImages.Rows)
         {
             var cb = (CheckBox)row.FindControl("chkSelector");
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvImages.DataKeys[row.RowIndex];
             if (dataKey == null) continue;
-            var userImageManagement = new UserGroupImageManagement
+            var userImageManagement = new UserGroupImageManagementEntity()
             {
                 UserGroupId = CloneDeployUserGroup.Id,
                 ImageId = Convert.ToInt32(dataKey.Value)
@@ -55,9 +57,9 @@ public partial class views_users_groupacls_imagemanagement : BasePages.Users
 
         }
 
-        BLL.UserGroupImageManagement.DeleteUserGroupImageManagements(CloneDeployUserGroup.Id);
-        BLL.UserGroupImageManagement.AddUserGroupImageManagements(list);
-        BLL.UserGroup.UpdateAllGroupMembersImageMgmt(CloneDeployUserGroup);
+        Call.UserGroupApi.DeleteImageManagements(CloneDeployUserGroup.Id);
+        Call.UserGroupImageManagementApi.Post(list);
+        Call.UserGroupApi.UpdateMemberImages(CloneDeployUserGroup.Id);
         EndUserMessage = "Updated Image Management";
 
 

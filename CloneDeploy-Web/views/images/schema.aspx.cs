@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BasePages;
-using ImageSchema = BLL.ImageSchema;
+using CloneDeploy_App.DTOs;
+using CloneDeploy_Entities.DTOs.ImageSchemaFE;
+
 
 namespace views.images
 {
@@ -25,8 +27,7 @@ namespace views.images
                 gv.Visible = true;
                 var td = gvRow.FindControl("tdFile");
                 td.Visible = true;
-                gv.DataSource = ImageSchema.GetPartitionImageFileInfoForGridView(Image, selectedHd,
-                    selectedPartition);
+                gv.DataSource = Call.ImageApi.GetPartitionFileInfo(Image.Id, selectedHd, selectedPartition);
                 gv.DataBind();
                 btn.Text = "-";
             }
@@ -51,7 +52,12 @@ namespace views.images
             ViewState["selectedHDName"] = selectedHd;
 
 
-            var partitions = new ImageSchema(null,null,Image).GetPartitionsForGridView(selectedHd);
+            var schemaRequestOptions = new ImageSchemaRequestDTO();
+            schemaRequestOptions.image = Image;
+            schemaRequestOptions.imageProfile = null;
+            schemaRequestOptions.schemaType = null;
+
+            var partitions = Call.ImageSchemaApi.GetPartitions(schemaRequestOptions,selectedHd);
             var btn = (LinkButton) gvRow.FindControl("btnHd");
             if (gv.Visible == false)
             {
@@ -112,7 +118,12 @@ namespace views.images
 
                 var td = gvRow.FindControl("tdLVS");
                 td.Visible = true;
-                gv.DataSource = new ImageSchema(null,null,Image).GetLogicalVolumesForGridView(selectedHd);
+                var schemaRequestOptions = new ImageSchemaRequestDTO();
+                schemaRequestOptions.image = Image;
+                schemaRequestOptions.imageProfile = null;
+                schemaRequestOptions.schemaType = null;
+
+                gv.DataSource = Call.ImageSchemaApi.GetLogicalVolumes(schemaRequestOptions,selectedHd);
                 gv.DataBind();
                 btn.Text = "-";
             }
@@ -135,7 +146,12 @@ namespace views.images
 
         protected void PopulateHardDrives()
         {
-            gvHDs.DataSource = new ImageSchema(null,null,Image).GetHardDrivesForGridView();
+            var schemaRequestOptions = new ImageSchemaRequestDTO();
+            schemaRequestOptions.image = Image;
+            schemaRequestOptions.imageProfile = null;
+            schemaRequestOptions.schemaType = null;
+
+            gvHDs.DataSource = Call.ImageSchemaApi.GetHardDrives(schemaRequestOptions);
             gvHDs.DataBind();
 
 

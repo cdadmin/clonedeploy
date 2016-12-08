@@ -59,27 +59,28 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GroupAuth(Permission = "GroupRead")]
+        [HttpGet]
         public ApiBoolResponseDTO Export(string path)
         {
             _groupServices.ExportCsv(path);
             return new ApiBoolResponseDTO() { Value = true };
         }
 
-        [HttpGet]
+        [HttpDelete]
         [GroupAuth(Permission = "GroupUpdate")]
         public ApiBoolResponseDTO RemoveGroupMember(int id, int computerId)
         {
             return new ApiBoolResponseDTO() {Value = _groupServices.DeleteMembership(computerId, id)};
         }
 
-        [HttpGet]
+        [HttpDelete]
         [GroupAuth(Permission = "GroupUpdate")]
         public ApiBoolResponseDTO RemoveMunkiTemplates(int id)
         {
             return new ApiBoolResponseDTO() {Value = _groupServices.DeleteMunkiTemplates(id)};
         }
 
-        [HttpGet]
+        
         [GroupAuth(Permission = "GroupRead")]
         public IEnumerable<GroupMunkiEntity> GetMunkiTemplates(int id)
         {
@@ -131,14 +132,14 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [HttpPost]
+        [HttpGet]
         [GroupAuth(Permission = "GroupUpdate")]
         public ActionResultDTO UpdateSmartMembership(int id)
         {
             return _groupServices.UpdateSmartMembership(id);
         }
 
-        [HttpPost]
+        [HttpGet]
         [TaskAuth(Permission = "ImageTaskDeploy")]
         public ApiIntResponseDTO StartGroupUnicast(int id)
         {
@@ -154,6 +155,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [UserAuth(Permission = "Administrator")]
+        [HttpGet]
         public ApiStringResponseDTO StartMulticast(int id)
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;

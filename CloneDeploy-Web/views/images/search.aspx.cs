@@ -4,7 +4,9 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BasePages;
-using Image = CloneDeploy_Web.Models.Image;
+using CloneDeploy_App.DTOs;
+using CloneDeploy_Entities;
+using CloneDeploy_Web;
 
 namespace views.images
 {
@@ -30,8 +32,12 @@ namespace views.images
                 var td = row.FindControl("tdHds");
                 td.Visible = true;
                 gvHDs.Visible = true;
+                var schemaRequestOptions = new ImageSchemaRequestDTO();
+                schemaRequestOptions.image = Call.ImageApi.Get(Convert.ToInt32(imageId));
+                schemaRequestOptions.imageProfile = null;
+                schemaRequestOptions.schemaType = "deploy";
 
-                gvHDs.DataSource = new BLL.ImageSchema(null,"deploy", BLL.Image.GetImage(Convert.ToInt32(imageId))).GetHardDrivesForGridView();
+                gvHDs.DataSource = Call.ImageSchemaApi.GetHardDrives(schemaRequestOptions);
                 gvHDs.DataBind();
                 btn.Text = "-";
             }
@@ -48,7 +54,7 @@ namespace views.images
                 var selectedHd = hdrow.RowIndex;
                 var lbl = hdrow.FindControl("lblHDSize") as Label;
                 if (lbl != null)
-                    lbl.Text = BLL.ImageSchema.ImageSizeOnServerForGridView(row.Cells[5].Text, selectedHd.ToString());
+                    lbl.Text = Call.ImageApi.GetImageSizeOnServer(row.Cells[5].Text,selectedHd.ToString());
             }
         }
 
@@ -62,8 +68,7 @@ namespace views.images
                 if (cb == null || !cb.Checked) continue;
                 var dataKey = gvImages.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
-                var image = BLL.Image.GetImage(Convert.ToInt32(dataKey.Value));
-                if (BLL.Image.DeleteImage(image).Success) deleteCount++;
+                if (Call.ImageApi.Delete(Convert.ToInt32(dataKey.Value)).Success) deleteCount++;
             }
             EndUserMessage = "Successfully Deleted " + deleteCount + " Images";
 
@@ -78,7 +83,7 @@ namespace views.images
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
-            List<Image> listImages = (List<Image>)gvImages.DataSource;
+            List<ImageEntity> listImages = (List<ImageEntity>)gvImages.DataSource;
             switch (e.SortExpression)
             {
                 case "Name":
@@ -97,9 +102,9 @@ namespace views.images
 
         protected void PopulateGrid()
         {
-            gvImages.DataSource = BLL.Image.SearchImagesForUser(CloneDeployCurrentUser.Id, txtSearch.Text).OrderBy(x => x.Name).ToList();
+            gvImages.DataSource = Call.ImageApi.GetAll(Int32.MaxValue, txtSearch.Text).OrderBy(x => x.Name).ToList();
             gvImages.DataBind();
-            lblTotal.Text = gvImages.Rows.Count + " Result(s) / " + BLL.Image.ImageCountUser(CloneDeployCurrentUser.Id) + " Total Image(s)";
+            lblTotal.Text = gvImages.Rows.Count + " Result(s) / " + Call.ImageApi.GetCount() + " Total Image(s)";
             PopulateSizes();
         }
 
@@ -108,7 +113,7 @@ namespace views.images
             foreach (GridViewRow row in gvImages.Rows)
             {
                 var lbl = row.FindControl("lblSize") as Label;
-                if (lbl != null) lbl.Text = BLL.ImageSchema.ImageSizeOnServerForGridView(row.Cells[5].Text, "0");
+                if (lbl != null) lbl.Text = Call.ImageApi.GetImageSizeOnServer(row.Cells[5].Text,"0");
             }
         }
 
@@ -126,13 +131,13 @@ namespace views.images
                 if (cb == null || !cb.Checked) continue;
                 var dataKey = gvImages.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
-                var image = BLL.Image.GetImage(Convert.ToInt32(dataKey.Value));
+                var image = Call.ImageApi.Get(Convert.ToInt32(dataKey.Value));
                 RequiresAuthorizationOrManagedImage(Authorizations.ApproveImage, image.Id);
                 image.Approved = 1;
-                if (BLL.Image.UpdateImage(image, image.Name).Success)
+                if (Call.ImageApi.Put(image.Id,image).Success)
                 {
                     approveCount++;
-                    BLL.Image.SendImageApprovedEmail(image.Id);
+                    Call.ImageApi.SendImageApprovedMail(image.Id);
                 }
             }
             EndUserMessage = "Successfully Approved " + approveCount + " Images";
