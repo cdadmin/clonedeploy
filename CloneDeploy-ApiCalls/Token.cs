@@ -33,9 +33,7 @@ namespace CloneDeploy_ApiCalls
             var response = _client.Execute<TokenEntity>(_request);
             var token = response.Data ?? new TokenEntity();
 
-            var user = new APICall().CloneDeployUserApi.GetByName(username);
-            if(user != null)
-                token.user_id = user.Id;
+            
 
             if (response.ErrorException != null)
             {

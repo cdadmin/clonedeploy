@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -28,20 +29,23 @@ namespace CloneDeploy_App.Controllers
         [UserAuth(Permission = "Administrator")]
         public IEnumerable<CloneDeployUserEntity> GetAll(string searchstring = "")
         {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                             .Select(c => c.Value).SingleOrDefault();
-
             return string.IsNullOrEmpty(searchstring)
                 ? _userServices.SearchUsers()
                 : _userServices.SearchUsers(searchstring);
 
         }
 
-        [UserAuth(Permission = "CallerOnly")]
-        public ApiObjectResponseDTO GetForLogin(int id)
+        [Authorize]
+        public ApiObjectResponseDTO GetForLogin(string username)
         {
-            return _userServices.GetUserForLogin(id);
+            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                .Select(c => c.Value).SingleOrDefault();
+            var user = _userServices.GetUser(username);
+            if (user.Id == Convert.ToInt32(userId))
+                return _userServices.GetUserForLogin(user.Id);
+
+            throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
         }
 
         [UserAuth(Permission = "Administrator")]

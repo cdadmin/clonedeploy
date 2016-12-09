@@ -68,11 +68,12 @@ namespace CloneDeploy_Web.views.login
                 Value = token.access_token,
                 HttpOnly = true
             });
-        
+
+          
             if (token.access_token != null)
             {
                 //verify token is valid         
-                var result = new APICall().CloneDeployUserApi.GetForLogin(token.user_id);
+                var result = new APICall().CloneDeployUserApi.GetForLogin(CrucibleLogin.UserName);
                 if (result == null)
                 {
                     lblError.Text = "Could Not Contact Application API";

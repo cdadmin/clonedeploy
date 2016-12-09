@@ -23,10 +23,11 @@ namespace CloneDeploy_ApiCalls
             return new ApiRequest().Execute<CloneDeployUserEntity>(_request);
         }
 
-        public ApiObjectResponseDTO GetForLogin(int id)
+        public ApiObjectResponseDTO GetForLogin(string username)
         {
             _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetForLogin/{1}", _resource,id);
+            _request.Resource = string.Format("api/{0}/GetForLogin/", _resource);
+            _request.AddParameter("username", username);
             var response = new ApiRequest().Execute<ApiObjectResponseDTO>(_request);
 
             if (response.Id == 0)
