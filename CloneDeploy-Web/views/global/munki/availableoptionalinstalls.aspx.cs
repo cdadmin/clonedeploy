@@ -4,8 +4,10 @@ using System.Linq;
 using System.Web.UI.WebControls;
 using CloneDeploy_Entities;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
-public partial class views_global_munki_availableoptionalinstalls : BasePages.Global
+public partial class views_global_munki_availableoptionalinstalls : Global
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -19,12 +21,12 @@ public partial class views_global_munki_availableoptionalinstalls : BasePages.Gl
 
 
         var listOfPackages = new List<MunkiPackageInfoEntity>();
-         var pkgInfos = GetMunkiResources("pkgsinfo");
+         var pkgInfos = Call.FilesystemApi.GetMunkiResources("pkgsinfo");
         if (pkgInfos != null)
         {
             foreach (var pkgInfoFile in pkgInfos)
             {
-                var pkg = ReadPlist(pkgInfoFile.FullName);
+                var pkg = Call.FilesystemApi.GetPlist(pkgInfoFile.FullName);
                 if (pkg != null)
                     listOfPackages.Add(pkg);
             }
@@ -37,7 +39,7 @@ public partial class views_global_munki_availableoptionalinstalls : BasePages.Gl
             gvPkgInfos.DataSource = listOfPackages;
             gvPkgInfos.DataBind();
 
-            lblTotalAvailable.Text = gvPkgInfos.Rows.Count + " Result(s) / " + pkgInfos.Length +
+            lblTotalAvailable.Text = gvPkgInfos.Rows.Count + " Result(s) / " + pkgInfos.Count +
                                      " Total Packages(s)";
         }
         else

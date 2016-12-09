@@ -33,6 +33,9 @@
     <Reference Include="CsvHelper">
       <HintPath>..\packages\CsvHelper.2.13.5.0\lib\net40-client\CsvHelper.dll</HintPath>
     </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Posix">
       <HintPath>..\packages\Mono.Posix-4.5.4.5.0\lib\net45\Mono.Posix.dll</HintPath>
     </Reference>
@@ -64,14 +67,14 @@
     <Compile Include="BootTemplateServices.cs" />
     <Compile Include="BuildingServices.cs" />
     <Compile Include="CdVersionServices.cs" />
-    <Compile Include="BLL\ClientImaging.cs" />
+    <Compile Include="ClientImagingServices.cs" />
     <Compile Include="ComputerBootMenuServices.cs" />
     <Compile Include="ComputerLogServices.cs" />
     <Compile Include="ComputerMunkiServices.cs" />
     <Compile Include="ComputerProxyReservation.cs" />
     <Compile Include="DistributionPoint.cs" />
-    <Compile Include="BLL\DynamicClientPartition\ClientPartition.cs" />
-    <Compile Include="BLL\DynamicClientPartition\ClientPartitionHelper.cs" />
+    <Compile Include="ClientPartitionSchemaServices.cs" />
+    <Compile Include="ClientPartitionHelper.cs" />
     <Compile Include="FileFolderServices.cs" />
     <Compile Include="GroupServices.cs" />
     <Compile Include="GroupBootMenuServices.cs" />
@@ -84,7 +87,7 @@
     <Compile Include="ImageProfileScript.cs" />
     <Compile Include="ImageProfileSysprepTagServices.cs" />
     <Compile Include="ImageSchemaFEServices.cs" />
-    <Compile Include="BLL\Ldap.cs" />
+    <Compile Include="LdapServices.cs" />
     <Compile Include="MunkiCatalogServices.cs" />
     <Compile Include="MunkiIncludedManifestServices.cs" />
     <Compile Include="MunkiManagedInstallServices.cs" />
@@ -93,7 +96,6 @@
     <Compile Include="MunkiManifestTemplateServices.cs" />
     <Compile Include="MunkiOptionalInstallServices.cs" />
     <Compile Include="PortServices.cs" />
-    <Compile Include="BLL\Progress.cs" />
     <Compile Include="RoomServices.cs" />
     <Compile Include="ScriptServices.cs" />
     <Compile Include="SettingServices.cs" />
@@ -108,25 +110,23 @@
     <Compile Include="UserImageManagementServices.cs" />
     <Compile Include="UserLockoutServices.cs" />
     <Compile Include="UserRightServices.cs" />
-    <Compile Include="BLL\Workflows\CancelAllImagingTasks.cs" />
-    <Compile Include="BLL\Workflows\CleanTaskBootFiles.cs" />
-    <Compile Include="BLL\Workflows\ClobberBootMenu.cs" />
-    <Compile Include="BLL\Workflows\CopyPxeBinaries.cs" />
-    <Compile Include="BLL\Workflows\CreateTaskArguments.cs" />
-    <Compile Include="BLL\Workflows\DefaultBootMenu.cs" />
-    <Compile Include="BLL\Workflows\DynamicPartitionScript.cs" />
-    <Compile Include="BLL\Workflows\EffectiveMunkiTemplate.cs" />
-    <Compile Include="BLL\Workflows\IsoGen.cs" />
-    <Compile Include="BLL\Workflows\Multicast.cs" />
-    <Compile Include="BLL\Workflows\TaskBootMenu.cs" />
-    <Compile Include="BLL\Workflows\Unicast.cs" />
+    <Compile Include="Workflows\CancelAllImagingTasks.cs" />
+    <Compile Include="Workflows\CleanTaskBootFiles.cs" />
+    <Compile Include="Workflows\ClobberBootMenu.cs" />
+    <Compile Include="Workflows\CopyPxeBinaries.cs" />
+    <Compile Include="Workflows\CreateTaskArguments.cs" />
+    <Compile Include="Workflows\DefaultBootMenu.cs" />
+    <Compile Include="Workflows\DynamicPartitionScript.cs" />
+    <Compile Include="Workflows\EffectiveMunkiTemplate.cs" />
+    <Compile Include="Workflows\IsoGen.cs" />
+    <Compile Include="Workflows\Multicast.cs" />
+    <Compile Include="Workflows\TaskBootMenu.cs" />
+    <Compile Include="Workflows\Unicast.cs" />
     <Compile Include="ComputerServices.cs" />
     <Compile Include="Helpers\Authorizations.cs" />
     <Compile Include="Helpers\Encryption.cs" />
     <Compile Include="Helpers\FileOps.cs" />
-    <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Helpers\Mail.cs" />
-    <Compile Include="Helpers\ParameterReplace.cs" />
     <Compile Include="Helpers\RegParser.cs" />
     <Compile Include="Helpers\Settings.cs" />
     <Compile Include="Helpers\UNCAccessWithCredentials.cs" />
@@ -142,6 +142,9 @@
       <Project>{453080da-87a4-4f5f-aa1f-2c49e37d2f21}</Project>
       <Name>CloneDeploy-Entities</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

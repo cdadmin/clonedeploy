@@ -1,10 +1,16 @@
 ﻿<%@ Application Language="C#" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="log4net" %>
+<%@ Import Namespace="log4net.Config" %>
 
 <script runat="server">
  
     void Application_Start(object sender, EventArgs e)
-    {  
-  
+    {
+        var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
+                            Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar + "CloneDeployFE.log";
+        GlobalContext.Properties["LogFile"] = logPath;
+        XmlConfigurator.Configure();
     }
 
     void Application_End(object sender, EventArgs e) 

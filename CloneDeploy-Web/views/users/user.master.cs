@@ -1,11 +1,12 @@
 ﻿using System;
-using BasePages;
 using CloneDeploy_Entities;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
 namespace views.masters
 {
-    public partial class UserMaster : BasePages.MasterBaseMaster
+    public partial class UserMaster : MasterBaseMaster
     {
         private Users UsersBasePage { get; set; }
         public CloneDeployUserEntity CloneDeployUser { get; set; }

@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using CloneDeploy_App.Helpers;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Services;
+using CloneDeploy_Services.Helpers;
 using Newtonsoft.Json;
 
-namespace CloneDeploy_App.BLL
+namespace CloneDeploy_Services
 {
     /// <summary>
     ///     Summary description for Authenticate
@@ -93,7 +92,7 @@ namespace CloneDeploy_App.BLL
                 {
                     foreach (var ldapGroup in _userGroupServices.GetLdapGroups())
                     {
-                        if (new BLL.Ldap().Authenticate(userName, password, ldapGroup.GroupLdapName))
+                        if (new LdapServices().Authenticate(userName, password, ldapGroup.GroupLdapName))
                         {
                             //user is a valid ldap user via ldap group that has not yet logged in.
                             //Add the user and allow login.                         
@@ -142,7 +141,7 @@ namespace CloneDeploy_App.BLL
                         {
                             //the group is an ldap group
                             //make sure user is still in that ldap group
-                            if (new BLL.Ldap().Authenticate(userName, password, userGroup.GroupLdapName))
+                            if (new LdapServices().Authenticate(userName, password, userGroup.GroupLdapName))
                             {
                                 validationResult.Success = true;
                             }
@@ -151,7 +150,7 @@ namespace CloneDeploy_App.BLL
                                 //user is either not in that group anymore, not in the directory, or bad password
                                 validationResult.Success = false;
 
-                                if (new BLL.Ldap().Authenticate(userName, password))
+                                if (new LdapServices().Authenticate(userName, password))
                                 {
                                     //password was good but user is no longer in the group
                                     //delete the user
@@ -163,20 +162,20 @@ namespace CloneDeploy_App.BLL
                         {
                             //the group is not an ldap group
                             //still need to check creds against directory
-                            if (new BLL.Ldap().Authenticate(userName, password)) validationResult.Success = true;
+                            if (new LdapServices().Authenticate(userName, password)) validationResult.Success = true;
                         }
                     }
                     else
                     {
                         //group didn't exist for some reason
                         //still need to check creds against directory
-                        if (new BLL.Ldap().Authenticate(userName, password)) validationResult.Success = true;
+                        if (new LdapServices().Authenticate(userName, password)) validationResult.Success = true;
                     }
                 }
                 else
                 {
                     //user is not part of a group, check creds against directory
-                    if (new BLL.Ldap().Authenticate(userName, password)) validationResult.Success = true;
+                    if (new LdapServices().Authenticate(userName, password)) validationResult.Success = true;
                 }
                
             }

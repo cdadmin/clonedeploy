@@ -1,8 +1,8 @@
 ﻿using System;
 using CloneDeploy_Entities;
-using CloneDeploy_Web;
+using CloneDeploy_Web.Helpers;
 
-namespace BasePages
+namespace CloneDeploy_Web.BasePages
 {
     public class Images : PageBaseMaster
     {

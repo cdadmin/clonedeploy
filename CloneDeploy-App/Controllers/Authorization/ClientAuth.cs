@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Controllers;
-using CloneDeploy_App.BLL;
-using CloneDeploy_App.Helpers;
+using CloneDeploy_Services;
+using CloneDeploy_Services.Helpers;
 
 namespace CloneDeploy_App.Controllers.Authorization
 {
@@ -18,7 +15,7 @@ namespace CloneDeploy_App.Controllers.Authorization
         public override void OnAuthorization(HttpActionContext actionContext)
         {
             var userToken = Utility.Decode(HttpContext.Current.Request.Headers["Authorization"], "Authorization");
-            if (!new Logic().Authorize(userToken))
+            if (!new ClientImagingServices().Authorize(userToken))
             {
                 var response = actionContext.Request.CreateResponse(HttpStatusCode.Forbidden);
                 throw new HttpResponseException(response);

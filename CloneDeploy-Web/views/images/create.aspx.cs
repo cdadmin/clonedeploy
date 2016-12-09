@@ -1,7 +1,8 @@
 ﻿using System;
-using BasePages;
 using CloneDeploy_Entities;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
 namespace views.images
 {
@@ -38,7 +39,7 @@ namespace views.images
             if (result.Success)
             {
                 EndUserMessage = "Successfully Added Image";
-                Response.Redirect("~/views/images/edit.aspx?imageid=" + image.Id);
+                Response.Redirect("~/views/images/edit.aspx?imageid=" + result.Id);
             }
             else
             {

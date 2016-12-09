@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using CloneDeploy_Entities;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
-public partial class views_admin_munki : BasePages.Admin
+public partial class views_admin_munki : Admin
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -29,7 +31,7 @@ public partial class views_admin_munki : BasePages.Admin
 
         };
         if (!string.IsNullOrEmpty(txtSmbPassword.Text))
-            listSettings.Add(new SettingEntity { Name = "Munki SMB Password Encrypted", Value = new Encryption().EncryptText(txtSmbPassword.Text), Id = Call.SettingApi.GetSetting("Munki SMB Password Encrypted").Id });
+            listSettings.Add(new SettingEntity { Name = "Munki SMB Password Encrypted", Value = txtSmbPassword.Text, Id = Call.SettingApi.GetSetting("Munki SMB Password Encrypted").Id });
 
 
 

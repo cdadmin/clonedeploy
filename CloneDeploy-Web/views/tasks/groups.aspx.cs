@@ -2,10 +2,12 @@
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
 namespace views.tasks
 {
-    public partial class TaskMulticast : BasePages.Tasks
+    public partial class TaskMulticast : Tasks
     {
         protected void Page_Load(object sender, EventArgs e)
         {

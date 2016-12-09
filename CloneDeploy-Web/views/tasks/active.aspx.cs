@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web.BasePages;
 
 namespace views.tasks
 {
-    public partial class TaskActive : BasePages.Tasks
+    public partial class TaskActive : Tasks
     {
         protected void Page_Load(object sender, EventArgs e)
         {

@@ -8,10 +8,11 @@ using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using log4net;
 
 
-public partial class views_admin_bootmenu_applenetboot : BasePages.Admin
+public partial class views_admin_bootmenu_applenetboot : Admin
 {
     /*BSDP Options
      *Code      Length      Values                              Name                        Client Or Server
@@ -44,7 +45,7 @@ public partial class views_admin_bootmenu_applenetboot : BasePages.Admin
                           04:                     [image name length]
                                 62:6f:6f:74       [image name]
     */
-
+    private readonly ILog log = LogManager.GetLogger("FrontEndLog");
     protected void Page_Load(object sender, EventArgs e)
     {
         if(!IsPostBack)
@@ -83,7 +84,7 @@ public partial class views_admin_bootmenu_applenetboot : BasePages.Admin
         }
         catch (Exception ex)
         {
-            Logger.Log("Could Not Parse IP Address. " + txtServerIp.Text + " " + ex.Message);
+            log.Debug("Could Not Parse IP Address. " + txtServerIp.Text + " " + ex.Message);
             EndUserMessage = "Could Not Parse IP Address";
             return;
         }

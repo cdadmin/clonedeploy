@@ -5,11 +5,8 @@ using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading;
-using System.Web;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
-using CloneDeploy_App.DTOs;
-using CloneDeploy_App.Helpers;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.ImageSchemaBE;
@@ -84,10 +81,10 @@ namespace CloneDeploy_App.Controllers
         }
 
         [GlobalAuth(Permission = "GlobalUpdate")]
-        public ActionResultDTO Put(int id, ImageEntity image, string originalName)
+        public ActionResultDTO Put(int id, ImageEntity image)
         {
             image.Id = id;
-            var result = _imageServices.UpdateImage(image,originalName);
+            var result = _imageServices.UpdateImage(image);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
         }

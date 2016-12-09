@@ -1,7 +1,7 @@
 ﻿using System;
-using CloneDeploy_Web;
+using CloneDeploy_Web.Helpers;
 
-namespace BasePages
+namespace CloneDeploy_Web.BasePages
 {
     public class Admin : PageBaseMaster
     {

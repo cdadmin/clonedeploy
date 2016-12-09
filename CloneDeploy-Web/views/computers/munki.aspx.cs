@@ -5,8 +5,10 @@ using System.Web.UI.WebControls;
 using CloneDeploy_ApiCalls;
 using CloneDeploy_Entities;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
-public partial class views_computers_munki : BasePages.Computers
+public partial class views_computers_munki : Computers
 {
     protected void Page_Load(object sender, EventArgs e)
     {

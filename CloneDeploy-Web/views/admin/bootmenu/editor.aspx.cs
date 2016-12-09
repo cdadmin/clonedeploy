@@ -1,12 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using BasePages;
-
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
+using log4net;
 
 public partial class views_admin_bootmenu_editor : Admin
 {
+    private readonly ILog log = LogManager.GetLogger("FrontEndLog");
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack) PopulateForm();
@@ -125,7 +127,7 @@ public partial class views_admin_bootmenu_editor : Admin
             }
             catch (Exception ex)
             {
-                Logger.Log(ex.Message);
+                log.Debug(ex.Message);
             }
         }
 
@@ -212,7 +214,7 @@ public partial class views_admin_bootmenu_editor : Admin
             {
                 
                     EndUserMessage = "Could Not Update Default Global Boot Menu.  Check The Exception Log For More Info.";
-                Logger.Log(ex.Message);
+                log.Debug(ex.Message);
             }
         }
 
@@ -334,7 +336,7 @@ public partial class views_admin_bootmenu_editor : Admin
             }
             catch (Exception ex)
             {
-                Logger.Log(ex.Message);
+                log.Debug(ex.Message);
             }
         }
 

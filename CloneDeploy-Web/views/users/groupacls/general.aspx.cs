@@ -4,8 +4,10 @@ using System.Linq;
 using System.Web.UI.WebControls;
 using CloneDeploy_Entities;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
-public partial class views_users_groupacls_general : BasePages.Users
+public partial class views_users_groupacls_general : Users
 {
     private List<CheckBox> _listCheckBoxes;
 

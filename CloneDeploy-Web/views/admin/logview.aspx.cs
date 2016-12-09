@@ -4,8 +4,7 @@ using System.IO;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using BasePages;
-using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
 
 namespace views.admin
 {
@@ -47,7 +46,7 @@ namespace views.admin
                     fileView.Visible = true;
                     btnExportLog.Visible = true;
                     dbView.Visible = false;
-                    GridView1.DataSource = Logger.ViewLog(ddlLog.Text, ddlLimit.Text);
+                    //GridView1.DataSource = Logger.ViewLog(ddlLog.Text, ddlLimit.Text);
                     GridView1.DataBind();
                 }
 

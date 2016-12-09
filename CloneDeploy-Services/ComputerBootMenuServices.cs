@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using CloneDeploy_App.Helpers;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services.Helpers;
 
 namespace CloneDeploy_Services
 {
@@ -16,7 +17,7 @@ namespace CloneDeploy_Services
             _uow = new UnitOfWork();
         }
 
-        public bool UpdateComputerBootMenu(ComputerBootMenuEntity computerBootMenu)
+        public ActionResultDTO UpdateComputerBootMenu(ComputerBootMenuEntity computerBootMenu)
         {
             if (_uow.ComputerBootMenuRepository.Exists(x => x.ComputerId == computerBootMenu.ComputerId))
             {
@@ -29,9 +30,10 @@ namespace CloneDeploy_Services
                 _uow.ComputerBootMenuRepository.Insert(computerBootMenu);
 
             _uow.Save();
-
-
-            return true;
+            var result = new ActionResultDTO();
+            result.Success = true;
+            result.Id = computerBootMenu.Id;
+            return result;
 
         }
 

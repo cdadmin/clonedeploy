@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using BasePages;
 using CloneDeploy_Entities;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
 public partial class views_admin_server : Admin
 {
@@ -50,7 +51,7 @@ public partial class views_admin_server : Admin
                 newBootMenu = true;
                 newClientIso = true;
             }
-            if ((string)ViewState["servicePath"] != ParameterReplace.Between(txtWebService.Text))
+            if ((string)ViewState["servicePath"] != Utility.Between(txtWebService.Text))
             {
                 newBootMenu = true;
                 newClientIso = true;

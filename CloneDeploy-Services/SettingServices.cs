@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
+using CloneDeploy_Services.Helpers;
 
 namespace CloneDeploy_Services
 {
@@ -18,18 +19,21 @@ namespace CloneDeploy_Services
         {
           
                 var setting = _uow.SettingRepository.GetFirstOrDefault(s => s.Name == settingName);              
-                setting.Value = CloneDeploy_App.Helpers.ParameterReplace.Between(setting.Value);             
+                setting.Value = Utility.Between(setting.Value);             
                 return setting;
             
         }
 
         public  bool UpdateSetting(List<SettingEntity> listSettings)
         {
-          
-                foreach (var setting in listSettings)
-                    _uow.SettingRepository.Update(setting, setting.Id);
-                                   
-                _uow.Save();
+
+            foreach (var setting in listSettings)
+            {
+                if (setting.Name == "Munki SMB Password Encrypted" || setting.Name == "Smtp Password Encrypted")
+                    setting.Value = new Encryption().EncryptText(setting.Value);
+                _uow.SettingRepository.Update(setting, setting.Id);
+            }
+            _uow.Save();
             
             return true;
         }

@@ -6,7 +6,7 @@ using DWORD = System.UInt32;
 using LPWSTR = System.String;
 using NET_API_STATUS = System.UInt32;
 
-namespace CloneDeploy_App.Helpers
+namespace CloneDeploy_Services.Helpers
 {
     public class UNCAccessWithCredentials : IDisposable
     {

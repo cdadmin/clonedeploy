@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using CloneDeploy_App.DTOs;
+using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.ImageSchemaFE;
 using RestSharp;
 using HardDrive = CloneDeploy_Entities.DTOs.ImageSchemaFE.HardDrive;

@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
-using System.Data.Entity.Infrastructure.Interception;
 using System.Data.Entity.Validation;
 using CloneDeploy_Entities;
+using log4net;
 
 namespace CloneDeploy_DataModel
 {
     public class UnitOfWork : IUnitOfWork 
     {
+        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
         private CloneDeployDbContext _context = new CloneDeployDbContext();
 
         private IGenericRepository<ActiveMulticastSessionEntity> _activeMulticastSessionRepository;
@@ -326,17 +326,17 @@ namespace CloneDeploy_DataModel
             {
                 foreach (var eve in ex.EntityValidationErrors)
                 {
-                    Logger.Logger.Log(string.Format("{0}: Entity of type \"{1}\" in state \"{2}\" has the following validation errors:", DateTime.Now, eve.Entry.Entity.GetType().Name, eve.Entry.State));
+                    log.Debug(string.Format("{0}: Entity of type \"{1}\" in state \"{2}\" has the following validation errors:", DateTime.Now, eve.Entry.Entity.GetType().Name, eve.Entry.State));
                     foreach (var ve in eve.ValidationErrors)
                     {
-                        Logger.Logger.Log(string.Format("- Property: \"{0}\", Error: \"{1}\"", ve.PropertyName, ve.ErrorMessage));
+                        log.Debug(string.Format("- Property: \"{0}\", Error: \"{1}\"", ve.PropertyName, ve.ErrorMessage));
                     }
                 }
                 throw;
             }
             catch (DbUpdateException ex)
             {
-                Logger.Logger.Log(ex.Message);
+                log.Debug(ex.Message);
                 throw;
             }
         }

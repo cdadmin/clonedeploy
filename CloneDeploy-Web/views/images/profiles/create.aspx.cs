@@ -1,6 +1,7 @@
 ﻿using System;
-using BasePages;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
 public partial class views_images_profiles_create : Images
 {

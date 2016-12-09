@@ -2,10 +2,12 @@
 using System.Linq;
 using System.Web.UI.WebControls;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
 namespace views.tasks
 {
-    public partial class TaskCustom : BasePages.Tasks
+    public partial class TaskCustom : Tasks
     {
         protected void Page_Load(object sender, EventArgs e)
         {

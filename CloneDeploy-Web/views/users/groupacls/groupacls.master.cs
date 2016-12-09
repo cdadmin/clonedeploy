@@ -1,15 +1,15 @@
 ﻿using System;
-using BasePages;
 using CloneDeploy_Entities;
+using CloneDeploy_Web.BasePages;
 
-public partial class views_users_groupacls_groupacls : BasePages.MasterBaseMaster
+public partial class views_users_groupacls_groupacls : MasterBaseMaster
 {
-    private BasePages.Users userBasePage { get; set; }
+    private Users userBasePage { get; set; }
     public CloneDeployUserGroupEntity CloneDeployUserGroup { get; set; }
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        userBasePage = (Page as BasePages.Users);
+        userBasePage = (Page as Users);
         CloneDeployUserGroup = userBasePage.CloneDeployUserGroup;
 
         if (CloneDeployUserGroup == null) Response.Redirect("~/", true);

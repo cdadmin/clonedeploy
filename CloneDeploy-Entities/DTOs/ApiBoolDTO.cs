@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace CloneDeploy_App.DTOs
+﻿namespace CloneDeploy_Entities.DTOs
 {
     public class ApiBoolResponseDTO
     {

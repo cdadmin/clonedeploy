@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
-using CloneDeploy_App.DTOs;
+using System.IO;
+
+using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using RestSharp;
 
@@ -57,45 +59,67 @@ namespace CloneDeploy_ApiCalls
 
         }
 
-        public string[] GetBootImages()
+        public List<string> GetBootImages()
         {
             _request.Method = Method.GET;
             _request.Resource = string.Format("api/{0}/GetBootImages/", _resource);
-            var response = new ApiRequest().Execute<ApiStringArrResponseDTO>(_request).Value;
+            var response = new ApiRequest().Execute<List<string>>(_request);
 
             return response;
 
         }
 
-        public string[] GetLogs()
+        public List<string> GetLogs()
         {
             _request.Method = Method.GET;
             _request.Resource = string.Format("api/{0}/GetLogs/", _resource);
-            var response = new ApiRequest().Execute<ApiStringArrResponseDTO>(_request).Value;
+            var response = new ApiRequest().Execute<List<string>>(_request);
 
             return response;
 
         }
 
-        public string[] GetScripts(string type)
+        public List<string> GetScripts(string type)
         {
             _request.Method = Method.GET;
             _request.Resource = string.Format("api/{0}/GetScripts/", _resource);
             _request.AddParameter("type", type);
-            var response = new ApiRequest().Execute<ApiStringArrResponseDTO>(_request).Value;
+            var response = new ApiRequest().Execute<List<string>>(_request);
 
             return response;
 
         }
 
-        public string[] GetThinImages()
+        public List<string> GetThinImages()
         {
             _request.Method = Method.GET;
             _request.Resource = string.Format("api/{0}/GetThinImages/", _resource);
-            var response = new ApiRequest().Execute<ApiStringArrResponseDTO>(_request).Value;
+            var response = new ApiRequest().Execute<List<string>>(_request);
 
             return response;
 
+        }
+
+
+        public MunkiPackageInfoEntity GetPlist(string file)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetPlist/", _resource);
+            _request.AddParameter("file", file);
+            var response = new ApiRequest().Execute<MunkiPackageInfoEntity>(_request);
+
+            return response;
+        }
+
+
+        public List<FileInfo> GetMunkiResources(string resourceType)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetMunkiResources/", _resource);
+            _request.AddParameter("resourceType", resourceType);
+            var response = new ApiRequest().Execute<List<FileInfo>>(_request);
+
+            return response;
         }
     }
 }

@@ -11,7 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
-namespace CloneDeploy_App.Helpers
+namespace CloneDeploy_Services.Helpers
 {
 
     /// <summary>

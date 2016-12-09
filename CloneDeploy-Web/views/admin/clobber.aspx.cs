@@ -5,8 +5,10 @@ using System.Web.UI.WebControls;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
-public partial class views_admin_clobber : BasePages.Admin
+public partial class views_admin_clobber : Admin
 {
     protected void Page_Load(object sender, EventArgs e)
     {

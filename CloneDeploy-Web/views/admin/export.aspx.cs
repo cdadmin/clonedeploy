@@ -1,8 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Web;
-using BasePages;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
 namespace views.admin
 {

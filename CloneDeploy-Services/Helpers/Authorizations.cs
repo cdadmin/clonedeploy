@@ -1,4 +1,4 @@
-﻿namespace CloneDeploy_App.Helpers
+﻿namespace CloneDeploy_Services.Helpers
 {
     public class Authorizations
     {

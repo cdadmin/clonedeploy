@@ -1,7 +1,9 @@
 ﻿using System;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
-public partial class views_groups_multicast : BasePages.Groups
+public partial class views_groups_multicast : Groups
 {
     protected void Page_Load(object sender, EventArgs e)
     {

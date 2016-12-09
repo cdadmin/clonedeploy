@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web.BasePages;
 
-public partial class views_computers_inventory_logins : BasePages.Computers
+public partial class views_computers_inventory_logins : Computers
 {
     protected void Page_Load(object sender, EventArgs e)
     {

@@ -1,7 +1,8 @@
 ﻿using System;
-using BasePages;
 using CloneDeploy_Entities;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
 public partial class views_admin_dp_create : Admin
 {
@@ -21,9 +22,9 @@ public partial class views_admin_dp_create : Admin
             ShareName = txtShareName.Text,
             Domain = txtDomain.Text,
             RwUsername = txtRwUsername.Text,
-            RwPassword = new Encryption().EncryptText(txtRwPassword.Text),
+            RwPassword = txtRwPassword.Text,
             RoUsername = txtRoUsername.Text,
-            RoPassword = new Encryption().EncryptText(txtRoPassword.Text),
+            RoPassword = txtRoPassword.Text,
             IsPrimary = Convert.ToInt16(chkPrimary.Checked),
             PhysicalPath = chkPrimary.Checked ? txtPhysicalPath.Text : "",           
            

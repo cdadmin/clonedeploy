@@ -2,14 +2,17 @@
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using log4net;
 
-namespace CloneDeploy_App.Helpers
+namespace CloneDeploy_Services.Helpers
 {
     /// <summary>
     /// Summary description for Mail
     /// </summary>
     public class Mail
     {
+        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+
         public string Subject { get; set; }
         public string Body { get; set; }
         public string MailTo { get; set; }
@@ -39,7 +42,7 @@ namespace CloneDeploy_App.Helpers
             }
             catch (Exception ex)
             {
-                Logger.Log(ex.Message);
+                log.Debug(ex.Message);
             }
         }
     }

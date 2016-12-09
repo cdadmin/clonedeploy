@@ -1,8 +1,10 @@
 ﻿using System;
 using CloneDeploy_Entities;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
-public partial class views_users_creategroup : BasePages.Users
+public partial class views_users_creategroup : Users
 {
     protected void Page_Load(object sender, EventArgs e)
     {

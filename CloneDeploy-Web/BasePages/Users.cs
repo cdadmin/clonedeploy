@@ -1,7 +1,7 @@
 ﻿using System;
 using CloneDeploy_Entities;
 
-namespace BasePages
+namespace CloneDeploy_Web.BasePages
 {
     public class Users : PageBaseMaster
     {

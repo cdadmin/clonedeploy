@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using CloneDeploy_Entities;
+﻿using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using RestSharp;
 

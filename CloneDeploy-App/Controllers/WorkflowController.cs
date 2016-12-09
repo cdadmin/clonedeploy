@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Security.Claims;
 using System.Threading;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
-using CloneDeploy_App.DTOs;
-using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Services;
+using CloneDeploy_Services.Workflows;
 
 
 namespace CloneDeploy_App.Controllers
@@ -22,7 +17,7 @@ namespace CloneDeploy_App.Controllers
         [HttpPost]
         public ApiBoolResponseDTO CreateDefaultBootMenu(BootMenuGenOptionsDTO defaultMenuOptions)
         {
-           new BLL.Workflows.DefaultBootMenu(defaultMenuOptions).CreateGlobalDefaultBootMenu();
+           new DefaultBootMenu(defaultMenuOptions).CreateGlobalDefaultBootMenu();
             return new ApiBoolResponseDTO() {Value = true};
         }
 
@@ -30,7 +25,7 @@ namespace CloneDeploy_App.Controllers
         [HttpPost]
         public ApiBoolResponseDTO GenerateLinuxIsoConfig(IsoGenOptionsDTO isoOptions)
         {
-            new BLL.Workflows.IsoGen(isoOptions).Generate();
+            new IsoGen(isoOptions).Generate();
             return new ApiBoolResponseDTO() { Value = true };
         }
 
@@ -38,7 +33,7 @@ namespace CloneDeploy_App.Controllers
         [HttpGet]
         public ApiBoolResponseDTO CreateClobberBootMenu(int profileId, bool promptComputerName)
         {
-            new BLL.Workflows.ClobberBootMenu(profileId, promptComputerName).CreatePxeBootFiles();
+            new ClobberBootMenu(profileId, promptComputerName).CreatePxeBootFiles();
             return new ApiBoolResponseDTO() { Value = true };
         }
 
@@ -46,14 +41,14 @@ namespace CloneDeploy_App.Controllers
         [HttpGet]
         public ApiBoolResponseDTO CopyPxeBinaries()
         {
-            return new ApiBoolResponseDTO() {Value = new BLL.Workflows.CopyPxeBinaries().CopyFiles()};
+            return new ApiBoolResponseDTO() {Value = new CopyPxeBinaries().CopyFiles()};
         }
 
         [UserAuth(Permission = "Administrator")]
         [HttpGet]
         public ApiBoolResponseDTO CancelAllImagingTasks()
         {
-            return new ApiBoolResponseDTO() { Value = BLL.Workflows.CancelAllImagingTasks.Run() };
+            return new ApiBoolResponseDTO() { Value = CloneDeploy_Services.Workflows.CancelAllImagingTasks.Run() };
         }
 
         [UserAuth(Permission = "Administrator")]
@@ -64,7 +59,7 @@ namespace CloneDeploy_App.Controllers
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                              .Select(c => c.Value).SingleOrDefault();
 
-            return new ApiStringResponseDTO() { Value = new BLL.Workflows.Multicast(profileId, clientCount, Convert.ToInt32(userId)).Create() };
+            return new ApiStringResponseDTO() { Value = new Multicast(profileId, clientCount, Convert.ToInt32(userId)).Create() };
         }   
 
        

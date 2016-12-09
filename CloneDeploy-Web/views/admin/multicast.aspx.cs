@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using BasePages;
 using CloneDeploy_Entities;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
+using log4net;
 
 public partial class views_admin_multicast : Admin
 {
+    private readonly ILog log = LogManager.GetLogger("FrontEndLog");
     protected void Page_Load(object sender, EventArgs e)
     {
         if (IsPostBack) return;
@@ -105,7 +108,7 @@ public partial class views_admin_multicast : Admin
         }
         catch (Exception ex)
         {
-            Logger.Log(ex.Message);
+            log.Debug(ex.Message);
             return false;
         }
     }

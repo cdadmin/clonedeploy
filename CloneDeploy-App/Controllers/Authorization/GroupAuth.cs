@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading;
-using System.Web;
 using System.Web.Http;
 using System.Web.Http.Controllers;
-
-using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 namespace CloneDeploy_App.Controllers.Authorization
 {
@@ -33,14 +30,14 @@ namespace CloneDeploy_App.Controllers.Authorization
             {
                 case "GroupSearch":
                 case "GroupCreate":
-                    if (new BLL.AuthorizationServices(Convert.ToInt32(userId), Permission).IsAuthorized())
+                    if (new AuthorizationServices(Convert.ToInt32(userId), Permission).IsAuthorized())
                         authorized = true;
                     break;
                 case "GroupDelete":
                 case "GroupUpdate":
                 case "GroupRead":
                     var objectId = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
-                    if (new BLL.AuthorizationServices(Convert.ToInt32(userId), Permission).GroupManagement(objectId))
+                    if (new AuthorizationServices(Convert.ToInt32(userId), Permission).GroupManagement(objectId))
                         authorized = true;
                     break;
             }

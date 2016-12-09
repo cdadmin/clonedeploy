@@ -3,14 +3,17 @@ using System.Configuration;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using log4net;
 
-namespace CloneDeploy_App.Helpers
+namespace CloneDeploy_Services.Helpers
 {
     /// <summary>
     /// Summary http://www.codeproject.com/Articles/769741/Csharp-AES-bits-Encryption-Library-with-Salt
     /// </summary>
     public class Encryption
     {
+
+        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
         public string EncryptText(string input)
         {
             byte[] bytesToBeEncrypted = Encoding.UTF8.GetBytes(input);
@@ -40,7 +43,7 @@ namespace CloneDeploy_App.Helpers
             }
             catch (Exception)
             {
-                Logger.Log("Could Not Decrypt Password.  Ensure Your Encryption Key is Correct.");
+                log.Debug("Could Not Decrypt Password.  Ensure Your Encryption Key is Correct.");
                 return null;
 
             }

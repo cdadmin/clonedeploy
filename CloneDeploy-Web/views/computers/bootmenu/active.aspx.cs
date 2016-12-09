@@ -1,7 +1,9 @@
 ﻿using System;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
-public partial class views_computers_bootmenu_active : BasePages.Computers
+public partial class views_computers_bootmenu_active : Computers
 {
     protected void Page_Load(object sender, EventArgs e)
     {

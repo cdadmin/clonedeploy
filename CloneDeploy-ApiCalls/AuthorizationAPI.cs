@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CloneDeploy_App.DTOs;
-using CloneDeploy_Entities;
-using CloneDeploy_Entities.DTOs;
+﻿using CloneDeploy_Entities.DTOs;
 using RestSharp;
 
 namespace CloneDeploy_ApiCalls

@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Web;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
-using CloneDeploy_App.DTOs;
-using CloneDeploy_App.Helpers;
+using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services.Helpers;
 
 
 namespace CloneDeploy_App.Controllers
@@ -21,7 +18,7 @@ namespace CloneDeploy_App.Controllers
 
             return new ApiBoolResponseDTO
             {
-                Value = new Helpers.FileOps().FileExists(Settings.TftpPath + Path.DirectorySeparatorChar + "boot" +
+                Value = new FileOps().FileExists(Settings.TftpPath + Path.DirectorySeparatorChar + "boot" +
                                                          Path.DirectorySeparatorChar + "boot.sdi")
             };
             
@@ -34,7 +31,7 @@ namespace CloneDeploy_App.Controllers
 
             return new ApiStringResponseDTO
             {
-                Value = new Helpers.FileOps().ReadAllText(path)
+                Value = new FileOps().ReadAllText(path)
             };
 
         }
@@ -51,26 +48,35 @@ namespace CloneDeploy_App.Controllers
 
         [HttpGet]
         [ComputerAuth(Permission = "ComputerSearch")]
-        public ApiStringArrResponseDTO GetBootImages()
+        public IEnumerable<string> GetBootImages()
         {
 
-            return new ApiStringArrResponseDTO
-            {
-                Value = Utility.GetBootImages()
-            };
+            return Utility.GetBootImages();
+        }
+
+        [HttpGet]
+        [ComputerAuth(Permission = "ComputerSearch")]
+        public List<string> GetLogs()
+        {
+
+
+            return Utility.GetLogs();
+
 
         }
 
         [HttpGet]
         [ComputerAuth(Permission = "ComputerSearch")]
-        public ApiStringArrResponseDTO GetLogs()
+        public MunkiPackageInfoEntity GetPlist(string file)
         {
+            return new Utility().ReadPlist(file);
+        }
 
-            return new ApiStringArrResponseDTO
-            {
-                Value = Utility.GetLogs()
-            };
-
+        [HttpGet]
+        [ComputerAuth(Permission = "ComputerSearch")]
+        public List<FileInfo> GetMunkiResources(string resourceType)
+        {
+            return new Utility().GetMunkiResources(resourceType);
         }
 
 
@@ -84,25 +90,23 @@ namespace CloneDeploy_App.Controllers
 
         [HttpGet]
         [ComputerAuth(Permission = "ComputerSearch")]
-        public ApiStringArrResponseDTO GetScripts(string type)
+        public List<string> GetScripts(string type)
         {
 
-            return new ApiStringArrResponseDTO
-            {
-                Value = Utility.GetScripts(type)
-            };
+
+            return Utility.GetScripts(type);
+
 
         }
 
         [HttpGet]
         [ComputerAuth(Permission = "ComputerSearch")]
-        public ApiStringArrResponseDTO GetThinImages()
+        public List<string> GetThinImages()
         {
 
-            return new ApiStringArrResponseDTO
-            {
-                Value = Utility.GetThinImages()
-            };
+
+            return Utility.GetThinImages();
+
 
         }
         

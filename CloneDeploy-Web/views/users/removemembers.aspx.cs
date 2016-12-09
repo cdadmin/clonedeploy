@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Web.UI.WebControls;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
-public partial class views_users_removemembers : BasePages.Users
+public partial class views_users_removemembers : Users
 {
     protected void Page_Load(object sender, EventArgs e)
     {

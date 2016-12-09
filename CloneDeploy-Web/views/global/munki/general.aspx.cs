@@ -1,7 +1,9 @@
 ﻿using System;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
-public partial class views_global_munki_general : BasePages.Global
+public partial class views_global_munki_general : Global
 {
     protected void Page_Load(object sender, EventArgs e)
     {

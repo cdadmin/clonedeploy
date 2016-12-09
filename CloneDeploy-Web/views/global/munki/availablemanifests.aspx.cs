@@ -4,8 +4,10 @@ using System.Linq;
 using System.Web.UI.WebControls;
 using CloneDeploy_Entities;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
-public partial class views_global_munki_availablemanifests : BasePages.Global
+public partial class views_global_munki_availablemanifests : Global
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -18,7 +20,7 @@ public partial class views_global_munki_availablemanifests : BasePages.Global
         var availableLimit = ddlLimitAvailable.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimitAvailable.Text);
 
         var listOfManifests = new List<MunkiPackageInfoEntity>();
-        var manifests = GetMunkiResources("manifests");
+        var manifests = Call.FilesystemApi.GetMunkiResources("manifests");
         if (manifests != null)
         {
             foreach (var manifest in manifests)
@@ -34,7 +36,7 @@ public partial class views_global_munki_availablemanifests : BasePages.Global
             gvPkgInfos.DataSource = listOfManifests;
             gvPkgInfos.DataBind();
 
-            lblTotalAvailable.Text = gvPkgInfos.Rows.Count + " Result(s) / " + manifests.Length +
+            lblTotalAvailable.Text = gvPkgInfos.Rows.Count + " Result(s) / " + manifests.Count +
                                      " Total Manifest(s)";
         }
         else

@@ -1,8 +1,9 @@
 ﻿using System;
-using BasePages;
 using CloneDeploy_ApiCalls;
 using CloneDeploy_Entities;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
 namespace views.computers
 {

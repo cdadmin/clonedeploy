@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using CloneDeploy_App.BLL.DynamicClientPartition;
-using CloneDeploy_App.Helpers;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services.Helpers;
 
 namespace CloneDeploy_Services
 {
@@ -25,6 +23,8 @@ namespace CloneDeploy_Services
 
             var validationResult = ValidateImageProfile(profile, true);
             var actionResult = new ActionResultDTO();
+            if (!string.IsNullOrEmpty(profile.MunkiAuthPassword))
+                profile.MunkiAuthPassword = new Encryption().EncryptText(profile.MunkiAuthPassword);
             if (validationResult.Success)
             {
                 _uow.ImageProfileRepository.Insert(profile);
@@ -87,6 +87,8 @@ namespace CloneDeploy_Services
 
                 var actionResult = new ActionResultDTO();
                 var validationResult = ValidateImageProfile(profile, false);
+                if (!string.IsNullOrEmpty(profile.MunkiAuthPassword))
+                    profile.MunkiAuthPassword = new Encryption().EncryptText(profile.MunkiAuthPassword);
                 if (validationResult.Success)
                 {
                     _uow.ImageProfileRepository.Update(profile, profile.Id);
@@ -106,7 +108,7 @@ namespace CloneDeploy_Services
 
         private ValidationResultDTO ValidateImageProfile(ImageProfileEntity imageProfile, bool isNewImageProfile)
         {
-            var validationResult = new ValidationResultDTO();
+            var validationResult = new ValidationResultDTO(){Success = true};
 
             if (string.IsNullOrEmpty(imageProfile.Name) || !imageProfile.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {

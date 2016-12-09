@@ -8,8 +8,8 @@ using System.Web.Security;
 #if __MonoCS__  
 using Mono.Unix; // requires reference to  Mono.Posix.dll
 #endif
-using BasePages;
 using CloneDeploy_Entities;
+using CloneDeploy_Web.BasePages;
 
 namespace views.dashboard
 {

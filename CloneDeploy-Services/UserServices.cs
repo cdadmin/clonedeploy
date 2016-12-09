@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CloneDeploy_App.Helpers;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services.Helpers;
 using Newtonsoft.Json;
 
 namespace CloneDeploy_Services
@@ -95,7 +95,7 @@ namespace CloneDeploy_Services
             foreach (var user in SearchUsers("").Where(x => x.NotifyLockout == 1 && !string.IsNullOrEmpty(x.Email)))
             {
                 if (user.Membership != "Administrator" && user.Id != userId) continue;
-                var mail = new CloneDeploy_App.Helpers.Mail
+                var mail = new Mail
                 {
                     MailTo = user.Email,
                     Body = lockedUser.Name + " Has Been Locked For 15 Minutes Because Of Too Many Failed Login Attempts",

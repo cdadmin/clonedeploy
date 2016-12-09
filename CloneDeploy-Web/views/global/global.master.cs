@@ -1,5 +1,5 @@
 ﻿using System;
-using BasePages;
+using CloneDeploy_Web.BasePages;
 
 public partial class views_global_global : MasterBaseMaster
 {

@@ -2,8 +2,10 @@
 using System.IO;
 using System.Web;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
-public partial class views_admin_scripts_editcore : BasePages.Global
+public partial class views_admin_scripts_editcore : Global
 {
     protected void Page_Load(object sender, EventArgs e)
     {

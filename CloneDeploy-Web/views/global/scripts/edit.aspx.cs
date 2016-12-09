@@ -1,8 +1,10 @@
 ﻿using System;
 using CloneDeploy_Entities;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
-public partial class views_admin_scripts_edit : BasePages.Global
+public partial class views_admin_scripts_edit : Global
 {
     public ScriptEntity Script { get { return ReadProfile(); } }
     protected void Page_Load(object sender, EventArgs e)

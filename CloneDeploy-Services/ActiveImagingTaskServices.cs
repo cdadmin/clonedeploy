@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CloneDeploy_App.Helpers;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using Newtonsoft.Json;
+using CloneDeploy_Services.Helpers;
+using CloneDeploy_Services.Workflows;
 
 namespace CloneDeploy_Services
 {
@@ -34,7 +34,7 @@ namespace CloneDeploy_Services
             actionResult.Success = true;
             actionResult.Id = activeImagingTaskId;
 
-            new CloneDeploy_App.BLL.Workflows.CleanTaskBootFiles(computer).CleanPxeBoot();
+            new CleanTaskBootFiles(computer).CleanPxeBoot();
 
             return actionResult;
 
@@ -50,7 +50,7 @@ namespace CloneDeploy_Services
             {
                 if (task.UserId == user.Id)
                 {
-                    var mail = new CloneDeploy_App.Helpers.Mail
+                    var mail = new Mail
                     {
                         MailTo = user.Email,
                         Body = task.Computer.Name + " Image Task Has Completed.",
@@ -70,7 +70,7 @@ namespace CloneDeploy_Services
             {
                 if (task.UserId == user.Id)
                 {
-                    var mail = new CloneDeploy_App.Helpers.Mail
+                    var mail = new Mail
                     {
                         MailTo = user.Email,
                         Body = task.Computer.Name + " Image Task Has Failed. " + error,

@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using CloneDeploy_App.Helpers;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.ImageSchemaBE;
+using CloneDeploy_Services.Helpers;
 using CsvHelper;
+using log4net;
 
 namespace CloneDeploy_Services
 {
     public class ImageServices
     {
+        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
         private readonly UnitOfWork _uow;
 
         private readonly UserServices _userServices = new UserServices();
@@ -31,7 +33,7 @@ namespace CloneDeploy_Services
 
                 _uow.ImageRepository.Insert(image);
                 _uow.Save();
-
+                actionResult.Id = image.Id;
                 var defaultProfile = SeedDefaultImageProfile(image.Id);
                 defaultProfile.ImageId = image.Id;
                 new ImageProfileServices().AddProfile(defaultProfile);
@@ -42,15 +44,15 @@ namespace CloneDeploy_Services
                                               image.Name);
                     new FileOps().SetUnixPermissionsImage(Settings.PrimaryStoragePath + "images" +
                                                           Path.DirectorySeparatorChar + image.Name);
+                    actionResult.Success = true;
 
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log(ex.Message);
+                    log.Debug(ex.Message);
                     actionResult.ErrorMessage = "Could Not Create Image Directory.";
+                   
                 }
-
-
             }
             else
             {
@@ -82,7 +84,7 @@ namespace CloneDeploy_Services
 
             _uow.ImageRepository.Delete(image.Id);
             _uow.Save();
-
+            result.Id = imageId;
             if (string.IsNullOrEmpty(image.Name)) return result;
             DeleteAllUserManagementsForImage(image.Id);
             DeleteAllProfilesForImage(image.Id);
@@ -96,7 +98,7 @@ namespace CloneDeploy_Services
             }
             catch (Exception ex)
             {
-                Logger.Log(ex.Message);
+                log.Debug(ex.Message);
                 result.ErrorMessage = "Could Not Delete Image Folder";
                 result.Success = false;
 
@@ -124,7 +126,7 @@ namespace CloneDeploy_Services
             var image = GetImage(imageId);
             foreach (var user in _userServices.SearchUsers("").Where(x => x.NotifyImageApproved == 1 && !string.IsNullOrEmpty(x.Email)))
             {
-                var mail = new CloneDeploy_App.Helpers.Mail
+                var mail = new Mail
                 {
                     MailTo = user.Email,
                     Body = image.Name + " Has Been Approved",
@@ -205,29 +207,31 @@ namespace CloneDeploy_Services
             
         }
 
-        public ActionResultDTO UpdateImage(ImageEntity image, string originalName)
+        public ActionResultDTO UpdateImage(ImageEntity image)
         {
-            var i = GetImage(image.Id);
-            if (i == null)
+            var originalImage = GetImage(image.Id);
+            if (originalImage == null)
                 return new ActionResultDTO() {ErrorMessage = "Image Not Found", Id = 0};
             var result = new ActionResultDTO();
 
+            bool updateFolderName = originalImage.Name != image.Name;
+            var oldName = originalImage.Name;
             var validationResult = ValidateImage(image, false);
             if (validationResult.Success)
             {
                 _uow.ImageRepository.Update(image, image.Id);
                 _uow.Save();
-
-                if (image.Name != originalName)
+                result.Id = image.Id;
+                if (updateFolderName)
                 {
                     try
                     {
-                        new FileOps().RenameFolder(originalName, image.Name);
+                        new FileOps().RenameFolder(oldName, image.Name);
                         result.Success = true;
                     }
                     catch (Exception ex)
                     {
-                        Logger.Log(ex.Message);
+                        log.Debug(ex.Message);
                         result.ErrorMessage = "Could Not Rename Image Folder";
                         result.Success = false;
                     }
@@ -355,7 +359,7 @@ namespace CloneDeploy_Services
 
         private  ValidationResultDTO ValidateImage(ImageEntity image, bool isNewImage)
         {
-            var validationResult = new ValidationResultDTO();
+            var validationResult = new ValidationResultDTO() {Success = true};
 
             if (string.IsNullOrEmpty(image.Name) || !image.Name.All(c => char.IsLetterOrDigit(c) || c == '_' || c == '-'))
             {
@@ -466,7 +470,7 @@ namespace CloneDeploy_Services
             }
             catch (Exception ex)
             {
-                Logger.Log(ex.Message);
+                log.Debug(ex.Message);
                 return null;
             }
         }

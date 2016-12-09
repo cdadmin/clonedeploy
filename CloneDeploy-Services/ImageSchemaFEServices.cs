@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using CloneDeploy_App.DTOs;
-using CloneDeploy_App.Helpers;
+using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.ImageSchemaFE;
+using CloneDeploy_Services.Helpers;
 using Newtonsoft.Json;
 using HardDrive = CloneDeploy_Entities.DTOs.ImageSchemaFE.HardDrive;
 using LogicalVolume = CloneDeploy_Entities.DTOs.ImageSchemaFE.LogicalVolume;

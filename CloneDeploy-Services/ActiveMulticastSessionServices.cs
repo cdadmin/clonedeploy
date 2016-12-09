@@ -4,16 +4,18 @@ using System.Diagnostics;
 using System.Linq;
 using System.Management;
 using System.Threading;
-using CloneDeploy_App.Helpers;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using Newtonsoft.Json;
+using CloneDeploy_Services.Helpers;
+using CloneDeploy_Services.Workflows;
+using log4net;
 
 namespace CloneDeploy_Services
 {
     public class ActiveMulticastSessionServices
     {
+        private static readonly ILog log = LogManager.GetLogger("ApplicationLog");
          private readonly UnitOfWork _uow;
         private readonly UserServices _userServices;
         public ActiveMulticastSessionServices()
@@ -47,7 +49,7 @@ namespace CloneDeploy_Services
             {
                 if (session.UserId == user.Id)
                 {
-                    var mail = new CloneDeploy_App.Helpers.Mail
+                    var mail = new Mail
                     {
                         MailTo = user.Email,
                         Body = session.Name + " Multicast Task Has Completed.",
@@ -79,7 +81,7 @@ namespace CloneDeploy_Services
             new ActiveImagingTaskServices().DeleteForMulticast(multicastId);
 
             foreach (var computer in computers)
-                new CloneDeploy_App.BLL.Workflows.CleanTaskBootFiles(computer).CleanPxeBoot();
+                new CleanTaskBootFiles(computer).CleanPxeBoot();
 
             try
             {
@@ -102,7 +104,7 @@ namespace CloneDeploy_Services
             }
             catch (Exception ex)
             {
-                Logger.Log(ex.ToString());
+                log.Debug(ex.ToString());
                 //Message.Text = "Could Not Kill Process.  Check The Exception Log For More Info";
                 actionResult.Success = false;
             }
@@ -183,7 +185,7 @@ namespace CloneDeploy_Services
             }
             catch (Exception ex)
             {
-                Logger.Log(ex.ToString());
+                log.Debug(ex.ToString());
             }
         }
 
@@ -201,7 +203,7 @@ namespace CloneDeploy_Services
             }
             catch (Exception ex)
             {
-                Logger.Log(ex.ToString());
+                log.Debug(ex.ToString());
             }
         }
     }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using CloneDeploy_Entities;
-
-namespace CloneDeploy_App.DTOs
+﻿namespace CloneDeploy_Entities.DTOs
 {
     public class ImageSchemaRequestDTO
     {

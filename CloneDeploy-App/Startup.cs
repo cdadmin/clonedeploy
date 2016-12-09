@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using CloneDeploy_App.BLL;
+using CloneDeploy_App;
 using CloneDeploy_Services;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.OAuth;
@@ -9,7 +9,7 @@ using Owin;
 
 [assembly: OwinStartup(typeof(Startup))]
 
-namespace CloneDeploy_App.BLL
+namespace CloneDeploy_App
 {
     public class SimpleAuthorizationServerProvider : OAuthAuthorizationServerProvider
     {

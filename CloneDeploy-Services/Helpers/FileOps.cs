@@ -1,11 +1,13 @@
 ﻿using System;
 using System.IO;
+using log4net;
 using Mono.Unix.Native;
 
-namespace CloneDeploy_App.Helpers
+namespace CloneDeploy_Services.Helpers
 {
     public class FileOps
     {
+        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
         public string ReadAllText(string path)
         {
             string fileText = null;
@@ -16,7 +18,7 @@ namespace CloneDeploy_App.Helpers
             }
             catch (Exception ex)
             {
-                Logger.Log(ex.Message);
+                log.Debug(ex.Message);
                 fileText = "Could Not Read File";
             }
 
@@ -49,7 +51,7 @@ namespace CloneDeploy_App.Helpers
             }
             catch (Exception ex)
             {
-                Logger.Log(ex.Message);
+                log.Debug(ex.Message);
                
              
                 return false;
@@ -98,7 +100,7 @@ namespace CloneDeploy_App.Helpers
             }
             catch (Exception ex)
             {
-               Logger.Log(ex.Message);
+               log.Debug(ex.Message);
              
             }
         }
@@ -134,7 +136,7 @@ namespace CloneDeploy_App.Helpers
             }
             catch (Exception ex)
             {
-                Logger.Log(ex.Message);
+                log.Debug(ex.Message);
                 return false;
             }
         }

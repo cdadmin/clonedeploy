@@ -1,7 +1,4 @@
-﻿using CloneDeploy_App.BLL;
-using CloneDeploy_Services;
-
-namespace CloneDeploy_App.Helpers
+﻿namespace CloneDeploy_Services.Helpers
 {
     public class Settings
     {

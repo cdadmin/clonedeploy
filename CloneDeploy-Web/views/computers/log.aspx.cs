@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using BasePages;
+using CloneDeploy_Web.BasePages;
 
 namespace views.computers
 {

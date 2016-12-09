@@ -46,18 +46,7 @@ namespace CloneDeploy_Web.views.login
                 SessionExpired.Visible = false;
             }
             
-          
-            if (Settings.ForceSsL == "Yes")
-            {
-                if (!HttpContext.Current.Request.IsSecureConnection)
-                {
-                    var root = Request.Url.GetLeftPart(UriPartial.Authority);
-                    root = root + Page.ResolveUrl("~/");
-                    root = root.Replace("http://", "https://");
-                    Response.Redirect(root);
-                }
-            }
-
+         
             if (Request.IsAuthenticated)
             {
                 Response.Redirect("~/views/dashboard/dash.aspx");

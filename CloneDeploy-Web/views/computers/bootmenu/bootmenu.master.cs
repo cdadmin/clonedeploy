@@ -1,8 +1,8 @@
 ﻿using System;
-using BasePages;
 using CloneDeploy_Entities;
+using CloneDeploy_Web.BasePages;
 
-public partial class views_computers_bootmenu_bootmenu : BasePages.MasterBaseMaster
+public partial class views_computers_bootmenu_bootmenu : MasterBaseMaster
 {
     private Computers computerBasePage { get; set; }
     public ComputerEntity Computer { get; set; }

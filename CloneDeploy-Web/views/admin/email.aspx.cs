@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using BasePages;
 using CloneDeploy_Entities;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
 public partial class views_admin_email : Admin
 {
@@ -36,7 +37,7 @@ public partial class views_admin_email : Admin
 
         };
         if (!string.IsNullOrEmpty(txtSmtpPassword.Text))
-            listSettings.Add(new SettingEntity { Name = "Smtp Password Encrypted", Value = new Encryption().EncryptText(txtSmtpPassword.Text), Id = Call.SettingApi.GetSetting("Smtp Password Encrypted").Id });
+            listSettings.Add(new SettingEntity { Name = "Smtp Password Encrypted", Value = txtSmtpPassword.Text, Id = Call.SettingApi.GetSetting("Smtp Password Encrypted").Id });
 
         var chkValue = chkEnabled.Checked ? "1" : "0";
         listSettings.Add(new SettingEntity { Name = "Smtp Enabled", Value = chkValue, Id = Call.SettingApi.GetSetting("Smtp Enabled").Id });
@@ -46,14 +47,7 @@ public partial class views_admin_email : Admin
 
     protected void btnTestMessage_Click(object sender, EventArgs e)
     {
-        var mail = new Mail
-        {
-            Subject = "Test Message",
-            Body = "Email Notifications Are Working!",
-            MailTo = Settings.SmtpMailTo
-        };
-
-        mail.Send();
+        Call.SettingApi.SendEmailTest();
         EndUserMessage = "Test Message Sent";
     }
 }

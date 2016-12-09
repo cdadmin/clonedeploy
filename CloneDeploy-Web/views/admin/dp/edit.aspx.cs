@@ -1,6 +1,7 @@
 ﻿using System;
-using BasePages;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
 public partial class views_admin_dp_edit : Admin
 {
@@ -21,11 +22,11 @@ public partial class views_admin_dp_edit : Admin
         distributionPoint.Domain = txtDomain.Text;
         distributionPoint.RwUsername = txtRwUsername.Text;
         distributionPoint.RwPassword = !string.IsNullOrEmpty(txtRwPassword.Text)
-            ? new Encryption().EncryptText(txtRwPassword.Text)
+            ? txtRwPassword.Text
             : distributionPoint.RwPassword;
         distributionPoint.RoUsername = txtRoUsername.Text;
         distributionPoint.RoPassword = !string.IsNullOrEmpty(txtRoPassword.Text)
-            ? new Encryption().EncryptText(txtRoPassword.Text)
+            ? txtRoPassword.Text
             : distributionPoint.RoPassword;
         distributionPoint.IsPrimary = Convert.ToInt16(chkPrimary.Checked);
         distributionPoint.PhysicalPath = chkPrimary.Checked ? txtPhysicalPath.Text : "";

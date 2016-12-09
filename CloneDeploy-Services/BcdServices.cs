@@ -2,10 +2,9 @@
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using CloneDeploy_App.Helpers;
-using CloneDeploy_Entities;
+using CloneDeploy_Services.Helpers;
 
-namespace CloneDeploy_App.BLL
+namespace CloneDeploy_Services
 {
     public class BcdServices
     {

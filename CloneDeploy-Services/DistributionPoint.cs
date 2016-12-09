@@ -5,7 +5,7 @@ using System.Linq;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using Newtonsoft.Json;
+using CloneDeploy_Services.Helpers;
 
 namespace CloneDeploy_Services
 {
@@ -18,10 +18,11 @@ namespace CloneDeploy_Services
             _uow = new UnitOfWork();
         }
 
-        public  ActionResultDTO AddDistributionPoint(DistributionPointEntity distributionPoint)       
+        public  ActionResultDTO AddDistributionPoint(DistributionPointEntity distributionPoint)
         {
 
-            
+            distributionPoint.RoPassword = new Encryption().EncryptText(distributionPoint.RoPassword);
+            distributionPoint.RwPassword = new Encryption().EncryptText(distributionPoint.RwPassword);
                 var validationResult = ValidateDistributionPoint(distributionPoint, true);
                 var actionResult = new ActionResultDTO();
                 if (validationResult.Success)
@@ -93,7 +94,10 @@ namespace CloneDeploy_Services
             var dp = GetDistributionPoint(distributionPoint.Id);
             if (dp == null)
                 return new ActionResultDTO() { ErrorMessage = "Distribution Point Not Found", Id = 0 };
-            
+
+
+            distributionPoint.RoPassword = new Encryption().EncryptText(distributionPoint.RoPassword);
+            distributionPoint.RwPassword = new Encryption().EncryptText(distributionPoint.RwPassword);
                 var validationResult = ValidateDistributionPoint(distributionPoint, false);
                 if (validationResult.Success)
                 {
@@ -113,7 +117,7 @@ namespace CloneDeploy_Services
 
         private  ValidationResultDTO ValidateDistributionPoint(DistributionPointEntity distributionPoint, bool isNewDistributionPoint)
         {
-            var validationResult = new ValidationResultDTO();
+            var validationResult = new ValidationResultDTO(){Success = true};
 
             
 

@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Security.Claims;
 using System.Text;
-using System.Threading;
-using System.Web;
 using System.Web.Http;
-using CloneDeploy_App.BLL;
 using CloneDeploy_App.Controllers.Authorization;
-using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
+using CloneDeploy_Services.Workflows;
 
 
 namespace CloneDeploy_App.Controllers
@@ -293,21 +287,21 @@ namespace CloneDeploy_App.Controllers
         [GlobalAuth(Permission = "GlobalRead")]
         public ApiStringResponseDTO GetEffectiveManifest(int id)
         {
-            var effectiveManifest = new BLL.Workflows.EffectiveMunkiTemplate().MunkiTemplate(id);
+            var effectiveManifest = new EffectiveMunkiTemplate().MunkiTemplate(id);
             return new ApiStringResponseDTO() { Value = Encoding.UTF8.GetString(effectiveManifest.ToArray()) };
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
         public MunkiUpdateConfirmDTO GetUpdateStats(int id)
         {
-            return new BLL.Workflows.EffectiveMunkiTemplate().GetUpdateStats(id);
+            return new EffectiveMunkiTemplate().GetUpdateStats(id);
         }
 
         [GlobalAuth(Permission = "GlobalRead")]
         [HttpGet]
         public ApiIntResponseDTO Apply(int id)
         {
-            return new ApiIntResponseDTO() {Value = new BLL.Workflows.EffectiveMunkiTemplate().Apply(id)};
+            return new ApiIntResponseDTO() {Value = new EffectiveMunkiTemplate().Apply(id)};
         }
     }
 }

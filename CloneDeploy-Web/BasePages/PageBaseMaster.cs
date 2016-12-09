@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 using CloneDeploy_ApiCalls;
 using CloneDeploy_Entities;
 
-namespace BasePages
+namespace CloneDeploy_Web.BasePages
 {
     public class PageBaseMaster : Page
     {

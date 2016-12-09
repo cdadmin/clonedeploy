@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using BasePages;
-
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
 public partial class views_admin_bootmenu_defaultmenu : Admin
 {

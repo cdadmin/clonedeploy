@@ -1,6 +1,6 @@
 ﻿using System.Web.UI;
 
-namespace BasePages
+namespace CloneDeploy_Web.BasePages
 {
     public class MasterBaseMaster : MasterPage
     {

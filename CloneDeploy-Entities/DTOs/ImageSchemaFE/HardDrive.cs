@@ -4,9 +4,7 @@ namespace CloneDeploy_Entities.DTOs.ImageSchemaFE
 {
     public class HardDrive
     {
-        public HardDrive()
-        {
-        }
+
         public bool Active { get; set; }
         public string Boot { get; set; }
         public string Guid { get; set; }

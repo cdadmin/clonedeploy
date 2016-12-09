@@ -1,6 +1,6 @@
 ﻿using System;
-using BasePages;
 using CloneDeploy_Entities;
+using CloneDeploy_Web.BasePages;
 
 public partial class views_computers_inventory_inventory : MasterBaseMaster
 {

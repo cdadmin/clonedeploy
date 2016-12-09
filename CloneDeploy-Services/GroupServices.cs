@@ -5,8 +5,8 @@ using System.Linq;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services.Workflows;
 using CsvHelper;
-using Newtonsoft.Json;
 
 namespace CloneDeploy_Services
 {
@@ -210,7 +210,7 @@ namespace CloneDeploy_Services
             var count = 0;
             foreach (var computer in GetGroupMembers(groupId))
             {
-                if(new CloneDeploy_App.BLL.Workflows.Unicast(computer.Id, "push",userId).Start() == "true")
+                if(new Unicast(computer.Id, "push",userId).Start() == "true")
                 count++;
             }
             return count;

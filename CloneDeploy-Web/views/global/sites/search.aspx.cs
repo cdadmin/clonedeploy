@@ -4,8 +4,10 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using CloneDeploy_Entities;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
-public partial class views_global_sites_search : BasePages.Global
+public partial class views_global_sites_search : Global
 {
     protected void Page_Load(object sender, EventArgs e)
     {

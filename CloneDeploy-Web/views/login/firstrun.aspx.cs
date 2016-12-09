@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using BasePages;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Web;
-
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
 
 public partial class views_login_firstrun : PageBaseMaster
@@ -87,9 +87,9 @@ public partial class views_login_firstrun : PageBaseMaster
             distributionPoint.ShareName = "cd_share";
             distributionPoint.Domain = "Workgroup";
             distributionPoint.RwUsername = "cd_share_rw";
-            distributionPoint.RwPassword = new Encryption().EncryptText(txtReadWrite.Text);
+            distributionPoint.RwPassword = txtReadWrite.Text;
             distributionPoint.RoUsername = "cd_share_ro";
-            distributionPoint.RoPassword = new Encryption().EncryptText(txtReadOnly.Text);
+            distributionPoint.RoPassword = txtReadOnly.Text;
             distributionPoint.IsPrimary = 1;
             if (Environment.OSVersion.ToString().Contains("Unix"))
                 distributionPoint.PhysicalPath = unixDist == "bsd" ? "/usr/pbi/clonedeploy-amd64/cd_dp" : "/cd_dp";

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using CloneDeploy_DataModel;
+﻿using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 
 namespace CloneDeploy_Services

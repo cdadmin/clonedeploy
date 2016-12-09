@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading;
-using System.Web;
 using System.Web.Http;
 using System.Web.Http.Controllers;
-
-using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 
 namespace CloneDeploy_App.Controllers.Authorization
 {
@@ -35,7 +32,7 @@ namespace CloneDeploy_App.Controllers.Authorization
                 case "GlobalUpdate":
                 case "GlobalCreate":
                 case "GlobalDelete":
-                    if (new BLL.AuthorizationServices(Convert.ToInt32(userId), Permission).IsAuthorized())
+                    if (new AuthorizationServices(Convert.ToInt32(userId), Permission).IsAuthorized())
                         authorized = true;
                     break;
 

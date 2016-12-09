@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using CloneDeploy_Web.BasePages;
 
-public partial class views_tasks_activeunicast : BasePages.Tasks
+public partial class views_tasks_activeunicast : Tasks
 {
     protected void Page_Load(object sender, EventArgs e)
     {

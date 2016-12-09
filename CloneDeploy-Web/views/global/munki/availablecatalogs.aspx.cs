@@ -5,8 +5,10 @@ using System.Linq;
 using System.Web.UI.WebControls;
 using CloneDeploy_Entities;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
-public partial class views_global_munki_availablecatalogs : BasePages.Global
+public partial class views_global_munki_availablecatalogs : Global
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -18,7 +20,7 @@ public partial class views_global_munki_availablecatalogs : BasePages.Global
     protected void PopulateGrid()
     {
 
-        var catalogs = GetMunkiResources("catalogs");
+        var catalogs = Call.FilesystemApi.GetMunkiResources("catalogs");
         IEnumerable<FileInfo> searchedCatalogs = null;
         if (catalogs != null)
         {

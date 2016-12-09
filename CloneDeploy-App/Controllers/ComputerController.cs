@@ -8,10 +8,10 @@ using System.Text;
 using System.Threading;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
-using CloneDeploy_App.DTOs;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
+using CloneDeploy_Services.Workflows;
 
 
 namespace CloneDeploy_App.Controllers
@@ -190,7 +190,7 @@ namespace CloneDeploy_App.Controllers
         [ComputerAuth(Permission = "ComputerRead")]
         public ApiStringResponseDTO GetEffectiveManifest(int id)
         {
-            var effectiveManifest = new BLL.Workflows.EffectiveMunkiTemplate().Computer(id);
+            var effectiveManifest = new EffectiveMunkiTemplate().Computer(id);
             return new ApiStringResponseDTO() {Value = Encoding.UTF8.GetString(effectiveManifest.ToArray())};
         }
 
@@ -234,7 +234,7 @@ namespace CloneDeploy_App.Controllers
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                              .Select(c => c.Value).SingleOrDefault();
-            return new ApiStringResponseDTO() {Value = new BLL.Workflows.Unicast(id, "pull", Convert.ToInt32(userId)).Start()};
+            return new ApiStringResponseDTO() {Value = new Unicast(id, "pull", Convert.ToInt32(userId)).Start()};
         }
 
         [HttpGet]
@@ -244,7 +244,7 @@ namespace CloneDeploy_App.Controllers
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                              .Select(c => c.Value).SingleOrDefault();
-            return new ApiStringResponseDTO() { Value = new BLL.Workflows.Unicast(id, "push", Convert.ToInt32(userId)).Start() };
+            return new ApiStringResponseDTO() { Value = new Unicast(id, "push", Convert.ToInt32(userId)).Start() };
         }
 
         [HttpGet]
@@ -254,7 +254,7 @@ namespace CloneDeploy_App.Controllers
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                              .Select(c => c.Value).SingleOrDefault();
-            return new ApiStringResponseDTO() { Value = new BLL.Workflows.Unicast(id, "permanent_push", Convert.ToInt32(userId)).Start() };
+            return new ApiStringResponseDTO() { Value = new Unicast(id, "permanent_push", Convert.ToInt32(userId)).Start() };
         }
     }
 }

@@ -2,8 +2,10 @@
 using System.Linq;
 using System.Web.UI.WebControls;
 using CloneDeploy_Web;
+using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
-public partial class views_users_searchgroup : BasePages.Users
+public partial class views_users_searchgroup : Users
 {
     protected void Page_Load(object sender, EventArgs e)
     {

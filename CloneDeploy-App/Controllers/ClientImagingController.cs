@@ -5,13 +5,11 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
 using System.Web.Http;
-using CloneDeploy_App.BLL;
-using CloneDeploy_App.BLL.Workflows;
 using CloneDeploy_App.Controllers.Authorization;
-using CloneDeploy_App.Helpers;
-using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.FormData;
 using CloneDeploy_Services;
+using CloneDeploy_Services.Helpers;
+using CloneDeploy_Services.Workflows;
 
 namespace CloneDeploy_App.Controllers
 {
@@ -61,7 +59,7 @@ namespace CloneDeploy_App.Controllers
         public HttpResponseMessage CheckTaskAuth(TaskDTO taskDto)
         {
             var userToken = Utility.Decode(HttpContext.Current.Request.Headers["Authorization"], "Authorization");
-            _response.Content = new StringContent(new Logic().CheckTaskAuth(taskDto.task, userToken), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().CheckTaskAuth(taskDto.task, userToken), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -102,7 +100,7 @@ namespace CloneDeploy_App.Controllers
         [HttpPost]
         public HttpResponseMessage IsLoginRequired(TaskDTO taskDto)
         {
-            _response.Content = new StringContent(new Logic().IsLoginRequired(taskDto.task), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().IsLoginRequired(taskDto.task), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -122,7 +120,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage GetMunkiBasicAuth(ProfileDTO profileDto)
         {
-            _response.Content = new StringContent(new Logic().GetMunkiBasicAuth(Convert.ToInt32(profileDto.profileId)), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().GetMunkiBasicAuth(Convert.ToInt32(profileDto.profileId)), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -130,7 +128,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage AddComputer(AddComputerDTO addComputerDto)
         {
-            _response.Content = new StringContent(new Logic().AddComputer(addComputerDto.name, addComputerDto.mac), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().AddComputer(addComputerDto.name, addComputerDto.mac), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -138,7 +136,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage AddImage(NameDTO nameDto)
         {
-            _response.Content = new StringContent(new Logic().AddImage(nameDto.name), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().AddImage(nameDto.name), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -146,7 +144,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage AddImageOsxEnv(NameDTO nameDto)
         {
-            _response.Content = new StringContent(new Logic().AddImageOsxEnv(nameDto.name), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().AddImageOsxEnv(nameDto.name), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -154,7 +152,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage AddImageWinPEEnv(NameDTO nameDto)
         {
-            _response.Content = new StringContent(new Logic().AddImageWinPEEnv(nameDto.name), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().AddImageWinPEEnv(nameDto.name), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -164,7 +162,7 @@ namespace CloneDeploy_App.Controllers
         {
             if (string.IsNullOrEmpty(imageListDto.userId))
                 imageListDto.userId = "0";
-            _response.Content = new StringContent(new Logic().ImageList(imageListDto.environment, Convert.ToInt32(imageListDto.userId)), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().ImageList(imageListDto.environment, Convert.ToInt32(imageListDto.userId)), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -172,7 +170,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage ListImageProfiles(ImageIdDTO imageIdDto)
         {
-            _response.Content = new StringContent(new Logic().ImageProfileList(Convert.ToInt32(imageIdDto.imageId)), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().ImageProfileList(Convert.ToInt32(imageIdDto.imageId)), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -180,7 +178,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage ListMulticasts(EnvironmentDTO environmentDto)
         {
-            _response.Content = new StringContent(new Logic().MulicastSessionList(environmentDto.environment), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().MulicastSessionList(environmentDto.environment), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -188,7 +186,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage CheckIn(ComputerMacDTO computerMacDto)
         {
-            _response.Content = new StringContent(new Logic().CheckIn(computerMacDto.computerMac), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().CheckIn(computerMacDto.computerMac), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -196,7 +194,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage DistributionPoint(DpDTO dpDto)
         {
-            _response.Content = new StringContent(new Logic().DistributionPoint(Convert.ToInt32(dpDto.dpId), dpDto.task), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().DistributionPoint(Convert.ToInt32(dpDto.dpId), dpDto.task), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -204,21 +202,21 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public void UpdateStatusInProgress(ComputerIdDTO computerIdDto)
         {
-            new Logic().ChangeStatusInProgress(computerIdDto.computerId);
+            new ClientImagingServices().ChangeStatusInProgress(computerIdDto.computerId);
         }
 
         [HttpPost]
         [ClientAuth]
         public void DeleteImage(ProfileDTO profileDto)
         {
-            new Logic().DeleteImage(Convert.ToInt32(profileDto.profileId));
+            new ClientImagingServices().DeleteImage(Convert.ToInt32(profileDto.profileId));
         }
 
         [HttpPost]
         [ClientAuth]
         public void ErrorEmail(ErrorEmailDTO errorEmailDto)
         {
-            new Logic().ErrorEmail(Convert.ToInt32(errorEmailDto.computerId), errorEmailDto.error);
+            new ClientImagingServices().ErrorEmail(Convert.ToInt32(errorEmailDto.computerId), errorEmailDto.error);
         }
 
 
@@ -226,14 +224,14 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public void CheckOut(ComputerIdDTO computerIdDto)
         {
-            new Logic().CheckOut(computerIdDto.computerId);
+            new ClientImagingServices().CheckOut(computerIdDto.computerId);
         }
 
         [HttpPost]
         [ClientAuth]
         public void PermanentTaskCheckOut(ComputerIdDTO computerIdDto)
         {
-            new Logic().PermanentTaskCheckOut(computerIdDto.computerId);
+            new ClientImagingServices().PermanentTaskCheckOut(computerIdDto.computerId);
         }
 
 
@@ -245,28 +243,28 @@ namespace CloneDeploy_App.Controllers
             var logContents = Utility.Decode(HttpContext.Current.Request.Form["logContents"], "logContents");
             var subType = Utility.Decode(HttpContext.Current.Request.Form["subType"], "subType");
             var computerMac = Utility.Decode(HttpContext.Current.Request.Form["mac"], "mac");
-            new Logic().UploadLog(Convert.ToInt32(computerId), logContents, subType, computerMac);
+            new ClientImagingServices().UploadLog(Convert.ToInt32(computerId), logContents, subType, computerMac);
         }
 
         [HttpPost]
         [ClientAuth]
         public void UpdateProgress(ProgressDTO progressDto)
         {
-            new Logic().UpdateProgress(Convert.ToInt32(progressDto.computerId), progressDto.progress, progressDto.progressType);
+            new ClientImagingServices().UpdateProgress(Convert.ToInt32(progressDto.computerId), progressDto.progress, progressDto.progressType);
         }
 
         [HttpPost]
         [ClientAuth]
         public void UpdateProgressPartition(ProgressPartitionDTO progressPartitionDto)
         {
-            new Logic().UpdateProgressPartition(Convert.ToInt32(progressPartitionDto.computerId), progressPartitionDto.partition);
+            new ClientImagingServices().UpdateProgressPartition(Convert.ToInt32(progressPartitionDto.computerId), progressPartitionDto.partition);
         }
 
         [HttpPost]
         [ClientAuth]
         public HttpResponseMessage CheckQueue(ComputerIdDTO computerIdDto)
         {
-            _response.Content = new StringContent(new Logic().CheckQueue(Convert.ToInt32(computerIdDto.computerId)), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().CheckQueue(Convert.ToInt32(computerIdDto.computerId)), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -274,7 +272,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage CheckHdRequirements(HdReqs hdReqs)
         {
-            _response.Content = new StringContent(new Logic().CheckHdRequirements(Convert.ToInt32(hdReqs.profileId), Convert.ToInt32(hdReqs.clientHdNumber), hdReqs.newHdSize, hdReqs.schemaHds, Convert.ToInt32(hdReqs.clientLbs)), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().CheckHdRequirements(Convert.ToInt32(hdReqs.profileId), Convert.ToInt32(hdReqs.clientHdNumber), hdReqs.newHdSize, hdReqs.schemaHds, Convert.ToInt32(hdReqs.clientLbs)), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -282,7 +280,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage GetOriginalLvm(OriginalLVM originalLvm)
         {
-            _response.Content = new StringContent(new Logic().GetOriginalLvm(Convert.ToInt32(originalLvm.profileId), originalLvm.clientHd, originalLvm.hdToGet, originalLvm.partitionPrefix), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().GetOriginalLvm(Convert.ToInt32(originalLvm.profileId), originalLvm.clientHd, originalLvm.hdToGet, originalLvm.partitionPrefix), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -290,7 +288,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage CheckForCancelledTask(ComputerIdDTO computerIdDto)
         {
-            _response.Content = new StringContent(new Logic().CheckForCancelledTask(Convert.ToInt32(computerIdDto.computerId)), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().CheckForCancelledTask(Convert.ToInt32(computerIdDto.computerId)), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -300,7 +298,7 @@ namespace CloneDeploy_App.Controllers
         {
             var bcd = Utility.Decode(HttpContext.Current.Request.Form["bcd"], "bcd");
             var offsetBytes = Utility.Decode(HttpContext.Current.Request.Form["offsetBytes"], "offsetBytes");
-            _response.Content = new StringContent(new BLL.BcdServices().UpdateEntry(bcd, Convert.ToInt64(offsetBytes)), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new BcdServices().UpdateEntry(bcd, Convert.ToInt64(offsetBytes)), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -342,7 +340,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage GetCustomScript(ScriptIdDTO scriptIdDto)
         {
-            _response.Content = new StringContent(new Logic().GetCustomScript(scriptIdDto.scriptId), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().GetCustomScript(scriptIdDto.scriptId), System.Text.Encoding.UTF8, "text/plain");
             return _response;
 
         }
@@ -351,7 +349,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage GetSysprepTag(SysprepDTO sysprepDto)
         {
-            _response.Content = new StringContent(new Logic().GetSysprepTag(sysprepDto.tagId, sysprepDto.imageEnvironment), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().GetSysprepTag(sysprepDto.tagId, sysprepDto.imageEnvironment), System.Text.Encoding.UTF8, "text/plain");
             return _response;
 
         }
@@ -360,7 +358,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage GetFileCopySchema(ProfileDTO profileDto)
         {
-            _response.Content = new StringContent(new Logic().GetFileCopySchema(profileDto.profileId), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().GetFileCopySchema(profileDto.profileId), System.Text.Encoding.UTF8, "text/plain");
             return _response;
 
         }
@@ -369,7 +367,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage MulticastCheckOut(PortDTO portDto)
         {
-            _response.Content = new StringContent(new Logic().MulticastCheckout(portDto.portBase), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().MulticastCheckout(portDto.portBase), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -377,7 +375,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage GetCustomPartitionScript(ProfileDTO profileDto)
         {
-            _response.Content = new StringContent(new Logic().GetCustomPartitionScript(Convert.ToInt32(profileDto.profileId)), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().GetCustomPartitionScript(Convert.ToInt32(profileDto.profileId)), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -385,7 +383,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage GetOnDemandArguments(OnDemandDTO onDemandDto)
         {
-            _response.Content = new StringContent(new Logic().GetOnDemandArguments(onDemandDto.mac, Convert.ToInt32(onDemandDto.objectId), onDemandDto.task), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().GetOnDemandArguments(onDemandDto.mac, Convert.ToInt32(onDemandDto.objectId), onDemandDto.task), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -399,7 +397,7 @@ namespace CloneDeploy_App.Controllers
         [HttpPost]
         public HttpResponseMessage GetProxyReservation(MacDTO macDto)
         {
-            _response.Content = new StringContent(new Logic().GetProxyReservation(macDto.mac), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().GetProxyReservation(macDto.mac), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 

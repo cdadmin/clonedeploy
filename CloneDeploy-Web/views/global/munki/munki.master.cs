@@ -1,11 +1,10 @@
 ﻿using System;
-
-using BasePages;
 using CloneDeploy_Entities;
+using CloneDeploy_Web.BasePages;
 
 public partial class views_global_munki_munki : MasterBaseMaster
 {
-    private BasePages.Global globalBasePage { get; set; }
+    private Global globalBasePage { get; set; }
     public MunkiManifestTemplateEntity ManifestTemplate { get; set; }
 
     public void Page_Load(object sender, EventArgs e)

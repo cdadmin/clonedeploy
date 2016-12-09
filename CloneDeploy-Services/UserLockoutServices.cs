@@ -1,9 +1,8 @@
 ﻿using System;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
-using CloneDeploy_Services;
 
-namespace CloneDeploy_App.BLL
+namespace CloneDeploy_Services
 {
     public class UserLockoutServices
     {
