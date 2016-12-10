@@ -76,6 +76,7 @@
     <Compile Include="ClientPartitionSchemaServices.cs" />
     <Compile Include="ClientPartitionHelper.cs" />
     <Compile Include="FileFolderServices.cs" />
+    <Compile Include="FilesystemServices.cs" />
     <Compile Include="GroupServices.cs" />
     <Compile Include="GroupBootMenuServices.cs" />
     <Compile Include="GroupMembershipServices.cs" />

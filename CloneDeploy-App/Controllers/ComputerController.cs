@@ -25,7 +25,7 @@ namespace CloneDeploy_App.Controllers
             _computerService = new ComputerServices();
         }
 
-        [ComputerAuth(Permission = "ComputerSearch")]
+        [CustomAuth(Permission = "ComputerSearch")]
         public IEnumerable<ComputerEntity> GetAll(int limit=0,string searchstring="")
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
@@ -38,7 +38,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
+        [CustomAuth(Permission = "ComputerRead")]
         public ComputerEntity Get(int id)
         {
             var computer = _computerService.GetComputer(id);
@@ -47,13 +47,13 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [ComputerAuthAttribute(Permission = "ComputerCreate")]
+        [CustomAuthAttribute(Permission = "ComputerCreate")]
         public ActionResultDTO Post(ComputerEntity computer)
         {
             return _computerService.AddComputer(computer);
         }
 
-        [ComputerAuth(Permission = "ComputerUpdate")]
+        [CustomAuth(Permission = "ComputerUpdate")]
         public ActionResultDTO Put(int id, ComputerEntity computer)
         {
             computer.Id = id;
@@ -62,7 +62,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [ComputerAuth(Permission = "ComputerDelete")]
+        [CustomAuth(Permission = "ComputerDelete")]
         public ActionResultDTO Delete(int id)
         {
             var result =_computerService.DeleteComputer(id);
@@ -70,7 +70,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [ComputerAuth(Permission = "ComputerSearch")]
+        [CustomAuth(Permission = "ComputerSearch")]
         public ApiStringResponseDTO GetCount()
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
@@ -80,7 +80,7 @@ namespace CloneDeploy_App.Controllers
             return new ApiStringResponseDTO(){Value = _computerService.ComputerCountUser(Convert.ToInt32(userId))};
         }
 
-        [ComputerAuth(Permission = "ComputerSearch")]
+        [CustomAuth(Permission = "ComputerSearch")]
         public IEnumerable<ComputerEntity> GetComputersWithoutGroup(int limit = 0, string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
@@ -89,19 +89,19 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
+        [CustomAuth(Permission = "ComputerRead")]
         public List<GroupMembershipEntity> GetGroupMemberships(int id)
         {
             return _computerService.GetAllComputerMemberships(id);
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
+        [CustomAuth(Permission = "ComputerRead")]
         public ComputerEntity GetByMac(string mac)
         {
             return _computerService.GetComputerFromMac(mac);       
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
+        [CustomAuth(Permission = "ComputerRead")]
         [HttpGet]
         public ApiBoolResponseDTO Export(string path)
         {
@@ -109,46 +109,42 @@ namespace CloneDeploy_App.Controllers
             return new ApiBoolResponseDTO() {Value = true};
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
-        public DistributionPointEntity GetDistributionPoint(int id)
-        {
-            return _computerService.GetDistributionPoint(id);
-        }
+    
 
         [HttpGet]
-        [ComputerAuth(Permission = "ComputerRead")]
+        [CustomAuth(Permission = "ComputerRead")]
         public ApiBoolResponseDTO IsComputerActive(int id)
         {
             return new ApiBoolResponseDTO() {Value = _computerService.IsComputerActive(id)};
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
+        [CustomAuth(Permission = "ComputerRead")]
         public ActiveImagingTaskEntity GetActiveTask(int id)
         {
             return _computerService.GetTaskForComputer(id);
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
+        [CustomAuth(Permission = "ComputerRead")]
         public ComputerBootMenuEntity GetBootMenu(int id)
         {
             return _computerService.GetComputerBootMenu(id);
         }
 
-        [ComputerAuth(Permission = "ComputerDelete")]
+        [CustomAuth(Permission = "ComputerDelete")]
         public ActionResultDTO DeleteBootMenus(int id)
         {
             return _computerService.DeleteComputerBootMenus(id);
         }
 
         [HttpGet]
-        [ComputerAuth(Permission = "ComputerUpdate")]
+        [CustomAuth(Permission = "ComputerUpdate")]
         public ApiBoolResponseDTO CreateCustomBootFiles(int id)
         {
             return new ApiBoolResponseDTO() {Value = _computerService.CreateBootFiles(id)};
         }
 
 
-        [ComputerAuth(Permission = "ComputerRead")]
+        [CustomAuth(Permission = "ComputerRead")]
         public ApiStringResponseDTO GetProxyPath(int id, bool isActiveOrCustom, string proxyType)
         {
             return new ApiStringResponseDTO()
@@ -158,7 +154,7 @@ namespace CloneDeploy_App.Controllers
         }
 
 
-        [ComputerAuth(Permission = "ComputerRead")]
+        [CustomAuth(Permission = "ComputerRead")]
         public ApiStringResponseDTO GetNonProxyPath(int id, bool isActiveOrCustom)
         {
             return new ApiStringResponseDTO()
@@ -167,13 +163,13 @@ namespace CloneDeploy_App.Controllers
             };
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
+        [CustomAuth(Permission = "ComputerRead")]
         public IEnumerable<ComputerLogEntity> GetComputerLogs(int id)
         {
             return _computerService.SearchComputerLogs(id);
         }
 
-        [ComputerAuth(Permission = "ComputerDelete")]
+        [CustomAuth(Permission = "ComputerDelete")]
         public ActionResultDTO DeleteAllComputerLogs(int id)
         {
             var result = _computerService.DeleteComputerLogs(id);
@@ -181,20 +177,20 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
+        [CustomAuth(Permission = "ComputerRead")]
         public IEnumerable<ComputerMunkiEntity> GetMunkiTemplates(int id)
         {
             return _computerService.GetMunkiTemplates(id);       
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
+        [CustomAuth(Permission = "ComputerRead")]
         public ApiStringResponseDTO GetEffectiveManifest(int id)
         {
             var effectiveManifest = new EffectiveMunkiTemplate().Computer(id);
             return new ApiStringResponseDTO() {Value = Encoding.UTF8.GetString(effectiveManifest.ToArray())};
         }
 
-        [ComputerAuth(Permission = "ComputerDelete")]
+        [CustomAuth(Permission = "ComputerDelete")]
         public ActionResultDTO DeleteMunkiTemplates(int id)
         {
             var result = _computerService.DeleteMunkiTemplates(id);
@@ -202,7 +198,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [ComputerAuth(Permission = "ComputerRead")]
+        [CustomAuth(Permission = "ComputerRead")]
         public ComputerProxyReservationEntity GetProxyReservation(int id)
         {
             var result = _computerService.GetComputerProxyReservation(id);
@@ -211,7 +207,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpGet]
-        [ComputerAuth(Permission = "ComputerUpdate")]
+        [CustomAuth(Permission = "ComputerUpdate")]
         public ApiBoolResponseDTO ToggleProxyReservation(int id, bool status)
         {
 
@@ -220,7 +216,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpGet]
-        [ComputerAuth(Permission = "ComputerUpdate")]
+        [CustomAuth(Permission = "ComputerUpdate")]
         public ApiBoolResponseDTO ToggleBootMenu(int id, bool status)
         {
 

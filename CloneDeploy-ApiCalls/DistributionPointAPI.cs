@@ -12,12 +12,7 @@ namespace CloneDeploy_ApiCalls
     
        
 
-        public DistributionPointEntity GetPrimary()
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetPrimary/", _resource);
-            return new ApiRequest().Execute<DistributionPointEntity>(_request);
-        }
+    
 
        
     }

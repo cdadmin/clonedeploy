@@ -44,13 +44,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [AdminAuth(Permission = "AdminRead")]
-        public DistributionPointEntity GetPrimary()
-        {
-            var result = _distributionPointServices.GetPrimaryDistributionPoint();
-            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
-            return result;
-        }
+      
 
         [AdminAuth(Permission = "AdminUpdate")]
         public ActionResultDTO Post(DistributionPointEntity distributionPoint)

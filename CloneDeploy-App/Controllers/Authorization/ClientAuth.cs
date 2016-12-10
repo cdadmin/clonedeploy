@@ -10,8 +10,6 @@ namespace CloneDeploy_App.Controllers.Authorization
 {
     public class ClientAuthAttribute : AuthorizeAttribute
     {
-        public string Permission { get; set; }
-
         public override void OnAuthorization(HttpActionContext actionContext)
         {
             var userToken = Utility.Decode(HttpContext.Current.Request.Headers["Authorization"], "Authorization");

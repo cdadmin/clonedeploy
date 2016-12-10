@@ -51,7 +51,7 @@ namespace CloneDeploy_App.Controllers
             return new ApiBoolResponseDTO() { Value = CloneDeploy_Services.Workflows.CancelAllImagingTasks.Run() };
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "AllowOnd")]
         [HttpGet]
         public ApiStringResponseDTO StartOnDemandMulticast(int profileId, string clientCount)
         {

@@ -18,7 +18,7 @@ namespace CloneDeploy_App.Controllers
             _computerProxyReservationServices = new ComputerProxyReservationServices();
         }
 
-        [ComputerAuth(Permission = "ComputerUpdate")]
+        [CustomAuth(Permission = "ComputerUpdate")]
         public ActionResultDTO Post(ComputerProxyReservationEntity computerProxyReservation)
         {
         

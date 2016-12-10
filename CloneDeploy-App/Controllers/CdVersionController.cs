@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
@@ -32,7 +33,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-         [Authorize]
+         [CustomAuth(Permission = "Administrator")]
         public ActionResultDTO Post(CdVersionEntity cdVersion)
         {
             return _cdVersionServices.Update(cdVersion);

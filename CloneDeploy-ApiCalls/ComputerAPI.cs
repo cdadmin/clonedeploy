@@ -47,12 +47,7 @@ namespace CloneDeploy_ApiCalls
             return new ApiRequest().Execute<ApiBoolResponseDTO>(_request);
         }
 
-        public DistributionPointEntity GetDistributionPoint(int id)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetDistributionPoint/{1}", _resource, id);
-            return new ApiRequest().Execute<DistributionPointEntity>(_request);
-        }
+     
 
 
 

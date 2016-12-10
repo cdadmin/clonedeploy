@@ -121,5 +121,14 @@ namespace CloneDeploy_ApiCalls
 
             return response;
         }
+
+        public DpFreeSpaceDTO GetDpFreeSpace()
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetDpFreeSpace/", _resource);
+            var response = new ApiRequest().Execute<DpFreeSpaceDTO>(_request);
+
+            return response;
+        }
     }
 }

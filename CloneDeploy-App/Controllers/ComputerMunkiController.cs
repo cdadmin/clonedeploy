@@ -20,7 +20,7 @@ namespace CloneDeploy_App.Controllers
             _computerMunkiServices = new ComputerMunkiServices();
         }
 
-        [ComputerAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public IEnumerable<ComputerMunkiEntity> GetTemplateComputers(int id)
         {
             var result = _computerMunkiServices.GetComputersForManifestTemplate(id);
@@ -28,7 +28,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [ComputerAuth(Permission = "ComputerCreate")]
+        [CustomAuth(Permission = "ComputerCreate")]
         public ActionResultDTO Post(ComputerMunkiEntity computerMunki)
         {
             var result = _computerMunkiServices.AddMunkiTemplates(computerMunki);

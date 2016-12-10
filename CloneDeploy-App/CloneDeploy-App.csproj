@@ -98,10 +98,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\Authorization\AdminAuth.cs" />
-    <Compile Include="Controllers\Authorization\UserAuth.cs" />
-    <Compile Include="Controllers\Authorization\ImageProfileAuth.cs" />
-    <Compile Include="Controllers\Authorization\ImageAuth.cs" />
     <Compile Include="Controllers\CdVersionController.cs" />
     <Compile Include="Controllers\AuthorizationController.cs" />
     <Compile Include="Controllers\WorkflowController.cs" />
@@ -142,10 +138,7 @@
     <Compile Include="Controllers\ActiveImagingTaskController.cs" />
     <Compile Include="Controllers\ActiveMulticastSessionController.cs" />
     <Compile Include="Controllers\Authorization\ClientAuth.cs" />
-    <Compile Include="Controllers\Authorization\ComputerAuth.cs" />
-    <Compile Include="Controllers\Authorization\GlobalAuth.cs" />
-    <Compile Include="Controllers\Authorization\GroupAuth.cs" />
-    <Compile Include="Controllers\Authorization\TaskAuth.cs" />
+    <Compile Include="Controllers\Authorization\CustomAuth.cs" />
     <Compile Include="Controllers\BootEntryController.cs" />
     <Compile Include="Controllers\ClientImagingController.cs" />
     <Compile Include="Controllers\ComputerController.cs" />

@@ -4,6 +4,7 @@ using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services;
 using CloneDeploy_Services.Helpers;
 
 
@@ -12,7 +13,7 @@ namespace CloneDeploy_App.Controllers
     public class FileSystemController :ApiController
     {
         [HttpGet]
-        [ComputerAuth(Permission = "ComputerSearch")]
+        [CustomAuth(Permission = "ComputerSearch")]
         public ApiBoolResponseDTO BootSdiExists()
         {
 
@@ -25,7 +26,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpGet]
-        [ComputerAuth(Permission = "ComputerSearch")]
+        [CustomAuth(Permission = "ComputerSearch")]
         public ApiStringResponseDTO ReadFileText(string path)
         {
 
@@ -37,7 +38,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpGet]
-        [ComputerAuth(Permission = "ComputerSearch")]
+        [CustomAuth(Permission = "ComputerSearch")]
         public IEnumerable<string> GetKernels()
         {
 
@@ -47,7 +48,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpGet]
-        [ComputerAuth(Permission = "ComputerSearch")]
+        [CustomAuth(Permission = "ComputerSearch")]
         public IEnumerable<string> GetBootImages()
         {
 
@@ -55,7 +56,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpGet]
-        [ComputerAuth(Permission = "ComputerSearch")]
+        [CustomAuth(Permission = "ComputerSearch")]
         public List<string> GetLogs()
         {
 
@@ -66,14 +67,14 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpGet]
-        [ComputerAuth(Permission = "ComputerSearch")]
+        [CustomAuth(Permission = "ComputerSearch")]
         public MunkiPackageInfoEntity GetPlist(string file)
         {
             return new Utility().ReadPlist(file);
         }
 
         [HttpGet]
-        [ComputerAuth(Permission = "ComputerSearch")]
+        [CustomAuth(Permission = "ComputerSearch")]
         public List<FileInfo> GetMunkiResources(string resourceType)
         {
             return new Utility().GetMunkiResources(resourceType);
@@ -81,7 +82,7 @@ namespace CloneDeploy_App.Controllers
 
 
         [HttpGet]
-        [ComputerAuth(Permission = "ComputerSearch")]
+        [CustomAuth(Permission = "ComputerSearch")]
         public ApiBoolResponseDTO SetUnixPermissions(string path)
         {
            new FileOps().SetUnixPermissions(path);
@@ -89,7 +90,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpGet]
-        [ComputerAuth(Permission = "ComputerSearch")]
+        [CustomAuth(Permission = "ComputerSearch")]
         public List<string> GetScripts(string type)
         {
 
@@ -100,14 +101,16 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpGet]
-        [ComputerAuth(Permission = "ComputerSearch")]
+        [CustomAuth(Permission = "ComputerSearch")]
         public List<string> GetThinImages()
         {
-
-
             return Utility.GetThinImages();
+        }
 
-
+        [Authorize]
+        public DpFreeSpaceDTO GetDpFreeSpace()
+        {
+            return new FilesystemServices().GetDpFreeSpace();
         }
         
     }

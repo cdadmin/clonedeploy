@@ -17,7 +17,7 @@ namespace CloneDeploy_App.Controllers
             _computerBootMenuServices = new ComputerBootMenuServices();
         }
 
-        [ComputerAuth(Permission = "ComputerUpdate")]
+        [CustomAuth(Permission = "ComputerUpdate")]
         public ActionResultDTO Post(ComputerBootMenuEntity computerBootMenu)
         {
             return _computerBootMenuServices.UpdateComputerBootMenu(computerBootMenu);

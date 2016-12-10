@@ -18,20 +18,20 @@ namespace CloneDeploy_App.Controllers
             _settingServices = new SettingServices();
         }
 
-        [AdminAuth(Permission = "AdminRead")]
+        [Authorize]
         public SettingEntity GetSetting(string name)
         {
             return _settingServices.GetSetting(name);          
         }
 
-        [GlobalAuth(Permission = "GlobalUpdate")]
+        [AdminAuth(Permission = "AdminUpdate")]
         [HttpPost]
         public ApiBoolResponseDTO UpdateSettings(List<SettingEntity> listSettings)
         {
             return new ApiBoolResponseDTO() {Value = _settingServices.UpdateSetting(listSettings)};         
         }
 
-        [AdminAuth(Permission = "AdminRead")]
+        [AdminAuth(Permission = "AdminUpdate")]
         [HttpGet]
         public ApiBoolResponseDTO SendEmailTest()
         {

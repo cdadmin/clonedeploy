@@ -23,7 +23,7 @@ namespace CloneDeploy_App.Controllers
             _activeImagingTaskServices = new ActiveImagingTaskServices();
         }
 
-        [ComputerAuth(Permission = "ComputerSearch")]
+        [Authorize]
         public IEnumerable<ActiveImagingTaskEntity> GetUnicasts(string taskType)
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
@@ -34,7 +34,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [TaskAuth(Permission = "ImageTaskDelete")]
+        [CustomAuth(Permission = "ImageTaskDelete")]
         public ActionResultDTO Delete(int id)
         {
             var result = _activeImagingTaskServices.DeleteActiveImagingTask(id);
@@ -51,7 +51,7 @@ namespace CloneDeploy_App.Controllers
             return _activeImagingTaskServices.ReadAll(Convert.ToInt32(userId));
         }
 
-        [TaskAuth(Permission = "ImageTaskDeploy")]
+        [Authorize]
         public ApiStringResponseDTO GetActiveUnicastCount(string taskType)
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
@@ -65,7 +65,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [TaskAuth(Permission = "ImageTaskDeploy")]
+        [Authorize]
         public ApiStringResponseDTO GetAllActiveCount()
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;

@@ -58,14 +58,6 @@ namespace CloneDeploy_Web.Helpers
         }
 
         
-
-        public static string PrimaryStoragePath
-        {
-            get { return new APICall().DistributionPointApi.GetPrimary().PhysicalPath; }
-        }
-
-      
-
         public static string OnDemand
         {
             get { return new APICall().SettingApi.GetSetting("On Demand").Value; }

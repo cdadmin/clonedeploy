@@ -24,7 +24,7 @@ namespace CloneDeploy_App.Controllers
             _activeMulticastSessionServices = new ActiveMulticastSessionServices();
         }
 
-        [TaskAuth(Permission = "ImageTaskMulticast")]
+        [Authorize]
         public IEnumerable<ActiveMulticastSessionEntity> GetAll()
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
@@ -35,7 +35,7 @@ namespace CloneDeploy_App.Controllers
           
         }
 
-        [TaskAuth(Permission = "ImageTaskMulticast")]
+        [Authorize]
         public ApiStringResponseDTO GetCount()
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
@@ -49,26 +49,26 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [TaskAuth(Permission = "ImageTaskMulticast")]
+        [CustomAuth(Permission = "ImageTaskMulticast")]
         public IEnumerable<ActiveImagingTaskEntity> GetMemberStatus(int id)
         {
             return new ActiveImagingTaskServices().MulticastMemberStatus(id);       
         }
 
-        [TaskAuth(Permission = "ImageTaskMulticast")]
+        [CustomAuth(Permission = "ImageTaskMulticast")]
         public IEnumerable<ComputerEntity> GetComputers(int id)
         {
             return new ActiveImagingTaskServices().GetMulticastComputers(id);
         }
 
-        [TaskAuth(Permission = "ImageTaskMulticast")]
+        [CustomAuth(Permission = "ImageTaskMulticast")]
         public IEnumerable<ActiveImagingTaskEntity> GetProgress(int id)
         {
             return new ActiveImagingTaskServices().MulticastProgress(id);
            
         }
 
-        [TaskAuth(Permission = "ImageTaskMulticast")]
+        [CustomAuth(Permission = "ImageTaskMulticast")]
         public ActionResultDTO Delete(int id)
         {
             var result = _activeMulticastSessionServices.Delete(id);

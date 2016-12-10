@@ -19,7 +19,7 @@ namespace CloneDeploy_App.Controllers
             _bootTemplateServices = new BootTemplateServices();
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public IEnumerable<BootTemplateEntity> GetAll(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
@@ -28,14 +28,14 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public ApiStringResponseDTO GetCount()
         {
             return new ApiStringResponseDTO() {Value = _bootTemplateServices.TotalCount()};
 
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public BootTemplateEntity Get(int id)
         {
             var result = _bootTemplateServices.GetBootTemplate(id);
@@ -43,14 +43,14 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [GlobalAuth(Permission = "GlobalCreate")]
+        [CustomAuth(Permission = "GlobalCreate")]
         public ActionResultDTO Post(BootTemplateEntity bootTemplate)
         {
             return  _bootTemplateServices.AddBootTemplate(bootTemplate);
           
         }
 
-        [GlobalAuth(Permission = "GlobalUpdate")]
+        [CustomAuth(Permission = "GlobalUpdate")]
         public ActionResultDTO Put(int id, BootTemplateEntity bootTemplate)
         {
             bootTemplate.Id = id;
@@ -59,7 +59,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [GlobalAuth(Permission = "GlobalDelete")]
+        [CustomAuth(Permission = "GlobalDelete")]
         public ActionResultDTO Delete(int id)
         {
             var result = _bootTemplateServices.DeleteBootTemplate(id);
