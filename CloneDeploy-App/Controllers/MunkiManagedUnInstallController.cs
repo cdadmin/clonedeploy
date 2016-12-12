@@ -15,7 +15,7 @@ namespace CloneDeploy_App.Controllers
             _munkiManagedUninstallServices = new MunkiManagedUninstallServices();
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public MunkiManifestManagedUnInstallEntity Get(int id)
         {
 

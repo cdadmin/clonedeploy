@@ -15,7 +15,7 @@ namespace CloneDeploy_App.Controllers
             _munkiManagedUpdateServices = new MunkiManagedUpdateServices();
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public MunkiManifestManagedUpdateEntity Get(int id)
         {
 

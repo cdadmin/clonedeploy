@@ -19,7 +19,7 @@ namespace CloneDeploy_App.Controllers
             _groupMembershipServices = new GroupMembershipServices();
         }
 
-        [GroupAuth]
+        [CustomAuth(Permission = "GroupSearch")]
         public ActionResultDTO Post(List<GroupMembershipEntity> groupMemberships)
         {
             return  _groupMembershipServices.AddMembership(groupMemberships);

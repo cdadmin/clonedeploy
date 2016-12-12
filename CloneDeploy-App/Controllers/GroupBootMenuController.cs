@@ -18,7 +18,7 @@ namespace CloneDeploy_App.Controllers
             
         }
 
-        [GroupAuth(Permission = "GroupUpdate")]
+        [CustomAuth(Permission = "GroupCreate")]
         public ActionResultDTO Post(GroupBootMenuEntity groupBootMenu)
         {
             return _groupBootMenuServices.UpdateGroupBootMenu(groupBootMenu);

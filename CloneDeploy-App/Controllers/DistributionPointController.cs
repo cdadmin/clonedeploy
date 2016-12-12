@@ -19,7 +19,7 @@ namespace CloneDeploy_App.Controllers
             _distributionPointServices = new DistributionPointServices();
         }
 
-        [AdminAuth(Permission = "AdminRead")]
+        [CustomAuth(Permission = "AdminRead")]
         public IEnumerable<DistributionPointEntity> GetAll(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
@@ -28,7 +28,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [AdminAuth(Permission = "AdminRead")]
+        [CustomAuth(Permission = "AdminRead")]
         public ApiStringResponseDTO GetCount()
         {
 
@@ -36,7 +36,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [AdminAuth(Permission = "AdminRead")]
+        [CustomAuth(Permission = "AdminRead")]
         public DistributionPointEntity Get(int id)
         {
             var result = _distributionPointServices.GetDistributionPoint(id);
@@ -46,7 +46,7 @@ namespace CloneDeploy_App.Controllers
 
       
 
-        [AdminAuth(Permission = "AdminUpdate")]
+        [CustomAuth(Permission = "AdminUpdate")]
         public ActionResultDTO Post(DistributionPointEntity distributionPoint)
         {
             var result = _distributionPointServices.AddDistributionPoint(distributionPoint);
@@ -54,7 +54,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [AdminAuth(Permission = "AdminUpdate")]
+        [CustomAuth(Permission = "AdminUpdate")]
         public ActionResultDTO Put(int id, DistributionPointEntity distributionPoint)
         {
             distributionPoint.Id = id;
@@ -63,7 +63,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [AdminAuth(Permission = "AdminUpdate")]
+        [CustomAuth(Permission = "AdminUpdate")]
         public ActionResultDTO Delete(int id)
         {
             var result = _distributionPointServices.DeleteDistributionPoint(id);

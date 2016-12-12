@@ -19,7 +19,7 @@ namespace CloneDeploy_App.Controllers
             _fileFolderServices = new FileFolderServices();
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public IEnumerable<FileFolderEntity> GetAll(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
@@ -28,7 +28,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public ApiStringResponseDTO GetCount()
         {
 
@@ -36,7 +36,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public FileFolderEntity Get(int id)
         {
             var result = _fileFolderServices.GetFileFolder(id);
@@ -44,7 +44,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [GlobalAuth(Permission = "GlobalCreate")]
+        [CustomAuth(Permission = "GlobalCreate")]
         public ActionResultDTO Post(FileFolderEntity fileFolder)
         {
             var result = _fileFolderServices.AddFileFolder(fileFolder);
@@ -52,7 +52,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [GlobalAuth(Permission = "GlobalUpdate")]
+        [CustomAuth(Permission = "GlobalUpdate")]
         public ActionResultDTO Put(int id, FileFolderEntity fileFolder)
         {
             fileFolder.Id = id;
@@ -61,7 +61,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [GlobalAuth(Permission = "GlobalDelete")]
+        [CustomAuth(Permission = "GlobalDelete")]
         public ActionResultDTO Delete(int id)
         {
             var result = _fileFolderServices.DeleteFileFolder(id);

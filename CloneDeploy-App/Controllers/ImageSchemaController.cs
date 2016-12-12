@@ -14,28 +14,28 @@ namespace CloneDeploy_App.Controllers
     public class ImageSchemaController: ApiController
     {
 
-        [ImageAuth(Permission = "ImageRead")]
+        [Authorize]
         [HttpPost]
         public ImageSchemaGridView GetSchema(ImageSchemaRequestDTO schemaRequest)
         {
             return new ImageSchemaFEServices(schemaRequest).GetImageSchema();
         }
 
-        [ImageAuth(Permission = "ImageRead")]
+        [Authorize]
         [HttpPost]
         public IEnumerable<HardDrive> GetHardDrives(ImageSchemaRequestDTO schemaRequest)
         {
             return new ImageSchemaFEServices(schemaRequest).GetHardDrivesForGridView();
         }
 
-        [ImageAuth(Permission = "ImageRead")]
+        [Authorize]
         [HttpPost]
         public List<Partition> GetPartitions(ImageSchemaRequestDTO schemaRequest, string selectedHd)
         {
             return new ImageSchemaFEServices(schemaRequest).GetPartitionsForGridView(selectedHd);
         }
 
-        [ImageAuth(Permission = "ImageRead")]
+        [Authorize]
         [HttpPost]
         public List<LogicalVolume> GetLogicalVolumes(ImageSchemaRequestDTO schemaRequest, string selectedHd)
         {

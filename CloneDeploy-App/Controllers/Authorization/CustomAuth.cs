@@ -67,6 +67,11 @@ namespace CloneDeploy_App.Controllers.Authorization
                     if (new AuthorizationServices(Convert.ToInt32(userId), Permission).GroupManagement(groupId))
                         authorized = true;
                     break;
+                case "ImageTaskDeployGroup":
+                    var groupId_a = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
+                    if (new AuthorizationServices(Convert.ToInt32(userId), "ImageTaskDeploy").GroupManagement(groupId_a))
+                        authorized = true;
+                    break;
                 case "ImageDelete":
                 case "ImageUpdate":
                 case "ImageRead":

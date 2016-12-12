@@ -15,7 +15,7 @@ namespace CloneDeploy_App.Controllers
             _munkiIncludedManifestServices = new MunkiIncludedManifestServices();
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public MunkiManifestIncludedManifestEntity Get(int id)
         {
             

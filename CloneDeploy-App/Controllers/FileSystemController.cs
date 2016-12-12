@@ -13,7 +13,7 @@ namespace CloneDeploy_App.Controllers
     public class FileSystemController :ApiController
     {
         [HttpGet]
-        [CustomAuth(Permission = "ComputerSearch")]
+        [Authorize]
         public ApiBoolResponseDTO BootSdiExists()
         {
 
@@ -26,7 +26,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpGet]
-        [CustomAuth(Permission = "ComputerSearch")]
+        [Authorize]
         public ApiStringResponseDTO ReadFileText(string path)
         {
 
@@ -38,7 +38,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpGet]
-        [CustomAuth(Permission = "ComputerSearch")]
+        [Authorize]
         public IEnumerable<string> GetKernels()
         {
 
@@ -48,7 +48,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpGet]
-        [CustomAuth(Permission = "ComputerSearch")]
+        [Authorize]
         public IEnumerable<string> GetBootImages()
         {
 
@@ -56,7 +56,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpGet]
-        [CustomAuth(Permission = "ComputerSearch")]
+        [Authorize]
         public List<string> GetLogs()
         {
 
@@ -67,14 +67,14 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpGet]
-        [CustomAuth(Permission = "ComputerSearch")]
+        [Authorize]
         public MunkiPackageInfoEntity GetPlist(string file)
         {
             return new Utility().ReadPlist(file);
         }
 
         [HttpGet]
-        [CustomAuth(Permission = "ComputerSearch")]
+        [Authorize]
         public List<FileInfo> GetMunkiResources(string resourceType)
         {
             return new Utility().GetMunkiResources(resourceType);
@@ -82,7 +82,7 @@ namespace CloneDeploy_App.Controllers
 
 
         [HttpGet]
-        [CustomAuth(Permission = "ComputerSearch")]
+        [Authorize]
         public ApiBoolResponseDTO SetUnixPermissions(string path)
         {
            new FileOps().SetUnixPermissions(path);
@@ -90,7 +90,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpGet]
-        [CustomAuth(Permission = "ComputerSearch")]
+        [Authorize]
         public List<string> GetScripts(string type)
         {
 
@@ -101,7 +101,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpGet]
-        [CustomAuth(Permission = "ComputerSearch")]
+        [Authorize]
         public List<string> GetThinImages()
         {
             return Utility.GetThinImages();

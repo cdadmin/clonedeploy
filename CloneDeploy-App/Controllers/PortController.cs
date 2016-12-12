@@ -17,7 +17,7 @@ namespace CloneDeploy_App.Controllers
         }
        
 
-        [AdminAuth(Permission = "AdminUpdate")]
+        [CustomAuth(Permission = "AdminUpdate")]
         public ApiBoolResponseDTO Post(PortEntity port)
         {
             return new ApiBoolResponseDTO() {Value = _portServices.AddPort(port)};

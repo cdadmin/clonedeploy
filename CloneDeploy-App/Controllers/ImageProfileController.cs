@@ -21,13 +21,13 @@ namespace CloneDeploy_App.Controllers
         }
 
 
-        [ImageProfileAuth(Permission = "ImageProfileSearch")]
+        [CustomAuth(Permission = "ProfileSearch")]
         public IEnumerable<ImageProfileEntity> GetAll()
         {
             return _imageProfileServices.GetAllProfiles();
         }
 
-        [ImageProfileAuth(Permission = "ImageProfileRead")]
+        [CustomAuth(Permission = "ProfileRead")]
         public ImageProfileEntity Get(int id)
         {
             var result = _imageProfileServices.ReadProfile(id);
@@ -37,7 +37,7 @@ namespace CloneDeploy_App.Controllers
 
        
 
-        [ImageProfileAuth(Permission = "ImageProfileCreate")]
+        [CustomAuth(Permission = "ProfileCreate")]
         public ActionResultDTO Post(ImageProfileEntity imageProfile)
         {
             return _imageProfileServices.AddProfile(imageProfile);
@@ -47,14 +47,14 @@ namespace CloneDeploy_App.Controllers
     
 
         [HttpGet]
-        [ImageProfileAuth(Permission = "ImageProfileCreate")]
+        [CustomAuth(Permission = "ProfileCreate")]
         public ApiBoolResponseDTO Clone(int id)
         {
             _imageProfileServices.CloneProfile(id);
             return new ApiBoolResponseDTO() {Value = true};
         }
 
-        [GlobalAuth(Permission = "GlobalUpdate")]
+        [CustomAuth(Permission = "ProfileUpdate")]
         public ActionResultDTO Put(int id, ImageProfileEntity imageProfile)
         {
             imageProfile.Id = id;
@@ -63,7 +63,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [ImageProfileAuth(Permission = "ImageProfileDelete")]
+        [CustomAuth(Permission = "ProfileDelete")]
         public ActionResultDTO Delete(int id)
         {
             var result = _imageProfileServices.DeleteProfile(id);
@@ -72,7 +72,7 @@ namespace CloneDeploy_App.Controllers
           
         }
 
-        [ImageProfileAuth(Permission = "ImageProfileSearch")]
+        [CustomAuth(Permission = "ProfileRead")]
         public IEnumerable<ImageProfileFileFolderEntity> GetFileFolders(int id)
         {
 
@@ -80,7 +80,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [ImageProfileAuth(Permission = "ImageProfileSearch")]
+        [CustomAuth(Permission = "ProfileRead")]
         public IEnumerable<ImageProfileScriptEntity> GetScripts(int id)
         {
 
@@ -88,7 +88,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [ImageProfileAuth(Permission = "ImageProfileSearch")]
+        [CustomAuth(Permission = "ProfileRead")]
         public IEnumerable<ImageProfileSysprepTagEntity> GetSysprepTags(int id)
         {
 
@@ -96,7 +96,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [ImageAuth(Permission = "ImageRead")]
+        [CustomAuth(Permission = "ProfileSearch")]
         public ApiStringResponseDTO GetMinimumClientSize(int id, int hdNumber)
         {
             return new ApiStringResponseDTO()
@@ -106,7 +106,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [ImageProfileAuth(Permission = "ImageProfileDelete")]
+        [CustomAuth(Permission = "ProfileUpdate")]
         [HttpDelete]
         public ActionResultDTO RemoveProfileFileFolders(int id)
         {
@@ -115,7 +115,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [ImageProfileAuth(Permission = "ImageProfileDelete")]
+        [CustomAuth(Permission = "ProfileUpdate")]
         [HttpDelete]
         public ActionResultDTO RemoveProfileScripts(int id)
         {
@@ -123,7 +123,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [ImageProfileAuth(Permission = "ImageProfileDelete")]
+        [CustomAuth(Permission = "ProfileUpdate")]
         [HttpDelete]
         public ApiBoolResponseDTO RemoveProfileSysprepTags(int id)
         {

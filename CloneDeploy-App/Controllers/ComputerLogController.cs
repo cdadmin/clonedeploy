@@ -19,7 +19,7 @@ namespace CloneDeploy_App.Controllers
             _computerLogServices = new ComputerLogServices();
         }
 
-        [CustomAuth(Permission = "ComputerRead")]
+        [CustomAuth(Permission = "ComputerSearch")]
         public ComputerLogEntity Get(int id)
         {
             var result = _computerLogServices.GetComputerLog(id);
@@ -33,7 +33,7 @@ namespace CloneDeploy_App.Controllers
             return _computerLogServices.SearchOnDemand(limit);
         }
 
-        [CustomAuth(Permission = "ComputerCreate")]
+        [CustomAuth(Permission = "ComputerSearch")]
         public ActionResultDTO Post(ComputerLogEntity computerLog)
         {
             var result = _computerLogServices.AddComputerLog(computerLog);
@@ -41,7 +41,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = "ComputerDelete")]
+        [CustomAuth(Permission = "ComputerSearch")]
         public ActionResultDTO Delete(int id)
         {
             var result = _computerLogServices.DeleteComputerLog(id);

@@ -15,7 +15,7 @@ namespace CloneDeploy_App.Controllers
             _munkiCatalogServices = new MunkiCatalogServices();
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public MunkiManifestCatalogEntity Get(int id)
         {           
              return _munkiCatalogServices.GetCatalog(id);

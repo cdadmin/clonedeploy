@@ -27,7 +27,7 @@ namespace CloneDeploy_App.Controllers
         }
 
 
-        [GroupAuth(Permission = "GroupSearch")]
+        [CustomAuth(Permission = "GroupSearch")]
         public IEnumerable<GroupEntity> GetAll(string searchstring = "")
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
@@ -39,7 +39,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [GroupAuth(Permission = "GroupSearch")]
+        [CustomAuth(Permission = "GroupSearch")]
         public ApiStringResponseDTO GetCount()
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
@@ -49,7 +49,7 @@ namespace CloneDeploy_App.Controllers
             return new ApiStringResponseDTO() {Value = _groupServices.GroupCountUser(Convert.ToInt32(userId))};
         }
 
-        [GroupAuth(Permission = "GroupRead")]
+        [CustomAuth(Permission = "GroupRead")]
         public GroupEntity Get(int id)
         {
             var result = _groupServices.GetGroup(id);
@@ -57,7 +57,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [GroupAuth(Permission = "GroupRead")]
+        [CustomAuth(Permission = "GroupRead")]
         [HttpGet]
         public ApiBoolResponseDTO Export(string path)
         {
@@ -66,28 +66,28 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpDelete]
-        [GroupAuth(Permission = "GroupUpdate")]
+        [CustomAuth(Permission = "GroupUpdate")]
         public ApiBoolResponseDTO RemoveGroupMember(int id, int computerId)
         {
             return new ApiBoolResponseDTO() {Value = _groupServices.DeleteMembership(computerId, id)};
         }
 
         [HttpDelete]
-        [GroupAuth(Permission = "GroupUpdate")]
+        [CustomAuth(Permission = "GroupUpdate")]
         public ApiBoolResponseDTO RemoveMunkiTemplates(int id)
         {
             return new ApiBoolResponseDTO() {Value = _groupServices.DeleteMunkiTemplates(id)};
         }
 
         
-        [GroupAuth(Permission = "GroupRead")]
+        [CustomAuth(Permission = "GroupRead")]
         public IEnumerable<GroupMunkiEntity> GetMunkiTemplates(int id)
         {
             return _groupServices.GetGroupMunkiTemplates(id);
         }
 
         [HttpGet]
-        [GroupAuth(Permission = "GroupRead")]
+        [CustomAuth(Permission = "GroupRead")]
         public GroupPropertyEntity GetGroupProperties(int id)
         {
             var result = _groupServices.GetGroupProperty(id);
@@ -95,14 +95,14 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [GroupAuth(Permission = "GroupRead")]
+        [CustomAuth(Permission = "GroupRead")]
         public ApiStringResponseDTO GetMemberCount(int id)
         {
             return new ApiStringResponseDTO() {Value = _groupServices.GetGroupMemberCount(id)};
         }
        
 
-        [GroupAuth(Permission = "GroupCreate")]
+        [CustomAuth(Permission = "GroupCreate")]
         public ActionResultDTO Post(GroupEntity group)
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
@@ -114,7 +114,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [GroupAuth(Permission = "GroupUpdate")]
+        [CustomAuth(Permission = "GroupUpdate")]
         public ActionResultDTO Put(int id, GroupEntity group)
         {
             group.Id = id;
@@ -123,7 +123,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [GroupAuth(Permission = "GroupDelete")]
+        [CustomAuth(Permission = "GroupDelete")]
         public ActionResultDTO Delete(int id)
         {
             var result = _groupServices.DeleteGroup(id);
@@ -132,14 +132,14 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpGet]
-        [GroupAuth(Permission = "GroupUpdate")]
+        [CustomAuth(Permission = "SmartUpdate")]
         public ActionResultDTO UpdateSmartMembership(int id)
         {
             return _groupServices.UpdateSmartMembership(id);
         }
 
         [HttpGet]
-        [TaskAuth(Permission = "ImageTaskDeploy")]
+        [CustomAuth(Permission = "ImageTaskDeployGroup")]
         public ApiIntResponseDTO StartGroupUnicast(int id)
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
@@ -153,7 +153,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "ImageTaskMulticast")]
         [HttpGet]
         public ApiStringResponseDTO StartMulticast(int id)
         {
@@ -164,7 +164,7 @@ namespace CloneDeploy_App.Controllers
             return new ApiStringResponseDTO() { Value = new Multicast(id, Convert.ToInt32(userId)).Create() };
         }   
 
-        [GroupAuth(Permission = "GroupRead")]
+        [CustomAuth(Permission = "GroupRead")]
         public IEnumerable<ComputerEntity> GetGroupMembers(int id, string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
@@ -173,7 +173,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [GroupAuth(Permission = "GroupRead")]
+        [CustomAuth(Permission = "GroupRead")]
         public GroupBootMenuEntity GetCustomBootMenu(int id)
         {
             var result = _groupServices.GetGroupBootMenu(id);

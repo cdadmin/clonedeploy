@@ -24,7 +24,7 @@ namespace CloneDeploy_App.Controllers
             _imageServices = new ImageServices();
         }
 
-        [ImageAuth(Permission = "ImageSearch")]
+        [CustomAuth(Permission = "ImageSearch")]
         public IEnumerable<ImageEntity> GetAll(string searchstring = "")
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
@@ -35,7 +35,7 @@ namespace CloneDeploy_App.Controllers
                 : _imageServices.SearchImagesForUser(Convert.ToInt32(userId),searchstring);
         }
 
-        [ImageAuth(Permission = "ImageSearch")]
+        [CustomAuth(Permission = "ImageSearch")]
         public IEnumerable<ImageEntity> Search(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
@@ -43,7 +43,7 @@ namespace CloneDeploy_App.Controllers
                 : _imageServices.SearchImages(searchstring);
         }
 
-        [ImageAuth(Permission = "ImageSearch")]
+        [CustomAuth(Permission = "ImageSearch")]
         public ApiStringResponseDTO GetCount()
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
@@ -54,7 +54,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [ImageAuth(Permission = "ImageRead")]
+        [CustomAuth(Permission = "ImageRead")]
         public ImageEntity Get(int id)
         {
             var result = _imageServices.GetImage(id);
@@ -64,7 +64,7 @@ namespace CloneDeploy_App.Controllers
 
       
 
-        [ImageAuth]
+        [Authorize]
         [HttpGet]
         public ApiBoolResponseDTO SendImageApprovedMail(int id)
         {
@@ -72,7 +72,7 @@ namespace CloneDeploy_App.Controllers
             return new ApiBoolResponseDTO(){Value = true};
         }
 
-        [ImageAuth(Permission = "ImageCreate")]
+        [CustomAuth(Permission = "ImageCreate")]
         public ActionResultDTO Post(ImageEntity image)
         {
             var result = _imageServices.AddImage(image);
@@ -80,7 +80,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [GlobalAuth(Permission = "GlobalUpdate")]
+        [CustomAuth(Permission = "ImageUpdate")]
         public ActionResultDTO Put(int id, ImageEntity image)
         {
             image.Id = id;
@@ -89,7 +89,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [ImageAuth(Permission = "ImageDelete")]
+        [CustomAuth(Permission = "ImageDelete")]
         public ActionResultDTO Delete(int id)
         {
             var result = _imageServices.DeleteImage(id);
@@ -97,7 +97,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [ImageAuth(Permission = "ImageRead")]
+        [CustomAuth(Permission = "ImageRead")]
         [HttpGet]
         public ApiBoolResponseDTO Export(string path)
         {
@@ -105,20 +105,20 @@ namespace CloneDeploy_App.Controllers
             return new ApiBoolResponseDTO() { Value = true };
         }
 
-        [ImageProfileAuth(Permission = "ImageProfileSearch")]
+        [CustomAuth(Permission = "ImageRead")]
         public IEnumerable<ImageProfileEntity> GetImageProfiles(int id)
         {
             return _imageServices.SearchProfiles(id);
         }
 
         [HttpGet]
-        [ImageProfileAuth(Permission = "ImageProfileCreate")]
+        [CustomAuth(Permission = "ImageCreate")]
         public ImageProfileEntity SeedDefaultProfile(int id)
         {
             return _imageServices.SeedDefaultImageProfile(id);
         }
 
-        [ImageAuth(Permission = "ImageRead")]
+        [CustomAuth(Permission = "ImageRead")]
         public IEnumerable<ImageFileInfo> GetPartitionFileInfo(int id, string selectedHd, string selectedPartition)
         {
 
@@ -126,7 +126,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [ImageAuth(Permission = "ImageRead")]
+        [CustomAuth(Permission = "ImageSearch")]
         public ApiStringResponseDTO GetImageSizeOnServer(string imageName, string hdNumber)
         {
 

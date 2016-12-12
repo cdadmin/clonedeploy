@@ -28,7 +28,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = "ComputerCreate")]
+        [CustomAuth(Permission = "ComputerSearch")]
         public ActionResultDTO Post(ComputerMunkiEntity computerMunki)
         {
             var result = _computerMunkiServices.AddMunkiTemplates(computerMunki);

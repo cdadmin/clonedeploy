@@ -15,7 +15,7 @@ namespace CloneDeploy_App.Controllers
             _munkiOptionalInstallServices = new MunkiOptionalInstallServices();
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public MunkiManifestOptionInstallEntity Get(int id)
         {
 

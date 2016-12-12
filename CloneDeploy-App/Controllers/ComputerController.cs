@@ -95,7 +95,7 @@ namespace CloneDeploy_App.Controllers
             return _computerService.GetAllComputerMemberships(id);
         }
 
-        [CustomAuth(Permission = "ComputerRead")]
+        [CustomAuth(Permission = "ComputerSearch")]
         public ComputerEntity GetByMac(string mac)
         {
             return _computerService.GetComputerFromMac(mac);       
@@ -224,7 +224,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpGet]
-        [TaskAuth(Permission = "ImageTaskUpload")]
+        [CustomAuth(Permission = "ImageTaskUpload")]
         public ApiStringResponseDTO StartUpload(int id)
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
@@ -234,7 +234,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpGet]
-        [TaskAuth(Permission = "ImageTaskDeploy")]
+        [CustomAuth(Permission = "ImageTaskDeploy")]
         public ApiStringResponseDTO StartDeploy(int id)
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
@@ -244,7 +244,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpGet]
-        [TaskAuth(Permission = "ImageTaskDeploy")]
+        [CustomAuth(Permission = "ImageTaskDeploy")]
         public ApiStringResponseDTO StartPermanentDeploy(int id)
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;

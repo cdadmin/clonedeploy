@@ -21,7 +21,7 @@ namespace CloneDeploy_App.Controllers
             _munkiManifestTemplateServices = new MunkiManifestTemplateServices();
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public IEnumerable<MunkiManifestTemplateEntity> GetAll(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
@@ -30,13 +30,13 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public ApiStringResponseDTO GetCount()
         {
             return new ApiStringResponseDTO() {Value = _munkiManifestTemplateServices.TotalCount()};
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public MunkiManifestTemplateEntity Get(int id)
         {
             var result = _munkiManifestTemplateServices.GetManifest(id);
@@ -44,13 +44,13 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [GlobalAuth(Permission = "GlobalCreate")]
+        [CustomAuth(Permission = "GlobalCreate")]
         public ActionResultDTO Post(MunkiManifestTemplateEntity manifest)
         {
             return _munkiManifestTemplateServices.AddManifest(manifest);
         }
 
-        [GlobalAuth(Permission = "GlobalUpdate")]
+        [CustomAuth(Permission = "GlobalUpdate")]
         public ActionResultDTO Put(int id, MunkiManifestTemplateEntity manifest)
         {
             manifest.Id = id;
@@ -59,7 +59,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [GlobalAuth(Permission = "GlobalDelete")]
+        [CustomAuth(Permission = "GlobalDelete")]
         public ActionResultDTO Delete(int id)
         {
             var result = _munkiManifestTemplateServices.DeleteManifest(id);
@@ -68,37 +68,37 @@ namespace CloneDeploy_App.Controllers
            
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public IEnumerable<MunkiManifestCatalogEntity> GetManifestCatalogs(int id)
         {
             return _munkiManifestTemplateServices.GetAllCatalogsForMt(id);
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public ApiStringResponseDTO GetCatalogCount(int id)
         {
             return new ApiStringResponseDTO() {Value = _munkiManifestTemplateServices.GetCatalogTotalCount(id)};
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public IEnumerable<MunkiManifestIncludedManifestEntity> GetManifestIncludedManifests(int id)
         {
             return _munkiManifestTemplateServices.GetAllIncludedManifestsForMt(id);
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public ApiStringResponseDTO GetIncludedManifestCount(int id)
         {
             return new ApiStringResponseDTO() {Value = _munkiManifestTemplateServices.GetIncludedManifestTotalCount(id)};
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public IEnumerable<MunkiManifestManagedInstallEntity> GetManifestManagedInstalls(int id)
         {
              return _munkiManifestTemplateServices.GetAllManagedInstallsForMt(id);
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public ApiStringResponseDTO GetManagedInstallCount(int id)
         {
 
@@ -106,13 +106,13 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public IEnumerable<MunkiManifestManagedUnInstallEntity> GetManifestManagedUninstalls(int id)
         {
             return _munkiManifestTemplateServices.GetAllManagedUnInstallsForMt(id);
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public ApiStringResponseDTO GetManagedUninstallCount(int id)
         {
 
@@ -120,31 +120,31 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public IEnumerable<MunkiManifestManagedUpdateEntity> GetManifestManagedUpdates(int id)
         {
             return _munkiManifestTemplateServices.GetAllManagedUpdatesForMt(id);
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public ApiStringResponseDTO GetManagedUpdateCount(int id)
         {
             return new ApiStringResponseDTO() {Value = _munkiManifestTemplateServices.GetManagedUpdateTotalCount(id)};
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public IEnumerable<MunkiManifestOptionInstallEntity> GetManifestOptionalInstalls(int id)
         {
             return _munkiManifestTemplateServices.GetAllOptionalInstallsForMt(id);
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public ApiStringResponseDTO GetOptionalInstallCount(int id)
         {
             return new ApiStringResponseDTO() {Value = _munkiManifestTemplateServices.GetOptionalInstallTotalCount(id)};
         }
 
-        [GlobalAuth(Permission = "GlobalCreate")]
+        [CustomAuth(Permission = "GlobalCreate")]
         [HttpPost]
         public ApiBoolResponseDTO AddCatalogToTemplate(MunkiManifestCatalogEntity catalog)
         {
@@ -153,7 +153,7 @@ namespace CloneDeploy_App.Controllers
 
 
 
-        [GlobalAuth(Permission = "GlobalDelete")]
+        [CustomAuth(Permission = "GlobalDelete")]
         public ApiBoolResponseDTO DeleteCatalogsFromTemplate(int id)
         {
 
@@ -161,7 +161,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [GlobalAuth(Permission = "GlobalCreate")]
+        [CustomAuth(Permission = "GlobalCreate")]
         [HttpPost]
         public ApiBoolResponseDTO AddManifestToTemplate(MunkiManifestIncludedManifestEntity manifest)
             {
@@ -175,7 +175,7 @@ namespace CloneDeploy_App.Controllers
 
 
 
-        [GlobalAuth(Permission = "GlobalDelete")]
+        [CustomAuth(Permission = "GlobalDelete")]
         public ApiBoolResponseDTO DeleteManifestsFromTemplate(int id)
         {
 
@@ -186,7 +186,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [GlobalAuth(Permission = "GlobalCreate")]
+        [CustomAuth(Permission = "GlobalCreate")]
         [HttpPost]
         public ApiBoolResponseDTO AddManagedInstallToTemplate(MunkiManifestManagedInstallEntity managedInstall)
         {
@@ -200,7 +200,7 @@ namespace CloneDeploy_App.Controllers
 
 
 
-        [GlobalAuth(Permission = "GlobalDelete")]
+        [CustomAuth(Permission = "GlobalDelete")]
         public ApiBoolResponseDTO DeleteManagedInstallsFromTemplate(int id)
         {
 
@@ -211,7 +211,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [GlobalAuth(Permission = "GlobalCreate")]
+        [CustomAuth(Permission = "GlobalCreate")]
         [HttpPost]
         public ApiBoolResponseDTO AddManagedUninstallsToTemplate(MunkiManifestManagedUnInstallEntity managedUninstall)
         {
@@ -225,7 +225,7 @@ namespace CloneDeploy_App.Controllers
 
 
 
-        [GlobalAuth(Permission = "GlobalDelete")]
+        [CustomAuth(Permission = "GlobalDelete")]
         public ApiBoolResponseDTO DeleteManageUninstallsFromTemplate(int id)
         {
 
@@ -236,7 +236,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [GlobalAuth(Permission = "GlobalCreate")]
+        [CustomAuth(Permission = "GlobalCreate")]
         [HttpPost]
         public ApiBoolResponseDTO AddManagedUpdateToTemplate(MunkiManifestManagedUpdateEntity managedUpdate)
         {
@@ -250,7 +250,7 @@ namespace CloneDeploy_App.Controllers
 
 
 
-        [GlobalAuth(Permission = "GlobalDelete")]
+        [CustomAuth(Permission = "GlobalDelete")]
         public ApiBoolResponseDTO RemoveManagedUpdatesFromTemplate(int id)
         {
 
@@ -258,7 +258,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [GlobalAuth(Permission = "GlobalCreate")]
+        [CustomAuth(Permission = "GlobalCreate")]
         [HttpPost]
         public ApiBoolResponseDTO AddOptionalInstallToTemplate(MunkiManifestOptionInstallEntity optionalInstall)
         {
@@ -273,7 +273,7 @@ namespace CloneDeploy_App.Controllers
 
 
 
-        [GlobalAuth(Permission = "GlobalDelete")]
+        [CustomAuth(Permission = "GlobalDelete")]
         public ApiBoolResponseDTO DeleteOptonalInstallsFromTemplate(int id)
             {
 
@@ -284,20 +284,20 @@ namespace CloneDeploy_App.Controllers
 
             }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public ApiStringResponseDTO GetEffectiveManifest(int id)
         {
             var effectiveManifest = new EffectiveMunkiTemplate().MunkiTemplate(id);
             return new ApiStringResponseDTO() { Value = Encoding.UTF8.GetString(effectiveManifest.ToArray()) };
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public MunkiUpdateConfirmDTO GetUpdateStats(int id)
         {
             return new EffectiveMunkiTemplate().GetUpdateStats(id);
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         [HttpGet]
         public ApiIntResponseDTO Apply(int id)
         {

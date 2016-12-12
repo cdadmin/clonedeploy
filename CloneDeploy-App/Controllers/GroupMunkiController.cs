@@ -16,7 +16,7 @@ namespace CloneDeploy_App.Controllers
             _groupMunkiServices = new GroupMunkiServices();
         }
 
-        [GroupAuth(Permission = "GroupCreate")]
+        [CustomAuth(Permission = "GroupSearch")]
         public ActionResultDTO Post(GroupMunkiEntity groupMunki)
         {
             return  _groupMunkiServices.AddMunkiTemplates(groupMunki);

@@ -16,7 +16,7 @@ namespace CloneDeploy_App.Controllers
             _imageProfileFileFolderService = new ImageProfileFileFolderService();
         }
 
-        [ImageProfileAuth(Permission = "ImageProfileCreate")]
+        [CustomAuth(Permission = "ProfileSearch")]
         public ActionResultDTO Post(ImageProfileFileFolderEntity imageProfileFileFolder)
         {
             return _imageProfileFileFolderService.AddImageProfileFileFolder(imageProfileFileFolder);

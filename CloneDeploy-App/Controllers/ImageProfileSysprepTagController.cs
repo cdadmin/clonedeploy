@@ -17,7 +17,7 @@ namespace CloneDeploy_App.Controllers
         }
        
 
-        [ImageProfileAuth(Permission = "ImageProfileCreate")]
+        [CustomAuth(Permission = "ProfileSearch")]
         public ActionResultDTO Post(ImageProfileSysprepTagEntity imageProfileFileFolder)
         {
 

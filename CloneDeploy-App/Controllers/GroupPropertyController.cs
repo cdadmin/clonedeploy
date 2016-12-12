@@ -17,13 +17,13 @@ namespace CloneDeploy_App.Controllers
             _groupPropertyServices = new GroupPropertyServices();
         }
 
-        [GroupAuth]
+        [CustomAuth(Permission = "GroupSearch")]
         public ActionResultDTO Post(GroupPropertyEntity groupProperty)
         {
             return _groupPropertyServices.AddGroupProperty(groupProperty);
         }
 
-        [GroupAuth]
+        [CustomAuth(Permission = "GroupSearch")]
         public ActionResultDTO Put(int id,GroupPropertyEntity groupProperty)
         {
             groupProperty.Id = id;
