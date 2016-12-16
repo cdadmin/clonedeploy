@@ -97,7 +97,7 @@ namespace CloneDeploy_Services
 
         private  ValidationResultDTO ValidateManifest(MunkiManifestTemplateEntity manifest, bool isNewManifest)
         {
-            var validationResult = new ValidationResultDTO();
+            var validationResult = new ValidationResultDTO() { Success = true };
 
             if (string.IsNullOrEmpty(manifest.Name) || manifest.Name.Contains(" "))
             {

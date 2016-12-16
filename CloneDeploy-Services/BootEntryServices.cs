@@ -97,7 +97,7 @@ namespace CloneDeploy_Services
 
         private  ValidationResultDTO ValidateEntry(BootEntryEntity bootEntry, bool isNewEntry)
         {
-            var validationResult = new ValidationResultDTO();
+            var validationResult = new ValidationResultDTO() {Success = true};
 
             if (string.IsNullOrEmpty(bootEntry.Name))
             {

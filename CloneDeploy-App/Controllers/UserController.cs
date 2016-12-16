@@ -26,7 +26,7 @@ namespace CloneDeploy_App.Controllers
         }
 
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "Administrator")]
         public IEnumerable<CloneDeployUserEntity> GetAll(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
@@ -48,25 +48,25 @@ namespace CloneDeploy_App.Controllers
             throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "Administrator")]
         public ApiStringResponseDTO GetCount()
         {
             return new ApiStringResponseDTO() {Value = _userServices.TotalCount()};
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "Administrator")]
         public ApiIntResponseDTO GetAdminCount()
         {
             return new ApiIntResponseDTO() {Value = _userServices.GetAdminCount()};
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "Administrator")]
         public ActionResultDTO Post(CloneDeployUserEntity user)
         {
             return  _userServices.AddUser(user);
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "Administrator")]
         public ActionResultDTO Put(int id, CloneDeployUserEntity user)
         {
             user.Id = id;
@@ -75,7 +75,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "Administrator")]
         public ActionResultDTO Delete(int id)
         {
             var result = _userServices.DeleteUser(id);
@@ -83,14 +83,14 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [Authorize]
         [HttpGet]
         public ApiBoolResponseDTO IsAdmin(int id)
         {
             return new ApiBoolResponseDTO() {Value = _userServices.IsAdmin(id)};
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "Administrator")]
         public CloneDeployUserEntity Get(int id)
         {
             var result = _userServices.GetUser(id);
@@ -98,7 +98,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "Administrator")]
         public CloneDeployUserEntity GetByName(string username)
         {
             var result = _userServices.GetUser(username);
@@ -106,39 +106,39 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "Administrator")]
         public IEnumerable<UserRightEntity> GetRights(int id)
         {
             return _userServices.GetUserRights(id);        
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "Administrator")]
         public ApiBoolResponseDTO DeleteRights(int id)
         {
             return new ApiBoolResponseDTO() {Value = _userServices.DeleteUserRights(id)};
 
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "Administrator")]
         public IEnumerable<UserImageManagementEntity> GetImageManagements(int id)
         {
             return _userServices.GetUserImageManagements(id);
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "Administrator")]
         public ApiBoolResponseDTO DeleteImageManagements(int id)
         {
             return new ApiBoolResponseDTO() {Value = _userServices.DeleteUserImageManagements(id)};
 
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "Administrator")]
         public IEnumerable<UserGroupManagementEntity> GetGroupManagements(int id)
         {
             return _userServices.GetUserGroupManagements(id);
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "Administrator")]
         public ApiBoolResponseDTO DeleteGroupManagements(int id)
         {
             return new ApiBoolResponseDTO() {Value = _userServices.DeleteUserGroupManagements(id)};

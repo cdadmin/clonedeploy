@@ -17,7 +17,7 @@ namespace CloneDeploy_App.Controllers
             _userRightServices = new UserRightServices();
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "Administrator")]
         public ActionResultDTO Post(List<UserRightEntity> listOfRights)
         {
             return _userRightServices.AddUserRights(listOfRights);

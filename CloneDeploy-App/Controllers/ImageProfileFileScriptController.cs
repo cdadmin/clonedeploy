@@ -16,11 +16,11 @@ namespace CloneDeploy_App.Controllers
             _imageProfileScriptServices = new ImageProfileScriptServices();
         }
 
-        [ImageProfileAuth(Permission = "ImageProfileCreate")]
-        public ActionResultDTO Post(ImageProfileScriptEntity imageProfileFileFolder)
+        [CustomAuth(Permission = "ProfileSearch")]
+        public ActionResultDTO Post(ImageProfileScriptEntity imageProfileScript)
         {
             
-            return _imageProfileScriptServices.AddImageProfileScript(imageProfileFileFolder);
+            return _imageProfileScriptServices.AddImageProfileScript(imageProfileScript);
 
         }
 

@@ -176,7 +176,7 @@ namespace CloneDeploy_Services
 
         private  ValidationResultDTO ValidateUser(CloneDeployUserEntity user, bool isNewUser)
         {
-            var validationResult = new ValidationResultDTO();
+            var validationResult = new ValidationResultDTO() { Success = true };
 
             if (string.IsNullOrEmpty(user.Name) || !user.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {

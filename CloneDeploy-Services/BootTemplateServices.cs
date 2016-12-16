@@ -103,7 +103,7 @@ namespace CloneDeploy_Services
 
         private ValidationResultDTO ValidateTemplate(BootTemplateEntity bootTemplate, bool isNewTemplate)
         {
-            var validationResult = new ValidationResultDTO();
+            var validationResult = new ValidationResultDTO() { Success = true };
 
             if (string.IsNullOrEmpty(bootTemplate.Name) || bootTemplate.Name.Contains(" "))
             {

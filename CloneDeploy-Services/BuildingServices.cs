@@ -97,7 +97,7 @@ namespace CloneDeploy_Services
 
         private  ValidationResultDTO ValidateBuilding(BuildingEntity building, bool isNewBuilding)
         {
-            var validationResult = new ValidationResultDTO();
+            var validationResult = new ValidationResultDTO() { Success = true };
 
             if (string.IsNullOrEmpty(building.Name) || building.Name.Contains(" "))
             {

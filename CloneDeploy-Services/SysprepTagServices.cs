@@ -105,7 +105,7 @@ namespace CloneDeploy_Services
 
         private  ValidationResultDTO ValidateSysprepTag(SysprepTagEntity sysprepTag, bool isNewSysprepTag)
         {
-            var validationResult = new ValidationResultDTO();
+            var validationResult = new ValidationResultDTO() { Success = true };
 
             if (string.IsNullOrEmpty(sysprepTag.Name) || !sysprepTag.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {

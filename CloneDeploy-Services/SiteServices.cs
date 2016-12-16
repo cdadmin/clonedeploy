@@ -93,7 +93,7 @@ namespace CloneDeploy_Services
 
         private ValidationResultDTO ValidateSite(SiteEntity site, bool isNewSite)
         {
-            var validationResult = new ValidationResultDTO();
+            var validationResult = new ValidationResultDTO() { Success = true };
 
             if (string.IsNullOrEmpty(site.Name))
             {

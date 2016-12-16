@@ -19,7 +19,7 @@ namespace CloneDeploy_App.Controllers
             _siteServices = new SiteServices();
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public IEnumerable<SiteEntity> GetAll(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
@@ -28,7 +28,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public ApiStringResponseDTO GetCount()
         {
 
@@ -36,7 +36,7 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public SiteEntity Get(int id)
         {
             var result = _siteServices.GetSite(id);
@@ -44,14 +44,14 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [GlobalAuth(Permission = "GlobalCreate")]
+        [CustomAuth(Permission = "GlobalCreate")]
         public ActionResultDTO Post(SiteEntity site)
         {
             return _siteServices.AddSite(site);
             
         }
 
-        [GlobalAuth(Permission = "GlobalUpdate")]
+        [CustomAuth(Permission = "GlobalUpdate")]
         public ActionResultDTO Put(int id, SiteEntity site)
         {
             site.Id = id;
@@ -60,7 +60,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [GlobalAuth(Permission = "GlobalDelete")]
+        [CustomAuth(Permission = "GlobalDelete")]
         public ActionResultDTO Delete(int id)
         {
             var result = _siteServices.DeleteSite(id);

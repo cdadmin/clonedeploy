@@ -17,7 +17,7 @@ namespace CloneDeploy_App.Controllers
             _userGroupGroupManagementServices = new UserGroupGroupManagementServices();
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "Administrator")]
         public ActionResultDTO Post(List<UserGroupGroupManagementEntity> listOfGroups)
         {
             return _userGroupGroupManagementServices.AddUserGroupGroupManagements(listOfGroups);

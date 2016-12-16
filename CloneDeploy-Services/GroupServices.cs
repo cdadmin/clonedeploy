@@ -257,7 +257,7 @@ namespace CloneDeploy_Services
 
         private  ValidationResultDTO ValidateGroup(GroupEntity group, bool isNewGroup)
         {
-            var validationResult = new ValidationResultDTO();
+            var validationResult = new ValidationResultDTO() { Success = true };
 
             if (string.IsNullOrEmpty(group.Name) || !group.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {

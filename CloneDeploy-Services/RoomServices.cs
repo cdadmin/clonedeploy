@@ -92,7 +92,7 @@ namespace CloneDeploy_Services
 
         private ValidationResultDTO ValidateRoom(RoomEntity room, bool isNewRoom)
         {
-            var validationResult = new ValidationResultDTO();
+            var validationResult = new ValidationResultDTO() { Success = true };
 
             if (string.IsNullOrEmpty(room.Name) || !room.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {

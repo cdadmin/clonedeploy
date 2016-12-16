@@ -13,7 +13,7 @@ namespace CloneDeploy_App.Controllers
     
     public class WorkflowController : ApiController
     {
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "AdminUpdate")]
         [HttpPost]
         public ApiBoolResponseDTO CreateDefaultBootMenu(BootMenuGenOptionsDTO defaultMenuOptions)
         {
@@ -21,7 +21,7 @@ namespace CloneDeploy_App.Controllers
             return new ApiBoolResponseDTO() {Value = true};
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "AdminUpdate")]
         [HttpPost]
         public ApiBoolResponseDTO GenerateLinuxIsoConfig(IsoGenOptionsDTO isoOptions)
         {
@@ -29,7 +29,7 @@ namespace CloneDeploy_App.Controllers
             return new ApiBoolResponseDTO() { Value = true };
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "AdminUpdate")]
         [HttpGet]
         public ApiBoolResponseDTO CreateClobberBootMenu(int profileId, bool promptComputerName)
         {
@@ -37,14 +37,14 @@ namespace CloneDeploy_App.Controllers
             return new ApiBoolResponseDTO() { Value = true };
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "AdminUpdate")]
         [HttpGet]
         public ApiBoolResponseDTO CopyPxeBinaries()
         {
             return new ApiBoolResponseDTO() {Value = new CopyPxeBinaries().CopyFiles()};
         }
 
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "Administrator")]
         [HttpGet]
         public ApiBoolResponseDTO CancelAllImagingTasks()
         {

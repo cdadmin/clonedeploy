@@ -211,7 +211,7 @@ namespace CloneDeploy_Services
 
         private  ValidationResultDTO ValidateUserGroup(CloneDeployUserGroupEntity userGroup, bool isNewUserGroup)
         {
-            var validationResult = new ValidationResultDTO();
+            var validationResult = new ValidationResultDTO() { Success = true };
 
             if (isNewUserGroup)
             {

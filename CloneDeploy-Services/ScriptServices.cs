@@ -90,7 +90,7 @@ namespace CloneDeploy_Services
 
         private ValidationResultDTO ValidateScript(ScriptEntity script, bool isNewScript)
         {
-            var validationResult = new ValidationResultDTO();
+            var validationResult = new ValidationResultDTO() { Success = true };
 
             if (string.IsNullOrEmpty(script.Name) || !script.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {

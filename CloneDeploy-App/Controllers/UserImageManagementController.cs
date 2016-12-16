@@ -17,7 +17,7 @@ namespace CloneDeploy_App.Controllers
             _userImageManagementServices = new UserImageManagementServices();
         }
       
-        [UserAuth(Permission = "Administrator")]
+        [CustomAuth(Permission = "Administrator")]
         public ActionResultDTO Post(List<UserImageManagementEntity> listOfImages)
         {
             return  _userImageManagementServices.AddUserImageManagements(listOfImages);

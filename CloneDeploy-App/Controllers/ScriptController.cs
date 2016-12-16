@@ -19,7 +19,7 @@ namespace CloneDeploy_App.Controllers
             _scriptServices = new ScriptServices();
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public IEnumerable<ScriptEntity> GetAll(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
@@ -28,13 +28,13 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public ApiStringResponseDTO GetCount()
         {
             return new ApiStringResponseDTO() {Value = _scriptServices.TotalCount()};
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public ScriptEntity Get(int id)
         {
             var result = _scriptServices.GetScript(id);
@@ -42,13 +42,13 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [GlobalAuth(Permission = "GlobalCreate")]
+        [CustomAuth(Permission = "GlobalCreate")]
         public ActionResultDTO Post(ScriptEntity script)
         {
             return _scriptServices.AddScript(script);
         }
 
-        [GlobalAuth(Permission = "GlobalUpdate")]
+        [CustomAuth(Permission = "GlobalUpdate")]
         public ActionResultDTO Put(int id, ScriptEntity script)
         {
             script.Id = id;
@@ -57,7 +57,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [GlobalAuth(Permission = "GlobalDelete")]
+        [CustomAuth(Permission = "GlobalDelete")]
         public ActionResultDTO Delete(int id)
         {
 

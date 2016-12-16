@@ -19,7 +19,7 @@ namespace CloneDeploy_App.Controllers
             _sysprepTagServices = new SysprepTagServices();
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public IEnumerable<SysprepTagEntity> GetAll(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
@@ -28,13 +28,13 @@ namespace CloneDeploy_App.Controllers
 
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public ApiStringResponseDTO GetCount()
         {
             return new ApiStringResponseDTO() {Value = _sysprepTagServices.TotalCount()};
         }
 
-        [GlobalAuth(Permission = "GlobalRead")]
+        [CustomAuth(Permission = "GlobalRead")]
         public SysprepTagEntity Get(int id)
         {
             var result = _sysprepTagServices.GetSysprepTag(id);
@@ -42,13 +42,13 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [GlobalAuth(Permission = "GlobalCreate")]
+        [CustomAuth(Permission = "GlobalCreate")]
         public ActionResultDTO Post(SysprepTagEntity sysprepTag)
         {
             return _sysprepTagServices.AddSysprepTag(sysprepTag);
         }
 
-        [GlobalAuth(Permission = "GlobalUpdate")]
+        [CustomAuth(Permission = "GlobalUpdate")]
         public ActionResultDTO Put(int id, SysprepTagEntity sysprepTag)
         {
             sysprepTag.Id = id;
@@ -57,7 +57,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [GlobalAuth(Permission = "GlobalDelete")]
+        [CustomAuth(Permission = "GlobalDelete")]
         public ActionResultDTO Delete(int id)
         {
             var result = _sysprepTagServices.DeleteSysprepTag(id);

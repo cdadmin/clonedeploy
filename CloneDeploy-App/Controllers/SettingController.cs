@@ -24,14 +24,14 @@ namespace CloneDeploy_App.Controllers
             return _settingServices.GetSetting(name);          
         }
 
-        [AdminAuth(Permission = "AdminUpdate")]
+        [CustomAuth(Permission = "AdminUpdate")]
         [HttpPost]
         public ApiBoolResponseDTO UpdateSettings(List<SettingEntity> listSettings)
         {
             return new ApiBoolResponseDTO() {Value = _settingServices.UpdateSetting(listSettings)};         
         }
 
-        [AdminAuth(Permission = "AdminUpdate")]
+        [CustomAuth(Permission = "AdminUpdate")]
         [HttpGet]
         public ApiBoolResponseDTO SendEmailTest()
         {
