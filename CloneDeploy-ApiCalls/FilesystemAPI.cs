@@ -130,5 +130,58 @@ namespace CloneDeploy_ApiCalls
 
             return response;
         }
+
+        public string GetDefaultBootFilePath(string type)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetDefaultBootFilePath/", _resource);
+            _request.AddParameter("type", type);
+            var response = new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
+
+            return response;
+        }
+
+        public bool EditDefaultBootMenu(string type, string contents)
+        {
+            _request.Method = Method.POST;
+            _request.Resource = string.Format("api/{0}/EditDefaultBootMenu/", _resource);
+            _request.AddParameter("type", type);
+            _request.AddParameter("contents", contents);
+            var response = new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+
+            return response;
+        }
+
+        public bool WriteCoreScript(string type, string contents)
+        {
+            _request.Method = Method.POST;
+            _request.Resource = string.Format("api/{0}/WriteCoreScript/", _resource);
+            _request.AddParameter("type", type);
+            _request.AddParameter("contents", contents);
+            var response = new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+
+            return response;
+        }
+
+        public string GetServerPaths(string type, string subType)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetServerPaths/", _resource);
+            _request.AddParameter("type", type);
+            _request.AddParameter("subType", subType);
+            var response = new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
+
+            return response;
+        }
+
+        public string GetLogContents(string name)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetLogContents/", _resource);
+            _request.AddParameter("name", name);
+            var response = new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
+
+            return response;
+        }
     }
 }

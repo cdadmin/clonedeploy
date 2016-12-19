@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
@@ -17,8 +16,7 @@ namespace views.images
 
         protected void ButtonImport_Click(object sender, EventArgs e)
         {
-            var csvFilePath = Server.MapPath("~") + Path.DirectorySeparatorChar + "private" + Path.DirectorySeparatorChar +
-                              "imports" + Path.DirectorySeparatorChar + "images.csv";
+            var csvFilePath = Call.FilesystemApi.GetServerPaths("csv", "images.csv");
             FileUpload.SaveAs(csvFilePath);
             Call.FilesystemApi.SetUnixPermissions(csvFilePath);
             //var successCount = BLL.Image.ImportCsv(csvFilePath);

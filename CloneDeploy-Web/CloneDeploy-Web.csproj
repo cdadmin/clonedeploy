@@ -107,6 +107,7 @@
     <Content Include="public\web.config" />
     <Content Include="views\admin\admin.master" />
     <Content Include="views\admin\bootmenu\bootmenu.master" />
+    <Content Include="views\admin\cluster\roles.aspx" />
     <Content Include="views\admin\dp\dp.master" />
     <Content Include="views\computers\bootmenu\bootmenu.master" />
     <Content Include="views\computers\computers.master" />
@@ -128,6 +129,7 @@
     <Content Include="views\users\groupacls\groupacls.master" />
     <Content Include="views\users\user.master" />
     <None Include="Properties\PublishProfiles\web.pubxml" />
+    <Content Include="views\admin\cluster\cluster.master" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -953,6 +955,20 @@
     </Compile>
     <Compile Include="views\admin\clobber.aspx.designer.cs">
       <DependentUpon>clobber.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\cluster\cluster.master.cs">
+      <DependentUpon>cluster.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\cluster\cluster.master.designer.cs">
+      <DependentUpon>cluster.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\cluster\roles.aspx.cs">
+      <DependentUpon>roles.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\cluster\roles.aspx.designer.cs">
+      <DependentUpon>roles.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\admin\dp\create.aspx.cs">
       <DependentUpon>create.aspx</DependentUpon>

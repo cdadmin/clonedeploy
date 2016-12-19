@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
+
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Web;
@@ -49,9 +49,7 @@ public partial class views_login_firstrun : PageBaseMaster
             }
             else
             {
-                tftpPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) +
-                Path.DirectorySeparatorChar + "clonedeploy" +
-                Path.DirectorySeparatorChar + "tftpboot" + Path.DirectorySeparatorChar;
+                tftpPath = Call.FilesystemApi.GetServerPaths("defaultTftp", "");
             }
             var listSettings = new List<SettingEntity>
             {
@@ -95,9 +93,7 @@ public partial class views_login_firstrun : PageBaseMaster
                 distributionPoint.PhysicalPath = unixDist == "bsd" ? "/usr/pbi/clonedeploy-amd64/cd_dp" : "/cd_dp";
             else
             {
-                distributionPoint.PhysicalPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) +
-                                                 Path.DirectorySeparatorChar + "clonedeploy" +
-                                                 Path.DirectorySeparatorChar + "cd_dp";
+                distributionPoint.PhysicalPath = Call.FilesystemApi.GetServerPaths("defaultDp", "");
             }
             Call.DistributionPointApi.Post(distributionPoint);
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using CloneDeploy_Entities;
 using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
@@ -100,8 +99,9 @@ public partial class views_admin_server : Admin
             if(txtPort.Text == "443")
                 txtWebService.Text = "https://[server-ip]/clonedeploy/service/client.asmx/";
         }
-        if (!txtTFTPPath.Text.Trim().EndsWith(Path.DirectorySeparatorChar.ToString()))
-            txtTFTPPath.Text += Path.DirectorySeparatorChar;
+        var seperator = Call.FilesystemApi.GetServerPaths("seperator", "");
+        if (!txtTFTPPath.Text.Trim().EndsWith(seperator))
+            txtTFTPPath.Text += seperator;
 
         return true;
     }

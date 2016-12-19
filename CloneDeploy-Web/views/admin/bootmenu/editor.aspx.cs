@@ -1,7 +1,5 @@
 ﻿using System;
-using System.IO;
 using System.Net;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 using log4net;
@@ -31,9 +29,7 @@ public partial class views_admin_bootmenu_editor : Admin
 
         protected void EditProxy_Changed(object sender, EventArgs e)
         {
-            string path = null;
-            var tftpPath = Settings.TftpPath;
-            var mode = Settings.PxeMode;
+            string path = Call.FilesystemApi.GetDefaultBootFilePath(ddlEditProxyType.Text);
             var proxyDhcp = Settings.ProxyDhcp;
 
             if (proxyDhcp == "Yes")
@@ -56,14 +52,7 @@ public partial class views_admin_bootmenu_editor : Admin
                         srvEdit.Visible = false;
                         return;
                     }
-                    else if (biosFile.Contains("ipxe"))
-                        path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
-                               ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
-                               Path.DirectorySeparatorChar + "default.ipxe";
-                    else
-                        path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
-                               ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
-                               Path.DirectorySeparatorChar + "default";
+                   
                 }
 
                 if (ddlEditProxyType.Text == "efi32")
@@ -76,14 +65,7 @@ public partial class views_admin_bootmenu_editor : Admin
                         srvEdit.Visible = false;
                         return;
                     }
-                    else if (efi32File.Contains("ipxe"))
-                        path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
-                               ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
-                               Path.DirectorySeparatorChar + "default.ipxe";
-                    else
-                        path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
-                               ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
-                               Path.DirectorySeparatorChar + "default";
+               
                 }
 
                 if (ddlEditProxyType.Text == "efi64")
@@ -96,34 +78,17 @@ public partial class views_admin_bootmenu_editor : Admin
                         srvEdit.Visible = false;
                         return;
                     }
-                    else if (efi64File.Contains("ipxe"))
-                        path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
-                               ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
-                               Path.DirectorySeparatorChar + "default.ipxe";
-                    else if (efi64File.Contains("grub"))
-                        path = tftpPath + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
-                    else
-                        path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
-                               ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
-                               Path.DirectorySeparatorChar + "default";
+                   
                 }
             }
             else
             {
                 proxyEditor.Visible = false;
-
-                if (mode.Contains("ipxe"))
-                    path = tftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
-                           "default.ipxe";
-                else if (mode.Contains("grub"))
-                    path = tftpPath + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
-                else
-                    path = tftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
             }
             lblFileName1.Text = path;
             try
             {
-                if (path != null) scriptEditorText.Value = File.ReadAllText(path);
+                if (path != null) scriptEditorText.Value = Call.FilesystemApi.ReadFileText(path);
             }
             catch (Exception ex)
             {
@@ -136,167 +101,65 @@ public partial class views_admin_bootmenu_editor : Admin
         protected void saveEditor_Click(object sender, EventArgs e)
         {
             RequiresAuthorization(Authorizations.UpdateAdmin);
-            string path = null;
-            var tftpPath = Settings.TftpPath;
-            var mode = Settings.PxeMode;
-            var proxyDhcp = Settings.ProxyDhcp;
 
-            if (proxyDhcp == "Yes")
-            {
-                var biosFile = Settings.ProxyBiosFile;
-                var efi32File = Settings.ProxyEfi32File;
-                var efi64File = Settings.ProxyEfi64File;
-                proxyEditor.Visible = true;
-                if (ddlEditProxyType.Text == "bios")
-                {
-                    if (biosFile.Contains("ipxe"))
-                        path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
-                               ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
-                               Path.DirectorySeparatorChar + "default.ipxe";
-                    else
-                        path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
-                               ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
-                               Path.DirectorySeparatorChar + "default";
-                }
-
-                if (ddlEditProxyType.Text == "efi32")
-                {
-                    if (efi32File.Contains("ipxe"))
-                        path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
-                               ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
-                               Path.DirectorySeparatorChar + "default.ipxe";
-                    else
-                        path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
-                               ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
-                               Path.DirectorySeparatorChar + "default";
-                }
-
-                if (ddlEditProxyType.Text == "efi64")
-                {
-                    if (efi64File.Contains("ipxe"))
-                        path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
-                               ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
-                               Path.DirectorySeparatorChar + "default.ipxe";
-                    else if (mode.Contains("grub"))
-                        path = tftpPath + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
-                    else
-                        path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
-                               ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
-                               Path.DirectorySeparatorChar + "default";
-                }
-            }
-            else
-            {
-                if (mode.Contains("ipxe"))
-                    path = tftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
-                           "default.ipxe";
-                else if (mode.Contains("grub"))
-                {
-                    path = tftpPath + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
-                }
-                else
-                    path = tftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
-            }
-            try
-            {
-                if (path != null)
-                {
-                    using (var file = new StreamWriter(path))
-                    {
-                        file.WriteLine(scriptEditorText.Value);
-                    }
-                    Call.FilesystemApi.SetUnixPermissions(path);
-                }
-                EndUserMessage = "Successfully Updated Default Global Boot Menu";
-            }
-
-            catch (Exception ex)
-            {
-                
-                    EndUserMessage = "Could Not Update Default Global Boot Menu.  Check The Exception Log For More Info.";
-                log.Debug(ex.Message);
-            }
+            EndUserMessage = Call.FilesystemApi.EditDefaultBootMenu(ddlEditProxyType.Text, scriptEditorText.Value) ? "Success" : "Could Not Save Boot Menu";
         }
 
-        protected void PopulateForm()
+    protected void PopulateForm()
+    {
+        string path = Call.FilesystemApi.GetDefaultBootFilePath(ddlEditProxyType.Text);
+        var tftpPath = Settings.TftpPath;
+        var mode = Settings.PxeMode;
+        var proxyDhcp = Settings.ProxyDhcp;
+
+        if (proxyDhcp == "Yes")
         {
-            string path = null;
-            var tftpPath = Settings.TftpPath;
-            var mode = Settings.PxeMode;
-            var proxyDhcp = Settings.ProxyDhcp;
+            btnSaveEditor.Visible = true;
 
-            if (proxyDhcp == "Yes")
+            srvEdit.Visible = true;
+
+            var biosFile = Settings.ProxyBiosFile;
+            var efi32File = Settings.ProxyEfi32File;
+            var efi64File = Settings.ProxyEfi64File;
+            proxyEditor.Visible = true;
+            if (ddlEditProxyType.Text == "bios")
             {
-                btnSaveEditor.Visible = true;
-               
-                srvEdit.Visible = true;
 
-                var biosFile = Settings.ProxyBiosFile;
-                var efi32File = Settings.ProxyEfi32File;
-                var efi64File = Settings.ProxyEfi64File;
-                proxyEditor.Visible = true;
-                if (ddlEditProxyType.Text == "bios")
+                if (biosFile.Contains("winpe"))
                 {
+                    btnSaveEditor.Visible = false;
+                    lblFileName1.Text = "Bios Boot Menus Are Not Used With WinPE";
 
-                    if (biosFile.Contains("winpe"))
-                    {
-                        btnSaveEditor.Visible = false;
-                        lblFileName1.Text = "Bios Boot Menus Are Not Used With WinPE";
-                       
-                        srvEdit.Visible = false;
-                        return;
-                    }
-                    else if (biosFile.Contains("ipxe"))
-                        path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
-                               ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
-                               Path.DirectorySeparatorChar + "default.ipxe";
-                    else
-                        path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
-                               ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
-                               Path.DirectorySeparatorChar + "default";
+                    srvEdit.Visible = false;
+                    return;
                 }
 
-                if (ddlEditProxyType.Text == "efi32")
+            }
+
+            if (ddlEditProxyType.Text == "efi32")
+            {
+                if (efi32File.Contains("winpe"))
                 {
-                    if (efi32File.Contains("winpe"))
-                    {
-                        btnSaveEditor.Visible = false;
-                        lblFileName1.Text = "Efi32 Boot Menus Are Not Used With WinPE";
-                       
-                        srvEdit.Visible = false;
-                        return;
-                    }
-                    else if (efi32File.Contains("ipxe"))
-                        path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
-                               ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
-                               Path.DirectorySeparatorChar + "default.ipxe";
-                    else
-                        path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
-                               ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
-                               Path.DirectorySeparatorChar + "default";
+                    btnSaveEditor.Visible = false;
+                    lblFileName1.Text = "Efi32 Boot Menus Are Not Used With WinPE";
+
+                    srvEdit.Visible = false;
+                    return;
                 }
 
-                if (ddlEditProxyType.Text == "efi64")
+            }
+
+            if (ddlEditProxyType.Text == "efi64")
+            {
+                if (efi64File.Contains("winpe"))
                 {
-                    if (efi64File.Contains("winpe"))
-                    {
-                        btnSaveEditor.Visible = false;
-                        lblFileName1.Text = "Efi64 Boot Menus Are Not Used With WinPE";
-                        
-                        srvEdit.Visible = false;
-                        return;
-                    }
-                    else if (efi64File.Contains("ipxe"))
-                        path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
-                               ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
-                               Path.DirectorySeparatorChar + "default.ipxe";
-                    else if (mode.Contains("grub"))
-                        path = tftpPath + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
-                    else
-                        path = tftpPath + "proxy" + Path.DirectorySeparatorChar +
-                               ddlEditProxyType.Text + Path.DirectorySeparatorChar + "pxelinux.cfg" +
-                               Path.DirectorySeparatorChar + "default";
+                    btnSaveEditor.Visible = false;
+                    lblFileName1.Text = "Efi64 Boot Menus Are Not Used With WinPE";
+
+                    srvEdit.Visible = false;
+                    return;
                 }
+
             }
             else
             {
@@ -305,7 +168,7 @@ public partial class views_admin_bootmenu_editor : Admin
                 {
                     btnSaveEditor.Visible = false;
                     lblFileName1.Text = "Boot Menus Are Not Used With WinPE";
-                  
+
                     srvEdit.Visible = false;
                     return;
                 }
@@ -313,26 +176,25 @@ public partial class views_admin_bootmenu_editor : Admin
                 {
                     grubShaGen.Visible = false;
                     syslinuxShaGen.Visible = false;
-                    path = tftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
-                           "default.ipxe";
+
                 }
                 else if (mode.Contains("grub"))
                 {
                     grubShaGen.Visible = true;
                     syslinuxShaGen.Visible = false;
-                    path = tftpPath + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
+
                 }
                 else
                 {
                     grubShaGen.Visible = false;
                     syslinuxShaGen.Visible = true;
-                    path = tftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
+
                 }
             }
             lblFileName1.Text = path;
             try
             {
-                if (path != null) scriptEditorText.Value = File.ReadAllText(path);
+                if (path != null) scriptEditorText.Value = Call.FilesystemApi.ReadFileText(path);
             }
             catch (Exception ex)
             {
@@ -340,6 +202,6 @@ public partial class views_admin_bootmenu_editor : Admin
             }
         }
 
-     
-    
+    }
+
 }

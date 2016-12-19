@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Web;
 using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
@@ -21,20 +20,21 @@ public partial class views_admin_scripts_editcore : Global
     {
         scriptEditor.Value = "";
         if (ddlCoreScripts.Text == "Select A Script") return;
-        var path = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
-                    Path.DirectorySeparatorChar + "clientscripts" + Path.DirectorySeparatorChar + ddlCoreScripts.Text;
+        var path = Call.FilesystemApi.GetServerPaths("clientScripts", ddlCoreScripts.Text);
 
 
-        scriptEditor.Value = File.ReadAllText(path);
+        scriptEditor.Value = Call.FilesystemApi.ReadFileText(path);
     }
 
     protected void buttonSaveCore_OnClick(object sender, EventArgs e)
     {
-        var path = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
-                   Path.DirectorySeparatorChar + "clientscripts" + Path.DirectorySeparatorChar + ddlCoreScripts.Text;
 
         var fixedLineEnding = scriptEditor.Value.Replace("\r\n", "\n");
-        File.WriteAllText(path, fixedLineEnding);
+        if(Call.FilesystemApi.WriteCoreScript(ddlCoreScripts.Text, fixedLineEnding))
         EndUserMessage = "Successfully Updated " + ddlCoreScripts.Text;
+        else
+        {
+            EndUserMessage = "Could Not Update Script";
+        }
     }
 }

@@ -112,6 +112,39 @@ namespace CloneDeploy_App.Controllers
         {
             return new FilesystemServices().GetDpFreeSpace();
         }
+
+        [CustomAuth(Permission = "AdminUpdate")]
+        public ApiStringResponseDTO GetDefaultBootFilePath(string type)
+        {
+            return new ApiStringResponseDTO() {Value = new FilesystemServices().GetDefaultBootMenuPath(type)};
+        }
+
+         [CustomAuth(Permission = "AdminUpdate")]
+        [HttpPost]
+        public ApiBoolResponseDTO EditDefaultBootMenu(string type, string contents)
+        {
+            return new ApiBoolResponseDTO() { Value = new FilesystemServices().EditDefaultBootMenu(type,contents) };
+        }
+
+         [CustomAuth(Permission = "Administrator")]
+         [HttpPost]
+         public ApiBoolResponseDTO WriteCoreScript(string type, string contents)
+         {
+             return new ApiBoolResponseDTO() { Value = new FilesystemServices().WriteCoreScript(type, contents) };
+         }
+
+
+         [CustomAuth(Permission = "AdminRead")]
+         public ApiStringResponseDTO GetServerPaths(string type, string subType)
+         {
+             return new ApiStringResponseDTO() { Value = new FilesystemServices().GetServerPaths(type,subType) };
+         }
+
+         [CustomAuth(Permission = "AdminRead")]
+         public ApiStringResponseDTO GetLogContents(string name)
+         {
+             return new ApiStringResponseDTO() { Value = new FilesystemServices().GetLogContents(name) };
+         }
         
     }
 }

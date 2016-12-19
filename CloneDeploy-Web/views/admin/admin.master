@@ -16,6 +16,12 @@
                 </a>
             </li>
             
+             <li id="cluster">
+                <a href="<%= ResolveUrl("~/views/admin/cluster/roles.aspx?level=2") %>">
+                    <span class="nav-text">Cluster</span>
+                </a>
+            </li>
+
             <li id="distribution">
                 <a href="<%= ResolveUrl("~/views/admin/dp/search.aspx?level=2") %>">
                     <span class="nav-text">Distribution Points</span>

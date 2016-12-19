@@ -1,0 +1,31 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/views/admin/admin.master" AutoEventWireup="true" CodeBehind="cluster.master.cs" Inherits="CloneDeploy_Web.views.admin.cluster.cluster" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
+     <li ><a href="<%= ResolveUrl("~/views/admin/cluster/roles.aspx") %>?level=2">Cluster Settings</a></li>
+    <asp:ContentPlaceHolder runat="server" ID="BreadcrumbSub2">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content runat="server" ID="Help" ContentPlaceHolderID="Help">
+    <asp:ContentPlaceHolder runat="server" ID="SubHelp">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
+    <asp:ContentPlaceHolder runat="server" ID="ActionsRightSub">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="PageNavSub" Runat="Server">
+      <li id="roles"><a  href="<%= ResolveUrl("~/views/admin/cluster/roles.aspx") %>?level=2"><span class="sub-nav-text">Server Roles</span></a></li>
+    <li id="secondary"><a href="<%= ResolveUrl("~/views/admin/cluster/secondary.aspx")  %>?level=2"><span class="sub-nav-text">Secondary Servers</span></a></li>
+</asp:Content>
+
+<asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
+      <script type="text/javascript">
+        $(document).ready(function() {
+            $('#cluster').addClass("nav-current");
+        });
+    </script>
+      <asp:ContentPlaceHolder ID="SubContent2" runat="server">
+        </asp:ContentPlaceHolder>
+</asp:Content>

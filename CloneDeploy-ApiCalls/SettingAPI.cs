@@ -23,7 +23,7 @@ namespace CloneDeploy_ApiCalls
 
         public bool UpdateSettings(List<SettingEntity> listSettings)
         {
-            _request.Method = Method.GET;
+            _request.Method = Method.POST;
             _request.Resource = string.Format("api/{0}/UpdateSettings/", _resource);
             _request.AddJsonBody(listSettings);
             return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;

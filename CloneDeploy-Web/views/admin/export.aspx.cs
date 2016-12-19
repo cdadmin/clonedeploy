@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Web;
 using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
@@ -16,9 +15,8 @@ namespace views.admin
   
         protected void btnExportCsv_Click(object sender, EventArgs e)
         {
-            string exportPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
-                         Path.DirectorySeparatorChar + "exports" + Path.DirectorySeparatorChar;
-
+            string exportPath = Call.FilesystemApi.GetServerPaths("exports", "");
+         
            Call.ComputerApi.Export(exportPath + "computers.csv");
            Call.GroupApi.Export(exportPath + "groups.csv");
            Call.ImageApi.Export(exportPath + "images.csv");

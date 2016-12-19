@@ -12,20 +12,13 @@ namespace views.admin
     {
         protected void btnExportLog_Click(object sender, EventArgs e)
         {
-            try
-            {
-                var computerLogPath = ddlLog.Text;
-                var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
-                              Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar;
-                HttpContext.Current.Response.ContentType = "application/octet-stream";
-                HttpContext.Current.Response.AppendHeader("Content-Disposition", "attachment; filename=" + ddlLog.Text);
-                HttpContext.Current.Response.TransmitFile(logPath + computerLogPath);
-                HttpContext.Current.Response.End();
-            }
-            catch
-            {
-                // ignored
-            }
+
+            HttpContext.Current.Response.ContentType = "application/octet-stream";
+            HttpContext.Current.Response.AppendHeader("Content-Disposition",
+                "attachment; filename=" + ddlLog.Text);
+            HttpContext.Current.Response.Write(Call.FilesystemApi.GetLogContents(ddlLog.Text));
+            HttpContext.Current.Response.End();
+
         }
 
         private void PopulateLogs()

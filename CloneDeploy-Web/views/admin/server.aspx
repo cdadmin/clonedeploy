@@ -30,6 +30,7 @@
     <asp:TextBox ID="txtIP" runat="server" CssClass="textbox"></asp:TextBox>
 </div>
 <br class="clear"/>
+   
 <div class="size-4 column">
     Web Server Port:
 </div>
@@ -39,7 +40,7 @@
 
     <br class="clear"/>
 <div class="size-4 column">
-    Manual Override Web Service:
+    Manual Override Client Imaging API:
 </div>
 <div class="size-setting column">
     <asp:CheckBox ID="chkOverride" runat="server" ></asp:CheckBox>
@@ -48,7 +49,7 @@
     <br class="clear"/>
     <br/>
 <div class="size-4 column">
-    Web Service:
+    Client Imaging API:
 </div>
 <div class="size-setting column">
     <asp:TextBox ID="txtWebService" runat="server" CssClass="textbox"></asp:TextBox>
