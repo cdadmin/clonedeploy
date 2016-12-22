@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Net;
 using CloneDeploy_Entities;
+using log4net;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -12,6 +13,7 @@ namespace CloneDeploy_ApiCalls
     /// </summary>
     public class TokenApi
     {
+        private readonly ILog log = LogManager.GetLogger("FrontEndLog");
         private readonly RestRequest _request = new RestRequest();
         private readonly RestClient _client = new RestClient();
         private readonly string _resource;
@@ -37,8 +39,7 @@ namespace CloneDeploy_ApiCalls
 
             if (response.ErrorException != null)
             {
-                const string message = "Error retrieving response: ";
-                //Logger.Log(message + response.ErrorException);
+                log.Debug("Error With Token API: " + response.ErrorException);
             }
 
             switch (response.StatusCode)
@@ -53,7 +54,7 @@ namespace CloneDeploy_ApiCalls
                     return token;
                 default:
                     token.error_description = "Unknown Error With Token API";
-                    
+                    log.Debug("Error With Token API: " + response.Content);
                     return token;
 
             }

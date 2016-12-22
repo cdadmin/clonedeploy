@@ -62,7 +62,13 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-      
+
+        [CustomAuthAttribute(Permission = "ComputerCreate")]
+        [HttpPost]
+        public ApiIntResponseDTO Import(ApiStringResponseDTO csvContents)
+        {
+            return new ApiIntResponseDTO() { Value = _imageServices.ImportCsv(csvContents.Value) };
+        }
 
         [Authorize]
         [HttpGet]

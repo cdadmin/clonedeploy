@@ -141,9 +141,9 @@ namespace CloneDeploy_App.Controllers
          }
 
          [CustomAuth(Permission = "AdminRead")]
-         public ApiStringResponseDTO GetLogContents(string name)
+         public List<string> GetLogContents(string name,int limit)
          {
-             return new ApiStringResponseDTO() { Value = new FilesystemServices().GetLogContents(name) };
+             return new FilesystemServices().GetLogContents(name,limit);
          }
         
     }

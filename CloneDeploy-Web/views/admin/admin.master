@@ -16,6 +16,12 @@
                 </a>
             </li>
             
+            <li id="imageshare">
+                <a href="<%= ResolveUrl("~/views/admin/imageshare.aspx") %>">
+                    <span class="nav-text">Image Share</span>
+                </a>
+            </li>
+            
              <li id="cluster">
                 <a href="<%= ResolveUrl("~/views/admin/cluster/roles.aspx?level=2") %>">
                     <span class="nav-text">Cluster</span>
@@ -70,8 +76,8 @@
                 </a>
             </li>
             
-             <li id="log">
-                <a href="<%= ResolveUrl("~/views/admin/logview.aspx") %>" >
+             <li id="logs">
+                <a href="<%= ResolveUrl("~/views/admin/logs/application.aspx?level=2") %>" >
                     <span class="nav-text">Logs</span>
                 </a>
             </li>

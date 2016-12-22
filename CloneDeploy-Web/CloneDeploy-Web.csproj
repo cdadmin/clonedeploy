@@ -80,6 +80,10 @@
     <Content Include="views\admin\cluster\roles.aspx" />
     <Content Include="views\admin\cluster\secondary.aspx" />
     <Content Include="views\admin\dp\dp.master" />
+    <Content Include="views\admin\imageshare.aspx" />
+    <Content Include="views\admin\logs\application.aspx" />
+    <Content Include="views\admin\logs\frontend.aspx" />
+    <Content Include="views\admin\logs\ond.aspx" />
     <Content Include="views\computers\bootmenu\bootmenu.master" />
     <Content Include="views\computers\computers.master" />
     <Content Include="views\computers\inventory\inventory.master" />
@@ -101,6 +105,7 @@
     <Content Include="views\users\user.master" />
     <None Include="Properties\PublishProfiles\web.pubxml" />
     <Content Include="views\admin\cluster\cluster.master" />
+    <Content Include="views\admin\logs\logs.master" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -638,7 +643,6 @@
     <Content Include="views\admin\dp\search.aspx" />
     <Content Include="views\admin\email.aspx" />
     <Content Include="views\admin\export.aspx" />
-    <Content Include="views\admin\logview.aspx" />
     <Content Include="views\admin\multicast.aspx" />
     <Content Include="views\admin\munki.aspx" />
     <Content Include="views\admin\pxe.aspx" />
@@ -1007,12 +1011,40 @@
     <Compile Include="views\admin\export.aspx.designer.cs">
       <DependentUpon>export.aspx</DependentUpon>
     </Compile>
-    <Compile Include="views\admin\logview.aspx.cs">
-      <DependentUpon>logview.aspx</DependentUpon>
+    <Compile Include="views\admin\imageshare.aspx.cs">
+      <DependentUpon>imageshare.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="views\admin\logview.aspx.designer.cs">
-      <DependentUpon>logview.aspx</DependentUpon>
+    <Compile Include="views\admin\imageshare.aspx.designer.cs">
+      <DependentUpon>imageshare.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\logs\application.aspx.cs">
+      <DependentUpon>application.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\logs\application.aspx.designer.cs">
+      <DependentUpon>application.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\logs\frontend.aspx.cs">
+      <DependentUpon>frontend.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\logs\frontend.aspx.designer.cs">
+      <DependentUpon>frontend.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\logs\logs.master.cs">
+      <DependentUpon>logs.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\logs\logs.master.designer.cs">
+      <DependentUpon>logs.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\logs\ond.aspx.cs">
+      <DependentUpon>ond.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\logs\ond.aspx.designer.cs">
+      <DependentUpon>ond.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\admin\multicast.aspx.cs">
       <DependentUpon>multicast.aspx</DependentUpon>

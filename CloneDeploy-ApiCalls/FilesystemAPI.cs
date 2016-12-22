@@ -172,12 +172,13 @@ namespace CloneDeploy_ApiCalls
             return response;
         }
 
-        public string GetLogContents(string name)
+        public IEnumerable<string> GetLogContents(string name,int limit)
         {
             _request.Method = Method.GET;
             _request.Resource = string.Format("api/{0}/GetLogContents/", _resource);
             _request.AddParameter("name", name);
-            var response = new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
+            _request.AddParameter("limit", limit);
+            var response = new ApiRequest().Execute<List<string>>(_request);
 
             return response;
         }

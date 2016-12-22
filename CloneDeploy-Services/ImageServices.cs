@@ -295,10 +295,10 @@ namespace CloneDeploy_Services
             
         }
 
-        public int ImportCsv(string path)
+        public int ImportCsv(string csvContents)
         {
             var importCounter = 0;
-            using (var csv = new CsvReader(new StreamReader(path)))
+            using (var csv = new CsvReader(new StringReader(csvContents)))
             {
                 csv.Configuration.RegisterClassMap<ImageCsvMap>();
                 var records = csv.GetRecords<ImageEntity>();

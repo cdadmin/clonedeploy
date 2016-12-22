@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 
 namespace CloneDeploy_Web.Helpers
 {
@@ -60,6 +64,26 @@ namespace CloneDeploy_Web.Helpers
             decimal adjustedSize = (decimal)value / (1L << (mag * 10));
 
             return string.Format("{0:n1} {1}", adjustedSize, SizeSuffixes[mag]);
+        }
+
+        public static List<string> GetFeLogs()
+        {
+            var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
+                          Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar;
+
+            var logFiles = Directory.GetFiles(logPath, "*.*");
+            var result = new List<string>();
+            for (var x = 0; x < logFiles.Length; x++)
+                result.Add(Path.GetFileName(logFiles[x]));
+
+            return result;
+        }
+
+        public static List<string> GetLogContents(string name, int limit)
+        {
+            var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
+                          Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar + name;
+            return File.ReadLines(logPath).Reverse().Take(limit).Reverse().ToList();
         }
     }
 }

@@ -7,99 +7,99 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace views.admin {
+namespace CloneDeploy_Web.views.admin {
     
     
-    public partial class Logview {
+    public partial class imageshare {
         
         /// <summary>
-        /// btnExportLog control.
+        /// btnUpdateSettings control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnExportLog;
+        protected global::System.Web.UI.WebControls.LinkButton btnUpdateSettings;
         
         /// <summary>
-        /// ddlLog control.
+        /// ddlType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlLog;
+        protected global::System.Web.UI.WebControls.DropDownList ddlType;
         
         /// <summary>
-        /// fileView control.
+        /// txtServer control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl fileView;
+        protected global::System.Web.UI.WebControls.TextBox txtServer;
         
         /// <summary>
-        /// ddlLimit control.
+        /// txtShareName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlLimit;
+        protected global::System.Web.UI.WebControls.TextBox txtShareName;
         
         /// <summary>
-        /// GridView1 control.
+        /// txtDomain control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GridView1;
+        protected global::System.Web.UI.WebControls.TextBox txtDomain;
         
         /// <summary>
-        /// dbView control.
+        /// txtRwUsername control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl dbView;
+        protected global::System.Web.UI.WebControls.TextBox txtRwUsername;
         
         /// <summary>
-        /// ddlDbLimit control.
+        /// txtRwPassword control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlDbLimit;
+        protected global::System.Web.UI.WebControls.TextBox txtRwPassword;
         
         /// <summary>
-        /// gvLogs control.
+        /// txtRoUsername control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvLogs;
+        protected global::System.Web.UI.WebControls.TextBox txtRoUsername;
         
         /// <summary>
-        /// ViewLog control.
+        /// txtRoPassword control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl ViewLog;
+        protected global::System.Web.UI.WebControls.TextBox txtRoPassword;
         
         /// <summary>
-        /// gvLogView control.
+        /// txtPhysicalPath control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvLogView;
+        protected global::System.Web.UI.WebControls.TextBox txtPhysicalPath;
     }
 }

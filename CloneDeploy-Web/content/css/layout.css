@@ -34,8 +34,9 @@
 #leftnav {
     width: 160px;
     float: left;
-  
     border-bottom: 0;
+    overflow-y: auto ;height: calc(100% - 105px);
+    overflow-x: hidden;
 }
 
 @media only screen and (min-width: 1251px) and (max-width: 1420px) {
@@ -167,5 +168,7 @@ a.confirm_no{width:75px; }
 .mobi-hide-smallest{display:none;}
 .username{ display: none;}
 }
+
+
 
 

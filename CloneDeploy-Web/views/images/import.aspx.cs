@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
@@ -16,11 +18,17 @@ namespace views.images
 
         protected void ButtonImport_Click(object sender, EventArgs e)
         {
-            var csvFilePath = Call.FilesystemApi.GetServerPaths("csv", "images.csv");
-            FileUpload.SaveAs(csvFilePath);
-            Call.FilesystemApi.SetUnixPermissions(csvFilePath);
-            //var successCount = BLL.Image.ImportCsv(csvFilePath);
-            //EndUserMessage = "Successfully Imported " + successCount + " Images";
+            if (FileUpload.HasFile)
+            {
+                string csvContent;
+                using (StreamReader inputStreamReader = new StreamReader(FileUpload.PostedFile.InputStream))
+                {
+                    csvContent = inputStreamReader.ReadToEnd();
+                }
+
+                var count = Call.ImageApi.Import(new ApiStringResponseDTO() { Value = csvContent });
+                EndUserMessage = "Successfully Imported " + count + " Images";
+            }         
 
         }       
     }

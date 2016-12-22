@@ -223,10 +223,10 @@ namespace CloneDeploy_Services
             }
         }
 
-        public string GetLogContents(string name)
+        public List<string> GetLogContents(string name,int limit)
         {
-            var path = GetServerPaths("logs");
-            return new FileOps().ReadAllText(path + name);
+            var path = GetServerPaths("logs") + name;
+            return File.ReadLines(path).Reverse().Take(limit).Reverse().ToList();
         }
 
         public string GetServerPaths(string type, string subType="")
