@@ -204,7 +204,7 @@ namespace CloneDeploy_Services
 
         public bool WriteCoreScript(string type, string contents)
         {
-            var path = GetServerPaths("clientScripts", type);
+            var path = GetServerPaths("clientScript", type);
             try
             {
                 using (var file = new StreamWriter(path))

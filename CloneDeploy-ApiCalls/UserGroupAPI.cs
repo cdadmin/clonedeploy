@@ -59,12 +59,11 @@ namespace CloneDeploy_ApiCalls
         }
 
 
-        public bool AddNewMember(CloneDeployUserGroupEntity userGroup, CloneDeployUserEntity user)
+        public bool AddNewMember(int id, int userId)
         {
-            _request.Method = Method.POST;
-            _request.Resource = string.Format("api/{0}/AddNewMember/", _resource);
-            _request.AddJsonBody(userGroup);
-            _request.AddJsonBody(user);
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/AddNewMember/{1}", _resource,id);
+            _request.AddParameter("userId", userId);
             return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
         }
 

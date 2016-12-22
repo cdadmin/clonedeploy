@@ -141,23 +141,21 @@ namespace CloneDeploy_ApiCalls
             return response;
         }
 
-        public bool EditDefaultBootMenu(string type, string contents)
+        public bool EditDefaultBootMenu(CoreScriptDTO menu)
         {
             _request.Method = Method.POST;
             _request.Resource = string.Format("api/{0}/EditDefaultBootMenu/", _resource);
-            _request.AddParameter("type", type);
-            _request.AddParameter("contents", contents);
+            _request.AddJsonBody(menu);
             var response = new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
 
             return response;
         }
 
-        public bool WriteCoreScript(string type, string contents)
+        public bool WriteCoreScript(CoreScriptDTO script)
         {
             _request.Method = Method.POST;
             _request.Resource = string.Format("api/{0}/WriteCoreScript/", _resource);
-            _request.AddParameter("type", type);
-            _request.AddParameter("contents", contents);
+            _request.AddJsonBody(script);
             var response = new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
 
             return response;

@@ -73,7 +73,7 @@ public partial class views_users_addmembers : Users
             {
                 var user = Call.CloneDeployUserApi.Get(Convert.ToInt32(dataKey.Value));
 
-                Call.UserGroupApi.AddNewMember(CloneDeployUserGroup,user);
+                Call.UserGroupApi.AddNewMember(CloneDeployUserGroup.Id,user.Id);
                 successCount++;
 
             }

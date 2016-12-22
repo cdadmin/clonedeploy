@@ -109,7 +109,7 @@ namespace CloneDeploy_Services
                             {
                                 //add user to group
                                 var newUser = _userServices.GetUser(userName);
-                                _userGroupServices.AddNewGroupMember(ldapGroup,newUser);
+                                _userGroupServices.AddNewGroupMember(ldapGroup.Id,newUser.Id);
                             }
                             validationResult.ErrorMessage = "Success";
                             validationResult.Success = true;

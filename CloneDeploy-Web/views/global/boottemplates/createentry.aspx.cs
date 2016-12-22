@@ -32,7 +32,7 @@ public partial class views_global_boottemplates_createentry : Global
         else
         {
             EndUserMessage = "Successfully Added Boot Menu Entry";
-            Response.Redirect("~/views/global/boottemplates/editentry.aspx?cat=sub1&entryid=" + bootEntry.Id);
+            Response.Redirect("~/views/global/boottemplates/editentry.aspx?cat=sub1&entryid=" + result.Id);
         }
     }
 }

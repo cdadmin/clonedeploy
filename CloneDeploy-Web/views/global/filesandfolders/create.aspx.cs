@@ -27,7 +27,7 @@ public partial class views_global_filesandfolders_create : Global
         else
         {
             EndUserMessage = "Successfully Added File / Folder";
-            Response.Redirect("~/views/global/filesandfolders/edit.aspx?cat=sub1&fileid=" + fileFolder.Id);
+            Response.Redirect("~/views/global/filesandfolders/edit.aspx?cat=sub1&fileid=" + result.Id);
         }
     }
 }

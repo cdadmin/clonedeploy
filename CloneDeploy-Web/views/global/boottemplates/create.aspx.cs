@@ -27,7 +27,7 @@ public partial class views_global_boottemplates_create : Global
         else
         {
             EndUserMessage = "Successfully Added Boot Menu Template";
-            Response.Redirect("~/views/global/boottemplates/edit.aspx?cat=sub1&templateid=" + bootTemplate.Id);
+            Response.Redirect("~/views/global/boottemplates/edit.aspx?cat=sub1&templateid=" + result.Id);
         }
     }
 }

@@ -92,14 +92,14 @@ public partial class views_admin_server : Admin
         {
             if (txtPort.Text != "80" && txtPort.Text != "443" && !string.IsNullOrEmpty(txtPort.Text))
             {
-                txtWebService.Text = "http://[server-ip]:" + txtPort.Text + "/clonedeploy/service/client.asmx/";
+                txtWebService.Text = "http://[server-ip]:" + txtPort.Text + "/clonedeploy/api/ClientImaging/";
             }
             if (txtPort.Text == "80" || string.IsNullOrEmpty(txtPort.Text))
             {
-                txtWebService.Text = "http://[server-ip]/clonedeploy/service/client.asmx/";
+                txtWebService.Text = "http://[server-ip]/clonedeploy/api/ClientImaging/";
             }
             if(txtPort.Text == "443")
-                txtWebService.Text = "https://[server-ip]/clonedeploy/service/client.asmx/";
+                txtWebService.Text = "https://[server-ip]/clonedeploy/api/ClientImaging/";
         }
         var seperator = Call.FilesystemApi.GetServerPaths("seperator", "");
         if (!txtTFTPPath.Text.Trim().EndsWith(seperator))

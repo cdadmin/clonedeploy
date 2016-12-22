@@ -47,6 +47,7 @@
     <Compile Include="DTOs\ApiIntResponseDTO.cs" />
     <Compile Include="DTOs\DefaultBootMenuGenDTO.cs" />
     <Compile Include="DTOs\DpFreeSpaceDTO.cs" />
+    <Compile Include="DTOs\CoreScriptDTO.cs" />
     <Compile Include="DTOs\IsoGenOptionsDTO.cs" />
     <Compile Include="DTOs\MunkiUpdateConfirm.cs" />
     <Compile Include="DTOs\ValidationResultDTO.cs" />

@@ -59,7 +59,7 @@ namespace views.users
             else
             {
                 EndUserMessage = "Successfully Created User";
-                Response.Redirect("~/views/users/edit.aspx?userid=" + user.Id);
+                Response.Redirect("~/views/users/edit.aspx?userid=" + result.Id);
             }
         }
 

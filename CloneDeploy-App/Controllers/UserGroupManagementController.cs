@@ -8,11 +8,11 @@ using CloneDeploy_Services;
 
 namespace CloneDeploy_App.Controllers
 {
-    public class UserGroupManagement: ApiController
+    public class UserGroupManagementController: ApiController
     {
         private readonly UserGroupManagementServices _userGroupManagementServices;
 
-        public UserGroupManagement()
+        public UserGroupManagementController()
         {
             _userGroupManagementServices = new UserGroupManagementServices();
         }

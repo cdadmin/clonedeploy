@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 using log4net;
@@ -101,15 +102,16 @@ public partial class views_admin_bootmenu_editor : Admin
         protected void saveEditor_Click(object sender, EventArgs e)
         {
             RequiresAuthorization(Authorizations.UpdateAdmin);
-
-            EndUserMessage = Call.FilesystemApi.EditDefaultBootMenu(ddlEditProxyType.Text, scriptEditorText.Value) ? "Success" : "Could Not Save Boot Menu";
+            var menu = new CoreScriptDTO();
+            menu.Name = ddlEditProxyType.Text;
+            menu.Contents = scriptEditorText.Value;
+            EndUserMessage = Call.FilesystemApi.EditDefaultBootMenu(menu) ? "Success" : "Could Not Save Boot Menu";
         }
 
     protected void PopulateForm()
     {
         string path = Call.FilesystemApi.GetDefaultBootFilePath(ddlEditProxyType.Text);
-        var tftpPath = Settings.TftpPath;
-        var mode = Settings.PxeMode;
+      
         var proxyDhcp = Settings.ProxyDhcp;
 
         if (proxyDhcp == "Yes")
@@ -161,37 +163,39 @@ public partial class views_admin_bootmenu_editor : Admin
                 }
 
             }
+        }
+        else
+        {
+            var mode = Settings.PxeMode;
+            proxyEditor.Visible = false;
+            if (mode.Contains("winpe"))
+            {
+                btnSaveEditor.Visible = false;
+                lblFileName1.Text = "Boot Menus Are Not Used With WinPE";
+
+                srvEdit.Visible = false;
+                return;
+            }
+            if (mode.Contains("ipxe"))
+            {
+                grubShaGen.Visible = false;
+                syslinuxShaGen.Visible = false;
+
+            }
+            else if (mode.Contains("grub"))
+            {
+                grubShaGen.Visible = true;
+                syslinuxShaGen.Visible = false;
+
+            }
             else
             {
-                proxyEditor.Visible = false;
-                if (mode.Contains("winpe"))
-                {
-                    btnSaveEditor.Visible = false;
-                    lblFileName1.Text = "Boot Menus Are Not Used With WinPE";
+                grubShaGen.Visible = false;
+                syslinuxShaGen.Visible = true;
 
-                    srvEdit.Visible = false;
-                    return;
-                }
-                if (mode.Contains("ipxe"))
-                {
-                    grubShaGen.Visible = false;
-                    syslinuxShaGen.Visible = false;
-
-                }
-                else if (mode.Contains("grub"))
-                {
-                    grubShaGen.Visible = true;
-                    syslinuxShaGen.Visible = false;
-
-                }
-                else
-                {
-                    grubShaGen.Visible = false;
-                    syslinuxShaGen.Visible = true;
-
-                }
             }
-            lblFileName1.Text = path;
+        }
+        lblFileName1.Text = path;
             try
             {
                 if (path != null) scriptEditorText.Value = Call.FilesystemApi.ReadFileText(path);
@@ -200,7 +204,7 @@ public partial class views_admin_bootmenu_editor : Admin
             {
                 log.Debug(ex.Message);
             }
-        }
+        
 
     }
 

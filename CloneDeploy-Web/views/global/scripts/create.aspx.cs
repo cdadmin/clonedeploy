@@ -25,7 +25,7 @@ public partial class views_admin_scripts_create : Global
         if (result.Success)
         {
             EndUserMessage = "Successfully Created Script";
-            Response.Redirect("~/views/global/scripts/edit.aspx?cat=sub1&scriptid=" + script.Id);
+            Response.Redirect("~/views/global/scripts/edit.aspx?cat=sub1&scriptid=" + result.Id);
         }
         else
         {

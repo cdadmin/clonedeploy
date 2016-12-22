@@ -174,8 +174,10 @@ namespace CloneDeploy_Services
             return true;
         }
 
-        public  bool AddNewGroupMember(CloneDeployUserGroupEntity userGroup, CloneDeployUserEntity user)
+        public  bool AddNewGroupMember(int userGroupId, int userId)
         {
+            var user = new UserServices().GetUser(userId);
+            var userGroup = GetUserGroup(userGroupId);
             user.Membership = userGroup.Membership;
             user.UserGroupId = userGroup.Id;
             new UserServices().UpdateUser(user);

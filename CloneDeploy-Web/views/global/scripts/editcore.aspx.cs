@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web;
+using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
@@ -20,7 +21,7 @@ public partial class views_admin_scripts_editcore : Global
     {
         scriptEditor.Value = "";
         if (ddlCoreScripts.Text == "Select A Script") return;
-        var path = Call.FilesystemApi.GetServerPaths("clientScripts", ddlCoreScripts.Text);
+        var path = Call.FilesystemApi.GetServerPaths("clientScript", ddlCoreScripts.Text);
 
 
         scriptEditor.Value = Call.FilesystemApi.ReadFileText(path);
@@ -30,7 +31,10 @@ public partial class views_admin_scripts_editcore : Global
     {
 
         var fixedLineEnding = scriptEditor.Value.Replace("\r\n", "\n");
-        if(Call.FilesystemApi.WriteCoreScript(ddlCoreScripts.Text, fixedLineEnding))
+        var script = new CoreScriptDTO();
+        script.Name = ddlCoreScripts.Text;
+        script.Contents = fixedLineEnding;
+        if(Call.FilesystemApi.WriteCoreScript(script))
         EndUserMessage = "Successfully Updated " + ddlCoreScripts.Text;
         else
         {

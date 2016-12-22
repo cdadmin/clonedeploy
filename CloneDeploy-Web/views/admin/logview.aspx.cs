@@ -39,7 +39,8 @@ namespace views.admin
                     fileView.Visible = true;
                     btnExportLog.Visible = true;
                     dbView.Visible = false;
-                    //GridView1.DataSource = Logger.ViewLog(ddlLog.Text, ddlLimit.Text);
+                   
+                    GridView1.DataSource = Call.FilesystemApi.GetLogContents(ddlLog.Text);//Logger.ViewLog(ddlLog.Text, ddlLimit.Text);
                     GridView1.DataBind();
                 }
 

@@ -110,10 +110,10 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "Administrator")]
-        [HttpPost]
-        public ApiBoolResponseDTO AddNewMember(CloneDeployUserGroupEntity userGroup, CloneDeployUserEntity user)
+        [HttpGet]
+        public ApiBoolResponseDTO AddNewMember(int id, int userId)
         {
-            return new ApiBoolResponseDTO() {Value = _userGroupServices.AddNewGroupMember(userGroup, user)};
+            return new ApiBoolResponseDTO() {Value = _userGroupServices.AddNewGroupMember(id, userId)};
         }
 
         [CustomAuth(Permission = "Administrator")]

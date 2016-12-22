@@ -121,16 +121,16 @@ namespace CloneDeploy_App.Controllers
 
          [CustomAuth(Permission = "AdminUpdate")]
         [HttpPost]
-        public ApiBoolResponseDTO EditDefaultBootMenu(string type, string contents)
+        public ApiBoolResponseDTO EditDefaultBootMenu(CoreScriptDTO menu)
         {
-            return new ApiBoolResponseDTO() { Value = new FilesystemServices().EditDefaultBootMenu(type,contents) };
+            return new ApiBoolResponseDTO() { Value = new FilesystemServices().EditDefaultBootMenu(menu.Name,menu.Contents) };
         }
 
          [CustomAuth(Permission = "Administrator")]
          [HttpPost]
-         public ApiBoolResponseDTO WriteCoreScript(string type, string contents)
+         public ApiBoolResponseDTO WriteCoreScript(CoreScriptDTO script)
          {
-             return new ApiBoolResponseDTO() { Value = new FilesystemServices().WriteCoreScript(type, contents) };
+             return new ApiBoolResponseDTO() { Value = new FilesystemServices().WriteCoreScript(script.Name,script.Contents) };
          }
 
 

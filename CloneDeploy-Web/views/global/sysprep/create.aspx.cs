@@ -27,7 +27,7 @@ public partial class views_global_sysprep_create : Global
         if (result.Success)
         {
             EndUserMessage = "Successfully Created Sysprep Tag";
-            Response.Redirect("~/views/global/sysprep/edit.aspx?cat=sub1&syspreptagid=" + sysPrepTag.Id);
+            Response.Redirect("~/views/global/sysprep/edit.aspx?cat=sub1&syspreptagid=" + result.Id);
         }
         else
         {

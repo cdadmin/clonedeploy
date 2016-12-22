@@ -28,7 +28,7 @@ public partial class views_users_creategroup : Users
         else
         {
             EndUserMessage = "Successfully Created User Group";
-            Response.Redirect("~/views/users/editgroup.aspx?groupid=" + userGroup.Id);
+            Response.Redirect("~/views/users/editgroup.aspx?groupid=" + result.Id);
         }
     }
 
