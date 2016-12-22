@@ -70,44 +70,15 @@
     <Content Include="content\fonts\OpenSans-Light.ttf" />
     <Content Include="content\fonts\OpenSans-Regular.ttf" />
     <Content Include="packages.config" />
-    <Content Include="private\clientscripts\cd_cancel" />
-    <Content Include="private\clientscripts\cd_diag" />
-    <Content Include="private\clientscripts\cd_global_functions" />
-    <Content Include="private\clientscripts\cd_ond" />
-    <Content Include="private\clientscripts\cd_pull" />
-    <Content Include="private\clientscripts\cd_push" />
-    <Content Include="private\clientscripts\cd_register" />
-    <Content Include="private\clientscripts\cd_reporter" />
-    <Content Include="private\clientscripts\osx_cancel" />
-    <Content Include="private\clientscripts\osx_global_functions" />
-    <Content Include="private\clientscripts\osx_ond" />
-    <Content Include="private\clientscripts\osx_pull" />
-    <Content Include="private\clientscripts\osx_push" />
-    <Content Include="private\clientscripts\osx_register" />
-    <Content Include="private\clientscripts\osx_reporter" />
-    <Content Include="private\clientscripts\osx_strings" />
-    <Content Include="private\clientscripts\osx_task_select" />
-    <Content Include="private\clientscripts\S99cd" />
-    <Content Include="private\clientscripts\winpe_global_functions.ps1" />
-    <Content Include="private\clientscripts\winpe_menu.ps1" />
-    <Content Include="private\clientscripts\winpe_ond.ps1" />
-    <Content Include="private\clientscripts\winpe_pull.ps1" />
-    <Content Include="private\clientscripts\winpe_push.ps1" />
-    <Content Include="private\clientscripts\winpe_register.ps1" />
-    <Content Include="private\clientscripts\winpe_reporter.ps1" />
-    <Content Include="private\clientscripts\winpe_start.ps1" />
-    <Content Include="private\clientscripts\winpe_task_select.ps1" />
-    <Content Include="private\client_iso\.gitignore" />
-    <Content Include="private\exports\.gitignore" />
-    <Content Include="private\imports\.gitignore" />
     <Content Include="private\logs\.gitignore" />
     <Content Include="private\logs\exceptions.log" />
-    <Content Include="public\.gitignore" />
-    <Content Include="public\macos_nbis\.gitignore" />
-    <Content Include="public\web.config" />
     <Content Include="views\admin\admin.master" />
     <Content Include="views\admin\bootmenu\bootmenu.master" />
+    <Content Include="views\admin\cluster\clustergroup.aspx" />
+    <Content Include="views\admin\cluster\newclustergroup.aspx" />
+    <Content Include="views\admin\cluster\newsecondary.aspx" />
     <Content Include="views\admin\cluster\roles.aspx" />
+    <Content Include="views\admin\cluster\secondary.aspx" />
     <Content Include="views\admin\dp\dp.master" />
     <Content Include="views\computers\bootmenu\bootmenu.master" />
     <Content Include="views\computers\computers.master" />
@@ -655,10 +626,6 @@
     <Content Include="default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="License.txt" />
-    <Content Include="private\apps\gzip.exe" />
-    <Content Include="private\apps\lz4.exe" />
-    <Content Include="private\apps\udp-receiver.exe" />
-    <Content Include="private\apps\udp-sender.exe" />
     <Content Include="views\admin\bootmenu\applenetboot.aspx" />
     <Content Include="views\admin\bootmenu\defaultmenu.aspx" />
     <Content Include="views\admin\bootmenu\editor.aspx" />
@@ -963,12 +930,40 @@
     <Compile Include="views\admin\cluster\cluster.master.designer.cs">
       <DependentUpon>cluster.master</DependentUpon>
     </Compile>
+    <Compile Include="views\admin\cluster\clustergroup.aspx.cs">
+      <DependentUpon>clustergroup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\cluster\clustergroup.aspx.designer.cs">
+      <DependentUpon>clustergroup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\cluster\newclustergroup.aspx.cs">
+      <DependentUpon>newclustergroup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\cluster\newclustergroup.aspx.designer.cs">
+      <DependentUpon>newclustergroup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\cluster\newsecondary.aspx.cs">
+      <DependentUpon>newsecondary.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\cluster\newsecondary.aspx.designer.cs">
+      <DependentUpon>newsecondary.aspx</DependentUpon>
+    </Compile>
     <Compile Include="views\admin\cluster\roles.aspx.cs">
       <DependentUpon>roles.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="views\admin\cluster\roles.aspx.designer.cs">
       <DependentUpon>roles.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\cluster\secondary.aspx.cs">
+      <DependentUpon>secondary.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\cluster\secondary.aspx.designer.cs">
+      <DependentUpon>secondary.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\admin\dp\create.aspx.cs">
       <DependentUpon>create.aspx</DependentUpon>

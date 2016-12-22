@@ -108,6 +108,14 @@ namespace CloneDeploy_ApiCalls
             return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
         }
 
+        public int Import(ApiStringResponseDTO csvContents)
+        {
+            _request.Method = Method.POST;
+            _request.Resource = string.Format("api/{0}/Import/", _resource);
+            _request.AddJsonBody(csvContents);
+            return new ApiRequest().Execute<ApiIntResponseDTO>(_request).Value;
+        }
+
         public IEnumerable<ComputerLogEntity> GetComputerLogs(int id)
         {
             _request.Method = Method.GET;

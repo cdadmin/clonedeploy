@@ -274,6 +274,11 @@ namespace CloneDeploy_Web.Helpers
         {
             get { return new APICall().SettingApi.GetSetting("Clobber Prompt Computer Name").Value; }
         }
+
+        public static string ServerIdentifier
+        {
+            get { return new APICall().SettingApi.GetSetting("Server Identifier").Value; }
+        }
     
     }
 }

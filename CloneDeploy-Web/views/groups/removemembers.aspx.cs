@@ -70,12 +70,7 @@ public partial class views_groups_removemembers : Groups
             var dataKey = gvComputers.DataKeys[row.RowIndex];
             if (dataKey != null)
             {
-                var membership = new GroupMembershipEntity()
-                {
-                    ComputerId = Convert.ToInt32(dataKey.Value),
-                    GroupId = Group.Id
-                };
-                if (Call.GroupMembershipApi.Delete(membership.Id).Success)
+                if (Call.GroupApi.RemoveGroupMember(Group.Id,Convert.ToInt32(dataKey.Value)))
                     removedCount++;
             }
         }

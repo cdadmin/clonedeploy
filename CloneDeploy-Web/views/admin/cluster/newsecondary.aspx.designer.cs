@@ -7,72 +7,54 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace views.masters {
+namespace CloneDeploy_Web.views.admin.cluster {
     
     
-    public partial class SiteMaster {
+    public partial class newsecondary {
         
         /// <summary>
-        /// form1 control.
+        /// btnUpdateSettings control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+        protected global::System.Web.UI.WebControls.LinkButton btnUpdateSettings;
         
         /// <summary>
-        /// lblServerId control.
+        /// txtServerId control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblServerId;
+        protected global::System.Web.UI.WebControls.TextBox txtServerId;
         
         /// <summary>
-        /// SubNav control.
+        /// txtApi control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder SubNav;
+        protected global::System.Web.UI.WebControls.TextBox txtApi;
         
         /// <summary>
-        /// Breadcrumb control.
+        /// txtAccountName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder Breadcrumb;
+        protected global::System.Web.UI.WebControls.TextBox txtAccountName;
         
         /// <summary>
-        /// PageActions control.
+        /// txtAccountPassword control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder PageActions;
-        
-        /// <summary>
-        /// PageNav control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder PageNav;
-        
-        /// <summary>
-        /// Content control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder Content;
+        protected global::System.Web.UI.WebControls.TextBox txtAccountPassword;
     }
 }

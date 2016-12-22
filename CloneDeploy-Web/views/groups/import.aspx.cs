@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
@@ -16,13 +18,17 @@ namespace views.groups
 
         protected void ButtonImport_Click(object sender, EventArgs e)
         {
-            var csvFilePath = Call.FilesystemApi.GetServerPaths("csv", "groups.csv");
-            
-            FileUpload.SaveAs(csvFilePath);
-            Call.FilesystemApi.SetUnixPermissions(csvFilePath);
-            //var successCount = BLL.Group.ImportCsv(csvFilePath,CloneDeployCurrentUser.Id);
-            //EndUserMessage = "Successfully Imported " + successCount + " Groups";
+            if (FileUpload.HasFile)
+            {
+                string csvContent;
+                using (StreamReader inputStreamReader = new StreamReader(FileUpload.PostedFile.InputStream))
+                {
+                    csvContent = inputStreamReader.ReadToEnd();
+                }
 
+                var count = Call.GroupApi.Import(new ApiStringResponseDTO() { Value = csvContent });
+                EndUserMessage = "Successfully Imported " + count + " Groups";
+            }         
         }       
     }
 }

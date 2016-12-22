@@ -7,72 +7,54 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace views.masters {
+namespace CloneDeploy_Web.views.admin.cluster {
     
     
-    public partial class SiteMaster {
+    public partial class secondary {
         
         /// <summary>
-        /// form1 control.
+        /// txtSearch control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+        protected global::System.Web.UI.WebControls.TextBox txtSearch;
         
         /// <summary>
-        /// lblServerId control.
+        /// gvServers control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblServerId;
+        protected global::System.Web.UI.WebControls.GridView gvServers;
         
         /// <summary>
-        /// SubNav control.
+        /// lblTitle control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder SubNav;
+        protected global::System.Web.UI.WebControls.Label lblTitle;
         
         /// <summary>
-        /// Breadcrumb control.
+        /// ConfirmButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder Breadcrumb;
+        protected global::System.Web.UI.WebControls.LinkButton ConfirmButton;
         
         /// <summary>
-        /// PageActions control.
+        /// CancelButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder PageActions;
-        
-        /// <summary>
-        /// PageNav control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder PageNav;
-        
-        /// <summary>
-        /// Content control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder Content;
+        protected global::System.Web.UI.WebControls.LinkButton CancelButton;
     }
 }

@@ -26,7 +26,7 @@ namespace CloneDeploy_ApiCalls
 
         public bool RemoveGroupMember(int id, int computerId)
         {
-            _request.Method = Method.DELETE;
+            _request.Method = Method.GET;
             _request.Resource = string.Format("api/{0}/RemoveGroupMember/{1}", _resource, id);
             _request.AddParameter("computerId", computerId);
             return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
@@ -98,12 +98,26 @@ namespace CloneDeploy_ApiCalls
 
         }
 
+        public int Import(ApiStringResponseDTO csvContents)
+        {
+            _request.Method = Method.POST;
+            _request.Resource = string.Format("api/{0}/Import/", _resource);
+            _request.AddJsonBody(csvContents);
+            return new ApiRequest().Execute<ApiIntResponseDTO>(_request).Value;
+        }
 
         public GroupBootMenuEntity GetCustomBootMenu(int id)
         {
             _request.Method = Method.GET;
             _request.Resource = string.Format("api/{0}/GetCustomBootMenu/{1}", _resource, id);
             return new ApiRequest().Execute<GroupBootMenuEntity>(_request);
+        }
+
+        public string GetEffectiveManifest(int id)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetEffectiveManifest/{1}", _resource, id);
+            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
         }
     }
 }

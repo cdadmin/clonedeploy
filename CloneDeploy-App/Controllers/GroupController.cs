@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
+using System.Text;
 using System.Threading;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
@@ -57,6 +58,16 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
+        [CustomAuthAttribute(Permission = "GroupCreate")]
+        [HttpPost]
+        public ApiIntResponseDTO Import(ApiStringResponseDTO csvContents)
+        {
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                             .Select(c => c.Value).SingleOrDefault();
+            return new ApiIntResponseDTO() { Value = _groupServices.ImportCsv(csvContents.Value,Convert.ToInt32(userId)) };
+        }
+
         [CustomAuth(Permission = "GroupRead")]
         [HttpGet]
         public ApiBoolResponseDTO Export(string path)
@@ -65,7 +76,7 @@ namespace CloneDeploy_App.Controllers
             return new ApiBoolResponseDTO() { Value = true };
         }
 
-        [HttpDelete]
+        [HttpGet]
         [CustomAuth(Permission = "GroupUpdate")]
         public ApiBoolResponseDTO RemoveGroupMember(int id, int computerId)
         {
@@ -151,6 +162,13 @@ namespace CloneDeploy_App.Controllers
                 Value = _groupServices.StartGroupUnicast(id, Convert.ToInt32(userId))
             };
 
+        }
+
+        [CustomAuth(Permission = "GroupRead")]
+        public ApiStringResponseDTO GetEffectiveManifest(int id)
+        {
+            var effectiveManifest = new EffectiveMunkiTemplate().Group(id);
+            return new ApiStringResponseDTO() { Value = Encoding.UTF8.GetString(effectiveManifest.ToArray()) };
         }
 
         [CustomAuth(Permission = "ImageTaskMulticast")]

@@ -31,7 +31,7 @@ namespace views.groups
             else
             {
                 EndUserMessage = "Successfully Created Group";
-                Response.Redirect("~/views/groups/edit.aspx?groupid=" + group.Id);
+                Response.Redirect("~/views/groups/edit.aspx?groupid=" + result.Id);
             }            
         }
 

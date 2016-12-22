@@ -30,7 +30,7 @@
     <link href="~/content/css/layout.css" rel="stylesheet" type="text/css" />
 
     <!-- percent circle source: http://circle.firchow.net/ -->
-    <link rel="stylesheet" href="~/content/css/circle.css">
+    <link rel="stylesheet" href="~/content/css/circle.css"/>
 
 </head>
 <body>
@@ -61,7 +61,7 @@
             <div class="nav">
                 <div id="title">
                     <a href="<%= ResolveUrl("~/views/dashboard/dash.aspx") %>"><h1>CloneDeploy</h1></a>
-                    <span class="version">1.2.0</span>
+                    <span class="version">1.2.0 <b><asp:Label runat="server" Id="lblServerId"></asp:Label></b></span>
                 </div>
 
 

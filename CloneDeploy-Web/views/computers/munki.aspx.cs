@@ -100,7 +100,7 @@ public partial class views_computers_munki : Computers
     }
     protected void effective_OnClick(object sender, EventArgs e)
     {
-        var effectiveManifest = new APICall().ComputerMunkiApi.GetEffectiveManifest(Computer.Id);
+        var effectiveManifest = new APICall().ComputerApi.GetEffectiveManifest(Computer.Id);
 
         Response.Write(effectiveManifest);
         Response.ContentType = "text/plain";

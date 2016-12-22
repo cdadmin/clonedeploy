@@ -22,7 +22,7 @@ public partial class views_images_profiles_create : Images
         {
             EndUserMessage = "Successfully Created Image Profile";
             Response.Redirect("~/views/images/profiles/general.aspx?imageid=" + defaultProfile.ImageId + "&profileid=" +
-                              defaultProfile.Id + "&cat=profiles");
+                              result.Id + "&cat=profiles");
         }
         else
         {

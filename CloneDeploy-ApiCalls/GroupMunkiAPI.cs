@@ -11,12 +11,7 @@ namespace CloneDeploy_ApiCalls
 		
         }
 
-        public string GetEffectiveManifest(int id)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetEffectiveManifest/{1}", _resource, id);
-            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
-        }
+      
 
        
 

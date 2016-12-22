@@ -37,6 +37,7 @@
         <asp:DropDownList ID="ddluserMembership" runat="server" CssClass="ddlist">
             <asp:ListItem>Administrator</asp:ListItem>
             <asp:ListItem>User</asp:ListItem>
+            <asp:ListItem>Service Account</asp:ListItem>
         </asp:DropDownList>
     </div>
     <br class="clear"/>

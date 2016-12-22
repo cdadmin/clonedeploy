@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
@@ -17,11 +19,17 @@ namespace views.computers
 
         protected void ButtonImport_Click(object sender, EventArgs e)
         {
-            var csvFilePath = Call.FilesystemApi.GetServerPaths("csv", "computers.csv");
-            FileUpload.SaveAs(csvFilePath);
-            Call.FilesystemApi.SetUnixPermissions(csvFilePath);
-            //var successCount = BLL.Computer.ImportCsv(csvFilePath);
-            //EndUserMessage = "Successfully Imported " + successCount + " Computers";
+            if (FileUpload.HasFile)
+            {
+                string csvContent;
+                using (StreamReader inputStreamReader = new StreamReader(FileUpload.PostedFile.InputStream))
+                {
+                    csvContent = inputStreamReader.ReadToEnd();
+                }
+
+                var count = Call.ComputerApi.Import(new ApiStringResponseDTO(){Value = csvContent});
+                EndUserMessage = "Successfully Imported " + count + " Computers";
+            }         
 
         }
 

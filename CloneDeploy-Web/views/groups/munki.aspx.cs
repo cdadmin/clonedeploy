@@ -100,7 +100,7 @@ public partial class views_groups_munki : Groups
 
     protected void effective_OnClick(object sender, EventArgs e)
     {
-        var effectiveManifest = Call.GroupMunkiApi.GetEffectiveManifest(Group.Id);
+        var effectiveManifest = Call.GroupApi.GetEffectiveManifest(Group.Id);
         Response.Write(effectiveManifest);
         Response.ContentType = "text/plain";
         Response.End();

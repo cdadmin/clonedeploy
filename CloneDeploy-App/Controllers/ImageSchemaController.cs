@@ -30,16 +30,16 @@ namespace CloneDeploy_App.Controllers
 
         [Authorize]
         [HttpPost]
-        public List<Partition> GetPartitions(ImageSchemaRequestDTO schemaRequest, string selectedHd)
+        public List<Partition> GetPartitions(ImageSchemaRequestDTO schemaRequest)
         {
-            return new ImageSchemaFEServices(schemaRequest).GetPartitionsForGridView(selectedHd);
+            return new ImageSchemaFEServices(schemaRequest).GetPartitionsForGridView(schemaRequest.selectedHd);
         }
 
         [Authorize]
         [HttpPost]
-        public List<LogicalVolume> GetLogicalVolumes(ImageSchemaRequestDTO schemaRequest, string selectedHd)
+        public List<LogicalVolume> GetLogicalVolumes(ImageSchemaRequestDTO schemaRequest)
         {
-            return new ImageSchemaFEServices(schemaRequest).GetLogicalVolumesForGridView(selectedHd);
+            return new ImageSchemaFEServices(schemaRequest).GetLogicalVolumesForGridView(schemaRequest.selectedHd);
         }
 
      

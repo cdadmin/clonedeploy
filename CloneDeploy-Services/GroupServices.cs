@@ -210,16 +210,16 @@ namespace CloneDeploy_Services
             var count = 0;
             foreach (var computer in GetGroupMembers(groupId))
             {
-                if(new Unicast(computer.Id, "push",userId).Start() == "true")
+                if(new Unicast(computer.Id, "push",userId).Start().Contains("Successfully"))
                 count++;
             }
             return count;
         }
 
-        public  int ImportCsv(string path, int userId)
+        public  int ImportCsv(string csvContents, int userId)
         {
             var importCounter = 0;
-            using (var csv = new CsvReader(new StreamReader(path)))
+            using (var csv = new CsvReader(new StringReader(csvContents)))
             {
                 csv.Configuration.RegisterClassMap<GroupCsvMap>();
                 var records = csv.GetRecords<GroupEntity>();

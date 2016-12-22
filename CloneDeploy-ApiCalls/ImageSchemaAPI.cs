@@ -34,21 +34,19 @@ namespace CloneDeploy_ApiCalls
         }
 
 
-        public List<Partition> GetPartitions(ImageSchemaRequestDTO schemaRequest, string selectedHd)
+        public List<Partition> GetPartitions(ImageSchemaRequestDTO schemaRequest)
         {
             _request.Method = Method.POST;
             _request.Resource = string.Format("api/{0}/GetPartitions", _resource);
             _request.AddJsonBody(schemaRequest);
-            _request.AddParameter("selectedHd", selectedHd);
             return new ApiRequest().Execute<List<Partition>>(_request);
         }
 
-        public List<LogicalVolume> GetLogicalVolumes(ImageSchemaRequestDTO schemaRequest, string selectedHd)
+        public List<LogicalVolume> GetLogicalVolumes(ImageSchemaRequestDTO schemaRequest)
         {
             _request.Method = Method.POST;
             _request.Resource = string.Format("api/{0}/GetLogicalVolumes", _resource);
             _request.AddJsonBody(schemaRequest);
-            _request.AddParameter("selectedHd", selectedHd);
             return new ApiRequest().Execute<List<LogicalVolume>>(_request);
         }
 

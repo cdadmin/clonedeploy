@@ -221,7 +221,8 @@ public partial class views_images_profiles_deploy : Images
         schemaRequestOptions.image = null;
         schemaRequestOptions.imageProfile = ImageProfile;
         schemaRequestOptions.schemaType = "deploy";
-        var partitions = Call.ImageSchemaApi.GetPartitions(schemaRequestOptions,selectedHd);
+        schemaRequestOptions.selectedHd = selectedHd;
+        var partitions = Call.ImageSchemaApi.GetPartitions(schemaRequestOptions);
         var btn = (LinkButton)gvRow.FindControl("btnHd");
         if (gv.Visible == false)
         {
@@ -305,7 +306,8 @@ public partial class views_images_profiles_deploy : Images
             schemaRequestOptions.image = null;
             schemaRequestOptions.imageProfile = ImageProfile;
             schemaRequestOptions.schemaType = "deploy";
-            gv.DataSource = Call.ImageSchemaApi.GetLogicalVolumes(schemaRequestOptions, selectedHd);
+            schemaRequestOptions.selectedHd = selectedHd;
+            gv.DataSource = Call.ImageSchemaApi.GetLogicalVolumes(schemaRequestOptions);
             gv.DataBind();
             btn.Text = "-";
         }

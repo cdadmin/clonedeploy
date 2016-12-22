@@ -80,6 +80,13 @@ namespace CloneDeploy_App.Controllers
             return new ApiStringResponseDTO(){Value = _computerService.ComputerCountUser(Convert.ToInt32(userId))};
         }
 
+        [CustomAuthAttribute(Permission = "ComputerCreate")]
+        [HttpPost]
+        public ApiIntResponseDTO Import(ApiStringResponseDTO csvContents)
+        {
+            return new ApiIntResponseDTO() {Value = _computerService.ImportCsv(csvContents.Value)};
+        }
+
         [CustomAuth(Permission = "ComputerSearch")]
         public IEnumerable<ComputerEntity> GetComputersWithoutGroup(int limit = 0, string searchstring = "")
         {

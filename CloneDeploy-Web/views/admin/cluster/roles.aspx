@@ -24,14 +24,15 @@
     Server Operation Mode:
 </div>
 <div class="size-setting column">
-    <asp:DropDownList ID="ddlOperationMode" runat="server" CssClass="ddlist">
+    <asp:DropDownList ID="ddlOperationMode" runat="server" CssClass="ddlist" OnSelectedIndexChanged="ddlOperationMode_OnSelectedIndexChanged" AutoPostBack="True">
         <asp:ListItem>Single</asp:ListItem>
         <asp:ListItem>Cluster Primary</asp:ListItem>
         <asp:ListItem>Cluster Secondary</asp:ListItem>
     </asp:DropDownList>
     </div>
     <br class="clear"/>
-
+    
+    <div id="divRoles" runat="server">
      <div class="size-4 column">
     Image Server:
 </div>
@@ -53,5 +54,6 @@
     <asp:CheckBox runat="server" id="chkMulticastServer"/>
 </div>
 <br class="clear"/>
-</div>
+        </div>
+
     </asp:Content>

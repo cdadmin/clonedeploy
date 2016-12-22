@@ -56,8 +56,8 @@ namespace views.images
             schemaRequestOptions.image = Image;
             schemaRequestOptions.imageProfile = null;
             schemaRequestOptions.schemaType = null;
-
-            var partitions = Call.ImageSchemaApi.GetPartitions(schemaRequestOptions,selectedHd);
+            schemaRequestOptions.selectedHd = selectedHd;
+            var partitions = Call.ImageSchemaApi.GetPartitions(schemaRequestOptions);
             var btn = (LinkButton) gvRow.FindControl("btnHd");
             if (gv.Visible == false)
             {
@@ -122,8 +122,8 @@ namespace views.images
                 schemaRequestOptions.image = Image;
                 schemaRequestOptions.imageProfile = null;
                 schemaRequestOptions.schemaType = null;
-
-                gv.DataSource = Call.ImageSchemaApi.GetLogicalVolumes(schemaRequestOptions,selectedHd);
+                schemaRequestOptions.selectedHd = selectedHd;
+                gv.DataSource = Call.ImageSchemaApi.GetLogicalVolumes(schemaRequestOptions);
                 gv.DataBind();
                 btn.Text = "-";
             }

@@ -30,7 +30,14 @@
     <asp:TextBox ID="txtIP" runat="server" CssClass="textbox"></asp:TextBox>
 </div>
 <br class="clear"/>
-   
+
+    <div class="size-4 column">
+    Server Identifier:
+</div>
+<div class="size-setting column">
+    <asp:TextBox ID="txtId" runat="server" CssClass="textbox"></asp:TextBox>
+</div>
+<br class="clear"/>
 <div class="size-4 column">
     Web Server Port:
 </div>
