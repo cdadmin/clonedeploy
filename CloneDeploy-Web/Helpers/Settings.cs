@@ -279,6 +279,26 @@ namespace CloneDeploy_Web.Helpers
         {
             get { return new APICall().SettingApi.GetSetting("Server Identifier").Value; }
         }
+
+        public static string OperationMode
+        {
+            get { return new APICall().SettingApi.GetSetting("Operation Mode").Value; }
+        }
+
+        public static bool ImageServerRole
+        {
+            get { return new APICall().SettingApi.GetSetting("Image Server Role ").Value == "1"; }       
+        }
+
+        public static bool TftpServerRole
+        {
+            get { return new APICall().SettingApi.GetSetting("Tftp Server Role ").Value == "1"; }
+        }
+
+        public static bool MulticastServerRole
+        {
+            get { return new APICall().SettingApi.GetSetting("Multicast Server Role ").Value == "1"; }
+        }
     
     }
 }

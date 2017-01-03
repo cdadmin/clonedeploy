@@ -54,7 +54,8 @@ namespace CloneDeploy_DataModel
         IGenericRepository<GroupMunkiEntity> GroupMunkiRepository { get; }
         IGenericRepository<ComputerProxyReservationEntity> ComputerProxyRepository { get; }
         IGenericRepository<BootEntryEntity> BootEntryRepository { get; }
-        IGenericRepository<CloneDeployUserGroupEntity> UserGroupRepository { get; } 
+        IGenericRepository<CloneDeployUserGroupEntity> UserGroupRepository { get; }
+        IGenericRepository<SecondaryServerEntity> SecondaryServerRepository { get; } 
         void Save();
         
     }

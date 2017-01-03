@@ -90,16 +90,20 @@
         <asp:TextBox ID="txtRoPassword" runat="server" CssClass="textbox" TextMode="Password"/>
     </div>
 
-
     <br class="clear"/>
-    
-  
-    
      <div class="size-4 column">
         Physical Path:
     </div>
     <div class="size-1 column">
         <asp:TextBox ID="txtPhysicalPath" runat="server" CssClass="textbox"/>
+    </div>
+
+    <br class="clear"/>
+     <div class="size-4 column">
+        Queue Size:
+    </div>
+    <div class="size-1 column">
+        <asp:TextBox ID="txtQueueSize" runat="server" CssClass="textbox"/>
     </div>
 
     <br class="clear"/>

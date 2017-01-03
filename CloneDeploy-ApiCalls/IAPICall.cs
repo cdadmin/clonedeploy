@@ -54,6 +54,7 @@ namespace CloneDeploy_ApiCalls
         IGenericAPI<ScriptEntity> ScriptApi { get; }
         IGenericAPI<SiteEntity> SiteApi { get; }
         IGenericAPI<SysprepTagEntity> SysprepTagApi { get; }
+        IGenericAPI<SecondaryServerEntity> SecondaryServerApi { get; }
 
 
         

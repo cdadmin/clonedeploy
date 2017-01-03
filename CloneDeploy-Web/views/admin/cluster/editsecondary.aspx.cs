@@ -9,10 +9,28 @@ using CloneDeploy_Web.Helpers;
 
 namespace CloneDeploy_Web.views.admin.cluster
 {
-    public partial class newsecondary : BasePages.Admin
+    public partial class editsecondary : BasePages.Admin
     {
+        public SecondaryServerEntity SecondaryServer { get { return Read(); } }
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack) PopulateForm();
+        }
+
+      
+
+        protected void PopulateForm()
+        {
+            txtServerId.Text = SecondaryServer.Name;
+            txtApi.Text = SecondaryServer.ApiURL;
+            txtAccountName.Text = SecondaryServer.ServiceAccountName;
+            txtAccountPassword.Text = SecondaryServer.ServiceAccountPassword;
+
+        }
+
+        private SecondaryServerEntity Read()
+        {
+            return Call.SecondaryServerApi.Get(Convert.ToInt32(Request.QueryString["ssid"]));
 
         }
 
@@ -27,11 +45,11 @@ namespace CloneDeploy_Web.views.admin.cluster
                 ServiceAccountPassword = txtAccountPassword.Text
             };
 
-            var result = Call.SecondaryServerApi.Post(secondaryServer);
+            var result = Call.SecondaryServerApi.Put(SecondaryServer.Id, secondaryServer);
             if (result.Success)
             {
-                EndUserMessage = "Successfully Created SecondaryServer";
-                Response.Redirect("~/views/admin/clust/editsecondary.aspx?cat=sub1&ssid=" + result.Id);
+                EndUserMessage = "Successfully Updated SecondaryServer";
+
             }
             else
             {

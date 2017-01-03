@@ -75,6 +75,7 @@
     <Content Include="views\admin\admin.master" />
     <Content Include="views\admin\bootmenu\bootmenu.master" />
     <Content Include="views\admin\cluster\clustergroup.aspx" />
+    <Content Include="views\admin\cluster\editsecondary.aspx" />
     <Content Include="views\admin\cluster\newclustergroup.aspx" />
     <Content Include="views\admin\cluster\newsecondary.aspx" />
     <Content Include="views\admin\cluster\roles.aspx" />
@@ -940,6 +941,13 @@
     </Compile>
     <Compile Include="views\admin\cluster\clustergroup.aspx.designer.cs">
       <DependentUpon>clustergroup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\cluster\editsecondary.aspx.cs">
+      <DependentUpon>editsecondary.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\cluster\editsecondary.aspx.designer.cs">
+      <DependentUpon>editsecondary.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\admin\cluster\newclustergroup.aspx.cs">
       <DependentUpon>newclustergroup.aspx</DependentUpon>

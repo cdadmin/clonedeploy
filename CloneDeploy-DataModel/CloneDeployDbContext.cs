@@ -58,7 +58,7 @@ namespace CloneDeploy_DataModel
         public DbSet<ComputerProxyReservationEntity> ProxyReservations { get; set; }
         public DbSet<BootEntryEntity> BootEntries { get; set; }
         public DbSet<CloneDeployUserGroupEntity> UserGroups { get; set; }
-
+        public DbSet<SecondaryServerEntity> SecondaryServers { get; set; }
     }
 
 }

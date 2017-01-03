@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="ActiveImagingTask.cs" />
     <Compile Include="ActiveMulticastSession.cs" />
+    <Compile Include="SecondaryServer.cs" />
     <Compile Include="DTOs\ApiObjectResponseDTO.cs" />
     <Compile Include="DTOs\ApiIntResponseDTO.cs" />
     <Compile Include="DTOs\DefaultBootMenuGenDTO.cs" />

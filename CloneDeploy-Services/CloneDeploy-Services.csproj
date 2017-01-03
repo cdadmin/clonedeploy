@@ -98,6 +98,7 @@
     <Compile Include="MunkiOptionalInstallServices.cs" />
     <Compile Include="PortServices.cs" />
     <Compile Include="RoomServices.cs" />
+    <Compile Include="SecondaryServerServices.cs" />
     <Compile Include="ScriptServices.cs" />
     <Compile Include="SettingServices.cs" />
     <Compile Include="SiteServices.cs" />

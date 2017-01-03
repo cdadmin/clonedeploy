@@ -250,5 +250,10 @@ namespace CloneDeploy_ApiCalls
             get { return new GenericAPI<SysprepTagEntity>("SysprepTag"); }
         }
 
+        public IGenericAPI<SecondaryServerEntity> SecondaryServerApi
+        {
+            get { return new GenericAPI<SecondaryServerEntity>("SecondaryServer"); }
+        }
+
     }
 }

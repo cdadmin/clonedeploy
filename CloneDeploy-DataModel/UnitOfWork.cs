@@ -59,7 +59,12 @@ namespace CloneDeploy_DataModel
         private IGenericRepository<ComputerProxyReservationEntity> _computerProxyRepository;
         private IGenericRepository<BootEntryEntity> _bootEntryRepository;
         private IGenericRepository<CloneDeployUserGroupEntity> _userGroupRepository;
+        private IGenericRepository<SecondaryServerEntity> _secondaryServerRepository;
 
+        public IGenericRepository<SecondaryServerEntity> SecondaryServerRepository
+        {
+            get { return _secondaryServerRepository ?? (_secondaryServerRepository = new GenericRepository<SecondaryServerEntity>(_context)); }
+        }
 
         public IGenericRepository<CloneDeployUserGroupEntity> UserGroupRepository
         {
@@ -337,6 +342,7 @@ namespace CloneDeploy_DataModel
             catch (DbUpdateException ex)
             {
                 log.Debug(ex.Message);
+                log.Debug(ex.InnerException);
                 throw;
             }
         }

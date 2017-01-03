@@ -41,17 +41,16 @@
                     <asp:CheckBox ID="chkSelector" runat="server"/>
                 </ItemTemplate>
             </asp:TemplateField>
-             <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/admin/cluster/editsecondary.aspx?level=2&secondaryid={0}" Text="View" ItemStyle-CssClass="chkboxwidth"/>
+             <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/admin/cluster/editsecondary.aspx?level=2&ssid={0}" Text="View" ItemStyle-CssClass="chkboxwidth"/>
             <asp:BoundField DataField="Id" HeaderText="Id" SortExpression="Id" Visible="False"/>
-            <asp:BoundField DataField="DisplayName" HeaderText="Display Name" SortExpression="DisplayName" ItemStyle-CssClass="width_200"></asp:BoundField>
-            <asp:BoundField DataField="Server" HeaderText="Server" SortExpression="Server" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
-            <asp:BoundField DataField="ShareName" HeaderText="Share" SortExpression="ShareName" ItemStyle-CssClass="width_200 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller"/>
-            <asp:BoundField DataField="IsPrimary" HeaderText="Primary" SortExpression="IsPrimary" />
+            <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="DisplayName" ItemStyle-CssClass="width_200"></asp:BoundField>
+            <asp:BoundField DataField="ApiURL" HeaderText="API" SortExpression="Server" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
+           
          
            
         </Columns>
         <EmptyDataTemplate>
-            No Distribution Points Found
+            No Servers Found
         </EmptyDataTemplate>
     </asp:GridView>
   
