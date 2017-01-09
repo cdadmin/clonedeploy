@@ -18,6 +18,15 @@ namespace CloneDeploy_Entities
         public string ServiceAccountName { get; set; }
 
         [Column("service_account_password_enc", Order = 5)]
-        public string ServiceAccountPassword { get; set; } 
+        public string ServiceAccountPassword { get; set; }
+
+        [Column("image_role", Order = 6)]
+        public int ImageRole { get; set; }
+
+        [Column("tftp_role", Order = 7)]
+        public int TftpRole { get; set; }
+
+        [Column("multicast_role", Order = 8)]
+        public int MulticastRole { get; set; } 
     }
 }

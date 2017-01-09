@@ -17,15 +17,21 @@ namespace CloneDeploy_ApiCalls
         private readonly RestRequest _request = new RestRequest();
         private readonly RestClient _client = new RestClient();
         private readonly string _resource;
-
+        private readonly Uri _baseUrl;
         public TokenApi(string resource)
         {
             _resource = resource;
         }
 
+        public TokenApi(Uri baseUrl, string resource)
+        {
+            _baseUrl = baseUrl;
+            _resource = resource;
+        }
+
         public TokenEntity Get(string username, string password)
         {
-            _client.BaseUrl = new Uri(ConfigurationManager.AppSettings["api_base_url"]);
+            _client.BaseUrl = _baseUrl ?? new Uri(ConfigurationManager.AppSettings["api_base_url"]);
             _request.Method = Method.POST;
             _request.Resource = string.Format("api/{0}",_resource);
             _request.AddParameter("grant_type", "password");

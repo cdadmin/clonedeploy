@@ -4,7 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using CloneDeploy_ApiCalls;
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Web.Helpers;
 
 namespace CloneDeploy_Web.views.admin.cluster
@@ -21,7 +23,6 @@ namespace CloneDeploy_Web.views.admin.cluster
             RequiresAuthorization(Authorizations.UpdateAdmin);
             var secondaryServer = new SecondaryServerEntity()
             {
-                Name = txtServerId.Text,
                 ApiURL = txtApi.Text,
                 ServiceAccountName = txtAccountName.Text,
                 ServiceAccountPassword = txtAccountPassword.Text
@@ -30,8 +31,8 @@ namespace CloneDeploy_Web.views.admin.cluster
             var result = Call.SecondaryServerApi.Post(secondaryServer);
             if (result.Success)
             {
-                EndUserMessage = "Successfully Created SecondaryServer";
-                Response.Redirect("~/views/admin/clust/editsecondary.aspx?cat=sub1&ssid=" + result.Id);
+                EndUserMessage = "Successfully Created Secondary Server";
+                Response.Redirect("~/views/admin/cluster/editsecondary.aspx?cat=sub1&ssid=" + result.Id);
             }
             else
             {
@@ -39,4 +40,9 @@ namespace CloneDeploy_Web.views.admin.cluster
             }
         }
     }
+
+
+
 }
+
+

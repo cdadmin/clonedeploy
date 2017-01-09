@@ -78,13 +78,13 @@ namespace CloneDeploy_Web.BasePages
             ddlImageProfile.Items.Insert(0, new ListItem("Select Profile", "-1"));
         }
 
-        protected void PopulateDistributionPointsDdl(DropDownList ddlDp)
+        protected void PopulateClusterGroupsDdl(DropDownList ddlClusterGroup)
         {
-            ddlDp.DataSource =
-                Call.DistributionPointApi.GetAll(Int32.MaxValue, "").Select(d => new {d.Id, d.DisplayName});
-            ddlDp.DataValueField = "Id";
-            ddlDp.DataTextField = "DisplayName";
-            ddlDp.DataBind();
+            ddlClusterGroup.DataSource =
+                Call.ClusterGroupApi.GetAll(Int32.MaxValue, "").Select(d => new {d.Id, d.Name});
+            ddlClusterGroup.DataValueField = "Id";
+            ddlClusterGroup.DataTextField = "Name";
+            ddlClusterGroup.DataBind();
         }
 
         protected void PopulateSitesDdl(DropDownList ddl)

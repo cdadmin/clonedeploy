@@ -17,7 +17,7 @@ namespace CloneDeploy_DataModel
         public List<RoomEntity> Get(string searchString)
         {
             return (from s in _context.Rooms
-                    join d in _context.DistributionPoints on s.DistributionPointId equals d.Id into joined
+                    join d in _context.ClusterGroups on s.DistributionPointId equals d.Id into joined
                     from j in joined.DefaultIfEmpty()
                     where s.Name.Contains(searchString)
                     orderby s.Name
@@ -30,7 +30,7 @@ namespace CloneDeploy_DataModel
                     {
                         Id = x.id,
                         Name = x.name,
-                        DistributionPoint = x.distributionPoint
+                        ClusterGroup = x.distributionPoint
                     }).ToList();
 
         }

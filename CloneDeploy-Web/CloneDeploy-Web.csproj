@@ -75,12 +75,12 @@
     <Content Include="views\admin\admin.master" />
     <Content Include="views\admin\bootmenu\bootmenu.master" />
     <Content Include="views\admin\cluster\clustergroup.aspx" />
+    <Content Include="views\admin\cluster\editcluster.aspx" />
     <Content Include="views\admin\cluster\editsecondary.aspx" />
     <Content Include="views\admin\cluster\newclustergroup.aspx" />
     <Content Include="views\admin\cluster\newsecondary.aspx" />
     <Content Include="views\admin\cluster\roles.aspx" />
     <Content Include="views\admin\cluster\secondary.aspx" />
-    <Content Include="views\admin\dp\dp.master" />
     <Content Include="views\admin\imageshare.aspx" />
     <Content Include="views\admin\logs\application.aspx" />
     <Content Include="views\admin\logs\frontend.aspx" />
@@ -639,9 +639,6 @@
     <Content Include="views\admin\chooser.aspx" />
     <Content Include="views\admin\client.aspx" />
     <Content Include="views\admin\clobber.aspx" />
-    <Content Include="views\admin\dp\create.aspx" />
-    <Content Include="views\admin\dp\edit.aspx" />
-    <Content Include="views\admin\dp\search.aspx" />
     <Content Include="views\admin\email.aspx" />
     <Content Include="views\admin\export.aspx" />
     <Content Include="views\admin\multicast.aspx" />
@@ -942,6 +939,13 @@
     <Compile Include="views\admin\cluster\clustergroup.aspx.designer.cs">
       <DependentUpon>clustergroup.aspx</DependentUpon>
     </Compile>
+    <Compile Include="views\admin\cluster\editcluster.aspx.cs">
+      <DependentUpon>editcluster.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\cluster\editcluster.aspx.designer.cs">
+      <DependentUpon>editcluster.aspx</DependentUpon>
+    </Compile>
     <Compile Include="views\admin\cluster\editsecondary.aspx.cs">
       <DependentUpon>editsecondary.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -976,34 +980,6 @@
     </Compile>
     <Compile Include="views\admin\cluster\secondary.aspx.designer.cs">
       <DependentUpon>secondary.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\admin\dp\create.aspx.cs">
-      <DependentUpon>create.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\admin\dp\create.aspx.designer.cs">
-      <DependentUpon>create.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\admin\dp\dp.master.cs">
-      <DependentUpon>dp.master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\admin\dp\dp.master.designer.cs">
-      <DependentUpon>dp.master</DependentUpon>
-    </Compile>
-    <Compile Include="views\admin\dp\edit.aspx.cs">
-      <DependentUpon>edit.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\admin\dp\edit.aspx.designer.cs">
-      <DependentUpon>edit.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\admin\dp\search.aspx.cs">
-      <DependentUpon>search.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\admin\dp\search.aspx.designer.cs">
-      <DependentUpon>search.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\admin\email.aspx.cs">
       <DependentUpon>email.aspx</DependentUpon>

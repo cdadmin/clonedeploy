@@ -50,11 +50,11 @@
     <Compile Include="APICall.cs" />
     <Compile Include="ApiRequest.cs" />
     <Compile Include="CdVersionAPI.cs" />
+    <Compile Include="ClusterGroupAPI.cs" />
     <Compile Include="ComputerAPI.cs" />
     <Compile Include="ComputerLogAPI.cs" />
     <Compile Include="GroupMunkiAPI.cs" />
     <Compile Include="ComputerMunkiAPI.cs" />
-    <Compile Include="DistributionPointAPI.cs" />
     <Compile Include="FilesystemAPI.cs" />
     <Compile Include="GenericAPI.cs" />
     <Compile Include="GroupAPI.cs" />
@@ -70,6 +70,7 @@
     <Compile Include="Token.cs" />
     <Compile Include="UserAPI.cs" />
     <Compile Include="UserGroupAPI.cs" />
+    <Compile Include="ClusterGroupServerAPI.cs" />
     <Compile Include="UserGroupGroupManagementAPI.cs" />
     <Compile Include="UserGroupImageManagementAPI.cs" />
     <Compile Include="UserGroupManagementAPI.cs" />

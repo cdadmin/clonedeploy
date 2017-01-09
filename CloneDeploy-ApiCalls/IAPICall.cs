@@ -9,8 +9,7 @@ namespace CloneDeploy_ApiCalls
         ComputerAPI ComputerApi { get; }
         ComputerLogAPI ComputerLogApi { get; }
         ComputerMunkiAPI ComputerMunkiApi { get; }
-        GroupMunkiAPI GroupMunkiApi { get; }
-        DistributionPointAPI DistributionPointApi { get; }
+        GroupMunkiAPI GroupMunkiApi { get; }       
         FilesystemAPI FilesystemApi { get; }
         GroupAPI GroupApi { get; }
         GroupMembershipAPI GroupMembershipApi { get; }
@@ -31,6 +30,8 @@ namespace CloneDeploy_ApiCalls
         WorkflowAPI WorkflowApi { get; }
         CdVersionAPI CdVersionApi { get; }
         AuthorizationAPI AuthorizationApi { get; }
+        ClusterGroupAPI ClusterGroupApi { get; }
+        ClusterGroupServerAPI ClusterGroupServerApi { get; }
 
         IGenericAPI<BootEntryEntity> BootEntryApi { get; }
         IGenericAPI<BootTemplateEntity> BootTemplateApi { get; }
@@ -55,7 +56,7 @@ namespace CloneDeploy_ApiCalls
         IGenericAPI<SiteEntity> SiteApi { get; }
         IGenericAPI<SysprepTagEntity> SysprepTagApi { get; }
         IGenericAPI<SecondaryServerEntity> SecondaryServerApi { get; }
-
+        
 
         
  

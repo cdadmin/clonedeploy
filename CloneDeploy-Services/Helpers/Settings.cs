@@ -53,14 +53,13 @@
         }
 
         
-
+        //Fix Me
         public static string PrimaryStoragePath
         {
-            get { return new DistributionPointServices().GetPrimaryDistributionPoint().PhysicalPath; }
+            get { return new SettingServices().GetImageShare().PhysicalPath; }
         }
 
       
-
         public static string OnDemand
         {
             get { return new SettingServices().GetSetting("On Demand").Value; }
@@ -276,6 +275,31 @@
         public static string ClobberPromptComputerName
         {
             get { return new SettingServices().GetSetting("Clobber Prompt Computer Name").Value; }
+        }
+
+        public static string ServerIdentifier
+        {
+            get { return new SettingServices().GetSetting("Server Identifier").Value; }
+        }
+
+        public static string OperationMode
+        {
+            get { return new SettingServices().GetSetting("Operation Mode").Value; }
+        }
+
+        public static bool ImageServerRole
+        {
+            get { return new SettingServices().GetSetting("Image Server Role ").Value == "1"; }
+        }
+
+        public static bool TftpServerRole
+        {
+            get { return new SettingServices().GetSetting("Tftp Server Role ").Value == "1"; }
+        }
+
+        public static bool MulticastServerRole
+        {
+            get { return new SettingServices().GetSetting("Multicast Server Role ").Value == "1"; }
         }
     
     }

@@ -46,6 +46,7 @@ namespace CloneDeploy_App.Controllers.Authorization
                 case "GlobalCreate":
                 case "GlobalDelete":
                 case "AllowOnd":
+                case "ServiceAccount":
                     if (new AuthorizationServices(Convert.ToInt32(userId), Permission).IsAuthorized())
                         authorized = true;
                     break;

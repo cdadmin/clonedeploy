@@ -51,6 +51,15 @@ public partial class views_login_firstrun : PageBaseMaster
             {
                 tftpPath = Call.FilesystemApi.GetServerPaths("defaultTftp", "");
             }
+
+            var physicalPath = "";
+            if (Environment.OSVersion.ToString().Contains("Unix"))
+                physicalPath = unixDist == "bsd" ? "/usr/pbi/clonedeploy-amd64/cd_dp" : "/cd_dp";
+            else
+            {
+                physicalPath = Call.FilesystemApi.GetServerPaths("defaultDp", "");
+            }
+
             var listSettings = new List<SettingEntity>
             {
                 new SettingEntity()
@@ -64,7 +73,67 @@ public partial class views_login_firstrun : PageBaseMaster
                     Name = "Tftp Path",
                     Value = tftpPath,
                     Id = Call.SettingApi.GetSetting("Tftp Path").Id
-                }           
+                },
+                new SettingEntity
+                {
+                    Name = "Image Share Type",
+                    Value = "Local",
+                    Id = Call.SettingApi.GetSetting("Image Share Type").Id
+                },
+                new SettingEntity
+                {
+                    Name = "Image Server Ip",
+                    Value = "[server-ip]",
+                    Id = Call.SettingApi.GetSetting("Image Server Ip").Id
+                },
+                new SettingEntity
+                {
+                    Name = "Image Share Name",
+                    Value = "cd_share",
+                    Id = Call.SettingApi.GetSetting("Image Share Name").Id
+                },
+                new SettingEntity
+                {
+                    Name = "Image Domain",
+                    Value = "Workgroup",
+                    Id = Call.SettingApi.GetSetting("Image Domain").Id
+                },
+                new SettingEntity
+                {
+                    Name = "Image ReadWrite Username",
+                    Value = "cd_share_rw",
+                    Id = Call.SettingApi.GetSetting("Image ReadWrite Username").Id
+                },
+                new SettingEntity
+                {
+                    Name = "Image ReadWrite Password Encrypted",
+                    Value = txtReadWrite.Text,
+                    Id = Call.SettingApi.GetSetting("Image ReadWrite Password Encrypted").Id
+                },
+                new SettingEntity
+                {
+                    Name = "Image ReadOnly Username",
+                    Value = "cd_share_ro",
+                    Id = Call.SettingApi.GetSetting("Image ReadOnly Username").Id
+                },
+                new SettingEntity
+                {
+                    Name = "Image ReadOnly Password Encrypted",
+                    Value = txtReadOnly.Text,
+                    Id = Call.SettingApi.GetSetting("Image ReadOnly Password Encrypted").Id
+                },
+                 new SettingEntity
+                {
+                    Name = "Image Physical Path",
+                    Value = physicalPath,
+                    Id = Call.SettingApi.GetSetting("Image Physical Path").Id
+                },
+                 new SettingEntity
+                {
+                    Name = "Image Queue Size",
+                    Value = "3",
+                    Id = Call.SettingApi.GetSetting("Image Queue Size").Id
+                },
             };
 
             if (unixDist == "bsd")
@@ -76,26 +145,9 @@ public partial class views_login_firstrun : PageBaseMaster
                     Id = Call.SettingApi.GetSetting("Sender Args").Id
                 });
             }
-            Call.SettingApi.UpdateSettings(listSettings);
 
-            var distributionPoint = new DistributionPointEntity();
-            distributionPoint.DisplayName = "Default";
-            distributionPoint.Server = "[server-ip]";
-            distributionPoint.Protocol = "SMB";
-            distributionPoint.ShareName = "cd_share";
-            distributionPoint.Domain = "Workgroup";
-            distributionPoint.RwUsername = "cd_share_rw";
-            distributionPoint.RwPassword = txtReadWrite.Text;
-            distributionPoint.RoUsername = "cd_share_ro";
-            distributionPoint.RoPassword = txtReadOnly.Text;
-            distributionPoint.IsPrimary = 1;
-            if (Environment.OSVersion.ToString().Contains("Unix"))
-                distributionPoint.PhysicalPath = unixDist == "bsd" ? "/usr/pbi/clonedeploy-amd64/cd_dp" : "/cd_dp";
-            else
-            {
-                distributionPoint.PhysicalPath = Call.FilesystemApi.GetServerPaths("defaultDp", "");
-            }
-            Call.DistributionPointApi.Post(distributionPoint);
+
+            Call.SettingApi.UpdateSettings(listSettings);
 
             var defaultBootMenuOptions = new BootMenuGenOptionsDTO();
             defaultBootMenuOptions.Kernel = Settings.DefaultKernel32;

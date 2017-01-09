@@ -22,16 +22,16 @@ namespace CloneDeploy_Services
         private static readonly ILog log = LogManager.GetLogger("ApplicationLog");
         public DpFreeSpaceDTO GetDpFreeSpace()
         {
-            var primaryDp = new DistributionPointServices().GetPrimaryDistributionPoint();
+            var imageShare = new SettingServices().GetImageShare();
 
             var dpFreeSpace = new DpFreeSpaceDTO();
-            dpFreeSpace.dPPath = primaryDp.PhysicalPath;
+            dpFreeSpace.dPPath = imageShare.PhysicalPath;
 
-            if (System.IO.Directory.Exists(primaryDp.PhysicalPath))
+            if (System.IO.Directory.Exists(imageShare.PhysicalPath))
             {
                 ulong freespace = 0;
                 ulong total = 0;
-                bool success = DriveFreeBytes(primaryDp.PhysicalPath, out freespace, out total);
+                bool success = DriveFreeBytes(imageShare.PhysicalPath, out freespace, out total);
 
                 if (!success) return null;
 

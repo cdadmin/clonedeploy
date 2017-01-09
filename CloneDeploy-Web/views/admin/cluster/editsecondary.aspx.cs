@@ -21,10 +21,13 @@ namespace CloneDeploy_Web.views.admin.cluster
 
         protected void PopulateForm()
         {
-            txtServerId.Text = SecondaryServer.Name;
+            lblServerId.Text = SecondaryServer.Name;
             txtApi.Text = SecondaryServer.ApiURL;
             txtAccountName.Text = SecondaryServer.ServiceAccountName;
             txtAccountPassword.Text = SecondaryServer.ServiceAccountPassword;
+            lblImage.Text = SecondaryServer.ImageRole == 1 ? "Yes" : "No";
+            lblTftp.Text = SecondaryServer.TftpRole == 1 ? "Yes" : "No";
+            lblMulticast.Text = SecondaryServer.MulticastRole == 1 ? "Yes" : "No";
 
         }
 
@@ -39,7 +42,6 @@ namespace CloneDeploy_Web.views.admin.cluster
             RequiresAuthorization(Authorizations.UpdateAdmin);
             var secondaryServer = new SecondaryServerEntity()
             {
-                Name = txtServerId.Text,
                 ApiURL = txtApi.Text,
                 ServiceAccountName = txtAccountName.Text,
                 ServiceAccountPassword = txtAccountPassword.Text
@@ -48,7 +50,8 @@ namespace CloneDeploy_Web.views.admin.cluster
             var result = Call.SecondaryServerApi.Put(SecondaryServer.Id, secondaryServer);
             if (result.Success)
             {
-                EndUserMessage = "Successfully Updated SecondaryServer";
+                EndUserMessage = "Successfully Updated Secondary Server";
+                PopulateForm();
 
             }
             else
@@ -56,5 +59,7 @@ namespace CloneDeploy_Web.views.admin.cluster
                 EndUserMessage = result.ErrorMessage;
             }
         }
+
+       
     }
 }

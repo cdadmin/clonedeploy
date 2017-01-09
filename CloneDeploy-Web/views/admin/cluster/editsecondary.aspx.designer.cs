@@ -22,13 +22,13 @@ namespace CloneDeploy_Web.views.admin.cluster {
         protected global::System.Web.UI.WebControls.LinkButton btnUpdateSettings;
         
         /// <summary>
-        /// txtServerId control.
+        /// lblServerId control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtServerId;
+        protected global::System.Web.UI.WebControls.Label lblServerId;
         
         /// <summary>
         /// txtApi control.
@@ -56,5 +56,32 @@ namespace CloneDeploy_Web.views.admin.cluster {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtAccountPassword;
+        
+        /// <summary>
+        /// lblImage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblImage;
+        
+        /// <summary>
+        /// lblTftp control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblTftp;
+        
+        /// <summary>
+        /// lblMulticast control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblMulticast;
     }
 }

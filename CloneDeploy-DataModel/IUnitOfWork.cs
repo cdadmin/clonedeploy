@@ -9,7 +9,6 @@ namespace CloneDeploy_DataModel
         IGenericRepository<ActiveMulticastSessionEntity> ActiveMulticastSessionRepository { get; }
        
         RoomRepository RoomRepository { get; }
-        IGenericRepository<DistributionPointEntity> DistributionPointRepository { get; }
         IGenericRepository<FileFolderEntity> FileFolderRepository { get; }
         IGenericRepository<ComputerBootMenuEntity> ComputerBootMenuRepository { get; }
         IGenericRepository<GroupBootMenuEntity> GroupBootMenuRepository { get; }
@@ -55,7 +54,9 @@ namespace CloneDeploy_DataModel
         IGenericRepository<ComputerProxyReservationEntity> ComputerProxyRepository { get; }
         IGenericRepository<BootEntryEntity> BootEntryRepository { get; }
         IGenericRepository<CloneDeployUserGroupEntity> UserGroupRepository { get; }
-        IGenericRepository<SecondaryServerEntity> SecondaryServerRepository { get; } 
+        IGenericRepository<SecondaryServerEntity> SecondaryServerRepository { get; }
+        IGenericRepository<ClusterGroupEntity> ClusterGroupRepository { get; }
+        IGenericRepository<ClusterGroupServerEntity> ClusterGroupServersRepository { get; } 
         void Save();
         
     }

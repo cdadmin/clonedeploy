@@ -2,7 +2,7 @@
 {
     public class DpDTO
     {
-        public string dpId { get; set; }
+        public string serverIdentifier { get; set; }
         public string task { get; set; }
     }
 }

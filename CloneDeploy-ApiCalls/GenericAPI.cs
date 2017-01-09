@@ -8,11 +8,19 @@ namespace CloneDeploy_ApiCalls
     {
         protected readonly RestRequest _request;     
         protected readonly string _resource;
+        protected readonly CustomApiCallDTO _cApiDto;
 
         public GenericAPI(string resource)
         {
             _request = new RestRequest();
             _resource = resource;
+        }
+
+        public GenericAPI(string resource, CustomApiCallDTO cApiDto)
+        {
+            _request = new RestRequest();
+            _resource = resource;
+            _cApiDto = cApiDto;
         }
 
         public List<T> GetAll(int limit, string searchstring)

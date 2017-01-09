@@ -26,6 +26,9 @@ namespace CloneDeploy_Services
         public bool IsAuthorized()
         {
             if (_cloneDeployUser.Membership == "Administrator") return true;
+            
+            if (_cloneDeployUser.Membership == "Service Account" && _requiredRight == "ServiceAccount") return true;
+            
             return _currentUserRights.Any(right => right == _requiredRight);
         }
 

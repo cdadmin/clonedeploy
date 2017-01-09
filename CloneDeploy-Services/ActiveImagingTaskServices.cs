@@ -201,7 +201,10 @@ namespace CloneDeploy_Services
             
         }
 
-     
+        public List<ActiveImagingTaskEntity> GetAll()
+        {
+            return _uow.ActiveImagingTaskRepository.Get();
+        }
 
         public  ActiveImagingTaskEntity GetTask(int taskId)
         {

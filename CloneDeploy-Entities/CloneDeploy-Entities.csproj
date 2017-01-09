@@ -43,6 +43,11 @@
   <ItemGroup>
     <Compile Include="ActiveImagingTask.cs" />
     <Compile Include="ActiveMulticastSession.cs" />
+    <Compile Include="ClusterGroupServer.cs" />
+    <Compile Include="DTOs\CustomApiCallDTO.cs" />
+    <Compile Include="DTOs\ImageShareDTO.cs" />
+    <Compile Include="DTOs\ServerRoleDTO.cs" />
+    <Compile Include="ClusterGroup.cs" />
     <Compile Include="SecondaryServer.cs" />
     <Compile Include="DTOs\ApiObjectResponseDTO.cs" />
     <Compile Include="DTOs\ApiIntResponseDTO.cs" />
@@ -89,7 +94,6 @@
     <Compile Include="ComputerPrinter.cs" />
     <Compile Include="ComputerProxyReservation.cs" />
     <Compile Include="ComputerUser.cs" />
-    <Compile Include="DistributionPoint.cs" />
     <Compile Include="DTOs\ClientPartition\ClientVolumeGroupHelper.cs" />
     <Compile Include="DTOs\ClientPartition\ExtendedPartitionHelper.cs" />
     <Compile Include="DTOs\ClientPartition\PartitionHelper.cs" />

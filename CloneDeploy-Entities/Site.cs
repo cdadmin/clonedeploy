@@ -18,6 +18,6 @@ namespace CloneDeploy_Entities
         public int DistributionPointId { get; set; }
 
         [NotMapped]
-        public virtual DistributionPointEntity DistributionPoint { get; set; }
+        public virtual ClusterGroupEntity ClusterGroup { get; set; }
     }
 }

@@ -72,7 +72,6 @@
     <Compile Include="ComputerLogServices.cs" />
     <Compile Include="ComputerMunkiServices.cs" />
     <Compile Include="ComputerProxyReservation.cs" />
-    <Compile Include="DistributionPoint.cs" />
     <Compile Include="ClientPartitionSchemaServices.cs" />
     <Compile Include="ClientPartitionHelper.cs" />
     <Compile Include="FileFolderServices.cs" />
@@ -98,11 +97,13 @@
     <Compile Include="MunkiOptionalInstallServices.cs" />
     <Compile Include="PortServices.cs" />
     <Compile Include="RoomServices.cs" />
+    <Compile Include="ClusterGroupServices.cs" />
     <Compile Include="SecondaryServerServices.cs" />
     <Compile Include="ScriptServices.cs" />
     <Compile Include="SettingServices.cs" />
     <Compile Include="SiteServices.cs" />
     <Compile Include="SysprepTagServices.cs" />
+    <Compile Include="ClusterGroupServerServices.cs" />
     <Compile Include="UserServices.cs" />
     <Compile Include="UserGroupServices.cs" />
     <Compile Include="UserGroupGroupManagementServices.cs" />
@@ -120,6 +121,7 @@
     <Compile Include="Workflows\DefaultBootMenu.cs" />
     <Compile Include="Workflows\DynamicPartitionScript.cs" />
     <Compile Include="Workflows\EffectiveMunkiTemplate.cs" />
+    <Compile Include="Workflows\GetImageServer.cs" />
     <Compile Include="Workflows\IsoGen.cs" />
     <Compile Include="Workflows\Multicast.cs" />
     <Compile Include="Workflows\TaskBootMenu.cs" />
@@ -136,6 +138,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CloneDeploy-ApiCalls\CloneDeploy-ApiCalls.csproj">
+      <Project>{f5a4e04d-fa84-4abb-9690-df2539f425cd}</Project>
+      <Name>CloneDeploy-ApiCalls</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CloneDeploy-DataModel\CloneDeploy-DataModel.csproj">
       <Project>{67c7f110-f0fd-4ea2-8ec3-5118a718b0b4}</Project>
       <Name>CloneDeploy-DataModel</Name>

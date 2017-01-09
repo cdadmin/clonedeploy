@@ -11,6 +11,11 @@ namespace CloneDeploy_ApiCalls
         {
 		
         }
+
+        public SettingAPI(string resource,CustomApiCallDTO cApiDto):base(resource,cApiDto)
+        {
+
+        }
     
         public SettingEntity GetSetting(string name)
         {
@@ -35,6 +40,20 @@ namespace CloneDeploy_ApiCalls
             _request.Method = Method.GET;
             _request.Resource = string.Format("api/{0}/SendEmailTest/", _resource);
             return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+        }
+
+        public ServerRoleDTO GetServerRoles()
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetServerRoles/", _resource);
+            return _cApiDto != null ? new ApiRequest(_cApiDto.Token, _cApiDto.BaseUrl).Execute<ServerRoleDTO>(_request) : new ApiRequest().Execute<ServerRoleDTO>(_request);
+        }
+
+        public ImageShareDTO GetImageShareSettings()
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetImageShareSettings/", _resource);
+            return _cApiDto != null ? new ApiRequest(_cApiDto.Token, _cApiDto.BaseUrl).Execute<ImageShareDTO>(_request) : new ApiRequest().Execute<ImageShareDTO>(_request);
         }
     }
 }

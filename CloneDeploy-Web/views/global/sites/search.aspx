@@ -43,9 +43,9 @@
                 </FooterTemplate>
             </asp:TemplateField>
             
-            <asp:TemplateField HeaderText="Distribution Point" ItemStyle-Width="150">
+            <asp:TemplateField HeaderText="Cluster Group" ItemStyle-Width="150">
                 <ItemTemplate>
-                    <asp:Label ID="lblDp" runat="server" Text='<%# Eval("DistributionPoint.DisplayName") %>'></asp:Label>
+                    <asp:Label ID="lblDp" runat="server" Text='<%# Eval("ClusterGroup.Name") %>'></asp:Label>
                 </ItemTemplate>
                 <EditItemTemplate>
                     <asp:DropDownList ID="ddlDp" runat="server" CssClass="ddlist"></asp:DropDownList>

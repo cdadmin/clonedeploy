@@ -13,7 +13,6 @@ namespace CloneDeploy_DataModel
 
         private IGenericRepository<ActiveMulticastSessionEntity> _activeMulticastSessionRepository;
         private BuildingRepository _buildingRepository;
-        private IGenericRepository<DistributionPointEntity> _distributionPointRepository;
         private IGenericRepository<FileFolderEntity> _fileFolderRepository;
         private IGenericRepository<ComputerBootMenuEntity> _computerBootMenuRepository;
         private IGenericRepository<GroupBootMenuEntity> _groupBootMenuRepository;
@@ -60,6 +59,19 @@ namespace CloneDeploy_DataModel
         private IGenericRepository<BootEntryEntity> _bootEntryRepository;
         private IGenericRepository<CloneDeployUserGroupEntity> _userGroupRepository;
         private IGenericRepository<SecondaryServerEntity> _secondaryServerRepository;
+        private IGenericRepository<ClusterGroupEntity> _clusterGroupRepository;
+        private IGenericRepository<ClusterGroupServerEntity> _clusterGroupServersRepository;
+
+        public IGenericRepository<ClusterGroupEntity> ClusterGroupRepository
+        {
+            get { return _clusterGroupRepository ?? (_clusterGroupRepository = new GenericRepository<ClusterGroupEntity>(_context)); }
+
+        }
+        public IGenericRepository<ClusterGroupServerEntity> ClusterGroupServersRepository
+        {
+            get { return _clusterGroupServersRepository ?? (_clusterGroupServersRepository = new GenericRepository<ClusterGroupServerEntity>(_context)); }
+
+        }
 
         public IGenericRepository<SecondaryServerEntity> SecondaryServerRepository
         {
@@ -198,11 +210,6 @@ namespace CloneDeploy_DataModel
         public BuildingRepository BuildingRepository
         {
             get { return _buildingRepository ?? (_buildingRepository = new BuildingRepository(_context)); }
-        }
-
-        public IGenericRepository<DistributionPointEntity> DistributionPointRepository
-        {
-            get { return _distributionPointRepository ?? (_distributionPointRepository = new GenericRepository<DistributionPointEntity>(_context)); }
         }
 
         public IGenericRepository<GroupMembershipEntity> GroupMembershipRepository

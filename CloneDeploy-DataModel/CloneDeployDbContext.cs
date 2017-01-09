@@ -32,7 +32,7 @@ namespace CloneDeploy_DataModel
         public DbSet<SiteEntity> Sites { get; set; }
         public DbSet<BuildingEntity> Buildings { get; set; }
         public DbSet<RoomEntity> Rooms { get; set; }
-        public DbSet<DistributionPointEntity> DistributionPoints { get; set; }
+      
         public DbSet<ComputerBootMenuEntity> ComputerBootMenus { get; set; }
         public DbSet<GroupBootMenuEntity> GroupBootMenus { get; set; }
         public DbSet<ComputerLogEntity> ComputerLogs { get; set; }
@@ -59,6 +59,8 @@ namespace CloneDeploy_DataModel
         public DbSet<BootEntryEntity> BootEntries { get; set; }
         public DbSet<CloneDeployUserGroupEntity> UserGroups { get; set; }
         public DbSet<SecondaryServerEntity> SecondaryServers { get; set; }
+        public DbSet<ClusterGroupEntity> ClusterGroups { get; set; }
+        public DbSet<ClusterGroupServerEntity> ClusterGroupServers { get; set; }
     }
 
 }

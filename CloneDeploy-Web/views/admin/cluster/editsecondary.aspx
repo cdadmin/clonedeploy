@@ -1,6 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/cluster/cluster.master" AutoEventWireup="true" CodeBehind="editsecondary.aspx.cs" Inherits="CloneDeploy_Web.views.admin.cluster.editsecondary" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" runat="server">
-    <li>New Secondary Server</li>
+    <li>Edit</li>
+
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="SubHelp" runat="server">
      <li role="separator" class="divider"></li>
@@ -11,17 +12,16 @@
      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <span class="caret"></span></button>
 </asp:Content>
+
+
+
 <asp:Content ID="Content4" ContentPlaceHolderID="SubContent2" runat="server">
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#roles').addClass("nav-current");
-        });
-    </script>
+    
      <div class="size-4 column">
     Server Id:
 </div>
     <div class="size-5 column">
-        <asp:TextBox runat="server" Id="txtServerId" CssClass="textbox"></asp:TextBox>
+        <asp:Label runat="server" Id="lblServerId" CssClass="nav-text"></asp:Label>
     </div>
     <br class="clear"/>
     <div class="size-4 column">
@@ -42,6 +42,31 @@
     Service Account Password:
 </div>
     <div class="size-5 column">
-        <asp:TextBox runat="server" Id="txtAccountPassword" CssClass="textbox"></asp:TextBox>
+        <asp:TextBox runat="server" Id="txtAccountPassword" CssClass="textbox" TextMode="Password"></asp:TextBox>
+    </div>
+    <br class="clear"/>
+    <div class="size-4 column">
+        Image Server Role:
+    </div>
+    <div class="size-5 column">
+        <asp:Label runat="server" ID="lblImage" CssClass="nav-text"></asp:Label>
+    </div>
+  
+     <br class="clear"/>
+      <br/>
+    <div class="size-4 column">
+        Tftp Server Role:
+    </div>
+    <div class="size-5 column">
+        <asp:Label runat="server" ID="lblTftp" CssClass="nav-text"></asp:Label>
+    </div>
+    
+     <br class="clear"/>
+      <br/>
+    <div class="size-4 column">
+        Multicast Server Role:
+    </div>
+    <div class="size-5 column">
+        <asp:Label runat="server" ID="lblMulticast" CssClass="nav-text"></asp:Label>
     </div>
 </asp:Content>

@@ -28,12 +28,7 @@
                 </a>
             </li>
 
-            <li id="distribution">
-                <a href="<%= ResolveUrl("~/views/admin/dp/search.aspx?level=2") %>">
-                    <span class="nav-text">Distribution Points</span>
-                </a>
-            </li>
-
+          
              <li id="client">
                 <a href="<%= ResolveUrl("~/views/admin/client.aspx") %>">
                     <span class="nav-text">Client</span>

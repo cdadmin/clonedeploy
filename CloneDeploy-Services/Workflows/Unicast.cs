@@ -20,6 +20,9 @@ namespace CloneDeploy_Services.Workflows
 
         public string Start()
         {
+            if (string.IsNullOrEmpty(Settings.ServerIdentifier))
+                return "The Server Identifier Must Be Set Before Tasks Can Be Started";
+
             if (_computer == null)
                 return "The Computer Does Not Exist";
 
@@ -34,8 +37,8 @@ namespace CloneDeploy_Services.Workflows
                 if (!validation.Success) return validation.ErrorMessage;
             }
 
-            var dp = new DistributionPointServices().GetPrimaryDistributionPoint();
-            if (dp == null) return "Could Not Find A Primary Distribution Point";
+            //var dp = new DistributionPointServices().GetPrimaryDistributionPoint();
+            //if (dp == null) return "Could Not Find A Primary Distribution Point";
 
             if (new ComputerServices().IsComputerActive(_computer.Id))
                 return "This Computer Is Already Part Of An Active Task";

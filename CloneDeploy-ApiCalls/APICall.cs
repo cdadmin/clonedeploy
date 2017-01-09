@@ -1,9 +1,24 @@
-﻿using CloneDeploy_Entities;
+﻿using System;
+using System.Diagnostics.Eventing.Reader;
+using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
 
 namespace CloneDeploy_ApiCalls
 {
     public class APICall : IAPICall
     {
+        private readonly CustomApiCallDTO _cApiDto;
+      
+        public APICall(CustomApiCallDTO cApi)
+        {
+            _cApiDto = cApi;
+        }
+
+        public APICall()
+        {
+            
+        }
+
         public ActiveImagingTaskAPI ActiveImagingTaskApi
         {
             get { return new ActiveImagingTaskAPI("ActiveImagingTask"); }
@@ -34,10 +49,7 @@ namespace CloneDeploy_ApiCalls
             get { return new GroupMunkiAPI("GroupMunki"); }
         }
 
-        public DistributionPointAPI DistributionPointApi
-        {
-            get { return new DistributionPointAPI("DistributionPoint"); }
-        }
+      
 
         public FilesystemAPI FilesystemApi
         {
@@ -76,12 +88,12 @@ namespace CloneDeploy_ApiCalls
 
         public SettingAPI SettingApi
         {
-            get { return new SettingAPI("Setting"); }
+            get { return _cApiDto != null ? new SettingAPI("Setting",_cApiDto) : new SettingAPI("Setting"); }
         }
 
         public TokenApi TokenApi
         {
-            get { return new TokenApi("Token"); }
+            get { return _cApiDto != null ? new TokenApi(_cApiDto.BaseUrl,"Token") : new TokenApi("Token"); }
         }
 
         public UserAPI CloneDeployUserApi
@@ -138,6 +150,17 @@ namespace CloneDeploy_ApiCalls
         {
             get { return new AuthorizationAPI("Authorization"); }
         }
+
+        public ClusterGroupAPI ClusterGroupApi
+        {
+            get { return new ClusterGroupAPI("ClusterGroup"); }
+        }
+
+        public ClusterGroupServerAPI ClusterGroupServerApi
+        {
+            get {  return new ClusterGroupServerAPI("ClusterGroupServers");}
+        }
+        
 
 
         public IGenericAPI<BootEntryEntity> BootEntryApi
@@ -255,5 +278,6 @@ namespace CloneDeploy_ApiCalls
             get { return new GenericAPI<SecondaryServerEntity>("SecondaryServer"); }
         }
 
+      
     }
 }

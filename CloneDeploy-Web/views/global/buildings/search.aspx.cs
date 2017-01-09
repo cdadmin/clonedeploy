@@ -106,7 +106,7 @@ public partial class views_global_buildings_search : Global
         if (e.Row.RowType == DataControlRowType.Footer)
         {
             ddlDps = e.Row.FindControl("ddlDpAdd") as DropDownList;
-            PopulateDistributionPointsDdl(ddlDps);
+            PopulateClusterGroupsDdl(ddlDps);
 
         }
 
@@ -115,7 +115,7 @@ public partial class views_global_buildings_search : Global
             ddlDps = e.Row.FindControl("ddlDp") as DropDownList;
             if (ddlDps != null)
             {
-                PopulateDistributionPointsDdl(ddlDps);
+                PopulateClusterGroupsDdl(ddlDps);
                 ddlDps.SelectedValue = ((BuildingEntity)(e.Row.DataItem)).DistributionPointId.ToString();
             }
         } 

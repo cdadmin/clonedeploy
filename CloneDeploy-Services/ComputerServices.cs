@@ -96,37 +96,37 @@ namespace CloneDeploy_Services
             return result;
         }
 
-        public DistributionPointEntity GetDistributionPoint(int computerId)
+        public ClusterGroupEntity GetClusterGroup(int computerId)
         {
-            DistributionPointEntity dp = null;
-            var dpServices = new DistributionPointServices();
+            ClusterGroupEntity cg = null;
+            var cgServices = new ClusterGroupServices();
             var computer = GetComputer(computerId);
             if (computer.RoomId != -1)
             {
                 var room = new RoomServices().GetRoom(computer.RoomId);
                 if(room != null)
-                dp =
-                    dpServices.GetDistributionPoint(room.DistributionPointId);
+                cg =
+                    cgServices.GetClusterGroup(room.DistributionPointId);
             }
             else if (computer.BuildingId != -1)
             {
                 var building = new BuildingServices().GetBuilding(computer.BuildingId);
                 if (building != null)
-                dp =
-                    dpServices.GetDistributionPoint(building.DistributionPointId);
+                cg =
+                    cgServices.GetClusterGroup(building.DistributionPointId);
             }
             else if (computer.SiteId != -1)
             {
                 var site = new SiteServices().GetSite(computer.SiteId);
                 if (site != null)
-                dp =
-                    dpServices.GetDistributionPoint(site.DistributionPointId);
+                cg =
+                    cgServices.GetClusterGroup(site.DistributionPointId);
             }
-            
-            if(dp == null)
-                dp = dpServices.GetPrimaryDistributionPoint();
 
-            return dp;
+            if (cg == null)
+                cg = cgServices.GetDefaultClusterGroup();
+
+            return cg;
         }
 
         public ComputerEntity GetComputer(int computerId)

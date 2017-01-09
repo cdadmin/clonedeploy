@@ -50,7 +50,10 @@ namespace CloneDeploy_Entities
         public int MulticastId { get; set; }
 
         [Column("user_id", Order = 13)]
-        public int UserId { get; set; } 
+        public int UserId { get; set; }
+
+        [Column("image_server", Order = 14)]
+        public string ImageServer { get; set; } 
 
         [NotMapped]
         public string Direction { get; set; }

@@ -21,6 +21,8 @@
         $('#imageshare').addClass("nav-current");
     });
 </script>
+    
+    <div id="divShareEnabled" runat="server" Visible="False">
       <div class="size-4 column">
     Share Type:
 </div>
@@ -107,4 +109,8 @@
     </div>
 
     <br class="clear"/>
+        </div>
+     <div id="divShareDisabled" runat="server" Visible="False">
+     This Server Does Not Have The Image Role Enabled.    
+     </div>
 </asp:Content>

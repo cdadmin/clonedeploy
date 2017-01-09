@@ -14,16 +14,10 @@
 <asp:Content ID="Content4" ContentPlaceHolderID="SubContent2" runat="server">
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#roles').addClass("nav-current");
+            $('#new-secondary').addClass("nav-current");
         });
     </script>
-     <div class="size-4 column">
-    Server Id:
-</div>
-    <div class="size-5 column">
-        <asp:TextBox runat="server" Id="txtServerId" CssClass="textbox"></asp:TextBox>
-    </div>
-    <br class="clear"/>
+   
     <div class="size-4 column">
     API Url:
 </div>

@@ -15,7 +15,7 @@
 <asp:Content ID="Content4" ContentPlaceHolderID="SubContent2" runat="server">
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#search').addClass("nav-current");
+            $('#secondary').addClass("nav-current");
             $("[id*=gvServers] td").hover(function () {
                 $("td", $(this).closest("tr")).addClass("hover_row");
             }, function () {
@@ -44,7 +44,9 @@
              <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/admin/cluster/editsecondary.aspx?level=2&ssid={0}" Text="View" ItemStyle-CssClass="chkboxwidth"/>
             <asp:BoundField DataField="Id" HeaderText="Id" SortExpression="Id" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="DisplayName" ItemStyle-CssClass="width_200"></asp:BoundField>
-            <asp:BoundField DataField="ApiURL" HeaderText="API" SortExpression="Server" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
+            <asp:BoundField DataField="ImageRole" HeaderText="Image Role" SortExpression="Server" ItemStyle-CssClass="width_200"/>
+            <asp:BoundField DataField="TftpRole" HeaderText="Tftp Role" SortExpression="Server" ItemStyle-CssClass="width_200"/>
+            <asp:BoundField DataField="MulticastRole" HeaderText="Multicast Role" SortExpression="Server" />
            
          
            

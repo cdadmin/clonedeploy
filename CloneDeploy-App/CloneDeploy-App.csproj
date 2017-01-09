@@ -100,7 +100,9 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\CdVersionController.cs" />
     <Compile Include="Controllers\AuthorizationController.cs" />
+    <Compile Include="Controllers\ClusterGroupController.cs" />
     <Compile Include="Controllers\SecondaryServerController.cs" />
+    <Compile Include="Controllers\ClusterGroupServersController.cs" />
     <Compile Include="Controllers\WorkflowController.cs" />
     <Compile Include="Controllers\UserGroupController.cs" />
     <Compile Include="Controllers\UserGroupGroupManagementController.cs" />
@@ -131,7 +133,6 @@
     <Compile Include="Controllers\GroupMunkiController.cs" />
     <Compile Include="Controllers\GroupBootMenuController.cs" />
     <Compile Include="Controllers\FileFolderController.cs" />
-    <Compile Include="Controllers\DistributionPointController.cs" />
     <Compile Include="Controllers\BuildingController.cs" />
     <Compile Include="Controllers\BootTemplateController.cs" />
     <Compile Include="Controllers\ComputerBootMenuController.cs" />

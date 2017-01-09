@@ -60,9 +60,10 @@ namespace CloneDeploy_Services.Workflows
                 return "Could Not Determine Current Port Base";
             }
 
-            var dp = new DistributionPointServices().GetPrimaryDistributionPoint();
+            //Fix Me
+            /*var dp = new DistributionPointServices().GetPrimaryDistributionPoint();
             if (dp == null) return "Could Not Find A Primary Distribution Point";
-
+            */
             _multicastSession.UserId = _userId;
             //End of the road for starting an on demand multicast
             if (_isOnDemand)

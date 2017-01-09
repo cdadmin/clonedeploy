@@ -22,6 +22,15 @@ namespace CloneDeploy_Web.views.admin {
         protected global::System.Web.UI.WebControls.LinkButton btnUpdateSettings;
         
         /// <summary>
+        /// divShareEnabled control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divShareEnabled;
+        
+        /// <summary>
         /// ddlType control.
         /// </summary>
         /// <remarks>
@@ -110,5 +119,14 @@ namespace CloneDeploy_Web.views.admin {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtQueueSize;
+        
+        /// <summary>
+        /// divShareDisabled control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divShareDisabled;
     }
 }

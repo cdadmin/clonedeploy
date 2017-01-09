@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Security.Policy;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
@@ -44,6 +45,18 @@ namespace CloneDeploy_App.Controllers
 
             mail.Send();
             return new ApiBoolResponseDTO() {Value = true};
+        }
+
+        [CustomAuth(Permission = "ServiceAccount")]
+        public ServerRoleDTO GetServerRoles()
+        {
+            return _settingServices.GetServerRoles();
+        }
+
+        [CustomAuth(Permission = "ServiceAccount")]
+        public ImageShareDTO GetImageShareSettings()
+        {
+            return _settingServices.GetImageShare();
         }
     }
 }

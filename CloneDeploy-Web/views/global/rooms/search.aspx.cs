@@ -106,7 +106,7 @@ public partial class views_global_rooms_search : Global
         if (e.Row.RowType == DataControlRowType.Footer)
         {
             ddlDps = e.Row.FindControl("ddlDpAdd") as DropDownList;
-            PopulateDistributionPointsDdl(ddlDps);
+            PopulateClusterGroupsDdl(ddlDps);
 
         }
 
@@ -115,8 +115,8 @@ public partial class views_global_rooms_search : Global
             ddlDps = e.Row.FindControl("ddlDp") as DropDownList;
             if (ddlDps != null)
             {
-                PopulateDistributionPointsDdl(ddlDps);
-                ddlDps.SelectedValue = ((RoomEntity)(e.Row.DataItem)).DistributionPoint.ToString();
+                PopulateClusterGroupsDdl(ddlDps);
+                ddlDps.SelectedValue = ((RoomEntity)(e.Row.DataItem)).ClusterGroup.ToString();
             }
         } 
     }

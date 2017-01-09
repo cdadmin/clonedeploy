@@ -32,6 +32,8 @@ namespace CloneDeploy_App
                 context.Validated(oAuthIdentity);
                 var user = new UserServices().GetUser(context.UserName);
                 oAuthIdentity.AddClaim(new Claim("user_id", user.Id.ToString()));
+                //set different time spans here
+                //context.Options.AccessTokenExpireTimeSpan = TimeSpan.FromDays(60);
                 context.Validated(oAuthIdentity);
             }
             else

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using CloneDeploy_ApiCalls;
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.ClientImaging;
 using CloneDeploy_Services.Helpers;
 using CloneDeploy_Services.Workflows;
@@ -152,8 +154,8 @@ namespace CloneDeploy_Services
         public string CheckIn(string computerMac)
         {
             var checkIn = new CheckIn();
-
-            var computer = new ComputerServices().GetComputerFromMac(computerMac);
+            var computerServices = new ComputerServices();
+            var computer = computerServices.GetComputerFromMac(computerMac);
             if (computer == null)
             {
                 checkIn.Result = "false";
@@ -161,7 +163,7 @@ namespace CloneDeploy_Services
                 return JsonConvert.SerializeObject(checkIn);
             }
 
-            var computerTask = new ComputerServices().GetTaskForComputer(computer.Id);
+            var computerTask = computerServices.GetTaskForComputer(computer.Id);
             if (computerTask == null)
             {
                 checkIn.Result = "false";
@@ -169,11 +171,15 @@ namespace CloneDeploy_Services
                 return JsonConvert.SerializeObject(checkIn);
             }
 
+            var imageServerIdentifier = new Workflows.GetImageServer(computer).Run();
+
             computerTask.Status = "1";
+            computerTask.ImageServer = imageServerIdentifier;
+
             if (new ActiveImagingTaskServices().UpdateActiveImagingTask(computerTask))
             {
                 checkIn.Result = "true";
-                checkIn.TaskArguments = computerTask.Arguments;
+               
                 var image = new ImageServices().GetImage(computer.ImageId);
                 if (image != null)
                 {
@@ -182,6 +188,10 @@ namespace CloneDeploy_Services
                     checkIn.ImageEnvironment = image.Environment;
                 }
                 
+                if(image.Environment == "winpe")
+                    checkIn.TaskArguments = computerTask.Arguments + " image_server_identifier=\"" + imageServerIdentifier + "\"\r\n";
+                else
+                    checkIn.TaskArguments = computerTask.Arguments + " image_server_identifier=\"" + imageServerIdentifier + "\"";
                 checkIn.TaskType = computerTask.Type;
                 return JsonConvert.SerializeObject(checkIn);
             }
@@ -202,26 +212,35 @@ namespace CloneDeploy_Services
             return Helpers.Utility.Encode(authString);
         }
 
-        public string DistributionPoint(int dpId, string task)
+        public string DistributionPoint(string serverIdentifier, string task)
         {
+      
             var smb = new SMB();
-            var dp = new DistributionPointServices().GetDistributionPoint(dpId);
-            smb.SharePath = "//" + Utility.Between(dp.Server) + "/" + dp.ShareName;
-            smb.Domain = dp.Domain;
-            if (task == "pull")
+          
+            ImageShareDTO imageShare;
+            if (Settings.OperationMode == "Single" || serverIdentifier == Settings.ServerIdentifier)
             {
-                smb.Username = dp.RwUsername;
-                smb.Password = new Helpers.Encryption().DecryptText(dp.RwPassword);
+                imageShare = new SettingServices().GetImageShare();
             }
             else
             {
-                smb.Username = dp.RoUsername;
-                smb.Password = new Helpers.Encryption().DecryptText(dp.RoPassword);
+                imageShare = new APICall(new SecondaryServerServices().GetApiToken(serverIdentifier)).SettingApi.GetImageShareSettings();              
+            }
+
+            smb.SharePath = "//" + Utility.Between(imageShare.Server) + "/" + imageShare.Name;
+            smb.Domain = imageShare.Domain;
+            if (task == "pull")
+            {
+                smb.Username = imageShare.ReadWriteUser;
+                smb.Password = imageShare.ReadOnlyPassword;
+            }
+            else
+            {
+                smb.Username = imageShare.ReadOnlyUser;
+                smb.Password = imageShare.ReadOnlyPassword;
             }
             
             return JsonConvert.SerializeObject(smb);
-
-
         }
 
         public void ChangeStatusInProgress(int computerId)
@@ -598,19 +617,27 @@ namespace CloneDeploy_Services
         {
             ImageProfileEntity imageProfile;
             var computer = new ComputerServices().GetComputerFromMac(mac);
+            var arguments = "";
             if (task == "push" || task == "pull")
             {
                 imageProfile = new ImageProfileServices().ReadProfile(objectId);
-                return new CreateTaskArguments(computer, imageProfile, task).Run();
+                arguments = new CreateTaskArguments(computer, imageProfile, task).Run();
             }
             else //Multicast
             {
                 var multicast = new ActiveMulticastSessionServices().GetFromPort(objectId);
                 imageProfile = new ImageProfileServices().ReadProfile(multicast.ImageProfileId);
-                return new CreateTaskArguments(computer, imageProfile, task).Run(objectId.ToString());
+                arguments = new CreateTaskArguments(computer, imageProfile, task).Run(objectId.ToString());
             }
 
-            
+            var imageServerIdentifier = new Workflows.GetImageServer(computer).Run();
+            if (imageProfile.Image.Environment == "winpe")
+                arguments += " image_server_identifier=\"" + imageServerIdentifier + "\"\r\n";
+            else
+                arguments += " image_server_identifier=\"" + imageServerIdentifier + "\"";
+
+            return arguments;
+
         }
 
         public string ImageList(string environment,int userId = 0)

@@ -14,7 +14,7 @@ namespace CloneDeploy_Services.Workflows
         private readonly string _direction;
         private readonly ImageProfileEntity _imageProfile;
         private readonly ImageProfileServices _imageProfileServices;
-        private readonly DistributionPointServices _distributionPointServices;
+        private readonly ClusterGroupServices _clusterGroupServices;
 
         public CreateTaskArguments(ComputerEntity computer, ImageProfileEntity imageProfile, string direction)
         {
@@ -23,7 +23,7 @@ namespace CloneDeploy_Services.Workflows
             _direction = direction;
             _activeTaskArguments = new StringBuilder();
             _imageProfileServices = new ImageProfileServices();
-            _distributionPointServices = new DistributionPointServices();
+            _clusterGroupServices = new ClusterGroupServices();
         }
 
         private string SetPartitionMethod()
@@ -175,8 +175,14 @@ namespace CloneDeploy_Services.Workflows
 
             if (_direction == "pull")
             {
-                //Upload currently only support going to the primary distribution point
-                AppendString("dp_id=" + _distributionPointServices.GetPrimaryDistributionPoint().Id);
+                if (_computer != null)
+                {
+                    AppendString("dp_id=" + new ComputerServices().GetClusterGroup(_computer.Id).Id);
+                }
+                else
+                {
+                    AppendString("dp_id=" + _clusterGroupServices.GetDefaultClusterGroup().Id);
+                }
                 //Added for OSX NBI suppport
                 AppendString("image_direction=pull");
                 AppendString("osx_target_volume=" + "\"" + _imageProfile.OsxTargetVolume + "\"");
@@ -199,7 +205,7 @@ namespace CloneDeploy_Services.Workflows
                 //Support For on demand 
                 if (_computer != null)
                 {
-                    AppendString("dp_id=" + new ComputerServices().GetDistributionPoint(_computer.Id).Id);
+                    AppendString("dp_id=" + new ComputerServices().GetClusterGroup(_computer.Id).Id);
                     if(!string.IsNullOrEmpty(_computer.CustomAttribute1))
                         AppendString("cust_attr_1=" + "\"" + _computer.CustomAttribute1 + "\"");
                     if (!string.IsNullOrEmpty(_computer.CustomAttribute2))
@@ -212,7 +218,7 @@ namespace CloneDeploy_Services.Workflows
                         AppendString("cust_attr_5=" + "\"" + _computer.CustomAttribute5 + "\"");
                 }
                 else
-                    AppendString("dp_id=" + _distributionPointServices.GetPrimaryDistributionPoint().Id);
+                    AppendString("dp_id=" + _clusterGroupServices.GetDefaultClusterGroup().Id);
 
                 //Added for OSX NBI suppport
                 AppendString("image_direction=push");
