@@ -258,7 +258,7 @@ namespace CloneDeploy_Services
              var customApiCall = new CustomApiCallDTO();
                 customApiCall.BaseUrl = new Uri(secondaryServer.ApiURL);
                 var token = new APICall(customApiCall).TokenApi.Get(secondaryServer.ServiceAccountName,
-                    secondaryServer.ServiceAccountPassword);
+                    new Encryption().DecryptText(secondaryServer.ServiceAccountPassword));
 
             if (token != null)
             {

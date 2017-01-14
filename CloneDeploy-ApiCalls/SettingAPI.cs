@@ -22,7 +22,7 @@ namespace CloneDeploy_ApiCalls
             _request.Method = Method.GET;
             _request.Resource = string.Format("api/{0}/GetSetting/", _resource);
             _request.AddParameter("name", name);
-            return new ApiRequest().Execute<SettingEntity>(_request);
+            return _cApiDto != null ? new ApiRequest(_cApiDto.Token, _cApiDto.BaseUrl).Execute<SettingEntity>(_request) : new ApiRequest().Execute<SettingEntity>(_request);
         }
 
 

@@ -71,7 +71,6 @@
     <Content Include="content\fonts\OpenSans-Regular.ttf" />
     <Content Include="packages.config" />
     <Content Include="private\logs\.gitignore" />
-    <Content Include="private\logs\exceptions.log" />
     <Content Include="views\admin\admin.master" />
     <Content Include="views\admin\bootmenu\bootmenu.master" />
     <Content Include="views\admin\cluster\clustergroup.aspx" />

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using CloneDeploy_ApiCalls;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services.Helpers;
 using log4net;
@@ -190,7 +191,27 @@ namespace CloneDeploy_Services.Workflows
 
             var path = Settings.TftpPath + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
 
-            new FileOps().WritePath(path, grubMenu.ToString());
+            if (Settings.OperationMode == "Single")
+                new FileOps().WritePath(path, grubMenu.ToString());
+            else
+            {
+                if (Settings.TftpServerRole)
+                    new FileOps().WritePath(path, grubMenu.ToString());
+                var tftpServers = new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
+                foreach (var tftpServer in tftpServers)
+                {
+                    var tftpPath =
+                        new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
+                            .SettingApi.GetSetting("Tftp Path").Value;
+
+                    var tftpFile = new TftpFileDTO();
+                    tftpFile.Contents = grubMenu.ToString();
+                    tftpFile.Path = tftpPath + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
+
+                    new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
+                        .FilesystemApi.WriteTftpFile(tftpFile);
+                }
+            }
         }
 
         private void CreateIpxeMenu()
@@ -324,7 +345,36 @@ namespace CloneDeploy_Services.Workflows
                 path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + _defaultBoot.Type +
                        Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default.ipxe";
 
-            new FileOps().WritePath(path, ipxeMenu.ToString());
+
+            if (Settings.OperationMode == "Single")
+                new FileOps().WritePath(path, ipxeMenu.ToString());
+            else
+            {
+                if (Settings.TftpServerRole)
+                    new FileOps().WritePath(path, ipxeMenu.ToString());
+
+                var tftpServers = new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
+                foreach (var tftpServer in tftpServers)
+                {
+                    var tftpPath =
+                        new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
+                            .SettingApi.GetSetting("Tftp Path").Value;
+
+                    var tftpFile = new TftpFileDTO();
+                    tftpFile.Contents = ipxeMenu.ToString();
+                    if (_defaultBoot.Type == "standard")
+                        tftpFile.Path = tftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default.ipxe";
+                    else
+                        tftpFile.Path = tftpPath + "proxy" + Path.DirectorySeparatorChar + _defaultBoot.Type +
+                               Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default.ipxe";
+
+                    new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
+                        .FilesystemApi.WriteTftpFile(tftpFile);
+                }
+            }
+
+
+            
         }
 
         private void CreateSyslinuxMenu()
@@ -431,7 +481,36 @@ namespace CloneDeploy_Services.Workflows
                 path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + _defaultBoot.Type +
                        Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
 
-            new FileOps().WritePath(path, sysLinuxMenu.ToString());
+
+            if (Settings.OperationMode == "Single")
+                new FileOps().WritePath(path, sysLinuxMenu.ToString());
+            else
+            {
+                if (Settings.TftpServerRole)
+                    new FileOps().WritePath(path, sysLinuxMenu.ToString());
+
+                var tftpServers = new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
+                foreach (var tftpServer in tftpServers)
+                {
+                    var tftpPath =
+                        new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
+                            .SettingApi.GetSetting("Tftp Path").Value;
+
+                    var tftpFile = new TftpFileDTO();
+                    tftpFile.Contents = sysLinuxMenu.ToString();
+                    if (_defaultBoot.Type == "standard")
+                        tftpFile.Path = tftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
+                    else
+                        tftpFile.Path = tftpPath + "proxy" + Path.DirectorySeparatorChar + _defaultBoot.Type +
+                               Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
+
+                    new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
+                        .FilesystemApi.WriteTftpFile(tftpFile);
+                }
+            }
+
+
+           
         }
     }
 }

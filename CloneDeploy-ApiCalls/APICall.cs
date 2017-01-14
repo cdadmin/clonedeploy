@@ -53,7 +53,7 @@ namespace CloneDeploy_ApiCalls
 
         public FilesystemAPI FilesystemApi
         {
-            get { return new FilesystemAPI("FileSystem"); }
+            get { return _cApiDto != null ? new FilesystemAPI("FileSystem",_cApiDto) : new FilesystemAPI("FileSystem"); }
         }
 
         public GroupAPI GroupApi

@@ -48,7 +48,17 @@ namespace CloneDeploy_DataModel
 
         public virtual TEntity GetById(object id)
         {
-            return _dbSet.Find(id);
+            try
+            {
+                return _dbSet.Find(id);
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+            
+           
         }
 
         public virtual TEntity GetFirstOrDefault(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null)

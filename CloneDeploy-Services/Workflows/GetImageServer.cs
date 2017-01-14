@@ -53,6 +53,7 @@ namespace CloneDeploy_Services.Workflows
                 }
 
                 var queueSizesDict = new Dictionary<string, int>();
+                var toRemove = new List<string>();
                 foreach (var imageShareServer in availableImageShareServers)
                 {
                     string queueSize;
@@ -60,9 +61,14 @@ namespace CloneDeploy_Services.Workflows
                         queueSize = Settings.QueueSize;
                     else
                         queueSize = new APICall(new SecondaryServerServices().GetApiToken(imageShareServer)).SettingApi.GetImageShareSettings().QueueSize;
+                    if (string.IsNullOrEmpty(queueSize))
+                    {
+                        toRemove.Add(imageShareServer);
+                        continue;
+                    }
                     queueSizesDict.Add(imageShareServer, Convert.ToInt32(queueSize));
                 }
-
+                availableImageShareServers = availableImageShareServers.Except(toRemove).ToList();
                 var taskInUseDict = new Dictionary<string, int>();
                 foreach (var imageshareServer in availableImageShareServers)
                 {
@@ -89,13 +95,34 @@ namespace CloneDeploy_Services.Workflows
                     imageServerIdentifier = freeImageServers.First();
                 else if (freeImageServers.Count > 1)
                 {
-                    var random = new Random();
-                    var index = random.Next(0, freeImageServers.Count);
-                    imageServerIdentifier = freeImageServers[index];
+                    var freeDictionary = new Dictionary<string,int>();
+                    foreach (var freeImageServer in freeImageServers)
+                    {
+                        freeDictionary.Add(freeImageServer,taskInUseDict[freeImageServer]);
+                    }
+
+                    var duplicateFreeDict = freeDictionary.GroupBy(x => x.Value).Where(x => x.Count() > 1);
+
+                    if (duplicateFreeDict.Count() == freeDictionary.Count)
+                    {
+                        //all image servers have equal free slots - randomly choose one.
+                        var random = new Random();
+                        var index = random.Next(0, freeImageServers.Count);
+                        imageServerIdentifier = freeImageServers[index];
+                    }
+                    else
+                    {
+                        //Just grab the first one with the smallest queue, could be a duplicate but will eventually even out on it's own
+                        var orderedInUse = freeDictionary.OrderBy(x => x.Value);
+                        imageServerIdentifier = orderedInUse.First().Key;
+                    }
+
+
+                   
                 }
                 else
                 {
-                    //Free image servers count is 0, pick the one with the lowest count
+                    //Free image servers count is 0, pick the one with the lowest number of tasks
                     var orderedInUse = taskInUseDict.OrderBy(x => x.Value);
                     imageServerIdentifier = orderedInUse.First().Key;
 

@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
+using CloneDeploy_ApiCalls;
 using CloneDeploy_Services.Helpers;
 using log4net;
 
@@ -13,6 +15,17 @@ namespace CloneDeploy_Services.Workflows
         private static readonly ILog log = LogManager.GetLogger("ApplicationLog");
         public static bool Run()
         {
+            if (Settings.OperationMode == "Cluster Primary")
+            {
+                var secondaryServers =
+                    new SecondaryServerServices().SearchSecondaryServers().Where(x => x.MulticastRole == 1 || x.TftpRole == 1);
+                foreach (var server in secondaryServers)
+                {
+                    new APICall(new SecondaryServerServices().GetApiToken(server.Name))
+                        .WorkflowApi.CancelAllImagingTasks();
+                }
+            }
+
             var tftpPath = Settings.TftpPath;
             var pxePaths = new List<string>
             {
@@ -42,9 +55,12 @@ namespace CloneDeploy_Services.Workflows
                 }
             }
 
-            new ActiveImagingTaskServices().DeleteAll();
-            new ActiveMulticastSessionServices().DeleteAll();
-          
+            if (Settings.OperationMode != "Cluster Secondary")
+            {
+                new ActiveImagingTaskServices().DeleteAll();
+                new ActiveMulticastSessionServices().DeleteAll();
+            }
+
             if (Environment.OSVersion.ToString().Contains("Unix"))
             {
                 for (var x = 1; x <= 10; x++)
@@ -87,10 +103,13 @@ namespace CloneDeploy_Services.Workflows
                 }
             }
 
-            //Recreate any custom boot menu's that were just deleted
-            foreach (var computer in new ComputerServices().ComputersWithCustomBootMenu())
+            if (Settings.OperationMode != "Cluster Secondary")
             {
-                new ComputerServices().CreateBootFiles(computer.Id);
+                //Recreate any custom boot menu's that were just deleted
+                foreach (var computer in new ComputerServices().ComputersWithCustomBootMenu())
+                {
+                    new ComputerServices().CreateBootFiles(computer.Id);
+                }
             }
             return true;
         }        

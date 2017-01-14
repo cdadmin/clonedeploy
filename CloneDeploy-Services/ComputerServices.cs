@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CloneDeploy_ApiCalls;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
@@ -385,21 +386,48 @@ namespace CloneDeploy_Services
                 {
                     Tuple.Create("bios", "", bootMenu.BiosMenu),
                     Tuple.Create("bios", ".ipxe", bootMenu.BiosMenu),
-                    Tuple.Create("efi32", "",bootMenu.Efi32Menu),
+                    Tuple.Create("efi32", "", bootMenu.Efi32Menu),
                     Tuple.Create("efi32", ".ipxe", bootMenu.Efi32Menu),
-                    Tuple.Create("efi64", "" , bootMenu.Efi64Menu),
+                    Tuple.Create("efi64", "", bootMenu.Efi64Menu),
                     Tuple.Create("efi64", ".ipxe", bootMenu.Efi64Menu),
                     Tuple.Create("efi64", ".cfg", bootMenu.Efi64Menu)
                 };
-                foreach (var tuple in list)
+
+                if (Settings.OperationMode == "Single")
                 {
-                    path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
-                           Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeMac +
-                           tuple.Item2;
+                    foreach (var tuple in list)
+                    {
+                        path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
+                               Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeMac +
+                               tuple.Item2;
 
-                    if (!string.IsNullOrEmpty(tuple.Item3))
-                        new FileOps().WritePath(path, tuple.Item3);
+                        if (!string.IsNullOrEmpty(tuple.Item3))
+                            new FileOps().WritePath(path, tuple.Item3);
+                    }
+                }
+                else
+                {
+                    var secondaryServers =
+                        new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
+                    foreach (var server in secondaryServers)
+                    {
+                        var tftpPath =
+                            new APICall(new SecondaryServerServices().GetApiToken(server.Name))
+                                .SettingApi.GetSetting("Tftp Path").Value;
+                        foreach (var tuple in list)
+                        {
+                            path = tftpPath + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
+                                   Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeMac +
+                                   tuple.Item2;
 
+                            new APICall(new SecondaryServerServices().GetApiToken(server.Name))
+                                .FilesystemApi.WriteTftpFile(new TftpFileDTO()
+                                {
+                                    Path = path,
+                                    Contents = tuple.Item3
+                                });
+                        }
+                    }
 
                 }
             }
@@ -409,13 +437,36 @@ namespace CloneDeploy_Services
                 path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
                        pxeMac;
 
-                if (mode.Contains("ipxe"))
-                    path += ".ipxe";
-                else if (mode.Contains("grub"))
-                    path += ".cfg";
+                if (Settings.OperationMode == "Single")
+                {
+                    if (mode.Contains("ipxe"))
+                        path += ".ipxe";
+                    else if (mode.Contains("grub"))
+                        path += ".cfg";
 
-                if (!string.IsNullOrEmpty(bootMenu.BiosMenu))
-                    new FileOps().WritePath(path, bootMenu.BiosMenu);
+                    if (!string.IsNullOrEmpty(bootMenu.BiosMenu))
+                        new FileOps().WritePath(path, bootMenu.BiosMenu);
+                }
+                else
+                {
+                    var secondaryServers =
+                       new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
+                    foreach (var server in secondaryServers)
+                    {
+                        var tftpPath =
+                            new APICall(new SecondaryServerServices().GetApiToken(server.Name))
+                                .SettingApi.GetSetting("Tftp Path").Value;
+                        
+
+                            new APICall(new SecondaryServerServices().GetApiToken(server.Name))
+                                .FilesystemApi.WriteTftpFile(new TftpFileDTO()
+                                {
+                                    Path = path,
+                                    Contents = tuple.Item3
+                                });
+                        
+                    }
+                }
 
             }
             return true;

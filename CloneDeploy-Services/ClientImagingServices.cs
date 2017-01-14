@@ -324,12 +324,25 @@ namespace CloneDeploy_Services
             if (thisComputerTask.Status == "2")
             {
                 //Check if the queue is open yet
-                var inUse = activeImagingTaskServices.GetCurrentQueue(thisComputerTask.Type);
-                var totalCapacity = Convert.ToInt32(Settings.QueueSize);
+                var inUse = activeImagingTaskServices.GetCurrentQueue(thisComputerTask);
+                var totalCapacity = 0;
+                if(thisComputerTask.ImageServer == Settings.ServerIdentifier)
+                    totalCapacity = Convert.ToInt32(Settings.QueueSize);
+                else
+                {
+                    var queue = new APICall(new SecondaryServerServices().GetApiToken(thisComputerTask.ImageServer)).SettingApi.GetImageShareSettings().QueueSize;
+                    if (!string.IsNullOrEmpty(queue))
+                        totalCapacity = Convert.ToInt32(queue);
+                    else
+                    {
+                        log.Debug("Could Not Get Queue Size For Secondary Server " + thisComputerTask.ImageServer);
+                        return "";
+                    }
+                }
                 if (inUse < totalCapacity)
                 {
                     //queue is open, is this computer next
-                    var firstTaskInQueue = activeImagingTaskServices.GetNextComputerInQueue(thisComputerTask.Type);
+                    var firstTaskInQueue = activeImagingTaskServices.GetNextComputerInQueue(thisComputerTask);
                     if (firstTaskInQueue.ComputerId == computerId)
                     {
                         ChangeStatusInProgress(computerId);
@@ -357,8 +370,21 @@ namespace CloneDeploy_Services
             {
                 //New computer checking queue for the first time
 
-                var inUse = activeImagingTaskServices.GetCurrentQueue(thisComputerTask.Type);
-                var totalCapacity = Convert.ToInt32(Settings.QueueSize);
+                var inUse = activeImagingTaskServices.GetCurrentQueue(thisComputerTask);
+                var totalCapacity = 0;
+                if (thisComputerTask.ImageServer == Settings.ServerIdentifier)
+                    totalCapacity = Convert.ToInt32(Settings.QueueSize);
+                else
+                {
+                    var queue = new APICall(new SecondaryServerServices().GetApiToken(thisComputerTask.ImageServer)).SettingApi.GetImageShareSettings().QueueSize;
+                    if (!string.IsNullOrEmpty(queue))
+                        totalCapacity = Convert.ToInt32(queue);
+                    else
+                    {
+                        log.Debug("Could Not Get Queue Size For Secondary Server " + thisComputerTask.ImageServer);
+                        return "";
+                    }
+                }
                 if (inUse < totalCapacity)
                 {
                     ChangeStatusInProgress(computerId);
@@ -371,7 +397,7 @@ namespace CloneDeploy_Services
                 else
                 {
                     //place into queue
-                    var lastQueuedTask = activeImagingTaskServices.GetLastQueuedTask(thisComputerTask.Type);
+                    var lastQueuedTask = activeImagingTaskServices.GetLastQueuedTask(thisComputerTask);
                     if (lastQueuedTask == null)
                         thisComputerTask.QueuePosition = 1;
                     else

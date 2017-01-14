@@ -48,6 +48,7 @@
     <Compile Include="DTOs\ImageShareDTO.cs" />
     <Compile Include="DTOs\ServerRoleDTO.cs" />
     <Compile Include="ClusterGroup.cs" />
+    <Compile Include="DTOs\TftpFileDTO.cs" />
     <Compile Include="SecondaryServer.cs" />
     <Compile Include="DTOs\ApiObjectResponseDTO.cs" />
     <Compile Include="DTOs\ApiIntResponseDTO.cs" />

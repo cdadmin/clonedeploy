@@ -220,31 +220,31 @@ namespace CloneDeploy_Services
             
         }
 
-        public  int GetCurrentQueue(string qType)
+        public  int GetCurrentQueue(ActiveImagingTaskEntity activeTask)
         {
             
                 return
-                    Convert.ToInt32(_uow.ActiveImagingTaskRepository.Count(x => x.Status == "3" && x.Type == qType));
+                    Convert.ToInt32(_uow.ActiveImagingTaskRepository.Count(x => x.Status == "3" && x.Type == activeTask.Type && x.ImageServer == activeTask.ImageServer));
 
             
         }
 
-        public  ActiveImagingTaskEntity GetLastQueuedTask(string qType)
+        public  ActiveImagingTaskEntity GetLastQueuedTask(ActiveImagingTaskEntity activeTask)
         {
            
                 return
-                    _uow.ActiveImagingTaskRepository.Get(x => x.Status == "2" && x.Type == qType,
+                    _uow.ActiveImagingTaskRepository.Get(x => x.Status == "2" && x.Type == activeTask.Type && x.ImageServer == activeTask.ImageServer,
                         orderBy: q => q.OrderByDescending(t => t.QueuePosition)).FirstOrDefault();
             
         }
 
        
 
-        public  ActiveImagingTaskEntity GetNextComputerInQueue(string qType)
+        public  ActiveImagingTaskEntity GetNextComputerInQueue(ActiveImagingTaskEntity activeTask)
         {
             
                 return
-                    _uow.ActiveImagingTaskRepository.Get(x => x.Status == "2" && x.Type == qType,
+                    _uow.ActiveImagingTaskRepository.Get(x => x.Status == "2" && x.Type == activeTask.Type && x.ImageServer == activeTask.ImageServer,
                         orderBy: q => q.OrderBy(t => t.QueuePosition)).FirstOrDefault();
             
         }

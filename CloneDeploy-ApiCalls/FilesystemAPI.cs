@@ -11,12 +11,20 @@ namespace CloneDeploy_ApiCalls
     {
         private readonly RestRequest _request;     
         private readonly string _resource;
+        private readonly CustomApiCallDTO _cApiDto;
 
         public FilesystemAPI(string resource)
         {
             _request = new RestRequest();
             _resource = resource;
         }
+
+         public FilesystemAPI(string resource,CustomApiCallDTO cApiDto)
+         {
+             _request = new RestRequest();
+             _resource = resource;
+             _cApiDto = cApiDto;
+         }
 
         public bool BootSdiExists()
         {
@@ -181,6 +189,14 @@ namespace CloneDeploy_ApiCalls
             var response = new ApiRequest().Execute<List<string>>(_request);
 
             return response;
+        }
+
+        public bool WriteTftpFile(TftpFileDTO tftpFile)
+        {
+            _request.Method = Method.POST;
+            _request.Resource = string.Format("api/{0}/WriteTftpFile/", _resource);
+            _request.AddJsonBody(tftpFile);
+            return _cApiDto != null ? new ApiRequest(_cApiDto.Token, _cApiDto.BaseUrl).Execute<ApiBoolResponseDTO>(_request).Value : new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
         }
     }
 }

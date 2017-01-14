@@ -145,6 +145,13 @@ namespace CloneDeploy_App.Controllers
          {
              return new FilesystemServices().GetLogContents(name,limit);
          }
+
+        [CustomAuth(Permission = "ServiceAccount")]
+        [HttpPost]
+        public ApiBoolResponseDTO WriteTftpFile(TftpFileDTO tftpFile)
+        {
+            return new ApiBoolResponseDTO() {Value = new FileOps().WritePath(tftpFile.Path, tftpFile.Contents)};
+        }
         
     }
 }

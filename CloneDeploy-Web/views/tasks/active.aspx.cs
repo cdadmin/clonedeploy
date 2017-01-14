@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using CloneDeploy_ApiCalls;
 using CloneDeploy_Web.BasePages;
+using CloneDeploy_Web.Helpers;
 
 namespace views.tasks
 {
@@ -34,6 +37,7 @@ namespace views.tasks
 
         protected void cancelTasks_Click(object sender, EventArgs e)
         {
+           
             Call.WorkflowApi.CancelAllImagingTasks();
             PopulateGrid();
         }

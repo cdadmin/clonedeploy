@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using CloneDeploy_ApiCalls;
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services.Helpers;
 
 namespace CloneDeploy_Services.Workflows
@@ -47,7 +50,8 @@ namespace CloneDeploy_Services.Workflows
             sysLinux.Append("KERNEL kernels" + Path.DirectorySeparatorChar + _imageProfile.Kernel + newLineChar);
             sysLinux.Append("APPEND initrd=images" + Path.DirectorySeparatorChar + _imageProfile.BootImage +
                             " root=/dev/ram0 rw ramdisk_size=156000 task=" + _direction +
-                            " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" + userToken + " " + globalComputerArgs +
+                            " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" + userToken + " " +
+                            globalComputerArgs +
                             " " + _imageProfile.KernelArguments + newLineChar);
 
 
@@ -80,40 +84,154 @@ namespace CloneDeploy_Services.Workflows
             //to use a specific boot file without affecting all others, using the proxydhcp reservations file.
             if (Settings.ProxyDhcp == "Yes")
             {
-                foreach (var bootMenu in list)
+                if (Settings.OperationMode == "Single")
                 {
-                    var path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + bootMenu.Item1 +
-                               Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeComputerMac +
-                               bootMenu.Item2;
+                    foreach (var bootMenu in list)
+                    {
+                        var path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + bootMenu.Item1 +
+                                   Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                                   pxeComputerMac +
+                                   bootMenu.Item2;
 
-                    if (!new FileOps().WritePath(path, bootMenu.Item3))
-                        return false;
+                        if (!new FileOps().WritePath(path, bootMenu.Item3))
+                            return false;
+                    }
+                }
+                else
+                {
+                    var clusterGroup = new ComputerServices().GetClusterGroup(_computer.Id);
+                    var tftpServers =
+                        new ClusterGroupServices().GetClusterServers(clusterGroup.Id).Where(x => x.TftpRole == 1);
+                    foreach (var tftpServer in tftpServers)
+                    {
+                        foreach (var bootMenu in list)
+                        {
+                            if (tftpServer.SecondaryServerId == -1)
+                            {
+                                var path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + bootMenu.Item1 +
+                                           Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                                           pxeComputerMac +
+                                           bootMenu.Item2;
+
+                                if (!new FileOps().WritePath(path, bootMenu.Item3))
+                                    return false;
+                            }
+                            else
+                            {
+                                var secondaryServer =
+                                    new SecondaryServerServices().GetSecondaryServer(tftpServer.SecondaryServerId);
+                                var tftpPath =
+                                    new APICall(new SecondaryServerServices().GetApiToken(secondaryServer.Name))
+                                        .SettingApi.GetSetting("Tftp Path").Value;
+
+                                var path = tftpPath + "proxy" + Path.DirectorySeparatorChar + bootMenu.Item1 +
+                                           Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                                           pxeComputerMac +
+                                           bootMenu.Item2;
+
+                                if (
+                                    !new APICall(new SecondaryServerServices().GetApiToken(secondaryServer.Name))
+                                        .FilesystemApi.WriteTftpFile(new TftpFileDTO()
+                                        {
+                                            Path = path,
+                                            Contents = bootMenu.Item3
+                                        }))
+                                    return false;
+                            }
+
+                        }
+
+                    }
                 }
             }
             //When not using proxy dhcp, only one boot file is created
             else
             {
                 var mode = Settings.PxeMode;
-                var path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeComputerMac;
-                string fileContents = null;
-                if (mode == "pxelinux" || mode == "syslinux_32_efi" || mode == "syslinux_64_efi")
+                var path = "";
+                if (Settings.OperationMode == "Single")
                 {
-                    fileContents = sysLinux.ToString();
-                }
+                    path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeComputerMac;
 
-                else if (mode.Contains("ipxe"))
-                {
-                    path += ".ipxe";
-                    fileContents = ipxe.ToString();
-                }
-                else if (mode.Contains("grub"))
-                {
-                    path += ".cfg";
-                    fileContents = grub.ToString();
-                }
+                    string fileContents = null;
+                    if (mode == "pxelinux" || mode == "syslinux_32_efi" || mode == "syslinux_64_efi")
+                    {
+                        fileContents = sysLinux.ToString();
+                    }
 
-                if (!new FileOps().WritePath(path, fileContents))
-                    return false;
+                    else if (mode.Contains("ipxe"))
+                    {
+                        path += ".ipxe";
+                        fileContents = ipxe.ToString();
+                    }
+                    else if (mode.Contains("grub"))
+                    {
+                        path += ".cfg";
+                        fileContents = grub.ToString();
+                    }
+
+                    if (!new FileOps().WritePath(path, fileContents))
+                        return false;
+                }
+                else
+                {
+                    var clusterGroup = new ComputerServices().GetClusterGroup(_computer.Id);
+                    var tftpServers =
+                        new ClusterGroupServices().GetClusterServers(clusterGroup.Id).Where(x => x.TftpRole == 1);
+                    var secondaryServer = new SecondaryServerEntity();
+                    foreach (var tftpServer in tftpServers)
+                    {
+                        if (tftpServer.SecondaryServerId == -1)
+                        {
+                            path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeComputerMac;
+                        }
+                        else
+                        {
+                            secondaryServer =
+                                new SecondaryServerServices().GetSecondaryServer(tftpServer.SecondaryServerId);
+                            var tftpPath =
+                                new APICall(new SecondaryServerServices().GetApiToken(secondaryServer.Name)).SettingApi
+                                    .GetSetting("Tftp Path").Value;
+
+                            path = tftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeComputerMac;
+                        }
+
+                        string fileContents = null;
+                        if (mode == "pxelinux" || mode == "syslinux_32_efi" || mode == "syslinux_64_efi")
+                        {
+                            fileContents = sysLinux.ToString();
+                        }
+
+                        else if (mode.Contains("ipxe"))
+                        {
+                            path += ".ipxe";
+                            fileContents = ipxe.ToString();
+                        }
+                        else if (mode.Contains("grub"))
+                        {
+                            path += ".cfg";
+                            fileContents = grub.ToString();
+                        }
+
+                        if (tftpServer.SecondaryServerId == -1)
+                        {
+                            if (!new FileOps().WritePath(path, fileContents))
+                                return false;
+                        }
+                        else
+                        {
+                            if (
+                                !new APICall(new SecondaryServerServices().GetApiToken(secondaryServer.Name))
+                                    .FilesystemApi.WriteTftpFile(new TftpFileDTO()
+                                    {
+                                        Path = path,
+                                        Contents = fileContents
+                                    }))
+                                return false;
+                        }
+
+                    }
+                }
             }
 
             return true;
