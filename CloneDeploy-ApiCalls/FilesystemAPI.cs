@@ -198,5 +198,13 @@ namespace CloneDeploy_ApiCalls
             _request.AddJsonBody(tftpFile);
             return _cApiDto != null ? new ApiRequest(_cApiDto.Token, _cApiDto.BaseUrl).Execute<ApiBoolResponseDTO>(_request).Value : new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
         }
+
+        public bool DeleteTftpFile(string path)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/DeleteTftpFile/", _resource);
+            _request.AddParameter("path", path);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+        }
     }
 }

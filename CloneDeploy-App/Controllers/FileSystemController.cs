@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
@@ -93,11 +94,7 @@ namespace CloneDeploy_App.Controllers
         [Authorize]
         public List<string> GetScripts(string type)
         {
-
-
             return Utility.GetScripts(type);
-
-
         }
 
         [HttpGet]
@@ -151,6 +148,13 @@ namespace CloneDeploy_App.Controllers
         public ApiBoolResponseDTO WriteTftpFile(TftpFileDTO tftpFile)
         {
             return new ApiBoolResponseDTO() {Value = new FileOps().WritePath(tftpFile.Path, tftpFile.Contents)};
+        }
+
+        [CustomAuth(Permission = "ServiceAccount")]
+        [HttpGet]
+        public ApiBoolResponseDTO DeleteTftpFile(string path)
+        {
+            return new ApiBoolResponseDTO() {Value = new FilesystemServices().DeleteTftpFile(path)};
         }
         
     }

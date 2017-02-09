@@ -1,5 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using CloneDeploy_ApiCalls;
+using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services.Helpers;
 using log4net;
 
@@ -40,7 +43,23 @@ namespace CloneDeploy_Services.Workflows
 
         public bool CopyFiles()
         {
-            return Settings.ProxyDhcp == "Yes" ? CopyFilesForProxy() : CopyFilesForNonProxy();
+            var copyResult = false;
+            if (Settings.OperationMode == "Single" || Settings.OperationMode == "Cluster Secondary" || (Settings.OperationMode == "Cluster Primary" && Settings.TftpServerRole))
+            {
+                copyResult = Settings.ProxyDhcp == "Yes" ? CopyFilesForProxy() : CopyFilesForNonProxy();
+            }
+            
+            if (Settings.OperationMode == "Cluster Primary")
+            {
+                var tftpServers = new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
+                foreach (var tftpServer in tftpServers)
+                {
+                    copyResult = new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
+                        .WorkflowApi.CopyPxeBinaries();
+                }
+            }
+            return copyResult;
+            
         }
 
         private bool CopyFilesForProxy()

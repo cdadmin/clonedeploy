@@ -258,8 +258,28 @@ namespace CloneDeploy_Services
                 default:
                     return null;
             }
+        }
 
-
+        public bool DeleteTftpFile(string path)
+        {
+            if (path.StartsWith(Settings.TftpPath))
+            {
+                try
+                {
+                    File.Delete(path);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    log.Debug(ex.Message);
+                    return false;
+                }
+            }
+            else
+            {
+                log.Debug("Could Not Delete Tftp File " + path + " It Is Not A Sub Directory Of The Base Tftp Path");
+                return false;
+            }
         }
     }
 

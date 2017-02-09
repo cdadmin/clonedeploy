@@ -407,6 +407,19 @@ namespace CloneDeploy_Services
                 }
                 else
                 {
+                    if (Settings.TftpServerRole)
+                    {
+                        foreach (var tuple in list)
+                        {
+                            path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
+                                   Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeMac +
+                                   tuple.Item2;
+
+                            if (!string.IsNullOrEmpty(tuple.Item3))
+                                new FileOps().WritePath(path, tuple.Item3);
+                        }
+                    }
+
                     var secondaryServers =
                         new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
                     foreach (var server in secondaryServers)
@@ -449,6 +462,18 @@ namespace CloneDeploy_Services
                 }
                 else
                 {
+                    if (Settings.TftpServerRole)
+                    {
+                        path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                       pxeMac;
+                        if (mode.Contains("ipxe"))
+                            path += ".ipxe";
+                        else if (mode.Contains("grub"))
+                            path += ".cfg";
+
+                        if (!string.IsNullOrEmpty(bootMenu.BiosMenu))
+                            new FileOps().WritePath(path, bootMenu.BiosMenu);
+                    }
                     var secondaryServers =
                        new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
                     foreach (var server in secondaryServers)
@@ -456,13 +481,19 @@ namespace CloneDeploy_Services
                         var tftpPath =
                             new APICall(new SecondaryServerServices().GetApiToken(server.Name))
                                 .SettingApi.GetSetting("Tftp Path").Value;
-                        
+                        path = tftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                       pxeMac;
+
+                        if (mode.Contains("ipxe"))
+                            path += ".ipxe";
+                        else if (mode.Contains("grub"))
+                            path += ".cfg";
 
                             new APICall(new SecondaryServerServices().GetApiToken(server.Name))
                                 .FilesystemApi.WriteTftpFile(new TftpFileDTO()
                                 {
                                     Path = path,
-                                    Contents = tuple.Item3
+                                    Contents = bootMenu.BiosMenu
                                 });
                         
                     }
