@@ -35,6 +35,8 @@ namespace BLL
             return result;
         }
 
+      
+
         public static string GetGroupMemberCount(int groupId)
         {
             using (var uow = new DAL.UnitOfWork())

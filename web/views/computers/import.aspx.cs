@@ -22,6 +22,7 @@ namespace views.computers
             new FileOps().SetUnixPermissions(csvFilePath);
             var successCount = BLL.Computer.ImportCsv(csvFilePath);
             EndUserMessage = "Successfully Imported " + successCount + " Computers";
+            BLL.Group.UpdateAllSmartGroupsMembers();
 
         }
 

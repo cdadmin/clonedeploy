@@ -14,6 +14,7 @@ namespace views.computers
 
         protected void buttonUpdateComputer_Click(object sender, EventArgs e)
         {
+            bool nameChange = txtComputerName.Text != Computer.Name;
             RequiresAuthorizationOrManagedComputer(Authorizations.UpdateComputer, Computer.Id);
             var computer = new Computer
             {
@@ -35,7 +36,24 @@ namespace views.computers
             };
 
             var result = BLL.Computer.UpdateComputer(computer);
-            EndUserMessage = !result.IsValid ? result.Message : "Successfully Updated Computer";
+           
+            if (result.IsValid)
+            {
+                if (nameChange)
+                {
+                    BLL.Group.UpdateAllSmartGroupsMembers();
+                    Computer = BLL.Computer.GetComputer(Computer.Id);
+                    PopulateForm();
+                }
+                EndUserMessage = "Successfully Updated Computer";
+                
+            }
+            else
+            {
+                EndUserMessage = result.Message;
+            }
+           
+
         }
 
         protected void PopulateForm()

@@ -120,9 +120,21 @@ namespace BLL
         public static bool UpdateSmartMembership(Models.Group group)
         {
             BLL.GroupMembership.DeleteAllMembershipsForGroup(group.Id);
-            var computers = BLL.Computer.SearchComputers(group.SmartCriteria,Int32.MaxValue);
+            var computers = BLL.Computer.SearchComputersByName(group.SmartCriteria,Int32.MaxValue);
             var memberships = computers.Select(computer => new Models.GroupMembership {GroupId = @group.Id, ComputerId = computer.Id}).ToList();
             return BLL.GroupMembership.AddMembership(memberships);
+        }
+
+        public static void AddComputerToSmartGroups(Models.Computer computer)
+        {
+            var groups = SearchGroups();
+            foreach (var group in groups.Where(x => x.Type == "smart"))
+            {
+                var computers = BLL.Computer.SearchComputersByName(group.SmartCriteria, Int32.MaxValue).Where(x => x.Name == computer.Name);  
+                var memberships = computers.Select(comp => new Models.GroupMembership { GroupId = @group.Id, ComputerId = comp.Id }).ToList();
+                BLL.GroupMembership.AddMembership(memberships);
+            }
+             
         }
 
         public static Models.ValidationResult UpdateGroup(Models.Group group)

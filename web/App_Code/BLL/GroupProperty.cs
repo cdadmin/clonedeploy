@@ -35,6 +35,7 @@ namespace BLL
 
         public static void UpdateComputerProperties(Models.GroupProperty groupProperty)
         {
+            if (groupProperty == null) return;
             foreach (var computer in BLL.Group.GetGroupMembers(groupProperty.GroupId))
             {
                 if (Convert.ToBoolean(groupProperty.ImageEnabled))

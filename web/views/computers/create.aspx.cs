@@ -9,8 +9,6 @@ namespace views.computers
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-           
-
             if (!IsPostBack) PopulateForm();
         }
 
@@ -44,6 +42,7 @@ namespace views.computers
                 EndUserMessage = result.Message;
             else
             {
+                BLL.Group.AddComputerToSmartGroups(computer);
                 EndUserMessage = "Successfully Created Computer";
                 if (!createAnother.Checked)
                     Response.Redirect("~/views/computers/edit.aspx?computerid=" + computer.Id);

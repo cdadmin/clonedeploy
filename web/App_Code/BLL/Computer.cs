@@ -24,7 +24,7 @@ namespace BLL
                     if (validationResult.IsValid)
                     {
                         validationResult.ObjectId = computer.Id;
-                        BLL.Group.UpdateAllSmartGroupsMembers();
+                        //BLL.Group.UpdateAllSmartGroupsMembers();
                     }
 
                 }
@@ -156,6 +156,30 @@ namespace BLL
             }
         }
 
+        public static List<Models.Computer> SearchComputersForUserByName(int userId, int limit, string searchString = "")
+        {
+            if (BLL.User.GetUser(userId).Membership == "Administrator")
+                return SearchComputersByName(searchString, limit);
+
+            var listOfComputers = new List<Models.Computer>();
+
+            var userManagedGroups = BLL.UserGroupManagement.Get(userId);
+            if (userManagedGroups.Count == 0)
+                return SearchComputersByName(searchString, limit);
+            else
+            {
+                foreach (var managedGroup in userManagedGroups)
+                {
+                    listOfComputers.AddRange(BLL.Group.GetGroupMembers(managedGroup.GroupId, searchString));
+                }
+
+                foreach (var computer in listOfComputers)
+                    computer.Image = BLL.Image.GetImage(computer.ImageId);
+
+                return listOfComputers;
+            }
+        }
+
         public static List<Models.Computer> GetAll()
         {
             using (var uow = new DAL.UnitOfWork())
@@ -172,6 +196,14 @@ namespace BLL
             }
         }
 
+        public static List<Models.Computer> SearchComputersByName(string searchString, int limit)
+        {
+            using (var uow = new DAL.UnitOfWork())
+            {
+                return uow.ComputerRepository.SearchByName(searchString, limit);
+            }
+        }
+
         public static Models.ValidationResult UpdateComputer(Models.Computer computer)
         {
             using (var uow = new DAL.UnitOfWork())
@@ -182,7 +214,6 @@ namespace BLL
                 {
                     uow.ComputerRepository.Update(computer, computer.Id);
                     validationResult.IsValid = uow.Save();
-                    if (validationResult.IsValid) BLL.Group.UpdateAllSmartGroupsMembers();
                 }
 
                 return validationResult;
