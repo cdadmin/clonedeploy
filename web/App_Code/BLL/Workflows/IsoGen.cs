@@ -123,6 +123,7 @@ namespace BLL.Workflows
             sysLinuxMenu.Append("MENU LABEL Client Console" + NewLineChar);
             sysLinuxMenu.Append("" + NewLineChar);
 
+            sysLinuxMenu.Append("LABEL Add Computer" + NewLineChar);
             sysLinuxMenu.Append("kernel /clonedeploy/" + _kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=/clonedeploy/" + _bootImage +
                                 " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" + _webPath + " USER_TOKEN=" +
