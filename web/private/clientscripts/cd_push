@@ -56,7 +56,7 @@ function process_hard_drives()
     if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
 	  log " ** Restoring GUID On $hard_drive ** "
 	  sgdisk $hard_drive -U$(parse_json "$hd_schema" .Guid) &>> $CLIENT_LOG
-	  
+	  log "$(parse_json "$hd_schema" .Guid)"
 	  #hard drive and partition guids must be restored prior to updating nvram
 	  update_efi_nvram
 	fi
@@ -174,7 +174,7 @@ function process_partitions()
 		
     if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
       log " ** Restoring GUID On ${hard_drive}$(parse_json "$current_partition" .Number) ** "
-      log " ...... part $part gptGUID: $gptGUID "
+      log " ...... part $part gptGUID: $(parse_json "$current_partition" .Guid) "
       sgdisk $hard_drive -u$(parse_json "$current_partition" .Number):$(parse_json "$current_partition" .Guid) &>> $CLIENT_LOG
     fi
 		
@@ -558,7 +558,7 @@ function update_efi_nvram()
 	return 1
   fi
   
-  boot_entries_to_delete=$(efibootmgr -v | grep "File(" | cut -d "*" -f1 | sed 's/Boot//g')
+  boot_entries_to_delete=$(efibootmgr -v | grep "File(\\\\" | cut -d " " -f1 | sed 's/Boot//g' | cut -d* -f1)
 
   local array_index=-1
   while [  "$(( $array_index + 1 ))" -lt "$(parse_json "$hd_schema" .PhysicalPartitionCount)" ]; do
@@ -571,14 +571,14 @@ function update_efi_nvram()
 	if [ -n "$existing_bootloader" ] && [ "$existing_bootloader" = "$(parse_json "$current_partition" .EfiBootLoader)" ]; then
 	  log "NVRAM Entry Already Exists"
 	  #This partition already has a matching entry in the nvram
-	  #Don't delete it.
+	  #Remove from entries to delete
 	  boot_entries_to_delete=$(echo $boot_entries_to_delete | sed "s/$boot_number//g")
 	elif [ -n "$existing_bootloader" ]; then
 	  log "Updating NVRAM Entry"
 	  #Partition has entry in nvram but bootloader doesn't match
 	  #Update it and don't delete
 	  efibootmgr -B -b $boot_number 2>>$CLIENT_LOG
-	  efibootmgr -c -d $hard_drive -p "$(parse_json "$current_partition" .Number)" -L "$(parse_json "$current_partition" .EfiBootLoader)" -l "$(parse_json "$current_partition" .EfiBootLoader)" 2>>$CLIENT_LOG
+	  efibootmgr -c -d $hard_drive -p "$(parse_json "$current_partition" .Number)" -L "$(echo "$(parse_json "$current_partition" .EfiBootLoader)" | cut -d# -f1)"  -l "$(echo "$(parse_json "$current_partition" .EfiBootLoader)" | cut -d# -f2)" 2>>$CLIENT_LOG
 	  boot_entries_to_delete=$(echo $boot_entries_to_delete | sed "s/$boot_number//g")
 	else
 	  #Partition Does not exist in the nvram
@@ -586,15 +586,16 @@ function update_efi_nvram()
 	  if [ -n "$(parse_json "$current_partition" .EfiBootLoader)" ] && [ "$(parse_json "$current_partition" .EfiBootLoader)" != "null" ]; then
 	     log "Creating New NVRAM Entry"
 	    #Entry needs added
-	    efibootmgr -c -d $hard_drive -p "$(parse_json "$current_partition" .Number)" -L "$(parse_json "$current_partition" .EfiBootLoader)" -l "$(parse_json "$current_partition" .EfiBootLoader)" 2>>$CLIENT_LOG
+	    efibootmgr -c -d $hard_drive -p "$(parse_json "$current_partition" .Number)" -L "$(echo "$(parse_json "$current_partition" .EfiBootLoader)" | cut -d# -f1)" -l "$(echo "$(parse_json "$current_partition" .EfiBootLoader)" | cut -d# -f2)" 2>>$CLIENT_LOG
 	  fi
 	fi
   done
   
   #Delete remaining boot entries
-   for efi_boot in $boot_entries_to_delete; do
-    efibootmgr -B -b $efi_boot 2>>$CLIENT_LOG
-  done	
+  #As of 2016-17 no longer delete nvram entries, only add as it could brick poorly implemented efi systems
+   #for efi_boot in $boot_entries_to_delete; do
+    #efibootmgr -B -b $efi_boot 2>>$CLIENT_LOG
+  #done	
   
   log "Updated NVRAM"
   efibootmgr -v &>> $CLIENT_LOG
@@ -753,7 +754,7 @@ function change_computer_name()
 	return 1
   fi
   
-  if [ -f "/mnt/ntfs/Windows/Panther/unattend.xml" ]; then
+  if [ -f "/mnt/ntfs/Windows/Panther/unattend.xml" ] || [ -f "/mnt/ntfs/Windows/panther/unattend.xml" ]; then
     log " ...... Found Answer File At /Windows/Panther/unattend.xml, Changing Computer Name" "display"
     perl -0777 -i -pe "s/(\<ComputerName\>).*(\<\/ComputerName\>)/\${1}$computer_name\${2}/si" /mnt/ntfs/Windows/Panther/unattend.xml 
   elif [ -f "/mnt/ntfs/Windows/System32/sysprep/Panther/unattend.xml" ]; then
