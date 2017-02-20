@@ -22,7 +22,7 @@ function ntfs_tasks()
 {
   mkdir -p /mnt/ntfs 2>> /dev/null
   log " ** Clearing Mounted Devices On $partition ** "
-  ntfs-3g -o force,rw,remove_hiberfile $partition /mnt/ntfs 2>> $CLIENT_LOG
+  ntfs-3g -o force,rw $partition /mnt/ntfs 2>> $CLIENT_LOG
   reged -e /mnt/ntfs/Windows/System32/config/SYSTEM &>>$CLIENT_LOG <<MOUNT
 cd \MountedDevices
 delallv
@@ -38,6 +38,13 @@ MOUNT
   fi
   log " ...... Complete"
     
+
+  if [ -f "/mnt/ntfs/Pagefile.sys" ] || [ -f "/mnt/ntfs/pagefile.sys" ]; then
+      log " ** Removing PageFile ** "
+	rm /mnt/ntfs/Pagefile.sys 2>> $CLIENT_LOG
+    rm /mnt/ntfs/pagefile.sys 2>> $CLIENT_LOG
+  fi
+  
   umount /mnt/ntfs &> /dev/null
 }
 
@@ -149,7 +156,7 @@ function get_partitions()
     fi
   else
     #added grep -v boot to exclude boot partitions on emmc drives.  Not sure if this may effect anything else
-    partitions=$(lsblk -ipno KNAME | grep "$hard_drive" | grep -vw "$hard_drive" | grep -v "boot" 2>> $CLIENT_LOG)  
+    partitions=$(lsblk -ipno KNAME | sort | grep "$hard_drive" | grep -vw "$hard_drive" | grep -v "boot" 2>> $CLIENT_LOG)  
   fi
     
   partition_count=0  
@@ -208,7 +215,17 @@ function shrink_volume()
       if [ "$image_type" = "File" ]; then #If we are doing a file based clone, the volume does not need to be shrunk
         return 0
       fi
+	  
       log " ...... Shrinking NTFS Volume On $volume_to_shrink (This May Take A Few Minutes) " "display"
+	  mkdir -p /mnt/ntfs 2>> /dev/null
+	  ntfs-3g -o force,rw $volume_to_shrink /mnt/ntfs 2>> $CLIENT_LOG
+
+	  if [ -f "/mnt/ntfs/Hiberfil.sys" ] || [ -f "/mnt/ntfs/hiberfil.sys" ]; then
+	    error "Hibernation Must Be Completely Disabled Before Resizing A Partition.  From An Elevated CMD Prompt Run powercfg.exe /h off"
+		umount /mnt/ntfs &> /dev/null
+	  fi
+	  umount /mnt/ntfs &> /dev/null
+	  
       ntfs_check=`ntfsresize -i $volume_to_shrink | grep "chkdsk /f"`
       if [ "$?" = "0" ]; then
         error "$ntfs_check"
@@ -330,10 +347,16 @@ function create_image_schema()
         fsid=$(sfdisk --part-type $hard_drive $partition_number | sed 's/ //g' 2>> $CLIENT_LOG)
       else
         fsid=$(gdisk $hard_drive -l | grep " $partition_number " | awk '/^ / {print $6}')
-        #find any matching boot entry in the nvram for this partition.  Find them all incase of multiboot systems	
+        #find any matching boot entry in the nvram for this partition.  Find them all incase of multiboot systems
+		efi_bootloader="";efi_bootloader_name="";efi_bootlmgr_id="";efi_boot_info="";
 		efi_bootloader=$(efibootmgr -v | grep -i "$partition_guid" | grep -o "File(.*)" | cut -d "(" -f2 | cut -d ")" -f1 | uniq | sed 's/\\/\\\\/g')
-
-      fi
+		if [ -n "$efi_bootloader" ]; then
+	      efi_bootmgr_id=$(efibootmgr -v | grep -i "$partition_guid" | cut -d* -f1)
+		  efi_bootloader_name=$(efibootmgr | grep -i "$efi_bootmgr_id" | cut -d* -f2)
+		  efi_bootloader_name=$(remove_whitespace $efi_bootloader_name)
+		  efi_boot_info="$efi_bootloader_name#$efi_bootloader"
+        fi
+	  fi
 
       if [ "$skip_shrink_volumes" != "true" ] && [ "$upload_schema_only" != "true" ]; then 
         if [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ] || [ "$filesystem_type" = "ntfs" ]; then
@@ -356,7 +379,7 @@ function create_image_schema()
 	  volume_used_mb=$(( $volume_used_mb * 1000 * 1000 ))
 	  volume_used_mb=$(( $volume_used_mb / 1024 / 1024 ))
 	  
-      partition_json="{\"number\":\"$partition_number\",\"start\":\"$partition_start\",\"end\":\"$partition_end\",\"size\":\"$partition_size\",\"volumesize\":\"$volume_size\",\"type\":\"$partition_type\",\"usedmb\":\"$volume_used_mb\",\"fsType\":\"$filesystem_type\",\"fsid\":\"$fsid\",\"uuid\":\"$partition_uuid\",\"guid\":\"$partition_guid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\",\"prefix\":\"$partition_prefix\",\"efibootloader\":\"$efi_bootloader\",\"volumegroup\": { "
+      partition_json="{\"number\":\"$partition_number\",\"start\":\"$partition_start\",\"end\":\"$partition_end\",\"size\":\"$partition_size\",\"volumesize\":\"$volume_size\",\"type\":\"$partition_type\",\"usedmb\":\"$volume_used_mb\",\"fsType\":\"$filesystem_type\",\"fsid\":\"$fsid\",\"uuid\":\"$partition_uuid\",\"guid\":\"$partition_guid\",\"active\":\"true\",\"customsize\":\"\",\"customsizeunit\":\"\",\"forcefixedsize\":\"false\",\"prefix\":\"$partition_prefix\",\"efibootloader\":\"$efi_boot_info\",\"volumegroup\": { "
       
       #experimental lvm support
       if [ "$lvmResize" != "false" ]; then
@@ -398,7 +421,7 @@ function create_image_schema()
             #In addition to setting partclone type, clean filesystems for better compatibility moving forward
             if [ "$filesystem_type" = "ntfs" ]; then
               ntfsfix -b -d "$logical_volume_device" &>/dev/null
-              ntfs-3g -o force,rw,remove_hiberfile "$logical_volume_device" /mnt/ntfs 2> /dev/null
+              ntfs-3g -o force,rw "$logical_volume_device" /mnt/ntfs 2> /dev/null
               umount /mnt/ntfs &> /dev/null
               partclone_type="ntfs"
           
@@ -544,6 +567,7 @@ function upload_image()
     clear_and_move_down
 	wim_arguments=""
     log " ** Starting Image Upload For $partition ** " "display" 
+	
 	if [ -n "$computer_id" ]; then    
 	  null=$($curlAuth --data "computerId=$computer_id&partition=$partition" "${web}UpdateProgressPartition" $curlEnd)
     fi
@@ -624,11 +648,12 @@ function upload_image()
 	  umount /mnt/wimsource &> /dev/null
     else
 	  touch /tmp/clone.progress
+	  cd /
 	  log " ...... cd_reporter $computer_id partclone $is_ondemand & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension"    
 	  eval "cd_reporter $computer_id partclone $is_ondemand & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension"
       rm /tmp/clone.progress
       cat /var/log/partclone.log >> $CLIENT_LOG
-	  
+	  cd $image_path
 	  killall cd_reporter &>/dev/null
 	fi
   done
