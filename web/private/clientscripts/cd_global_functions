@@ -206,7 +206,7 @@ function get_hard_drives()
 	log " ...... Displaying Available Devices "
 	blockdev --report &>> $CLIENT_LOG
 	fdisk -l &>> $CLIENT_LOG
-	parted -l &>> $CLIENT_LOG
+
 	if [ -n "$custom_hard_drives" ]; then
 		hard_drives="$custom_hard_drives"
 		log " ...... Hard Drive(s) Set By Image Profile: $hard_drives" "display"		
@@ -225,7 +225,7 @@ function get_hard_drives()
 		  #Only get hard drives with valid disk labels
 		  if [ "$disk_label" = "dos" ] || [ "$disk_label" = "gpt" ]; then
 		    #only get hard drives that have partitions.  No reason to try and upload a disk without partitions
-			partitions=$(lsblk -ipno KNAME | grep "$hdd" | grep -vw "$hdd" 2>> $CLIENT_LOG)
+			partitions=$(lsblk -ipno KNAME | sort | grep "$hdd" | grep -vw "$hdd" 2>> $CLIENT_LOG)
 			log "partitions: $partitions"
 			partition_count=0  
             for partition in $partitions; do
@@ -361,7 +361,7 @@ function process_sysprep_tags()
   else
     log " ...... Could Not Find Answer File"
   fi
-  #umount /mnt/ntfs
+  umount /mnt/ntfs
 }
 
 function process_file_copy()
