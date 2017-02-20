@@ -26,12 +26,12 @@ namespace Helpers
 
         public static string DefaultKernel32
         {
-            get { return "4.5"; }
+            get { return "4.9.8"; }
         }
         
         public static string DefaultKernel64
         {
-            get { return "4.5x64"; }
+            get { return "4.9.8x64"; }
         }
 
         public static string DefaultInit
@@ -54,14 +54,10 @@ namespace Helpers
             get { return Setting.GetSetting("Global Computer Args").Value; }
         }
 
-        
-
         public static string PrimaryStoragePath
         {
             get { return BLL.DistributionPoint.GetPrimaryDistributionPoint().PhysicalPath; }
         }
-
-      
 
         public static string OnDemand
         {
