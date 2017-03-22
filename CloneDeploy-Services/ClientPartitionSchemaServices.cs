@@ -129,7 +129,7 @@ namespace CloneDeploy_Services
                     partCounter++;
 
                     //Determine what sector the first partition should start at
-                    if (Convert.ToInt32(schemaPartition.Start) < FirstPartitionStartSector)
+                    if (Convert.ToInt64(schemaPartition.Start) < FirstPartitionStartSector)
                         FirstPartitionStartSector = Convert.ToInt32(schemaPartition.Start);
 
                     if (!schemaPartition.Active)
