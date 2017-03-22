@@ -56,7 +56,9 @@ namespace CloneDeploy_DataModel
         IGenericRepository<CloneDeployUserGroupEntity> UserGroupRepository { get; }
         IGenericRepository<SecondaryServerEntity> SecondaryServerRepository { get; }
         IGenericRepository<ClusterGroupEntity> ClusterGroupRepository { get; }
-        IGenericRepository<ClusterGroupServerEntity> ClusterGroupServersRepository { get; } 
+        IGenericRepository<ClusterGroupServerEntity> ClusterGroupServersRepository { get; }
+        IGenericRepository<DistributionPointEntity> DistributionPointRepository { get; }
+        IGenericRepository<ClusterGroupDistributionPointEntity> ClusterGroupDistributionPointRepository { get; } 
         void Save();
         
     }

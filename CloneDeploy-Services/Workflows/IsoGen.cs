@@ -122,6 +122,7 @@ namespace CloneDeploy_Services.Workflows
             sysLinuxMenu.Append("MENU LABEL Client Console" + NewLineChar);
             sysLinuxMenu.Append("" + NewLineChar);
 
+            sysLinuxMenu.Append("LABEL Add Computer" + NewLineChar);
             sysLinuxMenu.Append("kernel /clonedeploy/" + _isoOptions.kernel + "" + NewLineChar);
             sysLinuxMenu.Append("append initrd=/clonedeploy/" + _isoOptions.bootImage +
                                 " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" + _webPath + " USER_TOKEN=" +

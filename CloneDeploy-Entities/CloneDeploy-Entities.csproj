@@ -43,9 +43,11 @@
   <ItemGroup>
     <Compile Include="ActiveImagingTask.cs" />
     <Compile Include="ActiveMulticastSession.cs" />
+    <Compile Include="ClusterGroupDistributionPoint.cs" />
     <Compile Include="ClusterGroupServer.cs" />
+    <Compile Include="DistributionPoint.cs" />
+    <Compile Include="DTOs\TftpServerDTO.cs" />
     <Compile Include="DTOs\CustomApiCallDTO.cs" />
-    <Compile Include="DTOs\ImageShareDTO.cs" />
     <Compile Include="DTOs\ServerRoleDTO.cs" />
     <Compile Include="ClusterGroup.cs" />
     <Compile Include="DTOs\TftpFileDTO.cs" />
@@ -74,7 +76,7 @@
     <Compile Include="DTOs\ClientImaging\LogicalVolume.cs" />
     <Compile Include="DTOs\ClientImaging\MulticastList.cs" />
     <Compile Include="DTOs\ClientImaging\PhysicalPartition.cs" />
-    <Compile Include="DTOs\ClientImaging\ProxyReservation.cs" />
+    <Compile Include="DTOs\ProxyReservation.cs" />
     <Compile Include="DTOs\ClientImaging\QueueStatus.cs" />
     <Compile Include="DTOs\ClientImaging\SMB.cs" />
     <Compile Include="DTOs\ClientImaging\VolumeGroup.cs" />

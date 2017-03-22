@@ -16,9 +16,11 @@
                 </a>
             </li>
             
-            <li id="imageshare">
-                <a href="<%= ResolveUrl("~/views/admin/imageshare.aspx") %>">
-                    <span class="nav-text">Image Share</span>
+         
+            
+              <li id="distribution">
+                <a href="<%= ResolveUrl("~/views/admin/dp/search.aspx?level=2") %>">
+                    <span class="nav-text">Distribution Points</span>
                 </a>
             </li>
             

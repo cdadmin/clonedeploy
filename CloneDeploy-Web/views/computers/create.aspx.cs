@@ -30,6 +30,7 @@ namespace views.computers
                 SiteId = Convert.ToInt32(ddlSite.SelectedValue),
                 BuildingId = Convert.ToInt32(ddlBuilding.SelectedValue),
                 RoomId = Convert.ToInt32(ddlRoom.SelectedValue),
+                ClusterGroupId = Convert.ToInt32(ddlClusterGroup.SelectedValue),
                 CustomAttribute1 = txtCustom1.Text,
                 CustomAttribute2 = txtCustom2.Text,
                 CustomAttribute3 = txtCustom3.Text,
@@ -38,12 +39,13 @@ namespace views.computers
                 
             };
 
-            var result = new APICall().ComputerApi.Post(computer);
+            var result = Call.ComputerApi.Post(computer);
           
             if (!result.Success)
                 EndUserMessage = result.ErrorMessage;
             else
             {
+                Call.ComputerApi.AddToSmartGroups(computer);
                 EndUserMessage = "Successfully Created Computer";
                 if (!createAnother.Checked)
                     Response.Redirect(string.Format("~/views/computers/edit.aspx?computerid={0}",result.Id));
@@ -56,6 +58,7 @@ namespace views.computers
             PopulateSitesDdl(ddlSite);
             PopulateBuildingsDdl(ddlBuilding);
             PopulateRoomsDdl(ddlRoom);
+            PopulateClusterGroupsDdl(ddlClusterGroup);
         }
 
         protected void ddlComputerImage_OnSelectedIndexChanged(object sender, EventArgs e)

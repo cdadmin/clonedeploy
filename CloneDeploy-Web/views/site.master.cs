@@ -16,6 +16,14 @@ namespace views.masters
         public void Page_Load(object sender, EventArgs e)
         {
             lblServerId.Text = Settings.ServerIdentifier;
+            if (Settings.OperationMode == "Cluster Secondary")
+            {
+                navhosts.Visible = false;
+                navgroups.Visible = false;
+                navimages.Visible = false;
+                navglobal.Visible = false;
+                navtasks.Visible = false;
+            }
         }
 
        

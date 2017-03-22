@@ -26,14 +26,15 @@ namespace CloneDeploy_App
             var auth = new AuthenticationServices();
 
             var validationResult = auth.GlobalLogin(context.UserName, context.Password, "Web");
-            if ((validationResult.Success))
+            if (validationResult.Success)
             {
                 ClaimsIdentity oAuthIdentity = new ClaimsIdentity(context.Options.AuthenticationType);
                 context.Validated(oAuthIdentity);
                 var user = new UserServices().GetUser(context.UserName);
                 oAuthIdentity.AddClaim(new Claim("user_id", user.Id.ToString()));
                 //set different time spans here
-                //context.Options.AccessTokenExpireTimeSpan = TimeSpan.FromDays(60);
+                if(user.Membership == "Service Account")
+                context.Options.AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(5);
                 context.Validated(oAuthIdentity);
             }
             else

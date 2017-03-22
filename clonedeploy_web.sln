@@ -4,8 +4,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloneDeploy-Web", "CloneDeploy-Web\CloneDeploy-Web.csproj", "{CB120C38-1AD9-4D9E-B939-F3FAB2150F95}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F5A4E04D-FA84-4ABB-9690-DF2539F425CD} = {F5A4E04D-FA84-4ABB-9690-DF2539F425CD}
+		{453080DA-87A4-4F5F-AA1F-2C49E37D2F21} = {453080DA-87A4-4F5F-AA1F-2C49E37D2F21}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloneDeploy-App", "CloneDeploy-App\CloneDeploy-App.csproj", "{A47826D1-1475-4E57-AAA1-D213E70CA0B1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{453080DA-87A4-4F5F-AA1F-2C49E37D2F21} = {453080DA-87A4-4F5F-AA1F-2C49E37D2F21}
+		{1F6BFFED-303F-4991-B44C-F70BFFF0A0D4} = {1F6BFFED-303F-4991-B44C-F70BFFF0A0D4}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloneDeploy-Entities", "CloneDeploy-Entities\CloneDeploy-Entities.csproj", "{453080DA-87A4-4F5F-AA1F-2C49E37D2F21}"
 EndProject

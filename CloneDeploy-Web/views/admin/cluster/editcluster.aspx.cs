@@ -74,6 +74,24 @@ namespace CloneDeploy_Web.views.admin.cluster
                 }
             }
 
+            gvDps.DataSource = Call.DistributionPointApi.GetAll(Int32.MaxValue, "");
+            gvDps.DataBind();
+
+            foreach (GridViewRow row in gvDps.Rows)
+            {
+                var cb = (CheckBox)row.FindControl("chkSelector");
+                var dataKey = gvServers.DataKeys[row.RowIndex];
+                if (dataKey == null) continue;
+
+                foreach (var clusterDp in Call.ClusterGroupApi.GetClusterDistributionPoints(ClusterGroup.Id))
+                {
+                    if (clusterDp.DistributionPointId == Convert.ToInt32(dataKey.Value))
+                    {
+                        cb.Checked = true;
+                        
+                    }
+                }
+            }
         }
 
         private ClusterGroupEntity Read()
@@ -129,6 +147,29 @@ namespace CloneDeploy_Web.views.admin.cluster
                 if(listOfServers.Count == 0)
                     listOfServers.Add(new ClusterGroupServerEntity(){ClusterGroupId = ClusterGroup.Id,SecondaryServerId = -2});
                 Call.ClusterGroupServerApi.Post(listOfServers);
+
+
+                var listOfDps = new List<ClusterGroupDistributionPointEntity>();
+                foreach (GridViewRow row in gvDps.Rows)
+                {
+                    var cb = (CheckBox)row.FindControl("chkSelector");
+                    if (!cb.Checked) continue;
+
+
+                    var dataKey = gvServers.DataKeys[row.RowIndex];
+                    if (dataKey == null) continue;
+
+                    var clusterGroupDistributionPoint = new ClusterGroupDistributionPointEntity();
+                    clusterGroupDistributionPoint.ClusterGroupId = result.Id;
+                    clusterGroupDistributionPoint.DistributionPointId = Convert.ToInt32(dataKey.Value);
+
+
+                    listOfDps.Add(clusterGroupDistributionPoint);
+                }
+
+                if (listOfDps.Count == 0)
+                    listOfDps.Add(new ClusterGroupDistributionPointEntity() { ClusterGroupId = ClusterGroup.Id, DistributionPointId = -2 });
+                Call.ClusterGroupDistributionPointApi.Post(listOfDps);
 
                 EndUserMessage = "Successfully Updated Cluster Group";
               

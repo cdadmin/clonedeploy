@@ -10,8 +10,8 @@ namespace CloneDeploy_Web.BasePages
 
         protected override void OnInit(EventArgs e)
         {
-            
             base.OnInit(e);
+
             Computer = !string.IsNullOrEmpty(Request.QueryString["computerid"])
                 ? Call.ComputerApi.Get(Convert.ToInt32(Request.QueryString["computerid"]))
                 : null;

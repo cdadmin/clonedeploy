@@ -16,6 +16,7 @@ public partial class views_admin_server : Admin
         ddlComputerView.SelectedValue = Settings.DefaultComputerView;
         txtWebService.Text = Settings.WebPath;
         txtId.Text = Settings.ServerIdentifier;
+        txtTftpServerIp.Text = Settings.TftpServerIp;
 
         //These require pxe boot menu or client iso to be recreated
         ViewState["serverIP"] = txtIP.Text;
@@ -34,7 +35,8 @@ public partial class views_admin_server : Admin
             new SettingEntity {Name = "Web Server Port", Value = txtPort.Text, Id = Call.SettingApi.GetSetting("Web Server Port").Id},
             new SettingEntity {Name = "Tftp Path", Value = txtTFTPPath.Text, Id = Call.SettingApi.GetSetting("Tftp Path").Id},
             new SettingEntity {Name = "Default Computer View", Value = ddlComputerView.Text, Id = Call.SettingApi.GetSetting("Default Computer View").Id},
-            new SettingEntity {Name = "Web Path", Value = txtWebService.Text, Id = Call.SettingApi.GetSetting("Web Path").Id}
+            new SettingEntity {Name = "Web Path", Value = txtWebService.Text, Id = Call.SettingApi.GetSetting("Web Path").Id},
+            new SettingEntity {Name = "Tftp Server IP", Value = txtTftpServerIp.Text, Id = Call.SettingApi.GetSetting("Tftp Server IP").Id}
         };
 
         var newBootMenu = false;

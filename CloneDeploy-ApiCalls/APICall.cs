@@ -160,8 +160,16 @@ namespace CloneDeploy_ApiCalls
         {
             get {  return new ClusterGroupServerAPI("ClusterGroupServers");}
         }
-        
 
+        public ClusterGroupDistributionPointAPI ClusterGroupDistributionPointApi
+        {
+            get { return new ClusterGroupDistributionPointAPI("ClusterGroupDistributionPoints"); }
+        }
+
+        public ServiceAccountAPI ServiceAccountApi
+        {
+            get { return _cApiDto != null ? new ServiceAccountAPI("ServiceAccount", _cApiDto) : new ServiceAccountAPI("ServiceAccount"); }
+        }
 
         public IGenericAPI<BootEntryEntity> BootEntryApi
         {
@@ -276,6 +284,11 @@ namespace CloneDeploy_ApiCalls
         public IGenericAPI<SecondaryServerEntity> SecondaryServerApi
         {
             get { return new GenericAPI<SecondaryServerEntity>("SecondaryServer"); }
+        }
+
+        public IGenericAPI<DistributionPointEntity> DistributionPointApi
+        {
+            get { return new GenericAPI<DistributionPointEntity>("DistributionPoint"); }
         }
 
       

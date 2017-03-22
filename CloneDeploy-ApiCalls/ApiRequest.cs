@@ -28,6 +28,7 @@ namespace CloneDeploy_ApiCalls
         {
             var client = new RestClient();
             client.BaseUrl = _baseUrl ;
+            client.Timeout = 5000;
 
             request.AddHeader("Authorization", "bearer " + _token);
             var response = client.Execute<TClass>(request);

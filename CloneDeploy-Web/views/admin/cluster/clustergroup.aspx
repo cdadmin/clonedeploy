@@ -54,6 +54,8 @@
             No Cluster Groups Found
         </EmptyDataTemplate>
     </asp:GridView>
+    
+
   
       <div id="confirmbox" class="confirm-box-outer">
         <div class="confirm-box-inner">

@@ -52,8 +52,8 @@ namespace CloneDeploy_Entities
         [Column("user_id", Order = 13)]
         public int UserId { get; set; }
 
-        [Column("image_server", Order = 14)]
-        public string ImageServer { get; set; } 
+        [Column("distribution_point_id", Order = 14)]
+        public int DpId { get; set; } 
 
         [NotMapped]
         public string Direction { get; set; }

@@ -32,6 +32,10 @@ namespace CloneDeploy_Services.Helpers
             {
                 return parameter.Replace("[server-ip]", Settings.ServerIp);
             }
+            else if (s == "tftp-server-ip")
+            {
+                return parameter.Replace("[tftp-server-ip]", Settings.TftpServerIp);
+            }
             return s;
         }
 

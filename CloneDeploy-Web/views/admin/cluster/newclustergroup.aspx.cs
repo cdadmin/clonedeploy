@@ -58,6 +58,9 @@ namespace CloneDeploy_Web.views.admin.cluster
                         cbMulticast.Visible = false;
                 }
             }
+
+            gvDps.DataSource = Call.DistributionPointApi.GetAll(Int32.MaxValue,"");
+            gvDps.DataBind();
         }
 
         protected void btnAddCluster_OnClick(object sender, EventArgs e)
@@ -98,6 +101,27 @@ namespace CloneDeploy_Web.views.admin.cluster
                 }
 
                 Call.ClusterGroupServerApi.Post(listOfServers);
+
+                var listOfDps = new List<ClusterGroupDistributionPointEntity>();
+                foreach (GridViewRow row in gvDps.Rows)
+                {
+                    var cb = (CheckBox)row.FindControl("chkSelector");
+                    if (!cb.Checked) continue;
+
+                  
+                    var dataKey = gvServers.DataKeys[row.RowIndex];
+                    if (dataKey == null) continue;
+
+                    var clusterGroupDistributionPoint = new ClusterGroupDistributionPointEntity();
+                    clusterGroupDistributionPoint.ClusterGroupId = result.Id;
+                    clusterGroupDistributionPoint.DistributionPointId = Convert.ToInt32(dataKey.Value);
+                 
+
+                    listOfDps.Add(clusterGroupDistributionPoint);
+                }
+
+                Call.ClusterGroupDistributionPointApi.Post(listOfDps);
+                
 
                 EndUserMessage = "Successfully Created Cluster Group";
                 Response.Redirect("~/views/admin/cluster/editcluster.aspx?cat=sub1&clusterid=" + result.Id);

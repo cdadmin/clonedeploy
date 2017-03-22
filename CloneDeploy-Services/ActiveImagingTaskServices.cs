@@ -224,7 +224,7 @@ namespace CloneDeploy_Services
         {
             
                 return
-                    Convert.ToInt32(_uow.ActiveImagingTaskRepository.Count(x => x.Status == "3" && x.Type == activeTask.Type && x.ImageServer == activeTask.ImageServer));
+                    Convert.ToInt32(_uow.ActiveImagingTaskRepository.Count(x => x.Status == "3" && x.Type == activeTask.Type && x.DpId == activeTask.DpId));
 
             
         }
@@ -233,7 +233,7 @@ namespace CloneDeploy_Services
         {
            
                 return
-                    _uow.ActiveImagingTaskRepository.Get(x => x.Status == "2" && x.Type == activeTask.Type && x.ImageServer == activeTask.ImageServer,
+                    _uow.ActiveImagingTaskRepository.Get(x => x.Status == "2" && x.Type == activeTask.Type && x.DpId == activeTask.DpId,
                         orderBy: q => q.OrderByDescending(t => t.QueuePosition)).FirstOrDefault();
             
         }
@@ -244,7 +244,7 @@ namespace CloneDeploy_Services
         {
             
                 return
-                    _uow.ActiveImagingTaskRepository.Get(x => x.Status == "2" && x.Type == activeTask.Type && x.ImageServer == activeTask.ImageServer,
+                    _uow.ActiveImagingTaskRepository.Get(x => x.Status == "2" && x.Type == activeTask.Type && x.DpId == activeTask.DpId,
                         orderBy: q => q.OrderBy(t => t.QueuePosition)).FirstOrDefault();
             
         }

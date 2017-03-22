@@ -131,7 +131,7 @@ namespace CloneDeploy_Services.Workflows
 
                                 if (
                                     !new APICall(new SecondaryServerServices().GetApiToken(secondaryServer.Name))
-                                        .FilesystemApi.WriteTftpFile(new TftpFileDTO()
+                                        .ServiceAccountApi.WriteTftpFile(new TftpFileDTO()
                                         {
                                             Path = path,
                                             Contents = bootMenu.Item3
@@ -222,7 +222,7 @@ namespace CloneDeploy_Services.Workflows
                         {
                             if (
                                 !new APICall(new SecondaryServerServices().GetApiToken(secondaryServer.Name))
-                                    .FilesystemApi.WriteTftpFile(new TftpFileDTO()
+                                    .ServiceAccountApi.WriteTftpFile(new TftpFileDTO()
                                     {
                                         Path = path,
                                         Contents = fileContents

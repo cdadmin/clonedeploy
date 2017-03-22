@@ -68,13 +68,16 @@
     <Compile Include="BuildingServices.cs" />
     <Compile Include="CdVersionServices.cs" />
     <Compile Include="ClientImagingServices.cs" />
+    <Compile Include="ClusterGroupDistributionPointServices.cs" />
     <Compile Include="ComputerBootMenuServices.cs" />
     <Compile Include="ComputerLogServices.cs" />
     <Compile Include="ComputerMunkiServices.cs" />
     <Compile Include="ComputerProxyReservation.cs" />
     <Compile Include="ClientPartitionSchemaServices.cs" />
     <Compile Include="ClientPartitionHelper.cs" />
+    <Compile Include="DistributionPoint.cs" />
     <Compile Include="FileFolderServices.cs" />
+    <Compile Include="ProxyDhcpServices.cs" />
     <Compile Include="FilesystemServices.cs" />
     <Compile Include="GroupServices.cs" />
     <Compile Include="GroupBootMenuServices.cs" />

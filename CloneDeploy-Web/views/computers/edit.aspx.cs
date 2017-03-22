@@ -17,6 +17,7 @@ namespace views.computers
         protected void buttonUpdateComputer_Click(object sender, EventArgs e)
         {
             RequiresAuthorizationOrManagedComputer(Authorizations.UpdateComputer, Computer.Id);
+            bool nameChange = txtComputerName.Text != Computer.Name;
             var computer = new ComputerEntity
             {
                 Id = Computer.Id,
@@ -28,6 +29,7 @@ namespace views.computers
                 SiteId = Convert.ToInt32(ddlSite.SelectedValue),
                 BuildingId = Convert.ToInt32(ddlBuilding.SelectedValue),
                 RoomId = Convert.ToInt32(ddlRoom.SelectedValue),
+                ClusterGroupId = Convert.ToInt32(ddlClusterGroup.SelectedValue),
                 CustomAttribute1 = txtCustom1.Text,
                 CustomAttribute2 = txtCustom2.Text,
                 CustomAttribute3 = txtCustom3.Text,
@@ -36,8 +38,25 @@ namespace views.computers
                 ProxyReservation = Computer.ProxyReservation
             };
 
-            var result = new APICall().ComputerApi.Put(computer.Id, computer); 
-            EndUserMessage = !result.Success ? result.ErrorMessage : "Successfully Updated Computer";
+            var result = Call.ComputerApi.Put(computer.Id, computer); 
+
+            if (result.Success)
+            {
+                if (nameChange)
+                {
+                    Call.GroupApi.ReCalcSmart();
+                    Computer = Call.ComputerApi.Get(Computer.Id);
+                    PopulateForm();
+                }
+                EndUserMessage = "Successfully Updated Computer";
+                
+            }
+            else
+            {
+                EndUserMessage = result.ErrorMessage;
+            }
+
+    
         }
 
         protected void PopulateForm()
@@ -46,6 +65,7 @@ namespace views.computers
             PopulateSitesDdl(ddlSite);
             PopulateBuildingsDdl(ddlBuilding);
             PopulateRoomsDdl(ddlRoom);
+            PopulateClusterGroupsDdl(ddlClusterGroup);
             txtComputerName.Text = Computer.Name;
             txtComputerMac.Text = Computer.Mac;
             ddlComputerImage.SelectedValue = Computer.ImageId.ToString();        
@@ -55,6 +75,7 @@ namespace views.computers
             ddlSite.SelectedValue = Computer.SiteId.ToString();
             ddlBuilding.SelectedValue = Computer.BuildingId.ToString();
             ddlRoom.SelectedValue = Computer.RoomId.ToString();
+            ddlClusterGroup.SelectedValue = Computer.ClusterGroupId.ToString();
             txtCustom1.Text = Computer.CustomAttribute1;
             txtCustom2.Text = Computer.CustomAttribute2;
             txtCustom3.Text = Computer.CustomAttribute3;

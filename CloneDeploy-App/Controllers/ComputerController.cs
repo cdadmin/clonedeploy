@@ -38,6 +38,19 @@ namespace CloneDeploy_App.Controllers
 
         }
 
+        [CustomAuth(Permission = "ComputerSearch")]
+        public IEnumerable<ComputerEntity> GetAllByName(int limit = 0, string searchstring = "")
+        {
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                             .Select(c => c.Value).SingleOrDefault();
+
+            return string.IsNullOrEmpty(searchstring)
+                ? _computerService.SearchComputersForUserByName(Convert.ToInt32(userId), limit)
+                : _computerService.SearchComputersForUserByName(Convert.ToInt32(userId), limit, searchstring);
+
+        }
+
         [CustomAuth(Permission = "ComputerRead")]
         public ComputerEntity Get(int id)
         {
@@ -100,6 +113,14 @@ namespace CloneDeploy_App.Controllers
         public List<GroupMembershipEntity> GetGroupMemberships(int id)
         {
             return _computerService.GetAllComputerMemberships(id);
+        }
+
+        [HttpPost]
+        [CustomAuthAttribute(Permission = "ComputerCreate")]
+        public ApiBoolResponseDTO AddToSmartGroups(ComputerEntity computer)
+        {
+            _computerService.AddComputerToSmartGroups(computer);
+            return new ApiBoolResponseDTO(){Value = true};
         }
 
         [CustomAuth(Permission = "ComputerSearch")]

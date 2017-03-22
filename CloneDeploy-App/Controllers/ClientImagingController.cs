@@ -394,13 +394,7 @@ namespace CloneDeploy_App.Controllers
             return _response;
         }
 
-        [HttpPost]
-        public HttpResponseMessage GetProxyReservation(MacDTO macDto)
-        {
-            _response.Content = new StringContent(new ClientImagingServices().GetProxyReservation(macDto.mac), System.Text.Encoding.UTF8, "text/plain");
-            return _response;
-        }
-
+        
        
     }
 }

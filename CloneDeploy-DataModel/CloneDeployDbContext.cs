@@ -61,6 +61,8 @@ namespace CloneDeploy_DataModel
         public DbSet<SecondaryServerEntity> SecondaryServers { get; set; }
         public DbSet<ClusterGroupEntity> ClusterGroups { get; set; }
         public DbSet<ClusterGroupServerEntity> ClusterGroupServers { get; set; }
+        public DbSet<DistributionPointEntity> DistributionPoints { get; set; }
+        public DbSet<ClusterGroupDistributionPointEntity> ClusterGroupDistributionPoints { get; set; }
     }
 
 }

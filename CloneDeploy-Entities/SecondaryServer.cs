@@ -27,6 +27,9 @@ namespace CloneDeploy_Entities
         public int TftpRole { get; set; }
 
         [Column("multicast_role", Order = 8)]
-        public int MulticastRole { get; set; } 
+        public int MulticastRole { get; set; }
+
+        [Column("last_token", Order = 9)]
+        public string LastToken { get; set; } 
     }
 }

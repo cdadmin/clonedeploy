@@ -68,4 +68,28 @@
             No Servers Found
         </EmptyDataTemplate>
     </asp:GridView>
+    
+      <br class="clear"/>
+    <h4>Select Distribution Points For The Group:</h4>
+   <asp:GridView ID="gvDps" runat="server" DataKeyNames="Id" AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
+        <Columns>
+            <asp:TemplateField>
+                <HeaderStyle CssClass="chkboxwidth"></HeaderStyle>
+                <ItemStyle CssClass="chkboxwidth"></ItemStyle>
+                <HeaderTemplate>
+                    <asp:CheckBox ID="chkSelectAll" runat="server" AutoPostBack="True" OnCheckedChanged="chkSelectAll_CheckedChanged"/>
+                </HeaderTemplate>
+                <ItemTemplate>
+                    <asp:CheckBox ID="chkSelector" runat="server"/>
+                </ItemTemplate>
+            </asp:TemplateField>
+          
+            <asp:BoundField DataField="Id" HeaderText="Id" SortExpression="Id" Visible="False"/>
+            <asp:BoundField DataField="DisplayName" HeaderText="Display Name" SortExpression="DisplayName" ></asp:BoundField>
+           
+        </Columns>
+        <EmptyDataTemplate>
+            No Distribution Points Found
+        </EmptyDataTemplate>
+    </asp:GridView>
 </asp:Content>

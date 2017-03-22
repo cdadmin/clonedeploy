@@ -57,6 +57,9 @@ namespace CloneDeploy_Entities
         [Column("proxy_reservation_enabled", Order = 17)]
         public int ProxyReservation { get; set; }
 
+        [Column("cluster_group_id", Order = 18)]
+        public int ClusterGroupId { get; set; }
+
         [NotMapped]
         public virtual ActiveImagingTaskEntity ActiveImagingTask { get; set; }
 

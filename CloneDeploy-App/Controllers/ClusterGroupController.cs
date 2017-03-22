@@ -70,5 +70,11 @@ namespace CloneDeploy_App.Controllers
         {
             return _clusterGroupServices.GetClusterServers(id);
         }
+
+        [CustomAuth(Permission = "AdminRead")]
+        public IEnumerable<ClusterGroupDistributionPointEntity> GetClusterDistributionPoints(int id)
+        {
+            return _clusterGroupServices.GetClusterDps(id);
+        }
     }
 }

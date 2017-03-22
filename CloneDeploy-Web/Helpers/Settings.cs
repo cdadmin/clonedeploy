@@ -29,12 +29,12 @@ namespace CloneDeploy_Web.Helpers
 
         public static string DefaultKernel32
         {
-            get { return "4.5"; }
+            get { return "4.9.8"; }
         }
         
         public static string DefaultKernel64
         {
-            get { return "4.5x64"; }
+            get { return "4.9.8x64"; }
         }
 
         public static string DefaultInit
@@ -298,6 +298,11 @@ namespace CloneDeploy_Web.Helpers
         public static bool MulticastServerRole
         {
             get { return new APICall().SettingApi.GetSetting("Multicast Server Role ").Value == "1"; }
+        }
+
+        public static string TftpServerIp
+        {
+            get { return new APICall().SettingApi.GetSetting("Tftp Server IP").Value; }
         }
     
     }

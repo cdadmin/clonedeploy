@@ -61,6 +61,19 @@ namespace CloneDeploy_DataModel
         private IGenericRepository<SecondaryServerEntity> _secondaryServerRepository;
         private IGenericRepository<ClusterGroupEntity> _clusterGroupRepository;
         private IGenericRepository<ClusterGroupServerEntity> _clusterGroupServersRepository;
+        private IGenericRepository<DistributionPointEntity> _distributionPointRepository;
+        private IGenericRepository<ClusterGroupDistributionPointEntity> _clusterGroupDistributionPointRepository;
+
+        public IGenericRepository<ClusterGroupDistributionPointEntity> ClusterGroupDistributionPointRepository
+        {
+            get { return _clusterGroupDistributionPointRepository ?? (_clusterGroupDistributionPointRepository = new GenericRepository<ClusterGroupDistributionPointEntity>(_context)); }
+        }
+
+        public IGenericRepository<DistributionPointEntity> DistributionPointRepository
+        {
+            get { return _distributionPointRepository ?? (_distributionPointRepository = new GenericRepository<DistributionPointEntity>(_context)); }
+
+        }
 
         public IGenericRepository<ClusterGroupEntity> ClusterGroupRepository
         {

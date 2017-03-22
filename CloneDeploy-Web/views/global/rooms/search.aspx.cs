@@ -107,7 +107,6 @@ public partial class views_global_rooms_search : Global
         {
             ddlDps = e.Row.FindControl("ddlDpAdd") as DropDownList;
             PopulateClusterGroupsDdl(ddlDps);
-
         }
 
         if (e.Row.RowType == DataControlRowType.DataRow)

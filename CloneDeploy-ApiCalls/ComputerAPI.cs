@@ -12,6 +12,14 @@ namespace CloneDeploy_ApiCalls
 		
         }
 
+        public IEnumerable<ComputerEntity> GetAllByName(int limit = 0, string searchstring = "")
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetAllByName", _resource);
+            _request.AddParameter("limit", limit);
+            _request.AddParameter("searchstring", searchstring);
+            return new ApiRequest().Execute<List<ComputerEntity>>(_request);
+        }
 
         public IEnumerable<ComputerEntity> GetComputersWithoutGroup(int limit, string searchstring)
         {
@@ -30,6 +38,13 @@ namespace CloneDeploy_ApiCalls
             return new ApiRequest().Execute<List<GroupMembershipEntity>>(_request);
         }
 
+        public ApiBoolResponseDTO AddToSmartGroups(ComputerEntity computer)
+        {
+            _request.Method = Method.POST;
+            _request.Resource = string.Format("api/{0}/AddToSmartGroups/", _resource);
+            _request.AddJsonBody(computer);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request);
+        }
 
         public ComputerEntity GetByMac(string mac)
         {

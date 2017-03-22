@@ -149,6 +149,11 @@ namespace CloneDeploy_Services
             return _uow.ClusterGroupServersRepository.Get(x => x.ClusterGroupId == clusterId);
         }
 
+        public List<ClusterGroupDistributionPointEntity> GetClusterDps(int clusterId)
+        {
+            return _uow.ClusterGroupDistributionPointRepository.Get(x => x.ClusterGroupId == clusterId);
+        }
+
         public ClusterGroupEntity GetDefaultClusterGroup()
         {
             return _uow.ClusterGroupRepository.GetFirstOrDefault(x => x.Default == 1);

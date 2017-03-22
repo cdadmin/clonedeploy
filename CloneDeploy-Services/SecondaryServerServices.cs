@@ -39,7 +39,7 @@ namespace CloneDeploy_Services
                 else
                 {
                     customApiCall.Token = token.access_token;
-                    serverRoles = new APICall(customApiCall).SettingApi.GetServerRoles();
+                    serverRoles = new APICall(customApiCall).ServiceAccountApi.GetServerRoles();
                     if (serverRoles.OperationMode != "Cluster Secondary")
                     {
                         actionResult.ErrorMessage =
@@ -52,12 +52,12 @@ namespace CloneDeploy_Services
                             "Could Not Add Secondary Server.  You Must First Assign Roles To The Server";
                         return actionResult;
                     }
-                    /*if (serverRoles.Identifier == Settings.ServerIdentifier)
+                    if (serverRoles.Identifier == Settings.ServerIdentifier)
                     {
                         actionResult.ErrorMessage =
                             "Could Not Add Secondary Server.  Server Identifiers Must Be Different";
                         return actionResult;
-                    }*/
+                    }
                 }
             }
             else
@@ -159,7 +159,7 @@ namespace CloneDeploy_Services
                 else
                 {
                     customApiCall.Token = token.access_token;
-                    serverRoles = new APICall(customApiCall).SettingApi.GetServerRoles();
+                    serverRoles = new APICall(customApiCall).ServiceAccountApi.GetServerRoles();
                     if (serverRoles.OperationMode != "Cluster Secondary")
                     {
                         actionResult.ErrorMessage =
@@ -172,12 +172,12 @@ namespace CloneDeploy_Services
                             "Could Not Add Secondary Server.  You Must First Assign Roles To The Server";
                         return actionResult;
                     }
-                    /*if (serverRoles.Identifier == Settings.ServerIdentifier)
+                    if (serverRoles.Identifier == Settings.ServerIdentifier)
                     {
                         actionResult.ErrorMessage =
                             "Could Not Add Secondary Server.  Server Identifiers Must Be Different";
                         return actionResult;
-                    }*/
+                    }
                 }
             }
             else
@@ -254,26 +254,35 @@ namespace CloneDeploy_Services
 
         public CustomApiCallDTO GetApiToken(string serverName)
         {
-             var secondaryServer = GetSecondaryServerByName(serverName);
-             var customApiCall = new CustomApiCallDTO();
-                customApiCall.BaseUrl = new Uri(secondaryServer.ApiURL);
+            var secondaryServer = GetSecondaryServerByName(serverName);
+            var customApiCall = new CustomApiCallDTO();
+            customApiCall.BaseUrl = new Uri(secondaryServer.ApiURL);
+            customApiCall.Token = secondaryServer.LastToken;
+            if (new APICall(customApiCall).ServiceAccountApi.Test())
+                return customApiCall;
+            else
+            {
                 var token = new APICall(customApiCall).TokenApi.Get(secondaryServer.ServiceAccountName,
                     new Encryption().DecryptText(secondaryServer.ServiceAccountPassword));
 
-            if (token != null)
-            {
-                if (!string.IsNullOrEmpty(token.error_description))
+                if (token != null)
                 {
-                    return null;
-                    
+                    if (!string.IsNullOrEmpty(token.error_description))
+                    {
+                        return null;
+
+                    }
+                    else
+                    {
+                        customApiCall.Token = token.access_token;
+                        secondaryServer.LastToken = token.access_token;
+                        _uow.SecondaryServerRepository.Update(secondaryServer, secondaryServer.Id);
+                        _uow.Save();
+                    }
                 }
-                else
-                {
-                    customApiCall.Token = token.access_token;
-                }
+                return customApiCall;
             }
-            return customApiCall;
         }
-      
+
     }
 }

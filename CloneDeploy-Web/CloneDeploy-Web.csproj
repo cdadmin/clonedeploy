@@ -80,7 +80,9 @@
     <Content Include="views\admin\cluster\newsecondary.aspx" />
     <Content Include="views\admin\cluster\roles.aspx" />
     <Content Include="views\admin\cluster\secondary.aspx" />
-    <Content Include="views\admin\imageshare.aspx" />
+    <Content Include="views\admin\dp\create.aspx" />
+    <Content Include="views\admin\dp\edit.aspx" />
+    <Content Include="views\admin\dp\search.aspx" />
     <Content Include="views\admin\logs\application.aspx" />
     <Content Include="views\admin\logs\frontend.aspx" />
     <Content Include="views\admin\logs\ond.aspx" />
@@ -106,6 +108,7 @@
     <None Include="Properties\PublishProfiles\web.pubxml" />
     <Content Include="views\admin\cluster\cluster.master" />
     <Content Include="views\admin\logs\logs.master" />
+    <Content Include="views\admin\dp\dp.master" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -980,6 +983,34 @@
     <Compile Include="views\admin\cluster\secondary.aspx.designer.cs">
       <DependentUpon>secondary.aspx</DependentUpon>
     </Compile>
+    <Compile Include="views\admin\dp\create.aspx.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\dp\create.aspx.designer.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\dp\dp.master.cs">
+      <DependentUpon>dp.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\dp\dp.master.designer.cs">
+      <DependentUpon>dp.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\dp\edit.aspx.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\dp\edit.aspx.designer.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\dp\search.aspx.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\dp\search.aspx.designer.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
     <Compile Include="views\admin\email.aspx.cs">
       <DependentUpon>email.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -993,13 +1024,6 @@
     </Compile>
     <Compile Include="views\admin\export.aspx.designer.cs">
       <DependentUpon>export.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\admin\imageshare.aspx.cs">
-      <DependentUpon>imageshare.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\admin\imageshare.aspx.designer.cs">
-      <DependentUpon>imageshare.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\admin\logs\application.aspx.cs">
       <DependentUpon>application.aspx</DependentUpon>

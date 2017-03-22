@@ -125,6 +125,8 @@ namespace CloneDeploy_Services
             }
         }
 
+        
+
         public  List<GroupEntity> SearchGroups(string searchString = "")
         {
             
@@ -139,7 +141,7 @@ namespace CloneDeploy_Services
         {
             var group = GetGroup(groupId);
             DeleteAllMembershipsForGroup(group.Id);
-            var computers = new ComputerServices().SearchComputers(group.SmartCriteria, Int32.MaxValue);
+            var computers = new ComputerServices().SearchComputersByName(group.SmartCriteria, Int32.MaxValue);
             var memberships = computers.Select(computer => new GroupMembershipEntity { GroupId = @group.Id, ComputerId = computer.Id }).ToList();
             return new GroupMembershipServices().AddMembership(memberships);
         }

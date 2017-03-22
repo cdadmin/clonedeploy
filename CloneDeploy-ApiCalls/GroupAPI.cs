@@ -40,6 +40,12 @@ namespace CloneDeploy_ApiCalls
             return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
         }
 
+        public bool ReCalcSmart()
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/ReCalcSmart", _resource);
+            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+        }
 
         public IEnumerable<GroupMunkiEntity> GetMunkiTemplates(int id)
         {

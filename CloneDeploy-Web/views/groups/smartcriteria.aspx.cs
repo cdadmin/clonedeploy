@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Web.UI.WebControls;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
@@ -24,7 +23,7 @@ public partial class views_groups_smartcriteria : Groups
 
     protected void btnTestQuery_OnClick(object sender, EventArgs e)
     {
-        gvComputers.DataSource = Call.ComputerApi.GetAll(Int32.MaxValue, txtContains.Text);
+        gvComputers.DataSource = Call.ComputerApi.GetAllByName(Int32.MaxValue, txtContains.Text);
         gvComputers.DataBind();
         lblTotal.Text = gvComputers.Rows.Count + " Result(s)";
     }

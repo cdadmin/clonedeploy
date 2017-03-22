@@ -66,6 +66,15 @@ public partial class views_admin_server {
     protected global::System.Web.UI.WebControls.TextBox txtWebService;
     
     /// <summary>
+    /// txtTftpServerIp control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.TextBox txtTftpServerIp;
+    
+    /// <summary>
     /// txtTFTPPath control.
     /// </summary>
     /// <remarks>

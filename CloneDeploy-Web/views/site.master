@@ -68,23 +68,24 @@
                 <div class="navmenu">
                     <ul>
 
-
-                        <li id="nav-hosts">
+                        
+                        <li id="navhosts" runat="server">
                             <a href="<%= ResolveUrl("~/views/computers/search.aspx") %>" class="icon-host"></a>
                         </li>
-                        <li id="nav-groups">
+                        <li id="navgroups" runat="server">
                             <a href="<%= ResolveUrl("~/views/groups/search.aspx") %>" class="icon-group"></a>
                         </li>
-                        <li id="nav-images">
+                        <li id="navimages" runat="server">
                             <a href="<%= ResolveUrl("~/views/images/search.aspx") %>" class="icon-image"></a>
                         </li>
-                        <li id="nav-tasks">
+                        <li id="navtasks" runat="server">
                             <a href="<%= ResolveUrl("~/views/tasks/active.aspx") %>" class="icon-task"></a>
                         </li>
                         <li id="nav-users">
                             <a href="<%= ResolveUrl("~/views/users/search.aspx") %>" class="icon-user"></a>
                         </li>
-                        <li id="nav-global">
+                  
+                        <li id="navglobal" runat="server">
                             <a href="<%= ResolveUrl("~/views/global/chooser.aspx") %>" class="icon-global"></a>
                         </li>
                         <li id="nav-settings">

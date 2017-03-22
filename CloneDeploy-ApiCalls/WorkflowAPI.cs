@@ -20,7 +20,8 @@ namespace CloneDeploy_ApiCalls
             _request.Method = Method.POST;
             _request.Resource = string.Format("api/{0}/CreateDefaultBootMenu/", _resource);
             _request.AddJsonBody(defaultMenuOptions);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+            var response = new ApiRequest().Execute<ApiBoolResponseDTO>(_request);
+            return response != null && response.Value;
         }
 
         public bool GenerateLinuxIsoConfig(IsoGenOptionsDTO isoOptions)

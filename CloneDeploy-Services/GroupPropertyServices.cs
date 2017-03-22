@@ -45,6 +45,7 @@ namespace CloneDeploy_Services
 
         public  void UpdateComputerProperties(GroupPropertyEntity groupProperty)
         {
+            if (groupProperty == null) return;
             foreach (var computer in new GroupServices().GetGroupMembers(groupProperty.GroupId))
             {
                 if (Convert.ToBoolean(groupProperty.ImageEnabled))

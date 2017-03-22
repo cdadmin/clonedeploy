@@ -51,8 +51,10 @@
     <Compile Include="ApiRequest.cs" />
     <Compile Include="CdVersionAPI.cs" />
     <Compile Include="ClusterGroupAPI.cs" />
+    <Compile Include="ClusterGroupDistributionPointAPI.cs" />
     <Compile Include="ComputerAPI.cs" />
     <Compile Include="ComputerLogAPI.cs" />
+    <Compile Include="DistributionPointAPI.cs" />
     <Compile Include="GroupMunkiAPI.cs" />
     <Compile Include="ComputerMunkiAPI.cs" />
     <Compile Include="FilesystemAPI.cs" />
@@ -68,6 +70,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingAPI.cs" />
     <Compile Include="Token.cs" />
+    <Compile Include="ServiceAccountAPI.cs" />
     <Compile Include="UserAPI.cs" />
     <Compile Include="UserGroupAPI.cs" />
     <Compile Include="ClusterGroupServerAPI.cs" />

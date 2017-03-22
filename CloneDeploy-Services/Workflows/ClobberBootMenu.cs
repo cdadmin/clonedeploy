@@ -145,7 +145,7 @@ namespace CloneDeploy_Services.Workflows
                             tftpFile.Path = path;
 
                             new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
-                                .FilesystemApi.WriteTftpFile(tftpFile);
+                                .ServiceAccountApi.WriteTftpFile(tftpFile);
                         
                         }
                     }
@@ -214,7 +214,7 @@ namespace CloneDeploy_Services.Workflows
                             tftpFile.Path = path;
 
                             new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
-                                .FilesystemApi.WriteTftpFile(tftpFile);
+                                .ServiceAccountApi.WriteTftpFile(tftpFile);
                                            
                     }            
                 }

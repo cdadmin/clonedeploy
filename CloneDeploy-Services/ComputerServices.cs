@@ -31,7 +31,6 @@ namespace CloneDeploy_Services
                 _uow.Save();
                 actionResult.Success = true;
                 actionResult.Id = computer.Id;
-                new GroupServices().UpdateAllSmartGroupsMembers();
             }
             else
             {
@@ -102,34 +101,56 @@ namespace CloneDeploy_Services
             ClusterGroupEntity cg = null;
             var cgServices = new ClusterGroupServices();
             var computer = GetComputer(computerId);
+
+            if (computer.ClusterGroupId != -1)
+            {
+                cg = cgServices.GetClusterGroup(computer.ClusterGroupId);
+                return cg ?? cgServices.GetDefaultClusterGroup();
+            }
             if (computer.RoomId != -1)
             {
                 var room = new RoomServices().GetRoom(computer.RoomId);
-                if(room != null)
-                cg =
-                    cgServices.GetClusterGroup(room.DistributionPointId);
+                if (room != null)
+                {
+                    if (room.DistributionPointId != -1)
+                    {
+                        cg =
+                            cgServices.GetClusterGroup(room.DistributionPointId);
+                        return cg ?? cgServices.GetDefaultClusterGroup();
+                    }
+                }
             }
-            else if (computer.BuildingId != -1)
+            if (computer.BuildingId != -1)
             {
                 var building = new BuildingServices().GetBuilding(computer.BuildingId);
                 if (building != null)
-                cg =
-                    cgServices.GetClusterGroup(building.DistributionPointId);
+                {
+                    if (building.DistributionPointId != -1)
+                    {
+                        cg =
+                            cgServices.GetClusterGroup(building.DistributionPointId);
+                        return cg ?? cgServices.GetDefaultClusterGroup();
+                    }
+                }
             }
-            else if (computer.SiteId != -1)
+            if (computer.SiteId != -1)
             {
                 var site = new SiteServices().GetSite(computer.SiteId);
                 if (site != null)
-                cg =
-                    cgServices.GetClusterGroup(site.DistributionPointId);
+                {
+                    if (site.DistributionPointId != -1)
+                    {
+                        cg =
+                            cgServices.GetClusterGroup(site.DistributionPointId);
+                        return cg ?? cgServices.GetDefaultClusterGroup();
+                    }
+                }
             }
 
-            if (cg == null)
-                cg = cgServices.GetDefaultClusterGroup();
-
-            return cg;
+            return cgServices.GetDefaultClusterGroup();
         }
 
+    
         public ComputerEntity GetComputer(int computerId)
         {
             var computer = _uow.ComputerRepository.GetById(computerId);
@@ -171,6 +192,33 @@ namespace CloneDeploy_Services
             }
         }
 
+        public List<ComputerEntity> SearchComputersForUserByName(int userId, int limit, string searchString = "")
+        {
+            var userServices = new UserServices();
+            if (limit == 0) limit = Int32.MaxValue;
+
+            if (userServices.GetUser(userId).Membership == "Administrator")
+                return SearchComputers(searchString, limit);
+
+            var listOfComputers = new List<ComputerEntity>();
+
+            var userManagedGroups = userServices.GetUserGroupManagements(userId);
+            if (userManagedGroups.Count == 0)
+                return SearchComputersByName(searchString, limit);
+            else
+            {
+                foreach (var managedGroup in userManagedGroups)
+                {
+                    listOfComputers.AddRange(new GroupServices().GetGroupMembers(managedGroup.GroupId, searchString));
+                }
+
+                foreach (var computer in listOfComputers)
+                    computer.Image = new ImageServices().GetImage(computer.ImageId);
+
+                return listOfComputers;
+            }
+        }
+
         public List<ComputerEntity> GetAll()
         {
 
@@ -181,6 +229,11 @@ namespace CloneDeploy_Services
         {
 
             return _uow.ComputerRepository.Search(searchString, limit);
+        }
+
+        public List<ComputerEntity> SearchComputersByName(string searchString, int limit)
+        {
+            return _uow.ComputerRepository.SearchByName(searchString, limit);         
         }
 
         public ActionResultDTO UpdateComputer(ComputerEntity computer)
@@ -198,8 +251,6 @@ namespace CloneDeploy_Services
                 _uow.Save();
                 actionResult.Success = true;
                 actionResult.Id = computer.Id;
-                new GroupServices().UpdateAllSmartGroupsMembers();
-
             }
 
             return actionResult;
@@ -210,6 +261,18 @@ namespace CloneDeploy_Services
 
             return _uow.ComputerRepository.Get(x => x.CustomBootEnabled == 1);
 
+
+        }
+
+        public void AddComputerToSmartGroups(ComputerEntity computer)
+        {
+            var groups = new GroupServices().SearchGroups();
+            foreach (var group in groups.Where(x => x.Type == "smart"))
+            {
+                var computers = SearchComputersByName(group.SmartCriteria, Int32.MaxValue).Where(x => x.Name == computer.Name);
+                var memberships = computers.Select(comp => new GroupMembershipEntity() { GroupId = @group.Id, ComputerId = comp.Id }).ToList();
+                new GroupMembershipServices().AddMembership(memberships);
+            }
 
         }
 
@@ -434,7 +497,7 @@ namespace CloneDeploy_Services
                                    tuple.Item2;
 
                             new APICall(new SecondaryServerServices().GetApiToken(server.Name))
-                                .FilesystemApi.WriteTftpFile(new TftpFileDTO()
+                                .ServiceAccountApi.WriteTftpFile(new TftpFileDTO()
                                 {
                                     Path = path,
                                     Contents = tuple.Item3
@@ -490,7 +553,7 @@ namespace CloneDeploy_Services
                             path += ".cfg";
 
                             new APICall(new SecondaryServerServices().GetApiToken(server.Name))
-                                .FilesystemApi.WriteTftpFile(new TftpFileDTO()
+                                .ServiceAccountApi.WriteTftpFile(new TftpFileDTO()
                                 {
                                     Path = path,
                                     Contents = bootMenu.BiosMenu

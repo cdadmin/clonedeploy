@@ -15,7 +15,7 @@ public partial class views_computers_groups : Computers
     protected void PopulateGrid()
     {
         var memberships = Call.ComputerApi.GetGroupMemberships(Computer.Id);
-        var computerGroups = memberships.Select(membership => Call.GroupApi.Get(membership.GroupId)).ToList();
+        var computerGroups = memberships.Select(membership => Call.GroupApi.Get(membership.GroupId)).Where(x => x != null).ToList();
         gvGroups.DataSource = computerGroups;
         gvGroups.DataBind();
     }

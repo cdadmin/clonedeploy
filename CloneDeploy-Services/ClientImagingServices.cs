@@ -17,17 +17,19 @@ namespace CloneDeploy_Services
     public class ClientImagingServices
     {
         private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+
         public bool Authorize(string token)
         {
             if (token == Settings.UniversalToken && !string.IsNullOrEmpty(Settings.UniversalToken))
                 return true;
-            
+
             var user = new UserServices().GetUserByToken(token);
             if (user != null)
                 return true;
 
             return false;
         }
+
         public string AddComputer(string name, string mac)
         {
             var computer = new ComputerEntity
@@ -147,7 +149,7 @@ namespace CloneDeploy_Services
                         return "true";
                 }
             }
-           
+
             return "false";
         }
 
@@ -171,15 +173,15 @@ namespace CloneDeploy_Services
                 return JsonConvert.SerializeObject(checkIn);
             }
 
-            var imageServerIdentifier = new Workflows.GetImageServer(computer).Run();
+            var imageDistributionPoint = new Workflows.GetImageServer(computer).Run();
 
             computerTask.Status = "1";
-            computerTask.ImageServer = imageServerIdentifier;
+            computerTask.DpId = imageDistributionPoint;
 
             if (new ActiveImagingTaskServices().UpdateActiveImagingTask(computerTask))
             {
                 checkIn.Result = "true";
-               
+
                 var image = new ImageServices().GetImage(computer.ImageId);
                 if (image != null)
                 {
@@ -187,11 +189,13 @@ namespace CloneDeploy_Services
                         image.Environment = "linux";
                     checkIn.ImageEnvironment = image.Environment;
                 }
-                
-                if(image.Environment == "winpe")
-                    checkIn.TaskArguments = computerTask.Arguments + " image_server_identifier=\"" + imageServerIdentifier + "\"\r\n";
+
+                if (image.Environment == "winpe")
+                    checkIn.TaskArguments = computerTask.Arguments + " dp_id=\"" +
+                                            imageDistributionPoint + "\"\r\n";
                 else
-                    checkIn.TaskArguments = computerTask.Arguments + " image_server_identifier=\"" + imageServerIdentifier + "\"";
+                    checkIn.TaskArguments = computerTask.Arguments + " dp_id=\"" +
+                                            imageDistributionPoint + "\"";
                 checkIn.TaskType = computerTask.Type;
                 return JsonConvert.SerializeObject(checkIn);
             }
@@ -212,34 +216,26 @@ namespace CloneDeploy_Services
             return Helpers.Utility.Encode(authString);
         }
 
-        public string DistributionPoint(string serverIdentifier, string task)
+        public string DistributionPoint(string dpId, string task)
         {
-      
-            var smb = new SMB();
-          
-            ImageShareDTO imageShare;
-            if (Settings.OperationMode == "Single" || serverIdentifier == Settings.ServerIdentifier)
-            {
-                imageShare = new SettingServices().GetImageShare();
-            }
-            else
-            {
-                imageShare = new APICall(new SecondaryServerServices().GetApiToken(serverIdentifier)).SettingApi.GetImageShareSettings();              
-            }
 
-            smb.SharePath = "//" + Utility.Between(imageShare.Server) + "/" + imageShare.Name;
-            smb.Domain = imageShare.Domain;
+            var smb = new SMB();
+
+            var dp = new DistributionPointServices().GetDistributionPoint(Convert.ToInt32(dpId));          
+
+            smb.SharePath = "//" + Utility.Between(dp.Server) + "/" + dp.ShareName;
+            smb.Domain = dp.Domain;
             if (task == "pull")
             {
-                smb.Username = imageShare.ReadWriteUser;
-                smb.Password = imageShare.ReadOnlyPassword;
+                smb.Username = dp.RwUsername;
+                smb.Password = new Encryption().DecryptText(dp.RwPassword);
             }
             else
             {
-                smb.Username = imageShare.ReadOnlyUser;
-                smb.Password = imageShare.ReadOnlyPassword;
+                smb.Username = dp.RoUsername;
+                smb.Password = new Encryption().DecryptText(dp.RoPassword);
             }
-            
+
             return JsonConvert.SerializeObject(smb);
         }
 
@@ -259,10 +255,15 @@ namespace CloneDeploy_Services
             new ImageProfileServices().UpdateProfile(profile);
             try
             {
-                if (Directory.Exists(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + profile.Image.Name))
-                    Directory.Delete(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + profile.Image.Name, true);
-                Directory.CreateDirectory(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + profile.Image.Name);
-                new FileOps().SetUnixPermissionsImage(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + profile.Image.Name);
+                if (
+                    Directory.Exists(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar +
+                                     profile.Image.Name))
+                    Directory.Delete(
+                        Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + profile.Image.Name, true);
+                Directory.CreateDirectory(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar +
+                                          profile.Image.Name);
+                new FileOps().SetUnixPermissionsImage(Settings.PrimaryStoragePath + "images" +
+                                                      Path.DirectorySeparatorChar + profile.Image.Name);
             }
             catch (Exception ex)
             {
@@ -273,7 +274,7 @@ namespace CloneDeploy_Services
         public void ErrorEmail(int computerId, string error)
         {
             var computerTask = new ComputerServices().GetTaskForComputer(computerId);
-            new ActiveImagingTaskServices().SendTaskErrorEmail(computerTask,error);
+            new ActiveImagingTaskServices().SendTaskErrorEmail(computerTask, error);
         }
 
         public void CheckOut(int computerId)
@@ -281,7 +282,7 @@ namespace CloneDeploy_Services
             var computerTask = new ComputerServices().GetTaskForComputer(computerId);
             var activeImagingTaskServices = new ActiveImagingTaskServices();
             activeImagingTaskServices.DeleteActiveImagingTask(computerTask.Id);
-            if(computerTask.Type == "unicast")
+            if (computerTask.Type == "unicast")
                 activeImagingTaskServices.SendTaskCompletedEmail(computerTask);
         }
 
@@ -296,7 +297,7 @@ namespace CloneDeploy_Services
             computerTask.Rate = "";
             computerTask.Remaining = "";
             activeImagingTaskServices.UpdateActiveImagingTask(computerTask);
-           
+
             activeImagingTaskServices.SendTaskCompletedEmail(computerTask);
         }
 
@@ -326,19 +327,8 @@ namespace CloneDeploy_Services
                 //Check if the queue is open yet
                 var inUse = activeImagingTaskServices.GetCurrentQueue(thisComputerTask);
                 var totalCapacity = 0;
-                if(thisComputerTask.ImageServer == Settings.ServerIdentifier)
-                    totalCapacity = Convert.ToInt32(Settings.QueueSize);
-                else
-                {
-                    var queue = new APICall(new SecondaryServerServices().GetApiToken(thisComputerTask.ImageServer)).SettingApi.GetImageShareSettings().QueueSize;
-                    if (!string.IsNullOrEmpty(queue))
-                        totalCapacity = Convert.ToInt32(queue);
-                    else
-                    {
-                        log.Debug("Could Not Get Queue Size For Secondary Server " + thisComputerTask.ImageServer);
-                        return "";
-                    }
-                }
+                var dp = new DistributionPointServices().GetDistributionPoint(thisComputerTask.DpId);
+                totalCapacity = dp.QueueSize;
                 if (inUse < totalCapacity)
                 {
                     //queue is open, is this computer next
@@ -354,7 +344,7 @@ namespace CloneDeploy_Services
                     {
                         //not time for this computer yet
                         queueStatus.Result = "false";
-                        queueStatus.Position = new ComputerServices().GetQueuePosition(computerId); 
+                        queueStatus.Position = new ComputerServices().GetQueuePosition(computerId);
                         return JsonConvert.SerializeObject(queueStatus);
                     }
                 }
@@ -372,19 +362,8 @@ namespace CloneDeploy_Services
 
                 var inUse = activeImagingTaskServices.GetCurrentQueue(thisComputerTask);
                 var totalCapacity = 0;
-                if (thisComputerTask.ImageServer == Settings.ServerIdentifier)
-                    totalCapacity = Convert.ToInt32(Settings.QueueSize);
-                else
-                {
-                    var queue = new APICall(new SecondaryServerServices().GetApiToken(thisComputerTask.ImageServer)).SettingApi.GetImageShareSettings().QueueSize;
-                    if (!string.IsNullOrEmpty(queue))
-                        totalCapacity = Convert.ToInt32(queue);
-                    else
-                    {
-                        log.Debug("Could Not Get Queue Size For Secondary Server " + thisComputerTask.ImageServer);
-                        return "";
-                    }
-                }
+                var dp = new DistributionPointServices().GetDistributionPoint(thisComputerTask.DpId);
+                totalCapacity = dp.QueueSize;
                 if (inUse < totalCapacity)
                 {
                     ChangeStatusInProgress(computerId);
@@ -414,10 +393,11 @@ namespace CloneDeploy_Services
 
         }
 
-        public string CheckHdRequirements(int profileId, int clientHdNumber, string newHdSize, string imageSchemaDrives, int clientLbs)
+        public string CheckHdRequirements(int profileId, int clientHdNumber, string newHdSize, string imageSchemaDrives,
+            int clientLbs)
         {
             var result = new HardDriveSchema();
-            
+
             var imageProfile = new ImageProfileServices().ReadProfile(profileId);
             var partitionHelper = new ClientPartitionHelper(imageProfile);
             var imageSchema = partitionHelper.GetImageSchema();
@@ -432,10 +412,10 @@ namespace CloneDeploy_Services
             }
 
             var listSchemaDrives = new List<int>();
-            if(!string.IsNullOrEmpty(imageSchemaDrives))
-                listSchemaDrives.AddRange(imageSchemaDrives.Split(' ').Select(hd => Convert.ToInt32(hd)));         
-            result.SchemaHdNumber = partitionHelper.NextActiveHardDrive(listSchemaDrives,clientHdNumber);
-            
+            if (!string.IsNullOrEmpty(imageSchemaDrives))
+                listSchemaDrives.AddRange(imageSchemaDrives.Split(' ').Select(hd => Convert.ToInt32(hd)));
+            result.SchemaHdNumber = partitionHelper.NextActiveHardDrive(listSchemaDrives, clientHdNumber);
+
             if (result.SchemaHdNumber == -1)
             {
                 result.IsValid = "false";
@@ -444,14 +424,14 @@ namespace CloneDeploy_Services
             }
 
             var newHdBytes = Convert.ToInt64(newHdSize);
-            var minimumSize = partitionHelper.HardDrive(result.SchemaHdNumber,newHdBytes);
+            var minimumSize = partitionHelper.HardDrive(result.SchemaHdNumber, newHdBytes);
 
             if (clientLbs != 0) //if zero should be from the osx imaging environment or winpe
             {
                 if (clientLbs != imageSchema.HardDrives[result.SchemaHdNumber].Lbs)
                 {
                     log.Debug("Error: The Logical Block Size Of This Hard Drive " + clientLbs +
-                               " Does Not Match The Original Image " + imageSchema.HardDrives[result.SchemaHdNumber].Lbs);
+                              " Does Not Match The Original Image " + imageSchema.HardDrives[result.SchemaHdNumber].Lbs);
 
 
                     result.IsValid = "false";
@@ -464,9 +444,9 @@ namespace CloneDeploy_Services
 
             if (minimumSize > newHdBytes)
             {
-                log.Debug("Error:  " + newHdBytes / 1024 / 1024 +
-                           " MB Is Less Than The Minimum Required HD Size For This Image(" +
-                           minimumSize / 1024 / 1024 + " MB)");
+                log.Debug("Error:  " + newHdBytes/1024/1024 +
+                          " MB Is Less Than The Minimum Required HD Size For This Image(" +
+                          minimumSize/1024/1024 + " MB)");
 
                 result.IsValid = "false";
                 result.Message = newHdBytes/1024/1024 +
@@ -506,13 +486,14 @@ namespace CloneDeploy_Services
             var partitionHelper = new ClientPartitionHelper(imageProfile);
             var imageSchema = partitionHelper.GetImageSchema();
             foreach (var part in from part in imageSchema.HardDrives[hdNumberToGet].Partitions
-                                 where part.Active
-                                 where part.VolumeGroup != null
-                                 where part.VolumeGroup.LogicalVolumes != null
-                                 select part)
+                where part.Active
+                where part.VolumeGroup != null
+                where part.VolumeGroup.LogicalVolumes != null
+                select part)
             {
                 result = "pvcreate -u " + part.Uuid + " --norestorefile -yf " +
-                         clientHd + partitionPrefix + part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] + "\r\n";
+                         clientHd + partitionPrefix +
+                         part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] + "\r\n";
                 result += "vgcreate " + part.VolumeGroup.Name + " " + clientHd + partitionPrefix +
                           part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] + " -yf" + "\r\n";
                 result += "echo \"" + part.VolumeGroup.Uuid + "\" >>/tmp/vg-" + part.VolumeGroup.Name +
@@ -586,7 +567,7 @@ namespace CloneDeploy_Services
             string result = null;
             var activeMulticastSessionServices = new ActiveMulticastSessionServices();
             var mcTask = activeMulticastSessionServices.GetFromPort(Convert.ToInt32(portBase));
-               
+
             if (mcTask != null)
             {
                 var prsRunning = true;
@@ -656,17 +637,17 @@ namespace CloneDeploy_Services
                 arguments = new CreateTaskArguments(computer, imageProfile, task).Run(objectId.ToString());
             }
 
-            var imageServerIdentifier = new Workflows.GetImageServer(computer).Run();
+            var imageDistributionPoint = new Workflows.GetImageServer(computer).Run();
             if (imageProfile.Image.Environment == "winpe")
-                arguments += " image_server_identifier=\"" + imageServerIdentifier + "\"\r\n";
+                arguments += " dp_id=\"" + imageDistributionPoint + "\"\r\n";
             else
-                arguments += " image_server_identifier=\"" + imageServerIdentifier + "\"";
+                arguments += " dp_id=\"" + imageDistributionPoint + "\"";
 
             return arguments;
 
         }
 
-        public string ImageList(string environment,int userId = 0)
+        public string ImageList(string environment, int userId = 0)
         {
             var images = new ImageServices().GetOnDemandImageList(userId);
             if (environment == "winpe")
@@ -684,7 +665,7 @@ namespace CloneDeploy_Services
             }
             else
             {
-                var imageList = new ImageList {Images = new List<string>()};              
+                var imageList = new ImageList {Images = new List<string>()};
                 if (environment == "macOS")
                     images = images.Where(x => x.Environment == "macOS").ToList();
                 else if (environment == "linux")
@@ -704,22 +685,23 @@ namespace CloneDeploy_Services
             var selectedImage = imageServices.GetImage(imageId);
             if (selectedImage.Environment == "winpe")
             {
-                var imageProfileList = new WinPEProfileList { ImageProfiles = new List<WinPEProfile>() };
+                var imageProfileList = new WinPEProfileList {ImageProfiles = new List<WinPEProfile>()};
                 int profileCounter = 0;
-                foreach (var imageProfile in imageServices.SearchProfiles(Convert.ToInt32(imageId)).OrderBy(x => x.Name))
+                foreach (var imageProfile in imageServices.SearchProfiles(Convert.ToInt32(imageId)).OrderBy(x => x.Name)
+                    )
                 {
                     profileCounter++;
                     var winpeProfile = new WinPEProfile();
                     winpeProfile.ProfileId = imageProfile.Id.ToString();
                     winpeProfile.ProfileName = imageProfile.Name;
                     imageProfileList.ImageProfiles.Add(winpeProfile);
-                    
+
                     if (profileCounter == 1)
                         imageProfileList.FirstProfileId = imageProfile.Id.ToString();
                 }
                 imageProfileList.Count = profileCounter.ToString();
                 return JsonConvert.SerializeObject(imageProfileList);
-            
+
             }
             else
             {
@@ -737,7 +719,7 @@ namespace CloneDeploy_Services
                 imageProfileList.Count = profileCounter.ToString();
                 return JsonConvert.SerializeObject(imageProfileList);
             }
-            
+
         }
 
         public string MulicastSessionList(string environment)
@@ -826,70 +808,6 @@ namespace CloneDeploy_Services
             return JsonConvert.SerializeObject(result);
         }
 
-        public string GetProxyReservation(string mac)
-        {
-            var bootClientReservation = new ProxyReservation();
-
-            var computer = new ComputerServices().GetComputerFromMac(mac);
-            if (computer == null)
-            {
-                bootClientReservation.BootFile = "NotFound";
-                return JsonConvert.SerializeObject(bootClientReservation);
-            }
-            if (computer.ProxyReservation == 0)
-            {
-                bootClientReservation.BootFile = "NotEnabled";
-                return JsonConvert.SerializeObject(bootClientReservation);
-            }
-
-            var computerReservation = new ComputerServices().GetComputerProxyReservation(computer.Id);
-            
-
-            bootClientReservation.NextServer = Helpers.Utility.Between(computerReservation.NextServer);
-            switch (computerReservation.BootFile)
-            {
-                case "bios_pxelinux":
-                    bootClientReservation.BootFile = @"proxy/bios/pxelinux.0";
-                    break;
-                case "bios_ipxe":
-                    bootClientReservation.BootFile = @"proxy/bios/undionly.kpxe";
-                    break;
-                case "bios_x86_winpe":
-                    bootClientReservation.BootFile = @"proxy/bios/pxeboot.n12";
-                    bootClientReservation.BcdFile = @"/boot/BCDx86";
-                    break;
-                case "bios_x64_winpe":
-                    bootClientReservation.BootFile = @"proxy/bios/pxeboot.n12";
-                    bootClientReservation.BcdFile = @"/boot/BCDx64";
-                    break;
-                case "efi_x86_syslinux":
-                    bootClientReservation.BootFile = @"proxy/efi32/syslinux.efi";
-                    break;
-                case "efi_x86_ipxe":
-                    bootClientReservation.BootFile = @"proxy/efi32/ipxe.efi";
-                    break;
-                case "efi_x86_winpe":
-                    bootClientReservation.BootFile = @"proxy/efi32/bootmgfw.efi";
-                    bootClientReservation.BcdFile = @"/boot/BCDx86";
-                    break;
-                case "efi_x64_syslinux":
-                    bootClientReservation.BootFile = @"proxy/efi64/syslinux.efi";
-                    break;
-                case "efi_x64_ipxe":
-                    bootClientReservation.BootFile = @"proxy/efi64/ipxe.efi";
-                    break;
-                case "efi_x64_winpe":
-                    bootClientReservation.BootFile = @"proxy/efi64/bootmgfw.efi";
-                    bootClientReservation.BcdFile = @"/boot/BCDx64";
-                    break;
-                case "efi_x64_grub":
-                    bootClientReservation.BootFile = @"proxy/efi64/bootx64.efi";
-                    break;
-            }
-
-            return JsonConvert.SerializeObject(bootClientReservation);
-        }
-
-       
+        
     }
 }

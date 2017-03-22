@@ -56,7 +56,14 @@
         <asp:TextBox ID="txtComputerDesc" runat="server" CssClass="descbox" TextMode="MultiLine"></asp:TextBox>
     </div>
     <br class="clear"/>
-    
+     <div class="size-4 column">
+        Cluster Group:
+    </div>
+    <div class="size-5 column">
+        <asp:DropDownList ID="ddlClusterGroup" runat="server" CssClass="ddlist"/>
+    </div>
+
+    <br class="clear"/>
      <div class="size-4 column">
         Site:
     </div>

@@ -88,15 +88,22 @@ namespace views.computers
             limit = ddlLimit.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimit.Text);
 
             
-            var listOfComputers = Call.ComputerApi.GetAll(limit, txtSearch.Text);
-            
+            var listOfComputers = Call.ComputerApi.GetAll(limit, txtSearch.Text);           
             listOfComputers = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
+
+            if (ddlSite.SelectedValue != "-1" || ddlBuilding.SelectedValue != "-1" || ddlRoom.SelectedValue != "-1" ||
+                ddlGroup.SelectedValue != "-1" || ddlImage.SelectedValue != "-1")
+            {
+                listOfComputers = Call.ComputerApi.GetAll(Int32.MaxValue, txtSearch.Text);
+                listOfComputers = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
+            }
+
             if (ddlSite.SelectedValue != "-1")
-                listOfComputers = listOfComputers.Where(c => c.SiteId == Convert.ToInt32(ddlSite.SelectedValue)).ToList();
+                listOfComputers = listOfComputers.Where(c => c.SiteId == Convert.ToInt32(ddlSite.SelectedValue)).Take(limit).ToList();
             if (ddlBuilding.SelectedValue != "-1")
-                listOfComputers = listOfComputers.Where(c => c.BuildingId == Convert.ToInt32(ddlBuilding.SelectedValue)).ToList();
+                listOfComputers = listOfComputers.Where(c => c.BuildingId == Convert.ToInt32(ddlBuilding.SelectedValue)).Take(limit).ToList();
             if (ddlRoom.SelectedValue != "-1")
-                listOfComputers = listOfComputers.Where(c => c.RoomId == Convert.ToInt32(ddlRoom.SelectedValue)).ToList();
+                listOfComputers = listOfComputers.Where(c => c.RoomId == Convert.ToInt32(ddlRoom.SelectedValue)).Take(limit).ToList();
             if (ddlGroup.SelectedValue != "-1")
             {
                 var groupMembers = Call.GroupApi.GetGroupMembers(Convert.ToInt32(ddlGroup.SelectedValue));
@@ -105,12 +112,12 @@ namespace views.computers
                     (from groupMember in groupMembers
                         from computer in listOfComputers
                         where groupMember.Id == computer.Id
-                        select computer).ToList();
+                        select computer).Take(limit).ToList();
               
                
             }
             if (ddlImage.SelectedValue != "-1")
-                listOfComputers = listOfComputers.Where(c => c.Image != null).Where(a => a.Image.Id == Convert.ToInt32(ddlImage.SelectedValue)).ToList();
+                listOfComputers = listOfComputers.Where(c => c.Image != null).Where(a => a.Image.Id == Convert.ToInt32(ddlImage.SelectedValue)).Take(limit).ToList();
             gvComputers.DataSource = listOfComputers;
             
             /*Dynamic column example

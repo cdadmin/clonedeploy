@@ -24,12 +24,12 @@
 
         public static string DefaultKernel32
         {
-            get { return "4.5"; }
+            get { return "4.9.8"; }
         }
         
         public static string DefaultKernel64
         {
-            get { return "4.5x64"; }
+            get { return "4.9.8x64"; }
         }
 
         public static string DefaultInit
@@ -56,7 +56,7 @@
         //Fix Me
         public static string PrimaryStoragePath
         {
-            get { return new SettingServices().GetImageShare().PhysicalPath; }
+            get { return new DistributionPointServices().GetPrimaryDistributionPoint().PhysicalPath; }
         }
 
       
@@ -301,6 +301,11 @@
         {
             get { return new SettingServices().GetSetting("Multicast Server Role ").Value == "1"; }
         }
-    
+
+        public static string TftpServerIp
+        {
+            get { return new SettingServices().GetSetting("Tftp Server Ip").Value; }
+        }
+
     }
 }

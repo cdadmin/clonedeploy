@@ -32,6 +32,8 @@ namespace CloneDeploy_ApiCalls
         AuthorizationAPI AuthorizationApi { get; }
         ClusterGroupAPI ClusterGroupApi { get; }
         ClusterGroupServerAPI ClusterGroupServerApi { get; }
+        ClusterGroupDistributionPointAPI ClusterGroupDistributionPointApi { get; }
+        ServiceAccountAPI ServiceAccountApi { get; }
 
         IGenericAPI<BootEntryEntity> BootEntryApi { get; }
         IGenericAPI<BootTemplateEntity> BootTemplateApi { get; }
@@ -56,6 +58,7 @@ namespace CloneDeploy_ApiCalls
         IGenericAPI<SiteEntity> SiteApi { get; }
         IGenericAPI<SysprepTagEntity> SysprepTagApi { get; }
         IGenericAPI<SecondaryServerEntity> SecondaryServerApi { get; }
+        IGenericAPI<DistributionPointEntity> DistributionPointApi { get; }
         
 
         

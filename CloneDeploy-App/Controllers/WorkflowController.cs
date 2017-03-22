@@ -44,7 +44,7 @@ namespace CloneDeploy_App.Controllers
             return new ApiBoolResponseDTO() {Value = new CopyPxeBinaries().CopyFiles()};
         }
 
-        [CustomAuth(Permission = "ServiceAccount")]
+        [CustomAuth(Permission = "Administrator")]
         [HttpGet]
         public ApiBoolResponseDTO CancelAllImagingTasks()
         {

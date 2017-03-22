@@ -209,7 +209,7 @@ namespace CloneDeploy_Services.Workflows
                     tftpFile.Path = tftpPath + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
 
                     new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
-                        .FilesystemApi.WriteTftpFile(tftpFile);
+                        .ServiceAccountApi.WriteTftpFile(tftpFile);
                 }
             }
         }
@@ -369,7 +369,7 @@ namespace CloneDeploy_Services.Workflows
                                Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default.ipxe";
 
                     new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
-                        .FilesystemApi.WriteTftpFile(tftpFile);
+                        .ServiceAccountApi.WriteTftpFile(tftpFile);
                 }
             }
 
@@ -505,7 +505,7 @@ namespace CloneDeploy_Services.Workflows
                                Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
 
                     new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
-                        .FilesystemApi.WriteTftpFile(tftpFile);
+                        .ServiceAccountApi.WriteTftpFile(tftpFile);
                 }
             }
 

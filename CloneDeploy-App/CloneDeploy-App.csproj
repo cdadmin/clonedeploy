@@ -101,8 +101,12 @@
     <Compile Include="Controllers\CdVersionController.cs" />
     <Compile Include="Controllers\AuthorizationController.cs" />
     <Compile Include="Controllers\ClusterGroupController.cs" />
+    <Compile Include="Controllers\ClusterGroupDistributionPointsController.cs" />
+    <Compile Include="Controllers\DistributionPointController.cs" />
     <Compile Include="Controllers\SecondaryServerController.cs" />
     <Compile Include="Controllers\ClusterGroupServersController.cs" />
+    <Compile Include="Controllers\ServiceAccountController.cs" />
+    <Compile Include="Controllers\ProxyDhcpController.cs" />
     <Compile Include="Controllers\WorkflowController.cs" />
     <Compile Include="Controllers\UserGroupController.cs" />
     <Compile Include="Controllers\UserGroupGroupManagementController.cs" />

@@ -52,26 +52,5 @@ namespace CloneDeploy_Services
             return srDto;
             
         }
-
-        public ImageShareDTO GetImageShare()
-        {
-            var imageShare = new ImageShareDTO();
-            imageShare.Type = _uow.SettingRepository.GetFirstOrDefault(s => s.Name == "Image Share Type").Value;
-            imageShare.Server = _uow.SettingRepository.GetFirstOrDefault(s => s.Name == "Image Server Ip").Value;
-            imageShare.Name = _uow.SettingRepository.GetFirstOrDefault(s => s.Name == "Image Share Name").Value;
-            imageShare.Domain = _uow.SettingRepository.GetFirstOrDefault(s => s.Name == "Image Domain").Value;
-            imageShare.ReadWriteUser = _uow.SettingRepository.GetFirstOrDefault(s => s.Name == "Image ReadWrite Username").Value;
-            imageShare.ReadWritePassword =
-                new Encryption().DecryptText(
-                    _uow.SettingRepository.GetFirstOrDefault(s => s.Name == "Image ReadWrite Password Encrypted").Value);
-            imageShare.ReadOnlyUser = _uow.SettingRepository.GetFirstOrDefault(s => s.Name == "Image ReadOnly Username").Value;
-            imageShare.ReadOnlyPassword =
-                new Encryption().DecryptText(
-                    _uow.SettingRepository.GetFirstOrDefault(s => s.Name == "Image ReadOnly Password Encrypted").Value);
-            imageShare.PhysicalPath = _uow.SettingRepository.GetFirstOrDefault(s => s.Name == "Image Physical Path").Value;
-            imageShare.QueueSize = _uow.SettingRepository.GetFirstOrDefault(s => s.Name == "Image Queue Size").Value;
-
-            return imageShare;
-        }
     }
 }

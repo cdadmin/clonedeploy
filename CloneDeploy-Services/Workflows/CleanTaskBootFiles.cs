@@ -74,7 +74,7 @@ namespace CloneDeploy_Services.Workflows
                                    _bootFile + extension;
 
                         new APICall(new SecondaryServerServices().GetApiToken(secondaryServer.Name))
-                            .FilesystemApi.DeleteTftpFile(path);
+                            .ServiceAccountApi.DeleteTftpFile(path);
                     }
                 }
             }
@@ -127,7 +127,7 @@ namespace CloneDeploy_Services.Workflows
                         ;
 
                         new APICall(new SecondaryServerServices().GetApiToken(secondaryServer.Name))
-                            .FilesystemApi.DeleteTftpFile(path);
+                            .ServiceAccountApi.DeleteTftpFile(path);
                     }
                 }
             }

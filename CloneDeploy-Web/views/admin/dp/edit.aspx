@@ -1,44 +1,42 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/admin.master" AutoEventWireup="true" CodeBehind="imageshare.aspx.cs" Inherits="CloneDeploy_Web.views.admin.imageshare" %>
-<asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
-    <li>Share Settings</li>
-    </asp:Content>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/dp/dp.master" AutoEventWireup="true" Inherits="views_admin_dp_edit" Codebehind="edit.aspx.cs" %>
 
-<asp:Content runat="server" ID="Help" ContentPlaceHolderID="Help">
-     <li role="separator" class="divider"></li>
-      <li><a href="<%= ResolveUrl("~/views/help/admin-share.aspx")%>"  target="_blank">Help</a></li>
+<asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
+<li>Edit</li>
 </asp:Content>
-
-<asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
-    <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update Server Settings " OnClick="btnUpdateSettings_OnClick" CssClass="btn btn-default" />
+<asp:Content ID="Content3" ContentPlaceHolderID="SubHelp" Runat="Server">
+     <li role="separator" class="divider"></li>
+    <li><a href="<%= ResolveUrl("~/views/help/admin-dp.aspx") %>"   target="_blank">Help</a></li>
+</asp:Content>
+<asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
+     <asp:LinkButton ID="buttonUpdateDp" runat="server" OnClick="buttonUpdateDp_OnClick" Text="Update Distribution Point " CssClass="btn btn-default"  />
      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <span class="caret"></span>
   </button>
 </asp:Content>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="SubContent" Runat="Server">
-    <script type="text/javascript">
-    $(document).ready(function() {
-        $('#imageshare').addClass("nav-current");
-    });
-</script>
-    
-    <div id="divShareEnabled" runat="server" Visible="False">
-      <div class="size-4 column">
-    Share Type:
-</div>
-<div class="size-setting column">
-    <asp:DropDownList runat="server" id="ddlType" CssClass="ddlist">
-        <asp:ListItem>Local</asp:ListItem>
-        <asp:ListItem>Remote</asp:ListItem>
-        </asp:DropDownList>
-
-</div>
-<br class="clear"/>
-      <div class="size-4 column">
+<asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
+     <div class="size-4 column">
+        Display Name:
+    </div>
+    <div class="size-5 column">
+        <asp:TextBox ID="txtDisplayName" runat="server" CssClass="textbox" ClientIDMode="Static"></asp:TextBox>
+      
+    </div>
+    <br class="clear"/>
+    <div class="size-4 column">
         Server Ip / Name:
     </div>
     <div class="size-5 column">
         <asp:TextBox ID="txtServer" runat="server" CssClass="textbox"></asp:TextBox>
+    </div>
+    <br class="clear"/>
+    <div class="size-4 column">
+        Protocol:
+    </div>
+    <div class="size-5 column">
+        <asp:DropDownList ID="ddlProtocol" runat="server" CssClass="ddlist">
+        <asp:ListItem>SMB</asp:ListItem>
+            </asp:DropDownList>
     </div>
     <br class="clear"/>
    
@@ -92,7 +90,20 @@
         <asp:TextBox ID="txtRoPassword" runat="server" CssClass="textbox" TextMode="Password"/>
     </div>
 
+
     <br class="clear"/>
+    
+     <div class="size-4 column">
+        Primary Distribution Point:
+    </div>
+    <div class="size-5 column">
+        <asp:CheckBox ID="chkPrimary" runat="server" OnCheckedChanged="chkPrimary_OnCheckedChanged" AutoPostBack="True" />
+    </div>
+
+    <br class="clear"/>
+    <br />
+    
+    <div id="PhysicalPath" runat="server" Visible="False">
      <div class="size-4 column">
         Physical Path:
     </div>
@@ -101,16 +112,18 @@
     </div>
 
     <br class="clear"/>
-     <div class="size-4 column">
-        Queue Size:
+     </div>
+
+   
+    
+    <div id="BackendServer" runat="server" Visible="False">
+      <div class="size-4 column">
+        Backend Server Ip / Name:
     </div>
-    <div class="size-1 column">
-        <asp:TextBox ID="txtQueueSize" runat="server" CssClass="textbox"/>
+    <div class="size-5 column">
+        <asp:TextBox ID="txtBackendServer" runat="server" CssClass="textbox"/>
     </div>
 
-    <br class="clear"/>
-        </div>
-     <div id="divShareDisabled" runat="server" Visible="False">
-     This Server Does Not Have The Image Role Enabled.    
-     </div>
+   </div>
 </asp:Content>
+

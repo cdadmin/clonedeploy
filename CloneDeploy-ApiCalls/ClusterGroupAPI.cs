@@ -19,6 +19,13 @@ namespace CloneDeploy_ApiCalls
             return new ApiRequest().Execute<List<ClusterGroupServerEntity>>(_request);
         }
 
+        public IEnumerable<ClusterGroupDistributionPointEntity> GetClusterDistributionPoints(int id)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetClusterDistributionPoints/{1}", _resource, id);
+            return new ApiRequest().Execute<List<ClusterGroupDistributionPointEntity>>(_request);
+        }
+
         
     }
 }

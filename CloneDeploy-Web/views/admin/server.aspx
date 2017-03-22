@@ -64,6 +64,13 @@
 
 
 <br class="clear"/>
+     <div class="size-4 column">
+    TFTP Server IP:
+</div>
+<div class="size-setting column">
+    <asp:TextBox ID="txtTftpServerIp" runat="server" CssClass="textbox"></asp:TextBox>
+</div>
+<br class="clear"/>
 <div class="size-4 column">
     TFTP Path:
 </div>

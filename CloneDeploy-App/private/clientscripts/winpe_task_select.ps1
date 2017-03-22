@@ -8,7 +8,7 @@ log -message "System Architecture:"
 log -message $(gwmi win32_operatingsystem | select OSArchitecture)
 try
 {
-    $efi=Confirm-SecureBootUEFI 2>&1 >> $clientLog
+    $efi=Confirm-SecureBootUEFI
     if($efi -eq $false)
     {
         $script:bootType="efi"

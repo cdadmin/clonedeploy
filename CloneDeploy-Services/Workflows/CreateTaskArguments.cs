@@ -175,14 +175,7 @@ namespace CloneDeploy_Services.Workflows
 
             if (_direction == "pull")
             {
-                if (_computer != null)
-                {
-                    AppendString("dp_id=" + new ComputerServices().GetClusterGroup(_computer.Id).Id);
-                }
-                else
-                {
-                    AppendString("dp_id=" + _clusterGroupServices.GetDefaultClusterGroup().Id);
-                }
+             
                 //Added for OSX NBI suppport
                 AppendString("image_direction=pull");
                 AppendString("osx_target_volume=" + "\"" + _imageProfile.OsxTargetVolume + "\"");
@@ -205,7 +198,7 @@ namespace CloneDeploy_Services.Workflows
                 //Support For on demand 
                 if (_computer != null)
                 {
-                    AppendString("dp_id=" + new ComputerServices().GetClusterGroup(_computer.Id).Id);
+                    
                     if(!string.IsNullOrEmpty(_computer.CustomAttribute1))
                         AppendString("cust_attr_1=" + "\"" + _computer.CustomAttribute1 + "\"");
                     if (!string.IsNullOrEmpty(_computer.CustomAttribute2))
@@ -217,8 +210,7 @@ namespace CloneDeploy_Services.Workflows
                     if (!string.IsNullOrEmpty(_computer.CustomAttribute5))
                         AppendString("cust_attr_5=" + "\"" + _computer.CustomAttribute5 + "\"");
                 }
-                else
-                    AppendString("dp_id=" + _clusterGroupServices.GetDefaultClusterGroup().Id);
+               
 
                 //Added for OSX NBI suppport
                 AppendString("image_direction=push");

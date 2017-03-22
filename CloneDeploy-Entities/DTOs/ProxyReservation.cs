@@ -1,6 +1,6 @@
-﻿namespace CloneDeploy_Entities.DTOs.ClientImaging
+﻿namespace CloneDeploy_Entities.DTOs
 {
-    public class ProxyReservation
+    public class ProxyReservationDTO
     {
         public string NextServer { get; set; }
         public string BootFile { get; set; }

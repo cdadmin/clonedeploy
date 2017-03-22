@@ -90,7 +90,13 @@ namespace CloneDeploy_App.Controllers
             return new ApiBoolResponseDTO() {Value = _groupServices.DeleteMunkiTemplates(id)};
         }
 
-        
+        [Authorize]
+        public ApiBoolResponseDTO ReCalcSmart()
+        {
+            _groupServices.UpdateAllSmartGroupsMembers();
+            return new ApiBoolResponseDTO() {Value = true};
+        }
+
         [CustomAuth(Permission = "GroupRead")]
         public IEnumerable<GroupMunkiEntity> GetMunkiTemplates(int id)
         {

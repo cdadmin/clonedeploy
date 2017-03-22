@@ -28,6 +28,7 @@ namespace views.computers
                 }
 
                 var count = Call.ComputerApi.Import(new ApiStringResponseDTO(){Value = csvContent});
+                Call.GroupApi.ReCalcSmart();
                 EndUserMessage = "Successfully Imported " + count + " Computers";
             }         
 
