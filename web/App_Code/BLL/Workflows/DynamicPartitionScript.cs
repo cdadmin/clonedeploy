@@ -159,6 +159,8 @@ namespace BLL.Workflows
                     var isActive = "";
                     if (partition.Number == ImageSchema.HardDrives[HdNumberToGet].Boot)
                         isActive = "-IsActive";
+					if (partition.Type == "Unknown") //Not sure how to handle this yet
+                        partition.Type = "IFS";
                     partitionScript +=
                           "New-Partition " + ClientHd + " -MbrType " + partition.Type + " -Size " + partition.Size * ImageSchema.HardDrives[HdNumberToGet].Lbs / 1024 / 1024 + "MB " + isActive + " | Format-Volume -FileSystem " + partition.FsType + " 2>&1 >> $clientLog\r\n";
                 }
