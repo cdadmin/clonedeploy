@@ -1,4 +1,6 @@
-﻿using CloneDeploy_Entities.DTOs;
+﻿using System.IO;
+using System.Net;
+using CloneDeploy_Entities.DTOs;
 using RestSharp;
 
 namespace CloneDeploy_ApiCalls
@@ -24,12 +26,12 @@ namespace CloneDeploy_ApiCalls
             return response != null && response.Value;
         }
 
-        public bool GenerateLinuxIsoConfig(IsoGenOptionsDTO isoOptions)
+        public byte[] GenerateLinuxIsoConfig(IsoGenOptionsDTO isoOptions)
         {
             _request.Method = Method.POST;
             _request.Resource = string.Format("api/{0}/GenerateLinuxIsoConfig/", _resource);
             _request.AddJsonBody(isoOptions);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+            return new ApiRequest().ExecuteRaw(_request);
         }
 
         public bool CreateClobberBootMenu(int profileId, bool promptComputerName)
@@ -63,5 +65,7 @@ namespace CloneDeploy_ApiCalls
             _request.AddParameter("clientCount", clientCount);
             return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
         }
+
+       
     }
 }

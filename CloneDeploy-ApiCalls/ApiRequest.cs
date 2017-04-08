@@ -41,5 +41,18 @@ namespace CloneDeploy_ApiCalls
             }
             return response.Data;
         }
+
+        public byte[] ExecuteRaw(RestRequest request)
+        {
+            var client = new RestClient();
+            client.BaseUrl = _baseUrl;
+            client.Timeout = 5000;
+
+            request.AddHeader("Authorization", "bearer " + _token);
+            return client.DownloadData(request);
+          
+        }
+
+       
     }
 }

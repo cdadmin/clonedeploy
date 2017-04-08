@@ -36,8 +36,14 @@ namespace CloneDeploy_Services
 
             var computerReservation = new ComputerServices().GetComputerProxyReservation(computer.Id);
 
-
-            bootClientReservation.NextServer = Helpers.Utility.Between(computerReservation.NextServer);
+          
+            if (!string.IsNullOrEmpty(computerReservation.NextServer))
+            {
+                bootClientReservation.NextServer = Helpers.Utility.Between(computerReservation.NextServer);
+            }
+           
+            
+            
             switch (computerReservation.BootFile)
             {
                 case "bios_pxelinux":

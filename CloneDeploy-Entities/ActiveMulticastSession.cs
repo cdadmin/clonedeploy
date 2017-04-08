@@ -25,6 +25,9 @@ namespace CloneDeploy_Entities
 
         [Column("ond_image_profile_id", Order = 6)]
         public int ImageProfileId { get; set; }
+
+        [Column("server_id", Order = 7)]
+        public int ServerId { get; set; }
         
     }
 }

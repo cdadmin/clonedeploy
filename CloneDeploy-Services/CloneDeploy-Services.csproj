@@ -33,6 +33,9 @@
     <Reference Include="CsvHelper">
       <HintPath>..\packages\CsvHelper.2.13.5.0\lib\net40-client\CsvHelper.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
     </Reference>
@@ -77,6 +80,7 @@
     <Compile Include="ClientPartitionHelper.cs" />
     <Compile Include="DistributionPoint.cs" />
     <Compile Include="FileFolderServices.cs" />
+    <Compile Include="Helpers\Zip.cs" />
     <Compile Include="ProxyDhcpServices.cs" />
     <Compile Include="FilesystemServices.cs" />
     <Compile Include="GroupServices.cs" />
@@ -125,6 +129,7 @@
     <Compile Include="Workflows\DynamicPartitionScript.cs" />
     <Compile Include="Workflows\EffectiveMunkiTemplate.cs" />
     <Compile Include="Workflows\GetImageServer.cs" />
+    <Compile Include="Workflows\GetMulticastServer.cs" />
     <Compile Include="Workflows\IsoGen.cs" />
     <Compile Include="Workflows\Multicast.cs" />
     <Compile Include="Workflows\TaskBootMenu.cs" />

@@ -194,7 +194,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage DistributionPoint(DpDTO dpDto)
         {
-            _response.Content = new StringContent(new ClientImagingServices().DistributionPoint(dpDto.serverIdentifier, dpDto.task), System.Text.Encoding.UTF8, "text/plain");
+            _response.Content = new StringContent(new ClientImagingServices().DistributionPoint(dpDto.dpId, dpDto.task), System.Text.Encoding.UTF8, "text/plain");
             return _response;
         }
 

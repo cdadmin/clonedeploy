@@ -103,6 +103,21 @@ namespace CloneDeploy_Services
             
         }
 
+        public ClusterGroupEntity GetClusterGroup(int groupId)
+        {
+            var cgServices = new ClusterGroupServices();
+            var group = GetGroup(groupId);
+
+            if (group.ClusterGroupId != -1)
+            {
+                var cg = cgServices.GetClusterGroup(@group.ClusterGroupId);
+                return cg ?? cgServices.GetDefaultClusterGroup();
+            }
+
+
+            return cgServices.GetDefaultClusterGroup();
+        }
+
         public  List<GroupEntity> SearchGroupsForUser(int userId, string searchString = "")
         {
             var userServices = new UserServices();

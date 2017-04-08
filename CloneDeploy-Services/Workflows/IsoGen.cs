@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Web;
@@ -19,8 +20,11 @@ namespace CloneDeploy_Services.Workflows
         private string _userToken { get; set; }
         private readonly string _webPath = Settings.WebPath;
         private readonly IsoGenOptionsDTO _isoOptions;
+        private readonly string _configOutPath;
+        private readonly string _basePath;
+        private readonly string _rootfsPath;
         private readonly string _buildPath;
-       
+        private string _outputPath;
 
         public IsoGen(IsoGenOptionsDTO isoGenOptions)
         {
@@ -32,27 +36,30 @@ namespace CloneDeploy_Services.Workflows
             {
                 _userToken = "";
             }
-            _buildPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
-                            Path.DirectorySeparatorChar + "client_iso" + Path.DirectorySeparatorChar + "output" +
+            _basePath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
+                       Path.DirectorySeparatorChar;    
+            _rootfsPath = _basePath + "client_iso" + Path.DirectorySeparatorChar + "rootfs" + Path.DirectorySeparatorChar;
+            _buildPath = _basePath + "client_iso" + Path.DirectorySeparatorChar + "build-tmp";
+            _outputPath = _basePath + "client_iso" + Path.DirectorySeparatorChar;
+            _configOutPath = _basePath + "client_iso" + Path.DirectorySeparatorChar + "config" +
                             Path.DirectorySeparatorChar;
-
         }
 
         public bool Generate()
         {
             try
             {
-                if (Directory.Exists(_buildPath))
-                    Directory.Delete(_buildPath, true);
-                Directory.CreateDirectory(_buildPath);
-                Directory.CreateDirectory(_buildPath + "clonedeploy");
-                Directory.CreateDirectory(_buildPath + "EFI");
-                Directory.CreateDirectory(_buildPath + "EFI" + Path.DirectorySeparatorChar + "boot");
-                Directory.CreateDirectory(_buildPath + "syslinux");
+                if (Directory.Exists(_configOutPath))
+                    Directory.Delete(_configOutPath, true);
+                Directory.CreateDirectory(_configOutPath);
+                Directory.CreateDirectory(_configOutPath + "clonedeploy");
+                Directory.CreateDirectory(_configOutPath + "EFI");
+                Directory.CreateDirectory(_configOutPath + "EFI" + Path.DirectorySeparatorChar + "boot");
+                Directory.CreateDirectory(_configOutPath + "syslinux");
                 File.Copy(Settings.TftpPath + "images" + Path.DirectorySeparatorChar + _isoOptions.bootImage,
-                    _buildPath + "clonedeploy" + Path.DirectorySeparatorChar + _isoOptions.bootImage, true);
+                    _configOutPath + "clonedeploy" + Path.DirectorySeparatorChar + _isoOptions.bootImage, true);
                 File.Copy(Settings.TftpPath + "kernels" + Path.DirectorySeparatorChar + _isoOptions.kernel,
-                    _buildPath + "clonedeploy" + Path.DirectorySeparatorChar + _isoOptions.kernel, true);
+                    _configOutPath + "clonedeploy" + Path.DirectorySeparatorChar + _isoOptions.kernel, true);
             }
             catch (Exception ex)
             {
@@ -62,6 +69,16 @@ namespace CloneDeploy_Services.Workflows
 
             CreateSyslinuxMenu();
             CreateGrubMenu();
+
+            if (_isoOptions.buildType == "ISO")
+            {
+                StartMkIsofs();
+            }
+            else
+            {
+                CreateUsb();
+            }
+
 
             return true;
         }
@@ -154,9 +171,9 @@ namespace CloneDeploy_Services.Workflows
 
             string outFile;
             if (_isoOptions.buildType == "ISO")
-                outFile = _buildPath + "syslinux" + Path.DirectorySeparatorChar + "isolinux.cfg";
+                outFile = _configOutPath + "syslinux" + Path.DirectorySeparatorChar + "isolinux.cfg";
             else
-                outFile = _buildPath + "syslinux" + Path.DirectorySeparatorChar + "syslinux.cfg";
+                outFile = _configOutPath + "syslinux" + Path.DirectorySeparatorChar + "syslinux.cfg";
 
             new FileOps().WritePath(outFile, sysLinuxMenu.ToString());
            
@@ -167,7 +184,7 @@ namespace CloneDeploy_Services.Workflows
             var grubMenu = new StringBuilder();
 
             grubMenu.Append("# Global options" + NewLineChar);
-            grubMenu.Append("set timeout=90" + NewLineChar);
+            grubMenu.Append("set timeout=-1" + NewLineChar);
             grubMenu.Append("set default=0" + NewLineChar);
             grubMenu.Append("set fallback=1" + NewLineChar);
             grubMenu.Append("set pager=1" + NewLineChar);
@@ -235,10 +252,100 @@ namespace CloneDeploy_Services.Workflows
             grubMenu.Append("" + NewLineChar);
 
 
-            var outFile = _buildPath + "EFI" + Path.DirectorySeparatorChar + "boot" + Path.DirectorySeparatorChar +
+            var outFile = _configOutPath + "EFI" + Path.DirectorySeparatorChar + "boot" + Path.DirectorySeparatorChar +
                           "grub.cfg";
 
             new FileOps().WritePath(outFile, grubMenu.ToString());
+        }
+
+        private string GenerateArgs()
+        {
+            var logPath = _basePath + "logs" + Path.DirectorySeparatorChar + "mkisofs.log";
+
+            string arguments;
+            var isUnix = Environment.OSVersion.ToString().Contains("Unix");
+            if (isUnix)
+            {
+                arguments = "-c \"mkisofs -o " + "\"" + _outputPath + "\"" +
+                            " -log-file \"" + logPath + "\"" +
+                            " -graft-points -joliet -R -full-iso9660-filenames -allow-lowercase" +
+                            " -b syslinux/isolinux.bin -c syslinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table" +
+                            " -eltorito-alt-boot -e EFI/images/efiboot.img -no-emul-boot " + _buildPath + "\"";
+            }
+            else
+            {
+                var appPath = _basePath + "apps" + Path.DirectorySeparatorChar + "mkisofs.exe";
+                arguments = "/c \"cd /d " + _buildPath + " & " + " \"" + appPath + "\"" + " -o " + "\"" + _outputPath + "\"" +
+                              " -log-file \"" + logPath + "\"" +
+                              " -graft-points -joliet -R -full-iso9660-filenames -allow-lowercase" +
+                              " -b syslinux/isolinux.bin -c syslinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table" +
+                              " -eltorito-alt-boot -eltorito-platform 0xEF -eltorito-boot EFI/images/efiboot.img -no-emul-boot . " + "\"";
+            }
+            return arguments;
+        }
+
+        private void CleanBuildPath()
+        {
+            if (Directory.Exists(_buildPath))
+            {
+                Directory.Delete(_buildPath, true);
+            }
+        }
+        private bool CreateUsb()
+        {
+            _outputPath += "clientboot.zip";
+
+            //copy base root path to temporary location
+            new FileOps().Copy(_rootfsPath, _buildPath);
+            //copy newly generated config files on top of temporary location
+            new FileOps().Copy(_configOutPath, _buildPath);
+
+            new Zip().Create(_outputPath,_buildPath);
+
+            CleanBuildPath();
+
+            return true;
+        }
+
+        private bool StartMkIsofs()
+        {
+            _outputPath += "clientboot.iso";
+
+            //copy base root path to temporary location
+            new FileOps().Copy(_rootfsPath, _buildPath);
+            //copy newly generated config files on top of temporary location
+            new FileOps().Copy(_configOutPath, _buildPath);
+
+
+            var isUnix = Environment.OSVersion.ToString().Contains("Unix");
+            var shell = isUnix ? "/bin/bash" : "cmd.exe";
+
+            var processArguments = GenerateArgs();
+            if (processArguments == null) return false;
+            var pInfo = new ProcessStartInfo { FileName = shell, Arguments = processArguments };
+
+            Process makeIso;
+            try
+            {
+                makeIso = Process.Start(pInfo);
+            }
+            catch (Exception ex)
+            {
+
+                log.Debug(ex.ToString());
+                return false;
+            }
+
+            if (makeIso == null)
+            {
+                CleanBuildPath();
+                return false;
+            }
+
+            makeIso.WaitForExit(15000);
+            
+            CleanBuildPath();
+            return true;
         }
     }
 }

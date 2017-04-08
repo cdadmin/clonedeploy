@@ -117,7 +117,7 @@ namespace CloneDeploy_Services.Helpers
         {
             if (Environment.OSVersion.ToString().Contains("Unix"))
                 Syscall.chmod(path,
-                    (FilePermissions.S_IRWXU | FilePermissions.S_IRWXG | FilePermissions.S_IROTH | FilePermissions.S_IXOTH ));
+                    (FilePermissions.S_IRWXU | FilePermissions.S_IRWXG | FilePermissions.S_IRWXO));
         }
         
        
@@ -145,6 +145,34 @@ namespace CloneDeploy_Services.Helpers
         {
             return File.Exists(filePath);
 
+        }
+
+        public void Copy(string sourceDirectory, string targetDirectory)
+        {
+            DirectoryInfo diSource = new DirectoryInfo(sourceDirectory);
+            DirectoryInfo diTarget = new DirectoryInfo(targetDirectory);
+
+            CopyAll(diSource, diTarget);
+        }
+
+        private void CopyAll(DirectoryInfo source, DirectoryInfo target)
+        {
+            Directory.CreateDirectory(target.FullName);
+
+            // Copy each file into the new directory.
+            foreach (FileInfo fi in source.GetFiles())
+            {
+
+                fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
+            }
+
+            // Copy each subdirectory using recursion.
+            foreach (DirectoryInfo diSourceSubDir in source.GetDirectories())
+            {
+                DirectoryInfo nextTargetSubDir =
+                    target.CreateSubdirectory(diSourceSubDir.Name);
+                CopyAll(diSourceSubDir, nextTargetSubDir);
+            }
         }
        
     }

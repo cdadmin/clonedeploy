@@ -122,6 +122,11 @@ namespace CloneDeploy_Services
             
         }
 
+        public List<ActiveMulticastSessionEntity> GetAll()
+        {
+            return _uow.ActiveMulticastSessionRepository.Get();
+        }
+
         public  List<ActiveMulticastSessionEntity> GetOnDemandList()
         {
             

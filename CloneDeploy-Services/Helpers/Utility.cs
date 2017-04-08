@@ -12,6 +12,7 @@ using System.Web;
 using Claunia.PropertyList;
 using CloneDeploy_Entities;
 using log4net;
+using log4net.Appender;
 
 namespace CloneDeploy_Services.Helpers
 {

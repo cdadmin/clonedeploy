@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics.Eventing.Reader;
+using System.IO;
 using System.Web;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Web;
@@ -19,23 +21,39 @@ public partial class views_admin_bootmenu_isogen : Admin
             ddlBootImage.SelectedValue = Settings.DefaultInit;
         }
     }
+
     protected void btnGenerate_OnClick(object sender, EventArgs e)
     {
-        var output = Call.FilesystemApi.GetServerPaths("iso","");
-
+       
         var isoGenOptions = new IsoGenOptionsDTO();
         isoGenOptions.bootImage = ddlBootImage.Text;
         isoGenOptions.buildType = ddlBuildType.Text;
         isoGenOptions.kernel = ddlKernel.Text;
         isoGenOptions.arguments = txtKernelArgs.Text;
 
-        if (
-            Call.WorkflowApi.GenerateLinuxIsoConfig(isoGenOptions))
-            EndUserMessage = "Complete.  Output Located At " + Utility.EscapeFilePaths(output);
+
+        var clientboot = Call.WorkflowApi.GenerateLinuxIsoConfig(isoGenOptions);
+
+
+        Response.Clear();
+        MemoryStream ms = new MemoryStream(clientboot);
+        if (ddlBuildType.Text == "ISO")
+        {
+            Response.ContentType = "application/iso";
+            Response.AddHeader("content-disposition", "attachment;filename=clientboot.iso");
+        }
         else
         {
-            EndUserMessage = "Could Not Create Client ISO Files";
+            Response.ContentType = "application/zip";
+            Response.AddHeader("content-disposition", "attachment;filename=clientboot.zip");
         }
+
+
+        Response.Buffer = true;
+        ms.WriteTo(Response.OutputStream);
+        Response.End();
+
+
     }
 }
 

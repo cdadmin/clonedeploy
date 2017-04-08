@@ -46,6 +46,9 @@ namespace CloneDeploy_Entities
         [Column("group_default_bootmenu_enabled", Order = 9)]
         public int SetDefaultBootMenu { get; set; }
 
+        [Column("cluster_group_id", Order = 10)]
+        public int ClusterGroupId { get; set; }
+
         [NotMapped]
         public List<ComputerEntity> Members { get; set; }
 
