@@ -20,11 +20,11 @@ namespace CloneDeploy_Services.Workflows
         {
             //Find the best multicast server to use
 
-            int serverId;
+            int serverId = -1;
            
 
             if (Settings.OperationMode == "Single")
-                serverId = -1;
+                return serverId;
             else
             {
                 var clusterServices = new ClusterGroupServices();
@@ -44,8 +44,6 @@ namespace CloneDeploy_Services.Workflows
 
                 }
 
-              
-
                 var availableMulticastServers =
                         new ClusterGroupServices().GetClusterServers(clusterGroup.Id).Where(x => x.MulticastRole == 1);
 
@@ -58,50 +56,31 @@ namespace CloneDeploy_Services.Workflows
                     taskInUseDict.Add(mServer.SecondaryServerId, counter);
                 }
 
-                var freeDps = new List<DistributionPointEntity>();
-                foreach (var dp in availableDistributionPoints)
-                {
-                    if (taskInUseDict[dp.Id] < queueSizesDict[dp.Id])
-                        freeDps.Add(dp);
-                }
+           
 
                 if (taskInUseDict.Count == 1)
                     serverId = taskInUseDict.Keys.First();
 
                 else if (taskInUseDict.Count > 1)
                 {
-                    var freeDictionary = new Dictionary<int, int>();
-                    foreach (var dp in freeDps)
-                    {
-                        freeDictionary.Add(dp.Id, taskInUseDict[dp.Id]);
-                    }
-
-                    var duplicateFreeDict = freeDictionary.GroupBy(x => x.Value).Where(x => x.Count() > 1);
-
-                    if (duplicateFreeDict.Count() == freeDictionary.Count)
-                    {
-                        //all image servers have equal free slots - randomly choose one.
-                        var random = new Random();
-                        var index = random.Next(0, freeDps.Count);
-                        dpId = freeDps[index].Id;
-                    }
-                    else
-                    {
-                        //Just grab the first one with the smallest queue, could be a duplicate but will eventually even out on it's own
-                        var orderedInUse = freeDictionary.OrderBy(x => x.Value);
-                        dpId = orderedInUse.First().Key;
-                    }
-                }
-                else
-                {
-                    //Free image servers count is 0, pick the one with the lowest number of tasks to be added to the queue
                     var orderedInUse = taskInUseDict.OrderBy(x => x.Value);
-                    dpId = orderedInUse.First().Key;
 
+                    if (taskInUseDict.Values.Distinct().Count() == 1)
+                    {
+                        //all multicast server have equal tasks - randomly choose one.
+                        var random = new Random();
+                        var index = random.Next(0, taskInUseDict.Count);
+                        serverId = taskInUseDict[index];
+                    }
+                    //Just grab the first one with the smallest queue, could be a duplicate but will eventually even out on it's own               
+                    serverId = orderedInUse.First().Key;
+
+                   
                 }
+              
 
             }
-            return dpId;
+            return serverId;
         }
     }
 }
