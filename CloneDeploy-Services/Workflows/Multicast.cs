@@ -21,6 +21,8 @@ namespace CloneDeploy_Services.Workflows
         private readonly GroupEntity _group;
         private ImageProfileEntity _imageProfile;
         private readonly int _userId;
+        private int _multicastServerId;
+
         //Constructor For Starting Multicast For Group
         public Multicast(int groupId, int userId)
         {
@@ -60,6 +62,13 @@ namespace CloneDeploy_Services.Workflows
                 return "Could Not Determine Current Port Base";
             }
 
+            _multicastServerId = _isOnDemand
+                ? new Workflows.GetMulticastServer().Run()
+                : new Workflows.GetMulticastServer(_group).Run();
+
+            if (_multicastServerId == -2)
+                return "Could Not Find Any Available Multicast Servers";
+
             //Fix Me
             /*var dp = new DistributionPointServices().GetPrimaryDistributionPoint();
             if (dp == null) return "Could Not Find A Primary Distribution Point";
@@ -70,7 +79,11 @@ namespace CloneDeploy_Services.Workflows
             {
                 _multicastSession.Name = _group.Name;
                 _group.Name =_multicastSession.Port.ToString();
-                if (!StartMulticastSender())
+                var onDemandprocessArguments = GenerateProcessArguments();
+                if (onDemandprocessArguments == null)
+                    return "Could Not Create Multicast Sender Arguments";
+
+                if (!StartMulticastSender(onDemandprocessArguments))
                     return "Could Not Start The Multicast Application";
                 else
                     return "Successfully Started Multicast " + _group.Name;
@@ -108,7 +121,11 @@ namespace CloneDeploy_Services.Workflows
                 return "Could Not Create Computer Task Arguments";
             }
 
-            if (!StartMulticastSender())
+            var processArguments = GenerateProcessArguments();
+            if (processArguments == null)
+                return "Could Not Create Multicast Sender Arguments";
+            
+            if (!StartMulticastSender(processArguments))
             {
                 activeMulticastSessionServices.Delete(_multicastSession.Id);
                 return "Could Not Start The Multicast Application";
@@ -183,7 +200,6 @@ namespace CloneDeploy_Services.Workflows
 
         private string GenerateProcessArguments()
         {
-            var isUnix = Environment.OSVersion.ToString().Contains("Unix");
 
             var schema = new ClientPartitionHelper(_imageProfile).GetImageSchema();
 
@@ -281,6 +297,9 @@ namespace CloneDeploy_Services.Workflows
                         minReceivers = " --min-receivers " + _computers.Count;
                     }
 
+                    //get remote environment api call here
+
+                    var isUnix = Environment.OSVersion.ToString().Contains("Unix");
                     string compAlg;
                     string stdout = "";
                     switch (Path.GetExtension(imageFile))
@@ -365,34 +384,13 @@ namespace CloneDeploy_Services.Workflows
             return processArguments;
         }
 
-        private bool StartMulticastSender()
+        private bool StartMulticastSender(string processArguments)
         {
             var isUnix = Environment.OSVersion.ToString().Contains("Unix");
 
-            string shell;
-            if (isUnix)
-            {
-                string dist = null;
-                var distInfo = new ProcessStartInfo
-                {
-                    UseShellExecute = false,
-                    FileName = "uname",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true
-                };
+            var shell = isUnix ? "/bin/bash" : "cmd.exe";
 
-                using (var process = Process.Start(distInfo))
-                    if (process != null) dist = process.StandardOutput.ReadToEnd();
-
-                shell = dist != null && dist.ToLower().Contains("bsd") ? "/bin/csh" : "/bin/bash";
-            }
-            else
-            {
-                shell = "cmd.exe";
-            }
-
-            var processArguments = GenerateProcessArguments();
-            if (processArguments == null) return false;
+           
             var senderInfo = new ProcessStartInfo {FileName = shell, Arguments = processArguments};
 
             var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +

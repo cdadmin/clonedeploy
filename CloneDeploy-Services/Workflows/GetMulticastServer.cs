@@ -11,9 +11,15 @@ namespace CloneDeploy_Services.Workflows
     public class GetMulticastServer
     {
         private readonly GroupEntity _group;
+
         public GetMulticastServer(GroupEntity group)
         {
             _group = group;
+        }
+
+        public GetMulticastServer()
+        {
+            //For on demand no group
         }
 
         public int Run()
@@ -21,7 +27,7 @@ namespace CloneDeploy_Services.Workflows
             //Find the best multicast server to use
 
             int serverId = -1;
-           
+
 
             if (Settings.OperationMode == "Single")
                 return serverId;
@@ -34,29 +40,30 @@ namespace CloneDeploy_Services.Workflows
                 if (_group != null)
                 {
                     clusterGroup = new GroupServices().GetClusterGroup(_group.Id);
-
                 }
                 else
                 {
                     //on demand group might be null
                     //use default cluster group
                     clusterGroup = clusterServices.GetDefaultClusterGroup();
-
                 }
 
                 var availableMulticastServers =
-                        new ClusterGroupServices().GetClusterServers(clusterGroup.Id).Where(x => x.MulticastRole == 1);
+                    new ClusterGroupServices().GetClusterServers(clusterGroup.Id).Where(x => x.MulticastRole == 1);
 
-               
+                if (availableMulticastServers.Count() == 0)
+                    return -2;
+
                 var taskInUseDict = new Dictionary<int, int>();
                 foreach (var mServer in availableMulticastServers)
                 {
-                    var counter = new ActiveMulticastSessionServices().GetAll().Count(x => x.ServerId == mServer.SecondaryServerId);
+                    var counter =
+                        new ActiveMulticastSessionServices().GetAll()
+                            .Count(x => x.ServerId == mServer.SecondaryServerId);
 
                     taskInUseDict.Add(mServer.SecondaryServerId, counter);
                 }
 
-           
 
                 if (taskInUseDict.Count == 1)
                     serverId = taskInUseDict.Keys.First();
@@ -72,13 +79,12 @@ namespace CloneDeploy_Services.Workflows
                         var index = random.Next(0, taskInUseDict.Count);
                         serverId = taskInUseDict[index];
                     }
-                    //Just grab the first one with the smallest queue, could be a duplicate but will eventually even out on it's own               
-                    serverId = orderedInUse.First().Key;
-
-                   
+                    else
+                    {
+                        //Just grab the first one with the smallest queue, could be a duplicate but will eventually even out on it's own               
+                        serverId = orderedInUse.First().Key;
+                    }
                 }
-              
-
             }
             return serverId;
         }
