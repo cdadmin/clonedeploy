@@ -48,6 +48,13 @@ namespace CloneDeploy_App.Controllers
         {
             return new ApiStringResponseDTO() { Value = Utility.Between(Settings.TftpServerIp) };
         }
+
+        [CustomAuth(Permission = "ServiceAccount")]
+        [HttpPost]
+        public ApiIntResponseDTO GetMulticastSenderArgs(MulticastArgsDTO multicastArgs)
+        {
+            return new ApiIntResponseDTO() { Value = new CloneDeploy_Services.Workflows.MulticastArguments().GenerateProcessArguments(multicastArgs) };
+        }
         
     }
 }

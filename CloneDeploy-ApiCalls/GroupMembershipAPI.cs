@@ -5,8 +5,8 @@ using RestSharp;
 
 namespace CloneDeploy_ApiCalls
 {
-    
-    public class GroupMembershipAPI: GenericAPI<GroupMembershipEntity>
+
+    public class GroupMembershipAPI : BaseAPI
     {
         public GroupMembershipAPI(string resource):base(resource)
         {

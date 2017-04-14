@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Configuration;
 using System.Web;
+using log4net;
 using RestSharp;
 
 namespace CloneDeploy_ApiCalls
 {
     public class ApiRequest
     {
+        private static readonly ILog Log = LogManager.GetLogger("ApplicationLog");
         private readonly string _token;
         private readonly Uri _baseUrl;
 
@@ -35,9 +37,13 @@ namespace CloneDeploy_ApiCalls
 
             if (response.ErrorException != null)
             {
-                const string message = "Error retrieving response: ";
-                //Logger.Log(message + response.ErrorException);
+                Log.Error("Error retrieving response: " + response.ErrorException);
                 return default(TClass);
+            }
+            else if (response.Data == null)
+            {
+                //Fix me - not finished
+                Log.Debug("Response was null: ");
             }
             return response.Data;
         }

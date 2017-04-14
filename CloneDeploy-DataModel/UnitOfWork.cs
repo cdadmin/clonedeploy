@@ -63,6 +63,13 @@ namespace CloneDeploy_DataModel
         private IGenericRepository<ClusterGroupServerEntity> _clusterGroupServersRepository;
         private IGenericRepository<DistributionPointEntity> _distributionPointRepository;
         private IGenericRepository<ClusterGroupDistributionPointEntity> _clusterGroupDistributionPointRepository;
+        private IGenericRepository<AuditLogEntity> _auditLogRepository;
+
+
+        public IGenericRepository<AuditLogEntity> AuditLogRepository
+        {
+            get { return _auditLogRepository ?? (_auditLogRepository = new GenericRepository<AuditLogEntity>(_context)); }
+        }
 
         public IGenericRepository<ClusterGroupDistributionPointEntity> ClusterGroupDistributionPointRepository
         {

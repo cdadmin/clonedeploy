@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Web;
+﻿using System.Collections.Generic;
+using CloneDeploy_ApiCalls;
 using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services.Helpers;
 using log4net;
 
@@ -69,10 +65,7 @@ namespace CloneDeploy_Services.Workflows
             if (_multicastServerId == -2)
                 return "Could Not Find Any Available Multicast Servers";
 
-            //Fix Me
-            /*var dp = new DistributionPointServices().GetPrimaryDistributionPoint();
-            if (dp == null) return "Could Not Find A Primary Distribution Point";
-            */
+      
             _multicastSession.UserId = _userId;
             //End of the road for starting an on demand multicast
             if (_isOnDemand)
@@ -80,10 +73,7 @@ namespace CloneDeploy_Services.Workflows
                 _multicastSession.Name = _group.Name;
                 _group.Name =_multicastSession.Port.ToString();
                 var onDemandprocessArguments = GenerateProcessArguments();
-                if (onDemandprocessArguments == null)
-                    return "Could Not Create Multicast Sender Arguments";
-
-                if (!StartMulticastSender(onDemandprocessArguments))
+                if (onDemandprocessArguments == 0)
                     return "Could Not Start The Multicast Application";
                 else
                     return "Successfully Started Multicast " + _group.Name;
@@ -122,15 +112,12 @@ namespace CloneDeploy_Services.Workflows
             }
 
             var processArguments = GenerateProcessArguments();
-            if (processArguments == null)
-                return "Could Not Create Multicast Sender Arguments";
-            
-            if (!StartMulticastSender(processArguments))
+            if (processArguments == 0)
             {
                 activeMulticastSessionServices.Delete(_multicastSession.Id);
                 return "Could Not Start The Multicast Application";
             }
-
+            
             foreach (var computer in _computers)
                 Utility.WakeUp(computer.Mac);
 
@@ -198,255 +185,59 @@ namespace CloneDeploy_Services.Workflows
             return true;
         }
 
-        private string GenerateProcessArguments()
+        private int GenerateProcessArguments()
         {
-
-            var schema = new ClientPartitionHelper(_imageProfile).GetImageSchema();
-
-            var schemaCounter = -1;
-            var multicastHdCounter = 0;
-            string processArguments = null;
-            foreach (var hd in schema.HardDrives)
+            var multicastArgs = new MulticastArgsDTO();
+            multicastArgs.schema = new ClientPartitionHelper(_imageProfile).GetImageSchema();
+            multicastArgs.Environment = _imageProfile.Image.Environment;
+            multicastArgs.ImageName = _imageProfile.Image.Name;
+            multicastArgs.Port = _multicastSession.Port.ToString();
+            if (_isOnDemand)
             {
-                schemaCounter++;
-                if (!hd.Active) continue;
-                multicastHdCounter++;
-
-                var imagePath = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar +
-                                _imageProfile.Image.Name + Path.DirectorySeparatorChar + "hd" +
-                                schemaCounter;
-
-                var x = 0;
-                foreach (var part in schema.HardDrives[schemaCounter].Partitions)
-                {
-                    if (!part.Active) continue;
-                    string imageFile = null;
-                    foreach (var ext in new[] {".ntfs", ".fat", ".extfs", ".hfsp", ".imager", ".winpe", ".xfs"})
-                    {
-                        try
-                        {
-                            imageFile =
-                         Directory.GetFiles(
-                             imagePath + Path.DirectorySeparatorChar, "part" + part.Number + ext + ".*")
-                             .FirstOrDefault();
-                        }
-                        catch (Exception ex)
-                        {
-                            log.Debug(ex.Message);
-                            return null;
-
-                        }
-                     
-
-                        if (imageFile != null) break;
-
-                        //Look for lvm
-                        if (part.VolumeGroup == null) continue;
-                        if (part.VolumeGroup.LogicalVolumes == null) continue;
-                        foreach (var lv in part.VolumeGroup.LogicalVolumes.Where(lv => lv.Active))
-                        {
-                            try
-                            {
-                                imageFile =
-                             Directory.GetFiles(
-                                 imagePath + imagePath + Path.DirectorySeparatorChar, lv.VolumeGroup + "-" +
-                                                                                      lv.Name + ext + ".*")
-                                 .FirstOrDefault();
-                            }
-                            catch (Exception ex)
-                            {
-                                log.Debug(ex.Message);
-                                return null;
-                            }
-                         
-                        }
-                    }
-
-                    if (imageFile == null)
-                        continue;
-                    if (_imageProfile.Image.Environment == "winpe" &&
-                        schema.HardDrives[schemaCounter].Table.ToLower() == "gpt")
-                    {
-                        if (part.Type.ToLower() == "system" || part.Type.ToLower() == "recovery" ||
-                            part.Type.ToLower() == "reserved")
-                            continue;
-                    }
-                    if (_imageProfile.Image.Environment == "winpe" &&
-                        schema.HardDrives[schemaCounter].Table.ToLower() == "mbr")
-                    {
-                        if (part.Number == schema.HardDrives[schemaCounter].Boot && schema.HardDrives[schemaCounter].Partitions.Length > 1)
-                            continue;
-                    }
-                    x++;
-
-                    string minReceivers;
-                    string senderArgs;
-                    if (_isOnDemand)
-                    {
-                        senderArgs = Settings.SenderArgs;
-                        if (!string.IsNullOrEmpty(_clientCount))
-                            minReceivers = " --min-receivers " + _clientCount;
-                        else
-                            minReceivers = "";
-                    }
-                    else
-                    {
-                        senderArgs = string.IsNullOrEmpty(_imageProfile.SenderArguments)
-                            ? Settings.SenderArgs
-                            : _imageProfile.SenderArguments;
-                        minReceivers = " --min-receivers " + _computers.Count;
-                    }
-
-                    //get remote environment api call here
-
-                    var isUnix = Environment.OSVersion.ToString().Contains("Unix");
-                    string compAlg;
-                    string stdout = "";
-                    switch (Path.GetExtension(imageFile))
-                    {
-                        case ".lz4":
-                            compAlg = isUnix ? "lz4 -d " : "lz4.exe\" -d ";
-                            stdout = " - ";
-                            break;
-                        case ".gz":
-                            compAlg = isUnix ? "gzip -c -d " : "gzip.exe\" -c -d ";
-                            stdout = "";
-                            break;
-                        case ".uncp":
-                            compAlg = "none";
-                            break;
-                        case ".wim":
-                            compAlg = "none";
-                            break;
-                        default:
-                            return null;
-                    }
-
-                    if (isUnix)
-                    {
-                        string prefix = null;
-                        if(multicastHdCounter == 1)
-                            prefix = x == 1 ? " -c \"" : " ; ";
-                        else
-                            prefix = " ; ";
-
-
-                        if (compAlg == "none" || Settings.MulticastDecompression == "client")
-                        {
-                            processArguments += (prefix + "cat " + "\"" + imageFile + "\"" + " | udp-sender" +
-                                                 " --portbase " + _multicastSession.Port + minReceivers + " " +
-                                                 " --ttl 32 " +
-                                                 senderArgs);
-                        }
-
-                        else
-                        {
-                            processArguments += (prefix + compAlg + "\"" + imageFile + "\"" + stdout + " | udp-sender" +
-                                                 " --portbase " + _multicastSession.Port + minReceivers + " " +
-                                                 " --ttl 32 " +
-                                                 senderArgs);
-                        }
-                    }
-                    else
-                    {
-                        var appPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
-                                      Path.DirectorySeparatorChar + "apps" + Path.DirectorySeparatorChar;
-
-                        string prefix = null;
-                        if (multicastHdCounter == 1)
-                            prefix = x == 1 ? " /c \"" : " & ";
-                        else
-                            prefix = " & ";
-                       
-
-                        if (compAlg == "none" || Settings.MulticastDecompression == "client")
-                        {
-                            processArguments += (prefix + "\"" + appPath +
-                                                 "udp-sender.exe" + "\"" + " --file " + "\"" + imageFile + "\"" +
-                                                 " --portbase " + _multicastSession.Port + minReceivers + " " +
-                                                 " --ttl 32 " +
-                                                 senderArgs);
-                        }
-                        else
-                        {
-                            processArguments += (prefix + "\"" + appPath + compAlg + "\"" + imageFile + "\"" + stdout + " | " + "\"" + appPath +
-                                                 "udp-sender.exe" + "\"" +
-                                                 " --portbase " + _multicastSession.Port + minReceivers + " " +
-                                                 " --ttl 32 " +
-                                                 senderArgs);
-                        }
-
-                    }
-                }
+                multicastArgs.ExtraArgs = Settings.SenderArgs;
+                if (!string.IsNullOrEmpty(_clientCount))
+                    multicastArgs.clientCount = _clientCount;
+            }
+            else
+            {
+                multicastArgs.ExtraArgs = string.IsNullOrEmpty(_imageProfile.SenderArguments)
+                    ? Settings.SenderArgs
+                    : _imageProfile.SenderArguments;
+                multicastArgs.clientCount = _computers.Count.ToString();
             }
 
-            processArguments += "\"";
-            return processArguments;
-        }
-
-        private bool StartMulticastSender(string processArguments)
-        {
-            var isUnix = Environment.OSVersion.ToString().Contains("Unix");
-
-            var shell = isUnix ? "/bin/bash" : "cmd.exe";
-
-           
-            var senderInfo = new ProcessStartInfo {FileName = shell, Arguments = processArguments};
-
-            var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
-                          Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar + "multicast.log";
-
-            var logText = (Environment.NewLine + DateTime.Now.ToString("MM-dd-yy hh:mm") +
-                           " Starting Multicast Session " +
-                           _group.Name +
-                           " With The Following Command:" + Environment.NewLine + senderInfo.FileName +
-                           senderInfo.Arguments
-                           + Environment.NewLine);
-            File.AppendAllText(logPath, logText);
-
-
-            Process sender;
-            try
+            var pid = 0;
+            if (_multicastServerId == -1)
+                pid = new Workflows.MulticastArguments().GenerateProcessArguments(multicastArgs);
+            else
             {
-               
-                sender = Process.Start(senderInfo);
-            }
-            catch (Exception ex)
-            {
-                
-                log.Debug(ex.ToString());
-                File.AppendAllText(logPath,
-                    "Could Not Start Session " + _group.Name + " Try Pasting The Command Into A Command Prompt");
-                return false;
+                var secondaryServer =
+                                    new SecondaryServerServices().GetSecondaryServer(_multicastServerId);
+                pid =
+                    new APICall(new SecondaryServerServices().GetApiToken(secondaryServer.Name))
+                        .ServiceAccountApi.GetMulticastSenderArgs(multicastArgs);             
             }
 
-            Thread.Sleep(2000);
-            
-            if (sender == null) return false;
-
-            if (sender.HasExited)
-            {
-
-                File.AppendAllText(logPath,
-                    "Session " + _group.Name + " Started And Was Forced To Quit, Try Running The Command Manually");
-                return false;
-            }
+            if (pid == 0) return pid;
 
             var activeMulticastSessionServices = new ActiveMulticastSessionServices();
             if (_isOnDemand)
             {
-                _multicastSession.Pid = sender.Id;
+                _multicastSession.Pid = pid;
                 _multicastSession.Name = _group.Name;
                 activeMulticastSessionServices.AddActiveMulticastSession(_multicastSession);
             }
             else
             {
-                
-                _multicastSession.Pid = sender.Id;
+                _multicastSession.Pid = pid;
                 activeMulticastSessionServices.UpdateActiveMulticastSession(_multicastSession);
             }
 
-            return true;
+            return pid;
         }
+
+        
+
+      
     }
 }

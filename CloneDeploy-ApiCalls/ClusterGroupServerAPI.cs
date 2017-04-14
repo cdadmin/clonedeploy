@@ -5,7 +5,7 @@ using RestSharp;
 
 namespace CloneDeploy_ApiCalls
 {
-    public class ClusterGroupServerAPI : GenericAPI<ClusterGroupServerEntity>
+    public class ClusterGroupServerAPI : BaseAPI
     {
         public ClusterGroupServerAPI(string resource):base(resource)
         {

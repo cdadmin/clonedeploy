@@ -5,15 +5,13 @@ using RestSharp;
 
 namespace CloneDeploy_ApiCalls
 {
-    public class WorkflowAPI
+    public class WorkflowAPI : BaseAPI
     {
-        private readonly RestRequest _request;     
-        private readonly string _resource;
+       
 
-        public WorkflowAPI(string resource)
+        public WorkflowAPI(string resource):base (resource)
         {
-            _request = new RestRequest();
-            _resource = resource;
+          
         }
     
 

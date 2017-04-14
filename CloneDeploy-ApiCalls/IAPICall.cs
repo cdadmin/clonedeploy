@@ -34,31 +34,32 @@ namespace CloneDeploy_ApiCalls
         ClusterGroupServerAPI ClusterGroupServerApi { get; }
         ClusterGroupDistributionPointAPI ClusterGroupDistributionPointApi { get; }
         ServiceAccountAPI ServiceAccountApi { get; }
+        SecondaryServerAPI SecondaryServerApi { get; }
 
-        IGenericAPI<BootEntryEntity> BootEntryApi { get; }
-        IGenericAPI<BootTemplateEntity> BootTemplateApi { get; }
-        IGenericAPI<BuildingEntity> BuildingApi { get; }
-        IGenericAPI<ComputerBootMenuEntity> ComputerBootMenuApi { get; }
-        IGenericAPI<ComputerProxyReservationEntity> ComputerProxyReservationApi { get; }
-        IGenericAPI<FileFolderEntity> FileFolderApi { get; }
-        IGenericAPI<GroupBootMenuEntity> GroupBootMenuApi { get; }
-        IGenericAPI<GroupPropertyEntity> GroupPropertyApi { get; }
-        IGenericAPI<ImageProfileFileFolderEntity> ImageProfileFileFolderApi { get; }
-        IGenericAPI<ImageProfileScriptEntity> ImageProfileScriptApi { get; }
-        IGenericAPI<ImageProfileSysprepTagEntity> ImageProfileSysprepTagApi { get; }
-        IGenericAPI<MunkiManifestCatalogEntity> MunkiManifestCatalogApi { get; }
-        IGenericAPI<MunkiManifestIncludedManifestEntity> MunkiManifestIncludedManifestApi { get; }
-        IGenericAPI<MunkiManifestManagedInstallEntity> MunkiManifestManagedInstallApi { get; }
-        IGenericAPI<MunkiManifestManagedUnInstallEntity> MunkiManifestManagedUnInstallEntityApi { get; }
-        IGenericAPI<MunkiManifestManagedUpdateEntity> MunkiManifestManagedUpdateEntityApi { get; }
-        IGenericAPI<MunkiManifestOptionInstallEntity> MunkiManifestOptionInstallEntity { get; }
-        IGenericAPI<PortEntity> PortApi { get; }
-        IGenericAPI<RoomEntity> RoomApi { get; }
-        IGenericAPI<ScriptEntity> ScriptApi { get; }
-        IGenericAPI<SiteEntity> SiteApi { get; }
-        IGenericAPI<SysprepTagEntity> SysprepTagApi { get; }
-        IGenericAPI<SecondaryServerEntity> SecondaryServerApi { get; }
-        IGenericAPI<DistributionPointEntity> DistributionPointApi { get; }
+        BootEntryAPI BootEntryApi { get; }
+        BootTemplateAPI BootTemplateApi { get; }
+        BuildingAPI BuildingApi { get; }
+        ComputerBootMenuAPI ComputerBootMenuApi { get; }
+        ComputerProxyReservationAPI ComputerProxyReservationApi { get; }
+        FileFolderAPI FileFolderApi { get; }
+        GroupBootMenuAPI GroupBootMenuApi { get; }
+        GroupPropertyAPI GroupPropertyApi { get; }
+        ImageProfileFileFolderAPI ImageProfileFileFolderApi { get; }
+        ImageProfileScriptAPI ImageProfileScriptApi { get; }
+        ImageProfileSysprepTagAPI ImageProfileSysprepTagApi { get; }
+        MunkiManifestCatalogAPI MunkiManifestCatalogApi { get; }
+        MunkiManifestIncludedManifestAPI MunkiManifestIncludedManifestApi { get; }
+        MunkiManifestManagedInstallAPI MunkiManifestManagedInstallApi { get; }
+        MunkiManifestManagedUnInstallAPI MunkiManifestManagedUnInstallEntityApi { get; }
+        MunkiManifestManagedUpdateAPI MunkiManifestManagedUpdateEntityApi { get; }
+        MunkiManifestOptionInstallAPI MunkiManifestOptionInstallEntity { get; }
+        PortAPI PortApi { get; }
+        RoomAPI RoomApi { get; }
+        ScriptAPI ScriptApi { get; }
+        SiteAPI SiteApi { get; }
+        SysprepTagAPI SysprepTagApi { get; }
+        
+        DistributionPointAPI DistributionPointApi { get; }
         
 
         

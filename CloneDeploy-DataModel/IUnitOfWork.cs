@@ -58,7 +58,8 @@ namespace CloneDeploy_DataModel
         IGenericRepository<ClusterGroupEntity> ClusterGroupRepository { get; }
         IGenericRepository<ClusterGroupServerEntity> ClusterGroupServersRepository { get; }
         IGenericRepository<DistributionPointEntity> DistributionPointRepository { get; }
-        IGenericRepository<ClusterGroupDistributionPointEntity> ClusterGroupDistributionPointRepository { get; } 
+        IGenericRepository<ClusterGroupDistributionPointEntity> ClusterGroupDistributionPointRepository { get; }
+        IGenericRepository<AuditLogEntity> AuditLogRepository { get; } 
         void Save();
         
     }

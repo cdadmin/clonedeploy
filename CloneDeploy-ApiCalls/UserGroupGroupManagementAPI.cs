@@ -5,7 +5,7 @@ using RestSharp;
 
 namespace CloneDeploy_ApiCalls
 {
-    public class UserGroupGroupManagementAPI : GenericAPI<UserGroupGroupManagementEntity>
+    public class UserGroupGroupManagementAPI : BaseAPI
     {
         public UserGroupGroupManagementAPI(string resource):base(resource)
         {

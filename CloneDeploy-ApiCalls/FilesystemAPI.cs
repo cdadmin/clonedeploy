@@ -7,24 +7,16 @@ using RestSharp;
 
 namespace CloneDeploy_ApiCalls
 {
-    public class FilesystemAPI
+    public class FilesystemAPI: BaseAPI
     {
-        private readonly RestRequest _request;     
-        private readonly string _resource;
-        private readonly CustomApiCallDTO _cApiDto;
+      
 
-        public FilesystemAPI(string resource)
+        public FilesystemAPI(string resource):base(resource)
         {
-            _request = new RestRequest();
-            _resource = resource;
+         
         }
 
-         public FilesystemAPI(string resource,CustomApiCallDTO cApiDto)
-         {
-             _request = new RestRequest();
-             _resource = resource;
-             _cApiDto = cApiDto;
-         }
+       
 
         public bool BootSdiExists()
         {

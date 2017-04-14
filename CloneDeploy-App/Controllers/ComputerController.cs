@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
-using System.Threading;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
@@ -16,38 +15,41 @@ using CloneDeploy_Services.Workflows;
 
 namespace CloneDeploy_App.Controllers
 {
+   
     public class ComputerController : ApiController
     {
         private readonly ComputerServices _computerService;
+        private readonly AuditLogServices _auditLogService;
+        private readonly AuditLogEntity _auditLog;
+        private readonly int _userId;
 
         public ComputerController()
         {
             _computerService = new ComputerServices();
+            _auditLogService = new AuditLogServices();
+            _userId = Convert.ToInt32(((ClaimsIdentity)User.Identity).Claims.Where(c => c.Type == "user_id")
+                   .Select(c => c.Value).SingleOrDefault());
+            _auditLog = new AuditLogEntity();
+            _auditLog.ObjectType = "Computer";
+            _auditLog.UserId = _userId;
+
         }
 
         [CustomAuth(Permission = "ComputerSearch")]
         public IEnumerable<ComputerEntity> GetAll(int limit=0,string searchstring="")
         {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                             .Select(c => c.Value).SingleOrDefault();
-            
             return string.IsNullOrEmpty(searchstring)
-                ? _computerService.SearchComputersForUser(Convert.ToInt32(userId), limit)
-                : _computerService.SearchComputersForUser(Convert.ToInt32(userId), limit, searchstring);
+                ? _computerService.SearchComputersForUser(Convert.ToInt32(_userId), limit)
+                : _computerService.SearchComputersForUser(Convert.ToInt32(_userId), limit, searchstring);
 
         }
 
         [CustomAuth(Permission = "ComputerSearch")]
         public IEnumerable<ComputerEntity> GetAllByName(int limit = 0, string searchstring = "")
         {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                             .Select(c => c.Value).SingleOrDefault();
-
             return string.IsNullOrEmpty(searchstring)
-                ? _computerService.SearchComputersForUserByName(Convert.ToInt32(userId), limit)
-                : _computerService.SearchComputersForUserByName(Convert.ToInt32(userId), limit, searchstring);
+                ? _computerService.SearchComputersForUserByName(Convert.ToInt32(_userId), limit)
+                : _computerService.SearchComputersForUserByName(Convert.ToInt32(_userId), limit, searchstring);
 
         }
 
@@ -63,7 +65,17 @@ namespace CloneDeploy_App.Controllers
         [CustomAuthAttribute(Permission = "ComputerCreate")]
         public ActionResultDTO Post(ComputerEntity computer)
         {
-            return _computerService.AddComputer(computer);
+            
+            var result = _computerService.AddComputer(computer);
+            if (result.Success)
+            {
+                _auditLog.AuditType = AuditEntry.Type.Create;
+                _auditLog.ObjectId = result.Id;
+                _auditLog.ObjectName = computer.Name;
+                _auditLog.Ip = Request.GetClientIpAddress();
+                _auditLogService.AddAuditLog(_auditLog);
+            }
+            return result;
         }
 
         [CustomAuth(Permission = "ComputerUpdate")]
@@ -72,25 +84,39 @@ namespace CloneDeploy_App.Controllers
             computer.Id = id;
             var result = _computerService.UpdateComputer(computer);
             if (result.Id == 0) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound, result));
+            if (result.Success)
+            {
+                _auditLog.AuditType = AuditEntry.Type.Update;
+                _auditLog.ObjectId = result.Id;
+                _auditLog.ObjectName = computer.Name;
+                _auditLog.Ip = Request.GetClientIpAddress();
+                _auditLogService.AddAuditLog(_auditLog);
+            }
             return result;
+
         }
 
         [CustomAuth(Permission = "ComputerDelete")]
         public ActionResultDTO Delete(int id)
         {
+            var computer = _computerService.GetComputer(id);
             var result =_computerService.DeleteComputer(id);
             if (result.Id == 0) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound,result));
+            if (result.Success)
+            {
+                _auditLog.AuditType = AuditEntry.Type.Delete;
+                _auditLog.ObjectId = result.Id;
+                _auditLog.ObjectName = computer.Name;
+                _auditLog.Ip = Request.GetClientIpAddress();
+                _auditLogService.AddAuditLog(_auditLog);
+            }
             return result;
         }
 
         [CustomAuth(Permission = "ComputerSearch")]
         public ApiStringResponseDTO GetCount()
         {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                             .Select(c => c.Value).SingleOrDefault();
-
-            return new ApiStringResponseDTO(){Value = _computerService.ComputerCountUser(Convert.ToInt32(userId))};
+            return new ApiStringResponseDTO(){Value = _computerService.ComputerCountUser(_userId)};
         }
 
         [CustomAuthAttribute(Permission = "ComputerCreate")]
@@ -255,30 +281,21 @@ namespace CloneDeploy_App.Controllers
         [CustomAuth(Permission = "ImageTaskUpload")]
         public ApiStringResponseDTO StartUpload(int id)
         {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                             .Select(c => c.Value).SingleOrDefault();
-            return new ApiStringResponseDTO() {Value = new Unicast(id, "pull", Convert.ToInt32(userId)).Start()};
+            return new ApiStringResponseDTO() {Value = new Unicast(id, "pull", _userId).Start()};
         }
 
         [HttpGet]
         [CustomAuth(Permission = "ImageTaskDeploy")]
         public ApiStringResponseDTO StartDeploy(int id)
         {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                             .Select(c => c.Value).SingleOrDefault();
-            return new ApiStringResponseDTO() { Value = new Unicast(id, "push", Convert.ToInt32(userId)).Start() };
+            return new ApiStringResponseDTO() { Value = new Unicast(id, "push", _userId).Start() };
         }
 
         [HttpGet]
         [CustomAuth(Permission = "ImageTaskDeploy")]
         public ApiStringResponseDTO StartPermanentDeploy(int id)
         {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                             .Select(c => c.Value).SingleOrDefault();
-            return new ApiStringResponseDTO() { Value = new Unicast(id, "permanent_push", Convert.ToInt32(userId)).Start() };
+            return new ApiStringResponseDTO() { Value = new Unicast(id, "permanent_push", _userId).Start() };
         }
     }
 }

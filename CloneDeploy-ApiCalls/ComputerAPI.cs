@@ -5,11 +5,67 @@ using RestSharp;
 
 namespace CloneDeploy_ApiCalls
 {
-    public class ComputerAPI :GenericAPI<ComputerEntity>
+    public class ComputerAPI : BaseAPI
     {
         public ComputerAPI(string resource):base(resource)
         {
 		
+        }
+        public List<ComputerEntity> GetAll(int limit, string searchstring)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetAll", _resource);
+            _request.AddParameter("limit", limit);
+            _request.AddParameter("searchstring", searchstring);
+            return new ApiRequest().Execute<List<ComputerEntity>>(_request);
+        }
+
+        public ComputerEntity Get(int id)
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/Get/{1}", _resource, id);
+            return new ApiRequest().Execute<ComputerEntity>(_request);
+        }
+
+        public string GetCount()
+        {
+            _request.Method = Method.GET;
+            _request.Resource = string.Format("api/{0}/GetCount", _resource);
+            var responseData = new ApiRequest().Execute<ApiStringResponseDTO>(_request);
+            return responseData != null ? responseData.Value : string.Empty;
+
+        }
+
+        public ActionResultDTO Put(int id, ComputerEntity tObject)
+        {
+            _request.Method = Method.PUT;
+            _request.AddJsonBody(tObject);
+            _request.Resource = string.Format("api/{0}/Put/{1}", _resource, id);
+            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
+            if (response.Id == 0)
+                response.Success = false;
+            return response;
+        }
+
+        public ActionResultDTO Post(ComputerEntity tObject)
+        {
+            _request.Method = Method.POST;
+            _request.AddJsonBody(tObject);
+            _request.Resource = string.Format("api/{0}/Post/", _resource);
+            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
+            if (response.Id == 0)
+                response.Success = false;
+            return response;
+        }
+
+        public ActionResultDTO Delete(int id)
+        {
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/Delete/{1}", _resource, id);
+            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
+            if (response.Id == 0)
+                response.Success = false;
+            return response;
         }
 
         public IEnumerable<ComputerEntity> GetAllByName(int limit = 0, string searchstring = "")
@@ -61,10 +117,6 @@ namespace CloneDeploy_ApiCalls
             _request.AddParameter("path", path);
             return new ApiRequest().Execute<ApiBoolResponseDTO>(_request);
         }
-
-     
-
-
 
         public bool IsComputerActive(int id)
         {

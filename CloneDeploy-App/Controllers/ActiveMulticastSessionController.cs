@@ -24,6 +24,8 @@ namespace CloneDeploy_App.Controllers
             _activeMulticastSessionServices = new ActiveMulticastSessionServices();
         }
 
+
+
         [Authorize]
         public IEnumerable<ActiveMulticastSessionEntity> GetAll()
         {

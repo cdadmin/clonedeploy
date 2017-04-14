@@ -8,23 +8,17 @@ namespace CloneDeploy_ApiCalls
     /// <summary>
     /// Summary description for User
     /// </summary>
-    public class ServiceAccountAPI
+    public class ServiceAccountAPI:BaseAPI
     {
-        private readonly RestRequest _request;     
-        private readonly string _resource;
-        private readonly CustomApiCallDTO _cApiDto;
-
-        public ServiceAccountAPI(string resource)
+        public ServiceAccountAPI(string resource):base (resource)
         {
-            _request = new RestRequest();
-            _resource = resource;
+          
         }
 
-        public ServiceAccountAPI(string resource,CustomApiCallDTO cApiDto)
+        public ServiceAccountAPI(string resource, CustomApiCallDTO cApiDto)
+            : base(resource, cApiDto)
         {
-            _request = new RestRequest();
-            _resource = resource;
-            _cApiDto = cApiDto;
+           
         }
 
         public bool Test()
@@ -73,6 +67,14 @@ namespace CloneDeploy_ApiCalls
             _request.Method = Method.GET;
             _request.Resource = string.Format("api/{0}/GetTftpServer/", _resource);
             return _cApiDto != null ? new ApiRequest(_cApiDto.Token, _cApiDto.BaseUrl).Execute<ApiStringResponseDTO>(_request).Value : new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
+        }
+
+        public int GetMulticastSenderArgs(MulticastArgsDTO multicastArgs)
+        {
+            _request.Method = Method.POST;
+            _request.Resource = string.Format("api/{0}/GetMulticastSenderArgs/", _resource);
+            _request.AddJsonBody(multicastArgs);
+            return _cApiDto != null ? new ApiRequest(_cApiDto.Token, _cApiDto.BaseUrl).Execute<ApiIntResponseDTO>(_request).Value : new ApiRequest().Execute<ApiIntResponseDTO>(_request).Value;
         }
     }
 }

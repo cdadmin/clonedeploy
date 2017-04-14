@@ -5,7 +5,7 @@ using RestSharp;
 
 namespace CloneDeploy_ApiCalls
 {
-    public class ClusterGroupDistributionPointAPI : GenericAPI<ClusterGroupDistributionPointEntity>
+    public class ClusterGroupDistributionPointAPI : BaseAPI
     {
         public ClusterGroupDistributionPointAPI(string resource):base(resource)
         {

@@ -53,7 +53,7 @@ namespace CloneDeploy_ApiCalls
 
         public FilesystemAPI FilesystemApi
         {
-            get { return _cApiDto != null ? new FilesystemAPI("FileSystem",_cApiDto) : new FilesystemAPI("FileSystem"); }
+            get { return new FilesystemAPI("FileSystem"); }
         }
 
         public GroupAPI GroupApi
@@ -171,124 +171,125 @@ namespace CloneDeploy_ApiCalls
             get { return _cApiDto != null ? new ServiceAccountAPI("ServiceAccount", _cApiDto) : new ServiceAccountAPI("ServiceAccount"); }
         }
 
-        public IGenericAPI<BootEntryEntity> BootEntryApi
+        public SecondaryServerAPI SecondaryServerApi
         {
-            get { return new GenericAPI<BootEntryEntity>("BootEntry"); }
+            get { return new SecondaryServerAPI("SecondaryServer"); }
         }
 
-        public IGenericAPI<BootTemplateEntity> BootTemplateApi
+
+        public BootEntryAPI BootEntryApi
         {
-            get { return new GenericAPI<BootTemplateEntity>("BootTemplate"); }
+            get { return new BootEntryAPI("BootEntry"); }
         }
 
-        public IGenericAPI<BuildingEntity> BuildingApi
+        public BootTemplateAPI BootTemplateApi
         {
-            get { return new GenericAPI<BuildingEntity>("Building"); }
+            get { return new BootTemplateAPI("BootTemplate"); }
         }
 
-        public IGenericAPI<ComputerBootMenuEntity> ComputerBootMenuApi
+        public BuildingAPI BuildingApi
         {
-            get { return new GenericAPI<ComputerBootMenuEntity>("ComputerBootMenu"); }
+            get { return new BuildingAPI("Building"); }
         }
 
-        public IGenericAPI<ComputerProxyReservationEntity> ComputerProxyReservationApi
+        public ComputerBootMenuAPI ComputerBootMenuApi
         {
-            get { return new GenericAPI<ComputerProxyReservationEntity>("ComputerProxyReservation"); }
+            get { return new ComputerBootMenuAPI("ComputerBootMenu"); }
         }
 
-        public IGenericAPI<FileFolderEntity> FileFolderApi
+        public ComputerProxyReservationAPI ComputerProxyReservationApi
         {
-            get { return new GenericAPI<FileFolderEntity>("FileFolder"); }
+            get { return new ComputerProxyReservationAPI("ComputerProxyReservation"); }
         }
 
-        public IGenericAPI<GroupBootMenuEntity> GroupBootMenuApi
+        public FileFolderAPI FileFolderApi
         {
-            get { return new GenericAPI<GroupBootMenuEntity>("GroupBootMenu"); }
+            get { return new FileFolderAPI("FileFolder"); }
         }
 
-        public IGenericAPI<GroupPropertyEntity> GroupPropertyApi
+        public GroupBootMenuAPI GroupBootMenuApi
         {
-            get { return new GenericAPI<GroupPropertyEntity>("GroupProperty"); }
+            get { return new GroupBootMenuAPI("GroupBootMenu"); }
         }
 
-        public IGenericAPI<ImageProfileFileFolderEntity> ImageProfileFileFolderApi
+        public GroupPropertyAPI GroupPropertyApi
         {
-            get { return new GenericAPI<ImageProfileFileFolderEntity>("ImageProfileFileFolder"); }
+            get { return new GroupPropertyAPI("GroupProperty"); }
         }
 
-        public IGenericAPI<ImageProfileScriptEntity> ImageProfileScriptApi
+        public ImageProfileFileFolderAPI ImageProfileFileFolderApi
         {
-            get { return new GenericAPI<ImageProfileScriptEntity>("ImageProfileScript"); }
+            get { return new ImageProfileFileFolderAPI("ImageProfileFileFolder"); }
         }
 
-        public IGenericAPI<ImageProfileSysprepTagEntity> ImageProfileSysprepTagApi
+        public ImageProfileScriptAPI ImageProfileScriptApi
         {
-            get { return new GenericAPI<ImageProfileSysprepTagEntity>("ImageProfileSysprepTag"); }
+            get { return new ImageProfileScriptAPI("ImageProfileScript"); }
         }
 
-        public IGenericAPI<MunkiManifestCatalogEntity> MunkiManifestCatalogApi
+        public ImageProfileSysprepTagAPI ImageProfileSysprepTagApi
         {
-            get { return new GenericAPI<MunkiManifestCatalogEntity>("MunkiManifestCatalog"); }
+            get { return new ImageProfileSysprepTagAPI("ImageProfileSysprepTag"); }
         }
 
-        public IGenericAPI<MunkiManifestIncludedManifestEntity> MunkiManifestIncludedManifestApi
+        public MunkiManifestCatalogAPI MunkiManifestCatalogApi
         {
-            get { return new GenericAPI<MunkiManifestIncludedManifestEntity>("MunkiManifestIncludedManifest"); }
+            get { return new MunkiManifestCatalogAPI("MunkiManifestCatalog"); }
         }
 
-        public IGenericAPI<MunkiManifestManagedInstallEntity> MunkiManifestManagedInstallApi
+        public MunkiManifestIncludedManifestAPI MunkiManifestIncludedManifestApi
         {
-            get { return new GenericAPI<MunkiManifestManagedInstallEntity>("MunkiManifestManagedInstall"); }
+            get { return new MunkiManifestIncludedManifestAPI("MunkiManifestIncludedManifest"); }
         }
 
-        public IGenericAPI<MunkiManifestManagedUnInstallEntity> MunkiManifestManagedUnInstallEntityApi
+        public MunkiManifestManagedInstallAPI MunkiManifestManagedInstallApi
         {
-            get { return new GenericAPI<MunkiManifestManagedUnInstallEntity>("MunkiManifestManagedUninstall"); }
+            get { return new MunkiManifestManagedInstallAPI("MunkiManifestManagedInstall"); }
         }
 
-        public IGenericAPI<MunkiManifestManagedUpdateEntity> MunkiManifestManagedUpdateEntityApi
+        public MunkiManifestManagedUnInstallAPI MunkiManifestManagedUnInstallEntityApi
         {
-            get { return new GenericAPI<MunkiManifestManagedUpdateEntity>("MunkiManifestManagedUpdate"); }
+            get { return new MunkiManifestManagedUnInstallAPI("MunkiManifestManagedUninstall"); }
         }
 
-        public IGenericAPI<MunkiManifestOptionInstallEntity> MunkiManifestOptionInstallEntity
+        public MunkiManifestManagedUpdateAPI MunkiManifestManagedUpdateEntityApi
         {
-            get { return new GenericAPI<MunkiManifestOptionInstallEntity>("MunkiManifestOptionalInstall"); }
+            get { return new MunkiManifestManagedUpdateAPI("MunkiManifestManagedUpdate"); }
         }
 
-        public IGenericAPI<PortEntity> PortApi
+        public MunkiManifestOptionInstallAPI MunkiManifestOptionInstallEntity
         {
-            get { return new GenericAPI<PortEntity>("Port"); }
+            get { return new MunkiManifestOptionInstallAPI("MunkiManifestOptionalInstall"); }
         }
 
-        public IGenericAPI<RoomEntity> RoomApi
+        public PortAPI PortApi
         {
-            get { return new GenericAPI<RoomEntity>("Room"); }
+            get { return new PortAPI("Port"); }
         }
 
-        public IGenericAPI<ScriptEntity> ScriptApi
+        public RoomAPI RoomApi
         {
-            get { return new GenericAPI<ScriptEntity>("Script"); }
+            get { return new RoomAPI("Room"); }
         }
 
-        public IGenericAPI<SiteEntity> SiteApi
+        public ScriptAPI ScriptApi
         {
-            get { return new GenericAPI<SiteEntity>("Site"); }
+            get { return new ScriptAPI("Script"); }
         }
 
-        public IGenericAPI<SysprepTagEntity> SysprepTagApi
+        public SiteAPI SiteApi
         {
-            get { return new GenericAPI<SysprepTagEntity>("SysprepTag"); }
+            get { return new SiteAPI("Site"); }
         }
 
-        public IGenericAPI<SecondaryServerEntity> SecondaryServerApi
+        public SysprepTagAPI SysprepTagApi
         {
-            get { return new GenericAPI<SecondaryServerEntity>("SecondaryServer"); }
+            get { return new SysprepTagAPI("SysprepTag"); }
         }
 
-        public IGenericAPI<DistributionPointEntity> DistributionPointApi
+        public DistributionPointAPI DistributionPointApi
         {
-            get { return new GenericAPI<DistributionPointEntity>("DistributionPoint"); }
+            get { return new DistributionPointAPI("DistributionPoint"); }
         }
 
       

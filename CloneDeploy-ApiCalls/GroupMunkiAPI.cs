@@ -4,14 +4,24 @@ using RestSharp;
 
 namespace CloneDeploy_ApiCalls
 {
-    public class GroupMunkiAPI: GenericAPI<GroupMunkiEntity>
+    public class GroupMunkiAPI : BaseAPI
     {
         public GroupMunkiAPI(string resource):base(resource)
         {
 		
         }
 
-      
+
+        public ActionResultDTO Post(GroupMunkiEntity tObject)
+        {
+            _request.Method = Method.POST;
+            _request.AddJsonBody(tObject);
+            _request.Resource = string.Format("api/{0}/Post/", _resource);
+            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
+            if (response.Id == 0)
+                response.Success = false;
+            return response;
+        }
 
        
 

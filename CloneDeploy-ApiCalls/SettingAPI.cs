@@ -5,7 +5,7 @@ using RestSharp;
 
 namespace CloneDeploy_ApiCalls
 {
-    public class SettingAPI : GenericAPI<SettingEntity>
+    public class SettingAPI : BaseAPI
     {
         public SettingAPI(string resource):base(resource)
         {

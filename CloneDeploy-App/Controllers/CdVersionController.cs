@@ -33,12 +33,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-         [CustomAuth(Permission = "Administrator")]
-        public ActionResultDTO Post(CdVersionEntity cdVersion)
-        {
-            return _cdVersionServices.Update(cdVersion);
-
-        }
+      
 
        
     }

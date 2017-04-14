@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -58,6 +59,15 @@ namespace CloneDeploy_App.Controllers
             var result = _secondaryServerServices.DeleteSecondaryServer(id);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
+        }
+
+        [Authorize]
+        public ApiStringResponseDTO GetServerOS()
+        {
+            var isUnix = Environment.OSVersion.ToString().Contains("Unix");
+            var result = isUnix ? "unix" : "windows";
+            return new ApiStringResponseDTO() {Value = result};
+          
         }
     }
 }

@@ -43,9 +43,12 @@
   <ItemGroup>
     <Compile Include="ActiveImagingTask.cs" />
     <Compile Include="ActiveMulticastSession.cs" />
+    <Compile Include="AuditEntry.cs" />
+    <Compile Include="AuditLog.cs" />
     <Compile Include="ClusterGroupDistributionPoint.cs" />
     <Compile Include="ClusterGroupServer.cs" />
     <Compile Include="DistributionPoint.cs" />
+    <Compile Include="DTOs\MulticastArgsDTO.cs" />
     <Compile Include="DTOs\TftpServerDTO.cs" />
     <Compile Include="DTOs\CustomApiCallDTO.cs" />
     <Compile Include="DTOs\ServerRoleDTO.cs" />

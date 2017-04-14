@@ -9,7 +9,7 @@ using Partition = CloneDeploy_Entities.DTOs.ImageSchemaFE.Partition;
 
 namespace CloneDeploy_ApiCalls
 {
-    public class ImageSchemaAPI : GenericAPI<ImageSchemaGridView>
+    public class ImageSchemaAPI : BaseAPI
     {
         public ImageSchemaAPI(string resource):base(resource)
         {

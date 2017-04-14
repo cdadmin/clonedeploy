@@ -108,6 +108,7 @@
     <Compile Include="SecondaryServerServices.cs" />
     <Compile Include="ScriptServices.cs" />
     <Compile Include="SettingServices.cs" />
+    <Compile Include="AuditLogServices.cs" />
     <Compile Include="SiteServices.cs" />
     <Compile Include="SysprepTagServices.cs" />
     <Compile Include="ClusterGroupServerServices.cs" />
@@ -132,6 +133,7 @@
     <Compile Include="Workflows\GetMulticastServer.cs" />
     <Compile Include="Workflows\IsoGen.cs" />
     <Compile Include="Workflows\Multicast.cs" />
+    <Compile Include="Workflows\MulticastArguments.cs" />
     <Compile Include="Workflows\TaskBootMenu.cs" />
     <Compile Include="Workflows\Unicast.cs" />
     <Compile Include="ComputerServices.cs" />

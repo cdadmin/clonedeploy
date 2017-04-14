@@ -5,7 +5,7 @@ using RestSharp;
 
 namespace CloneDeploy_ApiCalls
 {
-    public class UserImageManagementAPI : GenericAPI<UserImageManagementEntity>
+    public class UserImageManagementAPI : BaseAPI
     {
         public UserImageManagementAPI(string resource):base(resource)
         {

@@ -3,17 +3,13 @@ using RestSharp;
 
 namespace CloneDeploy_ApiCalls
 {
-    public class AuthorizationAPI
+    public class AuthorizationAPI : BaseAPI
     {
-        private readonly RestRequest _request;     
-        private readonly string _resource;
-
-        public AuthorizationAPI(string resource)
+      
+        public AuthorizationAPI(string resource):base (resource)
         {
-            _request = new RestRequest();
-            _resource = resource;
+           
         }
-
 
         public bool IsAuthorized(string requiredRight)
         {

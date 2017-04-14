@@ -5,7 +5,7 @@ using RestSharp;
 
 namespace CloneDeploy_ApiCalls
 {
-    public class ActiveImagingTaskAPI:GenericAPI<ActiveImagingTaskEntity>
+    public class ActiveImagingTaskAPI:BaseAPI
     {
         public ActiveImagingTaskAPI(string resource):base(resource)
         {
@@ -18,7 +18,6 @@ namespace CloneDeploy_ApiCalls
             _request.Resource = string.Format("api/{0}/GetUnicasts/", _resource);
             _request.AddParameter("tasktype", taskType);
             return new ApiRequest().Execute<List<ActiveImagingTaskEntity>>(_request);
-
         }
 
         public IEnumerable<ActiveImagingTaskEntity> GetActiveTasks()
@@ -45,6 +44,14 @@ namespace CloneDeploy_ApiCalls
 
         }
 
-     
+        public ActionResultDTO Delete(int id)
+        {
+            _request.Method = Method.DELETE;
+            _request.Resource = string.Format("api/{0}/Delete/{1}", _resource, id);
+            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
+            if (response.Id == 0)
+                response.Success = false;
+            return response;
+        }
     }
 }
