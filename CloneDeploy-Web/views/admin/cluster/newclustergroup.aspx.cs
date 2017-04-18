@@ -26,7 +26,7 @@ namespace CloneDeploy_Web.views.admin.cluster
                 var primary = new SecondaryServerEntity();
                 primary.Id = -1;
                 primary.Name = Settings.ServerIdentifier;
-                primary.ImageRole = Settings.ImageServerRole ? 1 : 0;
+               
                 primary.TftpRole = Settings.TftpServerRole ? 1 : 0;
                 primary.MulticastRole = Settings.MulticastServerRole ? 1 : 0;
                 secondaryServers.Insert(0,primary);
@@ -43,15 +43,14 @@ namespace CloneDeploy_Web.views.admin.cluster
                 if (dataKey == null) continue;
                 if (Convert.ToInt32(dataKey.Value) == -1)
                 {
-                    cbImage.Visible = Settings.ImageServerRole;
+                   
                     cbTftp.Visible = Settings.TftpServerRole;
                     cbMulticast.Visible = Settings.MulticastServerRole;
                 }
                 else
                 {
                     var secondaryServer = Call.SecondaryServerApi.Get(Convert.ToInt32(dataKey.Value));
-                    if (secondaryServer.ImageRole != 1)
-                        cbImage.Visible = false;
+                  
                     if (secondaryServer.TftpRole != 1)
                         cbTftp.Visible = false;
                     if (secondaryServer.MulticastRole != 1)
@@ -90,8 +89,7 @@ namespace CloneDeploy_Web.views.admin.cluster
                     var clusterGroupServer = new ClusterGroupServerEntity();
                     clusterGroupServer.ClusterGroupId = result.Id;
                     clusterGroupServer.SecondaryServerId = Convert.ToInt32(dataKey.Value);
-                    if (cbImage.Checked)
-                        clusterGroupServer.ImageRole = 1;
+                    
                     if (cbTftp.Checked)
                         clusterGroupServer.TftpRole = 1;
                     if (cbMulticast.Checked)

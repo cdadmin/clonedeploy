@@ -98,6 +98,12 @@ namespace CloneDeploy_Entities
         [Column("bootfile", Order = 30)]
         public string BootFile { get; set; }
 
+        [Column("cluster_group_id_enabled", Order = 31)]
+        public int ClusterGroupEnabled { get; set; }
+
+        [Column("cluster_group_id", Order = 32)]
+        public int ClusterGroupId { get; set; }
+
 
      
 

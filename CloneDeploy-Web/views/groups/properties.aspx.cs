@@ -19,6 +19,7 @@ public partial class views_groups_properties : Groups
         PopulateSitesDdl(ddlSite);
         PopulateBuildingsDdl(ddlBuilding);
         PopulateRoomsDdl(ddlRoom);
+       PopulateClusterGroupsDdl(ddlClusterGroup);
 
        chkDefault.Checked = Convert.ToBoolean(Group.SetDefaultProperties);
         if (_groupProperty != null)
@@ -52,6 +53,8 @@ public partial class views_groups_properties : Groups
             chkProxyEnabled.Checked = Convert.ToBoolean(_groupProperty.ProxyEnabled);
             txtTftp.Text = _groupProperty.TftpServer;
             ddlBootFile.Text = _groupProperty.BootFile;
+            ddlClusterGroup.SelectedValue = _groupProperty.ClusterGroupId.ToString();
+            chkClusterGroup.Checked = Convert.ToBoolean(_groupProperty.ClusterGroupEnabled);
         }
     }
 
@@ -95,7 +98,9 @@ public partial class views_groups_properties : Groups
             TftpServerEnabled = Convert.ToInt16(chkTftp.Checked),
             ProxyEnabled = Convert.ToInt16(chkProxyEnabled.Checked),
             TftpServer = txtTftp.Text,
-            BootFile = ddlBootFile.Text
+            BootFile = ddlBootFile.Text,
+            ClusterGroupId = Convert.ToInt32(ddlClusterGroup.SelectedValue),
+            ClusterGroupEnabled = Convert.ToInt16(chkClusterGroup.Checked)
         };
 
         if (_groupProperty == null)

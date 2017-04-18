@@ -45,15 +45,7 @@
         <asp:TextBox runat="server" Id="txtAccountPassword" CssClass="textbox" TextMode="Password"></asp:TextBox>
     </div>
     <br class="clear"/>
-    <div class="size-4 column">
-        Image Server Role:
-    </div>
-    <div class="size-5 column">
-        <asp:Label runat="server" ID="lblImage" CssClass="nav-text"></asp:Label>
-    </div>
   
-     <br class="clear"/>
-      <br/>
     <div class="size-4 column">
         Tftp Server Role:
     </div>

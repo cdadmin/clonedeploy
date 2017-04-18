@@ -103,42 +103,6 @@ namespace views.users {
         protected global::System.Web.UI.WebControls.TextBox txtToken;
         
         /// <summary>
-        /// btnGenId control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnGenId;
-        
-        /// <summary>
-        /// txtApiId control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtApiId;
-        
-        /// <summary>
-        /// btnGenApiKey control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnGenApiKey;
-        
-        /// <summary>
-        /// txtApiKey control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtApiKey;
-        
-        /// <summary>
         /// chkLockout control.
         /// </summary>
         /// <remarks>

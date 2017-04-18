@@ -28,7 +28,7 @@ namespace CloneDeploy_Web.views.admin.cluster
                 var primary = new SecondaryServerEntity();
                 primary.Id = -1;
                 primary.Name = Settings.ServerIdentifier;
-                primary.ImageRole = Settings.ImageServerRole ? 1 : 0;
+               
                 primary.TftpRole = Settings.TftpServerRole ? 1 : 0;
                 primary.MulticastRole = Settings.MulticastServerRole ? 1 : 0;
                 secondaryServers.Insert(0, primary);
@@ -39,7 +39,7 @@ namespace CloneDeploy_Web.views.admin.cluster
             foreach (GridViewRow row in gvServers.Rows)
             {
                 var cb = (CheckBox)row.FindControl("chkSelector");
-                var cbImage = (CheckBox)row.FindControl("chkImage");
+               
                 var cbTftp = (CheckBox)row.FindControl("chkTftp");
                 var cbMulticast = (CheckBox)row.FindControl("chkMulticast");
                 var dataKey = gvServers.DataKeys[row.RowIndex];
@@ -47,15 +47,14 @@ namespace CloneDeploy_Web.views.admin.cluster
 
                 if (Convert.ToInt32(dataKey.Value) == -1)
                 {
-                    cbImage.Visible = Settings.ImageServerRole;
+                   
                     cbTftp.Visible = Settings.TftpServerRole;
                     cbMulticast.Visible = Settings.MulticastServerRole;
                 }
                 else
                 {
                     var secondaryServer = Call.SecondaryServerApi.Get(Convert.ToInt32(dataKey.Value));
-                    if (secondaryServer.ImageRole != 1)
-                        cbImage.Visible = false;
+                 
                     if (secondaryServer.TftpRole != 1)
                         cbTftp.Visible = false;
                     if (secondaryServer.MulticastRole != 1)
@@ -67,7 +66,7 @@ namespace CloneDeploy_Web.views.admin.cluster
                     if (clusterServer.SecondaryServerId == Convert.ToInt32(dataKey.Value))
                     {
                         cb.Checked = true;
-                        cbImage.Checked = clusterServer.ImageRole == 1;
+                        
                         cbTftp.Checked = clusterServer.TftpRole == 1;
                         cbMulticast.Checked = clusterServer.MulticastRole == 1;
                     }
@@ -128,10 +127,7 @@ namespace CloneDeploy_Web.views.admin.cluster
                     var clusterGroupServer = new ClusterGroupServerEntity();
                     clusterGroupServer.ClusterGroupId = result.Id;
                     clusterGroupServer.SecondaryServerId = Convert.ToInt32(dataKey.Value);
-                    if (cbImage.Checked)
-                        clusterGroupServer.ImageRole = 1;
-                    if (!cbImage.Visible)
-                        clusterGroupServer.ImageRole = 0;
+                   
                     if (cbTftp.Checked)
                         clusterGroupServer.TftpRole = 1;
                     if (!cbTftp.Visible)

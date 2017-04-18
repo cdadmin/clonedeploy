@@ -52,8 +52,7 @@ namespace views.users
             updatedUser.NotifyError = chkError.Checked ? 1 : 0;
             updatedUser.NotifyComplete = chkComplete.Checked ? 1 : 0;
             updatedUser.NotifyImageApproved = chkApproved.Checked ? 1 : 0;
-            updatedUser.ApiId = txtApiId.Text;
-            updatedUser.ApiKey = txtApiKey.Text;
+           
            
             var result = Call.CloneDeployUserApi.Put(updatedUser.Id,updatedUser);
             EndUserMessage = !result.Success ? result.ErrorMessage : "Successfully Updated User";
@@ -76,8 +75,7 @@ namespace views.users
             chkError.Checked = CloneDeployUser.NotifyError == 1;
             chkComplete.Checked = CloneDeployUser.NotifyComplete == 1;
             chkApproved.Checked = CloneDeployUser.NotifyImageApproved == 1;
-            txtApiId.Text = CloneDeployUser.ApiId;
-            txtApiKey.Text = CloneDeployUser.ApiKey;
+           
         }
 
 
@@ -86,14 +84,6 @@ namespace views.users
             txtToken.Text = Utility.GenerateKey();
         }
 
-        protected void btnGenId_OnClick(object sender, EventArgs e)
-        {
-            txtApiId.Text = Utility.GenerateKey();
-        }
-
-        protected void btnGenApiKey_OnClick(object sender, EventArgs e)
-        {
-            txtApiKey.Text = Utility.GenerateKey();
-        }
+     
     }
 }

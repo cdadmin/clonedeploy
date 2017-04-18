@@ -25,7 +25,7 @@ namespace CloneDeploy_Web.views.admin.cluster
             txtApi.Text = SecondaryServer.ApiURL;
             txtAccountName.Text = SecondaryServer.ServiceAccountName;
             txtAccountPassword.Text = SecondaryServer.ServiceAccountPassword;
-            lblImage.Text = SecondaryServer.ImageRole == 1 ? "Yes" : "No";
+            
             lblTftp.Text = SecondaryServer.TftpRole == 1 ? "Yes" : "No";
             lblMulticast.Text = SecondaryServer.MulticastRole == 1 ? "Yes" : "No";
 

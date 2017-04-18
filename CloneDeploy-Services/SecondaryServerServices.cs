@@ -67,7 +67,7 @@ namespace CloneDeploy_Services
             }
 
             secondaryServer.Name = serverRoles.Identifier;
-            secondaryServer.ImageRole = Convert.ToInt16(serverRoles.IsImageServer);
+           
             secondaryServer.TftpRole = Convert.ToInt16(serverRoles.IsTftpServer);
             secondaryServer.MulticastRole = Convert.ToInt16(serverRoles.IsMulticastServer);
             secondaryServer.ServiceAccountPassword = new Encryption().EncryptText(secondaryServer.ServiceAccountPassword);
@@ -187,7 +187,7 @@ namespace CloneDeploy_Services
             }
 
             secondaryServer.Name = serverRoles.Identifier;
-            secondaryServer.ImageRole = Convert.ToInt16(serverRoles.IsImageServer);
+            
             secondaryServer.TftpRole = Convert.ToInt16(serverRoles.IsTftpServer);
             secondaryServer.MulticastRole = Convert.ToInt16(serverRoles.IsMulticastServer);
             secondaryServer.ServiceAccountPassword = !string.IsNullOrEmpty(secondaryServer.ServiceAccountPassword) ? new Encryption().EncryptText(secondaryServer.ServiceAccountPassword) : s.ServiceAccountPassword;

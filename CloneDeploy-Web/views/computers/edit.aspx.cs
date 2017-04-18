@@ -37,7 +37,7 @@ namespace views.computers
                 CustomAttribute5 = txtCustom5.Text,
                 ProxyReservation = Computer.ProxyReservation
             };
-
+            
             var result = Call.ComputerApi.Put(computer.Id, computer); 
 
             if (result.Success)

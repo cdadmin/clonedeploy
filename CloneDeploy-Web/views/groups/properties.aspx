@@ -60,6 +60,17 @@
     <div class="size-12 column">
         <asp:CheckBox runat="server" Id="chkDescription"/>
     </div>
+     <br class="clear"/>
+    
+     <div class="size-4 column">
+        Cluster Group:
+    </div>
+    <div class="size-5 column">
+        <asp:DropDownList ID="ddlClusterGroup" runat="server" CssClass="ddlist"/>
+    </div>
+    <div class="size-12 column">
+        <asp:CheckBox runat="server" Id="chkClusterGroup"/>
+    </div>
     <br class="clear"/>
     
      <div class="size-4 column">

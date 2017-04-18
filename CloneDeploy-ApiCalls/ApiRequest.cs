@@ -37,13 +37,14 @@ namespace CloneDeploy_ApiCalls
 
             if (response.ErrorException != null)
             {
-                Log.Error("Error retrieving response: " + response.ErrorException);
+                Log.Debug("Error retrieving response: " + response.ErrorException);
                 return default(TClass);
             }
             else if (response.Data == null)
             {
                 //Fix me - not finished
                 Log.Debug("Response was null: ");
+                return default(TClass);
             }
             return response.Data;
         }

@@ -285,10 +285,7 @@ namespace CloneDeploy_Web.Helpers
             get { return new APICall().SettingApi.GetSetting("Operation Mode").Value; }
         }
 
-        public static bool ImageServerRole
-        {
-            get { return new APICall().SettingApi.GetSetting("Image Server Role ").Value == "1"; }       
-        }
+      
 
         public static bool TftpServerRole
         {

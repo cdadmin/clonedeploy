@@ -17,13 +17,10 @@ namespace CloneDeploy_Entities
         [Column("secondary_server_id", Order = 3)]
         public int SecondaryServerId { get; set; }
 
-        [Column("image_role", Order = 4)]
-        public int ImageRole { get; set; }
-
-        [Column("tftp_role", Order = 5)]
+        [Column("tftp_role", Order = 4)]
         public int TftpRole { get; set; }
 
-        [Column("multicast_role", Order = 6)]
+        [Column("multicast_role", Order = 5)]
         public int MulticastRole { get; set; }
         
     }

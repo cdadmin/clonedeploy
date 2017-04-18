@@ -72,6 +72,8 @@ namespace CloneDeploy_Services
                     computer.CustomAttribute5 = groupProperty.CustomAttribute5;
                 if (Convert.ToBoolean(groupProperty.ProxyEnabledEnabled))
                     computer.ProxyReservation = groupProperty.ProxyEnabled;
+                if (Convert.ToBoolean(groupProperty.ClusterGroupEnabled))
+                    computer.ClusterGroupId = groupProperty.ClusterGroupId;
 
                 var computerServices = new ComputerServices();
                 computerServices.UpdateComputer(computer);

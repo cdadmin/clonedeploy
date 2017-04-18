@@ -43,11 +43,7 @@
           
             <asp:BoundField DataField="Id" HeaderText="Id" SortExpression="Id" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="DisplayName" ItemStyle-CssClass="width_200"></asp:BoundField>
-            <asp:TemplateField ItemStyle-CssClass="width_100" HeaderText="Image Role">
-                <ItemTemplate>
-                    <asp:CheckBox ID="chkImage" runat="server" />
-                </ItemTemplate>
-            </asp:TemplateField>
+           
             <asp:TemplateField ItemStyle-CssClass="width_100" HeaderText="Tftp Role">
                 <ItemTemplate>
                     <asp:CheckBox ID="chkTftp" runat="server" />

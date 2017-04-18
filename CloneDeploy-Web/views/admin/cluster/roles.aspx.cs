@@ -20,7 +20,7 @@ namespace CloneDeploy_Web.views.admin.cluster
             ddlOperationMode.Text = Settings.OperationMode;
             if (ddlOperationMode.Text != "single")
             {
-                chkImageServer.Checked = Settings.ImageServerRole;
+               
                 chkTftpServer.Checked = Settings.TftpServerRole;
                 chkMulticastServer.Checked = Settings.MulticastServerRole;
             }
