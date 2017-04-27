@@ -449,3 +449,10 @@ y
 EOFN
 }
 
+function move_to_front_of_list()
+{
+  local item=$1
+  local delim=$2
+  local list=$3
+  echo ${item} $(echo "$list" | tr "${delim}" " " | xargs -n 1 | grep -v "^${item}$") | xargs | tr " " "${delim}"
+}
