@@ -16,17 +16,13 @@ if [ "$reporter_type" = "partclone" ]; then
     result=$($curlAuth --data "computerId=$computer_id&progress=$post&progressType=partclone" "${web}UpdateProgress" $curlEnd)        
     sleep 2
   done	
-else
+else  # wimup or wimdown
   while [ -f "/tmp/wim.progress" ]; do
-    if [ "$reporter_type" = "wimup" ]; then
-      post=$(cat /tmp/wim.progress | dos2unix | sed -e 's/done/\n/g' | tail -n 1)
-    else #wimdown
-      post=$(cat /tmp/wim.progress | dos2unix | sed -e 's/done/\n/g' | tail -n 1)
+    post=$(cat /tmp/wim.progress | dos2unix | sed -e 's/done/\n/g' | tail -n 1)
+      
+    if [[ "$post" == *"scanned"* ]]; then
+      post="Scanning Files."
     fi
-	
-	 if [[ "$post" == *"scanned"* ]]; then
-	   post="Scanning Files."
-	 fi
 	 
     if [ -z "$post" ]; then
       post="Please Wait."
