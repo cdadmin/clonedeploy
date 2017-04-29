@@ -81,6 +81,7 @@
     <Compile Include="DistributionPoint.cs" />
     <Compile Include="FileFolderServices.cs" />
     <Compile Include="Helpers\Zip.cs" />
+    <Compile Include="OnlineKernelServices.cs" />
     <Compile Include="ProxyDhcpServices.cs" />
     <Compile Include="FilesystemServices.cs" />
     <Compile Include="GroupServices.cs" />

@@ -89,6 +89,11 @@
                     <span class="nav-text">Clobber Mode</span>
                 </a>
             </li>
+              <li id="kerneldownload">
+                <a href="<%= ResolveUrl("~/views/admin/kerneldownload.aspx") %>" >
+                    <span class="nav-text">Kernel Downloads</span>
+                </a>
+            </li>
             
         </ul>
         </div>

@@ -91,6 +91,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingAPI.cs" />
     <Compile Include="SiteAPI.cs" />
+    <Compile Include="OnlineKernelAPI.cs" />
     <Compile Include="SysprepTagAPI.cs" />
     <Compile Include="Token.cs" />
     <Compile Include="ServiceAccountAPI.cs" />

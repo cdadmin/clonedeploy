@@ -83,6 +83,7 @@
     <Content Include="views\admin\dp\create.aspx" />
     <Content Include="views\admin\dp\edit.aspx" />
     <Content Include="views\admin\dp\search.aspx" />
+    <Content Include="views\admin\kerneldownload.aspx" />
     <Content Include="views\admin\logs\application.aspx" />
     <Content Include="views\admin\logs\frontend.aspx" />
     <Content Include="views\admin\logs\ond.aspx" />
@@ -1024,6 +1025,13 @@
     </Compile>
     <Compile Include="views\admin\export.aspx.designer.cs">
       <DependentUpon>export.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\kerneldownload.aspx.cs">
+      <DependentUpon>kerneldownload.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\kerneldownload.aspx.designer.cs">
+      <DependentUpon>kerneldownload.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\admin\logs\application.aspx.cs">
       <DependentUpon>application.aspx</DependentUpon>

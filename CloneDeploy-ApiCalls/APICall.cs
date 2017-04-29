@@ -292,6 +292,11 @@ namespace CloneDeploy_ApiCalls
             get { return new DistributionPointAPI("DistributionPoint"); }
         }
 
+        public OnlineKernelAPI OnlineKernelApi
+        {
+            get { return new OnlineKernelAPI("OnlineKernel"); }
+        }
+
       
     }
 }

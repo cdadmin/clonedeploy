@@ -57,9 +57,9 @@ namespace CloneDeploy_ApiCalls
         RoomAPI RoomApi { get; }
         ScriptAPI ScriptApi { get; }
         SiteAPI SiteApi { get; }
-        SysprepTagAPI SysprepTagApi { get; }
-        
+        SysprepTagAPI SysprepTagApi { get; }     
         DistributionPointAPI DistributionPointApi { get; }
+        OnlineKernelAPI OnlineKernelApi { get; }
         
 
         
