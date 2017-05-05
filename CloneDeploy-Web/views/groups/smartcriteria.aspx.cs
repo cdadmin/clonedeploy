@@ -23,7 +23,7 @@ public partial class views_groups_smartcriteria : Groups
 
     protected void btnTestQuery_OnClick(object sender, EventArgs e)
     {
-        gvComputers.DataSource = Call.ComputerApi.GetAllByName(Int32.MaxValue, txtContains.Text);
+        gvComputers.DataSource = Call.ComputerApi.SearchByName(Int32.MaxValue, txtContains.Text);
         gvComputers.DataBind();
         lblTotal.Text = gvComputers.Rows.Count + " Result(s)";
     }

@@ -2,54 +2,50 @@
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.ImageSchemaFE;
 using RestSharp;
-using HardDrive = CloneDeploy_Entities.DTOs.ImageSchemaFE.HardDrive;
-using LogicalVolume = CloneDeploy_Entities.DTOs.ImageSchemaFE.LogicalVolume;
-using Partition = CloneDeploy_Entities.DTOs.ImageSchemaFE.Partition;
-
 
 namespace CloneDeploy_ApiCalls
 {
     public class ImageSchemaAPI : BaseAPI
     {
-        public ImageSchemaAPI(string resource):base(resource)
-        {
-		
-        }
-    
+        private readonly ApiRequest _apiRequest;
 
-        public ImageSchemaGridView GetSchema(ImageSchemaRequestDTO schemaRequest)
+        public ImageSchemaAPI(string resource) : base(resource)
         {
-            _request.Method = Method.POST;
-            _request.Resource = string.Format("api/{0}/GetSchema", _resource);
-            _request.AddJsonBody(schemaRequest);
-            return new ApiRequest().Execute<ImageSchemaGridView>(_request);
+            _apiRequest = new ApiRequest();
         }
 
         public IEnumerable<HardDrive> GetHardDrives(ImageSchemaRequestDTO schemaRequest)
         {
-            _request.Method = Method.POST;
-            _request.Resource = string.Format("api/{0}/GetHardDrives", _resource);
-            _request.AddJsonBody(schemaRequest);
-            return new ApiRequest().Execute<List<HardDrive>>(_request);
+            Request.Method = Method.POST;
+            Request.Resource = string.Format("api/{0}/GetHardDrives", Resource);
+            Request.AddJsonBody(schemaRequest);
+            return _apiRequest.Execute<List<HardDrive>>(Request);
+        }
+
+        public List<LogicalVolume> GetLogicalVolumes(ImageSchemaRequestDTO schemaRequest)
+        {
+            Request.Method = Method.POST;
+            Request.Resource = string.Format("api/{0}/GetLogicalVolumes", Resource);
+            Request.AddJsonBody(schemaRequest);
+            return _apiRequest.Execute<List<LogicalVolume>>(Request);
         }
 
 
         public List<Partition> GetPartitions(ImageSchemaRequestDTO schemaRequest)
         {
-            _request.Method = Method.POST;
-            _request.Resource = string.Format("api/{0}/GetPartitions", _resource);
-            _request.AddJsonBody(schemaRequest);
-            return new ApiRequest().Execute<List<Partition>>(_request);
+            Request.Method = Method.POST;
+            Request.Resource = string.Format("api/{0}/GetPartitions", Resource);
+            Request.AddJsonBody(schemaRequest);
+            return _apiRequest.Execute<List<Partition>>(Request);
         }
 
-        public List<LogicalVolume> GetLogicalVolumes(ImageSchemaRequestDTO schemaRequest)
+
+        public ImageSchemaGridView GetSchema(ImageSchemaRequestDTO schemaRequest)
         {
-            _request.Method = Method.POST;
-            _request.Resource = string.Format("api/{0}/GetLogicalVolumes", _resource);
-            _request.AddJsonBody(schemaRequest);
-            return new ApiRequest().Execute<List<LogicalVolume>>(_request);
+            Request.Method = Method.POST;
+            Request.Resource = string.Format("api/{0}/GetSchema", Resource);
+            Request.AddJsonBody(schemaRequest);
+            return _apiRequest.Execute<ImageSchemaGridView>(Request);
         }
-
-     
     }
 }

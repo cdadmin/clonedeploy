@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using RestSharp;
@@ -11,29 +7,28 @@ namespace CloneDeploy_ApiCalls
 {
     public class OnlineKernelAPI : BaseAPI
     {
-        public OnlineKernelAPI(string resource):base(resource)
-        {
-		
-        }
+        private readonly ApiRequest _apiRequest;
 
-        public List<OnlineKernel> GetAll()
+        public OnlineKernelAPI(string resource) : base(resource)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetAll", _resource);
-           
-            return new ApiRequest().Execute<List<OnlineKernel>>(_request);
+            _apiRequest = new ApiRequest();
         }
 
         public bool Download(OnlineKernel tObject)
         {
-            _request.Method = Method.POST;
-            _request.AddJsonBody(tObject);
-            _request.Resource = string.Format("api/{0}/Download/", _resource);
-            var response = new ApiRequest().Execute<ApiBoolResponseDTO>(_request);
+            Request.Method = Method.POST;
+            Request.AddJsonBody(tObject);
+            Request.Resource = string.Format("api/{0}/Download/", Resource);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
             return response != null && response.Value;
         }
 
+        public List<OnlineKernel> GetAll()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetAll", Resource);
 
-    
+            return _apiRequest.Execute<List<OnlineKernel>>(Request);
+        }
     }
 }

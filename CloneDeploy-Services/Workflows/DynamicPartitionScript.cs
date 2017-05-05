@@ -14,7 +14,7 @@ namespace CloneDeploy_Services.Workflows
         public int profileId { get; set; }
         public string partitionPrefix { get; set; }
         public int clientBlockSize { get; set; }
-        private ImageProfileEntity imageProfile;
+        private ImageProfileWithImage imageProfile;
         private ClientPartitionSchemaServices clientSchema;
         public string GeneratePartitionScript()
         {

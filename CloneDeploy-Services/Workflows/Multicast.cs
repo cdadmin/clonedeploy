@@ -15,7 +15,7 @@ namespace CloneDeploy_Services.Workflows
         private readonly ActiveMulticastSessionEntity _multicastSession;
         private List<ComputerEntity> _computers;
         private readonly GroupEntity _group;
-        private ImageProfileEntity _imageProfile;
+        private ImageProfileWithImage _imageProfile;
         private readonly int _userId;
         private int _multicastServerId;
 
@@ -145,7 +145,7 @@ namespace CloneDeploy_Services.Workflows
                 if (activeImagingTaskServices.AddActiveImagingTask(activeTask))
                 {
                     activeTaskIds.Add(activeTask.Id);
-                    computer.ActiveImagingTask = activeTask;
+                    //computer.ActiveImagingTask = activeTask;
                 }
                 else
                 {
@@ -177,9 +177,10 @@ namespace CloneDeploy_Services.Workflows
         {
             foreach (var computer in _computers)
             {
-                computer.ActiveImagingTask.Arguments =
+                var activeTask = new ComputerServices().GetTaskForComputer(computer.Id);
+                activeTask.Arguments =
                     new CreateTaskArguments(computer, _imageProfile, "multicast").Run(_multicastSession.Port.ToString());
-                if (!new ActiveImagingTaskServices().UpdateActiveImagingTask(computer.ActiveImagingTask))
+                if (!new ActiveImagingTaskServices().UpdateActiveImagingTask(activeTask))
                     return false;
             }
             return true;

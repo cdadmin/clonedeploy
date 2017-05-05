@@ -38,7 +38,7 @@ namespace views.dashboard
         {
             //FixMe: get all the numbers in own function, don't slowly create full lists of unused stuff 
 
-            List<ComputerEntity> computersList = Call.ComputerApi.GetAll(Int32.MaxValue, "");
+            var computersList = Call.ComputerApi.Search(Int32.MaxValue, "");
             lblTotalComputers.Text = computersList.Count + " Total Computer(s)";
 
             List<ImageEntity> imagesList =

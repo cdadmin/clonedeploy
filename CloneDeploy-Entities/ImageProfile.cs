@@ -109,11 +109,12 @@ namespace CloneDeploy_Entities
 
         [Column("wim_enabled_multicast", Order = 34)]
         public int WimMulticastEnabled { get; set; }
+    }
 
-        [NotMapped]
-        public virtual ImageEntity Image { get; set; }
-
-   
+    [NotMapped]
+    public class ImageProfileWithImage : ImageProfileEntity
+    {
+        public ImageEntity Image { get; set; }
     }
 }
 

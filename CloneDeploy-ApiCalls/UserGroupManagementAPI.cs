@@ -7,19 +7,19 @@ namespace CloneDeploy_ApiCalls
 {
     public class UserGroupManagementAPI : BaseAPI
     {
-        public UserGroupManagementAPI(string resource):base(resource)
+        private readonly ApiRequest _apiRequest;
+
+        public UserGroupManagementAPI(string resource) : base(resource)
         {
-		
-        }
-  
-        public ActionResultDTO Post(List<UserGroupManagementEntity> listOfGroups)
-        {
-            _request.Method = Method.POST;
-            _request.Resource = string.Format("api/{0}/Post/", _resource);
-            _request.AddJsonBody(listOfGroups);
-            return new ApiRequest().Execute<ActionResultDTO>(_request);
+            _apiRequest = new ApiRequest();
         }
 
-        
+        public ActionResultDTO Post(List<UserGroupManagementEntity> listOfGroups)
+        {
+            Request.Method = Method.POST;
+            Request.Resource = string.Format("api/{0}/Post/", Resource);
+            Request.AddJsonBody(listOfGroups);
+            return _apiRequest.Execute<ActionResultDTO>(Request);
+        }
     }
 }

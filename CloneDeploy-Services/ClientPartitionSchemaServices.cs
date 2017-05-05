@@ -19,7 +19,7 @@ namespace CloneDeploy_Services
     public class ClientPartitionSchemaServices
     {
         private readonly ILog log = LogManager.GetLogger("ApplicationLog");
-        public ClientPartitionSchemaServices(int hdToGet,string newHdSize, ImageProfileEntity imageProfile, string partitionPrefix)
+        public ClientPartitionSchemaServices(int hdToGet,string newHdSize, ImageProfileWithImage imageProfile, string partitionPrefix)
         {
             _hdToGet = hdToGet;
             _newHdSize = (long)(Convert.ToInt64(newHdSize) * .99);
@@ -36,7 +36,7 @@ namespace CloneDeploy_Services
         private int HdNumberToGet { get; set; }
 
         private readonly int _hdToGet;
-        private readonly ImageProfileEntity _imageProfile;
+        private readonly ImageProfileWithImage _imageProfile;
         private readonly long _newHdSize;
 
         private int LbsByte { get; set; }    

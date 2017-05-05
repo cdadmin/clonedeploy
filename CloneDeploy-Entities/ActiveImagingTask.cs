@@ -57,8 +57,11 @@ namespace CloneDeploy_Entities
 
         [NotMapped]
         public string Direction { get; set; }
+    }
 
-        [NotMapped]
-        public virtual ComputerEntity Computer { get; set; }
+    [NotMapped]
+    public class TaskWithComputer : ActiveImagingTaskEntity
+    {
+        public ComputerEntity Computer { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using CloneDeploy_Entities;
+﻿using System.Web.WebSockets;
+using CloneDeploy_Entities;
 using CloneDeploy_Services.Helpers;
 
 namespace CloneDeploy_Services.Workflows
@@ -8,14 +9,16 @@ namespace CloneDeploy_Services.Workflows
         private readonly ComputerEntity _computer;
         private readonly string _direction;
         private ActiveImagingTaskEntity _activeTask;
-        private ImageProfileEntity _imageProfile;
+        private ImageProfileWithImage _imageProfile;
         private readonly int _userId;
+        private readonly string _ipAddress;
 
-        public Unicast(int computerId, string direction, int userId)
+        public Unicast(int computerId, string direction, int userId, string userIp)
         {
             _direction = direction;
             _computer = new ComputerServices().GetComputer(computerId);
             _userId = userId;
+            _ipAddress = userIp;
         }
 
         public string Start()
@@ -72,6 +75,27 @@ namespace CloneDeploy_Services.Workflows
             }
 
             Utility.WakeUp(_computer.Mac);
+
+            var auditLog = new AuditLogEntity();
+            switch (_direction)
+            {
+                case "push":
+                    auditLog.AuditType = AuditEntry.Type.Push;
+                    break;
+                case "permanent_push":
+                    auditLog.AuditType = AuditEntry.Type.PermanentPush;
+                    break;
+                default:
+                    auditLog.AuditType = AuditEntry.Type.Pull;
+                    break;
+            }
+
+            auditLog.ObjectId = _computer.Id;
+            auditLog.ObjectName = _computer.Name;
+            auditLog.Ip = _ipAddress;
+            auditLog.UserId = _userId;
+            auditLog.ObjectType = "Computer";
+            new AuditLogServices().AddAuditLog(auditLog);
 
             return "Successfully Started Task For " + _computer.Name;
         }

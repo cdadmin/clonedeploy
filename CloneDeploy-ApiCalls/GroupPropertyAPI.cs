@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CloneDeploy_Entities;
+﻿using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using RestSharp;
 
@@ -11,32 +6,33 @@ namespace CloneDeploy_ApiCalls
 {
     public class GroupPropertyAPI : BaseAPI
     {
-        public GroupPropertyAPI(string resource):base(resource)
-        {
-		
-        }
+        private readonly ApiRequest _apiRequest;
 
-        public ActionResultDTO Put(int id, GroupPropertyEntity tObject)
+        public GroupPropertyAPI(string resource) : base(resource)
         {
-            _request.Method = Method.PUT;
-            _request.AddJsonBody(tObject);
-            _request.Resource = string.Format("api/{0}/Put/{1}", _resource, id);
-            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
-            if (response.Id == 0)
-                response.Success = false;
-            return response;
+            _apiRequest = new ApiRequest();
         }
 
         public ActionResultDTO Post(GroupPropertyEntity tObject)
         {
-            _request.Method = Method.POST;
-            _request.AddJsonBody(tObject);
-            _request.Resource = string.Format("api/{0}/Post/", _resource);
-            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
+            Request.Method = Method.POST;
+            Request.AddJsonBody(tObject);
+            Request.Resource = string.Format("api/{0}/Post/", Resource);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
             if (response.Id == 0)
                 response.Success = false;
             return response;
         }
-    
+
+        public ActionResultDTO Put(int id, GroupPropertyEntity tObject)
+        {
+            Request.Method = Method.PUT;
+            Request.AddJsonBody(tObject);
+            Request.Resource = string.Format("api/{0}/Put/{1}", Resource, id);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
+            if (response.Id == 0)
+                response.Success = false;
+            return response;
+        }
     }
 }

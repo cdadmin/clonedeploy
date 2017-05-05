@@ -15,7 +15,8 @@ namespace CloneDeploy_DataModel
             _context = context;
         }
 
-        public List<ComputerEntity> Search(string searchString, int limit = Int32.MaxValue)
+      
+        public List<ComputerWithImage> Search(string searchString, int limit = Int32.MaxValue)
         {
             return (from h in _context.Computers
                     join t in _context.Images on h.ImageId equals t.Id into joined
@@ -31,7 +32,7 @@ namespace CloneDeploy_DataModel
                         site = h.SiteId,
                         building = h.BuildingId,
                         room = h.RoomId
-                    }).AsEnumerable().Select(x => new ComputerEntity()
+                    }).AsEnumerable().Select(x => new ComputerWithImage()
                     {
                         Id = x.id,
                         Name = x.name,
@@ -45,7 +46,7 @@ namespace CloneDeploy_DataModel
                     }).OrderBy(x => x.Name).Take(limit).ToList();
         }
 
-        public List<ComputerEntity> SearchByName(string searchString, int limit = Int32.MaxValue)
+        public List<ComputerWithImage> SearchByName(string searchString, int limit = Int32.MaxValue)
         {
             return (from h in _context.Computers
                     join t in _context.Images on h.ImageId equals t.Id into joined
@@ -61,7 +62,7 @@ namespace CloneDeploy_DataModel
                         site = h.SiteId,
                         building = h.BuildingId,
                         room = h.RoomId
-                    }).AsEnumerable().Select(x => new ComputerEntity()
+                    }).AsEnumerable().Select(x => new ComputerWithImage()
                     {
                         Id = x.id,
                         Name = x.name,

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Web;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services.Helpers;
@@ -11,6 +12,8 @@ namespace CloneDeploy_Services
     /// </summary>
     public class AuthenticationServices
     {
+       
+
         private readonly UserServices _userServices;
         private readonly UserGroupServices _userGroupServices;
         private readonly UserLockoutServices _userLockoutServices;
@@ -81,6 +84,15 @@ namespace CloneDeploy_Services
                 Success = false
             };
 
+            var auditLog = new AuditLogEntity();
+            var auditLogService = new AuditLogServices();
+            auditLog.ObjectId = -1;
+            auditLog.ObjectName = userName;
+            auditLog.Ip = Utility.GetIPAddress();
+            auditLog.UserId = -1;
+            auditLog.ObjectType = "User";
+            auditLog.AuditType = AuditEntry.Type.FailedLogin;
+
            
 
             //Check if user exists in Clone Deploy
@@ -109,14 +121,18 @@ namespace CloneDeploy_Services
                             {
                                 //add user to group
                                 var newUser = _userServices.GetUser(userName);
-                                _userGroupServices.AddNewGroupMember(ldapGroup.Id,newUser.Id);
+                                _userGroupServices.AddNewGroupMember(ldapGroup.Id, newUser.Id);
+                                auditLog.UserId = newUser.Id;
+                                auditLog.ObjectId = newUser.Id;
+                                validationResult.Success = true;
+                                auditLog.AuditType = AuditEntry.Type.SuccessfulLogin;
+
+                                break;
                             }
-                            validationResult.ErrorMessage = "Success";
-                            validationResult.Success = true;
-                            break;
                         }
                     }
                 }
+                auditLogService.AddAuditLog(auditLog);
                 return validationResult;
             }
 
@@ -124,6 +140,9 @@ namespace CloneDeploy_Services
             {
                 _userLockoutServices.ProcessBadLogin(user.Id);
                 validationResult.ErrorMessage = "Account Is Locked";
+                auditLog.UserId = user.Id;
+                auditLog.ObjectId = user.Id;
+                auditLogService.AddAuditLog(auditLog);
                 return validationResult;
             }
 
@@ -193,12 +212,19 @@ namespace CloneDeploy_Services
            
             if (validationResult.Success)
             {
+                auditLog.AuditType = AuditEntry.Type.SuccessfulLogin;
+                auditLog.UserId = user.Id;
+                auditLog.ObjectId = user.Id;
+                auditLogService.AddAuditLog(auditLog);
                 _userLockoutServices.DeleteUserLockouts(user.Id);
-                validationResult.ErrorMessage = "Success";
                 return validationResult;
             }
             else
             {
+                auditLog.AuditType = AuditEntry.Type.FailedLogin;
+                auditLog.UserId = user.Id;
+                auditLog.ObjectId = user.Id;
+                auditLogService.AddAuditLog(auditLog);
                 _userLockoutServices.ProcessBadLogin(user.Id);
                 return validationResult;
             }

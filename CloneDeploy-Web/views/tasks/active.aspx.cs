@@ -12,11 +12,23 @@ namespace views.tasks
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            cancelTasks.Visible = Call.CloneDeployUserApi.IsAdmin(CloneDeployCurrentUser.Id);
+            if (Call.CloneDeployUserApi.IsAdmin(CloneDeployCurrentUser.Id))
+            {
+                lblTotalNotOwned.Visible = false;
+                cancelTasks.Visible = true;
+            }
+            else
+            {
+                lblTotalNotOwned.Text = Call.ActiveImagingTaskApi.GetActiveNotOwned() + " Task(s) Not Visible";
+                lblTotalNotOwned.Visible = true;
+                cancelTasks.Visible = false;
+            }
+         
             if (IsPostBack) return;
             ViewState["clickTracker"] = "1";
             PopulateGrid();
             lblTotal.Text = Call.ActiveImagingTaskApi.GetAllActiveCount() + " Total Tasks(s)";
+
         }
 
         protected void btnCancel_Click(object sender, EventArgs e)

@@ -622,7 +622,7 @@ namespace CloneDeploy_Services
 
         public string GetOnDemandArguments(string mac, int objectId, string task)
         {
-            ImageProfileEntity imageProfile;
+            ImageProfileWithImage imageProfile;
             var computer = new ComputerServices().GetComputerFromMac(mac);
             var arguments = "";
             if (task == "push" || task == "pull")

@@ -12,11 +12,11 @@ namespace CloneDeploy_Services.Workflows
         private readonly StringBuilder _activeTaskArguments;
         private readonly ComputerEntity _computer;
         private readonly string _direction;
-        private readonly ImageProfileEntity _imageProfile;
+        private readonly ImageProfileWithImage _imageProfile;
         private readonly ImageProfileServices _imageProfileServices;
         private readonly ClusterGroupServices _clusterGroupServices;
 
-        public CreateTaskArguments(ComputerEntity computer, ImageProfileEntity imageProfile, string direction)
+        public CreateTaskArguments(ComputerEntity computer, ImageProfileWithImage imageProfile, string direction)
         {
             _computer = computer;
             _imageProfile = imageProfile;

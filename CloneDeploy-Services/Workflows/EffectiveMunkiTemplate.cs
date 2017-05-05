@@ -78,7 +78,7 @@ namespace CloneDeploy_Services.Workflows
                 foreach (var munkiGroup in groups)
                 {
                     var effectiveManifest = new EffectiveMunkiTemplate().Group(munkiGroup.GroupId);
-                    var computersInGroup = _groupServices.GetGroupMembers(munkiGroup.GroupId);
+                    var computersInGroup = _groupServices.GetGroupMembersWithImages(munkiGroup.GroupId);
                     foreach (var computer in computersInGroup)
                     {
                         if (!WritePath(basePath + computer.Name, Encoding.UTF8.GetString(effectiveManifest.ToArray())))
@@ -97,7 +97,7 @@ namespace CloneDeploy_Services.Workflows
                         foreach (var munkiGroup in groups)
                         {
                             var effectiveManifest = new EffectiveMunkiTemplate().Group(munkiGroup.GroupId);
-                            var computersInGroup = _groupServices.GetGroupMembers(munkiGroup.GroupId);
+                            var computersInGroup = _groupServices.GetGroupMembersWithImages(munkiGroup.GroupId);
                             foreach (var computer in computersInGroup)
                             {
                                 if (!WritePath(basePath + computer.Name, Encoding.UTF8.GetString(effectiveManifest.ToArray())))
@@ -110,7 +110,7 @@ namespace CloneDeploy_Services.Workflows
                         log.Debug("Failed to connect to " + Settings.MunkiBasePath + "\r\nLastError = " + unc.LastError);
                         foreach (var munkiGroup in groups)
                         {
-                            var computersInGroup = _groupServices.GetGroupMembers(munkiGroup.GroupId);
+                            var computersInGroup = _groupServices.GetGroupMembersWithImages(munkiGroup.GroupId);
                             errorCount += computersInGroup.Count();
                         }
                     }

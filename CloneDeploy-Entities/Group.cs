@@ -10,7 +10,6 @@ namespace CloneDeploy_Entities
     {
         public GroupEntity()
         {
-            Members = new List<ComputerEntity>();
             ImageId = -1;
             ImageProfileId = -1;
             SetDefaultProperties = 0;
@@ -49,11 +48,6 @@ namespace CloneDeploy_Entities
         [Column("cluster_group_id", Order = 10)]
         public int ClusterGroupId { get; set; }
 
-        [NotMapped]
-        public List<ComputerEntity> Members { get; set; }
-
-        [NotMapped]
-        public virtual ImageEntity Image { get; set; }
     }
 
     public sealed class GroupCsvMap : CsvClassMap<GroupEntity>

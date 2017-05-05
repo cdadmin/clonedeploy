@@ -15,7 +15,7 @@ namespace CloneDeploy_DataModel
         }
 
 
-        public List<BuildingEntity> Get(string searchString)
+        public List<BuildingWithClusterGroup> Get(string searchString)
         {
             return (from s in _context.Buildings
                     join d in _context.ClusterGroups on s.DistributionPointId equals d.Id into joined
@@ -27,7 +27,7 @@ namespace CloneDeploy_DataModel
                         id = s.Id,
                         name = s.Name,
                         distributionPoint = j
-                    }).AsEnumerable().Select(x => new BuildingEntity()
+                    }).AsEnumerable().Select(x => new BuildingWithClusterGroup()
                     {
                         Id = x.id,
                         Name = x.name,

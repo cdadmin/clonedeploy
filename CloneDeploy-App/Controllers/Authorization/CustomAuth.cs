@@ -85,10 +85,22 @@ namespace CloneDeploy_App.Controllers.Authorization
                 case "ProfileUpdate":
                 case "ProfileRead":
                     var profileId = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
-                    var profileImageId = new ImageProfileServices().ReadProfile(profileId).ImageId;
-                    if (new AuthorizationServices(Convert.ToInt32(userId), Permission).ImageManagement(profileImageId))
+                    var profile = new ImageProfileServices().ReadProfile(profileId);
+                    if (profile == null)
+                    {
                         authorized = true;
-                    break;
+                        break;
+                    }
+                    else
+                    {
+                        var profileImageId = profile.ImageId;
+                        if (
+                            new AuthorizationServices(Convert.ToInt32(userId), Permission).ImageManagement(
+                                profileImageId))
+                            authorized = true;
+
+                        break;
+                    }
                 case "ImageTaskDelete":
                     var objectId = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
                     var activeImagingTask = new ActiveImagingTaskServices().GetTask(objectId);

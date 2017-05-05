@@ -6,158 +6,158 @@ using RestSharp;
 namespace CloneDeploy_ApiCalls
 {
     /// <summary>
-    /// Summary description for User
+    ///     Summary description for User
     /// </summary>
     public class UserAPI : BaseAPI
     {
-        public UserAPI(string resource):base(resource)
-        {
-		
-        }
+        private readonly ApiRequest _apiRequest;
 
-        public List<CloneDeployUserEntity> GetAll(int limit, string searchstring)
+        public UserAPI(string resource) : base(resource)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetAll", _resource);
-            _request.AddParameter("limit", limit);
-            _request.AddParameter("searchstring", searchstring);
-            return new ApiRequest().Execute<List<CloneDeployUserEntity>>(_request);
-        }
-
-        public CloneDeployUserEntity Get(int id)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/Get/{1}", _resource, id);
-            return new ApiRequest().Execute<CloneDeployUserEntity>(_request);
-        }
-
-        public string GetCount()
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetCount", _resource);
-            var responseData = new ApiRequest().Execute<ApiStringResponseDTO>(_request);
-            return responseData != null ? responseData.Value : string.Empty;
-
-        }
-
-        public ActionResultDTO Put(int id, CloneDeployUserEntity tObject)
-        {
-            _request.Method = Method.PUT;
-            _request.AddJsonBody(tObject);
-            _request.Resource = string.Format("api/{0}/Put/{1}", _resource, id);
-            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
-            if (response.Id == 0)
-                response.Success = false;
-            return response;
-        }
-
-        public ActionResultDTO Post(CloneDeployUserEntity tObject)
-        {
-            _request.Method = Method.POST;
-            _request.AddJsonBody(tObject);
-            _request.Resource = string.Format("api/{0}/Post/", _resource);
-            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
-            if (response.Id == 0)
-                response.Success = false;
-            return response;
+            _apiRequest = new ApiRequest();
         }
 
         public ActionResultDTO Delete(int id)
         {
-            _request.Method = Method.DELETE;
-            _request.Resource = string.Format("api/{0}/Delete/{1}", _resource, id);
-            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
+            Request.Method = Method.DELETE;
+            Request.Resource = string.Format("api/{0}/Delete/{1}", Resource, id);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
             if (response.Id == 0)
                 response.Success = false;
             return response;
-
-        }
-        public CloneDeployUserEntity GetByName(string username)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetByName/", _resource);
-            _request.AddParameter("username", username);
-            return new ApiRequest().Execute<CloneDeployUserEntity>(_request);
-        }
-
-        public ApiObjectResponseDTO GetForLogin(string username)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetForLogin/", _resource);
-            _request.AddParameter("username", username);
-            var response = new ApiRequest().Execute<ApiObjectResponseDTO>(_request);
-
-            if (response.Id == 0)
-                response.Success = false;
-            return response;
-
-        }
-
-
-
-        public int GetAdminCount()
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetAdminCount/", _resource);
-            return new ApiRequest().Execute<ApiIntResponseDTO>(_request).Value;
-        }
-
-
-
-
-        public bool IsAdmin(int id)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/IsAdmin/", _resource);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
-        }
-
-        public IEnumerable<UserRightEntity> GetRights(int id)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetRights/{1}", _resource,id);
-            return new ApiRequest().Execute<List<UserRightEntity>>(_request);
-        }
-
-
-        public bool DeleteRights(int id)
-        {
-            _request.Method = Method.DELETE;
-            _request.Resource = string.Format("api/{0}/DeleteRights/{1}", _resource,id);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
-
-        }
-
-
-        public IEnumerable<UserImageManagementEntity> GetImageManagements(int id)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetImageManagements/{1}", _resource,id);
-            return new ApiRequest().Execute<List<UserImageManagementEntity>>(_request);
-        }
-
-
-        public bool DeleteImageManagements(int id)
-        {
-            _request.Method = Method.DELETE;
-            _request.Resource = string.Format("api/{0}/DeleteImageManagements/{1}", _resource,id);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
-
-        }
-
-        public IEnumerable<UserGroupManagementEntity> GetGroupManagements(int id)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetGroupManagements/{1}", _resource,id);
-            return new ApiRequest().Execute<List<UserGroupManagementEntity>>(_request);
         }
 
 
         public bool DeleteGroupManagements(int id)
         {
-            _request.Method = Method.DELETE;
-            _request.Resource = string.Format("api/{0}/DeleteGroupManagements/", _resource,id);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+            Request.Method = Method.DELETE;
+            Request.Resource = string.Format("api/{0}/DeleteGroupManagements/{1}", Resource, id);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
+        }
+
+
+        public bool DeleteImageManagements(int id)
+        {
+            Request.Method = Method.DELETE;
+            Request.Resource = string.Format("api/{0}/DeleteImageManagements/{1}", Resource, id);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
+        }
+
+
+        public bool DeleteRights(int id)
+        {
+            Request.Method = Method.DELETE;
+            Request.Resource = string.Format("api/{0}/DeleteRights/{1}", Resource, id);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
+        }
+
+        public CloneDeployUserEntity Get(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/Get/{1}", Resource, id);
+            return _apiRequest.Execute<CloneDeployUserEntity>(Request);
+        }
+
+
+        public int GetAdminCount()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetAdminCount/", Resource);
+            var response = _apiRequest.Execute<ApiIntResponseDTO>(Request);
+            return response != null ? response.Value : 0;
+        }
+
+        public List<CloneDeployUserEntity> GetAll(int limit, string searchstring)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetAll", Resource);
+            Request.AddParameter("limit", limit);
+            Request.AddParameter("searchstring", searchstring);
+            return _apiRequest.Execute<List<CloneDeployUserEntity>>(Request);
+        }
+
+        public CloneDeployUserEntity GetByName(string username)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetByName/", Resource);
+            Request.AddParameter("username", username);
+            return _apiRequest.Execute<CloneDeployUserEntity>(Request);
+        }
+
+        public string GetCount()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetCount", Resource);
+            var responseData = _apiRequest.Execute<ApiStringResponseDTO>(Request);
+            return responseData != null ? responseData.Value : string.Empty;
+        }
+
+        public ApiObjectResponseDTO GetForLogin(string username)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetForLogin/", Resource);
+            Request.AddParameter("username", username);
+            var response = _apiRequest.Execute<ApiObjectResponseDTO>(Request);
+
+            if (response.Id == 0)
+                response.Success = false;
+            return response;
+        }
+
+        public IEnumerable<UserGroupManagementEntity> GetGroupManagements(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetGroupManagements/{1}", Resource, id);
+            return _apiRequest.Execute<List<UserGroupManagementEntity>>(Request);
+        }
+
+
+        public IEnumerable<UserImageManagementEntity> GetImageManagements(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetImageManagements/{1}", Resource, id);
+            return _apiRequest.Execute<List<UserImageManagementEntity>>(Request);
+        }
+
+        public IEnumerable<UserRightEntity> GetRights(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetRights/{1}", Resource, id);
+            return _apiRequest.Execute<List<UserRightEntity>>(Request);
+        }
+
+
+        public bool IsAdmin(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/IsAdmin/", Resource);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
+        }
+
+        public ActionResultDTO Post(CloneDeployUserEntity tObject)
+        {
+            Request.Method = Method.POST;
+            Request.AddJsonBody(tObject);
+            Request.Resource = string.Format("api/{0}/Post/", Resource);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
+            if (response.Id == 0)
+                response.Success = false;
+            return response;
+        }
+
+        public ActionResultDTO Put(int id, CloneDeployUserEntity tObject)
+        {
+            Request.Method = Method.PUT;
+            Request.AddJsonBody(tObject);
+            Request.Resource = string.Format("api/{0}/Put/{1}", Resource, id);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
+            if (response.Id == 0)
+                response.Success = false;
+            return response;
         }
     }
 }

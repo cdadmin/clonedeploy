@@ -17,7 +17,7 @@ namespace CloneDeploy_Services
 
         public  void UpdateGroupMemberBootMenus(GroupBootMenuEntity groupBootMenu)
         {
-            foreach (var computer in new GroupServices().GetGroupMembers(groupBootMenu.GroupId))
+            foreach (var computer in new GroupServices().GetGroupMembersWithImages(groupBootMenu.GroupId))
             {
                 var computerBootMenu = new ComputerBootMenuEntity
                 {

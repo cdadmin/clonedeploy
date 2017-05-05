@@ -5,21 +5,21 @@ using RestSharp;
 
 namespace CloneDeploy_ApiCalls
 {
-
     public class GroupMembershipAPI : BaseAPI
     {
-        public GroupMembershipAPI(string resource):base(resource)
+        private readonly ApiRequest _apiRequest;
+
+        public GroupMembershipAPI(string resource) : base(resource)
         {
-		
+            _apiRequest = new ApiRequest();
         }
-    
+
         public ActionResultDTO Post(List<GroupMembershipEntity> groupMemberships)
         {
-            _request.Method = Method.POST;
-            _request.Resource = string.Format("api/{0}/Post/", _resource);
-            _request.AddJsonBody(groupMemberships);
-            return new ApiRequest().Execute<ActionResultDTO>(_request);
-          
+            Request.Method = Method.POST;
+            Request.Resource = string.Format("api/{0}/Post/", Resource);
+            Request.AddJsonBody(groupMemberships);
+            return _apiRequest.Execute<ActionResultDTO>(Request);
         }
     }
 }

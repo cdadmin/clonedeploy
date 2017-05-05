@@ -15,7 +15,7 @@ namespace CloneDeploy_DataModel
         IGenericRepository<GroupMembershipEntity> GroupMembershipRepository { get; }
         IGenericRepository<ImageEntity> ImageRepository { get; }
         IGenericRepository<ImageProfilePartitionLayoutEntity> ImageProfilePartitionRepository { get; }
-        IGenericRepository<ImageProfileEntity> ImageProfileRepository { get; }
+        ImageProfileRepository ImageProfileRepository { get; }
         IGenericRepository<PartitionEntity> PartitionRepository { get; }
         IGenericRepository<PartitionLayoutEntity> PartitionLayoutRepository { get; }
         IGenericRepository<PortEntity> PortRepository { get; }

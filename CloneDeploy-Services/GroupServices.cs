@@ -97,8 +97,7 @@ namespace CloneDeploy_Services
         {
            
                 var group = _uow.GroupRepository.GetById(groupId);
-                if (group != null)
-                    group.Image = new ImageServices().GetImage(group.ImageId);
+              
                 return group;
             
         }
@@ -132,8 +131,7 @@ namespace CloneDeploy_Services
             {
               
                     var listOfGroups = userManagedGroups.Select(managedGroup => _uow.GroupRepository.GetFirstOrDefault(i => i.Name.Contains(searchString) && i.Id == managedGroup.GroupId)).ToList();
-                    foreach (var group in listOfGroups)
-                        group.Image = new ImageServices().GetImage(group.ImageId);
+                   
                     return listOfGroups;
                     
                 
@@ -146,8 +144,7 @@ namespace CloneDeploy_Services
         {
             
                 var listOfGroups = _uow.GroupRepository.Get(g => g.Name.Contains(searchString));
-                foreach (var group in listOfGroups)
-                    group.Image = new ImageServices().GetImage(group.ImageId);
+             
                 return listOfGroups;
             
         }
@@ -222,12 +219,12 @@ namespace CloneDeploy_Services
 
         }
 
-        public  int StartGroupUnicast(int groupId, int userId)
+        public int StartGroupUnicast(int groupId, int userId, string clientIp)
         {
             var count = 0;
-            foreach (var computer in GetGroupMembers(groupId))
+            foreach (var computer in GetGroupMembersWithImages(groupId))
             {
-                if(new Unicast(computer.Id, "push",userId).Start().Contains("Successfully"))
+                if(new Unicast(computer.Id, "push",userId,clientIp).Start().Contains("Successfully"))
                 count++;
             }
             return count;
@@ -258,11 +255,18 @@ namespace CloneDeploy_Services
             }
         }
 
-        public  List<ComputerEntity> GetGroupMembers(int groupId, string searchString = "")
+        public  List<ComputerWithImage> GetGroupMembersWithImages(int groupId, string searchString = "")
         {
            
-                return _uow.GroupRepository.GetGroupMembers(groupId, searchString);
+                return _uow.GroupRepository.GetGroupMembersWithImages(groupId, searchString);
             
+        }
+
+        public List<ComputerEntity> GetGroupMembers(int groupId, string searchString = "")
+        {
+
+            return _uow.GroupRepository.GetGroupMembers(groupId, searchString);
+
         }
 
         public  void UpdateAllSmartGroupsMembers()

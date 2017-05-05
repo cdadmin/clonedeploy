@@ -1,69 +1,69 @@
-﻿using System.IO;
-using System.Net;
-using CloneDeploy_Entities.DTOs;
+﻿using CloneDeploy_Entities.DTOs;
 using RestSharp;
 
 namespace CloneDeploy_ApiCalls
 {
     public class WorkflowAPI : BaseAPI
     {
-       
+        private readonly ApiRequest _apiRequest;
 
-        public WorkflowAPI(string resource):base (resource)
+        public WorkflowAPI(string resource) : base(resource)
         {
-          
+            _apiRequest = new ApiRequest();
         }
-    
+
+        public bool CancelAllImagingTasks()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/CancelAllImagingTasks/", Resource);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
+        }
+
+        public bool CopyPxeBinaries()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/CopyPxeBinaries/", Resource);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
+        }
+
+        public bool CreateClobberBootMenu(int profileId, bool promptComputerName)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/CreateClobberBootMenu/", Resource);
+            Request.AddParameter("profileId", profileId);
+            Request.AddParameter("promptComputerName", promptComputerName);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
+        }
+
 
         public bool CreateDefaultBootMenu(BootMenuGenOptionsDTO defaultMenuOptions)
         {
-            _request.Method = Method.POST;
-            _request.Resource = string.Format("api/{0}/CreateDefaultBootMenu/", _resource);
-            _request.AddJsonBody(defaultMenuOptions);
-            var response = new ApiRequest().Execute<ApiBoolResponseDTO>(_request);
+            Request.Method = Method.POST;
+            Request.Resource = string.Format("api/{0}/CreateDefaultBootMenu/", Resource);
+            Request.AddJsonBody(defaultMenuOptions);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
             return response != null && response.Value;
         }
 
         public byte[] GenerateLinuxIsoConfig(IsoGenOptionsDTO isoOptions)
         {
-            _request.Method = Method.POST;
-            _request.Resource = string.Format("api/{0}/GenerateLinuxIsoConfig/", _resource);
-            _request.AddJsonBody(isoOptions);
-            return new ApiRequest().ExecuteRaw(_request);
-        }
-
-        public bool CreateClobberBootMenu(int profileId, bool promptComputerName)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/CreateClobberBootMenu/", _resource);
-            _request.AddParameter("profileId", profileId);
-            _request.AddParameter("promptComputerName", promptComputerName);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
-        }
-
-        public bool CopyPxeBinaries()
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/CopyPxeBinaries/", _resource);     
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
-        }
-
-        public bool CancelAllImagingTasks()
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/CancelAllImagingTasks/", _resource);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+            Request.Method = Method.POST;
+            Request.Resource = string.Format("api/{0}/GenerateLinuxIsoConfig/", Resource);
+            Request.AddJsonBody(isoOptions);
+            return _apiRequest.ExecuteRaw(Request);
         }
 
         public string StartOnDemandMulticast(int profileId, string clientCount)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/StartOnDemandMulticast/", _resource);
-            _request.AddParameter("profileId", profileId);
-            _request.AddParameter("clientCount", clientCount);
-            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/StartOnDemandMulticast/", Resource);
+            Request.AddParameter("profileId", profileId);
+            Request.AddParameter("clientCount", clientCount);
+            var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
+            return response != null ? response.Value : string.Empty;
         }
-
-       
     }
 }

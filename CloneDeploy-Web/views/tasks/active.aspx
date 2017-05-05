@@ -30,6 +30,10 @@
               <p class="total">
         <asp:Label ID="lblTotal" runat="server"></asp:Label>
     </p>
+            <br class="clear" />
+             <p class="total">
+        <asp:Label ID="lblTotalNotOwned" runat="server"></asp:Label>
+    </p>
     <br class="clear" />
     <br/>
             <asp:GridView ID="gvTasks" runat="server" AutoGenerateColumns="False" DataKeyNames="Id" CssClass="Gridview extraPad" AlternatingRowStyle-CssClass="alt">

@@ -7,82 +7,81 @@ namespace CloneDeploy_ApiCalls
 {
     public class ClusterGroupAPI : BaseAPI
     {
-        public ClusterGroupAPI(string resource):base(resource)
-        {
-		
-        }
+        private readonly ApiRequest _apiRequest;
 
-        public List<ClusterGroupEntity> GetAll(int limit, string searchstring)
+        public ClusterGroupAPI(string resource) : base(resource)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetAll", _resource);
-            _request.AddParameter("limit", limit);
-            _request.AddParameter("searchstring", searchstring);
-            return new ApiRequest().Execute<List<ClusterGroupEntity>>(_request);
-        }
-
-        public ClusterGroupEntity Get(int id)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/Get/{1}", _resource, id);
-            return new ApiRequest().Execute<ClusterGroupEntity>(_request);
-        }
-
-        public string GetCount()
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetCount", _resource);
-            var responseData = new ApiRequest().Execute<ApiStringResponseDTO>(_request);
-            return responseData != null ? responseData.Value : string.Empty;
-
-        }
-
-        public ActionResultDTO Put(int id, ClusterGroupEntity tObject)
-        {
-            _request.Method = Method.PUT;
-            _request.AddJsonBody(tObject);
-            _request.Resource = string.Format("api/{0}/Put/{1}", _resource, id);
-            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
-            if (response.Id == 0)
-                response.Success = false;
-            return response;
-        }
-
-        public ActionResultDTO Post(ClusterGroupEntity tObject)
-        {
-            _request.Method = Method.POST;
-            _request.AddJsonBody(tObject);
-            _request.Resource = string.Format("api/{0}/Post/", _resource);
-            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
-            if (response.Id == 0)
-                response.Success = false;
-            return response;
+            _apiRequest = new ApiRequest();
         }
 
         public ActionResultDTO Delete(int id)
         {
-            _request.Method = Method.DELETE;
-            _request.Resource = string.Format("api/{0}/Delete/{1}", _resource, id);
-            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
+            Request.Method = Method.DELETE;
+            Request.Resource = string.Format("api/{0}/Delete/{1}", Resource, id);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
             if (response.Id == 0)
                 response.Success = false;
             return response;
         }
-  
-        public IEnumerable<ClusterGroupServerEntity> GetClusterServers(int id)
+
+        public ClusterGroupEntity Get(int id)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetClusterServers/{1}", _resource, id);
-            return new ApiRequest().Execute<List<ClusterGroupServerEntity>>(_request);
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/Get/{1}", Resource, id);
+            return _apiRequest.Execute<ClusterGroupEntity>(Request);
+        }
+
+        public List<ClusterGroupEntity> GetAll(int limit, string searchstring)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetAll", Resource);
+            Request.AddParameter("limit", limit);
+            Request.AddParameter("searchstring", searchstring);
+            return _apiRequest.Execute<List<ClusterGroupEntity>>(Request);
         }
 
         public IEnumerable<ClusterGroupDistributionPointEntity> GetClusterDistributionPoints(int id)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetClusterDistributionPoints/{1}", _resource, id);
-            return new ApiRequest().Execute<List<ClusterGroupDistributionPointEntity>>(_request);
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetClusterDistributionPoints/{1}", Resource, id);
+            return _apiRequest.Execute<List<ClusterGroupDistributionPointEntity>>(Request);
         }
 
-        
+        public IEnumerable<ClusterGroupServerEntity> GetClusterServers(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetClusterServers/{1}", Resource, id);
+            return _apiRequest.Execute<List<ClusterGroupServerEntity>>(Request);
+        }
+
+        public string GetCount()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetCount", Resource);
+            var responseData = _apiRequest.Execute<ApiStringResponseDTO>(Request);
+            return responseData != null ? responseData.Value : string.Empty;
+        }
+
+        public ActionResultDTO Post(ClusterGroupEntity tObject)
+        {
+            Request.Method = Method.POST;
+            Request.AddJsonBody(tObject);
+            Request.Resource = string.Format("api/{0}/Post/", Resource);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
+            if (response.Id == 0)
+                response.Success = false;
+            return response;
+        }
+
+        public ActionResultDTO Put(int id, ClusterGroupEntity tObject)
+        {
+            Request.Method = Method.PUT;
+            Request.AddJsonBody(tObject);
+            Request.Resource = string.Format("api/{0}/Put/{1}", Resource, id);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
+            if (response.Id == 0)
+                response.Success = false;
+            return response;
+        }
     }
 }

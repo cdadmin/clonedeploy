@@ -5,49 +5,52 @@ namespace CloneDeploy_ApiCalls
 {
     public class AuthorizationAPI : BaseAPI
     {
-      
-        public AuthorizationAPI(string resource):base (resource)
-        {
-           
-        }
+        private readonly ApiRequest _apiRequest;
 
-        public bool IsAuthorized(string requiredRight)
+        public AuthorizationAPI(string resource) : base(resource)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/IsAuthorized/", _resource);
-            _request.AddParameter("requiredRight", requiredRight);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+            _apiRequest = new ApiRequest();
         }
 
 
         public bool ComputerManagement(string requiredRight, int computerId)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/IsAuthorized/", _resource);
-            _request.AddParameter("requiredRight", requiredRight);
-            _request.AddParameter("computerId", computerId);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/IsAuthorized/", Resource);
+            Request.AddParameter("requiredRight", requiredRight);
+            Request.AddParameter("computerId", computerId);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
         }
 
         public bool GroupManagement(string requiredRight, int groupId)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/IsAuthorized/", _resource);
-            _request.AddParameter("requiredRight", requiredRight);
-            _request.AddParameter("groupId", groupId);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/IsAuthorized/", Resource);
+            Request.AddParameter("requiredRight", requiredRight);
+            Request.AddParameter("groupId", groupId);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
         }
 
 
         public bool ImageManagement(string requiredRight, int imageId)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/IsAuthorized/", _resource);
-            _request.AddParameter("requiredRight", requiredRight);
-            _request.AddParameter("imageId", imageId);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/IsAuthorized/", Resource);
+            Request.AddParameter("requiredRight", requiredRight);
+            Request.AddParameter("imageId", imageId);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
         }
 
-      
+        public bool IsAuthorized(string requiredRight)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/IsAuthorized/", Resource);
+            Request.AddParameter("requiredRight", requiredRight);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
+        }
     }
 }

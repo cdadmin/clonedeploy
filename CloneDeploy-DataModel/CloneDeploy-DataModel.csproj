@@ -48,6 +48,7 @@
     <Compile Include="GenericRepository.cs" />
     <Compile Include="GroupRepository.cs" />
     <Compile Include="IGenericRepository.cs" />
+    <Compile Include="ImageProfileRepository.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoomRepository.cs" />

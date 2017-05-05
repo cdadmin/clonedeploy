@@ -8,6 +8,7 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services.Helpers;
 using CsvHelper;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace CloneDeploy_Services
 {
@@ -154,8 +155,8 @@ namespace CloneDeploy_Services
         public ComputerEntity GetComputer(int computerId)
         {
             var computer = _uow.ComputerRepository.GetById(computerId);
-            if (computer != null)
-                computer.Image = new ImageServices().GetImage(computer.ImageId);
+            //if (computer != null)
+                //computer.Image = new ImageServices().GetImage(computer.ImageId);
             return computer;
         }
 
@@ -166,14 +167,16 @@ namespace CloneDeploy_Services
 
         }
 
-        public List<ComputerEntity> SearchComputersForUser(int userId, int limit, string searchString = "")
+     
+
+        public List<ComputerWithImage> SearchComputersForUser(int userId, int limit, string searchString = "")
         {
             var userServices = new UserServices();
             if(limit== 0) limit=Int32.MaxValue;
             if(userServices.GetUser(userId).Membership == "Administrator")
                 return SearchComputers(searchString,limit);
 
-            var listOfComputers = new List<ComputerEntity>();
+            var listOfComputers = new List<ComputerWithImage>();
 
             var userManagedGroups = userServices.GetUserGroupManagements(userId);
             if (userManagedGroups.Count == 0)
@@ -182,17 +185,17 @@ namespace CloneDeploy_Services
             {
                 foreach (var managedGroup in userManagedGroups)
                 {
-                    listOfComputers.AddRange(new GroupServices().GetGroupMembers(managedGroup.GroupId, searchString));
+                    listOfComputers.AddRange(new GroupServices().GetGroupMembersWithImages(managedGroup.GroupId, searchString));
                 }
 
-                foreach (var computer in listOfComputers)
-                    computer.Image = new ImageServices().GetImage(computer.ImageId);
+                //foreach (var computer in listOfComputers)
+                    //computer.Image = new ImageServices().GetImage(computer.ImageId);
 
                 return listOfComputers;
             }
         }
 
-        public List<ComputerEntity> SearchComputersForUserByName(int userId, int limit, string searchString = "")
+        public List<ComputerWithImage> SearchComputersForUserByName(int userId, int limit, string searchString = "")
         {
             var userServices = new UserServices();
             if (limit == 0) limit = Int32.MaxValue;
@@ -200,7 +203,7 @@ namespace CloneDeploy_Services
             if (userServices.GetUser(userId).Membership == "Administrator")
                 return SearchComputers(searchString, limit);
 
-            var listOfComputers = new List<ComputerEntity>();
+            var listOfComputers = new List<ComputerWithImage>();
 
             var userManagedGroups = userServices.GetUserGroupManagements(userId);
             if (userManagedGroups.Count == 0)
@@ -209,11 +212,11 @@ namespace CloneDeploy_Services
             {
                 foreach (var managedGroup in userManagedGroups)
                 {
-                    listOfComputers.AddRange(new GroupServices().GetGroupMembers(managedGroup.GroupId, searchString));
+                    listOfComputers.AddRange(new GroupServices().GetGroupMembersWithImages(managedGroup.GroupId, searchString));
                 }
 
-                foreach (var computer in listOfComputers)
-                    computer.Image = new ImageServices().GetImage(computer.ImageId);
+                //foreach (var computer in listOfComputers)
+                    //computer.Image = new ImageServices().GetImage(computer.ImageId);
 
                 return listOfComputers;
             }
@@ -225,13 +228,13 @@ namespace CloneDeploy_Services
             return _uow.ComputerRepository.Get();
         }
 
-        public List<ComputerEntity> SearchComputers(string searchString, int limit)
+        public List<ComputerWithImage> SearchComputers(string searchString, int limit)
         {
 
             return _uow.ComputerRepository.Search(searchString, limit);
         }
 
-        public List<ComputerEntity> SearchComputersByName(string searchString, int limit)
+        public List<ComputerWithImage> SearchComputersByName(string searchString, int limit)
         {
             return _uow.ComputerRepository.SearchByName(searchString, limit);         
         }
@@ -258,10 +261,7 @@ namespace CloneDeploy_Services
 
         public IEnumerable<ComputerEntity> ComputersWithCustomBootMenu()
         {
-
             return _uow.ComputerRepository.Get(x => x.CustomBootEnabled == 1);
-
-
         }
 
         public void AddComputerToSmartGroups(ComputerEntity computer)
@@ -304,8 +304,8 @@ namespace CloneDeploy_Services
         public List<ComputerEntity> ComputersWithoutGroup(int limit, string searchString = "")
         {
             var listOfComputers = _uow.ComputerRepository.GetComputersWithoutGroup(searchString, limit);
-            foreach (var computer in listOfComputers)
-                computer.Image = new ImageServices().GetImage(computer.ImageId);
+            //foreach (var computer in listOfComputers)
+                //computer.Image = new ImageServices().GetImage(computer.ImageId);
 
             return listOfComputers;
         }

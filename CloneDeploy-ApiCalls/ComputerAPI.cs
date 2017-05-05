@@ -7,269 +7,286 @@ namespace CloneDeploy_ApiCalls
 {
     public class ComputerAPI : BaseAPI
     {
-        public ComputerAPI(string resource):base(resource)
-        {
-		
-        }
-        public List<ComputerEntity> GetAll(int limit, string searchstring)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetAll", _resource);
-            _request.AddParameter("limit", limit);
-            _request.AddParameter("searchstring", searchstring);
-            return new ApiRequest().Execute<List<ComputerEntity>>(_request);
-        }
+        private readonly ApiRequest _apiRequest;
 
-        public ComputerEntity Get(int id)
+        public ComputerAPI(string resource) : base(resource)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/Get/{1}", _resource, id);
-            return new ApiRequest().Execute<ComputerEntity>(_request);
-        }
-
-        public string GetCount()
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetCount", _resource);
-            var responseData = new ApiRequest().Execute<ApiStringResponseDTO>(_request);
-            return responseData != null ? responseData.Value : string.Empty;
-
-        }
-
-        public ActionResultDTO Put(int id, ComputerEntity tObject)
-        {
-            _request.Method = Method.PUT;
-            _request.AddJsonBody(tObject);
-            _request.Resource = string.Format("api/{0}/Put/{1}", _resource, id);
-            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
-            if (response.Id == 0)
-                response.Success = false;
-            return response;
-        }
-
-        public ActionResultDTO Post(ComputerEntity tObject)
-        {
-            _request.Method = Method.POST;
-            _request.AddJsonBody(tObject);
-            _request.Resource = string.Format("api/{0}/Post/", _resource);
-            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
-            if (response.Id == 0)
-                response.Success = false;
-            return response;
-        }
-
-        public ActionResultDTO Delete(int id)
-        {
-            _request.Method = Method.DELETE;
-            _request.Resource = string.Format("api/{0}/Delete/{1}", _resource, id);
-            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
-            if (response.Id == 0)
-                response.Success = false;
-            return response;
-        }
-
-        public IEnumerable<ComputerEntity> GetAllByName(int limit = 0, string searchstring = "")
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetAllByName", _resource);
-            _request.AddParameter("limit", limit);
-            _request.AddParameter("searchstring", searchstring);
-            return new ApiRequest().Execute<List<ComputerEntity>>(_request);
-        }
-
-        public IEnumerable<ComputerEntity> GetComputersWithoutGroup(int limit, string searchstring)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetComputersWithoutGroup", _resource);
-            _request.AddParameter("limit", limit);
-            _request.AddParameter("searchstring", searchstring);
-            return new ApiRequest().Execute<List<ComputerEntity>>(_request);
-        }
-
-
-        public IEnumerable<GroupMembershipEntity> GetGroupMemberships(int id)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetGroupMemberships/{1}", _resource,id);
-            return new ApiRequest().Execute<List<GroupMembershipEntity>>(_request);
+            _apiRequest = new ApiRequest();
         }
 
         public ApiBoolResponseDTO AddToSmartGroups(ComputerEntity computer)
         {
-            _request.Method = Method.POST;
-            _request.Resource = string.Format("api/{0}/AddToSmartGroups/", _resource);
-            _request.AddJsonBody(computer);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request);
-        }
-
-        public ComputerEntity GetByMac(string mac)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetByMac/", _resource);
-            _request.AddParameter("mac", mac);
-            return new ApiRequest().Execute<ComputerEntity>(_request);
-        }
-
-        public ApiBoolResponseDTO Export(string path)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/Export/", _resource);
-            _request.AddParameter("path", path);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request);
-        }
-
-        public bool IsComputerActive(int id)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/IsComputerActive/{1}", _resource, id);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
-        }
-
-
-        public ActiveImagingTaskEntity GetActiveTask(int id)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetActiveTask/{1}", _resource, id);
-            return new ApiRequest().Execute<ActiveImagingTaskEntity>(_request);
-        }
-
-
-        public ComputerBootMenuEntity GetBootMenu(int id)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetBootMenu/{1}", _resource, id);
-            return new ApiRequest().Execute<ComputerBootMenuEntity>(_request);
-        }
-
-        public ActionResultDTO DeleteBootMenus(int id)
-        {
-            _request.Method = Method.DELETE;
-            _request.Resource = string.Format("api/{0}/DeleteBootMenus/{1}", _resource, id);
-            return new ApiRequest().Execute<ActionResultDTO>(_request);
+            Request.Method = Method.POST;
+            Request.Resource = string.Format("api/{0}/AddToSmartGroups/", Resource);
+            Request.AddJsonBody(computer);
+            return _apiRequest.Execute<ApiBoolResponseDTO>(Request);
         }
 
 
         public bool CreateCustomBootFiles(int id)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/CreateCustomBootFiles/{1}", _resource,id);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/CreateCustomBootFiles/{1}", Resource, id);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
         }
 
-
-        public string GetProxyPath(int id, bool isActiveOrCustom, string proxyType)
+        public ActionResultDTO Delete(int id)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetProxyPath/{1}", _resource, id);
-            _request.AddParameter("isActiveOrCustom", isActiveOrCustom);
-            _request.AddParameter("proxyType", proxyType);
-            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
-        }
-
-
-        public string GetNonProxyPath(int id, bool isActiveOrCustom)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetNonProxyPath/{1}", _resource, id);
-            _request.AddParameter("isActiveOrCustom", isActiveOrCustom);
-            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
-        }
-
-        public int Import(ApiStringResponseDTO csvContents)
-        {
-            _request.Method = Method.POST;
-            _request.Resource = string.Format("api/{0}/Import/", _resource);
-            _request.AddJsonBody(csvContents);
-            return new ApiRequest().Execute<ApiIntResponseDTO>(_request).Value;
-        }
-
-        public IEnumerable<ComputerLogEntity> GetComputerLogs(int id)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetComputerLogs/{1}", _resource, id);
-            return new ApiRequest().Execute<List<ComputerLogEntity>>(_request);
+            Request.Method = Method.DELETE;
+            Request.Resource = string.Format("api/{0}/Delete/{1}", Resource, id);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
+            if (response.Id == 0)
+                response.Success = false;
+            return response;
         }
 
 
         public ActionResultDTO DeleteAllComputerLogs(int id)
         {
-            _request.Method = Method.DELETE;
-            _request.Resource = string.Format("api/{0}/DeleteAllComputerLogs/{1}", _resource, id);
-            return new ApiRequest().Execute<ActionResultDTO>(_request);
+            Request.Method = Method.DELETE;
+            Request.Resource = string.Format("api/{0}/DeleteAllComputerLogs/{1}", Resource, id);
+            return _apiRequest.Execute<ActionResultDTO>(Request);
         }
 
-
-        public IEnumerable<ComputerMunkiEntity> GetMunkiTemplates(int id)
+        public ActionResultDTO DeleteBootMenus(int id)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetMunkiTemplates/{1}", _resource, id);
-            return new ApiRequest().Execute<List<ComputerMunkiEntity>>(_request);
-        }
-
-
-        public string GetEffectiveManifest(int id)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetEffectiveManifest/{1}", _resource, id);
-            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
+            Request.Method = Method.DELETE;
+            Request.Resource = string.Format("api/{0}/DeleteBootMenus/{1}", Resource, id);
+            return _apiRequest.Execute<ActionResultDTO>(Request);
         }
 
 
         public ActionResultDTO DeleteMunkiTemplates(int id)
         {
-            _request.Method = Method.DELETE;
-            _request.Resource = string.Format("api/{0}/DeleteMunkiTemplates/{1}", _resource, id);
-            return new ApiRequest().Execute<ActionResultDTO>(_request);
+            Request.Method = Method.DELETE;
+            Request.Resource = string.Format("api/{0}/DeleteMunkiTemplates/{1}", Resource, id);
+            return _apiRequest.Execute<ActionResultDTO>(Request);
+        }
+
+        public ApiBoolResponseDTO Export(string path)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/Export/", Resource);
+            Request.AddParameter("path", path);
+            return _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+        }
+
+        public ComputerEntity Get(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/Get/{1}", Resource, id);
+            return _apiRequest.Execute<ComputerEntity>(Request);
+        }
+
+        public List<ComputerEntity> GetAll()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetAll", Resource);
+            return _apiRequest.Execute<List<ComputerEntity>>(Request);
+        }
+
+
+        public ActiveImagingTaskEntity GetActiveTask(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetActiveTask/{1}", Resource, id);
+            return _apiRequest.Execute<ActiveImagingTaskEntity>(Request);
+        }
+
+        public List<ComputerWithImage> Search(int limit, string searchstring)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/Search", Resource);
+            Request.AddParameter("limit", limit);
+            Request.AddParameter("searchstring", searchstring);
+            return _apiRequest.Execute<List<ComputerWithImage>>(Request);
+        }
+
+        public IEnumerable<ComputerEntity> SearchByName(int limit = 0, string searchstring = "")
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/SearchByName", Resource);
+            Request.AddParameter("limit", limit);
+            Request.AddParameter("searchstring", searchstring);
+            return _apiRequest.Execute<List<ComputerEntity>>(Request);
+        }
+
+
+        public ComputerBootMenuEntity GetBootMenu(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetBootMenu/{1}", Resource, id);
+            return _apiRequest.Execute<ComputerBootMenuEntity>(Request);
+        }
+
+        public ComputerEntity GetByMac(string mac)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetByMac/", Resource);
+            Request.AddParameter("mac", mac);
+            return _apiRequest.Execute<ComputerEntity>(Request);
+        }
+
+        public IEnumerable<ComputerLogEntity> GetComputerLogs(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetComputerLogs/{1}", Resource, id);
+            return _apiRequest.Execute<List<ComputerLogEntity>>(Request);
+        }
+
+        public IEnumerable<ComputerEntity> GetComputersWithoutGroup(int limit, string searchstring)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetComputersWithoutGroup", Resource);
+            Request.AddParameter("limit", limit);
+            Request.AddParameter("searchstring", searchstring);
+            return _apiRequest.Execute<List<ComputerEntity>>(Request);
+        }
+
+        public string GetCount()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetCount", Resource);
+            var responseData = _apiRequest.Execute<ApiStringResponseDTO>(Request);
+            return responseData != null ? responseData.Value : string.Empty;
+        }
+
+
+        public string GetEffectiveManifest(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetEffectiveManifest/{1}", Resource, id);
+            return _apiRequest.Execute<ApiStringResponseDTO>(Request).Value;
+        }
+
+
+        public IEnumerable<GroupMembershipEntity> GetGroupMemberships(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetGroupMemberships/{1}", Resource, id);
+            return _apiRequest.Execute<List<GroupMembershipEntity>>(Request);
+        }
+
+
+        public IEnumerable<ComputerMunkiEntity> GetMunkiTemplates(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetMunkiTemplates/{1}", Resource, id);
+            return _apiRequest.Execute<List<ComputerMunkiEntity>>(Request);
+        }
+
+
+        public string GetNonProxyPath(int id, bool isActiveOrCustom)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetNonProxyPath/{1}", Resource, id);
+            Request.AddParameter("isActiveOrCustom", isActiveOrCustom);
+            var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
+            return response != null ? response.Value : string.Empty;
+        }
+
+
+        public string GetProxyPath(int id, bool isActiveOrCustom, string proxyType)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetProxyPath/{1}", Resource, id);
+            Request.AddParameter("isActiveOrCustom", isActiveOrCustom);
+            Request.AddParameter("proxyType", proxyType);
+            var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
+            return response != null ? response.Value : string.Empty;
         }
 
 
         public ComputerProxyReservationEntity GetProxyReservation(int id)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetProxyReservation/{1}", _resource, id);
-            return new ApiRequest().Execute<ComputerProxyReservationEntity>(_request);
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetProxyReservation/{1}", Resource, id);
+            return _apiRequest.Execute<ComputerProxyReservationEntity>(Request);
         }
 
-
-        public bool ToggleProxyReservation(int id, bool status)
+        public int Import(ApiStringResponseDTO csvContents)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/ToggleProxyReservation/{1}", _resource, id);
-            _request.AddParameter("status", status);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+            Request.Method = Method.POST;
+            Request.Resource = string.Format("api/{0}/Import/", Resource);
+            Request.AddJsonBody(csvContents);
+            var response = _apiRequest.Execute<ApiIntResponseDTO>(Request);
+            return response != null ? response.Value : 0;
         }
 
-
-        public bool ToggleBootMenu(int id, bool status)
+        public bool IsComputerActive(int id)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/ToggleBootMenu/{1}", _resource, id);
-            _request.AddParameter("status", status);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
-
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/IsComputerActive/{1}", Resource, id);
+            return _apiRequest.Execute<ApiBoolResponseDTO>(Request).Value;
         }
 
-
-        public string StartUpload(int id)
+        public ActionResultDTO Post(ComputerEntity tObject)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/StartUpload/{1}", _resource, id);
-            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
+            Request.Method = Method.POST;
+            Request.AddJsonBody(tObject);
+            Request.Resource = string.Format("api/{0}/Post/", Resource);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
+            if (response.Id == 0)
+                response.Success = false;
+            return response;
+        }
+
+        public ActionResultDTO Put(int id, ComputerEntity tObject)
+        {
+            Request.Method = Method.PUT;
+            Request.AddJsonBody(tObject);
+            Request.Resource = string.Format("api/{0}/Put/{1}", Resource, id);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
+            if (response.Id == 0)
+                response.Success = false;
+            return response;
         }
 
 
         public string StartDeploy(int id)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/StartDeploy/{1}", _resource, id);
-            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/StartDeploy/{1}", Resource, id);
+            var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
+            return response != null ? response.Value : string.Empty;
         }
 
         public string StartPermanentDeploy(int id)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/StartPermanentDeploy/{1}", _resource, id);
-            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/StartPermanentDeploy/{1}", Resource, id);
+            var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
+            return response != null ? response.Value : string.Empty;
+        }
+
+
+        public string StartUpload(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/StartUpload/{1}", Resource, id);
+            var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
+            return response != null ? response.Value : string.Empty;
+        }
+
+
+        public bool ToggleBootMenu(int id, bool status)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/ToggleBootMenu/{1}", Resource, id);
+            Request.AddParameter("status", status);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
+        }
+
+
+        public bool ToggleProxyReservation(int id, bool status)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/ToggleProxyReservation/{1}", Resource, id);
+            Request.AddParameter("status", status);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
         }
     }
 }

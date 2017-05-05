@@ -7,43 +7,42 @@ namespace CloneDeploy_ApiCalls
 {
     public class SettingAPI : BaseAPI
     {
-        public SettingAPI(string resource):base(resource)
+        private readonly ApiRequest _apiRequest;
+
+        public SettingAPI(string resource) : base(resource)
         {
-		
+            _apiRequest = new ApiRequest();
         }
 
-        public SettingAPI(string resource,CustomApiCallDTO cApiDto):base(resource,cApiDto)
+        public SettingAPI(string resource, CustomApiCallDTO cApiDto) : base(resource)
         {
-
+            _apiRequest = new ApiRequest(cApiDto.Token, cApiDto.BaseUrl);
         }
-    
+
         public SettingEntity GetSetting(string name)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetSetting/", _resource);
-            _request.AddParameter("name", name);
-            return _cApiDto != null ? new ApiRequest(_cApiDto.Token, _cApiDto.BaseUrl).Execute<SettingEntity>(_request) : new ApiRequest().Execute<SettingEntity>(_request);
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetSetting/", Resource);
+            Request.AddParameter("name", name);
+            return _apiRequest.Execute<SettingEntity>(Request);
+        }
+
+        public bool SendEmailTest()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/SendEmailTest/", Resource);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
         }
 
 
         public bool UpdateSettings(List<SettingEntity> listSettings)
         {
-            _request.Method = Method.POST;
-            _request.Resource = string.Format("api/{0}/UpdateSettings/", _resource);
-            _request.AddJsonBody(listSettings);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
-            
+            Request.Method = Method.POST;
+            Request.Resource = string.Format("api/{0}/UpdateSettings/", Resource);
+            Request.AddJsonBody(listSettings);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
         }
-
-        public bool SendEmailTest()
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/SendEmailTest/", _resource);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
-        }
-
-       
-
-       
     }
 }

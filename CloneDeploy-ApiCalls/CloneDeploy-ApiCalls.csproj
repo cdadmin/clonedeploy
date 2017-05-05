@@ -79,11 +79,11 @@
     <Compile Include="GroupMunkiAPI.cs" />
     <Compile Include="ComputerMunkiAPI.cs" />
     <Compile Include="FilesystemAPI.cs" />
-    <Compile Include="GenericAPI.cs" />
+    <Compile Include="BaseAPI.cs" />
     <Compile Include="GroupAPI.cs" />
     <Compile Include="GroupMembershipAPI.cs" />
     <Compile Include="IAPICall.cs" />
-    <Compile Include="IGenericAPI.cs" />
+    <Compile Include="IBaseAPI.cs" />
     <Compile Include="ImageAPI.cs" />
     <Compile Include="ImageProfileAPI.cs" />
     <Compile Include="ImageSchemaAPI.cs" />

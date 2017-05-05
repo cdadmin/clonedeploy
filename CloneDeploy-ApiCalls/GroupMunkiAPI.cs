@@ -6,26 +6,23 @@ namespace CloneDeploy_ApiCalls
 {
     public class GroupMunkiAPI : BaseAPI
     {
-        public GroupMunkiAPI(string resource):base(resource)
+        private readonly ApiRequest _apiRequest;
+
+        public GroupMunkiAPI(string resource) : base(resource)
         {
-		
+            _apiRequest = new ApiRequest();
         }
 
 
         public ActionResultDTO Post(GroupMunkiEntity tObject)
         {
-            _request.Method = Method.POST;
-            _request.AddJsonBody(tObject);
-            _request.Resource = string.Format("api/{0}/Post/", _resource);
-            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
+            Request.Method = Method.POST;
+            Request.AddJsonBody(tObject);
+            Request.Resource = string.Format("api/{0}/Post/", Resource);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
             if (response.Id == 0)
                 response.Success = false;
             return response;
         }
-
-       
-
-       
-    
     }
 }

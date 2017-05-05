@@ -211,7 +211,7 @@ namespace views.tasks
         {
             var limit = 0;
             limit = ddlLimit.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimit.Text);
-            var listOfComputers = Call.ComputerApi.GetAll(limit,txtSearch.Text);
+            var listOfComputers = Call.ComputerApi.Search(limit,txtSearch.Text);
             gvComputers.DataSource = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
             gvComputers.DataBind();
 

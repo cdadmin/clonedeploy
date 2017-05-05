@@ -75,8 +75,6 @@
                     </div>
                 </ItemTemplate>
             </asp:TemplateField>
-
-           
         </Columns>
         <EmptyDataTemplate>
             No Files / Folders Found

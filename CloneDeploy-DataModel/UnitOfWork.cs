@@ -19,7 +19,7 @@ namespace CloneDeploy_DataModel
         private IGenericRepository<GroupMembershipEntity> _groupMembershipRepository;
         private IGenericRepository<ImageEntity> _imageRepository;
         private IGenericRepository<ImageProfilePartitionLayoutEntity> _imageProfilePartitionRepository;
-        private IGenericRepository<ImageProfileEntity> _imageProfileRepository;
+        private ImageProfileRepository _imageProfileRepository;
         private IGenericRepository<PartitionEntity> _partitionRepository;
         private IGenericRepository<PartitionLayoutEntity> _partitionLayoutRepository;
         private IGenericRepository<PortEntity> _portRepository;
@@ -247,9 +247,9 @@ namespace CloneDeploy_DataModel
             get { return _imageProfilePartitionRepository ?? (_imageProfilePartitionRepository = new GenericRepository<ImageProfilePartitionLayoutEntity>(_context)); }
         }
 
-        public IGenericRepository<ImageProfileEntity> ImageProfileRepository
+        public ImageProfileRepository ImageProfileRepository
         {
-            get { return _imageProfileRepository ?? (_imageProfileRepository = new GenericRepository<ImageProfileEntity>(_context)); }
+            get { return _imageProfileRepository ?? (_imageProfileRepository = new ImageProfileRepository(_context)); }
         }
 
         public IGenericRepository<PartitionEntity> PartitionRepository

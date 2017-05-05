@@ -52,7 +52,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "ImageTaskMulticast")]
-        public IEnumerable<ActiveImagingTaskEntity> GetMemberStatus(int id)
+        public IEnumerable<TaskWithComputer> GetMemberStatus(int id)
         {
             return new ActiveImagingTaskServices().MulticastMemberStatus(id);       
         }

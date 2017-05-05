@@ -7,20 +7,20 @@ namespace CloneDeploy_ApiCalls
 {
     public class UserRightAPI : BaseAPI
     {
-        public UserRightAPI(string resource):base(resource)
+        private readonly ApiRequest _apiRequest;
+
+        public UserRightAPI(string resource) : base(resource)
         {
-		
+            _apiRequest = new ApiRequest();
         }
-   
+
 
         public ActionResultDTO Post(List<UserRightEntity> listOfRights)
         {
-            _request.Method = Method.POST;
-            _request.Resource = string.Format("api/{0}/Post/", _resource);
-            _request.AddJsonBody(listOfRights);
-            return new ApiRequest().Execute<ActionResultDTO>(_request);
+            Request.Method = Method.POST;
+            Request.Resource = string.Format("api/{0}/Post/", Resource);
+            Request.AddJsonBody(listOfRights);
+            return _apiRequest.Execute<ActionResultDTO>(Request);
         }
-
-        
     }
 }

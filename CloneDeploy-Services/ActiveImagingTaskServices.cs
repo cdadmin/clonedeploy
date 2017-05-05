@@ -45,7 +45,7 @@ namespace CloneDeploy_Services
         {
             //Mail not enabled
             if (Settings.SmtpEnabled == "0") return;
-            task.Computer = new ComputerServices().GetComputer(task.ComputerId);
+            var computer = new ComputerServices().GetComputer(task.ComputerId);
             foreach (var user in _userServices.SearchUsers("").Where(x => x.NotifyComplete == 1 && !string.IsNullOrEmpty(x.Email)))
             {
                 if (task.UserId == user.Id)
@@ -53,7 +53,7 @@ namespace CloneDeploy_Services
                     var mail = new Mail
                     {
                         MailTo = user.Email,
-                        Body = task.Computer.Name + " Image Task Has Completed.",
+                        Body = computer.Name + " Image Task Has Completed.",
                         Subject = "Task Completed"
                     };
                     mail.Send();
@@ -65,7 +65,7 @@ namespace CloneDeploy_Services
         {
             //Mail not enabled
             if (Settings.SmtpEnabled == "0") return;
-            task.Computer = new ComputerServices().GetComputer(task.ComputerId);
+            var computer = new ComputerServices().GetComputer(task.ComputerId);
             foreach (var user in _userServices.SearchUsers("").Where(x => x.NotifyError == 1 && !string.IsNullOrEmpty(x.Email)))
             {
                 if (task.UserId == user.Id)
@@ -73,7 +73,7 @@ namespace CloneDeploy_Services
                     var mail = new Mail
                     {
                         MailTo = user.Email,
-                        Body = task.Computer.Name + " Image Task Has Failed. " + error,
+                        Body = computer.Name + " Image Task Has Failed. " + error,
                         Subject = "Task Failed"
                     };
                     mail.Send();
@@ -110,40 +110,22 @@ namespace CloneDeploy_Services
             
         }
 
-        public  List<ActiveImagingTaskEntity> MulticastMemberStatus(int multicastId)
+        public  List<TaskWithComputer> MulticastMemberStatus(int multicastId)
         {
-            
-                var activeImagingTasks = _uow.ActiveImagingTaskRepository.Get(t => t.MulticastId == multicastId,
-                    orderBy: q => q.OrderBy(t => t.ComputerId));
-                foreach (var task in activeImagingTasks)
-                {
-                    task.Computer = new ComputerServices().GetComputer(task.ComputerId);
-                }
-                return activeImagingTasks;
-            
+            return _uow.ActiveImagingTaskRepository.GetMulticastMembers(multicastId); 
         }
 
         public  List<ActiveImagingTaskEntity> MulticastProgress(int multicastId)
         {
-           
-                return _uow.ActiveImagingTaskRepository.MulticastProgress(multicastId);
-            
+                return _uow.ActiveImagingTaskRepository.MulticastProgress(multicastId);         
         }
 
-        public  List<ActiveImagingTaskEntity> ReadAll(int userId)
+        public  List<TaskWithComputer> ReadAll(int userId)
         {
-
-            
                 //Admins see all tasks
-                var activeImagingTasks = _userServices.IsAdmin(userId)
-                    ? _uow.ActiveImagingTaskRepository.Get(orderBy: q => q.OrderBy(t => t.Id))
-                    : _uow.ActiveImagingTaskRepository.Get(x => x.UserId == userId, orderBy: q => q.OrderBy(t => t.Id));
-                foreach (var task in activeImagingTasks)
-                {
-                    task.Computer = new ComputerServices().GetComputer(task.ComputerId);
-                }
-                return activeImagingTasks;
-            
+                return _userServices.IsAdmin(userId)
+                    ? _uow.ActiveImagingTaskRepository.GetAllTaskWithComputersForAdmin()
+                    : _uow.ActiveImagingTaskRepository.GetAllTaskWithComputers(userId);  
         }
 
         public  string ActiveUnicastCount(int userId, string taskType)
@@ -155,13 +137,20 @@ namespace CloneDeploy_Services
             
         }
 
-        public  string AllActiveCount(int userId)
+        public string AllActiveCount(int userId)
         {
            
                 return _userServices.IsAdmin(userId)
                     ? _uow.ActiveImagingTaskRepository.Count()
                     : _uow.ActiveImagingTaskRepository.Count(x => x.UserId == userId);
             
+        }
+
+        public string ActiveCountNotOwnedByuser(int userId)
+        {
+            return _userServices.IsAdmin(userId)
+                   ? "0"
+                   : _uow.ActiveImagingTaskRepository.Count(x => x.UserId != userId);
         }
 
         public  int AllActiveCountAdmin()
@@ -171,27 +160,14 @@ namespace CloneDeploy_Services
             
         }
 
-        public  List<ActiveImagingTaskEntity> ReadUnicasts(int userId, string taskType)
+        public  List<TaskWithComputer> ReadUnicasts(int userId, string taskType)
         {
-           
-                //Admins see all tasks
-                List<ActiveImagingTaskEntity> activeImagingTasks;
-                if (_userServices.IsAdmin(userId))
-                {
-                    activeImagingTasks = _uow.ActiveImagingTaskRepository.Get(t => t.Type == taskType,
-                        orderBy: q => q.OrderBy(t => t.ComputerId));
-                }
-                else
-                {
-                    activeImagingTasks = _uow.ActiveImagingTaskRepository.Get(t => t.Type == taskType && t.UserId == userId,
-                        orderBy: q => q.OrderBy(t => t.ComputerId));
-                }
-                foreach (var task in activeImagingTasks)
-                {
-                    task.Computer = new ComputerServices().GetComputer(task.ComputerId);
-                }
-                return activeImagingTasks;
-            
+            //Admins see all tasks
+            var activeImagingTasks = _userServices.IsAdmin(userId)
+                ? _uow.ActiveImagingTaskRepository.GetUnicastsWithComputersForAdmin(taskType)
+                : _uow.ActiveImagingTaskRepository.GetUnicastsWithComputers(userId, taskType);
+
+            return activeImagingTasks;
         }
 
         public  List<ComputerEntity> GetMulticastComputers(int multicastId)

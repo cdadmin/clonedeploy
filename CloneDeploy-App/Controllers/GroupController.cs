@@ -165,7 +165,7 @@ namespace CloneDeploy_App.Controllers
 
             return new ApiIntResponseDTO()
             {
-                Value = _groupServices.StartGroupUnicast(id, Convert.ToInt32(userId))
+                Value = _groupServices.StartGroupUnicast(id, Convert.ToInt32(userId), Request.GetClientIpAddress())
             };
 
         }
@@ -189,11 +189,11 @@ namespace CloneDeploy_App.Controllers
         }   
 
         [CustomAuth(Permission = "GroupRead")]
-        public IEnumerable<ComputerEntity> GetGroupMembers(int id, string searchstring = "")
+        public IEnumerable<ComputerWithImage> GetGroupMembers(int id, string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
-                ? _groupServices.GetGroupMembers(id)
-                : _groupServices.GetGroupMembers(id, searchstring);
+                ? _groupServices.GetGroupMembersWithImages(id)
+                : _groupServices.GetGroupMembersWithImages(id, searchstring);
 
         }
 

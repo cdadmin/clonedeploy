@@ -35,8 +35,9 @@ namespace CloneDeploy_App.Controllers
 
         }
 
+        [HttpGet]
         [CustomAuth(Permission = "ComputerSearch")]
-        public IEnumerable<ComputerEntity> GetAll(int limit=0,string searchstring="")
+        public IEnumerable<ComputerWithImage> Search(int limit=0,string searchstring="")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _computerService.SearchComputersForUser(Convert.ToInt32(_userId), limit)
@@ -44,8 +45,9 @@ namespace CloneDeploy_App.Controllers
 
         }
 
+        [HttpGet]
         [CustomAuth(Permission = "ComputerSearch")]
-        public IEnumerable<ComputerEntity> GetAllByName(int limit = 0, string searchstring = "")
+        public IEnumerable<ComputerEntity> SearchByName(int limit = 0, string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _computerService.SearchComputersForUserByName(Convert.ToInt32(_userId), limit)
@@ -60,6 +62,13 @@ namespace CloneDeploy_App.Controllers
             if (computer == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return computer;
 
+        }
+
+        [CustomAuth(Permission = "ComputerRead")]
+        public IEnumerable<ComputerEntity> GetAll()
+        {
+            return _computerService.GetAll();
+           
         }
 
         [CustomAuthAttribute(Permission = "ComputerCreate")]
@@ -281,21 +290,21 @@ namespace CloneDeploy_App.Controllers
         [CustomAuth(Permission = "ImageTaskUpload")]
         public ApiStringResponseDTO StartUpload(int id)
         {
-            return new ApiStringResponseDTO() {Value = new Unicast(id, "pull", _userId).Start()};
+            return new ApiStringResponseDTO() {Value = new Unicast(id, "pull", _userId, Request.GetClientIpAddress()).Start()};
         }
 
         [HttpGet]
         [CustomAuth(Permission = "ImageTaskDeploy")]
         public ApiStringResponseDTO StartDeploy(int id)
         {
-            return new ApiStringResponseDTO() { Value = new Unicast(id, "push", _userId).Start() };
+            return new ApiStringResponseDTO() { Value = new Unicast(id, "push", _userId, Request.GetClientIpAddress()).Start() };
         }
 
         [HttpGet]
         [CustomAuth(Permission = "ImageTaskDeploy")]
         public ApiStringResponseDTO StartPermanentDeploy(int id)
         {
-            return new ApiStringResponseDTO() { Value = new Unicast(id, "permanent_push", _userId).Start() };
+            return new ApiStringResponseDTO() { Value = new Unicast(id, "permanent_push", _userId, Request.GetClientIpAddress()).Start() };
         }
     }
 }

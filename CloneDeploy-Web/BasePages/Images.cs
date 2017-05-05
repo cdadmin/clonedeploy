@@ -7,7 +7,7 @@ namespace CloneDeploy_Web.BasePages
     public class Images : PageBaseMaster
     {
        public ImageEntity Image { get; set; }
-        public ImageProfileEntity ImageProfile { get; set; }
+        public ImageProfileWithImage ImageProfile { get; set; }
 
 
         protected override void OnInit(EventArgs e)

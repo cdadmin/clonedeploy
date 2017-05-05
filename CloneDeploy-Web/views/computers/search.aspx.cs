@@ -88,13 +88,13 @@ namespace views.computers
             limit = ddlLimit.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimit.Text);
 
             
-            var listOfComputers = Call.ComputerApi.GetAll(limit, txtSearch.Text);           
+            var listOfComputers = Call.ComputerApi.Search(limit, txtSearch.Text);           
             listOfComputers = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
 
             if (ddlSite.SelectedValue != "-1" || ddlBuilding.SelectedValue != "-1" || ddlRoom.SelectedValue != "-1" ||
                 ddlGroup.SelectedValue != "-1" || ddlImage.SelectedValue != "-1")
             {
-                listOfComputers = Call.ComputerApi.GetAll(Int32.MaxValue, txtSearch.Text);
+                listOfComputers = Call.ComputerApi.Search(Int32.MaxValue, txtSearch.Text);
                 listOfComputers = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
             }
 
@@ -120,14 +120,30 @@ namespace views.computers
                 listOfComputers = listOfComputers.Where(c => c.Image != null).Where(a => a.Image.Id == Convert.ToInt32(ddlImage.SelectedValue)).Take(limit).ToList();
             gvComputers.DataSource = listOfComputers;
             
-            /*Dynamic column example
-            BoundField test = new BoundField();
-            test.DataField = "ImageProfileId";
-            test.HeaderText = "Image Profile";
-            gvComputers.Columns.Add(test);
-            */
-            gvComputers.DataBind();
+            //Dynamic column example
+            //BoundField test = new BoundField();
+            //test.DataField = "ImageProfileId";
+            //test.HeaderText = "Image Profile";
+            //gvComputers.Columns.Add(test);
             
+            gvComputers.DataBind();
+
+            foreach (GridViewRow row in gvComputers.Rows)
+            {
+                var computer = new ComputerEntity();
+                var lbl = row.FindControl("lblProfile") as Label;
+                var dataKey = gvComputers.DataKeys[row.RowIndex];
+                if (dataKey != null)
+                    computer = Call.ComputerApi.Get(Convert.ToInt32(dataKey.Value));
+                if (computer.ImageProfileId == -1) continue;
+                if (lbl != null)
+                {
+                    var imageProfile = Call.ImageProfileApi.Get(computer.ImageProfileId);
+                    if(imageProfile != null)
+                    lbl.Text = imageProfile.Name;
+                }
+
+            }
         
             lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + Call.ComputerApi.GetCount() + " Computer(s)";
         }

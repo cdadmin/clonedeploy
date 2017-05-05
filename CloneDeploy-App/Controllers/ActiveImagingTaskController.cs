@@ -24,7 +24,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [Authorize]
-        public IEnumerable<ActiveImagingTaskEntity> GetUnicasts(string taskType)
+        public IEnumerable<TaskWithComputer> GetUnicasts(string taskType)
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
@@ -43,7 +43,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [Authorize]
-        public IEnumerable<ActiveImagingTaskEntity> GetActiveTasks()
+        public IEnumerable<TaskWithComputer> GetActiveTasks()
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
@@ -65,6 +65,8 @@ namespace CloneDeploy_App.Controllers
 
         }
 
+      
+
         [Authorize]
         public ApiStringResponseDTO GetAllActiveCount()
         {
@@ -75,6 +77,20 @@ namespace CloneDeploy_App.Controllers
             return new ApiStringResponseDTO()
             {
                 Value = _activeImagingTaskServices.AllActiveCount(Convert.ToInt32(userId))
+            };
+
+        }
+
+        [Authorize]
+        public ApiStringResponseDTO GetActiveNotOwned()
+        {
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                             .Select(c => c.Value).SingleOrDefault();
+
+            return new ApiStringResponseDTO()
+            {
+                Value = _activeImagingTaskServices.ActiveCountNotOwnedByuser(Convert.ToInt32(userId))
             };
 
         }

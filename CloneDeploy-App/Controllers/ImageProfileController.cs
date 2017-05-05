@@ -22,13 +22,13 @@ namespace CloneDeploy_App.Controllers
 
 
         [CustomAuth(Permission = "ProfileSearch")]
-        public IEnumerable<ImageProfileEntity> GetAll()
+        public IEnumerable<ImageProfileWithImage> GetAll()
         {
             return _imageProfileServices.GetAllProfiles();
         }
 
         [CustomAuth(Permission = "ProfileRead")]
-        public ImageProfileEntity Get(int id)
+        public ImageProfileWithImage Get(int id)
         {
             var result = _imageProfileServices.ReadProfile(id);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));

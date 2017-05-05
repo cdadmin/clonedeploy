@@ -37,13 +37,10 @@ namespace CloneDeploy_Services
 
         }
 
-        public  ImageProfileEntity ReadProfile(int profileId)
+        public ImageProfileWithImage ReadProfile(int profileId)
         {
-           
-                var imageProfile = _uow.ImageProfileRepository.GetById(profileId);
-                if (imageProfile != null)
-                    imageProfile.Image = _imageServices.GetImage(imageProfile.ImageId);
-                return imageProfile;
+            return _uow.ImageProfileRepository.GetImageProfileWithImage(profileId);
+               
             
         }
 
@@ -65,18 +62,10 @@ namespace CloneDeploy_Services
         }
 
 
-        public  List<ImageProfileEntity> GetAllProfiles()
+        public  List<ImageProfileWithImage> GetAllProfiles()
         {
-            var imageProfiles = _uow.ImageProfileRepository.Get(orderBy: (q => q.OrderBy(p => p.Name)));
-            
+            return _uow.ImageProfileRepository.GetImageProfilesWithImages();
 
-            foreach (var imageProfile in imageProfiles)
-            {
-                imageProfile.Image = _imageServices.GetImage(imageProfile.ImageId);
-            }
-
-            return imageProfiles.OrderBy(x => x.Image.Name).ToList();
-            
         }
 
         public  ActionResultDTO UpdateProfile(ImageProfileEntity profile)

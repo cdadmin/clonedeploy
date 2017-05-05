@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CloneDeploy_Entities;
+﻿using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using RestSharp;
 
@@ -11,21 +6,22 @@ namespace CloneDeploy_ApiCalls
 {
     public class ImageProfileSysprepTagAPI : BaseAPI
     {
-        public ImageProfileSysprepTagAPI(string resource):base(resource)
+        private readonly ApiRequest _apiRequest;
+
+        public ImageProfileSysprepTagAPI(string resource) : base(resource)
         {
-		
+            _apiRequest = new ApiRequest();
         }
 
         public ActionResultDTO Post(ImageProfileSysprepTagEntity tObject)
         {
-            _request.Method = Method.POST;
-            _request.AddJsonBody(tObject);
-            _request.Resource = string.Format("api/{0}/Post/", _resource);
-            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
+            Request.Method = Method.POST;
+            Request.AddJsonBody(tObject);
+            Request.Resource = string.Format("api/{0}/Post/", Resource);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
             if (response.Id == 0)
                 response.Success = false;
             return response;
         }
-    
     }
 }

@@ -7,50 +7,47 @@ namespace CloneDeploy_ApiCalls
 {
     public class ComputerLogAPI : BaseAPI
     {
-        public ComputerLogAPI(string resource):base(resource)
-        {
-		
-        }
+        private readonly ApiRequest _apiRequest;
 
-        public ComputerLogEntity Get(int id)
+        public ComputerLogAPI(string resource) : base(resource)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/Get/{1}", _resource, id);
-            return new ApiRequest().Execute<ComputerLogEntity>(_request);
-        }
-
-        public ActionResultDTO Post(ComputerLogEntity tObject)
-        {
-            _request.Method = Method.POST;
-            _request.AddJsonBody(tObject);
-            _request.Resource = string.Format("api/{0}/Post/", _resource);
-            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
-            if (response.Id == 0)
-                response.Success = false;
-            return response;
+            _apiRequest = new ApiRequest();
         }
 
         public ActionResultDTO Delete(int id)
         {
-            _request.Method = Method.DELETE;
-            _request.Resource = string.Format("api/{0}/Delete/{1}", _resource, id);
-            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
+            Request.Method = Method.DELETE;
+            Request.Resource = string.Format("api/{0}/Delete/{1}", Resource, id);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
             if (response.Id == 0)
                 response.Success = false;
             return response;
         }
 
-        public IEnumerable<ComputerLogEntity> GetOnDemandLogs(int limit = 0)
+        public ComputerLogEntity Get(int id)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetOnDemandLogs/", _resource);
-            _request.AddParameter("limit", limit);
-            return new ApiRequest().Execute<List<ComputerLogEntity>>(_request);
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/Get/{1}", Resource, id);
+            return _apiRequest.Execute<ComputerLogEntity>(Request);
         }
 
-        
+        public IEnumerable<ComputerLogEntity> GetOnDemandLogs(int limit = 0)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetOnDemandLogs/", Resource);
+            Request.AddParameter("limit", limit);
+            return _apiRequest.Execute<List<ComputerLogEntity>>(Request);
+        }
 
-
-      
+        public ActionResultDTO Post(ComputerLogEntity tObject)
+        {
+            Request.Method = Method.POST;
+            Request.AddJsonBody(tObject);
+            Request.Resource = string.Format("api/{0}/Post/", Resource);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
+            if (response.Id == 0)
+                response.Success = false;
+            return response;
+        }
     }
 }

@@ -8,58 +8,80 @@ namespace CloneDeploy_ApiCalls
 {
     public class ApiRequest
     {
-        private static readonly ILog Log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog _log = LogManager.GetLogger("FrontEndLog");
         private readonly string _token;
-        private readonly Uri _baseUrl;
+        private readonly RestClient _client;
 
         public ApiRequest()
         {
+            _client = new RestClient();
+            _client.BaseUrl = new Uri(ConfigurationManager.AppSettings["api_base_url"]);
+
             var httpCookie = HttpContext.Current.Request.Cookies["cdtoken"];
             if (httpCookie != null)
                 _token = httpCookie.Value;
-            _baseUrl = new Uri(ConfigurationManager.AppSettings["api_base_url"]);
+           
         }
 
         public ApiRequest(string token, Uri baseUrl)
         {
+            _client = new RestClient();
+            _client.BaseUrl = baseUrl;
             _token = token;
-            _baseUrl = baseUrl;
+           
         }
 
         public TClass Execute<TClass>(RestRequest request) where TClass : new()
         {
-            var client = new RestClient();
-            client.BaseUrl = _baseUrl ;
-            client.Timeout = 5000;
-
+            if (request == null)
+            {
+                _log.Debug("Could Not Execute API Request.  The Request was empty." + new TClass().GetType());
+                return default(TClass);
+            }
             request.AddHeader("Authorization", "bearer " + _token);
-            var response = client.Execute<TClass>(request);
+
+            var response = _client.Execute<TClass>(request);
+
+            if (response == null)
+            {
+                _log.Debug("Could Not Complete API Request.  The Response was empty." + request.Resource);
+                return default(TClass);
+            }
 
             if (response.ErrorException != null)
             {
-                Log.Debug("Error retrieving response: " + response.ErrorException);
+                _log.Debug("Error Retrieving API Response: " + response.ErrorException);
                 return default(TClass);
             }
-            else if (response.Data == null)
+
+            if (response.Data == null)
             {
-                //Fix me - not finished
-                Log.Debug("Response was null: ");
+                _log.Debug("Response Data Was Null For Resource: " + request.Resource);
                 return default(TClass);
             }
+            
             return response.Data;
         }
 
         public byte[] ExecuteRaw(RestRequest request)
         {
-            var client = new RestClient();
-            client.BaseUrl = _baseUrl;
-            client.Timeout = 5000;
+            if (request == null)
+            {
+                _log.Debug("Could Not Execute Raw API Request.  The Request was empty.");
+                return null;
+            }
 
             request.AddHeader("Authorization", "bearer " + _token);
-            return client.DownloadData(request);
-          
-        }
 
-       
+            var response = _client.DownloadData(request);
+
+            if (response == null)
+            {
+                _log.Debug("Could Not Complete Raw API Request.  The Response was empty." + request.Resource);
+                return null;
+            }
+
+            return response;
+        }
     }
 }

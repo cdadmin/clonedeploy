@@ -20,7 +20,7 @@ namespace CloneDeploy_Services
         public List<OnlineKernel> GetAllOnlineKernels()
         {
             WebClient wc = new WebClient();
-            byte[] data = wc.DownloadData("http://localhost/clonedeploy/api/public/kernels.json");
+            byte[] data = wc.DownloadData("https://sourceforge.net/projects/clonedeploy/files/kernels.json");
             var text = Encoding.UTF8.GetString(data);
 
             return JsonConvert.DeserializeObject<List<OnlineKernel>>(text);

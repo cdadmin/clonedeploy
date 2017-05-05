@@ -15,7 +15,11 @@ namespace CloneDeploy_Entities
             Update = 2,
             Delete = 3,
             SuccessfulLogin = 4,
-            FailedLogin = 5
+            FailedLogin = 5,
+            Push = 6,
+            Pull = 7,
+            PermanentPush = 8,
+            Multicast = 9,
         }
     }
 }

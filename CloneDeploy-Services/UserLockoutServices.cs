@@ -25,7 +25,7 @@ namespace CloneDeploy_Services
                 else
                 {
                     userLockout.BadLoginCount += 1;
-                    if (userLockout.BadLoginCount == 5)
+                    if (userLockout.BadLoginCount == 15)
                     {
                         userLockout.LockedUntil = DateTime.UtcNow.AddMinutes(15);
                         new UserServices().SendLockOutEmail(userId);

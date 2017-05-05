@@ -5,182 +5,183 @@ using RestSharp;
 
 namespace CloneDeploy_ApiCalls
 {
-    /// <summary>
-    /// Summary description for User
-    /// </summary>
     public class GroupAPI : BaseAPI
     {
-        public GroupAPI(string resource):base(resource)
-        {
-		
-        }
+        private readonly ApiRequest _apiRequest;
 
-        public List<GroupEntity> GetAll(int limit, string searchstring)
+        public GroupAPI(string resource) : base(resource)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetAll", _resource);
-            _request.AddParameter("limit", limit);
-            _request.AddParameter("searchstring", searchstring);
-            return new ApiRequest().Execute<List<GroupEntity>>(_request);
-        }
-
-        public GroupEntity Get(int id)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/Get/{1}", _resource, id);
-            return new ApiRequest().Execute<GroupEntity>(_request);
-        }
-
-        public string GetCount()
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetCount", _resource);
-            var responseData = new ApiRequest().Execute<ApiStringResponseDTO>(_request);
-            return responseData != null ? responseData.Value : string.Empty;
-
-        }
-
-        public ActionResultDTO Put(int id, GroupEntity tObject)
-        {
-            _request.Method = Method.PUT;
-            _request.AddJsonBody(tObject);
-            _request.Resource = string.Format("api/{0}/Put/{1}", _resource, id);
-            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
-            if (response.Id == 0)
-                response.Success = false;
-            return response;
-        }
-
-        public ActionResultDTO Post(GroupEntity tObject)
-        {
-            _request.Method = Method.POST;
-            _request.AddJsonBody(tObject);
-            _request.Resource = string.Format("api/{0}/Post/", _resource);
-            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
-            if (response.Id == 0)
-                response.Success = false;
-            return response;
+            _apiRequest = new ApiRequest();
         }
 
         public ActionResultDTO Delete(int id)
         {
-            _request.Method = Method.DELETE;
-            _request.Resource = string.Format("api/{0}/Delete/{1}", _resource, id);
-            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
+            Request.Method = Method.DELETE;
+            Request.Resource = string.Format("api/{0}/Delete/{1}", Resource, id);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
             if (response.Id == 0)
                 response.Success = false;
             return response;
         }
 
-        public string GetMemberCount(int id)
+        public ApiBoolResponseDTO Export(string path)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetMemberCount/{1}", _resource,id);
-            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/Export/", Resource);
+            Request.AddParameter("path", path);
+            return _apiRequest.Execute<ApiBoolResponseDTO>(Request);
         }
 
-
-
-        public bool RemoveGroupMember(int id, int computerId)
+        public GroupEntity Get(int id)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/RemoveGroupMember/{1}", _resource, id);
-            _request.AddParameter("computerId", computerId);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/Get/{1}", Resource, id);
+            return _apiRequest.Execute<GroupEntity>(Request);
         }
 
-
-        public bool RemoveMunkiTemplates(int id)
+        public List<GroupEntity> GetAll(int limit, string searchstring)
         {
-            _request.Method = Method.DELETE;
-            _request.Resource = string.Format("api/{0}/RemoveMunkiTemplates/{1}", _resource, id);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetAll", Resource);
+            Request.AddParameter("limit", limit);
+            Request.AddParameter("searchstring", searchstring);
+            return _apiRequest.Execute<List<GroupEntity>>(Request);
         }
 
-        public bool ReCalcSmart()
+        public string GetCount()
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/ReCalcSmart", _resource);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request).Value;
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetCount", Resource);
+            var responseData = _apiRequest.Execute<ApiStringResponseDTO>(Request);
+            return responseData != null ? responseData.Value : string.Empty;
         }
 
-        public IEnumerable<GroupMunkiEntity> GetMunkiTemplates(int id)
+        public GroupBootMenuEntity GetCustomBootMenu(int id)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetMunkiTemplates/{1}", _resource, id);
-            return new ApiRequest().Execute<List<GroupMunkiEntity>>(_request);
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetCustomBootMenu/{1}", Resource, id);
+            return _apiRequest.Execute<GroupBootMenuEntity>(Request);
+        }
+
+        public string GetEffectiveManifest(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetEffectiveManifest/{1}", Resource, id);
+            var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
+            return response != null ? response.Value : string.Empty;
+        }
+
+        public IEnumerable<ComputerWithImage> GetGroupMembers(int id, string searchstring = "")
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetGroupMembers/{1}", Resource, id);
+            Request.AddParameter("searchstring", searchstring);
+            return _apiRequest.Execute<List<ComputerWithImage>>(Request);
         }
 
 
         public GroupPropertyEntity GetGroupProperties(int id)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetGroupProperties/{1}", _resource, id);
-            return new ApiRequest().Execute<GroupPropertyEntity>(_request);
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetGroupProperties/{1}", Resource, id);
+            return _apiRequest.Execute<GroupPropertyEntity>(Request);
         }
 
-        public ApiBoolResponseDTO Export(string path)
+        public string GetMemberCount(int id)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/Export/", _resource);
-            _request.AddParameter("path", path);
-            return new ApiRequest().Execute<ApiBoolResponseDTO>(_request);
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetMemberCount/{1}", Resource, id);
+            var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
+            return response != null ? response.Value : string.Empty;
         }
 
-        public ActionResultDTO UpdateSmartMembership(int id)
+        public IEnumerable<GroupMunkiEntity> GetMunkiTemplates(int id)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/UpdateSmartMembership/{1}", _resource, id);
-            return new ApiRequest().Execute<ActionResultDTO>(_request);
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetMunkiTemplates/{1}", Resource, id);
+            return _apiRequest.Execute<List<GroupMunkiEntity>>(Request);
+        }
+
+        public int Import(ApiStringResponseDTO csvContents)
+        {
+            Request.Method = Method.POST;
+            Request.Resource = string.Format("api/{0}/Import/", Resource);
+            Request.AddJsonBody(csvContents);
+            var response = _apiRequest.Execute<ApiIntResponseDTO>(Request);
+            return response != null ? response.Value : 0;
+        }
+
+        public ActionResultDTO Post(GroupEntity tObject)
+        {
+            Request.Method = Method.POST;
+            Request.AddJsonBody(tObject);
+            Request.Resource = string.Format("api/{0}/Post/", Resource);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
+            if (response.Id == 0)
+                response.Success = false;
+            return response;
+        }
+
+        public ActionResultDTO Put(int id, GroupEntity tObject)
+        {
+            Request.Method = Method.PUT;
+            Request.AddJsonBody(tObject);
+            Request.Resource = string.Format("api/{0}/Put/{1}", Resource, id);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
+            if (response.Id == 0)
+                response.Success = false;
+            return response;
+        }
+
+        public bool ReCalcSmart()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/ReCalcSmart", Resource);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
+        }
+
+
+        public bool RemoveGroupMember(int id, int computerId)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/RemoveGroupMember/{1}", Resource, id);
+            Request.AddParameter("computerId", computerId);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
+        }
+
+
+        public bool RemoveMunkiTemplates(int id)
+        {
+            Request.Method = Method.DELETE;
+            Request.Resource = string.Format("api/{0}/RemoveMunkiTemplates/{1}", Resource, id);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
         }
 
 
         public int StartGroupUnicast(int id)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/StartGroupUnicast/{1}", _resource, id);
-            return new ApiRequest().Execute<ApiIntResponseDTO>(_request).Value;
-
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/StartGroupUnicast/{1}", Resource, id);
+            var response = _apiRequest.Execute<ApiIntResponseDTO>(Request);
+            return response != null ? response.Value : 0;
         }
 
         public string StartMulticast(int id)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/StartMulticast/{1}", _resource, id);
-            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
-
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/StartMulticast/{1}", Resource, id);
+            var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
+            return response != null ? response.Value : string.Empty;
         }
 
-
-        public IEnumerable<ComputerEntity> GetGroupMembers(int id, string searchstring = "")
+        public ActionResultDTO UpdateSmartMembership(int id)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetGroupMembers/{1}", _resource, id);
-            _request.AddParameter("searchstring", searchstring);
-            return new ApiRequest().Execute<List<ComputerEntity>>(_request);
-
-        }
-
-        public int Import(ApiStringResponseDTO csvContents)
-        {
-            _request.Method = Method.POST;
-            _request.Resource = string.Format("api/{0}/Import/", _resource);
-            _request.AddJsonBody(csvContents);
-            return new ApiRequest().Execute<ApiIntResponseDTO>(_request).Value;
-        }
-
-        public GroupBootMenuEntity GetCustomBootMenu(int id)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetCustomBootMenu/{1}", _resource, id);
-            return new ApiRequest().Execute<GroupBootMenuEntity>(_request);
-        }
-
-        public string GetEffectiveManifest(int id)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetEffectiveManifest/{1}", _resource, id);
-            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/UpdateSmartMembership/{1}", Resource, id);
+            return _apiRequest.Execute<ActionResultDTO>(Request);
         }
     }
 }

@@ -47,7 +47,7 @@ public partial class views_groups_addmembers : Groups
     {
         var limit = 0;
         limit = ddlLimit.Text == "All" ? Int32.MaxValue : Convert.ToInt32(ddlLimit.Text);
-        var listOfComputers = Call.ComputerApi.GetAll(limit,txtSearch.Text);
+        var listOfComputers = Call.ComputerApi.GetAll();
         
         //If a user is using a managed group they can also see computers without any group, to add in.
         listOfComputers.AddRange(Call.ComputerApi.GetComputersWithoutGroup(limit,txtSearch.Text));

@@ -7,61 +7,60 @@ namespace CloneDeploy_ApiCalls
 {
     public class ActiveMulticastSessionAPI : BaseAPI
     {
-        public ActiveMulticastSessionAPI(string resource):base(resource)
-        {
-		
-        }
+        private readonly ApiRequest _apiRequest;
 
-        public List<ActiveMulticastSessionEntity> GetAll(int limit, string searchstring)
+        public ActiveMulticastSessionAPI(string resource) : base(resource)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetAll", _resource);
-            _request.AddParameter("limit", limit);
-            _request.AddParameter("searchstring", searchstring);
-            return new ApiRequest().Execute<List<ActiveMulticastSessionEntity>>(_request);
-        }
-
-        public string GetCount()
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetCount", _resource);
-            var responseData = new ApiRequest().Execute<ApiStringResponseDTO>(_request);
-            return responseData != null ? responseData.Value : string.Empty;
-
-        }
-        public IEnumerable<ActiveImagingTaskEntity> GetMemberStatus(int id)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetUnicasts/{1}", _resource,id);
-            return new ApiRequest().Execute<List<ActiveImagingTaskEntity>>(_request);
-        }
-
-        public IEnumerable<ComputerEntity> GetComputers(int id)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetComputers/{1}", _resource,id);
-            return new ApiRequest().Execute<List<ComputerEntity>>(_request);
-        }
-
-
-        public IEnumerable<ActiveImagingTaskEntity> GetProgress(int id)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetUnicasts/{1}", _resource,id);
-            return new ApiRequest().Execute<List<ActiveImagingTaskEntity>>(_request);
-           
+            _apiRequest = new ApiRequest();
         }
 
         public ActionResultDTO Delete(int id)
         {
-            _request.Method = Method.DELETE;
-            _request.Resource = string.Format("api/{0}/Delete/{1}", _resource, id);
-            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
+            Request.Method = Method.DELETE;
+            Request.Resource = string.Format("api/{0}/Delete/{1}", Resource, id);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
             if (response.Id == 0)
                 response.Success = false;
             return response;
         }
 
-     
+        public List<ActiveMulticastSessionEntity> GetAll(int limit, string searchstring)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetAll", Resource);
+            Request.AddParameter("limit", limit);
+            Request.AddParameter("searchstring", searchstring);
+            return _apiRequest.Execute<List<ActiveMulticastSessionEntity>>(Request);
+        }
+
+        public IEnumerable<ComputerEntity> GetComputers(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetComputers/{1}", Resource, id);
+            return _apiRequest.Execute<List<ComputerEntity>>(Request);
+        }
+
+        public string GetCount()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetCount", Resource);
+            var responseData = _apiRequest.Execute<ApiStringResponseDTO>(Request);
+            return responseData != null ? responseData.Value : string.Empty;
+        }
+
+        public IEnumerable<TaskWithComputer> GetMemberStatus(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetUnicasts/{1}", Resource, id);
+            return _apiRequest.Execute<List<TaskWithComputer>>(Request);
+        }
+
+
+        public IEnumerable<ActiveImagingTaskEntity> GetProgress(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetUnicasts/{1}", Resource, id);
+            return _apiRequest.Execute<List<ActiveImagingTaskEntity>>(Request);
+        }
     }
 }

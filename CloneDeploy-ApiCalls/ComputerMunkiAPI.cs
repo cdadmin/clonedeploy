@@ -7,34 +7,29 @@ namespace CloneDeploy_ApiCalls
 {
     public class ComputerMunkiAPI : BaseAPI
     {
-        public ComputerMunkiAPI(string resource):base(resource)
-        {
-		
-        }
+        private readonly ApiRequest _apiRequest;
 
-        public ActionResultDTO Post(ComputerMunkiEntity tObject)
+        public ComputerMunkiAPI(string resource) : base(resource)
         {
-            _request.Method = Method.POST;
-            _request.AddJsonBody(tObject);
-            _request.Resource = string.Format("api/{0}/Post/", _resource);
-            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
-            if (response.Id == 0)
-                response.Success = false;
-            return response;
+            _apiRequest = new ApiRequest();
         }
 
         public List<ComputerMunkiEntity> GetTemplateComputers(int id)
         {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetTemplateComputers/{1}", _resource,id);
-            return new ApiRequest().Execute<List<ComputerMunkiEntity>>(_request);
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetTemplateComputers/{1}", Resource, id);
+            return _apiRequest.Execute<List<ComputerMunkiEntity>>(Request);
         }
 
-     
-
-       
-
-       
-    
+        public ActionResultDTO Post(ComputerMunkiEntity tObject)
+        {
+            Request.Method = Method.POST;
+            Request.AddJsonBody(tObject);
+            Request.Resource = string.Format("api/{0}/Post/", Resource);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
+            if (response.Id == 0)
+                response.Success = false;
+            return response;
+        }
     }
 }

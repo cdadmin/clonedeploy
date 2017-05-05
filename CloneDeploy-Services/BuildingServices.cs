@@ -65,7 +65,7 @@ namespace CloneDeploy_Services
             
         }
 
-        public  List<BuildingEntity> SearchBuildings(string searchString = "")
+        public  List<BuildingWithClusterGroup> SearchBuildings(string searchString = "")
         {
             
                 return _uow.BuildingRepository.Get(searchString);

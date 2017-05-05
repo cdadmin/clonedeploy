@@ -5,53 +5,63 @@ using RestSharp;
 
 namespace CloneDeploy_ApiCalls
 {
-    public class ActiveImagingTaskAPI:BaseAPI
+    public class ActiveImagingTaskAPI : BaseAPI
     {
-        public ActiveImagingTaskAPI(string resource):base(resource)
+        private readonly ApiRequest _apiRequest;
+
+        public ActiveImagingTaskAPI(string resource) : base(resource)
         {
-		
-        }
-
-        public IEnumerable<ActiveImagingTaskEntity> GetUnicasts(string taskType)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetUnicasts/", _resource);
-            _request.AddParameter("tasktype", taskType);
-            return new ApiRequest().Execute<List<ActiveImagingTaskEntity>>(_request);
-        }
-
-        public IEnumerable<ActiveImagingTaskEntity> GetActiveTasks()
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetActiveTasks/", _resource);
-            return new ApiRequest().Execute<List<ActiveImagingTaskEntity>>(_request);
-        }
-
-        public string GetActiveUnicastCount(string taskType)
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetActiveUnicastCount/", _resource);
-            _request.AddParameter("tasktype", taskType);
-            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
-        }
-
-
-        public string GetAllActiveCount()
-        {
-            _request.Method = Method.GET;
-            _request.Resource = string.Format("api/{0}/GetAllActiveCount/", _resource);
-            return new ApiRequest().Execute<ApiStringResponseDTO>(_request).Value;
-
+            _apiRequest = new ApiRequest();
         }
 
         public ActionResultDTO Delete(int id)
         {
-            _request.Method = Method.DELETE;
-            _request.Resource = string.Format("api/{0}/Delete/{1}", _resource, id);
-            var response = new ApiRequest().Execute<ActionResultDTO>(_request);
+            Request.Method = Method.DELETE;
+            Request.Resource = string.Format("api/{0}/Delete/{1}", Resource, id);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
             if (response.Id == 0)
                 response.Success = false;
             return response;
+        }
+
+        public string GetActiveNotOwned()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetActiveNotOwned/", Resource);
+            var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
+            return response != null ? response.Value : string.Empty;
+        }
+
+        public IEnumerable<TaskWithComputer> GetActiveTasks()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetActiveTasks/", Resource);
+            return _apiRequest.Execute<List<TaskWithComputer>>(Request);
+        }
+
+        public string GetActiveUnicastCount(string taskType)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetActiveUnicastCount/", Resource);
+            Request.AddParameter("tasktype", taskType);
+            var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
+            return response != null ? response.Value : string.Empty;
+        }
+
+        public string GetAllActiveCount()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetAllActiveCount/", Resource);
+            var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
+            return response != null ? response.Value : string.Empty;
+        }
+
+        public IEnumerable<TaskWithComputer> GetUnicasts(string taskType)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetUnicasts/", Resource);
+            Request.AddParameter("tasktype", taskType);
+            return _apiRequest.Execute<List<TaskWithComputer>>(Request);
         }
     }
 }

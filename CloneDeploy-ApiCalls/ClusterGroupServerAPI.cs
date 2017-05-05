@@ -7,19 +7,19 @@ namespace CloneDeploy_ApiCalls
 {
     public class ClusterGroupServerAPI : BaseAPI
     {
-        public ClusterGroupServerAPI(string resource):base(resource)
+        private readonly ApiRequest _apiRequest;
+
+        public ClusterGroupServerAPI(string resource) : base(resource)
         {
-		
-        }
-  
-        public ActionResultDTO Post(List<ClusterGroupServerEntity> listOfServers)
-        {
-            _request.Method = Method.POST;
-            _request.Resource = string.Format("api/{0}/Post/", _resource);
-            _request.AddJsonBody(listOfServers);
-            return new ApiRequest().Execute<ActionResultDTO>(_request);
+            _apiRequest = new ApiRequest();
         }
 
-        
+        public ActionResultDTO Post(List<ClusterGroupServerEntity> listOfServers)
+        {
+            Request.Method = Method.POST;
+            Request.Resource = string.Format("api/{0}/Post/", Resource);
+            Request.AddJsonBody(listOfServers);
+            return _apiRequest.Execute<ActionResultDTO>(Request);
+        }
     }
 }

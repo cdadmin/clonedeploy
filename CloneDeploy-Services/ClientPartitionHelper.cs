@@ -18,8 +18,8 @@ namespace CloneDeploy_Services
     {
         private readonly ILog log = LogManager.GetLogger("ApplicationLog");
         private readonly CloneDeploy_Entities.DTOs.ImageSchemaBE.ImageSchema _imageSchema;
-        private readonly ImageProfileEntity _imageProfile;
-        public ClientPartitionHelper(ImageProfileEntity imageProfile)
+        private readonly ImageProfileWithImage _imageProfile;
+        public ClientPartitionHelper(ImageProfileWithImage imageProfile)
         {
             string schema = null;
      
@@ -454,7 +454,7 @@ namespace CloneDeploy_Services
             }
         }
 
-        public List<PhysicalPartition> GetActivePartitions(int schemaHdNumber, ImageProfileEntity imageProfile)
+        public List<PhysicalPartition> GetActivePartitions(int schemaHdNumber, ImageProfileWithImage imageProfile)
         {
             var listPhysicalPartition = new List<PhysicalPartition>();
             var imagePath = Settings.PrimaryStoragePath + Path.DirectorySeparatorChar + "images" + Path.DirectorySeparatorChar + imageProfile.Image.Name + Path.DirectorySeparatorChar + "hd" +
