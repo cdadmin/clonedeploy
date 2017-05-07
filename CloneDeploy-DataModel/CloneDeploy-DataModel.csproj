@@ -44,6 +44,7 @@
     <Compile Include="ActiveImagingTaskRepository.cs" />
     <Compile Include="BuildingRepository.cs" />
     <Compile Include="CloneDeployDbContext.cs" />
+    <Compile Include="CloneDeployUserRepository.cs" />
     <Compile Include="ComputerRepository.cs" />
     <Compile Include="GenericRepository.cs" />
     <Compile Include="GroupRepository.cs" />

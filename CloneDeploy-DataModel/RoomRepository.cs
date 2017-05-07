@@ -14,7 +14,7 @@ namespace CloneDeploy_DataModel
             _context = context;
         }
 
-        public List<RoomEntity> Get(string searchString)
+        public List<RoomWithClusterGroup> Get(string searchString)
         {
             return (from s in _context.Rooms
                     join d in _context.ClusterGroups on s.DistributionPointId equals d.Id into joined
@@ -26,7 +26,7 @@ namespace CloneDeploy_DataModel
                         id = s.Id,
                         name = s.Name,
                         distributionPoint = j
-                    }).AsEnumerable().Select(x => new RoomEntity()
+                    }).AsEnumerable().Select(x => new RoomWithClusterGroup()
                     {
                         Id = x.id,
                         Name = x.name,

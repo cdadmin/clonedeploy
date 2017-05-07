@@ -35,8 +35,8 @@ public partial class views_global_rooms_search : Global
 
         if (gvRooms.Rows.Count == 0)
         {
-            var obj = new List<RoomEntity>();
-            obj.Add(new RoomEntity());
+            var obj = new List<RoomWithClusterGroup>();
+            obj.Add(new RoomWithClusterGroup());
             gvRooms.DataSource = obj;
             gvRooms.DataBind();
 
@@ -115,7 +115,7 @@ public partial class views_global_rooms_search : Global
             if (ddlDps != null)
             {
                 PopulateClusterGroupsDdl(ddlDps);
-                ddlDps.SelectedValue = ((RoomEntity)(e.Row.DataItem)).ClusterGroup.ToString();
+                ddlDps.SelectedValue = ((RoomWithClusterGroup)(e.Row.DataItem)).ClusterGroup.Id.ToString();
             }
         } 
     }

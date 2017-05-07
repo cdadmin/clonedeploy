@@ -23,7 +23,7 @@ namespace CloneDeploy_DataModel
         IGenericRepository<SettingEntity> SettingRepository { get; }
         SiteRepository SiteRepository { get; }
         IGenericRepository<SysprepTagEntity> SysprepTagRepository { get; }
-        IGenericRepository<CloneDeployUserEntity> UserRepository { get; }
+        CloneDeployUserRepository UserRepository { get; }
         IGenericRepository<BootTemplateEntity> BootTemplateRepository { get; }
         IGenericRepository<ComputerLogEntity> ComputerLogRepository { get; }
         IGenericRepository<UserRightEntity> UserRightRepository { get; }

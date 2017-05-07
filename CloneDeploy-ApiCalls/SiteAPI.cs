@@ -32,13 +32,13 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<SiteEntity>(Request);
         }
 
-        public List<SiteEntity> GetAll(int limit, string searchstring)
+        public List<SiteWithClusterGroup> GetAll(int limit, string searchstring)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetAll", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
-            return _apiRequest.Execute<List<SiteEntity>>(Request);
+            return _apiRequest.Execute<List<SiteWithClusterGroup>>(Request);
         }
 
         public string GetCount()

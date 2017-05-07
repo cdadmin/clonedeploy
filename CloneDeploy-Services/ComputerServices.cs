@@ -188,8 +188,7 @@ namespace CloneDeploy_Services
                     listOfComputers.AddRange(new GroupServices().GetGroupMembersWithImages(managedGroup.GroupId, searchString));
                 }
 
-                //foreach (var computer in listOfComputers)
-                    //computer.Image = new ImageServices().GetImage(computer.ImageId);
+               
 
                 return listOfComputers;
             }
@@ -215,8 +214,7 @@ namespace CloneDeploy_Services
                     listOfComputers.AddRange(new GroupServices().GetGroupMembersWithImages(managedGroup.GroupId, searchString));
                 }
 
-                //foreach (var computer in listOfComputers)
-                    //computer.Image = new ImageServices().GetImage(computer.ImageId);
+              
 
                 return listOfComputers;
             }

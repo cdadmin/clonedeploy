@@ -39,13 +39,13 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<GroupEntity>(Request);
         }
 
-        public List<GroupEntity> GetAll(int limit, string searchstring)
+        public List<GroupWithImage> GetAll(int limit, string searchstring)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetAll", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
-            return _apiRequest.Execute<List<GroupEntity>>(Request);
+            return _apiRequest.Execute<List<GroupWithImage>>(Request);
         }
 
         public string GetCount()

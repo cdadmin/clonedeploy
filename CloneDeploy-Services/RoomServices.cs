@@ -63,7 +63,7 @@ namespace CloneDeploy_Services
             
         }
 
-        public  List<RoomEntity> SearchRooms(string searchString = "")
+        public  List<RoomWithClusterGroup> SearchRooms(string searchString = "")
         {
            
                 return _uow.RoomRepository.Get(searchString);

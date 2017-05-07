@@ -62,7 +62,7 @@ namespace CloneDeploy_Services
             
         }
 
-        public  List<SiteEntity> SearchSites(string searchString = "")
+        public  List<SiteWithClusterGroup> SearchSites(string searchString = "")
         {
             
                 return _uow.SiteRepository.Get(searchString);

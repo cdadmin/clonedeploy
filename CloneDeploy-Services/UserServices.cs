@@ -140,16 +140,9 @@ namespace CloneDeploy_Services
 
         }
 
-        public  List<CloneDeployUserEntity> SearchUsers(string searchString = "")
+        public  List<UserWithUserGroup> SearchUsers(string searchString = "")
         {
-            
-                var users = _uow.UserRepository.Get(u => u.Name.Contains(searchString));
-                foreach (var user in users)
-                {
-                    user.UserGroup = new UserGroupServices().GetUserGroup(user.UserGroupId);
-                }
-                return users;
-            
+            return _uow.UserRepository.Search(searchString);
         }
 
         public  ActionResultDTO UpdateUser(CloneDeployUserEntity user)

@@ -20,7 +20,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "GlobalRead")]
-        public IEnumerable<SiteEntity> GetAll(string searchstring = "")
+        public IEnumerable<SiteWithClusterGroup> GetAll(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _siteServices.SearchSites()

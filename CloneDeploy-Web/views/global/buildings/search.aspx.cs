@@ -35,8 +35,8 @@ public partial class views_global_buildings_search : Global
 
         if (gvBuildings.Rows.Count == 0)
         {
-            var obj = new List<BuildingEntity>();
-            obj.Add(new BuildingEntity());
+            var obj = new List<BuildingWithClusterGroup>();
+            obj.Add(new BuildingWithClusterGroup());
             gvBuildings.DataSource = obj;
             gvBuildings.DataBind();
 

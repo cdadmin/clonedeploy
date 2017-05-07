@@ -17,6 +17,12 @@ namespace CloneDeploy_Entities
         [Column("room_distribution_point", Order = 3)]
         public int DistributionPointId { get; set; }
 
-        public virtual ClusterGroupEntity ClusterGroup { get; set; }
+      
+    }
+
+    [NotMapped]
+    public class RoomWithClusterGroup : RoomEntity
+    {
+        public ClusterGroupEntity ClusterGroup { get; set; }
     }
 }

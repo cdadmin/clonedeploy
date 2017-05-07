@@ -70,13 +70,13 @@ namespace CloneDeploy_ApiCalls
             return response != null ? response.Value : 0;
         }
 
-        public List<CloneDeployUserEntity> GetAll(int limit, string searchstring)
+        public List<UserWithUserGroup> GetAll(int limit, string searchstring)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetAll", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
-            return _apiRequest.Execute<List<CloneDeployUserEntity>>(Request);
+            return _apiRequest.Execute<List<UserWithUserGroup>>(Request);
         }
 
         public CloneDeployUserEntity GetByName(string username)

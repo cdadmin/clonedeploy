@@ -117,7 +117,7 @@ namespace CloneDeploy_Services
             return cgServices.GetDefaultClusterGroup();
         }
 
-        public  List<GroupEntity> SearchGroupsForUser(int userId, string searchString = "")
+        public  List<GroupWithImage> SearchGroupsForUser(int userId, string searchString = "")
         {
             var userServices = new UserServices();
             if (userServices.GetUser(userId).Membership == "Administrator")
@@ -129,24 +129,15 @@ namespace CloneDeploy_Services
 
             else
             {
-              
-                    var listOfGroups = userManagedGroups.Select(managedGroup => _uow.GroupRepository.GetFirstOrDefault(i => i.Name.Contains(searchString) && i.Id == managedGroup.GroupId)).ToList();
-                   
-                    return listOfGroups;
-                    
-                
+                return userManagedGroups.Select(groupManagement => _uow.GroupRepository.GetGroupWithImage(searchString, groupManagement.GroupId)).Where(@group => @group != null).ToList();
             }
         }
 
-        
 
-        public  List<GroupEntity> SearchGroups(string searchString = "")
+
+        public List<GroupWithImage> SearchGroups(string searchString = "")
         {
-            
-                var listOfGroups = _uow.GroupRepository.Get(g => g.Name.Contains(searchString));
-             
-                return listOfGroups;
-            
+            return _uow.GroupRepository.GetGroupsWithImage(searchString);
         }
 
         public  ActionResultDTO UpdateSmartMembership(int groupId)

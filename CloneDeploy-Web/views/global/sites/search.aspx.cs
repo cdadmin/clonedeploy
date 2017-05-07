@@ -35,8 +35,8 @@ public partial class views_global_sites_search : Global
 
         if (gvSites.Rows.Count == 0)
         {
-            var obj = new List<SiteEntity>();
-            obj.Add(new SiteEntity());
+            var obj = new List<SiteWithClusterGroup>();
+            obj.Add(new SiteWithClusterGroup());
             gvSites.DataSource = obj;
             gvSites.DataBind();
 

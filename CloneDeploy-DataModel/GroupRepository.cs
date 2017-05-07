@@ -15,6 +15,64 @@ namespace CloneDeploy_DataModel
             _context = context;
         }
 
+        public GroupWithImage GetGroupWithImage(string searchString, int groupId)
+        {
+            return (from h in _context.Groups
+                    join t in _context.Images on h.ImageId equals t.Id into joined
+                    from p in joined.DefaultIfEmpty()
+                    where h.Name.Contains(searchString) && h.Id == groupId
+                    select new
+                    {
+                        cdGroup = h,
+                        image = p
+                      
+                    }).AsEnumerable().Select(x => new GroupWithImage()
+                    {
+                        Id = x.cdGroup.Id,
+                        Name = x.cdGroup.Name,
+                        ClusterGroupId = x.cdGroup.ClusterGroupId,
+                        Description = x.cdGroup.Description,
+                        Image = x.image,
+                        ImageId = x.cdGroup.ImageId,
+                        ImageProfileId = x.cdGroup.ImageProfileId,
+                        SetDefaultBootMenu = x.cdGroup.SetDefaultBootMenu,
+                        SetDefaultProperties = x.cdGroup.SetDefaultProperties,
+                        SmartCriteria = x.cdGroup.SmartCriteria,
+                        Type = x.cdGroup.Type
+                     
+
+                    }).OrderBy(x => x.Name).FirstOrDefault();
+        }
+
+        public List<GroupWithImage> GetGroupsWithImage(string searchString)
+        {
+            return (from h in _context.Groups
+                join t in _context.Images on h.ImageId equals t.Id into joined
+                from p in joined.DefaultIfEmpty()
+                where h.Name.Contains(searchString)
+                select new
+                {
+                    cdGroup = h,
+                    image = p
+
+                }).AsEnumerable().Select(x => new GroupWithImage()
+                {
+                    Id = x.cdGroup.Id,
+                    Name = x.cdGroup.Name,
+                    ClusterGroupId = x.cdGroup.ClusterGroupId,
+                    Description = x.cdGroup.Description,
+                    Image = x.image,
+                    ImageId = x.cdGroup.ImageId,
+                    ImageProfileId = x.cdGroup.ImageProfileId,
+                    SetDefaultBootMenu = x.cdGroup.SetDefaultBootMenu,
+                    SetDefaultProperties = x.cdGroup.SetDefaultProperties,
+                    SmartCriteria = x.cdGroup.SmartCriteria,
+                    Type = x.cdGroup.Type
+
+
+                }).OrderBy(x => x.Name).ToList();
+        }
+
         public List<ComputerEntity> GetGroupMembers(int searchGroupId, string searchString)
         {
 

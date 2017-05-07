@@ -53,7 +53,12 @@ namespace CloneDeploy_Entities
         [Column("clonedeploy_usergroup_id", Order = 15)]
         public int UserGroupId { get; set; }
 
-        [NotMapped]
-        public virtual CloneDeployUserGroupEntity UserGroup { get; set; }
+       
+    }
+
+    [NotMapped]
+    public class UserWithUserGroup : CloneDeployUserEntity
+    {
+        public CloneDeployUserGroupEntity UserGroup { get; set; }
     }
 }

@@ -29,7 +29,7 @@ namespace CloneDeploy_App.Controllers
 
 
         [CustomAuth(Permission = "GroupSearch")]
-        public IEnumerable<GroupEntity> GetAll(string searchstring = "")
+        public IEnumerable<GroupWithImage> GetAll(string searchstring = "")
         {
             var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")

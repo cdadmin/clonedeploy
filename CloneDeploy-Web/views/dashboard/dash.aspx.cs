@@ -45,7 +45,7 @@ namespace views.dashboard
                 Call.ImageApi.GetAll(Int32.MaxValue, "").OrderBy(x => x.Name).ToList();
             lblTotalImages.Text = imagesList.Count + " Total Image(s)";
 
-            List<GroupEntity> groupsList = Call.GroupApi.GetAll(Int32.MaxValue, "");
+            List<GroupWithImage> groupsList = Call.GroupApi.GetAll(Int32.MaxValue, "");
             lblTotalGroups.Text = groupsList.Count + " Total Group(s)";
 
             var free = Call.FilesystemApi.GetDpFreeSpace();

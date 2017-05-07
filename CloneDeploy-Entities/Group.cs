@@ -50,6 +50,12 @@ namespace CloneDeploy_Entities
 
     }
 
+    [NotMapped]
+    public class GroupWithImage : GroupEntity
+    {
+        public ImageEntity Image { get; set; }
+    }
+
     public sealed class GroupCsvMap : CsvClassMap<GroupEntity>
     {
         public GroupCsvMap()

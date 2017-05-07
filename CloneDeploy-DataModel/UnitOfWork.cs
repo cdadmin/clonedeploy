@@ -37,7 +37,7 @@ namespace CloneDeploy_DataModel
         private IGenericRepository<SettingEntity> _settingRepository;
         private SiteRepository _siteRepository;
         private IGenericRepository<SysprepTagEntity> _sysprepTagRepository;
-        private IGenericRepository<CloneDeployUserEntity> _userRepository;
+        private CloneDeployUserRepository _userRepository;
         private IGenericRepository<BootTemplateEntity> _bootTemplateRepository;
         private IGenericRepository<CdVersionEntity> _cdVersionRepository;
         private ComputerRepository _computerRepository;
@@ -308,9 +308,9 @@ namespace CloneDeploy_DataModel
             get { return _sysprepTagRepository ?? (_sysprepTagRepository = new GenericRepository<SysprepTagEntity>(_context)); }
         }
 
-        public IGenericRepository<CloneDeployUserEntity> UserRepository
+        public CloneDeployUserRepository UserRepository
         {
-            get { return _userRepository ?? (_userRepository = new GenericRepository<CloneDeployUserEntity>(_context)); }
+            get { return _userRepository ?? (_userRepository = new CloneDeployUserRepository(_context)); }
         }
 
         public IGenericRepository<BootTemplateEntity> BootTemplateRepository
