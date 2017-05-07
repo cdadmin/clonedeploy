@@ -1,9 +1,11 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/views/users/user.master" AutoEventWireup="true" Inherits="views_users_groupacls_groupacls" Codebehind="groupacls.master.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
-     <li><a href="<%= ResolveUrl("~/views/users/editgroup.aspx") %>?groupid=<%= CloneDeployUserGroup.Id %>" ><%= CloneDeployUserGroup.Name %></a></li>
+    <li>
+        <a href="<%= ResolveUrl("~/views/users/editgroup.aspx") %>?groupid=<%= CloneDeployUserGroup.Id %>"><%= CloneDeployUserGroup.Name %></a>
+    </li>
     <li>ACLs</li>
-     <asp:ContentPlaceHolder runat="server" ID="BreadcrumbSub2">
+    <asp:ContentPlaceHolder runat="server" ID="BreadcrumbSub2">
     </asp:ContentPlaceHolder>
 </asp:Content>
 
@@ -18,12 +20,20 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="Level3" Runat="Server">
-       <li id="general"><a  href="<%= ResolveUrl("~/views/users/groupacls/general.aspx?level=3") %>&groupid=<%= CloneDeployUserGroup.Id %>"><span class="sub-nav-text">General</span></a></li>
-    <li id="group"><a href="<%= ResolveUrl("~/views/users/groupacls/groupmanagement.aspx?level=3")  %>&groupid=<%= CloneDeployUserGroup.Id %>"><span class="sub-nav-text">Group Based Computer Management</span></a></li>
-     <li id="image"><a href="<%= ResolveUrl("~/views/users/groupacls/imagemanagement.aspx?level=3")  %>&groupid=<%= CloneDeployUserGroup.Id %>"><span class="sub-nav-text">Image Management</span></a></li>
+    <li id="general">
+        <a href="<%= ResolveUrl("~/views/users/groupacls/general.aspx?level=3") %>&groupid=<%= CloneDeployUserGroup.Id %>">
+            <span class="sub-nav-text">General</span></a>
+    </li>
+    <li id="group">
+        <a href="<%= ResolveUrl("~/views/users/groupacls/groupmanagement.aspx?level=3") %>&groupid=<%= CloneDeployUserGroup.Id %>">
+            <span class="sub-nav-text">Group Based Computer Management</span></a>
+    </li>
+    <li id="image">
+        <a href="<%= ResolveUrl("~/views/users/groupacls/imagemanagement.aspx?level=3") %>&groupid=<%= CloneDeployUserGroup.Id %>">
+            <span class="sub-nav-text">Image Management</span></a>
+    </li>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
-           <asp:ContentPlaceHolder runat="server" ID="SubContent2">
+    <asp:ContentPlaceHolder runat="server" ID="SubContent2">
     </asp:ContentPlaceHolder>
 </asp:Content>
-

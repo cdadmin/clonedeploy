@@ -12,32 +12,24 @@ namespace CloneDeploy_Services
         public ComputerMunkiServices()
         {
             _uow = new UnitOfWork();
-
         }
-        public  ActionResultDTO AddMunkiTemplates(ComputerMunkiEntity computerMunki)
+
+        public ActionResultDTO AddMunkiTemplates(ComputerMunkiEntity computerMunki)
         {
             var actionResult = new ActionResultDTO();
-           
-                _uow.ComputerMunkiRepository.Insert(computerMunki);
-                _uow.Save();
-                actionResult.Success = true;
-                actionResult.Id = computerMunki.Id;
 
-                return actionResult;
-            
+            _uow.ComputerMunkiRepository.Insert(computerMunki);
+            _uow.Save();
+            actionResult.Success = true;
+            actionResult.Id = computerMunki.Id;
+
+            return actionResult;
         }
 
-        
 
-       
-
-        public  List<ComputerMunkiEntity> GetComputersForManifestTemplate(int templateId)
+        public List<ComputerMunkiEntity> GetComputersForManifestTemplate(int templateId)
         {
-            
-                return _uow.ComputerMunkiRepository.Get(x => x.MunkiTemplateId == templateId);
-            
+            return _uow.ComputerMunkiRepository.Get(x => x.MunkiTemplateId == templateId);
         }
-
-       
     }
 }

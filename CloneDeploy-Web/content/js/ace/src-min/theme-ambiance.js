@@ -1,8 +1,8 @@
-define("ace/theme/ambiance",["require","exports","module","ace/lib/dom"], function(require, exports, module) {
+﻿define("ace/theme/ambiance", ["require", "exports", "module", "ace/lib/dom"], function(require, exports, module) {
 
-exports.isDark = true;
-exports.cssClass = "ace-ambiance";
-exports.cssText = ".ace-ambiance {\
+    exports.isDark = true;
+    exports.cssClass = "ace-ambiance";
+    exports.cssText = ".ace-ambiance {\
 background-color: #3d3d3d;\
 background-image: -moz-linear-gradient(left, #3D3D3D, #333);\
 background-image: -ms-linear-gradient(left, #3D3D3D, #333);\
@@ -181,7 +181,7 @@ background-image: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICA
 background: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWNQUFD4z6Crq/sfAAuYAuYl+7lfAAAAAElFTkSuQmCC\") right repeat-y;\
 }";
 
-var dom = require("../lib/dom");
-dom.importCssString(exports.cssText, exports.cssClass);
+    var dom = require("../lib/dom");
+    dom.importCssString(exports.cssText, exports.cssClass);
 
 });

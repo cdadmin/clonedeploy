@@ -13,45 +13,46 @@
 // - Other minor tweaks
 // 2009-08-21 First Public Release
 
-(function (window, undefined) {
+(function(window, undefined) {
     var document = window.document,
         location = window.location,
-        key = window.escape('scrollPosition|' + location.pathname + location.search);
+        key = window.escape("scrollPosition|" + location.pathname + location.search);
 
-    window.loadScroll = function () {
-       
-      
+    window.loadScroll = function() {
+
+
         var positions;
         //load scroll positions
         try {
-            positions = (localStorage.getItem(key) || '').split('|');
+            positions = (localStorage.getItem(key) || "").split("|");
         } catch (ex) {
-            var cookieList = document.cookie.split(';');
+            var cookieList = document.cookie.split(";");
             for (var i = cookieList.length - 1; i >= 0 && !positions; i--) {
-                var cookieParts = cookieList[i].split('=');
+                var cookieParts = cookieList[i].split("=");
                 if (cookieParts[0] == key) {
-                    positions = window.unescape(cookieParts[1]).split('|');
+                    positions = window.unescape(cookieParts[1]).split("|");
                 }
             }
         }
         positions = positions || [];
 
         //set scroll positions
-        for (var j = positions.length - 1; j >= 0 ; j--) {
-            var currentValue = positions[j].split(',');
+        for (var j = positions.length - 1; j >= 0; j--) {
+            var currentValue = positions[j].split(",");
             try {
-                if ('' == currentValue[0]) {    //no id for window
+                if ("" == currentValue[0]) { //no id for window
                     window.scrollTo(currentValue[1], currentValue[2]);
                 } else if (currentValue[0]) {
                     var elm = document.getElementById(currentValue[0]);
                     elm.scrollLeft = currentValue[1];
                     elm.scrollTop = currentValue[2];
                 }
-            } catch (ex) { }
+            } catch (ex) {
+            }
         }
     };
 
-    window.saveScroll = function () {
+    window.saveScroll = function() {
         var positions = [];
         //windows scroll position
         var wl, wt;
@@ -65,43 +66,43 @@
             wl = document.body.scrollLeft;
             wt = document.body.scrollTop;
         }
-        if (wl || wt) positions.push(['', wl, wt].join(','));   //no id for window
+        if (wl || wt) positions.push(["", wl, wt].join(",")); //no id for window
 
         //other elements
-        var elements = document.all || document.getElementsByTagName('*');
+        var elements = document.all || document.getElementsByTagName("*");
         for (var i = 0; i < elements.length; i++) {
             var e = elements[i];
             if (e.id && (e.scrollLeft || e.scrollTop)) {
-                positions.push([e.id, e.scrollLeft, e.scrollTop].join(','));
+                positions.push([e.id, e.scrollLeft, e.scrollTop].join(","));
             }
         }
 
         //save scroll positions
         try {
-            localStorage.setItem(key, positions.join('|'));
+            localStorage.setItem(key, positions.join("|"));
         } catch (ex) {
-            document.cookie = key + '=' + positions.join('|') + ';';
+            document.cookie = key + "=" + positions.join("|") + ";";
         }
     };
 })(window);
 
 // Attach to page load and unload
-(function (window) {
+(function(window) {
     var addEvent, eventPrefix;
     if (window.attachEvent) {
         addEvent = window.attachEvent;
-        eventPrefix = 'on';
+        eventPrefix = "on";
     } else {
         addEvent = window.addEventListener;
-        eventPrefix = '';
+        eventPrefix = "";
     }
-    addEvent(eventPrefix + 'load', window.loadScroll, false);
-    addEvent(eventPrefix + 'unload', window.saveScroll, false);
+    addEvent(eventPrefix + "load", window.loadScroll, false);
+    addEvent(eventPrefix + "unload", window.saveScroll, false);
 })(window);
 
 // Only for Partial PostBacks (UpdatePanel in ASP.NET)
-setTimeout(function () {
-    if ('undefined' != typeof Sys && 'undefined' != typeof Sys.WebForms) {
+setTimeout(function() {
+    if ("undefined" != typeof Sys && "undefined" != typeof Sys.WebForms) {
         var instance = Sys.WebForms.PageRequestManager.getInstance();
         instance.add_beginRequest(window.saveScroll);
         instance.add_endRequest(window.loadScroll);

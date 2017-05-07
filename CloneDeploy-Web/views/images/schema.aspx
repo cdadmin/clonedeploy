@@ -1,17 +1,21 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/images/images.master" AutoEventWireup="true" Inherits="views.images.ImageSpecs" Codebehind="schema.aspx.cs" %>
 
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
-    <li><a href="<%= ResolveUrl("~/views/images/edit.aspx") %>?imageid=<%= Image.Id %>" ><%= Image.Name %></a></li>
+    <li>
+        <a href="<%= ResolveUrl("~/views/images/edit.aspx") %>?imageid=<%= Image.Id %>"><%= Image.Name %></a>
+    </li>
     <li>Schema</li>
-    </asp:Content>
+</asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-      <li role="separator" class="divider"></li>
-     <li><a href="<%= ResolveUrl("~/views/help/images-schema.aspx")%>"  target="_blank">Help</a></li>
+    <li role="separator" class="divider"></li>
+    <li>
+        <a href="<%= ResolveUrl("~/views/help/images-schema.aspx") %>" target="_blank">Help</a>
+    </li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-     <button type="button" class="btn btn-default dropdown-toggle width_140" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span class="caret"></span>
-  </button>
+    <button type="button" class="btn btn-default dropdown-toggle width_140" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+    </button>
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="SubContent" Runat="Server">
     <script type="text/javascript">

@@ -13,7 +13,7 @@
 <body>
 <form id="form1" runat="server">
     <div class="loginwrapper">
-        
+
         <img src="<%= ResolveUrl("~/") %>content/img/logo.png" alt="logo" class="logo"/>
         <asp:Login ID="CrucibleLogin" runat="server" OnAuthenticate="CrucibleLogin_Authenticate" DestinationPageUrl="~/views/dashboard/dash.aspx">
             <LayoutTemplate>

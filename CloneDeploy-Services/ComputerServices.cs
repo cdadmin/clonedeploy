@@ -8,7 +8,6 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services.Helpers;
 using CsvHelper;
-using ICSharpCode.SharpZipLib.Zip;
 
 namespace CloneDeploy_Services
 {
@@ -40,10 +39,18 @@ namespace CloneDeploy_Services
             return actionResult;
         }
 
-        public string TotalCount()
+        public void AddComputerToSmartGroups(ComputerEntity computer)
         {
-
-            return _uow.ComputerRepository.Count();
+            var groups = new GroupServices().SearchGroups();
+            foreach (var group in groups.Where(x => x.Type == "smart"))
+            {
+                var computers =
+                    SearchComputersByName(group.SmartCriteria, int.MaxValue).Where(x => x.Name == computer.Name);
+                var memberships =
+                    computers.Select(comp => new GroupMembershipEntity {GroupId = @group.Id, ComputerId = comp.Id})
+                        .ToList();
+                new GroupMembershipServices().AddMembership(memberships);
+            }
         }
 
         public string ComputerCountUser(int userId)
@@ -61,22 +68,163 @@ namespace CloneDeploy_Services
             {
                 return TotalCount();
             }
+            var computerCount = 0;
+            foreach (var managedGroup in userManagedGroups)
+            {
+                computerCount += Convert.ToInt32(new GroupServices().GetGroupMemberCount(managedGroup.GroupId));
+            }
+            return computerCount.ToString();
+        }
+
+        public IEnumerable<ComputerEntity> ComputersWithCustomBootMenu()
+        {
+            return _uow.ComputerRepository.Get(x => x.CustomBootEnabled == 1);
+        }
+
+        public List<ComputerEntity> ComputersWithoutGroup(int limit, string searchString = "")
+        {
+            var listOfComputers = _uow.ComputerRepository.GetComputersWithoutGroup(searchString, limit);
+            //foreach (var computer in listOfComputers)
+            //computer.Image = new ImageServices().GetImage(computer.ImageId);
+
+            return listOfComputers;
+        }
+
+        public bool CreateBootFiles(int id)
+        {
+            var computer = GetComputer(id);
+            if (new ComputerServices().IsComputerActive(computer.Id))
+                return false; //Files Will Be Processed When task is done
+            var bootMenu = new ComputerServices().GetComputerBootMenu(computer.Id);
+            if (bootMenu == null) return false;
+            var pxeMac = Utility.MacToPxeMac(computer.Mac);
+            string path;
+
+            if (Settings.ProxyDhcp == "Yes")
+            {
+                var list = new List<Tuple<string, string, string>>
+                {
+                    Tuple.Create("bios", "", bootMenu.BiosMenu),
+                    Tuple.Create("bios", ".ipxe", bootMenu.BiosMenu),
+                    Tuple.Create("efi32", "", bootMenu.Efi32Menu),
+                    Tuple.Create("efi32", ".ipxe", bootMenu.Efi32Menu),
+                    Tuple.Create("efi64", "", bootMenu.Efi64Menu),
+                    Tuple.Create("efi64", ".ipxe", bootMenu.Efi64Menu),
+                    Tuple.Create("efi64", ".cfg", bootMenu.Efi64Menu)
+                };
+
+                if (Settings.OperationMode == "Single")
+                {
+                    foreach (var tuple in list)
+                    {
+                        path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
+                               Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeMac +
+                               tuple.Item2;
+
+                        if (!string.IsNullOrEmpty(tuple.Item3))
+                            new FileOps().WritePath(path, tuple.Item3);
+                    }
+                }
+                else
+                {
+                    if (Settings.TftpServerRole)
+                    {
+                        foreach (var tuple in list)
+                        {
+                            path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
+                                   Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeMac +
+                                   tuple.Item2;
+
+                            if (!string.IsNullOrEmpty(tuple.Item3))
+                                new FileOps().WritePath(path, tuple.Item3);
+                        }
+                    }
+
+                    var secondaryServers =
+                        new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
+                    foreach (var server in secondaryServers)
+                    {
+                        var tftpPath =
+                            new APICall(new SecondaryServerServices().GetApiToken(server.Name))
+                                .SettingApi.GetSetting("Tftp Path").Value;
+                        foreach (var tuple in list)
+                        {
+                            path = tftpPath + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
+                                   Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeMac +
+                                   tuple.Item2;
+
+                            new APICall(new SecondaryServerServices().GetApiToken(server.Name))
+                                .ServiceAccountApi.WriteTftpFile(new TftpFileDTO
+                                {
+                                    Path = path,
+                                    Contents = tuple.Item3
+                                });
+                        }
+                    }
+                }
+            }
             else
             {
-                var computerCount = 0;
-                foreach (var managedGroup in userManagedGroups)
+                var mode = Settings.PxeMode;
+                path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                       pxeMac;
+
+                if (Settings.OperationMode == "Single")
                 {
-                    computerCount += Convert.ToInt32(new GroupServices().GetGroupMemberCount(managedGroup.GroupId));
+                    if (mode.Contains("ipxe"))
+                        path += ".ipxe";
+                    else if (mode.Contains("grub"))
+                        path += ".cfg";
+
+                    if (!string.IsNullOrEmpty(bootMenu.BiosMenu))
+                        new FileOps().WritePath(path, bootMenu.BiosMenu);
                 }
-                return computerCount.ToString();
+                else
+                {
+                    if (Settings.TftpServerRole)
+                    {
+                        path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                               pxeMac;
+                        if (mode.Contains("ipxe"))
+                            path += ".ipxe";
+                        else if (mode.Contains("grub"))
+                            path += ".cfg";
+
+                        if (!string.IsNullOrEmpty(bootMenu.BiosMenu))
+                            new FileOps().WritePath(path, bootMenu.BiosMenu);
+                    }
+                    var secondaryServers =
+                        new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
+                    foreach (var server in secondaryServers)
+                    {
+                        var tftpPath =
+                            new APICall(new SecondaryServerServices().GetApiToken(server.Name))
+                                .SettingApi.GetSetting("Tftp Path").Value;
+                        path = tftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                               pxeMac;
+
+                        if (mode.Contains("ipxe"))
+                            path += ".ipxe";
+                        else if (mode.Contains("grub"))
+                            path += ".cfg";
+
+                        new APICall(new SecondaryServerServices().GetApiToken(server.Name))
+                            .ServiceAccountApi.WriteTftpFile(new TftpFileDTO
+                            {
+                                Path = path,
+                                Contents = bootMenu.BiosMenu
+                            });
+                    }
+                }
             }
+            return true;
         }
 
 
         public ActionResultDTO DeleteComputer(int id)
-        {           
+        {
             var computer = GetComputer(id);
-            if (computer == null) return new ActionResultDTO() {ErrorMessage = "Computer Not Found", Id = 0};
+            if (computer == null) return new ActionResultDTO {ErrorMessage = "Computer Not Found", Id = 0};
 
             var validationResult = ValidateComputer(computer, "delete");
             var result = new ActionResultDTO();
@@ -95,6 +243,78 @@ namespace CloneDeploy_Services
                 result.ErrorMessage = validationResult.ErrorMessage;
             }
             return result;
+        }
+
+        public ActionResultDTO DeleteComputerBootMenus(int computerId)
+        {
+            var actionResult = new ActionResultDTO();
+
+
+            using (var uow = new UnitOfWork())
+            {
+                uow.ComputerBootMenuRepository.DeleteRange(x => x.ComputerId == computerId);
+                uow.Save();
+                actionResult.Success = true;
+                actionResult.Id = computerId;
+            }
+            return actionResult;
+        }
+
+        public ActionResultDTO DeleteComputerLogs(int computerId)
+        {
+            var computer = GetComputer(computerId);
+            if (computer == null)
+                return new ActionResultDTO {ErrorMessage = "Computer Not Found", Id = 0};
+
+            var actionResult = new ActionResultDTO();
+
+            _uow.ComputerLogRepository.DeleteRange(x => x.ComputerId == computerId);
+            _uow.Save();
+            actionResult.Success = true;
+            actionResult.Id = computerId;
+
+
+            return actionResult;
+        }
+
+        public bool DeleteComputerMemberships(int computerId)
+        {
+            _uow.GroupMembershipRepository.DeleteRange(x => x.ComputerId == computerId);
+            _uow.Save();
+            return true;
+        }
+
+        public ActionResultDTO DeleteMunkiTemplates(int computerId)
+        {
+            var existingcomputer = new ComputerServices().GetComputer(computerId);
+            if (existingcomputer == null)
+                return new ActionResultDTO {ErrorMessage = "Computer Not Found", Id = 0};
+            var actionResult = new ActionResultDTO();
+
+            _uow.ComputerMunkiRepository.DeleteRange(x => x.ComputerId == computerId);
+            _uow.Save();
+            actionResult.Success = true;
+            actionResult.Id = computerId;
+            return actionResult;
+        }
+
+        public void ExportCsv(string path)
+        {
+            using (var csv = new CsvWriter(new StreamWriter(path)))
+            {
+                csv.Configuration.RegisterClassMap<ComputerCsvMap>();
+                csv.WriteRecords(GetAll());
+            }
+        }
+
+        public List<ComputerEntity> GetAll()
+        {
+            return _uow.ComputerRepository.Get();
+        }
+
+        public List<GroupMembershipEntity> GetAllComputerMemberships(int computerId)
+        {
+            return _uow.GroupMembershipRepository.Get(x => x.ComputerId == computerId);
         }
 
         public ClusterGroupEntity GetClusterGroup(int computerId)
@@ -151,417 +371,23 @@ namespace CloneDeploy_Services
             return cgServices.GetDefaultClusterGroup();
         }
 
-    
+
         public ComputerEntity GetComputer(int computerId)
         {
             var computer = _uow.ComputerRepository.GetById(computerId);
             //if (computer != null)
-                //computer.Image = new ImageServices().GetImage(computer.ImageId);
+            //computer.Image = new ImageServices().GetImage(computer.ImageId);
             return computer;
-        }
-
-        public ComputerEntity GetComputerFromMac(string mac)
-        {
-
-            return _uow.ComputerRepository.GetFirstOrDefault(p => p.Mac == mac);
-
-        }
-
-     
-
-        public List<ComputerWithImage> SearchComputersForUser(int userId, int limit, string searchString = "")
-        {
-            var userServices = new UserServices();
-            if(limit== 0) limit=Int32.MaxValue;
-            if(userServices.GetUser(userId).Membership == "Administrator")
-                return SearchComputers(searchString,limit);
-
-            var listOfComputers = new List<ComputerWithImage>();
-
-            var userManagedGroups = userServices.GetUserGroupManagements(userId);
-            if (userManagedGroups.Count == 0)
-                return SearchComputers(searchString,limit);
-            else
-            {
-                foreach (var managedGroup in userManagedGroups)
-                {
-                    listOfComputers.AddRange(new GroupServices().GetGroupMembersWithImages(managedGroup.GroupId, searchString));
-                }
-
-               
-
-                return listOfComputers;
-            }
-        }
-
-        public List<ComputerWithImage> SearchComputersForUserByName(int userId, int limit, string searchString = "")
-        {
-            var userServices = new UserServices();
-            if (limit == 0) limit = Int32.MaxValue;
-
-            if (userServices.GetUser(userId).Membership == "Administrator")
-                return SearchComputers(searchString, limit);
-
-            var listOfComputers = new List<ComputerWithImage>();
-
-            var userManagedGroups = userServices.GetUserGroupManagements(userId);
-            if (userManagedGroups.Count == 0)
-                return SearchComputersByName(searchString, limit);
-            else
-            {
-                foreach (var managedGroup in userManagedGroups)
-                {
-                    listOfComputers.AddRange(new GroupServices().GetGroupMembersWithImages(managedGroup.GroupId, searchString));
-                }
-
-              
-
-                return listOfComputers;
-            }
-        }
-
-        public List<ComputerEntity> GetAll()
-        {
-
-            return _uow.ComputerRepository.Get();
-        }
-
-        public List<ComputerWithImage> SearchComputers(string searchString, int limit)
-        {
-
-            return _uow.ComputerRepository.Search(searchString, limit);
-        }
-
-        public List<ComputerWithImage> SearchComputersByName(string searchString, int limit)
-        {
-            return _uow.ComputerRepository.SearchByName(searchString, limit);         
-        }
-
-        public ActionResultDTO UpdateComputer(ComputerEntity computer)
-        {
-            var existingcomputer = GetComputer(computer.Id);
-            if (existingcomputer == null)
-                return new ActionResultDTO() {ErrorMessage = "Computer Not Found", Id = 0};
-
-            computer.Mac = Utility.FixMac(computer.Mac);
-            var actionResult = new ActionResultDTO();
-            var validationResult = ValidateComputer(computer, "update");
-            if (validationResult.Success)
-            {
-                _uow.ComputerRepository.Update(computer, computer.Id);
-                _uow.Save();
-                actionResult.Success = true;
-                actionResult.Id = computer.Id;
-            }
-
-            return actionResult;
-        }
-
-        public IEnumerable<ComputerEntity> ComputersWithCustomBootMenu()
-        {
-            return _uow.ComputerRepository.Get(x => x.CustomBootEnabled == 1);
-        }
-
-        public void AddComputerToSmartGroups(ComputerEntity computer)
-        {
-            var groups = new GroupServices().SearchGroups();
-            foreach (var group in groups.Where(x => x.Type == "smart"))
-            {
-                var computers = SearchComputersByName(group.SmartCriteria, Int32.MaxValue).Where(x => x.Name == computer.Name);
-                var memberships = computers.Select(comp => new GroupMembershipEntity() { GroupId = @group.Id, ComputerId = comp.Id }).ToList();
-                new GroupMembershipServices().AddMembership(memberships);
-            }
-
-        }
-
-        public int ImportCsv(string csvContents)
-        {
-            var importCounter = 0;
-            using (var csv = new CsvReader(new StringReader(csvContents)))
-            {
-                csv.Configuration.RegisterClassMap<ComputerCsvMap>();
-                var records = csv.GetRecords<ComputerEntity>();
-                foreach (var computer in records)
-                {
-                    if (AddComputer(computer).Success )
-                        importCounter++;
-                }
-            }
-            return importCounter;
-        }
-
-        public void ExportCsv(string path)
-        {
-            using (var csv = new CsvWriter(new StreamWriter(path)))
-            {
-                csv.Configuration.RegisterClassMap<ComputerCsvMap>();
-                csv.WriteRecords(GetAll());
-            }
-        }
-
-        public List<ComputerEntity> ComputersWithoutGroup(int limit, string searchString = "")
-        {
-            var listOfComputers = _uow.ComputerRepository.GetComputersWithoutGroup(searchString, limit);
-            //foreach (var computer in listOfComputers)
-                //computer.Image = new ImageServices().GetImage(computer.ImageId);
-
-            return listOfComputers;
-        }
-
-        private ValidationResultDTO ValidateComputer(ComputerEntity computer, string type)
-        {
-            var validationResult = new ValidationResultDTO() { Success = false };
-            if (type == "new" || type == "update")
-            {
-                if (string.IsNullOrEmpty(computer.Name) || computer.Name.Any(c => c == ' '))
-                {
-                    validationResult.ErrorMessage = "Computer Name Is Not Valid";
-                    return validationResult;
-                }
-
-                if (string.IsNullOrEmpty(computer.Mac) ||
-                    !computer.Mac.All(c => char.IsLetterOrDigit(c) || c == ':' || c == '-')
-                    && (computer.Mac.Length == 12 && !computer.Mac.All(char.IsLetterOrDigit)))
-                {
-                    validationResult.ErrorMessage = "Computer Mac Is Not Valid";
-                    return validationResult;
-                }
-
-                if (type == "new")
-                {
-                    
-                        if (_uow.ComputerRepository.Exists(h => h.Name == computer.Name))
-                        {
-                            validationResult.ErrorMessage = "A Computer With This Name Already Exists";
-                            return validationResult;
-                        }
-                        if (_uow.ComputerRepository.Exists(h => h.Mac == computer.Mac))
-                        {
-                            validationResult.ErrorMessage = "A Computer With This MAC Already Exists";
-                            return validationResult;
-                        }
-                    
-                }
-                else
-                {
-                 
-                        var originalComputer = _uow.ComputerRepository.GetById(computer.Id);
-                        if (originalComputer.Name != computer.Name)
-                        {
-                            if (_uow.ComputerRepository.Exists(h => h.Name == computer.Name))
-                            {
-                                validationResult.ErrorMessage = "A Computer With This Name Already Exists";
-                                return validationResult;
-                            }
-                        }
-                        else if (originalComputer.Mac != computer.Mac)
-                        {
-                            if (_uow.ComputerRepository.Exists(h => h.Mac == computer.Mac))
-                            {
-                                validationResult.ErrorMessage = "A Computer With This MAC Already Exists";
-                                return validationResult;
-                            }
-                        }
-                    
-                }
-            }
-
-            if (type == "delete")
-            {
-                if (IsComputerActive(computer.Id))
-                {
-                    validationResult.ErrorMessage = "A Computer Cannot Be Deleted While It Has An Active Task";
-                    return validationResult;
-                }
-
-            }
-
-            validationResult.Success = true;
-            return validationResult;
-        }
-
-        public bool IsComputerActive(int computerId)
-        {
-            return _uow.ActiveImagingTaskRepository.Exists(a => a.ComputerId == computerId);
-        }
-
-        public ActiveImagingTaskEntity GetTaskForComputer(int computerId)
-        {
-           
-                return _uow.ActiveImagingTaskRepository.GetFirstOrDefault(x => x.ComputerId == computerId);
-            
-        }
-
-        public string GetQueuePosition(int computerId)
-        {
-            var computerTask = GetTaskForComputer(computerId);
-           
-                return
-                    _uow.ActiveImagingTaskRepository.Count(
-                        x => x.Status == "2" && x.QueuePosition < computerTask.QueuePosition);
-            
         }
 
         public ComputerBootMenuEntity GetComputerBootMenu(int computerId)
         {
-            
-                return _uow.ComputerBootMenuRepository.GetFirstOrDefault(p => p.ComputerId == computerId);
-            
+            return _uow.ComputerBootMenuRepository.GetFirstOrDefault(p => p.ComputerId == computerId);
         }
 
-        public ActionResultDTO DeleteComputerBootMenus(int computerId)
+        public ComputerEntity GetComputerFromMac(string mac)
         {
-            var actionResult = new ActionResultDTO();
-          
-
-            using (var uow = new UnitOfWork())
-            {
-                uow.ComputerBootMenuRepository.DeleteRange(x => x.ComputerId == computerId);
-                uow.Save();
-                actionResult.Success = true;
-                actionResult.Id = computerId;
-            }
-            return actionResult;
-
-        }
-
-        public List<GroupMembershipEntity> GetAllComputerMemberships(int computerId)
-        {
-
-            return _uow.GroupMembershipRepository.Get(x => x.ComputerId == computerId);
-
-        }
-
-        public bool CreateBootFiles(int id)
-        {
-            var computer = GetComputer(id);
-            if (new ComputerServices().IsComputerActive(computer.Id)) return false; //Files Will Be Processed When task is done
-            var bootMenu = new ComputerServices().GetComputerBootMenu(computer.Id);
-            if (bootMenu == null) return false;
-            var pxeMac = Utility.MacToPxeMac(computer.Mac);
-            string path;
-
-            if (Settings.ProxyDhcp == "Yes")
-            {
-                List<Tuple<string, string, string>> list = new List<Tuple<string, string, string>>
-                {
-                    Tuple.Create("bios", "", bootMenu.BiosMenu),
-                    Tuple.Create("bios", ".ipxe", bootMenu.BiosMenu),
-                    Tuple.Create("efi32", "", bootMenu.Efi32Menu),
-                    Tuple.Create("efi32", ".ipxe", bootMenu.Efi32Menu),
-                    Tuple.Create("efi64", "", bootMenu.Efi64Menu),
-                    Tuple.Create("efi64", ".ipxe", bootMenu.Efi64Menu),
-                    Tuple.Create("efi64", ".cfg", bootMenu.Efi64Menu)
-                };
-
-                if (Settings.OperationMode == "Single")
-                {
-                    foreach (var tuple in list)
-                    {
-                        path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
-                               Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeMac +
-                               tuple.Item2;
-
-                        if (!string.IsNullOrEmpty(tuple.Item3))
-                            new FileOps().WritePath(path, tuple.Item3);
-                    }
-                }
-                else
-                {
-                    if (Settings.TftpServerRole)
-                    {
-                        foreach (var tuple in list)
-                        {
-                            path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
-                                   Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeMac +
-                                   tuple.Item2;
-
-                            if (!string.IsNullOrEmpty(tuple.Item3))
-                                new FileOps().WritePath(path, tuple.Item3);
-                        }
-                    }
-
-                    var secondaryServers =
-                        new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
-                    foreach (var server in secondaryServers)
-                    {
-                        var tftpPath =
-                            new APICall(new SecondaryServerServices().GetApiToken(server.Name))
-                                .SettingApi.GetSetting("Tftp Path").Value;
-                        foreach (var tuple in list)
-                        {
-                            path = tftpPath + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
-                                   Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeMac +
-                                   tuple.Item2;
-
-                            new APICall(new SecondaryServerServices().GetApiToken(server.Name))
-                                .ServiceAccountApi.WriteTftpFile(new TftpFileDTO()
-                                {
-                                    Path = path,
-                                    Contents = tuple.Item3
-                                });
-                        }
-                    }
-
-                }
-            }
-            else
-            {
-                var mode = Settings.PxeMode;
-                path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
-                       pxeMac;
-
-                if (Settings.OperationMode == "Single")
-                {
-                    if (mode.Contains("ipxe"))
-                        path += ".ipxe";
-                    else if (mode.Contains("grub"))
-                        path += ".cfg";
-
-                    if (!string.IsNullOrEmpty(bootMenu.BiosMenu))
-                        new FileOps().WritePath(path, bootMenu.BiosMenu);
-                }
-                else
-                {
-                    if (Settings.TftpServerRole)
-                    {
-                        path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
-                       pxeMac;
-                        if (mode.Contains("ipxe"))
-                            path += ".ipxe";
-                        else if (mode.Contains("grub"))
-                            path += ".cfg";
-
-                        if (!string.IsNullOrEmpty(bootMenu.BiosMenu))
-                            new FileOps().WritePath(path, bootMenu.BiosMenu);
-                    }
-                    var secondaryServers =
-                       new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
-                    foreach (var server in secondaryServers)
-                    {
-                        var tftpPath =
-                            new APICall(new SecondaryServerServices().GetApiToken(server.Name))
-                                .SettingApi.GetSetting("Tftp Path").Value;
-                        path = tftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
-                       pxeMac;
-
-                        if (mode.Contains("ipxe"))
-                            path += ".ipxe";
-                        else if (mode.Contains("grub"))
-                            path += ".cfg";
-
-                            new APICall(new SecondaryServerServices().GetApiToken(server.Name))
-                                .ServiceAccountApi.WriteTftpFile(new TftpFileDTO()
-                                {
-                                    Path = path,
-                                    Contents = bootMenu.BiosMenu
-                                });
-                        
-                    }
-                }
-
-            }
-            return true;
+            return _uow.ComputerRepository.GetFirstOrDefault(p => p.Mac == mac);
         }
 
         public string GetComputerNonProxyPath(int computerId, bool isActiveOrCustom)
@@ -578,18 +404,16 @@ namespace CloneDeploy_Services
                        fileName + ".ipxe";
             else if (mode.Contains("grub"))
             {
-
                 if (isActiveOrCustom)
                 {
                     path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
-                      pxeComputerMac + ".cfg";
+                           pxeComputerMac + ".cfg";
                 }
                 else
                 {
                     path = Settings.TftpPath + "grub" + Path.DirectorySeparatorChar
-                      + "grub.cfg";
+                           + "grub.cfg";
                 }
-
             }
             else
                 path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
@@ -644,14 +468,13 @@ namespace CloneDeploy_Services
                         if (isActiveOrCustom)
                         {
                             path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar +
-                              proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
-                              Path.DirectorySeparatorChar + pxeComputerMac + ".cfg";
-
+                                   proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
+                                   Path.DirectorySeparatorChar + pxeComputerMac + ".cfg";
                         }
                         else
                         {
                             path = Settings.TftpPath + "grub" +
-                                  Path.DirectorySeparatorChar + "grub.cfg";
+                                   Path.DirectorySeparatorChar + "grub.cfg";
                         }
                     }
                     else
@@ -664,75 +487,111 @@ namespace CloneDeploy_Services
             return path;
         }
 
-        public bool DeleteComputerMemberships(int computerId)
+        public ComputerProxyReservationEntity GetComputerProxyReservation(int computerId)
         {
-
-            _uow.GroupMembershipRepository.DeleteRange(x => x.ComputerId == computerId);
-            _uow.Save();
-            return true;
-
-        }
-
-        public List<ComputerLogEntity> SearchComputerLogs(int computerId)
-        {
-
-            return _uow.ComputerLogRepository.Get(x => x.ComputerId == computerId, orderBy: (q => q.OrderByDescending(x => x.LogTime)));
-
-        }
-
-        public ActionResultDTO DeleteComputerLogs(int computerId)
-        {
-            var computer = GetComputer(computerId);
-            if (computer == null)
-                return new ActionResultDTO() { ErrorMessage = "Computer Not Found", Id = 0 };
-
-            var actionResult = new ActionResultDTO();
-
-            _uow.ComputerLogRepository.DeleteRange(x => x.ComputerId == computerId);
-            _uow.Save();
-            actionResult.Success = true;
-            actionResult.Id = computerId;
-
-
-
-            return actionResult;
+            return _uow.ComputerProxyRepository.GetFirstOrDefault(p => p.ComputerId == computerId);
         }
 
         public List<ComputerMunkiEntity> GetMunkiTemplates(int computerId)
         {
-
             return _uow.ComputerMunkiRepository.Get(x => x.ComputerId == computerId);
-
         }
 
-        public ActionResultDTO DeleteMunkiTemplates(int computerId)
+        public string GetQueuePosition(int computerId)
         {
-            var existingcomputer = new ComputerServices().GetComputer(computerId);
-            if (existingcomputer == null)
-                return new ActionResultDTO() { ErrorMessage = "Computer Not Found", Id = 0 };
-            var actionResult = new ActionResultDTO();
+            var computerTask = GetTaskForComputer(computerId);
 
-            _uow.ComputerMunkiRepository.DeleteRange(x => x.ComputerId == computerId);
-            _uow.Save();
-            actionResult.Success = true;
-            actionResult.Id = computerId;
-            return actionResult;
-
+            return
+                _uow.ActiveImagingTaskRepository.Count(
+                    x => x.Status == "2" && x.QueuePosition < computerTask.QueuePosition);
         }
 
-        public ComputerProxyReservationEntity GetComputerProxyReservation(int computerId)
+        public ActiveImagingTaskEntity GetTaskForComputer(int computerId)
         {
-
-            return _uow.ComputerProxyRepository.GetFirstOrDefault(p => p.ComputerId == computerId);
+            return _uow.ActiveImagingTaskRepository.GetFirstOrDefault(x => x.ComputerId == computerId);
         }
 
-        public bool ToggleProxyReservation(int computerId, bool enable)
+        public int ImportCsv(string csvContents)
         {
-            var computerServices = new ComputerServices();
-            var computer = computerServices.GetComputer(computerId);
-            computer.ProxyReservation = Convert.ToInt16(enable);
-            computerServices.UpdateComputer(computer);
-            return true;
+            var importCounter = 0;
+            using (var csv = new CsvReader(new StringReader(csvContents)))
+            {
+                csv.Configuration.RegisterClassMap<ComputerCsvMap>();
+                var records = csv.GetRecords<ComputerEntity>();
+                foreach (var computer in records)
+                {
+                    if (AddComputer(computer).Success)
+                        importCounter++;
+                }
+            }
+            return importCounter;
+        }
+
+        public bool IsComputerActive(int computerId)
+        {
+            return _uow.ActiveImagingTaskRepository.Exists(a => a.ComputerId == computerId);
+        }
+
+        public List<ComputerLogEntity> SearchComputerLogs(int computerId)
+        {
+            return _uow.ComputerLogRepository.Get(x => x.ComputerId == computerId,
+                q => q.OrderByDescending(x => x.LogTime));
+        }
+
+        public List<ComputerWithImage> SearchComputers(string searchString, int limit)
+        {
+            return _uow.ComputerRepository.Search(searchString, limit);
+        }
+
+        public List<ComputerWithImage> SearchComputersByName(string searchString, int limit)
+        {
+            return _uow.ComputerRepository.SearchByName(searchString, limit);
+        }
+
+
+        public List<ComputerWithImage> SearchComputersForUser(int userId, int limit, string searchString = "")
+        {
+            var userServices = new UserServices();
+            if (limit == 0) limit = int.MaxValue;
+            if (userServices.GetUser(userId).Membership == "Administrator")
+                return SearchComputers(searchString, limit);
+
+            var listOfComputers = new List<ComputerWithImage>();
+
+            var userManagedGroups = userServices.GetUserGroupManagements(userId);
+            if (userManagedGroups.Count == 0)
+                return SearchComputers(searchString, limit);
+            foreach (var managedGroup in userManagedGroups)
+            {
+                listOfComputers.AddRange(new GroupServices().GetGroupMembersWithImages(managedGroup.GroupId,
+                    searchString));
+            }
+
+
+            return listOfComputers;
+        }
+
+        public List<ComputerWithImage> SearchComputersForUserByName(int userId, int limit, string searchString = "")
+        {
+            var userServices = new UserServices();
+            if (limit == 0) limit = int.MaxValue;
+
+            if (userServices.GetUser(userId).Membership == "Administrator")
+                return SearchComputers(searchString, limit);
+
+            var listOfComputers = new List<ComputerWithImage>();
+
+            var userManagedGroups = userServices.GetUserGroupManagements(userId);
+            if (userManagedGroups.Count == 0)
+                return SearchComputersByName(searchString, limit);
+            foreach (var managedGroup in userManagedGroups)
+            {
+                listOfComputers.AddRange(new GroupServices().GetGroupMembersWithImages(managedGroup.GroupId,
+                    searchString));
+            }
+
+
+            return listOfComputers;
         }
 
         public bool ToggleComputerBootMenu(int computerId, bool enable)
@@ -746,6 +605,107 @@ namespace CloneDeploy_Services
                 CreateBootFiles(computer.Id);
 
             return true;
+        }
+
+        public bool ToggleProxyReservation(int computerId, bool enable)
+        {
+            var computerServices = new ComputerServices();
+            var computer = computerServices.GetComputer(computerId);
+            computer.ProxyReservation = Convert.ToInt16(enable);
+            computerServices.UpdateComputer(computer);
+            return true;
+        }
+
+        public string TotalCount()
+        {
+            return _uow.ComputerRepository.Count();
+        }
+
+        public ActionResultDTO UpdateComputer(ComputerEntity computer)
+        {
+            var existingcomputer = GetComputer(computer.Id);
+            if (existingcomputer == null)
+                return new ActionResultDTO {ErrorMessage = "Computer Not Found", Id = 0};
+
+            computer.Mac = Utility.FixMac(computer.Mac);
+            var actionResult = new ActionResultDTO();
+            var validationResult = ValidateComputer(computer, "update");
+            if (validationResult.Success)
+            {
+                _uow.ComputerRepository.Update(computer, computer.Id);
+                _uow.Save();
+                actionResult.Success = true;
+                actionResult.Id = computer.Id;
+            }
+
+            return actionResult;
+        }
+
+        private ValidationResultDTO ValidateComputer(ComputerEntity computer, string type)
+        {
+            var validationResult = new ValidationResultDTO {Success = false};
+            if (type == "new" || type == "update")
+            {
+                if (string.IsNullOrEmpty(computer.Name) || computer.Name.Any(c => c == ' '))
+                {
+                    validationResult.ErrorMessage = "Computer Name Is Not Valid";
+                    return validationResult;
+                }
+
+                if (string.IsNullOrEmpty(computer.Mac) ||
+                    !computer.Mac.All(c => char.IsLetterOrDigit(c) || c == ':' || c == '-') && computer.Mac.Length == 12 &&
+                    !computer.Mac.All(char.IsLetterOrDigit))
+                {
+                    validationResult.ErrorMessage = "Computer Mac Is Not Valid";
+                    return validationResult;
+                }
+
+                if (type == "new")
+                {
+                    if (_uow.ComputerRepository.Exists(h => h.Name == computer.Name))
+                    {
+                        validationResult.ErrorMessage = "A Computer With This Name Already Exists";
+                        return validationResult;
+                    }
+                    if (_uow.ComputerRepository.Exists(h => h.Mac == computer.Mac))
+                    {
+                        validationResult.ErrorMessage = "A Computer With This MAC Already Exists";
+                        return validationResult;
+                    }
+                }
+                else
+                {
+                    var originalComputer = _uow.ComputerRepository.GetById(computer.Id);
+                    if (originalComputer.Name != computer.Name)
+                    {
+                        if (_uow.ComputerRepository.Exists(h => h.Name == computer.Name))
+                        {
+                            validationResult.ErrorMessage = "A Computer With This Name Already Exists";
+                            return validationResult;
+                        }
+                    }
+                    else if (originalComputer.Mac != computer.Mac)
+                    {
+                        if (_uow.ComputerRepository.Exists(h => h.Mac == computer.Mac))
+                        {
+                            validationResult.ErrorMessage = "A Computer With This MAC Already Exists";
+                            return validationResult;
+                        }
+                    }
+                }
+            }
+
+            if (type == "delete")
+            {
+                if (IsComputerActive(computer.Id))
+                {
+                    validationResult.ErrorMessage = "A Computer Cannot Be Deleted While It Has An Active Task";
+                    return validationResult;
+                }
+            }
+
+            validationResult.Success = true;
+            return validationResult;
         }
     }
 }

@@ -3,12 +3,11 @@ using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class MunkiIncludedManifestController: ApiController
+    public class MunkiIncludedManifestController : ApiController
     {
-         private readonly MunkiIncludedManifestServices _munkiIncludedManifestServices;
+        private readonly MunkiIncludedManifestServices _munkiIncludedManifestServices;
 
         public MunkiIncludedManifestController()
         {
@@ -18,11 +17,7 @@ namespace CloneDeploy_App.Controllers
         [CustomAuth(Permission = "GlobalRead")]
         public MunkiManifestIncludedManifestEntity Get(int id)
         {
-            
-             return _munkiIncludedManifestServices.GetIncludedManifest(id);
-
+            return _munkiIncludedManifestServices.GetIncludedManifest(id);
         }
-
-       
     }
 }

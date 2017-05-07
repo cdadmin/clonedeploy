@@ -12,18 +12,10 @@ namespace CloneDeploy_Services
             _uow = new UnitOfWork();
         }
 
-       
 
-        public  MunkiManifestCatalogEntity GetCatalog(int catalogId)
+        public MunkiManifestCatalogEntity GetCatalog(int catalogId)
         {
-            
-                return _uow.MunkiCatalogRepository.GetById(catalogId);
-            
+            return _uow.MunkiCatalogRepository.GetById(catalogId);
         }
-
-      
-       
-
-       
     }
 }

@@ -5,10 +5,9 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class UserGroupGroupManagementController: ApiController
+    public class UserGroupGroupManagementController : ApiController
     {
         private readonly UserGroupGroupManagementServices _userGroupGroupManagementServices;
 
@@ -22,7 +21,5 @@ namespace CloneDeploy_App.Controllers
         {
             return _userGroupGroupManagementServices.AddUserGroupGroupManagements(listOfGroups);
         }
-
-        
     }
 }

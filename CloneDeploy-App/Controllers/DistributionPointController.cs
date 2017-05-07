@@ -7,10 +7,9 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class DistributionPointController: ApiController
+    public class DistributionPointController : ApiController
     {
         private readonly DistributionPointServices _distributionPointServices;
 
@@ -19,21 +18,12 @@ namespace CloneDeploy_App.Controllers
             _distributionPointServices = new DistributionPointServices();
         }
 
-        [CustomAuth(Permission = "AdminRead")]
-        public IEnumerable<DistributionPointEntity> GetAll(string searchstring = "")
+        [CustomAuth(Permission = "AdminUpdate")]
+        public ActionResultDTO Delete(int id)
         {
-            return string.IsNullOrEmpty(searchstring)
-                ? _distributionPointServices.SearchDistributionPoints()
-                : _distributionPointServices.SearchDistributionPoints(searchstring);
-
-        }
-
-        [CustomAuth(Permission = "AdminRead")]
-        public ApiStringResponseDTO GetCount()
-        {
-
-            return new ApiStringResponseDTO() {Value = _distributionPointServices.TotalCount()};
-
+            var result = _distributionPointServices.DeleteDistributionPoint(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [CustomAuth(Permission = "AdminRead")]
@@ -44,7 +34,20 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-      
+        [CustomAuth(Permission = "AdminRead")]
+        public IEnumerable<DistributionPointEntity> GetAll(string searchstring = "")
+        {
+            return string.IsNullOrEmpty(searchstring)
+                ? _distributionPointServices.SearchDistributionPoints()
+                : _distributionPointServices.SearchDistributionPoints(searchstring);
+        }
+
+        [CustomAuth(Permission = "AdminRead")]
+        public ApiStringResponseDTO GetCount()
+        {
+            return new ApiStringResponseDTO {Value = _distributionPointServices.TotalCount()};
+        }
+
 
         [CustomAuth(Permission = "AdminUpdate")]
         public ActionResultDTO Post(DistributionPointEntity distributionPoint)
@@ -59,14 +62,6 @@ namespace CloneDeploy_App.Controllers
         {
             distributionPoint.Id = id;
             var result = _distributionPointServices.UpdateDistributionPoint(distributionPoint);
-            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
-            return result;
-        }
-
-        [CustomAuth(Permission = "AdminUpdate")]
-        public ActionResultDTO Delete(int id)
-        {
-            var result = _distributionPointServices.DeleteDistributionPoint(id);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
         }

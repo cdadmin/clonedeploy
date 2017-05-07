@@ -52,12 +52,12 @@
                 <a href="<%= ResolveUrl("~/views/groups/properties.aspx") %>?groupid=<%= Group.Id %>">
                     <span class="sub-nav-text">Computer Properties</span></a>
             </li>
-          
+
             <li id="bootmenu">
                 <a href="<%= ResolveUrl("~/views/groups/bootmenu.aspx") %>?groupid=<%= Group.Id %>">
                     <span class="sub-nav-text">Boot Menu</span></a>
             </li>
-             <li id="munki">
+            <li id="munki">
                 <a href="<%= ResolveUrl("~/views/groups/munki.aspx") %>?groupid=<%= Group.Id %>">
                     <span class="sub-nav-text">Munki Templates</span></a>
             </li>
@@ -79,17 +79,23 @@
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="PageActions">
     <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
     </asp:ContentPlaceHolder>
-    
+
     <ul class="dropdown-menu">
         <asp:ContentPlaceHolder ID="AdditionalActions" runat="server"></asp:ContentPlaceHolder>
-        <li><asp:LinkButton ID="btnMulticast" runat="server" OnClick="btnMulticast_Click"  Text="Multicast Group"></asp:LinkButton></li>
-        <li><asp:LinkButton ID="btnUnicast" runat="server" OnClick="btnUnicast_Click"  Text="Unicast Group"></asp:LinkButton></li>
-        <li><asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click"  Text="Delete Group"></asp:LinkButton></li>
+        <li>
+            <asp:LinkButton ID="btnMulticast" runat="server" OnClick="btnMulticast_Click" Text="Multicast Group"></asp:LinkButton>
+        </li>
+        <li>
+            <asp:LinkButton ID="btnUnicast" runat="server" OnClick="btnUnicast_Click" Text="Unicast Group"></asp:LinkButton>
+        </li>
+        <li>
+            <asp:LinkButton ID="btnDelete" runat="server" OnClick="btnDelete_Click" Text="Delete Group"></asp:LinkButton>
+        </li>
         <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
 
 
-    <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
-        </ul>
+        <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
+    </ul>
 
 </asp:Content>
 
@@ -111,12 +117,12 @@
             <asp:GridView ID="gvConfirm" runat="server" CssClass="Gridview gv-confirm" AutoGenerateColumns="false">
                 <Columns>
                     <asp:BoundField DataField="Name" HeaderText="Name" ItemStyle-CssClass="width_200"/>
-                      <asp:TemplateField ItemStyle-CssClass="width_200" HeaderText="Image">
-                <ItemTemplate>
-                    <asp:Label ID="lblImage" runat="server" Text='<%# Bind("Image.Name") %>'/>
-                </ItemTemplate>
-            </asp:TemplateField>
-                  
+                    <asp:TemplateField ItemStyle-CssClass="width_200" HeaderText="Image">
+                        <ItemTemplate>
+                            <asp:Label ID="lblImage" runat="server" Text='<%# Bind("Image.Name") %>'/>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+
                 </Columns>
             </asp:GridView>
             <div class="confirm-box-btns">

@@ -4,10 +4,9 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class GroupMunkiController:ApiController
+    public class GroupMunkiController : ApiController
     {
         private readonly GroupMunkiServices _groupMunkiServices;
 
@@ -19,9 +18,7 @@ namespace CloneDeploy_App.Controllers
         [CustomAuth(Permission = "GroupSearch")]
         public ActionResultDTO Post(GroupMunkiEntity groupMunki)
         {
-            return  _groupMunkiServices.AddMunkiTemplates(groupMunki);
+            return _groupMunkiServices.AddMunkiTemplates(groupMunki);
         }
-
-    
     }
 }

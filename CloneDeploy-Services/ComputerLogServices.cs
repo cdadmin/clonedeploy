@@ -31,7 +31,7 @@ namespace CloneDeploy_Services
         {
             var computerLog = GetComputerLog(computerLogId);
             if (computerLog == null)
-                return new ActionResultDTO() {ErrorMessage = "Computer Log Not Found", Id = 0};
+                return new ActionResultDTO {ErrorMessage = "Computer Log Not Found", Id = 0};
 
 
             var actionResult = new ActionResultDTO();
@@ -44,23 +44,18 @@ namespace CloneDeploy_Services
             return actionResult;
         }
 
-        public  ComputerLogEntity GetComputerLog(int computerLogId)
+        public ComputerLogEntity GetComputerLog(int computerLogId)
         {
-            
-                return _uow.ComputerLogRepository.GetById(computerLogId);
-            
+            return _uow.ComputerLogRepository.GetById(computerLogId);
         }
 
 
-       
-
-        public  List<ComputerLogEntity> SearchOnDemand(int limit)
+        public List<ComputerLogEntity> SearchOnDemand(int limit)
         {
-           
-                return _uow.ComputerLogRepository.Get(x => x.ComputerId == -1, orderBy: (q => q.OrderByDescending(x => x.LogTime))).Take(limit).ToList();
-            
+            return
+                _uow.ComputerLogRepository.Get(x => x.ComputerId == -1, q => q.OrderByDescending(x => x.LogTime))
+                    .Take(limit)
+                    .ToList();
         }
-
-      
     }
 }

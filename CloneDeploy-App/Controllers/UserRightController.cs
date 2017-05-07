@@ -5,10 +5,9 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class UserRightController: ApiController
+    public class UserRightController : ApiController
     {
         private readonly UserRightServices _userRightServices;
 
@@ -22,7 +21,5 @@ namespace CloneDeploy_App.Controllers
         {
             return _userRightServices.AddUserRights(listOfRights);
         }
-
-        
     }
 }

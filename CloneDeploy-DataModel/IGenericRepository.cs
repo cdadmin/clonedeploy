@@ -7,7 +7,14 @@ namespace CloneDeploy_DataModel
 {
     public interface IGenericRepository<TEntity>
     {
+        string Count(Expression<Func<TEntity, bool>> filter = null);
+
+        void Delete(object id);
+
+        void DeleteRange(Expression<Func<TEntity, bool>> filter = null);
         void ExecuteRawSql(string query, params object[] parameters);
+
+        bool Exists(Expression<Func<TEntity, bool>> filter = null);
 
         List<TEntity> Get(
             Expression<Func<TEntity, bool>> filter = null,
@@ -21,16 +28,8 @@ namespace CloneDeploy_DataModel
         TEntity GetFirstOrDefault(Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null);
 
-        string Count(Expression<Func<TEntity, bool>> filter = null);
-
-        bool Exists(Expression<Func<TEntity, bool>> filter = null);
-
         void Insert(TEntity entity);
 
         void Update(TEntity entity, object id);
-
-        void Delete(object id);
-
-        void DeleteRange(Expression<Func<TEntity, bool>> filter = null);
     }
 }

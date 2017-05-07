@@ -5,34 +5,12 @@ using CloneDeploy_Web.BasePages;
 
 public partial class views_tasks_activemulticast : Tasks
 {
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        if (IsPostBack) return;
-        ViewState["clickTracker"] = "1";
-        PopulateGrid();
-             
-    }
-
-    private void PopulateGrid()
-    {
-        gvMcTasks.DataSource = Call.ActiveMulticastSessionApi.GetAll(Int32.MaxValue,"");
-        gvMcTasks.DataBind();
-        lblTotal.Text = Call.ActiveMulticastSessionApi.GetCount() + " Total Multicast(s)";
-        GetMcInfo();
-    }
-
-    protected void TimerMC_Tick(object sender, EventArgs e)
-    {
-        PopulateGrid();
-    }
-
     protected void btnCancelMc_Click(object sender, EventArgs e)
     {
-
         var control = sender as Control;
         if (control != null)
         {
-            var gvRow = (GridViewRow)control.Parent.Parent;
+            var gvRow = (GridViewRow) control.Parent.Parent;
             var dataKey = gvMcTasks.DataKeys[gvRow.RowIndex];
             if (dataKey != null)
             {
@@ -45,14 +23,14 @@ public partial class views_tasks_activemulticast : Tasks
     protected void btnMembers_Click(object sender, EventArgs e)
     {
         int cTracker = Convert.ToInt16(ViewState["clickTracker"]);
-        TimerMC.Enabled = cTracker % 2 == 0;
+        TimerMC.Enabled = cTracker%2 == 0;
         ViewState["clickTracker"] = cTracker + 1;
 
         var control = sender as Control;
         if (control != null)
         {
-            var gvRow = (GridViewRow)control.Parent.Parent;
-            var gv = (GridView)gvRow.FindControl("gvMembers");
+            var gvRow = (GridViewRow) control.Parent.Parent;
+            var gv = (GridView) gvRow.FindControl("gvMembers");
 
             if (gv.Visible == false)
             {
@@ -67,7 +45,6 @@ public partial class views_tasks_activemulticast : Tasks
                     gv.DataSource = table;
                     gv.DataBind();
                 }
-
             }
             else
             {
@@ -110,5 +87,25 @@ public partial class views_tasks_activemulticast : Tasks
                 // ignored
             }
         }
+    }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (IsPostBack) return;
+        ViewState["clickTracker"] = "1";
+        PopulateGrid();
+    }
+
+    private void PopulateGrid()
+    {
+        gvMcTasks.DataSource = Call.ActiveMulticastSessionApi.GetAll(int.MaxValue, "");
+        gvMcTasks.DataBind();
+        lblTotal.Text = Call.ActiveMulticastSessionApi.GetCount() + " Total Multicast(s)";
+        GetMcInfo();
+    }
+
+    protected void TimerMC_Tick(object sender, EventArgs e)
+    {
+        PopulateGrid();
     }
 }

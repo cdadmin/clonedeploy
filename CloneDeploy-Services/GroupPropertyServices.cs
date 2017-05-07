@@ -16,7 +16,6 @@ namespace CloneDeploy_Services
 
         public ActionResultDTO AddGroupProperty(GroupPropertyEntity groupProperty)
         {
-
             _uow.GroupPropertyRepository.Insert(groupProperty);
             _uow.Save();
             var actionResult = new ActionResultDTO();
@@ -28,22 +27,7 @@ namespace CloneDeploy_Services
             return actionResult;
         }
 
-       
-
-        public ActionResultDTO UpdateGroupProperty(GroupPropertyEntity groupProperty)
-        {
-
-            _uow.GroupPropertyRepository.Update(groupProperty, groupProperty.Id);
-            _uow.Save();
-            var actionResult = new ActionResultDTO();
-            actionResult.Success = true;
-            actionResult.Id = groupProperty.Id;
-            UpdateComputerProperties(groupProperty);
-            return actionResult;
-            
-        }
-
-        public  void UpdateComputerProperties(GroupPropertyEntity groupProperty)
+        public void UpdateComputerProperties(GroupPropertyEntity groupProperty)
         {
             if (groupProperty == null) return;
             foreach (var computer in new GroupServices().GetGroupMembersWithImages(groupProperty.GroupId))
@@ -77,7 +61,8 @@ namespace CloneDeploy_Services
 
                 var computerServices = new ComputerServices();
                 computerServices.UpdateComputer(computer);
-                if (Convert.ToBoolean(groupProperty.TftpServerEnabled) || Convert.ToBoolean(groupProperty.BootFileEnabled))
+                if (Convert.ToBoolean(groupProperty.TftpServerEnabled) ||
+                    Convert.ToBoolean(groupProperty.BootFileEnabled))
                 {
                     var proxyServices = new ComputerProxyReservationServices();
                     var computerProxy = computerServices.GetComputerProxyReservation(computer.Id);
@@ -90,9 +75,16 @@ namespace CloneDeploy_Services
             }
         }
 
-      
-       
 
-      
+        public ActionResultDTO UpdateGroupProperty(GroupPropertyEntity groupProperty)
+        {
+            _uow.GroupPropertyRepository.Update(groupProperty, groupProperty.Id);
+            _uow.Save();
+            var actionResult = new ActionResultDTO();
+            actionResult.Success = true;
+            actionResult.Id = groupProperty.Id;
+            UpdateComputerProperties(groupProperty);
+            return actionResult;
+        }
     }
 }

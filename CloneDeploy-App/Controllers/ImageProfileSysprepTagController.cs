@@ -4,10 +4,9 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class ImageProfileSysprepTagController: ApiController
+    public class ImageProfileSysprepTagController : ApiController
     {
         private readonly ImageProfileSysprepTagServices _imageProfileSysprepTagServices;
 
@@ -15,18 +14,12 @@ namespace CloneDeploy_App.Controllers
         {
             _imageProfileSysprepTagServices = new ImageProfileSysprepTagServices();
         }
-       
+
 
         [CustomAuth(Permission = "ProfileSearch")]
         public ActionResultDTO Post(ImageProfileSysprepTagEntity imageProfileFileFolder)
         {
-
             return _imageProfileSysprepTagServices.AddImageProfileSysprepTag(imageProfileFileFolder);
-
         }
-
-       
-
-       
     }
 }

@@ -4,10 +4,9 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class ImageProfileFileFolderController: ApiController
+    public class ImageProfileFileFolderController : ApiController
     {
         private readonly ImageProfileFileFolderService _imageProfileFileFolderService;
 
@@ -21,8 +20,5 @@ namespace CloneDeploy_App.Controllers
         {
             return _imageProfileFileFolderService.AddImageProfileFileFolder(imageProfileFileFolder);
         }
-
-       
-       
     }
 }

@@ -1,39 +1,41 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/sysprep/sysprep.master" AutoEventWireup="true" Inherits="views_global_sysprep_search" Codebehind="search.aspx.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
-      <li>Search</li>
+    <li>Search</li>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="SubHelp" Runat="Server">
-     <li role="separator" class="divider"></li>
-    <li><a href="<%= ResolveUrl("~/views/help/global-sysprep.aspx") %>"   target="_blank">Help</a></li>
+    <li role="separator" class="divider"></li>
+    <li>
+        <a href="<%= ResolveUrl("~/views/help/global-sysprep.aspx") %>" target="_blank">Help</a>
+    </li>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
-      <a class="confirm btn btn-default" href="#">Delete Selected Tags</a>
-     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span class="caret"></span>
-  </button>
+    <a class="confirm btn btn-default" href="#">Delete Selected Tags</a>
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+    </button>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
-     <script type="text/javascript">
+    <script type="text/javascript">
         $(document).ready(function() {
             $('#search').addClass("nav-current");
-            $("[id*=gvSysprepTags] td").hover(function () {
+            $("[id*=gvSysprepTags] td").hover(function() {
                 $("td", $(this).closest("tr")).addClass("hover_row");
-            }, function () {
+            }, function() {
                 $("td", $(this).closest("tr")).removeClass("hover_row");
             });
         });
     </script>
-     <p class="total">
+    <p class="total">
         <asp:Label ID="lblTotal" runat="server"></asp:Label>
     </p>
     <div class="size-7 column">
         <asp:TextBox ID="txtSearch" runat="server" CssClass="searchbox" OnTextChanged="search_Changed"></asp:TextBox>
     </div>
     <br class="clear"/>
-   
+
     <asp:GridView ID="gvSysprepTags" runat="server" AllowSorting="True" DataKeyNames="Id" OnSorting="gridView_Sorting" AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
         <Columns>
             <asp:TemplateField>
@@ -50,16 +52,15 @@
             <asp:BoundField DataField="Id" HeaderText="computerID" SortExpression="computerID" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"></asp:BoundField>
             <asp:BoundField DataField="OpeningTag" HeaderText="Tag" SortExpression="OpeningTag" ItemStyle-CssClass="mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
-          
-         
-            
+
+
         </Columns>
         <EmptyDataTemplate>
             No Sysprep Tags Found
         </EmptyDataTemplate>
     </asp:GridView>
-   
-     <div id="confirmbox" class="confirm-box-outer">
+
+    <div id="confirmbox" class="confirm-box-outer">
         <div class="confirm-box-inner">
             <h4>
                 <asp:Label ID="lblTitle" runat="server" Text="Delete The Selected Sysprep Tags?"></asp:Label>
@@ -70,4 +71,4 @@
             </div>
         </div>
     </div>
-    </asp:Content>
+</asp:Content>

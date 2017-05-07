@@ -12,11 +12,11 @@ namespace CloneDeploy_Web.Helpers
     {
         public static string Between(string parameter)
         {
-            if (String.IsNullOrEmpty(parameter)) return parameter;
-            int start = parameter.IndexOf("[", StringComparison.Ordinal);
-            int to = parameter.IndexOf("]", start + "[".Length, StringComparison.Ordinal);
+            if (string.IsNullOrEmpty(parameter)) return parameter;
+            var start = parameter.IndexOf("[", StringComparison.Ordinal);
+            var to = parameter.IndexOf("]", start + "[".Length, StringComparison.Ordinal);
             if (start < 0 || to < 0) return parameter;
-            string s = parameter.Substring(
+            var s = parameter.Substring(
                 start + "[".Length,
                 to - start - "[".Length);
             if (s == "server-ip")
@@ -26,22 +26,12 @@ namespace CloneDeploy_Web.Helpers
             return s;
         }
 
-        public static string EscapeFilePaths(string path)
-        {
-            return path != null ? path.Replace(@"\", @"\\") : String.Empty;
-        }
-
-        public static string GenerateKey()
-        {
-            return Guid.NewGuid().ToString();
-        }
-
         public static string CreatePasswordHash(string pwd, string salt)
         {
-            var saltAndPwd = String.Concat(pwd, salt);
+            var saltAndPwd = string.Concat(pwd, salt);
             HashAlgorithm hash = new SHA256Managed();
-            byte[] plainTextBytes = Encoding.UTF8.GetBytes(saltAndPwd);
-            byte[] hashBytes = hash.ComputeHash(plainTextBytes);
+            var plainTextBytes = Encoding.UTF8.GetBytes(saltAndPwd);
+            var hashBytes = hash.ComputeHash(plainTextBytes);
             return Convert.ToBase64String(hashBytes);
         }
 
@@ -53,17 +43,14 @@ namespace CloneDeploy_Web.Helpers
             return Convert.ToBase64String(buff);
         }
 
-        public static string SizeSuffix(Int64 value)
+        public static string EscapeFilePaths(string path)
         {
-            string[] SizeSuffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+            return path != null ? path.Replace(@"\", @"\\") : string.Empty;
+        }
 
-            if (value < 0) { return "-" + SizeSuffix(-value); }
-            if (value == 0) { return "0.0 bytes"; }
-
-            int mag = (int)Math.Log(value, 1024);
-            decimal adjustedSize = (decimal)value / (1L << (mag * 10));
-
-            return string.Format("{0:n1} {1}", adjustedSize, SizeSuffixes[mag]);
+        public static string GenerateKey()
+        {
+            return Guid.NewGuid().ToString();
         }
 
         public static List<string> GetFeLogs()
@@ -84,6 +71,25 @@ namespace CloneDeploy_Web.Helpers
             var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
                           Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar + name;
             return File.ReadLines(logPath).Reverse().Take(limit).Reverse().ToList();
+        }
+
+        public static string SizeSuffix(long value)
+        {
+            string[] SizeSuffixes = {"bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
+
+            if (value < 0)
+            {
+                return "-" + SizeSuffix(-value);
+            }
+            if (value == 0)
+            {
+                return "0.0 bytes";
+            }
+
+            var mag = (int) Math.Log(value, 1024);
+            var adjustedSize = (decimal) value/(1L << (mag*10));
+
+            return string.Format("{0:n1} {1}", adjustedSize, SizeSuffixes[mag]);
         }
     }
 }

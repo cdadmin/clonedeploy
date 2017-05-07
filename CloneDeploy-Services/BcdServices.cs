@@ -26,7 +26,7 @@ namespace CloneDeploy_Services
             for (var i = 0; i < charOffsetHex.Count; i++)
             {
                 if (i%2 != 0) continue;
-                if ((i + 1) < charOffsetHex.Count)
+                if (i + 1 < charOffsetHex.Count)
                 {
                     output.Append(charOffsetHex[i + 1]);
                 }
@@ -56,12 +56,13 @@ namespace CloneDeploy_Services
                     regfile.RegValues[@".\Objects\{" + guid + @"}\Elements\11000001"]["Element"]
                         .Value;
                 var regBinarySplit = regBinary.Split(',');
-                var originalOffsetHex = regBinarySplit[32] + "," + regBinarySplit[33] + "," + regBinarySplit[34] + "," + regBinarySplit[35] + "," +
-                               regBinarySplit[36] + "," + regBinarySplit[37] + "," + regBinarySplit[38] + "," + regBinarySplit[39];
+                var originalOffsetHex = regBinarySplit[32] + "," + regBinarySplit[33] + "," + regBinarySplit[34] + "," +
+                                        regBinarySplit[35] + "," +
+                                        regBinarySplit[36] + "," + regBinarySplit[37] + "," + regBinarySplit[38] + "," +
+                                        regBinarySplit[39];
 
                 var regex = new Regex(originalOffsetHex, RegexOptions.IgnoreCase);
                 bcd = regex.Replace(bcd, newOffsetHex);
-
             }
 
 

@@ -1,29 +1,33 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/groups/groups.master" AutoEventWireup="true" Inherits="views_groups_smartcriteria" Codebehind="smartcriteria.aspx.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
-      <li><a href="<%= ResolveUrl("~/views/groups/edit.aspx") %>?groupid=<%= Group.Id %>" ><%= Group.Name %></a></li>
+    <li>
+        <a href="<%= ResolveUrl("~/views/groups/edit.aspx") %>?groupid=<%= Group.Id %>"><%= Group.Name %></a>
+    </li>
     <li>Smart Criteria</li>
 </asp:Content>
 
-    <asp:Content runat="server" ContentPlaceHolderID="Help">
-         <li role="separator" class="divider"></li>
-     <li><a href="<%= ResolveUrl("~/views/help/groups-smart.aspx")%>" target="_blank">Help</a></li>
+<asp:Content runat="server" ContentPlaceHolderID="Help">
+    <li role="separator" class="divider"></li>
+    <li>
+        <a href="<%= ResolveUrl("~/views/help/groups-smart.aspx") %>" target="_blank">Help</a>
+    </li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-   <asp:LinkButton ID="btnUpdate" runat="server" Text="Update Criteria" OnClick="btnUpdate_OnClick" CssClass="btn btn-default" />
-       <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span class="caret"></span>
-  </button>
+    <asp:LinkButton ID="btnUpdate" runat="server" Text="Update Criteria" OnClick="btnUpdate_OnClick" CssClass="btn btn-default"/>
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+    </button>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent" Runat="Server">
-      <script type="text/javascript">
+    <script type="text/javascript">
         $(document).ready(function() {
             $('.smart').addClass("nav-current");
         });
     </script>
 
-      <div class="size-4 column">
+    <div class="size-4 column">
         Where Computer Name Contains:
     </div>
     <div class="size-5 column">
@@ -33,7 +37,7 @@
         <asp:LinkButton ID="btnTestQuery" runat="server" Text="Test Query" OnClick="btnTestQuery_OnClick" CssClass="generic-btn"/>
     </div>
     <br class="clear"/>
-        
+
     <p class="total">
         <asp:Label ID="lblTotal" runat="server"></asp:Label>
     </p>
@@ -47,6 +51,5 @@
             No Computers Found
         </EmptyDataTemplate>
     </asp:GridView>
-   
-</asp:Content>
 
+</asp:Content>

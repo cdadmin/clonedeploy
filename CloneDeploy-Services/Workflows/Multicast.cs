@@ -9,14 +9,14 @@ namespace CloneDeploy_Services.Workflows
 {
     public class Multicast
     {
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
         private readonly string _clientCount;
+        private readonly GroupEntity _group;
         private readonly bool _isOnDemand;
         private readonly ActiveMulticastSessionEntity _multicastSession;
-        private List<ComputerEntity> _computers;
-        private readonly GroupEntity _group;
-        private ImageProfileWithImage _imageProfile;
         private readonly int _userId;
+        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private List<ComputerEntity> _computers;
+        private ImageProfileWithImage _imageProfile;
         private int _multicastServerId;
 
         //Constructor For Starting Multicast For Group
@@ -27,7 +27,6 @@ namespace CloneDeploy_Services.Workflows
             _isOnDemand = false;
             _group = new GroupServices().GetGroup(groupId);
             _userId = userId;
-
         }
 
         //Constructor For Starting Multicast For On Demand
@@ -37,7 +36,7 @@ namespace CloneDeploy_Services.Workflows
             _isOnDemand = true;
             _imageProfile = new ImageProfileServices().ReadProfile(imageProfileId);
             _clientCount = clientCount;
-            _group = new GroupEntity { ImageProfileId = _imageProfile.Id };
+            _group = new GroupEntity {ImageProfileId = _imageProfile.Id};
             _userId = userId;
             _multicastSession.ImageProfileId = _imageProfile.Id;
         }
@@ -49,7 +48,7 @@ namespace CloneDeploy_Services.Workflows
 
             if (_imageProfile.Image == null) return "The Image Does Not Exist";
 
-            var validation = new ImageServices().CheckApprovalAndChecksum(_imageProfile.Image,_userId);
+            var validation = new ImageServices().CheckApprovalAndChecksum(_imageProfile.Image, _userId);
             if (!validation.Success) return validation.ErrorMessage;
 
             _multicastSession.Port = new PortServices().GetNextPort();
@@ -59,24 +58,23 @@ namespace CloneDeploy_Services.Workflows
             }
 
             _multicastServerId = _isOnDemand
-                ? new Workflows.GetMulticastServer().Run()
-                : new Workflows.GetMulticastServer(_group).Run();
+                ? new GetMulticastServer().Run()
+                : new GetMulticastServer(_group).Run();
 
             if (_multicastServerId == -2)
                 return "Could Not Find Any Available Multicast Servers";
 
-      
+
             _multicastSession.UserId = _userId;
             //End of the road for starting an on demand multicast
             if (_isOnDemand)
             {
                 _multicastSession.Name = _group.Name;
-                _group.Name =_multicastSession.Port.ToString();
+                _group.Name = _multicastSession.Port.ToString();
                 var onDemandprocessArguments = GenerateProcessArguments();
                 if (onDemandprocessArguments == 0)
                     return "Could Not Start The Multicast Application";
-                else
-                    return "Successfully Started Multicast " + _group.Name;
+                return "Successfully Started Multicast " + _group.Name;
             }
 
             //Continue On If multicast is for a group
@@ -117,7 +115,7 @@ namespace CloneDeploy_Services.Workflows
                 activeMulticastSessionServices.Delete(_multicastSession.Id);
                 return "Could Not Start The Multicast Application";
             }
-            
+
             foreach (var computer in _computers)
                 Utility.WakeUp(computer.Mac);
 
@@ -139,7 +137,6 @@ namespace CloneDeploy_Services.Workflows
                     Direction = "push",
                     MulticastId = _multicastSession.Id,
                     UserId = _userId
-                    
                 };
 
                 if (activeImagingTaskServices.AddActiveImagingTask(activeTask))
@@ -209,14 +206,14 @@ namespace CloneDeploy_Services.Workflows
 
             var pid = 0;
             if (_multicastServerId == -1)
-                pid = new Workflows.MulticastArguments().GenerateProcessArguments(multicastArgs);
+                pid = new MulticastArguments().GenerateProcessArguments(multicastArgs);
             else
             {
                 var secondaryServer =
-                                    new SecondaryServerServices().GetSecondaryServer(_multicastServerId);
+                    new SecondaryServerServices().GetSecondaryServer(_multicastServerId);
                 pid =
                     new APICall(new SecondaryServerServices().GetApiToken(secondaryServer.Name))
-                        .ServiceAccountApi.GetMulticastSenderArgs(multicastArgs);             
+                        .ServiceAccountApi.GetMulticastSenderArgs(multicastArgs);
             }
 
             if (pid == 0) return pid;
@@ -236,9 +233,5 @@ namespace CloneDeploy_Services.Workflows
 
             return pid;
         }
-
-        
-
-      
     }
 }

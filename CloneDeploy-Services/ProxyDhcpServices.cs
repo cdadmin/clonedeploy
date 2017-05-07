@@ -1,23 +1,83 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
 using CloneDeploy_ApiCalls;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.ClientImaging;
 using CloneDeploy_Services.Helpers;
-using log4net;
-
 
 namespace CloneDeploy_Services
 {
     public class ProxyDhcpServices
     {
+        public TftpServerDTO GetAllTftpServers()
+        {
+            var tftpDto = new TftpServerDTO();
+            tftpDto.TftpServers = new List<string>();
+            if (Settings.OperationMode == "Single")
+                tftpDto.TftpServers.Add(Utility.Between(Settings.TftpServerIp));
+            else
+            {
+                if (Settings.TftpServerRole)
+                    tftpDto.TftpServers.Add(Utility.Between(Settings.TftpServerIp));
+                var tftpServers = new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
+                foreach (var tftpServer in tftpServers)
+                {
+                    var tServer =
+                        new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name)).ServiceAccountApi
+                            .GetTftpServer();
+                    if (tServer != null)
+                        tftpDto.TftpServers.Add(tServer);
+                }
+            }
+
+            return tftpDto;
+        }
+
+        public TftpServerDTO GetComputerTftpServers(string mac)
+        {
+            var tftpDto = new TftpServerDTO();
+            tftpDto.TftpServers = new List<string>();
+            if (Settings.OperationMode == "Single")
+                tftpDto.TftpServers.Add(Utility.Between(Settings.TftpServerIp));
+
+            else
+            {
+                var clusterServices = new ClusterGroupServices();
+                var secondaryServerServices = new SecondaryServerServices();
+                List<ClusterGroupServerEntity> clusterServers;
+                var computer = new ComputerServices().GetComputerFromMac(mac);
+                if (computer == null)
+                {
+                    var cg = new ClusterGroupServices().GetDefaultClusterGroup();
+                    clusterServers = clusterServices.GetClusterServers(cg.Id);
+                }
+                else
+                {
+                    var cg = new ComputerServices().GetClusterGroup(computer.Id);
+                    clusterServers = clusterServices.GetClusterServers(cg.Id);
+                }
+
+                foreach (var tftpServer in clusterServers.Where(x => x.TftpRole == 1))
+                {
+                    if (tftpServer.SecondaryServerId == -1)
+                        tftpDto.TftpServers.Add(Utility.Between(Settings.TftpServerIp));
+                    else
+                    {
+                        var serverIdentifier =
+                            secondaryServerServices.GetSecondaryServer(tftpServer.SecondaryServerId).Name;
+                        var tServer =
+                            new APICall(new SecondaryServerServices().GetApiToken(serverIdentifier)).ServiceAccountApi
+                                .GetTftpServer();
+                        if (tServer != null)
+                            tftpDto.TftpServers.Add(tServer);
+                    }
+                }
+            }
+
+            return tftpDto;
+        }
+
         public ProxyReservationDTO GetProxyReservation(string mac)
         {
             var bootClientReservation = new ProxyReservationDTO();
@@ -36,14 +96,13 @@ namespace CloneDeploy_Services
 
             var computerReservation = new ComputerServices().GetComputerProxyReservation(computer.Id);
 
-          
+
             if (!string.IsNullOrEmpty(computerReservation.NextServer))
             {
-                bootClientReservation.NextServer = Helpers.Utility.Between(computerReservation.NextServer);
+                bootClientReservation.NextServer = Utility.Between(computerReservation.NextServer);
             }
-           
-            
-            
+
+
             switch (computerReservation.BootFile)
             {
                 case "bios_pxelinux":
@@ -87,78 +146,5 @@ namespace CloneDeploy_Services
 
             return bootClientReservation;
         }
-
-        public TftpServerDTO GetAllTftpServers()
-        {
-
-            var tftpDto = new TftpServerDTO();
-            tftpDto.TftpServers = new List<string>();
-            if (Settings.OperationMode == "Single")
-                tftpDto.TftpServers.Add(Utility.Between(Settings.TftpServerIp));
-            else
-            {
-                if (Settings.TftpServerRole)
-                    tftpDto.TftpServers.Add(Utility.Between(Settings.TftpServerIp));
-                var tftpServers = new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
-                foreach (var tftpServer in tftpServers)
-                {
-                    var tServer =
-                        new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name)).ServiceAccountApi
-                            .GetTftpServer();
-                    if (tServer != null)
-                        tftpDto.TftpServers.Add(tServer);
-                }
-
-            }
-
-            return tftpDto;
-
-        }
-
-        public TftpServerDTO GetComputerTftpServers(string mac)
-        {
-            var tftpDto = new TftpServerDTO();
-            tftpDto.TftpServers = new List<string>();
-            if (Settings.OperationMode == "Single")
-                tftpDto.TftpServers.Add(Utility.Between(Settings.TftpServerIp));
-
-            else
-            {
-                var clusterServices = new ClusterGroupServices();
-                var secondaryServerServices = new SecondaryServerServices();
-                List<ClusterGroupServerEntity> clusterServers;
-                var computer = new ComputerServices().GetComputerFromMac(mac);
-                if (computer == null)
-                {
-                    var cg = new ClusterGroupServices().GetDefaultClusterGroup();
-                    clusterServers = clusterServices.GetClusterServers(cg.Id);
-                }
-                else
-                {
-                    var cg = new ComputerServices().GetClusterGroup(computer.Id);
-                    clusterServers = clusterServices.GetClusterServers(cg.Id);
-                }
-
-                foreach (var tftpServer in clusterServers.Where(x => x.TftpRole == 1))
-                {
-                    if (tftpServer.SecondaryServerId == -1)
-                        tftpDto.TftpServers.Add(Utility.Between(Settings.TftpServerIp));
-                    else
-                    {
-                        var serverIdentifier = secondaryServerServices.GetSecondaryServer(tftpServer.SecondaryServerId).Name;
-                        var tServer = new APICall(new SecondaryServerServices().GetApiToken(serverIdentifier)).ServiceAccountApi
-                                .GetTftpServer();
-                        if (tServer != null)
-                            tftpDto.TftpServers.Add(tServer);
-                    }
-                }
-
-            }
-
-            return tftpDto;
-
-
-        }
     }
-
 }

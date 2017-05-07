@@ -4,12 +4,12 @@ using CloneDeploy_Web.BasePages;
 
 public partial class views_users_groupacls_groupacls : MasterBaseMaster
 {
-    private Users userBasePage { get; set; }
     public CloneDeployUserGroupEntity CloneDeployUserGroup { get; set; }
+    private Users userBasePage { get; set; }
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        userBasePage = (Page as Users);
+        userBasePage = Page as Users;
         CloneDeployUserGroup = userBasePage.CloneDeployUserGroup;
 
         if (CloneDeployUserGroup == null) Response.Redirect("~/", true);

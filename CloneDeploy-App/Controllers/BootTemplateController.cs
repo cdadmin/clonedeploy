@@ -7,32 +7,24 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class BootTemplateController: ApiController
+    public class BootTemplateController : ApiController
     {
-         private readonly BootTemplateServices _bootTemplateServices;
+        private readonly BootTemplateServices _bootTemplateServices;
 
         public BootTemplateController()
         {
             _bootTemplateServices = new BootTemplateServices();
         }
 
-        [CustomAuth(Permission = "GlobalRead")]
-        public IEnumerable<BootTemplateEntity> GetAll(string searchstring = "")
+        [CustomAuth(Permission = "GlobalDelete")]
+        public ActionResultDTO Delete(int id)
         {
-            return string.IsNullOrEmpty(searchstring)
-                ? _bootTemplateServices.SearchBootTemplates()
-                : _bootTemplateServices.SearchBootTemplates(searchstring);
-
-        }
-
-        [CustomAuth(Permission = "GlobalRead")]
-        public ApiStringResponseDTO GetCount()
-        {
-            return new ApiStringResponseDTO() {Value = _bootTemplateServices.TotalCount()};
-
+            var result = _bootTemplateServices.DeleteBootTemplate(id);
+            if (result.Id == 0)
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound, result));
+            return result;
         }
 
         [CustomAuth(Permission = "GlobalRead")]
@@ -43,11 +35,24 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
+        [CustomAuth(Permission = "GlobalRead")]
+        public IEnumerable<BootTemplateEntity> GetAll(string searchstring = "")
+        {
+            return string.IsNullOrEmpty(searchstring)
+                ? _bootTemplateServices.SearchBootTemplates()
+                : _bootTemplateServices.SearchBootTemplates(searchstring);
+        }
+
+        [CustomAuth(Permission = "GlobalRead")]
+        public ApiStringResponseDTO GetCount()
+        {
+            return new ApiStringResponseDTO {Value = _bootTemplateServices.TotalCount()};
+        }
+
         [CustomAuth(Permission = "GlobalCreate")]
         public ActionResultDTO Post(BootTemplateEntity bootTemplate)
         {
-            return  _bootTemplateServices.AddBootTemplate(bootTemplate);
-          
+            return _bootTemplateServices.AddBootTemplate(bootTemplate);
         }
 
         [CustomAuth(Permission = "GlobalUpdate")]
@@ -55,15 +60,8 @@ namespace CloneDeploy_App.Controllers
         {
             bootTemplate.Id = id;
             var result = _bootTemplateServices.UpdateBootTemplate(bootTemplate);
-            if (result.Id == 0) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound, result));
-            return result;
-        }
-
-        [CustomAuth(Permission = "GlobalDelete")]
-        public ActionResultDTO Delete(int id)
-        {
-            var result = _bootTemplateServices.DeleteBootTemplate(id);
-            if (result.Id == 0) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound, result));
+            if (result.Id == 0)
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound, result));
             return result;
         }
     }

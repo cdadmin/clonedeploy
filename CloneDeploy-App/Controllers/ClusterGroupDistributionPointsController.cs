@@ -5,10 +5,9 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class ClusterGroupDistributionPointsController: ApiController
+    public class ClusterGroupDistributionPointsController : ApiController
     {
         private readonly ClusterGroupDistributionPointServices _clusterGroupDistributionPointsServices;
 
@@ -22,7 +21,5 @@ namespace CloneDeploy_App.Controllers
         {
             return _clusterGroupDistributionPointsServices.AddClusterGroupDistributionPoints(listOfDps);
         }
-
-        
     }
 }

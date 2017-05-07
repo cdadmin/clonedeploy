@@ -24,16 +24,12 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "GroupSearch")]
-        public ActionResultDTO Put(int id,GroupPropertyEntity groupProperty)
+        public ActionResultDTO Put(int id, GroupPropertyEntity groupProperty)
         {
             groupProperty.Id = id;
             var result = _groupPropertyServices.UpdateGroupProperty(groupProperty);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
         }
-
-       
-
-       
     }
 }

@@ -13,21 +13,14 @@ namespace CloneDeploy_Services
             _uow = new UnitOfWork();
         }
 
-        public  ActionResultDTO AddImageProfileScript(ImageProfileScriptEntity imageProfileScript)
+        public ActionResultDTO AddImageProfileScript(ImageProfileScriptEntity imageProfileScript)
         {
-           
-                _uow.ImageProfileScriptRepository.Insert(imageProfileScript);
-                _uow.Save();
-                var actionResult = new ActionResultDTO();
+            _uow.ImageProfileScriptRepository.Insert(imageProfileScript);
+            _uow.Save();
+            var actionResult = new ActionResultDTO();
             actionResult.Success = true;
             actionResult.Id = imageProfileScript.Id;
             return actionResult;
-            
-
         }
-
-       
-
-       
     }
 }

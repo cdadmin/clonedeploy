@@ -1,7 +1,7 @@
-ace.define("ace/snippets/abc",["require","exports","module"], function(require, exports, module) {
-"use strict";
+ace.define("ace/snippets/abc", ["require", "exports", "module"], function(require, exports, module) {
+    "use strict";
 
-exports.snippetText = "\n\
+    exports.snippetText = "\n\
 snippet zupfnoter.print\n\
 	%%%%hn.print {\"startpos\": ${1:pos_y}, \"t\":\"${2:title}\", \"v\":[${3:voices}], \"s\":[[${4:syncvoices}1,2]], \"f\":[${5:flowlines}],  \"sf\":[${6:subflowlines}], \"j\":[${7:jumplines}]}\n\
 \n\
@@ -33,6 +33,6 @@ snippet zupfnoter.annotation\n\
 \n\
 \n\
 ";
-exports.scope = "abc";
+    exports.scope = "abc";
 
 });

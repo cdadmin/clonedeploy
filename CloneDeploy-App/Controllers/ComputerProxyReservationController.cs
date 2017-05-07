@@ -6,7 +6,6 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
     public class ComputerProxyReservationController : ApiController
@@ -21,7 +20,6 @@ namespace CloneDeploy_App.Controllers
         [CustomAuth(Permission = "ComputerSearch")]
         public ActionResultDTO Post(ComputerProxyReservationEntity computerProxyReservation)
         {
-        
             var result = _computerProxyReservationServices.UpdateComputerProxyReservation(computerProxyReservation);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;

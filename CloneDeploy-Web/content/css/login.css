@@ -1,22 +1,106 @@
-﻿@font-face{font-family:opensans;src:url(../fonts/OpenSans-Light.ttf) format("truetype");font-weight:400;font-style:normal;}
-body{background:#fff;font-size:14px;font-family:opensans, "Calibri Light", "Helvetica Neue", Helvetica, Arial;color:#666;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;text-align:center;margin:0;}
-.loginwrapper{background:#fff;width:600px;height:450px;padding-top:50px;-webkit-border-radius:5px;-moz-border-radius:5px;-ms-border-radius:5px;-o-border-radius:5px;border-radius:5px;border:2px solid #eee;margin:100px auto 0;}
-.uname,.password{height:35px;margin-bottom:15px;text-align:center;width:400px;border:1px solid #ddd;border-top:none;border-left:none;border-right:none;font-size:28px;color:#666;}
-.logo{margin-bottom:30px;}
-input[type="submit"]{background:#fff;border:1px solid #aaa;border-top:1px solid #ccc;border-left:1px solid #ccc;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;color:#666;display:inline-block;text-decoration:none;text-shadow:0 1px rgba(255,255,255,.75);cursor:pointer;font-size:24px;margin-bottom:3px;line-height:normal;width:400px;padding:8px 10px;}
-input[type="submit"]:hover{color:#fff;background:#47a3da;-webkit-transition:background .2s ease-in-out;-moz-transition:background .2s ease-in-out;transition:background .2s ease-in-out;border:1px solid #47a3da;text-shadow:none;}
+﻿@font-face {
+    font-family: opensans;
+    font-style: normal;
+    font-weight: 400;
+    src: url(../fonts/OpenSans-Light.ttf) format("truetype");
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+    background: #fff;
+    color: #666;
+    font-family: opensans, "Calibri Light", "Helvetica Neue", Helvetica, Arial;
+    font-size: 14px;
+    margin: 0;
+    text-align: center;
+}
+
+.loginwrapper {
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    background: #fff;
+    border: 2px solid #eee;
+    border-radius: 5px;
+    height: 450px;
+    margin: 100px auto 0;
+    padding-top: 50px;
+    width: 600px;
+}
+
+.uname, .password {
+    border: 1px solid #ddd;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    color: #666;
+    font-size: 28px;
+    height: 35px;
+    margin-bottom: 15px;
+    text-align: center;
+    width: 400px;
+}
+
+.logo { margin-bottom: 30px; }
+
+input[type="submit"] {
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    background: #fff;
+    border: 1px solid #aaa;
+    border-left: 1px solid #ccc;
+    border-radius: 3px;
+    border-top: 1px solid #ccc;
+    color: #666;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 24px;
+    line-height: normal;
+    margin-bottom: 3px;
+    padding: 8px 10px;
+    text-decoration: none;
+    text-shadow: 0 1px rgba(255, 255, 255, .75);
+    width: 400px;
+}
+
+input[type="submit"]:hover {
+    -moz-transition: background .2s ease-in-out;
+    -webkit-transition: background .2s ease-in-out;
+    background: #47a3da;
+    border: 1px solid #47a3da;
+    color: #fff;
+    text-shadow: none;
+    transition: background .2s ease-in-out;
+}
 
 @media only screen and (min-width: 641px) and (max-width: 820px) {
-.loginwrapper{width:500px; margin-top:0; border:none;}
+    .loginwrapper {
+        border: none;
+        margin-top: 0;
+        width: 500px;
+    }
 }
 
 @media only screen and (min-width: 480px) and (max-width: 640px) {
-.loginwrapper{width:400px; margin-top:0; border:none;}
+    .loginwrapper {
+        border: none;
+        margin-top: 0;
+        width: 400px;
+    }
 }
 
 @media only screen and (max-width: 479px) {
-.loginwrapper{width:300px; margin-top:0; border:none; }
-.uname,.password{width:300px;}
-.logo {width:300px; }
-input[type="submit"] {width:300px;}
+    .loginwrapper {
+        border: none;
+        margin-top: 0;
+        width: 300px;
+    }
+
+    .uname, .password { width: 300px; }
+
+    .logo { width: 300px; }
+
+    input[type="submit"] { width: 300px; }
 }

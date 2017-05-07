@@ -1,7 +1,7 @@
-ace.define("ace/snippets/perl",["require","exports","module"], function(require, exports, module) {
-"use strict";
+ace.define("ace/snippets/perl", ["require", "exports", "module"], function(require, exports, module) {
+    "use strict";
 
-exports.snippetText = "# #!/usr/bin/perl\n\
+    exports.snippetText = "# #!/usr/bin/perl\n\
 snippet #!\n\
 	#!/usr/bin/env perl\n\
 \n\
@@ -349,6 +349,6 @@ snippet debug_trace\n\
 	};\n\
 \n\
 ";
-exports.scope = "perl";
+    exports.scope = "perl";
 
 });

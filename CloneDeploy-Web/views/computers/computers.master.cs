@@ -1,6 +1,5 @@
 ﻿using System;
 using CloneDeploy_Entities;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
@@ -8,25 +7,8 @@ namespace views.computers
 {
     public partial class ComputerMaster : MasterBaseMaster
     {
-        private Computers ComputerBasePage { get; set; }
         public ComputerEntity Computer { get; set; }
-
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            ComputerBasePage = (Page as Computers);
-            Computer = ComputerBasePage.Computer;
-            if (Computer == null) //level 2
-            {
-                Level2.Visible = false;
-                LinkButton1.Visible = false;
-                LinkButton2.Visible = false;
-                LinkButton3.Visible = false;
-            }
-            else
-            {
-                Level1.Visible = false;
-            }
-        }
+        private Computers ComputerBasePage { get; set; }
 
         protected void btnDelete_Click(object sender, EventArgs e)
         {
@@ -51,12 +33,12 @@ namespace views.computers
 
         protected void buttonConfirm_Click(object sender, EventArgs e)
         {
-            var action = (string)(Session["action"]);
+            var action = (string) Session["action"];
             Session.Remove("action");
             switch (action)
             {
                 case "delete":
-                    ComputerBasePage.RequiresAuthorizationOrManagedComputer(Authorizations.DeleteComputer,Computer.Id);
+                    ComputerBasePage.RequiresAuthorizationOrManagedComputer(Authorizations.DeleteComputer, Computer.Id);
                     var result = ComputerBasePage.Call.ComputerApi.Delete(Computer.Id);
                     if (result.Success)
                     {
@@ -78,6 +60,23 @@ namespace views.computers
                     PageBaseMaster.EndUserMessage = ComputerBasePage.Call.ComputerApi.StartUpload(Computer.Id);
                 }
                     break;
+            }
+        }
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            ComputerBasePage = Page as Computers;
+            Computer = ComputerBasePage.Computer;
+            if (Computer == null) //level 2
+            {
+                Level2.Visible = false;
+                LinkButton1.Visible = false;
+                LinkButton2.Visible = false;
+                LinkButton3.Visible = false;
+            }
+            else
+            {
+                Level1.Visible = false;
             }
         }
     }

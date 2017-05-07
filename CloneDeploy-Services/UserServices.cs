@@ -11,112 +11,88 @@ namespace CloneDeploy_Services
 {
     public class UserServices
     {
-         private readonly UnitOfWork _uow;
+        private readonly UnitOfWork _uow;
 
         public UserServices()
         {
             _uow = new UnitOfWork();
         }
 
-        public  ActionResultDTO AddUser(CloneDeployUserEntity user)
+        public ActionResultDTO AddUser(CloneDeployUserEntity user)
         {
-           
-                var validationResult = ValidateUser(user, true);
+            var validationResult = ValidateUser(user, true);
             var actionResult = new ActionResultDTO();
-                if (validationResult.Success)
-                {
-                    _uow.UserRepository.Insert(user);
-                    _uow.Save();
-                    actionResult.Success = true;
-                    actionResult.Id = user.Id;
-                }
-                else
-                {
-                    actionResult.ErrorMessage = validationResult.ErrorMessage;
-                }
+            if (validationResult.Success)
+            {
+                _uow.UserRepository.Insert(user);
+                _uow.Save();
+                actionResult.Success = true;
+                actionResult.Id = user.Id;
+            }
+            else
+            {
+                actionResult.ErrorMessage = validationResult.ErrorMessage;
+            }
 
             return actionResult;
-
-        }
-
-        public  string TotalCount()
-        {
-            
-                return _uow.UserRepository.Count();
-            
-        }
-
-        public  int GetAdminCount()
-        {
-            
-                return Convert.ToInt32(_uow.UserRepository.Count(u => u.Membership == "Administrator"));
-            
         }
 
         public ActionResultDTO DeleteUser(int userId)
         {
             var u = GetUser(userId);
-            if (u == null) return new ActionResultDTO() {ErrorMessage = "User Not Found", Id = 0};
+            if (u == null) return new ActionResultDTO {ErrorMessage = "User Not Found", Id = 0};
             _uow.UserRepository.Delete(userId);
             _uow.Save();
             var actionResult = new ActionResultDTO();
             actionResult.Success = true;
             actionResult.Id = u.Id;
             return actionResult;
-
         }
 
-        public  bool IsAdmin(int userId)
+        public bool DeleteUserGroupManagements(int userId)
         {
-            var user = GetUser(userId);
-            return user.Membership == "Administrator";
+            _uow.UserGroupManagementRepository.DeleteRange(x => x.UserId == userId);
+            _uow.Save();
+            return true;
         }
 
-        public  CloneDeployUserEntity GetUserByToken(string token)
+        public bool DeleteUserImageManagements(int userId)
         {
-            
-                return _uow.UserRepository.GetFirstOrDefault(x => x.Token == token);
-            
+            _uow.UserImageManagementRepository.DeleteRange(x => x.UserId == userId);
+            _uow.Save();
+            return true;
         }
 
-        public  CloneDeployUserEntity GetUserByApiId(string apiId)
+        public bool DeleteUserRights(int userId)
         {
-           
-                return _uow.UserRepository.GetFirstOrDefault(x => x.ApiId == apiId);
-            
+            _uow.UserRightRepository.DeleteRange(x => x.UserId == userId);
+            _uow.Save();
+            return true;
         }
 
-        public  void SendLockOutEmail(int userId)
+        public int GetAdminCount()
         {
-            //Mail not enabled
-            if (Settings.SmtpEnabled == "0") return;
-
-            var lockedUser = GetUser(userId);
-            foreach (var user in SearchUsers("").Where(x => x.NotifyLockout == 1 && !string.IsNullOrEmpty(x.Email)))
-            {
-                if (user.Membership != "Administrator" && user.Id != userId) continue;
-                var mail = new Mail
-                {
-                    MailTo = user.Email,
-                    Body = lockedUser.Name + " Has Been Locked For 15 Minutes Because Of Too Many Failed Login Attempts",
-                    Subject = "User Locked"
-                };
-                mail.Send();
-            }
+            return Convert.ToInt32(_uow.UserRepository.Count(u => u.Membership == "Administrator"));
         }
 
-        public  CloneDeployUserEntity GetUser(int userId)
+        public CloneDeployUserEntity GetUser(int userId)
         {
-           
-                return _uow.UserRepository.GetById(userId);
-            
+            return _uow.UserRepository.GetById(userId);
         }
 
-        public  CloneDeployUserEntity GetUser(string userName)
+        public CloneDeployUserEntity GetUser(string userName)
         {
-           
-                return _uow.UserRepository.GetFirstOrDefault(u => u.Name == userName);
-            
+            return _uow.UserRepository.GetFirstOrDefault(u => u.Name == userName);
+        }
+
+        public CloneDeployUserEntity GetUserByApiId(string apiId)
+        {
+            return _uow.UserRepository.GetFirstOrDefault(x => x.ApiId == apiId);
+        }
+
+        public CloneDeployUserEntity GetUserByToken(string token)
+        {
+            return _uow.UserRepository.GetFirstOrDefault(x => x.Token == token);
         }
 
         public ApiObjectResponseDTO GetUserForLogin(int userId)
@@ -136,40 +112,82 @@ namespace CloneDeploy_Services
             }
 
             return result;
-
-
         }
 
-        public  List<UserWithUserGroup> SearchUsers(string searchString = "")
+        public List<UserGroupManagementEntity> GetUserGroupManagements(int userId)
+        {
+            return _uow.UserGroupManagementRepository.Get(x => x.UserId == userId);
+        }
+
+        public List<UserImageManagementEntity> GetUserImageManagements(int userId)
+        {
+            return _uow.UserImageManagementRepository.Get(x => x.UserId == userId);
+        }
+
+        public List<UserRightEntity> GetUserRights(int userId)
+        {
+            return _uow.UserRightRepository.Get(x => x.UserId == userId);
+        }
+
+        public bool IsAdmin(int userId)
+        {
+            var user = GetUser(userId);
+            return user.Membership == "Administrator";
+        }
+
+        public List<UserWithUserGroup> SearchUsers(string searchString = "")
         {
             return _uow.UserRepository.Search(searchString);
         }
 
-        public  ActionResultDTO UpdateUser(CloneDeployUserEntity user)
+        public void SendLockOutEmail(int userId)
         {
-            var u = GetUser(user.Id);
-            if (u == null) return new ActionResultDTO() { ErrorMessage = "User Not Found", Id = 0 };
-                var validationResult = ValidateUser(user, false);
-            var actionResult = new ActionResultDTO();
-                if (validationResult.Success)
-                {
-                    _uow.UserRepository.Update(user, user.Id);
-                    _uow.Save();
-                    actionResult.Success = true;
-                    actionResult.Id = user.Id;
-                }
-                else
-                {
-                    actionResult.ErrorMessage = validationResult.ErrorMessage;
-                }
+            //Mail not enabled
+            if (Settings.SmtpEnabled == "0") return;
 
-            return actionResult;
-
+            var lockedUser = GetUser(userId);
+            foreach (var user in SearchUsers("").Where(x => x.NotifyLockout == 1 && !string.IsNullOrEmpty(x.Email)))
+            {
+                if (user.Membership != "Administrator" && user.Id != userId) continue;
+                var mail = new Mail
+                {
+                    MailTo = user.Email,
+                    Body = lockedUser.Name + " Has Been Locked For 15 Minutes Because Of Too Many Failed Login Attempts",
+                    Subject = "User Locked"
+                };
+                mail.Send();
+            }
         }
 
-        private  ValidationResultDTO ValidateUser(CloneDeployUserEntity user, bool isNewUser)
+        public string TotalCount()
         {
-            var validationResult = new ValidationResultDTO() { Success = true };
+            return _uow.UserRepository.Count();
+        }
+
+        public ActionResultDTO UpdateUser(CloneDeployUserEntity user)
+        {
+            var u = GetUser(user.Id);
+            if (u == null) return new ActionResultDTO {ErrorMessage = "User Not Found", Id = 0};
+            var validationResult = ValidateUser(user, false);
+            var actionResult = new ActionResultDTO();
+            if (validationResult.Success)
+            {
+                _uow.UserRepository.Update(user, user.Id);
+                _uow.Save();
+                actionResult.Success = true;
+                actionResult.Id = user.Id;
+            }
+            else
+            {
+                actionResult.ErrorMessage = validationResult.ErrorMessage;
+            }
+
+            return actionResult;
+        }
+
+        private ValidationResultDTO ValidateUser(CloneDeployUserEntity user, bool isNewUser)
+        {
+            var validationResult = new ValidationResultDTO {Success = true};
 
             if (string.IsNullOrEmpty(user.Name) || !user.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {
@@ -187,80 +205,29 @@ namespace CloneDeploy_Services
                     return validationResult;
                 }
 
-              
+
+                if (_uow.UserRepository.Exists(h => h.Name == user.Name))
+                {
+                    validationResult.Success = false;
+                    validationResult.ErrorMessage = "This User Already Exists";
+                    return validationResult;
+                }
+            }
+            else
+            {
+                var originalUser = _uow.UserRepository.GetById(user.Id);
+                if (originalUser.Name != user.Name)
+                {
                     if (_uow.UserRepository.Exists(h => h.Name == user.Name))
                     {
                         validationResult.Success = false;
                         validationResult.ErrorMessage = "This User Already Exists";
                         return validationResult;
                     }
-                
-            }
-            else
-            {
-                
-                    var originalUser = _uow.UserRepository.GetById(user.Id);
-                    if (originalUser.Name != user.Name)
-                    {
-                        if (_uow.UserRepository.Exists(h => h.Name == user.Name))
-                        {
-                            validationResult.Success = false;
-                            validationResult.ErrorMessage = "This User Already Exists";
-                            return validationResult;
-                        }
-                    }
-                
+                }
             }
 
             return validationResult;
-        }
-
-        public bool DeleteUserRights(int userId)
-        {
-
-            _uow.UserRightRepository.DeleteRange(x => x.UserId == userId);
-            _uow.Save();
-            return true;
-
-        }
-
-        public List<UserRightEntity> GetUserRights(int userId)
-        {
-
-            return _uow.UserRightRepository.Get(x => x.UserId == userId);
-
-        }
-
-        public bool DeleteUserImageManagements(int userId)
-        {
-
-            _uow.UserImageManagementRepository.DeleteRange(x => x.UserId == userId);
-            _uow.Save();
-            return true;
-
-        }
-
-        public List<UserImageManagementEntity> GetUserImageManagements(int userId)
-        {
-
-            return _uow.UserImageManagementRepository.Get(x => x.UserId == userId);
-
-        }
-
-        public bool DeleteUserGroupManagements(int userId)
-        {
-
-            _uow.UserGroupManagementRepository.DeleteRange(x => x.UserId == userId);
-            _uow.Save();
-            return true;
-
-        }
-
-        public List<UserGroupManagementEntity> GetUserGroupManagements(int userId)
-        {
-
-            return _uow.UserGroupManagementRepository.Get(x => x.UserId == userId);
-
         }
     }
 }

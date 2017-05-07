@@ -4,14 +4,16 @@
     <li>Sites</li>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="Help" Runat="Server">
-     <li role="separator" class="divider"></li>
-    <li><a href="<%= ResolveUrl("~/views/help/global-sites.aspx") %>"   target="_blank">Help</a></li>
+    <li role="separator" class="divider"></li>
+    <li>
+        <a href="<%= ResolveUrl("~/views/help/global-sites.aspx") %>" target="_blank">Help</a>
+    </li>
 </asp:Content>
 
 <asp:Content ID="Content4" ContentPlaceHolderID="SubPageActionsRight" Runat="Server">
-     <button type="button" class="btn btn-default dropdown-toggle width_140" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span class="caret"></span>
-  </button>
+    <button type="button" class="btn btn-default dropdown-toggle width_140" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+    </button>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" runat="Server">
@@ -42,7 +44,7 @@
                     <asp:TextBox ID="txtNameAdd" runat="server"></asp:TextBox>
                 </FooterTemplate>
             </asp:TemplateField>
-            
+
             <asp:TemplateField HeaderText="Cluster Group" ItemStyle-Width="150">
                 <ItemTemplate>
                     <asp:Label ID="lblDp" runat="server" Text='<%# Eval("ClusterGroup.Name") %>'></asp:Label>
@@ -81,4 +83,3 @@
         </Columns>
     </asp:GridView>
 </asp:Content>
-

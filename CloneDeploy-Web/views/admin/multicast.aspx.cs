@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using CloneDeploy_Entities;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 using log4net;
@@ -9,26 +8,13 @@ using log4net;
 public partial class views_admin_multicast : Admin
 {
     private readonly ILog log = LogManager.GetLogger("FrontEndLog");
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        if (IsPostBack) return;
-     
-        txtSenderArgs.Text = Settings.SenderArgs;  
-        txtStartPort.Text = Settings.StartPort;
-        txtEndPort.Text = Settings.EndPort;   
-        txtRecClientArgs.Text = Settings.ClientReceiverArgs;
-        ddlDecompress.Text = Settings.MulticastDecompression;
-      
-        ViewState["startPort"] = txtStartPort.Text;
-        ViewState["endPort"] = txtEndPort.Text;
-    }
 
     protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.UpdateAdmin);
         if (ValidateSettings())
         {
-            List<SettingEntity> listSettings = new List<SettingEntity>
+            var listSettings = new List<SettingEntity>
             {
                 new SettingEntity
                 {
@@ -59,13 +45,13 @@ public partial class views_admin_multicast : Admin
                     Name = "Multicast Decompression",
                     Value = ddlDecompress.Text,
                     Id = Call.SettingApi.GetSetting("Multicast Decompression").Id
-                },
+                }
             };
 
             if (Call.SettingApi.UpdateSettings(listSettings))
             {
                 EndUserMessage = "Successfully Updated Settings";
-                if ((string) (ViewState["startPort"]) != txtStartPort.Text)
+                if ((string) ViewState["startPort"] != txtStartPort.Text)
                 {
                     var startPort = Convert.ToInt32(txtStartPort.Text);
                     startPort = startPort - 2;
@@ -78,7 +64,20 @@ public partial class views_admin_multicast : Admin
                 EndUserMessage = "Could Not Update Settings";
             }
         }
+    }
 
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (IsPostBack) return;
+
+        txtSenderArgs.Text = Settings.SenderArgs;
+        txtStartPort.Text = Settings.StartPort;
+        txtEndPort.Text = Settings.EndPort;
+        txtRecClientArgs.Text = Settings.ClientReceiverArgs;
+        ddlDecompress.Text = Settings.MulticastDecompression;
+
+        ViewState["startPort"] = txtStartPort.Text;
+        ViewState["endPort"] = txtEndPort.Text;
     }
 
     protected bool ValidateSettings()
@@ -86,12 +85,12 @@ public partial class views_admin_multicast : Admin
         var startPort = Convert.ToInt32(txtStartPort.Text);
         var endPort = Convert.ToInt32(txtEndPort.Text);
 
-        if (startPort % 2 != 0)
+        if (startPort%2 != 0)
         {
             startPort++;
             txtStartPort.Text = startPort.ToString();
         }
-        if (endPort % 2 != 0)
+        if (endPort%2 != 0)
         {
             endPort++;
             txtEndPort.Text = endPort.ToString();

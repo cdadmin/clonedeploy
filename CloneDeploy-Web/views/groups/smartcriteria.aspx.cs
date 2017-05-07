@@ -5,6 +5,28 @@ using CloneDeploy_Web.Helpers;
 
 public partial class views_groups_smartcriteria : Groups
 {
+    protected void btnTestQuery_OnClick(object sender, EventArgs e)
+    {
+        gvComputers.DataSource = Call.ComputerApi.SearchByName(int.MaxValue, txtContains.Text);
+        gvComputers.DataBind();
+        lblTotal.Text = gvComputers.Rows.Count + " Result(s)";
+    }
+
+    protected void btnUpdate_OnClick(object sender, EventArgs e)
+    {
+        RequiresAuthorizationOrManagedGroup(Authorizations.UpdateGroup, Group.Id);
+        RequiresAuthorization(Authorizations.UpdateSmart);
+        var group = Group;
+        group.SmartCriteria = txtContains.Text;
+        var result = Call.GroupApi.Put(group.Id, group);
+        EndUserMessage = result.Success ? "Successfully Updated Smart Criteria" : result.ErrorMessage;
+        Call.GroupApi.UpdateSmartMembership(group.Id);
+    }
+
+    protected void gvComputers_OnSorting(object sender, GridViewSortEventArgs e)
+    {
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack) PopulateForm();
@@ -14,28 +36,5 @@ public partial class views_groups_smartcriteria : Groups
     {
         if (Group.Type == "smart")
             txtContains.Text = Group.SmartCriteria;
-    }
-
-    protected void gvComputers_OnSorting(object sender, GridViewSortEventArgs e)
-    {
-        
-    }
-
-    protected void btnTestQuery_OnClick(object sender, EventArgs e)
-    {
-        gvComputers.DataSource = Call.ComputerApi.SearchByName(Int32.MaxValue, txtContains.Text);
-        gvComputers.DataBind();
-        lblTotal.Text = gvComputers.Rows.Count + " Result(s)";
-    }
-
-    protected void btnUpdate_OnClick(object sender, EventArgs e)
-    {
-        RequiresAuthorizationOrManagedGroup(Authorizations.UpdateGroup,Group.Id); 
-        RequiresAuthorization(Authorizations.UpdateSmart);
-        var group = Group;
-        group.SmartCriteria = txtContains.Text;
-        var result = Call.GroupApi.Put(group.Id,group);
-        EndUserMessage = result.Success ? "Successfully Updated Smart Criteria" : result.ErrorMessage;
-        Call.GroupApi.UpdateSmartMembership(group.Id);
     }
 }

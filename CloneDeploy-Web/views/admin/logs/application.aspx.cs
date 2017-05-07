@@ -1,15 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using CloneDeploy_Web.BasePages;
 
 namespace CloneDeploy_Web.views.admin.logs
 {
-    public partial class application : BasePages.Admin
+    public partial class application : Admin
     {
+        protected void btnExportLog_Click(object sender, EventArgs e)
+        {
+            HttpContext.Current.Response.ContentType = "application/octet-stream";
+            HttpContext.Current.Response.AppendHeader("Content-Disposition",
+                "attachment; filename=" + ddlLog.Text);
+            var log = Call.FilesystemApi.GetLogContents(ddlLog.Text, int.MaxValue);
+            var sb = new StringBuilder();
+            foreach (var line in log)
+            {
+                sb.Append(line);
+                sb.Append(Environment.NewLine);
+            }
+            HttpContext.Current.Response.Write(sb.ToString());
+            HttpContext.Current.Response.End();
+        }
+
+        protected void ddlLimit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            PopulateLogs();
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -18,27 +36,8 @@ namespace CloneDeploy_Web.views.admin.logs
                 ddlLog.DataBind();
                 ddlLog.Items.Insert(0, "Select A Log");
                 ddlLimit.SelectedValue = "10";
-
             }
             PopulateLogs();
-        }
-
-        protected void btnExportLog_Click(object sender, EventArgs e)
-        {
-
-            HttpContext.Current.Response.ContentType = "application/octet-stream";
-            HttpContext.Current.Response.AppendHeader("Content-Disposition",
-                "attachment; filename=" + ddlLog.Text);
-            var log = Call.FilesystemApi.GetLogContents(ddlLog.Text, Int32.MaxValue);
-            var sb = new StringBuilder();
-            foreach (var line in log )
-            {
-                sb.Append(line);
-                sb.Append(Environment.NewLine);
-            }
-            HttpContext.Current.Response.Write(sb.ToString());
-            HttpContext.Current.Response.End();
-
         }
 
         private void PopulateLogs()
@@ -48,14 +47,7 @@ namespace CloneDeploy_Web.views.admin.logs
                 var limit = ddlLimit.Text == "All" ? int.MaxValue : Convert.ToInt32(ddlLimit.Text);
                 gvLog.DataSource = Call.FilesystemApi.GetLogContents(ddlLog.Text, limit);
                 gvLog.DataBind();
-
-
             }
-        }
-
-        protected void ddlLimit_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            PopulateLogs();
         }
     }
 }

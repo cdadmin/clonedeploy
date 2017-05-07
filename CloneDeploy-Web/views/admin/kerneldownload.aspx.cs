@@ -1,21 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using CloneDeploy_Entities;
+using CloneDeploy_Web.BasePages;
 
 namespace CloneDeploy_Web.views.admin
 {
-    public partial class kerneldownload : BasePages.Admin
+    public partial class kerneldownload : Admin
     {
+        protected void btnDownload_OnClick(object sender, EventArgs e)
+        {
+            var control = sender as Control;
+            if (control != null)
+            {
+                var onlineKernel = new OnlineKernel();
+                var gvRow = (GridViewRow) control.Parent.Parent;
+                onlineKernel.BaseVersion = gvRow.Cells[2].Text;
+                onlineKernel.FileName = gvRow.Cells[0].Text;
+                if (onlineKernel.BaseVersion != null)
+                {
+                    var result = Call.OnlineKernelApi.Download(onlineKernel);
+                    EndUserMessage = result ? "Successfully Downloaded Kernel" : "Could Not Download Kernel";
+                }
+            }
+            PopulateKernels();
+        }
+
+        protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            if(!IsPostBack) PopulateKernels(); 
+            if (!IsPostBack) PopulateKernels();
         }
 
         private void PopulateKernels()
@@ -33,30 +51,6 @@ namespace CloneDeploy_Web.views.admin
                         lbl.Text = "Yes";
                 }
             }
-        }
-
-        protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected void btnDownload_OnClick(object sender, EventArgs e)
-        {
-         
-            var control = sender as Control;
-            if (control != null)
-            {
-                var onlineKernel = new OnlineKernel();
-                var gvRow = (GridViewRow)control.Parent.Parent;
-                onlineKernel.BaseVersion = gvRow.Cells[2].Text;
-                onlineKernel.FileName = gvRow.Cells[0].Text;
-                if (onlineKernel.BaseVersion != null)
-                {
-                    var result = Call.OnlineKernelApi.Download(onlineKernel);
-                    EndUserMessage = result ? "Successfully Downloaded Kernel" : "Could Not Download Kernel";
-                }
-            }
-            PopulateKernels();         
         }
     }
 }

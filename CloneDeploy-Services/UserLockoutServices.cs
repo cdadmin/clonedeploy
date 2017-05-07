@@ -6,38 +6,14 @@ namespace CloneDeploy_Services
 {
     public class UserLockoutServices
     {
-          private readonly UnitOfWork _uow;
+        private readonly UnitOfWork _uow;
 
         public UserLockoutServices()
         {
             _uow = new UnitOfWork();
         }
 
-        public  void ProcessBadLogin(int userId)
-        {
-           
-                var userLockout = Get(userId);
-                if (userLockout == null)
-                {
-                    _uow.UserLockoutRepository.Insert(new UserLockoutEntity { UserId = userId, BadLoginCount = 1 });
-                   
-                }
-                else
-                {
-                    userLockout.BadLoginCount += 1;
-                    if (userLockout.BadLoginCount == 15)
-                    {
-                        userLockout.LockedUntil = DateTime.UtcNow.AddMinutes(15);
-                        new UserServices().SendLockOutEmail(userId);
-                    }
-
-                    _uow.UserLockoutRepository.Update(userLockout, userLockout.Id);
-                }
-                _uow.Save();
-            
-        }
-
-        public  bool AccountIsLocked(int userId)
+        public bool AccountIsLocked(int userId)
         {
             var userLockout = Get(userId);
 
@@ -51,28 +27,40 @@ namespace CloneDeploy_Services
                 DeleteUserLockouts(userId);
                 return false;
             }
+            return true;
+        }
+
+        public bool DeleteUserLockouts(int userId)
+        {
+            _uow.UserLockoutRepository.DeleteRange(x => x.UserId == userId);
+            _uow.Save();
+            return true;
+        }
+
+        public UserLockoutEntity Get(int userId)
+        {
+            return _uow.UserLockoutRepository.GetFirstOrDefault(x => x.UserId == userId);
+        }
+
+        public void ProcessBadLogin(int userId)
+        {
+            var userLockout = Get(userId);
+            if (userLockout == null)
+            {
+                _uow.UserLockoutRepository.Insert(new UserLockoutEntity {UserId = userId, BadLoginCount = 1});
+            }
             else
             {
-                return true;
+                userLockout.BadLoginCount += 1;
+                if (userLockout.BadLoginCount == 15)
+                {
+                    userLockout.LockedUntil = DateTime.UtcNow.AddMinutes(15);
+                    new UserServices().SendLockOutEmail(userId);
+                }
+
+                _uow.UserLockoutRepository.Update(userLockout, userLockout.Id);
             }
-
-
-        }
-
-        public  bool DeleteUserLockouts(int userId)
-        {
-            
-                _uow.UserLockoutRepository.DeleteRange(x => x.UserId == userId);
-                _uow.Save();
-                return true;
-            
-        }
-
-        public  UserLockoutEntity Get(int userId)
-        {
-           
-                return _uow.UserLockoutRepository.GetFirstOrDefault(x => x.UserId == userId);
-            
+            _uow.Save();
         }
     }
 }

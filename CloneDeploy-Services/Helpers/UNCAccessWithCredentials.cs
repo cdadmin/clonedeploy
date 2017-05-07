@@ -10,55 +10,17 @@ namespace CloneDeploy_Services.Helpers
 {
     public class UNCAccessWithCredentials : IDisposable
     {
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        internal struct USE_INFO_2
-        {
-            internal LPWSTR ui2_local;
-            internal LPWSTR ui2_remote;
-            internal LPWSTR ui2_password;
-            internal DWORD ui2_status;
-            internal DWORD ui2_asg_type;
-            internal DWORD ui2_refcount;
-            internal DWORD ui2_usecount;
-            internal LPWSTR ui2_username;
-            internal LPWSTR ui2_domainname;
-        }
-
-        [DllImport("NetApi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        internal static extern NET_API_STATUS NetUseAdd(
-            LPWSTR UncServerName,
-            DWORD Level,
-            ref USE_INFO_2 Buf,
-            out DWORD ParmError);
-
-        [DllImport("NetApi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        internal static extern NET_API_STATUS NetUseDel(
-            LPWSTR UncServerName,
-            LPWSTR UseName,
-            DWORD ForceCond);
-
-        private bool disposed = false;
+        private bool disposed;
+        private string sDomain;
+        private string sPassword;
 
         private string sUNCPath;
         private string sUser;
-        private string sPassword;
-        private string sDomain;
-        private int iLastError;
 
         /// <summary>
-        /// A disposeable class that allows access to a UNC resource with credentials.
+        ///     The last system error code returned from NetUseAdd or NetUseDel.  Success = 0
         /// </summary>
-        public UNCAccessWithCredentials()
-        {
-        }
-
-        /// <summary>
-        /// The last system error code returned from NetUseAdd or NetUseDel.  Success = 0
-        /// </summary>
-        public int LastError
-        {
-            get { return iLastError; }
-        }
+        public int LastError { get; private set; }
 
         public void Dispose()
         {
@@ -70,8 +32,46 @@ namespace CloneDeploy_Services.Helpers
             GC.SuppressFinalize(this);
         }
 
+        ~UNCAccessWithCredentials()
+        {
+            Dispose();
+        }
+
+        [DllImport("NetApi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        internal static extern uint NetUseAdd(
+            string UncServerName,
+            uint Level,
+            ref USE_INFO_2 Buf,
+            out uint ParmError);
+
+        [DllImport("NetApi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        internal static extern uint NetUseDel(
+            string UncServerName,
+            string UseName,
+            uint ForceCond);
+
         /// <summary>
-        /// Connects to a UNC path using the credentials supplied.
+        ///     Ends the connection to the remote resource
+        /// </summary>
+        /// <returns>True if it succeeds.  Use LastError to get the system error code</returns>
+        public bool NetUseDelete()
+        {
+            uint returncode;
+            try
+            {
+                returncode = NetUseDel(null, sUNCPath, 2);
+                LastError = (int) returncode;
+                return returncode == 0;
+            }
+            catch
+            {
+                LastError = Marshal.GetLastWin32Error();
+                return false;
+            }
+        }
+
+        /// <summary>
+        ///     Connects to a UNC path using the credentials supplied.
         /// </summary>
         /// <param name="UNCPath">Fully qualified domain name UNC path</param>
         /// <param name="User">A user with sufficient rights to access the path.</param>
@@ -92,7 +92,7 @@ namespace CloneDeploy_Services.Helpers
             uint returncode;
             try
             {
-                USE_INFO_2 useinfo = new USE_INFO_2();
+                var useinfo = new USE_INFO_2();
 
                 useinfo.ui2_remote = sUNCPath;
                 useinfo.ui2_username = sUser;
@@ -102,41 +102,28 @@ namespace CloneDeploy_Services.Helpers
                 useinfo.ui2_usecount = 1;
                 uint paramErrorIndex;
                 returncode = NetUseAdd(null, 2, ref useinfo, out paramErrorIndex);
-                iLastError = (int)returncode;
+                LastError = (int) returncode;
                 return returncode == 0;
             }
             catch
             {
-                iLastError = Marshal.GetLastWin32Error();
+                LastError = Marshal.GetLastWin32Error();
                 return false;
             }
         }
 
-        /// <summary>
-        /// Ends the connection to the remote resource 
-        /// </summary>
-        /// <returns>True if it succeeds.  Use LastError to get the system error code</returns>
-        public bool NetUseDelete()
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        internal struct USE_INFO_2
         {
-            uint returncode;
-            try
-            {
-                returncode = NetUseDel(null, sUNCPath, 2);
-                iLastError = (int)returncode;
-                return (returncode == 0);
-            }
-            catch
-            {
-                iLastError = Marshal.GetLastWin32Error();
-                return false;
-            }
+            internal string ui2_local;
+            internal string ui2_remote;
+            internal string ui2_password;
+            internal uint ui2_status;
+            internal uint ui2_asg_type;
+            internal uint ui2_refcount;
+            internal uint ui2_usecount;
+            internal string ui2_username;
+            internal string ui2_domainname;
         }
-
-        ~UNCAccessWithCredentials()
-        {
-            Dispose();
-        }
-
-      
     }
 }

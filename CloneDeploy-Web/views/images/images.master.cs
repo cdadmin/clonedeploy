@@ -1,6 +1,5 @@
 ﻿using System;
 using CloneDeploy_Entities;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
@@ -8,12 +7,43 @@ namespace views.masters
 {
     public partial class ImageMaster : MasterBaseMaster
     {
-        private Images imagesBasePage { get; set; }
         public ImageEntity Image { get; set; }
+        private Images imagesBasePage { get; set; }
+
+        protected void btnApprove_Click(object sender, EventArgs e)
+        {
+            imagesBasePage.RequiresAuthorizationOrManagedImage(Authorizations.ApproveImage, Image.Id);
+            Image.Approved = 1;
+            PageBaseMaster.EndUserMessage = imagesBasePage.Call.ImageApi.Put(Image.Id, Image).Success
+                ? "Successfully Approved Image"
+                : "Could Not Approve Image";
+            imagesBasePage.Call.ImageApi.SendImageApprovedMail(Image.Id);
+        }
+
+        protected void btnDelete_Click(object sender, EventArgs e)
+        {
+            imagesBasePage.RequiresAuthorizationOrManagedImage(Authorizations.DeleteImage, Image.Id);
+            lblTitle.Text = "Delete This Image?";
+            DisplayConfirm();
+        }
+
+        protected void OkButton_Click(object sender, EventArgs e)
+        {
+            var result = imagesBasePage.Call.ImageApi.Delete(Image.Id);
+            if (result.Success)
+            {
+                PageBaseMaster.EndUserMessage = "Successfully Deleted Image";
+                Response.Redirect("~/views/images/search.aspx");
+            }
+            else
+            {
+                PageBaseMaster.EndUserMessage = result.ErrorMessage;
+            }
+        }
 
         public void Page_Load(object sender, EventArgs e)
         {
-            imagesBasePage = (Page as Images);
+            imagesBasePage = Page as Images;
             if (imagesBasePage != null) Image = imagesBasePage.Image;
             if (Image == null)
             {
@@ -29,39 +59,6 @@ namespace views.masters
             if (Request.QueryString["cat"] == "profiles")
             {
                 btnDelete.Visible = false;
-            }
-  
-           
-        }
-
-        protected void btnDelete_Click(object sender, EventArgs e)
-        {
-            imagesBasePage.RequiresAuthorizationOrManagedImage(Authorizations.DeleteImage, Image.Id);
-            lblTitle.Text = "Delete This Image?";
-            DisplayConfirm();
-        }
-
-        protected void btnApprove_Click(object sender, EventArgs e)
-        {
-            imagesBasePage.RequiresAuthorizationOrManagedImage(Authorizations.ApproveImage,Image.Id);
-            Image.Approved = 1;
-            PageBaseMaster.EndUserMessage = imagesBasePage.Call.ImageApi.Put(Image.Id,Image).Success
-                ? "Successfully Approved Image"
-                : "Could Not Approve Image";
-            imagesBasePage.Call.ImageApi.SendImageApprovedMail(Image.Id);
-        }
-
-        protected void OkButton_Click(object sender, EventArgs e)
-        {
-            var result = imagesBasePage.Call.ImageApi.Delete(Image.Id);
-            if (result.Success)
-            {
-                PageBaseMaster.EndUserMessage = "Successfully Deleted Image";
-                Response.Redirect("~/views/images/search.aspx");
-            }
-            else
-            {
-                PageBaseMaster.EndUserMessage = result.ErrorMessage;
             }
         }
     }

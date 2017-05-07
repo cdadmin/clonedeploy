@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
@@ -12,6 +11,91 @@ public partial class views_admin_bootmenu_defaultmenu : Admin
     public string efi32Lbl;
     public string efi64Lbl;
     public string noProxyLbl;
+
+
+    public void btnSubmit_Click(object sender, EventArgs e)
+    {
+        RequiresAuthorization(Authorizations.UpdateAdmin);
+        if (Settings.ProxyDhcp == "Yes")
+            CreateProxyMenu();
+        else
+            CreateStandardMenu();
+        EndUserMessage = "Complete";
+    }
+
+    protected void CreateProxyMenu()
+    {
+        var listSettings = new List<SettingEntity>
+        {
+            new SettingEntity
+            {
+                Name = "Ipxe Requires Login",
+                Value = chkIpxeProxy.Checked.ToString(),
+                Id = Call.SettingApi.GetSetting("Ipxe Requires Login").Id
+            }
+        };
+
+        Call.SettingApi.UpdateSettings(listSettings);
+
+        var defaultBootMenuOptions = new BootMenuGenOptionsDTO
+        {
+            DebugPwd = consoleShaProxy.Value,
+            AddPwd = addcomputerShaProxy.Value,
+            OndPwd = ondshaProxy.Value,
+            DiagPwd = diagshaProxy.Value,
+            GrubUserName = txtGrubProxyUsername.Text,
+            GrubPassword = txtGrubProxyPassword.Text
+        };
+
+        defaultBootMenuOptions.Kernel = ddlBiosKernel.SelectedValue;
+        defaultBootMenuOptions.BootImage = ddlBiosBootImage.SelectedValue;
+        defaultBootMenuOptions.Type = "bios";
+        Call.WorkflowApi.CreateDefaultBootMenu(defaultBootMenuOptions);
+
+        defaultBootMenuOptions.Kernel = ddlEfi32Kernel.SelectedValue;
+        defaultBootMenuOptions.BootImage = ddlEfi32BootImage.SelectedValue;
+        defaultBootMenuOptions.Type = "efi32";
+        Call.WorkflowApi.CreateDefaultBootMenu(defaultBootMenuOptions);
+
+        defaultBootMenuOptions.Kernel = ddlEfi64Kernel.SelectedValue;
+        defaultBootMenuOptions.BootImage = ddlEfi64BootImage.SelectedValue;
+        defaultBootMenuOptions.Type = "efi64";
+        Call.WorkflowApi.CreateDefaultBootMenu(defaultBootMenuOptions);
+    }
+
+    protected void CreateStandardMenu()
+    {
+        var listSettings = new List<SettingEntity>
+        {
+            new SettingEntity
+            {
+                Name = "Ipxe Requires Login",
+                Value = chkIpxeLogin.Checked.ToString(),
+                Id = Call.SettingApi.GetSetting("Ipxe Requires Login").Id
+            }
+        };
+
+        Call.SettingApi.UpdateSettings(listSettings);
+
+        var defaultBootMenuOptions = new BootMenuGenOptionsDTO();
+        var pxeMode = Settings.PxeMode;
+        if (pxeMode.Contains("grub"))
+        {
+            defaultBootMenuOptions.GrubUserName = txtGrubUsername.Text;
+            defaultBootMenuOptions.GrubPassword = txtGrubPassword.Text;
+        }
+        else
+        {
+            defaultBootMenuOptions.DebugPwd = consoleSha.Value;
+            defaultBootMenuOptions.AddPwd = addcomputerSha.Value;
+            defaultBootMenuOptions.OndPwd = ondsha.Value;
+            defaultBootMenuOptions.DiagPwd = diagsha.Value;
+        }
+        defaultBootMenuOptions.Kernel = ddlComputerKernel.SelectedValue;
+        defaultBootMenuOptions.BootImage = ddlComputerBootImage.SelectedValue;
+        defaultBootMenuOptions.Type = "standard";
+        Call.WorkflowApi.CreateDefaultBootMenu(defaultBootMenuOptions);
+    }
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -80,9 +164,6 @@ public partial class views_admin_bootmenu_defaultmenu : Admin
             ddlEfi64BootImage.DataSource = Call.FilesystemApi.GetBootImages();
             ddlEfi64BootImage.DataBind();
             ddlEfi64BootImage.SelectedValue = Settings.DefaultInit;
-
-
-
         }
         else
         {
@@ -100,8 +181,8 @@ public partial class views_admin_bootmenu_defaultmenu : Admin
             btnSubmitDefault.Visible = true;
             bootPasswords.Visible = true;
             divStandardMode.Visible = true;
-            
-          
+
+
             if (pxeMode.Contains("ipxe"))
             {
                 passboxes.Visible = false;
@@ -124,97 +205,6 @@ public partial class views_admin_bootmenu_defaultmenu : Admin
             ddlComputerBootImage.DataSource = Call.FilesystemApi.GetBootImages();
             ddlComputerBootImage.DataBind();
             ddlComputerBootImage.SelectedValue = Settings.DefaultInit;
-
         }
-    }
-
-
-
-    public void btnSubmit_Click(object sender, EventArgs e)
-    {
-        RequiresAuthorization(Authorizations.UpdateAdmin);
-        if(Settings.ProxyDhcp == "Yes")
-            CreateProxyMenu();
-        else
-            CreateStandardMenu();
-        EndUserMessage = "Complete";
-    }
-
-    protected void CreateProxyMenu()
-    {
-        var listSettings = new List<SettingEntity>
-        {
-            new SettingEntity
-            {
-                Name = "Ipxe Requires Login",
-                Value = chkIpxeProxy.Checked.ToString(),
-                Id = Call.SettingApi.GetSetting("Ipxe Requires Login").Id
-            },
-        };
-
-        Call.SettingApi.UpdateSettings(listSettings);
-
-        var defaultBootMenuOptions = new BootMenuGenOptionsDTO()
-        {
-            DebugPwd = consoleShaProxy.Value,
-            AddPwd = addcomputerShaProxy.Value,
-            OndPwd = ondshaProxy.Value,
-            DiagPwd = diagshaProxy.Value,
-            GrubUserName = txtGrubProxyUsername.Text,
-            GrubPassword = txtGrubProxyPassword.Text,
-        };
-
-        defaultBootMenuOptions.Kernel = ddlBiosKernel.SelectedValue;
-        defaultBootMenuOptions.BootImage = ddlBiosBootImage.SelectedValue;
-        defaultBootMenuOptions.Type = "bios";
-        Call.WorkflowApi.CreateDefaultBootMenu(defaultBootMenuOptions);
-
-        defaultBootMenuOptions.Kernel = ddlEfi32Kernel.SelectedValue;
-        defaultBootMenuOptions.BootImage = ddlEfi32BootImage.SelectedValue;
-        defaultBootMenuOptions.Type = "efi32";
-        Call.WorkflowApi.CreateDefaultBootMenu(defaultBootMenuOptions);
-
-        defaultBootMenuOptions.Kernel = ddlEfi64Kernel.SelectedValue;
-        defaultBootMenuOptions.BootImage = ddlEfi64BootImage.SelectedValue;
-        defaultBootMenuOptions.Type = "efi64";
-        Call.WorkflowApi.CreateDefaultBootMenu(defaultBootMenuOptions);
-
-        
-    }
-
-    protected void CreateStandardMenu()
-    {
-        var listSettings = new List<SettingEntity>
-        {
-            new SettingEntity()
-            {
-                Name = "Ipxe Requires Login",
-                Value = chkIpxeLogin.Checked.ToString(),
-                Id = Call.SettingApi.GetSetting("Ipxe Requires Login").Id
-            },
-        };
-
-        Call.SettingApi.UpdateSettings(listSettings);
-
-        var defaultBootMenuOptions = new BootMenuGenOptionsDTO();
-        var pxeMode = Settings.PxeMode;
-        if (pxeMode.Contains("grub"))
-        {
-            defaultBootMenuOptions.GrubUserName = txtGrubUsername.Text;
-            defaultBootMenuOptions.GrubPassword = txtGrubPassword.Text;
-        }
-        else
-        {
-            defaultBootMenuOptions.DebugPwd = consoleSha.Value;
-            defaultBootMenuOptions.AddPwd = addcomputerSha.Value;
-            defaultBootMenuOptions.OndPwd = ondsha.Value;
-            defaultBootMenuOptions.DiagPwd = diagsha.Value;
-        }
-        defaultBootMenuOptions.Kernel = ddlComputerKernel.SelectedValue;
-        defaultBootMenuOptions.BootImage = ddlComputerBootImage.SelectedValue;
-        defaultBootMenuOptions.Type = "standard";
-        Call.WorkflowApi.CreateDefaultBootMenu(defaultBootMenuOptions);
-
-
     }
 }

@@ -6,22 +6,24 @@
 
 <asp:Content ID="Content3" ContentPlaceHolderID="SubHelp" Runat="Server">
     <li role="separator" class="divider"></li>
-    <li><a href="<%= ResolveUrl("~/views/help/global-bootmenutemplates.aspx") %>"   target="_blank">Help</a></li>
+    <li>
+        <a href="<%= ResolveUrl("~/views/help/global-bootmenutemplates.aspx") %>" target="_blank">Help</a>
+    </li>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
     <a class="confirm btn btn-default" href="#">Delete Selected Templates</a>
-     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span class="caret"></span>
-  </button>
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+    </button>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
             $('#search').addClass("nav-current");
-            $("[id*=gvTemplates] td").hover(function () {
+            $("[id*=gvTemplates] td").hover(function() {
                 $("td", $(this).closest("tr")).addClass("hover_row");
-            }, function () {
+            }, function() {
                 $("td", $(this).closest("tr")).removeClass("hover_row");
             });
         });
@@ -45,19 +47,17 @@
                     <asp:CheckBox ID="chkSelector" runat="server"/>
                 </ItemTemplate>
             </asp:TemplateField>
-             <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/global/boottemplates/edit.aspx?cat=sub1&templateid={0}" Text="View" ItemStyle-CssClass="chkboxwidth"/>
+            <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/global/boottemplates/edit.aspx?cat=sub1&templateid={0}" Text="View" ItemStyle-CssClass="chkboxwidth"/>
             <asp:BoundField DataField="Id" HeaderText="computerID" SortExpression="computerID" Visible="False"/>
-            <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ></asp:BoundField>
-          
-          
-         
-           
+            <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name"></asp:BoundField>
+
+
         </Columns>
         <EmptyDataTemplate>
             No Templates Found
         </EmptyDataTemplate>
     </asp:GridView>
-  
+
     <div id="confirmbox" class="confirm-box-outer">
         <div class="confirm-box-inner">
             <h4>
@@ -70,4 +70,3 @@
         </div>
     </div>
 </asp:Content>
-

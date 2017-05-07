@@ -1,15 +1,9 @@
 ﻿using System;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
 public partial class views_admin_dp_edit : Admin
 {
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        if (!IsPostBack) PopulateForm();
-    }
-
     protected void buttonUpdateDp_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.UpdateAdmin);
@@ -41,6 +35,10 @@ public partial class views_admin_dp_edit : Admin
         PhysicalPath.Visible = chkPrimary.Checked;
     }
 
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack) PopulateForm();
+    }
 
 
     protected void PopulateForm()
@@ -61,7 +59,5 @@ public partial class views_admin_dp_edit : Admin
         txtPhysicalPath.Text = distributionPoint.PhysicalPath;
 
         txtBackendServer.Text = distributionPoint.BackendServer;
-
-
     }
 }

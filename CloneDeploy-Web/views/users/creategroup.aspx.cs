@@ -1,19 +1,13 @@
 ﻿using System;
 using CloneDeploy_Entities;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
 public partial class views_users_creategroup : Users
 {
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        RequiresAuthorization(Authorizations.Administrator);
-    }
-
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
-        var userGroup = new CloneDeployUserGroupEntity()
+        var userGroup = new CloneDeployUserGroupEntity
         {
             Name = txtGroupName.Text,
             Membership = ddlGroupMembership.Text,
@@ -35,5 +29,10 @@ public partial class views_users_creategroup : Users
     protected void chkldap_OnCheckedChanged(object sender, EventArgs e)
     {
         divldapgroup.Visible = chkldap.Checked;
+    }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        RequiresAuthorization(Authorizations.Administrator);
     }
 }

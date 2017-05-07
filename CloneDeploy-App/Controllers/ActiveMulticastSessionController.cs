@@ -11,10 +11,9 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class ActiveMulticastSessionController: ApiController
+    public class ActiveMulticastSessionController : ApiController
     {
         private readonly ActiveMulticastSessionServices _activeMulticastSessionServices;
 
@@ -24,37 +23,24 @@ namespace CloneDeploy_App.Controllers
             _activeMulticastSessionServices = new ActiveMulticastSessionServices();
         }
 
+        [CustomAuth(Permission = "ImageTaskMulticast")]
+        public ActionResultDTO Delete(int id)
+        {
+            var result = _activeMulticastSessionServices.Delete(id);
+            if (result.Id == 0)
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound, result));
+            return result;
+        }
 
 
         [Authorize]
         public IEnumerable<ActiveMulticastSessionEntity> GetAll()
         {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
-                             .Select(c => c.Value).SingleOrDefault();
+                .Select(c => c.Value).SingleOrDefault();
 
             return _activeMulticastSessionServices.GetAllMulticastSessions(Convert.ToInt32(userId));
-          
-        }
-
-        [Authorize]
-        public ApiStringResponseDTO GetCount()
-        {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                             .Select(c => c.Value).SingleOrDefault();
-
-            return new ApiStringResponseDTO()
-            {
-                Value = _activeMulticastSessionServices.ActiveCount(Convert.ToInt32(userId))
-            };
-
-        }
-
-        [CustomAuth(Permission = "ImageTaskMulticast")]
-        public IEnumerable<TaskWithComputer> GetMemberStatus(int id)
-        {
-            return new ActiveImagingTaskServices().MulticastMemberStatus(id);       
         }
 
         [CustomAuth(Permission = "ImageTaskMulticast")]
@@ -63,19 +49,29 @@ namespace CloneDeploy_App.Controllers
             return new ActiveImagingTaskServices().GetMulticastComputers(id);
         }
 
+        [Authorize]
+        public ApiStringResponseDTO GetCount()
+        {
+            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                .Select(c => c.Value).SingleOrDefault();
+
+            return new ApiStringResponseDTO
+            {
+                Value = _activeMulticastSessionServices.ActiveCount(Convert.ToInt32(userId))
+            };
+        }
+
+        [CustomAuth(Permission = "ImageTaskMulticast")]
+        public IEnumerable<TaskWithComputer> GetMemberStatus(int id)
+        {
+            return new ActiveImagingTaskServices().MulticastMemberStatus(id);
+        }
+
         [CustomAuth(Permission = "ImageTaskMulticast")]
         public IEnumerable<ActiveImagingTaskEntity> GetProgress(int id)
         {
             return new ActiveImagingTaskServices().MulticastProgress(id);
-           
-        }
-
-        [CustomAuth(Permission = "ImageTaskMulticast")]
-        public ActionResultDTO Delete(int id)
-        {
-            var result = _activeMulticastSessionServices.Delete(id);
-            if (result.Id == 0) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound, result));
-            return result;
         }
     }
 }

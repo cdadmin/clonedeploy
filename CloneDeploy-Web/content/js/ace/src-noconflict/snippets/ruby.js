@@ -1,7 +1,7 @@
-ace.define("ace/snippets/ruby",["require","exports","module"], function(require, exports, module) {
-"use strict";
+ace.define("ace/snippets/ruby", ["require", "exports", "module"], function(require, exports, module) {
+    "use strict";
 
-exports.snippetText = "########################################\n\
+    exports.snippetText = "########################################\n\
 # Ruby snippets - for Rails, see below #\n\
 ########################################\n\
 \n\
@@ -930,6 +930,6 @@ snippet aft\n\
 		${2}\n\
 	end\n\
 ";
-exports.scope = "ruby";
+    exports.scope = "ruby";
 
 });

@@ -7,10 +7,9 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class SysprepTagController: ApiController
+    public class SysprepTagController : ApiController
     {
         private readonly SysprepTagServices _sysprepTagServices;
 
@@ -19,19 +18,12 @@ namespace CloneDeploy_App.Controllers
             _sysprepTagServices = new SysprepTagServices();
         }
 
-        [CustomAuth(Permission = "GlobalRead")]
-        public IEnumerable<SysprepTagEntity> GetAll(string searchstring = "")
+        [CustomAuth(Permission = "GlobalDelete")]
+        public ActionResultDTO Delete(int id)
         {
-            return string.IsNullOrEmpty(searchstring)
-                ? _sysprepTagServices.SearchSysprepTags()
-                : _sysprepTagServices.SearchSysprepTags(searchstring);
-
-        }
-
-        [CustomAuth(Permission = "GlobalRead")]
-        public ApiStringResponseDTO GetCount()
-        {
-            return new ApiStringResponseDTO() {Value = _sysprepTagServices.TotalCount()};
+            var result = _sysprepTagServices.DeleteSysprepTag(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [CustomAuth(Permission = "GlobalRead")]
@@ -40,6 +32,20 @@ namespace CloneDeploy_App.Controllers
             var result = _sysprepTagServices.GetSysprepTag(id);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
+        }
+
+        [CustomAuth(Permission = "GlobalRead")]
+        public IEnumerable<SysprepTagEntity> GetAll(string searchstring = "")
+        {
+            return string.IsNullOrEmpty(searchstring)
+                ? _sysprepTagServices.SearchSysprepTags()
+                : _sysprepTagServices.SearchSysprepTags(searchstring);
+        }
+
+        [CustomAuth(Permission = "GlobalRead")]
+        public ApiStringResponseDTO GetCount()
+        {
+            return new ApiStringResponseDTO {Value = _sysprepTagServices.TotalCount()};
         }
 
         [CustomAuth(Permission = "GlobalCreate")]
@@ -53,14 +59,6 @@ namespace CloneDeploy_App.Controllers
         {
             sysprepTag.Id = id;
             var result = _sysprepTagServices.UpdateSysprepTag(sysprepTag);
-             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
-            return result;
-        }
-
-        [CustomAuth(Permission = "GlobalDelete")]
-        public ActionResultDTO Delete(int id)
-        {
-            var result = _sysprepTagServices.DeleteSysprepTag(id);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
         }

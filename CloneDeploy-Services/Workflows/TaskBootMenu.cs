@@ -131,16 +131,14 @@ namespace CloneDeploy_Services.Workflows
 
                                 if (
                                     !new APICall(new SecondaryServerServices().GetApiToken(secondaryServer.Name))
-                                        .ServiceAccountApi.WriteTftpFile(new TftpFileDTO()
+                                        .ServiceAccountApi.WriteTftpFile(new TftpFileDTO
                                         {
                                             Path = path,
                                             Contents = bootMenu.Item3
                                         }))
                                     return false;
                             }
-
                         }
-
                     }
                 }
             }
@@ -222,14 +220,13 @@ namespace CloneDeploy_Services.Workflows
                         {
                             if (
                                 !new APICall(new SecondaryServerServices().GetApiToken(secondaryServer.Name))
-                                    .ServiceAccountApi.WriteTftpFile(new TftpFileDTO()
+                                    .ServiceAccountApi.WriteTftpFile(new TftpFileDTO
                                     {
                                         Path = path,
                                         Contents = fileContents
                                     }))
                                 return false;
                         }
-
                     }
                 }
             }

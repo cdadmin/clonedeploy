@@ -1,7 +1,7 @@
-ace.define("ace/snippets/sqlserver",["require","exports","module"], function(require, exports, module) {
-"use strict";
+ace.define("ace/snippets/sqlserver", ["require", "exports", "module"], function(require, exports, module) {
+    "use strict";
 
-exports.snippetText = "# ISNULL\n\
+    exports.snippetText = "# ISNULL\n\
 snippet isnull\n\
 	ISNULL(${1:check_expression}, ${2:replacement_value})\n\
 # FORMAT\n\
@@ -71,6 +71,6 @@ snippet createfn\n\
 		\n\
 	END\n\
 	GO";
-exports.scope = "sqlserver";
+    exports.scope = "sqlserver";
 
 });

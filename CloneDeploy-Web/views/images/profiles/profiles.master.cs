@@ -4,13 +4,13 @@ using CloneDeploy_Web.BasePages;
 
 public partial class views_masters_Profile : MasterBaseMaster
 {
+    public ImageEntity Image { get; set; }
     private Images imageBasePage { get; set; }
     public ImageProfileEntity ImageProfile { get; set; }
-    public ImageEntity Image { get; set; }
 
     public void Page_Load(object sender, EventArgs e)
     {
-        imageBasePage = (Page as Images);
+        imageBasePage = Page as Images;
         ImageProfile = imageBasePage.ImageProfile;
         Image = imageBasePage.Image;
 
@@ -29,7 +29,7 @@ public partial class views_masters_Profile : MasterBaseMaster
             linux_profile.Visible = false;
             winpe_profile.Visible = false;
         }
-        else if(Image.Environment == "linux" || Image.Environment == "")
+        else if (Image.Environment == "linux" || Image.Environment == "")
         {
             osx_profile.Visible = false;
             linux_profile.Visible = true;
@@ -41,5 +41,5 @@ public partial class views_masters_Profile : MasterBaseMaster
             linux_profile.Visible = false;
             winpe_profile.Visible = true;
         }
-    } 
+    }
 }

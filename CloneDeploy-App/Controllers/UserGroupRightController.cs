@@ -7,7 +7,7 @@ using CloneDeploy_Services;
 
 namespace CloneDeploy_App.Controllers
 {
-    public class UserGroupRightController: ApiController
+    public class UserGroupRightController : ApiController
     {
         private readonly UserGroupRightServices _userGroupRightServices;
 
@@ -15,13 +15,11 @@ namespace CloneDeploy_App.Controllers
         {
             _userGroupRightServices = new UserGroupRightServices();
         }
-      
+
         [CustomAuth(Permission = "Administrator")]
         public ActionResultDTO Post(List<UserGroupRightEntity> listOfRights)
         {
             return _userGroupRightServices.AddUserGroupRights(listOfRights);
         }
-
-        
     }
 }

@@ -5,25 +5,17 @@ namespace CloneDeploy_Services
 {
     public class MunkiOptionalInstallServices
     {
-         private readonly UnitOfWork _uow;
+        private readonly UnitOfWork _uow;
 
         public MunkiOptionalInstallServices()
         {
             _uow = new UnitOfWork();
         }
 
-       
 
-        public  MunkiManifestOptionInstallEntity GetOptionalInstall(int optionalInstallId)
+        public MunkiManifestOptionInstallEntity GetOptionalInstall(int optionalInstallId)
         {
-            
-                return _uow.MunkiOptionalInstallRepository.GetById(optionalInstallId);
-            
+            return _uow.MunkiOptionalInstallRepository.GetById(optionalInstallId);
         }
-
-      
-       
-
-       
     }
 }

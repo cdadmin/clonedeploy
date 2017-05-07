@@ -1,12 +1,9 @@
-﻿
-
-using CloneDeploy_ApiCalls;
+﻿using CloneDeploy_ApiCalls;
 
 namespace CloneDeploy_Web.Helpers
 {
     public class Settings
     {
-       
         public static string AdLoginDomain
         {
             get { return new APICall().SettingApi.GetSetting("AD Login Domain").Value; }
@@ -15,6 +12,26 @@ namespace CloneDeploy_Web.Helpers
         public static string ClientReceiverArgs
         {
             get { return new APICall().SettingApi.GetSetting("Client Receiver Args").Value; }
+        }
+
+        public static string ClobberEnabled
+        {
+            get { return new APICall().SettingApi.GetSetting("Clobber Enabled").Value; }
+        }
+
+        public static string ClobberProfileId
+        {
+            get { return new APICall().SettingApi.GetSetting("Clobber ProfileId").Value; }
+        }
+
+        public static string ClobberPromptComputerName
+        {
+            get { return new APICall().SettingApi.GetSetting("Clobber Prompt Computer Name").Value; }
+        }
+
+        public static string ClobberRequiresLogin
+        {
+            get { return new APICall().SettingApi.GetSetting("Clobber Requires Login").Value; }
         }
 
         public static string DebugRequiresLogin
@@ -27,19 +44,19 @@ namespace CloneDeploy_Web.Helpers
             get { return new APICall().SettingApi.GetSetting("Default Computer View").Value; }
         }
 
+        public static string DefaultInit
+        {
+            get { return "initrd.xz"; }
+        }
+
         public static string DefaultKernel32
         {
             get { return "4.9.8"; }
         }
-        
+
         public static string DefaultKernel64
         {
             get { return "4.9.8x64"; }
-        }
-
-        public static string DefaultInit
-        {
-            get { return "initrd.xz"; }
         }
 
         public static string EndPort
@@ -57,7 +74,77 @@ namespace CloneDeploy_Web.Helpers
             get { return new APICall().SettingApi.GetSetting("Global Computer Args").Value; }
         }
 
-        
+        public static string IpxeRequiresLogin
+        {
+            get { return new APICall().SettingApi.GetSetting("Ipxe Requires Login").Value; }
+        }
+
+        public static string LdapAuthAttribute
+        {
+            get { return new APICall().SettingApi.GetSetting("Ldap Auth Attribute").Value; }
+        }
+
+        public static string LdapAuthType
+        {
+            get { return new APICall().SettingApi.GetSetting("Ldap Auth Type").Value; }
+        }
+
+        public static string LdapBaseDN
+        {
+            get { return new APICall().SettingApi.GetSetting("Ldap Base DN").Value; }
+        }
+
+        public static string LdapEnabled
+        {
+            get { return new APICall().SettingApi.GetSetting("Ldap Enabled").Value; }
+        }
+
+        public static string LdapPort
+        {
+            get { return new APICall().SettingApi.GetSetting("Ldap Port").Value; }
+        }
+
+        public static string LdapServer
+        {
+            get { return new APICall().SettingApi.GetSetting("Ldap Server").Value; }
+        }
+
+        public static string MulticastDecompression
+        {
+            get { return new APICall().SettingApi.GetSetting("Multicast Decompression").Value; }
+        }
+
+        public static bool MulticastServerRole
+        {
+            get { return new APICall().SettingApi.GetSetting("Multicast Server Role ").Value == "1"; }
+        }
+
+        public static string MunkiBasePath
+        {
+            get { return new APICall().SettingApi.GetSetting("Munki Base Path").Value; }
+        }
+
+        public static string MunkiPathType
+        {
+            get { return new APICall().SettingApi.GetSetting("Munki Path Type").Value; }
+        }
+
+        public static string MunkiSMBDomain
+        {
+            get { return new APICall().SettingApi.GetSetting("Munki SMB Domain").Value; }
+        }
+
+        public static string MunkiSMBPassword
+        {
+            get { return new APICall().SettingApi.GetSetting("Munki SMB Password Encrypted").Value; }
+        }
+
+        public static string MunkiSMBUsername
+        {
+            get { return new APICall().SettingApi.GetSetting("Munki SMB Username").Value; }
+        }
+
+
         public static string OnDemand
         {
             get { return new APICall().SettingApi.GetSetting("On Demand").Value; }
@@ -66,6 +153,11 @@ namespace CloneDeploy_Web.Helpers
         public static string OnDemandRequiresLogin
         {
             get { return new APICall().SettingApi.GetSetting("On Demand Requires Login").Value; }
+        }
+
+        public static string OperationMode
+        {
+            get { return new APICall().SettingApi.GetSetting("Operation Mode").Value; }
         }
 
         public static string ProxyBiosFile
@@ -98,11 +190,15 @@ namespace CloneDeploy_Web.Helpers
             get { return new APICall().SettingApi.GetSetting("Queue Size").Value; }
         }
 
-      
 
         public static string RegisterRequiresLogin
         {
             get { return new APICall().SettingApi.GetSetting("Register Requires Login").Value; }
+        }
+
+        public static string RequireImageApproval
+        {
+            get { return new APICall().SettingApi.GetSetting("Require Image Approval").Value; }
         }
 
         public static string SenderArgs
@@ -110,14 +206,54 @@ namespace CloneDeploy_Web.Helpers
             get { return new APICall().SettingApi.GetSetting("Sender Args").Value; }
         }
 
+        public static string ServerIdentifier
+        {
+            get { return new APICall().SettingApi.GetSetting("Server Identifier").Value; }
+        }
+
         public static string ServerIp
         {
             get { return new APICall().SettingApi.GetSetting("Server IP").Value; }
         }
 
-        public static string UniversalToken
+        public static string SmtpEnabled
         {
-            get { return new APICall().SettingApi.GetSetting("Universal Token").Value; }
+            get { return new APICall().SettingApi.GetSetting("Smtp Enabled").Value; }
+        }
+
+        public static string SmtpMailFrom
+        {
+            get { return new APICall().SettingApi.GetSetting("Smtp Mail From").Value; }
+        }
+
+        public static string SmtpMailTo
+        {
+            get { return new APICall().SettingApi.GetSetting("Smtp Mail To").Value; }
+        }
+
+        public static string SmtpPassword
+        {
+            get { return new APICall().SettingApi.GetSetting("Smtp Password Encrypted").Value; }
+        }
+
+        public static string SmtpPort
+        {
+            get { return new APICall().SettingApi.GetSetting("Smtp Port").Value; }
+        }
+
+        public static string SmtpServer
+        {
+            get { return new APICall().SettingApi.GetSetting("Smtp Server").Value; }
+        }
+
+        public static string SmtpSsl
+        {
+            get { return new APICall().SettingApi.GetSetting("Smtp Ssl").Value; }
+        }
+
+        public static string SmtpUsername
+        {
+            get { return new APICall().SettingApi.GetSetting("Smtp Username").Value; }
         }
 
         public static string StartPort
@@ -128,6 +264,22 @@ namespace CloneDeploy_Web.Helpers
         public static string TftpPath
         {
             get { return new APICall().SettingApi.GetSetting("Tftp Path").Value; }
+        }
+
+        public static string TftpServerIp
+        {
+            get { return new APICall().SettingApi.GetSetting("Tftp Server IP").Value; }
+        }
+
+
+        public static bool TftpServerRole
+        {
+            get { return new APICall().SettingApi.GetSetting("Tftp Server Role ").Value == "1"; }
+        }
+
+        public static string UniversalToken
+        {
+            get { return new APICall().SettingApi.GetSetting("Universal Token").Value; }
         }
 
         public static string WebPath
@@ -144,163 +296,5 @@ namespace CloneDeploy_Web.Helpers
         {
             get { return new APICall().SettingApi.GetSetting("Web Task Requires Login").Value; }
         }
-
-        public static string SmtpServer
-        {
-            get { return new APICall().SettingApi.GetSetting("Smtp Server").Value; }
-        }
-
-        public static string SmtpPort
-        {
-            get { return new APICall().SettingApi.GetSetting("Smtp Port").Value; }
-        }
-
-        public static string SmtpUsername
-        {
-            get { return new APICall().SettingApi.GetSetting("Smtp Username").Value; }
-        }
-
-        public static string SmtpPassword
-        {
-            get { return new APICall().SettingApi.GetSetting("Smtp Password Encrypted").Value; }
-        }
-
-        public static string SmtpMailFrom
-        {
-            get { return new APICall().SettingApi.GetSetting("Smtp Mail From").Value; }
-        }
-
-        public static string SmtpMailTo
-        {
-            get { return new APICall().SettingApi.GetSetting("Smtp Mail To").Value; }
-        }
-
-        public static string SmtpSsl
-        {
-            get { return new APICall().SettingApi.GetSetting("Smtp Ssl").Value; }
-        }
-
-        public static string SmtpEnabled
-        {
-            get { return new APICall().SettingApi.GetSetting("Smtp Enabled").Value; }
-        }
-
-        public static string RequireImageApproval
-        {
-            get { return new APICall().SettingApi.GetSetting("Require Image Approval").Value; }
-        }
-
-        public static string MulticastDecompression
-        {
-            get { return new APICall().SettingApi.GetSetting("Multicast Decompression").Value; }
-        }
-
-        public static string IpxeRequiresLogin
-        {
-            get { return new APICall().SettingApi.GetSetting("Ipxe Requires Login").Value; }
-        }
-
-        public static string LdapEnabled
-        {
-            get { return new APICall().SettingApi.GetSetting("Ldap Enabled").Value; }
-        }
-
-        public static string LdapServer
-        {
-            get { return new APICall().SettingApi.GetSetting("Ldap Server").Value; }
-        }
-
-        public static string LdapPort
-        {
-            get { return new APICall().SettingApi.GetSetting("Ldap Port").Value; }
-        }
-
-        public static string LdapAuthAttribute
-        {
-            get { return new APICall().SettingApi.GetSetting("Ldap Auth Attribute").Value; }
-        }
-
-        public static string LdapBaseDN
-        {
-            get { return new APICall().SettingApi.GetSetting("Ldap Base DN").Value; }
-        }
-
-        public static string LdapAuthType
-        {
-            get { return new APICall().SettingApi.GetSetting("Ldap Auth Type").Value; }
-        }
-
-        public static string MunkiPathType
-        {
-            get { return new APICall().SettingApi.GetSetting("Munki Path Type").Value; }
-        }
-
-        public static string MunkiBasePath
-        {
-            get { return new APICall().SettingApi.GetSetting("Munki Base Path").Value; }
-        }
-
-        public static string MunkiSMBUsername
-        {
-            get { return new APICall().SettingApi.GetSetting("Munki SMB Username").Value; }
-        }
-
-        public static string MunkiSMBPassword
-        {
-            get { return new APICall().SettingApi.GetSetting("Munki SMB Password Encrypted").Value; }
-        }
-
-        public static string MunkiSMBDomain
-        {
-            get { return new APICall().SettingApi.GetSetting("Munki SMB Domain").Value; }
-        }
-
-        public static string ClobberEnabled
-        {
-            get { return new APICall().SettingApi.GetSetting("Clobber Enabled").Value; }
-        }
-
-        public static string ClobberProfileId
-        {
-            get { return new APICall().SettingApi.GetSetting("Clobber ProfileId").Value; }
-        }
-
-        public static string ClobberRequiresLogin
-        {
-            get { return new APICall().SettingApi.GetSetting("Clobber Requires Login").Value; }
-        }
-
-        public static string ClobberPromptComputerName
-        {
-            get { return new APICall().SettingApi.GetSetting("Clobber Prompt Computer Name").Value; }
-        }
-
-        public static string ServerIdentifier
-        {
-            get { return new APICall().SettingApi.GetSetting("Server Identifier").Value; }
-        }
-
-        public static string OperationMode
-        {
-            get { return new APICall().SettingApi.GetSetting("Operation Mode").Value; }
-        }
-
-      
-
-        public static bool TftpServerRole
-        {
-            get { return new APICall().SettingApi.GetSetting("Tftp Server Role ").Value == "1"; }
-        }
-
-        public static bool MulticastServerRole
-        {
-            get { return new APICall().SettingApi.GetSetting("Multicast Server Role ").Value == "1"; }
-        }
-
-        public static string TftpServerIp
-        {
-            get { return new APICall().SettingApi.GetSetting("Tftp Server IP").Value; }
-        }
-    
     }
 }

@@ -1,28 +1,19 @@
 ﻿using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class CdVersionController: ApiController
+    public class CdVersionController : ApiController
     {
-         private readonly CdVersionServices _cdVersionServices;
+        private readonly CdVersionServices _cdVersionServices;
 
         public CdVersionController()
         {
             _cdVersionServices = new CdVersionServices();
-        }
-
-        [HttpGet]
-        [Authorize]
-        public ApiBoolResponseDTO IsFirstRunCompleted()
-        {
-            return new ApiBoolResponseDTO() {Value = _cdVersionServices.FirstRunCompleted()};
         }
 
         [Authorize]
@@ -33,8 +24,11 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-      
-
-       
+        [HttpGet]
+        [Authorize]
+        public ApiBoolResponseDTO IsFirstRunCompleted()
+        {
+            return new ApiBoolResponseDTO {Value = _cdVersionServices.FirstRunCompleted()};
+        }
     }
 }

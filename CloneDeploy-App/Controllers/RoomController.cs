@@ -7,31 +7,23 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class RoomController: ApiController
+    public class RoomController : ApiController
     {
         private readonly RoomServices _roomServices;
 
         public RoomController()
         {
-            _roomServices = new RoomServices();    
+            _roomServices = new RoomServices();
         }
 
-        [CustomAuth(Permission = "GlobalRead")]
-        public IEnumerable<RoomWithClusterGroup> GetAll(string searchstring = "")
+        [CustomAuth(Permission = "GlobalDelete")]
+        public ActionResultDTO Delete(int id)
         {
-            return string.IsNullOrEmpty(searchstring)
-                ? _roomServices.SearchRooms()
-                : _roomServices.SearchRooms(searchstring);
-
-        }
-
-        [CustomAuth(Permission = "GlobalRead")]
-        public ApiStringResponseDTO GetCount()
-        {
-            return new ApiStringResponseDTO() {Value = _roomServices.TotalCount()};
+            var result = _roomServices.DeleteRoom(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [CustomAuth(Permission = "GlobalRead")]
@@ -42,10 +34,24 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
+        [CustomAuth(Permission = "GlobalRead")]
+        public IEnumerable<RoomWithClusterGroup> GetAll(string searchstring = "")
+        {
+            return string.IsNullOrEmpty(searchstring)
+                ? _roomServices.SearchRooms()
+                : _roomServices.SearchRooms(searchstring);
+        }
+
+        [CustomAuth(Permission = "GlobalRead")]
+        public ApiStringResponseDTO GetCount()
+        {
+            return new ApiStringResponseDTO {Value = _roomServices.TotalCount()};
+        }
+
         [CustomAuth(Permission = "GlobalCreate")]
         public ActionResultDTO Post(RoomEntity room)
         {
-            return _roomServices.AddRoom(room);            
+            return _roomServices.AddRoom(room);
         }
 
         [CustomAuth(Permission = "GlobalUpdate")]
@@ -53,14 +59,6 @@ namespace CloneDeploy_App.Controllers
         {
             room.Id = id;
             var result = _roomServices.UpdateRoom(room);
-            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
-            return result;
-        }
-
-        [CustomAuth(Permission = "GlobalDelete")]
-        public ActionResultDTO Delete(int id)
-        {
-            var result = _roomServices.DeleteRoom(id);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
         }

@@ -1,22 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
-
 public partial class views_login_firstrun : PageBaseMaster
 {
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        if(Call.CdVersionApi.IsFirstRunCompleted())
-            Response.Redirect("~/views/dashboard/dash.aspx");
-    }
-
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
         string unixDist = null;
@@ -26,7 +17,7 @@ public partial class views_login_firstrun : PageBaseMaster
             adminUser.Salt = Utility.CreateSalt(64);
             adminUser.Password = Utility.CreatePasswordHash(txtUserPwd.Text, adminUser.Salt);
             adminUser.Token = Utility.GenerateKey();
-            Call.CloneDeployUserApi.Put(adminUser.Id,adminUser);
+            Call.CloneDeployUserApi.Put(adminUser.Id, adminUser);
 
             string tftpPath = null;
             if (Environment.OSVersion.ToString().Contains("Unix"))
@@ -45,7 +36,6 @@ public partial class views_login_firstrun : PageBaseMaster
 
                 unixDist = dist != null && dist.ToLower().Contains("bsd") ? "bsd" : "linux";
                 tftpPath = unixDist == "bsd" ? "/usr/pbi/clonedeploy-amd64/tftpboot/" : "/tftpboot/";
-
             }
             else
             {
@@ -62,13 +52,13 @@ public partial class views_login_firstrun : PageBaseMaster
 
             var listSettings = new List<SettingEntity>
             {
-                new SettingEntity()
+                new SettingEntity
                 {
                     Name = "Server IP",
                     Value = txtServerIP.Text,
                     Id = Call.SettingApi.GetSetting("Server IP").Id
                 },
-                new SettingEntity()
+                new SettingEntity
                 {
                     Name = "Tftp Path",
                     Value = tftpPath,
@@ -122,23 +112,23 @@ public partial class views_login_firstrun : PageBaseMaster
                     Value = txtReadOnly.Text,
                     Id = Call.SettingApi.GetSetting("Image ReadOnly Password Encrypted").Id
                 },
-                 new SettingEntity
+                new SettingEntity
                 {
                     Name = "Image Physical Path",
                     Value = physicalPath,
                     Id = Call.SettingApi.GetSetting("Image Physical Path").Id
                 },
-                 new SettingEntity
+                new SettingEntity
                 {
                     Name = "Image Queue Size",
                     Value = "3",
                     Id = Call.SettingApi.GetSetting("Image Queue Size").Id
-                },
+                }
             };
 
             if (unixDist == "bsd")
             {
-                listSettings.Add(new SettingEntity()
+                listSettings.Add(new SettingEntity
                 {
                     Name = "Sender Args",
                     Value = "--interface " + txtServerIP.Text,
@@ -158,18 +148,26 @@ public partial class views_login_firstrun : PageBaseMaster
             var cdVersion = Call.CdVersionApi.Get(1);
             cdVersion.FirstRunCompleted = 1;
 
-            if (Call.CdVersionApi.Put(cdVersion.Id,cdVersion).Success)
+            if (Call.CdVersionApi.Put(cdVersion.Id, cdVersion).Success)
             {
                 EndUserMessage = "Setup Complete";
                 Response.Redirect("~/views/dashboard/dash.aspx");
             }
         }
     }
-    
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (Call.CdVersionApi.IsFirstRunCompleted())
+            Response.Redirect("~/views/dashboard/dash.aspx");
+    }
+
 
     private bool ValidateForm()
     {
-        if(string.IsNullOrEmpty(txtUserPwd.Text) || string.IsNullOrEmpty(txtUserPwdConfirm.Text) || string.IsNullOrEmpty(txtServerIP.Text) || string.IsNullOrEmpty(txtReadOnly.Text) || string.IsNullOrEmpty(txtReadWrite.Text))
+        if (string.IsNullOrEmpty(txtUserPwd.Text) || string.IsNullOrEmpty(txtUserPwdConfirm.Text) ||
+            string.IsNullOrEmpty(txtServerIP.Text) || string.IsNullOrEmpty(txtReadOnly.Text) ||
+            string.IsNullOrEmpty(txtReadWrite.Text))
         {
             EndUserMessage = "Values Cannot Be Empty";
             return false;
@@ -181,11 +179,8 @@ public partial class views_login_firstrun : PageBaseMaster
             {
                 return true;
             }
-            else
-            {
-                EndUserMessage = "Admin Passwords Did Not Match";
-                return false;
-            }
+            EndUserMessage = "Admin Passwords Did Not Match";
+            return false;
         }
         return true;
     }

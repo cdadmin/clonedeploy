@@ -1,24 +1,17 @@
 ﻿using System;
 using CloneDeploy_Entities;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
 public partial class views_global_munki_manifestcreate : Global
 {
-    protected void Page_Load(object sender, EventArgs e)
-    {
-
-    }
-
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.CreateGlobal);
-        var manifestTemplate = new MunkiManifestTemplateEntity()
+        var manifestTemplate = new MunkiManifestTemplateEntity
         {
             Name = txtManifestName.Text,
-            Description = txtManifestDesc.Text,
-          
+            Description = txtManifestDesc.Text
         };
 
         var result = Call.MunkiManifestTemplateApi.Post(manifestTemplate);
@@ -31,5 +24,9 @@ public partial class views_global_munki_manifestcreate : Global
         {
             EndUserMessage = result.ErrorMessage;
         }
+    }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
     }
 }

@@ -1,56 +1,10 @@
 ﻿using System;
 using CloneDeploy_Entities;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
 public partial class views_computers_bootmenu_custom : Computers
 {
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        if(!IsPostBack) PopulateForm();
-    }
-
-    protected void PopulateForm()
-    {
-        chkEnabled.Checked = Computer.CustomBootEnabled == 1;
-        PopulateBootTemplatesDdl(ddlTemplates);
-        var bootMenu = Call.ComputerApi.GetBootMenu(Computer.Id);
-        
-
-        if (Settings.ProxyDhcp == "Yes")
-        {
-            divProxy.Visible = true;
-            if(bootMenu == null) return;
-            switch (ddlProxyMode.Text)
-            {
-                case "bios":
-                    scriptEditor.Value = bootMenu.BiosMenu;
-                    break;
-                case "efi32":
-                    scriptEditor.Value = bootMenu.Efi32Menu;
-                    break;
-                case "efi64":
-                    scriptEditor.Value = bootMenu.Efi64Menu;
-                    break;
-            }
-        }
-        else
-        {
-            if(bootMenu == null) return;
-            scriptEditor.Value = bootMenu.BiosMenu;
-        }
-
-        
-    }
-
-    protected void ddlTemplates_OnSelectedIndexChanged(object sender, EventArgs e)
-    {
-        scriptEditor.Value = "";
-        if (ddlTemplates.SelectedValue == "-1") return;
-        scriptEditor.Value = Call.BootTemplateApi.Get(Convert.ToInt32(ddlTemplates.SelectedValue)).Contents;
-    }
-
     protected void buttonUpdate_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorizationOrManagedComputer(Authorizations.UpdateComputer, Computer.Id);
@@ -85,11 +39,54 @@ public partial class views_computers_bootmenu_custom : Computers
 
     protected void chkEnabled_OnCheckedChanged(object sender, EventArgs e)
     {
-        Call.ComputerApi.ToggleBootMenu(Computer.Id, chkEnabled.Checked);     
+        Call.ComputerApi.ToggleBootMenu(Computer.Id, chkEnabled.Checked);
     }
 
     protected void ddlProxyMode_OnSelectedIndexChanged(object sender, EventArgs e)
     {
         PopulateForm();
+    }
+
+    protected void ddlTemplates_OnSelectedIndexChanged(object sender, EventArgs e)
+    {
+        scriptEditor.Value = "";
+        if (ddlTemplates.SelectedValue == "-1") return;
+        scriptEditor.Value = Call.BootTemplateApi.Get(Convert.ToInt32(ddlTemplates.SelectedValue)).Contents;
+    }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack) PopulateForm();
+    }
+
+    protected void PopulateForm()
+    {
+        chkEnabled.Checked = Computer.CustomBootEnabled == 1;
+        PopulateBootTemplatesDdl(ddlTemplates);
+        var bootMenu = Call.ComputerApi.GetBootMenu(Computer.Id);
+
+
+        if (Settings.ProxyDhcp == "Yes")
+        {
+            divProxy.Visible = true;
+            if (bootMenu == null) return;
+            switch (ddlProxyMode.Text)
+            {
+                case "bios":
+                    scriptEditor.Value = bootMenu.BiosMenu;
+                    break;
+                case "efi32":
+                    scriptEditor.Value = bootMenu.Efi32Menu;
+                    break;
+                case "efi64":
+                    scriptEditor.Value = bootMenu.Efi64Menu;
+                    break;
+            }
+        }
+        else
+        {
+            if (bootMenu == null) return;
+            scriptEditor.Value = bootMenu.BiosMenu;
+        }
     }
 }

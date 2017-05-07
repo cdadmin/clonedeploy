@@ -15,10 +15,11 @@ namespace CloneDeploy_Services
 {
     public class ImageServices
     {
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
         private readonly UnitOfWork _uow;
 
         private readonly UserServices _userServices = new UserServices();
+        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+
         public ImageServices()
         {
             _uow = new UnitOfWork();
@@ -30,7 +31,6 @@ namespace CloneDeploy_Services
             var actionResult = new ActionResultDTO();
             if (validationResult.Success)
             {
-
                 _uow.ImageRepository.Insert(image);
                 _uow.Save();
                 actionResult.Id = image.Id;
@@ -45,13 +45,11 @@ namespace CloneDeploy_Services
                     new FileOps().SetUnixPermissionsImage(Settings.PrimaryStoragePath + "images" +
                                                           Path.DirectorySeparatorChar + image.Name);
                     actionResult.Success = true;
-
                 }
                 catch (Exception ex)
                 {
                     log.Debug(ex.Message);
                     actionResult.ErrorMessage = "Could Not Create Image Directory.";
-                   
                 }
             }
             else
@@ -61,215 +59,14 @@ namespace CloneDeploy_Services
             }
 
 
-
-
-
             return actionResult;
-        }
-
-
-
-        public ActionResultDTO DeleteImage(int imageId)
-        {
-            var image = GetImage(imageId);
-            if (image == null)
-                return new ActionResultDTO() {ErrorMessage = "Image Not Found", Id = 0};
-            var result = new ActionResultDTO();
-
-            if (Convert.ToBoolean(image.Protected))
-            {
-                result.ErrorMessage = "This Image Is Protected And Cannot Be Deleted";
-                return result;
-            }
-
-            _uow.ImageRepository.Delete(image.Id);
-            _uow.Save();
-            result.Id = imageId;
-            if (string.IsNullOrEmpty(image.Name)) return result;
-            DeleteAllUserManagementsForImage(image.Id);
-            DeleteAllProfilesForImage(image.Id);
-            try
-            {
-                if (Directory.Exists(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name))
-                    Directory.Delete(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name,
-                        true);
-
-                result.Success = true;
-            }
-            catch (Exception ex)
-            {
-                log.Debug(ex.Message);
-                result.ErrorMessage = "Could Not Delete Image Folder";
-                result.Success = false;
-
-            }
-
-
-            return result;
-
-
-
-        }
-
-        public  ImageEntity GetImage(int imageId)
-        {
-            
-                return _uow.ImageRepository.GetById(imageId);
-            
-        }
-
-        public  void SendImageApprovedEmail(int imageId)
-        {
-            //Mail not enabled
-            if (Settings.SmtpEnabled == "0") return;
-
-            var image = GetImage(imageId);
-            foreach (var user in _userServices.SearchUsers("").Where(x => x.NotifyImageApproved == 1 && !string.IsNullOrEmpty(x.Email)))
-            {
-                var mail = new Mail
-                {
-                    MailTo = user.Email,
-                    Body = image.Name + " Has Been Approved",
-                    Subject = "Image Approved"
-                };
-                mail.Send();
-            }
-        }
-
-        
-        public  string ImageCountUser(int userId)
-        {
-            if (_userServices.GetUser(userId).Membership == "Administrator")
-                return TotalCount();
-
-            var userManagedImages = _userServices.GetUserImageManagements(userId);
-            
-            //If count is zero image management is not being used return total count
-            return userManagedImages.Count == 0 ? TotalCount() : userManagedImages.Count.ToString();
-        }
-
-        public List<ImageEntity> SearchImagesForUser(int userId, string searchString = "")
-        {
-            if (_userServices.GetUser(userId).Membership == "Administrator")
-                return SearchImages(searchString);
-
-
-            var listOfImages = new List<ImageEntity>();
-
-            var userManagedImages = _userServices.GetUserImageManagements(userId);
-            if (userManagedImages.Count == 0)
-                return SearchImages(searchString);
-
-            else
-            {
-
-                listOfImages.AddRange(
-                    userManagedImages.Select(
-                        managedImage =>
-                            _uow.ImageRepository.GetFirstOrDefault(
-                                i => i.Name.Contains(searchString) && i.Id == managedImage.ImageId)));
-
-
-
-                return listOfImages;
-            }
-
-        }
-
-
-        public  List<ImageEntity> GetOnDemandImageList(int userId = 0)
-        {
-           
-                if (userId == 0)
-                    return _uow.ImageRepository.Get(i => i.IsVisible == 1 && i.Enabled == 1, orderBy: (q => q.OrderBy(p => p.Name)));
-                else
-                {
-                    if (_userServices.GetUser(userId).Membership == "Administrator")
-                        return _uow.ImageRepository.Get(i => i.IsVisible == 1 && i.Enabled == 1, orderBy: (q => q.OrderBy(p => p.Name)));
-
-                    var userManagedImages = _userServices.GetUserImageManagements(userId);
-                    if (userManagedImages.Count == 0)
-                        return _uow.ImageRepository.Get(i => i.IsVisible == 1 && i.Enabled == 1, orderBy: (q => q.OrderBy(p => p.Name)));
-                    else
-                    {
-                        var listOfImages = new List<ImageEntity>();
-                         listOfImages.AddRange(userManagedImages.Select(managedImage => _uow.ImageRepository.GetFirstOrDefault(i => i.IsVisible == 1 && i.Id == managedImage.ImageId && i.Enabled == 1)));
-                        return listOfImages;
-                    }
-                }
-            
-        }
-
-        public  List<ImageEntity> SearchImages(string searchString = "")
-        {
-            
-                return _uow.ImageRepository.Get(i => i.Name.Contains(searchString));
-            
-        }
-
-        public ActionResultDTO UpdateImage(ImageEntity image)
-        {
-            var originalImage = GetImage(image.Id);
-            if (originalImage == null)
-                return new ActionResultDTO() {ErrorMessage = "Image Not Found", Id = 0};
-            var result = new ActionResultDTO();
-
-            bool updateFolderName = originalImage.Name != image.Name;
-            var oldName = originalImage.Name;
-            var validationResult = ValidateImage(image, false);
-            if (validationResult.Success)
-            {
-                _uow.ImageRepository.Update(image, image.Id);
-                _uow.Save();
-                result.Id = image.Id;
-                if (updateFolderName)
-                {
-                    try
-                    {
-                        new FileOps().RenameFolder(oldName, image.Name);
-                        result.Success = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        log.Debug(ex.Message);
-                        result.ErrorMessage = "Could Not Rename Image Folder";
-                        result.Success = false;
-                    }
-                }
-                else
-                {
-                    result.Success = true;
-                }
-
-
-            }
-            return result;
-
-        }
-
-        public bool DeleteAllUserManagementsForImage(int imageId)
-        {
-
-            _uow.UserImageManagementRepository.DeleteRange(x => x.ImageId == imageId);
-            _uow.Save();
-            return true;
-
-        }
-
-        public bool DeleteAllProfilesForImage(int imageId)
-        {
-
-            _uow.ImageProfileRepository.DeleteRange(x => x.ImageId == imageId);
-            _uow.Save();
-            return true;
-
         }
 
         public static string Calculate_Hash(string fileName)
         {
             long read = 0;
             var r = -1;
-            const long bytesToRead = 100 * 1024 * 1024;
+            const long bytesToRead = 100*1024*1024;
             const int bufferSize = 4096;
             var buffer = new byte[bufferSize];
             var sha = new SHA256Managed();
@@ -278,7 +75,7 @@ namespace CloneDeploy_Services
             {
                 while (read <= bytesToRead && r != 0)
                 {
-                    read += (r = stream.Read(buffer, 0, bufferSize));
+                    read += r = stream.Read(buffer, 0, bufferSize);
                     sha.TransformBlock(buffer, 0, r, null, 0);
                 }
             }
@@ -286,41 +83,7 @@ namespace CloneDeploy_Services
             return string.Join("", sha.Hash.Select(x => x.ToString("x2")));
         }
 
-        
-
-        private  string TotalCount()
-        {
-           
-                return _uow.ImageRepository.Count();
-            
-        }
-
-        public int ImportCsv(string csvContents)
-        {
-            var importCounter = 0;
-            using (var csv = new CsvReader(new StringReader(csvContents)))
-            {
-                csv.Configuration.RegisterClassMap<ImageCsvMap>();
-                var records = csv.GetRecords<ImageEntity>();
-                foreach (var image in records)
-                {
-                    if (AddImage(image).Success)
-                        importCounter++;
-                }
-            }
-            return importCounter;
-        }
-
-        public void ExportCsv(string path)
-        {
-            using (var csv = new CsvWriter(new StreamWriter(path)))
-            {
-                csv.Configuration.RegisterClassMap<ImageCsvMap>();
-                csv.WriteRecords(SearchImages());
-            }
-        }
-
-        public  ActionResultDTO CheckApprovalAndChecksum(ImageEntity image, int userId)
+        public ActionResultDTO CheckApprovalAndChecksum(ImageEntity image, int userId)
         {
             var actionResult = new ActionResultDTO();
             if (image == null)
@@ -351,59 +114,202 @@ namespace CloneDeploy_Services
                 }
             }
 
-          
 
             actionResult.Success = true;
             return actionResult;
         }
 
-        private  ValidationResultDTO ValidateImage(ImageEntity image, bool isNewImage)
+        public bool DeleteAllProfilesForImage(int imageId)
         {
-            var validationResult = new ValidationResultDTO() {Success = true};
+            _uow.ImageProfileRepository.DeleteRange(x => x.ImageId == imageId);
+            _uow.Save();
+            return true;
+        }
 
-            if (string.IsNullOrEmpty(image.Name) || !image.Name.All(c => char.IsLetterOrDigit(c) || c == '_' || c == '-'))
+        public bool DeleteAllUserManagementsForImage(int imageId)
+        {
+            _uow.UserImageManagementRepository.DeleteRange(x => x.ImageId == imageId);
+            _uow.Save();
+            return true;
+        }
+
+
+        public ActionResultDTO DeleteImage(int imageId)
+        {
+            var image = GetImage(imageId);
+            if (image == null)
+                return new ActionResultDTO {ErrorMessage = "Image Not Found", Id = 0};
+            var result = new ActionResultDTO();
+
+            if (Convert.ToBoolean(image.Protected))
             {
-                validationResult.Success = false;
-                validationResult.ErrorMessage = "Image Name Is Not Valid";
-                return validationResult;
+                result.ErrorMessage = "This Image Is Protected And Cannot Be Deleted";
+                return result;
             }
 
-            if (isNewImage)
+            _uow.ImageRepository.Delete(image.Id);
+            _uow.Save();
+            result.Id = imageId;
+            if (string.IsNullOrEmpty(image.Name)) return result;
+            DeleteAllUserManagementsForImage(image.Id);
+            DeleteAllProfilesForImage(image.Id);
+            try
             {
-               
-                    if (_uow.ImageRepository.Exists(h => h.Name == image.Name))
-                    {
-                        validationResult.Success = false;
-                        validationResult.ErrorMessage = "This Image Already Exists";
-                        return validationResult;
-                    }
-                
+                if (Directory.Exists(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name))
+                    Directory.Delete(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name,
+                        true);
+
+                result.Success = true;
             }
-            else
+            catch (Exception ex)
             {
-                
-                    var originalImage = _uow.ImageRepository.GetById(image.Id);
-                    if (originalImage.Name != image.Name)
-                    {
-                        if (_uow.ImageRepository.Exists(h => h.Name == image.Name))
-                        {
-                            validationResult.Success = false;
-                            validationResult.ErrorMessage = "This Image Already Exists";
-                            return validationResult;
-                        }
-                    }
-                
+                log.Debug(ex.Message);
+                result.ErrorMessage = "Could Not Delete Image Folder";
+                result.Success = false;
             }
 
-            return validationResult;
+
+            return result;
+        }
+
+        public void ExportCsv(string path)
+        {
+            using (var csv = new CsvWriter(new StreamWriter(path)))
+            {
+                csv.Configuration.RegisterClassMap<ImageCsvMap>();
+                csv.WriteRecords(SearchImages());
+            }
+        }
+
+        public ImageEntity GetImage(int imageId)
+        {
+            return _uow.ImageRepository.GetById(imageId);
+        }
+
+
+        public List<ImageEntity> GetOnDemandImageList(int userId = 0)
+        {
+            if (userId == 0)
+                return _uow.ImageRepository.Get(i => i.IsVisible == 1 && i.Enabled == 1, q => q.OrderBy(p => p.Name));
+            if (_userServices.GetUser(userId).Membership == "Administrator")
+                return _uow.ImageRepository.Get(i => i.IsVisible == 1 && i.Enabled == 1, q => q.OrderBy(p => p.Name));
+
+            var userManagedImages = _userServices.GetUserImageManagements(userId);
+            if (userManagedImages.Count == 0)
+                return _uow.ImageRepository.Get(i => i.IsVisible == 1 && i.Enabled == 1, q => q.OrderBy(p => p.Name));
+            var listOfImages = new List<ImageEntity>();
+            listOfImages.AddRange(
+                userManagedImages.Select(
+                    managedImage =>
+                        _uow.ImageRepository.GetFirstOrDefault(
+                            i => i.IsVisible == 1 && i.Id == managedImage.ImageId && i.Enabled == 1)));
+            return listOfImages;
+        }
+
+        public List<ImageFileInfo> GetPartitionImageFileInfoForGridView(int imageId, string selectedHd,
+            string selectedPartition)
+        {
+            var image = GetImage(imageId);
+            try
+            {
+                var imageFile =
+                    Directory.GetFiles(
+                        Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name +
+                        Path.DirectorySeparatorChar + "hd" + selectedHd +
+                        Path.DirectorySeparatorChar,
+                        "part" + selectedPartition + ".*").FirstOrDefault();
+
+                var fi = new FileInfo(imageFile);
+                var imageFileInfo = new ImageFileInfo
+                {
+                    FileName = fi.Name,
+                    FileSize = (fi.Length/1024f/1024f).ToString("#.##") + " MB"
+                };
+
+                return new List<ImageFileInfo> {imageFileInfo};
+            }
+            catch (Exception ex)
+            {
+                log.Debug(ex.Message);
+                return null;
+            }
+        }
+
+
+        public string ImageCountUser(int userId)
+        {
+            if (_userServices.GetUser(userId).Membership == "Administrator")
+                return TotalCount();
+
+            var userManagedImages = _userServices.GetUserImageManagements(userId);
+
+            //If count is zero image management is not being used return total count
+            return userManagedImages.Count == 0 ? TotalCount() : userManagedImages.Count.ToString();
+        }
+
+        public string ImageSizeOnServerForGridView(string imageName, string hdNumber)
+        {
+            try
+            {
+                var imagePath = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + imageName +
+                                Path.DirectorySeparatorChar + "hd" + hdNumber;
+                var size = new FileOps().GetDirectorySize(new DirectoryInfo(imagePath))/1024f/1024f/1024f;
+                return Math.Abs(size) < 0.1f ? "< 100M" : size.ToString("#.##") + " GB";
+            }
+            catch
+            {
+                return "N/A";
+            }
+        }
+
+        public int ImportCsv(string csvContents)
+        {
+            var importCounter = 0;
+            using (var csv = new CsvReader(new StringReader(csvContents)))
+            {
+                csv.Configuration.RegisterClassMap<ImageCsvMap>();
+                var records = csv.GetRecords<ImageEntity>();
+                foreach (var image in records)
+                {
+                    if (AddImage(image).Success)
+                        importCounter++;
+                }
+            }
+            return importCounter;
+        }
+
+        public List<ImageEntity> SearchImages(string searchString = "")
+        {
+            return _uow.ImageRepository.Get(i => i.Name.Contains(searchString));
+        }
+
+        public List<ImageEntity> SearchImagesForUser(int userId, string searchString = "")
+        {
+            if (_userServices.GetUser(userId).Membership == "Administrator")
+                return SearchImages(searchString);
+
+
+            var listOfImages = new List<ImageEntity>();
+
+            var userManagedImages = _userServices.GetUserImageManagements(userId);
+            if (userManagedImages.Count == 0)
+                return SearchImages(searchString);
+
+            listOfImages.AddRange(
+                userManagedImages.Select(
+                    managedImage =>
+                        _uow.ImageRepository.GetFirstOrDefault(
+                            i => i.Name.Contains(searchString) && i.Id == managedImage.ImageId)));
+
+
+            return listOfImages;
         }
 
         public List<ImageProfileEntity> SearchProfiles(int imageId)
         {
             using (var uow = new UnitOfWork())
             {
-                return uow.ImageProfileRepository.Get(p => p.ImageId == imageId,
-                    orderBy: (q => q.OrderBy(p => p.Name)));
+                return uow.ImageProfileRepository.Get(p => p.ImageId == imageId, q => q.OrderBy(p => p.Name));
             }
         }
 
@@ -434,45 +340,106 @@ namespace CloneDeploy_Services
             return imageProfile;
         }
 
-        public string ImageSizeOnServerForGridView(string imageName, string hdNumber)
+        public void SendImageApprovedEmail(int imageId)
         {
-            try
+            //Mail not enabled
+            if (Settings.SmtpEnabled == "0") return;
+
+            var image = GetImage(imageId);
+            foreach (
+                var user in
+                    _userServices.SearchUsers("")
+                        .Where(x => x.NotifyImageApproved == 1 && !string.IsNullOrEmpty(x.Email)))
             {
-                var imagePath = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + imageName + Path.DirectorySeparatorChar + "hd" + hdNumber;
-                var size = new FileOps().GetDirectorySize(new DirectoryInfo(imagePath)) / 1024f / 1024f / 1024f;
-                return Math.Abs(size) < 0.1f ? "< 100M" : size.ToString("#.##") + " GB";
-            }
-            catch
-            {
-                return "N/A";
+                var mail = new Mail
+                {
+                    MailTo = user.Email,
+                    Body = image.Name + " Has Been Approved",
+                    Subject = "Image Approved"
+                };
+                mail.Send();
             }
         }
 
-        public List<ImageFileInfo> GetPartitionImageFileInfoForGridView(int imageId, string selectedHd, string selectedPartition)
+
+        private string TotalCount()
         {
-            var image = GetImage(imageId);
-            try
-            {
-                var imageFile =
-                    Directory.GetFiles(
-                        Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name + Path.DirectorySeparatorChar + "hd" + selectedHd +
-                        Path.DirectorySeparatorChar,
-                        "part" + selectedPartition + ".*").FirstOrDefault();
+            return _uow.ImageRepository.Count();
+        }
 
-                var fi = new FileInfo(imageFile);
-                var imageFileInfo = new ImageFileInfo
+        public ActionResultDTO UpdateImage(ImageEntity image)
+        {
+            var originalImage = GetImage(image.Id);
+            if (originalImage == null)
+                return new ActionResultDTO {ErrorMessage = "Image Not Found", Id = 0};
+            var result = new ActionResultDTO();
+
+            var updateFolderName = originalImage.Name != image.Name;
+            var oldName = originalImage.Name;
+            var validationResult = ValidateImage(image, false);
+            if (validationResult.Success)
+            {
+                _uow.ImageRepository.Update(image, image.Id);
+                _uow.Save();
+                result.Id = image.Id;
+                if (updateFolderName)
                 {
-                    FileName = fi.Name,
-                    FileSize = (fi.Length / 1024f / 1024f).ToString("#.##") + " MB"
-                };
+                    try
+                    {
+                        new FileOps().RenameFolder(oldName, image.Name);
+                        result.Success = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Debug(ex.Message);
+                        result.ErrorMessage = "Could Not Rename Image Folder";
+                        result.Success = false;
+                    }
+                }
+                else
+                {
+                    result.Success = true;
+                }
+            }
+            return result;
+        }
 
-                return new List<ImageFileInfo> { imageFileInfo };
-            }
-            catch (Exception ex)
+        private ValidationResultDTO ValidateImage(ImageEntity image, bool isNewImage)
+        {
+            var validationResult = new ValidationResultDTO {Success = true};
+
+            if (string.IsNullOrEmpty(image.Name) ||
+                !image.Name.All(c => char.IsLetterOrDigit(c) || c == '_' || c == '-'))
             {
-                log.Debug(ex.Message);
-                return null;
+                validationResult.Success = false;
+                validationResult.ErrorMessage = "Image Name Is Not Valid";
+                return validationResult;
             }
+
+            if (isNewImage)
+            {
+                if (_uow.ImageRepository.Exists(h => h.Name == image.Name))
+                {
+                    validationResult.Success = false;
+                    validationResult.ErrorMessage = "This Image Already Exists";
+                    return validationResult;
+                }
+            }
+            else
+            {
+                var originalImage = _uow.ImageRepository.GetById(image.Id);
+                if (originalImage.Name != image.Name)
+                {
+                    if (_uow.ImageRepository.Exists(h => h.Name == image.Name))
+                    {
+                        validationResult.Success = false;
+                        validationResult.ErrorMessage = "This Image Already Exists";
+                        return validationResult;
+                    }
+                }
+            }
+
+            return validationResult;
         }
     }
 }

@@ -11,51 +11,9 @@ namespace CloneDeploy_Web.views.login
 {
     public partial class Default : Page
     {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            if (!IsPostBack)
-            {
-                Session.RemoveAll();
-                Session.Abandon();
-              
-                FormsAuthentication.SignOut();
-                //http://stackoverflow.com/questions/6635349/how-to-delete-cookies-in-asp-net-website
-                if (HttpContext.Current != null)
-                {
-                    int cookieCount = HttpContext.Current.Request.Cookies.Count;
-                    for (var i = 0; i < cookieCount; i++)
-                    {
-                        var cookie = HttpContext.Current.Request.Cookies[i];
-                        if (cookie != null)
-                        {
-                            var cookieName = cookie.Name;
-                            var expiredCookie = new System.Web.HttpCookie(cookieName) { Expires = DateTime.Now.AddDays(-1) };
-                            HttpContext.Current.Response.Cookies.Add(expiredCookie); // overwrite it
-                        }
-                    }
-
-                    // clear cookies server side
-                    HttpContext.Current.Request.Cookies.Clear();
-                }
-
-                if (Request.QueryString["session"] == "expired")
-                    SessionExpired.Visible = true;
-            }
-            else
-            {
-                SessionExpired.Visible = false;
-            }
-            
-         
-            if (Request.IsAuthenticated)
-            {
-                Response.Redirect("~/views/dashboard/dash.aspx");
-            }
-        }
-
         protected void CrucibleLogin_Authenticate(object sender, AuthenticateEventArgs e)
         {
-          //Get token
+            //Get token
             var token = new APICall().TokenApi.Get(CrucibleLogin.UserName, CrucibleLogin.Password);
             if (token == null)
             {
@@ -63,13 +21,13 @@ namespace CloneDeploy_Web.views.login
                 return;
             }
 
-            HttpContext.Current.Response.Cookies.Add(new System.Web.HttpCookie("cdtoken")
+            HttpContext.Current.Response.Cookies.Add(new HttpCookie("cdtoken")
             {
                 Value = token.access_token,
                 HttpOnly = true
             });
 
-          
+
             if (token.access_token != null)
             {
                 //verify token is valid         
@@ -87,7 +45,6 @@ namespace CloneDeploy_Web.views.login
                         : result.ErrorMessage;
                     e.Authenticated = false;
                     lblError.Visible = true;
-
                 }
                 else if (result.Success)
                 {
@@ -110,6 +67,46 @@ namespace CloneDeploy_Web.views.login
             }
         }
 
-       
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                Session.RemoveAll();
+                Session.Abandon();
+
+                FormsAuthentication.SignOut();
+                //http://stackoverflow.com/questions/6635349/how-to-delete-cookies-in-asp-net-website
+                if (HttpContext.Current != null)
+                {
+                    var cookieCount = HttpContext.Current.Request.Cookies.Count;
+                    for (var i = 0; i < cookieCount; i++)
+                    {
+                        var cookie = HttpContext.Current.Request.Cookies[i];
+                        if (cookie != null)
+                        {
+                            var cookieName = cookie.Name;
+                            var expiredCookie = new HttpCookie(cookieName) {Expires = DateTime.Now.AddDays(-1)};
+                            HttpContext.Current.Response.Cookies.Add(expiredCookie); // overwrite it
+                        }
+                    }
+
+                    // clear cookies server side
+                    HttpContext.Current.Request.Cookies.Clear();
+                }
+
+                if (Request.QueryString["session"] == "expired")
+                    SessionExpired.Visible = true;
+            }
+            else
+            {
+                SessionExpired.Visible = false;
+            }
+
+
+            if (Request.IsAuthenticated)
+            {
+                Response.Redirect("~/views/dashboard/dash.aspx");
+            }
+        }
     }
 }

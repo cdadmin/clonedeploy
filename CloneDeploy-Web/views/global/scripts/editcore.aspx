@@ -1,19 +1,23 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/scripts/scripts.master" AutoEventWireup="true" Inherits="views_admin_scripts_editcore" ValidateRequest="False" Codebehind="editcore.aspx.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
-     <li ><a href="<%= ResolveUrl("~/views/global/scripts/search.aspx?cat=sub1") %>">Scripts</a></li>
+    <li >
+        <a href="<%= ResolveUrl("~/views/global/scripts/search.aspx?cat=sub1") %>">Scripts</a>
+    </li>
     <li>Edit Core Scripts</li>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="SubHelp" Runat="Server">
     <li role="separator" class="divider"></li>
-    <li><a href="<%= ResolveUrl("~/views/help/global-scripts.aspx") %>"   target="_blank">Help</a></li>
+    <li>
+        <a href="<%= ResolveUrl("~/views/help/global-scripts.aspx") %>" target="_blank">Help</a>
+    </li>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="ActionsRightSub" Runat="Server">
-      <asp:LinkButton ID="buttonSaveCore" runat="server" Text="Update" OnClick="buttonSaveCore_OnClick"  OnClientClick="update_click()" CssClass="btn btn-default width_100"/>
-     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span class="caret"></span>
-  </button>
+    <asp:LinkButton ID="buttonSaveCore" runat="server" Text="Update" OnClick="buttonSaveCore_OnClick" OnClientClick="update_click()" CssClass="btn btn-default width_100"/>
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+    </button>
 </asp:Content>
 
 <asp:Content runat="server" ID="Content2" ContentPlaceHolderID="SubContent2">
@@ -22,11 +26,10 @@
             $('#edit').addClass("nav-current");
         });
     </script>
-     <asp:DropDownList runat="server" ID="ddlCoreScripts" OnSelectedIndexChanged="ddlCoreScripts_OnSelectedIndexChanged" AutoPostBack="True" CssClass="ddlist" Style="float: right; margin-right: 5px; margin-top: 5px; width: 200px;">
-            </asp:DropDownList>
-        <br class="clear"/>
-           
-        
+    <asp:DropDownList runat="server" ID="ddlCoreScripts" OnSelectedIndexChanged="ddlCoreScripts_OnSelectedIndexChanged" AutoPostBack="True" CssClass="ddlist" Style="float: right; margin-right: 5px; margin-top: 5px; width: 200px;">
+    </asp:DropDownList>
+    <br class="clear"/>
+
 
     <div id="aceEditor" runat="server">
         <br class="clear"/>
@@ -54,4 +57,3 @@
         </script>
     </div>
 </asp:Content>
-

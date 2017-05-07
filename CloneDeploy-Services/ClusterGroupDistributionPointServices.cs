@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 
 namespace CloneDeploy_Services
 {
-    public  class ClusterGroupDistributionPointServices
+    public class ClusterGroupDistributionPointServices
     {
-         private readonly UnitOfWork _uow;
+        private readonly UnitOfWork _uow;
 
         public ClusterGroupDistributionPointServices()
         {
@@ -30,17 +29,16 @@ namespace CloneDeploy_Services
             }
 
             var firstDp = listOfDps[0];
-            if(firstDp != null)
-            DeleteClusterGroupDistributionPoints(firstDp.ClusterGroupId);
+            if (firstDp != null)
+                DeleteClusterGroupDistributionPoints(firstDp.ClusterGroupId);
 
-           
+
             foreach (var dp in listOfDps)
                 _uow.ClusterGroupDistributionPointRepository.Insert(dp);
             _uow.Save();
-            
+
             actionResult.Success = true;
             return actionResult;
-
         }
 
         private bool DeleteClusterGroupDistributionPoints(int clusterGroupId)

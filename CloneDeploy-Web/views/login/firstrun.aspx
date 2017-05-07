@@ -8,10 +8,10 @@
     &nbsp;
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="Content" Runat="Server">
-    
+
 
     <h5>Change The Admin Password:</h5>
-    <br />
+    <br/>
     <div class="size-4 column">
         New Password:
     </div>
@@ -25,20 +25,20 @@
     <div class="size-5 column">
         <asp:TextBox ID="txtUserPwdConfirm" runat="server" CssClass="textbox" TextMode="Password"></asp:TextBox>
     </div>
-     <br class="clear"/>
-    <br />
+    <br class="clear"/>
+    <br/>
     <h5>Enter The IP Address Of The CloneDeploy Server:</h5>
     <br/>
     <div class="size-4 column">
         Server IP:
     </div>
     <div class="size-5 column">
-        <asp:TextBox ID="txtServerIP" runat="server" CssClass="textbox" ></asp:TextBox>
+        <asp:TextBox ID="txtServerIP" runat="server" CssClass="textbox"></asp:TextBox>
     </div>
     <br class="clear"/>
     <br/>
-    
-     <h5></h5>
+
+    <h5></h5>
     <h5>Enter The SMB Share Passwords That Were Used During Installation.</h5>
 
     <br/>
@@ -58,6 +58,5 @@
     <br class="clear"/>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="PageActions" Runat="Server">
-      <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Finalize Setup" CssClass="btn btn-default"/>
+    <asp:LinkButton ID="btnSubmit" runat="server" OnClick="btnSubmit_OnClick" Text="Finalize Setup" CssClass="btn btn-default"/>
 </asp:Content>
-

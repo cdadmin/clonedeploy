@@ -5,20 +5,22 @@
 </asp:Content>
 
 <asp:Content runat="server" ID="Help" ContentPlaceHolderID="Help">
-     <li role="separator" class="divider"></li>
-    <li><a href="<%= ResolveUrl("~/views/help/admin-security.aspx")%>" target="_blank">Help</a></li>
+    <li role="separator" class="divider"></li>
+    <li>
+        <a href="<%= ResolveUrl("~/views/help/admin-security.aspx") %>" target="_blank">Help</a>
+    </li>
 </asp:Content>
 
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
-    <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update Security Settings" OnClick="btnUpdateSettings_OnClick" CssClass="btn btn-default" />
-     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span class="caret"></span>
-  </button>
+    <asp:LinkButton ID="btnUpdateSettings" runat="server" Text="Update Security Settings" OnClick="btnUpdateSettings_OnClick" CssClass="btn btn-default"/>
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+    </button>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent" runat="Server">
     <script type="text/javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#security').addClass("nav-current");
         });
     </script>
@@ -27,10 +29,10 @@
         Require Image Approval:
     </div>
     <div class="size-setting column">
-        <asp:CheckBox runat="server" ID="chkImageApproval" />
+        <asp:CheckBox runat="server" ID="chkImageApproval"/>
     </div>
-    <br class="clear" />
-    <br />
+    <br class="clear"/>
+    <br/>
     <div class="size-4 column">
         Force SSL:
     </div>
@@ -40,7 +42,7 @@
             <asp:ListItem>No</asp:ListItem>
         </asp:DropDownList>
     </div>
-    <br class="clear" />
+    <br class="clear"/>
     <div class="size-4 column">
         On Demand Mode:
     </div>
@@ -50,7 +52,7 @@
             <asp:ListItem>Disabled</asp:ListItem>
         </asp:DropDownList>
     </div>
-    <br class="clear" />
+    <br class="clear"/>
 
     <div class="size-4 column">
         Debug Requires Login:
@@ -61,7 +63,7 @@
             <asp:ListItem>No</asp:ListItem>
         </asp:DropDownList>
     </div>
-    <br class="clear" />
+    <br class="clear"/>
     <div class="size-4 column">
         On Demand Requires Login:
     </div>
@@ -71,7 +73,7 @@
             <asp:ListItem>No</asp:ListItem>
         </asp:DropDownList>
     </div>
-    <br class="clear" />
+    <br class="clear"/>
     <div class="size-4 column">
         Add Computer Requires Login:
     </div>
@@ -81,7 +83,7 @@
             <asp:ListItem>No</asp:ListItem>
         </asp:DropDownList>
     </div>
-    <br class="clear" />
+    <br class="clear"/>
     <div class="size-4 column">
         Web Tasks Require Login:
     </div>
@@ -91,8 +93,8 @@
             <asp:ListItem>No</asp:ListItem>
         </asp:DropDownList>
     </div>
-    <br class="clear" />
-     <div class="size-4 column">
+    <br class="clear"/>
+    <div class="size-4 column">
         Clobber Mode Requires Login:
     </div>
     <div class="size-setting column">
@@ -101,24 +103,24 @@
             <asp:ListItem>No</asp:ListItem>
         </asp:DropDownList>
     </div>
-    <br class="clear" />
+    <br class="clear"/>
     <div id="universal" runat="server" visible="False">
         <div class="size-4 column">
             Universal Token:
-    <asp:LinkButton ID="btnGenKey" runat="server" Text="Generate" OnClick="btnGenerate_Click" CssClass="btn btn-default right" />
+            <asp:LinkButton ID="btnGenKey" runat="server" Text="Generate" OnClick="btnGenerate_Click" CssClass="btn btn-default right"/>
         </div>
         <div class="size-setting column">
             <asp:TextBox ID="txtToken" runat="server" CssClass="textbox"></asp:TextBox>
         </div>
     </div>
-    <br class="clear" />
+    <br class="clear"/>
     <div class="size-4 column">
         Enable LDAP Authentication:
     </div>
     <div class="size-setting column">
         <asp:CheckBox ID="chkldap" runat="server" AutoPostBack="True" OnCheckedChanged="chkldap_OnCheckedChanged"></asp:CheckBox>
     </div>
-    <br class="clear" />
+    <br class="clear"/>
     <div id="ad" runat="server" Visible="False">
         <div class="size-4 column">
             LDAP Server:
@@ -126,29 +128,29 @@
         <div class="size-setting column">
             <asp:TextBox ID="txtldapServer" runat="server" CssClass="textbox"></asp:TextBox>
         </div>
-        <br class="clear" />
-         <div class="size-4 column">
+        <br class="clear"/>
+        <div class="size-4 column">
             LDAP Port:
         </div>
         <div class="size-setting column">
             <asp:TextBox ID="txtldapPort" runat="server" CssClass="textbox"></asp:TextBox>
         </div>
-        <br class="clear" />
-         <div class="size-4 column">
+        <br class="clear"/>
+        <div class="size-4 column">
             LDAP Authentication Attribute:
         </div>
         <div class="size-setting column">
             <asp:TextBox ID="txtldapAuthAttribute" runat="server" CssClass="textbox"></asp:TextBox>
         </div>
-        <br class="clear" />
-         <div class="size-4 column">
+        <br class="clear"/>
+        <div class="size-4 column">
             LDAP Base DN:
         </div>
         <div class="size-setting column">
             <asp:TextBox ID="txtldapbasedn" runat="server" CssClass="textbox"></asp:TextBox>
         </div>
         <br class="clear"/>
-         <div class="size-4 column">
+        <div class="size-4 column">
             LDAP Authentication Type:
         </div>
         <div class="size-setting column">
@@ -158,7 +160,7 @@
                 <asp:ListItem>SSL</asp:ListItem>
             </asp:DropDownList>
         </div>
-        <br class="clear" />
+        <br class="clear"/>
 
     </div>
 
@@ -170,9 +172,9 @@
             </h4>
 
             <div class="confirm-box-btns">
-                <asp:LinkButton ID="OkButton" OnClick="OkButton_Click" runat="server" Text="Yes" CssClass="confirm_yes" />
-                <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no" />
-                <br />
+                <asp:LinkButton ID="OkButton" OnClick="OkButton_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
+                <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no"/>
+                <br/>
                 <asp:Label ID="lblClientISO" runat="server" CssClass="smalltext"></asp:Label>
 
             </div>
@@ -181,11 +183,11 @@
     <div id="discouraged" class="confirm-box-outer">
         <div class="confirm-box-inner">
             <p style="font-size: 18px; text-align: center;">
-                <asp:Label ID="lblDiscouraged" runat="server" CssClass="modaltitle" ></asp:Label>
+                <asp:Label ID="lblDiscouraged" runat="server" CssClass="modaltitle"></asp:Label>
             </p>
 
             <div class="confirm-box-btns">
-                <asp:LinkButton ID="lnkOk" runat="server" Text="OK" CssClass="confirm_no" />
+                <asp:LinkButton ID="lnkOk" runat="server" Text="OK" CssClass="confirm_no"/>
 
             </div>
         </div>
@@ -193,4 +195,3 @@
     </div>
 
 </asp:Content>
-

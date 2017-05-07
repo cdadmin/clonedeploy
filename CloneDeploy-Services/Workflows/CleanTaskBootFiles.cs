@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using CloneDeploy_ApiCalls;
 using CloneDeploy_Entities;
-using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services.Helpers;
 using log4net;
 
@@ -11,15 +10,45 @@ namespace CloneDeploy_Services.Workflows
 {
     public class CleanTaskBootFiles
     {
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
-        private readonly ComputerEntity _computer;
-        private readonly string _bootFile;
         private const string ConfigFolder = "pxelinux.cfg";
+        private readonly string _bootFile;
+        private readonly ComputerEntity _computer;
+        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
 
         public CleanTaskBootFiles(ComputerEntity computer)
         {
             _computer = computer;
             _bootFile = Utility.MacToPxeMac(_computer.Mac);
+        }
+
+        public void CleanPxeBoot()
+        {
+            if (Settings.ProxyDhcp == "Yes")
+            {
+                DeleteProxyFile("bios");
+                DeleteProxyFile("bios", ".ipxe");
+                DeleteProxyFile("efi32");
+                DeleteProxyFile("efi32", ".ipxe");
+                DeleteProxyFile("efi64");
+                DeleteProxyFile("efi64", ".ipxe");
+                DeleteProxyFile("efi64", ".cfg");
+            }
+            else
+            {
+                var mode = Settings.PxeMode;
+                if (mode.Contains("ipxe"))
+                    DeleteStandardFile(".ipxe");
+                else if (mode.Contains("grub"))
+                    DeleteStandardFile(".cfg");
+                else
+                    DeleteStandardFile();
+            }
+
+            if (Settings.OperationMode != "Cluster Secondary")
+            {
+                if (Convert.ToBoolean(_computer.CustomBootEnabled))
+                    new ComputerServices().CreateBootFiles(_computer.Id);
+            }
         }
 
         private void DeleteProxyFile(string architecture, string extension = "")
@@ -28,7 +57,6 @@ namespace CloneDeploy_Services.Workflows
             {
                 try
                 {
-
                     File.Delete(Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + architecture +
                                 Path.DirectorySeparatorChar + ConfigFolder + Path.DirectorySeparatorChar + _bootFile +
                                 extension);
@@ -45,12 +73,10 @@ namespace CloneDeploy_Services.Workflows
                     new ClusterGroupServices().GetClusterServers(clusterGroup.Id).Where(x => x.TftpRole == 1);
                 foreach (var tftpServer in tftpServers)
                 {
-
                     if (tftpServer.SecondaryServerId == -1)
                     {
                         try
                         {
-
                             File.Delete(Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + architecture +
                                         Path.DirectorySeparatorChar + ConfigFolder + Path.DirectorySeparatorChar +
                                         _bootFile +
@@ -101,13 +127,12 @@ namespace CloneDeploy_Services.Workflows
                     new ClusterGroupServices().GetClusterServers(clusterGroup.Id).Where(x => x.TftpRole == 1);
                 foreach (var tftpServer in tftpServers)
                 {
-
                     if (tftpServer.SecondaryServerId == -1)
                     {
                         try
                         {
                             File.Delete(Settings.TftpPath + ConfigFolder + Path.DirectorySeparatorChar +
-                               _bootFile + extension);
+                                        _bootFile + extension);
                         }
                         catch (Exception ex)
                         {
@@ -131,37 +156,6 @@ namespace CloneDeploy_Services.Workflows
                     }
                 }
             }
-        }
-
-        public void CleanPxeBoot()
-        {    
-            if (Settings.ProxyDhcp == "Yes")
-            {
-                DeleteProxyFile("bios");
-                DeleteProxyFile("bios", ".ipxe");
-                DeleteProxyFile("efi32");
-                DeleteProxyFile("efi32", ".ipxe");
-                DeleteProxyFile("efi64");
-                DeleteProxyFile("efi64", ".ipxe");
-                DeleteProxyFile("efi64", ".cfg");
-            }
-            else
-            {
-                var mode = Settings.PxeMode;
-                if (mode.Contains("ipxe"))
-                    DeleteStandardFile(".ipxe");
-                else if (mode.Contains("grub"))
-                    DeleteStandardFile(".cfg");
-                else        
-                    DeleteStandardFile();
-            }
-
-            if (Settings.OperationMode != "Cluster Secondary")
-            {
-                if (Convert.ToBoolean(_computer.CustomBootEnabled))
-                    new ComputerServices().CreateBootFiles(_computer.Id);
-            }
-
         }
     }
 }

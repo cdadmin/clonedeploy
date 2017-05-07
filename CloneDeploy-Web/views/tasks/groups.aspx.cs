@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
@@ -9,11 +8,6 @@ namespace views.tasks
 {
     public partial class TaskMulticast : Tasks
     {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            if (!IsPostBack) PopulateGrid();
-        }
-
         protected void btnConfirm_Click(object sender, EventArgs e)
         {
             var groupId = Convert.ToInt32(Session["groupID"]);
@@ -32,7 +26,6 @@ namespace views.tasks
             }
             Session.Remove("groupID");
             Session.Remove("isGroupUnicast");
-
         }
 
         protected void btnMulticast_Click(object sender, EventArgs e)
@@ -66,11 +59,10 @@ namespace views.tasks
                 if (dataKey != null)
                 {
                     var group = Call.GroupApi.Get(Convert.ToInt32(dataKey.Value));
-                  
+
                     Session["groupID"] = group.Id;
                     Session["isGroupUnicast"] = 1;
                     lblTitle.Text = "Unicast All Computers In Group " + group.Name + "?";
-
                 }
             }
             ClientScript.RegisterStartupScript(GetType(), "modalscript",
@@ -80,14 +72,19 @@ namespace views.tasks
 
         protected void OkButtonChecksum_Click(object sender, EventArgs e)
         {
-            var imageId = (string) (Session["imageID"]);
+            var imageId = (string) Session["imageID"];
             Response.Redirect("~/views/images/specs.aspx?imageid=" + imageId, false);
             Session.Remove("imageID");
         }
 
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack) PopulateGrid();
+        }
+
         protected void PopulateGrid()
         {
-            gvGroups.DataSource = Call.GroupApi.GetAll(Int32.MaxValue,txtSearch.Text);
+            gvGroups.DataSource = Call.GroupApi.GetAll(int.MaxValue, txtSearch.Text);
             gvGroups.DataBind();
             lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + Call.GroupApi.GetCount() + " Total Group(s)";
         }

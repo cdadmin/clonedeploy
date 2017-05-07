@@ -2,17 +2,19 @@
 
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li>Search User Groups</li>
-    </asp:Content>
+</asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-      <li role="separator" class="divider"></li>
-     <li><a href="<%= ResolveUrl("~/views/help/users-searchgroups.aspx")%>"  target="_blank">Help</a></li>
+    <li role="separator" class="divider"></li>
+    <li>
+        <a href="<%= ResolveUrl("~/views/help/users-searchgroups.aspx") %>" target="_blank">Help</a>
+    </li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-          <a class="confirm btn btn-default" href="#">Delete Selected Groups</a>
-     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span class="caret"></span>
-  </button>
+    <a class="confirm btn btn-default" href="#">Delete Selected Groups</a>
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+    </button>
 
 </asp:Content>
 
@@ -20,21 +22,21 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('#searchusergroup').addClass("nav-current");
-            $("[id*=gvGroups] td").hover(function () {
+            $("[id*=gvGroups] td").hover(function() {
                 $("td", $(this).closest("tr")).addClass("hover_row");
-            }, function () {
+            }, function() {
                 $("td", $(this).closest("tr")).removeClass("hover_row");
             });
         });
     </script>
-     <p class="total">
+    <p class="total">
         <asp:Label ID="lblTotal" runat="server"></asp:Label>
     </p>
     <div class="size-7 column">
         <asp:TextBox ID="txtSearch" runat="server" CssClass="searchbox" OnTextChanged="search_Changed"></asp:TextBox>
     </div>
     <br class="clear"/>
-   
+
     <asp:GridView ID="gvGroups" runat="server" DataKeyNames="Id" AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
         <Columns>
             <asp:TemplateField>
@@ -50,20 +52,20 @@
             <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/users/editgroup.aspx?groupid={0}" Text="View" ItemStyle-CssClass="chkboxwidth"/>
             <asp:BoundField DataField="Id" HeaderText="userID" SortExpression="Id" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ItemStyle-CssClass="width_200"/>
-             <asp:BoundField DataField="IsLdapGroup" HeaderText="LDAP" SortExpression="Name" ItemStyle-CssClass="width_200"/>
+            <asp:BoundField DataField="IsLdapGroup" HeaderText="LDAP" SortExpression="Name" ItemStyle-CssClass="width_200"/>
             <asp:BoundField DataField="Membership" HeaderText="Role" SortExpression="Membership" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
-              <asp:TemplateField ShowHeader="True" HeaderText="Members">
+            <asp:TemplateField ShowHeader="True" HeaderText="Members">
                 <ItemTemplate>
                     <asp:Label ID="lblCount" runat="server" CausesValidation="false" CssClass="lbl_file "></asp:Label>
                 </ItemTemplate>
             </asp:TemplateField>
-            
+
         </Columns>
         <EmptyDataTemplate>
             No User Groups Found
         </EmptyDataTemplate>
     </asp:GridView>
-  
+
     <div id="confirmbox" class="confirm-box-outer">
         <div class="confirm-box-inner">
             <h4>
@@ -76,4 +78,3 @@
         </div>
     </div>
 </asp:Content>
-

@@ -1,33 +1,40 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/views/global/global.master" AutoEventWireup="true" Inherits="views_global_sysprep_sysprep" Codebehind="sysprep.master.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
-     <li ><a href="<%= ResolveUrl("~/views/global/sysprep/search.aspx?cat=sub1") %>">Sysprep</a></li>
+    <li >
+        <a href="<%= ResolveUrl("~/views/global/sysprep/search.aspx?cat=sub1") %>">Sysprep</a>
+    </li>
     <asp:ContentPlaceHolder runat="server" ID="BreadcrumbSub2">
     </asp:ContentPlaceHolder>
 </asp:Content>
 
 <asp:Content ID="Content4" ContentPlaceHolderID="Help" Runat="Server">
-     <asp:ContentPlaceHolder runat="server" ID="SubHelp">
+    <asp:ContentPlaceHolder runat="server" ID="SubHelp">
     </asp:ContentPlaceHolder>
 </asp:Content>
 
 <asp:Content ID="Content6" ContentPlaceHolderID="SubPageActionsRight" Runat="Server">
-     <asp:ContentPlaceHolder runat="server" ID="ActionsRightSub">
+    <asp:ContentPlaceHolder runat="server" ID="ActionsRightSub">
     </asp:ContentPlaceHolder>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="PageNavSub" Runat="Server">
-     <li id="search"><a  href="<%= ResolveUrl("~/views/global/sysprep/search.aspx?cat=sub1") %>"><span class="sub-nav-text">Search Sysprep Tags</span></a></li>
-    <li id="create"><a href="<%= ResolveUrl("~/views/global/sysprep/create.aspx?cat=sub1")  %>"><span class="sub-nav-text">New Sysprep Tag</span></a></li>
+    <li id="search">
+        <a href="<%= ResolveUrl("~/views/global/sysprep/search.aspx?cat=sub1") %>">
+            <span class="sub-nav-text">Search Sysprep Tags</span></a>
+    </li>
+    <li id="create">
+        <a href="<%= ResolveUrl("~/views/global/sysprep/create.aspx?cat=sub1") %>">
+            <span class="sub-nav-text">New Sysprep Tag</span></a>
+    </li>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
-      <script type="text/javascript">
+    <script type="text/javascript">
         $(document).ready(function() {
             $('#sysprep').addClass("nav-current");
-        
+
         });
     </script>
-     <asp:ContentPlaceHolder ID="SubContent2" runat="server">
-        </asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder ID="SubContent2" runat="server">
+    </asp:ContentPlaceHolder>
 </asp:Content>
-

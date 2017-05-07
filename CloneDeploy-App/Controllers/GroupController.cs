@@ -13,11 +13,8 @@ using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 using CloneDeploy_Services.Workflows;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    
-
     public class GroupController : ApiController
     {
         private readonly GroupServices _groupServices;
@@ -27,27 +24,20 @@ namespace CloneDeploy_App.Controllers
             _groupServices = new GroupServices();
         }
 
-
-        [CustomAuth(Permission = "GroupSearch")]
-        public IEnumerable<GroupWithImage> GetAll(string searchstring = "")
+        [CustomAuth(Permission = "GroupDelete")]
+        public ActionResultDTO Delete(int id)
         {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                             .Select(c => c.Value).SingleOrDefault();
-            return string.IsNullOrEmpty(searchstring)
-                ? _groupServices.SearchGroupsForUser(Convert.ToInt32(userId))
-                : _groupServices.SearchGroupsForUser(Convert.ToInt32(userId), searchstring);
-
+            var result = _groupServices.DeleteGroup(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
-        [CustomAuth(Permission = "GroupSearch")]
-        public ApiStringResponseDTO GetCount()
+        [CustomAuth(Permission = "GroupRead")]
+        [HttpGet]
+        public ApiBoolResponseDTO Export(string path)
         {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                             .Select(c => c.Value).SingleOrDefault();
-
-            return new ApiStringResponseDTO() {Value = _groupServices.GroupCountUser(Convert.ToInt32(userId))};
+            _groupServices.ExportCsv(path);
+            return new ApiBoolResponseDTO {Value = true};
         }
 
         [CustomAuth(Permission = "GroupRead")]
@@ -58,49 +48,49 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuthAttribute(Permission = "GroupCreate")]
-        [HttpPost]
-        public ApiIntResponseDTO Import(ApiStringResponseDTO csvContents)
+
+        [CustomAuth(Permission = "GroupSearch")]
+        public IEnumerable<GroupWithImage> GetAll(string searchstring = "")
         {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
-                             .Select(c => c.Value).SingleOrDefault();
-            return new ApiIntResponseDTO() { Value = _groupServices.ImportCsv(csvContents.Value,Convert.ToInt32(userId)) };
+                .Select(c => c.Value).SingleOrDefault();
+            return string.IsNullOrEmpty(searchstring)
+                ? _groupServices.SearchGroupsForUser(Convert.ToInt32(userId))
+                : _groupServices.SearchGroupsForUser(Convert.ToInt32(userId), searchstring);
+        }
+
+        [CustomAuth(Permission = "GroupSearch")]
+        public ApiStringResponseDTO GetCount()
+        {
+            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                .Select(c => c.Value).SingleOrDefault();
+
+            return new ApiStringResponseDTO {Value = _groupServices.GroupCountUser(Convert.ToInt32(userId))};
         }
 
         [CustomAuth(Permission = "GroupRead")]
-        [HttpGet]
-        public ApiBoolResponseDTO Export(string path)
+        public GroupBootMenuEntity GetCustomBootMenu(int id)
         {
-            _groupServices.ExportCsv(path);
-            return new ApiBoolResponseDTO() { Value = true };
-        }
-
-        [HttpGet]
-        [CustomAuth(Permission = "GroupUpdate")]
-        public ApiBoolResponseDTO RemoveGroupMember(int id, int computerId)
-        {
-            return new ApiBoolResponseDTO() {Value = _groupServices.DeleteMembership(computerId, id)};
-        }
-
-        [HttpDelete]
-        [CustomAuth(Permission = "GroupUpdate")]
-        public ApiBoolResponseDTO RemoveMunkiTemplates(int id)
-        {
-            return new ApiBoolResponseDTO() {Value = _groupServices.DeleteMunkiTemplates(id)};
-        }
-
-        [Authorize]
-        public ApiBoolResponseDTO ReCalcSmart()
-        {
-            _groupServices.UpdateAllSmartGroupsMembers();
-            return new ApiBoolResponseDTO() {Value = true};
+            var result = _groupServices.GetGroupBootMenu(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [CustomAuth(Permission = "GroupRead")]
-        public IEnumerable<GroupMunkiEntity> GetMunkiTemplates(int id)
+        public ApiStringResponseDTO GetEffectiveManifest(int id)
         {
-            return _groupServices.GetGroupMunkiTemplates(id);
+            var effectiveManifest = new EffectiveMunkiTemplate().Group(id);
+            return new ApiStringResponseDTO {Value = Encoding.UTF8.GetString(effectiveManifest.ToArray())};
+        }
+
+        [CustomAuth(Permission = "GroupRead")]
+        public IEnumerable<ComputerWithImage> GetGroupMembers(int id, string searchstring = "")
+        {
+            return string.IsNullOrEmpty(searchstring)
+                ? _groupServices.GetGroupMembersWithImages(id)
+                : _groupServices.GetGroupMembersWithImages(id, searchstring);
         }
 
         [HttpGet]
@@ -115,16 +105,32 @@ namespace CloneDeploy_App.Controllers
         [CustomAuth(Permission = "GroupRead")]
         public ApiStringResponseDTO GetMemberCount(int id)
         {
-            return new ApiStringResponseDTO() {Value = _groupServices.GetGroupMemberCount(id)};
+            return new ApiStringResponseDTO {Value = _groupServices.GetGroupMemberCount(id)};
         }
-       
+
+        [CustomAuth(Permission = "GroupRead")]
+        public IEnumerable<GroupMunkiEntity> GetMunkiTemplates(int id)
+        {
+            return _groupServices.GetGroupMunkiTemplates(id);
+        }
+
+        [CustomAuth(Permission = "GroupCreate")]
+        [HttpPost]
+        public ApiIntResponseDTO Import(ApiStringResponseDTO csvContents)
+        {
+            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                .Select(c => c.Value).SingleOrDefault();
+            return new ApiIntResponseDTO {Value = _groupServices.ImportCsv(csvContents.Value, Convert.ToInt32(userId))};
+        }
+
 
         [CustomAuth(Permission = "GroupCreate")]
         public ActionResultDTO Post(GroupEntity group)
         {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
-                             .Select(c => c.Value).SingleOrDefault();
+                .Select(c => c.Value).SingleOrDefault();
 
             var result = _groupServices.AddGroup(group, Convert.ToInt32(userId));
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
@@ -140,12 +146,50 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = "GroupDelete")]
-        public ActionResultDTO Delete(int id)
+        [Authorize]
+        public ApiBoolResponseDTO ReCalcSmart()
         {
-            var result = _groupServices.DeleteGroup(id);
-            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
-            return result;
+            _groupServices.UpdateAllSmartGroupsMembers();
+            return new ApiBoolResponseDTO {Value = true};
+        }
+
+        [HttpGet]
+        [CustomAuth(Permission = "GroupUpdate")]
+        public ApiBoolResponseDTO RemoveGroupMember(int id, int computerId)
+        {
+            return new ApiBoolResponseDTO {Value = _groupServices.DeleteMembership(computerId, id)};
+        }
+
+        [HttpDelete]
+        [CustomAuth(Permission = "GroupUpdate")]
+        public ApiBoolResponseDTO RemoveMunkiTemplates(int id)
+        {
+            return new ApiBoolResponseDTO {Value = _groupServices.DeleteMunkiTemplates(id)};
+        }
+
+        [HttpGet]
+        [CustomAuth(Permission = "ImageTaskDeployGroup")]
+        public ApiIntResponseDTO StartGroupUnicast(int id)
+        {
+            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                .Select(c => c.Value).SingleOrDefault();
+
+            return new ApiIntResponseDTO
+            {
+                Value = _groupServices.StartGroupUnicast(id, Convert.ToInt32(userId), Request.GetClientIpAddress())
+            };
+        }
+
+        [CustomAuth(Permission = "ImageTaskMulticast")]
+        [HttpGet]
+        public ApiStringResponseDTO StartMulticast(int id)
+        {
+            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                .Select(c => c.Value).SingleOrDefault();
+
+            return new ApiStringResponseDTO {Value = new Multicast(id, Convert.ToInt32(userId)).Create()};
         }
 
         [HttpGet]
@@ -153,56 +197,6 @@ namespace CloneDeploy_App.Controllers
         public ActionResultDTO UpdateSmartMembership(int id)
         {
             return _groupServices.UpdateSmartMembership(id);
-        }
-
-        [HttpGet]
-        [CustomAuth(Permission = "ImageTaskDeployGroup")]
-        public ApiIntResponseDTO StartGroupUnicast(int id)
-        {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                             .Select(c => c.Value).SingleOrDefault();
-
-            return new ApiIntResponseDTO()
-            {
-                Value = _groupServices.StartGroupUnicast(id, Convert.ToInt32(userId), Request.GetClientIpAddress())
-            };
-
-        }
-
-        [CustomAuth(Permission = "GroupRead")]
-        public ApiStringResponseDTO GetEffectiveManifest(int id)
-        {
-            var effectiveManifest = new EffectiveMunkiTemplate().Group(id);
-            return new ApiStringResponseDTO() { Value = Encoding.UTF8.GetString(effectiveManifest.ToArray()) };
-        }
-
-        [CustomAuth(Permission = "ImageTaskMulticast")]
-        [HttpGet]
-        public ApiStringResponseDTO StartMulticast(int id)
-        {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                             .Select(c => c.Value).SingleOrDefault();
-
-            return new ApiStringResponseDTO() { Value = new Multicast(id, Convert.ToInt32(userId)).Create() };
-        }   
-
-        [CustomAuth(Permission = "GroupRead")]
-        public IEnumerable<ComputerWithImage> GetGroupMembers(int id, string searchstring = "")
-        {
-            return string.IsNullOrEmpty(searchstring)
-                ? _groupServices.GetGroupMembersWithImages(id)
-                : _groupServices.GetGroupMembersWithImages(id, searchstring);
-
-        }
-
-        [CustomAuth(Permission = "GroupRead")]
-        public GroupBootMenuEntity GetCustomBootMenu(int id)
-        {
-            var result = _groupServices.GetGroupBootMenu(id);
-            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
-            return result;
         }
     }
 }

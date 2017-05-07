@@ -9,7 +9,6 @@ using System.Web.Http.Controllers;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers.Authorization
 {
     public class CustomAuthAttribute : AuthorizeAttribute
@@ -19,9 +18,9 @@ namespace CloneDeploy_App.Controllers.Authorization
         public override void OnAuthorization(HttpActionContext actionContext)
         {
             base.OnAuthorization(actionContext);
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
-                              .Select(c => c.Value).SingleOrDefault();
+                .Select(c => c.Value).SingleOrDefault();
 
             if (userId == null) return;
 
@@ -91,30 +90,28 @@ namespace CloneDeploy_App.Controllers.Authorization
                         authorized = true;
                         break;
                     }
-                    else
-                    {
-                        var profileImageId = profile.ImageId;
-                        if (
-                            new AuthorizationServices(Convert.ToInt32(userId), Permission).ImageManagement(
-                                profileImageId))
-                            authorized = true;
+                    var profileImageId = profile.ImageId;
+                    if (
+                        new AuthorizationServices(Convert.ToInt32(userId), Permission).ImageManagement(
+                            profileImageId))
+                        authorized = true;
 
-                        break;
-                    }
+                    break;
                 case "ImageTaskDelete":
                     var objectId = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
                     var activeImagingTask = new ActiveImagingTaskServices().GetTask(objectId);
                     var computer = new ComputerServices().GetComputer(activeImagingTask.ComputerId);
-                    if (new AuthorizationServices(Convert.ToInt32(userId), "ImageTaskDeploy").ComputerManagement(computer.Id))
+                    if (
+                        new AuthorizationServices(Convert.ToInt32(userId), "ImageTaskDeploy").ComputerManagement(
+                            computer.Id))
                         authorized = true;
                     break;
-               
-                    
             }
 
             if (!authorized)
             {
-                var response = actionContext.Request.CreateResponse(HttpStatusCode.Forbidden, new ValidationResultDTO() { Success = false, ErrorMessage = "Forbidden" });
+                var response = actionContext.Request.CreateResponse(HttpStatusCode.Forbidden,
+                    new ValidationResultDTO {Success = false, ErrorMessage = "Forbidden"});
                 throw new HttpResponseException(response);
             }
         }

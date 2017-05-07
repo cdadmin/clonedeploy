@@ -1,20 +1,9 @@
 ﻿using System;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
 public partial class views_computers_bootmenu_active : Computers
 {
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        if (!IsPostBack) DisplayActiveMenu();
-    }
-
-    protected void EditProxy_Changed(object sender, EventArgs e)
-    {
-        DisplayActiveMenu();
-    }
-
     protected void DisplayActiveMenu()
     {
         var proxyDhcp = Settings.ProxyDhcp;
@@ -56,5 +45,15 @@ public partial class views_computers_bootmenu_active : Computers
 
         lblFileName.Text = path;
         scriptEditor.Value = Call.FilesystemApi.ReadFileText(path);
+    }
+
+    protected void EditProxy_Changed(object sender, EventArgs e)
+    {
+        DisplayActiveMenu();
+    }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack) DisplayActiveMenu();
     }
 }

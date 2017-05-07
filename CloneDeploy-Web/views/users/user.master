@@ -3,75 +3,111 @@
 
 <asp:Content ID="SubNav" ContentPlaceHolderID="SubNav" Runat="Server">
     <script type="text/javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#nav-users').addClass("nav-current");
         });
     </script>
 
-        <div id="Level1" runat="server">
+    <div id="Level1" runat="server">
         <ul>
-       <li id="searchuser">     <a  href="<%= ResolveUrl("~/views/users/search.aspx") %>"><span class="sub-nav-text">Search Users</span></a></li>
-       <li id="createuser"><a  href="<%= ResolveUrl("~/views/users/create.aspx") %>"><span class="sub-nav-text">New User</span></a></li>
-       <li id="searchusergroup">     <a  href="<%= ResolveUrl("~/views/users/searchgroup.aspx") %>"><span class="sub-nav-text">Search User Groups</span></a></li>
-       <li id="createusergroup"><a  href="<%= ResolveUrl("~/views/users/creategroup.aspx") %>"><span class="sub-nav-text">New User Group</span></a></li>
-        
-      
-       </ul>
-        </div>
+            <li id="searchuser">
+                <a href="<%= ResolveUrl("~/views/users/search.aspx") %>">
+                    <span class="sub-nav-text">Search Users</span></a>
+            </li>
+            <li id="createuser">
+                <a href="<%= ResolveUrl("~/views/users/create.aspx") %>">
+                    <span class="sub-nav-text">New User</span></a>
+            </li>
+            <li id="searchusergroup">
+                <a href="<%= ResolveUrl("~/views/users/searchgroup.aspx") %>">
+                    <span class="sub-nav-text">Search User Groups</span></a>
+            </li>
+            <li id="createusergroup">
+                <a href="<%= ResolveUrl("~/views/users/creategroup.aspx") %>">
+                    <span class="sub-nav-text">New User Group</span></a>
+            </li>
+
+
+        </ul>
+    </div>
 
     <div id="Level2" runat="server">
 
         <ul>
-            <li id="editoption"><a href="<%= ResolveUrl("~/views/users/edit.aspx") %>?userid=<%= CloneDeployUser.Id %>"><span class="sub-nav-text">General</span></a></li>
-            <li id="acloption"><a href="<%= ResolveUrl("~/views/users/acls/general.aspx") %>?userid=<%= CloneDeployUser.Id %>&level=3"><span class="sub-nav-text">Access Control</span></a></li>
+            <li id="editoption">
+                <a href="<%= ResolveUrl("~/views/users/edit.aspx") %>?userid=<%= CloneDeployUser.Id %>">
+                    <span class="sub-nav-text">General</span></a>
+            </li>
+            <li id="acloption">
+                <a href="<%= ResolveUrl("~/views/users/acls/general.aspx") %>?userid=<%= CloneDeployUser.Id %>&level=3">
+                    <span class="sub-nav-text">Access Control</span></a>
+            </li>
         </ul>
     </div>
-    
+
     <div id="Level2Group" runat="server">
 
         <ul>
-            <li id="editoption"><a href="<%= ResolveUrl("~/views/users/editgroup.aspx") %>?groupid=<%= CloneDeployUserGroup.Id %>"><span class="sub-nav-text">General</span></a></li>
-            <li id="acloption"><a href="<%= ResolveUrl("~/views/users/groupacls/general.aspx") %>?groupid=<%= CloneDeployUserGroup.Id %>&level=3"><span class="sub-nav-text">Access Control</span></a></li>
-            <li id="addmembers"><a href="<%= ResolveUrl("~/views/users/addmembers.aspx") %>?groupid=<%= CloneDeployUserGroup.Id %>"><span class="sub-nav-text">Add Members</span></a></li>
-            <li id="removemembers"><a href="<%= ResolveUrl("~/views/users/removemembers.aspx") %>?groupid=<%= CloneDeployUserGroup.Id %>"><span class="sub-nav-text">Remove Members</span></a></li>
+            <li id="editoption">
+                <a href="<%= ResolveUrl("~/views/users/editgroup.aspx") %>?groupid=<%= CloneDeployUserGroup.Id %>">
+                    <span class="sub-nav-text">General</span></a>
+            </li>
+            <li id="acloption">
+                <a href="<%= ResolveUrl("~/views/users/groupacls/general.aspx") %>?groupid=<%= CloneDeployUserGroup.Id %>&level=3">
+                    <span class="sub-nav-text">Access Control</span></a>
+            </li>
+            <li id="addmembers">
+                <a href="<%= ResolveUrl("~/views/users/addmembers.aspx") %>?groupid=<%= CloneDeployUserGroup.Id %>">
+                    <span class="sub-nav-text">Add Members</span></a>
+            </li>
+            <li id="removemembers">
+                <a href="<%= ResolveUrl("~/views/users/removemembers.aspx") %>?groupid=<%= CloneDeployUserGroup.Id %>">
+                    <span class="sub-nav-text">Remove Members</span></a>
+            </li>
         </ul>
     </div>
 
-            <ul>
+    <ul>
         <asp:ContentPlaceHolder ID="Level3" runat="server">
         </asp:ContentPlaceHolder>
-                </ul>
+    </ul>
 
 </asp:Content>
 
 <asp:Content runat="server" ID="Breadcrumb" ContentPlaceHolderID="Breadcrumb">
-     <li><a href="<%= ResolveUrl("~/views/users/search.aspx") %>">Users</a></li>
+    <li>
+        <a href="<%= ResolveUrl("~/views/users/search.aspx") %>">Users</a>
+    </li>
     <asp:ContentPlaceHolder ID="BreadcrumbSub" runat="server">
-        </asp:ContentPlaceHolder>
+    </asp:ContentPlaceHolder>
 </asp:Content>
 
 
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="PageActions">
     <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
     </asp:ContentPlaceHolder>
-   
+
     <ul class="dropdown-menu">
-             <asp:ContentPlaceHolder ID="AdditionalActions" runat="server"></asp:ContentPlaceHolder>
-      <li><asp:LinkButton ID="btnDelete" runat="server"  Text="Delete User" OnClick="btnDelete_Click" Visible="False"></asp:LinkButton></li>
-         <li><asp:LinkButton ID="btnDeleteGroup" runat="server"  Text="Delete User Group" OnClick="btnDeleteGroup_Click" Visible="False"></asp:LinkButton></li>
-            <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
-   
- 
-     <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
-        </ul>
-       
+        <asp:ContentPlaceHolder ID="AdditionalActions" runat="server"></asp:ContentPlaceHolder>
+        <li>
+            <asp:LinkButton ID="btnDelete" runat="server" Text="Delete User" OnClick="btnDelete_Click" Visible="False"></asp:LinkButton>
+        </li>
+        <li>
+            <asp:LinkButton ID="btnDeleteGroup" runat="server" Text="Delete User Group" OnClick="btnDeleteGroup_Click" Visible="False"></asp:LinkButton>
+        </li>
+        <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
+
+
+        <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
+    </ul>
+
 </asp:Content>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="Content" Runat="Server">
-  
+
     <asp:ContentPlaceHolder ID="SubContent" runat="server">
     </asp:ContentPlaceHolder>
-  
+
     <div id="confirmbox" class="confirm-box-outer">
         <div class="confirm-box-inner">
             <h4>

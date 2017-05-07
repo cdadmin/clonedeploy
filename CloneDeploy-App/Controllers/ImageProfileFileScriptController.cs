@@ -4,10 +4,9 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class ImageProfileScriptController: ApiController
+    public class ImageProfileScriptController : ApiController
     {
         private readonly ImageProfileScriptServices _imageProfileScriptServices;
 
@@ -19,13 +18,7 @@ namespace CloneDeploy_App.Controllers
         [CustomAuth(Permission = "ProfileSearch")]
         public ActionResultDTO Post(ImageProfileScriptEntity imageProfileScript)
         {
-            
             return _imageProfileScriptServices.AddImageProfileScript(imageProfileScript);
-
         }
-
-       
-
-      
     }
 }

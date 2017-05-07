@@ -1,48 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 
 namespace CloneDeploy_Services.Helpers
 {
-    class Zip
+    internal class Zip
     {
-        public void Create(string outPathname, string folderName)
-        {
-
-            FileStream fsOut = File.Create(outPathname);
-            ZipOutputStream zipStream = new ZipOutputStream(fsOut);
-
-            zipStream.SetLevel(0); 
-
-            // This setting will strip the leading part of the folder path in the entries, to
-            // make the entries relative to the starting folder.
-            // To include the full path for each entry up to the drive root, assign folderOffset = 0.
-            int folderOffset = folderName.Length + (folderName.EndsWith("\\") ? 0 : 1);
-
-            CompressFolder(folderName, zipStream, folderOffset);
-
-            zipStream.IsStreamOwner = true;	// Makes the Close also Close the underlying stream
-            zipStream.Close();
-        }
-
         private void CompressFolder(string path, ZipOutputStream zipStream, int folderOffset)
         {
+            var files = Directory.GetFiles(path);
 
-            string[] files = Directory.GetFiles(path);
-
-            foreach (string filename in files)
+            foreach (var filename in files)
             {
+                var fi = new FileInfo(filename);
 
-                FileInfo fi = new FileInfo(filename);
-
-                string entryName = filename.Substring(folderOffset); // Makes the name in zip based on the folder
+                var entryName = filename.Substring(folderOffset); // Makes the name in zip based on the folder
                 entryName = ZipEntry.CleanName(entryName); // Removes drive from name and fixes slash direction
-                ZipEntry newEntry = new ZipEntry(entryName);
+                var newEntry = new ZipEntry(entryName);
                 newEntry.DateTime = fi.LastWriteTime; // Note the zip format stores 2 second granularity
 
                 // Specifying the AESKeySize triggers AES encryption. Allowable values are 0 (off), 128 or 256.
@@ -60,18 +34,36 @@ namespace CloneDeploy_Services.Helpers
 
                 // Zip the file in buffered chunks
                 // the "using" will close the stream even if an exception occurs
-                byte[] buffer = new byte[4096];
-                using (FileStream streamReader = File.OpenRead(filename))
+                var buffer = new byte[4096];
+                using (var streamReader = File.OpenRead(filename))
                 {
                     StreamUtils.Copy(streamReader, zipStream, buffer);
                 }
                 zipStream.CloseEntry();
             }
-            string[] folders = Directory.GetDirectories(path);
-            foreach (string folder in folders)
+            var folders = Directory.GetDirectories(path);
+            foreach (var folder in folders)
             {
                 CompressFolder(folder, zipStream, folderOffset);
             }
+        }
+
+        public void Create(string outPathname, string folderName)
+        {
+            var fsOut = File.Create(outPathname);
+            var zipStream = new ZipOutputStream(fsOut);
+
+            zipStream.SetLevel(0);
+
+            // This setting will strip the leading part of the folder path in the entries, to
+            // make the entries relative to the starting folder.
+            // To include the full path for each entry up to the drive root, assign folderOffset = 0.
+            var folderOffset = folderName.Length + (folderName.EndsWith("\\") ? 0 : 1);
+
+            CompressFolder(folderName, zipStream, folderOffset);
+
+            zipStream.IsStreamOwner = true; // Makes the Close also Close the underlying stream
+            zipStream.Close();
         }
     }
 }

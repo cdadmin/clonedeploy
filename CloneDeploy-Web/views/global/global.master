@@ -2,94 +2,95 @@
 
 <asp:Content ID="SubNav" ContentPlaceHolderID="SubNav" Runat="Server">
     <script type="text/javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#nav-global').addClass("nav-current");
         });
     </script>
-       <div class="sub-nav-top">
+    <div class="sub-nav-top">
         <div id="Level1" runat="server">
-        <ul>
-             <li id="scripts">
-                <a href="<%= ResolveUrl("~/views/global/scripts/search.aspx?cat=sub1") %>" >
-                    <span class="sub-nav-text">Imaging Scripts</span>
-                </a>
-            </li>
-            
-             <li id="sysprep">
-                <a href="<%= ResolveUrl("~/views/global/sysprep/search.aspx?cat=sub1") %>" >
-                    <span class="sub-nav-text">Sysprep Tags</span>
-                </a>
-            </li>
-            
-            <li id="filesandfolders">
-                <a href="<%= ResolveUrl("~/views/global/filesandfolders/search.aspx?cat=sub1") %>" >
-                    <span class="sub-nav-text">Files / Folders</span>
-                </a>
-            </li>
+            <ul>
+                <li id="scripts">
+                    <a href="<%= ResolveUrl("~/views/global/scripts/search.aspx?cat=sub1") %>">
+                        <span class="sub-nav-text">Imaging Scripts</span>
+                    </a>
+                </li>
 
-            <li id="boottemplates">
-                 <a href="<%= ResolveUrl("~/views/global/boottemplates/search.aspx?cat=sub1") %>">
-                    <span class="sub-nav-text">Boot Menu Templates</span>
-                </a>
-            </li>
+                <li id="sysprep">
+                    <a href="<%= ResolveUrl("~/views/global/sysprep/search.aspx?cat=sub1") %>">
+                        <span class="sub-nav-text">Sysprep Tags</span>
+                    </a>
+                </li>
 
-            <li id="sites">
-                <a href="<%= ResolveUrl("~/views/global/sites/search.aspx") %>" >
-                    <span class="sub-nav-text">Sites</span>
-                </a>
-            </li>
+                <li id="filesandfolders">
+                    <a href="<%= ResolveUrl("~/views/global/filesandfolders/search.aspx?cat=sub1") %>">
+                        <span class="sub-nav-text">Files / Folders</span>
+                    </a>
+                </li>
 
-             <li id="buildings">
-                <a href="<%= ResolveUrl("~/views/global/buildings/search.aspx") %>" >
-                    <span class="sub-nav-text">Buildings</span>
-                </a>
-            </li>
-            
-             <li id="rooms">
-                <a href="<%= ResolveUrl("~/views/global/rooms/search.aspx") %>" >
-                    <span class="sub-nav-text">Rooms</span>
-                </a>
-            </li>
-               <li id="munki">
-                <a href="<%= ResolveUrl("~/views/global/munki/manifestsearch.aspx?cat=sub1") %>" >
-                    <span class="sub-nav-text">Munki</span>
-                </a>
-            </li>
-              <li id="kernel">
-                <a href="<%= ResolveUrl("~/views/global/profileupdater/kernel.aspx?cat=sub1") %>" >
-                    <span class="sub-nav-text">Image Profile Updater</span>
-                </a>
-            </li>
-             
-            
+                <li id="boottemplates">
+                    <a href="<%= ResolveUrl("~/views/global/boottemplates/search.aspx?cat=sub1") %>">
+                        <span class="sub-nav-text">Boot Menu Templates</span>
+                    </a>
+                </li>
 
-        </ul>
+                <li id="sites">
+                    <a href="<%= ResolveUrl("~/views/global/sites/search.aspx") %>">
+                        <span class="sub-nav-text">Sites</span>
+                    </a>
+                </li>
+
+                <li id="buildings">
+                    <a href="<%= ResolveUrl("~/views/global/buildings/search.aspx") %>">
+                        <span class="sub-nav-text">Buildings</span>
+                    </a>
+                </li>
+
+                <li id="rooms">
+                    <a href="<%= ResolveUrl("~/views/global/rooms/search.aspx") %>">
+                        <span class="sub-nav-text">Rooms</span>
+                    </a>
+                </li>
+                <li id="munki">
+                    <a href="<%= ResolveUrl("~/views/global/munki/manifestsearch.aspx?cat=sub1") %>">
+                        <span class="sub-nav-text">Munki</span>
+                    </a>
+                </li>
+                <li id="kernel">
+                    <a href="<%= ResolveUrl("~/views/global/profileupdater/kernel.aspx?cat=sub1") %>">
+                        <span class="sub-nav-text">Image Profile Updater</span>
+                    </a>
+                </li>
+
+
+            </ul>
         </div>
 
-            <ul>
-                <asp:ContentPlaceHolder runat="server" ID="Level3"></asp:ContentPlaceHolder>
-                </ul>
+        <ul>
+            <asp:ContentPlaceHolder runat="server" ID="Level3"></asp:ContentPlaceHolder>
+        </ul>
     </div>
 </asp:Content>
 
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="Breadcrumb" Runat="Server">
-     <li><a href="<%= ResolveUrl("~/views/global/chooser.aspx") %>">Global</a></li>
+    <li>
+        <a href="<%= ResolveUrl("~/views/global/chooser.aspx") %>">Global</a>
+    </li>
     <asp:ContentPlaceHolder ID="BreadcrumbSub" runat="server">
-        </asp:ContentPlaceHolder>
+    </asp:ContentPlaceHolder>
 </asp:Content>
 
 
 <asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="PageActions">
     <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
     </asp:ContentPlaceHolder>
-    
+
     <ul class="dropdown-menu">
-             <asp:ContentPlaceHolder ID="AdditionalActions" runat="server"></asp:ContentPlaceHolder>
-       <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
+        <asp:ContentPlaceHolder ID="AdditionalActions" runat="server"></asp:ContentPlaceHolder>
+        <asp:ContentPlaceHolder ID="ActionLeftSub" runat="server"></asp:ContentPlaceHolder>
 
 
-      <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
-        </ul>
+        <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
+    </ul>
 </asp:Content>
 
 <asp:Content runat="server" ID="PageNav" ContentPlaceHolderID="PageNav">
@@ -97,12 +98,9 @@
 </asp:Content>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="Content" Runat="Server">
-    
+
     <asp:ContentPlaceHolder ID="SubContent" runat="server">
     </asp:ContentPlaceHolder>
-  
-   
 
 
 </asp:Content>
-

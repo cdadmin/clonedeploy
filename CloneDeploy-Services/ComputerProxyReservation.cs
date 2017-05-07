@@ -6,20 +6,23 @@ namespace CloneDeploy_Services
 {
     public class ComputerProxyReservationServices
     {
-         private readonly UnitOfWork _uow;
+        private readonly UnitOfWork _uow;
 
         public ComputerProxyReservationServices()
         {
             _uow = new UnitOfWork();
         }
 
-
-
+        public bool DeleteComputerProxyReservation(int computerId)
+        {
+            _uow.ComputerProxyRepository.DeleteRange(x => x.ComputerId == computerId);
+            _uow.Save();
+            return true;
+        }
 
 
         public ActionResultDTO UpdateComputerProxyReservation(ComputerProxyReservationEntity computerProxyReservation)
         {
-
             if (_uow.ComputerProxyRepository.Exists(x => x.ComputerId == computerProxyReservation.ComputerId))
             {
                 computerProxyReservation.Id =
@@ -35,16 +38,6 @@ namespace CloneDeploy_Services
             actionResult.Success = true;
             actionResult.Id = computerProxyReservation.Id;
             return actionResult;
-
-        }
-
-        public  bool DeleteComputerProxyReservation(int computerId)
-        {
-           
-                _uow.ComputerProxyRepository.DeleteRange(x => x.ComputerId == computerId);
-                _uow.Save();
-                return true;
-            
         }
     }
 }

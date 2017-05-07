@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services.Helpers;
@@ -18,8 +16,8 @@ namespace CloneDeploy_Services
 {
     public class FilesystemServices
     {
-
         private static readonly ILog log = LogManager.GetLogger("ApplicationLog");
+
         public DpFreeSpaceDTO GetDpFreeSpace()
         {
             var dp = new DistributionPointServices().GetPrimaryDistributionPoint();
@@ -27,22 +25,22 @@ namespace CloneDeploy_Services
             var dpFreeSpace = new DpFreeSpaceDTO();
             dpFreeSpace.dPPath = dp.PhysicalPath;
 
-            if (System.IO.Directory.Exists(dp.PhysicalPath))
+            if (Directory.Exists(dp.PhysicalPath))
             {
                 ulong freespace = 0;
                 ulong total = 0;
-                bool success = DriveFreeBytes(dp.PhysicalPath, out freespace, out total);
+                var success = DriveFreeBytes(dp.PhysicalPath, out freespace, out total);
 
                 if (!success) return null;
 
-                int freePercent = 0;
-                int usedPercent = 0;
+                var freePercent = 0;
+                var usedPercent = 0;
 
                 if (total > 0 && freespace > 0)
                 {
-                    freePercent = (int)(0.5f + ((100f * Convert.ToInt64(freespace)) / Convert.ToInt64(total)));
+                    freePercent = (int) (0.5f + 100f*Convert.ToInt64(freespace)/Convert.ToInt64(total));
                     usedPercent =
-                        (int)(0.5f + ((100f * Convert.ToInt64(total - freespace)) / Convert.ToInt64(total)));
+                        (int) (0.5f + 100f*Convert.ToInt64(total - freespace)/Convert.ToInt64(total));
                 }
                 dpFreeSpace.freespace = freespace;
                 dpFreeSpace.total = total;
@@ -51,8 +49,8 @@ namespace CloneDeploy_Services
             }
 
             return dpFreeSpace;
-
         }
+
         // if running on Mono
 #if __MonoCS__     
         public static bool DriveFreeBytes(string folderName, out ulong freespace, out ulong total)
@@ -83,9 +81,9 @@ namespace CloneDeploy_Services
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool GetDiskFreeSpaceEx(string lpDirectoryName,
-        out ulong lpFreeBytesAvailable,
-        out ulong lpTotalNumberOfBytes,
-        out ulong lpTotalNumberOfFreeBytes);
+            out ulong lpFreeBytesAvailable,
+            out ulong lpTotalNumberOfBytes,
+            out ulong lpTotalNumberOfFreeBytes);
 
         public static bool DriveFreeBytes(string folderName, out ulong freespace, out ulong total)
         {
@@ -109,12 +107,10 @@ namespace CloneDeploy_Services
                 total = tot;
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 #endif
+
         public string GetDefaultBootMenuPath(string type)
         {
             string path = null;
@@ -127,7 +123,7 @@ namespace CloneDeploy_Services
                 var biosFile = Settings.ProxyBiosFile;
                 var efi32File = Settings.ProxyEfi32File;
                 var efi64File = Settings.ProxyEfi64File;
-     
+
                 if (type == "bios")
                 {
                     if (biosFile.Contains("ipxe"))
@@ -223,13 +219,13 @@ namespace CloneDeploy_Services
             }
         }
 
-        public List<string> GetLogContents(string name,int limit)
+        public List<string> GetLogContents(string name, int limit)
         {
             var path = GetServerPaths("logs") + name;
             return File.ReadLines(path).Reverse().Take(limit).Reverse().ToList();
         }
 
-        public string GetServerPaths(string type, string subType="")
+        public string GetServerPaths(string type, string subType = "")
         {
             var basePath = HttpContext.Current.Server.MapPath("~");
             var seperator = Path.DirectorySeparatorChar;
@@ -237,7 +233,7 @@ namespace CloneDeploy_Services
             {
                 case "iso":
                     return basePath + seperator + "private" + seperator + "client_iso" + seperator + "output" +
-                           seperator;              
+                           seperator;
                 case "clientScript":
                     return basePath + seperator + "private" + seperator + "clientscripts" + seperator + subType;
                 case "csv":
@@ -246,11 +242,11 @@ namespace CloneDeploy_Services
                     return basePath + seperator + "private" + seperator + "exports" + seperator;
                 case "defaultTftp":
                     return Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) +
-                seperator + "clonedeploy" + seperator + "tftpboot" + seperator;
+                           seperator + "clonedeploy" + seperator + "tftpboot" + seperator;
                 case "defaultDp":
                     return Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) +
-                                                 seperator + "clonedeploy" +
-                                                 seperator + "cd_dp";
+                           seperator + "clonedeploy" +
+                           seperator + "cd_dp";
                 case "seperator":
                     return seperator.ToString();
                 case "logs":
@@ -275,12 +271,8 @@ namespace CloneDeploy_Services
                     return false;
                 }
             }
-            else
-            {
-                log.Debug("Could Not Delete Tftp File " + path + " It Is Not A Sub Directory Of The Base Tftp Path");
-                return false;
-            }
+            log.Debug("Could Not Delete Tftp File " + path + " It Is Not A Sub Directory Of The Base Tftp Path");
+            return false;
         }
     }
-
 }

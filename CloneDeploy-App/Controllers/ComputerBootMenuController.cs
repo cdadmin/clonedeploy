@@ -4,12 +4,10 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
     public class ComputerBootMenuController : ApiController
     {
-
         private readonly ComputerBootMenuServices _computerBootMenuServices;
 
         public ComputerBootMenuController()
@@ -22,9 +20,5 @@ namespace CloneDeploy_App.Controllers
         {
             return _computerBootMenuServices.UpdateComputerBootMenu(computerBootMenu);
         }
-
-       
-
-      
     }
 }

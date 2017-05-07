@@ -7,32 +7,33 @@ using log4net;
 namespace CloneDeploy_Services.Helpers
 {
     /// <summary>
-    /// Summary description for Mail
+    ///     Summary description for Mail
     /// </summary>
     public class Mail
     {
         private readonly ILog log = LogManager.GetLogger("ApplicationLog");
-
-        public string Subject { get; set; }
         public string Body { get; set; }
         public string MailTo { get; set; }
 
+        public string Subject { get; set; }
+
         public void Send()
         {
-             Task.Factory.StartNew(SendMailAsync);
+            Task.Factory.StartNew(SendMailAsync);
         }
 
         private void SendMailAsync()
         {
             var message = new MailMessage(Settings.SmtpMailFrom, MailTo)
             {
-                Subject = "Clone Deploy " + "("+ Subject +")",
+                Subject = "Clone Deploy " + "(" + Subject + ")",
                 Body = Body
             };
 
             var client = new SmtpClient(Settings.SmtpServer, Convert.ToInt32(Settings.SmtpPort))
             {
-                Credentials = new NetworkCredential(Settings.SmtpUsername, new Helpers.Encryption().DecryptText(Settings.SmtpPassword)),
+                Credentials =
+                    new NetworkCredential(Settings.SmtpUsername, new Encryption().DecryptText(Settings.SmtpPassword)),
                 EnableSsl = Settings.SmtpSsl == "Yes"
             };
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using CloneDeploy_Entities;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
@@ -8,18 +7,10 @@ namespace views.images
 {
     public partial class ImageCreate : Images
     {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            if (IsPostBack) return;
-            
-
-            chkVisible.Checked = true;
-        }
-
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             RequiresAuthorization(Authorizations.CreateImage);
-            var image = new ImageEntity()
+            var image = new ImageEntity
             {
                 Name = txtImageName.Text,
                 Os = "",
@@ -33,8 +24,8 @@ namespace views.images
             image.Type = ddlEnvironment.Text == "macOS" ? "Block" : ddlImageType.Text;
             image.Type = ddlEnvironment.Text == "winpe" ? "File" : ddlImageType.Text;
             image.OsxType = ddlEnvironment.Text == "macOS" ? "thick" : "";
-           
-           
+
+
             var result = Call.ImageApi.Post(image);
             if (result.Success)
             {
@@ -45,7 +36,6 @@ namespace views.images
             {
                 EndUserMessage = result.ErrorMessage;
             }
-
         }
 
         protected void ddlEnvironment_OnSelectedIndexChanged(object sender, EventArgs e)
@@ -53,12 +43,10 @@ namespace views.images
             if (ddlEnvironment.Text == "macOS" || ddlEnvironment.Text == "winpe")
             {
                 imageType.Visible = false;
-               
             }
             else
             {
                 imageType.Visible = true;
-               
             }
         }
 
@@ -76,6 +64,14 @@ namespace views.images
             {
                 thinImage.Visible = false;
             }
+        }
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (IsPostBack) return;
+
+
+            chkVisible.Checked = true;
         }
     }
 }

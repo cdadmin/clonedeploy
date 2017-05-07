@@ -1,5 +1,4 @@
-﻿using System.Web.WebSockets;
-using CloneDeploy_Entities;
+﻿using CloneDeploy_Entities;
 using CloneDeploy_Services.Helpers;
 
 namespace CloneDeploy_Services.Workflows
@@ -8,10 +7,10 @@ namespace CloneDeploy_Services.Workflows
     {
         private readonly ComputerEntity _computer;
         private readonly string _direction;
+        private readonly string _ipAddress;
+        private readonly int _userId;
         private ActiveImagingTaskEntity _activeTask;
         private ImageProfileWithImage _imageProfile;
-        private readonly int _userId;
-        private readonly string _ipAddress;
 
         public Unicast(int computerId, string direction, int userId, string userIp)
         {
@@ -36,7 +35,7 @@ namespace CloneDeploy_Services.Workflows
 
             if (_direction == "push" || _direction == "permanent_push")
             {
-                var validation = new ImageServices().CheckApprovalAndChecksum(_imageProfile.Image,_userId);
+                var validation = new ImageServices().CheckApprovalAndChecksum(_imageProfile.Image, _userId);
                 if (!validation.Success) return validation.ErrorMessage;
             }
 

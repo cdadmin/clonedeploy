@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using CloneDeploy_ApiCalls;
-using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services.Helpers;
 using log4net;
 
@@ -10,14 +9,17 @@ namespace CloneDeploy_Services.Workflows
 {
     public class CopyPxeBinaries
     {
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
         private const string BootFile = "pxeboot.0";
+
+        private readonly string[] _grubEfi64Files = {"bootx64.efi", "grubx64.efi"};
         private readonly string[] _ipxeBiosFiles = {"undionly.kpxe"};
         private readonly string[] _ipxeEfiFiles = {"ipxe.efi", "snp.efi", "snponly.efi"};
 
+        private readonly string _sourceRootPath = Settings.TftpPath + "static" + Path.DirectorySeparatorChar;
+
         private readonly string[] _syslinuxBiosFiles =
         {
-            "ldlinux.c32", "libcom32.c32", "libutil.c32", "vesamenu.c32", 
+            "ldlinux.c32", "libcom32.c32", "libutil.c32", "vesamenu.c32",
             "pxelinux.0"
         };
 
@@ -33,22 +35,43 @@ namespace CloneDeploy_Services.Workflows
             "syslinux.efi"
         };
 
-        private readonly string[] _grubEfi64Files = {"bootx64.efi", "grubx64.efi"};
+        private readonly string[] _winPEBiosFiles = {"bootmgr.exe", "pxeboot.n12"};
 
-        private readonly string[] _winPEBiosFiles = { "bootmgr.exe", "pxeboot.n12" };
+        private readonly string[] _winPEEfiFiles = {"bootmgfw.efi"};
+        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
 
-        private readonly string[] _winPEEfiFiles = { "bootmgfw.efi" };
+        private bool CopyCommand(string pxeType, string mode, string sArch, string dArch, string sName, string dName)
+        {
+            var destinationRootPath = Settings.TftpPath;
+            if (mode == "proxy" || (pxeType == "grub" && dArch == "efi64") || (pxeType == "winpe" && dArch == "efi64") ||
+                (pxeType == "winpe" && dArch == "efi32") || pxeType == "winpe" && dArch == "bios")
+                destinationRootPath += "proxy" + Path.DirectorySeparatorChar;
+            try
+            {
+                File.Copy(
+                    _sourceRootPath + pxeType + Path.DirectorySeparatorChar + mode +
+                    Path.DirectorySeparatorChar + sArch + Path.DirectorySeparatorChar + sName,
+                    destinationRootPath + dArch + Path.DirectorySeparatorChar + dName, true);
 
-        private readonly string _sourceRootPath = Settings.TftpPath + "static" + Path.DirectorySeparatorChar;
+                new FileOps().SetUnixPermissions(destinationRootPath + dArch + Path.DirectorySeparatorChar + dName);
+            }
+            catch (Exception ex)
+            {
+                log.Debug(ex.Message);
+                return false;
+            }
+            return true;
+        }
 
         public bool CopyFiles()
         {
             var copyResult = false;
-            if (Settings.OperationMode == "Single" || Settings.OperationMode == "Cluster Secondary" || (Settings.OperationMode == "Cluster Primary" && Settings.TftpServerRole))
+            if (Settings.OperationMode == "Single" || Settings.OperationMode == "Cluster Secondary" ||
+                (Settings.OperationMode == "Cluster Primary" && Settings.TftpServerRole))
             {
                 copyResult = Settings.ProxyDhcp == "Yes" ? CopyFilesForProxy() : CopyFilesForNonProxy();
             }
-            
+
             if (Settings.OperationMode == "Cluster Primary")
             {
                 var tftpServers = new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
@@ -59,102 +82,6 @@ namespace CloneDeploy_Services.Workflows
                 }
             }
             return copyResult;
-            
-        }
-
-        private bool CopyFilesForProxy()
-        {
-            var biosFile = Settings.ProxyBiosFile;
-            var efi32File = Settings.ProxyEfi32File;
-            var efi64File = Settings.ProxyEfi64File;
-
-            foreach (var file in _ipxeBiosFiles)
-            {
-                if (!CopyCommand("ipxe", "proxy", "ipxe", "bios", file, file)) return false;
-                if(biosFile == "ipxe" && file == "undionly.kpxe")
-                    if (!CopyCommand("ipxe", "proxy", "ipxe", "bios", file, BootFile))return false;
-            }
-            foreach (var file in _ipxeEfiFiles)
-            {
-                if (!CopyCommand("ipxe", "proxy", "ipxe_efi_32", "efi32", file, file)) return false;
-                if ((efi32File == "ipxe_efi" && file == "ipxe.efi") ||
-                    (efi32File == "ipxe_efi_snp" && file == "snp.efi")
-                    || (efi32File == "ipxe_efi_snponly" && file == "snponly.efi"))
-                    if (!CopyCommand("ipxe", "proxy", "ipxe_efi_32", "efi32", file, BootFile)) return false;
-
-            }
-            foreach (var file in _ipxeEfiFiles)
-            {
-                if (!CopyCommand("ipxe", "proxy", "ipxe_efi_64", "efi64", file, file)) return false;
-                 if ((efi64File == "ipxe_efi" && file == "ipxe.efi") ||
-                    (efi64File == "ipxe_efi_snp" && file == "snp.efi")
-                    || (efi64File == "ipxe_efi_snponly" && file == "snponly.efi"))
-                     if (!CopyCommand("ipxe", "proxy", "ipxe_efi_64", "efi64", file, BootFile)) return false;
-            }
-
-            foreach (var file in _syslinuxBiosFiles)
-            {
-                if (!CopyCommand("syslinux", "proxy", "pxelinux", "bios", file, file)) return false;
-                if(biosFile == "pxelinux" && file == "pxelinux.0")
-                    if (!CopyCommand("syslinux", "proxy", "pxelinux", "bios", file, BootFile)) return false;
-            }
-
-            foreach (var file in _syslinuxEfi32Files)
-            {
-                if (!CopyCommand("syslinux", "proxy", "syslinux_efi_32", "efi32", file, file)) return false;
-                if (efi32File == "syslinux" && file == "syslinux.efi")
-                    if (!CopyCommand("syslinux", "proxy", "syslinux_efi_32", "efi32", file, BootFile)) return false;
-            }
-
-            foreach (var file in _syslinuxEfi64Files)
-            {
-                if (!CopyCommand("syslinux", "proxy", "syslinux_efi_64", "efi64", file, file)) return false;
-                if (efi64File == "syslinux" && file == "syslinux.efi")
-                    if (!CopyCommand("syslinux", "proxy", "syslinux_efi_64", "efi64", file, BootFile)) return false;
-            }
-
-            foreach (var file in _grubEfi64Files)
-            {
-                if (!CopyCommand("grub", "", "", "efi64", file, file)) return false;
-                if (!CopyCommand("grub", "", "", "", file, file)) return false;
-                if(efi64File == "grub" && file == "bootx64.efi")
-                    if (!CopyCommand("grub", "", "", "efi64", file, BootFile)) return false;
-            }
-
-            if (
-                new Helpers.FileOps().FileExists(Settings.TftpPath + Path.DirectorySeparatorChar + "boot" +
-                                                 Path.DirectorySeparatorChar + "boot.sdi"))
-            {
-                foreach (var file in _winPEEfiFiles)
-                {
-                    if (!CopyCommand("winpe", "", "winpe_efi_64", "efi64", file, file)) return false;
-                    if (!CopyCommand("winpe", "", "winpe_efi_32", "efi32", file, file)) return false;
-                    if (efi64File == "winpe_efi")
-                    {
-                        if (!CopyCommand("winpe", "", "winpe_efi_64", "efi64", file, BootFile)) return false;
-                    }
-                    if (efi32File == "winpe_efi")
-                    {
-                        if (!CopyCommand("winpe", "", "winpe_efi_32", "efi32", file, BootFile)) return false;
-                    }
-
-                }
-                foreach (var file in _winPEBiosFiles)
-                {
-                    if (file == "bootmgr.exe")
-                    {
-                        if (!CopyCommand("winpe", "", "winpe", "", file, file)) return false;
-                    }
-                    if (!CopyCommand("winpe", "", "winpe", "bios", file, file)) return false;
-                
-                    if (biosFile == "winpe" && file == "pxeboot.n12")
-                    {
-                        if (!CopyCommand("winpe", "", "winpe", "bios", file, BootFile)) return false;
-                    }
-                }
-            }
-
-            return true;
         }
 
         private bool CopyFilesForNonProxy()
@@ -239,8 +166,9 @@ namespace CloneDeploy_Services.Workflows
                     try
                     {
                         File.Copy(Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCDx86",
-                            Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCD",true);
-                        new FileOps().SetUnixPermissions(Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCD");
+                            Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCD", true);
+                        new FileOps().SetUnixPermissions(Settings.TftpPath + "boot" + Path.DirectorySeparatorChar +
+                                                         "BCD");
                     }
                     catch (Exception ex)
                     {
@@ -263,8 +191,9 @@ namespace CloneDeploy_Services.Workflows
                     try
                     {
                         File.Copy(Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCDx64",
-                            Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCD",true);
-                        new FileOps().SetUnixPermissions(Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCD");
+                            Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCD", true);
+                        new FileOps().SetUnixPermissions(Settings.TftpPath + "boot" + Path.DirectorySeparatorChar +
+                                                         "BCD");
                     }
                     catch (Exception ex)
                     {
@@ -287,8 +216,9 @@ namespace CloneDeploy_Services.Workflows
                     try
                     {
                         File.Copy(Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCDx86",
-                            Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCD",true);
-                        new FileOps().SetUnixPermissions(Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCD");
+                            Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCD", true);
+                        new FileOps().SetUnixPermissions(Settings.TftpPath + "boot" + Path.DirectorySeparatorChar +
+                                                         "BCD");
                     }
                     catch (Exception ex)
                     {
@@ -301,8 +231,9 @@ namespace CloneDeploy_Services.Workflows
                     try
                     {
                         File.Copy(Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCDx64",
-                            Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCD",true);
-                        new FileOps().SetUnixPermissions(Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCD");
+                            Settings.TftpPath + "boot" + Path.DirectorySeparatorChar + "BCD", true);
+                        new FileOps().SetUnixPermissions(Settings.TftpPath + "boot" + Path.DirectorySeparatorChar +
+                                                         "BCD");
                     }
                     catch (Exception ex)
                     {
@@ -315,27 +246,97 @@ namespace CloneDeploy_Services.Workflows
             return true;
         }
 
-        private bool CopyCommand(string pxeType, string mode, string sArch, string dArch, string sName, string dName)
+        private bool CopyFilesForProxy()
         {
-            var destinationRootPath = Settings.TftpPath;
-            if (mode == "proxy" || (pxeType == "grub" && dArch == "efi64") || (pxeType == "winpe" && dArch == "efi64") || (pxeType == "winpe" && dArch == "efi32") || pxeType == "winpe" && dArch == "bios")
-                destinationRootPath += "proxy" + Path.DirectorySeparatorChar;
-            try
-            {
-                File.Copy(
-                  _sourceRootPath + pxeType + Path.DirectorySeparatorChar + mode +
-                  Path.DirectorySeparatorChar + sArch + Path.DirectorySeparatorChar + sName,
-                  destinationRootPath + dArch + Path.DirectorySeparatorChar + dName, true);
+            var biosFile = Settings.ProxyBiosFile;
+            var efi32File = Settings.ProxyEfi32File;
+            var efi64File = Settings.ProxyEfi64File;
 
-                new FileOps().SetUnixPermissions(destinationRootPath + dArch + Path.DirectorySeparatorChar + dName);
-            }
-            catch (Exception ex)
+            foreach (var file in _ipxeBiosFiles)
             {
-                log.Debug(ex.Message);
-                return false;           
+                if (!CopyCommand("ipxe", "proxy", "ipxe", "bios", file, file)) return false;
+                if (biosFile == "ipxe" && file == "undionly.kpxe")
+                    if (!CopyCommand("ipxe", "proxy", "ipxe", "bios", file, BootFile)) return false;
             }
+            foreach (var file in _ipxeEfiFiles)
+            {
+                if (!CopyCommand("ipxe", "proxy", "ipxe_efi_32", "efi32", file, file)) return false;
+                if ((efi32File == "ipxe_efi" && file == "ipxe.efi") ||
+                    (efi32File == "ipxe_efi_snp" && file == "snp.efi")
+                    || (efi32File == "ipxe_efi_snponly" && file == "snponly.efi"))
+                    if (!CopyCommand("ipxe", "proxy", "ipxe_efi_32", "efi32", file, BootFile)) return false;
+            }
+            foreach (var file in _ipxeEfiFiles)
+            {
+                if (!CopyCommand("ipxe", "proxy", "ipxe_efi_64", "efi64", file, file)) return false;
+                if ((efi64File == "ipxe_efi" && file == "ipxe.efi") ||
+                    (efi64File == "ipxe_efi_snp" && file == "snp.efi")
+                    || (efi64File == "ipxe_efi_snponly" && file == "snponly.efi"))
+                    if (!CopyCommand("ipxe", "proxy", "ipxe_efi_64", "efi64", file, BootFile)) return false;
+            }
+
+            foreach (var file in _syslinuxBiosFiles)
+            {
+                if (!CopyCommand("syslinux", "proxy", "pxelinux", "bios", file, file)) return false;
+                if (biosFile == "pxelinux" && file == "pxelinux.0")
+                    if (!CopyCommand("syslinux", "proxy", "pxelinux", "bios", file, BootFile)) return false;
+            }
+
+            foreach (var file in _syslinuxEfi32Files)
+            {
+                if (!CopyCommand("syslinux", "proxy", "syslinux_efi_32", "efi32", file, file)) return false;
+                if (efi32File == "syslinux" && file == "syslinux.efi")
+                    if (!CopyCommand("syslinux", "proxy", "syslinux_efi_32", "efi32", file, BootFile)) return false;
+            }
+
+            foreach (var file in _syslinuxEfi64Files)
+            {
+                if (!CopyCommand("syslinux", "proxy", "syslinux_efi_64", "efi64", file, file)) return false;
+                if (efi64File == "syslinux" && file == "syslinux.efi")
+                    if (!CopyCommand("syslinux", "proxy", "syslinux_efi_64", "efi64", file, BootFile)) return false;
+            }
+
+            foreach (var file in _grubEfi64Files)
+            {
+                if (!CopyCommand("grub", "", "", "efi64", file, file)) return false;
+                if (!CopyCommand("grub", "", "", "", file, file)) return false;
+                if (efi64File == "grub" && file == "bootx64.efi")
+                    if (!CopyCommand("grub", "", "", "efi64", file, BootFile)) return false;
+            }
+
+            if (
+                new FileOps().FileExists(Settings.TftpPath + Path.DirectorySeparatorChar + "boot" +
+                                         Path.DirectorySeparatorChar + "boot.sdi"))
+            {
+                foreach (var file in _winPEEfiFiles)
+                {
+                    if (!CopyCommand("winpe", "", "winpe_efi_64", "efi64", file, file)) return false;
+                    if (!CopyCommand("winpe", "", "winpe_efi_32", "efi32", file, file)) return false;
+                    if (efi64File == "winpe_efi")
+                    {
+                        if (!CopyCommand("winpe", "", "winpe_efi_64", "efi64", file, BootFile)) return false;
+                    }
+                    if (efi32File == "winpe_efi")
+                    {
+                        if (!CopyCommand("winpe", "", "winpe_efi_32", "efi32", file, BootFile)) return false;
+                    }
+                }
+                foreach (var file in _winPEBiosFiles)
+                {
+                    if (file == "bootmgr.exe")
+                    {
+                        if (!CopyCommand("winpe", "", "winpe", "", file, file)) return false;
+                    }
+                    if (!CopyCommand("winpe", "", "winpe", "bios", file, file)) return false;
+
+                    if (biosFile == "winpe" && file == "pxeboot.n12")
+                    {
+                        if (!CopyCommand("winpe", "", "winpe", "bios", file, BootFile)) return false;
+                    }
+                }
+            }
+
             return true;
-
         }
     }
 }

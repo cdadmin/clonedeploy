@@ -12,30 +12,61 @@ namespace CloneDeploy_Web.BasePages
 {
     public class PageBaseMaster : Page
     {
+        public APICall Call;
         public CloneDeployUserEntity CloneDeployCurrentUser;
         public List<string> CurrentUserRights;
-        public APICall Call;
 
         public static string EndUserMessage
         {
-            get { return (string)HttpContext.Current.Session["Message"]; }
+            get { return (string) HttpContext.Current.Session["Message"]; }
             set { HttpContext.Current.Session["Message"] = value; }
+        }
+
+        public void ChkAll(GridView gridview)
+        {
+            var hcb = (CheckBox) gridview.HeaderRow.FindControl("chkSelectAll");
+
+            foreach (GridViewRow row in gridview.Rows)
+            {
+                var cb = (CheckBox) row.FindControl("chkSelector");
+                if (cb != null)
+                    cb.Checked = hcb.Checked;
+            }
+        }
+
+        public void Export(string fileName, string contents)
+        {
+            HttpContext.Current.Response.ContentType = "application/octet-stream";
+            HttpContext.Current.Response.AppendHeader("Content-Disposition",
+                "attachment; filename=" + fileName);
+            HttpContext.Current.Response.Write(contents);
+            HttpContext.Current.Response.End();
+        }
+
+        public string GetSortDirection(string sortExpression)
+        {
+            if (ViewState[sortExpression] == null)
+                ViewState[sortExpression] = "Asc";
+            else
+                ViewState[sortExpression] = ViewState[sortExpression].ToString() == "Desc" ? "Asc" : "Desc";
+
+            return ViewState[sortExpression].ToString();
         }
 
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
             Call = new APICall();
-            object currentUser = Session["CloneDeployUser"];
+            var currentUser = Session["CloneDeployUser"];
 
-            if (currentUser == null )
+            if (currentUser == null)
             {
                 HttpContext.Current.Session.Abandon();
                 FormsAuthentication.SignOut();
                 Response.Redirect("~/views/login/login.aspx?session=expired", true);
             }
 
-            CloneDeployCurrentUser = (CloneDeployUserEntity)currentUser;
+            CloneDeployCurrentUser = (CloneDeployUserEntity) currentUser;
         }
 
         protected override void OnLoadComplete(EventArgs e)
@@ -51,18 +82,37 @@ namespace CloneDeploy_Web.BasePages
             HttpContext.Current.Session.Remove("Message");
         }
 
-        protected void PopulateImagesDdl(DropDownList ddlImages)
+        protected void PopulateBootTemplatesDdl(DropDownList ddl)
         {
-            ddlImages.DataSource = Call.ImageApi.GetAll(Int32.MaxValue, "").Select(i => new { i.Id, i.Name }).OrderBy(x => x.Name).ToList();
-            ddlImages.DataValueField = "Id";
-            ddlImages.DataTextField = "Name";
-            ddlImages.DataBind();
-            ddlImages.Items.Insert(0, new ListItem("Select Image", "-1"));
+            ddl.DataSource = Call.BootTemplateApi.GetAll(int.MaxValue, "").Select(i => new {i.Id, i.Name});
+            ddl.DataValueField = "Id";
+            ddl.DataTextField = "Name";
+            ddl.DataBind();
+            ddl.Items.Insert(0, new ListItem("No Template", "-1"));
+        }
+
+        protected void PopulateBuildingsDdl(DropDownList ddl)
+        {
+            ddl.DataSource = Call.BuildingApi.GetAll(int.MaxValue, "").Select(i => new {i.Id, i.Name});
+            ddl.DataValueField = "Id";
+            ddl.DataTextField = "Name";
+            ddl.DataBind();
+            ddl.Items.Insert(0, new ListItem("Select Building", "-1"));
+        }
+
+        protected void PopulateClusterGroupsDdl(DropDownList ddlClusterGroup)
+        {
+            ddlClusterGroup.DataSource =
+                Call.ClusterGroupApi.GetAll(int.MaxValue, "").Select(d => new {d.Id, d.Name});
+            ddlClusterGroup.DataValueField = "Id";
+            ddlClusterGroup.DataTextField = "Name";
+            ddlClusterGroup.DataBind();
+            ddlClusterGroup.Items.Insert(0, new ListItem("None", "-1"));
         }
 
         protected void PopulateGroupsDdl(DropDownList ddlGroups)
         {
-            ddlGroups.DataSource = Call.GroupApi.GetAll(Int32.MaxValue, "").Select(i => new { i.Id, i.Name });
+            ddlGroups.DataSource = Call.GroupApi.GetAll(int.MaxValue, "").Select(i => new {i.Id, i.Name});
             ddlGroups.DataValueField = "Id";
             ddlGroups.DataTextField = "Name";
             ddlGroups.DataBind();
@@ -71,111 +121,62 @@ namespace CloneDeploy_Web.BasePages
 
         protected void PopulateImageProfilesDdl(DropDownList ddlImageProfile, int value)
         {
-            ddlImageProfile.DataSource = Call.ImageApi.GetImageProfiles(value).Select(i => new { i.Id, i.Name });
+            ddlImageProfile.DataSource = Call.ImageApi.GetImageProfiles(value).Select(i => new {i.Id, i.Name});
             ddlImageProfile.DataValueField = "Id";
             ddlImageProfile.DataTextField = "Name";
             ddlImageProfile.DataBind();
             ddlImageProfile.Items.Insert(0, new ListItem("Select Profile", "-1"));
         }
 
-        protected void PopulateClusterGroupsDdl(DropDownList ddlClusterGroup)
+        protected void PopulateImagesDdl(DropDownList ddlImages)
         {
-            ddlClusterGroup.DataSource =
-                Call.ClusterGroupApi.GetAll(Int32.MaxValue, "").Select(d => new {d.Id, d.Name});
-            ddlClusterGroup.DataValueField = "Id";
-            ddlClusterGroup.DataTextField = "Name";
-            ddlClusterGroup.DataBind();
-            ddlClusterGroup.Items.Insert(0, new ListItem("None", "-1"));
-        }
-
-        protected void PopulateSitesDdl(DropDownList ddl)
-        {
-            ddl.DataSource = Call.SiteApi.GetAll(Int32.MaxValue, "").Select(i => new { i.Id, i.Name });
-            ddl.DataValueField = "Id";
-            ddl.DataTextField = "Name";
-            ddl.DataBind();
-            ddl.Items.Insert(0, new ListItem("Select Site", "-1"));
-        }
-
-        protected void PopulateBuildingsDdl(DropDownList ddl)
-        {
-            ddl.DataSource = Call.BuildingApi.GetAll(Int32.MaxValue, "").Select(i => new { i.Id, i.Name });
-            ddl.DataValueField = "Id";
-            ddl.DataTextField = "Name";
-            ddl.DataBind();
-            ddl.Items.Insert(0, new ListItem("Select Building", "-1"));
+            ddlImages.DataSource =
+                Call.ImageApi.GetAll(int.MaxValue, "").Select(i => new {i.Id, i.Name}).OrderBy(x => x.Name).ToList();
+            ddlImages.DataValueField = "Id";
+            ddlImages.DataTextField = "Name";
+            ddlImages.DataBind();
+            ddlImages.Items.Insert(0, new ListItem("Select Image", "-1"));
         }
 
         protected void PopulateRoomsDdl(DropDownList ddl)
         {
-            ddl.DataSource = Call.RoomApi.GetAll(Int32.MaxValue,"").Select(i => new { i.Id, i.Name });
+            ddl.DataSource = Call.RoomApi.GetAll(int.MaxValue, "").Select(i => new {i.Id, i.Name});
             ddl.DataValueField = "Id";
             ddl.DataTextField = "Name";
             ddl.DataBind();
             ddl.Items.Insert(0, new ListItem("Select Room", "-1"));
         }
 
-        protected void PopulateBootTemplatesDdl(DropDownList ddl)
+        protected void PopulateSitesDdl(DropDownList ddl)
         {
-            ddl.DataSource = Call.BootTemplateApi.GetAll(Int32.MaxValue, "").Select(i => new { i.Id, i.Name });
+            ddl.DataSource = Call.SiteApi.GetAll(int.MaxValue, "").Select(i => new {i.Id, i.Name});
             ddl.DataValueField = "Id";
             ddl.DataTextField = "Name";
             ddl.DataBind();
-            ddl.Items.Insert(0, new ListItem("No Template", "-1"));
-        }
-
-        public void ChkAll(GridView gridview)
-        {
-            var hcb = (CheckBox)gridview.HeaderRow.FindControl("chkSelectAll");
-
-            foreach (GridViewRow row in gridview.Rows)
-            {
-                var cb = (CheckBox)row.FindControl("chkSelector");
-                if (cb != null)
-                    cb.Checked = hcb.Checked;
-            }
-        }
-
-        public string GetSortDirection(string sortExpression)
-        {
-            if (ViewState[sortExpression] == null)
-                ViewState[sortExpression] = "Asc";
-            else
-                ViewState[sortExpression] = ViewState[sortExpression].ToString() == "Desc" ? "Asc" : "Desc";
-
-            return ViewState[sortExpression].ToString();
-        }
-
-        public void Export(string fileName, string contents)
-        {
-            HttpContext.Current.Response.ContentType = "application/octet-stream";
-            HttpContext.Current.Response.AppendHeader("Content-Disposition",
-                "attachment; filename=" + fileName);
-            HttpContext.Current.Response.Write(contents);
-            HttpContext.Current.Response.End();
+            ddl.Items.Insert(0, new ListItem("Select Site", "-1"));
         }
 
         public void RequiresAuthorization(string requiredRight)
         {
-            if(!Call.AuthorizationApi.IsAuthorized(requiredRight))
-                Response.Redirect("~/views/dashboard/dash.aspx?access=denied",true);
+            if (!Call.AuthorizationApi.IsAuthorized(requiredRight))
+                Response.Redirect("~/views/dashboard/dash.aspx?access=denied", true);
         }
 
         public void RequiresAuthorizationOrManagedComputer(string requiredRight, int computerId)
         {
-            if (!Call.AuthorizationApi.ComputerManagement(requiredRight,computerId))
-            Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
+            if (!Call.AuthorizationApi.ComputerManagement(requiredRight, computerId))
+                Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
         }
 
         public void RequiresAuthorizationOrManagedGroup(string requiredRight, int groupId)
         {
-            if (!Call.AuthorizationApi.GroupManagement(requiredRight,groupId))
+            if (!Call.AuthorizationApi.GroupManagement(requiredRight, groupId))
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
         }
 
         public void RequiresAuthorizationOrManagedImage(string requiredRight, int imageId)
         {
-            if (!Call.AuthorizationApi.ImageManagement(requiredRight,imageId))
+            if (!Call.AuthorizationApi.ImageManagement(requiredRight, imageId))
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
         }
     }

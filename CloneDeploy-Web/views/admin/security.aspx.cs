@@ -2,50 +2,11 @@
 using System.Collections.Generic;
 using System.Web.UI.WebControls;
 using CloneDeploy_Entities;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
 public partial class views_admin_security : Admin
 {
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        if (IsPostBack) return;
-
-        chkldap.Checked = Settings.LdapEnabled == "1";
-        if (chkldap.Checked)
-        {
-            ad.Visible = true;
-            txtldapServer.Text = Settings.LdapServer;
-            txtldapPort.Text = Settings.LdapPort;
-            txtldapAuthAttribute.Text = Settings.LdapAuthAttribute;
-            txtldapbasedn.Text = Settings.LdapBaseDN;
-            ddlldapAuthType.Text = Settings.LdapAuthType;
-        }
-        ddlOnd.SelectedValue = Settings.OnDemand;
-        txtToken.Text = Settings.UniversalToken;
-        ddlSSL.SelectedValue = Settings.ForceSsL;
-        chkImageApproval.Checked = Convert.ToBoolean(Settings.RequireImageApproval);
-        ddlWebTasksLogin.Text = Settings.WebTaskRequiresLogin;
-        ddlOndLogin.Text = Settings.OnDemandRequiresLogin;
-        ddlDebugLogin.Text = Settings.DebugRequiresLogin;
-        ddlRegisterLogin.Text = Settings.RegisterRequiresLogin;
-        ddlClobberLogin.Text = Settings.ClobberRequiresLogin;
-
-        if (ddlDebugLogin.Text == "No" || ddlOndLogin.Text == "No" || ddlRegisterLogin.Text == "No" ||
-            ddlWebTasksLogin.Text == "No" || ddlClobberLogin.Text == "No")
-            universal.Visible = true;
-
-        //These require pxe boot menu or client iso to be recreated 
-        ViewState["serverKey"] = txtToken.Text;
-        ViewState["forceSSL"] = ddlSSL.Text;
-        ViewState["debugLogin"] = ddlDebugLogin.Text;
-        ViewState["ondLogin"] = ddlOndLogin.Text;
-        ViewState["registerLogin"] = ddlRegisterLogin.Text;
-        ViewState["webTaskLogin"] = ddlWebTasksLogin.Text;
-        ViewState["clobberLogin"] = ddlClobberLogin.Text;
-    }
-
     protected void btnGenerate_Click(object sender, EventArgs e)
     {
         txtToken.Text = Utility.GenerateKey();
@@ -59,7 +20,6 @@ public partial class views_admin_security : Admin
             txtToken.Text = "";
         var listSettings = new List<SettingEntity>
         {
-           
             new SettingEntity
             {
                 Name = "Require Image Approval",
@@ -67,14 +27,49 @@ public partial class views_admin_security : Admin
                 Id = Call.SettingApi.GetSetting("Require Image Approval").Id
             },
             new SettingEntity {Name = "On Demand", Value = ddlOnd.Text, Id = Call.SettingApi.GetSetting("On Demand").Id},
-            new SettingEntity {Name = "Universal Token", Value = txtToken.Text, Id = Call.SettingApi.GetSetting("Universal Token").Id},
+            new SettingEntity
+            {
+                Name = "Universal Token",
+                Value = txtToken.Text,
+                Id = Call.SettingApi.GetSetting("Universal Token").Id
+            },
             new SettingEntity {Name = "Force SSL", Value = ddlSSL.Text, Id = Call.SettingApi.GetSetting("Force SSL").Id},
-            new SettingEntity {Name = "Ldap Enabled", Value = Convert.ToInt16(chkldap.Checked).ToString(), Id = Call.SettingApi.GetSetting("Ldap Enabled").Id},
-            new SettingEntity {Name = "Ldap Server", Value = txtldapServer.Text, Id = Call.SettingApi.GetSetting("Ldap Server").Id},
-            new SettingEntity {Name = "Ldap Port", Value = txtldapPort.Text, Id = Call.SettingApi.GetSetting("Ldap Port").Id},
-            new SettingEntity {Name = "Ldap Auth Attribute", Value = txtldapAuthAttribute.Text, Id = Call.SettingApi.GetSetting("Ldap Auth Attribute").Id},
-            new SettingEntity {Name = "Ldap Base DN", Value = txtldapbasedn.Text, Id = Call.SettingApi.GetSetting("Ldap Base DN").Id},
-            new SettingEntity {Name = "Ldap Auth Type", Value = ddlldapAuthType.Text, Id = Call.SettingApi.GetSetting("Ldap Auth Type").Id},
+            new SettingEntity
+            {
+                Name = "Ldap Enabled",
+                Value = Convert.ToInt16(chkldap.Checked).ToString(),
+                Id = Call.SettingApi.GetSetting("Ldap Enabled").Id
+            },
+            new SettingEntity
+            {
+                Name = "Ldap Server",
+                Value = txtldapServer.Text,
+                Id = Call.SettingApi.GetSetting("Ldap Server").Id
+            },
+            new SettingEntity
+            {
+                Name = "Ldap Port",
+                Value = txtldapPort.Text,
+                Id = Call.SettingApi.GetSetting("Ldap Port").Id
+            },
+            new SettingEntity
+            {
+                Name = "Ldap Auth Attribute",
+                Value = txtldapAuthAttribute.Text,
+                Id = Call.SettingApi.GetSetting("Ldap Auth Attribute").Id
+            },
+            new SettingEntity
+            {
+                Name = "Ldap Base DN",
+                Value = txtldapbasedn.Text,
+                Id = Call.SettingApi.GetSetting("Ldap Base DN").Id
+            },
+            new SettingEntity
+            {
+                Name = "Ldap Auth Type",
+                Value = ddlldapAuthType.Text,
+                Id = Call.SettingApi.GetSetting("Ldap Auth Type").Id
+            },
             new SettingEntity
             {
                 Name = "Web Task Requires Login",
@@ -84,32 +79,30 @@ public partial class views_admin_security : Admin
         };
 
 
-
         listSettings.Add(new SettingEntity
-            {
-                Name = "On Demand Requires Login",
-                Value = ddlOndLogin.Text,
-                Id = Call.SettingApi.GetSetting("On Demand Requires Login").Id
-            });
+        {
+            Name = "On Demand Requires Login",
+            Value = ddlOndLogin.Text,
+            Id = Call.SettingApi.GetSetting("On Demand Requires Login").Id
+        });
         listSettings.Add(new SettingEntity
-            {
-                Name = "Debug Requires Login",
-                Value = ddlDebugLogin.Text,
-                Id = Call.SettingApi.GetSetting("Debug Requires Login").Id
-            });
+        {
+            Name = "Debug Requires Login",
+            Value = ddlDebugLogin.Text,
+            Id = Call.SettingApi.GetSetting("Debug Requires Login").Id
+        });
         listSettings.Add(new SettingEntity
-            {
-                Name = "Register Requires Login",
-                Value = ddlRegisterLogin.Text,
-                Id = Call.SettingApi.GetSetting("Register Requires Login").Id
-            });
+        {
+            Name = "Register Requires Login",
+            Value = ddlRegisterLogin.Text,
+            Id = Call.SettingApi.GetSetting("Register Requires Login").Id
+        });
         listSettings.Add(new SettingEntity
-            {
-                Name = "Clobber Requires Login",
-                Value = ddlClobberLogin.Text,
-                Id = Call.SettingApi.GetSetting("Clobber Requires Login").Id
-            });
-        
+        {
+            Name = "Clobber Requires Login",
+            Value = ddlClobberLogin.Text,
+            Id = Call.SettingApi.GetSetting("Clobber Requires Login").Id
+        });
 
 
         var newBootMenu = false;
@@ -143,7 +136,7 @@ public partial class views_admin_security : Admin
                 newBootMenu = true;
                 newClientIso = true;
             }
-            if ((string)ViewState["clobberLogin"] != ddlClobberLogin.Text)
+            if ((string) ViewState["clobberLogin"] != ddlClobberLogin.Text)
             {
                 newBootMenu = true;
                 newClientIso = true;
@@ -197,11 +190,16 @@ public partial class views_admin_security : Admin
         Session.Remove("Message");
     }
 
-
-
-    protected void OkButton_Click(object sender, EventArgs e)
+    protected void chkldap_OnCheckedChanged(object sender, EventArgs e)
     {
-        Response.Redirect("~/views/admin/bootmenu/defaultmenu.aspx?level=2");
+        if (chkldap.Checked)
+        {
+            ad.Visible = true;
+        }
+        else
+        {
+            ad.Visible = false;
+        }
     }
 
     protected void LoginsChanged(object sender, EventArgs e)
@@ -227,15 +225,47 @@ public partial class views_admin_security : Admin
         }
     }
 
-    protected void chkldap_OnCheckedChanged(object sender, EventArgs e)
+
+    protected void OkButton_Click(object sender, EventArgs e)
     {
+        Response.Redirect("~/views/admin/bootmenu/defaultmenu.aspx?level=2");
+    }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (IsPostBack) return;
+
+        chkldap.Checked = Settings.LdapEnabled == "1";
         if (chkldap.Checked)
         {
             ad.Visible = true;
+            txtldapServer.Text = Settings.LdapServer;
+            txtldapPort.Text = Settings.LdapPort;
+            txtldapAuthAttribute.Text = Settings.LdapAuthAttribute;
+            txtldapbasedn.Text = Settings.LdapBaseDN;
+            ddlldapAuthType.Text = Settings.LdapAuthType;
         }
-        else
-        {
-            ad.Visible = false;
-        }
+        ddlOnd.SelectedValue = Settings.OnDemand;
+        txtToken.Text = Settings.UniversalToken;
+        ddlSSL.SelectedValue = Settings.ForceSsL;
+        chkImageApproval.Checked = Convert.ToBoolean(Settings.RequireImageApproval);
+        ddlWebTasksLogin.Text = Settings.WebTaskRequiresLogin;
+        ddlOndLogin.Text = Settings.OnDemandRequiresLogin;
+        ddlDebugLogin.Text = Settings.DebugRequiresLogin;
+        ddlRegisterLogin.Text = Settings.RegisterRequiresLogin;
+        ddlClobberLogin.Text = Settings.ClobberRequiresLogin;
+
+        if (ddlDebugLogin.Text == "No" || ddlOndLogin.Text == "No" || ddlRegisterLogin.Text == "No" ||
+            ddlWebTasksLogin.Text == "No" || ddlClobberLogin.Text == "No")
+            universal.Visible = true;
+
+        //These require pxe boot menu or client iso to be recreated 
+        ViewState["serverKey"] = txtToken.Text;
+        ViewState["forceSSL"] = ddlSSL.Text;
+        ViewState["debugLogin"] = ddlDebugLogin.Text;
+        ViewState["ondLogin"] = ddlOndLogin.Text;
+        ViewState["registerLogin"] = ddlRegisterLogin.Text;
+        ViewState["webTaskLogin"] = ddlWebTasksLogin.Text;
+        ViewState["clobberLogin"] = ddlClobberLogin.Text;
     }
 }

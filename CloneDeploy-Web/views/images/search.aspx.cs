@@ -5,7 +5,6 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
@@ -13,9 +12,25 @@ namespace views.images
 {
     public partial class ImageSearch : Images
     {
-        protected void Page_Load(object sender, EventArgs e)
+        protected void btnApproveImage_OnClick(object sender, EventArgs e)
         {
-            if (IsPostBack) return;
+            var approveCount = 0;
+            foreach (GridViewRow row in gvImages.Rows)
+            {
+                var cb = (CheckBox) row.FindControl("chkSelector");
+                if (cb == null || !cb.Checked) continue;
+                var dataKey = gvImages.DataKeys[row.RowIndex];
+                if (dataKey == null) continue;
+                var image = Call.ImageApi.Get(Convert.ToInt32(dataKey.Value));
+                RequiresAuthorizationOrManagedImage(Authorizations.ApproveImage, image.Id);
+                image.Approved = 1;
+                if (Call.ImageApi.Put(image.Id, image).Success)
+                {
+                    approveCount++;
+                    Call.ImageApi.SendImageApprovedMail(image.Id);
+                }
+            }
+            EndUserMessage = "Successfully Approved " + approveCount + " Images";
             PopulateGrid();
         }
 
@@ -23,9 +38,9 @@ namespace views.images
         {
             var control = sender as Control;
             if (control == null) return;
-            var row = (GridViewRow) control.Parent.Parent;    
+            var row = (GridViewRow) control.Parent.Parent;
             var gvHDs = (GridView) row.FindControl("gvHDs");
-            var imageId = ((HiddenField)row.FindControl("HiddenID")).Value;
+            var imageId = ((HiddenField) row.FindControl("HiddenID")).Value;
             var btn = (LinkButton) row.FindControl("btnHDs");
 
             if (gvHDs.Visible == false)
@@ -55,7 +70,7 @@ namespace views.images
                 var selectedHd = hdrow.RowIndex;
                 var lbl = hdrow.FindControl("lblHDSize") as Label;
                 if (lbl != null)
-                    lbl.Text = Call.ImageApi.GetImageSizeOnServer(row.Cells[5].Text,selectedHd.ToString());
+                    lbl.Text = Call.ImageApi.GetImageSizeOnServer(row.Cells[5].Text, selectedHd.ToString());
             }
         }
 
@@ -84,7 +99,7 @@ namespace views.images
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
-            List<ImageEntity> listImages = (List<ImageEntity>)gvImages.DataSource;
+            var listImages = (List<ImageEntity>) gvImages.DataSource;
             switch (e.SortExpression)
             {
                 case "Name":
@@ -92,18 +107,22 @@ namespace views.images
                         ? listImages.OrderBy(h => h.Name).ToList()
                         : listImages.OrderByDescending(h => h.Name).ToList();
                     break;
-            
             }
             gvImages.DataSource = listImages;
             gvImages.DataBind();
             PopulateSizes();
         }
 
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (IsPostBack) return;
+            PopulateGrid();
+        }
 
 
         protected void PopulateGrid()
         {
-            gvImages.DataSource = Call.ImageApi.GetAll(Int32.MaxValue, txtSearch.Text).OrderBy(x => x.Name).ToList();
+            gvImages.DataSource = Call.ImageApi.GetAll(int.MaxValue, txtSearch.Text).OrderBy(x => x.Name).ToList();
             gvImages.DataBind();
             lblTotal.Text = gvImages.Rows.Count + " Result(s) / " + Call.ImageApi.GetCount() + " Total Image(s)";
             PopulateSizes();
@@ -114,34 +133,12 @@ namespace views.images
             foreach (GridViewRow row in gvImages.Rows)
             {
                 var lbl = row.FindControl("lblSize") as Label;
-                if (lbl != null) lbl.Text = Call.ImageApi.GetImageSizeOnServer(row.Cells[5].Text,"0");
+                if (lbl != null) lbl.Text = Call.ImageApi.GetImageSizeOnServer(row.Cells[5].Text, "0");
             }
         }
 
         protected void search_Changed(object sender, EventArgs e)
         {
-            PopulateGrid();
-        }
-
-        protected void btnApproveImage_OnClick(object sender, EventArgs e)
-        {
-            var approveCount = 0;
-            foreach (GridViewRow row in gvImages.Rows)
-            {
-                var cb = (CheckBox)row.FindControl("chkSelector");
-                if (cb == null || !cb.Checked) continue;
-                var dataKey = gvImages.DataKeys[row.RowIndex];
-                if (dataKey == null) continue;
-                var image = Call.ImageApi.Get(Convert.ToInt32(dataKey.Value));
-                RequiresAuthorizationOrManagedImage(Authorizations.ApproveImage, image.Id);
-                image.Approved = 1;
-                if (Call.ImageApi.Put(image.Id,image).Success)
-                {
-                    approveCount++;
-                    Call.ImageApi.SendImageApprovedMail(image.Id);
-                }
-            }
-            EndUserMessage = "Successfully Approved " + approveCount + " Images";
             PopulateGrid();
         }
     }

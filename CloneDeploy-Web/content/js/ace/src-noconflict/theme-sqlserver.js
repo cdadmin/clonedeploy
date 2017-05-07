@@ -1,8 +1,8 @@
-ace.define("ace/theme/sqlserver",["require","exports","module","ace/lib/dom"], function(require, exports, module) {
+ace.define("ace/theme/sqlserver", ["require", "exports", "module", "ace/lib/dom"], function(require, exports, module) {
 
-exports.isDark = false;
-exports.cssClass = "ace-sqlserver";
-exports.cssText = ".ace_line {\
+    exports.isDark = false;
+    exports.cssClass = "ace-sqlserver";
+    exports.cssText = ".ace_line {\
 font-family: Consolas;\
 }\
 .ace-sqlserver .ace_gutter {\
@@ -136,6 +136,6 @@ background: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZ
 }\
 ";
 
-var dom = require("../lib/dom");
-dom.importCssString(exports.cssText, exports.cssClass);
+    var dom = require("../lib/dom");
+    dom.importCssString(exports.cssText, exports.cssClass);
 });

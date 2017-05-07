@@ -3,10 +3,9 @@ using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class MunkiCatalogController: ApiController
+    public class MunkiCatalogController : ApiController
     {
         private readonly MunkiCatalogServices _munkiCatalogServices;
 
@@ -17,10 +16,8 @@ namespace CloneDeploy_App.Controllers
 
         [CustomAuth(Permission = "GlobalRead")]
         public MunkiManifestCatalogEntity Get(int id)
-        {           
-             return _munkiCatalogServices.GetCatalog(id);
+        {
+            return _munkiCatalogServices.GetCatalog(id);
         }
-
-       
     }
 }

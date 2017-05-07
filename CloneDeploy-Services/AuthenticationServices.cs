@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Web;
+﻿using System;
+using System.Collections.Generic;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services.Helpers;
@@ -12,11 +12,11 @@ namespace CloneDeploy_Services
     /// </summary>
     public class AuthenticationServices
     {
-       
-
-        private readonly UserServices _userServices;
         private readonly UserGroupServices _userGroupServices;
         private readonly UserLockoutServices _userLockoutServices;
+
+
+        private readonly UserServices _userServices;
 
         public AuthenticationServices()
         {
@@ -28,9 +28,9 @@ namespace CloneDeploy_Services
         public string ConsoleLogin(string username, string password, string task, string ip)
         {
             var result = new Dictionary<string, string>();
-           
+
             var validationResult = GlobalLogin(username, password, "Console");
-            
+
             if (!validationResult.Success)
             {
                 result.Add("valid", "false");
@@ -44,41 +44,13 @@ namespace CloneDeploy_Services
                 result.Add("user_id", cloneDeployUser.Id.ToString());
                 result.Add("user_token", cloneDeployUser.Token);
             }
-         
+
             return JsonConvert.SerializeObject(result);
-        }
-
-       
-
-        public string IpxeLogin(string username, string password, string kernel, string bootImage, string task)
-        {
-            var newLineChar = "\n";
-            string userToken = null;
-            if (Settings.DebugRequiresLogin == "No" || Settings.OnDemandRequiresLogin == "No" ||
-               Settings.RegisterRequiresLogin == "No" || Settings.WebTaskRequiresLogin == "No")
-                userToken = Settings.UniversalToken;
-            else
-            {
-                userToken = "";
-            }
-            var globalComputerArgs = Settings.GlobalComputerArgs;
-            var validationResult = GlobalLogin(username, password, "iPXE");
-            if (!validationResult.Success) return "goto Menu";
-            var lines = "#!ipxe" + newLineChar;
-            lines += "kernel " + Settings.WebPath + "IpxeBoot?filename=" + kernel + "&type=kernel" +
-                     " initrd=" + bootImage + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
-                     Settings.WebPath + " USER_TOKEN=" + userToken + " task=" + task + " consoleblank=0 " +
-                     globalComputerArgs + newLineChar;
-            lines += "imgfetch --name " + bootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
-                     bootImage + "&type=bootimage" + newLineChar;
-            lines += "boot";
-
-            return lines;
         }
 
         public ValidationResultDTO GlobalLogin(string userName, string password, string loginType)
         {
-            var validationResult = new ValidationResultDTO()
+            var validationResult = new ValidationResultDTO
             {
                 ErrorMessage = "Incorrect Username Or Password",
                 Success = false
@@ -93,7 +65,6 @@ namespace CloneDeploy_Services
             auditLog.ObjectType = "User";
             auditLog.AuditType = AuditEntry.Type.FailedLogin;
 
-           
 
             //Check if user exists in Clone Deploy
             var user = _userServices.GetUser(userName);
@@ -111,12 +82,12 @@ namespace CloneDeploy_Services
                             var cdUser = new CloneDeployUserEntity
                             {
                                 Name = userName,
-                                Salt = Helpers.Utility.CreateSalt(64),
+                                Salt = Utility.CreateSalt(64),
                                 Token = Utility.GenerateKey(),
                                 IsLdapUser = 1
                             };
                             //Create a local random db pass, should never actually be possible to use.
-                            cdUser.Password = Helpers.Utility.CreatePasswordHash(new System.Guid().ToString(), cdUser.Salt);
+                            cdUser.Password = Utility.CreatePasswordHash(new Guid().ToString(), cdUser.Salt);
                             if (_userServices.AddUser(cdUser).Success)
                             {
                                 //add user to group
@@ -196,7 +167,6 @@ namespace CloneDeploy_Services
                     //user is not part of a group, check creds against directory
                     if (new LdapServices().Authenticate(userName, password)) validationResult.Success = true;
                 }
-               
             }
             else if (user.IsLdapUser == 1 && Settings.LdapEnabled != "1")
             {
@@ -206,10 +176,10 @@ namespace CloneDeploy_Services
             //Check against local DB
             else
             {
-                var hash = Helpers.Utility.CreatePasswordHash(password, user.Salt);
+                var hash = Utility.CreatePasswordHash(password, user.Salt);
                 if (user.Password == hash) validationResult.Success = true;
             }
-           
+
             if (validationResult.Success)
             {
                 auditLog.AuditType = AuditEntry.Type.SuccessfulLogin;
@@ -219,15 +189,39 @@ namespace CloneDeploy_Services
                 _userLockoutServices.DeleteUserLockouts(user.Id);
                 return validationResult;
             }
+            auditLog.AuditType = AuditEntry.Type.FailedLogin;
+            auditLog.UserId = user.Id;
+            auditLog.ObjectId = user.Id;
+            auditLogService.AddAuditLog(auditLog);
+            _userLockoutServices.ProcessBadLogin(user.Id);
+            return validationResult;
+        }
+
+
+        public string IpxeLogin(string username, string password, string kernel, string bootImage, string task)
+        {
+            var newLineChar = "\n";
+            string userToken = null;
+            if (Settings.DebugRequiresLogin == "No" || Settings.OnDemandRequiresLogin == "No" ||
+                Settings.RegisterRequiresLogin == "No" || Settings.WebTaskRequiresLogin == "No")
+                userToken = Settings.UniversalToken;
             else
             {
-                auditLog.AuditType = AuditEntry.Type.FailedLogin;
-                auditLog.UserId = user.Id;
-                auditLog.ObjectId = user.Id;
-                auditLogService.AddAuditLog(auditLog);
-                _userLockoutServices.ProcessBadLogin(user.Id);
-                return validationResult;
+                userToken = "";
             }
+            var globalComputerArgs = Settings.GlobalComputerArgs;
+            var validationResult = GlobalLogin(username, password, "iPXE");
+            if (!validationResult.Success) return "goto Menu";
+            var lines = "#!ipxe" + newLineChar;
+            lines += "kernel " + Settings.WebPath + "IpxeBoot?filename=" + kernel + "&type=kernel" +
+                     " initrd=" + bootImage + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
+                     Settings.WebPath + " USER_TOKEN=" + userToken + " task=" + task + " consoleblank=0 " +
+                     globalComputerArgs + newLineChar;
+            lines += "imgfetch --name " + bootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
+                     bootImage + "&type=bootimage" + newLineChar;
+            lines += "boot";
+
+            return lines;
         }
     }
 }

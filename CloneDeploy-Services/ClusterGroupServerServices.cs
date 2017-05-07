@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 
 namespace CloneDeploy_Services
 {
-    public  class ClusterGroupServerServices
+    public class ClusterGroupServerServices
     {
-         private readonly UnitOfWork _uow;
+        private readonly UnitOfWork _uow;
 
         public ClusterGroupServerServices()
         {
@@ -31,10 +30,9 @@ namespace CloneDeploy_Services
             foreach (var server in listOfServers)
                 _uow.ClusterGroupServersRepository.Insert(server);
             _uow.Save();
-            
+
             actionResult.Success = true;
             return actionResult;
-
         }
 
         private bool DeleteClusterGroupServers(int clusterGroupId)

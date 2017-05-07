@@ -26,7 +26,7 @@
                 <a href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?computerid=<%= Computer.Id %>">
                     <span class="sub-nav-text">General</span></a>
             </li>
-        
+
             <li id="bootmenu">
                 <a href="<%= ResolveUrl("~/views/computers/bootmenu/active.aspx?level=3") %>&computerid=<%= Computer.Id %>">
                     <span class="sub-nav-text">Boot Menu</span></a>
@@ -35,11 +35,11 @@
                 <a href="<%= ResolveUrl("~/views/computers/log.aspx") %>?computerid=<%= Computer.Id %>">
                     <span class="sub-nav-text">Logs</span></a>
             </li>
-             <li id="munki">
+            <li id="munki">
                 <a href="<%= ResolveUrl("~/views/computers/munki.aspx") %>?computerid=<%= Computer.Id %>">
                     <span class="sub-nav-text">Munki Templates</span></a>
             </li>
-             <li id="groups">
+            <li id="groups">
                 <a href="<%= ResolveUrl("~/views/computers/groups.aspx") %>?computerid=<%= Computer.Id %>">
                     <span class="sub-nav-text">Group Membership</span></a>
             </li>
@@ -68,17 +68,22 @@
 
     <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
     </asp:ContentPlaceHolder>
-    
-        <ul class="dropdown-menu">
-             <asp:ContentPlaceHolder ID="AdditionalActions" runat="server"></asp:ContentPlaceHolder>
-        <li><asp:LinkButton ID="LinkButton1" runat="server"  OnClick="btnUpload_Click" Text="Upload Computer "></asp:LinkButton></li>
-        <li><asp:LinkButton ID="LinkButton2" runat="server" OnClick="btnDeploy_Click" Text="Deploy Computer"></asp:LinkButton></li>
-        <li><asp:LinkButton ID="LinkButton3" runat="server"  OnClick="btnDelete_Click" Text="Delete Computer"></asp:LinkButton></li>
-    
 
- 
+    <ul class="dropdown-menu">
+        <asp:ContentPlaceHolder ID="AdditionalActions" runat="server"></asp:ContentPlaceHolder>
+        <li>
+            <asp:LinkButton ID="LinkButton1" runat="server" OnClick="btnUpload_Click" Text="Upload Computer "></asp:LinkButton>
+        </li>
+        <li>
+            <asp:LinkButton ID="LinkButton2" runat="server" OnClick="btnDeploy_Click" Text="Deploy Computer"></asp:LinkButton>
+        </li>
+        <li>
+            <asp:LinkButton ID="LinkButton3" runat="server" OnClick="btnDelete_Click" Text="Delete Computer"></asp:LinkButton>
+        </li>
+
+
         <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
-            </ul>
+    </ul>
 
 </asp:Content>
 

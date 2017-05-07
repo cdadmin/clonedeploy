@@ -2,32 +2,11 @@
 using System.Collections.Generic;
 using System.Drawing;
 using CloneDeploy_Entities;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
 public partial class views_admin_pxe : Admin
 {
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        if (IsPostBack) return;
-
-        ddlPXEMode.SelectedValue = Settings.PxeMode;
-        ddlProxyDHCP.SelectedValue = Settings.ProxyDhcp;
-        ddlProxyBios.SelectedValue = Settings.ProxyBiosFile;
-        ddlProxyEfi32.SelectedValue = Settings.ProxyEfi32File;
-        ddlProxyEfi64.SelectedValue = Settings.ProxyEfi64File;
-
-        //These require pxe boot menu or client iso to be recreated
-        ViewState["pxeMode"] = ddlPXEMode.Text;
-        ViewState["proxyDHCP"] = ddlProxyDHCP.SelectedValue;
-        ViewState["proxyBios"] = ddlProxyBios.SelectedValue;
-        ViewState["proxyEfi32"] = ddlProxyEfi32.SelectedValue;
-        ViewState["proxyEfi64"] = ddlProxyEfi64.SelectedValue;
-
-        ShowProxyMode();
-    }
-
     protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.UpdateAdmin);
@@ -35,11 +14,36 @@ public partial class views_admin_pxe : Admin
         {
             var listSettings = new List<SettingEntity>
             {
-                new SettingEntity {Name = "PXE Mode", Value = ddlPXEMode.Text, Id = Call.SettingApi.GetSetting("PXE Mode").Id},
-                new SettingEntity {Name = "Proxy Dhcp", Value = ddlProxyDHCP.Text,  Id = Call.SettingApi.GetSetting("Proxy Dhcp").Id},
-                new SettingEntity {Name = "Proxy Bios File", Value = ddlProxyBios.Text,  Id = Call.SettingApi.GetSetting("Proxy Bios File").Id},
-                new SettingEntity {Name = "Proxy Efi32 File", Value = ddlProxyEfi32.Text,  Id = Call.SettingApi.GetSetting("Proxy Efi32 File").Id},
-                new SettingEntity {Name = "Proxy Efi64 File", Value = ddlProxyEfi64.Text,  Id = Call.SettingApi.GetSetting("Proxy Efi64 File").Id}
+                new SettingEntity
+                {
+                    Name = "PXE Mode",
+                    Value = ddlPXEMode.Text,
+                    Id = Call.SettingApi.GetSetting("PXE Mode").Id
+                },
+                new SettingEntity
+                {
+                    Name = "Proxy Dhcp",
+                    Value = ddlProxyDHCP.Text,
+                    Id = Call.SettingApi.GetSetting("Proxy Dhcp").Id
+                },
+                new SettingEntity
+                {
+                    Name = "Proxy Bios File",
+                    Value = ddlProxyBios.Text,
+                    Id = Call.SettingApi.GetSetting("Proxy Bios File").Id
+                },
+                new SettingEntity
+                {
+                    Name = "Proxy Efi32 File",
+                    Value = ddlProxyEfi32.Text,
+                    Id = Call.SettingApi.GetSetting("Proxy Efi32 File").Id
+                },
+                new SettingEntity
+                {
+                    Name = "Proxy Efi64 File",
+                    Value = ddlProxyEfi64.Text,
+                    Id = Call.SettingApi.GetSetting("Proxy Efi64 File").Id
+                }
             };
 
 
@@ -71,8 +75,6 @@ public partial class views_admin_pxe : Admin
 
             if (newBootMenu)
             {
-
-
                 lblTitle.Text =
                     "Your Settings Changes Require A New PXE Boot File Be Created.  <br>Go There Now?";
 
@@ -86,7 +88,31 @@ public partial class views_admin_pxe : Admin
                 EndUserMessage = "Successfully Updated PXE Settings";
             }
         }
+    }
 
+    protected void OkButton_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("~/views/admin/bootmenu/defaultmenu.aspx?level=2");
+    }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (IsPostBack) return;
+
+        ddlPXEMode.SelectedValue = Settings.PxeMode;
+        ddlProxyDHCP.SelectedValue = Settings.ProxyDhcp;
+        ddlProxyBios.SelectedValue = Settings.ProxyBiosFile;
+        ddlProxyEfi32.SelectedValue = Settings.ProxyEfi32File;
+        ddlProxyEfi64.SelectedValue = Settings.ProxyEfi64File;
+
+        //These require pxe boot menu or client iso to be recreated
+        ViewState["pxeMode"] = ddlPXEMode.Text;
+        ViewState["proxyDHCP"] = ddlProxyDHCP.SelectedValue;
+        ViewState["proxyBios"] = ddlProxyBios.SelectedValue;
+        ViewState["proxyEfi32"] = ddlProxyEfi32.SelectedValue;
+        ViewState["proxyEfi64"] = ddlProxyEfi64.SelectedValue;
+
+        ShowProxyMode();
     }
 
     protected void ProxyDhcp_Changed(object sender, EventArgs e)
@@ -120,24 +146,21 @@ public partial class views_admin_pxe : Admin
         }
     }
 
-    protected void OkButton_Click(object sender, EventArgs e)
-    {
-        Response.Redirect("~/views/admin/bootmenu/defaultmenu.aspx?level=2");
-    }
-
     protected bool ValidateSettings()
     {
         if (ddlProxyDHCP.Text == "No" && ddlPXEMode.Text.Contains("winpe"))
         {
             if (
-               ! Call.FilesystemApi.BootSdiExists())
+                !Call.FilesystemApi.BootSdiExists())
             {
                 EndUserMessage =
                     "Cannot Use WinPE.  You Have Not Updated Your tftpboot Folder With CloneDeploy PE Maker";
                 return false;
             }
         }
-        else if (ddlProxyDHCP.Text == "Yes" && ( ddlProxyBios.Text.Contains("winpe") || ddlProxyEfi32.Text.Contains("winpe") || ddlProxyEfi64.Text.Contains("winpe") ))
+        else if (ddlProxyDHCP.Text == "Yes" &&
+                 (ddlProxyBios.Text.Contains("winpe") || ddlProxyEfi32.Text.Contains("winpe") ||
+                  ddlProxyEfi64.Text.Contains("winpe")))
         {
             if (
                 !Call.FilesystemApi.BootSdiExists())

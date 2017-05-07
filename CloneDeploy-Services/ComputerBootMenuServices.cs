@@ -10,11 +10,41 @@ namespace CloneDeploy_Services
 {
     public class ComputerBootMenuServices
     {
-         private readonly UnitOfWork _uow;
+        private readonly UnitOfWork _uow;
 
         public ComputerBootMenuServices()
         {
             _uow = new UnitOfWork();
+        }
+
+
+        public void DeleteBootFiles(ComputerEntity computer)
+        {
+            if (new ComputerServices().IsComputerActive(computer.Id))
+                return; //Files Will Be Processed When task is done
+            var pxeMac = Utility.MacToPxeMac(computer.Mac);
+            var list = new List<Tuple<string, string>>
+            {
+                Tuple.Create("bios", ""),
+                Tuple.Create("bios", ".ipxe"),
+                Tuple.Create("efi32", ""),
+                Tuple.Create("efi32", ".ipxe"),
+                Tuple.Create("efi64", ""),
+                Tuple.Create("efi64", ".ipxe"),
+                Tuple.Create("efi64", ".cfg")
+            };
+            foreach (var tuple in list)
+            {
+                new FileOps().DeletePath(Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
+                                         Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                                         pxeMac +
+                                         tuple.Item2);
+            }
+
+
+            foreach (var ext in new[] {"", ".ipxe", ".cfg"})
+                new FileOps().DeletePath(Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                                         pxeMac + ext);
         }
 
         public ActionResultDTO UpdateComputerBootMenu(ComputerBootMenuEntity computerBootMenu)
@@ -34,42 +64,6 @@ namespace CloneDeploy_Services
             result.Success = true;
             result.Id = computerBootMenu.Id;
             return result;
-
         }
-
-
-
-        public  void DeleteBootFiles(ComputerEntity computer)
-        {
-            if (new ComputerServices().IsComputerActive(computer.Id)) return; //Files Will Be Processed When task is done
-            var pxeMac = Utility.MacToPxeMac(computer.Mac);
-            List<Tuple<string, string>> list = new List<Tuple<string, string>>
-                {
-                    Tuple.Create("bios", ""),
-                    Tuple.Create("bios", ".ipxe"),
-                    Tuple.Create("efi32", ""),
-                    Tuple.Create("efi32", ".ipxe"),
-                    Tuple.Create("efi64", ""),
-                    Tuple.Create("efi64", ".ipxe"),
-                    Tuple.Create("efi64", ".cfg")
-                };
-            foreach (var tuple in list)
-            {
-                new FileOps().DeletePath(Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
-                                         Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar +
-                                         pxeMac +
-                                         tuple.Item2);
-            }
-
-
-            foreach(var ext in new[] {"",".ipxe",".cfg"})
-            new FileOps().DeletePath(Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
-                       pxeMac + ext);
-        }
-
-       
-
-        
-
     }
 }

@@ -1,18 +1,22 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/computers/computers.master" AutoEventWireup="true" Inherits="views.computers.ComputerEdit" Codebehind="edit.aspx.cs" %>
 
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
-    <li><a href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?computerid=<%= Computer.Id %>" ><%= Computer.Name %></a></li>
+    <li>
+        <a href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?computerid=<%= Computer.Id %>"><%= Computer.Name %></a>
+    </li>
     <li>General</li>
-    </asp:Content>
+</asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-        <li role="separator" class="divider"></li>
-      <li><a href="<%= ResolveUrl("~/views/help/computers-newedit.aspx")%>" target="_blank">Help</a></li>
+    <li role="separator" class="divider"></li>
+    <li>
+        <a href="<%= ResolveUrl("~/views/help/computers-newedit.aspx") %>" target="_blank">Help</a>
+    </li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-     <asp:LinkButton ID="buttonUpdateComputer" runat="server" OnClick="buttonUpdateComputer_Click" Text="Update Computer" CssClass="btn btn-default"></asp:LinkButton>
+    <asp:LinkButton ID="buttonUpdateComputer" runat="server" OnClick="buttonUpdateComputer_Click" Text="Update Computer" CssClass="btn btn-default"></asp:LinkButton>
     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span class="caret"></span>
-  </button>
+        <span class="caret"></span>
+    </button>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
     <script type="text/javascript">
@@ -41,7 +45,7 @@
         <asp:DropDownList ID="ddlComputerImage" runat="server" CssClass="ddlist" AutoPostBack="true" OnSelectedIndexChanged="ddlComputerImage_OnSelectedIndexChanged"/>
     </div>
     <br class="clear"/>
-   
+
     <div class="size-4 column">
         Image Profile:
     </div>
@@ -56,7 +60,7 @@
         <asp:TextBox ID="txtComputerDesc" runat="server" CssClass="descbox" TextMode="MultiLine"></asp:TextBox>
     </div>
     <br class="clear"/>
-     <div class="size-4 column">
+    <div class="size-4 column">
         Cluster Group:
     </div>
     <div class="size-5 column">
@@ -64,7 +68,7 @@
     </div>
 
     <br class="clear"/>
-     <div class="size-4 column">
+    <div class="size-4 column">
         Site:
     </div>
     <div class="size-5 column">
@@ -72,7 +76,7 @@
     </div>
 
     <br class="clear"/>
-     <div class="size-4 column">
+    <div class="size-4 column">
         Building:
     </div>
     <div class="size-5 column">
@@ -80,7 +84,7 @@
     </div>
 
     <br class="clear"/>
-     <div class="size-4 column">
+    <div class="size-4 column">
         Room:
     </div>
     <div class="size-5 column">
@@ -94,7 +98,7 @@
         <asp:TextBox ID="txtCustom1" runat="server" CssClass="textbox"></asp:TextBox>
     </div>
     <br class="clear"/>
-    
+
     <div class="size-4 column">
         Custom Attribute 2:
     </div>
@@ -102,7 +106,7 @@
         <asp:TextBox ID="txtCustom2" runat="server" CssClass="textbox"></asp:TextBox>
     </div>
     <br class="clear"/>
-    
+
     <div class="size-4 column">
         Custom Attribute 3:
     </div>
@@ -110,15 +114,15 @@
         <asp:TextBox ID="txtCustom3" runat="server" CssClass="textbox"></asp:TextBox>
     </div>
     <br class="clear"/>
-    
+
     <div class="size-4 column">
-         Custom Attribute 4:
+        Custom Attribute 4:
     </div>
     <div class="size-5 column">
         <asp:TextBox ID="txtCustom4" runat="server" CssClass="textbox"></asp:TextBox>
     </div>
     <br class="clear"/>
-    
+
     <div class="size-4 column">
         Custom Attribute 5:
     </div>

@@ -1,15 +1,9 @@
 ﻿using System;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
 public partial class views_images_profiles_create : Images
 {
-    protected void Page_Load(object sender, EventArgs e)
-    {
-
-    }
-
     protected void buttonCreateProfile_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.CreateProfile);
@@ -28,5 +22,9 @@ public partial class views_images_profiles_create : Images
         {
             EndUserMessage = result.ErrorMessage;
         }
+    }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
     }
 }

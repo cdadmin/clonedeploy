@@ -1,27 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using CloneDeploy_ApiCalls;
 using CloneDeploy_Entities;
-using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
 namespace CloneDeploy_Web.views.admin.cluster
 {
-    public partial class newsecondary : BasePages.Admin
+    public partial class newsecondary : Admin
     {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-
-        }
-
         protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
         {
             RequiresAuthorization(Authorizations.UpdateAdmin);
-            var secondaryServer = new SecondaryServerEntity()
+            var secondaryServer = new SecondaryServerEntity
             {
                 ApiURL = txtApi.Text,
                 ServiceAccountName = txtAccountName.Text,
@@ -39,10 +28,9 @@ namespace CloneDeploy_Web.views.admin.cluster
                 EndUserMessage = result.ErrorMessage;
             }
         }
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+        }
     }
-
-
-
 }
-
-

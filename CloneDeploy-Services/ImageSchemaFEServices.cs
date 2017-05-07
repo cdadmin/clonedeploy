@@ -6,16 +6,12 @@ using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.ImageSchemaFE;
 using CloneDeploy_Services.Helpers;
 using Newtonsoft.Json;
-using HardDrive = CloneDeploy_Entities.DTOs.ImageSchemaFE.HardDrive;
-using LogicalVolume = CloneDeploy_Entities.DTOs.ImageSchemaFE.LogicalVolume;
-using Partition = CloneDeploy_Entities.DTOs.ImageSchemaFE.Partition;
 
 namespace CloneDeploy_Services
 {
-
     public class ImageSchemaFEServices
     {
-        private readonly  ImageSchemaGridView _imageSchema;
+        private readonly ImageSchemaGridView _imageSchema;
 
         public ImageSchemaFEServices(ImageSchemaRequestDTO schemaRequest)
         {
@@ -24,10 +20,11 @@ namespace CloneDeploy_Services
             //Only To display the main image specs file when not using a profile.
             if (schemaRequest.image != null)
             {
-                var path = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + schemaRequest.image.Name + Path.DirectorySeparatorChar + "schema";
+                var path = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar +
+                           schemaRequest.image.Name + Path.DirectorySeparatorChar + "schema";
                 if (File.Exists(path))
                 {
-                    using (StreamReader reader = new StreamReader(path))
+                    using (var reader = new StreamReader(path))
                     {
                         schema = reader.ReadLine() ?? "";
                     }
@@ -36,21 +33,24 @@ namespace CloneDeploy_Services
 
             if (schemaRequest.imageProfile != null)
             {
-                if (!string.IsNullOrEmpty(schemaRequest.imageProfile.CustomSchema) && schemaRequest.schemaType == "deploy")
+                if (!string.IsNullOrEmpty(schemaRequest.imageProfile.CustomSchema) &&
+                    schemaRequest.schemaType == "deploy")
                 {
                     schema = schemaRequest.imageProfile.CustomSchema;
                 }
-                else if (!string.IsNullOrEmpty(schemaRequest.imageProfile.CustomUploadSchema) && schemaRequest.schemaType == "upload")
+                else if (!string.IsNullOrEmpty(schemaRequest.imageProfile.CustomUploadSchema) &&
+                         schemaRequest.schemaType == "upload")
                 {
                     schema = schemaRequest.imageProfile.CustomUploadSchema;
                 }
                 else
                 {
-                    var path = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + schemaRequest.imageProfile.Image.Name + Path.DirectorySeparatorChar +
+                    var path = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar +
+                               schemaRequest.imageProfile.Image.Name + Path.DirectorySeparatorChar +
                                "schema";
                     if (File.Exists(path))
                     {
-                        using (StreamReader reader = new StreamReader(path))
+                        using (var reader = new StreamReader(path))
                         {
                             schema = reader.ReadLine() ?? "";
                         }
@@ -72,38 +72,21 @@ namespace CloneDeploy_Services
 
             foreach (var harddrive in _imageSchema.HardDrives)
             {
-                harddrive.Size = (Convert.ToInt64(harddrive.Size) * harddrive.Lbs / 1000f / 1000f / 1000f).ToString("#.##") + " GB" +
-                          " / " + (Convert.ToInt64(harddrive.Size) * harddrive.Lbs / 1024f / 1024f / 1024f).ToString("#.##") +
-                          " GB";
+                harddrive.Size = (Convert.ToInt64(harddrive.Size)*harddrive.Lbs/1000f/1000f/1000f).ToString("#.##") +
+                                 " GB" +
+                                 " / " +
+                                 (Convert.ToInt64(harddrive.Size)*harddrive.Lbs/1024f/1024f/1024f).ToString("#.##") +
+                                 " GB";
                 hardDrives
                     .Add(harddrive);
             }
             return hardDrives;
         }
 
-        public List<Partition> GetPartitionsForGridView(string selectedHd)
+
+        public ImageSchemaGridView GetImageSchema()
         {
-            var partitions = new List<Partition>();
-
-            foreach (var hardDrive in _imageSchema.HardDrives.Where(x => x.Name == selectedHd))
-            {
-                foreach (var part in hardDrive.Partitions)
-                {
-                    if ((Convert.ToInt64(part.Size) * hardDrive.Lbs) < 1048576000)
-                        part.Size = (Convert.ToInt64(part.Size) * hardDrive.Lbs / 1024f / 1024f).ToString("#.##") + " MB";
-                    else
-                        part.Size = (Convert.ToInt64(part.Size) * hardDrive.Lbs / 1024f / 1024f / 1024f).ToString("#.##") +
-                                    " GB";
-                    part.UsedMb = part.UsedMb + " MB";
-                    
-                  
-                    part.VolumeSize = part.VolumeSize + " MB";
-                    partitions.Add(part);
-
-                 
-                }
-            }
-            return partitions;
+            return _imageSchema;
         }
 
         public List<LogicalVolume> GetLogicalVolumesForGridView(string selectedHd)
@@ -117,17 +100,17 @@ namespace CloneDeploy_Services
                 var lbs = _imageSchema.HardDrives[Convert.ToInt32(selectedHd)].Lbs;
                 foreach (var lv in partition.VolumeGroup.LogicalVolumes)
                 {
-                    if ((Convert.ToInt64(lv.Size) * lbs ) < 1048576000)
-                        lv.Size = (Convert.ToInt64(lv.Size) * lbs / 1024f / 1024f).ToString("#.##") +
+                    if (Convert.ToInt64(lv.Size)*lbs < 1048576000)
+                        lv.Size = (Convert.ToInt64(lv.Size)*lbs/1024f/1024f).ToString("#.##") +
                                   " MB";
                     else
                         lv.Size =
-                            (Convert.ToInt64(lv.Size) * lbs / 1024f / 1024f / 1024f).ToString("#.##") +
+                            (Convert.ToInt64(lv.Size)*lbs/1024f/1024f/1024f).ToString("#.##") +
                             " GB";
                     lv.UsedMb = lv.UsedMb + " MB";
-                   
-                   
-                        lv.VolumeSize = lv.VolumeSize + " MB";
+
+
+                    lv.VolumeSize = lv.VolumeSize + " MB";
 
                     lvList.Add(lv);
                 }
@@ -135,17 +118,27 @@ namespace CloneDeploy_Services
             return lvList;
         }
 
-       
-
-        
-       
-
-      
-
-        public ImageSchemaGridView GetImageSchema()
+        public List<Partition> GetPartitionsForGridView(string selectedHd)
         {
-            return _imageSchema;
+            var partitions = new List<Partition>();
+
+            foreach (var hardDrive in _imageSchema.HardDrives.Where(x => x.Name == selectedHd))
+            {
+                foreach (var part in hardDrive.Partitions)
+                {
+                    if (Convert.ToInt64(part.Size)*hardDrive.Lbs < 1048576000)
+                        part.Size = (Convert.ToInt64(part.Size)*hardDrive.Lbs/1024f/1024f).ToString("#.##") + " MB";
+                    else
+                        part.Size = (Convert.ToInt64(part.Size)*hardDrive.Lbs/1024f/1024f/1024f).ToString("#.##") +
+                                    " GB";
+                    part.UsedMb = part.UsedMb + " MB";
+
+
+                    part.VolumeSize = part.VolumeSize + " MB";
+                    partitions.Add(part);
+                }
+            }
+            return partitions;
         }
     }
 }
-

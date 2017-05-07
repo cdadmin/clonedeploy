@@ -8,7 +8,6 @@ namespace views.masters
     {
         public void Page_Init(object sender, EventArgs e)
         {
-
             if (!Request.IsAuthenticated)
                 Response.Redirect("~/", true);
         }
@@ -25,7 +24,5 @@ namespace views.masters
                 navtasks.Visible = false;
             }
         }
-
-       
     }
 }

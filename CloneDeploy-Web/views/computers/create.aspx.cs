@@ -1,7 +1,5 @@
 ﻿using System;
-using CloneDeploy_ApiCalls;
 using CloneDeploy_Entities;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
@@ -9,11 +7,6 @@ namespace views.computers
 {
     public partial class Addcomputers : Computers
     {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            if (!IsPostBack) PopulateForm();
-        }
-
         protected void ButtonAddComputer_Click(object sender, EventArgs e)
         {
             RequiresAuthorization(Authorizations.CreateComputer);
@@ -36,11 +29,10 @@ namespace views.computers
                 CustomAttribute3 = txtCustom3.Text,
                 CustomAttribute4 = txtCustom4.Text,
                 CustomAttribute5 = txtCustom5.Text
-                
             };
 
             var result = Call.ComputerApi.Post(computer);
-          
+
             if (!result.Success)
                 EndUserMessage = result.ErrorMessage;
             else
@@ -48,17 +40,8 @@ namespace views.computers
                 Call.ComputerApi.AddToSmartGroups(computer);
                 EndUserMessage = "Successfully Created Computer";
                 if (!createAnother.Checked)
-                    Response.Redirect(string.Format("~/views/computers/edit.aspx?computerid={0}",result.Id));
+                    Response.Redirect(string.Format("~/views/computers/edit.aspx?computerid={0}", result.Id));
             }
-        }
-
-        protected void PopulateForm()
-        {
-            PopulateImagesDdl(ddlComputerImage);
-            PopulateSitesDdl(ddlSite);
-            PopulateBuildingsDdl(ddlBuilding);
-            PopulateRoomsDdl(ddlRoom);
-            PopulateClusterGroupsDdl(ddlClusterGroup);
         }
 
         protected void ddlComputerImage_OnSelectedIndexChanged(object sender, EventArgs e)
@@ -72,6 +55,20 @@ namespace views.computers
             {
                 //ignore
             }
+        }
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack) PopulateForm();
+        }
+
+        protected void PopulateForm()
+        {
+            PopulateImagesDdl(ddlComputerImage);
+            PopulateSitesDdl(ddlSite);
+            PopulateBuildingsDdl(ddlBuilding);
+            PopulateRoomsDdl(ddlRoom);
+            PopulateClusterGroupsDdl(ddlClusterGroup);
         }
     }
 }

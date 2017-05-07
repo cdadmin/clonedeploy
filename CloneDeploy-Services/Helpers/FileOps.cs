@@ -8,21 +8,32 @@ namespace CloneDeploy_Services.Helpers
     public class FileOps
     {
         private readonly ILog log = LogManager.GetLogger("ApplicationLog");
-        public string ReadAllText(string path)
+
+        public void Copy(string sourceDirectory, string targetDirectory)
         {
-            string fileText = null;
+            var diSource = new DirectoryInfo(sourceDirectory);
+            var diTarget = new DirectoryInfo(targetDirectory);
 
-            try
+            CopyAll(diSource, diTarget);
+        }
+
+        private void CopyAll(DirectoryInfo source, DirectoryInfo target)
+        {
+            Directory.CreateDirectory(target.FullName);
+
+            // Copy each file into the new directory.
+            foreach (var fi in source.GetFiles())
             {
-                fileText = File.ReadAllText(path);
-            }
-            catch (Exception ex)
-            {
-                log.Debug(ex.Message);
-                fileText = "Could Not Read File";
+                fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
             }
 
-            return fileText;
+            // Copy each subdirectory using recursion.
+            foreach (var diSourceSubDir in source.GetDirectories())
+            {
+                var nextTargetSubDir =
+                    target.CreateSubdirectory(diSourceSubDir.Name);
+                CopyAll(diSourceSubDir, nextTargetSubDir);
+            }
         }
 
         public void DeleteAllFiles(string directoryPath)
@@ -52,10 +63,15 @@ namespace CloneDeploy_Services.Helpers
             catch (Exception ex)
             {
                 log.Debug(ex.Message);
-               
-             
+
+
                 return false;
             }
+        }
+
+        public bool FileExists(string filePath)
+        {
+            return File.Exists(filePath);
         }
 
         public long GetDirectorySize(DirectoryInfo d)
@@ -67,7 +83,7 @@ namespace CloneDeploy_Services.Helpers
                 size += fi.Length;
             }
 
-            return (size);
+            return size;
         }
 
         public void MoveFile(string sourceFileName, string destFileName)
@@ -90,18 +106,35 @@ namespace CloneDeploy_Services.Helpers
             Directory.Move(sourceFolderName, destFolderName);
         }
 
+        public string ReadAllText(string path)
+        {
+            string fileText = null;
+
+            try
+            {
+                fileText = File.ReadAllText(path);
+            }
+            catch (Exception ex)
+            {
+                log.Debug(ex.Message);
+                fileText = "Could Not Read File";
+            }
+
+            return fileText;
+        }
+
         public void RenameFolder(string oldName, string newName)
         {
             try
             {
                 var imagePath = Settings.PrimaryStoragePath;
                 if (Directory.Exists(imagePath + "images" + Path.DirectorySeparatorChar + oldName))
-                    Directory.Move(imagePath + "images" + Path.DirectorySeparatorChar + oldName, imagePath + "images" + Path.DirectorySeparatorChar + newName);
+                    Directory.Move(imagePath + "images" + Path.DirectorySeparatorChar + oldName,
+                        imagePath + "images" + Path.DirectorySeparatorChar + newName);
             }
             catch (Exception ex)
             {
-               log.Debug(ex.Message);
-             
+                log.Debug(ex.Message);
             }
         }
 
@@ -109,18 +142,17 @@ namespace CloneDeploy_Services.Helpers
         {
             if (Environment.OSVersion.ToString().Contains("Unix"))
                 Syscall.chmod(path,
-                    (FilePermissions.S_IWUSR | FilePermissions.S_IRGRP | FilePermissions.S_IROTH |
-                     FilePermissions.S_IRUSR));
+                    FilePermissions.S_IWUSR | FilePermissions.S_IRGRP | FilePermissions.S_IROTH |
+                    FilePermissions.S_IRUSR);
         }
 
         public void SetUnixPermissionsImage(string path)
         {
             if (Environment.OSVersion.ToString().Contains("Unix"))
                 Syscall.chmod(path,
-                    (FilePermissions.S_IRWXU | FilePermissions.S_IRWXG | FilePermissions.S_IRWXO));
+                    FilePermissions.S_IRWXU | FilePermissions.S_IRWXG | FilePermissions.S_IRWXO);
         }
-        
-       
+
 
         public bool WritePath(string path, string contents)
         {
@@ -140,40 +172,5 @@ namespace CloneDeploy_Services.Helpers
                 return false;
             }
         }
-
-        public bool FileExists(string filePath)
-        {
-            return File.Exists(filePath);
-
-        }
-
-        public void Copy(string sourceDirectory, string targetDirectory)
-        {
-            DirectoryInfo diSource = new DirectoryInfo(sourceDirectory);
-            DirectoryInfo diTarget = new DirectoryInfo(targetDirectory);
-
-            CopyAll(diSource, diTarget);
-        }
-
-        private void CopyAll(DirectoryInfo source, DirectoryInfo target)
-        {
-            Directory.CreateDirectory(target.FullName);
-
-            // Copy each file into the new directory.
-            foreach (FileInfo fi in source.GetFiles())
-            {
-
-                fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
-            }
-
-            // Copy each subdirectory using recursion.
-            foreach (DirectoryInfo diSourceSubDir in source.GetDirectories())
-            {
-                DirectoryInfo nextTargetSubDir =
-                    target.CreateSubdirectory(diSourceSubDir.Name);
-                CopyAll(diSourceSubDir, nextTargetSubDir);
-            }
-        }
-       
     }
 }

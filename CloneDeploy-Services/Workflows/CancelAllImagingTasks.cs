@@ -13,12 +13,14 @@ namespace CloneDeploy_Services.Workflows
     public class CancelAllImagingTasks
     {
         private static readonly ILog log = LogManager.GetLogger("ApplicationLog");
+
         public static bool Run()
         {
             if (Settings.OperationMode == "Cluster Primary")
             {
                 var secondaryServers =
-                    new SecondaryServerServices().SearchSecondaryServers().Where(x => x.MulticastRole == 1 || x.TftpRole == 1);
+                    new SecondaryServerServices().SearchSecondaryServers()
+                        .Where(x => x.MulticastRole == 1 || x.TftpRole == 1);
                 foreach (var server in secondaryServers)
                 {
                     new APICall(new SecondaryServerServices().GetApiToken(server.Name))
@@ -69,8 +71,8 @@ namespace CloneDeploy_Services.Workflows
                     {
                         var killProcInfo = new ProcessStartInfo
                         {
-                            FileName = ("killall"),
-                            Arguments = (" -s SIGKILL udp-sender")
+                            FileName = "killall",
+                            Arguments = " -s SIGKILL udp-sender"
                         };
                         Process.Start(killProcInfo);
                     }
@@ -112,6 +114,6 @@ namespace CloneDeploy_Services.Workflows
                 }
             }
             return true;
-        }        
+        }
     }
 }

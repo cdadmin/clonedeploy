@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace CloneDeploy_Web.views.admin.logs
 {
-    public partial class logs : System.Web.UI.MasterPage
+    public partial class logs : MasterPage
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
         }
     }
 }

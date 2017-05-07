@@ -12,10 +12,9 @@ using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.ImageSchemaBE;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class ImageController: ApiController
+    public class ImageController : ApiController
     {
         private readonly ImageServices _imageServices;
 
@@ -24,34 +23,20 @@ namespace CloneDeploy_App.Controllers
             _imageServices = new ImageServices();
         }
 
-        [CustomAuth(Permission = "ImageSearch")]
-        public IEnumerable<ImageEntity> GetAll(string searchstring = "")
+        [CustomAuth(Permission = "ImageDelete")]
+        public ActionResultDTO Delete(int id)
         {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                             .Select(c => c.Value).SingleOrDefault();
-            return string.IsNullOrEmpty(searchstring)
-                ? _imageServices.SearchImagesForUser(Convert.ToInt32(userId))
-                : _imageServices.SearchImagesForUser(Convert.ToInt32(userId),searchstring);
+            var result = _imageServices.DeleteImage(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
-        [CustomAuth(Permission = "ImageSearch")]
-        public IEnumerable<ImageEntity> Search(string searchstring = "")
+        [CustomAuth(Permission = "ImageRead")]
+        [HttpGet]
+        public ApiBoolResponseDTO Export(string path)
         {
-            return string.IsNullOrEmpty(searchstring)
-                ? _imageServices.SearchImages()
-                : _imageServices.SearchImages(searchstring);
-        }
-
-        [CustomAuth(Permission = "ImageSearch")]
-        public ApiStringResponseDTO GetCount()
-        {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                             .Select(c => c.Value).SingleOrDefault();
-
-            return new ApiStringResponseDTO() {Value = _imageServices.ImageCountUser(Convert.ToInt32(userId))};
-
+            _imageServices.ExportCsv(path);
+            return new ApiBoolResponseDTO {Value = true};
         }
 
         [CustomAuth(Permission = "ImageRead")]
@@ -62,20 +47,51 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
+        [CustomAuth(Permission = "ImageSearch")]
+        public IEnumerable<ImageEntity> GetAll(string searchstring = "")
+        {
+            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                .Select(c => c.Value).SingleOrDefault();
+            return string.IsNullOrEmpty(searchstring)
+                ? _imageServices.SearchImagesForUser(Convert.ToInt32(userId))
+                : _imageServices.SearchImagesForUser(Convert.ToInt32(userId), searchstring);
+        }
 
-        [CustomAuthAttribute(Permission = "ComputerCreate")]
+        [CustomAuth(Permission = "ImageSearch")]
+        public ApiStringResponseDTO GetCount()
+        {
+            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                .Select(c => c.Value).SingleOrDefault();
+
+            return new ApiStringResponseDTO {Value = _imageServices.ImageCountUser(Convert.ToInt32(userId))};
+        }
+
+        [CustomAuth(Permission = "ImageRead")]
+        public IEnumerable<ImageProfileEntity> GetImageProfiles(int id)
+        {
+            return _imageServices.SearchProfiles(id);
+        }
+
+        [CustomAuth(Permission = "ImageSearch")]
+        public ApiStringResponseDTO GetImageSizeOnServer(string imageName, string hdNumber)
+        {
+            return new ApiStringResponseDTO {Value = _imageServices.ImageSizeOnServerForGridView(imageName, hdNumber)};
+        }
+
+        [CustomAuth(Permission = "ImageRead")]
+        public IEnumerable<ImageFileInfo> GetPartitionFileInfo(int id, string selectedHd, string selectedPartition)
+        {
+            return _imageServices.GetPartitionImageFileInfoForGridView(id, selectedHd, selectedPartition);
+        }
+
+
+        [CustomAuth(Permission = "ComputerCreate")]
         [HttpPost]
         public ApiIntResponseDTO Import(ApiStringResponseDTO csvContents)
         {
-            return new ApiIntResponseDTO() { Value = _imageServices.ImportCsv(csvContents.Value) };
-        }
-
-        [Authorize]
-        [HttpGet]
-        public ApiBoolResponseDTO SendImageApprovedMail(int id)
-        {
-            _imageServices.SendImageApprovedEmail(id);
-            return new ApiBoolResponseDTO(){Value = true};
+            return new ApiIntResponseDTO {Value = _imageServices.ImportCsv(csvContents.Value)};
         }
 
         [CustomAuth(Permission = "ImageCreate")]
@@ -95,26 +111,12 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = "ImageDelete")]
-        public ActionResultDTO Delete(int id)
+        [CustomAuth(Permission = "ImageSearch")]
+        public IEnumerable<ImageEntity> Search(string searchstring = "")
         {
-            var result = _imageServices.DeleteImage(id);
-            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
-            return result;
-        }
-
-        [CustomAuth(Permission = "ImageRead")]
-        [HttpGet]
-        public ApiBoolResponseDTO Export(string path)
-        {
-            _imageServices.ExportCsv(path);
-            return new ApiBoolResponseDTO() { Value = true };
-        }
-
-        [CustomAuth(Permission = "ImageRead")]
-        public IEnumerable<ImageProfileEntity> GetImageProfiles(int id)
-        {
-            return _imageServices.SearchProfiles(id);
+            return string.IsNullOrEmpty(searchstring)
+                ? _imageServices.SearchImages()
+                : _imageServices.SearchImages(searchstring);
         }
 
         [HttpGet]
@@ -124,19 +126,12 @@ namespace CloneDeploy_App.Controllers
             return _imageServices.SeedDefaultImageProfile(id);
         }
 
-        [CustomAuth(Permission = "ImageRead")]
-        public IEnumerable<ImageFileInfo> GetPartitionFileInfo(int id, string selectedHd, string selectedPartition)
+        [Authorize]
+        [HttpGet]
+        public ApiBoolResponseDTO SendImageApprovedMail(int id)
         {
-
-            return _imageServices.GetPartitionImageFileInfoForGridView(id, selectedHd, selectedPartition);
-
-        }
-
-        [CustomAuth(Permission = "ImageSearch")]
-        public ApiStringResponseDTO GetImageSizeOnServer(string imageName, string hdNumber)
-        {
-
-            return new ApiStringResponseDTO() {Value = _imageServices.ImageSizeOnServerForGridView(imageName, hdNumber)};
+            _imageServices.SendImageApprovedEmail(id);
+            return new ApiBoolResponseDTO {Value = true};
         }
     }
 }

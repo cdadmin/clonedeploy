@@ -1,16 +1,10 @@
 ﻿using System;
 using CloneDeploy_Entities;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
 public partial class views_admin_dp_create : Admin
 {
-    protected void Page_Load(object sender, EventArgs e)
-    {
-
-    }
-
     protected void buttonAddDp_OnClick(object sender, EventArgs e)
     {
         RequiresAuthorization(Authorizations.UpdateAdmin);
@@ -26,8 +20,7 @@ public partial class views_admin_dp_create : Admin
             RoUsername = txtRoUsername.Text,
             RoPassword = txtRoPassword.Text,
             IsPrimary = Convert.ToInt16(chkPrimary.Checked),
-            PhysicalPath = chkPrimary.Checked ? txtPhysicalPath.Text : "",           
-           
+            PhysicalPath = chkPrimary.Checked ? txtPhysicalPath.Text : ""
         };
 
         var result = Call.DistributionPointApi.Post(distributionPoint);
@@ -35,13 +28,11 @@ public partial class views_admin_dp_create : Admin
         {
             EndUserMessage = "Successfully Created Distribution Point";
             Response.Redirect("~/views/admin/dp/edit.aspx?level=2&dpid=" + distributionPoint.Id);
-            
         }
         else
         {
             EndUserMessage = result.ErrorMessage;
         }
-
     }
 
     protected void chkPrimary_OnCheckedChanged(object sender, EventArgs e)
@@ -49,4 +40,7 @@ public partial class views_admin_dp_create : Admin
         PhysicalPath.Visible = chkPrimary.Checked;
     }
 
+    protected void Page_Load(object sender, EventArgs e)
+    {
+    }
 }

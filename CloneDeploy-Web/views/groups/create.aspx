@@ -2,16 +2,18 @@
 
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li>New</li>
-    </asp:Content>
+</asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <li><a href="<%= ResolveUrl("~/views/help/groups-newedit.aspx")%>" target="_blank">Help</a></li>
+    <li>
+        <a href="<%= ResolveUrl("~/views/help/groups-newedit.aspx") %>" target="_blank">Help</a>
+    </li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-     <asp:LinkButton ID="Submit" runat="server" OnClick="Submit_Click" Text="Add Group" CssClass="btn btn-default width_100"/>
-     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span class="caret"></span>
-  </button>
+    <asp:LinkButton ID="Submit" runat="server" OnClick="Submit_Click" Text="Add Group" CssClass="btn btn-default width_100"/>
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+    </button>
 </asp:Content>
 
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
@@ -31,14 +33,14 @@
         Group Type:
     </div>
     <div class="size-5 column">
-        <asp:DropDownList ID="ddlGroupType" runat="server" CssClass="ddlist" >
+        <asp:DropDownList ID="ddlGroupType" runat="server" CssClass="ddlist">
             <asp:ListItem>standard</asp:ListItem>
             <asp:ListItem>smart</asp:ListItem>
         </asp:DropDownList>
     </div>
     <br class="clear"/>
-   
-    
+
+
     <div class="size-4 column">
         Group Description:
     </div>

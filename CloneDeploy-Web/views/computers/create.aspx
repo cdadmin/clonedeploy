@@ -2,24 +2,26 @@
 
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li>New</li>
-    </asp:Content>
+</asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="Help">
     <li role="separator" class="divider"></li>
-    <li><a href="<%= ResolveUrl("~/views/help/computers-newedit.aspx")%>" class="" target="_blank">Help</a></li>
+    <li>
+        <a href="<%= ResolveUrl("~/views/help/computers-newedit.aspx") %>" class="" target="_blank">Help</a>
+    </li>
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-     <asp:LinkButton ID="buttonAddComputer" runat="server" OnClick="ButtonAddComputer_Click" Text="Add Computer" CssClass="btn btn-default" />
-  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span class="caret"></span>
-  </button>
+    <asp:LinkButton ID="buttonAddComputer" runat="server" OnClick="ButtonAddComputer_Click" Text="Add Computer" CssClass="btn btn-default"/>
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+    </button>
 
 </asp:Content>
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
-    <script type="text/javascript">     
-        $(document).ready(function() {      
+    <script type="text/javascript">
+        $(document).ready(function() {
             $('#new').addClass("nav-current");
-        });     
+        });
     </script>
 
     <div class="size-4 column">
@@ -43,7 +45,7 @@
         <asp:DropDownList ID="ddlComputerImage" runat="server" CssClass="ddlist" AutoPostBack="true" OnSelectedIndexChanged="ddlComputerImage_OnSelectedIndexChanged"/>
     </div>
     <br class="clear"/>
-   
+
     <div class="size-4 column">
         Image Profile:
     </div>
@@ -52,7 +54,7 @@
     </div>
 
     <br class="clear"/>
-   
+
     <div class="size-4 column">
         Description:
     </div>
@@ -60,8 +62,8 @@
         <asp:TextBox ID="txtComputerDesc" runat="server" CssClass="descbox" TextMode="MultiLine"></asp:TextBox>
     </div>
     <br class="clear"/>
-   
-     <div class="size-4 column">
+
+    <div class="size-4 column">
         Cluster Group:
     </div>
     <div class="size-5 column">
@@ -70,7 +72,7 @@
 
     <br class="clear"/>
 
-     <div class="size-4 column">
+    <div class="size-4 column">
         Site:
     </div>
     <div class="size-5 column">
@@ -78,7 +80,7 @@
     </div>
 
     <br class="clear"/>
-     <div class="size-4 column">
+    <div class="size-4 column">
         Building:
     </div>
     <div class="size-5 column">
@@ -86,7 +88,7 @@
     </div>
 
     <br class="clear"/>
-     <div class="size-4 column">
+    <div class="size-4 column">
         Room:
     </div>
     <div class="size-5 column">
@@ -94,7 +96,7 @@
     </div>
 
     <br class="clear"/>
-    
+
     <div class="size-4 column">
         Custom Attribute 1:
     </div>
@@ -102,7 +104,7 @@
         <asp:TextBox ID="txtCustom1" runat="server" CssClass="textbox"></asp:TextBox>
     </div>
     <br class="clear"/>
-    
+
     <div class="size-4 column">
         Custom Attribute 2:
     </div>
@@ -110,7 +112,7 @@
         <asp:TextBox ID="txtCustom2" runat="server" CssClass="textbox"></asp:TextBox>
     </div>
     <br class="clear"/>
-    
+
     <div class="size-4 column">
         Custom Attribute 3:
     </div>
@@ -118,15 +120,15 @@
         <asp:TextBox ID="txtCustom3" runat="server" CssClass="textbox"></asp:TextBox>
     </div>
     <br class="clear"/>
-    
+
     <div class="size-4 column">
-         Custom Attribute 4:
+        Custom Attribute 4:
     </div>
     <div class="size-5 column">
         <asp:TextBox ID="txtCustom4" runat="server" CssClass="textbox"></asp:TextBox>
     </div>
     <br class="clear"/>
-    
+
     <div class="size-4 column">
         Custom Attribute 5:
     </div>
@@ -134,14 +136,14 @@
         <asp:TextBox ID="txtCustom5" runat="server" CssClass="textbox"></asp:TextBox>
     </div>
     <br class="clear"/>
-   
+
     <div class="size-4 column">
         Create Another?
-      
+
     </div>
 
     <div class="size-5 column">
-         <asp:CheckBox runat="server" ID="createAnother"/>
+        <asp:CheckBox runat="server" ID="createAnother"/>
     </div>
-    
+
 </asp:Content>

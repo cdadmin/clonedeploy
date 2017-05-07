@@ -5,10 +5,9 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class ClusterGroupServersController: ApiController
+    public class ClusterGroupServersController : ApiController
     {
         private readonly ClusterGroupServerServices _clusterGroupServerServices;
 
@@ -22,7 +21,5 @@ namespace CloneDeploy_App.Controllers
         {
             return _clusterGroupServerServices.AddClusterGroupServers(listOfServers);
         }
-
-        
     }
 }

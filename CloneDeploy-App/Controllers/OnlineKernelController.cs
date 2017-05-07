@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
@@ -10,9 +7,9 @@ using CloneDeploy_Services;
 
 namespace CloneDeploy_App.Controllers
 {
-    public class OnlineKernelController: ApiController
+    public class OnlineKernelController : ApiController
     {
-         private readonly OnlineKernelServices _onlineKernelServices;
+        private readonly OnlineKernelServices _onlineKernelServices;
 
         public OnlineKernelController()
         {
@@ -20,17 +17,16 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "AdminUpdate")]
+        [HttpPost]
+        public ApiBoolResponseDTO Download(OnlineKernel onlineKernel)
+        {
+            return new ApiBoolResponseDTO {Value = _onlineKernelServices.DownloadKernel(onlineKernel)};
+        }
+
+        [CustomAuth(Permission = "AdminUpdate")]
         public IEnumerable<OnlineKernel> GetAll()
         {
             return _onlineKernelServices.GetAllOnlineKernels();
         }
-
-        [CustomAuth(Permission = "AdminUpdate")]
-        [HttpPost]
-        public ApiBoolResponseDTO Download(OnlineKernel onlineKernel)
-        {
-            return new ApiBoolResponseDTO() { Value = _onlineKernelServices.DownloadKernel(onlineKernel) };
-        }
-    
     }
 }

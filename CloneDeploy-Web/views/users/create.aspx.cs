@@ -1,6 +1,5 @@
 ﻿using System;
 using CloneDeploy_Entities;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
@@ -8,9 +7,8 @@ namespace views.users
 {
     public partial class CreateUser : Users
     {
-        protected void Page_Load(object sender, EventArgs e)
+        protected void btnGenKey_OnClick(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.Administrator);
             txtToken.Text = Utility.GenerateKey();
         }
 
@@ -37,7 +35,7 @@ namespace views.users
                 txtUserPwdConfirm.Text = txtUserPwd.Text;
             }
 
-            var user = new CloneDeployUserEntity()
+            var user = new CloneDeployUserEntity
             {
                 Name = txtUserName.Text,
                 Membership = ddluserMembership.Text,
@@ -48,7 +46,7 @@ namespace views.users
                 NotifyError = chkError.Checked ? 1 : 0,
                 NotifyComplete = chkComplete.Checked ? 1 : 0,
                 NotifyImageApproved = chkApproved.Checked ? 1 : 0,
-                IsLdapUser = chkldap.Checked ? 1: 0,
+                IsLdapUser = chkldap.Checked ? 1 : 0,
                 UserGroupId = -1
             };
 
@@ -63,11 +61,6 @@ namespace views.users
             }
         }
 
-        protected void btnGenKey_OnClick(object sender, EventArgs e)
-        {
-            txtToken.Text = Utility.GenerateKey();
-        }
-
         protected void chkldap_OnCheckedChanged(object sender, EventArgs e)
         {
             if (chkldap.Checked)
@@ -76,6 +69,12 @@ namespace views.users
             {
                 passwords.Visible = true;
             }
+        }
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            RequiresAuthorization(Authorizations.Administrator);
+            txtToken.Text = Utility.GenerateKey();
         }
     }
 }

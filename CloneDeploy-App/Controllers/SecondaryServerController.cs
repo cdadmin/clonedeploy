@@ -8,10 +8,9 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class SecondaryServerController: ApiController
+    public class SecondaryServerController : ApiController
     {
         private readonly SecondaryServerServices _secondaryServerServices;
 
@@ -20,13 +19,12 @@ namespace CloneDeploy_App.Controllers
             _secondaryServerServices = new SecondaryServerServices();
         }
 
-        [CustomAuth(Permission = "AdminRead")]
-        public IEnumerable<SecondaryServerEntity> GetAll(string searchstring = "")
+        [CustomAuth(Permission = "AdminUpdate")]
+        public ActionResultDTO Delete(int id)
         {
-            return string.IsNullOrEmpty(searchstring)
-                ? _secondaryServerServices.SearchSecondaryServers()
-                : _secondaryServerServices.SearchSecondaryServers(searchstring);
-
+            var result = _secondaryServerServices.DeleteSecondaryServer(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [CustomAuth(Permission = "AdminRead")]
@@ -35,6 +33,22 @@ namespace CloneDeploy_App.Controllers
             var result = _secondaryServerServices.GetSecondaryServer(id);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
+        }
+
+        [CustomAuth(Permission = "AdminRead")]
+        public IEnumerable<SecondaryServerEntity> GetAll(string searchstring = "")
+        {
+            return string.IsNullOrEmpty(searchstring)
+                ? _secondaryServerServices.SearchSecondaryServers()
+                : _secondaryServerServices.SearchSecondaryServers(searchstring);
+        }
+
+        [Authorize]
+        public ApiStringResponseDTO GetServerOS()
+        {
+            var isUnix = Environment.OSVersion.ToString().Contains("Unix");
+            var result = isUnix ? "unix" : "windows";
+            return new ApiStringResponseDTO {Value = result};
         }
 
         [CustomAuth(Permission = "AdminUpdate")]
@@ -50,24 +64,6 @@ namespace CloneDeploy_App.Controllers
             var result = _secondaryServerServices.UpdateSecondaryServer(secondaryServer);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
-        }
-
-        [CustomAuth(Permission = "AdminUpdate")]
-        public ActionResultDTO Delete(int id)
-        {
-
-            var result = _secondaryServerServices.DeleteSecondaryServer(id);
-            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
-            return result;
-        }
-
-        [Authorize]
-        public ApiStringResponseDTO GetServerOS()
-        {
-            var isUnix = Environment.OSVersion.ToString().Contains("Unix");
-            var result = isUnix ? "unix" : "windows";
-            return new ApiStringResponseDTO() {Value = result};
-          
         }
     }
 }

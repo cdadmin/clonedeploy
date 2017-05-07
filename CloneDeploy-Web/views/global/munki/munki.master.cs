@@ -9,22 +9,16 @@ public partial class views_global_munki_munki : MasterBaseMaster
 
     public void Page_Load(object sender, EventArgs e)
     {
-     
-            globalBasePage = (Page as Global);
-            ManifestTemplate = globalBasePage.ManifestTemplate;
+        globalBasePage = Page as Global;
+        ManifestTemplate = globalBasePage.ManifestTemplate;
 
-            if (ManifestTemplate == null)
-            {
-                divMunkiDetails.Visible = false;
-                return;
-            }
-            else
-            {
-                divMunki.Visible = false;
-            }
-
-            
-            
-        
-    } 
+        if (ManifestTemplate == null)
+        {
+            divMunkiDetails.Visible = false;
+        }
+        else
+        {
+            divMunki.Visible = false;
+        }
+    }
 }

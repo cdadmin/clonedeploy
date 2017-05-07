@@ -12,8 +12,8 @@ namespace CloneDeploy_Services.Workflows
 {
     public class ClobberBootMenu
     {
-        private readonly bool _promptComputerName;
         private readonly ImageProfileEntity _imageProfile;
+        private readonly bool _promptComputerName;
 
         public ClobberBootMenu(int imageProfileId, bool promptComputerName)
         {
@@ -25,7 +25,7 @@ namespace CloneDeploy_Services.Workflows
         {
             var webPath = Settings.WebPath;
             var globalComputerArgs = Settings.GlobalComputerArgs;
-            string namePromptArg = "";
+            var namePromptArg = "";
             if (_promptComputerName)
                 namePromptArg = " name_prompt=true";
 
@@ -37,7 +37,8 @@ namespace CloneDeploy_Services.Workflows
             ipxe.Append("#!ipxe" + newLineChar);
             ipxe.Append("kernel " + webPath + "IpxeBoot?filename=" + _imageProfile.Kernel +
                         "&type=kernel" + " initrd=" + _imageProfile.BootImage +
-                        " root=/dev/ram0 rw ramdisk_size=156000 task=clobber " + "imageProfileId=" + _imageProfile.Id + namePromptArg +
+                        " root=/dev/ram0 rw ramdisk_size=156000 task=clobber " + "imageProfileId=" + _imageProfile.Id +
+                        namePromptArg +
                         " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" + userToken + " " + globalComputerArgs +
                         " " + _imageProfile.KernelArguments + newLineChar);
             ipxe.Append("imgfetch --name " + _imageProfile.BootImage + " " + webPath +
@@ -50,8 +51,10 @@ namespace CloneDeploy_Services.Workflows
             sysLinux.Append("LABEL clonedeploy" + newLineChar);
             sysLinux.Append("KERNEL kernels" + Path.DirectorySeparatorChar + _imageProfile.Kernel + newLineChar);
             sysLinux.Append("APPEND initrd=images" + Path.DirectorySeparatorChar + _imageProfile.BootImage +
-                            " root=/dev/ram0 rw ramdisk_size=156000 task=clobber " + "imageProfileId=" + _imageProfile.Id + namePromptArg +
-                            " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" + userToken + " " + globalComputerArgs +
+                            " root=/dev/ram0 rw ramdisk_size=156000 task=clobber " + "imageProfileId=" +
+                            _imageProfile.Id + namePromptArg +
+                            " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" + userToken + " " +
+                            globalComputerArgs +
                             " " + _imageProfile.KernelArguments + newLineChar);
 
 
@@ -62,7 +65,8 @@ namespace CloneDeploy_Services.Workflows
             grub.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
                         newLineChar);
             grub.Append("linux /kernels/" + _imageProfile.Kernel +
-                        " root=/dev/ram0 rw ramdisk_size=156000 task=clobber " + "imageProfileId=" + _imageProfile.Id + namePromptArg + " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" +
+                        " root=/dev/ram0 rw ramdisk_size=156000 task=clobber " + "imageProfileId=" + _imageProfile.Id +
+                        namePromptArg + " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" +
                         userToken + " " +
                         globalComputerArgs + " " + _imageProfile.KernelArguments + newLineChar);
             grub.Append("initrd /images/" + _imageProfile.BootImage + newLineChar);
@@ -85,7 +89,8 @@ namespace CloneDeploy_Services.Workflows
             {
                 string path = null;
 
-                if (Settings.OperationMode == "Single" || (Settings.OperationMode == "Cluster Primary" && Settings.TftpServerRole))
+                if (Settings.OperationMode == "Single" ||
+                    (Settings.OperationMode == "Cluster Primary" && Settings.TftpServerRole))
                 {
                     foreach (var bootMenu in list)
                     {
@@ -146,7 +151,6 @@ namespace CloneDeploy_Services.Workflows
 
                             new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
                                 .ServiceAccountApi.WriteTftpFile(tftpFile);
-                        
                         }
                     }
                 }
@@ -161,7 +165,6 @@ namespace CloneDeploy_Services.Workflows
                 if (Settings.OperationMode == "Single" ||
                     (Settings.OperationMode == "Cluster Primary" && Settings.TftpServerRole))
                 {
-
                     if (mode == "pxelinux" || mode == "syslinux_32_efi" || mode == "syslinux_64_efi")
                     {
                         path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
@@ -184,7 +187,7 @@ namespace CloneDeploy_Services.Workflows
                 }
                 else
                 {
-                     var tftpServers =
+                    var tftpServers =
                         new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
                     foreach (var tftpServer in tftpServers)
                     {
@@ -209,14 +212,13 @@ namespace CloneDeploy_Services.Workflows
                             fileContents = grub.ToString();
                         }
 
-                            var tftpFile = new TftpFileDTO();
-                            tftpFile.Contents = fileContents;
-                            tftpFile.Path = path;
+                        var tftpFile = new TftpFileDTO();
+                        tftpFile.Contents = fileContents;
+                        tftpFile.Path = path;
 
-                            new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
-                                .ServiceAccountApi.WriteTftpFile(tftpFile);
-                                           
-                    }            
+                        new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
+                            .ServiceAccountApi.WriteTftpFile(tftpFile);
+                    }
                 }
             }
             return true;

@@ -8,5 +8,4 @@ public partial class views_global_global : MasterBaseMaster
         if (Request.QueryString["manifestid"] != null)
             Level1.Visible = false;
     }
-   
 }

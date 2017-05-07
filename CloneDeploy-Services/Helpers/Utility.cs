@@ -12,7 +12,6 @@ using System.Web;
 using Claunia.PropertyList;
 using CloneDeploy_Entities;
 using log4net;
-using log4net.Appender;
 
 namespace CloneDeploy_Services.Helpers
 {
@@ -22,52 +21,30 @@ namespace CloneDeploy_Services.Helpers
 
         public static string Between(string parameter)
         {
-            if (String.IsNullOrEmpty(parameter)) return parameter;
-            int start = parameter.IndexOf("[", StringComparison.Ordinal);
-            int to = parameter.IndexOf("]", start + "[".Length, StringComparison.Ordinal);
+            if (string.IsNullOrEmpty(parameter)) return parameter;
+            var start = parameter.IndexOf("[", StringComparison.Ordinal);
+            var to = parameter.IndexOf("]", start + "[".Length, StringComparison.Ordinal);
             if (start < 0 || to < 0) return parameter;
-            string s = parameter.Substring(
+            var s = parameter.Substring(
                 start + "[".Length,
                 to - start - "[".Length);
             if (s == "server-ip")
             {
                 return parameter.Replace("[server-ip]", Settings.ServerIp);
             }
-            else if (s == "tftp-server-ip")
+            if (s == "tftp-server-ip")
             {
                 return parameter.Replace("[tftp-server-ip]", Settings.TftpServerIp);
             }
             return s;
         }
 
-
-        public static string EscapeCharacter(string str, string[] charArray)
-        {
-            string escapedString = null;
-            foreach (var c in charArray)
-            {
-                escapedString = str.Replace(c, "\\" + c);
-                str = escapedString;
-            }
-            return escapedString;
-        }
-
-        public static string EscapeFilePaths(string path)
-        {
-            return path != null ? path.Replace(@"\", @"\\") : String.Empty;
-        }
-
-        public static string WindowsToUnixFilePath(string path)
-        {
-            return path != null ? path.Replace("\\", "/") : String.Empty;
-        }
-
         public static string CreatePasswordHash(string pwd, string salt)
         {
-            var saltAndPwd = String.Concat(pwd, salt);
+            var saltAndPwd = string.Concat(pwd, salt);
             HashAlgorithm hash = new SHA256Managed();
-            byte[] plainTextBytes = Encoding.UTF8.GetBytes(saltAndPwd);
-            byte[] hashBytes = hash.ComputeHash(plainTextBytes);
+            var plainTextBytes = Encoding.UTF8.GetBytes(saltAndPwd);
+            var hashBytes = hash.ComputeHash(plainTextBytes);
             return Convert.ToBase64String(hashBytes);
         }
 
@@ -109,9 +86,23 @@ namespace CloneDeploy_Services.Helpers
             }
 
             return encoded;
+        }
 
-            
-            
+
+        public static string EscapeCharacter(string str, string[] charArray)
+        {
+            string escapedString = null;
+            foreach (var c in charArray)
+            {
+                escapedString = str.Replace(c, "\\" + c);
+                str = escapedString;
+            }
+            return escapedString;
+        }
+
+        public static string EscapeFilePaths(string path)
+        {
+            return path != null ? path.Replace(@"\", @"\\") : string.Empty;
         }
 
         public static string FixMac(string mac)
@@ -157,6 +148,24 @@ namespace CloneDeploy_Services.Helpers
             return bootImageFiles;
         }
 
+        //http://stackoverflow.com/questions/735350/how-to-get-a-users-client-ip-address-in-asp-net
+        public static string GetIPAddress()
+        {
+            var context = HttpContext.Current;
+            var ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+
+            if (!string.IsNullOrEmpty(ipAddress))
+            {
+                var addresses = ipAddress.Split(',');
+                if (addresses.Length != 0)
+                {
+                    return addresses[0];
+                }
+            }
+
+            return context.Request.ServerVariables["REMOTE_ADDR"];
+        }
+
         public static List<string> GetKernels()
         {
             var kernelPath = Settings.TftpPath + "kernels" + Path.DirectorySeparatorChar;
@@ -167,6 +176,85 @@ namespace CloneDeploy_Services.Helpers
 
                 for (var x = 0; x < kernelFiles.Length; x++)
                     result.Add(Path.GetFileName(kernelFiles[x]));
+            }
+
+            catch (Exception ex)
+            {
+                log.Debug(ex.Message);
+            }
+            return result;
+        }
+
+        public static List<string> GetLogs()
+        {
+            var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
+                          Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar;
+
+            var logFiles = Directory.GetFiles(logPath, "*.*");
+            var result = new List<string>();
+            for (var x = 0; x < logFiles.Length; x++)
+                result.Add(Path.GetFileName(logFiles[x]));
+
+            return result;
+        }
+
+        public List<FileInfo> GetMunkiResources(string type)
+        {
+            FileInfo[] directoryFiles = null;
+            var pkgInfoFiles = Settings.MunkiBasePath + Path.DirectorySeparatorChar + type + Path.DirectorySeparatorChar;
+            if (Settings.MunkiPathType == "Local")
+            {
+                var di = new DirectoryInfo(pkgInfoFiles);
+                try
+                {
+                    directoryFiles = di.GetFiles("*.*");
+                }
+                catch (Exception ex)
+                {
+                    log.Debug(ex.Message);
+                }
+            }
+
+            else
+            {
+                using (var unc = new UNCAccessWithCredentials())
+                {
+                    var smbPassword = new Encryption().DecryptText(Settings.MunkiSMBPassword);
+                    var smbDomain = string.IsNullOrEmpty(Settings.MunkiSMBDomain) ? "" : Settings.MunkiSMBDomain;
+                    if (
+                        unc.NetUseWithCredentials(Settings.MunkiBasePath, Settings.MunkiSMBUsername, smbDomain,
+                            smbPassword) || unc.LastError == 1219)
+                    {
+                        var di = new DirectoryInfo(pkgInfoFiles);
+                        try
+                        {
+                            directoryFiles = di.GetFiles("*.*");
+                        }
+                        catch (Exception ex)
+                        {
+                            log.Debug(ex.Message);
+                        }
+                    }
+                    else
+                    {
+                        log.Debug("Failed to connect to " + Settings.MunkiBasePath + "\r\nLastError = " + unc.LastError);
+                    }
+                }
+            }
+
+            return directoryFiles.ToList();
+        }
+
+        public static List<string> GetScripts(string type)
+        {
+            var scriptPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
+                             Path.DirectorySeparatorChar + "clientscripts" + Path.DirectorySeparatorChar;
+            var result = new List<string>();
+            try
+            {
+                var scriptFiles = Directory.GetFiles(scriptPath, "*.*");
+                for (var x = 0; x < scriptFiles.Length; x++)
+                    result.Add(Path.GetFileName(scriptFiles[x]));
             }
 
             catch (Exception ex)
@@ -195,105 +283,6 @@ namespace CloneDeploy_Services.Helpers
             return result;
         }
 
-        public static List<string> GetLogs()
-        {
-            var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
-                          Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar;
-
-            var logFiles = Directory.GetFiles(logPath, "*.*");
-            var result = new List<string>();
-            for (var x = 0; x < logFiles.Length; x++)
-                result.Add(Path.GetFileName(logFiles[x]));
-
-            return result;
-        }
-
-        public static List<string> GetScripts(string type)
-        {
-            var scriptPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
-                             Path.DirectorySeparatorChar + "clientscripts" + Path.DirectorySeparatorChar;
-            var result = new List<string>();
-            try
-            {
-                var scriptFiles = Directory.GetFiles(scriptPath, "*.*");
-                for (var x = 0; x < scriptFiles.Length; x++)
-                    result.Add(Path.GetFileName(scriptFiles[x]));
-            }
-
-            catch (Exception ex)
-            {
-                log.Debug(ex.Message);
-            }
-            return result;
-        }
-
-        public MunkiPackageInfoEntity ReadPlist(string fileName)
-        {
-            try
-            {
-                NSDictionary rootDict = (NSDictionary)PropertyListParser.Parse(fileName);
-                var plist = new MunkiPackageInfoEntity();
-                plist.Name = rootDict.ObjectForKey("name").ToString();
-                plist.Version = rootDict.ObjectForKey("version").ToString();
-                return plist;
-
-            }
-            catch (Exception ex)
-            {
-                log.Debug(ex.Message);
-                return null;
-            }
-        }
-
-        public List<FileInfo> GetMunkiResources(string type)
-        {
-            FileInfo[] directoryFiles = null;
-            string pkgInfoFiles = Settings.MunkiBasePath + Path.DirectorySeparatorChar + type + Path.DirectorySeparatorChar;
-            if (Settings.MunkiPathType == "Local")
-            {
-                DirectoryInfo di = new DirectoryInfo(pkgInfoFiles);
-                try
-                {
-                    directoryFiles = di.GetFiles("*.*");
-                }
-                catch (Exception ex)
-                {
-                    log.Debug(ex.Message);
-
-                }
-            }
-
-            else
-            {
-                using (UNCAccessWithCredentials unc = new UNCAccessWithCredentials())
-                {
-                    var smbPassword = new Encryption().DecryptText(Settings.MunkiSMBPassword);
-                    var smbDomain = string.IsNullOrEmpty(Settings.MunkiSMBDomain) ? "" : Settings.MunkiSMBDomain;
-                    if (unc.NetUseWithCredentials(Settings.MunkiBasePath, Settings.MunkiSMBUsername, smbDomain, smbPassword) || unc.LastError == 1219)
-                    {
-
-                        DirectoryInfo di = new DirectoryInfo(pkgInfoFiles);
-                        try
-                        {
-                            directoryFiles = di.GetFiles("*.*");
-                        }
-                        catch (Exception ex)
-                        {
-                            log.Debug(ex.Message);
-
-                        }
-                    }
-                    else
-                    {
-                        log.Debug("Failed to connect to " + Settings.MunkiBasePath + "\r\nLastError = " + unc.LastError);
-                    }
-                }
-            }
-
-            return directoryFiles.ToList();
-
-        }
-
         public static string MacToPxeMac(string mac)
         {
             var pxeMac = "01-" + mac.ToLower().Replace(':', '-');
@@ -307,6 +296,23 @@ namespace CloneDeploy_Services.Helpers
             return mac;
         }
 
+        public MunkiPackageInfoEntity ReadPlist(string fileName)
+        {
+            try
+            {
+                var rootDict = (NSDictionary) PropertyListParser.Parse(fileName);
+                var plist = new MunkiPackageInfoEntity();
+                plist.Name = rootDict.ObjectForKey("name").ToString();
+                plist.Version = rootDict.ObjectForKey("version").ToString();
+                return plist;
+            }
+            catch (Exception ex)
+            {
+                log.Debug(ex.Message);
+                return null;
+            }
+        }
+
         public static void WakeUp(string mac)
         {
             var pattern = new Regex("[:]");
@@ -314,7 +320,7 @@ namespace CloneDeploy_Services.Helpers
 
             try
             {
-                var value = Int64.Parse(wolComputerMac, NumberStyles.HexNumber, CultureInfo.CurrentCulture.NumberFormat);
+                var value = long.Parse(wolComputerMac, NumberStyles.HexNumber, CultureInfo.CurrentCulture.NumberFormat);
                 var macBytes = BitConverter.GetBytes(value);
 
                 Array.Reverse(macBytes);
@@ -324,7 +330,7 @@ namespace CloneDeploy_Services.Helpers
                     macAddress[j] = macBytes[j + 2];
 
 
-                var packet = new byte[17 * 6];
+                var packet = new byte[17*6];
 
                 for (var i = 0; i < 6; i++)
                     packet[i] = 0xff;
@@ -332,7 +338,7 @@ namespace CloneDeploy_Services.Helpers
                 for (var i = 1; i <= 16; i++)
                 {
                     for (var j = 0; j < 6; j++)
-                        packet[i * 6 + j] = macAddress[j];
+                        packet[i*6 + j] = macAddress[j];
                 }
 
                 var client = new UdpClient();
@@ -345,22 +351,9 @@ namespace CloneDeploy_Services.Helpers
             }
         }
 
-        //http://stackoverflow.com/questions/735350/how-to-get-a-users-client-ip-address-in-asp-net
-        public static string GetIPAddress()
+        public static string WindowsToUnixFilePath(string path)
         {
-            System.Web.HttpContext context = System.Web.HttpContext.Current;
-            string ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-
-            if (!string.IsNullOrEmpty(ipAddress))
-            {
-                string[] addresses = ipAddress.Split(',');
-                if (addresses.Length != 0)
-                {
-                    return addresses[0];
-                }
-            }
-
-            return context.Request.ServerVariables["REMOTE_ADDR"];
+            return path != null ? path.Replace("\\", "/") : string.Empty;
         }
     }
 }

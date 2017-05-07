@@ -1,7 +1,5 @@
 ﻿using System;
-using CloneDeploy_ApiCalls;
 using CloneDeploy_Entities;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
@@ -9,22 +7,20 @@ namespace views.computers
 {
     public partial class ComputerEdit : Computers
     {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            if (!IsPostBack) PopulateForm();
-        }
-
         protected void buttonUpdateComputer_Click(object sender, EventArgs e)
         {
             RequiresAuthorizationOrManagedComputer(Authorizations.UpdateComputer, Computer.Id);
-            bool nameChange = txtComputerName.Text != Computer.Name;
+            var nameChange = txtComputerName.Text != Computer.Name;
             var computer = new ComputerEntity
             {
                 Id = Computer.Id,
                 Name = txtComputerName.Text,
                 Mac = txtComputerMac.Text,
                 ImageId = Convert.ToInt32(ddlComputerImage.SelectedValue),
-                ImageProfileId = Convert.ToInt32(ddlComputerImage.SelectedValue) == -1 ? -1 : Convert.ToInt32(ddlImageProfile.SelectedValue),
+                ImageProfileId =
+                    Convert.ToInt32(ddlComputerImage.SelectedValue) == -1
+                        ? -1
+                        : Convert.ToInt32(ddlImageProfile.SelectedValue),
                 Description = txtComputerDesc.Text,
                 SiteId = Convert.ToInt32(ddlSite.SelectedValue),
                 BuildingId = Convert.ToInt32(ddlBuilding.SelectedValue),
@@ -37,8 +33,8 @@ namespace views.computers
                 CustomAttribute5 = txtCustom5.Text,
                 ProxyReservation = Computer.ProxyReservation
             };
-            
-            var result = Call.ComputerApi.Put(computer.Id, computer); 
+
+            var result = Call.ComputerApi.Put(computer.Id, computer);
 
             if (result.Success)
             {
@@ -49,14 +45,30 @@ namespace views.computers
                     PopulateForm();
                 }
                 EndUserMessage = "Successfully Updated Computer";
-                
             }
             else
             {
                 EndUserMessage = result.ErrorMessage;
             }
+        }
 
-    
+        protected void ddlComputerImage_OnSelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ddlComputerImage.Text == "Select Image") return;
+            PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlComputerImage.SelectedValue));
+            try
+            {
+                ddlImageProfile.SelectedIndex = 1;
+            }
+            catch
+            {
+                //ignore
+            }
+        }
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack) PopulateForm();
         }
 
         protected void PopulateForm()
@@ -68,7 +80,7 @@ namespace views.computers
             PopulateClusterGroupsDdl(ddlClusterGroup);
             txtComputerName.Text = Computer.Name;
             txtComputerMac.Text = Computer.Mac;
-            ddlComputerImage.SelectedValue = Computer.ImageId.ToString();        
+            ddlComputerImage.SelectedValue = Computer.ImageId.ToString();
             txtComputerDesc.Text = Computer.Description;
             PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlComputerImage.SelectedValue));
             ddlImageProfile.SelectedValue = Computer.ImageProfileId.ToString();
@@ -81,21 +93,6 @@ namespace views.computers
             txtCustom3.Text = Computer.CustomAttribute3;
             txtCustom4.Text = Computer.CustomAttribute4;
             txtCustom5.Text = Computer.CustomAttribute5;
-        }
-
-        protected void ddlComputerImage_OnSelectedIndexChanged(object sender, EventArgs e)
-        {           
-            if (ddlComputerImage.Text == "Select Image") return;
-            PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlComputerImage.SelectedValue));
-            try
-            {
-                ddlImageProfile.SelectedIndex = 1;
-            }
-            catch 
-            {
-                //ignore
-            }
-           
         }
     }
 }

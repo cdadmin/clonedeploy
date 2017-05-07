@@ -2,22 +2,26 @@
 
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li>Search</li>
-    </asp:Content>
+</asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="Help">
-     <li role="separator" class="divider"></li>
-     <li><a href="<%= ResolveUrl("~/views/help/images-search.aspx")%>"  target="_blank">Help</a></li>
+    <li role="separator" class="divider"></li>
+    <li>
+        <a href="<%= ResolveUrl("~/views/help/images-search.aspx") %>" target="_blank">Help</a>
+    </li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
     <a class="confirm btn btn-default" href="#">Delete Selected Images</a>
-     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span class="caret"></span>
-  </button>
-    
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+    </button>
+
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="AdditionalActions">
-    <li><asp:LinkButton ID="btnApproveImage" runat="server" OnClick="btnApproveImage_OnClick">Approve Selected Images</asp:LinkButton></li>
+    <li>
+        <asp:LinkButton ID="btnApproveImage" runat="server" OnClick="btnApproveImage_OnClick">Approve Selected Images</asp:LinkButton>
+    </li>
 </asp:Content>
 
 <asp:Content ID="Content" ContentPlaceHolderID="SubContent" runat="Server">
@@ -25,13 +29,13 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('#search').addClass("nav-current");
-            $("[id*=gvImages] td").hover(function () {
+            $("[id*=gvImages] td").hover(function() {
                 $("td", $(this).closest("tr")).addClass("hover_row");
-            }, function () {
+            }, function() {
                 $("td", $(this).closest("tr")).removeClass("hover_row");
             });
         });
-       
+
     </script>
     <p class="total">
         <asp:Label ID="lblTotal" runat="server"></asp:Label>
@@ -40,10 +44,10 @@
         <asp:TextBox ID="txtSearch" runat="server" CssClass="searchbox" OnTextChanged="search_Changed"></asp:TextBox>
     </div>
     <br class="clear"/>
-    
+
     <asp:GridView ID="gvImages" runat="server" AllowSorting="True" AutoGenerateColumns="False" OnSorting="gridView_Sorting" DataKeyNames="Id" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
         <Columns>
-           
+
 
             <asp:TemplateField>
                 <HeaderStyle CssClass="chkboxwidth"></HeaderStyle>
@@ -55,7 +59,7 @@
                     <asp:CheckBox ID="chkSelector" runat="server"/>
                 </ItemTemplate>
             </asp:TemplateField>
-             <asp:TemplateField ShowHeader="False" ItemStyle-CssClass="width_30 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller">
+            <asp:TemplateField ShowHeader="False" ItemStyle-CssClass="width_30 mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller">
                 <ItemTemplate>
                     <div style="width: 0">
                         <asp:LinkButton ID="btnHds" runat="server" CausesValidation="false" CommandName="" Text="+" OnClick="btnHds_Click"></asp:LinkButton>
@@ -75,9 +79,8 @@
                     <asp:Label ID="lblSize" runat="server" CausesValidation="false" CssClass="lbl_file"></asp:Label>
                 </ItemTemplate>
             </asp:TemplateField>
-          <asp:BoundField DataField="Environment" HeaderText="Imaging Environment" ItemStyle-CssClass="width_200"></asp:BoundField>
+            <asp:BoundField DataField="Environment" HeaderText="Imaging Environment" ItemStyle-CssClass="width_200"></asp:BoundField>
             <asp:BoundField DataField="Approved" HeaderText="Approved" ItemStyle-CssClass="width_200"></asp:BoundField>
-            
 
 
             <asp:TemplateField>
@@ -92,7 +95,7 @@
                                             <asp:Label ID="lblHDSize" runat="server" CausesValidation="false" CssClass="lbl_file"></asp:Label>
                                         </ItemTemplate>
                                     </asp:TemplateField>
-                                  
+
 
                                 </Columns>
                             </asp:GridView>
@@ -109,7 +112,7 @@
             No Images Found
         </EmptyDataTemplate>
     </asp:GridView>
-   
+
     <div id="confirmbox" class="confirm-box-outer">
         <div class="confirm-box-inner">
             <h4>

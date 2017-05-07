@@ -1,5 +1,4 @@
 ﻿using System;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
@@ -7,15 +6,13 @@ namespace views.users
 {
     public partial class EditUser : Users
     {
-        protected void Page_Load(object sender, EventArgs e)
+        protected void btnGenKey_OnClick(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.Administrator);
-            if (!IsPostBack) PopulateForm();
+            txtToken.Text = Utility.GenerateKey();
         }
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            
             if (Call.CloneDeployUserApi.GetAdminCount() == 1 && ddluserMembership.Text != "Administrator" &&
                 CloneDeployUser.Membership == "Administrator")
             {
@@ -43,21 +40,25 @@ namespace views.users
                     return;
                 }
             }
-        
+
             updatedUser.Name = txtUserName.Text;
-            updatedUser.Membership = ddluserMembership.Text;        
+            updatedUser.Membership = ddluserMembership.Text;
             updatedUser.Email = txtEmail.Text;
             updatedUser.Token = txtToken.Text;
             updatedUser.NotifyLockout = chkLockout.Checked ? 1 : 0;
             updatedUser.NotifyError = chkError.Checked ? 1 : 0;
             updatedUser.NotifyComplete = chkComplete.Checked ? 1 : 0;
             updatedUser.NotifyImageApproved = chkApproved.Checked ? 1 : 0;
-           
-           
-            var result = Call.CloneDeployUserApi.Put(updatedUser.Id,updatedUser);
-            EndUserMessage = !result.Success ? result.ErrorMessage : "Successfully Updated User";
-            
 
+
+            var result = Call.CloneDeployUserApi.Put(updatedUser.Id, updatedUser);
+            EndUserMessage = !result.Success ? result.ErrorMessage : "Successfully Updated User";
+        }
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            RequiresAuthorization(Authorizations.Administrator);
+            if (!IsPostBack) PopulateForm();
         }
 
         protected void PopulateForm()
@@ -75,15 +76,6 @@ namespace views.users
             chkError.Checked = CloneDeployUser.NotifyError == 1;
             chkComplete.Checked = CloneDeployUser.NotifyComplete == 1;
             chkApproved.Checked = CloneDeployUser.NotifyImageApproved == 1;
-           
         }
-
-
-        protected void btnGenKey_OnClick(object sender, EventArgs e)
-        {
-            txtToken.Text = Utility.GenerateKey();
-        }
-
-     
     }
 }

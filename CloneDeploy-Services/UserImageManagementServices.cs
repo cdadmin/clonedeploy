@@ -14,21 +14,14 @@ namespace CloneDeploy_Services
             _uow = new UnitOfWork();
         }
 
-        public  ActionResultDTO AddUserImageManagements(List<UserImageManagementEntity> listOfImages)
+        public ActionResultDTO AddUserImageManagements(List<UserImageManagementEntity> listOfImages)
         {
-           
-                foreach (var image in listOfImages)
-                    _uow.UserImageManagementRepository.Insert(image);
-                _uow.Save();
-                var actionResult = new ActionResultDTO();
+            foreach (var image in listOfImages)
+                _uow.UserImageManagementRepository.Insert(image);
+            _uow.Save();
+            var actionResult = new ActionResultDTO();
             actionResult.Success = true;
             return actionResult;
-            
-
         }
-
-      
-
-      
     }
 }

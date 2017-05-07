@@ -5,10 +5,9 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class UserGroupImageManagementController: ApiController
+    public class UserGroupImageManagementController : ApiController
     {
         private readonly UserGroupImageManagementServices _userGroupImageManagementServices;
 
@@ -22,7 +21,5 @@ namespace CloneDeploy_App.Controllers
         {
             return _userGroupImageManagementServices.AddUserGroupImageManagements(listOfImages);
         }
-
-        
     }
 }

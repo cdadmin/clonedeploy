@@ -1,7 +1,4 @@
-﻿
-
-using System;
-using CloneDeploy_Web;
+﻿using System;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
@@ -9,18 +6,12 @@ namespace views.images
 {
     public partial class ImageEdit : Images
     {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            if (!IsPostBack) PopulateForm();
-        }
-
-   
         protected void btnUpdateImage_Click(object sender, EventArgs e)
         {
             RequiresAuthorizationOrManagedImage(Authorizations.UpdateImage, Image.Id);
             var image = Image;
 
-            var currentName = (string) (ViewState["currentName"]);
+            var currentName = (string) ViewState["currentName"];
             image.Name = txtImageName.Text;
             image.Os = "";
             image.Description = txtImageDesc.Text;
@@ -30,6 +21,11 @@ namespace views.images
 
             var result = Call.ImageApi.Put(image.Id, image);
             EndUserMessage = result.Success ? "Successfully Updated Image" : result.ErrorMessage;
+        }
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack) PopulateForm();
         }
 
         protected void PopulateForm()
@@ -57,7 +53,7 @@ namespace views.images
                     ddlThinOS.DataBind();
                     ddlThinRecovery.DataSource = Call.FilesystemApi.GetThinImages();
                     ddlThinRecovery.DataBind();
-                    
+
                     ddlThinOS.Text = Image.OsxThinOs;
                     ddlThinRecovery.Text = Image.OsxThinRecovery;
                 }
@@ -71,7 +67,6 @@ namespace views.images
             ddlImageType.Enabled = false;
             ddlEnvironment.Enabled = false;
             ddlOsxImageType.Enabled = false;
-
         }
     }
 }

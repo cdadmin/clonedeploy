@@ -5,31 +5,23 @@ using CloneDeploy_Entities.DTOs;
 
 namespace CloneDeploy_Services
 {
-    public  class UserGroupManagementServices
+    public class UserGroupManagementServices
     {
-         private readonly UnitOfWork _uow;
+        private readonly UnitOfWork _uow;
 
         public UserGroupManagementServices()
         {
             _uow = new UnitOfWork();
         }
 
-        public  ActionResultDTO AddUserGroupManagements(List<UserGroupManagementEntity> listOfGroups)
+        public ActionResultDTO AddUserGroupManagements(List<UserGroupManagementEntity> listOfGroups)
         {
-            
-                foreach (var group in listOfGroups)
-                    _uow.UserGroupManagementRepository.Insert(group);
-                _uow.Save();
-                var actionResult = new ActionResultDTO();
+            foreach (var group in listOfGroups)
+                _uow.UserGroupManagementRepository.Insert(group);
+            _uow.Save();
+            var actionResult = new ActionResultDTO();
             actionResult.Success = true;
             return actionResult;
-
         }
-
-       
-
-     
-
-      
     }
 }

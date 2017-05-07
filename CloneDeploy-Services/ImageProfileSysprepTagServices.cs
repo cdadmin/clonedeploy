@@ -13,20 +13,14 @@ namespace CloneDeploy_Services
             _uow = new UnitOfWork();
         }
 
-        public  ActionResultDTO AddImageProfileSysprepTag(ImageProfileSysprepTagEntity imageProfileSysprepTag)
+        public ActionResultDTO AddImageProfileSysprepTag(ImageProfileSysprepTagEntity imageProfileSysprepTag)
         {
-           
-                _uow.ImageProfileSysprepRepository.Insert(imageProfileSysprepTag);
-                _uow.Save();
-                var actionResult = new ActionResultDTO();
+            _uow.ImageProfileSysprepRepository.Insert(imageProfileSysprepTag);
+            _uow.Save();
+            var actionResult = new ActionResultDTO();
             actionResult.Success = true;
             actionResult.Id = imageProfileSysprepTag.Id;
             return actionResult;
-
         }
-
-      
-
-       
     }
 }

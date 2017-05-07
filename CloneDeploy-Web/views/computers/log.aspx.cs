@@ -1,28 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using CloneDeploy_Web.BasePages;
-using System.IO;
 
 namespace views.computers
 {
     public partial class ComputerLog : Computers
     {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            if (!IsPostBack) PopulateLogs();
-        }
-
-        protected void PopulateLogs()
-        {
-            gvLogs.DataSource = Call.ComputerApi.GetComputerLogs(Computer.Id);
-            gvLogs.DataBind();
-        }
-
         protected void btnExport_OnClick(object sender, EventArgs e)
         {
-             var control = sender as Control;
+            var control = sender as Control;
             if (control == null) return;
             var gvRow = (GridViewRow) control.Parent.Parent;
             var dataKey = gvLogs.DataKeys[gvRow.RowIndex];
@@ -35,7 +24,7 @@ namespace views.computers
         {
             var control = sender as Control;
             if (control == null) return;
-            var gvRow = (GridViewRow)control.Parent.Parent;
+            var gvRow = (GridViewRow) control.Parent.Parent;
             var dataKey = gvLogs.DataKeys[gvRow.RowIndex];
             if (dataKey == null) return;
             var log = Call.ComputerLogApi.Get(Convert.ToInt32(dataKey.Value));
@@ -48,18 +37,22 @@ namespace views.computers
             using (var reader = new StringReader(log.Contents))
             {
                 string line;
-                while((line = reader.ReadLine()) != null)
+                while ((line = reader.ReadLine()) != null)
                     text.Add(line);
             }
             gvLogView.DataSource = text;
             gvLogView.DataBind();
-
-
         }
 
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack) PopulateLogs();
+        }
 
-      
-
-
+        protected void PopulateLogs()
+        {
+            gvLogs.DataSource = Call.ComputerApi.GetComputerLogs(Computer.Id);
+            gvLogs.DataBind();
+        }
     }
 }

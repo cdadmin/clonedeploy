@@ -12,18 +12,10 @@ namespace CloneDeploy_Services
             _uow = new UnitOfWork();
         }
 
-       
 
-        public  MunkiManifestManagedUpdateEntity GetManagedUpdate(int managedUpdateId)
+        public MunkiManifestManagedUpdateEntity GetManagedUpdate(int managedUpdateId)
         {
-            
-                return _uow.MunkiManagedUpdateRepository.GetById(managedUpdateId);
-            
+            return _uow.MunkiManagedUpdateRepository.GetById(managedUpdateId);
         }
-
-     
-       
-
-       
     }
 }

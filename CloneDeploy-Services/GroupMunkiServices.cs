@@ -16,8 +16,6 @@ namespace CloneDeploy_Services
 
         public ActionResultDTO AddMunkiTemplates(GroupMunkiEntity template)
         {
-
-
             _uow.GroupMunkiRepository.Insert(template);
 
             _uow.Save();
@@ -25,22 +23,12 @@ namespace CloneDeploy_Services
             actionResult.Success = true;
             actionResult.Id = template.Id;
             return actionResult;
-            
-
-
         }
 
-       
-
-      
 
         public List<GroupMunkiEntity> GetGroupsForManifestTemplate(int templateId)
         {
-
             return _uow.GroupMunkiRepository.Get(x => x.MunkiTemplateId == templateId);
-
         }
-
-
     }
 }

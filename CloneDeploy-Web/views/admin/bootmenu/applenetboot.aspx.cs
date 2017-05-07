@@ -11,7 +11,6 @@ using System.Web.UI.WebControls;
 using CloneDeploy_Web.BasePages;
 using log4net;
 
-
 public partial class views_admin_bootmenu_applenetboot : Admin
 {
     /*BSDP Options
@@ -46,10 +45,17 @@ public partial class views_admin_bootmenu_applenetboot : Admin
                                 62:6f:6f:74       [image name]
     */
     private readonly ILog log = LogManager.GetLogger("FrontEndLog");
-    protected void Page_Load(object sender, EventArgs e)
+
+    public static string AddHexColons(string hex)
     {
-        if(!IsPostBack)
-        BindGrid();
+        var sb = new StringBuilder();
+        for (var i = 0; i < hex.Length; i++)
+        {
+            if (i%2 == 0 && i != 0)
+                sb.Append(':');
+            sb.Append(hex[i]);
+        }
+        return sb.ToString();
     }
 
     protected void BindGrid()
@@ -57,7 +63,7 @@ public partial class views_admin_bootmenu_applenetboot : Admin
         var obj = new DataTable();
         obj.Columns.Add("ImageId");
         obj.Columns.Add("Name");
-        DataRow dataRow = obj.NewRow();
+        var dataRow = obj.NewRow();
         obj.Rows.Add(dataRow);
         gvNetBoot.DataSource = obj;
         gvNetBoot.DataBind();
@@ -65,6 +71,32 @@ public partial class views_admin_bootmenu_applenetboot : Admin
         gvNetBoot.Rows[0].Cells.Clear();
         gvNetBoot.Rows[0].Cells.Add(new TableCell());
         gvNetBoot.Rows[0].Cells[0].Text = "";
+    }
+
+    protected void btnAdd1_OnClick(object sender, EventArgs e)
+    {
+        var gvRow = (GridViewRow) (sender as Control).Parent.Parent;
+        var id = ((TextBox) gvRow.FindControl("txtIdAdd")).Text;
+        var name = ((TextBox) gvRow.FindControl("txtNameAdd")).Text;
+        DataTable dt;
+        if (ViewState["VendorOptions"] != null)
+            dt = (DataTable) ViewState["VendorOptions"];
+        else
+        {
+            dt = new DataTable();
+            dt.Columns.Add("ImageId");
+            dt.Columns.Add("Name");
+        }
+
+        var dataRow = dt.NewRow();
+        dataRow[0] = id;
+        dataRow[1] = name;
+        dt.Rows.Add(dataRow);
+
+        ViewState["VendorOptions"] = dt;
+
+        gvNetBoot.DataSource = dt;
+        gvNetBoot.DataBind();
     }
 
     protected void btnSubmitDefault_OnClick(object sender, EventArgs e)
@@ -88,8 +120,8 @@ public partial class views_admin_bootmenu_applenetboot : Admin
             EndUserMessage = "Could Not Parse IP Address";
             return;
         }
-        
-        foreach (byte i in ip.GetAddressBytes())
+
+        foreach (var i in ip.GetAddressBytes())
         {
             vendorOptions.Append(i.ToString("X2") + ":");
         }
@@ -97,8 +129,8 @@ public partial class views_admin_bootmenu_applenetboot : Admin
         vendorOptions.Append("04:02:FF:FF:07:04:");
 
 
-        int rowCount = 0;
-        int totalNameLength = 0;
+        var rowCount = 0;
+        var totalNameLength = 0;
         foreach (GridViewRow row in gvNetBoot.Rows)
         {
             rowCount++;
@@ -109,17 +141,15 @@ public partial class views_admin_bootmenu_applenetboot : Admin
                 vendorOptions.Append(AddHexColons(Convert.ToInt32(defaultId.Text).ToString("X4")));
                 vendorOptions.Append(":");
             }
-            var name = (Label)row.FindControl("lblName");
+            var name = (Label) row.FindControl("lblName");
             totalNameLength += name.Text.Length;
-            
         }
 
-       
 
-        vendorOptions.Append("09:" + (5 * rowCount + totalNameLength).ToString("X2"));
+        vendorOptions.Append("09:" + (5*rowCount + totalNameLength).ToString("X2"));
         vendorOptions.Append(":");
 
-        List<string> listIds = new List<string>();
+        var listIds = new List<string>();
         var counter = 1;
         foreach (GridViewRow row in gvNetBoot.Rows)
         {
@@ -134,17 +164,18 @@ public partial class views_admin_bootmenu_applenetboot : Admin
             vendorOptions.Append(":");
             vendorOptions.Append(StringToHex(name.Text));
             if (counter != gvNetBoot.Rows.Count)
-            vendorOptions.Append(":");
+                vendorOptions.Append(":");
             listIds.Add(nbiIdHex);
 
             if (nbiIdHex != "0F49" && nbiIdHex != "98DB")
-                directions.Text += "Place the " + name.Text + " nbi in " + publicFolder + Path.DirectorySeparatorChar + nbiIdHex + "<br>";
+                directions.Text += "Place the " + name.Text + " nbi in " + publicFolder + Path.DirectorySeparatorChar +
+                                   nbiIdHex + "<br>";
             counter++;
         }
 
         var duplicateIds = listIds.GroupBy(x => x)
-                        .Where(group => group.Count() > 1)
-                        .Select(group => group.Key);
+            .Where(group => group.Count() > 1)
+            .Select(group => group.Key);
 
         if (duplicateIds.Any())
         {
@@ -158,56 +189,24 @@ public partial class views_admin_bootmenu_applenetboot : Admin
 
     protected void OnRowDeleting(object sender, GridViewDeleteEventArgs e)
     {
-        var dt = (DataTable)ViewState["VendorOptions"];
+        var dt = (DataTable) ViewState["VendorOptions"];
         dt.Rows[e.RowIndex].Delete();
         gvNetBoot.DataSource = dt;
         gvNetBoot.DataBind();
-        if(gvNetBoot.Rows.Count == 0)
+        if (gvNetBoot.Rows.Count == 0)
             BindGrid();
     }
 
-    protected void btnAdd1_OnClick(object sender, EventArgs e)
+    protected void Page_Load(object sender, EventArgs e)
     {
-        GridViewRow gvRow = (GridViewRow)(sender as Control).Parent.Parent;
-        var id = ((TextBox)gvRow.FindControl("txtIdAdd")).Text;
-        var name = ((TextBox)gvRow.FindControl("txtNameAdd")).Text;
-        DataTable dt;
-        if(ViewState["VendorOptions"] != null)
-        dt = (DataTable) ViewState["VendorOptions"];
-        else
-        {
-            dt =new DataTable();
-            dt.Columns.Add("ImageId");
-            dt.Columns.Add("Name");
-        }
-        
-        DataRow dataRow = dt.NewRow();
-        dataRow[0] = id;
-        dataRow[1] = name;
-        dt.Rows.Add(dataRow);
-
-        ViewState["VendorOptions"] = dt;
-
-        gvNetBoot.DataSource = dt;
-        gvNetBoot.DataBind();
-    }
-
-    public static string AddHexColons(string hex)
-    {
-        var sb = new StringBuilder();
-        for (var i = 0; i < hex.Length; i++)
-        {
-            if (i % 2 == 0 && i != 0)
-                sb.Append(':');
-            sb.Append(hex[i]);
-        }
-        return sb.ToString();
+        if (!IsPostBack)
+            BindGrid();
     }
 
     private string StringToHex(string hexstring)
     {
         var sb = new StringBuilder();
-        foreach (char t in hexstring)
+        foreach (var t in hexstring)
             sb.Append(Convert.ToInt32(t).ToString("X2"));
         return AddHexColons(sb.ToString());
     }

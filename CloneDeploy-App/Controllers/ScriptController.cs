@@ -7,10 +7,9 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class ScriptController: ApiController
+    public class ScriptController : ApiController
     {
         private readonly ScriptServices _scriptServices;
 
@@ -19,19 +18,12 @@ namespace CloneDeploy_App.Controllers
             _scriptServices = new ScriptServices();
         }
 
-        [CustomAuth(Permission = "GlobalRead")]
-        public IEnumerable<ScriptEntity> GetAll(string searchstring = "")
+        [CustomAuth(Permission = "GlobalDelete")]
+        public ActionResultDTO Delete(int id)
         {
-            return string.IsNullOrEmpty(searchstring)
-                ? _scriptServices.SearchScripts()
-                : _scriptServices.SearchScripts(searchstring);
-
-        }
-
-        [CustomAuth(Permission = "GlobalRead")]
-        public ApiStringResponseDTO GetCount()
-        {
-            return new ApiStringResponseDTO() {Value = _scriptServices.TotalCount()};
+            var result = _scriptServices.DeleteScript(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [CustomAuth(Permission = "GlobalRead")]
@@ -40,6 +32,20 @@ namespace CloneDeploy_App.Controllers
             var result = _scriptServices.GetScript(id);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
+        }
+
+        [CustomAuth(Permission = "GlobalRead")]
+        public IEnumerable<ScriptEntity> GetAll(string searchstring = "")
+        {
+            return string.IsNullOrEmpty(searchstring)
+                ? _scriptServices.SearchScripts()
+                : _scriptServices.SearchScripts(searchstring);
+        }
+
+        [CustomAuth(Permission = "GlobalRead")]
+        public ApiStringResponseDTO GetCount()
+        {
+            return new ApiStringResponseDTO {Value = _scriptServices.TotalCount()};
         }
 
         [CustomAuth(Permission = "GlobalCreate")]
@@ -53,15 +59,6 @@ namespace CloneDeploy_App.Controllers
         {
             script.Id = id;
             var result = _scriptServices.UpdateScript(script);
-            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
-            return result;
-        }
-
-        [CustomAuth(Permission = "GlobalDelete")]
-        public ActionResultDTO Delete(int id)
-        {
-
-            var result = _scriptServices.DeleteScript(id);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
         }

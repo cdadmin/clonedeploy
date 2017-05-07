@@ -7,10 +7,9 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class BuildingController: ApiController
+    public class BuildingController : ApiController
     {
         private readonly BuildingServices _buildingServices;
 
@@ -19,19 +18,12 @@ namespace CloneDeploy_App.Controllers
             _buildingServices = new BuildingServices();
         }
 
-        [CustomAuth(Permission = "GlobalRead")]
-        public IEnumerable<BuildingWithClusterGroup> GetAll(string searchstring = "")
+        [CustomAuth(Permission = "GlobalDelete")]
+        public ActionResultDTO Delete(int id)
         {
-            return string.IsNullOrEmpty(searchstring)
-                ? _buildingServices.SearchBuildings()
-                : _buildingServices.SearchBuildings(searchstring);
-
-        }
-
-        [CustomAuth(Permission = "GlobalRead")]
-        public ApiStringResponseDTO GetCount()
-        {
-            return new ApiStringResponseDTO() {Value = _buildingServices.TotalCount()};
+            var result = _buildingServices.DeleteBuilding(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [CustomAuth(Permission = "GlobalRead")]
@@ -40,6 +32,20 @@ namespace CloneDeploy_App.Controllers
             var result = _buildingServices.GetBuilding(id);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
+        }
+
+        [CustomAuth(Permission = "GlobalRead")]
+        public IEnumerable<BuildingWithClusterGroup> GetAll(string searchstring = "")
+        {
+            return string.IsNullOrEmpty(searchstring)
+                ? _buildingServices.SearchBuildings()
+                : _buildingServices.SearchBuildings(searchstring);
+        }
+
+        [CustomAuth(Permission = "GlobalRead")]
+        public ApiStringResponseDTO GetCount()
+        {
+            return new ApiStringResponseDTO {Value = _buildingServices.TotalCount()};
         }
 
         [CustomAuth(Permission = "GlobalCreate")]
@@ -55,14 +61,6 @@ namespace CloneDeploy_App.Controllers
         {
             building.Id = id;
             var result = _buildingServices.UpdateBuilding(building);
-            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
-            return result;
-        }
-
-        [CustomAuth(Permission = "GlobalDelete")]
-        public ActionResultDTO Delete(int id)
-        {
-            var result = _buildingServices.DeleteBuilding(id);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
         }

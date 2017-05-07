@@ -11,10 +11,13 @@ namespace CloneDeploy_Web.BasePages
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
-            CloneDeployUser = !string.IsNullOrEmpty(Request["userid"]) ? Call.CloneDeployUserApi.Get(Convert.ToInt32(Request.QueryString["userid"])) : null;
+            CloneDeployUser = !string.IsNullOrEmpty(Request["userid"])
+                ? Call.CloneDeployUserApi.Get(Convert.ToInt32(Request.QueryString["userid"]))
+                : null;
             //Don't Check Authorization here for admin because reset pass for users won't work.
-            CloneDeployUserGroup = !string.IsNullOrEmpty(Request["groupid"]) ? Call.UserGroupApi.Get(Convert.ToInt32(Request.QueryString["groupid"])) : null;
+            CloneDeployUserGroup = !string.IsNullOrEmpty(Request["groupid"])
+                ? Call.UserGroupApi.Get(Convert.ToInt32(Request.QueryString["groupid"]))
+                : null;
         }
-
     }
 }

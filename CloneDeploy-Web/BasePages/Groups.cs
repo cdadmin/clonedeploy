@@ -11,7 +11,9 @@ namespace CloneDeploy_Web.BasePages
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
-            Group = !string.IsNullOrEmpty(Request["groupid"]) ? Call.GroupApi.Get(Convert.ToInt32(Request.QueryString["groupid"])) : null;
+            Group = !string.IsNullOrEmpty(Request["groupid"])
+                ? Call.GroupApi.Get(Convert.ToInt32(Request.QueryString["groupid"]))
+                : null;
             if (Group == null)
                 RequiresAuthorization(Authorizations.SearchGroup);
             else

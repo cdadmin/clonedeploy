@@ -8,25 +8,19 @@ namespace CloneDeploy_Web.views.admin
 {
     public partial class Client : Admin
     {
-   
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            if (IsPostBack) return;
-     
-            txtQSize.Text = Settings.QueueSize;        
-            txtGlobalComputerArgs.Text = Settings.GlobalComputerArgs;
-            //These require pxe boot menu or client iso to be recreated
-            ViewState["globalArgs"] = txtGlobalComputerArgs.Text;
-        }
-
         protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
         {
             RequiresAuthorization(Authorizations.UpdateAdmin);
 
-            List<SettingEntity> listSettings = new List<SettingEntity>
+            var listSettings = new List<SettingEntity>
             {
-                new SettingEntity {Name = "Queue Size", Value = txtQSize.Text, Id = Call.SettingApi.GetSetting("Queue Size").Id},
-                new SettingEntity()
+                new SettingEntity
+                {
+                    Name = "Queue Size",
+                    Value = txtQSize.Text,
+                    Id = Call.SettingApi.GetSetting("Queue Size").Id
+                },
+                new SettingEntity
                 {
                     Name = "Global Computer Args",
                     Value = txtGlobalComputerArgs.Text,
@@ -48,12 +42,21 @@ namespace CloneDeploy_Web.views.admin
                     true);
                 Session.Remove("Message");
             }
-
         }
 
         protected void OkButton_Click(object sender, EventArgs e)
         {
             Response.Redirect("~/views/admin/bootmenu/defaultmenu.aspx?level=2");
+        }
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (IsPostBack) return;
+
+            txtQSize.Text = Settings.QueueSize;
+            txtGlobalComputerArgs.Text = Settings.GlobalComputerArgs;
+            //These require pxe boot menu or client iso to be recreated
+            ViewState["globalArgs"] = txtGlobalComputerArgs.Text;
         }
     }
 }

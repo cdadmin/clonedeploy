@@ -7,16 +7,23 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class ComputerLogController:ApiController
+    public class ComputerLogController : ApiController
     {
         private readonly ComputerLogServices _computerLogServices;
 
         public ComputerLogController()
         {
             _computerLogServices = new ComputerLogServices();
+        }
+
+        [CustomAuth(Permission = "ComputerSearch")]
+        public ActionResultDTO Delete(int id)
+        {
+            var result = _computerLogServices.DeleteComputerLog(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [CustomAuth(Permission = "ComputerSearch")]
@@ -40,15 +47,5 @@ namespace CloneDeploy_App.Controllers
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
         }
-
-        [CustomAuth(Permission = "ComputerSearch")]
-        public ActionResultDTO Delete(int id)
-        {
-            var result = _computerLogServices.DeleteComputerLog(id);
-            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
-            return result;
-        }
-
-      
     }
 }

@@ -1,13 +1,11 @@
-﻿using System.Collections.Generic;
-using CloneDeploy_DataModel;
+﻿using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
-using CloneDeploy_Entities.DTOs;
 
 namespace CloneDeploy_Services
 {
-    public  class AuditLogServices
+    public class AuditLogServices
     {
-          private readonly UnitOfWork _uow;
+        private readonly UnitOfWork _uow;
 
         public AuditLogServices()
         {

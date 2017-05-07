@@ -7,10 +7,9 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class SiteController: ApiController
+    public class SiteController : ApiController
     {
         private readonly SiteServices _siteServices;
 
@@ -19,21 +18,12 @@ namespace CloneDeploy_App.Controllers
             _siteServices = new SiteServices();
         }
 
-        [CustomAuth(Permission = "GlobalRead")]
-        public IEnumerable<SiteWithClusterGroup> GetAll(string searchstring = "")
+        [CustomAuth(Permission = "GlobalDelete")]
+        public ActionResultDTO Delete(int id)
         {
-            return string.IsNullOrEmpty(searchstring)
-                ? _siteServices.SearchSites()
-                : _siteServices.SearchSites(searchstring);
-
-        }
-
-        [CustomAuth(Permission = "GlobalRead")]
-        public ApiStringResponseDTO GetCount()
-        {
-
-            return new ApiStringResponseDTO() {Value = _siteServices.TotalCount()};
-
+            var result = _siteServices.DeleteSite(id);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
         }
 
         [CustomAuth(Permission = "GlobalRead")]
@@ -44,11 +34,24 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
+        [CustomAuth(Permission = "GlobalRead")]
+        public IEnumerable<SiteWithClusterGroup> GetAll(string searchstring = "")
+        {
+            return string.IsNullOrEmpty(searchstring)
+                ? _siteServices.SearchSites()
+                : _siteServices.SearchSites(searchstring);
+        }
+
+        [CustomAuth(Permission = "GlobalRead")]
+        public ApiStringResponseDTO GetCount()
+        {
+            return new ApiStringResponseDTO {Value = _siteServices.TotalCount()};
+        }
+
         [CustomAuth(Permission = "GlobalCreate")]
         public ActionResultDTO Post(SiteEntity site)
         {
             return _siteServices.AddSite(site);
-            
         }
 
         [CustomAuth(Permission = "GlobalUpdate")]
@@ -56,14 +59,6 @@ namespace CloneDeploy_App.Controllers
         {
             site.Id = id;
             var result = _siteServices.UpdateSite(site);
-            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
-            return result;
-        }
-
-        [CustomAuth(Permission = "GlobalDelete")]
-        public ActionResultDTO Delete(int id)
-        {
-            var result = _siteServices.DeleteSite(id);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
         }

@@ -16,60 +16,38 @@ namespace CloneDeploy_Services
     public class ActiveMulticastSessionServices
     {
         private static readonly ILog log = LogManager.GetLogger("ApplicationLog");
-         private readonly UnitOfWork _uow;
+        private readonly UnitOfWork _uow;
         private readonly UserServices _userServices;
+
         public ActiveMulticastSessionServices()
         {
             _uow = new UnitOfWork();
             _userServices = new UserServices();
         }
 
-        public  bool AddActiveMulticastSession(ActiveMulticastSessionEntity activeMulticastSession)
+        public string ActiveCount(int userId)
         {
-          
-                if (_uow.ActiveMulticastSessionRepository.Exists(h => h.Name == activeMulticastSession.Name))
-                {
-                    //Message.Text = "A Multicast Is Already Running For This Group";
-                    return false;
-                }
-                _uow.ActiveMulticastSessionRepository.Insert(activeMulticastSession);
-                _uow.Save();
-                return true;
-               
-                
-            
+            return _userServices.IsAdmin(userId)
+                ? _uow.ActiveMulticastSessionRepository.Count()
+                : _uow.ActiveMulticastSessionRepository.Count(x => x.UserId == userId);
         }
 
-        public  void SendMulticastCompletedEmail(ActiveMulticastSessionEntity session)
+        public bool AddActiveMulticastSession(ActiveMulticastSessionEntity activeMulticastSession)
         {
-            //Mail not enabled
-            if (Settings.SmtpEnabled == "0") return;
-
-            foreach (var user in _userServices.SearchUsers("").Where(x => x.NotifyComplete == 1 && !string.IsNullOrEmpty(x.Email)))
+            if (_uow.ActiveMulticastSessionRepository.Exists(h => h.Name == activeMulticastSession.Name))
             {
-                if (session.UserId == user.Id)
-                {
-                    var mail = new Mail
-                    {
-                        MailTo = user.Email,
-                        Body = session.Name + " Multicast Task Has Completed.",
-                        Subject = "Multicast Completed"
-                    };
-                    mail.Send();
-                }
+                //Message.Text = "A Multicast Is Already Running For This Group";
+                return false;
             }
-        }
-        public  ActiveMulticastSessionEntity GetFromPort(int port)
-        {
-            
-                return _uow.ActiveMulticastSessionRepository.GetFirstOrDefault(x => x.Port == port);
-            
+            _uow.ActiveMulticastSessionRepository.Insert(activeMulticastSession);
+            _uow.Save();
+            return true;
         }
 
         public ActionResultDTO Delete(int multicastId)
         {
             var multicast = _uow.ActiveMulticastSessionRepository.GetById(multicastId);
-            if (multicast == null) return new ActionResultDTO() {ErrorMessage = "Multicast Not Found", Id = 0};
+            if (multicast == null) return new ActionResultDTO {ErrorMessage = "Multicast Not Found", Id = 0};
             var computers = _uow.ActiveImagingTaskRepository.MulticastComputers(multicastId);
 
             var actionResult = new ActionResultDTO();
@@ -111,15 +89,17 @@ namespace CloneDeploy_Services
 
 
             return actionResult;
-
-
         }
 
-        public  ActiveMulticastSessionEntity Get(int multicastId)
+        public void DeleteAll()
         {
-            
-                return _uow.ActiveMulticastSessionRepository.GetById(multicastId);
-            
+            _uow.ActiveMulticastSessionRepository.DeleteRange();
+            _uow.Save();
+        }
+
+        public ActiveMulticastSessionEntity Get(int multicastId)
+        {
+            return _uow.ActiveMulticastSessionRepository.GetById(multicastId);
         }
 
         public List<ActiveMulticastSessionEntity> GetAll()
@@ -127,50 +107,21 @@ namespace CloneDeploy_Services
             return _uow.ActiveMulticastSessionRepository.Get();
         }
 
-        public  List<ActiveMulticastSessionEntity> GetOnDemandList()
+        public List<ActiveMulticastSessionEntity> GetAllMulticastSessions(int userId)
         {
-            
-                return _uow.ActiveMulticastSessionRepository.Get(x => x.ImageProfileId != -1, orderBy: (q => q.OrderBy(t => t.Name)));      
-            
+            if (_userServices.IsAdmin(userId))
+                return _uow.ActiveMulticastSessionRepository.Get(orderBy: q => q.OrderBy(t => t.Name));
+            return _uow.ActiveMulticastSessionRepository.Get(x => x.UserId == userId, q => q.OrderBy(t => t.Name));
         }
 
-        public  bool UpdateActiveMulticastSession(ActiveMulticastSessionEntity activeMulticastSession)
+        public ActiveMulticastSessionEntity GetFromPort(int port)
         {
-           
-                _uow.ActiveMulticastSessionRepository.Update(activeMulticastSession, activeMulticastSession.Id);
-                _uow.Save();
-                return true;
-            
+            return _uow.ActiveMulticastSessionRepository.GetFirstOrDefault(x => x.Port == port);
         }
 
-        public  List<ActiveMulticastSessionEntity> GetAllMulticastSessions(int userId)
+        public List<ActiveMulticastSessionEntity> GetOnDemandList()
         {
-          
-                if(_userServices.IsAdmin(userId))
-                return _uow.ActiveMulticastSessionRepository.Get(orderBy: (q => q.OrderBy(t => t.Name)));
-                else
-                {
-                    return _uow.ActiveMulticastSessionRepository.Get(x => x.UserId == userId, orderBy: (q => q.OrderBy(t => t.Name)));
-                }
-            
-        }
-
-        public  string ActiveCount(int userId)
-        {
-           
-                return _userServices.IsAdmin(userId)
-                    ? _uow.ActiveMulticastSessionRepository.Count()
-                    : _uow.ActiveMulticastSessionRepository.Count(x => x.UserId == userId);
-
-            
-        }
-
-        public  void DeleteAll()
-        {
-           
-                _uow.ActiveMulticastSessionRepository.DeleteRange();
-                _uow.Save();
-            
+            return _uow.ActiveMulticastSessionRepository.Get(x => x.ImageProfileId != -1, q => q.OrderBy(t => t.Name));
         }
 
         public static void KillProcess(int pid)
@@ -180,7 +131,7 @@ namespace CloneDeploy_Services
             var moc = searcher.Get();
             foreach (var o in moc)
             {
-                var mo = (ManagementObject)o;
+                var mo = (ManagementObject) o;
                 KillProcess(Convert.ToInt32(mo["ProcessID"]));
             }
             try
@@ -198,11 +149,10 @@ namespace CloneDeploy_Services
         {
             try
             {
-             
                 var killProcInfo = new ProcessStartInfo
                 {
-                    FileName = ("pkill"),
-                    Arguments = (" -SIGKILL -P " + pid)
+                    FileName = "pkill",
+                    Arguments = " -SIGKILL -P " + pid
                 };
                 Process.Start(killProcInfo);
             }
@@ -210,6 +160,35 @@ namespace CloneDeploy_Services
             {
                 log.Debug(ex.ToString());
             }
+        }
+
+        public void SendMulticastCompletedEmail(ActiveMulticastSessionEntity session)
+        {
+            //Mail not enabled
+            if (Settings.SmtpEnabled == "0") return;
+
+            foreach (
+                var user in
+                    _userServices.SearchUsers("").Where(x => x.NotifyComplete == 1 && !string.IsNullOrEmpty(x.Email)))
+            {
+                if (session.UserId == user.Id)
+                {
+                    var mail = new Mail
+                    {
+                        MailTo = user.Email,
+                        Body = session.Name + " Multicast Task Has Completed.",
+                        Subject = "Multicast Completed"
+                    };
+                    mail.Send();
+                }
+            }
+        }
+
+        public bool UpdateActiveMulticastSession(ActiveMulticastSessionEntity activeMulticastSession)
+        {
+            _uow.ActiveMulticastSessionRepository.Update(activeMulticastSession, activeMulticastSession.Id);
+            _uow.Save();
+            return true;
         }
     }
 }

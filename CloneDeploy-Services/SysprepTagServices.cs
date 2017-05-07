@@ -8,104 +8,90 @@ namespace CloneDeploy_Services
 {
     public class SysprepTagServices
     {
-         private readonly UnitOfWork _uow;
+        private readonly UnitOfWork _uow;
 
         public SysprepTagServices()
         {
             _uow = new UnitOfWork();
         }
 
-        public  ActionResultDTO AddSysprepTag(SysprepTagEntity sysprepTag)
+        public ActionResultDTO AddSysprepTag(SysprepTagEntity sysprepTag)
         {
-         
-                var validationResult = ValidateSysprepTag(sysprepTag, true);
+            var validationResult = ValidateSysprepTag(sysprepTag, true);
             var actionResult = new ActionResultDTO();
-                if (validationResult.Success)
-                {
-                    _uow.SysprepTagRepository.Insert(sysprepTag);
-                    _uow.Save();
-                    actionResult.Success = true;
-                    actionResult.Id = sysprepTag.Id;
-                }
-                else
-                {
-                    actionResult.ErrorMessage = validationResult.ErrorMessage;
-                }
+            if (validationResult.Success)
+            {
+                _uow.SysprepTagRepository.Insert(sysprepTag);
+                _uow.Save();
+                actionResult.Success = true;
+                actionResult.Id = sysprepTag.Id;
+            }
+            else
+            {
+                actionResult.ErrorMessage = validationResult.ErrorMessage;
+            }
 
             return actionResult;
-
-        }
-
-        public  string TotalCount()
-        {
-           
-                return _uow.SysprepTagRepository.Count();
-            
         }
 
 
         public ActionResultDTO DeleteSysprepTag(int sysprepTagId)
         {
             var tag = GetSysprepTag(sysprepTagId);
-            if (tag == null) return new ActionResultDTO() { ErrorMessage = "Sysprep Tag Not Found", Id = 0 };
-                _uow.SysprepTagRepository.Delete(sysprepTagId);
-                _uow.Save();
-                var actionResult = new ActionResultDTO();
-                actionResult.Success = true;
-                actionResult.Id = tag.Id;
-                return actionResult;
-            
+            if (tag == null) return new ActionResultDTO {ErrorMessage = "Sysprep Tag Not Found", Id = 0};
+            _uow.SysprepTagRepository.Delete(sysprepTagId);
+            _uow.Save();
+            var actionResult = new ActionResultDTO();
+            actionResult.Success = true;
+            actionResult.Id = tag.Id;
+            return actionResult;
         }
 
 
-        public  SysprepTagEntity GetSysprepTag(int sysprepTagId)
+        public SysprepTagEntity GetSysprepTag(int sysprepTagId)
         {
-           
-                return _uow.SysprepTagRepository.GetById(sysprepTagId);
-            
+            return _uow.SysprepTagRepository.GetById(sysprepTagId);
         }
 
 
-        public  List<SysprepTagEntity> SearchSysprepTags(string searchString = "")
+        public List<SysprepTagEntity> SearchSysprepTags(string searchString = "")
         {
-           
-                return
-                    _uow.SysprepTagRepository.Get(
-                        s => s.Name.Contains(searchString) || s.OpeningTag.Contains(searchString),
-                        orderBy: (q => q.OrderBy(s => s.OpeningTag)));
-            
+            return
+                _uow.SysprepTagRepository.Get(
+                    s => s.Name.Contains(searchString) || s.OpeningTag.Contains(searchString),
+                    q => q.OrderBy(s => s.OpeningTag));
         }
 
-        public  ActionResultDTO UpdateSysprepTag(SysprepTagEntity sysprepTag)
+        public string TotalCount()
+        {
+            return _uow.SysprepTagRepository.Count();
+        }
+
+        public ActionResultDTO UpdateSysprepTag(SysprepTagEntity sysprepTag)
         {
             var tag = GetSysprepTag(sysprepTag.Id);
-            if (tag == null) return new ActionResultDTO() { ErrorMessage = "Sysprep Tag Not Found", Id = 0 };
-                var validationResult = ValidateSysprepTag(sysprepTag, false);
+            if (tag == null) return new ActionResultDTO {ErrorMessage = "Sysprep Tag Not Found", Id = 0};
+            var validationResult = ValidateSysprepTag(sysprepTag, false);
             var actionResult = new ActionResultDTO();
-                if (validationResult.Success)
-                {
-                    _uow.SysprepTagRepository.Update(sysprepTag, sysprepTag.Id);
-                    _uow.Save();
-                    actionResult.Success = true;
-                    actionResult.Id = sysprepTag.Id;
-                    
-                }
-                else
-                {
-                    actionResult.ErrorMessage = validationResult.ErrorMessage;
-                }
+            if (validationResult.Success)
+            {
+                _uow.SysprepTagRepository.Update(sysprepTag, sysprepTag.Id);
+                _uow.Save();
+                actionResult.Success = true;
+                actionResult.Id = sysprepTag.Id;
+            }
+            else
+            {
+                actionResult.ErrorMessage = validationResult.ErrorMessage;
+            }
 
             return actionResult;
-
-
-
-
         }
 
 
-        private  ValidationResultDTO ValidateSysprepTag(SysprepTagEntity sysprepTag, bool isNewSysprepTag)
+        private ValidationResultDTO ValidateSysprepTag(SysprepTagEntity sysprepTag, bool isNewSysprepTag)
         {
-            var validationResult = new ValidationResultDTO() { Success = true };
+            var validationResult = new ValidationResultDTO {Success = true};
 
             if (string.IsNullOrEmpty(sysprepTag.Name) || !sysprepTag.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
             {
@@ -116,34 +102,28 @@ namespace CloneDeploy_Services
 
             if (isNewSysprepTag)
             {
-                
+                if (_uow.SysprepTagRepository.Exists(h => h.Name == sysprepTag.Name))
+                {
+                    validationResult.Success = false;
+                    validationResult.ErrorMessage = "This Sysprep Tag Already Exists";
+                    return validationResult;
+                }
+            }
+            else
+            {
+                var originalSysprepTag = _uow.SysprepTagRepository.GetById(sysprepTag.Id);
+                if (originalSysprepTag.Name != sysprepTag.Name)
+                {
                     if (_uow.SysprepTagRepository.Exists(h => h.Name == sysprepTag.Name))
                     {
                         validationResult.Success = false;
                         validationResult.ErrorMessage = "This Sysprep Tag Already Exists";
                         return validationResult;
                     }
-                
-            }
-            else
-            {
-              
-                    var originalSysprepTag = _uow.SysprepTagRepository.GetById(sysprepTag.Id);
-                    if (originalSysprepTag.Name != sysprepTag.Name)
-                    {
-                        if (_uow.SysprepTagRepository.Exists(h => h.Name == sysprepTag.Name))
-                        {
-                            validationResult.Success = false;
-                            validationResult.ErrorMessage = "This Sysprep Tag Already Exists";
-                            return validationResult;
-                        }
-                    }
-                
+                }
             }
 
             return validationResult;
         }
-
-      
     }
 }

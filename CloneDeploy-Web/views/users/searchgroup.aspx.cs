@@ -1,27 +1,18 @@
 ﻿using System;
 using System.Linq;
 using System.Web.UI.WebControls;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
 public partial class views_users_searchgroup : Users
 {
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        RequiresAuthorization(Authorizations.Administrator);
-
-        if (IsPostBack) return;
-        PopulateGrid();
-    }
-
     protected void btnSubmit_Click(object sender, EventArgs e)
     {
         var deletedCount = 0;
         var adminMessage = string.Empty;
         foreach (GridViewRow row in gvGroups.Rows)
         {
-            var cb = (CheckBox)row.FindControl("chkSelector");
+            var cb = (CheckBox) row.FindControl("chkSelector");
             if (cb == null || !cb.Checked) continue;
             var dataKey = gvGroups.DataKeys[row.RowIndex];
             if (dataKey != null)
@@ -36,19 +27,22 @@ public partial class views_users_searchgroup : Users
         PopulateGrid();
     }
 
-    protected void search_Changed(object sender, EventArgs e)
-    {
-        PopulateGrid();
-    }
-
     protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
     {
         ChkAll(gvGroups);
     }
 
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        RequiresAuthorization(Authorizations.Administrator);
+
+        if (IsPostBack) return;
+        PopulateGrid();
+    }
+
     protected void PopulateGrid()
     {
-        gvGroups.DataSource = Call.UserGroupApi.GetAll(Int32.MaxValue,txtSearch.Text).OrderBy(x => x.Name);
+        gvGroups.DataSource = Call.UserGroupApi.GetAll(int.MaxValue, txtSearch.Text).OrderBy(x => x.Name);
         gvGroups.DataBind();
 
         foreach (GridViewRow row in gvGroups.Rows)
@@ -60,5 +54,10 @@ public partial class views_users_searchgroup : Users
         }
 
         lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + Call.UserGroupApi.GetCount() + " Total Group(s)";
+    }
+
+    protected void search_Changed(object sender, EventArgs e)
+    {
+        PopulateGrid();
     }
 }

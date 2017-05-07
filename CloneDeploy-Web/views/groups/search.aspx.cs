@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using CloneDeploy_Entities;
-using CloneDeploy_Web;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
@@ -13,7 +12,7 @@ namespace views.groups
     {
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.DeleteGroup); 
+            RequiresAuthorization(Authorizations.DeleteGroup);
             var deletedCount = 0;
             foreach (var dataKey in from GridViewRow row in gvGroups.Rows
                 let cb = (CheckBox) row.FindControl("chkSelector")
@@ -34,19 +33,25 @@ namespace views.groups
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
-            List<GroupEntity> listGroups = (List<GroupEntity>)gvGroups.DataSource;
+            var listGroups = (List<GroupEntity>) gvGroups.DataSource;
             switch (e.SortExpression)
             {
                 case "Name":
-                    listGroups = GetSortDirection(e.SortExpression) == "Asc" ? listGroups.OrderBy(g => g.Name).ToList() : listGroups.OrderByDescending(g => g.Name).ToList();
+                    listGroups = GetSortDirection(e.SortExpression) == "Asc"
+                        ? listGroups.OrderBy(g => g.Name).ToList()
+                        : listGroups.OrderByDescending(g => g.Name).ToList();
                     break;
                 case "Image":
-                    listGroups = GetSortDirection(e.SortExpression) == "Asc" ? listGroups.OrderBy(g => g.ImageId).ToList() : listGroups.OrderByDescending(g => g.ImageId).ToList();
+                    listGroups = GetSortDirection(e.SortExpression) == "Asc"
+                        ? listGroups.OrderBy(g => g.ImageId).ToList()
+                        : listGroups.OrderByDescending(g => g.ImageId).ToList();
                     break;
                 case "Type":
-                    listGroups = GetSortDirection(e.SortExpression) == "Asc" ? listGroups.OrderBy(g => g.Type).ToList() : listGroups.OrderByDescending(g => g.Type).ToList();
-                    break;              
-            } 
+                    listGroups = GetSortDirection(e.SortExpression) == "Asc"
+                        ? listGroups.OrderBy(g => g.Type).ToList()
+                        : listGroups.OrderByDescending(g => g.Type).ToList();
+                    break;
+            }
 
             gvGroups.DataSource = listGroups;
             gvGroups.DataBind();
@@ -63,14 +68,14 @@ namespace views.groups
         }
 
         protected void Page_Load(object sender, EventArgs e)
-        {        
+        {
             if (IsPostBack) return;
             PopulateGrid();
         }
 
         protected void PopulateGrid()
         {
-            gvGroups.DataSource = Call.GroupApi.GetAll(Int32.MaxValue, txtSearch.Text);
+            gvGroups.DataSource = Call.GroupApi.GetAll(int.MaxValue, txtSearch.Text);
             gvGroups.DataBind();
 
             foreach (GridViewRow row in gvGroups.Rows)
@@ -82,7 +87,6 @@ namespace views.groups
                     group = Call.GroupApi.Get(Convert.ToInt32(dataKey.Value));
                 if (lbl != null)
                     lbl.Text = Call.GroupApi.GetMemberCount(group.Id);
-                
             }
 
 
@@ -98,7 +102,5 @@ namespace views.groups
         {
             ChkAll(gvGroups);
         }
-
-      
     }
 }

@@ -8,7 +8,7 @@ namespace CloneDeploy_Services
 {
     public class BootEntryServices
     {
-         private readonly UnitOfWork _uow;
+        private readonly UnitOfWork _uow;
 
         public BootEntryServices()
         {
@@ -17,7 +17,6 @@ namespace CloneDeploy_Services
 
         public ActionResultDTO AddBootEntry(BootEntryEntity bootEntry)
         {
-
             var validationResult = ValidateEntry(bootEntry, true);
             var actionResult = new ActionResultDTO();
             if (validationResult.Success)
@@ -27,25 +26,16 @@ namespace CloneDeploy_Services
 
                 actionResult.Success = true;
                 actionResult.Id = bootEntry.Id;
-
             }
 
             return actionResult;
-
-        }
-
-        public string TotalCount()
-        {
-
-            return _uow.BootEntryRepository.Count();
-
         }
 
         public ActionResultDTO DeleteBootEntry(int BootEntryId)
         {
             var actionResult = new ActionResultDTO();
             var bootEntry = GetBootEntry(BootEntryId);
-            if (bootEntry == null) return new ActionResultDTO() {ErrorMessage = "Boot Entry Not Found", Id = 0};
+            if (bootEntry == null) return new ActionResultDTO {ErrorMessage = "Boot Entry Not Found", Id = 0};
 
             _uow.BootEntryRepository.Delete(BootEntryId);
             _uow.Save();
@@ -59,23 +49,23 @@ namespace CloneDeploy_Services
 
         public BootEntryEntity GetBootEntry(int BootEntryId)
         {
-
             return _uow.BootEntryRepository.GetById(BootEntryId);
-
         }
 
         public List<BootEntryEntity> SearchBootEntrys(string searchString = "")
         {
-
             return
                 _uow.BootEntryRepository.Get(
-                    s => s.Name.Contains(searchString), orderBy: (q => q.OrderBy(t => t.Name)));
+                    s => s.Name.Contains(searchString), q => q.OrderBy(t => t.Name));
+        }
 
+        public string TotalCount()
+        {
+            return _uow.BootEntryRepository.Count();
         }
 
         public ActionResultDTO UpdateBootEntry(BootEntryEntity bootEntry)
         {
-
             var validationResult = ValidateEntry(bootEntry, false);
             var actionResult = new ActionResultDTO();
             if (validationResult.Success)
@@ -84,7 +74,6 @@ namespace CloneDeploy_Services
                 _uow.Save();
                 actionResult.Success = true;
                 actionResult.Id = bootEntry.Id;
-
             }
             else
             {
@@ -92,12 +81,11 @@ namespace CloneDeploy_Services
             }
 
             return actionResult;
-
         }
 
-        private  ValidationResultDTO ValidateEntry(BootEntryEntity bootEntry, bool isNewEntry)
+        private ValidationResultDTO ValidateEntry(BootEntryEntity bootEntry, bool isNewEntry)
         {
-            var validationResult = new ValidationResultDTO() {Success = true};
+            var validationResult = new ValidationResultDTO {Success = true};
 
             if (string.IsNullOrEmpty(bootEntry.Name))
             {
@@ -137,6 +125,5 @@ namespace CloneDeploy_Services
 
             return validationResult;
         }
-
     }
 }

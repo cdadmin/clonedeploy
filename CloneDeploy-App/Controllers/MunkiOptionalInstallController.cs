@@ -3,12 +3,11 @@ using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
 using CloneDeploy_Services;
 
-
 namespace CloneDeploy_App.Controllers
 {
-    public class MunkiOptionalInstallController: ApiController
+    public class MunkiOptionalInstallController : ApiController
     {
-         private readonly MunkiOptionalInstallServices _munkiOptionalInstallServices;
+        private readonly MunkiOptionalInstallServices _munkiOptionalInstallServices;
 
         public MunkiOptionalInstallController()
         {
@@ -18,11 +17,7 @@ namespace CloneDeploy_App.Controllers
         [CustomAuth(Permission = "GlobalRead")]
         public MunkiManifestOptionInstallEntity Get(int id)
         {
-
             return _munkiOptionalInstallServices.GetOptionalInstall(id);
-
         }
-
-      
     }
 }
