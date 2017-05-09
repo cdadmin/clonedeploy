@@ -12,10 +12,11 @@ namespace CloneDeploy_Services.Workflows
 {
     public class CancelAllImagingTasks
     {
-        private static readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private static readonly ILog Log = LogManager.GetLogger("ApplicationLog");
 
         public static bool Run()
         {
+            //If a cluster primary - cancel all tasks on secondaries first, then move on
             if (Settings.OperationMode == "Cluster Primary")
             {
                 var secondaryServers =
@@ -52,11 +53,13 @@ namespace CloneDeploy_Services.Workflows
                 }
                 catch (Exception ex)
                 {
-                    log.Debug(ex.ToString());
+                    Log.Debug(ex.ToString());
                     return false;
                 }
             }
 
+            //The database tasks are only removed on a single server or cluster primary,
+            //There are no database tasks in a clustered secondary.
             if (Settings.OperationMode != "Cluster Secondary")
             {
                 new ActiveImagingTaskServices().DeleteAll();
@@ -98,13 +101,14 @@ namespace CloneDeploy_Services.Workflows
                         }
                         catch (Exception ex)
                         {
-                            log.Debug(ex.ToString());
+                            Log.Debug(ex.ToString());
                         }
                     }
                     Thread.Sleep(200);
                 }
             }
 
+            //The create boot files method handles creating the file for the secondary servers
             if (Settings.OperationMode != "Cluster Secondary")
             {
                 //Recreate any custom boot menu's that were just deleted

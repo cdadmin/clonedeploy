@@ -3,7 +3,7 @@ using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
 using CloneDeploy_Web.Helpers;
 
-namespace views.computers
+namespace CloneDeploy_Web.views.computers
 {
     public partial class Addcomputers : Computers
     {

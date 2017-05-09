@@ -107,6 +107,13 @@ namespace CloneDeploy_Services
                 return validationResult;
             }
 
+            if (clusterGroup.Name.ToLower() == "default")
+            {
+                validationResult.Success = false;
+                validationResult.ErrorMessage = "Cluster Group Name Is Not Valid.  Default Is Reserved";
+                return validationResult;
+            }
+
             if (clusterGroup.Default == 1)
             {
                 var existingDefaultCluster = GetDefaultClusterGroup();

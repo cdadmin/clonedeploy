@@ -38,6 +38,6 @@
         Service Account Password:
     </div>
     <div class="size-5 column">
-        <asp:TextBox runat="server" Id="txtAccountPassword" CssClass="textbox"></asp:TextBox>
+        <asp:TextBox runat="server" Id="txtAccountPassword" CssClass="textbox" TextMode="Password"></asp:TextBox>
     </div>
 </asp:Content>

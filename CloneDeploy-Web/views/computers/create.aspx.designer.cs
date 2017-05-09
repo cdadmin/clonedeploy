@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace views.computers {
+namespace CloneDeploy_Web.views.computers {
     
     
     public partial class Addcomputers {

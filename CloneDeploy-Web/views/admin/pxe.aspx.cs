@@ -48,7 +48,7 @@ public partial class views_admin_pxe : Admin
 
 
             var newBootMenu = false;
-            if (Call.SettingApi.UpdateSettings(listSettings))
+            if (Call.SettingApi.UpdatePxeSettings(listSettings))
             {
                 if (!Call.WorkflowApi.CopyPxeBinaries())
                 {
@@ -71,6 +71,7 @@ public partial class views_admin_pxe : Admin
             else
             {
                 EndUserMessage = "Could Not Update PXE Settings";
+                return;
             }
 
             if (newBootMenu)

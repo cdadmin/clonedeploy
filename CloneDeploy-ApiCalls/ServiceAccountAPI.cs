@@ -1,4 +1,6 @@
-﻿using CloneDeploy_Entities.DTOs;
+﻿using System.Collections.Generic;
+using CloneDeploy_Entities;
+using CloneDeploy_Entities.DTOs;
 using RestSharp;
 
 namespace CloneDeploy_ApiCalls
@@ -25,6 +27,14 @@ namespace CloneDeploy_ApiCalls
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/CancelAllImagingTasks/", Resource);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
+        }
+
+        public bool CopyPxeBinaries()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/CopyPxeBinaries/", Resource);
             var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
             return response != null && response.Value;
         }
@@ -70,6 +80,14 @@ namespace CloneDeploy_ApiCalls
             return response != null && response.Value;
         }
 
+        public bool UpdateSettings(List<SettingEntity> listSettings)
+        {
+            Request.Method = Method.POST;
+            Request.Resource = string.Format("api/{0}/UpdateSettings/", Resource);
+            Request.AddJsonBody(listSettings);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
+        }
 
         public bool WriteTftpFile(TftpFileDTO tftpFile)
         {

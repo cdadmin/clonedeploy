@@ -14,7 +14,7 @@ namespace CloneDeploy_Entities
         public string Name { get; set; }
         
         [Column("building_distribution_point", Order = 3)]
-        public int DistributionPointId { get; set; }
+        public int ClusterGroupId { get; set; }
     }
 
     [NotMapped]

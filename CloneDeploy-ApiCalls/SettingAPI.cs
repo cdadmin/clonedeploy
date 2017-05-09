@@ -35,6 +35,14 @@ namespace CloneDeploy_ApiCalls
             return response != null && response.Value;
         }
 
+        public bool UpdatePxeSettings(List<SettingEntity> listSettings)
+        {
+            Request.Method = Method.POST;
+            Request.Resource = string.Format("api/{0}/UpdatePxeSettings/", Resource);
+            Request.AddJsonBody(listSettings);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
+        }
 
         public bool UpdateSettings(List<SettingEntity> listSettings)
         {

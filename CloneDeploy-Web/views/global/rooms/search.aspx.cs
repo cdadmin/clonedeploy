@@ -55,7 +55,7 @@ public partial class views_global_rooms_search : Global
         var room = new RoomEntity
         {
             Name = ((TextBox) gvRow.FindControl("txtNameAdd")).Text,
-            DistributionPointId = Convert.ToInt32(((DropDownList) gvRow.FindControl("ddlDpAdd")).SelectedValue)
+            ClusterGroupId = Convert.ToInt32(((DropDownList) gvRow.FindControl("ddlDpAdd")).SelectedValue)
         };
 
         Call.RoomApi.Post(room);
@@ -90,7 +90,7 @@ public partial class views_global_rooms_search : Global
         {
             Id = Convert.ToInt32(gvRooms.DataKeys[e.RowIndex].Values[0]),
             Name = ((TextBox) gvRow.FindControl("txtName")).Text,
-            DistributionPointId = Convert.ToInt32(((DropDownList) gvRow.FindControl("ddlDp")).SelectedValue)
+            ClusterGroupId = Convert.ToInt32(((DropDownList) gvRow.FindControl("ddlDp")).SelectedValue)
         };
         Call.RoomApi.Put(room.Id, room);
 

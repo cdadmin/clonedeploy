@@ -44,7 +44,7 @@ public partial class views_global_sites_search : Global
             if (ddlDps != null)
             {
                 PopulateClusterGroupsDdl(ddlDps);
-                ddlDps.SelectedValue = ((SiteEntity) e.Row.DataItem).DistributionPointId.ToString();
+                ddlDps.SelectedValue = ((SiteEntity) e.Row.DataItem).ClusterGroupId.ToString();
             }
         }
     }
@@ -56,7 +56,7 @@ public partial class views_global_sites_search : Global
         var site = new SiteEntity
         {
             Name = ((TextBox) gvRow.FindControl("txtNameAdd")).Text,
-            DistributionPointId = Convert.ToInt32(((DropDownList) gvRow.FindControl("ddlDpAdd")).SelectedValue)
+            ClusterGroupId = Convert.ToInt32(((DropDownList) gvRow.FindControl("ddlDpAdd")).SelectedValue)
         };
 
         Call.SiteApi.Post(site);
@@ -91,7 +91,7 @@ public partial class views_global_sites_search : Global
         {
             Id = Convert.ToInt32(gvSites.DataKeys[e.RowIndex].Values[0]),
             Name = ((TextBox) gvRow.FindControl("txtName")).Text,
-            DistributionPointId = Convert.ToInt32(((DropDownList) gvRow.FindControl("ddlDp")).SelectedValue)
+            ClusterGroupId = Convert.ToInt32(((DropDownList) gvRow.FindControl("ddlDp")).SelectedValue)
         };
         Call.SiteApi.Put(site.Id, site);
 

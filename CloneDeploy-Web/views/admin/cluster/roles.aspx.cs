@@ -19,12 +19,7 @@ namespace CloneDeploy_Web.views.admin.cluster
                     Value = ddlOperationMode.Text,
                     Id = Call.SettingApi.GetSetting("Operation Mode").Id
                 },
-                new SettingEntity
-                {
-                    Name = "Image Server Role",
-                    Value = chkImageServer.Checked ? "1" : "0",
-                    Id = Call.SettingApi.GetSetting("Image Server Role").Id
-                },
+               
                 new SettingEntity
                 {
                     Name = "Tftp Server Role",

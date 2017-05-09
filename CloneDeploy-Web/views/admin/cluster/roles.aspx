@@ -35,13 +35,7 @@
     <br class="clear"/>
 
     <div id="divRoles" runat="server">
-        <div class="size-4 column">
-            Image Server:
-        </div>
-        <div class="size-setting column">
-            <asp:CheckBox runat="server" id="chkImageServer"/>
-        </div>
-        <br class="clear"/>
+       
         <div class="size-4 column">
             Tftp Server:
         </div>

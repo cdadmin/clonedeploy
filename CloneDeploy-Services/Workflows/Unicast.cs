@@ -39,8 +39,16 @@ namespace CloneDeploy_Services.Workflows
                 if (!validation.Success) return validation.ErrorMessage;
             }
 
-            //var dp = new DistributionPointServices().GetPrimaryDistributionPoint();
-            //if (dp == null) return "Could Not Find A Primary Distribution Point";
+            if (Settings.OperationMode == "Single")
+            {
+                var dp = new DistributionPointServices().GetPrimaryDistributionPoint();
+                if (dp == null) return "Could Not Find A Primary Distribution Point";
+            }
+            else
+            {
+                var clusterGroup = new ComputerServices().GetClusterGroup(_computer.Id);
+                if (clusterGroup == null) return "Could Not Find A Cluster Group For This Computer";
+            }
 
             if (new ComputerServices().IsComputerActive(_computer.Id))
                 return "This Computer Is Already Part Of An Active Task";

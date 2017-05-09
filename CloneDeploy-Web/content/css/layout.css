@@ -210,7 +210,7 @@
     height: calc(100% - 105px);
     overflow-x: hidden;
     overflow-y: auto;
-    width: 160px;
+    width: 170px;
 }
 
 @media only screen and (min-width: 1251px) and (max-width: 1420px) {

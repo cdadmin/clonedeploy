@@ -15,7 +15,7 @@ namespace CloneDeploy_Entities
         public string Name { get; set; }
 
         [Column("room_distribution_point", Order = 3)]
-        public int DistributionPointId { get; set; }
+        public int ClusterGroupId { get; set; }
 
       
     }

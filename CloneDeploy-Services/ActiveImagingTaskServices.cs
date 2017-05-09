@@ -34,7 +34,6 @@ namespace CloneDeploy_Services
                 : _uow.ActiveImagingTaskRepository.Count(t => t.Type == taskType && t.UserId == userId);
         }
 
-        //be
         public bool AddActiveImagingTask(ActiveImagingTaskEntity activeImagingTask)
         {
             _uow.ActiveImagingTaskRepository.Insert(activeImagingTask);
@@ -78,7 +77,6 @@ namespace CloneDeploy_Services
             _uow.Save();
         }
 
-        //be
         public void DeleteForMulticast(int multicastId)
         {
             _uow.ActiveImagingTaskRepository.DeleteRange(t => t.MulticastId == multicastId);
@@ -153,7 +151,6 @@ namespace CloneDeploy_Services
             return activeImagingTasks;
         }
 
-        //be
         public void SendTaskCompletedEmail(ActiveImagingTaskEntity task)
         {
             //Mail not enabled
@@ -176,7 +173,6 @@ namespace CloneDeploy_Services
             }
         }
 
-        //be
         public void SendTaskErrorEmail(ActiveImagingTaskEntity task, string error)
         {
             //Mail not enabled
@@ -199,7 +195,6 @@ namespace CloneDeploy_Services
             }
         }
 
-        //be
         public bool UpdateActiveImagingTask(ActiveImagingTaskEntity activeImagingTask)
         {
             _uow.ActiveImagingTaskRepository.Update(activeImagingTask, activeImagingTask.Id);

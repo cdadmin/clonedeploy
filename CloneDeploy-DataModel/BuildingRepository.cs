@@ -18,7 +18,7 @@ namespace CloneDeploy_DataModel
         public List<BuildingWithClusterGroup> Get(string searchString)
         {
             return (from s in _context.Buildings
-                join d in _context.ClusterGroups on s.DistributionPointId equals d.Id into joined
+                join d in _context.ClusterGroups on s.ClusterGroupId equals d.Id into joined
                 from j in joined.DefaultIfEmpty()
                 where s.Name.Contains(searchString)
                 orderby s.Name

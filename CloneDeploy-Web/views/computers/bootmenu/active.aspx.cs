@@ -36,7 +36,7 @@ public partial class views_computers_bootmenu_active : Computers
             {
                 path = proxyDhcp == "Yes"
                     ? Call.ComputerApi.GetProxyPath(Computer.Id, false, ddlProxyMode.Text)
-                    : Call.ComputerApi.GetNonProxyPath(Computer.Id, true);
+                    : Call.ComputerApi.GetNonProxyPath(Computer.Id, false);
 
                 lblActiveBoot.Text =
                     "No Active Task Found <br> No Custom Boot Menu Found <br> Displaying Global Default Boot Menu";

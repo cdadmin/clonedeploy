@@ -333,10 +333,10 @@ namespace CloneDeploy_Services
                 var room = new RoomServices().GetRoom(computer.RoomId);
                 if (room != null)
                 {
-                    if (room.DistributionPointId != -1)
+                    if (room.ClusterGroupId != -1)
                     {
                         cg =
-                            cgServices.GetClusterGroup(room.DistributionPointId);
+                            cgServices.GetClusterGroup(room.ClusterGroupId);
                         return cg ?? cgServices.GetDefaultClusterGroup();
                     }
                 }
@@ -346,10 +346,10 @@ namespace CloneDeploy_Services
                 var building = new BuildingServices().GetBuilding(computer.BuildingId);
                 if (building != null)
                 {
-                    if (building.DistributionPointId != -1)
+                    if (building.ClusterGroupId != -1)
                     {
                         cg =
-                            cgServices.GetClusterGroup(building.DistributionPointId);
+                            cgServices.GetClusterGroup(building.ClusterGroupId);
                         return cg ?? cgServices.GetDefaultClusterGroup();
                     }
                 }
@@ -359,10 +359,10 @@ namespace CloneDeploy_Services
                 var site = new SiteServices().GetSite(computer.SiteId);
                 if (site != null)
                 {
-                    if (site.DistributionPointId != -1)
+                    if (site.ClusterGroupId != -1)
                     {
                         cg =
-                            cgServices.GetClusterGroup(site.DistributionPointId);
+                            cgServices.GetClusterGroup(site.ClusterGroupId);
                         return cg ?? cgServices.GetDefaultClusterGroup();
                     }
                 }

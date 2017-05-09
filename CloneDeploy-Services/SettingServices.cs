@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using CloneDeploy_ApiCalls;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
@@ -32,6 +35,28 @@ namespace CloneDeploy_Services
             var setting = _uow.SettingRepository.GetFirstOrDefault(s => s.Name == settingName);
             setting.Value = Utility.Between(setting.Value);
             return setting;
+        }
+
+        public bool UpdatePxeSettings(List<SettingEntity> settings)
+        {
+            if(Settings.OperationMode == "Single")
+                return UpdateSetting(settings);
+            else
+            {
+                var secondaryServers =
+                   new SecondaryServerServices().SearchSecondaryServers()
+                       .Where(x => x.TftpRole == 1);
+
+                foreach (var server in secondaryServers)
+                {
+                    var result = new APICall(new SecondaryServerServices().GetApiToken(server.Name))
+                        .ServiceAccountApi.UpdateSettings(settings);
+                    if (!result)
+                        return false;
+                }
+
+                return true;
+            }
         }
 
         public bool UpdateSetting(List<SettingEntity> listSettings)

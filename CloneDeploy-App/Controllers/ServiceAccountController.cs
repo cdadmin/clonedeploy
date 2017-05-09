@@ -1,5 +1,7 @@
-﻿using System.Web.Http;
+﻿using System.Collections.Generic;
+using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
+using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 using CloneDeploy_Services.Helpers;
@@ -14,6 +16,13 @@ namespace CloneDeploy_App.Controllers
         public ApiBoolResponseDTO CancelAllImagingTasks()
         {
             return new ApiBoolResponseDTO {Value = CloneDeploy_Services.Workflows.CancelAllImagingTasks.Run()};
+        }
+
+        [CustomAuth(Permission = "ServiceAccount")]
+        [HttpGet]
+        public ApiBoolResponseDTO CopyPxeBinaries()
+        {
+            return new ApiBoolResponseDTO { Value = new CopyPxeBinaries().CopyFiles() };
         }
 
         [CustomAuth(Permission = "ServiceAccount")]
@@ -55,6 +64,13 @@ namespace CloneDeploy_App.Controllers
         public ApiBoolResponseDTO WriteTftpFile(TftpFileDTO tftpFile)
         {
             return new ApiBoolResponseDTO {Value = new FileOps().WritePath(tftpFile.Path, tftpFile.Contents)};
+        }
+
+        [CustomAuth(Permission = "ServiceAccount")]
+        [HttpPost]
+        public ApiBoolResponseDTO UpdateSettings(List<SettingEntity> listSettings)
+        {
+            return new ApiBoolResponseDTO { Value = new SettingServices().UpdateSetting(listSettings) };
         }
     }
 }

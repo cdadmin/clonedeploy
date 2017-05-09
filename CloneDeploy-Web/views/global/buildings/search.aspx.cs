@@ -43,7 +43,7 @@ public partial class views_global_buildings_search : Global
             if (ddlDps != null)
             {
                 PopulateClusterGroupsDdl(ddlDps);
-                ddlDps.SelectedValue = ((BuildingEntity) e.Row.DataItem).DistributionPointId.ToString();
+                ddlDps.SelectedValue = ((BuildingEntity) e.Row.DataItem).ClusterGroupId.ToString();
             }
         }
     }
@@ -55,7 +55,7 @@ public partial class views_global_buildings_search : Global
         var building = new BuildingEntity
         {
             Name = ((TextBox) gvRow.FindControl("txtNameAdd")).Text,
-            DistributionPointId = Convert.ToInt32(((DropDownList) gvRow.FindControl("ddlDpAdd")).SelectedValue)
+            ClusterGroupId = Convert.ToInt32(((DropDownList) gvRow.FindControl("ddlDpAdd")).SelectedValue)
         };
 
         Call.BuildingApi.Post(building);
@@ -90,7 +90,7 @@ public partial class views_global_buildings_search : Global
         {
             Id = Convert.ToInt32(gvBuildings.DataKeys[e.RowIndex].Values[0]),
             Name = ((TextBox) gvRow.FindControl("txtName")).Text,
-            DistributionPointId = Convert.ToInt32(((DropDownList) gvRow.FindControl("ddlDp")).SelectedValue)
+            ClusterGroupId = Convert.ToInt32(((DropDownList) gvRow.FindControl("ddlDp")).SelectedValue)
         };
         Call.BuildingApi.Put(building.Id, building);
 

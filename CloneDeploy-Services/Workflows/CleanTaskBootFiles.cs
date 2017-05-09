@@ -13,7 +13,7 @@ namespace CloneDeploy_Services.Workflows
         private const string ConfigFolder = "pxelinux.cfg";
         private readonly string _bootFile;
         private readonly ComputerEntity _computer;
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog _log = LogManager.GetLogger("ApplicationLog");
 
         public CleanTaskBootFiles(ComputerEntity computer)
         {
@@ -44,6 +44,8 @@ namespace CloneDeploy_Services.Workflows
                     DeleteStandardFile();
             }
 
+            //Custom Boot files for the secondary cluster will be created by the primary
+            //Don't run on secondary
             if (Settings.OperationMode != "Cluster Secondary")
             {
                 if (Convert.ToBoolean(_computer.CustomBootEnabled))
@@ -63,7 +65,7 @@ namespace CloneDeploy_Services.Workflows
                 }
                 catch (Exception ex)
                 {
-                    log.Debug(ex.Message);
+                    _log.Debug(ex.Message);
                 }
             }
             else
@@ -84,7 +86,7 @@ namespace CloneDeploy_Services.Workflows
                         }
                         catch (Exception ex)
                         {
-                            log.Debug(ex.Message);
+                            _log.Debug(ex.Message);
                         }
                     }
                     else
@@ -117,7 +119,7 @@ namespace CloneDeploy_Services.Workflows
                 }
                 catch (Exception ex)
                 {
-                    log.Debug(ex.Message);
+                    _log.Debug(ex.Message);
                 }
             }
             else
@@ -136,7 +138,7 @@ namespace CloneDeploy_Services.Workflows
                         }
                         catch (Exception ex)
                         {
-                            log.Debug(ex.Message);
+                            _log.Debug(ex.Message);
                         }
                     }
                     else

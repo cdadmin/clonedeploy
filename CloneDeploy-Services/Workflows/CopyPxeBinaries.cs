@@ -78,7 +78,7 @@ namespace CloneDeploy_Services.Workflows
                 foreach (var tftpServer in tftpServers)
                 {
                     copyResult = new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
-                        .WorkflowApi.CopyPxeBinaries();
+                        .ServiceAccountApi.CopyPxeBinaries();
                 }
             }
             return copyResult;

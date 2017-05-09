@@ -107,7 +107,7 @@ namespace CloneDeploy_Web.BasePages
             ddlClusterGroup.DataValueField = "Id";
             ddlClusterGroup.DataTextField = "Name";
             ddlClusterGroup.DataBind();
-            ddlClusterGroup.Items.Insert(0, new ListItem("None", "-1"));
+            ddlClusterGroup.Items.Insert(0, new ListItem("Default", "-1"));
         }
 
         protected void PopulateGroupsDdl(DropDownList ddlGroups)
