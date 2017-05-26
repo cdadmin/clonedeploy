@@ -9,23 +9,26 @@
 
 
 
-public partial class views_computers_inventory_inventory {
+namespace CloneDeploy_Web.views.computers.inventory
+{
+    public partial class views_computers_inventory_inventory {
     
-    /// <summary>
-    /// BreadcrumbSub2 control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.ContentPlaceHolder BreadcrumbSub2;
+        /// <summary>
+        /// BreadcrumbSub2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ContentPlaceHolder BreadcrumbSub2;
     
-    /// <summary>
-    /// SubContent2 control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.ContentPlaceHolder SubContent2;
+        /// <summary>
+        /// SubContent2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ContentPlaceHolder SubContent2;
+    }
 }

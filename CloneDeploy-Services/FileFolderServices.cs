@@ -3,7 +3,6 @@ using System.Linq;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Services.Helpers;
 
 namespace CloneDeploy_Services
 {
@@ -117,7 +116,7 @@ namespace CloneDeploy_Services
                 fileFolder.Path = trimmed;
             }
 
-            fileFolder.Path = Utility.WindowsToUnixFilePath(fileFolder.Path);
+            fileFolder.Path = StringManipulationServices.WindowsToUnixFilePath(fileFolder.Path);
 
             if (isNewTemplate)
             {

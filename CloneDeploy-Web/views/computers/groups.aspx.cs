@@ -2,22 +2,25 @@
 using System.Linq;
 using CloneDeploy_Web.BasePages;
 
-public partial class views_computers_groups : Computers
+namespace CloneDeploy_Web.views.computers
 {
-    protected void Page_Load(object sender, EventArgs e)
+    public partial class views_computers_groups : Computers
     {
-        if (!IsPostBack)
+        protected void Page_Load(object sender, EventArgs e)
         {
-            PopulateGrid();
+            if (!IsPostBack)
+            {
+                PopulateGrid();
+            }
         }
-    }
 
-    protected void PopulateGrid()
-    {
-        var memberships = Call.ComputerApi.GetGroupMemberships(Computer.Id);
-        var computerGroups =
-            memberships.Select(membership => Call.GroupApi.Get(membership.GroupId)).Where(x => x != null).ToList();
-        gvGroups.DataSource = computerGroups;
-        gvGroups.DataBind();
+        protected void PopulateGrid()
+        {
+            var memberships = Call.ComputerApi.GetGroupMemberships(Computer.Id);
+            var computerGroups =
+                memberships.Select(membership => Call.GroupApi.Get(membership.GroupId)).Where(x => x != null).ToList();
+            gvGroups.DataSource = computerGroups;
+            gvGroups.DataBind();
+        }
     }
 }

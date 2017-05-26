@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web.UI;
 
-namespace views.masters
+namespace CloneDeploy_Web.views.tasks
 {
     public partial class TaskMaster : MasterPage
     {

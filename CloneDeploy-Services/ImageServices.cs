@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using CloneDeploy_Common;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
@@ -38,19 +39,8 @@ namespace CloneDeploy_Services
                 defaultProfile.ImageId = image.Id;
                 new ImageProfileServices().AddProfile(defaultProfile);
 
-                try
-                {
-                    Directory.CreateDirectory(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar +
-                                              image.Name);
-                    new FileOps().SetUnixPermissionsImage(Settings.PrimaryStoragePath + "images" +
-                                                          Path.DirectorySeparatorChar + image.Name);
-                    actionResult.Success = true;
-                }
-                catch (Exception ex)
-                {
-                    log.Debug(ex.Message);
-                    actionResult.ErrorMessage = "Could Not Create Image Directory.";
-                }
+                var dirCreateResult = new FilesystemServices().CreateNewImageFolders(image.Name);
+                actionResult.Success = dirCreateResult;
             }
             else
             {
@@ -100,7 +90,7 @@ namespace CloneDeploy_Services
                 return actionResult;
             }
 
-            if (Settings.RequireImageApproval.ToLower() == "true")
+            if (SettingServices.GetSettingValue(SettingStrings.RequireImageApproval).ToLower() == "true")
             {
                 var user = _userServices.GetUser(userId);
                 if (user.Membership != "Administrator") //administrators don't need image approval
@@ -150,25 +140,13 @@ namespace CloneDeploy_Services
             _uow.ImageRepository.Delete(image.Id);
             _uow.Save();
             result.Id = imageId;
+            //Check if image name is empty or null, return if so or something will be deleted that shouldn't be
             if (string.IsNullOrEmpty(image.Name)) return result;
             DeleteAllUserManagementsForImage(image.Id);
             DeleteAllProfilesForImage(image.Id);
-            try
-            {
-                if (Directory.Exists(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name))
-                    Directory.Delete(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name,
-                        true);
-
-                result.Success = true;
-            }
-            catch (Exception ex)
-            {
-                log.Debug(ex.Message);
-                result.ErrorMessage = "Could Not Delete Image Folder";
-                result.Success = false;
-            }
-
-
+            var delDirectoryResult = new FilesystemServices().DeleteImageFolders(image.Name);
+            result.Success = delDirectoryResult;
+      
             return result;
         }
 
@@ -210,29 +188,7 @@ namespace CloneDeploy_Services
             string selectedPartition)
         {
             var image = GetImage(imageId);
-            try
-            {
-                var imageFile =
-                    Directory.GetFiles(
-                        Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + image.Name +
-                        Path.DirectorySeparatorChar + "hd" + selectedHd +
-                        Path.DirectorySeparatorChar,
-                        "part" + selectedPartition + ".*").FirstOrDefault();
-
-                var fi = new FileInfo(imageFile);
-                var imageFileInfo = new ImageFileInfo
-                {
-                    FileName = fi.Name,
-                    FileSize = (fi.Length/1024f/1024f).ToString("#.##") + " MB"
-                };
-
-                return new List<ImageFileInfo> {imageFileInfo};
-            }
-            catch (Exception ex)
-            {
-                log.Debug(ex.Message);
-                return null;
-            }
+            return new FilesystemServices().GetPartitionFileSize(image.Name, selectedHd, selectedPartition);         
         }
 
 
@@ -249,17 +205,7 @@ namespace CloneDeploy_Services
 
         public string ImageSizeOnServerForGridView(string imageName, string hdNumber)
         {
-            try
-            {
-                var imagePath = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + imageName +
-                                Path.DirectorySeparatorChar + "hd" + hdNumber;
-                var size = new FileOps().GetDirectorySize(new DirectoryInfo(imagePath))/1024f/1024f/1024f;
-                return Math.Abs(size) < 0.1f ? "< 100M" : size.ToString("#.##") + " GB";
-            }
-            catch
-            {
-                return "N/A";
-            }
+            return new FilesystemServices().GetHdFileSize(imageName, hdNumber);
         }
 
         public int ImportCsv(string csvContents)
@@ -317,7 +263,7 @@ namespace CloneDeploy_Services
         {
             var image = GetImage(imageId);
             var imageProfile = new ImageProfileEntity();
-            imageProfile.Kernel = Settings.DefaultKernel32;
+            imageProfile.Kernel = SettingStrings.DefaultKernel32;
             imageProfile.BootImage = "initrd.xz";
             imageProfile.Name = "default";
             imageProfile.Description = "Auto Generated Via New Image.";
@@ -343,7 +289,7 @@ namespace CloneDeploy_Services
         public void SendImageApprovedEmail(int imageId)
         {
             //Mail not enabled
-            if (Settings.SmtpEnabled == "0") return;
+            if (SettingServices.GetSettingValue(SettingStrings.SmtpEnabled) == "0") return;
 
             var image = GetImage(imageId);
             foreach (
@@ -351,7 +297,7 @@ namespace CloneDeploy_Services
                     _userServices.SearchUsers("")
                         .Where(x => x.NotifyImageApproved == 1 && !string.IsNullOrEmpty(x.Email)))
             {
-                var mail = new Mail
+                var mail = new MailServices
                 {
                     MailTo = user.Email,
                     Body = image.Name + " Has Been Approved",
@@ -384,17 +330,7 @@ namespace CloneDeploy_Services
                 result.Id = image.Id;
                 if (updateFolderName)
                 {
-                    try
-                    {
-                        new FileOps().RenameFolder(oldName, image.Name);
-                        result.Success = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        log.Debug(ex.Message);
-                        result.ErrorMessage = "Could Not Rename Image Folder";
-                        result.Success = false;
-                    }
+                    result.Success = new FilesystemServices().RenameImageFolder(oldName, image.Name);
                 }
                 else
                 {

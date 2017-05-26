@@ -1,15 +1,15 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.groups
+namespace CloneDeploy_Web.views.groups
 {
     public partial class GroupEdit : Groups
     {
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            RequiresAuthorizationOrManagedGroup(Authorizations.UpdateGroup, Group.Id);
+            RequiresAuthorizationOrManagedGroup(AuthorizationStrings.UpdateGroup, Group.Id);
             var group = new GroupEntity
             {
                 Id = Group.Id,

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CloneDeploy_Common;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
@@ -20,8 +21,8 @@ namespace CloneDeploy_Services
 
         public ActionResultDTO AddDistributionPoint(DistributionPointEntity distributionPoint)
         {
-            distributionPoint.RoPassword = new Encryption().EncryptText(distributionPoint.RoPassword);
-            distributionPoint.RwPassword = new Encryption().EncryptText(distributionPoint.RwPassword);
+            distributionPoint.RoPassword = new EncryptionServices().EncryptText(distributionPoint.RoPassword);
+            distributionPoint.RwPassword = new EncryptionServices().EncryptText(distributionPoint.RwPassword);
             var validationResult = ValidateDistributionPoint(distributionPoint, true);
             var actionResult = new ActionResultDTO();
             if (validationResult.Success)
@@ -83,9 +84,18 @@ namespace CloneDeploy_Services
             if (dp == null)
                 return new ActionResultDTO {ErrorMessage = "Distribution Point Not Found", Id = 0};
 
+            if (string.IsNullOrEmpty(distributionPoint.RwPassword))
+                distributionPoint.RwPassword = dp.RwPassword;
+            else
+                distributionPoint.RwPassword = new EncryptionServices().EncryptText(distributionPoint.RwPassword);
+            if (string.IsNullOrEmpty(distributionPoint.RoPassword))
+                distributionPoint.RoPassword = dp.RoPassword;
+            else
+                distributionPoint.RoPassword = new EncryptionServices().EncryptText(distributionPoint.RoPassword);
+            
 
-            distributionPoint.RoPassword = new Encryption().EncryptText(distributionPoint.RoPassword);
-            distributionPoint.RwPassword = new Encryption().EncryptText(distributionPoint.RwPassword);
+           
+           
             var validationResult = ValidateDistributionPoint(distributionPoint, false);
             if (validationResult.Success)
             {
@@ -140,6 +150,16 @@ namespace CloneDeploy_Services
             else
             {
                 var originalDistributionPoint = _uow.DistributionPointRepository.GetById(distributionPoint.Id);
+                var primaryDp = GetPrimaryDistributionPoint();
+                if (primaryDp != null)
+                {
+                    if ((primaryDp.Id != distributionPoint.Id) && distributionPoint.IsPrimary == 1)
+                    {
+                        validationResult.Success = false;
+                        validationResult.ErrorMessage = "There Can Only Be One Primary Distribution Point";
+                        return validationResult;
+                    }
+                }
                 if (originalDistributionPoint.DisplayName != distributionPoint.DisplayName)
                 {
                     if (_uow.DistributionPointRepository.Exists(h => h.DisplayName == distributionPoint.DisplayName))
@@ -153,5 +173,7 @@ namespace CloneDeploy_Services
 
             return validationResult;
         }
+
+      
     }
 }

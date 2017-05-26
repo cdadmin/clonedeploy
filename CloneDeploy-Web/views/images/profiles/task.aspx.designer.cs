@@ -9,32 +9,35 @@
 
 
 
-public partial class views_images_profiles_task {
+namespace CloneDeploy_Web.views.images.profiles
+{
+    public partial class views_images_profiles_task {
     
-    /// <summary>
-    /// btnUpdateTask control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.LinkButton btnUpdateTask;
+        /// <summary>
+        /// btnUpdateTask control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnUpdateTask;
     
-    /// <summary>
-    /// chkWebCancel control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.CheckBox chkWebCancel;
+        /// <summary>
+        /// chkWebCancel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkWebCancel;
     
-    /// <summary>
-    /// ddlTaskComplete control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.DropDownList ddlTaskComplete;
+        /// <summary>
+        /// ddlTaskComplete control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlTaskComplete;
+    }
 }

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/groups/groups.master" AutoEventWireup="true" Inherits="views_groups_multicast" Codebehind="multicast.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/groups/groups.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.groups.views_groups_multicast" Codebehind="multicast.aspx.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li>

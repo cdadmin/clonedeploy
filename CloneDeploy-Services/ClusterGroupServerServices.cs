@@ -21,7 +21,7 @@ namespace CloneDeploy_Services
             if (clusterGroupServerEntity != null)
             {
                 DeleteClusterGroupServers(clusterGroupServerEntity.ClusterGroupId);
-                if (clusterGroupServerEntity.SecondaryServerId == -2)
+                if (clusterGroupServerEntity.ServerId == -2)
                 {
                     actionResult.Success = true;
                     return actionResult;

@@ -9,23 +9,26 @@
 
 
 
-public partial class views_images_profiles_scripts {
+namespace CloneDeploy_Web.views.images.profiles
+{
+    public partial class views_images_profiles_scripts {
     
-    /// <summary>
-    /// btnUpdateScripts control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.LinkButton btnUpdateScripts;
+        /// <summary>
+        /// btnUpdateScripts control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnUpdateScripts;
     
-    /// <summary>
-    /// gvScripts control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.GridView gvScripts;
+        /// <summary>
+        /// gvScripts control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvScripts;
+    }
 }

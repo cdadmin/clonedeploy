@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using CloneDeploy_ApiCalls;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services.Helpers;
@@ -14,22 +14,24 @@ namespace CloneDeploy_Services.Workflows
     {
         private readonly ImageProfileEntity _imageProfile;
         private readonly bool _promptComputerName;
+        private readonly SecondaryServerServices _secondaryServerServices;
 
         public ClobberBootMenu(int imageProfileId, bool promptComputerName)
         {
             _promptComputerName = promptComputerName;
             _imageProfile = new ImageProfileServices().ReadProfile(imageProfileId);
+            _secondaryServerServices = new SecondaryServerServices();
         }
 
-        public bool CreatePxeBootFiles()
+        public bool Execute()
         {
-            var webPath = Settings.WebPath;
-            var globalComputerArgs = Settings.GlobalComputerArgs;
+            var webPath = SettingServices.GetSettingValue(SettingStrings.WebPath);
+            var globalComputerArgs = SettingServices.GetSettingValue(SettingStrings.GlobalComputerArgs);
             var namePromptArg = "";
             if (_promptComputerName)
                 namePromptArg = " name_prompt=true";
 
-            var userToken = Settings.ClobberRequiresLogin == "No" ? Settings.UniversalToken : "";
+            var userToken = SettingServices.GetSettingValue(SettingStrings.ClobberRequiresLogin) == "No" ? SettingServices.GetSettingValue(SettingStrings.UniversalToken) : "";
             const string newLineChar = "\n";
 
 
@@ -85,45 +87,43 @@ namespace CloneDeploy_Services.Workflows
 
             //In proxy mode all boot files are created regardless of the pxe mode, this way computers can be customized
             //to use a specific boot file without affecting all others, using the proxydhcp reservations file.
-            if (Settings.ProxyDhcp == "Yes")
+            if (SettingServices.GetSettingValue(SettingStrings.ProxyDhcp) == "Yes")
             {
                 string path = null;
 
-                if (Settings.OperationMode == "Single" ||
-                    (Settings.OperationMode == "Cluster Primary" && Settings.TftpServerRole))
+                if (SettingServices.ServerIsNotClustered ||
+                    (SettingServices.ServerIsClusterPrimary && SettingServices.TftpServerRole))
                 {
                     foreach (var bootMenu in list)
                     {
                         switch (bootMenu.Item2)
                         {
                             case ".cfg":
-                                path = Settings.TftpPath + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
+                                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
                                 break;
                             case ".ipxe":
-                                path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + bootMenu.Item1 +
+                                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar + bootMenu.Item1 +
                                        Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar +
                                        "default.ipxe";
                                 break;
                             case "":
-                                path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + bootMenu.Item1 +
+                                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar + bootMenu.Item1 +
                                        Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar +
                                        "default";
                                 break;
                         }
 
 
-                        if (!new FileOps().WritePath(path, bootMenu.Item3))
+                        if (!new FileOpsServices().WritePath(path, bootMenu.Item3))
                             return false;
                     }
                 }
                 else
                 {
-                    var tftpServers =
-                        new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
-                    foreach (var tftpServer in tftpServers)
+                    foreach (var tftpServer in _secondaryServerServices.GetAllWithTftpRole())
                     {
                         var tftpPath =
-                            new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
+                            new APICall(_secondaryServerServices.GetToken(tftpServer.Name))
                                 .SettingApi.GetSetting("Tftp Path").Value;
 
                         foreach (var bootMenu in list)
@@ -149,7 +149,7 @@ namespace CloneDeploy_Services.Workflows
                             tftpFile.Contents = bootMenu.Item3;
                             tftpFile.Path = path;
 
-                            new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
+                            new APICall(_secondaryServerServices.GetToken(tftpServer.Name))
                                 .ServiceAccountApi.WriteTftpFile(tftpFile);
                         }
                     }
@@ -158,41 +158,39 @@ namespace CloneDeploy_Services.Workflows
             //When not using proxy dhcp, only one boot file is created
             else
             {
-                var mode = Settings.PxeMode;
+                var mode = SettingServices.GetSettingValue(SettingStrings.PxeMode);
                 string path = null;
                 string fileContents = null;
 
-                if (Settings.OperationMode == "Single" ||
-                    (Settings.OperationMode == "Cluster Primary" && Settings.TftpServerRole))
+                if (SettingServices.ServerIsNotClustered ||
+                    (SettingServices.ServerIsClusterPrimary && SettingServices.TftpServerRole))
                 {
                     if (mode == "pxelinux" || mode == "syslinux_32_efi" || mode == "syslinux_64_efi")
                     {
-                        path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
                         fileContents = sysLinux.ToString();
                     }
 
                     else if (mode.Contains("ipxe"))
                     {
-                        path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default.ipxe";
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default.ipxe";
                         fileContents = ipxe.ToString();
                     }
                     else if (mode.Contains("grub"))
                     {
-                        path = Settings.TftpPath + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
                         fileContents = grub.ToString();
                     }
 
-                    if (!new FileOps().WritePath(path, fileContents))
+                    if (!new FileOpsServices().WritePath(path, fileContents))
                         return false;
                 }
                 else
                 {
-                    var tftpServers =
-                        new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
-                    foreach (var tftpServer in tftpServers)
+                    foreach (var tftpServer in _secondaryServerServices.GetAllWithTftpRole())
                     {
                         var tftpPath =
-                            new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
+                            new APICall(_secondaryServerServices.GetToken(tftpServer.Name))
                                 .SettingApi.GetSetting("Tftp Path").Value;
 
                         if (mode == "pxelinux" || mode == "syslinux_32_efi" || mode == "syslinux_64_efi")
@@ -216,7 +214,7 @@ namespace CloneDeploy_Services.Workflows
                         tftpFile.Contents = fileContents;
                         tftpFile.Path = path;
 
-                        new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
+                        new APICall(_secondaryServerServices.GetToken(tftpServer.Name))
                             .ServiceAccountApi.WriteTftpFile(tftpFile);
                     }
                 }

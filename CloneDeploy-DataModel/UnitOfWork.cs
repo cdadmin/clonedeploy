@@ -64,6 +64,8 @@ namespace CloneDeploy_DataModel
         private IGenericRepository<UserLockoutEntity> _userLockoutRepository;
         private CloneDeployUserRepository _userRepository;
         private IGenericRepository<UserRightEntity> _userRightRepository;
+        private IGenericRepository<NetBootProfileEntity> _netBootProfileRepository;
+        private IGenericRepository<NbiEntryEntity> _nbiEntryRepository; 
 
         private bool disposed;
 
@@ -540,6 +542,22 @@ namespace CloneDeploy_DataModel
             get
             {
                 return _userRightRepository ?? (_userRightRepository = new GenericRepository<UserRightEntity>(_context));
+            }
+        }
+
+        public IGenericRepository<NetBootProfileEntity> NetBootProfileRepository
+        {
+            get
+            {
+                return _netBootProfileRepository ?? (_netBootProfileRepository = new GenericRepository<NetBootProfileEntity>(_context));
+            }
+        }
+
+        public IGenericRepository<NbiEntryEntity> NbiEntryRepository
+        {
+            get
+            {
+                return _nbiEntryRepository ?? (_nbiEntryRepository = new GenericRepository<NbiEntryEntity>(_context));
             }
         }
 

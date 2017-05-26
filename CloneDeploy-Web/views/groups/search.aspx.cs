@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.groups
+namespace CloneDeploy_Web.views.groups
 {
     public partial class GroupSearch : Groups
     {
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.DeleteGroup);
+            RequiresAuthorization(AuthorizationStrings.DeleteGroup);
             var deletedCount = 0;
             foreach (var dataKey in from GridViewRow row in gvGroups.Rows
                 let cb = (CheckBox) row.FindControl("chkSelector")

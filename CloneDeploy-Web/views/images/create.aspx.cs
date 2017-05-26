@@ -1,15 +1,15 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.images
+namespace CloneDeploy_Web.views.images
 {
     public partial class ImageCreate : Images
     {
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.CreateImage);
+            RequiresAuthorization(AuthorizationStrings.CreateImage);
             var image = new ImageEntity
             {
                 Name = txtImageName.Text,
@@ -55,10 +55,7 @@ namespace views.images
             if (ddlOsxImageType.Text == "thin")
             {
                 thinImage.Visible = true;
-                ddlThinOS.DataSource = Call.FilesystemApi.GetThinImages();
-                ddlThinOS.DataBind();
-                ddlThinRecovery.DataSource = Call.FilesystemApi.GetThinImages();
-                ddlThinRecovery.DataBind();
+               
             }
             else
             {

@@ -1,9 +1,9 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.masters
+namespace CloneDeploy_Web.views.users
 {
     public partial class UserMaster : MasterBaseMaster
     {
@@ -13,7 +13,7 @@ namespace views.masters
 
         protected void btnDelete_Click(object sender, EventArgs e)
         {
-            UsersBasePage.RequiresAuthorization(Authorizations.Administrator);
+            UsersBasePage.RequiresAuthorization(AuthorizationStrings.Administrator);
             if (UsersBasePage.Call.CloneDeployUserApi.GetAdminCount() == 1 &&
                 CloneDeployUser.Membership == "Administrator")
             {
@@ -30,7 +30,7 @@ namespace views.masters
 
         protected void btnDeleteGroup_Click(object sender, EventArgs e)
         {
-            UsersBasePage.RequiresAuthorization(Authorizations.Administrator);
+            UsersBasePage.RequiresAuthorization(AuthorizationStrings.Administrator);
 
             lblTitle.Text = "Delete This User Group?";
             Page.ClientScript.RegisterStartupScript(GetType(), "modalscript",

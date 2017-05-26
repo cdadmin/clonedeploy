@@ -60,6 +60,8 @@ namespace CloneDeploy_DataModel
         IGenericRepository<UserLockoutEntity> UserLockoutRepository { get; }
         CloneDeployUserRepository UserRepository { get; }
         IGenericRepository<UserRightEntity> UserRightRepository { get; }
+        IGenericRepository<NetBootProfileEntity> NetBootProfileRepository { get; }
+        IGenericRepository<NbiEntryEntity> NbiEntryRepository { get; } 
         void Save();
     }
 }

@@ -2,17 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using CloneDeploy_Entities;
-using CloneDeploy_Services.Helpers;
 
 namespace CloneDeploy_Services.Workflows
 {
     public class GetImageServer
     {
         private readonly ComputerEntity _computer;
+        private readonly string _direction;
+        private Random _random;
 
-        public GetImageServer(ComputerEntity computer)
+
+        public GetImageServer(ComputerEntity computer,string direction)
         {
             _computer = computer;
+            _direction = direction;
+            _random = new Random();
         }
 
         public int Run()
@@ -22,7 +26,7 @@ namespace CloneDeploy_Services.Workflows
             int dpId;
             var distributionPointServices = new DistributionPointServices();
 
-            if (Settings.OperationMode == "Single")
+            if (SettingServices.ServerIsNotClustered)
             {
                 var dp = distributionPointServices.GetPrimaryDistributionPoint();
                 if (dp != null)
@@ -53,11 +57,25 @@ namespace CloneDeploy_Services.Workflows
 
             var queueSizesDict = new Dictionary<int, int>();
             var toRemove = new List<DistributionPointEntity>();
+            var clusterDps = clusterServices.GetClusterDps(clusterGroup.Id);
+            var aDps = new List<DistributionPointEntity>();
+            foreach (var clusterDp in clusterDps)
+            {
+                aDps.Add(distributionPointServices.GetDistributionPoint(clusterDp.DistributionPointId));
+            }
             var availableDistributionPoints =
                 clusterServices.GetClusterDps(clusterGroup.Id)
                     .Select(
                         clusterDp => distributionPointServices.GetDistributionPoint(clusterDp.DistributionPointId))
                     .ToList();
+
+            //Check if any Distribution point in the cluster group is the primary dp
+            foreach (var dp in availableDistributionPoints.Where(dp => dp.IsPrimary == 1))
+            {
+                //Cluster Group has a primary, always return the primary for an upload, not necessary but saves syncing to the primary later
+                if (_direction == "pull")
+                    return dp.Id;
+            }
 
             foreach (var dp in availableDistributionPoints)
             {
@@ -96,18 +114,17 @@ namespace CloneDeploy_Services.Workflows
             else if (freeDps.Count > 1)
             {
                 var freeDictionary = new Dictionary<int, int>();
+                var slotsInUseList = new List<int>();
                 foreach (var dp in freeDps)
                 {
                     freeDictionary.Add(dp.Id, taskInUseDict[dp.Id]);
+                    slotsInUseList.Add(taskInUseDict[dp.Id]);
                 }
 
-                var duplicateFreeDict = freeDictionary.GroupBy(x => x.Value).Where(x => x.Count() > 1);
-
-                if (duplicateFreeDict.Count() == freeDictionary.Count)
+                if (slotsInUseList.All(x => x == slotsInUseList[0]))
                 {
-                    //all image servers have equal free slots - randomly choose one.
-                    var random = new Random();
-                    var index = random.Next(0, freeDps.Count);
+                    //all image servers have equal free slots - randomly choose one.                 
+                    var index = _random.Next(0, freeDps.Count);
                     dpId = freeDps[index].Id;
                 }
                 else

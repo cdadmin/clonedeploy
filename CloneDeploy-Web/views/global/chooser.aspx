@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/global.master" AutoEventWireup="true" Inherits="views_global_chooser" Codebehind="chooser.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/global.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.global.views_global_chooser" Codebehind="chooser.aspx.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
 </asp:Content>

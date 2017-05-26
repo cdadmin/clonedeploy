@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using CloneDeploy_ApiCalls;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 
 namespace CloneDeploy_Web.BasePages
@@ -63,7 +65,7 @@ namespace CloneDeploy_Web.BasePages
             {
                 HttpContext.Current.Session.Abandon();
                 FormsAuthentication.SignOut();
-                Response.Redirect("~/views/login/login.aspx?session=expired", true);
+                Response.Redirect("~/?session=expired", true);
             }
 
             CloneDeployCurrentUser = (CloneDeployUserEntity) currentUser;
@@ -178,6 +180,52 @@ namespace CloneDeploy_Web.BasePages
         {
             if (!Call.AuthorizationApi.ImageManagement(requiredRight, imageId))
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
+        }
+
+        public static string PlaceHolderReplace(string parameter)
+        {
+            if (string.IsNullOrEmpty(parameter)) return parameter;
+            var start = parameter.IndexOf("[", StringComparison.Ordinal);
+            var to = parameter.IndexOf("]", start + "[".Length, StringComparison.Ordinal);
+            if (start < 0 || to < 0) return parameter;
+            var s = parameter.Substring(
+                start + "[".Length,
+                to - start - "[".Length);
+            if (s == "server-ip")
+            {
+                return parameter.Replace("[server-ip]", GetSetting(SettingStrings.ServerIp));
+            }
+            if (s == "tftp-server-ip")
+            {
+                return parameter.Replace("[tftp-server-ip]", GetSetting(SettingStrings.TftpServerIp));
+            }
+            return s;
+        }
+
+        public static List<string> GetFeLogs()
+        {
+            var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
+                          Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar;
+
+            var logFiles = Directory.GetFiles(logPath, "*.*");
+            var result = new List<string>();
+            for (var x = 0; x < logFiles.Length; x++)
+                result.Add(Path.GetFileName(logFiles[x]));
+
+            return result;
+        }
+
+        public static List<string> GetLogContents(string name, int limit)
+        {
+            var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
+                          Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar + name;
+            return File.ReadLines(logPath).Reverse().Take(limit).Reverse().ToList();
+        }
+
+        public static string GetSetting(string settingName)
+        {
+            var setting = new APICall().SettingApi.GetSetting(settingName);
+            return setting != null ? setting.Value : string.Empty;
         }
     }
 }

@@ -1,38 +1,41 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-public partial class views_global_sysprep_edit : Global
+namespace CloneDeploy_Web.views.global.sysprep
 {
-    protected void btnSubmit_OnClick(object sender, EventArgs e)
+    public partial class views_global_sysprep_edit : Global
     {
-        RequiresAuthorization(Authorizations.UpdateGlobal);
-        var sysprepTag = new SysprepTagEntity
+        protected void btnSubmit_OnClick(object sender, EventArgs e)
         {
-            Id = SysprepTag.Id,
-            Name = txtName.Text,
-            OpeningTag = txtOpenTag.Text,
-            ClosingTag = txtCloseTag.Text,
-            Description = txtSysprepDesc.Text,
-            Contents = txtContent.Text
-        };
+            RequiresAuthorization(AuthorizationStrings.UpdateGlobal);
+            var sysprepTag = new SysprepTagEntity
+            {
+                Id = SysprepTag.Id,
+                Name = txtName.Text,
+                OpeningTag = txtOpenTag.Text,
+                ClosingTag = txtCloseTag.Text,
+                Description = txtSysprepDesc.Text,
+                Contents = txtContent.Text
+            };
 
-        var result = Call.SysprepTagApi.Put(sysprepTag.Id, sysprepTag);
-        EndUserMessage = result.Success ? "Successfully Updated Sysprep Tag" : result.ErrorMessage;
-    }
+            var result = Call.SysprepTagApi.Put(sysprepTag.Id, sysprepTag);
+            EndUserMessage = result.Success ? "Successfully Updated Sysprep Tag" : result.ErrorMessage;
+        }
 
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        if (!IsPostBack) PopulateForm();
-    }
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack) PopulateForm();
+        }
 
-    protected void PopulateForm()
-    {
-        txtName.Text = SysprepTag.Name;
-        txtOpenTag.Text = SysprepTag.OpeningTag;
-        txtCloseTag.Text = SysprepTag.ClosingTag;
-        txtSysprepDesc.Text = SysprepTag.Description;
-        txtContent.Text = SysprepTag.Contents;
+        protected void PopulateForm()
+        {
+            txtName.Text = SysprepTag.Name;
+            txtOpenTag.Text = SysprepTag.OpeningTag;
+            txtCloseTag.Text = SysprepTag.ClosingTag;
+            txtSysprepDesc.Text = SysprepTag.Description;
+            txtContent.Text = SysprepTag.Contents;
+        }
     }
 }

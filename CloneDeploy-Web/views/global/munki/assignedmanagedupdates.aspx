@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/munki/munki.master" AutoEventWireup="true" Inherits="views_global_munki_assignedmanagedupdates" Codebehind="assignedmanagedupdates.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/munki/munki.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.global.munki.views_global_munki_assignedmanagedupdates" Codebehind="assignedmanagedupdates.aspx.cs" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">

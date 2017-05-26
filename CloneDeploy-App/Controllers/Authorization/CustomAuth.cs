@@ -6,17 +6,21 @@ using System.Security.Claims;
 using System.Threading;
 using System.Web.Http;
 using System.Web.Http.Controllers;
+using CloneDeploy_Common;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
+using log4net;
 
 namespace CloneDeploy_App.Controllers.Authorization
 {
     public class CustomAuthAttribute : AuthorizeAttribute
     {
+        private readonly ILog _log = LogManager.GetLogger("ApplicationLog");
         public string Permission { get; set; }
 
         public override void OnAuthorization(HttpActionContext actionContext)
         {
+            _log.Debug("Resource Requested: " + actionContext.Request.RequestUri);
             base.OnAuthorization(actionContext);
             var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
@@ -28,61 +32,61 @@ namespace CloneDeploy_App.Controllers.Authorization
             var authorized = false;
             switch (Permission)
             {
-                case "ComputerSearch":
-                case "ComputerCreate":
-                case "GroupSearch":
-                case "GroupCreate":
-                case "SmartCreate":
-                case "ImageSearch":
-                case "ImageCreate":
-                case "ProfileSearch":
-                case "ProfileCreate":
-                case "AdminRead":
-                case "AdminUpdate":
-                case "Administrator":
-                case "GlobalRead":
-                case "GlobalUpdate":
-                case "GlobalCreate":
-                case "GlobalDelete":
-                case "AllowOnd":
-                case "ServiceAccount":
+                case AuthorizationStrings.SearchComputer:
+                case AuthorizationStrings.CreateComputer:
+                case AuthorizationStrings.SearchGroup:
+                case AuthorizationStrings.CreateGroup:
+                case AuthorizationStrings.CreateSmart:
+                case AuthorizationStrings.SearchImage:
+                case AuthorizationStrings.CreateImage:
+                case AuthorizationStrings.SearchProfile:
+                case AuthorizationStrings.CreateProfile:
+                case AuthorizationStrings.ReadAdmin:
+                case AuthorizationStrings.UpdateAdmin:
+                case AuthorizationStrings.Administrator:
+                case AuthorizationStrings.ReadGlobal:
+                case AuthorizationStrings.UpdateGlobal:
+                case AuthorizationStrings.CreateGlobal:
+                case AuthorizationStrings.DeleteGlobal:
+                case AuthorizationStrings.AllowOnd:
+                case AuthorizationStrings.ServiceAccount:
                     if (new AuthorizationServices(Convert.ToInt32(userId), Permission).IsAuthorized())
                         authorized = true;
                     break;
-                case "ComputerDelete":
-                case "ComputerUpdate":
-                case "ComputerRead":
-                case "ImageTaskDeploy":
-                case "ImageTaskUpload":
+                case AuthorizationStrings.DeleteComputer:
+                case AuthorizationStrings.UpdateComputer:
+                case AuthorizationStrings.ReadComputer:
+                case AuthorizationStrings.ImageDeployTask:
+                case AuthorizationStrings.ImageUploadTask:
                     var computerId = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
                     if (new AuthorizationServices(Convert.ToInt32(userId), Permission).ComputerManagement(computerId))
                         authorized = true;
                     break;
-                case "GroupDelete":
-                case "GroupUpdate":
-                case "GroupRead":
-                case "SmartUpdate":
-                case "ImageTaskMulticast":
+                case AuthorizationStrings.DeleteGroup:
+                case AuthorizationStrings.UpdateGroup:
+                case AuthorizationStrings.ReadGroup:
+                case AuthorizationStrings.UpdateSmart:
+                case AuthorizationStrings.ImageMulticastTask:
                     var groupId = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
                     if (new AuthorizationServices(Convert.ToInt32(userId), Permission).GroupManagement(groupId))
                         authorized = true;
                     break;
-                case "ImageTaskDeployGroup":
+                case AuthorizationStrings.ImageTaskDeployGroup:
                     var groupId_a = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
-                    if (new AuthorizationServices(Convert.ToInt32(userId), "ImageTaskDeploy").GroupManagement(groupId_a))
+                    if (new AuthorizationServices(Convert.ToInt32(userId), AuthorizationStrings.ImageDeployTask).GroupManagement(groupId_a))
                         authorized = true;
                     break;
-                case "ImageDelete":
-                case "ImageUpdate":
-                case "ImageRead":
-                case "ApproveImage":
+                case AuthorizationStrings.DeleteImage:
+                case AuthorizationStrings.UpdateImage:
+                case AuthorizationStrings.ReadImage:
+                case AuthorizationStrings.ApproveImage:
                     var imageId = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
                     if (new AuthorizationServices(Convert.ToInt32(userId), Permission).ImageManagement(imageId))
                         authorized = true;
                     break;
-                case "ProfileDelete":
-                case "ProfileUpdate":
-                case "ProfileRead":
+                case AuthorizationStrings.DeleteProfile:
+                case AuthorizationStrings.UpdateProfile:
+                case AuthorizationStrings.ReadProfile:
                     var profileId = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
                     var profile = new ImageProfileServices().ReadProfile(profileId);
                     if (profile == null)
@@ -97,12 +101,12 @@ namespace CloneDeploy_App.Controllers.Authorization
                         authorized = true;
 
                     break;
-                case "ImageTaskDelete":
+                case AuthorizationStrings.ImageDeleteTask:
                     var objectId = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
                     var activeImagingTask = new ActiveImagingTaskServices().GetTask(objectId);
                     var computer = new ComputerServices().GetComputer(activeImagingTask.ComputerId);
                     if (
-                        new AuthorizationServices(Convert.ToInt32(userId), "ImageTaskDeploy").ComputerManagement(
+                        new AuthorizationServices(Convert.ToInt32(userId), AuthorizationStrings.ImageDeployTask).ComputerManagement(
                             computer.Id))
                         authorized = true;
                     break;

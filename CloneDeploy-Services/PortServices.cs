@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
+using CloneDeploy_Common;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
-using CloneDeploy_Services.Helpers;
 
 namespace CloneDeploy_Services
 {
@@ -32,9 +32,9 @@ namespace CloneDeploy_Services
 
 
             if (lastPort == null)
-                nextPort.Number = Convert.ToInt32(Settings.StartPort);
-            else if (nextPort.Number >= Convert.ToInt32(Settings.EndPort))
-                nextPort.Number = Convert.ToInt32(Settings.StartPort);
+                nextPort.Number = Convert.ToInt32(SettingServices.GetSettingValue(SettingStrings.StartPort));
+            else if (nextPort.Number >= Convert.ToInt32(SettingServices.GetSettingValue(SettingStrings.EndPort)))
+                nextPort.Number = Convert.ToInt32(SettingServices.GetSettingValue(SettingStrings.StartPort));
             else
                 nextPort.Number = lastPort.Number + 2;
 

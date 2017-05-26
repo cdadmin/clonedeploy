@@ -1,9 +1,9 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.groups
+namespace CloneDeploy_Web.views.groups
 {
     public partial class GroupCreate : Groups
     {
@@ -13,9 +13,9 @@ namespace views.groups
 
         protected void Submit_Click(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.CreateGroup);
+            RequiresAuthorization(AuthorizationStrings.CreateGroup);
             if (ddlGroupType.Text == "smart")
-                RequiresAuthorization(Authorizations.CreateSmart);
+                RequiresAuthorization(AuthorizationStrings.CreateSmart);
             var group = new GroupEntity
             {
                 Name = txtGroupName.Text,

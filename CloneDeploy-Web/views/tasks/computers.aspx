@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/tasks/task.master" AutoEventWireup="true" Inherits="views.tasks.TaskUnicast" Codebehind="computers.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/tasks/task.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.tasks.TaskUnicast" Codebehind="computers.aspx.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li>Start Computer Task</li>

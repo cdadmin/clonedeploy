@@ -1,4 +1,6 @@
-﻿namespace CloneDeploy_ApiCalls
+﻿using CloneDeploy_Entities;
+
+namespace CloneDeploy_ApiCalls
 {
     public interface IAPICall
     {
@@ -57,5 +59,7 @@
         UserImageManagementAPI UserImageManagementApi { get; }
         UserRightAPI UserRightApi { get; }
         WorkflowAPI WorkflowApi { get; }
+        NetBootProfileAPI NetBootProfileApi { get; }
+        NbiEntryAPI NbiEntryApi { get; }
     }
 }

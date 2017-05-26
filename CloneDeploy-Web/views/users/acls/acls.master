@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" MasterPageFile="~/views/users/user.master" AutoEventWireup="true" Inherits="views_users_acls_acls" Codebehind="acls.master.cs" %>
+﻿<%@ Master Language="C#" MasterPageFile="~/views/users/user.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.users.acls.views_users_acls_acls" Codebehind="acls.master.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li>

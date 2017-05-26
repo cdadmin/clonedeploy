@@ -15,6 +15,7 @@ namespace CloneDeploy_ApiCalls
         {
         }
 
+
         public ActiveImagingTaskAPI ActiveImagingTaskApi
         {
             get { return new ActiveImagingTaskAPI("ActiveImagingTask"); }
@@ -294,6 +295,16 @@ namespace CloneDeploy_ApiCalls
         public WorkflowAPI WorkflowApi
         {
             get { return new WorkflowAPI("Workflow"); }
+        }
+
+        public NetBootProfileAPI NetBootProfileApi
+        {
+            get { return new NetBootProfileAPI("NetBootProfile"); }
+        }
+
+        public NbiEntryAPI NbiEntryApi
+        {
+            get { return new NbiEntryAPI("NbiEntry"); }
         }
     }
 }

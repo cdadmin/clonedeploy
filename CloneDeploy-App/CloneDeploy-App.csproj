@@ -74,6 +74,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MySql.Data.Entity.6.9.7\lib\net45\MySql.Data.Entity.EF6.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Owin">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
@@ -121,11 +125,13 @@
     </Compile>
     <Compile Include="Controllers\DistributionPointController.cs" />
     <Compile Include="Controllers\Ip.cs" />
+    <Compile Include="Controllers\NbiEntryController.cs" />
     <Compile Include="Controllers\OnlineKernelController.cs" />
     <Compile Include="Controllers\SecondaryServerController.cs" />
     <Compile Include="Controllers\ClusterGroupServersController.cs" />
     <Compile Include="Controllers\ServiceAccountController.cs" />
     <Compile Include="Controllers\ProxyDhcpController.cs" />
+    <Compile Include="Controllers\NetBootProfileController.cs" />
     <Compile Include="Controllers\WorkflowController.cs" />
     <Compile Include="Controllers\UserGroupController.cs" />
     <Compile Include="Controllers\UserGroupGroupManagementController.cs" />
@@ -228,6 +234,10 @@
     <ProjectReference Include="..\CloneDeploy-Entities\CloneDeploy-Entities.csproj">
       <Project>{453080da-87a4-4f5f-aa1f-2c49e37d2f21}</Project>
       <Name>CloneDeploy-Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CloneDeploy-Helpers\CloneDeploy-Common.csproj">
+      <Project>{6ead11e1-3464-40a1-b6cd-24d40ad2507a}</Project>
+      <Name>CloneDeploy-Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\CloneDeploy-Services\CloneDeploy-Services.csproj">
       <Project>{1f6bffed-303f-4991-b44c-f70bfff0a0d4}</Project>

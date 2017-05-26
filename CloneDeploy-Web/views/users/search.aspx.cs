@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.users
+namespace CloneDeploy_Web.views.users
 {
     public partial class UserSearch : Users
     {
@@ -74,7 +74,7 @@ namespace views.users
             }
 
             //Just In Case
-            RequiresAuthorization(Authorizations.Administrator);
+            RequiresAuthorization(AuthorizationStrings.Administrator);
 
             if (IsPostBack) return;
             PopulateGrid();

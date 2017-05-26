@@ -80,7 +80,12 @@
     <Compile Include="ClientPartitionHelper.cs" />
     <Compile Include="DistributionPoint.cs" />
     <Compile Include="FileFolderServices.cs" />
-    <Compile Include="Helpers\Zip.cs" />
+    <Compile Include="NbiEntryServices.cs" />
+    <Compile Include="IpServices.cs" />
+    <Compile Include="NetbootProfileServices.cs" />
+    <Compile Include="StringManipulationServices.cs" />
+    <Compile Include="Workflows\CreateAppleVendorString.cs" />
+    <Compile Include="ZipServices.cs" />
     <Compile Include="OnlineKernelServices.cs" />
     <Compile Include="ProxyDhcpServices.cs" />
     <Compile Include="FilesystemServices.cs" />
@@ -138,14 +143,11 @@
     <Compile Include="Workflows\TaskBootMenu.cs" />
     <Compile Include="Workflows\Unicast.cs" />
     <Compile Include="ComputerServices.cs" />
-    <Compile Include="Helpers\Authorizations.cs" />
-    <Compile Include="Helpers\Encryption.cs" />
-    <Compile Include="Helpers\FileOps.cs" />
-    <Compile Include="Helpers\Mail.cs" />
-    <Compile Include="Helpers\RegParser.cs" />
-    <Compile Include="Helpers\Settings.cs" />
-    <Compile Include="Helpers\UNCAccessWithCredentials.cs" />
-    <Compile Include="Helpers\Utility.cs" />
+    <Compile Include="EncryptionServices.cs" />
+    <Compile Include="FileOpsServices.cs" />
+    <Compile Include="MailServices.cs" />
+    <Compile Include="RegParserServices.cs" />
+    <Compile Include="UncServices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +162,10 @@
     <ProjectReference Include="..\CloneDeploy-Entities\CloneDeploy-Entities.csproj">
       <Project>{453080da-87a4-4f5f-aa1f-2c49e37d2f21}</Project>
       <Name>CloneDeploy-Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CloneDeploy-Helpers\CloneDeploy-Common.csproj">
+      <Project>{6ead11e1-3464-40a1-b6cd-24d40ad2507a}</Project>
+      <Name>CloneDeploy-Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

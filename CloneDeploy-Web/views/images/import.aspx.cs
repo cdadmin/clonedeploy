@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
+using CloneDeploy_Common;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.images
+namespace CloneDeploy_Web.views.images
 {
     public partial class ImageImport : Images
     {
@@ -25,7 +25,7 @@ namespace views.images
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.CreateImage);
+            RequiresAuthorization(AuthorizationStrings.CreateImage);
             if (IsPostBack) return;
         }
     }

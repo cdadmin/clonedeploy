@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CloneDeploy_ApiCalls;
+using CloneDeploy_Common;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
@@ -23,7 +24,7 @@ namespace CloneDeploy_Services
         public ActionResultDTO AddComputer(ComputerEntity computer)
         {
             var actionResult = new ActionResultDTO();
-            computer.Mac = Utility.FixMac(computer.Mac);
+            computer.Mac = StringManipulationServices.FixMac(computer.Mac);
             var validationResult = ValidateComputer(computer, "new");
             if (validationResult.Success)
             {
@@ -97,10 +98,10 @@ namespace CloneDeploy_Services
                 return false; //Files Will Be Processed When task is done
             var bootMenu = new ComputerServices().GetComputerBootMenu(computer.Id);
             if (bootMenu == null) return false;
-            var pxeMac = Utility.MacToPxeMac(computer.Mac);
+            var pxeMac = StringManipulationServices.MacToPxeMac(computer.Mac);
             string path;
 
-            if (Settings.ProxyDhcp == "Yes")
+            if (SettingServices.GetSettingValue(SettingStrings.ProxyDhcp) == "Yes")
             {
                 var list = new List<Tuple<string, string, string>>
                 {
@@ -113,30 +114,30 @@ namespace CloneDeploy_Services
                     Tuple.Create("efi64", ".cfg", bootMenu.Efi64Menu)
                 };
 
-                if (Settings.OperationMode == "Single")
+                if (SettingServices.ServerIsNotClustered)
                 {
                     foreach (var tuple in list)
                     {
-                        path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
                                Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeMac +
                                tuple.Item2;
 
                         if (!string.IsNullOrEmpty(tuple.Item3))
-                            new FileOps().WritePath(path, tuple.Item3);
+                            new FileOpsServices().WritePath(path, tuple.Item3);
                     }
                 }
                 else
                 {
-                    if (Settings.TftpServerRole)
+                    if (SettingServices.TftpServerRole)
                     {
                         foreach (var tuple in list)
                         {
-                            path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
+                            path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
                                    Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeMac +
                                    tuple.Item2;
 
                             if (!string.IsNullOrEmpty(tuple.Item3))
-                                new FileOps().WritePath(path, tuple.Item3);
+                                new FileOpsServices().WritePath(path, tuple.Item3);
                         }
                     }
 
@@ -145,7 +146,7 @@ namespace CloneDeploy_Services
                     foreach (var server in secondaryServers)
                     {
                         var tftpPath =
-                            new APICall(new SecondaryServerServices().GetApiToken(server.Name))
+                            new APICall(new SecondaryServerServices().GetToken(server.Name))
                                 .SettingApi.GetSetting("Tftp Path").Value;
                         foreach (var tuple in list)
                         {
@@ -153,7 +154,7 @@ namespace CloneDeploy_Services
                                    Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeMac +
                                    tuple.Item2;
 
-                            new APICall(new SecondaryServerServices().GetApiToken(server.Name))
+                            new APICall(new SecondaryServerServices().GetToken(server.Name))
                                 .ServiceAccountApi.WriteTftpFile(new TftpFileDTO
                                 {
                                     Path = path,
@@ -165,11 +166,11 @@ namespace CloneDeploy_Services
             }
             else
             {
-                var mode = Settings.PxeMode;
-                path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                var mode = SettingServices.GetSettingValue(SettingStrings.PxeMode);
+                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar +
                        pxeMac;
 
-                if (Settings.OperationMode == "Single")
+                if (SettingServices.ServerIsNotClustered)
                 {
                     if (mode.Contains("ipxe"))
                         path += ".ipxe";
@@ -177,13 +178,13 @@ namespace CloneDeploy_Services
                         path += ".cfg";
 
                     if (!string.IsNullOrEmpty(bootMenu.BiosMenu))
-                        new FileOps().WritePath(path, bootMenu.BiosMenu);
+                        new FileOpsServices().WritePath(path, bootMenu.BiosMenu);
                 }
                 else
                 {
-                    if (Settings.TftpServerRole)
+                    if (SettingServices.TftpServerRole)
                     {
-                        path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar +
                                pxeMac;
                         if (mode.Contains("ipxe"))
                             path += ".ipxe";
@@ -191,14 +192,14 @@ namespace CloneDeploy_Services
                             path += ".cfg";
 
                         if (!string.IsNullOrEmpty(bootMenu.BiosMenu))
-                            new FileOps().WritePath(path, bootMenu.BiosMenu);
+                            new FileOpsServices().WritePath(path, bootMenu.BiosMenu);
                     }
                     var secondaryServers =
                         new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
                     foreach (var server in secondaryServers)
                     {
                         var tftpPath =
-                            new APICall(new SecondaryServerServices().GetApiToken(server.Name))
+                            new APICall(new SecondaryServerServices().GetToken(server.Name))
                                 .SettingApi.GetSetting("Tftp Path").Value;
                         path = tftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
                                pxeMac;
@@ -208,7 +209,7 @@ namespace CloneDeploy_Services
                         else if (mode.Contains("grub"))
                             path += ".cfg";
 
-                        new APICall(new SecondaryServerServices().GetApiToken(server.Name))
+                        new APICall(new SecondaryServerServices().GetToken(server.Name))
                             .ServiceAccountApi.WriteTftpFile(new TftpFileDTO
                             {
                                 Path = path,
@@ -390,33 +391,39 @@ namespace CloneDeploy_Services
             return _uow.ComputerRepository.GetFirstOrDefault(p => p.Mac == mac);
         }
 
+        public List<AuditLogEntity> GetComputerAuditLogs(int computerId,int limit)
+        {
+            if (limit == 0) limit = int.MaxValue;
+            return _uow.AuditLogRepository.Get(x => x.ObjectType == "Computer" && x.ObjectId == computerId).OrderByDescending(x => x.Id).Take(limit).ToList();
+        }
+
         public string GetComputerNonProxyPath(int computerId, bool isActiveOrCustom)
         {
             var computer = GetComputer(computerId);
-            var mode = Settings.PxeMode;
-            var pxeComputerMac = Utility.MacToPxeMac(computer.Mac);
+            var mode = SettingServices.GetSettingValue(SettingStrings.PxeMode);
+            var pxeComputerMac = StringManipulationServices.MacToPxeMac(computer.Mac);
             string path;
 
             var fileName = isActiveOrCustom ? pxeComputerMac : "default";
 
             if (mode.Contains("ipxe"))
-                path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar +
                        fileName + ".ipxe";
             else if (mode.Contains("grub"))
             {
                 if (isActiveOrCustom)
                 {
-                    path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                    path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar +
                            pxeComputerMac + ".cfg";
                 }
                 else
                 {
-                    path = Settings.TftpPath + "grub" + Path.DirectorySeparatorChar
+                    path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "grub" + Path.DirectorySeparatorChar
                            + "grub.cfg";
                 }
             }
             else
-                path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar +
                        fileName;
 
             return path;
@@ -425,13 +432,13 @@ namespace CloneDeploy_Services
         public string GetComputerProxyPath(int computerId, bool isActiveOrCustom, string proxyType)
         {
             var computer = GetComputer(computerId);
-            var pxeComputerMac = Utility.MacToPxeMac(computer.Mac);
+            var pxeComputerMac = StringManipulationServices.MacToPxeMac(computer.Mac);
             string path = null;
 
 
-            var biosFile = Settings.ProxyBiosFile;
-            var efi32File = Settings.ProxyEfi32File;
-            var efi64File = Settings.ProxyEfi64File;
+            var biosFile = SettingServices.GetSettingValue(SettingStrings.ProxyBiosFile);
+            var efi32File = SettingServices.GetSettingValue(SettingStrings.ProxyEfi32File);
+            var efi64File = SettingServices.GetSettingValue(SettingStrings.ProxyEfi64File);
 
             var fileName = isActiveOrCustom ? pxeComputerMac : "default";
             switch (proxyType)
@@ -439,46 +446,46 @@ namespace CloneDeploy_Services
                 case "bios":
                     if (biosFile.Contains("ipxe"))
                     {
-                        path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar +
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar +
                                proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
                                Path.DirectorySeparatorChar + fileName + ".ipxe";
                     }
                     else
-                        path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar +
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar +
                                proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
                                Path.DirectorySeparatorChar + fileName;
                     break;
                 case "efi32":
                     if (efi32File.Contains("ipxe"))
-                        path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar +
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar +
                                proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
                                Path.DirectorySeparatorChar + fileName + ".ipxe";
                     else
-                        path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar +
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar +
                                proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
                                Path.DirectorySeparatorChar + fileName;
                     break;
                 case "efi64":
                     if (efi64File.Contains("ipxe"))
-                        path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar +
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar +
                                proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
                                Path.DirectorySeparatorChar + fileName + ".ipxe";
                     else if (efi64File.Contains("grub"))
                     {
                         if (isActiveOrCustom)
                         {
-                            path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar +
+                            path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar +
                                    proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
                                    Path.DirectorySeparatorChar + pxeComputerMac + ".cfg";
                         }
                         else
                         {
-                            path = Settings.TftpPath + "grub" +
+                            path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "grub" +
                                    Path.DirectorySeparatorChar + "grub.cfg";
                         }
                     }
                     else
-                        path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar +
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar +
                                proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
                                Path.DirectorySeparatorChar + fileName;
                     break;
@@ -627,7 +634,7 @@ namespace CloneDeploy_Services
             if (existingcomputer == null)
                 return new ActionResultDTO {ErrorMessage = "Computer Not Found", Id = 0};
 
-            computer.Mac = Utility.FixMac(computer.Mac);
+            computer.Mac = StringManipulationServices.FixMac(computer.Mac);
             var actionResult = new ActionResultDTO();
             var validationResult = ValidateComputer(computer, "update");
             if (validationResult.Success)

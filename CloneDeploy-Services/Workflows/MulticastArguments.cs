@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Web;
+using CloneDeploy_Common;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services.Helpers;
 using log4net;
@@ -25,10 +26,6 @@ namespace CloneDeploy_Services.Workflows
                 if (!hd.Active) continue;
                 multicastHdCounter++;
 
-                var imagePath = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar +
-                                mArgs.ImageName + Path.DirectorySeparatorChar + "hd" +
-                                schemaCounter;
-
                 var x = 0;
                 foreach (var part in mArgs.schema.HardDrives[schemaCounter].Partitions)
                 {
@@ -36,44 +33,22 @@ namespace CloneDeploy_Services.Workflows
                     string imageFile = null;
                     foreach (var ext in new[] {".ntfs", ".fat", ".extfs", ".hfsp", ".imager", ".winpe", ".xfs"})
                     {
-                        try
-                        {
-                            imageFile =
-                                Directory.GetFiles(
-                                    imagePath + Path.DirectorySeparatorChar, "part" + part.Number + ext + ".*")
-                                    .FirstOrDefault();
-                        }
-                        catch (Exception ex)
-                        {
-                            log.Debug(ex.Message);
-                            return 0;
-                        }
-
-
-                        if (imageFile != null) break;
+                        imageFile = new FilesystemServices().GetFileNameWithFullPath(mArgs.ImageName,
+                            schemaCounter.ToString(), part.Number, ext);
+                     
+                        if (!string.IsNullOrEmpty(imageFile)) break;
 
                         //Look for lvm
                         if (part.VolumeGroup == null) continue;
                         if (part.VolumeGroup.LogicalVolumes == null) continue;
                         foreach (var lv in part.VolumeGroup.LogicalVolumes.Where(lv => lv.Active))
                         {
-                            try
-                            {
-                                imageFile =
-                                    Directory.GetFiles(
-                                        imagePath + imagePath + Path.DirectorySeparatorChar, lv.VolumeGroup + "-" +
-                                                                                             lv.Name + ext + ".*")
-                                        .FirstOrDefault();
-                            }
-                            catch (Exception ex)
-                            {
-                                log.Debug(ex.Message);
-                                return 0;
-                            }
+                            imageFile = new FilesystemServices().GetLVMFileNameWithFullPath(mArgs.ImageName,
+                                schemaCounter.ToString(), lv.VolumeGroup, lv.Name, ext);
                         }
                     }
 
-                    if (imageFile == null)
+                    if (string.IsNullOrEmpty(imageFile))
                         continue;
                     if (mArgs.Environment == "winpe" &&
                         mArgs.schema.HardDrives[schemaCounter].Table.ToLower() == "gpt")
@@ -129,7 +104,7 @@ namespace CloneDeploy_Services.Workflows
                             prefix = " ; ";
 
 
-                        if (compAlg == "none" || Settings.MulticastDecompression == "client")
+                        if (compAlg == "none" || SettingServices.GetSettingValue(SettingStrings.MulticastDecompression) == "client")
                         {
                             processArguments += prefix + "cat " + "\"" + imageFile + "\"" + " | udp-sender" +
                                                 " --portbase " + mArgs.Port + minReceivers + " " +
@@ -152,12 +127,31 @@ namespace CloneDeploy_Services.Workflows
 
                         string prefix = null;
                         if (multicastHdCounter == 1)
-                            prefix = x == 1 ? " /c \"" : " & ";
+                        {
+                            //Relative to the multicast server being called
+                            var primaryDp = new DistributionPointServices().GetPrimaryDistributionPoint();
+                            if (primaryDp.Location == "Local")
+                            {
+                                prefix = x == 1 ? " /c \"" : " & ";
+                            }
+                            else //Remote
+                            {
+                                if (x == 1)
+                                {
+                                    prefix = " /c \"net use \\\\" + primaryDp.Server + "\\" + primaryDp.ShareName +
+                                             " /user:" + primaryDp.RoUsername + " " +  new EncryptionServices().DecryptText(primaryDp.RoPassword) + " & ";
+                                }
+                                else
+                                {
+                                    prefix = " & ";
+                                }
+                            }
+                        }
                         else
                             prefix = " & ";
 
 
-                        if (compAlg == "none" || Settings.MulticastDecompression == "client")
+                        if (compAlg == "none" || SettingServices.GetSettingValue(SettingStrings.MulticastDecompression) == "client")
                         {
                             processArguments += prefix + "\"" + appPath +
                                                 "udp-sender.exe" + "\"" + " --file " + "\"" + imageFile + "\"" +
@@ -178,6 +172,9 @@ namespace CloneDeploy_Services.Workflows
                 }
             }
 
+            var pDp = new DistributionPointServices().GetPrimaryDistributionPoint();
+            if (pDp.Location == "Remote")
+                processArguments += " & net use /delete \\\\" + pDp.Server + "\\" + pDp.ShareName;
             processArguments += "\"";
 
             return StartMulticastSender(processArguments, mArgs.groupName);
@@ -208,6 +205,7 @@ namespace CloneDeploy_Services.Workflows
             Process sender;
             try
             {
+                
                 sender = Process.Start(senderInfo);
             }
             catch (Exception ex)

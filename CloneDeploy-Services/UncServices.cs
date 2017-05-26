@@ -8,7 +8,7 @@ using NET_API_STATUS = System.UInt32;
 
 namespace CloneDeploy_Services.Helpers
 {
-    public class UNCAccessWithCredentials : IDisposable
+    public class UncServices : IDisposable
     {
         private bool disposed;
         private string sDomain;
@@ -32,7 +32,7 @@ namespace CloneDeploy_Services.Helpers
             GC.SuppressFinalize(this);
         }
 
-        ~UNCAccessWithCredentials()
+        ~UncServices()
         {
             Dispose();
         }

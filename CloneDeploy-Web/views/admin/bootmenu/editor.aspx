@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/bootmenu/bootmenu.master" AutoEventWireup="true" Inherits="views_admin_bootmenu_editor" Codebehind="editor.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/bootmenu/bootmenu.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.admin.bootmenu.views_admin_bootmenu_editor" Codebehind="editor.aspx.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
 </asp:Content>

@@ -17,7 +17,7 @@ function create_all_partition_layouts
 	
 	drive_name=$(echo $hard_drive | cut -d "/" -f 3)
     logical_block_size="$(diskutil info $hard_drive | grep "Device Block Size:" | cut -d : -f2 | sed 's/Bytes//g' | sed -e 's/^[ \t]*//')"   
-    hard_drive_size_bytes=$(diskutil info $hard_drive | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1 )
+    hard_drive_size_bytes=$(diskutil info $hard_drive | grep "$hd_size_param" | cut -d "(" -f2 | cut -d " " -f1 )
 	
     log "Get hd_schema:  profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$hard_drive_size_bytes&schemaHds=$imaged_schema_drives&clientLbs=0"
     hd_schema=$($curlAuth --data "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$hard_drive_size_bytes&schemaHds=$(remove_whitespace $imaged_schema_drives)&clientLbs=0" "${web}CheckHdRequirements" $curlEnd)
@@ -60,7 +60,7 @@ function fix_disk_identifiers
     boot_volume=$(diskutil list $hard_drive | grep -i "boot os x" | awk -F "$drive_name" '{print $2}' )
     if [ -n "$boot_volume" ]; then
 	  log "$hard_drive needs identifiers updated.  Updating"
-      partition_size_bytes=$(diskutil info "$drive_name$boot_volume" | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1)
+      partition_size_bytes=$(diskutil info "$drive_name$boot_volume" | grep "$partition_size_param" | cut -d "(" -f2 | cut -d " " -f1)
 	  diskutil resizeVolume "$drive_name$boot_volume" ${partition_size_bytes}B 2>>$CLIENT_LOG
 	  log "$partition_size_bytes $drive_name $boot_volume"
     fi
@@ -217,7 +217,7 @@ function process_hard_drives()
 	
 	drive_name=$(echo $hard_drive | cut -d "/" -f 3)
     logical_block_size="$(diskutil info $hard_drive | grep "Device Block Size:" | cut -d : -f2 | sed 's/Bytes//g' | sed -e 's/^[ \t]*//')"   
-    hard_drive_size_bytes=$(diskutil info $hard_drive | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1 )
+    hard_drive_size_bytes=$(diskutil info $hard_drive | grep "$hd_size_param" | cut -d "(" -f2 | cut -d " " -f1 )
 	
     log "Get hd_schema:  profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$hard_drive_size_bytes&schemaHds=$imaged_schema_drives&clientLbs=0"
     hd_schema=$($curlAuth --data "profileId=$profile_id&clientHdNumber=$current_hd_number&newHdSize=$hard_drive_size_bytes&schemaHds=$(remove_whitespace $imaged_schema_drives)&clientLbs=0" "${web}CheckHdRequirements" $curlEnd)
@@ -304,10 +304,10 @@ function process_partitions()
        log "$current_partition"
 	  
 	   if [[ "$(parse_json "$current_partition" .Type)" == *"Macintosh"* ]]; then
-		 partition_size_bytes=$(diskutil info ${hard_drive}${partition_prefix}2  | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1)
+		 partition_size_bytes=$(diskutil info ${hard_drive}${partition_prefix}2  | grep "$partition_size_param" | cut -d "(" -f2 | cut -d " " -f1)
 		 download_image "$current_partition" part2 "${hard_drive}${partition_prefix}2"
 	   elif [[ "$(parse_json "$current_partition" .Type)" == *"Recovery"* ]]; then
-	     partition_size_bytes=$(diskutil info ${hard_drive}${partition_prefix}3  | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1)	
+	     partition_size_bytes=$(diskutil info ${hard_drive}${partition_prefix}3  | grep "$partition_size_param" | cut -d "(" -f2 | cut -d " " -f1)	
 		 download_image "$current_partition" part3 "${hard_drive}${partition_prefix}3"
 	   fi
 	 done
@@ -327,7 +327,7 @@ function process_partitions()
        log "$current_partition"
 	  
 	   if [[ "$(parse_json "$current_partition" .Type)" == *"Recovery"* ]]; then
-	     partition_size_bytes=$(diskutil info ${hard_drive}${partition_prefix}3  | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1)	
+	     partition_size_bytes=$(diskutil info ${hard_drive}${partition_prefix}3  | grep "$partition_size_param" | cut -d "(" -f2 | cut -d " " -f1)	
 		 download_image "$current_partition" part4 "${hard_drive}${partition_prefix}4"
 	   fi
 	   
@@ -369,7 +369,7 @@ function process_partitions()
         fi
 	  done
 	
-	  partition_size_bytes=$(diskutil info ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)  | grep "Total Size:" | cut -d "(" -f2 | cut -d " " -f1)
+	  partition_size_bytes=$(diskutil info ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)  | grep "$partition_size_param" | cut -d "(" -f2 | cut -d " " -f1)
       download_image "$current_partition" part
 				
     done

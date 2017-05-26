@@ -24,7 +24,7 @@ namespace CloneDeploy_Services
             var validationResult = ValidateImageProfile(profile, true);
             var actionResult = new ActionResultDTO();
             if (!string.IsNullOrEmpty(profile.MunkiAuthPassword))
-                profile.MunkiAuthPassword = new Encryption().EncryptText(profile.MunkiAuthPassword);
+                profile.MunkiAuthPassword = new EncryptionServices().EncryptText(profile.MunkiAuthPassword);
             if (validationResult.Success)
             {
                 _uow.ImageProfileRepository.Insert(profile);
@@ -149,7 +149,7 @@ namespace CloneDeploy_Services
             var actionResult = new ActionResultDTO();
             var validationResult = ValidateImageProfile(profile, false);
             if (!string.IsNullOrEmpty(profile.MunkiAuthPassword))
-                profile.MunkiAuthPassword = new Encryption().EncryptText(profile.MunkiAuthPassword);
+                profile.MunkiAuthPassword = new EncryptionServices().EncryptText(profile.MunkiAuthPassword);
             if (validationResult.Success)
             {
                 _uow.ImageProfileRepository.Update(profile, profile.Id);

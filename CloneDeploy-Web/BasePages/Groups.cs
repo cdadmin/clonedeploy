@@ -1,6 +1,6 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
-using CloneDeploy_Web.Helpers;
 
 namespace CloneDeploy_Web.BasePages
 {
@@ -15,9 +15,9 @@ namespace CloneDeploy_Web.BasePages
                 ? Call.GroupApi.Get(Convert.ToInt32(Request.QueryString["groupid"]))
                 : null;
             if (Group == null)
-                RequiresAuthorization(Authorizations.SearchGroup);
+                RequiresAuthorization(AuthorizationStrings.SearchGroup);
             else
-                RequiresAuthorizationOrManagedGroup(Authorizations.ReadGroup, Group.Id);
+                RequiresAuthorizationOrManagedGroup(AuthorizationStrings.ReadGroup, Group.Id);
         }
     }
 }

@@ -5,7 +5,7 @@ using Mono.Unix.Native;
 
 namespace CloneDeploy_Services.Helpers
 {
-    public class FileOps
+    public class FileOpsServices
     {
         private readonly ILog log = LogManager.GetLogger("ApplicationLog");
 
@@ -121,21 +121,6 @@ namespace CloneDeploy_Services.Helpers
             }
 
             return fileText;
-        }
-
-        public void RenameFolder(string oldName, string newName)
-        {
-            try
-            {
-                var imagePath = Settings.PrimaryStoragePath;
-                if (Directory.Exists(imagePath + "images" + Path.DirectorySeparatorChar + oldName))
-                    Directory.Move(imagePath + "images" + Path.DirectorySeparatorChar + oldName,
-                        imagePath + "images" + Path.DirectorySeparatorChar + newName);
-            }
-            catch (Exception ex)
-            {
-                log.Debug(ex.Message);
-            }
         }
 
         public void SetUnixPermissions(string path)

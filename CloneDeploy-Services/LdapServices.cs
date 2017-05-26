@@ -1,6 +1,6 @@
 ﻿using System;
 using System.DirectoryServices;
-using CloneDeploy_Services.Helpers;
+using CloneDeploy_Common;
 using log4net;
 
 namespace CloneDeploy_Services
@@ -14,25 +14,27 @@ namespace CloneDeploy_Services
 
         public bool Authenticate(string username, string pwd, string ldapGroup = null)
         {
-            if (Settings.LdapEnabled != "1") return false;
+            if (SettingServices.GetSettingValue(SettingStrings.LdapEnabled) != "1") return false;
 
-            var path = "LDAP://" + Settings.LdapServer + ":" + Settings.LdapPort + "/" + Settings.LdapBaseDN;
+            var path = "LDAP://" + SettingServices.GetSettingValue(SettingStrings.LdapServer) + ":" +
+                       SettingServices.GetSettingValue(SettingStrings.LdapPort) + "/" +
+                       SettingServices.GetSettingValue(SettingStrings.LdapBaseDN);
             string _filterAttribute = null;
 
             var entry = new DirectoryEntry(path, username, pwd);
 
-            if (Settings.LdapAuthType == "Basic")
+            if (SettingServices.GetSettingValue(SettingStrings.LdapAuthType) == "Basic")
                 entry.AuthenticationType = AuthenticationTypes.None;
-            else if (Settings.LdapAuthType == "Secure")
+            else if (SettingServices.GetSettingValue(SettingStrings.LdapAuthType) == "Secure")
                 entry.AuthenticationType = AuthenticationTypes.Secure;
-            else if (Settings.LdapAuthType == "SSL")
+            else if (SettingServices.GetSettingValue(SettingStrings.LdapAuthType) == "SSL")
                 entry.AuthenticationType = AuthenticationTypes.SecureSocketsLayer;
             try
             {
                 // Bind to the native AdsObject to force authentication.
                 var obj = entry.NativeObject;
                 var search = new DirectorySearcher(entry);
-                search.Filter = "(" + Settings.LdapAuthAttribute + "=" + username + ")";
+                search.Filter = "(" + SettingServices.GetSettingValue(SettingStrings.LdapAuthAttribute) + "=" + username + ")";
                 search.PropertiesToLoad.Add("cn");
                 search.PropertiesToLoad.Add("memberOf");
 

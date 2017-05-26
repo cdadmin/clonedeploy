@@ -1,7 +1,6 @@
 ﻿using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Services.Helpers;
 
 namespace CloneDeploy_Services
 {
@@ -17,7 +16,7 @@ namespace CloneDeploy_Services
         public ActionResultDTO AddImageProfileFileFolder(ImageProfileFileFolderEntity imageProfileFileFolder)
         {
             imageProfileFileFolder.DestinationFolder =
-                Utility.WindowsToUnixFilePath(imageProfileFileFolder.DestinationFolder);
+                StringManipulationServices.WindowsToUnixFilePath(imageProfileFileFolder.DestinationFolder);
             if (imageProfileFileFolder.DestinationFolder.Trim().EndsWith("/") &&
                 imageProfileFileFolder.DestinationFolder.Length > 1)
             {

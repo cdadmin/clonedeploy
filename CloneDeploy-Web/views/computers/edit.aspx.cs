@@ -1,15 +1,15 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.computers
+namespace CloneDeploy_Web.views.computers
 {
     public partial class ComputerEdit : Computers
     {
         protected void buttonUpdateComputer_Click(object sender, EventArgs e)
         {
-            RequiresAuthorizationOrManagedComputer(Authorizations.UpdateComputer, Computer.Id);
+            RequiresAuthorizationOrManagedComputer(AuthorizationStrings.UpdateComputer, Computer.Id);
             var nameChange = txtComputerName.Text != Computer.Name;
             var computer = new ComputerEntity
             {

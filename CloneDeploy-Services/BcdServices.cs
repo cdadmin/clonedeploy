@@ -66,7 +66,7 @@ namespace CloneDeploy_Services
             }
 
 
-            return Utility.Encode(bcd);
+            return StringManipulationServices.Encode(bcd);
         }
     }
 }

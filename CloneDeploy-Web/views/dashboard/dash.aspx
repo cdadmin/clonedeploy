@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/site.master" AutoEventWireup="true" Inherits="views.dashboard.Dashboard" ValidateRequest="false" Codebehind="dash.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/site.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.dashboard.Dashboard" ValidateRequest="false" Codebehind="dash.aspx.cs" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="SubNav" runat="Server">

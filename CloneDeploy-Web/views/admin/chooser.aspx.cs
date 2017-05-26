@@ -1,7 +1,7 @@
 ﻿using System;
 using CloneDeploy_Web.BasePages;
 
-namespace views.admin
+namespace CloneDeploy_Web.views.admin
 {
     public partial class AdminChooser : Admin
     {

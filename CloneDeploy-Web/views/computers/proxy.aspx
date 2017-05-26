@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/computers/computers.master" AutoEventWireup="true" Inherits="views_computers_proxy" Codebehind="proxy.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/computers/computers.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.computers.views_computers_proxy" Codebehind="proxy.aspx.cs" %>
 
 <asp:Content ID="Content6" ContentPlaceHolderID="BreadcrumbSub" runat="Server">
     <li>

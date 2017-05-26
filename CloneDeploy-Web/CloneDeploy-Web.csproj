@@ -87,8 +87,12 @@
     <Content Include="views\admin\logs\application.aspx" />
     <Content Include="views\admin\logs\frontend.aspx" />
     <Content Include="views\admin\logs\ond.aspx" />
+    <Content Include="views\admin\netboot\create.aspx" />
+    <Content Include="views\admin\netboot\edit.aspx" />
+    <Content Include="views\admin\netboot\search.aspx" />
     <Content Include="views\computers\bootmenu\bootmenu.master" />
     <Content Include="views\computers\computers.master" />
+    <Content Include="views\computers\history.aspx" />
     <Content Include="views\computers\inventory\inventory.master" />
     <Content Include="views\global\boottemplates\boottemplates.master" />
     <Content Include="views\global\filesandfolders\filesandfolders.master" />
@@ -110,6 +114,7 @@
     <Content Include="views\admin\cluster\cluster.master" />
     <Content Include="views\admin\logs\logs.master" />
     <Content Include="views\admin\dp\dp.master" />
+    <Content Include="views\admin\netboot\netboot.master" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -632,10 +637,8 @@
     <Content Include="content\js\scrollsaver.js" />
     <Content Include="content\js\sha1.js" />
     <Content Include="content\js\sha512.js" />
-    <Content Include="default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="License.txt" />
-    <Content Include="views\admin\bootmenu\applenetboot.aspx" />
     <Content Include="views\admin\bootmenu\defaultmenu.aspx" />
     <Content Include="views\admin\bootmenu\editor.aspx" />
     <Content Include="views\admin\bootmenu\isogen.aspx" />
@@ -803,7 +806,7 @@
     <Content Include="views\images\schema.aspx" />
     <Content Include="views\images\search.aspx" />
     <Content Include="views\login\firstrun.aspx" />
-    <Content Include="views\login\login.aspx" />
+    <Content Include="default.aspx" />
     <Content Include="views\tasks\active.aspx" />
     <Content Include="views\tasks\activemulticast.aspx" />
     <Content Include="views\tasks\activepermanent.aspx" />
@@ -831,7 +834,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\Authorizations.cs" />
     <Compile Include="BasePages\Admin.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
@@ -863,21 +865,12 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Helpers\Settings.cs" />
-    <Compile Include="Helpers\Utility.cs" />
     <Compile Include="views\admin\admin.master.cs">
       <DependentUpon>admin.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="views\admin\admin.master.designer.cs">
       <DependentUpon>admin.master</DependentUpon>
-    </Compile>
-    <Compile Include="views\admin\bootmenu\applenetboot.aspx.cs">
-      <DependentUpon>applenetboot.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\admin\bootmenu\applenetboot.aspx.designer.cs">
-      <DependentUpon>applenetboot.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\admin\bootmenu\bootmenu.master.cs">
       <DependentUpon>bootmenu.master</DependentUpon>
@@ -1075,6 +1068,34 @@
     <Compile Include="views\admin\munki.aspx.designer.cs">
       <DependentUpon>munki.aspx</DependentUpon>
     </Compile>
+    <Compile Include="views\admin\netboot\create.aspx.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\netboot\create.aspx.designer.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\netboot\edit.aspx.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\netboot\edit.aspx.designer.cs">
+      <DependentUpon>edit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\netboot\netboot.master.cs">
+      <DependentUpon>netboot.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\netboot\netboot.master.designer.cs">
+      <DependentUpon>netboot.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\netboot\search.aspx.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\netboot\search.aspx.designer.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
     <Compile Include="views\admin\pxe.aspx.cs">
       <DependentUpon>pxe.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1144,6 +1165,13 @@
     </Compile>
     <Compile Include="views\computers\groups.aspx.designer.cs">
       <DependentUpon>groups.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\computers\history.aspx.cs">
+      <DependentUpon>history.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\computers\history.aspx.designer.cs">
+      <DependentUpon>history.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\computers\import.aspx.cs">
       <DependentUpon>import.aspx</DependentUpon>
@@ -1754,12 +1782,12 @@
     <Compile Include="views\login\firstrun.aspx.designer.cs">
       <DependentUpon>firstrun.aspx</DependentUpon>
     </Compile>
-    <Compile Include="views\login\login.aspx.cs">
-      <DependentUpon>login.aspx</DependentUpon>
+    <Compile Include="default.aspx.cs">
+      <DependentUpon>default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="views\login\login.aspx.designer.cs">
-      <DependentUpon>login.aspx</DependentUpon>
+    <Compile Include="default.aspx.designer.cs">
+      <DependentUpon>default.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\site.master.cs">
       <DependentUpon>site.master</DependentUpon>
@@ -1960,6 +1988,10 @@
     <ProjectReference Include="..\CloneDeploy-Entities\CloneDeploy-Entities.csproj">
       <Project>{453080da-87a4-4f5f-aa1f-2c49e37d2f21}</Project>
       <Name>CloneDeploy-Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CloneDeploy-Helpers\CloneDeploy-Common.csproj">
+      <Project>{6ead11e1-3464-40a1-b6cd-24d40ad2507a}</Project>
+      <Name>CloneDeploy-Common</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

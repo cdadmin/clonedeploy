@@ -1,8 +1,8 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.users
+namespace CloneDeploy_Web.views.users
 {
     public partial class ResetPass : Users
     {

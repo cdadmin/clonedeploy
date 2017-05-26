@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/users/user.master" AutoEventWireup="true" Inherits="views_users_searchgroup" Codebehind="searchgroup.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/users/user.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.users.views_users_searchgroup" Codebehind="searchgroup.aspx.cs" %>
 
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li>Search User Groups</li>

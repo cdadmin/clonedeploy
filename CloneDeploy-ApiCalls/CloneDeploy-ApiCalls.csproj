@@ -67,6 +67,7 @@
     <Compile Include="MunkiManifestManagedUnInstallAPI.cs" />
     <Compile Include="MunkiManifestManagedUpdateAPI.cs" />
     <Compile Include="MunkiManifestOptionInstallAPI.cs" />
+    <Compile Include="NbiEntryAPI.cs" />
     <Compile Include="PortAPI.cs" />
     <Compile Include="RoomAPI.cs" />
     <Compile Include="ScriptAPI.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="MunkiManifestTemplateAPI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingAPI.cs" />
+    <Compile Include="NetBootProfileAPI.cs" />
     <Compile Include="SiteAPI.cs" />
     <Compile Include="OnlineKernelAPI.cs" />
     <Compile Include="SysprepTagAPI.cs" />

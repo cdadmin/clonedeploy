@@ -1,9 +1,9 @@
-﻿<%@ Master Language="C#" MasterPageFile="~/views/site.master" AutoEventWireup="true" Inherits="views_global_global" Codebehind="global.master.cs" %>
+﻿<%@ Master Language="C#" MasterPageFile="~/views/site.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.global.views_global_global" Codebehind="global.master.cs" %>
 
 <asp:Content ID="SubNav" ContentPlaceHolderID="SubNav" Runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#nav-global').addClass("nav-current");
+            $('#navglobal').addClass("nav-current");
         });
     </script>
     <div class="sub-nav-top">

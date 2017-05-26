@@ -3,6 +3,36 @@ export LC_ALL=C
 export LANG=C
 CLIENT_LOG="/tmp/clientlog.log"
 
+#diskutil seems to change often, handle different versions of diskutil
+os_version=$(sw_vers -productVersion | cut -d. -f1 -f2)
+
+if [ "$os_version" = "10.11" ]; then
+  hd_size_param="Total Size:"
+  partition_size_param="Total Size:"
+fi
+
+if [ "$os_version" = "10.12" ]; then
+  hd_size_param="Disk Size:"
+  partition_size_param="Disk Size:"
+fi
+
+function get_volume_min_size()
+{
+  local volume_to_shrink="$1"
+  
+  if [ "$os_version" = "10.11" ]; then
+    echo "$(diskutil resizeVolume $volume_to_shrink limits 2>> $CLIENT_LOG | grep "Minimum" | cut -d "(" -f2 | cut -d " " -f1)"
+  fi
+  
+  if [ "$os_version" = "10.12" ]; then
+    echo "$(diskutil resizeVolume $volume_to_shrink limits 2>> $CLIENT_LOG | grep "Recommended minimum size" | cut -d "(" -f3 | cut -d " " -f1)"
+  fi
+}
+
+#
+#End of disk utility functions
+#
+
 function parse_json()
 {
 	echo `echo "$1" | jq "$2" -r`
@@ -77,7 +107,7 @@ function checkout()
 	if [ "$task_completed_action" = "Power Off" ]; then
 		shutdown
 	elif [ "$task_completed_action" = "Exit To Shell" ]; then
-		exit
+		/bin/bash
 	else
 		reboot
 	fi
@@ -150,6 +180,30 @@ function get_hard_drives()
 	fi
 	sleep 2
 	echo
+}
+
+function get_all_volume_uuids()
+{
+  local volume_uuid
+  
+  for partition in $partitions; do
+    volume_uuid=$(diskutil info $partition | grep "Volume UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+    all_volume_uuids="$all_volume_uuids $volume_uuid"
+  done
+}
+
+function get_volume_uuid()
+{
+  local device_node
+  device_node="$1"
+  echo $(diskutil info $device_node | grep "Volume UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+}
+
+function get_device_node()
+{
+  local uuid
+  uuid="$1"
+  echo $(diskutil info $uuid | grep "Device Node:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
 }
 
 function get_partitions()

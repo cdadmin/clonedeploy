@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/dp/dp.master" AutoEventWireup="true" Inherits="views_admin_dp_create" Codebehind="create.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/dp/dp.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.admin.dp.views_admin_dp_create" Codebehind="create.aspx.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
     <li>New</li>
@@ -109,27 +109,40 @@
 
     <br class="clear"/>
     <br/>
-
-    <div id="PhysicalPath" runat="server" Visible="False">
-        <div class="size-4 column">
-            Physical Path:
-        </div>
-        <div class="size-1 column">
-            <asp:TextBox ID="txtPhysicalPath" runat="server" CssClass="textbox"/>
-        </div>
-
-        <br class="clear"/>
+    
+     <div class="size-4 column">
+        Queue Size:
+    </div>
+    <div class="size-5 column">
+        <asp:TextBox ID="qSize" runat="server" CssClass="textbox" Text="2" />
     </div>
 
 
-    <div id="BackendServer" runat="server" Visible="False">
+    <br class="clear"/>
+
+    <div id="PrimaryParams" runat="server" Visible="False">
         <div class="size-4 column">
-            Backend Server Ip / Name:
+            Location:
         </div>
         <div class="size-5 column">
-            <asp:TextBox ID="txtBackendServer" runat="server" CssClass="textbox"/>
+            <asp:DropDownList ID="ddlPrimaryType" runat="server" CssClass="ddlist" OnSelectedIndexChanged="ddlPrimaryType_OnSelectedIndexChanged" AutoPostBack="True">
+                <asp:ListItem>Local</asp:ListItem>
+                <asp:ListItem>Remote</asp:ListItem>
+            </asp:DropDownList>
         </div>
+        <br class="clear" />
+        <div id="PhysicalPath" runat="server" visible="False">
+            <div class="size-4 column">
+                Physical Path:
+            </div>
+            <div class="size-1 column">
+                <asp:TextBox ID="txtPhysicalPath" runat="server" CssClass="textbox" />
+            </div>
 
-
+            <br class="clear" />
+        </div>
     </div>
+
+
+  
 </asp:Content>

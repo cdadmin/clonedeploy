@@ -44,7 +44,7 @@ namespace CloneDeploy_Services
         public ExtendedPartitionHelper ExtendedPartitionHelper { get; set; }
 
 
-        public int FirstPartitionStartSector { get; set; }
+        public long FirstPartitionStartSector { get; set; }
         private int HdNumberToGet { get; set; }
 
         private int LbsByte { get; set; }
@@ -414,7 +414,7 @@ namespace CloneDeploy_Services
 
                 PrimaryAndExtendedPartitions.Clear();
                 VolumeGroupHelpers.Clear();
-                FirstPartitionStartSector = Convert.ToInt32(_imageSchema.HardDrives[HdNumberToGet].Partitions[0].Start);
+                FirstPartitionStartSector = Convert.ToInt64(_imageSchema.HardDrives[HdNumberToGet].Partitions[0].Start);
                 var partCounter = -1;
 
                 foreach (var schemaPartition in _imageSchema.HardDrives[HdNumberToGet].Partitions)
@@ -423,7 +423,7 @@ namespace CloneDeploy_Services
 
                     //Determine what sector the first partition should start at
                     if (Convert.ToInt64(schemaPartition.Start) < FirstPartitionStartSector)
-                        FirstPartitionStartSector = Convert.ToInt32(schemaPartition.Start);
+                        FirstPartitionStartSector = Convert.ToInt64(schemaPartition.Start);
 
                     if (!schemaPartition.Active)
                         continue;

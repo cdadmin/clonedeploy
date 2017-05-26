@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CloneDeploy_ApiCalls;
+using CloneDeploy_Common;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
@@ -49,7 +50,7 @@ namespace CloneDeploy_Services
                         "Could Not Add Secondary Server.  You Must First Assign Roles To The Server";
                     return actionResult;
                 }
-                if (serverRoles.Identifier == Settings.ServerIdentifier)
+                if (serverRoles.Identifier == SettingServices.GetSettingValue(SettingStrings.ServerIdentifier))
                 {
                     actionResult.ErrorMessage =
                         "Could Not Add Secondary Server.  Server Identifiers Must Be Different";
@@ -66,7 +67,7 @@ namespace CloneDeploy_Services
 
             secondaryServer.TftpRole = Convert.ToInt16(serverRoles.IsTftpServer);
             secondaryServer.MulticastRole = Convert.ToInt16(serverRoles.IsMulticastServer);
-            secondaryServer.ServiceAccountPassword = new Encryption().EncryptText(secondaryServer.ServiceAccountPassword);
+            secondaryServer.ServiceAccountPassword = new EncryptionServices().EncryptText(secondaryServer.ServiceAccountPassword);
 
             var validationResult = ValidateSecondaryServer(secondaryServer, true);
             if (validationResult.Success)
@@ -99,7 +100,7 @@ namespace CloneDeploy_Services
             return actionResult;
         }
 
-        public CustomApiCallDTO GetApiToken(string serverName)
+        public CustomApiCallDTO GetToken(string serverName)
         {
             var secondaryServer = GetSecondaryServerByName(serverName);
             var customApiCall = new CustomApiCallDTO();
@@ -108,7 +109,7 @@ namespace CloneDeploy_Services
             if (new APICall(customApiCall).ServiceAccountApi.Test())
                 return customApiCall;
             var token = new APICall(customApiCall).TokenApi.Get(secondaryServer.ServiceAccountName,
-                new Encryption().DecryptText(secondaryServer.ServiceAccountPassword));
+                new EncryptionServices().DecryptText(secondaryServer.ServiceAccountPassword));
 
             if (token != null)
             {
@@ -122,6 +123,21 @@ namespace CloneDeploy_Services
                 _uow.Save();
             }
             return customApiCall;
+        }
+
+        public List<SecondaryServerEntity> GetAllWithActiveRoles()
+        {
+            return _uow.SecondaryServerRepository.Get(x => x.MulticastRole == 1 || x.TftpRole == 1);
+        }
+
+        public List<SecondaryServerEntity> GetAllWithTftpRole()
+        {
+            return _uow.SecondaryServerRepository.Get(x => x.TftpRole == 1);
+        }
+
+        public List<SecondaryServerEntity> GetAllWithMulticastRole()
+        {
+            return _uow.SecondaryServerRepository.Get(x => x.MulticastRole == 1);
         }
 
         public SecondaryServerEntity GetSecondaryServer(int secondaryServerId)
@@ -153,7 +169,7 @@ namespace CloneDeploy_Services
 
             var password = !string.IsNullOrEmpty(secondaryServer.ServiceAccountPassword)
                 ? secondaryServer.ServiceAccountPassword
-                : new Encryption().DecryptText(s.ServiceAccountPassword);
+                : new EncryptionServices().DecryptText(s.ServiceAccountPassword);
 
             //Verify connection to secondary server
             //Get token
@@ -182,7 +198,7 @@ namespace CloneDeploy_Services
                         "Could Not Add Secondary Server.  You Must First Assign Roles To The Server";
                     return actionResult;
                 }
-                if (serverRoles.Identifier == Settings.ServerIdentifier)
+                if (serverRoles.Identifier == SettingServices.GetSettingValue(SettingStrings.ServerIdentifier))
                 {
                     actionResult.ErrorMessage =
                         "Could Not Add Secondary Server.  Server Identifiers Must Be Different";
@@ -200,7 +216,7 @@ namespace CloneDeploy_Services
             secondaryServer.TftpRole = Convert.ToInt16(serverRoles.IsTftpServer);
             secondaryServer.MulticastRole = Convert.ToInt16(serverRoles.IsMulticastServer);
             secondaryServer.ServiceAccountPassword = !string.IsNullOrEmpty(secondaryServer.ServiceAccountPassword)
-                ? new Encryption().EncryptText(secondaryServer.ServiceAccountPassword)
+                ? new EncryptionServices().EncryptText(secondaryServer.ServiceAccountPassword)
                 : s.ServiceAccountPassword;
 
             var validationResult = ValidateSecondaryServer(secondaryServer, false);

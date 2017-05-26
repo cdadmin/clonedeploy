@@ -4,7 +4,7 @@ using ICSharpCode.SharpZipLib.Zip;
 
 namespace CloneDeploy_Services.Helpers
 {
-    internal class Zip
+    internal class ZipServices
     {
         private void CompressFolder(string path, ZipOutputStream zipStream, int folderOffset)
         {

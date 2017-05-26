@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/global.master" AutoEventWireup="true" Inherits="views_global_profileupdater_kernel" Codebehind="kernel.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/global.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.global.profileupdater.views_global_profileupdater_kernel" Codebehind="kernel.aspx.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" runat="Server">
     <li>Image Profile Updater</li>

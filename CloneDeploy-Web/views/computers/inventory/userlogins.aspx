@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/computers/inventory/inventory.master" AutoEventWireup="true" Inherits="views_computers_inventory_logins" Codebehind="userlogins.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/computers/inventory/inventory.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.computers.inventory.views_computers_inventory_logins" Codebehind="userlogins.aspx.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
     <li>User Logins</li>

@@ -1,65 +1,68 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.UI.WebControls;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-public partial class views_users_groupacls_groupmanagement : Users
+namespace CloneDeploy_Web.views.users.groupacls
 {
-    protected void buttonUpdate_OnClick(object sender, EventArgs e)
+    public partial class views_users_groupacls_groupmanagement : Users
     {
-        var list = new List<UserGroupGroupManagementEntity>();
-        foreach (GridViewRow row in gvGroups.Rows)
+        protected void buttonUpdate_OnClick(object sender, EventArgs e)
         {
-            var cb = (CheckBox) row.FindControl("chkSelector");
-            if (cb == null || !cb.Checked) continue;
-            var dataKey = gvGroups.DataKeys[row.RowIndex];
-            if (dataKey == null) continue;
-            var userGroupManagement = new UserGroupGroupManagementEntity
+            var list = new List<UserGroupGroupManagementEntity>();
+            foreach (GridViewRow row in gvGroups.Rows)
             {
-                UserGroupId = CloneDeployUserGroup.Id,
-                GroupId = Convert.ToInt32(dataKey.Value)
-            };
-            list.Add(userGroupManagement);
+                var cb = (CheckBox) row.FindControl("chkSelector");
+                if (cb == null || !cb.Checked) continue;
+                var dataKey = gvGroups.DataKeys[row.RowIndex];
+                if (dataKey == null) continue;
+                var userGroupManagement = new UserGroupGroupManagementEntity
+                {
+                    UserGroupId = CloneDeployUserGroup.Id,
+                    GroupId = Convert.ToInt32(dataKey.Value)
+                };
+                list.Add(userGroupManagement);
+            }
+
+            Call.UserGroupApi.DeleteGroupManagements(CloneDeployUserGroup.Id);
+            Call.UserGroupGroupManagementApi.Post(list);
+            Call.UserGroupApi.UpdateMemberGroups(CloneDeployUserGroup.Id);
+            EndUserMessage = "Updated Group Management";
         }
 
-        Call.UserGroupApi.DeleteGroupManagements(CloneDeployUserGroup.Id);
-        Call.UserGroupGroupManagementApi.Post(list);
-        Call.UserGroupApi.UpdateMemberGroups(CloneDeployUserGroup.Id);
-        EndUserMessage = "Updated Group Management";
-    }
-
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        RequiresAuthorization(Authorizations.Administrator);
-        if (!IsPostBack) PopulateForm();
-    }
-
-    protected void PopulateForm()
-    {
-        var listOfGroups = Call.UserGroupApi.GetGroupManagements(CloneDeployUserGroup.Id);
-
-        gvGroups.DataSource = Call.GroupApi.GetAll(int.MaxValue, "");
-        gvGroups.DataBind();
-
-        foreach (GridViewRow row in gvGroups.Rows)
+        protected void Page_Load(object sender, EventArgs e)
         {
-            var chkBox = (CheckBox) row.FindControl("chkSelector");
-            var dataKey = gvGroups.DataKeys[row.RowIndex];
-            if (dataKey == null) continue;
-            foreach (var groupManagement in listOfGroups)
+            RequiresAuthorization(AuthorizationStrings.Administrator);
+            if (!IsPostBack) PopulateForm();
+        }
+
+        protected void PopulateForm()
+        {
+            var listOfGroups = Call.UserGroupApi.GetGroupManagements(CloneDeployUserGroup.Id);
+
+            gvGroups.DataSource = Call.GroupApi.GetAll(int.MaxValue, "");
+            gvGroups.DataBind();
+
+            foreach (GridViewRow row in gvGroups.Rows)
             {
-                if (groupManagement.GroupId == Convert.ToInt32(dataKey.Value))
+                var chkBox = (CheckBox) row.FindControl("chkSelector");
+                var dataKey = gvGroups.DataKeys[row.RowIndex];
+                if (dataKey == null) continue;
+                foreach (var groupManagement in listOfGroups)
                 {
-                    chkBox.Checked = true;
+                    if (groupManagement.GroupId == Convert.ToInt32(dataKey.Value))
+                    {
+                        chkBox.Checked = true;
+                    }
                 }
             }
         }
-    }
 
-    protected void SelectAll_CheckedChanged(object sender, EventArgs e)
-    {
-        ChkAll(gvGroups);
+        protected void SelectAll_CheckedChanged(object sender, EventArgs e)
+        {
+            ChkAll(gvGroups);
+        }
     }
 }

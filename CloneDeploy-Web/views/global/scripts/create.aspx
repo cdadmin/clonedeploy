@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/scripts/scripts.master" AutoEventWireup="true" Inherits="views_admin_scripts_create" ValidateRequest="False" Codebehind="create.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/scripts/scripts.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.global.scripts.views_admin_scripts_create" ValidateRequest="False" Codebehind="create.aspx.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
     <li>New Script</li>

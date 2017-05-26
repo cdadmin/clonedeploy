@@ -9,32 +9,35 @@
 
 
 
-public partial class views_global_profileupdater_kernel {
+namespace CloneDeploy_Web.views.global.profileupdater
+{
+    public partial class views_global_profileupdater_kernel {
     
-    /// <summary>
-    /// btnUpdateKernel control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.LinkButton btnUpdateKernel;
+        /// <summary>
+        /// btnUpdateKernel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnUpdateKernel;
     
-    /// <summary>
-    /// ddlKernel control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.DropDownList ddlKernel;
+        /// <summary>
+        /// ddlKernel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlKernel;
     
-    /// <summary>
-    /// gvProfiles control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.GridView gvProfiles;
+        /// <summary>
+        /// gvProfiles control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvProfiles;
+    }
 }

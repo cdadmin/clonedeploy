@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using CloneDeploy_Common;
 using log4net;
 
 namespace CloneDeploy_Services.Helpers
@@ -9,7 +10,7 @@ namespace CloneDeploy_Services.Helpers
     /// <summary>
     ///     Summary description for Mail
     /// </summary>
-    public class Mail
+    public class MailServices
     {
         private readonly ILog log = LogManager.GetLogger("ApplicationLog");
         public string Body { get; set; }
@@ -24,17 +25,17 @@ namespace CloneDeploy_Services.Helpers
 
         private void SendMailAsync()
         {
-            var message = new MailMessage(Settings.SmtpMailFrom, MailTo)
+            var message = new MailMessage(SettingServices.GetSettingValue(SettingStrings.SmtpMailFrom), MailTo)
             {
                 Subject = "Clone Deploy " + "(" + Subject + ")",
                 Body = Body
             };
 
-            var client = new SmtpClient(Settings.SmtpServer, Convert.ToInt32(Settings.SmtpPort))
+            var client = new SmtpClient(SettingServices.GetSettingValue(SettingStrings.SmtpServer), Convert.ToInt32(SettingServices.GetSettingValue(SettingStrings.SmtpPort)))
             {
                 Credentials =
-                    new NetworkCredential(Settings.SmtpUsername, new Encryption().DecryptText(Settings.SmtpPassword)),
-                EnableSsl = Settings.SmtpSsl == "Yes"
+                    new NetworkCredential(SettingServices.GetSettingValue(SettingStrings.SmtpUsername), new EncryptionServices().DecryptText(SettingServices.GetSettingValue(SettingStrings.SmtpPassword))),
+                EnableSsl = SettingServices.GetSettingValue(SettingStrings.SmtpSsl) == "Yes"
             };
 
             try

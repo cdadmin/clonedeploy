@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.UI.WebControls;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
 namespace CloneDeploy_Web.views.admin.cluster
 {
@@ -11,7 +11,7 @@ namespace CloneDeploy_Web.views.admin.cluster
     {
         protected void btnAddCluster_OnClick(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.UpdateAdmin);
+            RequiresAuthorization(AuthorizationStrings.UpdateAdmin);
             var clusterGroup = new ClusterGroupEntity
             {
                 Name = txtClusterName.Text,
@@ -26,8 +26,6 @@ namespace CloneDeploy_Web.views.admin.cluster
                 {
                     var cb = (CheckBox) row.FindControl("chkSelector");
                     if (!cb.Checked) continue;
-
-                    var cbImage = (CheckBox) row.FindControl("chkImage");
                     var cbTftp = (CheckBox) row.FindControl("chkTftp");
                     var cbMulticast = (CheckBox) row.FindControl("chkMulticast");
                     var dataKey = gvServers.DataKeys[row.RowIndex];
@@ -35,7 +33,7 @@ namespace CloneDeploy_Web.views.admin.cluster
 
                     var clusterGroupServer = new ClusterGroupServerEntity();
                     clusterGroupServer.ClusterGroupId = result.Id;
-                    clusterGroupServer.SecondaryServerId = Convert.ToInt32(dataKey.Value);
+                    clusterGroupServer.ServerId = Convert.ToInt32(dataKey.Value);
 
                     if (cbTftp.Checked)
                         clusterGroupServer.TftpRole = 1;
@@ -54,7 +52,7 @@ namespace CloneDeploy_Web.views.admin.cluster
                     if (!cb.Checked) continue;
 
 
-                    var dataKey = gvServers.DataKeys[row.RowIndex];
+                    var dataKey = gvDps.DataKeys[row.RowIndex];
                     if (dataKey == null) continue;
 
                     var clusterGroupDistributionPoint = new ClusterGroupDistributionPointEntity();
@@ -92,14 +90,14 @@ namespace CloneDeploy_Web.views.admin.cluster
         protected void PopulateGrid()
         {
             var secondaryServers = Call.SecondaryServerApi.GetAll(int.MaxValue, "");
-            if (Settings.OperationMode == "Cluster Primary")
+            if (GetSetting(SettingStrings.OperationMode) == "Cluster Primary")
             {
                 var primary = new SecondaryServerEntity();
                 primary.Id = -1;
-                primary.Name = Settings.ServerIdentifier;
+                primary.Name = GetSetting(SettingStrings.ServerIdentifier);
 
-                primary.TftpRole = Settings.TftpServerRole ? 1 : 0;
-                primary.MulticastRole = Settings.MulticastServerRole ? 1 : 0;
+                primary.TftpRole = Convert.ToBoolean(Convert.ToInt16(GetSetting(SettingStrings.TftpServerRole))) ? 1 : 0;
+                primary.MulticastRole = Convert.ToBoolean(Convert.ToInt16(GetSetting(SettingStrings.MulticastServerRole))) ? 1 : 0;
                 secondaryServers.Insert(0, primary);
             }
             gvServers.DataSource = secondaryServers;
@@ -107,15 +105,14 @@ namespace CloneDeploy_Web.views.admin.cluster
 
             foreach (GridViewRow row in gvServers.Rows)
             {
-                var cbImage = (CheckBox) row.FindControl("chkImage");
                 var cbTftp = (CheckBox) row.FindControl("chkTftp");
                 var cbMulticast = (CheckBox) row.FindControl("chkMulticast");
                 var dataKey = gvServers.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
                 if (Convert.ToInt32(dataKey.Value) == -1)
                 {
-                    cbTftp.Visible = Settings.TftpServerRole;
-                    cbMulticast.Visible = Settings.MulticastServerRole;
+                    cbTftp.Visible = Convert.ToBoolean(Convert.ToInt16(GetSetting(SettingStrings.TftpServerRole)));
+                    cbMulticast.Visible = Convert.ToBoolean(Convert.ToInt16(GetSetting(SettingStrings.MulticastServerRole)));
                 }
                 else
                 {

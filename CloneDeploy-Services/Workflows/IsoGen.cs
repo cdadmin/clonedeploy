@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Web;
+using CloneDeploy_Common;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services.Helpers;
 using log4net;
@@ -20,16 +21,16 @@ namespace CloneDeploy_Services.Workflows
         private readonly string _configOutPath;
         private readonly IsoGenOptionsDTO _isoOptions;
         private readonly string _rootfsPath;
-        private readonly string _webPath = Settings.WebPath;
+        private readonly string _webPath = SettingServices.GetSettingValue(SettingStrings.WebPath);
         private readonly ILog log = LogManager.GetLogger("ApplicationLog");
         private string _outputPath;
 
         public IsoGen(IsoGenOptionsDTO isoGenOptions)
         {
             _isoOptions = isoGenOptions;
-            if (Settings.DebugRequiresLogin == "No" || Settings.OnDemandRequiresLogin == "No" ||
-                Settings.RegisterRequiresLogin == "No")
-                _userToken = Settings.UniversalToken;
+            if (SettingServices.GetSettingValue(SettingStrings.DebugRequiresLogin) == "No" || SettingServices.GetSettingValue(SettingStrings.OnDemandRequiresLogin) == "No" ||
+                SettingServices.GetSettingValue(SettingStrings.RegisterRequiresLogin) == "No")
+                _userToken = SettingServices.GetSettingValue(SettingStrings.UniversalToken);
             else
             {
                 _userToken = "";
@@ -142,7 +143,7 @@ namespace CloneDeploy_Services.Workflows
             var outFile = _configOutPath + "EFI" + Path.DirectorySeparatorChar + "boot" + Path.DirectorySeparatorChar +
                           "grub.cfg";
 
-            new FileOps().WritePath(outFile, grubMenu.ToString());
+            new FileOpsServices().WritePath(outFile, grubMenu.ToString());
         }
 
 
@@ -236,7 +237,7 @@ namespace CloneDeploy_Services.Workflows
             else
                 outFile = _configOutPath + "syslinux" + Path.DirectorySeparatorChar + "syslinux.cfg";
 
-            new FileOps().WritePath(outFile, sysLinuxMenu.ToString());
+            new FileOpsServices().WritePath(outFile, sysLinuxMenu.ToString());
         }
 
         private bool CreateUsb()
@@ -244,11 +245,11 @@ namespace CloneDeploy_Services.Workflows
             _outputPath += "clientboot.zip";
 
             //copy base root path to temporary location
-            new FileOps().Copy(_rootfsPath, _buildPath);
+            new FileOpsServices().Copy(_rootfsPath, _buildPath);
             //copy newly generated config files on top of temporary location
-            new FileOps().Copy(_configOutPath, _buildPath);
+            new FileOpsServices().Copy(_configOutPath, _buildPath);
 
-            new Zip().Create(_outputPath, _buildPath);
+            new ZipServices().Create(_outputPath, _buildPath);
 
             CleanBuildPath();
 
@@ -266,9 +267,9 @@ namespace CloneDeploy_Services.Workflows
                 Directory.CreateDirectory(_configOutPath + "EFI");
                 Directory.CreateDirectory(_configOutPath + "EFI" + Path.DirectorySeparatorChar + "boot");
                 Directory.CreateDirectory(_configOutPath + "syslinux");
-                File.Copy(Settings.TftpPath + "images" + Path.DirectorySeparatorChar + _isoOptions.bootImage,
+                File.Copy(SettingServices.GetSettingValue(SettingStrings.TftpPath) + "images" + Path.DirectorySeparatorChar + _isoOptions.bootImage,
                     _configOutPath + "clonedeploy" + Path.DirectorySeparatorChar + _isoOptions.bootImage, true);
-                File.Copy(Settings.TftpPath + "kernels" + Path.DirectorySeparatorChar + _isoOptions.kernel,
+                File.Copy(SettingServices.GetSettingValue(SettingStrings.TftpPath) + "kernels" + Path.DirectorySeparatorChar + _isoOptions.kernel,
                     _configOutPath + "clonedeploy" + Path.DirectorySeparatorChar + _isoOptions.kernel, true);
             }
             catch (Exception ex)
@@ -326,9 +327,9 @@ namespace CloneDeploy_Services.Workflows
             _outputPath += "clientboot.iso";
 
             //copy base root path to temporary location
-            new FileOps().Copy(_rootfsPath, _buildPath);
+            new FileOpsServices().Copy(_rootfsPath, _buildPath);
             //copy newly generated config files on top of temporary location
-            new FileOps().Copy(_configOutPath, _buildPath);
+            new FileOpsServices().Copy(_configOutPath, _buildPath);
 
 
             var isUnix = Environment.OSVersion.ToString().Contains("Unix");

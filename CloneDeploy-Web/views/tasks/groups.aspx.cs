@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using CloneDeploy_Common;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.tasks
+namespace CloneDeploy_Web.views.tasks
 {
     public partial class TaskMulticast : Tasks
     {
@@ -15,13 +15,13 @@ namespace views.tasks
 
             if (isUnicast == 1)
             {
-                RequiresAuthorizationOrManagedGroup(Authorizations.ImageDeployTask, groupId);
+                RequiresAuthorizationOrManagedGroup(AuthorizationStrings.ImageDeployTask, groupId);
                 var successCount = Call.GroupApi.StartGroupUnicast(groupId);
                 EndUserMessage = "Started " + successCount + " Tasks";
             }
             else
             {
-                RequiresAuthorizationOrManagedGroup(Authorizations.ImageMulticastTask, groupId);
+                RequiresAuthorizationOrManagedGroup(AuthorizationStrings.ImageMulticastTask, groupId);
                 EndUserMessage = Call.GroupApi.StartMulticast(groupId);
             }
             Session.Remove("groupID");

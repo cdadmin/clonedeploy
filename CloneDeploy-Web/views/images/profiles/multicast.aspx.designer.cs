@@ -9,32 +9,35 @@
 
 
 
-public partial class views_images_profiles_Default {
+namespace CloneDeploy_Web.views.images.profiles
+{
+    public partial class views_images_profiles_Default {
     
-    /// <summary>
-    /// buttonUpdateMulticast control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.LinkButton buttonUpdateMulticast;
+        /// <summary>
+        /// buttonUpdateMulticast control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton buttonUpdateMulticast;
     
-    /// <summary>
-    /// txtSender control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.TextBox txtSender;
+        /// <summary>
+        /// txtSender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtSender;
     
-    /// <summary>
-    /// txtReceiver control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.TextBox txtReceiver;
+        /// <summary>
+        /// txtReceiver control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtReceiver;
+    }
 }

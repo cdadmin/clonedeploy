@@ -1,7 +1,7 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
 namespace CloneDeploy_Web.views.admin.cluster
 {
@@ -9,7 +9,7 @@ namespace CloneDeploy_Web.views.admin.cluster
     {
         protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.UpdateAdmin);
+            RequiresAuthorization(AuthorizationStrings.UpdateAdmin);
             var secondaryServer = new SecondaryServerEntity
             {
                 ApiURL = txtApi.Text,

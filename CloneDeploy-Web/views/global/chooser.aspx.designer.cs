@@ -9,5 +9,8 @@
 
 
 
-public partial class views_global_chooser {
+namespace CloneDeploy_Web.views.global
+{
+    public partial class views_global_chooser {
+    }
 }

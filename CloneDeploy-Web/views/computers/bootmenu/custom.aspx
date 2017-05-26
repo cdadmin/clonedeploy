@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/computers/bootmenu/bootmenu.master" AutoEventWireup="true" Inherits="views_computers_bootmenu_custom" Codebehind="custom.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/computers/bootmenu/bootmenu.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.computers.bootmenu.views_computers_bootmenu_custom" Codebehind="custom.aspx.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
     <li>Custom</li>

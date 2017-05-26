@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Services.Helpers;
 using Newtonsoft.Json;
 
 namespace CloneDeploy_Services
@@ -14,7 +13,6 @@ namespace CloneDeploy_Services
     {
         private readonly UserGroupServices _userGroupServices;
         private readonly UserLockoutServices _userLockoutServices;
-
 
         private readonly UserServices _userServices;
 
@@ -60,18 +58,17 @@ namespace CloneDeploy_Services
             var auditLogService = new AuditLogServices();
             auditLog.ObjectId = -1;
             auditLog.ObjectName = userName;
-            auditLog.Ip = Utility.GetIPAddress();
+            auditLog.Ip = IpServices.GetIPAddress();
             auditLog.UserId = -1;
             auditLog.ObjectType = "User";
             auditLog.AuditType = AuditEntry.Type.FailedLogin;
-
 
             //Check if user exists in Clone Deploy
             var user = _userServices.GetUser(userName);
             if (user == null)
             {
                 //Check For a first time LDAP User Group Login
-                if (Settings.LdapEnabled == "1")
+                if (SettingServices.GetSettingValue(SettingStrings.LdapEnabled) == "1")
                 {
                     foreach (var ldapGroup in _userGroupServices.GetLdapGroups())
                     {
@@ -87,7 +84,7 @@ namespace CloneDeploy_Services
                                 IsLdapUser = 1
                             };
                             //Create a local random db pass, should never actually be possible to use.
-                            cdUser.Password = Utility.CreatePasswordHash(new Guid().ToString(), cdUser.Salt);
+                            cdUser.Password = Utility.CreatePasswordHash(Utility.GenerateKey(), cdUser.Salt);
                             if (_userServices.AddUser(cdUser).Success)
                             {
                                 //add user to group
@@ -118,7 +115,7 @@ namespace CloneDeploy_Services
             }
 
             //Check against AD
-            if (user.IsLdapUser == 1 && Settings.LdapEnabled == "1")
+            if (user.IsLdapUser == 1 && SettingServices.GetSettingValue(SettingStrings.LdapEnabled) == "1")
             {
                 //Check if user is authenticated against an ldap group
                 if (user.UserGroupId != -1)
@@ -168,7 +165,7 @@ namespace CloneDeploy_Services
                     if (new LdapServices().Authenticate(userName, password)) validationResult.Success = true;
                 }
             }
-            else if (user.IsLdapUser == 1 && Settings.LdapEnabled != "1")
+            else if (user.IsLdapUser == 1 && SettingServices.GetSettingValue(SettingStrings.LdapEnabled) != "1")
             {
                 //prevent ldap user from logging in with local pass if ldap auth gets turned off
                 validationResult.Success = false;
@@ -197,27 +194,26 @@ namespace CloneDeploy_Services
             return validationResult;
         }
 
-
         public string IpxeLogin(string username, string password, string kernel, string bootImage, string task)
         {
             var newLineChar = "\n";
-            string userToken = null;
-            if (Settings.DebugRequiresLogin == "No" || Settings.OnDemandRequiresLogin == "No" ||
-                Settings.RegisterRequiresLogin == "No" || Settings.WebTaskRequiresLogin == "No")
-                userToken = Settings.UniversalToken;
+            string userToken;
+            if (SettingServices.GetSettingValue(SettingStrings.DebugRequiresLogin) == "No" || SettingServices.GetSettingValue(SettingStrings.OnDemandRequiresLogin) == "No" ||
+                SettingServices.GetSettingValue(SettingStrings.RegisterRequiresLogin) == "No" || SettingServices.GetSettingValue(SettingStrings.WebTaskRequiresLogin) == "No")
+                userToken = SettingServices.GetSettingValue(SettingStrings.UniversalToken);
             else
             {
                 userToken = "";
             }
-            var globalComputerArgs = Settings.GlobalComputerArgs;
+            var globalComputerArgs = SettingServices.GetSettingValue(SettingStrings.GlobalComputerArgs);
             var validationResult = GlobalLogin(username, password, "iPXE");
             if (!validationResult.Success) return "goto Menu";
             var lines = "#!ipxe" + newLineChar;
-            lines += "kernel " + Settings.WebPath + "IpxeBoot?filename=" + kernel + "&type=kernel" +
+            lines += "kernel " + SettingServices.GetSettingValue(SettingStrings.WebPath) + "IpxeBoot?filename=" + kernel + "&type=kernel" +
                      " initrd=" + bootImage + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
-                     Settings.WebPath + " USER_TOKEN=" + userToken + " task=" + task + " consoleblank=0 " +
+                     SettingServices.GetSettingValue(SettingStrings.WebPath) + " USER_TOKEN=" + userToken + " task=" + task + " consoleblank=0 " +
                      globalComputerArgs + newLineChar;
-            lines += "imgfetch --name " + bootImage + " " + Settings.WebPath + "IpxeBoot?filename=" +
+            lines += "imgfetch --name " + bootImage + " " + SettingServices.GetSettingValue(SettingStrings.WebPath) + "IpxeBoot?filename=" +
                      bootImage + "&type=bootimage" + newLineChar;
             lines += "boot";
 

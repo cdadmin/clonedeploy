@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_Common;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
@@ -13,6 +14,7 @@ namespace CloneDeploy_Services
     {
         private readonly UnitOfWork _uow;
         private readonly UserServices _userServices;
+      
 
         public ActiveImagingTaskServices()
         {
@@ -66,7 +68,7 @@ namespace CloneDeploy_Services
             actionResult.Success = true;
             actionResult.Id = activeImagingTaskId;
 
-            new CleanTaskBootFiles(computer).CleanPxeBoot();
+            new CleanTaskBootFiles(computer).Execute();
 
             return actionResult;
         }
@@ -154,7 +156,7 @@ namespace CloneDeploy_Services
         public void SendTaskCompletedEmail(ActiveImagingTaskEntity task)
         {
             //Mail not enabled
-            if (Settings.SmtpEnabled == "0") return;
+            if (SettingServices.GetSettingValue(SettingStrings.SmtpEnabled) == "0") return;
             var computer = new ComputerServices().GetComputer(task.ComputerId);
             foreach (
                 var user in
@@ -162,7 +164,7 @@ namespace CloneDeploy_Services
             {
                 if (task.UserId == user.Id)
                 {
-                    var mail = new Mail
+                    var mail = new MailServices
                     {
                         MailTo = user.Email,
                         Body = computer.Name + " Image Task Has Completed.",
@@ -176,7 +178,7 @@ namespace CloneDeploy_Services
         public void SendTaskErrorEmail(ActiveImagingTaskEntity task, string error)
         {
             //Mail not enabled
-            if (Settings.SmtpEnabled == "0") return;
+            if (SettingServices.GetSettingValue(SettingStrings.SmtpEnabled) == "0") return;
             var computer = new ComputerServices().GetComputer(task.ComputerId);
             foreach (
                 var user in
@@ -184,7 +186,7 @@ namespace CloneDeploy_Services
             {
                 if (task.UserId == user.Id)
                 {
-                    var mail = new Mail
+                    var mail = new MailServices
                     {
                         MailTo = user.Email,
                         Body = computer.Name + " Image Task Has Failed. " + error,

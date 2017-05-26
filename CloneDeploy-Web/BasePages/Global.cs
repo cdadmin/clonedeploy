@@ -1,6 +1,6 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
-using CloneDeploy_Web.Helpers;
 
 namespace CloneDeploy_Web.BasePages
 {
@@ -31,7 +31,7 @@ namespace CloneDeploy_Web.BasePages
                 ? Call.MunkiManifestTemplateApi.Get(Convert.ToInt32(Request.QueryString["manifestid"]))
                 : null;
 
-            RequiresAuthorization(Authorizations.ReadGlobal);
+            RequiresAuthorization(AuthorizationStrings.ReadGlobal);
         }
     }
 }

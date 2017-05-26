@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
+using CloneDeploy_Common;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.groups
+namespace CloneDeploy_Web.views.groups
 {
     public partial class GroupImport : Groups
     {
@@ -25,7 +25,7 @@ namespace views.groups
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.CreateGroup);
+            RequiresAuthorization(AuthorizationStrings.CreateGroup);
             if (IsPostBack) return;
         }
     }

@@ -1,57 +1,60 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-public partial class views_computers_proxy : Computers
+namespace CloneDeploy_Web.views.computers
 {
-    protected void buttonUpdate_OnClick(object sender, EventArgs e)
+    public partial class views_computers_proxy : Computers
     {
-        if (chkEnabled.Checked)
+        protected void buttonUpdate_OnClick(object sender, EventArgs e)
         {
-            if (Settings.ProxyDhcp == "No")
+            if (chkEnabled.Checked)
             {
-                EndUserMessage = "Proxy DHCP Mode Must Be Enabled To Use Proxy Reservations";
-                return;
+                if (GetSetting(SettingStrings.ProxyDhcp) == "No")
+                {
+                    EndUserMessage = "Proxy DHCP Mode Must Be Enabled To Use Proxy Reservations";
+                    return;
+                }
             }
+
+            //Cluster Issue
+            if (ddlBootFile.Text.Contains("winpe"))
+            {
+                if (!Call.FilesystemApi.BootSdiExists())
+                {
+                    EndUserMessage =
+                        "Cannot Use WinPE.  You Have Not Updated Your tftpboot Folder With CloneDeployPE Builder";
+                    return;
+                }
+            }
+
+            Call.ComputerApi.ToggleProxyReservation(Computer.Id, chkEnabled.Checked);
+            var reservation = new ComputerProxyReservationEntity();
+            reservation.ComputerId = Computer.Id;
+            reservation.NextServer = txtTftp.Text;
+            reservation.BootFile = ddlBootFile.Text;
+
+            Call.ComputerProxyReservationApi.Post(reservation);
+
+            EndUserMessage = "Successfully Updated Computer Reservation";
         }
 
-        //Cluster Issue
-        if (ddlBootFile.Text.Contains("winpe"))
+        protected void Page_Load(object sender, EventArgs e)
         {
-            if (!Call.FilesystemApi.BootSdiExists())
-            {
-                EndUserMessage =
-                    "Cannot Use WinPE.  You Have Not Updated Your tftpboot Folder With CloneDeployPE Builder";
-                return;
-            }
+            if (!IsPostBack) PopulateForm();
         }
 
-        Call.ComputerApi.ToggleProxyReservation(Computer.Id, chkEnabled.Checked);
-        var reservation = new ComputerProxyReservationEntity();
-        reservation.ComputerId = Computer.Id;
-        reservation.NextServer = txtTftp.Text;
-        reservation.BootFile = ddlBootFile.Text;
-
-        Call.ComputerProxyReservationApi.Post(reservation);
-
-        EndUserMessage = "Successfully Updated Computer Reservation";
-    }
-
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        if (!IsPostBack) PopulateForm();
-    }
-
-    protected void PopulateForm()
-    {
-        chkEnabled.Checked = Computer.ProxyReservation == 1;
-
-        var reservation = Call.ComputerApi.GetProxyReservation(Computer.Id);
-        if (reservation != null)
+        protected void PopulateForm()
         {
-            txtTftp.Text = reservation.NextServer;
-            ddlBootFile.Text = reservation.BootFile;
+            chkEnabled.Checked = Computer.ProxyReservation == 1;
+
+            var reservation = Call.ComputerApi.GetProxyReservation(Computer.Id);
+            if (reservation != null)
+            {
+                txtTftp.Text = reservation.NextServer;
+                ddlBootFile.Text = reservation.BootFile;
+            }
         }
     }
 }

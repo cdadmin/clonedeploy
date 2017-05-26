@@ -135,14 +135,7 @@ namespace CloneDeploy_ApiCalls
             return response != null ? response.Value : string.Empty;
         }
 
-        public List<string> GetThinImages()
-        {
-            Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetThinImages/", Resource);
-            var response = _apiRequest.Execute<List<string>>(Request);
-
-            return response;
-        }
+       
 
         public string ReadFileText(string path)
         {

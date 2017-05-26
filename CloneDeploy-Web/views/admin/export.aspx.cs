@@ -1,8 +1,8 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.admin
+namespace CloneDeploy_Web.views.admin
 {
     public partial class AdminExport : Admin
     {
@@ -18,7 +18,7 @@ namespace views.admin
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.Administrator);
+            RequiresAuthorization(AuthorizationStrings.Administrator);
         }
     }
 }

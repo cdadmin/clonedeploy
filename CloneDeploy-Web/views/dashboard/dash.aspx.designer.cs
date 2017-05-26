@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace views.dashboard {
+namespace CloneDeploy_Web.views.dashboard {
     
     
     public partial class Dashboard {

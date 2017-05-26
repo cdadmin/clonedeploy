@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.ImageSchemaFE;
-using CloneDeploy_Services.Helpers;
 using Newtonsoft.Json;
 
 namespace CloneDeploy_Services
@@ -20,15 +19,7 @@ namespace CloneDeploy_Services
             //Only To display the main image specs file when not using a profile.
             if (schemaRequest.image != null)
             {
-                var path = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar +
-                           schemaRequest.image.Name + Path.DirectorySeparatorChar + "schema";
-                if (File.Exists(path))
-                {
-                    using (var reader = new StreamReader(path))
-                    {
-                        schema = reader.ReadLine() ?? "";
-                    }
-                }
+                schema = new FilesystemServices().ReadSchemaFile(schemaRequest.image.Name);
             }
 
             if (schemaRequest.imageProfile != null)
@@ -45,16 +36,7 @@ namespace CloneDeploy_Services
                 }
                 else
                 {
-                    var path = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar +
-                               schemaRequest.imageProfile.Image.Name + Path.DirectorySeparatorChar +
-                               "schema";
-                    if (File.Exists(path))
-                    {
-                        using (var reader = new StreamReader(path))
-                        {
-                            schema = reader.ReadLine() ?? "";
-                        }
-                    }
+                    schema = new FilesystemServices().ReadSchemaFile(schemaRequest.imageProfile.Name);
                 }
             }
 

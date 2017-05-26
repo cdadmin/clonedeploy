@@ -2,22 +2,25 @@
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
 
-public partial class views_users_acls_acls : MasterBaseMaster
+namespace CloneDeploy_Web.views.users.acls
 {
-    public CloneDeployUserEntity CloneDeployUser { get; set; }
-    private Users userBasePage { get; set; }
-
-    protected void Page_Load(object sender, EventArgs e)
+    public partial class views_users_acls_acls : MasterBaseMaster
     {
-        userBasePage = Page as Users;
-        CloneDeployUser = userBasePage.CloneDeployUser;
+        public CloneDeployUserEntity CloneDeployUser { get; set; }
+        private Users userBasePage { get; set; }
 
-        if (CloneDeployUser == null) Response.Redirect("~/", true);
-
-        if (CloneDeployUser.Membership == "Administrator")
+        protected void Page_Load(object sender, EventArgs e)
         {
-            PageBaseMaster.EndUserMessage = "Administrators Do Not Use ACL's";
-            Response.Redirect("~/views/users/edit.aspx?userid=" + CloneDeployUser.Id);
+            userBasePage = Page as Users;
+            CloneDeployUser = userBasePage.CloneDeployUser;
+
+            if (CloneDeployUser == null) Response.Redirect("~/", true);
+
+            if (CloneDeployUser.Membership == "Administrator")
+            {
+                PageBaseMaster.EndUserMessage = "Administrators Do Not Use ACL's";
+                Response.Redirect("~/views/users/edit.aspx?userid=" + CloneDeployUser.Id);
+            }
         }
     }
 }

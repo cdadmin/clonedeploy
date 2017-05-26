@@ -50,8 +50,8 @@ elif [ "$taskType" = "2" ]; then
 		if [ ! "$?" = "0" ]; then
 			error "Could Not Add Image: $addImageResult"
 		else
-			if [ "$(parse_json "$addImageResult" .IsValid)" = "true" ]; then
-			  image_id="$(parse_json "$addImageResult" .Message)"
+			if [ "$(parse_json "$addImageResult" .Success)" = "true" ]; then
+			  image_id="$(parse_json "$addImageResult" .ErrorMessage)"
 			  isError="false"
 			else
 			  isError="true"
@@ -63,7 +63,7 @@ elif [ "$taskType" = "2" ]; then
     image_id=$(dialog --backtitle "CloneDeploy" --title "Select An Image" --clear --menu "" 20 60 15 `parse_json "$image_list" .Images[]` --stdout)
   fi
   
-  if [ -z "$image_id"]; then
+  if [ -z "$image_id" ]; then
 	  error "No Image Was Selected Or No Images Have Been Added Yet"
   fi
   profile_list=`$curlAuth --data "imageId=$image_id" "${web}ListImageProfiles" $curlEnd`

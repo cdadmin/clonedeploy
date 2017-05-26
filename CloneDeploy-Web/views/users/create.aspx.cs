@@ -1,9 +1,9 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.users
+namespace CloneDeploy_Web.views.users
 {
     public partial class CreateUser : Users
     {
@@ -73,7 +73,7 @@ namespace views.users
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.Administrator);
+            RequiresAuthorization(AuthorizationStrings.Administrator);
             txtToken.Text = Utility.GenerateKey();
         }
     }

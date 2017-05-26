@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Web.UI;
-using CloneDeploy_Web.Helpers;
+using CloneDeploy_Common;
+using CloneDeploy_Web.BasePages;
 
-namespace views.masters
+namespace CloneDeploy_Web.views
 {
-    public partial class SiteMaster : MasterPage
+    public partial class SiteMaster : MasterBaseMaster
     {
         public void Page_Init(object sender, EventArgs e)
         {
@@ -14,8 +15,8 @@ namespace views.masters
 
         public void Page_Load(object sender, EventArgs e)
         {
-            lblServerId.Text = Settings.ServerIdentifier;
-            if (Settings.OperationMode == "Cluster Secondary")
+            lblServerId.Text = GetSetting(SettingStrings.ServerIdentifier);
+            if (GetSetting(SettingStrings.OperationMode) == "Cluster Secondary")
             {
                 navhosts.Visible = false;
                 navgroups.Visible = false;

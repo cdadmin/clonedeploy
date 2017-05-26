@@ -1,54 +1,57 @@
 ﻿using System;
 using System.Web.UI.WebControls;
+using CloneDeploy_Common;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-public partial class views_users_removemembers : Users
+namespace CloneDeploy_Web.views.users
 {
-    protected void btnRemoveSelected_OnClick(object sender, EventArgs e)
+    public partial class views_users_removemembers : Users
     {
-        RequiresAuthorization(Authorizations.Administrator);
-
-        var successCount = 0;
-        foreach (GridViewRow row in gvUsers.Rows)
+        protected void btnRemoveSelected_OnClick(object sender, EventArgs e)
         {
-            var cb = (CheckBox) row.FindControl("chkSelector");
-            if (cb == null || !cb.Checked) continue;
-            var dataKey = gvUsers.DataKeys[row.RowIndex];
-            if (dataKey != null)
+            RequiresAuthorization(AuthorizationStrings.Administrator);
+
+            var successCount = 0;
+            foreach (GridViewRow row in gvUsers.Rows)
             {
-                var user = Call.CloneDeployUserApi.Get(Convert.ToInt32(dataKey.Value));
-                user.UserGroupId = -1;
+                var cb = (CheckBox) row.FindControl("chkSelector");
+                if (cb == null || !cb.Checked) continue;
+                var dataKey = gvUsers.DataKeys[row.RowIndex];
+                if (dataKey != null)
+                {
+                    var user = Call.CloneDeployUserApi.Get(Convert.ToInt32(dataKey.Value));
+                    user.UserGroupId = -1;
 
-                if (Call.CloneDeployUserApi.Put(user.Id, user).Success)
-                    successCount++;
+                    if (Call.CloneDeployUserApi.Put(user.Id, user).Success)
+                        successCount++;
+                }
             }
+            EndUserMessage = "Successfully Removed " + successCount + " Users From The Group";
+            PopulateGrid();
         }
-        EndUserMessage = "Successfully Removed " + successCount + " Users From The Group";
-        PopulateGrid();
-    }
 
-    protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
-    {
-        ChkAll(gvUsers);
-    }
+        protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
+        {
+            ChkAll(gvUsers);
+        }
 
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        if (IsPostBack) return;
-        PopulateGrid();
-    }
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (IsPostBack) return;
+            PopulateGrid();
+        }
 
-    protected void PopulateGrid()
-    {
-        gvUsers.DataSource = Call.UserGroupApi.GetGroupMembers(CloneDeployUserGroup.Id, txtSearch.Text);
-        gvUsers.DataBind();
-        lblTotal.Text = gvUsers.Rows.Count + " Result(s) / " + Call.UserGroupApi.GetMemberCount(CloneDeployUserGroup.Id) +
-                        " Total User(s)";
-    }
+        protected void PopulateGrid()
+        {
+            gvUsers.DataSource = Call.UserGroupApi.GetGroupMembers(CloneDeployUserGroup.Id, txtSearch.Text);
+            gvUsers.DataBind();
+            lblTotal.Text = gvUsers.Rows.Count + " Result(s) / " + Call.UserGroupApi.GetMemberCount(CloneDeployUserGroup.Id) +
+                            " Total User(s)";
+        }
 
-    protected void search_Changed(object sender, EventArgs e)
-    {
-        PopulateGrid();
+        protected void search_Changed(object sender, EventArgs e)
+        {
+            PopulateGrid();
+        }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.UI.WebControls;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
 namespace CloneDeploy_Web.views.admin.cluster
 {
@@ -16,7 +16,7 @@ namespace CloneDeploy_Web.views.admin.cluster
 
         protected void btnUpdateCluster_OnClick(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.UpdateAdmin);
+            RequiresAuthorization(AuthorizationStrings.UpdateAdmin);
             var clusterGroup = new ClusterGroupEntity
             {
                 Id = ClusterGroup.Id,
@@ -41,7 +41,7 @@ namespace CloneDeploy_Web.views.admin.cluster
 
                     var clusterGroupServer = new ClusterGroupServerEntity();
                     clusterGroupServer.ClusterGroupId = result.Id;
-                    clusterGroupServer.SecondaryServerId = Convert.ToInt32(dataKey.Value);
+                    clusterGroupServer.ServerId = Convert.ToInt32(dataKey.Value);
 
                     if (cbTftp.Checked)
                         clusterGroupServer.TftpRole = 1;
@@ -59,7 +59,7 @@ namespace CloneDeploy_Web.views.admin.cluster
                     listOfServers.Add(new ClusterGroupServerEntity
                     {
                         ClusterGroupId = ClusterGroup.Id,
-                        SecondaryServerId = -2
+                        ServerId = -2
                     });
                 Call.ClusterGroupServerApi.Post(listOfServers);
 
@@ -71,7 +71,7 @@ namespace CloneDeploy_Web.views.admin.cluster
                     if (!cb.Checked) continue;
 
 
-                    var dataKey = gvServers.DataKeys[row.RowIndex];
+                    var dataKey = gvDps.DataKeys[row.RowIndex];
                     if (dataKey == null) continue;
 
                     var clusterGroupDistributionPoint = new ClusterGroupDistributionPointEntity();
@@ -114,14 +114,14 @@ namespace CloneDeploy_Web.views.admin.cluster
             chkDefault.Checked = ClusterGroup.Default == 1;
 
             var secondaryServers = Call.SecondaryServerApi.GetAll(int.MaxValue, "");
-            if (Settings.OperationMode == "Cluster Primary")
+            if (GetSetting(SettingStrings.OperationMode) == "Cluster Primary")
             {
                 var primary = new SecondaryServerEntity();
                 primary.Id = -1;
-                primary.Name = Settings.ServerIdentifier;
+                primary.Name = GetSetting(SettingStrings.ServerIdentifier);
 
-                primary.TftpRole = Settings.TftpServerRole ? 1 : 0;
-                primary.MulticastRole = Settings.MulticastServerRole ? 1 : 0;
+                primary.TftpRole = Convert.ToBoolean(Convert.ToInt16(GetSetting(SettingStrings.TftpServerRole))) ? 1 : 0;
+                primary.MulticastRole = Convert.ToBoolean(Convert.ToInt16(GetSetting(SettingStrings.MulticastServerRole))) ? 1 : 0;
                 secondaryServers.Insert(0, primary);
             }
             gvServers.DataSource = secondaryServers;
@@ -138,8 +138,8 @@ namespace CloneDeploy_Web.views.admin.cluster
 
                 if (Convert.ToInt32(dataKey.Value) == -1)
                 {
-                    cbTftp.Visible = Settings.TftpServerRole;
-                    cbMulticast.Visible = Settings.MulticastServerRole;
+                    cbTftp.Visible = Convert.ToBoolean(Convert.ToInt16(GetSetting(SettingStrings.TftpServerRole)));
+                    cbMulticast.Visible = Convert.ToBoolean(Convert.ToInt16(GetSetting(SettingStrings.MulticastServerRole)));
                 }
                 else
                 {
@@ -153,7 +153,7 @@ namespace CloneDeploy_Web.views.admin.cluster
 
                 foreach (var clusterServer in Call.ClusterGroupApi.GetClusterServers(ClusterGroup.Id))
                 {
-                    if (clusterServer.SecondaryServerId == Convert.ToInt32(dataKey.Value))
+                    if (clusterServer.ServerId == Convert.ToInt32(dataKey.Value))
                     {
                         cb.Checked = true;
 
@@ -169,7 +169,7 @@ namespace CloneDeploy_Web.views.admin.cluster
             foreach (GridViewRow row in gvDps.Rows)
             {
                 var cb = (CheckBox) row.FindControl("chkSelector");
-                var dataKey = gvServers.DataKeys[row.RowIndex];
+                var dataKey = gvDps.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
 
                 foreach (var clusterDp in Call.ClusterGroupApi.GetClusterDistributionPoints(ClusterGroup.Id))

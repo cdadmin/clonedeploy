@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace views.masters {
+namespace CloneDeploy_Web.views.groups {
     
     
     public partial class GroupMaster {

@@ -25,11 +25,11 @@ while [ "$isError" != "false" ]; do
 		if [ ! "$?" = "0" ]; then
 			echo " ...... Could Not Register Computer: $registerResult"
 		else
-			if [ "$(parse_json "$registerResult" .IsValid)" = "true" ]; then
+			if [ "$(parse_json "$registerResult" .Success)" = "true" ]; then
 				echo " ...... Success"
 				isError="false"
 			else
-				echo " ...... $(parse_json "$registerResult" .Message)"
+				echo " ...... $(parse_json "$registerResult" .ErrorMessage)"
 				isError="true"
 			fi
 			echo

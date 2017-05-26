@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" Inherits="views.masters.SiteMaster" Codebehind="site.master.cs" %>
+﻿<%@ Master Language="C#" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.SiteMaster" Codebehind="site.master.cs" %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -169,6 +169,7 @@
         jQuery("#bread-crumb1").jBreadCrumb();
         $('.searchbox').watermark('Search', { useNative: false });
         $('.txt-generate').watermark('Password', { useNative: false });
+        $('.password').watermark('******', { useNative: false });
 
         $(".confirm").click(function() {
             var menuTop = document.getElementById('confirmbox');

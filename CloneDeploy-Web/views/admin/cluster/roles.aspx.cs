@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
 namespace CloneDeploy_Web.views.admin.cluster
 {
@@ -10,7 +10,7 @@ namespace CloneDeploy_Web.views.admin.cluster
     {
         protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.UpdateAdmin);
+            RequiresAuthorization(AuthorizationStrings.UpdateAdmin);
             var listSettings = new List<SettingEntity>
             {
                 new SettingEntity
@@ -53,11 +53,11 @@ namespace CloneDeploy_Web.views.admin.cluster
         {
             if (IsPostBack) return;
 
-            ddlOperationMode.Text = Settings.OperationMode;
+            ddlOperationMode.Text = GetSetting(SettingStrings.OperationMode);
             if (ddlOperationMode.Text != "single")
             {
-                chkTftpServer.Checked = Settings.TftpServerRole;
-                chkMulticastServer.Checked = Settings.MulticastServerRole;
+                chkTftpServer.Checked = Convert.ToBoolean(Convert.ToInt16(GetSetting(SettingStrings.TftpServerRole)));
+                chkMulticastServer.Checked = Convert.ToBoolean(Convert.ToInt16(GetSetting(SettingStrings.MulticastServerRole)));
             }
             DisplayRoles();
         }

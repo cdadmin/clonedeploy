@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using CloneDeploy_ApiCalls;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
-using CloneDeploy_Services.Helpers;
 using log4net;
 
 namespace CloneDeploy_Services.Workflows
@@ -14,16 +13,22 @@ namespace CloneDeploy_Services.Workflows
         private readonly string _bootFile;
         private readonly ComputerEntity _computer;
         private readonly ILog _log = LogManager.GetLogger("ApplicationLog");
+        private readonly ComputerServices _computerServices;
+        private readonly ClusterGroupServices _clusterGroupServices;
+        private readonly SecondaryServerServices _secondaryServerServices;
 
         public CleanTaskBootFiles(ComputerEntity computer)
         {
             _computer = computer;
-            _bootFile = Utility.MacToPxeMac(_computer.Mac);
+            _bootFile = StringManipulationServices.MacToPxeMac(_computer.Mac);
+            _computerServices = new ComputerServices();
+            _clusterGroupServices = new ClusterGroupServices();
+            _secondaryServerServices = new SecondaryServerServices();
         }
 
-        public void CleanPxeBoot()
+        public void Execute()
         {
-            if (Settings.ProxyDhcp == "Yes")
+            if (SettingServices.GetSettingValue(SettingStrings.ProxyDhcp) == "Yes")
             {
                 DeleteProxyFile("bios");
                 DeleteProxyFile("bios", ".ipxe");
@@ -35,7 +40,7 @@ namespace CloneDeploy_Services.Workflows
             }
             else
             {
-                var mode = Settings.PxeMode;
+                var mode = SettingServices.GetSettingValue(SettingStrings.PxeMode);
                 if (mode.Contains("ipxe"))
                     DeleteStandardFile(".ipxe");
                 else if (mode.Contains("grub"))
@@ -46,20 +51,20 @@ namespace CloneDeploy_Services.Workflows
 
             //Custom Boot files for the secondary cluster will be created by the primary
             //Don't run on secondary
-            if (Settings.OperationMode != "Cluster Secondary")
+            if (!SettingServices.ServerIsClusterSecondary)
             {
                 if (Convert.ToBoolean(_computer.CustomBootEnabled))
-                    new ComputerServices().CreateBootFiles(_computer.Id);
+                    _computerServices.CreateBootFiles(_computer.Id);
             }
         }
 
         private void DeleteProxyFile(string architecture, string extension = "")
         {
-            if (Settings.OperationMode == "Single")
+            if (SettingServices.ServerIsNotClustered)
             {
                 try
                 {
-                    File.Delete(Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + architecture +
+                    File.Delete(SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar + architecture +
                                 Path.DirectorySeparatorChar + ConfigFolder + Path.DirectorySeparatorChar + _bootFile +
                                 extension);
                 }
@@ -70,16 +75,14 @@ namespace CloneDeploy_Services.Workflows
             }
             else
             {
-                var clusterGroup = new ComputerServices().GetClusterGroup(_computer.Id);
-                var tftpServers =
-                    new ClusterGroupServices().GetClusterServers(clusterGroup.Id).Where(x => x.TftpRole == 1);
-                foreach (var tftpServer in tftpServers)
+                var clusterGroup = _computerServices.GetClusterGroup(_computer.Id);
+                foreach (var tftpServer in _clusterGroupServices.GetClusterTftpServers(clusterGroup.Id))
                 {
-                    if (tftpServer.SecondaryServerId == -1)
+                    if (tftpServer.ServerId == -1)
                     {
                         try
                         {
-                            File.Delete(Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + architecture +
+                            File.Delete(SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar + architecture +
                                         Path.DirectorySeparatorChar + ConfigFolder + Path.DirectorySeparatorChar +
                                         _bootFile +
                                         extension);
@@ -91,17 +94,16 @@ namespace CloneDeploy_Services.Workflows
                     }
                     else
                     {
-                        var secondaryServer =
-                            new SecondaryServerServices().GetSecondaryServer(tftpServer.SecondaryServerId);
+                        var secondaryServer = _secondaryServerServices.GetSecondaryServer(tftpServer.ServerId);
                         var tftpPath =
-                            new APICall(new SecondaryServerServices().GetApiToken(secondaryServer.Name))
+                            new APICall(_secondaryServerServices.GetToken(secondaryServer.Name))
                                 .SettingApi.GetSetting("Tftp Path").Value;
 
                         var path = tftpPath + "proxy" + Path.DirectorySeparatorChar + architecture +
                                    Path.DirectorySeparatorChar + ConfigFolder + Path.DirectorySeparatorChar +
                                    _bootFile + extension;
 
-                        new APICall(new SecondaryServerServices().GetApiToken(secondaryServer.Name))
+                        new APICall(_secondaryServerServices.GetToken(secondaryServer.Name))
                             .ServiceAccountApi.DeleteTftpFile(path);
                     }
                 }
@@ -110,11 +112,11 @@ namespace CloneDeploy_Services.Workflows
 
         private void DeleteStandardFile(string extension = "")
         {
-            if (Settings.OperationMode == "Single")
+            if (SettingServices.ServerIsNotClustered)
             {
                 try
                 {
-                    File.Delete(Settings.TftpPath + ConfigFolder + Path.DirectorySeparatorChar +
+                    File.Delete(SettingServices.GetSettingValue(SettingStrings.TftpPath) + ConfigFolder + Path.DirectorySeparatorChar +
                                 _bootFile + extension);
                 }
                 catch (Exception ex)
@@ -124,16 +126,14 @@ namespace CloneDeploy_Services.Workflows
             }
             else
             {
-                var clusterGroup = new ComputerServices().GetClusterGroup(_computer.Id);
-                var tftpServers =
-                    new ClusterGroupServices().GetClusterServers(clusterGroup.Id).Where(x => x.TftpRole == 1);
-                foreach (var tftpServer in tftpServers)
+                var clusterGroup = _computerServices.GetClusterGroup(_computer.Id);
+                foreach (var tftpServer in _clusterGroupServices.GetClusterTftpServers(clusterGroup.Id))
                 {
-                    if (tftpServer.SecondaryServerId == -1)
+                    if (tftpServer.ServerId == -1)
                     {
                         try
                         {
-                            File.Delete(Settings.TftpPath + ConfigFolder + Path.DirectorySeparatorChar +
+                            File.Delete(SettingServices.GetSettingValue(SettingStrings.TftpPath) + ConfigFolder + Path.DirectorySeparatorChar +
                                         _bootFile + extension);
                         }
                         catch (Exception ex)
@@ -143,17 +143,16 @@ namespace CloneDeploy_Services.Workflows
                     }
                     else
                     {
-                        var secondaryServer =
-                            new SecondaryServerServices().GetSecondaryServer(tftpServer.SecondaryServerId);
+                        var secondaryServer = _secondaryServerServices.GetSecondaryServer(tftpServer.ServerId);
                         var tftpPath =
-                            new APICall(new SecondaryServerServices().GetApiToken(secondaryServer.Name))
+                            new APICall(_secondaryServerServices.GetToken(secondaryServer.Name))
                                 .SettingApi.GetSetting("Tftp Path").Value;
 
                         var path = tftpPath + ConfigFolder + Path.DirectorySeparatorChar +
                                    _bootFile + extension;
                         ;
 
-                        new APICall(new SecondaryServerServices().GetApiToken(secondaryServer.Name))
+                        new APICall(_secondaryServerServices.GetToken(secondaryServer.Name))
                             .ServiceAccountApi.DeleteTftpFile(path);
                     }
                 }

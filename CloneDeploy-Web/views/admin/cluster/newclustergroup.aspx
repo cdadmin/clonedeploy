@@ -34,7 +34,9 @@
         <asp:CheckBox runat="server" Id="chkDefault"></asp:CheckBox>
     </div>
     <br class="clear"/>
+    <br/>
     <h4>Select Servers And Roles For The Group:</h4>
+    
     <asp:GridView ID="gvServers" runat="server" DataKeyNames="Id" AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
         <Columns>
             <asp:TemplateField>
@@ -68,6 +70,7 @@
     </asp:GridView>
 
     <br class="clear"/>
+    <br/>
     <h4>Select Distribution Points For The Group:</h4>
     <asp:GridView ID="gvDps" runat="server" DataKeyNames="Id" AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
         <Columns>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web.UI.WebControls;
+using CloneDeploy_Common;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
 namespace CloneDeploy_Web.views.admin.cluster
 {
@@ -9,7 +9,7 @@ namespace CloneDeploy_Web.views.admin.cluster
     {
         protected void ButtonConfirmDelete_Click(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.UpdateAdmin);
+            RequiresAuthorization(AuthorizationStrings.UpdateAdmin);
             foreach (GridViewRow row in gvClusters.Rows)
             {
                 var cb = (CheckBox) row.FindControl("chkSelector");

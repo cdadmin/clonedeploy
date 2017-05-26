@@ -2,34 +2,38 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using CloneDeploy_ApiCalls;
-using CloneDeploy_Services.Helpers;
+using CloneDeploy_Common;
 using log4net;
 
 namespace CloneDeploy_Services.Workflows
 {
     public class CancelAllImagingTasks
     {
-        private static readonly ILog Log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog Log = LogManager.GetLogger("ApplicationLog");
+        private readonly ComputerServices _computerServices;
+        private readonly SecondaryServerServices _secondaryServerServices;
 
-        public static bool Run()
+        public CancelAllImagingTasks()
+        {
+            _computerServices = new ComputerServices();
+            _secondaryServerServices = new SecondaryServerServices();
+        }
+
+        public bool Execute()
         {
             //If a cluster primary - cancel all tasks on secondaries first, then move on
-            if (Settings.OperationMode == "Cluster Primary")
+            if (SettingServices.ServerIsClusterPrimary)
             {
-                var secondaryServers =
-                    new SecondaryServerServices().SearchSecondaryServers()
-                        .Where(x => x.MulticastRole == 1 || x.TftpRole == 1);
-                foreach (var server in secondaryServers)
+                foreach (var server in _secondaryServerServices.GetAllWithActiveRoles())
                 {
-                    new APICall(new SecondaryServerServices().GetApiToken(server.Name))
-                        .WorkflowApi.CancelAllImagingTasks();
+                    new APICall(_secondaryServerServices.GetToken(server.Name))
+                        .ServiceAccountApi.CancelAllImagingTasks();
                 }
             }
 
-            var tftpPath = Settings.TftpPath;
+            var tftpPath = SettingServices.GetSettingValue(SettingStrings.TftpPath);
             var pxePaths = new List<string>
             {
                 tftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar,
@@ -58,13 +62,7 @@ namespace CloneDeploy_Services.Workflows
                 }
             }
 
-            //The database tasks are only removed on a single server or cluster primary,
-            //There are no database tasks in a clustered secondary.
-            if (Settings.OperationMode != "Cluster Secondary")
-            {
-                new ActiveImagingTaskServices().DeleteAll();
-                new ActiveMulticastSessionServices().DeleteAll();
-            }
+
 
             if (Environment.OSVersion.ToString().Contains("Unix"))
             {
@@ -108,13 +106,20 @@ namespace CloneDeploy_Services.Workflows
                 }
             }
 
-            //The create boot files method handles creating the file for the secondary servers
-            if (Settings.OperationMode != "Cluster Secondary")
+
+            if (!SettingServices.ServerIsClusterSecondary)
             {
+                //The database tasks are only removed on a single server or cluster primary,
+                //There are no database tasks in a clustered secondary.
+
+                new ActiveImagingTaskServices().DeleteAll();
+                new ActiveMulticastSessionServices().DeleteAll();
+
                 //Recreate any custom boot menu's that were just deleted
-                foreach (var computer in new ComputerServices().ComputersWithCustomBootMenu())
+                foreach (var computer in _computerServices.ComputersWithCustomBootMenu())
                 {
-                    new ComputerServices().CreateBootFiles(computer.Id);
+                    //The create boot files method handles creating the file for the secondary servers
+                    _computerServices.CreateBootFiles(computer.Id);
                 }
             }
             return true;

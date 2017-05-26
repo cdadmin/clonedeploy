@@ -3,7 +3,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using CloneDeploy_Web.BasePages;
 
-namespace views.tasks
+namespace CloneDeploy_Web.views.tasks
 {
     public partial class TaskActive : Tasks
     {

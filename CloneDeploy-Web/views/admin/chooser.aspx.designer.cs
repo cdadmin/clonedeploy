@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace views.admin {
+namespace CloneDeploy_Web.views.admin {
     
     
     public partial class AdminChooser {

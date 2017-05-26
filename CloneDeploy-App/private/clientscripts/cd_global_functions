@@ -287,30 +287,93 @@ function log_boot_args()
 
 function mount_smb()
 {
+	local mount_result
+	local all_cluster_dps
+	local result
+	
 	log " ** Mounting SMB Share **" "display"
 	mkdir /storage &>> $CLIENT_LOG
 	smbInfo=$($curlAuth --data "dpId=$dp_id&task=$task" "${web}DistributionPoint" $curlEnd)
+	log " ...... Connecting To $(parse_json "$smbInfo" .DisplayName)" "display"
+	if [ "smb_debug" = "1" ]; then
+	  log "$smbInfo"
+	fi
+	
+	mount_result=$(mount_smb_sub "$smbInfo")
+	if [ "$mount_result" = "true" ]; then
+	  log " ...... Success" "display"
+	else
+	  #Look for other distribution points
+	  log " ...... Looking For Additional Distribution Points"
+	  all_cluster_dps=$($curlAuth --data "computerMac=$mac" "${web}GetAllClusterDps" $curlEnd)
+	  if [ ! "$?" = "0" ]; then
+		error "Could Not Find Additional Distribution Points"
+	  else
+	    if [ "$all_cluster_dps" = "single" ]; then
+			error "Could Not Mount SMB Share and Server Is Not Clustered"
+		elif [ "$all_cluster_dps" = "false" ]; then
+			error "Could Not Mount SMB Share and An Unknown Error Occurred While Looking For Others"
+		else
+			for local_dp_id in $all_cluster_dps; do
+			  sleep 2
+			  smbInfo=$($curlAuth --data "dpId=$local_dp_id&task=$task" "${web}DistributionPoint" $curlEnd)
+			  log " ...... Connecting To $(parse_json "$smbInfo" .DisplayName)" "display"
+			  if [ "smb_debug" = "1" ]; then
+				log "$smbInfo"
+			  fi
+			  mount_result=$(mount_smb_sub "$smbInfo")
+			  if [ "$mount_result" = "true" ]; then
+			    log " ...... Success" "display"
+				dp_id=$local_dp_id
+				result="true"
+				break
+			  else
+			    result="false"
+			  fi
+			done
+			
+			if [ "$result" = "false" ]; then
+			  #no smb shares could be mounted
+			  error "Could Not Mount Any Available SMB Shares"
+			fi
+		fi
+	  fi
+	fi
+	
+	
+	
+	echo
+	sleep 2
+}
+
+function mount_smb_sub()
+{
+	local smbInfo=$1
+	
 	for smbVersion in 3.0 2.1 2.0 1.0; do	
 		mount -t cifs "$(parse_json "$smbInfo" .SharePath)" /storage -o user="$(parse_json "$smbInfo" .Username)",pass="$(parse_json "$smbInfo" .Password)",dom="$(parse_json "$smbInfo" .Domain)",vers=$smbVersion 2>/tmp/mntstat
 		if [ ! $? = "0" ]; then
 			cat /tmp/mntstat >> $CLIENT_LOG
 			errormsg=$(cat /tmp/mntstat)
-			
 		else
-			log " ...... Success" "display"
-
 			cd /storage/images/$image_name;
 			if [ "$?" != "0" ]; then
-				error "Could Not Change Directory To /images/$image_name Check Permissions"
+				log " ...... Could Not Change Directory To /images/$image_name Check Permissions" "display"
+				cd /
+			    umount /storage
+			    echo "false"
+			else
+				echo "true"
 			fi
+			
 			break
 		fi
+		
 		if [ "$smbVersion" = "1.0" ]; then
-			error "Could Not Mount SMB Share"
+			log " ...... Could Not Mount SMB Share" "display"
+			echo "false"
 		fi
 	done
-	echo
-	sleep 2
 }
 
 function process_scripts()

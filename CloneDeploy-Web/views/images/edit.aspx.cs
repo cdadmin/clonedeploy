@@ -1,14 +1,14 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.images
+namespace CloneDeploy_Web.views.images
 {
     public partial class ImageEdit : Images
     {
         protected void btnUpdateImage_Click(object sender, EventArgs e)
         {
-            RequiresAuthorizationOrManagedImage(Authorizations.UpdateImage, Image.Id);
+            RequiresAuthorizationOrManagedImage(AuthorizationStrings.UpdateImage, Image.Id);
             var image = Image;
 
             var currentName = (string) ViewState["currentName"];
@@ -49,10 +49,7 @@ namespace views.images
                 if (Image.OsxType == "thin")
                 {
                     thinImage.Visible = false;
-                    ddlThinOS.DataSource = Call.FilesystemApi.GetThinImages();
-                    ddlThinOS.DataBind();
-                    ddlThinRecovery.DataSource = Call.FilesystemApi.GetThinImages();
-                    ddlThinRecovery.DataBind();
+                   
 
                     ddlThinOS.Text = Image.OsxThinOs;
                     ddlThinRecovery.Text = Image.OsxThinRecovery;

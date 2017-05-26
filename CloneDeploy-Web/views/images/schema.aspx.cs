@@ -6,7 +6,7 @@ using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.ImageSchemaFE;
 using CloneDeploy_Web.BasePages;
 
-namespace views.images
+namespace CloneDeploy_Web.views.images
 {
     public partial class ImageSpecs : Images
     {

@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" MasterPageFile="~/views/site.master" AutoEventWireup="true" Inherits="views.masters.GroupMaster" Codebehind="groups.master.cs" %>
+﻿<%@ Master Language="C#" MasterPageFile="~/views/site.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.groups.GroupMaster" Codebehind="groups.master.cs" %>
 
 <asp:Content ID="SubNav" ContentPlaceHolderID="SubNav" Runat="Server">
 
@@ -102,7 +102,7 @@
 <asp:Content ID="MainContent" ContentPlaceHolderID="Content" Runat="Server">
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#nav-groups').addClass("nav-current");
+            $('#navgroups').addClass("nav-current");
         });
     </script>
     <asp:ContentPlaceHolder ID="SubContent" runat="server">
@@ -119,7 +119,7 @@
                     <asp:BoundField DataField="Name" HeaderText="Name" ItemStyle-CssClass="width_200"/>
                     <asp:TemplateField ItemStyle-CssClass="width_200" HeaderText="Image">
                         <ItemTemplate>
-                            <asp:Label ID="lblImage" runat="server" Text='<%# Bind("Image.Name") %>'/>
+                            <asp:Label ID="lblImage" runat="server" Text=""/>
                         </ItemTemplate>
                     </asp:TemplateField>
 

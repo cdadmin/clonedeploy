@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CloneDeploy_Entities
@@ -6,6 +7,10 @@ namespace CloneDeploy_Entities
     [Table("audit_logs")]
     public class AuditLogEntity
     {
+        public AuditLogEntity()
+        {
+            DateTime = DateTime.Now;
+        }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("audit_log_id", Order = 1)]
@@ -28,6 +33,15 @@ namespace CloneDeploy_Entities
 
         [Column("ip_address", Order = 7)]
         public string Ip { get; set; }
+
+        [Column("date_time", Order = 8)]
+        public DateTime DateTime { get; set; }
+
+        [Column("user_name", Order = 9)]
+        public string UserName { get; set; }
+
+        [Column("object_json", Order = 10)]
+        public string ObjectJson { get; set; }
       
     }
 }

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
+
 using CloneDeploy_Entities.DTOs.ClientImaging;
 using CloneDeploy_Services.Helpers;
 using CloneDeploy_Services.Workflows;
@@ -87,7 +89,7 @@ namespace CloneDeploy_Services
 
         public bool Authorize(string token)
         {
-            if (token == Settings.UniversalToken && !string.IsNullOrEmpty(Settings.UniversalToken))
+            if (token == SettingServices.GetSettingValue(SettingStrings.UniversalToken) && !string.IsNullOrEmpty(SettingServices.GetSettingValue(SettingStrings.UniversalToken)))
                 return true;
 
             var user = new UserServices().GetUserByToken(token);
@@ -212,7 +214,7 @@ namespace CloneDeploy_Services
                 return JsonConvert.SerializeObject(checkIn);
             }
 
-            var imageDistributionPoint = new GetImageServer(computer).Run();
+            var imageDistributionPoint = new GetImageServer(computer,computerTask.Direction).Run();
 
             computerTask.Status = "1";
             computerTask.DpId = imageDistributionPoint;
@@ -322,50 +324,50 @@ namespace CloneDeploy_Services
         {
             var userServices = new UserServices();
             //only check ond and debug because web tasks can't even be started if user isn't authorized
-            if (task == "ond" && Settings.OnDemand != "Enabled")
+            if (task == "ond" && SettingServices.GetSettingValue(SettingStrings.OnDemand) != "Enabled")
             {
                 return "false";
             }
 
-            if (task == "ond" && Settings.OnDemandRequiresLogin == "No")
+            if (task == "ond" && SettingServices.GetSettingValue(SettingStrings.OnDemandRequiresLogin) == "No")
             {
-                if (token == Settings.UniversalToken && !string.IsNullOrEmpty(Settings.UniversalToken))
+                if (token == SettingServices.GetSettingValue(SettingStrings.UniversalToken) && !string.IsNullOrEmpty(SettingServices.GetSettingValue(SettingStrings.UniversalToken)))
                     return "true";
             }
-            else if (task == "ond" && Settings.OnDemandRequiresLogin == "Yes")
+            else if (task == "ond" && SettingServices.GetSettingValue(SettingStrings.OnDemandRequiresLogin) == "Yes")
             {
                 var user = userServices.GetUserByToken(token);
                 if (user != null)
                 {
-                    if (new AuthorizationServices(user.Id, Authorizations.AllowOnd).IsAuthorized())
+                    if (new AuthorizationServices(user.Id, AuthorizationStrings.AllowOnd).IsAuthorized())
                         return "true";
                 }
             }
-            else if (task == "debug" && Settings.DebugRequiresLogin == "No")
+            else if (task == "debug" && SettingServices.GetSettingValue(SettingStrings.DebugRequiresLogin) == "No")
             {
-                if (token == Settings.UniversalToken && !string.IsNullOrEmpty(Settings.UniversalToken))
+                if (token == SettingServices.GetSettingValue(SettingStrings.UniversalToken) && !string.IsNullOrEmpty(SettingServices.GetSettingValue(SettingStrings.UniversalToken)))
                     return "true";
             }
-            else if (task == "debug" && Settings.DebugRequiresLogin == "Yes")
+            else if (task == "debug" && SettingServices.GetSettingValue(SettingStrings.DebugRequiresLogin) == "Yes")
             {
                 var user = userServices.GetUserByToken(token);
                 if (user != null)
                 {
-                    if (new AuthorizationServices(user.Id, Authorizations.AllowDebug).IsAuthorized())
+                    if (new AuthorizationServices(user.Id, AuthorizationStrings.AllowDebug).IsAuthorized())
                         return "true";
                 }
             }
-            else if (task == "clobber" && Settings.ClobberRequiresLogin == "No")
+            else if (task == "clobber" && SettingServices.GetSettingValue(SettingStrings.ClobberRequiresLogin) == "No")
             {
-                if (token == Settings.UniversalToken && !string.IsNullOrEmpty(Settings.UniversalToken))
+                if (token == SettingServices.GetSettingValue(SettingStrings.UniversalToken) && !string.IsNullOrEmpty(SettingServices.GetSettingValue(SettingStrings.UniversalToken)))
                     return "true";
             }
-            else if (task == "clobber" && Settings.ClobberRequiresLogin == "Yes")
+            else if (task == "clobber" && SettingServices.GetSettingValue(SettingStrings.ClobberRequiresLogin) == "Yes")
             {
                 var user = userServices.GetUserByToken(token);
                 if (user != null)
                 {
-                    if (new AuthorizationServices(user.Id, Authorizations.ImageDeployTask).IsAuthorized())
+                    if (new AuthorizationServices(user.Id, AuthorizationStrings.ImageDeployTask).IsAuthorized())
                         return "true";
                 }
             }
@@ -380,22 +382,11 @@ namespace CloneDeploy_Services
             //Remove existing custom deploy schema, it may not match newly updated image
             profile.CustomSchema = string.Empty;
             new ImageProfileServices().UpdateProfile(profile);
-            try
-            {
-                if (
-                    Directory.Exists(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar +
-                                     profile.Image.Name))
-                    Directory.Delete(
-                        Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar + profile.Image.Name, true);
-                Directory.CreateDirectory(Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar +
-                                          profile.Image.Name);
-                new FileOps().SetUnixPermissionsImage(Settings.PrimaryStoragePath + "images" +
-                                                      Path.DirectorySeparatorChar + profile.Image.Name);
-            }
-            catch (Exception ex)
-            {
-                log.Debug(ex.Message);
-            }
+
+            var delResult = new FilesystemServices().DeleteImageFolders(profile.Image.Name);
+            if (delResult)
+                new FilesystemServices().CreateNewImageFolders(profile.Image.Name);
+       
         }
 
         public string DistributionPoint(string dpId, string task)
@@ -404,21 +395,76 @@ namespace CloneDeploy_Services
 
             var dp = new DistributionPointServices().GetDistributionPoint(Convert.ToInt32(dpId));
 
-            smb.SharePath = "//" + Utility.Between(dp.Server) + "/" + dp.ShareName;
+            smb.SharePath = "//" + StringManipulationServices.PlaceHolderReplace(dp.Server) + "/" + dp.ShareName;
             smb.Domain = dp.Domain;
+            smb.DisplayName = dp.DisplayName;
+            smb.IsPrimary = dp.IsPrimary == 1 ? "true" : "false";
             if (task == "pull")
             {
                 smb.Username = dp.RwUsername;
-                smb.Password = new Encryption().DecryptText(dp.RwPassword);
+                smb.Password = new EncryptionServices().DecryptText(dp.RwPassword);
             }
             else
             {
                 smb.Username = dp.RoUsername;
-                smb.Password = new Encryption().DecryptText(dp.RoPassword);
+                smb.Password = new EncryptionServices().DecryptText(dp.RoPassword);
             }
 
             return JsonConvert.SerializeObject(smb);
         }
+
+        public string GetAllClusterDps(string computerMac)
+        {
+            var rnd = new Random();
+            var computerServices = new ComputerServices();
+            var computer = computerServices.GetComputerFromMac(computerMac);
+
+            if (SettingServices.ServerIsNotClustered)
+            {
+                return "single";
+            }
+
+            var clusterServices = new ClusterGroupServices();
+
+            ClusterGroupEntity clusterGroup;
+
+            if (computer != null)
+            {
+                clusterGroup = new ComputerServices().GetClusterGroup(computer.Id);
+            }
+            else
+            {
+                //on demand computer might be null
+                //use default cluster group
+                clusterGroup = clusterServices.GetDefaultClusterGroup();
+            }
+
+            //Something went wrong
+            if (clusterGroup == null) return "false";
+
+            var clusterDps = clusterServices.GetClusterDps(clusterGroup.Id);
+            var dpList = clusterDps.Select(clusterDp => clusterDp.DistributionPointId).ToList();
+            var randomDpList = new List<int>();
+            try
+            {
+                randomDpList = dpList.OrderBy(x => rnd.Next()).ToList();
+            }
+            catch (Exception ex)
+            {
+                log.Debug("Could Not Select Random Distribution Point");
+                log.Debug(ex.Message);
+                return "false";
+            }
+           
+            var result = "";
+            foreach (var dpId in randomDpList)
+            {
+                result += dpId + " ";
+            }
+
+            return result;
+        }
+
 
         public void ErrorEmail(int computerId, string error)
         {
@@ -462,7 +508,7 @@ namespace CloneDeploy_Services
         {
             var imageProfile = new ImageProfileServices().ReadProfile(profileId);
             var authString = imageProfile.MunkiAuthUsername + ":" + imageProfile.MunkiAuthPassword;
-            return Utility.Encode(authString);
+            return StringManipulationServices.Encode(authString);
         }
 
         public string GetOnDemandArguments(string mac, int objectId, string task)
@@ -473,16 +519,16 @@ namespace CloneDeploy_Services
             if (task == "push" || task == "pull")
             {
                 imageProfile = new ImageProfileServices().ReadProfile(objectId);
-                arguments = new CreateTaskArguments(computer, imageProfile, task).Run();
+                arguments = new CreateTaskArguments(computer, imageProfile, task).Execute();
             }
             else //Multicast
             {
                 var multicast = new ActiveMulticastSessionServices().GetFromPort(objectId);
                 imageProfile = new ImageProfileServices().ReadProfile(multicast.ImageProfileId);
-                arguments = new CreateTaskArguments(computer, imageProfile, task).Run(objectId.ToString());
+                arguments = new CreateTaskArguments(computer, imageProfile, task).Execute(objectId.ToString());
             }
 
-            var imageDistributionPoint = new GetImageServer(computer).Run();
+            var imageDistributionPoint = new GetImageServer(computer,task).Run();
             if (imageProfile.Image.Environment == "winpe")
                 arguments += " dp_id=\"" + imageDistributionPoint + "\"\r\n";
             else
@@ -528,9 +574,9 @@ namespace CloneDeploy_Services
         public string GetSysprepTag(int tagId, string imageEnvironment)
         {
             var tag = new SysprepTagServices().GetSysprepTag(tagId);
-            tag.OpeningTag = Utility.EscapeCharacter(tag.OpeningTag, new[] {">", "<"});
-            tag.ClosingTag = Utility.EscapeCharacter(tag.ClosingTag, new[] {">", "<", "/"});
-            tag.Contents = Utility.EscapeCharacter(tag.Contents, new[] {">", "<", "/", "\""});
+            tag.OpeningTag = StringManipulationServices.EscapeCharacter(tag.OpeningTag, new[] {">", "<"});
+            tag.ClosingTag = StringManipulationServices.EscapeCharacter(tag.ClosingTag, new[] {">", "<", "/"});
+            tag.Contents = StringManipulationServices.EscapeCharacter(tag.Contents, new[] {">", "<", "/", "\""});
 
             var a = tag.Contents.Replace("\r", imageEnvironment == "win" ? "" : "\\r");
             var b = a.Replace("\n", "\\n");
@@ -622,19 +668,19 @@ namespace CloneDeploy_Services
             switch (task)
             {
                 case "ond":
-                    return Settings.OnDemandRequiresLogin;
+                    return SettingServices.GetSettingValue(SettingStrings.OnDemandRequiresLogin);
                 case "debug":
-                    return Settings.DebugRequiresLogin;
+                    return SettingServices.GetSettingValue(SettingStrings.DebugRequiresLogin);
                 case "register":
-                    return Settings.RegisterRequiresLogin;
+                    return SettingServices.GetSettingValue(SettingStrings.RegisterRequiresLogin);
                 case "clobber":
-                    return Settings.ClobberRequiresLogin;
+                    return SettingServices.GetSettingValue(SettingStrings.ClobberRequiresLogin);
                 case "push":
-                    return Settings.WebTaskRequiresLogin;
+                    return SettingServices.GetSettingValue(SettingStrings.WebTaskRequiresLogin);
                 case "permanent_push":
-                    return Settings.WebTaskRequiresLogin;
+                    return SettingServices.GetSettingValue(SettingStrings.WebTaskRequiresLogin);
                 case "pull":
-                    return Settings.WebTaskRequiresLogin;
+                    return SettingServices.GetSettingValue(SettingStrings.WebTaskRequiresLogin);
 
                 default:
                     return "Yes";

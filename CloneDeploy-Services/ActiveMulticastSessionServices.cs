@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Management;
 using System.Threading;
+using CloneDeploy_Common;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
@@ -59,7 +60,7 @@ namespace CloneDeploy_Services
             new ActiveImagingTaskServices().DeleteForMulticast(multicastId);
 
             foreach (var computer in computers)
-                new CleanTaskBootFiles(computer).CleanPxeBoot();
+                new CleanTaskBootFiles(computer).Execute();
 
             try
             {
@@ -165,7 +166,7 @@ namespace CloneDeploy_Services
         public void SendMulticastCompletedEmail(ActiveMulticastSessionEntity session)
         {
             //Mail not enabled
-            if (Settings.SmtpEnabled == "0") return;
+            if (SettingServices.GetSettingValue(SettingStrings.SmtpEnabled) == "0") return;
 
             foreach (
                 var user in
@@ -173,7 +174,7 @@ namespace CloneDeploy_Services
             {
                 if (session.UserId == user.Id)
                 {
-                    var mail = new Mail
+                    var mail = new MailServices
                     {
                         MailTo = user.Email,
                         Body = session.Name + " Multicast Task Has Completed.",

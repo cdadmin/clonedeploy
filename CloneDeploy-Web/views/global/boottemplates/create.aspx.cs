@@ -1,31 +1,34 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-public partial class views_global_boottemplates_create : Global
+namespace CloneDeploy_Web.views.global.boottemplates
 {
-    protected void btnSubmit_OnClick(object sender, EventArgs e)
+    public partial class views_global_boottemplates_create : Global
     {
-        RequiresAuthorization(Authorizations.CreateGlobal);
-        var bootTemplate = new BootTemplateEntity
+        protected void btnSubmit_OnClick(object sender, EventArgs e)
         {
-            Name = txtName.Text,
-            Description = txtDescription.Text,
-            Contents = txtContents.Text
-        };
+            RequiresAuthorization(AuthorizationStrings.CreateGlobal);
+            var bootTemplate = new BootTemplateEntity
+            {
+                Name = txtName.Text,
+                Description = txtDescription.Text,
+                Contents = txtContents.Text
+            };
 
-        var result = Call.BootTemplateApi.Post(bootTemplate);
-        if (!result.Success)
-            EndUserMessage = result.ErrorMessage;
-        else
-        {
-            EndUserMessage = "Successfully Added Boot Menu Template";
-            Response.Redirect("~/views/global/boottemplates/edit.aspx?cat=sub1&templateid=" + result.Id);
+            var result = Call.BootTemplateApi.Post(bootTemplate);
+            if (!result.Success)
+                EndUserMessage = result.ErrorMessage;
+            else
+            {
+                EndUserMessage = "Successfully Added Boot Menu Template";
+                Response.Redirect("~/views/global/boottemplates/edit.aspx?cat=sub1&templateid=" + result.Id);
+            }
         }
-    }
 
-    protected void Page_Load(object sender, EventArgs e)
-    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+        }
     }
 }

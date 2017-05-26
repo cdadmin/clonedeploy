@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" MasterPageFile="~/views/admin/admin.master" AutoEventWireup="true" Inherits="views_admin_bootmenu_bootmenu" Codebehind="bootmenu.master.cs" %>
+﻿<%@ Master Language="C#" MasterPageFile="~/views/admin/admin.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.admin.bootmenu.views_admin_bootmenu_bootmenu" Codebehind="bootmenu.master.cs" %>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li >
@@ -28,10 +28,6 @@
     <li id="iso">
         <a href="<%= ResolveUrl("~/views/admin/bootmenu/isogen.aspx") %>?level=2">
             <span class="sub-nav-text">ISO / USB Generator</span></a>
-    </li>
-    <li id="apple">
-        <a href="<%= ResolveUrl("~/views/admin/bootmenu/applenetboot.aspx") %>?level=2">
-            <span class="sub-nav-text">Apple NetBoot</span></a>
     </li>
 </asp:Content>
 

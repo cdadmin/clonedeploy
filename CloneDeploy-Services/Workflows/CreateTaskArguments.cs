@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Services.Helpers;
 
 namespace CloneDeploy_Services.Workflows
 {
     public class CreateTaskArguments
     {
         private readonly StringBuilder _activeTaskArguments;
-        private readonly ClusterGroupServices _clusterGroupServices;
         private readonly ComputerEntity _computer;
         private readonly string _direction;
         private readonly ImageProfileWithImage _imageProfile;
@@ -23,7 +22,6 @@ namespace CloneDeploy_Services.Workflows
             _direction = direction;
             _activeTaskArguments = new StringBuilder();
             _imageProfileServices = new ImageProfileServices();
-            _clusterGroupServices = new ClusterGroupServices();
         }
 
         private void AppendString(string value)
@@ -32,7 +30,7 @@ namespace CloneDeploy_Services.Workflows
             _activeTaskArguments.Append(_imageProfile.Image.Environment == "winpe" ? "\r\n" : " ");
         }
 
-        public string Run(string multicastPort = "")
+        public string Execute(string multicastPort = "")
         {
             var preScripts = "\"";
             var postScripts = "\"";
@@ -65,7 +63,7 @@ namespace CloneDeploy_Services.Workflows
 
             AppendString("image_name=" + _imageProfile.Image.Name);
             AppendString("profile_id=" + _imageProfile.Id);
-            AppendString("server_ip=" + Settings.ServerIp);
+            AppendString("server_ip=" + SettingServices.GetSettingValue(SettingStrings.ServerIp));
             AppendString(_direction == "multicast" ? "multicast=true" : "multicast=false");
             AppendString("pre_scripts=" + preScripts);
             AppendString("post_scripts=" + postScripts);
@@ -140,7 +138,7 @@ namespace CloneDeploy_Services.Workflows
                 }
                 if (_direction == "multicast")
                 {
-                    if (Settings.MulticastDecompression == "client")
+                    if (SettingServices.GetSettingValue(SettingStrings.MulticastDecompression) == "client")
                         AppendString("decompress_multicast_on_client=true");
                     AppendString("client_receiver_args=" + "\"" + _imageProfile.ReceiverArguments + "\"");
                     AppendString("multicast_port=" + multicastPort);

@@ -4,11 +4,11 @@ using System.Data;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.tasks
+namespace CloneDeploy_Web.views.tasks
 {
     public partial class TaskUnicast : Tasks
     {
@@ -151,7 +151,7 @@ namespace views.tasks
                 {
                     foreach (var computerId in selectedComputers)
                     {
-                        RequiresAuthorizationOrManagedComputer(Authorizations.ImageDeployTask, computerId);
+                        RequiresAuthorizationOrManagedComputer(AuthorizationStrings.ImageDeployTask, computerId);
                         if (Call.ComputerApi.StartPermanentDeploy(computerId).Contains("Successfully"))
                             sucessCount++;
                         EndUserMessage = "Successfully Started " + sucessCount + " Tasks";
@@ -162,7 +162,7 @@ namespace views.tasks
                 {
                     foreach (var computerId in selectedComputers)
                     {
-                        RequiresAuthorizationOrManagedComputer(Authorizations.ImageDeployTask, computerId);
+                        RequiresAuthorizationOrManagedComputer(AuthorizationStrings.ImageDeployTask, computerId);
                         if (Call.ComputerApi.StartDeploy(computerId).Contains("Successfully"))
                             sucessCount++;
                         EndUserMessage = "Successfully Started " + sucessCount + " Tasks";
@@ -173,7 +173,7 @@ namespace views.tasks
                 {
                     foreach (var computerId in selectedComputers)
                     {
-                        RequiresAuthorizationOrManagedComputer(Authorizations.ImageUploadTask, computerId);
+                        RequiresAuthorizationOrManagedComputer(AuthorizationStrings.ImageUploadTask, computerId);
                         if (Call.ComputerApi.StartUpload(computerId).Contains("Successfully"))
                             sucessCount++;
                         EndUserMessage = "Successfully Started " + sucessCount + " Tasks";
@@ -186,7 +186,7 @@ namespace views.tasks
         protected void Page_Load(object sender, EventArgs e)
         {
             if (IsPostBack) return;
-            if (Settings.DefaultComputerView == "all")
+            if (GetSetting(SettingStrings.DefaultComputerView) == "all")
                 PopulateGrid();
         }
 
@@ -214,17 +214,17 @@ namespace views.tasks
 
             if (direction == "permanent_push")
             {
-                RequiresAuthorizationOrManagedComputer(Authorizations.ImageDeployTask, computerId);
+                RequiresAuthorizationOrManagedComputer(AuthorizationStrings.ImageDeployTask, computerId);
                 EndUserMessage = Call.ComputerApi.StartPermanentDeploy(computerId);
             }
             else if (direction == "push")
             {
-                RequiresAuthorizationOrManagedComputer(Authorizations.ImageDeployTask, computerId);
+                RequiresAuthorizationOrManagedComputer(AuthorizationStrings.ImageDeployTask, computerId);
                 EndUserMessage = Call.ComputerApi.StartDeploy(computerId);
             }
             else
             {
-                RequiresAuthorizationOrManagedComputer(Authorizations.ImageUploadTask, computerId);
+                RequiresAuthorizationOrManagedComputer(AuthorizationStrings.ImageUploadTask, computerId);
                 EndUserMessage = Call.ComputerApi.StartUpload(computerId);
             }
             Session.Remove("computerID");

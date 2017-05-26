@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
 namespace CloneDeploy_Web.views.admin
 {
@@ -10,16 +10,10 @@ namespace CloneDeploy_Web.views.admin
     {
         protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.UpdateAdmin);
+            RequiresAuthorization(AuthorizationStrings.UpdateAdmin);
 
             var listSettings = new List<SettingEntity>
             {
-                new SettingEntity
-                {
-                    Name = "Queue Size",
-                    Value = txtQSize.Text,
-                    Id = Call.SettingApi.GetSetting("Queue Size").Id
-                },
                 new SettingEntity
                 {
                     Name = "Global Computer Args",
@@ -53,8 +47,7 @@ namespace CloneDeploy_Web.views.admin
         {
             if (IsPostBack) return;
 
-            txtQSize.Text = Settings.QueueSize;
-            txtGlobalComputerArgs.Text = Settings.GlobalComputerArgs;
+            txtGlobalComputerArgs.Text = GetSetting(SettingStrings.GlobalComputerArgs);
             //These require pxe boot menu or client iso to be recreated
             ViewState["globalArgs"] = txtGlobalComputerArgs.Text;
         }

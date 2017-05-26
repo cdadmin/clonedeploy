@@ -1,9 +1,9 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.masters
+namespace CloneDeploy_Web.views.images
 {
     public partial class ImageMaster : MasterBaseMaster
     {
@@ -12,7 +12,7 @@ namespace views.masters
 
         protected void btnApprove_Click(object sender, EventArgs e)
         {
-            imagesBasePage.RequiresAuthorizationOrManagedImage(Authorizations.ApproveImage, Image.Id);
+            imagesBasePage.RequiresAuthorizationOrManagedImage(AuthorizationStrings.ApproveImage, Image.Id);
             Image.Approved = 1;
             PageBaseMaster.EndUserMessage = imagesBasePage.Call.ImageApi.Put(Image.Id, Image).Success
                 ? "Successfully Approved Image"
@@ -22,7 +22,7 @@ namespace views.masters
 
         protected void btnDelete_Click(object sender, EventArgs e)
         {
-            imagesBasePage.RequiresAuthorizationOrManagedImage(Authorizations.DeleteImage, Image.Id);
+            imagesBasePage.RequiresAuthorizationOrManagedImage(AuthorizationStrings.DeleteImage, Image.Id);
             lblTitle.Text = "Delete This Image?";
             DisplayConfirm();
         }
@@ -53,7 +53,7 @@ namespace views.masters
             }
 
             Level1.Visible = false;
-            if (Settings.RequireImageApproval.ToLower() == "true" && Image.Approved != 1)
+            if (GetSetting(SettingStrings.RequireImageApproval).ToLower() == "true" && Image.Approved != 1)
                 btnApproveImage.Visible = true;
 
             if (Request.QueryString["cat"] == "profiles")

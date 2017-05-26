@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/dp/dp.master" AutoEventWireup="true" Inherits="views_admin_dp_search" Codebehind="search.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/dp/dp.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.admin.dp.views_admin_dp_search" Codebehind="search.aspx.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
     <li>Search</li>

@@ -1,7 +1,7 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
 namespace CloneDeploy_Web.views.computers
 {
@@ -9,7 +9,7 @@ namespace CloneDeploy_Web.views.computers
     {
         protected void ButtonAddComputer_Click(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.CreateComputer);
+            RequiresAuthorization(AuthorizationStrings.CreateComputer);
             var computer = new ComputerEntity
             {
                 Name = txtComputerName.Text,

@@ -39,6 +39,8 @@ namespace CloneDeploy_Entities
         public string RoPassword { get; set; }
         [Column("distribution_point_queue_size", Order = 15)]
         public int QueueSize { get; set; }
+        [Column("distribution_point_storage_location", Order = 16)]
+        public string Location { get; set; }
 
 
 

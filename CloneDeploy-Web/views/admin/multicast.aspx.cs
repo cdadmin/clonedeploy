@@ -1,114 +1,117 @@
 ﻿using System;
 using System.Collections.Generic;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 using log4net;
 
-public partial class views_admin_multicast : Admin
+namespace CloneDeploy_Web.views.admin
 {
-    private readonly ILog log = LogManager.GetLogger("FrontEndLog");
-
-    protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
+    public partial class views_admin_multicast : Admin
     {
-        RequiresAuthorization(Authorizations.UpdateAdmin);
-        if (ValidateSettings())
+        private readonly ILog log = LogManager.GetLogger("FrontEndLog");
+
+        protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
         {
-            var listSettings = new List<SettingEntity>
+            RequiresAuthorization(AuthorizationStrings.UpdateAdmin);
+            if (ValidateSettings())
             {
-                new SettingEntity
+                var listSettings = new List<SettingEntity>
                 {
-                    Name = "Sender Args",
-                    Value = txtSenderArgs.Text,
-                    Id = Call.SettingApi.GetSetting("Sender Args").Id
-                },
-                new SettingEntity
+                    new SettingEntity
+                    {
+                        Name = "Sender Args",
+                        Value = txtSenderArgs.Text,
+                        Id = Call.SettingApi.GetSetting("Sender Args").Id
+                    },
+                    new SettingEntity
+                    {
+                        Name = "Udpcast Start Port",
+                        Value = txtStartPort.Text,
+                        Id = Call.SettingApi.GetSetting("Udpcast Start Port").Id
+                    },
+                    new SettingEntity
+                    {
+                        Name = "Udpcast End Port",
+                        Value = txtEndPort.Text,
+                        Id = Call.SettingApi.GetSetting("Udpcast End Port").Id
+                    },
+                    new SettingEntity
+                    {
+                        Name = "Client Receiver Args",
+                        Value = txtRecClientArgs.Text,
+                        Id = Call.SettingApi.GetSetting("Client Receiver Args").Id
+                    },
+                    new SettingEntity
+                    {
+                        Name = "Multicast Decompression",
+                        Value = ddlDecompress.Text,
+                        Id = Call.SettingApi.GetSetting("Multicast Decompression").Id
+                    }
+                };
+
+                if (Call.SettingApi.UpdateSettings(listSettings))
                 {
-                    Name = "Udpcast Start Port",
-                    Value = txtStartPort.Text,
-                    Id = Call.SettingApi.GetSetting("Udpcast Start Port").Id
-                },
-                new SettingEntity
-                {
-                    Name = "Udpcast End Port",
-                    Value = txtEndPort.Text,
-                    Id = Call.SettingApi.GetSetting("Udpcast End Port").Id
-                },
-                new SettingEntity
-                {
-                    Name = "Client Receiver Args",
-                    Value = txtRecClientArgs.Text,
-                    Id = Call.SettingApi.GetSetting("Client Receiver Args").Id
-                },
-                new SettingEntity
-                {
-                    Name = "Multicast Decompression",
-                    Value = ddlDecompress.Text,
-                    Id = Call.SettingApi.GetSetting("Multicast Decompression").Id
+                    EndUserMessage = "Successfully Updated Settings";
+                    if ((string) ViewState["startPort"] != txtStartPort.Text)
+                    {
+                        var startPort = Convert.ToInt32(txtStartPort.Text);
+                        startPort = startPort - 2;
+                        var port = new PortEntity {Number = startPort};
+                        Call.PortApi.Post(port);
+                    }
                 }
-            };
-
-            if (Call.SettingApi.UpdateSettings(listSettings))
-            {
-                EndUserMessage = "Successfully Updated Settings";
-                if ((string) ViewState["startPort"] != txtStartPort.Text)
+                else
                 {
-                    var startPort = Convert.ToInt32(txtStartPort.Text);
-                    startPort = startPort - 2;
-                    var port = new PortEntity {Number = startPort};
-                    Call.PortApi.Post(port);
+                    EndUserMessage = "Could Not Update Settings";
                 }
             }
-            else
+        }
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (IsPostBack) return;
+
+            txtSenderArgs.Text = GetSetting(SettingStrings.SenderArgs);
+            txtStartPort.Text = GetSetting(SettingStrings.StartPort);
+            txtEndPort.Text = GetSetting(SettingStrings.EndPort);
+            txtRecClientArgs.Text = GetSetting(SettingStrings.ClientReceiverArgs);
+            ddlDecompress.Text = GetSetting(SettingStrings.MulticastDecompression);
+
+            ViewState["startPort"] = txtStartPort.Text;
+            ViewState["endPort"] = txtEndPort.Text;
+        }
+
+        protected bool ValidateSettings()
+        {
+            var startPort = Convert.ToInt32(txtStartPort.Text);
+            var endPort = Convert.ToInt32(txtEndPort.Text);
+
+            if (startPort%2 != 0)
             {
-                EndUserMessage = "Could Not Update Settings";
+                startPort++;
+                txtStartPort.Text = startPort.ToString();
             }
-        }
-    }
-
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        if (IsPostBack) return;
-
-        txtSenderArgs.Text = Settings.SenderArgs;
-        txtStartPort.Text = Settings.StartPort;
-        txtEndPort.Text = Settings.EndPort;
-        txtRecClientArgs.Text = Settings.ClientReceiverArgs;
-        ddlDecompress.Text = Settings.MulticastDecompression;
-
-        ViewState["startPort"] = txtStartPort.Text;
-        ViewState["endPort"] = txtEndPort.Text;
-    }
-
-    protected bool ValidateSettings()
-    {
-        var startPort = Convert.ToInt32(txtStartPort.Text);
-        var endPort = Convert.ToInt32(txtEndPort.Text);
-
-        if (startPort%2 != 0)
-        {
-            startPort++;
-            txtStartPort.Text = startPort.ToString();
-        }
-        if (endPort%2 != 0)
-        {
-            endPort++;
-            txtEndPort.Text = endPort.ToString();
-        }
-
-        try
-        {
-            if ((startPort >= 2) && (endPort - startPort >= 2))
+            if (endPort%2 != 0)
             {
-                return true;
+                endPort++;
+                txtEndPort.Text = endPort.ToString();
             }
-            EndUserMessage = "End Port Must Be At Least 2 More Than Starting Port";
-            return false;
-        }
-        catch (Exception ex)
-        {
-            log.Debug(ex.Message);
-            return false;
+
+            try
+            {
+                if ((startPort >= 2) && (endPort - startPort >= 2))
+                {
+                    return true;
+                }
+                EndUserMessage = "End Port Must Be At Least 2 More Than Starting Port";
+                return false;
+            }
+            catch (Exception ex)
+            {
+                log.Debug(ex.Message);
+                return false;
+            }
         }
     }
 }

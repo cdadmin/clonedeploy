@@ -11,6 +11,7 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 using CloneDeploy_Services.Workflows;
+using Newtonsoft.Json;
 
 namespace CloneDeploy_App.Controllers
 {
@@ -30,6 +31,9 @@ namespace CloneDeploy_App.Controllers
             _auditLog = new AuditLogEntity();
             _auditLog.ObjectType = "Computer";
             _auditLog.UserId = _userId;
+            var user = new UserServices().GetUser(_userId);
+            if (user != null)
+                _auditLog.UserName = user.Name;
         }
 
         [HttpPost]
@@ -128,6 +132,12 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "ComputerRead")]
+        public IEnumerable<AuditLogEntity> GetComputerAuditLogs(int id,int limit)
+        {
+            return _computerService.GetComputerAuditLogs(id,limit);
+        }
+
+        [CustomAuth(Permission = "ComputerRead")]
         public IEnumerable<ComputerLogEntity> GetComputerLogs(int id)
         {
             return _computerService.SearchComputerLogs(id);
@@ -219,7 +229,9 @@ namespace CloneDeploy_App.Controllers
                 _auditLog.ObjectId = result.Id;
                 _auditLog.ObjectName = computer.Name;
                 _auditLog.Ip = Request.GetClientIpAddress();
+                _auditLog.ObjectJson = JsonConvert.SerializeObject(_computerService.GetComputer(result.Id));
                 _auditLogService.AddAuditLog(_auditLog);
+               
             }
             return result;
         }
@@ -237,7 +249,9 @@ namespace CloneDeploy_App.Controllers
                 _auditLog.ObjectId = result.Id;
                 _auditLog.ObjectName = computer.Name;
                 _auditLog.Ip = Request.GetClientIpAddress();
+                _auditLog.ObjectJson = JsonConvert.SerializeObject(computer);
                 _auditLogService.AddAuditLog(_auditLog);
+                
             }
             return result;
         }

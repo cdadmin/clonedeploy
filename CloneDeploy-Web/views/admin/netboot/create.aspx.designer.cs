@@ -7,45 +7,45 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CloneDeploy_Web.views.login {
+namespace CloneDeploy_Web.views.admin.netboot {
     
     
-    public partial class Default {
+    public partial class create {
         
         /// <summary>
-        /// form1 control.
+        /// buttonAddNetBoot control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+        protected global::System.Web.UI.WebControls.LinkButton buttonAddNetBoot;
         
         /// <summary>
-        /// CrucibleLogin control.
+        /// txtDisplayName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Login CrucibleLogin;
+        protected global::System.Web.UI.WebControls.TextBox txtDisplayName;
         
         /// <summary>
-        /// SessionExpired control.
+        /// txtIp control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label SessionExpired;
+        protected global::System.Web.UI.WebControls.TextBox txtIp;
         
         /// <summary>
-        /// lblError control.
+        /// gvNetBoot control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblError;
+        protected global::System.Web.UI.WebControls.GridView gvNetBoot;
     }
 }

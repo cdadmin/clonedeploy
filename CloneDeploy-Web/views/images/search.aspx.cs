@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.images
+namespace CloneDeploy_Web.views.images
 {
     public partial class ImageSearch : Images
     {
@@ -22,7 +22,7 @@ namespace views.images
                 var dataKey = gvImages.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
                 var image = Call.ImageApi.Get(Convert.ToInt32(dataKey.Value));
-                RequiresAuthorizationOrManagedImage(Authorizations.ApproveImage, image.Id);
+                RequiresAuthorizationOrManagedImage(AuthorizationStrings.ApproveImage, image.Id);
                 image.Approved = 1;
                 if (Call.ImageApi.Put(image.Id, image).Success)
                 {
@@ -76,7 +76,7 @@ namespace views.images
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.DeleteImage);
+            RequiresAuthorization(AuthorizationStrings.DeleteImage);
             var deleteCount = 0;
             foreach (GridViewRow row in gvImages.Rows)
             {

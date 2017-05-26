@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CloneDeploy_ApiCalls;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.ClientImaging;
-using CloneDeploy_Services.Helpers;
 
 namespace CloneDeploy_Services
 {
@@ -14,17 +14,17 @@ namespace CloneDeploy_Services
         {
             var tftpDto = new TftpServerDTO();
             tftpDto.TftpServers = new List<string>();
-            if (Settings.OperationMode == "Single")
-                tftpDto.TftpServers.Add(Utility.Between(Settings.TftpServerIp));
+            if (SettingServices.ServerIsNotClustered)
+                tftpDto.TftpServers.Add(StringManipulationServices.PlaceHolderReplace(SettingServices.GetSettingValue(SettingStrings.TftpServerIp)));
             else
             {
-                if (Settings.TftpServerRole)
-                    tftpDto.TftpServers.Add(Utility.Between(Settings.TftpServerIp));
+                if (SettingServices.TftpServerRole)
+                    tftpDto.TftpServers.Add(StringManipulationServices.PlaceHolderReplace(SettingServices.GetSettingValue(SettingStrings.TftpServerIp)));
                 var tftpServers = new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
                 foreach (var tftpServer in tftpServers)
                 {
                     var tServer =
-                        new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name)).ServiceAccountApi
+                        new APICall(new SecondaryServerServices().GetToken(tftpServer.Name)).ServiceAccountApi
                             .GetTftpServer();
                     if (tServer != null)
                         tftpDto.TftpServers.Add(tServer);
@@ -38,8 +38,8 @@ namespace CloneDeploy_Services
         {
             var tftpDto = new TftpServerDTO();
             tftpDto.TftpServers = new List<string>();
-            if (Settings.OperationMode == "Single")
-                tftpDto.TftpServers.Add(Utility.Between(Settings.TftpServerIp));
+            if (SettingServices.ServerIsNotClustered)
+                tftpDto.TftpServers.Add(StringManipulationServices.PlaceHolderReplace(SettingServices.GetSettingValue(SettingStrings.TftpServerIp)));
 
             else
             {
@@ -60,14 +60,14 @@ namespace CloneDeploy_Services
 
                 foreach (var tftpServer in clusterServers.Where(x => x.TftpRole == 1))
                 {
-                    if (tftpServer.SecondaryServerId == -1)
-                        tftpDto.TftpServers.Add(Utility.Between(Settings.TftpServerIp));
+                    if (tftpServer.ServerId == -1)
+                        tftpDto.TftpServers.Add(StringManipulationServices.PlaceHolderReplace(SettingServices.GetSettingValue(SettingStrings.TftpServerIp)));
                     else
                     {
                         var serverIdentifier =
-                            secondaryServerServices.GetSecondaryServer(tftpServer.SecondaryServerId).Name;
+                            secondaryServerServices.GetSecondaryServer(tftpServer.ServerId).Name;
                         var tServer =
-                            new APICall(new SecondaryServerServices().GetApiToken(serverIdentifier)).ServiceAccountApi
+                            new APICall(new SecondaryServerServices().GetToken(serverIdentifier)).ServiceAccountApi
                                 .GetTftpServer();
                         if (tServer != null)
                             tftpDto.TftpServers.Add(tServer);
@@ -99,7 +99,7 @@ namespace CloneDeploy_Services
 
             if (!string.IsNullOrEmpty(computerReservation.NextServer))
             {
-                bootClientReservation.NextServer = Utility.Between(computerReservation.NextServer);
+                bootClientReservation.NextServer = StringManipulationServices.PlaceHolderReplace(computerReservation.NextServer);
             }
 
 

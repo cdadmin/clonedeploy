@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace views.users {
+namespace CloneDeploy_Web.views.users {
     
     
     public partial class CreateUser {

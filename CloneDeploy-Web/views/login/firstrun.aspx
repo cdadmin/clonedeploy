@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/site.master" AutoEventWireup="true" Inherits="views_login_firstrun" Codebehind="firstrun.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/site.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.login.views_login_firstrun" Codebehind="firstrun.aspx.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="Breadcrumb" Runat="Server">
     <h4>CloneDeploy Initial Setup</h4>

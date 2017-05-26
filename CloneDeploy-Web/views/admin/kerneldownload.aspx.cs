@@ -38,7 +38,13 @@ namespace CloneDeploy_Web.views.admin
 
         private void PopulateKernels()
         {
-            gvKernels.DataSource = Call.OnlineKernelApi.GetAll();
+            var onlineKernels = Call.OnlineKernelApi.GetAll();
+            if (onlineKernels == null)
+            {
+                EndUserMessage = "Could Not Get Online Kernel List.  Internet Access Is Required.";
+                return;
+            }
+            gvKernels.DataSource = onlineKernels;
             gvKernels.DataBind();
 
             var installedKernels = Call.FilesystemApi.GetKernels();

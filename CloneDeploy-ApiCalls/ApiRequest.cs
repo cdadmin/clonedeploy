@@ -59,7 +59,8 @@ namespace CloneDeploy_ApiCalls
                 _log.Debug("Response Data Was Null For Resource: " + request.Resource);
                 return default(TClass);
             }
-            
+
+            _log.Debug("Requesting Resource: " + request.Resource);
             return response.Data;
         }
 
@@ -81,6 +82,7 @@ namespace CloneDeploy_ApiCalls
                 return null;
             }
 
+            _log.Debug("Requesting Resource: " + request.Resource);
             return response;
         }
     }

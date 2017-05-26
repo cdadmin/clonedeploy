@@ -4,6 +4,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using CloneDeploy_ApiCalls;
+using CloneDeploy_Common;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services.Helpers;
 using log4net;
@@ -17,29 +18,31 @@ namespace CloneDeploy_Services.Workflows
         private readonly Regex _alphaNumericSpace = new Regex("[^a-zA-Z0-9 ]");
         private readonly BootEntryServices _bootEntryServices;
         private readonly BootMenuGenOptionsDTO _defaultBoot;
-        private readonly string _globalComputerArgs = Settings.GlobalComputerArgs;
-        private readonly string _webPath = Settings.WebPath;
+        private readonly string _globalComputerArgs = SettingServices.GetSettingValue(SettingStrings.GlobalComputerArgs);
+        private readonly string _webPath = SettingServices.GetSettingValue(SettingStrings.WebPath);
         private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private readonly SecondaryServerServices _secondaryServerServices;
 
         public DefaultBootMenu(BootMenuGenOptionsDTO defaultBootMenu)
         {
             _defaultBoot = defaultBootMenu;
             _bootEntryServices = new BootEntryServices();
+            _secondaryServerServices = new SecondaryServerServices();
         }
 
         private string _userToken { get; set; }
 
-        public void CreateGlobalDefaultBootMenu()
+        public void Execute()
         {
-            if (Settings.DebugRequiresLogin == "No" || Settings.OnDemandRequiresLogin == "No" ||
-                Settings.RegisterRequiresLogin == "No")
-                _userToken = Settings.UniversalToken;
+            if (SettingServices.GetSettingValue(SettingStrings.DebugRequiresLogin) == "No" || SettingServices.GetSettingValue(SettingStrings.OnDemandRequiresLogin) == "No" ||
+                SettingServices.GetSettingValue(SettingStrings.RegisterRequiresLogin) == "No")
+                _userToken = SettingServices.GetSettingValue(SettingStrings.UniversalToken);
             else
             {
                 _userToken = "";
             }
 
-            var mode = Settings.PxeMode;
+            var mode = SettingServices.GetSettingValue(SettingStrings.PxeMode);
 
             if (_defaultBoot.Type == "standard")
             {
@@ -203,26 +206,25 @@ namespace CloneDeploy_Services.Workflows
                 grubMenu.Append("" + NewLineChar);
             }
 
-            var path = Settings.TftpPath + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
+            var path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
 
-            if (Settings.OperationMode == "Single")
-                new FileOps().WritePath(path, grubMenu.ToString());
+            if (SettingServices.ServerIsNotClustered)
+                new FileOpsServices().WritePath(path, grubMenu.ToString());
             else
             {
-                if (Settings.TftpServerRole)
-                    new FileOps().WritePath(path, grubMenu.ToString());
-                var tftpServers = new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
-                foreach (var tftpServer in tftpServers)
+                if (SettingServices.TftpServerRole)
+                    new FileOpsServices().WritePath(path, grubMenu.ToString());              
+                foreach (var tftpServer in _secondaryServerServices.GetAllWithTftpRole())
                 {
                     var tftpPath =
-                        new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
+                        new APICall(_secondaryServerServices.GetToken(tftpServer.Name))
                             .SettingApi.GetSetting("Tftp Path").Value;
 
                     var tftpFile = new TftpFileDTO();
                     tftpFile.Contents = grubMenu.ToString();
                     tftpFile.Path = tftpPath + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
 
-                    new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
+                    new APICall(_secondaryServerServices.GetToken(tftpServer.Name))
                         .ServiceAccountApi.WriteTftpFile(tftpFile);
                 }
             }
@@ -264,7 +266,7 @@ namespace CloneDeploy_Services.Workflows
             }
             ipxeMenu.Append("" + NewLineChar);
 
-            if (Settings.IpxeRequiresLogin == "True")
+            if (SettingServices.GetSettingValue(SettingStrings.IpxeRequiresLogin) == "True")
             {
                 ipxeMenu.Append(":bootLocal" + NewLineChar);
                 ipxeMenu.Append("exit" + NewLineChar);
@@ -299,7 +301,7 @@ namespace CloneDeploy_Services.Workflows
                 ipxeMenu.Append("param bootImage " + _defaultBoot.BootImage + "" + NewLineChar);
                 ipxeMenu.Append("param task " + "${task}" + "" + NewLineChar);
                 ipxeMenu.Append("echo Authenticating" + NewLineChar);
-                ipxeMenu.Append("chain --timeout 15000 " + Settings.WebPath + "IpxeLogin##params || goto Menu" +
+                ipxeMenu.Append("chain --timeout 15000 " + SettingServices.GetSettingValue(SettingStrings.WebPath) + "IpxeLogin##params || goto Menu" +
                                 NewLineChar);
             }
             else
@@ -309,52 +311,52 @@ namespace CloneDeploy_Services.Workflows
                 ipxeMenu.Append("" + NewLineChar);
 
                 ipxeMenu.Append(":console" + NewLineChar);
-                ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + _defaultBoot.Kernel +
+                ipxeMenu.Append("kernel " + SettingServices.GetSettingValue(SettingStrings.WebPath) + "IpxeBoot?filename=" + _defaultBoot.Kernel +
                                 "&type=kernel" +
                                 " initrd=" + _defaultBoot.BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " +
                                 " web=" +
-                                Settings.WebPath + " USER_TOKEN=" + _userToken + " task=debug" + " consoleblank=0 " +
+                                SettingServices.GetSettingValue(SettingStrings.WebPath) + " USER_TOKEN=" + _userToken + " task=debug" + " consoleblank=0 " +
                                 _globalComputerArgs + NewLineChar);
-                ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " + Settings.WebPath +
+                ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " + SettingServices.GetSettingValue(SettingStrings.WebPath) +
                                 "IpxeBoot?filename=" +
                                 _defaultBoot.BootImage + "&type=bootimage" + NewLineChar);
                 ipxeMenu.Append("boot" + NewLineChar);
                 ipxeMenu.Append("" + NewLineChar);
 
                 ipxeMenu.Append(":register" + NewLineChar);
-                ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + _defaultBoot.Kernel +
+                ipxeMenu.Append("kernel " + SettingServices.GetSettingValue(SettingStrings.WebPath) + "IpxeBoot?filename=" + _defaultBoot.Kernel +
                                 "&type=kernel" +
                                 " initrd=" + _defaultBoot.BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " +
                                 " web=" +
-                                Settings.WebPath + " USER_TOKEN=" + _userToken + " task=register" + " consoleblank=0 " +
+                                SettingServices.GetSettingValue(SettingStrings.WebPath) + " USER_TOKEN=" + _userToken + " task=register" + " consoleblank=0 " +
                                 _globalComputerArgs + NewLineChar);
-                ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " + Settings.WebPath +
+                ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " + SettingServices.GetSettingValue(SettingStrings.WebPath) +
                                 "IpxeBoot?filename=" +
                                 _defaultBoot.BootImage + "&type=bootimage" + NewLineChar);
                 ipxeMenu.Append("boot" + NewLineChar);
                 ipxeMenu.Append("" + NewLineChar);
 
                 ipxeMenu.Append(":ond" + NewLineChar);
-                ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + _defaultBoot.Kernel +
+                ipxeMenu.Append("kernel " + SettingServices.GetSettingValue(SettingStrings.WebPath) + "IpxeBoot?filename=" + _defaultBoot.Kernel +
                                 "&type=kernel" +
                                 " initrd=" + _defaultBoot.BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " +
                                 " web=" +
-                                Settings.WebPath + " USER_TOKEN=" + _userToken + " task=ond" + " consoleblank=0 " +
+                                SettingServices.GetSettingValue(SettingStrings.WebPath) + " USER_TOKEN=" + _userToken + " task=ond" + " consoleblank=0 " +
                                 _globalComputerArgs + NewLineChar);
-                ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " + Settings.WebPath +
+                ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " + SettingServices.GetSettingValue(SettingStrings.WebPath) +
                                 "IpxeBoot?filename=" +
                                 _defaultBoot.BootImage + "&type=bootimage" + NewLineChar);
                 ipxeMenu.Append("boot" + NewLineChar);
                 ipxeMenu.Append("" + NewLineChar);
 
                 ipxeMenu.Append(":diag" + NewLineChar);
-                ipxeMenu.Append("kernel " + Settings.WebPath + "IpxeBoot?filename=" + _defaultBoot.Kernel +
+                ipxeMenu.Append("kernel " + SettingServices.GetSettingValue(SettingStrings.WebPath) + "IpxeBoot?filename=" + _defaultBoot.Kernel +
                                 "&type=kernel" +
                                 " initrd=" + _defaultBoot.BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " +
                                 " web=" +
-                                Settings.WebPath + " USER_TOKEN=" + _userToken + " task=diag" + " consoleblank=0 " +
+                                SettingServices.GetSettingValue(SettingStrings.WebPath) + " USER_TOKEN=" + _userToken + " task=diag" + " consoleblank=0 " +
                                 _globalComputerArgs + NewLineChar);
-                ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " + Settings.WebPath +
+                ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " + SettingServices.GetSettingValue(SettingStrings.WebPath) +
                                 "IpxeBoot?filename=" +
                                 _defaultBoot.BootImage + "&type=bootimage" + NewLineChar);
                 ipxeMenu.Append("boot" + NewLineChar);
@@ -370,24 +372,23 @@ namespace CloneDeploy_Services.Workflows
 
             string path;
             if (_defaultBoot.Type == "standard")
-                path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default.ipxe";
+                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default.ipxe";
             else
-                path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + _defaultBoot.Type +
+                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar + _defaultBoot.Type +
                        Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default.ipxe";
 
 
-            if (Settings.OperationMode == "Single")
-                new FileOps().WritePath(path, ipxeMenu.ToString());
+            if (SettingServices.ServerIsNotClustered)
+                new FileOpsServices().WritePath(path, ipxeMenu.ToString());
             else
             {
-                if (Settings.TftpServerRole)
-                    new FileOps().WritePath(path, ipxeMenu.ToString());
+                if (SettingServices.TftpServerRole)
+                    new FileOpsServices().WritePath(path, ipxeMenu.ToString());
 
-                var tftpServers = new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
-                foreach (var tftpServer in tftpServers)
+                foreach (var tftpServer in _secondaryServerServices.GetAllWithTftpRole())
                 {
                     var tftpPath =
-                        new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
+                        new APICall(_secondaryServerServices.GetToken(tftpServer.Name))
                             .SettingApi.GetSetting("Tftp Path").Value;
 
                     var tftpFile = new TftpFileDTO();
@@ -399,7 +400,7 @@ namespace CloneDeploy_Services.Workflows
                                         Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar +
                                         "default.ipxe";
 
-                    new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
+                    new APICall(_secondaryServerServices.GetToken(tftpServer.Name))
                         .ServiceAccountApi.WriteTftpFile(tftpFile);
                 }
             }
@@ -508,24 +509,23 @@ namespace CloneDeploy_Services.Workflows
 
             string path;
             if (_defaultBoot.Type == "standard")
-                path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
+                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
             else
-                path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + _defaultBoot.Type +
+                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar + _defaultBoot.Type +
                        Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
 
 
-            if (Settings.OperationMode == "Single")
-                new FileOps().WritePath(path, sysLinuxMenu.ToString());
+            if (SettingServices.ServerIsNotClustered)
+                new FileOpsServices().WritePath(path, sysLinuxMenu.ToString());
             else
             {
-                if (Settings.TftpServerRole)
-                    new FileOps().WritePath(path, sysLinuxMenu.ToString());
+                if (SettingServices.TftpServerRole)
+                    new FileOpsServices().WritePath(path, sysLinuxMenu.ToString());
 
-                var tftpServers = new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
-                foreach (var tftpServer in tftpServers)
+                foreach (var tftpServer in _secondaryServerServices.GetAllWithTftpRole())
                 {
                     var tftpPath =
-                        new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
+                        new APICall(_secondaryServerServices.GetToken(tftpServer.Name))
                             .SettingApi.GetSetting("Tftp Path").Value;
 
                     var tftpFile = new TftpFileDTO();
@@ -537,7 +537,7 @@ namespace CloneDeploy_Services.Workflows
                                         Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar +
                                         "default";
 
-                    new APICall(new SecondaryServerServices().GetApiToken(tftpServer.Name))
+                    new APICall(_secondaryServerServices.GetToken(tftpServer.Name))
                         .ServiceAccountApi.WriteTftpFile(tftpFile);
                 }
             }

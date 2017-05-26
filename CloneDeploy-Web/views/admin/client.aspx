@@ -26,16 +26,6 @@
     </script>
     <div id="settings">
 
-
-        <div class="size-4 column">
-            Queue Size:
-        </div>
-        <div class="size-setting column">
-            <asp:TextBox ID="txtQSize" runat="server" CssClass="textbox"></asp:TextBox>
-        </div>
-        <br class="clear"/>
-
-
         <div class="size-4 column">
             Global Computer Arguments:
         </div>

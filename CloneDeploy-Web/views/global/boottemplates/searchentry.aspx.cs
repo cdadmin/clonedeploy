@@ -1,48 +1,51 @@
 ﻿using System;
 using System.Web.UI.WebControls;
+using CloneDeploy_Common;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-public partial class views_global_boottemplates_searchentry : Global
+namespace CloneDeploy_Web.views.global.boottemplates
 {
-    protected void ButtonConfirmDelete_Click(object sender, EventArgs e)
+    public partial class views_global_boottemplates_searchentry : Global
     {
-        RequiresAuthorization(Authorizations.DeleteGlobal);
-        foreach (GridViewRow row in gvEntries.Rows)
+        protected void ButtonConfirmDelete_Click(object sender, EventArgs e)
         {
-            var cb = (CheckBox) row.FindControl("chkSelector");
-            if (cb == null || !cb.Checked) continue;
-            var dataKey = gvEntries.DataKeys[row.RowIndex];
-            if (dataKey == null) continue;
-            Call.BootEntryApi.Delete(Convert.ToInt32(dataKey.Value));
+            RequiresAuthorization(AuthorizationStrings.DeleteGlobal);
+            foreach (GridViewRow row in gvEntries.Rows)
+            {
+                var cb = (CheckBox) row.FindControl("chkSelector");
+                if (cb == null || !cb.Checked) continue;
+                var dataKey = gvEntries.DataKeys[row.RowIndex];
+                if (dataKey == null) continue;
+                Call.BootEntryApi.Delete(Convert.ToInt32(dataKey.Value));
+            }
+
+            PopulateGrid();
         }
 
-        PopulateGrid();
-    }
 
+        protected void chkSelectAll_OnCheckedChanged(object sender, EventArgs e)
+        {
+            ChkAll(gvEntries);
+        }
 
-    protected void chkSelectAll_OnCheckedChanged(object sender, EventArgs e)
-    {
-        ChkAll(gvEntries);
-    }
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (IsPostBack) return;
 
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        if (IsPostBack) return;
+            PopulateGrid();
+        }
 
-        PopulateGrid();
-    }
+        protected void PopulateGrid()
+        {
+            gvEntries.DataSource = Call.BootEntryApi.GetAll(int.MaxValue, txtSearch.Text);
+            gvEntries.DataBind();
 
-    protected void PopulateGrid()
-    {
-        gvEntries.DataSource = Call.BootEntryApi.GetAll(int.MaxValue, txtSearch.Text);
-        gvEntries.DataBind();
+            lblTotal.Text = gvEntries.Rows.Count + " Result(s) / " + Call.BootEntryApi.GetCount() + " Total Boot Entry(s)";
+        }
 
-        lblTotal.Text = gvEntries.Rows.Count + " Result(s) / " + Call.BootEntryApi.GetCount() + " Total Boot Entry(s)";
-    }
-
-    protected void txtSearch_OnTextChanged(object sender, EventArgs e)
-    {
-        PopulateGrid();
+        protected void txtSearch_OnTextChanged(object sender, EventArgs e)
+        {
+            PopulateGrid();
+        }
     }
 }

@@ -1,5 +1,6 @@
-﻿using CloneDeploy_Entities;
-using CloneDeploy_Services.Helpers;
+﻿using CloneDeploy_Common;
+using CloneDeploy_Entities;
+using Newtonsoft.Json;
 
 namespace CloneDeploy_Services.Workflows
 {
@@ -22,7 +23,7 @@ namespace CloneDeploy_Services.Workflows
 
         public string Start()
         {
-            if (string.IsNullOrEmpty(Settings.ServerIdentifier))
+            if (string.IsNullOrEmpty(SettingServices.GetSettingValue(SettingStrings.ServerIdentifier)))
                 return "The Server Identifier Must Be Set Before Tasks Can Be Started";
 
             if (_computer == null)
@@ -39,12 +40,10 @@ namespace CloneDeploy_Services.Workflows
                 if (!validation.Success) return validation.ErrorMessage;
             }
 
-            if (Settings.OperationMode == "Single")
-            {
-                var dp = new DistributionPointServices().GetPrimaryDistributionPoint();
-                if (dp == null) return "Could Not Find A Primary Distribution Point";
-            }
-            else
+            var dp = new DistributionPointServices().GetPrimaryDistributionPoint();
+            if (dp == null) return "Could Not Find A Primary Distribution Point";
+
+            if (SettingServices.ServerIsClusterPrimary)
             {
                 var clusterGroup = new ComputerServices().GetClusterGroup(_computer.Id);
                 if (clusterGroup == null) return "Could Not Find A Cluster Group For This Computer";
@@ -74,34 +73,43 @@ namespace CloneDeploy_Services.Workflows
                 return "Could Not Create PXE Boot File";
             }
 
-            _activeTask.Arguments = new CreateTaskArguments(_computer, _imageProfile, _direction).Run();
+            _activeTask.Arguments = new CreateTaskArguments(_computer, _imageProfile, _direction).Execute();
             if (!activeImagingTaskServices.UpdateActiveImagingTask(_activeTask))
             {
                 activeImagingTaskServices.DeleteActiveImagingTask(_activeTask.Id);
                 return "Could Not Create Task Arguments";
             }
 
-            Utility.WakeUp(_computer.Mac);
+            IpServices.WakeUp(_computer.Mac);
 
             var auditLog = new AuditLogEntity();
             switch (_direction)
             {
                 case "push":
-                    auditLog.AuditType = AuditEntry.Type.Push;
+                    auditLog.AuditType = AuditEntry.Type.Deploy;
                     break;
                 case "permanent_push":
                     auditLog.AuditType = AuditEntry.Type.PermanentPush;
                     break;
                 default:
-                    auditLog.AuditType = AuditEntry.Type.Pull;
+                    auditLog.AuditType = AuditEntry.Type.Upload;
                     break;
             }
 
             auditLog.ObjectId = _computer.Id;
+            var user = new UserServices().GetUser(_userId);
+            if (user != null)
+                auditLog.UserName = user.Name;
             auditLog.ObjectName = _computer.Name;
             auditLog.Ip = _ipAddress;
             auditLog.UserId = _userId;
             auditLog.ObjectType = "Computer";
+            auditLog.ObjectJson = JsonConvert.SerializeObject(_activeTask);
+            new AuditLogServices().AddAuditLog(auditLog);
+
+            auditLog.ObjectId = _imageProfile.ImageId;
+            auditLog.ObjectName = _imageProfile.Image.Name;
+            auditLog.ObjectType = "Image";
             new AuditLogServices().AddAuditLog(auditLog);
 
             return "Successfully Started Task For " + _computer.Name;

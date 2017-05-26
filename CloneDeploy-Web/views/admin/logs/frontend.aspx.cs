@@ -2,7 +2,6 @@
 using System.Text;
 using System.Web;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
 namespace CloneDeploy_Web.views.admin.logs
 {
@@ -13,7 +12,7 @@ namespace CloneDeploy_Web.views.admin.logs
             HttpContext.Current.Response.ContentType = "application/octet-stream";
             HttpContext.Current.Response.AppendHeader("Content-Disposition",
                 "attachment; filename=" + ddlLog.Text);
-            var log = Utility.GetLogContents(ddlLog.Text, int.MaxValue);
+            var log = GetLogContents(ddlLog.Text, int.MaxValue);
             var sb = new StringBuilder();
             foreach (var line in log)
             {
@@ -33,7 +32,7 @@ namespace CloneDeploy_Web.views.admin.logs
         {
             if (!IsPostBack)
             {
-                ddlLog.DataSource = Utility.GetFeLogs();
+                ddlLog.DataSource = GetFeLogs();
                 ddlLog.DataBind();
                 ddlLog.Items.Insert(0, "Select A Log");
                 ddlLimit.SelectedValue = "10";
@@ -46,7 +45,7 @@ namespace CloneDeploy_Web.views.admin.logs
             if (ddlLog.Text != "Select A Log")
             {
                 var limit = ddlLimit.Text == "All" ? int.MaxValue : Convert.ToInt32(ddlLimit.Text);
-                gvLog.DataSource = Utility.GetLogContents(ddlLog.Text, limit);
+                gvLog.DataSource = GetLogContents(ddlLog.Text, limit);
                 gvLog.DataBind();
             }
         }

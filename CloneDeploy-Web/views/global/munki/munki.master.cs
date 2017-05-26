@@ -2,23 +2,26 @@
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
 
-public partial class views_global_munki_munki : MasterBaseMaster
+namespace CloneDeploy_Web.views.global.munki
 {
-    private Global globalBasePage { get; set; }
-    public MunkiManifestTemplateEntity ManifestTemplate { get; set; }
-
-    public void Page_Load(object sender, EventArgs e)
+    public partial class views_global_munki_munki : MasterBaseMaster
     {
-        globalBasePage = Page as Global;
-        ManifestTemplate = globalBasePage.ManifestTemplate;
+        private Global globalBasePage { get; set; }
+        public MunkiManifestTemplateEntity ManifestTemplate { get; set; }
 
-        if (ManifestTemplate == null)
+        public void Page_Load(object sender, EventArgs e)
         {
-            divMunkiDetails.Visible = false;
-        }
-        else
-        {
-            divMunki.Visible = false;
+            globalBasePage = Page as Global;
+            ManifestTemplate = globalBasePage.ManifestTemplate;
+
+            if (ManifestTemplate == null)
+            {
+                divMunkiDetails.Visible = false;
+            }
+            else
+            {
+                divMunki.Visible = false;
+            }
         }
     }
 }

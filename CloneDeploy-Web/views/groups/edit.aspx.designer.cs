@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace views.groups {
+namespace CloneDeploy_Web.views.groups {
     
     
     public partial class GroupEdit {

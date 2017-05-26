@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web.UI.WebControls;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.masters
+namespace CloneDeploy_Web.views.groups
 {
     public partial class GroupMaster : MasterBaseMaster
     {
@@ -18,7 +19,7 @@ namespace views.masters
             switch (taskType)
             {
                 case "delete":
-                    groupBasePage.RequiresAuthorizationOrManagedGroup(Authorizations.DeleteGroup, Group.Id);
+                    groupBasePage.RequiresAuthorizationOrManagedGroup(AuthorizationStrings.DeleteGroup, Group.Id);
                     var result = groupBasePage.Call.GroupApi.Delete(Group.Id);
                     if (result.Success)
                     {
@@ -29,12 +30,12 @@ namespace views.masters
                         PageBaseMaster.EndUserMessage = result.ErrorMessage;
                     break;
                 case "unicast":
-                    groupBasePage.RequiresAuthorizationOrManagedGroup(Authorizations.ImageDeployTask, Group.Id);
+                    groupBasePage.RequiresAuthorizationOrManagedGroup(AuthorizationStrings.ImageDeployTask, Group.Id);
                     var successCount = groupBasePage.Call.GroupApi.StartGroupUnicast(Group.Id);
-                    PageBaseMaster.EndUserMessage = "Succssfully Started " + successCount + " Tasks";
+                    PageBaseMaster.EndUserMessage = "Successfully Started " + successCount + " Tasks";
                     break;
                 case "multicast":
-                    groupBasePage.RequiresAuthorizationOrManagedGroup(Authorizations.ImageMulticastTask, Group.Id);
+                    groupBasePage.RequiresAuthorizationOrManagedGroup(AuthorizationStrings.ImageMulticastTask, Group.Id);
                     PageBaseMaster.EndUserMessage = groupBasePage.Call.GroupApi.StartMulticast(Group.Id);
                     break;
             }
@@ -55,6 +56,13 @@ namespace views.masters
             lblTitle.Text = "Multicast The Selected Group?";
             gvConfirm.DataSource = new List<GroupEntity> {Group};
             gvConfirm.DataBind();
+            foreach (GridViewRow row in gvConfirm.Rows)
+            {
+                var lbl = row.FindControl("lblImage") as Label;
+                var image = groupBasePage.Call.ImageApi.Get(Group.ImageId);
+                if (image != null)
+                    lbl.Text = image.Name;
+            }
             DisplayConfirm();
         }
 

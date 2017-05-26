@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace views.masters {
+namespace CloneDeploy_Web.views.tasks {
     
     
     public partial class TaskMaster {

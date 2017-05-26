@@ -47,6 +47,9 @@
     <Compile Include="AuditLog.cs" />
     <Compile Include="ClusterGroupDistributionPoint.cs" />
     <Compile Include="ClusterGroupServer.cs" />
+    <Compile Include="DTOs\AppleVendorDTO.cs" />
+    <Compile Include="NbiEntry.cs" />
+    <Compile Include="NetBootProfile.cs" />
     <Compile Include="DistributionPoint.cs" />
     <Compile Include="DTOs\MulticastArgsDTO.cs" />
     <Compile Include="DTOs\TftpServerDTO.cs" />

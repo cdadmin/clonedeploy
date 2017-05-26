@@ -128,6 +128,14 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<ComputerEntity>(Request);
         }
 
+        public IEnumerable<AuditLogEntity> GetComputerAuditLogs(int id,int limit)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetComputerAuditLogs/{1}", Resource, id);
+            Request.AddParameter("limit", limit);
+            return _apiRequest.Execute<List<AuditLogEntity>>(Request);
+
+        }
         public IEnumerable<ComputerLogEntity> GetComputerLogs(int id)
         {
             Request.Method = Method.GET;

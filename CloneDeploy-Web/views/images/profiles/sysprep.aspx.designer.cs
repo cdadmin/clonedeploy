@@ -9,23 +9,26 @@
 
 
 
-public partial class views_images_profiles_sysprep {
+namespace CloneDeploy_Web.views.images.profiles
+{
+    public partial class views_images_profiles_sysprep {
     
-    /// <summary>
-    /// btnUpdateSysprep control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.LinkButton btnUpdateSysprep;
+        /// <summary>
+        /// btnUpdateSysprep control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnUpdateSysprep;
     
-    /// <summary>
-    /// gvSysprep control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.GridView gvSysprep;
+        /// <summary>
+        /// gvSysprep control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvSysprep;
+    }
 }

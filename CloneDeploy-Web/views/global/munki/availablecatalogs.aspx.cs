@@ -3,88 +3,91 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-public partial class views_global_munki_availablecatalogs : Global
+namespace CloneDeploy_Web.views.global.munki
 {
-    protected void buttonUpdate_OnClick(object sender, EventArgs e)
+    public partial class views_global_munki_availablecatalogs : Global
     {
-        RequiresAuthorization(Authorizations.UpdateGlobal);
-
-        var updateCount = 0;
-        foreach (GridViewRow row in gvCatalogs.Rows)
+        protected void buttonUpdate_OnClick(object sender, EventArgs e)
         {
-            var enabled = (CheckBox) row.FindControl("chkSelector");
-            if (enabled == null) continue;
-            if (!enabled.Checked) continue;
+            RequiresAuthorization(AuthorizationStrings.UpdateGlobal);
 
-            var dataKey = gvCatalogs.DataKeys[row.RowIndex];
-            if (dataKey == null) continue;
-
-            var catalog = new MunkiManifestCatalogEntity
+            var updateCount = 0;
+            foreach (GridViewRow row in gvCatalogs.Rows)
             {
-                Name = dataKey.Value.ToString(),
-                ManifestTemplateId = ManifestTemplate.Id
-            };
-            var txtPriority = row.FindControl("txtPriority") as TextBox;
-            if (txtPriority != null)
-                if (!string.IsNullOrEmpty(txtPriority.Text))
-                    catalog.Priority = Convert.ToInt32(txtPriority.Text);
+                var enabled = (CheckBox) row.FindControl("chkSelector");
+                if (enabled == null) continue;
+                if (!enabled.Checked) continue;
 
-            if (Call.MunkiManifestTemplateApi.AddCatalogToTemplate(catalog)) updateCount++;
+                var dataKey = gvCatalogs.DataKeys[row.RowIndex];
+                if (dataKey == null) continue;
+
+                var catalog = new MunkiManifestCatalogEntity
+                {
+                    Name = dataKey.Value.ToString(),
+                    ManifestTemplateId = ManifestTemplate.Id
+                };
+                var txtPriority = row.FindControl("txtPriority") as TextBox;
+                if (txtPriority != null)
+                    if (!string.IsNullOrEmpty(txtPriority.Text))
+                        catalog.Priority = Convert.ToInt32(txtPriority.Text);
+
+                if (Call.MunkiManifestTemplateApi.AddCatalogToTemplate(catalog)) updateCount++;
+            }
+
+
+            if (updateCount > 0)
+            {
+                EndUserMessage = "Successfully Updated Catalogs";
+                ManifestTemplate.ChangesApplied = 0;
+                Call.MunkiManifestTemplateApi.Put(ManifestTemplate.Id, ManifestTemplate);
+            }
+            else
+            {
+                EndUserMessage = "Could Not Update Catalogs";
+            }
+
+
+            PopulateGrid();
         }
 
-
-        if (updateCount > 0)
+        protected void Page_Load(object sender, EventArgs e)
         {
-            EndUserMessage = "Successfully Updated Catalogs";
-            ManifestTemplate.ChangesApplied = 0;
-            Call.MunkiManifestTemplateApi.Put(ManifestTemplate.Id, ManifestTemplate);
+            if (IsPostBack) return;
+            PopulateGrid();
         }
-        else
+
+        protected void PopulateGrid()
         {
-            EndUserMessage = "Could Not Update Catalogs";
+            var catalogs = Call.FilesystemApi.GetMunkiResources("catalogs");
+            IEnumerable<FileInfo> searchedCatalogs = null;
+            if (catalogs != null)
+            {
+                searchedCatalogs =
+                    catalogs.Where(
+                        f =>
+                            f.Name.IndexOf(txtSearch.Text, StringComparison.CurrentCultureIgnoreCase) != -1 &&
+                            f.Name != "all");
+            }
+            gvCatalogs.DataSource = searchedCatalogs;
+            gvCatalogs.DataBind();
+
+            if (searchedCatalogs != null)
+                lblTotal.Text = gvCatalogs.Rows.Count + " Result(s) / " + searchedCatalogs.Count() + " Total Catalog(s)";
         }
 
-
-        PopulateGrid();
-    }
-
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        if (IsPostBack) return;
-        PopulateGrid();
-    }
-
-    protected void PopulateGrid()
-    {
-        var catalogs = Call.FilesystemApi.GetMunkiResources("catalogs");
-        IEnumerable<FileInfo> searchedCatalogs = null;
-        if (catalogs != null)
+        protected void search_Changed(object sender, EventArgs e)
         {
-            searchedCatalogs =
-                catalogs.Where(
-                    f =>
-                        f.Name.IndexOf(txtSearch.Text, StringComparison.CurrentCultureIgnoreCase) != -1 &&
-                        f.Name != "all");
+            PopulateGrid();
         }
-        gvCatalogs.DataSource = searchedCatalogs;
-        gvCatalogs.DataBind();
-
-        if (searchedCatalogs != null)
-            lblTotal.Text = gvCatalogs.Rows.Count + " Result(s) / " + searchedCatalogs.Count() + " Total Catalog(s)";
-    }
-
-    protected void search_Changed(object sender, EventArgs e)
-    {
-        PopulateGrid();
-    }
 
 
-    protected void showAvailable_OnClick(object sender, EventArgs e)
-    {
-        Available.Visible = !Available.Visible;
+        protected void showAvailable_OnClick(object sender, EventArgs e)
+        {
+            Available.Visible = !Available.Visible;
+        }
     }
 }

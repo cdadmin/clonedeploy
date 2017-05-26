@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace views.tasks {
+namespace CloneDeploy_Web.views.tasks {
     
     
     public partial class TaskCustom {

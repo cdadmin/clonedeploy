@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CloneDeploy_Common;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
@@ -143,13 +144,13 @@ namespace CloneDeploy_Services
         public void SendLockOutEmail(int userId)
         {
             //Mail not enabled
-            if (Settings.SmtpEnabled == "0") return;
+            if (SettingServices.GetSettingValue(SettingStrings.SmtpEnabled) == "0") return;
 
             var lockedUser = GetUser(userId);
             foreach (var user in SearchUsers("").Where(x => x.NotifyLockout == 1 && !string.IsNullOrEmpty(x.Email)))
             {
                 if (user.Membership != "Administrator" && user.Id != userId) continue;
-                var mail = new Mail
+                var mail = new MailServices
                 {
                     MailTo = user.Email,
                     Body = lockedUser.Name + " Has Been Locked For 15 Minutes Because Of Too Many Failed Login Attempts",

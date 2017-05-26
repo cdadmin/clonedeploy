@@ -1,13 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Claunia.PropertyList;
+using CloneDeploy_Common;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using CloneDeploy_Services.Helpers;
+using log4net;
 
 namespace CloneDeploy_Services
 {
     public class MunkiManifestTemplateServices
     {
+        private static readonly ILog log = LogManager.GetLogger("ApplicationLog");
+
         private readonly UnitOfWork _uow;
 
         public MunkiManifestTemplateServices()
@@ -335,6 +343,75 @@ namespace CloneDeploy_Services
             }
 
             return validationResult;
+        }
+
+        public List<FileInfo> GetMunkiResources(string type)
+        {
+            FileInfo[] directoryFiles = null;
+            var pkgInfoFiles = SettingServices.GetSettingValue(SettingStrings.MunkiBasePath) + Path.DirectorySeparatorChar + type + Path.DirectorySeparatorChar;
+            if (SettingServices.GetSettingValue(SettingStrings.MunkiPathType) == "Local")
+            {
+                var di = new DirectoryInfo(pkgInfoFiles);
+                try
+                {
+                    directoryFiles = di.GetFiles("*.*");
+                }
+                catch (Exception ex)
+                {
+                    log.Debug(ex.Message);
+                }
+            }
+
+            else
+            {
+                using (var unc = new UncServices())
+                {
+                    var smbPassword = new EncryptionServices().DecryptText(SettingServices.GetSettingValue(SettingStrings.MunkiSMBPassword));
+                    var smbDomain = string.IsNullOrEmpty(SettingServices.GetSettingValue(SettingStrings.MunkiSMBDomain)) ? "" : SettingServices.GetSettingValue(SettingStrings.MunkiSMBDomain);
+                    if (
+                        unc.NetUseWithCredentials(SettingServices.GetSettingValue(SettingStrings.MunkiBasePath), SettingServices.GetSettingValue(SettingStrings.MunkiSMBUsername), smbDomain,
+                            smbPassword) || unc.LastError == 1219)
+                    {
+                        var di = new DirectoryInfo(pkgInfoFiles);
+                        try
+                        {
+                            directoryFiles = di.GetFiles("*.*");
+                        }
+                        catch (Exception ex)
+                        {
+                            log.Debug(ex.Message);
+                        }
+                    }
+                    else
+                    {
+                        log.Debug("Failed to connect to " + SettingServices.GetSettingValue(SettingStrings.MunkiBasePath) + "\r\nLastError = " + unc.LastError);
+                    }
+                }
+            }
+
+            return directoryFiles.ToList();
+        }
+
+
+
+
+
+
+        public MunkiPackageInfoEntity ReadPlist(string fileName)
+        {
+            try
+            {
+                var rootDict = (NSDictionary)PropertyListParser.Parse(fileName);
+                var plist = new MunkiPackageInfoEntity();
+                plist.Name = rootDict.ObjectForKey("name").ToString();
+                plist.Version = rootDict.ObjectForKey("version").ToString();
+                return plist;
+            }
+            catch (Exception ex)
+            {
+                log.Debug(ex.Message);
+                return null;
+            }
         }
     }
 }

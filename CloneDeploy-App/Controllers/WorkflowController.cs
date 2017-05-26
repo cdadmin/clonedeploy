@@ -20,21 +20,21 @@ namespace CloneDeploy_App.Controllers
         [HttpGet]
         public ApiBoolResponseDTO CancelAllImagingTasks()
         {
-            return new ApiBoolResponseDTO {Value = CloneDeploy_Services.Workflows.CancelAllImagingTasks.Run()};
+            return new ApiBoolResponseDTO {Value = new CloneDeploy_Services.Workflows.CancelAllImagingTasks().Execute()};
         }
 
         [CustomAuth(Permission = "AdminUpdate")]
         [HttpGet]
         public ApiBoolResponseDTO CopyPxeBinaries()
         {
-            return new ApiBoolResponseDTO {Value = new CopyPxeBinaries().CopyFiles()};
+            return new ApiBoolResponseDTO {Value = new CopyPxeBinaries().Execute()};
         }
 
         [CustomAuth(Permission = "AdminUpdate")]
         [HttpGet]
         public ApiBoolResponseDTO CreateClobberBootMenu(int profileId, bool promptComputerName)
         {
-            new ClobberBootMenu(profileId, promptComputerName).CreatePxeBootFiles();
+            new ClobberBootMenu(profileId, promptComputerName).Execute();
             return new ApiBoolResponseDTO {Value = true};
         }
 
@@ -42,7 +42,7 @@ namespace CloneDeploy_App.Controllers
         [HttpPost]
         public ApiBoolResponseDTO CreateDefaultBootMenu(BootMenuGenOptionsDTO defaultMenuOptions)
         {
-            new DefaultBootMenu(defaultMenuOptions).CreateGlobalDefaultBootMenu();
+            new DefaultBootMenu(defaultMenuOptions).Execute();
             return new ApiBoolResponseDTO {Value = true};
         }
 
@@ -81,6 +81,13 @@ namespace CloneDeploy_App.Controllers
             {
                 Value = new Multicast(profileId, clientCount, Convert.ToInt32(userId)).Create()
             };
+        }
+
+        [CustomAuth(Permission = "AdminRead")]
+        [HttpGet]
+        public AppleVendorDTO GetAppleVendorString(string ip)
+        {
+            return new CreateAppleVendorString().Execute(ip);
         }
     }
 }

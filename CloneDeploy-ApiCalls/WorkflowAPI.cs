@@ -65,5 +65,14 @@ namespace CloneDeploy_ApiCalls
             var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
             return response != null ? response.Value : string.Empty;
         }
+
+        public AppleVendorDTO GetAppleVendorString(string ip)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetAppleVendorString/", Resource);
+            Request.AddParameter("ip", ip);
+            var response = _apiRequest.Execute<AppleVendorDTO>(Request);
+            return response;
+        }
     }
 }

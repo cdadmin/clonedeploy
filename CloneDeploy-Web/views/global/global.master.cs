@@ -1,11 +1,14 @@
 ﻿using System;
 using CloneDeploy_Web.BasePages;
 
-public partial class views_global_global : MasterBaseMaster
+namespace CloneDeploy_Web.views.global
 {
-    protected void Page_Load(object sender, EventArgs e)
+    public partial class views_global_global : MasterBaseMaster
     {
-        if (Request.QueryString["manifestid"] != null)
-            Level1.Visible = false;
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (Request.QueryString["manifestid"] != null)
+                Level1.Visible = false;
+        }
     }
 }

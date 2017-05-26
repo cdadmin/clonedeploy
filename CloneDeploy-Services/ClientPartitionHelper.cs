@@ -6,7 +6,6 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs.ClientImaging;
 using CloneDeploy_Entities.DTOs.ClientPartition;
 using CloneDeploy_Entities.DTOs.ImageSchemaBE;
-using CloneDeploy_Services.Helpers;
 using log4net;
 using Newtonsoft.Json;
 using LogicalVolume = CloneDeploy_Entities.DTOs.ImageSchemaBE.LogicalVolume;
@@ -38,16 +37,8 @@ namespace CloneDeploy_Services
                 }
                 else
                 {
-                    var path = Settings.PrimaryStoragePath + "images" + Path.DirectorySeparatorChar +
-                               imageProfile.Image.Name + Path.DirectorySeparatorChar +
-                               "schema";
-                    if (File.Exists(path))
-                    {
-                        using (var reader = new StreamReader(path))
-                        {
-                            schema = reader.ReadLine() ?? "";
-                        }
-                    }
+                    schema = new FilesystemServices().ReadSchemaFile(imageProfile.Image.Name);
+                  
                 }
             }
 
@@ -178,9 +169,7 @@ namespace CloneDeploy_Services
         public List<PhysicalPartition> GetActivePartitions(int schemaHdNumber, ImageProfileWithImage imageProfile)
         {
             var listPhysicalPartition = new List<PhysicalPartition>();
-            var imagePath = Settings.PrimaryStoragePath + Path.DirectorySeparatorChar + "images" +
-                            Path.DirectorySeparatorChar + imageProfile.Image.Name + Path.DirectorySeparatorChar + "hd" +
-                            schemaHdNumber;
+         
             foreach (
                 var partition in _imageSchema.HardDrives[schemaHdNumber].Partitions.Where(partition => partition.Active)
                 )
@@ -195,18 +184,11 @@ namespace CloneDeploy_Services
                 string imageFile = null;
                 foreach (var ext in new[] {"ntfs", "fat", "extfs", "hfsp", "imager", "xfs"})
                 {
-                    try
-                    {
-                        imageFile =
-                            Directory.GetFiles(
-                                imagePath + Path.DirectorySeparatorChar, "part" + partition.Number + "." + ext + ".*")
-                                .FirstOrDefault();
-                    }
-                    catch (Exception ex)
-                    {
-                        log.Debug(ex.Message);
-                    }
-                    if (imageFile != null)
+
+                    imageFile = new FilesystemServices().GetFileNameWithFullPath(imageProfile.Image.Name,
+                        schemaHdNumber.ToString(), partition.Number, "." + ext);
+
+                    if (!string.IsNullOrEmpty(imageFile))
                     {
                         physicalPartition.PartcloneFileSystem = ext;
                         break;
@@ -248,19 +230,10 @@ namespace CloneDeploy_Services
 
                         foreach (var ext in new[] {"ntfs", "fat", "extfs", "hfsp", "imager", "xfs"})
                         {
-                            try
-                            {
-                                imageFile =
-                                    Directory.GetFiles(
-                                        imagePath + Path.DirectorySeparatorChar,
-                                        partition.VolumeGroup.Name + "-" + logicalVolume.Name + "." + ext + ".*")
-                                        .FirstOrDefault();
-                            }
-                            catch (Exception ex)
-                            {
-                                log.Debug(ex.Message);
-                            }
-                            if (imageFile != null)
+                            imageFile = new FilesystemServices().GetLVMFileNameWithFullPath(imageProfile.Image.Name,
+                                schemaHdNumber.ToString(), partition.VolumeGroup.Name, logicalVolume.Name, ext);
+                            
+                            if (!string.IsNullOrEmpty(imageFile))
                             {
                                 clientLogicalVolume.PartcloneFileSystem = ext;
                                 break;
@@ -365,28 +338,15 @@ namespace CloneDeploy_Services
             }
             else
             {
-                var imagePath = Settings.PrimaryStoragePath + Path.DirectorySeparatorChar + "images" +
-                                Path.DirectorySeparatorChar + _imageProfile.Image.Name + Path.DirectorySeparatorChar +
-                                "hd" +
-                                hdNumberToGet;
                 logicalVolumeHelper.IsDynamicSize = true;
                 string imageFile = null;
                 foreach (var ext in new[] {"ntfs", "fat", "extfs", "hfsp", "imager", "xfs"})
                 {
-                    try
-                    {
-                        imageFile =
-                            Directory.GetFiles(
-                                imagePath + Path.DirectorySeparatorChar,
-                                lv.VolumeGroup + "-" + lv.Name + "." + ext + ".*")
-                                .FirstOrDefault();
-                    }
-                    catch (Exception ex)
-                    {
-                        log.Debug(ex.Message);
-                    }
+                    imageFile = new FilesystemServices().GetLVMFileNameWithFullPath(_imageProfile.Image.Name,
+                        hdNumberToGet.ToString(), lv.VolumeGroup, lv.Name, ext);
+                 
 
-                    if (imageFile != null) break;
+                    if (!string.IsNullOrEmpty(imageFile)) break;
                 }
                 if (Path.GetExtension(imageFile) == ".wim")
                     logicalVolumeHelper.MinSizeBlk = lv.UsedMb*1024*1024/lbsByte;
@@ -451,10 +411,7 @@ namespace CloneDeploy_Services
 
             partitionHelper.VolumeGroupHelper = VolumeGroup(hdNumberToGet, partNumberToGet, newHdSize);
             var lbsByte = _imageSchema.HardDrives[hdNumberToGet].Lbs;
-            var imagePath = Settings.PrimaryStoragePath + Path.DirectorySeparatorChar + "images" +
-                            Path.DirectorySeparatorChar + _imageProfile.Image.Name + Path.DirectorySeparatorChar + "hd" +
-                            hdNumberToGet;
-
+         
             //Look if any volume groups are present for this partition.  If so set the volumesize for the volume group to the minimum size
             //required for the volume group.  Volume groups are always treated as resizable even if none of the individual 
             //logical volumes are resizable
@@ -516,20 +473,10 @@ namespace CloneDeploy_Services
                     string imageFile = null;
                     foreach (var ext in new[] {"ntfs", "fat", "extfs", "hfsp", "imager", "winpe", "xfs"})
                     {
-                        try
-                        {
-                            imageFile =
-                                Directory.GetFiles(
-                                    imagePath + Path.DirectorySeparatorChar,
-                                    "part" + partition.Number + "." + ext + ".*")
-                                    .FirstOrDefault();
-                        }
-                        catch (Exception ex)
-                        {
-                            log.Debug(ex.Message);
-                        }
-
-                        if (imageFile != null) break;
+                        imageFile = new FilesystemServices().GetFileNameWithFullPath(_imageProfile.Image.Name,
+                            hdNumberToGet.ToString(), partition.Number, ext);
+                       
+                        if (!string.IsNullOrEmpty(imageFile)) break;
                     }
                     if (Path.GetExtension(imageFile) == ".wim")
                         partitionHelper.MinSizeBlk = partition.UsedMb*1024*1024/lbsByte;

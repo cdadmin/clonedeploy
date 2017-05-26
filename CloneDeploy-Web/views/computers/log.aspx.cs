@@ -5,7 +5,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using CloneDeploy_Web.BasePages;
 
-namespace views.computers
+namespace CloneDeploy_Web.views.computers
 {
     public partial class ComputerLog : Computers
     {

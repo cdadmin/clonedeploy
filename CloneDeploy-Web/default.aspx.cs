@@ -7,14 +7,14 @@ using CloneDeploy_ApiCalls;
 using CloneDeploy_Entities;
 using Newtonsoft.Json;
 
-namespace CloneDeploy_Web.views.login
+namespace CloneDeploy_Web
 {
     public partial class Default : Page
     {
-        protected void CrucibleLogin_Authenticate(object sender, AuthenticateEventArgs e)
+        protected void WebLogin_Authenticate(object sender, AuthenticateEventArgs e)
         {
             //Get token
-            var token = new APICall().TokenApi.Get(CrucibleLogin.UserName, CrucibleLogin.Password);
+            var token = new APICall().TokenApi.Get(WebLogin.UserName, WebLogin.Password);
             if (token == null)
             {
                 lblError.Text = "Unknown API Error";
@@ -31,7 +31,7 @@ namespace CloneDeploy_Web.views.login
             if (token.access_token != null)
             {
                 //verify token is valid         
-                var result = new APICall().CloneDeployUserApi.GetForLogin(CrucibleLogin.UserName);
+                var result = new APICall().CloneDeployUserApi.GetForLogin(WebLogin.UserName);
                 if (result == null)
                 {
                     lblError.Text = "Could Not Contact Application API";

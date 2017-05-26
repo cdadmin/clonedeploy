@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace views.images {
+namespace CloneDeploy_Web.views.images {
     
     
     public partial class ImageSpecs {

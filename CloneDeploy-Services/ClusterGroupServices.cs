@@ -60,6 +60,16 @@ namespace CloneDeploy_Services
             return _uow.ClusterGroupServersRepository.Get(x => x.ClusterGroupId == clusterId);
         }
 
+        public List<ClusterGroupServerEntity> GetClusterTftpServers(int clusterId)
+        {
+            return _uow.ClusterGroupServersRepository.Get(x => x.ClusterGroupId == clusterId && x.TftpRole == 1);
+        }
+
+        public List<ClusterGroupServerEntity> GetClusterMulticastServers(int clusterId)
+        {
+            return _uow.ClusterGroupServersRepository.Get(x => x.ClusterGroupId == clusterId && x.MulticastRole == 1);
+        }
+
         public ClusterGroupEntity GetDefaultClusterGroup()
         {
             return _uow.ClusterGroupRepository.GetFirstOrDefault(x => x.Default == 1);

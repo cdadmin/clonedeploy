@@ -15,7 +15,7 @@ namespace CloneDeploy_Entities
         public int ClusterGroupId { get; set; }
 
         [Column("secondary_server_id", Order = 3)]
-        public int SecondaryServerId { get; set; }
+        public int ServerId { get; set; }
 
         [Column("tftp_role", Order = 4)]
         public int TftpRole { get; set; }

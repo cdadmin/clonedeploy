@@ -2,67 +2,70 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-public partial class views_global_filesandfolders_search : Global
+namespace CloneDeploy_Web.views.global.filesandfolders
 {
-    protected void ButtonConfirmDelete_Click(object sender, EventArgs e)
+    public partial class views_global_filesandfolders_search : Global
     {
-        RequiresAuthorization(Authorizations.DeleteGlobal);
-        foreach (GridViewRow row in gvFiles.Rows)
+        protected void ButtonConfirmDelete_Click(object sender, EventArgs e)
         {
-            var cb = (CheckBox) row.FindControl("chkSelector");
-            if (cb == null || !cb.Checked) continue;
-            var dataKey = gvFiles.DataKeys[row.RowIndex];
-            if (dataKey == null) continue;
-            Call.FileFolderApi.Delete(Convert.ToInt32(dataKey.Value));
+            RequiresAuthorization(AuthorizationStrings.DeleteGlobal);
+            foreach (GridViewRow row in gvFiles.Rows)
+            {
+                var cb = (CheckBox) row.FindControl("chkSelector");
+                if (cb == null || !cb.Checked) continue;
+                var dataKey = gvFiles.DataKeys[row.RowIndex];
+                if (dataKey == null) continue;
+                Call.FileFolderApi.Delete(Convert.ToInt32(dataKey.Value));
+            }
+
+            PopulateGrid();
         }
 
-        PopulateGrid();
-    }
-
-    protected void chkSelectAll_OnCheckedChanged(object sender, EventArgs e)
-    {
-        ChkAll(gvFiles);
-    }
-
-    protected void gvFiles_OnSorting(object sender, GridViewSortEventArgs e)
-    {
-        PopulateGrid();
-        var listSysprepTags = (List<FileFolderEntity>) gvFiles.DataSource;
-        switch (e.SortExpression)
+        protected void chkSelectAll_OnCheckedChanged(object sender, EventArgs e)
         {
-            case "Name":
-                listSysprepTags = GetSortDirection(e.SortExpression) == "Asc"
-                    ? listSysprepTags.OrderBy(s => s.Name).ToList()
-                    : listSysprepTags.OrderByDescending(s => s.Name).ToList();
-                break;
+            ChkAll(gvFiles);
         }
 
-        gvFiles.DataSource = listSysprepTags;
-        gvFiles.DataBind();
-    }
+        protected void gvFiles_OnSorting(object sender, GridViewSortEventArgs e)
+        {
+            PopulateGrid();
+            var listSysprepTags = (List<FileFolderEntity>) gvFiles.DataSource;
+            switch (e.SortExpression)
+            {
+                case "Name":
+                    listSysprepTags = GetSortDirection(e.SortExpression) == "Asc"
+                        ? listSysprepTags.OrderBy(s => s.Name).ToList()
+                        : listSysprepTags.OrderByDescending(s => s.Name).ToList();
+                    break;
+            }
 
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        if (IsPostBack) return;
+            gvFiles.DataSource = listSysprepTags;
+            gvFiles.DataBind();
+        }
 
-        PopulateGrid();
-    }
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (IsPostBack) return;
 
-    protected void PopulateGrid()
-    {
-        gvFiles.DataSource = Call.FileFolderApi.GetAll(int.MaxValue, txtSearch.Text);
-        gvFiles.DataBind();
+            PopulateGrid();
+        }
 
-        lblTotal.Text = gvFiles.Rows.Count + " Result(s) / " + Call.FileFolderApi.GetCount() +
-                        " Total File(s) / Folder(s)";
-    }
+        protected void PopulateGrid()
+        {
+            gvFiles.DataSource = Call.FileFolderApi.GetAll(int.MaxValue, txtSearch.Text);
+            gvFiles.DataBind();
 
-    protected void txtSearch_OnTextChanged(object sender, EventArgs e)
-    {
-        PopulateGrid();
+            lblTotal.Text = gvFiles.Rows.Count + " Result(s) / " + Call.FileFolderApi.GetCount() +
+                            " Total File(s) / Folder(s)";
+        }
+
+        protected void txtSearch_OnTextChanged(object sender, EventArgs e)
+        {
+            PopulateGrid();
+        }
     }
 }

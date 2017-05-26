@@ -48,6 +48,15 @@ namespace CloneDeploy_ApiCalls
             return response != null && response.Value;
         }
 
+        public bool DownloadOnlineKernel(OnlineKernel tObject)
+        {
+            Request.Method = Method.POST;
+            Request.AddJsonBody(tObject);
+            Request.Resource = string.Format("api/{0}/DownloadOnlineKernel/", Resource);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
+        }
+
         public int GetMulticastSenderArgs(MulticastArgsDTO multicastArgs)
         {
             Request.Method = Method.POST;

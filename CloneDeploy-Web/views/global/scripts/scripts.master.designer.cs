@@ -9,41 +9,44 @@
 
 
 
-public partial class views_admin_scripts_scripts {
+namespace CloneDeploy_Web.views.global.scripts
+{
+    public partial class views_admin_scripts_scripts {
     
-    /// <summary>
-    /// BreadcrumbSub2 control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.ContentPlaceHolder BreadcrumbSub2;
+        /// <summary>
+        /// BreadcrumbSub2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ContentPlaceHolder BreadcrumbSub2;
     
-    /// <summary>
-    /// SubHelp control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.ContentPlaceHolder SubHelp;
+        /// <summary>
+        /// SubHelp control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ContentPlaceHolder SubHelp;
     
-    /// <summary>
-    /// ActionsRightSub control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.ContentPlaceHolder ActionsRightSub;
+        /// <summary>
+        /// ActionsRightSub control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ContentPlaceHolder ActionsRightSub;
     
-    /// <summary>
-    /// SubContent2 control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.ContentPlaceHolder SubContent2;
+        /// <summary>
+        /// SubContent2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ContentPlaceHolder SubContent2;
+    }
 }

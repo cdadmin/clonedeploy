@@ -1,6 +1,6 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
-using CloneDeploy_Web.Helpers;
 
 namespace CloneDeploy_Web.BasePages
 {
@@ -20,9 +20,9 @@ namespace CloneDeploy_Web.BasePages
                 ? Call.ImageProfileApi.Get(Convert.ToInt32(Request.QueryString["profileid"]))
                 : null;
             if (Image == null)
-                RequiresAuthorization(Authorizations.SearchImage);
+                RequiresAuthorization(AuthorizationStrings.SearchImage);
             else
-                RequiresAuthorizationOrManagedImage(Authorizations.ReadImage, Image.Id);
+                RequiresAuthorizationOrManagedImage(AuthorizationStrings.ReadImage, Image.Id);
         }
     }
 }

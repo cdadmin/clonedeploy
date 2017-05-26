@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/tasks/task.master" AutoEventWireup="true" Inherits="views_tasks_activemulticast" Codebehind="activemulticast.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/tasks/task.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.tasks.views_tasks_activemulticast" Codebehind="activemulticast.aspx.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li>Active Multicasts</li>

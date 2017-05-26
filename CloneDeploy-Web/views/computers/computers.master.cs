@@ -1,9 +1,9 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.computers
+namespace CloneDeploy_Web.views.computers
 {
     public partial class ComputerMaster : MasterBaseMaster
     {
@@ -38,7 +38,7 @@ namespace views.computers
             switch (action)
             {
                 case "delete":
-                    ComputerBasePage.RequiresAuthorizationOrManagedComputer(Authorizations.DeleteComputer, Computer.Id);
+                    ComputerBasePage.RequiresAuthorizationOrManagedComputer(AuthorizationStrings.DeleteComputer, Computer.Id);
                     var result = ComputerBasePage.Call.ComputerApi.Delete(Computer.Id);
                     if (result.Success)
                     {
@@ -50,13 +50,13 @@ namespace views.computers
                     break;
                 case "push":
                 {
-                    ComputerBasePage.RequiresAuthorizationOrManagedComputer(Authorizations.ImageDeployTask, Computer.Id);
+                    ComputerBasePage.RequiresAuthorizationOrManagedComputer(AuthorizationStrings.ImageDeployTask, Computer.Id);
                     PageBaseMaster.EndUserMessage = ComputerBasePage.Call.ComputerApi.StartDeploy(Computer.Id);
                 }
                     break;
                 case "pull":
                 {
-                    ComputerBasePage.RequiresAuthorizationOrManagedComputer(Authorizations.ImageUploadTask, Computer.Id);
+                    ComputerBasePage.RequiresAuthorizationOrManagedComputer(AuthorizationStrings.ImageUploadTask, Computer.Id);
                     PageBaseMaster.EndUserMessage = ComputerBasePage.Call.ComputerApi.StartUpload(Computer.Id);
                 }
                     break;

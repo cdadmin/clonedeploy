@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using CloneDeploy_Common;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
@@ -22,7 +23,7 @@ namespace CloneDeploy_Services
         {
             if (new ComputerServices().IsComputerActive(computer.Id))
                 return; //Files Will Be Processed When task is done
-            var pxeMac = Utility.MacToPxeMac(computer.Mac);
+            var pxeMac = StringManipulationServices.MacToPxeMac(computer.Mac);
             var list = new List<Tuple<string, string>>
             {
                 Tuple.Create("bios", ""),
@@ -35,7 +36,7 @@ namespace CloneDeploy_Services
             };
             foreach (var tuple in list)
             {
-                new FileOps().DeletePath(Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
+                new FileOpsServices().DeletePath(SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
                                          Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar +
                                          pxeMac +
                                          tuple.Item2);
@@ -43,7 +44,7 @@ namespace CloneDeploy_Services
 
 
             foreach (var ext in new[] {"", ".ipxe", ".cfg"})
-                new FileOps().DeletePath(Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                new FileOpsServices().DeletePath(SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar +
                                          pxeMac + ext);
         }
 

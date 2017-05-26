@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Common;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.tasks
+namespace CloneDeploy_Web.views.tasks
 {
     public partial class TaskCustom : Tasks
     {
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            RequiresAuthorization(Authorizations.ImageMulticastTask);
+            RequiresAuthorization(AuthorizationStrings.ImageMulticastTask);
             if (ddlComputerImage.Text == "Select Image") return;
             EndUserMessage = Call.WorkflowApi.StartOnDemandMulticast(Convert.ToInt32(ddlImageProfile.SelectedValue),
                 txtClientCount.Text);
@@ -23,9 +23,9 @@ namespace views.tasks
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Settings.OnDemand != "Enabled")
+            if (GetSetting(SettingStrings.OnDemand) != "Enabled")
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
-            RequiresAuthorization(Authorizations.AllowOnd);
+            RequiresAuthorization(AuthorizationStrings.AllowOnd);
             if (!IsPostBack) PopulateForm();
         }
 

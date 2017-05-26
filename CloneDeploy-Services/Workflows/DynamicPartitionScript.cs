@@ -145,8 +145,7 @@ namespace CloneDeploy_Services.Workflows
                 var counter = 0;
                 var partCount = clientSchema.PrimaryAndExtendedPartitions.Count;
 
-                string partitionCommands;
-                partitionCommands = "fdisk " + ClientHd + " &>>/tmp/clientlog.log <<FDISK\r\n";
+                var partitionCommands = "fdisk " + ClientHd + " &>>/tmp/clientlog.log <<FDISK\r\n";
                 if (clientBlockSize == 512)
                 {
                     if (Convert.ToInt32(clientSchema.PrimaryAndExtendedPartitions[0].Start) < 2048)

@@ -7,9 +7,9 @@ using System.Text;
 using System.Web;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
+using CloneDeploy_Common;
 using CloneDeploy_Entities.DTOs.FormData;
 using CloneDeploy_Services;
-using CloneDeploy_Services.Helpers;
 using CloneDeploy_Services.Workflows;
 
 namespace CloneDeploy_App.Controllers
@@ -112,7 +112,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage CheckTaskAuth(TaskDTO taskDto)
         {
-            var userToken = Utility.Decode(HttpContext.Current.Request.Headers["Authorization"], "Authorization");
+            var userToken = StringManipulationServices.Decode(HttpContext.Current.Request.Headers["Authorization"], "Authorization");
             _response.Content = new StringContent(new ClientImagingServices().CheckTaskAuth(taskDto.task, userToken),
                 Encoding.UTF8, "text/plain");
             return _response;
@@ -121,10 +121,10 @@ namespace CloneDeploy_App.Controllers
         [HttpPost]
         public HttpResponseMessage ConsoleLogin()
         {
-            var ip = Utility.Decode(HttpContext.Current.Request.Form["clientIP"], "clientIP");
-            var username = Utility.Decode(HttpContext.Current.Request.Form["username"], "username");
-            var password = Utility.Decode(HttpContext.Current.Request.Form["password"], "password");
-            var task = Utility.Decode(HttpContext.Current.Request.Form["task"], "task");
+            var ip = StringManipulationServices.Decode(HttpContext.Current.Request.Form["clientIP"], "clientIP");
+            var username = StringManipulationServices.Decode(HttpContext.Current.Request.Form["username"], "username");
+            var password = StringManipulationServices.Decode(HttpContext.Current.Request.Form["password"], "password");
+            var task = StringManipulationServices.Decode(HttpContext.Current.Request.Form["task"], "task");
 
             _response.Content =
                 new StringContent(new AuthenticationServices().ConsoleLogin(username, password, task, ip), Encoding.UTF8,
@@ -145,6 +145,15 @@ namespace CloneDeploy_App.Controllers
         {
             _response.Content = new StringContent(
                 new ClientImagingServices().DistributionPoint(dpDto.dpId, dpDto.task), Encoding.UTF8, "text/plain");
+            return _response;
+        }
+
+        [HttpPost]
+        [ClientAuth]
+        public HttpResponseMessage GetAllClusterDps(ComputerMacDTO computerMacDto)
+        {
+            _response.Content = new StringContent(
+                new ClientImagingServices().GetAllClusterDps(computerMacDto.computerMac), Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -296,7 +305,7 @@ namespace CloneDeploy_App.Controllers
         {
             if (type == "kernel")
             {
-                var path = Settings.TftpPath + "kernels" + Path.DirectorySeparatorChar;
+                var path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "kernels" + Path.DirectorySeparatorChar;
                 HttpContext.Current.Response.ContentType = "application/octet-stream";
                 HttpContext.Current.Response.AppendHeader("Content-Disposition", "inline; filename=" + filename);
                 HttpContext.Current.Response.TransmitFile(path + filename);
@@ -304,7 +313,7 @@ namespace CloneDeploy_App.Controllers
             }
             else
             {
-                var path = Settings.TftpPath + "images" + Path.DirectorySeparatorChar;
+                var path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "images" + Path.DirectorySeparatorChar;
                 HttpContext.Current.Response.ContentType = "application/x-gzip";
                 HttpContext.Current.Response.AppendHeader("Content-Disposition", "inline; filename=" + filename);
                 HttpContext.Current.Response.TransmitFile(path + filename);
@@ -395,8 +404,8 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage UpdateBcd()
         {
-            var bcd = Utility.Decode(HttpContext.Current.Request.Form["bcd"], "bcd");
-            var offsetBytes = Utility.Decode(HttpContext.Current.Request.Form["offsetBytes"], "offsetBytes");
+            var bcd = StringManipulationServices.Decode(HttpContext.Current.Request.Form["bcd"], "bcd");
+            var offsetBytes = StringManipulationServices.Decode(HttpContext.Current.Request.Form["offsetBytes"], "offsetBytes");
             _response.Content = new StringContent(new BcdServices().UpdateEntry(bcd, Convert.ToInt64(offsetBytes)),
                 Encoding.UTF8, "text/plain");
             return _response;
@@ -430,10 +439,10 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public void UploadLog()
         {
-            var computerId = Utility.Decode(HttpContext.Current.Request.Form["computerId"], "computerId");
-            var logContents = Utility.Decode(HttpContext.Current.Request.Form["logContents"], "logContents");
-            var subType = Utility.Decode(HttpContext.Current.Request.Form["subType"], "subType");
-            var computerMac = Utility.Decode(HttpContext.Current.Request.Form["mac"], "mac");
+            var computerId = StringManipulationServices.Decode(HttpContext.Current.Request.Form["computerId"], "computerId");
+            var logContents = StringManipulationServices.Decode(HttpContext.Current.Request.Form["logContents"], "logContents");
+            var subType = StringManipulationServices.Decode(HttpContext.Current.Request.Form["subType"], "subType");
+            var computerMac = StringManipulationServices.Decode(HttpContext.Current.Request.Form["mac"], "mac");
             new ClientImagingServices().UploadLog(Convert.ToInt32(computerId), logContents, subType, computerMac);
         }
     }

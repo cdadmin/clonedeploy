@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.computers
+namespace CloneDeploy_Web.views.computers
 {
     public partial class Searchcomputers : Computers
     {
@@ -80,7 +80,7 @@ namespace views.computers
                 PopulateRoomsDdl(ddlRoom);
                 PopulateGroupsDdl(ddlGroup);
                 PopulateImagesDdl(ddlImage);
-                if (Settings.DefaultComputerView == "all")
+                if (GetSetting(SettingStrings.DefaultComputerView) == "all")
                     PopulateGrid();
             }
         }

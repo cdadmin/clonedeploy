@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using CloneDeploy_Entities;
-using CloneDeploy_Services.Helpers;
 
 namespace CloneDeploy_Services.Workflows
 {
     public class GetMulticastServer
     {
         private readonly GroupEntity _group;
-
+        private Random _random;
         public GetMulticastServer(GroupEntity group)
         {
             _group = group;
+            _random = new Random();
         }
 
         public GetMulticastServer()
@@ -27,7 +27,7 @@ namespace CloneDeploy_Services.Workflows
             var serverId = -1;
 
 
-            if (Settings.OperationMode == "Single")
+            if (SettingServices.ServerIsNotClustered)
                 return serverId;
             var clusterServices = new ClusterGroupServices();
 
@@ -45,9 +45,9 @@ namespace CloneDeploy_Services.Workflows
             }
 
             var availableMulticastServers =
-                new ClusterGroupServices().GetClusterServers(clusterGroup.Id).Where(x => x.MulticastRole == 1);
+                new ClusterGroupServices().GetClusterMulticastServers(clusterGroup.Id);
 
-            if (availableMulticastServers.Count() == 0)
+            if (!availableMulticastServers.Any())
                 return -2;
 
             var taskInUseDict = new Dictionary<int, int>();
@@ -55,9 +55,9 @@ namespace CloneDeploy_Services.Workflows
             {
                 var counter =
                     new ActiveMulticastSessionServices().GetAll()
-                        .Count(x => x.ServerId == mServer.SecondaryServerId);
+                        .Count(x => x.ServerId == mServer.ServerId);
 
-                taskInUseDict.Add(mServer.SecondaryServerId, counter);
+                taskInUseDict.Add(mServer.ServerId, counter);
             }
 
 
@@ -71,8 +71,8 @@ namespace CloneDeploy_Services.Workflows
                 if (taskInUseDict.Values.Distinct().Count() == 1)
                 {
                     //all multicast server have equal tasks - randomly choose one.
-                    var random = new Random();
-                    var index = random.Next(0, taskInUseDict.Count);
+                   
+                    var index = _random.Next(0, taskInUseDict.Count);
                     serverId = taskInUseDict[index];
                 }
                 else

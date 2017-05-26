@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
@@ -27,11 +28,11 @@ namespace CloneDeploy_App.Controllers
         [HttpGet]
         public ApiBoolResponseDTO SendEmailTest()
         {
-            var mail = new Mail
+            var mail = new MailServices
             {
                 Subject = "Test Message",
                 Body = "Email Notifications Are Working!",
-                MailTo = Settings.SmtpMailTo
+                MailTo = SettingServices.GetSettingValue(SettingStrings.SmtpMailTo)
             };
 
             mail.Send();

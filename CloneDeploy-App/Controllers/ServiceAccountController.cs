@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 using CloneDeploy_Services.Helpers;
 using CloneDeploy_Services.Workflows;
+
 
 namespace CloneDeploy_App.Controllers
 {
@@ -15,14 +17,14 @@ namespace CloneDeploy_App.Controllers
         [HttpGet]
         public ApiBoolResponseDTO CancelAllImagingTasks()
         {
-            return new ApiBoolResponseDTO {Value = CloneDeploy_Services.Workflows.CancelAllImagingTasks.Run()};
+            return new ApiBoolResponseDTO {Value = new CloneDeploy_Services.Workflows.CancelAllImagingTasks().Execute()};
         }
 
         [CustomAuth(Permission = "ServiceAccount")]
         [HttpGet]
         public ApiBoolResponseDTO CopyPxeBinaries()
         {
-            return new ApiBoolResponseDTO { Value = new CopyPxeBinaries().CopyFiles() };
+            return new ApiBoolResponseDTO { Value = new CopyPxeBinaries().Execute() };
         }
 
         [CustomAuth(Permission = "ServiceAccount")]
@@ -30,6 +32,13 @@ namespace CloneDeploy_App.Controllers
         public ApiBoolResponseDTO DeleteTftpFile(string path)
         {
             return new ApiBoolResponseDTO {Value = new FilesystemServices().DeleteTftpFile(path)};
+        }
+
+        [CustomAuth(Permission = "ServiceAccount")]
+        [HttpPost]
+        public ApiBoolResponseDTO DownloadOnlineKernel(OnlineKernel onlineKernel)
+        {
+            return new ApiBoolResponseDTO { Value = new OnlineKernelServices().DownloadKernel(onlineKernel) };
         }
 
         [CustomAuth(Permission = "ServiceAccount")]
@@ -49,7 +58,7 @@ namespace CloneDeploy_App.Controllers
         [HttpGet]
         public ApiStringResponseDTO GetTftpServer()
         {
-            return new ApiStringResponseDTO {Value = Utility.Between(Settings.TftpServerIp)};
+            return new ApiStringResponseDTO { Value = StringManipulationServices.PlaceHolderReplace(SettingServices.GetSettingValue(SettingStrings.TftpServerIp)) };
         }
 
         [HttpGet]
@@ -63,7 +72,7 @@ namespace CloneDeploy_App.Controllers
         [HttpPost]
         public ApiBoolResponseDTO WriteTftpFile(TftpFileDTO tftpFile)
         {
-            return new ApiBoolResponseDTO {Value = new FileOps().WritePath(tftpFile.Path, tftpFile.Contents)};
+            return new ApiBoolResponseDTO {Value = new FileOpsServices().WritePath(tftpFile.Path, tftpFile.Contents)};
         }
 
         [CustomAuth(Permission = "ServiceAccount")]

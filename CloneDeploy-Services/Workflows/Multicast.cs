@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using CloneDeploy_ApiCalls;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Services.Helpers;
 using log4net;
 
 namespace CloneDeploy_Services.Workflows
@@ -18,6 +18,7 @@ namespace CloneDeploy_Services.Workflows
         private List<ComputerEntity> _computers;
         private ImageProfileWithImage _imageProfile;
         private int _multicastServerId;
+        private readonly ComputerServices _computerServices;
 
         //Constructor For Starting Multicast For Group
         public Multicast(int groupId, int userId)
@@ -27,6 +28,7 @@ namespace CloneDeploy_Services.Workflows
             _isOnDemand = false;
             _group = new GroupServices().GetGroup(groupId);
             _userId = userId;
+            _computerServices = new ComputerServices();
         }
 
         //Constructor For Starting Multicast For On Demand
@@ -39,6 +41,7 @@ namespace CloneDeploy_Services.Workflows
             _group = new GroupEntity {ImageProfileId = _imageProfile.Id};
             _userId = userId;
             _multicastSession.ImageProfileId = _imageProfile.Id;
+            _computerServices = new ComputerServices();
         }
 
         public string Create()
@@ -117,7 +120,7 @@ namespace CloneDeploy_Services.Workflows
             }
 
             foreach (var computer in _computers)
-                Utility.WakeUp(computer.Mac);
+                IpServices.WakeUp(computer.Mac);
 
             return "Successfully Started Multicast " + _group.Name;
         }
@@ -129,7 +132,7 @@ namespace CloneDeploy_Services.Workflows
             var activeImagingTaskServices = new ActiveImagingTaskServices();
             foreach (var computer in _computers)
             {
-                if (new ComputerServices().IsComputerActive(computer.Id)) return false;
+                if (_computerServices.IsComputerActive(computer.Id)) return false;
                 var activeTask = new ActiveImagingTaskEntity
                 {
                     Type = "multicast",
@@ -142,7 +145,6 @@ namespace CloneDeploy_Services.Workflows
                 if (activeImagingTaskServices.AddActiveImagingTask(activeTask))
                 {
                     activeTaskIds.Add(activeTask.Id);
-                    //computer.ActiveImagingTask = activeTask;
                 }
                 else
                 {
@@ -174,9 +176,9 @@ namespace CloneDeploy_Services.Workflows
         {
             foreach (var computer in _computers)
             {
-                var activeTask = new ComputerServices().GetTaskForComputer(computer.Id);
+                var activeTask = _computerServices.GetTaskForComputer(computer.Id);
                 activeTask.Arguments =
-                    new CreateTaskArguments(computer, _imageProfile, "multicast").Run(_multicastSession.Port.ToString());
+                    new CreateTaskArguments(computer, _imageProfile, "multicast").Execute(_multicastSession.Port.ToString());
                 if (!new ActiveImagingTaskServices().UpdateActiveImagingTask(activeTask))
                     return false;
             }
@@ -192,14 +194,14 @@ namespace CloneDeploy_Services.Workflows
             multicastArgs.Port = _multicastSession.Port.ToString();
             if (_isOnDemand)
             {
-                multicastArgs.ExtraArgs = Settings.SenderArgs;
+                multicastArgs.ExtraArgs = SettingServices.GetSettingValue(SettingStrings.SenderArgs);
                 if (!string.IsNullOrEmpty(_clientCount))
                     multicastArgs.clientCount = _clientCount;
             }
             else
             {
                 multicastArgs.ExtraArgs = string.IsNullOrEmpty(_imageProfile.SenderArguments)
-                    ? Settings.SenderArgs
+                    ? SettingServices.GetSettingValue(SettingStrings.SenderArgs)
                     : _imageProfile.SenderArguments;
                 multicastArgs.clientCount = _computers.Count.ToString();
             }
@@ -212,7 +214,7 @@ namespace CloneDeploy_Services.Workflows
                 var secondaryServer =
                     new SecondaryServerServices().GetSecondaryServer(_multicastServerId);
                 pid =
-                    new APICall(new SecondaryServerServices().GetApiToken(secondaryServer.Name))
+                    new APICall(new SecondaryServerServices().GetToken(secondaryServer.Name))
                         .ServiceAccountApi.GetMulticastSenderArgs(multicastArgs);
             }
 

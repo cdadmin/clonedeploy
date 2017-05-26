@@ -3,141 +3,144 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-public partial class views_global_munki_manifestsearch : Global
+namespace CloneDeploy_Web.views.global.munki
 {
-    protected void btnApply_OnClick(object sender, EventArgs e)
+    public partial class views_global_munki_manifestsearch : Global
     {
-        var control = sender as Control;
-        if (control != null)
+        protected void btnApply_OnClick(object sender, EventArgs e)
         {
-            var gvRow = (GridViewRow) control.Parent.Parent;
-            var dataKey = gvManifestTemplates.DataKeys[gvRow.RowIndex];
-            if (dataKey != null)
+            var control = sender as Control;
+            if (control != null)
             {
-                Session["manifestTemplateId"] = Convert.ToInt32(dataKey.Value);
-                var confirmStats =
-                    Call.MunkiManifestTemplateApi.GetUpdateStats(Convert.ToInt32(dataKey.Value));
-
-                lblTitle.Text =
-                    "Are You Sure?<br>";
-                lblSubTitle.Text = " The Manifest For " + confirmStats.computerCount +
-                                   " Computers Will Be Updated.  Applying This Template Will Include Changes From the Following Templates. ";
-
-                foreach (var munkiTemplate in confirmStats.manifestTemplates)
+                var gvRow = (GridViewRow) control.Parent.Parent;
+                var dataKey = gvManifestTemplates.DataKeys[gvRow.RowIndex];
+                if (dataKey != null)
                 {
-                    lblSubTitle.Text += munkiTemplate.Name + " ";
+                    Session["manifestTemplateId"] = Convert.ToInt32(dataKey.Value);
+                    var confirmStats =
+                        Call.MunkiManifestTemplateApi.GetUpdateStats(Convert.ToInt32(dataKey.Value));
+
+                    lblTitle.Text =
+                        "Are You Sure?<br>";
+                    lblSubTitle.Text = " The Manifest For " + confirmStats.computerCount +
+                                       " Computers Will Be Updated.  Applying This Template Will Include Changes From the Following Templates. ";
+
+                    foreach (var munkiTemplate in confirmStats.manifestTemplates)
+                    {
+                        lblSubTitle.Text += munkiTemplate.Name + " ";
+                    }
+
+                    ClientScript.RegisterStartupScript(GetType(), "modalscript",
+                        "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
+                        true);
                 }
-
-                ClientScript.RegisterStartupScript(GetType(), "modalscript",
-                    "$(function() {  var menuTop = document.getElementById('confirmbox'),body = document.body;classie.toggle(menuTop, 'confirm-box-outer-open'); });",
-                    true);
             }
         }
-    }
 
-    protected void btnPreview_OnClick(object sender, EventArgs e)
-    {
-        var control = sender as Control;
-        if (control != null)
+        protected void btnPreview_OnClick(object sender, EventArgs e)
         {
-            var gvRow = (GridViewRow) control.Parent.Parent;
-            var dataKey = gvManifestTemplates.DataKeys[gvRow.RowIndex];
-            if (dataKey != null)
+            var control = sender as Control;
+            if (control != null)
             {
-                var effectiveManifest =
-                    Call.MunkiManifestTemplateApi.GetEffectiveManifest(Convert.ToInt32(dataKey.Value));
-                Response.Write(effectiveManifest);
-                Response.ContentType = "text/plain";
-                Response.End();
+                var gvRow = (GridViewRow) control.Parent.Parent;
+                var dataKey = gvManifestTemplates.DataKeys[gvRow.RowIndex];
+                if (dataKey != null)
+                {
+                    var effectiveManifest =
+                        Call.MunkiManifestTemplateApi.GetEffectiveManifest(Convert.ToInt32(dataKey.Value));
+                    Response.Write(effectiveManifest);
+                    Response.ContentType = "text/plain";
+                    Response.End();
+                }
             }
         }
-    }
 
-    protected void ButtonConfirmDelete_Click(object sender, EventArgs e)
-    {
-        RequiresAuthorization(Authorizations.DeleteGlobal);
-        foreach (GridViewRow row in gvManifestTemplates.Rows)
+        protected void ButtonConfirmDelete_Click(object sender, EventArgs e)
         {
-            var cb = (CheckBox) row.FindControl("chkSelector");
-            if (cb == null || !cb.Checked) continue;
-            var dataKey = gvManifestTemplates.DataKeys[row.RowIndex];
-            if (dataKey == null) continue;
-            Call.MunkiManifestTemplateApi.Delete(Convert.ToInt32(dataKey.Value));
+            RequiresAuthorization(AuthorizationStrings.DeleteGlobal);
+            foreach (GridViewRow row in gvManifestTemplates.Rows)
+            {
+                var cb = (CheckBox) row.FindControl("chkSelector");
+                if (cb == null || !cb.Checked) continue;
+                var dataKey = gvManifestTemplates.DataKeys[row.RowIndex];
+                if (dataKey == null) continue;
+                Call.MunkiManifestTemplateApi.Delete(Convert.ToInt32(dataKey.Value));
+            }
+
+            PopulateGrid();
         }
 
-        PopulateGrid();
-    }
-
-    protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
-    {
-        ChkAll(gvManifestTemplates);
-    }
-
-    protected void ConfirmButton_OnClick(object sender, EventArgs e)
-    {
-        var manifestTemplateId = (int) Session["manifestTemplateId"];
-        Session.Remove("manifestTemplateId");
-        var failedCount = Call.MunkiManifestTemplateApi.Apply(manifestTemplateId);
-
-        PopulateGrid();
-        if (failedCount > 0)
-            EndUserMessage = "Failed To Update " + failedCount + "Manifests";
-        else
-
-            EndUserMessage = "Successfully Updated Manifests";
-    }
-
-
-    protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
-    {
-        PopulateGrid();
-        var listManifestTemplates = (List<MunkiManifestTemplateEntity>) gvManifestTemplates.DataSource;
-        switch (e.SortExpression)
+        protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
         {
-            case "Name":
-                listManifestTemplates = GetSortDirection(e.SortExpression) == "Asc"
-                    ? listManifestTemplates.OrderBy(s => s.Name).ToList()
-                    : listManifestTemplates.OrderByDescending(s => s.Name).ToList();
-                break;
+            ChkAll(gvManifestTemplates);
+        }
+
+        protected void ConfirmButton_OnClick(object sender, EventArgs e)
+        {
+            var manifestTemplateId = (int) Session["manifestTemplateId"];
+            Session.Remove("manifestTemplateId");
+            var failedCount = Call.MunkiManifestTemplateApi.Apply(manifestTemplateId);
+
+            PopulateGrid();
+            if (failedCount > 0)
+                EndUserMessage = "Failed To Update " + failedCount + "Manifests";
+            else
+
+                EndUserMessage = "Successfully Updated Manifests";
         }
 
 
-        gvManifestTemplates.DataSource = listManifestTemplates;
-        gvManifestTemplates.DataBind();
-    }
-
-
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        if (IsPostBack) return;
-
-        PopulateGrid();
-    }
-
-    protected void PopulateGrid()
-    {
-        gvManifestTemplates.DataSource = Call.MunkiManifestTemplateApi.GetAll(int.MaxValue, txtSearch.Text);
-        gvManifestTemplates.DataBind();
-
-        lblTotal.Text = gvManifestTemplates.Rows.Count + " Result(s) / " + Call.MunkiManifestTemplateApi.GetCount() +
-                        " Total Manifest Template(s)";
-
-        foreach (GridViewRow row in gvManifestTemplates.Rows)
+        protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
-            var dataKey = gvManifestTemplates.DataKeys[row.RowIndex];
-            if (dataKey == null) continue;
-            var lblApplied = (Label) row.FindControl("lblApplied");
-            var manifestTemplate = Call.MunkiManifestTemplateApi.Get(Convert.ToInt32(dataKey.Value));
-            lblApplied.Text = manifestTemplate.ChangesApplied == 0 ? "No" : "Yes";
-        }
-    }
+            PopulateGrid();
+            var listManifestTemplates = (List<MunkiManifestTemplateEntity>) gvManifestTemplates.DataSource;
+            switch (e.SortExpression)
+            {
+                case "Name":
+                    listManifestTemplates = GetSortDirection(e.SortExpression) == "Asc"
+                        ? listManifestTemplates.OrderBy(s => s.Name).ToList()
+                        : listManifestTemplates.OrderByDescending(s => s.Name).ToList();
+                    break;
+            }
 
-    protected void search_Changed(object sender, EventArgs e)
-    {
-        PopulateGrid();
+
+            gvManifestTemplates.DataSource = listManifestTemplates;
+            gvManifestTemplates.DataBind();
+        }
+
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (IsPostBack) return;
+
+            PopulateGrid();
+        }
+
+        protected void PopulateGrid()
+        {
+            gvManifestTemplates.DataSource = Call.MunkiManifestTemplateApi.GetAll(int.MaxValue, txtSearch.Text);
+            gvManifestTemplates.DataBind();
+
+            lblTotal.Text = gvManifestTemplates.Rows.Count + " Result(s) / " + Call.MunkiManifestTemplateApi.GetCount() +
+                            " Total Manifest Template(s)";
+
+            foreach (GridViewRow row in gvManifestTemplates.Rows)
+            {
+                var dataKey = gvManifestTemplates.DataKeys[row.RowIndex];
+                if (dataKey == null) continue;
+                var lblApplied = (Label) row.FindControl("lblApplied");
+                var manifestTemplate = Call.MunkiManifestTemplateApi.Get(Convert.ToInt32(dataKey.Value));
+                lblApplied.Text = manifestTemplate.ChangesApplied == 0 ? "No" : "Yes";
+            }
+        }
+
+        protected void search_Changed(object sender, EventArgs e)
+        {
+            PopulateGrid();
+        }
     }
 }

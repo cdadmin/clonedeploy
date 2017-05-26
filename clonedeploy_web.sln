@@ -7,6 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloneDeploy-Web", "CloneDep
 	ProjectSection(ProjectDependencies) = postProject
 		{F5A4E04D-FA84-4ABB-9690-DF2539F425CD} = {F5A4E04D-FA84-4ABB-9690-DF2539F425CD}
 		{453080DA-87A4-4F5F-AA1F-2C49E37D2F21} = {453080DA-87A4-4F5F-AA1F-2C49E37D2F21}
+		{6EAD11E1-3464-40A1-B6CD-24D40AD2507A} = {6EAD11E1-3464-40A1-B6CD-24D40AD2507A}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloneDeploy-App", "CloneDeploy-App\CloneDeploy-App.csproj", "{A47826D1-1475-4E57-AAA1-D213E70CA0B1}"
@@ -18,10 +19,15 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloneDeploy-Entities", "CloneDeploy-Entities\CloneDeploy-Entities.csproj", "{453080DA-87A4-4F5F-AA1F-2C49E37D2F21}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloneDeploy-Services", "CloneDeploy-Services\CloneDeploy-Services.csproj", "{1F6BFFED-303F-4991-B44C-F70BFFF0A0D4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6EAD11E1-3464-40A1-B6CD-24D40AD2507A} = {6EAD11E1-3464-40A1-B6CD-24D40AD2507A}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloneDeploy-DataModel", "CloneDeploy-DataModel\CloneDeploy-DataModel.csproj", "{67C7F110-F0FD-4EA2-8EC3-5118A718B0B4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloneDeploy-ApiCalls", "CloneDeploy-ApiCalls\CloneDeploy-ApiCalls.csproj", "{F5A4E04D-FA84-4ABB-9690-DF2539F425CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloneDeploy-Common", "CloneDeploy-Helpers\CloneDeploy-Common.csproj", "{6EAD11E1-3464-40A1-B6CD-24D40AD2507A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +59,10 @@ Global
 		{F5A4E04D-FA84-4ABB-9690-DF2539F425CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5A4E04D-FA84-4ABB-9690-DF2539F425CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5A4E04D-FA84-4ABB-9690-DF2539F425CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EAD11E1-3464-40A1-B6CD-24D40AD2507A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EAD11E1-3464-40A1-B6CD-24D40AD2507A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EAD11E1-3464-40A1-B6CD-24D40AD2507A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EAD11E1-3464-40A1-B6CD-24D40AD2507A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

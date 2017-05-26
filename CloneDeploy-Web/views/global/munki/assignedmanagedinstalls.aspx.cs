@@ -1,86 +1,89 @@
 ﻿using System;
 using System.Linq;
 using System.Web.UI.WebControls;
+using CloneDeploy_Common;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-public partial class views_global_munki_assignedmanagedinstalls : Global
+namespace CloneDeploy_Web.views.global.munki
 {
-    protected void buttonUpdate_OnClick(object sender, EventArgs e)
+    public partial class views_global_munki_assignedmanagedinstalls : Global
     {
-        RequiresAuthorization(Authorizations.UpdateGlobal);
-
-        var updateCount = 0;
-        foreach (GridViewRow row in gvTemplateInstalls.Rows)
+        protected void buttonUpdate_OnClick(object sender, EventArgs e)
         {
-            var enabled = (CheckBox) row.FindControl("chkSelector");
-            if (enabled == null) continue;
-            var dataKey = gvTemplateInstalls.DataKeys[row.RowIndex];
-            if (dataKey == null) continue;
+            RequiresAuthorization(AuthorizationStrings.UpdateGlobal);
 
-            if (!enabled.Checked)
+            var updateCount = 0;
+            foreach (GridViewRow row in gvTemplateInstalls.Rows)
             {
-                if (Call.MunkiManifestTemplateApi.DeleteManagedInstallsFromTemplate(Convert.ToInt32(dataKey.Value)))
-                    updateCount++;
+                var enabled = (CheckBox) row.FindControl("chkSelector");
+                if (enabled == null) continue;
+                var dataKey = gvTemplateInstalls.DataKeys[row.RowIndex];
+                if (dataKey == null) continue;
+
+                if (!enabled.Checked)
+                {
+                    if (Call.MunkiManifestTemplateApi.DeleteManagedInstallsFromTemplate(Convert.ToInt32(dataKey.Value)))
+                        updateCount++;
+                }
+                else
+                {
+                    var managedInstall = Call.MunkiManifestManagedInstallApi.Get(Convert.ToInt32(dataKey.Value));
+
+                    var txtCondition = row.FindControl("txtCondition") as TextBox;
+                    if (txtCondition != null)
+                        if (txtCondition.Text != managedInstall.Condition)
+                            managedInstall.Condition = txtCondition.Text;
+
+                    if (Call.MunkiManifestTemplateApi.AddManagedInstallToTemplate(managedInstall)) updateCount++;
+                }
+            }
+
+            if (updateCount > 0)
+            {
+                EndUserMessage = "Successfully Updated Managed Installs";
+                ManifestTemplate.ChangesApplied = 0;
+                Call.MunkiManifestTemplateApi.Put(ManifestTemplate.Id, ManifestTemplate);
             }
             else
             {
-                var managedInstall = Call.MunkiManifestManagedInstallApi.Get(Convert.ToInt32(dataKey.Value));
-
-                var txtCondition = row.FindControl("txtCondition") as TextBox;
-                if (txtCondition != null)
-                    if (txtCondition.Text != managedInstall.Condition)
-                        managedInstall.Condition = txtCondition.Text;
-
-                if (Call.MunkiManifestTemplateApi.AddManagedInstallToTemplate(managedInstall)) updateCount++;
+                EndUserMessage = "Could Not Update Managed Installs";
             }
+
+
+            PopulateGrid();
         }
 
-        if (updateCount > 0)
+        protected void ddlLimit_OnSelectedIndexChanged(object sender, EventArgs e)
         {
-            EndUserMessage = "Successfully Updated Managed Installs";
-            ManifestTemplate.ChangesApplied = 0;
-            Call.MunkiManifestTemplateApi.Put(ManifestTemplate.Id, ManifestTemplate);
+            PopulateGrid();
         }
-        else
+
+        protected void Page_Load(object sender, EventArgs e)
         {
-            EndUserMessage = "Could Not Update Managed Installs";
+            if (IsPostBack) return;
+            PopulateGrid();
         }
 
+        protected void PopulateGrid()
+        {
+            var assignedLimit = ddlLimitAssigned.Text == "All" ? int.MaxValue : Convert.ToInt32(ddlLimitAssigned.Text);
 
-        PopulateGrid();
-    }
+            var templateInstalls =
+                Call.MunkiManifestTemplateApi.GetManifestManagedInstalls(ManifestTemplate.Id)
+                    .Where(s => s.Name.IndexOf(txtSearchAssigned.Text, StringComparison.CurrentCultureIgnoreCase) != -1)
+                    .OrderBy(x => x.Name)
+                    .Take(assignedLimit);
+            gvTemplateInstalls.DataSource = templateInstalls;
+            gvTemplateInstalls.DataBind();
 
-    protected void ddlLimit_OnSelectedIndexChanged(object sender, EventArgs e)
-    {
-        PopulateGrid();
-    }
+            lblTotalAssigned.Text = gvTemplateInstalls.Rows.Count + " Result(s) / " +
+                                    Call.MunkiManifestTemplateApi.GetManagedInstallCount(ManifestTemplate.Id) +
+                                    " Total Managed Install(s)";
+        }
 
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        if (IsPostBack) return;
-        PopulateGrid();
-    }
-
-    protected void PopulateGrid()
-    {
-        var assignedLimit = ddlLimitAssigned.Text == "All" ? int.MaxValue : Convert.ToInt32(ddlLimitAssigned.Text);
-
-        var templateInstalls =
-            Call.MunkiManifestTemplateApi.GetManifestManagedInstalls(ManifestTemplate.Id)
-                .Where(s => s.Name.IndexOf(txtSearchAssigned.Text, StringComparison.CurrentCultureIgnoreCase) != -1)
-                .OrderBy(x => x.Name)
-                .Take(assignedLimit);
-        gvTemplateInstalls.DataSource = templateInstalls;
-        gvTemplateInstalls.DataBind();
-
-        lblTotalAssigned.Text = gvTemplateInstalls.Rows.Count + " Result(s) / " +
-                                Call.MunkiManifestTemplateApi.GetManagedInstallCount(ManifestTemplate.Id) +
-                                " Total Managed Install(s)";
-    }
-
-    protected void search_Changed(object sender, EventArgs e)
-    {
-        PopulateGrid();
+        protected void search_Changed(object sender, EventArgs e)
+        {
+            PopulateGrid();
+        }
     }
 }

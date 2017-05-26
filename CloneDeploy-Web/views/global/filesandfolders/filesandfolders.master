@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" MasterPageFile="~/views/global/global.master" AutoEventWireup="true" Inherits="views_global_filesandfolders_filesandfolders" Codebehind="filesandfolders.master.cs" %>
+﻿<%@ Master Language="C#" MasterPageFile="~/views/global/global.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.global.filesandfolders.views_global_filesandfolders_filesandfolders" Codebehind="filesandfolders.master.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
     <li >

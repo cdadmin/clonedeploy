@@ -4,6 +4,7 @@ using System.Web.Http;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.ClientImaging;
 using CloneDeploy_Services;
+using CloneDeploy_Services.Workflows;
 
 namespace CloneDeploy_App.Controllers
 {
@@ -47,6 +48,12 @@ namespace CloneDeploy_App.Controllers
         public ApiBoolResponseDTO Test()
         {
             return new ApiBoolResponseDTO {Value = true};
+        }
+
+        [HttpGet]
+        public AppleVendorDTO GetAppleVendorString(string ip)
+        {
+            return new CreateAppleVendorString().Execute(ip);
         }
     }
 }

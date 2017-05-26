@@ -10,7 +10,7 @@ namespace CloneDeploy_Services.Helpers
     /// <summary>
     ///     Summary http://www.codeproject.com/Articles/769741/Csharp-AES-bits-Encryption-Library-with-Salt
     /// </summary>
-    public class Encryption
+    public class EncryptionServices
     {
         private readonly ILog log = LogManager.GetLogger("ApplicationLog");
 

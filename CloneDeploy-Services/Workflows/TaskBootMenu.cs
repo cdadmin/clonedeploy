@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using CloneDeploy_ApiCalls;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services.Helpers;
@@ -15,20 +15,24 @@ namespace CloneDeploy_Services.Workflows
         private readonly ComputerEntity _computer;
         private readonly string _direction;
         private readonly ImageProfileEntity _imageProfile;
+        private readonly ClusterGroupServices _clusterGroupServices;
+        private readonly SecondaryServerServices _secondaryServerServices;
 
         public TaskBootMenu(ComputerEntity computer, ImageProfileEntity imageProfile, string direction)
         {
             _computer = computer;
             _direction = direction;
             _imageProfile = imageProfile;
+            _clusterGroupServices = new ClusterGroupServices();
+            _secondaryServerServices = new SecondaryServerServices();
         }
 
         public bool CreatePxeBootFiles()
         {
-            var pxeComputerMac = Utility.MacToPxeMac(_computer.Mac);
-            var webPath = Settings.WebPath;
-            var globalComputerArgs = Settings.GlobalComputerArgs;
-            var userToken = Settings.WebTaskRequiresLogin == "No" ? Settings.UniversalToken : "";
+            var pxeComputerMac = StringManipulationServices.MacToPxeMac(_computer.Mac);
+            var webPath = SettingServices.GetSettingValue(SettingStrings.WebPath);
+            var globalComputerArgs = SettingServices.GetSettingValue(SettingStrings.GlobalComputerArgs);
+            var userToken = SettingServices.GetSettingValue(SettingStrings.WebTaskRequiresLogin) == "No" ? SettingServices.GetSettingValue(SettingStrings.UniversalToken) : "";
             const string newLineChar = "\n";
 
 
@@ -82,46 +86,43 @@ namespace CloneDeploy_Services.Workflows
 
             //In proxy mode all boot files are created regardless of the pxe mode, this way computers can be customized
             //to use a specific boot file without affecting all others, using the proxydhcp reservations file.
-            if (Settings.ProxyDhcp == "Yes")
+            if (SettingServices.GetSettingValue(SettingStrings.ProxyDhcp) == "Yes")
             {
-                if (Settings.OperationMode == "Single")
+                if (SettingServices.ServerIsNotClustered)
                 {
                     foreach (var bootMenu in list)
                     {
-                        var path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + bootMenu.Item1 +
+                        var path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar + bootMenu.Item1 +
                                    Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar +
                                    pxeComputerMac +
                                    bootMenu.Item2;
 
-                        if (!new FileOps().WritePath(path, bootMenu.Item3))
+                        if (!new FileOpsServices().WritePath(path, bootMenu.Item3))
                             return false;
                     }
                 }
                 else
                 {
                     var clusterGroup = new ComputerServices().GetClusterGroup(_computer.Id);
-                    var tftpServers =
-                        new ClusterGroupServices().GetClusterServers(clusterGroup.Id).Where(x => x.TftpRole == 1);
-                    foreach (var tftpServer in tftpServers)
+                    foreach (var tftpServer in _clusterGroupServices.GetClusterTftpServers(clusterGroup.Id))
                     {
                         foreach (var bootMenu in list)
                         {
-                            if (tftpServer.SecondaryServerId == -1)
+                            if (tftpServer.ServerId == -1)
                             {
-                                var path = Settings.TftpPath + "proxy" + Path.DirectorySeparatorChar + bootMenu.Item1 +
+                                var path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar + bootMenu.Item1 +
                                            Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar +
                                            pxeComputerMac +
                                            bootMenu.Item2;
 
-                                if (!new FileOps().WritePath(path, bootMenu.Item3))
+                                if (!new FileOpsServices().WritePath(path, bootMenu.Item3))
                                     return false;
                             }
                             else
                             {
-                                var secondaryServer =
-                                    new SecondaryServerServices().GetSecondaryServer(tftpServer.SecondaryServerId);
+                                var secondaryServer = _secondaryServerServices.GetSecondaryServer(tftpServer.ServerId);
                                 var tftpPath =
-                                    new APICall(new SecondaryServerServices().GetApiToken(secondaryServer.Name))
+                                    new APICall(_secondaryServerServices.GetToken(secondaryServer.Name))
                                         .SettingApi.GetSetting("Tftp Path").Value;
 
                                 var path = tftpPath + "proxy" + Path.DirectorySeparatorChar + bootMenu.Item1 +
@@ -130,7 +131,7 @@ namespace CloneDeploy_Services.Workflows
                                            bootMenu.Item2;
 
                                 if (
-                                    !new APICall(new SecondaryServerServices().GetApiToken(secondaryServer.Name))
+                                    !new APICall(_secondaryServerServices.GetToken(secondaryServer.Name))
                                         .ServiceAccountApi.WriteTftpFile(new TftpFileDTO
                                         {
                                             Path = path,
@@ -145,11 +146,11 @@ namespace CloneDeploy_Services.Workflows
             //When not using proxy dhcp, only one boot file is created
             else
             {
-                var mode = Settings.PxeMode;
+                var mode = SettingServices.GetSettingValue(SettingStrings.PxeMode);
                 var path = "";
-                if (Settings.OperationMode == "Single")
+                if (SettingServices.ServerIsNotClustered)
                 {
-                    path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeComputerMac;
+                    path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeComputerMac;
 
                     string fileContents = null;
                     if (mode == "pxelinux" || mode == "syslinux_32_efi" || mode == "syslinux_64_efi")
@@ -168,27 +169,24 @@ namespace CloneDeploy_Services.Workflows
                         fileContents = grub.ToString();
                     }
 
-                    if (!new FileOps().WritePath(path, fileContents))
+                    if (!new FileOpsServices().WritePath(path, fileContents))
                         return false;
                 }
                 else
                 {
                     var clusterGroup = new ComputerServices().GetClusterGroup(_computer.Id);
-                    var tftpServers =
-                        new ClusterGroupServices().GetClusterServers(clusterGroup.Id).Where(x => x.TftpRole == 1);
                     var secondaryServer = new SecondaryServerEntity();
-                    foreach (var tftpServer in tftpServers)
+                    foreach (var tftpServer in _clusterGroupServices.GetClusterTftpServers(clusterGroup.Id))
                     {
-                        if (tftpServer.SecondaryServerId == -1)
+                        if (tftpServer.ServerId == -1)
                         {
-                            path = Settings.TftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeComputerMac;
+                            path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeComputerMac;
                         }
                         else
                         {
-                            secondaryServer =
-                                new SecondaryServerServices().GetSecondaryServer(tftpServer.SecondaryServerId);
+                            secondaryServer = _secondaryServerServices.GetSecondaryServer(tftpServer.ServerId);
                             var tftpPath =
-                                new APICall(new SecondaryServerServices().GetApiToken(secondaryServer.Name)).SettingApi
+                                new APICall(_secondaryServerServices.GetToken(secondaryServer.Name)).SettingApi
                                     .GetSetting("Tftp Path").Value;
 
                             path = tftpPath + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeComputerMac;
@@ -211,15 +209,15 @@ namespace CloneDeploy_Services.Workflows
                             fileContents = grub.ToString();
                         }
 
-                        if (tftpServer.SecondaryServerId == -1)
+                        if (tftpServer.ServerId == -1)
                         {
-                            if (!new FileOps().WritePath(path, fileContents))
+                            if (!new FileOpsServices().WritePath(path, fileContents))
                                 return false;
                         }
                         else
                         {
                             if (
-                                !new APICall(new SecondaryServerServices().GetApiToken(secondaryServer.Name))
+                                !new APICall(_secondaryServerServices.GetToken(secondaryServer.Name))
                                     .ServiceAccountApi.WriteTftpFile(new TftpFileDTO
                                     {
                                         Path = path,

@@ -1,46 +1,57 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-public partial class views_admin_dp_create : Admin
+namespace CloneDeploy_Web.views.admin.dp
 {
-    protected void buttonAddDp_OnClick(object sender, EventArgs e)
+    public partial class views_admin_dp_create : Admin
     {
-        RequiresAuthorization(Authorizations.UpdateAdmin);
-        var distributionPoint = new DistributionPointEntity
+        protected void buttonAddDp_OnClick(object sender, EventArgs e)
         {
-            DisplayName = txtDisplayName.Text,
-            Server = txtServer.Text,
-            Protocol = ddlProtocol.Text,
-            ShareName = txtShareName.Text,
-            Domain = txtDomain.Text,
-            RwUsername = txtRwUsername.Text,
-            RwPassword = txtRwPassword.Text,
-            RoUsername = txtRoUsername.Text,
-            RoPassword = txtRoPassword.Text,
-            IsPrimary = Convert.ToInt16(chkPrimary.Checked),
-            PhysicalPath = chkPrimary.Checked ? txtPhysicalPath.Text : ""
-        };
+            RequiresAuthorization(AuthorizationStrings.UpdateAdmin);
+            var distributionPoint = new DistributionPointEntity
+            {
+                DisplayName = txtDisplayName.Text,
+                Server = txtServer.Text,
+                Protocol = ddlProtocol.Text,
+                ShareName = txtShareName.Text,
+                Domain = txtDomain.Text,
+                RwUsername = txtRwUsername.Text,
+                RwPassword = txtRwPassword.Text,
+                RoUsername = txtRoUsername.Text,
+                RoPassword = txtRoPassword.Text,
+                IsPrimary = Convert.ToInt16(chkPrimary.Checked),
+                PhysicalPath = chkPrimary.Checked ? txtPhysicalPath.Text : "",
+                QueueSize = Convert.ToInt32(qSize.Text),
+                Location = ddlPrimaryType.Text
+            };
 
-        var result = Call.DistributionPointApi.Post(distributionPoint);
-        if (result.Success)
-        {
-            EndUserMessage = "Successfully Created Distribution Point";
-            Response.Redirect("~/views/admin/dp/edit.aspx?level=2&dpid=" + distributionPoint.Id);
+            var result = Call.DistributionPointApi.Post(distributionPoint);
+            if (result.Success)
+            {
+                EndUserMessage = "Successfully Created Distribution Point";
+                Response.Redirect("~/views/admin/dp/edit.aspx?level=2&dpid=" + result.Id);
+            }
+            else
+            {
+                EndUserMessage = result.ErrorMessage;
+            }
         }
-        else
+
+        protected void chkPrimary_OnCheckedChanged(object sender, EventArgs e)
         {
-            EndUserMessage = result.ErrorMessage;
+            PrimaryParams.Visible = chkPrimary.Checked;
         }
-    }
 
-    protected void chkPrimary_OnCheckedChanged(object sender, EventArgs e)
-    {
-        PhysicalPath.Visible = chkPrimary.Checked;
-    }
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            PhysicalPath.Visible = ddlPrimaryType.Text == "Local";
+        }
 
-    protected void Page_Load(object sender, EventArgs e)
-    {
+        protected void ddlPrimaryType_OnSelectedIndexChanged(object sender, EventArgs e)
+        {
+            PhysicalPath.Visible = ddlPrimaryType.Text == "Local";
+        }
     }
 }

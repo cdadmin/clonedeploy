@@ -1,18 +1,18 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-namespace views.groups
+namespace CloneDeploy_Web.views.groups
 {
     public partial class GroupBootMenu : Groups
     {
         protected void buttonUpdate_OnClick(object sender, EventArgs e)
         {
-            RequiresAuthorizationOrManagedGroup(Authorizations.UpdateGroup, Group.Id);
+            RequiresAuthorizationOrManagedGroup(AuthorizationStrings.UpdateGroup, Group.Id);
             var bootMenu = Call.GroupApi.GetCustomBootMenu(Group.Id) ?? new GroupBootMenuEntity();
             bootMenu.GroupId = Group.Id;
-            if (Settings.ProxyDhcp == "Yes")
+            if (GetSetting(SettingStrings.ProxyDhcp) == "Yes")
             {
                 switch (ddlProxyMode.Text)
                 {
@@ -66,7 +66,7 @@ namespace views.groups
             PopulateBootTemplatesDdl(ddlTemplates);
             var bootMenu = Call.GroupApi.GetCustomBootMenu(Group.Id);
 
-            if (Settings.ProxyDhcp == "Yes")
+            if (GetSetting(SettingStrings.ProxyDhcp) == "Yes")
             {
                 divProxy.Visible = true;
                 if (bootMenu == null) return;

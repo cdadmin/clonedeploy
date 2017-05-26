@@ -1,33 +1,36 @@
 ﻿using System;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
-using CloneDeploy_Web.Helpers;
 
-public partial class views_admin_scripts_create : Global
+namespace CloneDeploy_Web.views.global.scripts
 {
-    protected void btnSubmit_OnClick(object sender, EventArgs e)
+    public partial class views_admin_scripts_create : Global
     {
-        RequiresAuthorization(Authorizations.CreateGlobal);
-        var script = new ScriptEntity
+        protected void btnSubmit_OnClick(object sender, EventArgs e)
         {
-            Name = txtScriptName.Text,
-            Description = txtScriptDesc.Text
-        };
-        var fixedLineEnding = scriptEditor.Value.Replace("\r\n", "\n");
-        script.Contents = fixedLineEnding;
-        var result = Call.ScriptApi.Post(script);
-        if (result.Success)
-        {
-            EndUserMessage = "Successfully Created Script";
-            Response.Redirect("~/views/global/scripts/edit.aspx?cat=sub1&scriptid=" + result.Id);
+            RequiresAuthorization(AuthorizationStrings.CreateGlobal);
+            var script = new ScriptEntity
+            {
+                Name = txtScriptName.Text,
+                Description = txtScriptDesc.Text
+            };
+            var fixedLineEnding = scriptEditor.Value.Replace("\r\n", "\n");
+            script.Contents = fixedLineEnding;
+            var result = Call.ScriptApi.Post(script);
+            if (result.Success)
+            {
+                EndUserMessage = "Successfully Created Script";
+                Response.Redirect("~/views/global/scripts/edit.aspx?cat=sub1&scriptid=" + result.Id);
+            }
+            else
+            {
+                EndUserMessage = result.ErrorMessage;
+            }
         }
-        else
-        {
-            EndUserMessage = result.ErrorMessage;
-        }
-    }
 
-    protected void Page_Load(object sender, EventArgs e)
-    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+        }
     }
 }

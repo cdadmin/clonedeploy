@@ -2,6 +2,7 @@
 using System.IO;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
@@ -17,7 +18,7 @@ namespace CloneDeploy_App.Controllers
         {
             return new ApiBoolResponseDTO
             {
-                Value = new FileOps().FileExists(Settings.TftpPath + Path.DirectorySeparatorChar + "boot" +
+                Value = new FileOpsServices().FileExists(SettingServices.GetSettingValue(SettingStrings.TftpPath) + Path.DirectorySeparatorChar + "boot" +
                                                  Path.DirectorySeparatorChar + "boot.sdi")
             };
         }
@@ -36,7 +37,7 @@ namespace CloneDeploy_App.Controllers
         [Authorize]
         public IEnumerable<string> GetBootImages()
         {
-            return Utility.GetBootImages();
+            return FilesystemServices.GetBootImages();
         }
 
         [CustomAuth(Permission = "AdminUpdate")]
@@ -55,7 +56,7 @@ namespace CloneDeploy_App.Controllers
         [Authorize]
         public IEnumerable<string> GetKernels()
         {
-            return Utility.GetKernels();
+            return FilesystemServices.GetKernels();
         }
 
         [CustomAuth(Permission = "AdminRead")]
@@ -68,28 +69,28 @@ namespace CloneDeploy_App.Controllers
         [Authorize]
         public List<string> GetLogs()
         {
-            return Utility.GetLogs();
+            return FilesystemServices.GetLogs();
         }
 
         [HttpGet]
         [Authorize]
         public List<FileInfo> GetMunkiResources(string resourceType)
         {
-            return new Utility().GetMunkiResources(resourceType);
+            return new MunkiManifestTemplateServices().GetMunkiResources(resourceType);
         }
 
         [HttpGet]
         [Authorize]
         public MunkiPackageInfoEntity GetPlist(string file)
         {
-            return new Utility().ReadPlist(file);
+            return new MunkiManifestTemplateServices().ReadPlist(file);
         }
 
         [HttpGet]
         [Authorize]
         public List<string> GetScripts(string type)
         {
-            return Utility.GetScripts(type);
+            return FilesystemServices.GetScripts(type);
         }
 
 
@@ -99,12 +100,7 @@ namespace CloneDeploy_App.Controllers
             return new ApiStringResponseDTO {Value = new FilesystemServices().GetServerPaths(type, subType)};
         }
 
-        [HttpGet]
-        [Authorize]
-        public List<string> GetThinImages()
-        {
-            return Utility.GetThinImages();
-        }
+      
 
         [HttpGet]
         [Authorize]
@@ -112,7 +108,7 @@ namespace CloneDeploy_App.Controllers
         {
             return new ApiStringResponseDTO
             {
-                Value = new FileOps().ReadAllText(path)
+                Value = new FileOpsServices().ReadAllText(path)
             };
         }
 
@@ -121,7 +117,7 @@ namespace CloneDeploy_App.Controllers
         [Authorize]
         public ApiBoolResponseDTO SetUnixPermissions(string path)
         {
-            new FileOps().SetUnixPermissions(path);
+            new FileOpsServices().SetUnixPermissions(path);
             return new ApiBoolResponseDTO {Value = true};
         }
 
