@@ -29,17 +29,16 @@ function Checkout()
         curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "portBase=$multicast_port" "${script:web}MulticastCheckOut" --connect-timeout 10 --stderr -
 	}
 
-    if(!$script:isOnDemand)
+  
+    if(!$script:isPermanentTask)
     {
-        if(!$script:isPermanentTask)
-        {
-            curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id" "${script:web}CheckOut" --connect-timeout 10 --stderr -
-        }
-        else
-        {
-            curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id" "${script:web}PermanentTaskCheckOut" --connect-timeout 10 --stderr -
-        }
+        curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id" "${script:web}CheckOut" --connect-timeout 10 --stderr -
     }
+    else
+    {
+        curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id" "${script:web}PermanentTaskCheckOut" --connect-timeout 10 --stderr -
+    }
+    
 
     if($task_completed_action.trim("`"") -eq "Power Off")
     {

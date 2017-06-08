@@ -37,8 +37,19 @@ function remove_whitespace() {
 
 function checkin()
 {	
-	log " ** Looking For Active Task ** " "display"
-	checkInStatus=`$curlAuth --data "computerMac=$mac" "${web}CheckIn" $curlEnd`
+  clear_and_move_down
+    if [ "$is_ondemand" = "true" ]; then
+	  log " ** Using On Demand Mode ** "
+      log " ** Creating Active Task ** " "display"
+	  checkInStatus=$($curlAuth --data "mac=$mac&objectId=$image_profile_id&task=$task&userId=$user_id&computerId=$computer_id" "${web}OnDemandCheckIn" $curlEnd)
+    elif [ "$task" = "clobber" ]; then
+	   log " ** Using Clobber Mode ** "
+	   checkInStatus=$($curlAuth --data "mac=$mac&objectId=$image_profile_id&task=$task&userId=$user_id&computerId=$computer_id" "${web}OnDemandCheckIn" $curlEnd)
+    else
+	  log " ** Verifying Active Task ** " "display"
+	  checkInStatus=`$curlAuth --data "computerId=$computer_id" "${web}CheckIn" $curlEnd`
+	fi
+
 	if [ ! "$?" = "0" ]; then
 		error "$checkInStatus"
 	else
@@ -51,10 +62,43 @@ function checkin()
 		fi
 	fi
 	
+	if [ "$task" = "upload" ] && [ "$imageProtected" = "1" ]; then
+      error "This Image Is Protected And Cannot Be Overwritten"
+    fi
+	
+	if [ "$is_ondemand " ] || [ "$task" = "clobber" ]; then
+	  if [ "$computer_name" = "" ] || [ "$computer_name" = "null" ]; then
+		echo "This Computer Was Not Found In The Database, Enter A Name For It Now:"
+		echo "Leave Blank To Skip Computer Renaming"
+		echo
+		read computer_name
+		echo
+	  fi
+	fi
+	
 	if [ "$web_cancel" = "true" ] && [ "$is_ondemand" != "true" ]; then
 	  cd_cancel $computer_id &
 	fi
 	echo
+	
+    if [ "$task" != "pull" ] && [ "$multicast" != "true" ]; then
+	   log " ** Checking Current Queue ** " "display"	
+        while true; do
+	      queue_status=$($curlAuth --data "computerId=$computer_id" "${web}CheckQueue" $curlEnd)
+		  if [ "$(parse_json "$queue_status" .Result)" = "true" ]; then
+		    break
+		  else
+		    echo "** Queue Is Full, Waiting For Open Slot ** "
+		    echo " ...... Current Position $(parse_json "$queue_status" .Position)"
+		    sleep 5
+		  fi
+        done
+	    log " ...... Complete" "display"
+		echo
+	else
+	   $curlAuth --data "computerId=$computer_id" "${web}UpdateStatusInProgress" $curlEnd
+	fi
+	
 	sleep 2
 }
 
@@ -73,18 +117,13 @@ function checkout()
 		log " ...... $mccheckoutResult"
 	fi
 		
-	if [ "$is_ondemand" != "true" ] && [ "$task" != "clobber" ]; then
-	  if [ "$task" = "permanent_push" ]; then
+	
+	  if [ "$task" = "permanent_deploy" ]; then
 	    checkout_status=$($curlAuth --data "computerId=$computer_id" "${web}PermanentTaskCheckOut" $curlEnd)
 	  else
 	    checkout_status=$($curlAuth --data "computerId=$computer_id" "${web}CheckOut" $curlEnd)
 	  fi
 	  log " ...... $checkout_status" "display"
-	else
-	  if [ -z "$computer_id"  ]; then
-	  computer_id="-1"
-	  fi
-	fi
 	
 	echo
 		
@@ -305,7 +344,7 @@ function mount_smb()
 	else
 	  #Look for other distribution points
 	  log " ...... Looking For Additional Distribution Points"
-	  all_cluster_dps=$($curlAuth --data "computerMac=$mac" "${web}GetAllClusterDps" $curlEnd)
+	  all_cluster_dps=$($curlAuth --data "computerId=$computer_id" "${web}GetAllClusterDps" $curlEnd)
 	  if [ ! "$?" = "0" ]; then
 		error "Could Not Find Additional Distribution Points"
 	  else

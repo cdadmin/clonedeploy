@@ -1,0 +1,138 @@
+#!/bin/bash
+
+. /usr/local/bin/mie_global_functions
+
+log "OS X NBI Version:"
+sw_vers >> $CLIENT_LOG
+
+mac_address_list=$(networksetup -listallhardwareports | grep "Ethernet Address:" | cut -d " " -f 3)
+
+  #Begin search using the computers client id
+for mac_address in $mac_address_list; do
+   #Assume task is on demand and computer does not exist until each are found
+  task="ond"
+  computer_id="false"
+  mac=$mac_address
+  serial_number=$(system_profiler SPHardwareDataType | awk '/Serial Number/ {print $4}')
+  system_uuid=$(system_profiler SPHardwareDataType | awk '/UUID/ { print $3; }')
+  client_id="$mac.$(remove_whitespace $serial_number).$(remove_whitespace $system_uuid)"
+	
+  echo
+  log " ** Looking For Active Task For $client_id ** " "display"
+  computer_task_object=$($curlCommand --data "idType=clientId&id=$client_id" "${web}DetermineTask" $curlEnd)
+  log "$computer_task_object"
+  if [  "$?" != "0" ]; then
+    log "$computer_task_object"
+	login_message="Could Not Determine Task Type"
+  else
+    if [ "$(parse_json "$computer_task_object" .computerId)" = "false" ] || [ -z "$(parse_json "$computer_task_object" .computerId)" ]; then
+	  log " ...... This Computer Was Not Found" "display"
+	  continue
+	else
+	  if [ "$(parse_json "$computer_task_object" .task)" = "upload" ] || [ "$(parse_json "$computer_task_object" .task)" = "deploy" ] || [ "$(parse_json "$computer_task_object" .task)" = "permanent_deploy" ]; then
+	    computer_id="$(parse_json "$computer_task_object" .computerId)"
+	    task="$(parse_json "$computer_task_object" .task)"
+		log " ...... Success" "display"
+		login_message="Found $task Task For This Computer"
+		task_found="true"
+		break
+	  else
+	    computer_id="$(parse_json "$computer_task_object" .computerId)"
+		log " ...... An Active Task Was Not Found For This Computer" "display"
+		continue
+	  fi
+	fi
+  fi
+done
+  
+if [ "$task_found" != "true" ]; then  
+  #Continue Search Looking Only for computer by mac address
+for mac_address in $mac_address_list; do
+    mac=$mac_address
+	echo
+	log " ** Looking For Active Task For $mac ** " "display"
+	computer_task_object=$($curlCommand --data "idType=mac&id=$mac" "${web}DetermineTask" $curlEnd)
+	log "$computer_task_object"
+	if [  "$?" != "0" ]; then
+      log "$computer_task_object"
+	  login_message="Could Not Determine Task Type"
+	else
+	  if [ "$(parse_json "$computer_task_object" .computerId)" = "false" ] || [ -z "$(parse_json "$computer_task_object" .computerId)" ]; then
+	    log " ...... This Computer Was Not Found" "display"
+		continue
+	  else
+	    if [ "$(parse_json "$computer_task_object" .task)" = "upload" ] || [ "$(parse_json "$computer_task_object" .task)" = "deploy" ] || [ "$(parse_json "$computer_task_object" .task)" = "permanent_deploy" ]; then
+	      computer_id="$(parse_json "$computer_task_object" .computerId)"
+	      task="$(parse_json "$computer_task_object" .task)"
+		  log " ...... Success" "display"
+		  login_message="Found $task Task For This Computer"
+		  task_found="true"
+		  break
+		else
+		  computer_id="$(parse_json "$computer_task_object" .computerId)"
+		  log " ...... An Active Task Was Not Found For This Computer" "display"
+		  continue
+		fi
+	  fi
+	fi
+  done
+fi
+
+echo
+  if [ "$computer_id" = "false" ]; then
+    log "This Computer Is Not Registered.  No Active Web Tasks Were Found For This Computer.  Starting Registration." "display"
+	sleep 10
+	. /usr/local/bin/mie_register
+  fi
+  
+  if [ "$task_found" != "true" ]; then
+    log "No Active Web Tasks Were Found For This Computer.  Starting On Demand Imaging." "display"
+	sleep 10
+	mac=$(networksetup -listallhardwareports | grep "Ethernet Address:" | cut -d " " -f 3 | head -n1)
+    . /usr/local/bin/mie_ond
+  fi
+
+   if [ "$is_ondemand" = "true" ]; then
+	  log " ** Using On Demand Mode ** "
+      log " ** Creating Active Task ** " "display"
+	  checkInStatus=$($curlAuth --data "mac=$mac&objectId=$image_profile_id&task=$task&userId=$user_id&computerId=$computer_id" "${web}OnDemandCheckIn" $curlEnd)
+    else
+	  log " ** Verifying Active Task ** " "display"
+	  checkInStatus=`$curlAuth --data "computerId=$computer_id" "${web}CheckIn" $curlEnd`
+	fi
+  
+  if [ ! "$?" = "0" ]; then
+		error "$checkInStatus"
+	else
+		if [ "`parse_json "$checkInStatus" .Result`" != "true" ]; then
+			error "`parse_json "$checkInStatus" .Message`"
+		else
+			sleep 1
+			for arg in "`parse_json "$checkInStatus" .TaskArguments`"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
+			log " ...... Success" "display"
+		fi
+	fi
+  
+if [ "$task" = "upload" ]; then
+  . /usr/local/bin/mie_upload
+elif [ "$task" = "deploy" ]; then
+  . /usr/local/bin/mie_deploy
+else
+  error "Could Not Determine Task Type"
+fi  
+  
+  #Shouldn't get this far but catch it anyway
+  if [ "$task_completed_action" = "Power Off" ]; then
+		shutdown
+	elif [ "$task_completed_action" = "Exit To Shell" ]; then
+		/bin/bash
+	else
+		reboot
+	fi
+
+
+
+
+
+
+

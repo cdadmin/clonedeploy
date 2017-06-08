@@ -11,33 +11,32 @@ namespace CloneDeploy_Web.views.computers
         {
             RequiresAuthorizationOrManagedComputer(AuthorizationStrings.UpdateComputer, Computer.Id);
             var nameChange = txtComputerName.Text != Computer.Name;
-            var computer = new ComputerEntity
-            {
-                Id = Computer.Id,
-                Name = txtComputerName.Text,
-                Mac = txtComputerMac.Text,
-                ImageId = Convert.ToInt32(ddlComputerImage.SelectedValue),
-                ImageProfileId =
-                    Convert.ToInt32(ddlComputerImage.SelectedValue) == -1
-                        ? -1
-                        : Convert.ToInt32(ddlImageProfile.SelectedValue),
-                Description = txtComputerDesc.Text,
-                SiteId = Convert.ToInt32(ddlSite.SelectedValue),
-                BuildingId = Convert.ToInt32(ddlBuilding.SelectedValue),
-                RoomId = Convert.ToInt32(ddlRoom.SelectedValue),
-                ClusterGroupId = Convert.ToInt32(ddlClusterGroup.SelectedValue),
-                CustomAttribute1 = txtCustom1.Text,
-                CustomAttribute2 = txtCustom2.Text,
-                CustomAttribute3 = txtCustom3.Text,
-                CustomAttribute4 = txtCustom4.Text,
-                CustomAttribute5 = txtCustom5.Text,
-                ProxyReservation = Computer.ProxyReservation
-            };
 
-            var result = Call.ComputerApi.Put(computer.Id, computer);
+            Computer.Name = txtComputerName.Text;
+            Computer.Mac = txtComputerMac.Text;
+            Computer.ImageId = Convert.ToInt32(ddlComputerImage.SelectedValue);
+            Computer.ImageProfileId =
+                Convert.ToInt32(ddlComputerImage.SelectedValue) == -1
+                    ? -1
+                    : Convert.ToInt32(ddlImageProfile.SelectedValue);
+            Computer.Description = txtComputerDesc.Text;
+            Computer.SiteId = Convert.ToInt32(ddlSite.SelectedValue);
+            Computer.BuildingId = Convert.ToInt32(ddlBuilding.SelectedValue);
+            Computer.RoomId = Convert.ToInt32(ddlRoom.SelectedValue);
+            Computer.ClusterGroupId = Convert.ToInt32(ddlClusterGroup.SelectedValue);
+            Computer.CustomAttribute1 = txtCustom1.Text;
+            Computer.CustomAttribute2 = txtCustom2.Text;
+            Computer.CustomAttribute3 = txtCustom3.Text;
+            Computer.CustomAttribute4 = txtCustom4.Text;
+            Computer.CustomAttribute5 = txtCustom5.Text;
+
+            
+
+            var result = Call.ComputerApi.Put(Computer.Id, Computer);
 
             if (result.Success)
             {
+                //Don't move this to the ComputerServices.  It's called here for a reason.
                 if (nameChange)
                 {
                     Call.GroupApi.ReCalcSmart();

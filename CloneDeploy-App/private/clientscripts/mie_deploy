@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. /usr/local/bin/osx_global_functions
+. /usr/local/bin/mie_global_functions
 
 function create_all_partition_layouts
 {
@@ -403,11 +403,11 @@ function download_image()
   echo
 	
   touch /tmp/osx.progress
-	  . osx_reporter & asr $asr_verb --source "$image_path/$file_name_prefix.dmg" --target $destination --erase --noprompt --noverify --puppetstrings 2>> $CLIENT_LOG | tee /tmp/osx.progress
-	  log ". osx_reporter &  asr $asr_verb --source $image_path/$file_name_prefix.dmg --target $destination --erase --noprompt --noverify --puppetstrings 2>> $CLIENT_LOG | tee /tmp/osx.progress"
+	  . mie_reporter & asr $asr_verb --source "$image_path/$file_name_prefix.dmg" --target $destination --erase --noprompt --noverify --puppetstrings 2>> $CLIENT_LOG | tee /tmp/osx.progress
+	  log ". mie_reporter &  asr $asr_verb --source $image_path/$file_name_prefix.dmg --target $destination --erase --noprompt --noverify --puppetstrings 2>> $CLIENT_LOG | tee /tmp/osx.progress"
 	  sleep 5
 	  
-	  killall osx_reporter &>/dev/null
+	  killall mie_reporter &>/dev/null
 	  rm /tmp/osx.progress
 }
 
@@ -514,10 +514,7 @@ function install_munki()
 function main()
 {
   
-  if [ "$is_ondemand" = "true" ]; then
-    log " ** Using On Demand Mode ** "
-	for arg in "$ondemand_arguments"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
-  else
+ 
 	  log " ** Checking Current Queue ** " "display"	
       while true; do
 	    queue_status=$($curlAuth --data "computerId=$computer_id" "${web}CheckQueue" $curlEnd)
@@ -532,8 +529,6 @@ function main()
 	    log " ...... Complete" "display"
 		echo
 		  		
-  fi
-
   sleep 2
 
   if [ -n "$pre_scripts" ]; then
@@ -565,7 +560,5 @@ function main()
   checkout
 }
 
-is_ondemand="$1"
-ondemand_arguments="$2"
 main "$@"
 

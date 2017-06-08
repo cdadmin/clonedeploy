@@ -26,19 +26,19 @@ namespace CloneDeploy_Web.views.tasks
             if (IsPostBack) return;
             ViewState["clickTracker"] = "1";
             PopulateGrid();
-            lblTotal.Text = Call.ActiveImagingTaskApi.GetActiveUnicastCount("permanent_push") + " Total Permanent Task(s)";
+            lblTotal.Text = Call.ActiveImagingTaskApi.GetActiveUnicastCount("permanent_deploy") + " Total Permanent Task(s)";
         }
 
         private void PopulateGrid()
         {
-            gvUcTasks.DataSource = Call.ActiveImagingTaskApi.GetUnicasts("permanent_push");
+            gvUcTasks.DataSource = Call.ActiveImagingTaskApi.GetPermanentUnicasts();
             gvUcTasks.DataBind();
         }
 
         protected void Timer_Tick(object sender, EventArgs e)
         {
             PopulateGrid();
-            lblTotal.Text = Call.ActiveImagingTaskApi.GetActiveUnicastCount("permanent_push") + " Total Permanent Task(s)";
+            lblTotal.Text = Call.ActiveImagingTaskApi.GetActiveUnicastCount("permanent_deploy") + " Total Permanent Task(s)";
             UpdatePanel1.Update();
         }
     }

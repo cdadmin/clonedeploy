@@ -53,7 +53,7 @@ namespace CloneDeploy_Services
         public List<ComputerLogEntity> SearchOnDemand(int limit)
         {
             return
-                _uow.ComputerLogRepository.Get(x => x.ComputerId == -1, q => q.OrderByDescending(x => x.LogTime))
+                _uow.ComputerLogRepository.Get(x => x.ComputerId <= -1, q => q.OrderByDescending(x => x.LogTime))
                     .Take(limit)
                     .ToList();
         }

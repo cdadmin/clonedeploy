@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using CsvHelper.Configuration;
 
@@ -47,6 +48,12 @@ namespace CloneDeploy_Entities
 
         [Column("image_osx_thin_recovery", Order = 13)]
         public string OsxThinRecovery { get; set; }        
+    }
+
+    [NotMapped]
+    public class ImageWithDate : ImageEntity
+    {
+        public DateTime? LastUsed { get; set; }
     }
 
     public sealed class ImageCsvMap : CsvClassMap<ImageEntity>

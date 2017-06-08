@@ -73,7 +73,7 @@ namespace CloneDeploy_Services.Workflows
             foreach (var dp in availableDistributionPoints.Where(dp => dp.IsPrimary == 1))
             {
                 //Cluster Group has a primary, always return the primary for an upload, not necessary but saves syncing to the primary later
-                if (_direction == "pull")
+                if (_direction == "upload")
                     return dp.Id;
             }
 

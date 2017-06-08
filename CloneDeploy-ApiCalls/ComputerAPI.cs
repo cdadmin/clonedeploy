@@ -79,10 +79,17 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<ComputerEntity>(Request);
         }
 
-        public List<ComputerEntity> GetAll()
+        public ComputerWithImage GetWithImage(int id)
         {
             Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetAll", Resource);
+            Request.Resource = string.Format("api/{0}/GetWithImage/{1}", Resource, id);
+            return _apiRequest.Execute<ComputerWithImage>(Request);
+        }
+
+        public List<ComputerEntity> Get()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/Get", Resource);
             return _apiRequest.Execute<List<ComputerEntity>>(Request);
         }
 
@@ -94,19 +101,19 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<ActiveImagingTaskEntity>(Request);
         }
 
-        public List<ComputerWithImage> Search(int limit, string searchstring)
+        public List<ComputerWithImage> GridViewSearch(int limit, string searchstring)
         {
             Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/Search", Resource);
+            Request.Resource = string.Format("api/{0}/GridViewSearch", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
             return _apiRequest.Execute<List<ComputerWithImage>>(Request);
         }
 
-        public IEnumerable<ComputerEntity> SearchByName(int limit = 0, string searchstring = "")
+        public IEnumerable<ComputerEntity> SearchByNameOnly(int limit = 0, string searchstring = "")
         {
             Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/SearchByName", Resource);
+            Request.Resource = string.Format("api/{0}/SearchByNameOnly", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
             return _apiRequest.Execute<List<ComputerEntity>>(Request);
@@ -120,11 +127,11 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<ComputerBootMenuEntity>(Request);
         }
 
-        public ComputerEntity GetByMac(string mac)
+        public ComputerEntity GetByName(string name)
         {
             Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetByMac/", Resource);
-            Request.AddParameter("mac", mac);
+            Request.Resource = string.Format("api/{0}/GetByName/", Resource);
+            Request.AddParameter("name", name);
             return _apiRequest.Execute<ComputerEntity>(Request);
         }
 

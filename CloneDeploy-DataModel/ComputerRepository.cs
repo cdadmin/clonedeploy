@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using CloneDeploy_Entities;
 
 namespace CloneDeploy_DataModel
@@ -12,6 +14,35 @@ namespace CloneDeploy_DataModel
             : base(context)
         {
             _context = context;
+        }
+
+        public ComputerWithImage GetComputerWithImage(int computerId)
+        {
+            return (from h in _context.Computers
+                    join t in _context.Images on h.ImageId equals t.Id into joinimage
+                    from p in joinimage.DefaultIfEmpty()
+                    where h.Id == computerId
+                    select new
+                    {
+                        id = h.Id,
+                        name = h.Name,
+                        mac = h.Mac,
+                        image = p,
+                        profileId = h.ImageProfileId,
+                        site = h.SiteId,
+                        building = h.BuildingId,
+                        room = h.RoomId
+                    }).AsEnumerable().Select(x => new ComputerWithImage
+                    {
+                        Id = x.id,
+                        Name = x.name,
+                        Mac = x.mac,
+                        Image = x.image,
+                        ImageProfileId = x.profileId,
+                        SiteId = x.site,
+                        BuildingId = x.building,
+                        RoomId = x.room
+                    }).FirstOrDefault();
         }
 
         public List<ComputerEntity> GetComputersWithoutGroup(string searchString, int limit = int.MaxValue)
@@ -29,8 +60,10 @@ namespace CloneDeploy_DataModel
         public List<ComputerWithImage> Search(string searchString, int limit = int.MaxValue)
         {
             return (from h in _context.Computers
-                join t in _context.Images on h.ImageId equals t.Id into joined
-                from p in joined.DefaultIfEmpty()
+                join t in _context.Images on h.ImageId equals t.Id into joinimage
+                join i in _context.ImageProfiles on h.ImageProfileId equals i.Id into joinprofile
+                from p in joinimage.DefaultIfEmpty()
+                from z in joinprofile.DefaultIfEmpty()
                 where h.Name.Contains(searchString) || h.Mac.Contains(searchString)
                 select new
                 {
@@ -38,6 +71,7 @@ namespace CloneDeploy_DataModel
                     name = h.Name,
                     mac = h.Mac,
                     image = p,
+                    imageProfile = z,
                     profileId = h.ImageProfileId,
                     site = h.SiteId,
                     building = h.BuildingId,
@@ -48,6 +82,7 @@ namespace CloneDeploy_DataModel
                     Name = x.name,
                     Mac = x.mac,
                     Image = x.image,
+                    ImageProfile = x.imageProfile,
                     ImageProfileId = x.profileId,
                     SiteId = x.site,
                     BuildingId = x.building,

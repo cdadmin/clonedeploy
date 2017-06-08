@@ -108,13 +108,21 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "ComputerRead")]
+        public ComputerWithImage GetWithImage(int id)
+        {
+            var computer = _computerService.GetWithImage(id);
+            if (computer == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return computer;
+        }
+
+        [CustomAuth(Permission = "ComputerRead")]
         public ActiveImagingTaskEntity GetActiveTask(int id)
         {
             return _computerService.GetTaskForComputer(id);
         }
 
         [CustomAuth(Permission = "ComputerRead")]
-        public IEnumerable<ComputerEntity> GetAll()
+        public IEnumerable<ComputerEntity> Get()
         {
             return _computerService.GetAll();
         }
@@ -126,9 +134,9 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "ComputerSearch")]
-        public ComputerEntity GetByMac(string mac)
+        public ComputerEntity GetByName(string name)
         {
-            return _computerService.GetComputerFromMac(mac);
+            return _computerService.GetComputerFromName(name);
         }
 
         [CustomAuth(Permission = "ComputerRead")]
@@ -258,7 +266,7 @@ namespace CloneDeploy_App.Controllers
 
         [HttpGet]
         [CustomAuth(Permission = "ComputerSearch")]
-        public IEnumerable<ComputerWithImage> Search(int limit = 0, string searchstring = "")
+        public IEnumerable<ComputerWithImage> GridViewSearch(int limit = 0, string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _computerService.SearchComputersForUser(Convert.ToInt32(_userId), limit)
@@ -267,7 +275,7 @@ namespace CloneDeploy_App.Controllers
 
         [HttpGet]
         [CustomAuth(Permission = "ComputerSearch")]
-        public IEnumerable<ComputerEntity> SearchByName(int limit = 0, string searchstring = "")
+        public IEnumerable<ComputerEntity> SearchByNameOnly(int limit = 0, string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _computerService.SearchComputersForUserByName(Convert.ToInt32(_userId), limit)
@@ -280,7 +288,7 @@ namespace CloneDeploy_App.Controllers
         {
             return new ApiStringResponseDTO
             {
-                Value = new Unicast(id, "push", _userId, Request.GetClientIpAddress()).Start()
+                Value = new Unicast(id, "deploy", _userId, Request.GetClientIpAddress()).Start()
             };
         }
 
@@ -290,7 +298,7 @@ namespace CloneDeploy_App.Controllers
         {
             return new ApiStringResponseDTO
             {
-                Value = new Unicast(id, "permanent_push", _userId, Request.GetClientIpAddress()).Start()
+                Value = new Unicast(id, "permanent_deploy", _userId, Request.GetClientIpAddress()).Start()
             };
         }
 
@@ -300,7 +308,7 @@ namespace CloneDeploy_App.Controllers
         {
             return new ApiStringResponseDTO
             {
-                Value = new Unicast(id, "pull", _userId, Request.GetClientIpAddress()).Start()
+                Value = new Unicast(id, "upload", _userId, Request.GetClientIpAddress()).Start()
             };
         }
 

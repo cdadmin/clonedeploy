@@ -26,7 +26,7 @@ namespace CloneDeploy_App.Controllers
         public HttpResponseMessage AddComputer(AddComputerDTO addComputerDto)
         {
             _response.Content =
-                new StringContent(new ClientImagingServices().AddComputer(addComputerDto.name, addComputerDto.mac),
+                new StringContent(new ClientImagingServices().AddComputer(addComputerDto.name, addComputerDto.mac, addComputerDto.clientIdentifier),
                     Encoding.UTF8, "text/plain");
             return _response;
         }
@@ -82,14 +82,31 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpPost]
-        [ClientAuth]
-        public HttpResponseMessage CheckIn(ComputerMacDTO computerMacDto)
+        public HttpResponseMessage DetermineTask(IdTypeDTO idTypeDto)
         {
-            _response.Content = new StringContent(new ClientImagingServices().CheckIn(computerMacDto.computerMac),
+            _response.Content = new StringContent(new ClientImagingServices().DetermineTask(idTypeDto.idType, idTypeDto.id), Encoding.UTF8, "text/plain");
+            return _response;
+        }
+
+        [HttpPost]
+        [ClientAuth]
+        public HttpResponseMessage CheckIn(CheckInTaskDTO checkInTaskDto)
+        {
+            _response.Content = new StringContent(new ClientImagingServices().CheckIn(checkInTaskDto.computerId),
                 Encoding.UTF8, "text/plain");
             return _response;
         }
 
+        [HttpPost]
+        [ClientAuth]
+        public HttpResponseMessage OnDemandCheckin(OnDemandDTO onDemandDto)
+        {
+            _response.Content =
+                new StringContent(
+                    new ClientImagingServices().OnDemandCheckIn(onDemandDto.mac,
+                        Convert.ToInt32(onDemandDto.objectId), onDemandDto.task,onDemandDto.userId,onDemandDto.computerId), Encoding.UTF8, "text/plain");
+            return _response;
+        }
 
         [HttpPost]
         [ClientAuth]
@@ -150,10 +167,10 @@ namespace CloneDeploy_App.Controllers
 
         [HttpPost]
         [ClientAuth]
-        public HttpResponseMessage GetAllClusterDps(ComputerMacDTO computerMacDto)
+        public HttpResponseMessage GetAllClusterDps(ComputerIdDTO computerIdDto)
         {
             _response.Content = new StringContent(
-                new ClientImagingServices().GetAllClusterDps(computerMacDto.computerMac), Encoding.UTF8, "text/plain");
+                new ClientImagingServices().GetAllClusterDps(computerIdDto.computerId), Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -182,14 +199,6 @@ namespace CloneDeploy_App.Controllers
         public void ErrorEmail(ErrorEmailDTO errorEmailDto)
         {
             new ClientImagingServices().ErrorEmail(Convert.ToInt32(errorEmailDto.computerId), errorEmailDto.error);
-        }
-
-        [HttpPost]
-        public HttpResponseMessage GetComputerName(MacDTO macDto)
-        {
-            _response.Content = new StringContent(new ComputerServices().GetComputerFromMac(macDto.mac).Name,
-                Encoding.UTF8, "text/plain");
-            return _response;
         }
 
         [HttpPost]
@@ -239,17 +248,7 @@ namespace CloneDeploy_App.Controllers
             return _response;
         }
 
-        [HttpPost]
-        [ClientAuth]
-        public HttpResponseMessage GetOnDemandArguments(OnDemandDTO onDemandDto)
-        {
-            _response.Content =
-                new StringContent(
-                    new ClientImagingServices().GetOnDemandArguments(onDemandDto.mac,
-                        Convert.ToInt32(onDemandDto.objectId), onDemandDto.task), Encoding.UTF8, "text/plain");
-            return _response;
-        }
-
+       
         [HttpPost]
         [ClientAuth]
         public HttpResponseMessage GetOriginalLvm(OriginalLVM originalLvm)

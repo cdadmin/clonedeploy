@@ -34,7 +34,7 @@ namespace CloneDeploy_Services.Workflows
 
             if (_imageProfile.Image == null) return "The Image Does Not Exist";
 
-            if (_direction == "push" || _direction == "permanent_push")
+            if (_direction == "deploy" || _direction == "permanent_deploy")
             {
                 var validation = new ImageServices().CheckApprovalAndChecksum(_imageProfile.Image, _userId);
                 if (!validation.Success) return validation.ErrorMessage;
@@ -59,7 +59,7 @@ namespace CloneDeploy_Services.Workflows
                 UserId = _userId
             };
 
-            _activeTask.Type = _direction == "permanent_push" ? "permanent_push" : "unicast";
+            _activeTask.Type = _direction;
 
 
             var activeImagingTaskServices = new ActiveImagingTaskServices();
@@ -85,10 +85,10 @@ namespace CloneDeploy_Services.Workflows
             var auditLog = new AuditLogEntity();
             switch (_direction)
             {
-                case "push":
+                case "deploy":
                     auditLog.AuditType = AuditEntry.Type.Deploy;
                     break;
-                case "permanent_push":
+                case "permanent_deploy":
                     auditLog.AuditType = AuditEntry.Type.PermanentPush;
                     break;
                 default:

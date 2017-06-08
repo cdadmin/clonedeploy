@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. /bin/cd_global_functions
+. /bin/lie_global_functions
 computer_id="$1"
 while true; do
   result=$($curlAuth --data "computerId=$computer_id" "${web}CheckForCancelledTask" $curlEnd)

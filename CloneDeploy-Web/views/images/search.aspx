@@ -81,7 +81,7 @@
             </asp:TemplateField>
             <asp:BoundField DataField="Environment" HeaderText="Imaging Environment" ItemStyle-CssClass="width_200"></asp:BoundField>
             <asp:BoundField DataField="Approved" HeaderText="Approved" ItemStyle-CssClass="width_200"></asp:BoundField>
-
+            <asp:BoundField DataField="LastUsed" HeaderText="Last Used" SortExpression="LastUsed" ItemStyle-CssClass="width_200"/>
 
             <asp:TemplateField>
                 <ItemTemplate>

@@ -1,0 +1,35 @@
+#!/bin/bash
+
+. /usr/local/bin/mie_global_functions
+
+clear_and_move_down
+mac=$(networksetup -listallhardwareports | grep "Ethernet Address:" | cut -d " " -f 3 | head -n1)
+serial_number=$(system_profiler SPHardwareDataType | awk '/Serial Number/ {print $4}')
+system_uuid=$(system_profiler SPHardwareDataType | awk '/UUID/ { print $3; }')
+client_id="$mac.$(remove_whitespace $serial_number).$(remove_whitespace $system_uuid)"
+
+while true; do
+  if [ -n "$(parse_json "$registerResult" .ErrorMessage)" ] && [ "$(parse_json "$registerResult" .ErrorMessage)" != "null" ]; then
+    name=$(dialog --backtitle "CloneDeploy" --title "Enter Computer Name" --clear --inputbox "MAC address: $mac \nClient Id  : $client_id \n\nError: $(parse_json "$registerResult" .ErrorMessage)" 20 130 --stdout)
+  elif [ -n "$registerResult" ]; then
+    name=$(dialog --backtitle "CloneDeploy" --title "Enter Computer Name" --clear --inputbox "MAC address: $mac \nClient Id  : $client_id \n\nError: $registerResult" 20 130 --stdout)
+  else
+    name=$(dialog --backtitle "CloneDeploy" --title "Enter Computer Name" --clear --inputbox "MAC address: $mac \nClient Id  : $client_id" 20 130 --stdout)
+  fi
+  
+  #Cancel Button
+  if [ "$?" = "1" ]; then
+    break
+  fi
+
+  registerResult=$($curlAuth --data "name=$name&mac=$mac&clientIdentifier=$client_id" ${web}AddComputer $curlClose)
+  if [ "$(parse_json "$registerResult" .Success)" = "true" ]; then
+    break
+  fi
+done
+
+
+
+
+
+

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. /bin/cd_global_functions
+. /bin/lie_global_functions
 
 if [ "$started_from_init" != "true" ]; then
 	error "Script Cannot Be Started This Way, Exports Are Not Set."
@@ -266,6 +266,12 @@ CONFIRM
 ################################################################
 function create_image_schema()
 {
+  
+  if [ "$upload_schema_only" != "true" ]; then
+    log " ** Removing All Files For Existing Image: $image_name ** "
+    $curlAuth --data "profileId=$profile_id" "${web}DeleteImage" $curlEnd
+  fi
+  
   clear_and_move_down
   log " ** Creating Image Schema ** " "display"
   echo
@@ -369,8 +375,9 @@ function create_image_schema()
       fi
 
       partclone.$partclone_type -SIic -s $partition -O /dev/null >& /tmp/$partition_number.size
-      log "$partition Volume Size"
+      log "Partition Volume Size"
       cat /tmp/$partition_number.size | grep volume_size >> $CLIENT_LOG
+	  log "Partition Used Size"
       cat /tmp/$partition_number.size | grep used_size >> $CLIENT_LOG
       volume_size=`cat /tmp/$partition_number.size | grep volume_size | cut -d"," -f 1 | cut -d ":" -f 2` #sed 's/ *$//'
       volume_used_mb=`cat /tmp/$partition_number.size | grep used_size | cut -d"," -f 2 | cut -d ":" -f 2` #sed 's/ *$//'
@@ -516,6 +523,10 @@ function create_image_schema()
   sleep 2 
   
   echo $image_schema > /storage/images/$image_name/schema
+  
+  if [ "$upload_schema_only" = "true" ]; then
+    checkout
+  fi
 }
 
 
@@ -633,7 +644,7 @@ function upload_image()
 	fi
   
     if [ "$image_type" = "File" ] && [ -n "$wim_arguments" ]; then
-	  
+	  export WIMLIB_IMAGEX_USE_UTF8=1
 	  if [ "$filesystem_type" = "ntfs" ]; then
 	    wimsource="$partition"   
 	  else
@@ -642,19 +653,19 @@ function upload_image()
 		wimsource="/mnt/wimsource"
       fi 	  
 	  touch /tmp/wim.progress
-	  log " ...... cd_reporter $computer_id wimup $is_ondemand & wimcapture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
-	  eval "cd_reporter $computer_id wimup $is_ondemand & wimcapture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
+	  log " ...... lie_reporter $computer_id wim & wimcapture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
+	  eval "lie_reporter $computer_id wim & wimcapture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
 	  rm /tmp/wim.progress
 	  umount /mnt/wimsource &> /dev/null
     else
 	  touch /tmp/clone.progress
 	  cd /
-	  log " ...... cd_reporter $computer_id partclone $is_ondemand & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension"    
-	  eval "cd_reporter $computer_id partclone $is_ondemand & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension"
+	  log " ...... lie_reporter $computer_id partclone & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension"    
+	  eval "lie_reporter $computer_id partclone & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension"
       rm /tmp/clone.progress
       cat /var/log/partclone.log >> $CLIENT_LOG
 	  cd $image_path
-	  killall cd_reporter &>/dev/null
+	  killall lie_reporter &>/dev/null
 	fi
   done
 }
@@ -708,44 +719,18 @@ function main()
 {
   log_boot_args
   
-  if [ "$is_ondemand" = "true" ]; then
-    log " ** On Demand Enabled ** "
-    for arg in "$ondemand_arguments"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
-  else
-    checkin
-  fi
-
-  if [ "$imageProtected" = "1" ]; then
-    error "This Image Is Protected And Cannot Be Overwritten"
-  fi
-
+  checkin
+  
   mount_smb
 
   get_hard_drives "upload"
 
-  if [ "$is_ondemand" != "true" ]; then
-    log " ** Updating Client Status To In-Progress ** "
-    $curlAuth --data "computerId=$computer_id" "${web}UpdateStatusInProgress" $curlEnd
-  fi
-
-  log " ** Removing All Files For Existing Image: $image_name ** "
-    $curlAuth --data "profileId=$profile_id" "${web}DeleteImage" $curlEnd
-
   create_image_schema
-  if [ "$upload_schema_only" = "true" ]; then
-    checkout
-  fi
 
-  if [ "$image_type" = "File" ]; then
-    export WIMLIB_IMAGEX_USE_UTF8=1
-  fi
-  
   process_hard_drives
   
-checkout
+  checkout
 }
 
-is_ondemand="$1"
-ondemand_arguments="$2"
 main "$@"
   

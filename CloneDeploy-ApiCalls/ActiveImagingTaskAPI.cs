@@ -24,7 +24,17 @@ namespace CloneDeploy_ApiCalls
             return response;
         }
 
-        public string GetActiveNotOwned()
+        public ActionResultDTO DeleteOnDemand(int id)
+        {
+            Request.Method = Method.DELETE;
+            Request.Resource = string.Format("api/{0}/DeleteOnDemand/{1}", Resource, id);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
+            if (response.Id == 0)
+                response.Success = false;
+            return response;
+        }
+
+            public string GetActiveNotOwned()
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetActiveNotOwned/", Resource);
@@ -39,7 +49,7 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<List<TaskWithComputer>>(Request);
         }
 
-        public string GetActiveUnicastCount(string taskType)
+        public string GetActiveUnicastCount(string taskType="")
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetActiveUnicastCount/", Resource);
@@ -56,12 +66,34 @@ namespace CloneDeploy_ApiCalls
             return response != null ? response.Value : string.Empty;
         }
 
-        public IEnumerable<TaskWithComputer> GetUnicasts(string taskType)
+        public IEnumerable<TaskWithComputer> GetUnicasts()
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetUnicasts/", Resource);
-            Request.AddParameter("tasktype", taskType);
             return _apiRequest.Execute<List<TaskWithComputer>>(Request);
+        }
+
+        public IEnumerable<TaskWithComputer> GetPermanentUnicasts()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetPermanentUnicasts/", Resource);
+            return _apiRequest.Execute<List<TaskWithComputer>>(Request);
+        }
+
+        public IEnumerable<ActiveImagingTaskEntity> GetAllOnDemandUnregistered()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetAllOnDemandUnregistered/", Resource);
+            return _apiRequest.Execute<List<TaskWithComputer>>(Request);
+        }
+
+        public int OnDemandCount()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/OnDemandCount/", Resource);
+            var response = _apiRequest.Execute<ApiIntResponseDTO>(Request);
+            if (response != null) return response.Value;
+            else return 0;
         }
     }
 }

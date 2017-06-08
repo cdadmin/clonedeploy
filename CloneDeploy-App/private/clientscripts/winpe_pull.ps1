@@ -101,17 +101,16 @@ function Upload-Image()
             if(!$updatedPartition.DriveLetter) { continue }
             
              
-	        if($computer_id -and !$script:isOnDemand)
-            {   
-                log "curl.exe  --data `"computerId=$computer_id&partition=$($partition.PartitionNumber)`" ${script:web}UpdateProgressPartition  --connect-timeout 10 --stderr -"
-                curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id&partition=$($partition.PartitionNumber)" ${script:web}UpdateProgressPartition  --connect-timeout 10 --stderr -
-            }
+	      
+            log "curl.exe  --data `"computerId=$computer_id&partition=$($partition.PartitionNumber)`" ${script:web}UpdateProgressPartition  --connect-timeout 10 --stderr -"
+            curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id&partition=$($partition.PartitionNumber)" ${script:web}UpdateProgressPartition  --connect-timeout 10 --stderr -
+            
             Start-Sleep 7
             Write-Host
     
             log " ...... partitionNumber: $($partition.PartitionNumber)"
 
-            $reporterProc=$(Start-Process powershell "x:\winpe_reporter.ps1 -web $script:web -computerId $computer_id -partitionNumber $($partition.PartitionNumber) -direction Uploading -curlOptions $script:curlOptions -userTokenEncoded $script:userTokenEncoded -isOnDemand $script:isOnDemand" -NoNewWindow -PassThru)
+            $reporterProc=$(Start-Process powershell "x:\winpe_reporter.ps1 -web $script:web -computerId $computer_id -partitionNumber $($partition.PartitionNumber) -direction Uploading -curlOptions $script:curlOptions -userTokenEncoded $script:userTokenEncoded " -NoNewWindow -PassThru)
             
             log "wimcapture $($updatedPartition.DriveLetter):\ $imagePath\part$($partition.PartitionNumber).winpe.wim $web_wim_args 2>>$clientLog > x:\wim.progress"
             wimcapture "$($updatedPartition.DriveLetter):\" "$imagePath\part$($partition.PartitionNumber).winpe.wim" $web_wim_args 2>>$clientLog > x:\wim.progress
@@ -130,11 +129,10 @@ Mount-SMB
 
 Get-Hard-Drives("upload")
 
-if(!$script:isOnDemand)
-{
-    log " ** Updating Client Status To In-Progress ** "
-    curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id" ${script:web}UpdateStatusInProgress  --connect-timeout 10 --stderr -
-}
+
+log " ** Updating Client Status To In-Progress ** "
+curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id" ${script:web}UpdateStatusInProgress  --connect-timeout 10 --stderr -
+
 
 log " ** Removing All Files For Existing Image: $image_name ** "
 curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "profileId=$profile_id" ${script:web}DeleteImage  --connect-timeout 10 --stderr -

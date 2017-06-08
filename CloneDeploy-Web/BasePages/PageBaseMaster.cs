@@ -48,7 +48,7 @@ namespace CloneDeploy_Web.BasePages
         public string GetSortDirection(string sortExpression)
         {
             if (ViewState[sortExpression] == null)
-                ViewState[sortExpression] = "Asc";
+                ViewState[sortExpression] = "Desc";
             else
                 ViewState[sortExpression] = ViewState[sortExpression].ToString() == "Desc" ? "Asc" : "Desc";
 

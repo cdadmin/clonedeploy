@@ -74,7 +74,7 @@ namespace CloneDeploy_Web.views.groups
         {
             var limit = 0;
             limit = ddlLimit.Text == "All" ? int.MaxValue : Convert.ToInt32(ddlLimit.Text);
-            var listOfComputers = Call.ComputerApi.GetAll();
+            var listOfComputers = Call.ComputerApi.Get();
 
             //If a user is using a managed group they can also see computers without any group, to add in.
             listOfComputers.AddRange(Call.ComputerApi.GetComputersWithoutGroup(limit, txtSearch.Text));

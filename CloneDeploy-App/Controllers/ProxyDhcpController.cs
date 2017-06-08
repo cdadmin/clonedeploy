@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.ClientImaging;
 using CloneDeploy_Services;
@@ -8,6 +9,7 @@ using CloneDeploy_Services.Workflows;
 
 namespace CloneDeploy_App.Controllers
 {
+    [EnableCorsAttribute("*","*","*")]
     public class ProxyDhcpController : ApiController
     {
         private readonly ProxyDhcpServices _proxyDhcpServices;

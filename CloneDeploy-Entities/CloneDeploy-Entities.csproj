@@ -41,13 +41,16 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActiveImagingTask.cs" />
+    <Compile Include="ActiveImagingTaskEntity.cs" />
     <Compile Include="ActiveMulticastSession.cs" />
     <Compile Include="AuditEntry.cs" />
-    <Compile Include="AuditLog.cs" />
+    <Compile Include="AuditLogEntity.cs" />
     <Compile Include="ClusterGroupDistributionPoint.cs" />
     <Compile Include="ClusterGroupServer.cs" />
     <Compile Include="DTOs\AppleVendorDTO.cs" />
+    <Compile Include="DTOs\ClientImaging\DetermineTaskDTO.cs" />
+    <Compile Include="DTOs\FormData\CheckInTaskDTO.cs" />
+    <Compile Include="DTOs\FormData\IdTypeDTO.cs" />
     <Compile Include="NbiEntry.cs" />
     <Compile Include="NetBootProfile.cs" />
     <Compile Include="DistributionPoint.cs" />

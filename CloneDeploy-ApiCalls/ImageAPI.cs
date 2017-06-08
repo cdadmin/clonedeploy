@@ -37,13 +37,13 @@ namespace CloneDeploy_ApiCalls
             return new ApiRequest().Execute<ImageEntity>(Request);
         }
 
-        public List<ImageEntity> GetAll(int limit, string searchstring)
+        public List<ImageWithDate> GetAll(int limit, string searchstring)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetAll", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
-            return new ApiRequest().Execute<List<ImageEntity>>(Request);
+            return new ApiRequest().Execute<List<ImageWithDate>>(Request);
         }
 
         public string GetCount()
@@ -62,7 +62,14 @@ namespace CloneDeploy_ApiCalls
             return new ApiRequest().Execute<List<ImageProfileEntity>>(Request);
         }
 
+        public IEnumerable<AuditLogEntity> GetImageAuditLogs(int id, int limit)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetImageAuditLogs/{1}", Resource, id);
+            Request.AddParameter("limit", limit);
+            return new ApiRequest().Execute<List<AuditLogEntity>>(Request);
 
+        }
         public string GetImageSizeOnServer(string imageName, string hdNumber)
         {
             Request.Method = Method.GET;
@@ -111,12 +118,12 @@ namespace CloneDeploy_ApiCalls
             return response;
         }
 
-        public IEnumerable<ImageEntity> Search(string searchstring = "")
+        public IEnumerable<ImageWithDate> Search(string searchstring = "")
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/Search/", Resource);
             Request.AddParameter("searchstring", searchstring);
-            return new ApiRequest().Execute<List<ImageEntity>>(Request);
+            return new ApiRequest().Execute<List<ImageWithDate>>(Request);
         }
 
         public ImageProfileEntity SeedDefaultProfile(int id)

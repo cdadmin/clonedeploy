@@ -4,30 +4,51 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
-using System.Threading;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.ImageSchemaBE;
 using CloneDeploy_Services;
+using Newtonsoft.Json;
 
 namespace CloneDeploy_App.Controllers
 {
     public class ImageController : ApiController
     {
         private readonly ImageServices _imageServices;
+        private readonly AuditLogEntity _auditLog;
+        private readonly AuditLogServices _auditLogService;
+        private readonly int _userId;
 
         public ImageController()
         {
             _imageServices = new ImageServices();
+            _auditLogService = new AuditLogServices();
+            _userId = Convert.ToInt32(((ClaimsIdentity)User.Identity).Claims.Where(c => c.Type == "user_id")
+                .Select(c => c.Value).SingleOrDefault());
+            _auditLog = new AuditLogEntity();
+            _auditLog.ObjectType = "Image";
+            _auditLog.UserId = _userId;
+            var user = new UserServices().GetUser(_userId);
+            if (user != null)
+                _auditLog.UserName = user.Name;
         }
 
         [CustomAuth(Permission = "ImageDelete")]
         public ActionResultDTO Delete(int id)
         {
+            var image = _imageServices.GetImage(id);
             var result = _imageServices.DeleteImage(id);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            if (result.Success)
+            {
+                _auditLog.AuditType = AuditEntry.Type.Delete;
+                _auditLog.ObjectId = result.Id;
+                _auditLog.ObjectName = image.Name;
+                _auditLog.Ip = Request.GetClientIpAddress();
+                _auditLogService.AddAuditLog(_auditLog);
+            }
             return result;
         }
 
@@ -48,24 +69,24 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "ImageSearch")]
-        public IEnumerable<ImageEntity> GetAll(string searchstring = "")
+        public IEnumerable<ImageWithDate> GetAll(string searchstring = "")
         {
-            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                .Select(c => c.Value).SingleOrDefault();
             return string.IsNullOrEmpty(searchstring)
-                ? _imageServices.SearchImagesForUser(Convert.ToInt32(userId))
-                : _imageServices.SearchImagesForUser(Convert.ToInt32(userId), searchstring);
+                ? _imageServices.SearchImagesForUser(_userId)
+                : _imageServices.SearchImagesForUser(Convert.ToInt32(_userId), searchstring);
         }
 
         [CustomAuth(Permission = "ImageSearch")]
         public ApiStringResponseDTO GetCount()
         {
-            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                .Select(c => c.Value).SingleOrDefault();
+           
+            return new ApiStringResponseDTO {Value = _imageServices.ImageCountUser(_userId)};
+        }
 
-            return new ApiStringResponseDTO {Value = _imageServices.ImageCountUser(Convert.ToInt32(userId))};
+        [CustomAuth(Permission = "ImageRead")]
+        public IEnumerable<AuditLogEntity> GetImageAuditLogs(int id, int limit)
+        {
+            return _imageServices.GetImageAuditLogs(id, limit);
         }
 
         [CustomAuth(Permission = "ImageRead")]
@@ -99,6 +120,15 @@ namespace CloneDeploy_App.Controllers
         {
             var result = _imageServices.AddImage(image);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            if (result.Success)
+            {
+                _auditLog.AuditType = AuditEntry.Type.Create;
+                _auditLog.ObjectId = result.Id;
+                _auditLog.ObjectName = image.Name;
+                _auditLog.Ip = Request.GetClientIpAddress();
+                _auditLog.ObjectJson = JsonConvert.SerializeObject(_imageServices.GetImage(result.Id));
+                _auditLogService.AddAuditLog(_auditLog);
+            }
             return result;
         }
 
@@ -108,11 +138,21 @@ namespace CloneDeploy_App.Controllers
             image.Id = id;
             var result = _imageServices.UpdateImage(image);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            if (result.Success)
+            {
+                _auditLog.AuditType = AuditEntry.Type.Update;
+                _auditLog.ObjectId = result.Id;
+                _auditLog.ObjectName = image.Name;
+                _auditLog.Ip = Request.GetClientIpAddress();
+                _auditLog.ObjectJson = JsonConvert.SerializeObject(image);
+                _auditLogService.AddAuditLog(_auditLog);
+
+            }
             return result;
         }
 
         [CustomAuth(Permission = "ImageSearch")]
-        public IEnumerable<ImageEntity> Search(string searchstring = "")
+        public IEnumerable<ImageWithDate> Search(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _imageServices.SearchImages()

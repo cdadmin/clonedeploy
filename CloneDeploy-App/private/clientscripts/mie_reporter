@@ -1,8 +1,8 @@
 #!/bin/bash
 
-. /usr/local/bin/osx_global_functions
+. /usr/local/bin/mie_global_functions
 
-  if [ "$image_direction" = "push" ]; then
+  if [ "$task" = "deploy" ]; then
     while [ -f "/tmp/osx.progress" ]; do
       post="$(tail -n 1 /tmp/osx.progress | cut -f2) %"
       result=$($curlAuth --data "computerId=$computer_id&progress=$post&progressType=wim" "${web}UpdateProgress" $curlEnd)        

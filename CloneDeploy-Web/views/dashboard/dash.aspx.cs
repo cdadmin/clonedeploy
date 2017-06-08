@@ -33,7 +33,7 @@ namespace CloneDeploy_Web.views.dashboard
         {
             //FixMe: get all the numbers in own function, don't slowly create full lists of unused stuff 
 
-            var computersList = Call.ComputerApi.Search(int.MaxValue, "");
+            var computersList = Call.ComputerApi.GridViewSearch(int.MaxValue, "");
             lblTotalComputers.Text = computersList.Count + " Total Computer(s)";
 
             var imagesList =

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. /bin/cd_global_functions
+. /bin/lie_global_functions
 
 if [ "$started_from_init" != "true" ]; then
 	error "Script Cannot Be Started This Way, Exports Are Not Set."
@@ -50,8 +50,6 @@ function process_hard_drives()
 	if [ "$(parse_json "$hd_schema" .PartitionType)" = "mbr" ]; then
       update_bcd
 	fi
-	
-    update_grub
 	
     if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
 	  log " ** Restoring GUID On $hard_drive ** "
@@ -242,19 +240,19 @@ function download_image()
 			
   if [ "$multicast" = "true" ]; then
     if [ "$decompress_multicast_on_client" = "true" ]; then
-	    log "cd_reporter $computer_id partclone $is_ondemand & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
-      cd_reporter $computer_id partclone $is_ondemand & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
+	    log "lie_reporter $computer_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
+      lie_reporter $computer_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
 	else #dcompress on server
-      log "cd_reporter $computer_id partclone $is_ondemand & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
-      cd_reporter $computer_id partclone $is_ondemand & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
+      log "lie_reporter $computer_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
+      lie_reporter $computer_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
     fi
   else #unicast
     if [ "$partCompAlg" = "none" ]; then #no compression
-	   cd_reporter $computer_id partclone $is_ondemand & partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -s $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).uncp -o $destination
-	   log "cd_reporter $computer_id partclone $is_ondemand & partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -s $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).uncp -o $destination"
+	   lie_reporter $computer_id partclone & partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -s $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).uncp -o $destination
+	   log "lie_reporter $computer_id partclone & partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -s $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).uncp -o $destination"
 	else #compression in use
-      log "cd_reporter $computer_id partclone $is_ondemand & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
-      cd_reporter $computer_id partclone $is_ondemand & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
+      log "lie_reporter $computer_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
+      lie_reporter $computer_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
 	fi
   fi
 			
@@ -287,11 +285,11 @@ function download_image()
 	fi
 	
 	if [ "$multicast" = "true" ]; then
-	  log "cd_reporter $computer_id wimdown $is_ondemand & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 $destination $wim_arguments"
-	  cd_reporter $computer_id wimdown $is_ondemand & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 $destination $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress
+	  log "lie_reporter $computer_id wim & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 $destination $wim_arguments"
+	  lie_reporter $computer_id wim & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 $destination $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress
 	else
-	  log "cd_reporter $computer_id wimdown $is_ondemand & wimapply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination $wim_arguments"
-	  cd_reporter $computer_id wimdown $is_ondemand & wimapply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress
+	  log "lie_reporter $computer_id wim & wimapply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination $wim_arguments"
+	  lie_reporter $computer_id wim & wimapply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress
 	fi
   fi 
 }
@@ -324,46 +322,6 @@ eof
   partprobe &>/dev/null
   sleep 2
 }
-
-function update_grub()
-{
-
-	log " ** Checking If Grub Is Required ** "
-	dd if=$hard_drive of=/tmp/grubcheck bs=512 count=1 2> /dev/null
-	strings /tmp/grubcheck | grep -i "grub"
-	if [ "$?" = "0" ]; then
-		log " ...... Grub Is Required, Searching For Boot Files "
-		if [ -n "$grubRoot" ]; then
-			log " ...... Grub Root Overridden By User $grubRoot "
-			grubHD=$(echo $grubRoot | cut -d"," -f1)
-			grubHD="$grubHD)"
-		else
-			grub --batch <<eof>> /tmp/grubroot
-find /grub/menu.lst
-find /boot/grub/menu.lst
-eof
-			cat /tmp/grubroot >>$CLIENT_LOG
-			grubRoot=$(cat /tmp/grubroot | grep -i "$hard_drive$current_hd_number")
-			grubHD=$(echo $grubRoot | cut -d"," -f1)
-			grubHD="$grubHD)"
-		fi
-			log "grubRoot: $grubRoot grubHD: $grubHD current_hd_number: $current_hd_number"
-		
-		if [ -n "$grubRoot" ]; then
-			log " ...... Found Legacy Grub On $grubRoot "
-			log " ...... Restoring Grub Legacy "
-			grub --batch <<eof>> $CLIENT_LOG
-root $grubRoot
-setup $grubHD
-eof
-		else
-			log " ...... Could Not Find Boot Files For Grub Legacy."
-		fi
-	else
-		log " ...... Grub Is Not Required"
-	fi
-}
-
 
 function create_partition_layout()
 {
@@ -785,53 +743,8 @@ function main()
 {
   log_boot_args
 
-  if [ "$is_ondemand" = "true" ]; then
-    log " ** Using On Demand Mode ** "
-	for arg in "$ondemand_arguments"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
-  elif [ "$task" = "clobber" ]; then
-    log " ** Using Clobber Mode ** "
-	clobber_args=$($curlAuth --data "mac=$mac&objectId=$imageProfileId&task=push" "${web}GetOnDemandArguments" $curlEnd)
-    for arg in "$clobber_args"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
-	if [ "$computer_name" = "" ] || [ "$computer_name" = "null" ]; then
-	  if [ "$name_prompt" = "true" ]; then
-		echo "This Computer Was Not Found In The Database, Enter A Name For It Now:"
-		echo "Leave Blank To Skip Computer Renaming"
-		echo
-		read computer_name
-		echo
-		if [ -n "$computer_name" ]; then
-		  computer_name=$computer_name
-		fi
-	  fi
-	fi
-  else
-    checkin
-  fi
-  
-  if [ "$is_ondemand" != "true" ]; then
-  if [ "$task" = "push" ] || [ "$task" = "permanent_push" ]; then	
-	if [ "$multicast" = "true" ]; then
-	  $curlAuth --data "computerId=$computer_id" "${web}UpdateStatusInProgress" $curlEnd
-	else
-	  log " ** Checking Current Queue ** " "display"	
-      while true; do
-	    queue_status=$($curlAuth --data "computerId=$computer_id" "${web}CheckQueue" $curlEnd)
-		if [ "$(parse_json "$queue_status" .Result)" = "true" ]; then
-		  break
-		else
-		  echo "** Queue Is Full, Waiting For Open Slot ** "
-		  echo " ...... Current Position $(parse_json "$queue_status" .Position)"
-		  sleep 5
-		fi
-      done
-	    log " ...... Complete" "display"
-		echo
-	fi	  		
-  fi
-  fi
-   
-  sleep 2
-
+  checkin
+    
   mount_smb
 
   process_hard_drives
@@ -839,7 +752,5 @@ function main()
   checkout
 }
 
-is_ondemand="$1"
-ondemand_arguments="$2"
 main "$@"
 

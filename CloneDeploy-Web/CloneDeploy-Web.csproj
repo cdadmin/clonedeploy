@@ -19,6 +19,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -103,12 +104,15 @@
     <Content Include="views\groups\groups.master" />
     <Content Include="views\help\content.master" />
     <Content Include="views\help\help.master" />
+    <Content Include="views\images\history.aspx" />
     <Content Include="views\images\images.master" />
     <Content Include="views\images\profiles\profiles.master" />
     <Content Include="views\site.master" />
+    <Content Include="views\tasks\activeond.aspx" />
     <Content Include="views\tasks\task.master" />
     <Content Include="views\users\acls\acls.master" />
     <Content Include="views\users\groupacls\groupacls.master" />
+    <Content Include="views\users\history.aspx" />
     <Content Include="views\users\user.master" />
     <None Include="Properties\PublishProfiles\web.pubxml" />
     <Content Include="views\admin\cluster\cluster.master" />
@@ -1663,6 +1667,13 @@
     <Compile Include="views\images\edit.aspx.designer.cs">
       <DependentUpon>edit.aspx</DependentUpon>
     </Compile>
+    <Compile Include="views\images\history.aspx.cs">
+      <DependentUpon>history.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\images\history.aspx.designer.cs">
+      <DependentUpon>history.aspx</DependentUpon>
+    </Compile>
     <Compile Include="views\images\images.master.cs">
       <DependentUpon>images.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1810,6 +1821,13 @@
     <Compile Include="views\tasks\activemulticast.aspx.designer.cs">
       <DependentUpon>activemulticast.aspx</DependentUpon>
     </Compile>
+    <Compile Include="views\tasks\activeond.aspx.cs">
+      <DependentUpon>activeond.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\tasks\activeond.aspx.designer.cs">
+      <DependentUpon>activeond.aspx</DependentUpon>
+    </Compile>
     <Compile Include="views\tasks\activepermanent.aspx.cs">
       <DependentUpon>activepermanent.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1942,6 +1960,13 @@
     </Compile>
     <Compile Include="views\users\groupacls\imagemanagement.aspx.designer.cs">
       <DependentUpon>imagemanagement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\users\history.aspx.cs">
+      <DependentUpon>history.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\users\history.aspx.designer.cs">
+      <DependentUpon>history.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\users\removemembers.aspx.cs">
       <DependentUpon>removemembers.aspx</DependentUpon>

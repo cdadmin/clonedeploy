@@ -189,7 +189,7 @@ namespace CloneDeploy_App.Controllers
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                 .Select(c => c.Value).SingleOrDefault();
 
-            return new ApiStringResponseDTO {Value = new Multicast(id, Convert.ToInt32(userId)).Create()};
+            return new ApiStringResponseDTO {Value = new Multicast(id, Convert.ToInt32(userId), Request.GetClientIpAddress()).Create()};
         }
 
         [HttpGet]

@@ -9,16 +9,24 @@
 # Author:       Miquel van Smoorenburg, <miquels@drinkel.nl.mugnet.org>
 #                   Modified for RHS Linux by Damien Neil
 #				     Modified for Clone Deploy
-. /bin/cd_global_functions
 
-export started_from_init="true"
-set_curl_command
-
-echo 3 > /proc/sys/kernel/printk
+. /bin/lie_global_functions
 
 function start_network()
 {
-   
+   clear_and_move_down
+  if [ "$reset_network" = "1" ]; then
+	echo " ** Reset Network Level 1 ** "
+	echo " Disconnect and Reconnect Your USB Nic "
+	echo " Press Any Key When Done "
+	read key_pressed
+  elif [ "$reset_network" = "2" ]; then
+	echo " ** Reset Network Level 2 ** ";
+	echo " Disconnect and Reconnect Your USB Nic ";
+	echo " Waiting 30 Seconds Before Auto Continue ";
+	sleep 30
+  fi
+	
 	if [ -z "$net_if" ]; then
 		export net_if=eth0
 	fi
@@ -124,7 +132,7 @@ function assign_static_ip()
 	read ip_netmask
 	echo -n "      Gateway: "
 	read ip_gateway
-	echo -n "             DNS:"
+	echo -n "             DNS: "
 	read ip_dns
 	
 	echo "auto lo" > /etc/network/interfaces
@@ -167,39 +175,90 @@ function check_auth()
   fi
 }
 
-if [ -n "$keymap" ]; then
-	loadkeys $keymap
-fi
+function get_task_computer()
+{
+ #Assume task is on demand and computer does not exist until each are found
+  export task="ond"
+  export computer_id="false"
+  
+  clear_and_move_down
+  #Begin search using the computers client id
+  for interface in `ls /sys/class/net | grep -v "lo" | sed 's/@//'`; do
+    export mac=$(cat /sys/class/net/$interface/address)
+	serial_number=$(dmidecode -s system-serial-number)
+	system_uuid=$(dmidecode -s system-uuid)
+	client_id="$mac.$(remove_whitespace $serial_number).$(remove_whitespace $system_uuid)"
+	
+	echo
+	log " ** Looking For Active Task For $client_id ** " "display"
+	computer_task_object=$($curlCommand --data "idType=clientId&id=$client_id" "${web}DetermineTask" $curlEnd)
+	log "$computer_task_object"
+	if [  "$?" != "0" ]; then
+      log "$computer_task_object"
+	  login_message="Could Not Determine Task Type"
+	else
+	  if [ "$(parse_json "$computer_task_object" .computerId)" = "false" ] || [ -z "$(parse_json "$computer_task_object" .computerId)" ]; then
+	    log " ...... This Computer Was Not Found" "display"
+		continue
+	  else
+	    if [ "$(parse_json "$computer_task_object" .task)" = "upload" ] || [ "$(parse_json "$computer_task_object" .task)" = "deploy" ] || [ "$(parse_json "$computer_task_object" .task)" = "permanent_deploy" ]; then
+	      export computer_id="$(parse_json "$computer_task_object" .computerId)"
+	      export task="$(parse_json "$computer_task_object" .task)"
+		  log " ...... Success" "display"
+		  login_message="Found $task Task For This Computer"
+		  return
+		else
+		  export computer_id="$(parse_json "$computer_task_object" .computerId)"
+		  log " ...... An Active Task Was Not Found For This Computer" "display"
+		  continue
+		fi
+	  fi
+	fi
+  done
+  
+  #Continue Search Looking Only for computer by mac address
+  for interface in `ls /sys/class/net | grep -v "lo" | sed 's/@//'`; do
+    export mac=$(cat /sys/class/net/$interface/address)
+	echo
+	log " ** Looking For Active Task For $mac ** " "display"
+	computer_task_object=$($curlCommand --data "idType=mac&id=$mac" "${web}DetermineTask" $curlEnd)
+	log "$computer_task_object"
+	if [  "$?" != "0" ]; then
+      log "$computer_task_object"
+	  login_message="Could Not Determine Task Type"
+	else
+	  if [ "$(parse_json "$computer_task_object" .computerId)" = "false" ] || [ -z "$(parse_json "$computer_task_object" .computerId)" ]; then
+	    log " ...... This Computer Was Not Found" "display"
+		continue
+	  else
+	    if [ "$(parse_json "$computer_task_object" .task)" = "upload" ] || [ "$(parse_json "$computer_task_object" .task)" = "deploy" ] || [ "$(parse_json "$computer_task_object" .task)" = "permanent_deploy" ]; then
+	      export computer_id="$(parse_json "$computer_task_object" .computerId)"
+	      export task="$(parse_json "$computer_task_object" .task)"
+		  log " ...... Success" "display"
+		  login_message="Found $task Task For This Computer"
+		  return
+		else
+		  export computer_id="$(parse_json "$computer_task_object" .computerId)"
+		  log " ...... An Active Task Was Not Found For This Computer" "display"
+		  continue
+		fi
+	  fi
+	fi
+  done
+  
+  if [ -z "$computer_id" ]; then
+    login_message="This Computer Is Not Registered.  No Active Web Tasks Were Found For This Computer.  Starting On Demand Imaging."
+  else
+    login_message="No Active Web Tasks Were Found For This Computer.  Starting On Demand Imaging."
+  fi
+  
+  
+  log " No Active Web Tasks Were Found.  Falling Back To On Demand Mode" "display"
+}
 
-clear_and_move_down
-if [ "$reset_network" = "1" ]; then
-	echo " ** Reset Network Level 1 ** "
-	echo " Disconnect and Reconnect Your USB Nic "
-	echo " Press Any Key When Done "
-	read key_pressed
-elif [ "$reset_network" = "2" ]; then
-	echo " ** Reset Network Level 2 ** ";
-	echo " Disconnect and Reconnect Your USB Nic ";
-	echo " Waiting 30 Seconds Before Auto Continue ";
-	sleep 30
-fi
-
-start_network
-test_conn
-
-if [ "$task" = "diag" ]; then
-	/bin/cd_diag
-	reboot -f
-fi
-
-
-if [ "$skip_clock" != "true" ]; then		
-	utcDateTime=$($curlCommand ${web}GetUtcDateTime $curlEnd)
-	date -s "$utcDateTime" &>> /dev/null
-fi
-
-clear_and_move_down
-loginRequired=$($curlCommand --data "task=$task" "${web}IsLoginRequired" $curlEnd)
+function clonedeploy_login()
+{
+  loginRequired=$($curlCommand --data "task=$task" "${web}IsLoginRequired" $curlEnd)
 if [ "$login_debug" = "1" ]; then
  echo " Login Required: $loginRequired"
 fi
@@ -256,49 +315,80 @@ if [ "$loginRequired" != "No" ]; then
 		loginCount=$(( $loginCount + 1 ))
 	done
 fi
+}
 
-set_curl_auth
+function main()
+{
+  echo 3 > /proc/sys/kernel/printk
+  
+  if [ -n "$keymap" ]; then
+	  loadkeys $keymap
+  fi
+  
+  export started_from_init="true"
 
-if [ "$skip_core_download" != "true" ]; then
-	clear_and_move_down
-	echo " ** Downloading Core Scripts ** "
+  set_curl_command
 
-	for script_name in cd_global_functions cd_ond cd_pull cd_push cd_register cd_reporter cd_cancel; do
-		dl_result=$($curlAuth --data "scriptName=$script_name" ${web}DownloadCoreScripts -o /bin/$script_name -w %{http_code} --connect-timeout 10 --stderr /tmp/clientscriptdlerror)
-		check_download $scriptName
-	done
+  start_network
+
+  test_conn
+
+  utcDateTime=$($curlCommand ${web}GetUtcDateTime $curlEnd)
+  date -s "$utcDateTime" &>> /dev/null
+
+  if [ -z "$task" ]; then
+    get_task_computer
+  fi
+
+  clear_and_move_down
+  echo "$login_message"
+  echo
+  clonedeploy_login
+
+  set_curl_auth
+
+  clear_and_move_down
+  echo " ** Downloading Core Scripts ** "
+
+  for script_name in lie_global_functions lie_ond lie_upload lie_deploy lie_register lie_reporter lie_cancel; do
+    dl_result=$($curlAuth --data "scriptName=$script_name" ${web}DownloadCoreScripts -o /bin/$script_name -w %{http_code} --connect-timeout 10 --stderr /tmp/clientscriptdlerror)
+    check_download $scriptName
+  done
 	
-	echo " ...... Complete"
-	echo
-	sleep 2
-fi
+  echo " ...... Complete"
+  echo
+  sleep 2
 
-if [ "$task" = "push" ] || [ "$task" = "permanent_push" ]; then	
-	/bin/cd_push
+  if [ "$task" = "deploy" ] || [ "$task" = "permanent_deploy" ]; then	
+	  /bin/lie_deploy
 
-elif [ "$task" = "clobber" ]; then	
-	check_auth
-	/bin/cd_push
+  elif [ "$task" = "clobber" ]; then	
+	  check_auth
+	  /bin/lie_deploy
 	
-elif [ "$task" = "pull" ]; then	
-	/bin/cd_pull
+  elif [ "$task" = "upload" ]; then	
+	  /bin/lie_upload
 
-elif [ "$task" = "register" ]; then
-	/bin/cd_register
+  elif [ "$task" = "register" ]; then
+	  /bin/lie_register
 
-elif [ "$task" = "ond" ]; then
-	check_auth
-	/bin/cd_ond
+  elif [ "$task" = "ond" ]; then
+	  check_auth
+	  /bin/lie_ond
 	
-elif [ "$task" = "debug" ]; then
-	check_auth
-	echo " ** Debug Mode ** "
-else
-	clear_and_move_down
-	echo " ** No Task Selected....Rebooting ** "
-	sleep 10
-	reboot -f
-fi
+  elif [ "$task" = "debug" ]; then
+	  check_auth
+	  echo " ** Debug Mode ** "
+
+  else
+	  clear_and_move_down
+	  echo " ** No Task Selected....Rebooting ** "
+	  sleep 10
+	  reboot -f
+  fi
+}
+
+main "$@"
 
 
 

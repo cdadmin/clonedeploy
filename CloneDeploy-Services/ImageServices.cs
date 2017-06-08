@@ -164,6 +164,11 @@ namespace CloneDeploy_Services
             return _uow.ImageRepository.GetById(imageId);
         }
 
+        public List<AuditLogEntity> GetImageAuditLogs(int imageId, int limit)
+        {
+            if (limit == 0) limit = int.MaxValue;
+            return _uow.AuditLogRepository.Get(x => x.ObjectType == "Image" && x.ObjectId == imageId).OrderByDescending(x => x.Id).Take(limit).ToList();
+        }
 
         public List<ImageEntity> GetOnDemandImageList(int userId = 0)
         {
@@ -224,12 +229,26 @@ namespace CloneDeploy_Services
             return importCounter;
         }
 
-        public List<ImageEntity> SearchImages(string searchString = "")
+        public List<ImageWithDate> SearchImages(string searchString = "")
         {
-            return _uow.ImageRepository.Get(i => i.Name.Contains(searchString));
+            var images = _uow.ImageRepository.Get(i => i.Name.Contains(searchString));
+
+            var listWithDate = new List<ImageWithDate>();
+            foreach (var image in images)
+            {
+                var imageWithDate = new ImageWithDate();
+                imageWithDate.Id = image.Id;
+                imageWithDate.Name = image.Name;
+                imageWithDate.Environment = image.Environment;
+                imageWithDate.Approved = image.Approved;
+                imageWithDate.LastUsed = new AuditLogServices().GetImageLastUsedDate(image.Id);
+                listWithDate.Add(imageWithDate);
+            }
+
+            return listWithDate;
         }
 
-        public List<ImageEntity> SearchImagesForUser(int userId, string searchString = "")
+        public List<ImageWithDate> SearchImagesForUser(int userId, string searchString = "")
         {
             if (_userServices.GetUser(userId).Membership == "Administrator")
                 return SearchImages(searchString);
@@ -247,8 +266,19 @@ namespace CloneDeploy_Services
                         _uow.ImageRepository.GetFirstOrDefault(
                             i => i.Name.Contains(searchString) && i.Id == managedImage.ImageId)));
 
+            var listWithDate = new List<ImageWithDate>();
+            foreach (var image in listOfImages)
+            {
+                var imageWithDate = new ImageWithDate();
+                imageWithDate.Id = image.Id;
+                imageWithDate.Name = image.Name;
+                imageWithDate.Environment = image.Environment;
+                imageWithDate.Approved = image.Approved;
+                imageWithDate.LastUsed = new AuditLogServices().GetImageLastUsedDate(image.Id);
+                listWithDate.Add(imageWithDate);
+            }
 
-            return listOfImages;
+            return listWithDate;
         }
 
         public List<ImageProfileEntity> SearchProfiles(int imageId)

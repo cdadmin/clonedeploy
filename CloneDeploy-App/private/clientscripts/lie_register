@@ -1,0 +1,53 @@
+#!/bin/bash
+
+. /bin/lie_global_functions
+
+if [ "$started_from_init" != "true" ]; then
+	error "Script Cannot Be Started This Way, Exports Are Not Set."
+fi
+
+clear_and_move_down
+serial_number=$(dmidecode -s system-serial-number)
+system_uuid=$(dmidecode -s system-uuid)
+client_id="$mac.$(remove_whitespace $serial_number).$(remove_whitespace $system_uuid)"
+	
+while true; do
+  if [ -n "$(parse_json "$registerResult" .ErrorMessage)" ] && [ "$(parse_json "$registerResult" .ErrorMessage)" != "null" ]; then
+    name=$(dialog --backtitle "CloneDeploy" --title "Enter Computer Name" --clear --inputbox "MAC address: $mac \nClient Id  : $client_id \n\nError: $(parse_json "$registerResult" .ErrorMessage)" 20 130 --stdout)
+  elif [ -n "$registerResult" ]; then
+    name=$(dialog --backtitle "CloneDeploy" --title "Enter Computer Name" --clear --inputbox "MAC address: $mac \nClient Id  : $client_id \n\nError: $registerResult" 20 130 --stdout)
+  else
+    name=$(dialog --backtitle "CloneDeploy" --title "Enter Computer Name" --clear --inputbox "MAC address: $mac \nClient Id  : $client_id" 20 130 --stdout)
+  fi
+  
+  #Cancel Button
+  if [ "$?" = "1" ]; then
+    result="Computer Not Registered"
+    break
+  fi
+
+  registerResult=$($curlAuth --data "name=$name&mac=$mac&clientIdentifier=$client_id" ${web}AddComputer $curlClose)
+  if [ "$(parse_json "$registerResult" .Success)" = "true" ]; then
+    result="Successfully Registered $name"
+    break
+  fi
+done
+
+while true; do
+  taskType=$(dialog --backtitle "CloneDeploy" --title "Select A Task" --clear  --menu "$result" 20 60 15 1 "Shutdown" 2 "Reboot" 3 "Start On Demand Task"  --stdout)
+  #Cancel Button
+  if [ "$?" = "1" ]; then
+    poweroff -f
+  fi
+  
+  if [ "$taskType" = "1" ]; then
+    poweroff -f
+  elif [ "$taskType" = "2" ]; then
+    reboot -f
+  else
+    /bin/lie_ond
+  fi
+done
+
+
+

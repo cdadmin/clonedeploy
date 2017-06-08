@@ -58,13 +58,17 @@ namespace CloneDeploy_Entities
         public int ProxyReservation { get; set; }
 
         [Column("cluster_group_id", Order = 18)]
-        public int ClusterGroupId { get; set; }   
+        public int ClusterGroupId { get; set; }
+
+        [Column("client_identifier", Order = 19)]
+        public string ClientIdentifier { get; set; }
     }
 
     [NotMapped]
     public class ComputerWithImage : ComputerEntity
     {
         public ImageEntity Image { get; set; }
+        public ImageProfileEntity ImageProfile { get; set; }
     }
 
     public sealed class ComputerCsvMap : CsvClassMap<ComputerEntity>
@@ -79,6 +83,7 @@ namespace CloneDeploy_Entities
             Map(m => m.CustomAttribute3).Name("CustomAttribute3");
             Map(m => m.CustomAttribute4).Name("CustomAttribute4");
             Map(m => m.CustomAttribute5).Name("CustomAttribute5");
+            Map(m => m.ClientIdentifier).Name("ClientIdentifier");
         }
     }
 

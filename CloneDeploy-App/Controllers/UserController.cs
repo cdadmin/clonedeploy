@@ -72,6 +72,12 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "Administrator")]
+        public IEnumerable<AuditLogEntity> GetUserAuditLogs(int id, int limit)
+        {
+            return _userServices.GetUserAuditLogs(id, limit);
+        }
+
+        [CustomAuth(Permission = "Administrator")]
         public CloneDeployUserEntity GetByName(string username)
         {
             var result = _userServices.GetUser(username);

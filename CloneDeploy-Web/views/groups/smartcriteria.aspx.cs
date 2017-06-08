@@ -9,7 +9,7 @@ namespace CloneDeploy_Web.views.groups
     {
         protected void btnTestQuery_OnClick(object sender, EventArgs e)
         {
-            gvComputers.DataSource = Call.ComputerApi.SearchByName(int.MaxValue, txtContains.Text);
+            gvComputers.DataSource = Call.ComputerApi.SearchByNameOnly(int.MaxValue, txtContains.Text);
             gvComputers.DataBind();
             lblTotal.Text = gvComputers.Rows.Count + " Result(s)";
         }

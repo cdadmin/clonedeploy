@@ -34,6 +34,8 @@
                 </a>
             </p>
         </div>
+        <br/><br/>
+        <h4>Last Logins</h4>
     </div>
 
     <div class="column-center">

@@ -41,7 +41,9 @@ if($taskType -eq "deploy")
         clear
         $imageProfileId=$(fShowMenu "Select An Image Profile" $profileTable)	
     }
-    $script:ondArgs=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "mac=$script:mac&objectId=$imageProfileId&task=push" ${script:web}GetOnDemandArguments --connect-timeout 10 --stderr -)
+    $task="push"
+    $ondObjectId=$imageProfileId
+    #$script:ondArgs=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "mac=$script:mac&objectId=$imageProfileId&task=push" ${script:web}GetOnDemandArguments --connect-timeout 10 --stderr -)
 	
 }
 elseif($taskType -eq "upload")
@@ -131,7 +133,9 @@ elseif($taskType -eq "upload")
         clear
         $imageProfileId=$(fShowMenu "Select An Image Profile" $profileTable)	
     }
-    $script:ondArgs=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "mac=$script:mac&objectId=$imageProfileId&task=pull" ${script:web}GetOnDemandArguments --connect-timeout 10 --stderr -)
+    $task="pull"
+    $ondObjectId=$imageProfileId
+    #$script:ondArgs=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "mac=$script:mac&objectId=$imageProfileId&task=pull" ${script:web}GetOnDemandArguments --connect-timeout 10 --stderr -)
 }
 
 elseif($taskType -eq "multicast")
@@ -151,7 +155,9 @@ elseif($taskType -eq "multicast")
 	  error "No Multicast Session Was Selected Or There Are No Active Sessions"
 	}
 
-    $script:ondArgs=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "mac=$script:mac&objectId=$multicastId&task=multicast" ${script:web}GetOnDemandArguments --connect-timeout 10 --stderr -)
+    $task="multicast"
+    $ondObjectId=$multicastId
+    #$script:ondArgs=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "mac=$script:mac&objectId=$multicastId&task=multicast" ${script:web}GetOnDemandArguments --connect-timeout 10 --stderr -)
 }
 
 else
@@ -159,15 +165,28 @@ else
     error "Could Not Determine Task Type"
 }
 
-log -message $script:ondArgs
-$arr = $script:ondArgs -split '\r\n'
-$pos = 0
-while($pos -lt $arr.Count)
-{
-    $arg=$arr[$pos] -split '='
-    New-Variable -Name $arg[0] -Value $arg[1] -Scope Script -Force
-    $pos++
-}
+log " ** Using On Demand Mode ** "
+  $checkInStatus=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "mac=$script:mac&objectId=$ondObjectId&task=$task&userId=$script:userId" ${script:web}OnDemandCheckIn --connect-timeout 10 --stderr -)
+    $checkInStatus=$checkInStatus | ConvertFrom-Json
+    if(!$?)
+    {
+        $Error[0].Exception.Message
+        $checkInStatus
+        exit 1
+    }
+    else
+    {
+           log -message $checkInStatus.TaskArguments
+            $arr = $checkInStatus.TaskArguments -split '\r\n'
+            $pos = 0
+            while($pos -lt $arr.Count - 1)
+            {
+                $arg=$arr[$pos] -split '='
+                New-Variable -Name $arg[0] -Value $arg[1] -Scope Script -Force
+                $pos++
+            }
+    }
+
 
 clear
 if($image_direction -eq "pull")

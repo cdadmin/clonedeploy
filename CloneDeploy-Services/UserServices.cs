@@ -115,6 +115,12 @@ namespace CloneDeploy_Services
             return result;
         }
 
+        public List<AuditLogEntity> GetUserAuditLogs(int userId, int limit)
+        {
+            if (limit == 0) limit = int.MaxValue;
+            return _uow.AuditLogRepository.Get(x => x.UserId == userId).OrderByDescending(x => x.Id).Take(limit).ToList();
+        }
+
         public List<UserGroupManagementEntity> GetUserGroupManagements(int userId)
         {
             return _uow.UserGroupManagementRepository.Get(x => x.UserId == userId);

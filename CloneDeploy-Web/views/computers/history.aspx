@@ -30,7 +30,16 @@
         });
 
     </script>
-
+    
+     <div class="size-10 column">
+        <asp:DropDownList ID="ddlType" runat="server" CssClass="ddlist" AutoPostBack="True" OnSelectedIndexChanged="ddlType_OnSelectedIndexChanged">
+            <asp:ListItem>Select Filter</asp:ListItem>
+            <asp:ListItem>Create</asp:ListItem>
+            <asp:ListItem>Update</asp:ListItem>
+            <asp:ListItem>Deploy</asp:ListItem>
+            <asp:ListItem>Upload</asp:ListItem>
+            </asp:DropDownList>
+    </div>
     <div class="size-11 column">
 
         <asp:DropDownList runat="server" ID="ddlLimit" AutoPostBack="True" OnSelectedIndexChanged="ddl_OnSelectedIndexChanged" CssClass="ddlist">

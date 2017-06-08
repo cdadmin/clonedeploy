@@ -96,11 +96,12 @@
                     <asp:Label ID="lblImage" runat="server" Text='<%# Bind("Image.Name") %>'/>
                 </ItemTemplate>
             </asp:TemplateField>
-            <asp:TemplateField ShowHeader="True" HeaderText="Image Profile">
+              <asp:TemplateField ItemStyle-CssClass="mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller" HeaderText="Profile2">
                 <ItemTemplate>
-                    <asp:Label ID="lblProfile" runat="server" CausesValidation="false" CssClass="lbl_file "></asp:Label>
+                    <asp:Label ID="lblImageProfile" runat="server" Text='<%# Bind("ImageProfile.Name") %>'/>
                 </ItemTemplate>
             </asp:TemplateField>
+       
 
 
         </Columns>

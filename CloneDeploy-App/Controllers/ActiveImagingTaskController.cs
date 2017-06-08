@@ -32,9 +32,18 @@ namespace CloneDeploy_App.Controllers
         }
 
         [Authorize]
+        public ActionResultDTO DeleteOnDemand(int id)
+        {
+            var result = _activeImagingTaskServices.DeleteUnregisteredOndTask(id);
+            if (result.Id == 0)
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound, result));
+            return result;
+        }
+
+        [Authorize]
         public ApiStringResponseDTO GetActiveNotOwned()
         {
-            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                 .Select(c => c.Value).SingleOrDefault();
 
@@ -47,7 +56,7 @@ namespace CloneDeploy_App.Controllers
         [Authorize]
         public IEnumerable<TaskWithComputer> GetActiveTasks()
         {
-            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                 .Select(c => c.Value).SingleOrDefault();
             return _activeImagingTaskServices.ReadAll(Convert.ToInt32(userId));
@@ -56,7 +65,7 @@ namespace CloneDeploy_App.Controllers
         [Authorize]
         public ApiStringResponseDTO GetActiveUnicastCount(string taskType)
         {
-            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                 .Select(c => c.Value).SingleOrDefault();
 
@@ -70,7 +79,7 @@ namespace CloneDeploy_App.Controllers
         [Authorize]
         public ApiStringResponseDTO GetAllActiveCount()
         {
-            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                 .Select(c => c.Value).SingleOrDefault();
 
@@ -81,13 +90,36 @@ namespace CloneDeploy_App.Controllers
         }
 
         [Authorize]
-        public IEnumerable<TaskWithComputer> GetUnicasts(string taskType)
+        public IEnumerable<TaskWithComputer> GetUnicasts()
         {
-            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                 .Select(c => c.Value).SingleOrDefault();
 
-            return _activeImagingTaskServices.ReadUnicasts(Convert.ToInt32(userId), taskType);
+            return _activeImagingTaskServices.ReadUnicasts(Convert.ToInt32(userId));
+        }
+
+        [Authorize]
+        public IEnumerable<TaskWithComputer> GetPermanentUnicasts()
+        {
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                .Select(c => c.Value).SingleOrDefault();
+
+            return _activeImagingTaskServices.ReadUnicasts(Convert.ToInt32(userId));
+        }
+
+        [Authorize]
+        public IEnumerable<ActiveImagingTaskEntity> GetAllOnDemandUnregistered()
+        {
+            return _activeImagingTaskServices.GetAllOnDemandUnregistered();
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ApiIntResponseDTO OnDemandCount()
+        {
+            return new ApiIntResponseDTO { Value = _activeImagingTaskServices.OnDemandCount() };
         }
     }
 }

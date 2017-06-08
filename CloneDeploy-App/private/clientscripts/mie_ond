@@ -1,33 +1,30 @@
 #!/bin/bash
 
-. /usr/local/bin/osx_global_functions
+. /usr/local/bin/mie_global_functions
 
+is_ondemand="true"
 taskType=$(dialog --backtitle "CloneDeploy" --title "Select A Task" --clear --menu "" 20 60 15 1 Deploy 2 Upload --stdout)
 
 if [ "$taskType" != "1" ] && [ "$taskType" != "2" ]; then
-    image_direction="unknown"
 	error "Could Not Determine Task Type"
 fi
 
-if [ "$taskType" = "1" ]; then
-    image_direction="push"
-	imageList=`$curlAuth --data "environment=osx&userId=$user_id" "${web}ListImages" $curlEnd`
+if [ "$taskType" = "1" ]; then    
+	imageList=`$curlAuth --data "environment=macOS&userId=$user_id" "${web}ListImages" $curlEnd`
 	imageId=$(dialog --backtitle "CloneDeploy" --title "Select An Image" --clear --menu "" 20 60 15 `parse_json "$imageList" .Images[]` --stdout)
-	if [ -z "$imageId"]; then
+	if [ -z "$imageId" ]; then
 	  error "No Image Was Selected Or No Images Have Been Added Yet"
 	fi
 	imageProfileList=`$curlAuth --data "imageId=$imageId" "${web}ListImageProfiles" $curlEnd`
 	if [ "`parse_json "$imageProfileList" .Count`" = "1" ]; then
-		imageProfileId=`parse_json "$imageProfileList" .FirstProfileId`
+		image_profile_id=`parse_json "$imageProfileList" .FirstProfileId`
 	else
-		imageProfileId=$(dialog --backtitle "CloneDeploy" --title "Select An Image Profile" --clear --menu "" 20 60 15 `parse_json "$imageProfileList" .ImageProfiles[]` --stdout)
-	fi	
-	ond_args=$($curlAuth --data "mac=$mac&objectId=$imageProfileId&task=push" "${web}GetOnDemandArguments" $curlEnd)
-	ond_args="${ond_args} image_direction=push"
-    
-elif [ "$taskType" = "2" ]; then
-  image_direction="pull"
-  
+		image_profile_id=$(dialog --backtitle "CloneDeploy" --title "Select An Image Profile" --clear --menu "" 20 60 15 `parse_json "$imageProfileList" .ImageProfiles[]` --stdout)
+	fi
+	
+	task="deploy"
+
+elif [ "$taskType" = "2" ]; then 
   new_or_existing=$(dialog --backtitle "CloneDeploy" --title "New Or Existing?" --clear --menu "" 20 60 15 1 "New Image" 2 "Existing Image" --stdout)
 
   if [ "$new_or_existing" != "1" ] && [ "$new_or_existing" != "2" ]; then
@@ -59,7 +56,7 @@ elif [ "$taskType" = "2" ]; then
 		fi
    done
   else
-    image_list=`$curlAuth --data "environment=osx&userId=$user_id" "${web}ListImages" $curlEnd`
+    image_list=`$curlAuth --data "environment=macOS&userId=$user_id" "${web}ListImages" $curlEnd`
     image_id=$(dialog --backtitle "CloneDeploy" --title "Select An Image" --clear --menu "" 20 60 15 `parse_json "$image_list" .Images[]` --stdout)
   fi
   
@@ -72,27 +69,10 @@ elif [ "$taskType" = "2" ]; then
   else
     image_profile_id=$(dialog --backtitle "CloneDeploy" --title "Select An Image Profile" --clear --menu "" 20 60 15 `parse_json "$profile_list" .ImageProfiles[]` --stdout)
   fi
-  ond_args=$($curlAuth --data "mac=$mac&objectId=$image_profile_id&task=pull" "${web}GetOnDemandArguments" $curlEnd)
-  ond_args="${ond_args} image_direction=pull"
-		
+  
+  task="upload"
 else
 	error "An Error Occurred Or No Task Was Selected"
 fi
+  
 
-clear_and_move_down
-if [ "$taskType" = "2" ]; then
-	/usr/local/bin/osx_pull "true" "$ond_args"
-else
-    for arg in "$ond_args"; do case "$arg" in *=*) eval "$arg"; esac; done
-	if [ "$computer_name" = "" ] || [ "$computer_name" = "null" ]; then
-		echo "This Computer Was Not Found In The Database, Enter A Name For It Now:"
-		echo "Leave Blank To Skip Computer Renaming"
-		echo
-		read computer_name
-		echo
-		if [ -n "$computer_name" ]; then
-		  ond_args="${ond_args} computer_name=$computer_name"
-		fi
-	fi
-	/usr/local/bin/osx_push "true" "$ond_args"
-fi

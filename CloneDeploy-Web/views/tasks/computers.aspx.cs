@@ -22,11 +22,11 @@ namespace CloneDeploy_Web.views.tasks
                 var dataKey = gvComputers.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var computer = Call.ComputerApi.Get(Convert.ToInt32(dataKey.Value));
+                    var computer = Call.ComputerApi.GetWithImage(Convert.ToInt32(dataKey.Value));
                     Session["computerID"] = computer.Id;
                     Session["direction"] = "push";
                     lblTitle.Text = "Deploy The Selected Computer?";
-                    gvConfirm.DataSource = new List<ComputerEntity> {computer};
+                    gvConfirm.DataSource = new List<ComputerWithImage> {computer};
                 }
             }
             gvConfirm.DataBind();
@@ -67,11 +67,11 @@ namespace CloneDeploy_Web.views.tasks
                 var dataKey = gvComputers.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var computer = Call.ComputerApi.Get(Convert.ToInt32(dataKey.Value));
+                    var computer = Call.ComputerApi.GetWithImage(Convert.ToInt32(dataKey.Value));
                     Session["computerID"] = computer.Id;
                     Session["direction"] = "permanent_push";
                     lblTitle.Text = "Permanent Deploy The Selected Computer?";
-                    gvConfirm.DataSource = new List<ComputerEntity> {computer};
+                    gvConfirm.DataSource = new List<ComputerWithImage> {computer};
                 }
             }
             gvConfirm.DataBind();
@@ -88,11 +88,11 @@ namespace CloneDeploy_Web.views.tasks
                 var dataKey = gvComputers.DataKeys[gvRow.RowIndex];
                 if (dataKey != null)
                 {
-                    var computer = Call.ComputerApi.Get(Convert.ToInt32(dataKey.Value));
+                    var computer = Call.ComputerApi.GetWithImage(Convert.ToInt32(dataKey.Value));
                     Session["computerID"] = computer.Id;
                     Session["direction"] = "pull";
                     lblTitle.Text = "Upload The Selected Computer?";
-                    gvConfirm.DataSource = new List<ComputerEntity> {computer};
+                    gvConfirm.DataSource = new List<ComputerWithImage> {computer};
                 }
             }
             gvConfirm.DataBind();
@@ -194,7 +194,7 @@ namespace CloneDeploy_Web.views.tasks
         {
             var limit = 0;
             limit = ddlLimit.Text == "All" ? int.MaxValue : Convert.ToInt32(ddlLimit.Text);
-            var listOfComputers = Call.ComputerApi.Search(limit, txtSearch.Text);
+            var listOfComputers = Call.ComputerApi.GridViewSearch(limit, txtSearch.Text);
             gvComputers.DataSource = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
             gvComputers.DataBind();
 

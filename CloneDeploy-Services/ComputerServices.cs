@@ -35,6 +35,7 @@ namespace CloneDeploy_Services
             }
             else
             {
+                actionResult.Success = false;
                 actionResult.ErrorMessage = validationResult.ErrorMessage;
             }
             return actionResult;
@@ -85,9 +86,6 @@ namespace CloneDeploy_Services
         public List<ComputerEntity> ComputersWithoutGroup(int limit, string searchString = "")
         {
             var listOfComputers = _uow.ComputerRepository.GetComputersWithoutGroup(searchString, limit);
-            //foreach (var computer in listOfComputers)
-            //computer.Image = new ImageServices().GetImage(computer.ImageId);
-
             return listOfComputers;
         }
 
@@ -313,6 +311,11 @@ namespace CloneDeploy_Services
             return _uow.ComputerRepository.Get();
         }
 
+        public ComputerWithImage GetWithImage(int computerId)
+        {
+            return _uow.ComputerRepository.GetComputerWithImage(computerId);
+        }
+
         public List<GroupMembershipEntity> GetAllComputerMemberships(int computerId)
         {
             return _uow.GroupMembershipRepository.Get(x => x.ComputerId == computerId);
@@ -376,8 +379,6 @@ namespace CloneDeploy_Services
         public ComputerEntity GetComputer(int computerId)
         {
             var computer = _uow.ComputerRepository.GetById(computerId);
-            //if (computer != null)
-            //computer.Image = new ImageServices().GetImage(computer.ImageId);
             return computer;
         }
 
@@ -389,6 +390,16 @@ namespace CloneDeploy_Services
         public ComputerEntity GetComputerFromMac(string mac)
         {
             return _uow.ComputerRepository.GetFirstOrDefault(p => p.Mac == mac);
+        }
+
+        public ComputerEntity GetComputerFromName(string name)
+        {
+            return _uow.ComputerRepository.GetFirstOrDefault(p => p.Name == name);
+        }
+
+        public ComputerEntity GetComputerFromClientIdentifier(string clientIdentifier)
+        {
+            return _uow.ComputerRepository.GetFirstOrDefault(p => p.ClientIdentifier == clientIdentifier);
         }
 
         public List<AuditLogEntity> GetComputerAuditLogs(int computerId,int limit)
@@ -644,6 +655,11 @@ namespace CloneDeploy_Services
                 actionResult.Success = true;
                 actionResult.Id = computer.Id;
             }
+            else
+            {
+                actionResult.Success = false;
+                actionResult.ErrorMessage = validationResult.ErrorMessage;
+            }
 
             return actionResult;
         }
@@ -676,8 +692,12 @@ namespace CloneDeploy_Services
                     }
                     if (_uow.ComputerRepository.Exists(h => h.Mac == computer.Mac))
                     {
-                        validationResult.ErrorMessage = "A Computer With This MAC Already Exists";
-                        return validationResult;
+                        var existingComputer = GetComputerFromMac(computer.Mac);
+                        if ((string.IsNullOrEmpty(existingComputer.ClientIdentifier) || string.IsNullOrEmpty(computer.ClientIdentifier)) || existingComputer.ClientIdentifier == computer.ClientIdentifier)
+                        {
+                            validationResult.ErrorMessage = "Duplicate MAC Addresses Are Only Allowed If Each Computer Has A Unique Client Identifier";
+                            return validationResult;
+                        }
                     }
                 }
                 else
@@ -695,8 +715,12 @@ namespace CloneDeploy_Services
                     {
                         if (_uow.ComputerRepository.Exists(h => h.Mac == computer.Mac))
                         {
-                            validationResult.ErrorMessage = "A Computer With This MAC Already Exists";
-                            return validationResult;
+                            var existingComputer = GetComputerFromMac(computer.Mac);
+                            if ((string.IsNullOrEmpty(existingComputer.ClientIdentifier) || string.IsNullOrEmpty(computer.ClientIdentifier)) || existingComputer.ClientIdentifier == computer.ClientIdentifier)
+                            {
+                                validationResult.ErrorMessage = "Duplicate MAC Addresses Are Only Allowed If Each Computer Has A Unique Client Identifier";
+                                return validationResult;
+                            }                           
                         }
                     }
                 }

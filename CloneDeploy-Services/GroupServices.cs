@@ -232,7 +232,7 @@ namespace CloneDeploy_Services
             var count = 0;
             foreach (var computer in GetGroupMembersWithImages(groupId))
             {
-                if (new Unicast(computer.Id, "push", userId, clientIp).Start().Contains("Successfully"))
+                if (new Unicast(computer.Id, "deploy", userId, clientIp).Start().Contains("Successfully"))
                     count++;
             }
             return count;

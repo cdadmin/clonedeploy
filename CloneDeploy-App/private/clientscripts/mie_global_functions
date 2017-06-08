@@ -60,7 +60,7 @@ function error()
 	  $curlAuth --data "computerId=$computer_id&error=$1" "${web}ErrorEmail" $curlEnd
 	fi
 	
-	$curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/clientlog.log | base64)"  -F subType="$(echo -n $image_direction | base64)"  -F mac="$(echo -n $mac | base64)" "${web}UploadLog" $curlEnd	
+	$curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/clientlog.log | base64)"  -F subType="$(echo -n $task | base64)"  -F mac="$(echo -n $mac | base64)" "${web}UploadLog" $curlEnd	
 	
 	if [ -n "$reboot_time" ]; then
 	  sleep $reboot_time
@@ -89,18 +89,13 @@ function checkout()
 		log " ...... $mccheckoutResult"
 	fi
 		
-	if [ "$is_ondemand" != "true" ]; then
-	  checkout_status=$($curlAuth --data "computerId=$computer_id" "${web}CheckOut" $curlEnd)
-	  log " ...... $checkout_status" "display"
-	else
-	  if [ -z "$computer_id"  ]; then
-	  computer_id="-1"
-	  fi
-	fi
+
+	checkout_status=$($curlAuth --data "computerId=$computer_id" "${web}CheckOut" $curlEnd)
+	log " ...... $checkout_status" "display"
 	
 	echo
 		
-	$curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/clientlog.log | base64)"  -F subType="$(echo -n $image_direction | base64)"  -F mac="$(echo -n $mac | base64)" "${web}UploadLog" $curlEnd
+	$curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/clientlog.log | base64)"  -F subType="$(echo -n $task | base64)"  -F mac="$(echo -n $mac | base64)" "${web}UploadLog" $curlEnd
 		
 	sleep 1;
 	
@@ -270,7 +265,7 @@ function mount_smb()
 	  return 0
 	fi
 	
-	smbInfo=$($curlAuth --data "dpId=$dp_id&task=$image_direction" "${web}DistributionPoint" $curlEnd)
+	smbInfo=$($curlAuth --data "dpId=$dp_id&task=$task" "${web}DistributionPoint" $curlEnd)
 	#fix path that was originally only used for initrd
 	share_path=$(echo "$(parse_json "$smbInfo" .SharePath)" | sed 's~//~~g')
     mount -t smbfs //"$(parse_json "$smbInfo" .Domain)"\;"$(parse_json "$smbInfo" .Username)":"$(parse_json "$smbInfo" .Password)"@"$share_path" /storage 2>/tmp/mntstat

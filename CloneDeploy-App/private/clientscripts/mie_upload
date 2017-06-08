@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. /usr/local/bin/osx_global_functions
+. /usr/local/bin/mie_global_functions
 
 log "OS X Client Version:"
 chroot "/Volumes/Macintosh HD" sw_vers >> $CLIENT_LOG
@@ -307,21 +307,21 @@ function upload_image()
 		  fi
 		  log " ...... Uploading Logical Volume $logical_volume" "display"
 		  touch /tmp/osx.progress
-	      . osx_reporter & hdiutil create -srcDevice $logical_volume -format UDZO -layout GPTSPUD -puppetstrings "$image_path/${volume_group_name}-${volume_name}".dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress
-	      log " . osx_reporter & hdiutil create -srcDevice $logical_volume -format UDZO -layout GPTSPUD -puppetstrings $image_path/${volume_group_name}-${volume_name}.dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress"
+	      . mie_reporter & hdiutil create -srcDevice $logical_volume -format UDZO -layout GPTSPUD -puppetstrings "$image_path/${volume_group_name}-${volume_name}".dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress
+	      log " . mie_reporter & hdiutil create -srcDevice $logical_volume -format UDZO -layout GPTSPUD -puppetstrings $image_path/${volume_group_name}-${volume_name}.dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress"
 	      sleep 5
 	      asr imagescan --source "$image_path/${volume_group_name}-${volume_name}".dmg | tee /tmp/osx.progress
-	      killall osx_reporter &>/dev/null
+	      killall mie_reporter &>/dev/null
 	      rm /tmp/osx.progress
 		  imaged_lvs="$imaged_lvs $logical_volume"
 		done	
     else
 	  touch /tmp/osx.progress
-	  . osx_reporter & hdiutil create -srcDevice $partition -format UDZO -layout GPTSPUD -puppetstrings "$image_path/part${partition_counter}".dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress
-	  log ". osx_reporter & hdiutil create -srcDevice $partition -format UDZO -layout GPTSPUD -puppetstrings $image_path/part${partition_counter}.dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress"
+	  . mie_reporter & hdiutil create -srcDevice $partition -format UDZO -layout GPTSPUD -puppetstrings "$image_path/part${partition_counter}".dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress
+	  log ". mie_reporter & hdiutil create -srcDevice $partition -format UDZO -layout GPTSPUD -puppetstrings $image_path/part${partition_counter}.dmg 2>> $CLIENT_LOG | tee /tmp/osx.progress"
 	  sleep 5
 	  asr imagescan --source "$image_path/part${partition_counter}".dmg | tee /tmp/osx.progress
-	  killall osx_reporter &>/dev/null
+	  killall mie_reporter &>/dev/null
 	  rm /tmp/osx.progress
 	 fi 
   done
@@ -402,12 +402,8 @@ function process_hard_drives()
 }
 
 function main()
-{  
-  if [ "$is_ondemand" = "true" ]; then
-    log " ** On Demand Enabled ** "
-    for arg in "$ondemand_arguments"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
-  fi
-
+{
+  
   if [ "$imageProtected" = "1" ]; then
     error "This Image Is Protected And Cannot Be Overwritten"
   fi
@@ -416,13 +412,12 @@ function main()
 
   get_hard_drives "upload"
 
-  if [ "$is_ondemand" != "true" ]; then
-    log " ** Updating Client Status To In-Progress ** "
-    $curlAuth --data "computerId=$computer_id" "${web}UpdateStatusInProgress" $curlEnd
-  fi
 
+  log " ** Updating Client Status To In-Progress ** "
+  $curlAuth --data "computerId=$computer_id" "${web}UpdateStatusInProgress" $curlEnd
+  
   log " ** Removing All Files For Existing Image: $image_name ** "
-    $curlAuth --data "profileId=$profile_id" "${web}DeleteImage" $curlEnd
+  $curlAuth --data "profileId=$profile_id" "${web}DeleteImage" $curlEnd
 
   create_image_schema
   if [ "$upload_schema_only" = "true" ]; then
@@ -434,7 +429,5 @@ function main()
 checkout
 }
 
-is_ondemand="$1"
-ondemand_arguments="$2"
 main "$@"
   

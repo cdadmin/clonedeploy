@@ -4,6 +4,7 @@ using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using log4net;
+using Newtonsoft.Json;
 
 namespace CloneDeploy_Services.Workflows
 {
@@ -19,9 +20,10 @@ namespace CloneDeploy_Services.Workflows
         private ImageProfileWithImage _imageProfile;
         private int _multicastServerId;
         private readonly ComputerServices _computerServices;
+        private readonly string _ipAddress;
 
         //Constructor For Starting Multicast For Group
-        public Multicast(int groupId, int userId)
+        public Multicast(int groupId, int userId, string userIp)
         {
             _computers = new List<ComputerEntity>();
             _multicastSession = new ActiveMulticastSessionEntity();
@@ -29,10 +31,11 @@ namespace CloneDeploy_Services.Workflows
             _group = new GroupServices().GetGroup(groupId);
             _userId = userId;
             _computerServices = new ComputerServices();
+            _ipAddress = userIp;
         }
 
         //Constructor For Starting Multicast For On Demand
-        public Multicast(int imageProfileId, string clientCount, int userId)
+        public Multicast(int imageProfileId, string clientCount, int userId, string userIp)
         {
             _multicastSession = new ActiveMulticastSessionEntity();
             _isOnDemand = true;
@@ -42,6 +45,7 @@ namespace CloneDeploy_Services.Workflows
             _userId = userId;
             _multicastSession.ImageProfileId = _imageProfile.Id;
             _computerServices = new ComputerServices();
+            _ipAddress = userIp;
         }
 
         public string Create()
@@ -77,6 +81,20 @@ namespace CloneDeploy_Services.Workflows
                 var onDemandprocessArguments = GenerateProcessArguments();
                 if (onDemandprocessArguments == 0)
                     return "Could Not Start The Multicast Application";
+
+
+                var ondAuditLog = new AuditLogEntity();
+                ondAuditLog.AuditType = AuditEntry.Type.OndMulticast;
+                ondAuditLog.ObjectId = _imageProfile.ImageId;
+                var ondUser = new UserServices().GetUser(_userId);
+                if (ondUser != null)
+                    ondAuditLog.UserName = ondUser.Name;
+                ondAuditLog.ObjectName = _imageProfile.Image.Name;
+                ondAuditLog.Ip = _ipAddress;
+                ondAuditLog.UserId = _userId;
+                ondAuditLog.ObjectType = "Image";
+                ondAuditLog.ObjectJson = JsonConvert.SerializeObject(_multicastSession);
+                new AuditLogServices().AddAuditLog(ondAuditLog);
                 return "Successfully Started Multicast " + _group.Name;
             }
 
@@ -85,7 +103,7 @@ namespace CloneDeploy_Services.Workflows
             _computers = new GroupServices().GetGroupMembers(_group.Id);
             if (_computers.Count < 1)
             {
-                return "The group Does Not Have Any Members";
+                return "The Group Does Not Have Any Members";
             }
 
             var activeMulticastSessionServices = new ActiveMulticastSessionServices();
@@ -122,6 +140,25 @@ namespace CloneDeploy_Services.Workflows
             foreach (var computer in _computers)
                 IpServices.WakeUp(computer.Mac);
 
+            var auditLog = new AuditLogEntity();
+            auditLog.AuditType = AuditEntry.Type.Multicast;
+            auditLog.ObjectId = _group.Id;
+            var user = new UserServices().GetUser(_userId);
+            if (user != null)
+                auditLog.UserName = user.Name;
+            auditLog.ObjectName = _group.Name;
+            auditLog.Ip = _ipAddress;
+            auditLog.UserId = _userId;
+            auditLog.ObjectType = "Group";
+            auditLog.ObjectJson = JsonConvert.SerializeObject(_multicastSession);
+            new AuditLogServices().AddAuditLog(auditLog);
+
+            auditLog.ObjectId = _imageProfile.ImageId;
+            auditLog.ObjectName = _imageProfile.Image.Name;
+            auditLog.ObjectType = "Image";
+            new AuditLogServices().AddAuditLog(auditLog);
+
+
             return "Successfully Started Multicast " + _group.Name;
         }
 
@@ -137,7 +174,7 @@ namespace CloneDeploy_Services.Workflows
                 {
                     Type = "multicast",
                     ComputerId = computer.Id,
-                    Direction = "push",
+                    Direction = "deploy",
                     MulticastId = _multicastSession.Id,
                     UserId = _userId
                 };
@@ -166,7 +203,7 @@ namespace CloneDeploy_Services.Workflows
         {
             foreach (var computer in _computers)
             {
-                if (!new TaskBootMenu(computer, _imageProfile, "push").CreatePxeBootFiles())
+                if (!new TaskBootMenu(computer, _imageProfile, "deploy").CreatePxeBootFiles())
                     return false;
             }
             return true;

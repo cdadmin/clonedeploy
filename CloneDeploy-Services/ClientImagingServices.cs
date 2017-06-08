@@ -5,12 +5,12 @@ using System.IO;
 using System.Linq;
 using CloneDeploy_Common;
 using CloneDeploy_Entities;
-
 using CloneDeploy_Entities.DTOs.ClientImaging;
 using CloneDeploy_Services.Helpers;
 using CloneDeploy_Services.Workflows;
 using log4net;
 using Newtonsoft.Json;
+using CloneDeploy_Entities.DTOs;
 
 namespace CloneDeploy_Services
 {
@@ -18,12 +18,24 @@ namespace CloneDeploy_Services
     {
         private readonly ILog log = LogManager.GetLogger("ApplicationLog");
 
-        public string AddComputer(string name, string mac)
+        public string AddComputer(string name, string mac, string clientIdentifier)
         {
+            var existingComputer = new ComputerServices().GetComputerFromClientIdentifier(clientIdentifier);
+            if(existingComputer != null)
+            {
+                return JsonConvert.SerializeObject(new ActionResultDTO() { Success = false, ErrorMessage = "A Computer With This Client Id Already Exists" });
+            }
             var computer = new ComputerEntity
             {
                 Name = name,
-                Mac = mac
+                Mac = mac,
+                ClientIdentifier = clientIdentifier,
+                SiteId = -1,
+                BuildingId = -1,
+                RoomId = -1,
+                ImageId = -1,
+                ImageProfileId = -1,
+                ClusterGroupId = -1
             };
             var result = new ComputerServices().AddComputer(computer);
             return JsonConvert.SerializeObject(result);
@@ -194,11 +206,112 @@ namespace CloneDeploy_Services
             return JsonConvert.SerializeObject(result);
         }
 
-        public string CheckIn(string computerMac)
+        public string OnDemandCheckIn(string mac, int objectId, string task, string userId, string computerId)
         {
             var checkIn = new CheckIn();
             var computerServices = new ComputerServices();
-            var computer = computerServices.GetComputerFromMac(computerMac);
+
+            ComputerEntity computer = null;
+            if(computerId != "false")
+                computer = computerServices.GetComputer(Convert.ToInt32(computerId));
+           
+            ImageProfileWithImage imageProfile;
+
+            var arguments = "";
+            if (task == "deploy" || task == "upload" || task == "clobber")
+            {
+                imageProfile = new ImageProfileServices().ReadProfile(objectId);
+                arguments = new CreateTaskArguments(computer, imageProfile, task).Execute();
+            }
+            else //Multicast
+            {
+                var multicast = new ActiveMulticastSessionServices().GetFromPort(objectId);
+                imageProfile = new ImageProfileServices().ReadProfile(multicast.ImageProfileId);
+                arguments = new CreateTaskArguments(computer, imageProfile, task).Execute(objectId.ToString());
+            }
+
+            var imageDistributionPoint = new GetImageServer(computer, task).Run();
+            if (imageProfile.Image.Environment == "winpe")
+                arguments += " dp_id=\"" + imageDistributionPoint + "\"\r\n";
+            else
+                arguments += " dp_id=\"" + imageDistributionPoint + "\"";
+
+            var activeTask = new ActiveImagingTaskEntity();
+            activeTask.Direction = task;
+            activeTask.UserId = Convert.ToInt32(userId);
+            activeTask.Type = task;
+           
+            activeTask.DpId = imageDistributionPoint;
+            activeTask.Status = "1";
+
+            if (computer == null)
+            {
+                //Create Task for an unregistered on demand computer
+                var rnd = new Random(DateTime.Now.Millisecond);
+                int newComputerId = rnd.Next(-200000, -100000);
+
+                if (imageProfile.Image.Environment == "winpe")
+                    arguments += " computer_id=" + newComputerId + "\r\n";
+                else
+                    arguments += " computer_id=" + newComputerId;
+                activeTask.ComputerId = newComputerId;
+                activeTask.Arguments = mac;
+            }
+            else
+            {
+                //Create Task for a registered on demand computer
+                activeTask.ComputerId = computer.Id;
+                activeTask.Arguments = arguments;
+            }
+            new ActiveImagingTaskServices().AddActiveImagingTask(activeTask);
+
+            checkIn.Result = "true";
+            checkIn.TaskArguments = arguments;
+            return JsonConvert.SerializeObject(checkIn);
+        }
+
+        public string DetermineTask(string idType, string id)
+        {
+            var determineTaskDto = new DetermineTaskDTO();
+            var computerServices = new ComputerServices();
+            ComputerEntity computer;
+            if(idType == "mac")
+                computer = computerServices.GetComputerFromMac(id);
+            else
+                computer = computerServices.GetComputerFromClientIdentifier(id);
+
+            if (computer == null)
+            {
+                determineTaskDto.task = "ond";
+                determineTaskDto.computerId = "false";
+                return JsonConvert.SerializeObject(determineTaskDto);
+            }
+
+            var computerTask = computerServices.GetTaskForComputer(computer.Id);
+            if (computerTask == null)
+            {
+                determineTaskDto.computerId = computer.Id.ToString();
+                determineTaskDto.task = "ond";
+            }
+            else
+            {
+                determineTaskDto.computerId = computer.Id.ToString();
+                determineTaskDto.task = computerTask.Type;
+            }
+
+            return JsonConvert.SerializeObject(determineTaskDto);
+
+
+        }
+
+        public string CheckIn(string computerId)
+        {
+
+            var checkIn = new CheckIn();
+            var computerServices = new ComputerServices();
+
+            var computer = computerServices.GetComputer(Convert.ToInt32(computerId));
+
             if (computer == null)
             {
                 checkIn.Result = "false";
@@ -214,7 +327,7 @@ namespace CloneDeploy_Services
                 return JsonConvert.SerializeObject(checkIn);
             }
 
-            var imageDistributionPoint = new GetImageServer(computer,computerTask.Direction).Run();
+            var imageDistributionPoint = new GetImageServer(computer, computerTask.Direction).Run();
 
             computerTask.Status = "1";
             computerTask.DpId = imageDistributionPoint;
@@ -243,14 +356,22 @@ namespace CloneDeploy_Services
             checkIn.Result = "false";
             checkIn.Message = "Could Not Update Task Status";
             return JsonConvert.SerializeObject(checkIn);
+
         }
 
         public void CheckOut(int computerId)
         {
             var computerTask = new ComputerServices().GetTaskForComputer(computerId);
             var activeImagingTaskServices = new ActiveImagingTaskServices();
-            activeImagingTaskServices.DeleteActiveImagingTask(computerTask.Id);
-            if (computerTask.Type == "unicast")
+            if (computerId < 0)
+            {
+                activeImagingTaskServices.DeleteUnregisteredOndTask(computerTask.Id);
+            }
+            else
+            {
+                activeImagingTaskServices.DeleteActiveImagingTask(computerTask.Id);
+            }
+            if (computerTask.Type != "multicast")
                 activeImagingTaskServices.SendTaskCompletedEmail(computerTask);
         }
 
@@ -399,7 +520,7 @@ namespace CloneDeploy_Services
             smb.Domain = dp.Domain;
             smb.DisplayName = dp.DisplayName;
             smb.IsPrimary = dp.IsPrimary == 1 ? "true" : "false";
-            if (task == "pull")
+            if (task == "upload")
             {
                 smb.Username = dp.RwUsername;
                 smb.Password = new EncryptionServices().DecryptText(dp.RwPassword);
@@ -413,11 +534,11 @@ namespace CloneDeploy_Services
             return JsonConvert.SerializeObject(smb);
         }
 
-        public string GetAllClusterDps(string computerMac)
+        public string GetAllClusterDps(int computerId)
         {
             var rnd = new Random();
             var computerServices = new ComputerServices();
-            var computer = computerServices.GetComputerFromMac(computerMac);
+            var computer = computerServices.GetComputer(computerId);
 
             if (SettingServices.ServerIsNotClustered)
             {
@@ -509,32 +630,6 @@ namespace CloneDeploy_Services
             var imageProfile = new ImageProfileServices().ReadProfile(profileId);
             var authString = imageProfile.MunkiAuthUsername + ":" + imageProfile.MunkiAuthPassword;
             return StringManipulationServices.Encode(authString);
-        }
-
-        public string GetOnDemandArguments(string mac, int objectId, string task)
-        {
-            ImageProfileWithImage imageProfile;
-            var computer = new ComputerServices().GetComputerFromMac(mac);
-            var arguments = "";
-            if (task == "push" || task == "pull")
-            {
-                imageProfile = new ImageProfileServices().ReadProfile(objectId);
-                arguments = new CreateTaskArguments(computer, imageProfile, task).Execute();
-            }
-            else //Multicast
-            {
-                var multicast = new ActiveMulticastSessionServices().GetFromPort(objectId);
-                imageProfile = new ImageProfileServices().ReadProfile(multicast.ImageProfileId);
-                arguments = new CreateTaskArguments(computer, imageProfile, task).Execute(objectId.ToString());
-            }
-
-            var imageDistributionPoint = new GetImageServer(computer,task).Run();
-            if (imageProfile.Image.Environment == "winpe")
-                arguments += " dp_id=\"" + imageDistributionPoint + "\"\r\n";
-            else
-                arguments += " dp_id=\"" + imageDistributionPoint + "\"";
-
-            return arguments;
         }
 
         public string GetOriginalLvm(int profileId, string clientHd, string hdToGet, string partitionPrefix)
@@ -675,11 +770,11 @@ namespace CloneDeploy_Services
                     return SettingServices.GetSettingValue(SettingStrings.RegisterRequiresLogin);
                 case "clobber":
                     return SettingServices.GetSettingValue(SettingStrings.ClobberRequiresLogin);
-                case "push":
+                case "deploy":
                     return SettingServices.GetSettingValue(SettingStrings.WebTaskRequiresLogin);
-                case "permanent_push":
+                case "permanent_deploy":
                     return SettingServices.GetSettingValue(SettingStrings.WebTaskRequiresLogin);
-                case "pull":
+                case "upload":
                     return SettingServices.GetSettingValue(SettingStrings.WebTaskRequiresLogin);
 
                 default:

@@ -1,4 +1,4 @@
-param([string]$web,[string]$computerId,[string]$partitionNumber,[string]$direction,[string]$curlOptions,[string]$userTokenEncoded,[string]$isOnDemand)
+param([string]$web,[string]$computerId,[string]$partitionNumber,[string]$direction,[string]$curlOptions,[string]$userTokenEncoded)
 
 . x:\winpe_global_functions.ps1
 
@@ -13,9 +13,8 @@ while(Test-Path x:\wim.progress)
     $post=$(Get-Content x:\wim.progress | Select -last 1)
     Write-Host $post
 
-    if($isOnDemand -eq "false")
-    {
-        $result=$(curl.exe $curlOptions -H Authorization:$userTokenEncoded --data "computerId=$computerId&progress=$post&progressType=wim" ${web}UpdateProgress --connect-timeout 10 --stderr -)
-    }
+
+    $result=$(curl.exe $curlOptions -H Authorization:$userTokenEncoded --data "computerId=$computerId&progress=$post&progressType=wim" ${web}UpdateProgress --connect-timeout 10 --stderr -)
+    
     Start-Sleep -s 2
 }

@@ -79,7 +79,7 @@ namespace CloneDeploy_App.Controllers
 
             return new ApiStringResponseDTO
             {
-                Value = new Multicast(profileId, clientCount, Convert.ToInt32(userId)).Create()
+                Value = new Multicast(profileId, clientCount, Convert.ToInt32(userId), Request.GetClientIpAddress()).Create()
             };
         }
 

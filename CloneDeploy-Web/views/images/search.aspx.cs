@@ -99,13 +99,18 @@ namespace CloneDeploy_Web.views.images
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
-            var listImages = (List<ImageEntity>) gvImages.DataSource;
+            var listImages = (List<ImageWithDate>) gvImages.DataSource;
             switch (e.SortExpression)
             {
                 case "Name":
                     listImages = GetSortDirection(e.SortExpression) == "Asc"
                         ? listImages.OrderBy(h => h.Name).ToList()
                         : listImages.OrderByDescending(h => h.Name).ToList();
+                    break;
+                case "LastUsed":
+                    listImages = GetSortDirection(e.SortExpression) == "Asc"
+                        ? listImages.OrderBy(h => h.LastUsed).ToList()
+                        : listImages.OrderByDescending(h => h.LastUsed).ToList();
                     break;
             }
             gvImages.DataSource = listImages;
