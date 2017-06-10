@@ -1,14 +1,4 @@
 #!/bin/bash
-#
-#
-# rc.single     This file is executed by init when it goes into runlevel
-#               1, which is the administrative state. It kills all
-#               deamons and then puts the system into single user mode.
-#               Note that the file systems are kept mounted.
-#
-# Author:       Miquel van Smoorenburg, <miquels@drinkel.nl.mugnet.org>
-#                   Modified for RHS Linux by Damien Neil
-#				     Modified for Clone Deploy
 
 . /bin/lie_global_functions
 
@@ -180,13 +170,14 @@ function get_task_computer()
  #Assume task is on demand and computer does not exist until each are found
   export task="ond"
   export computer_id="false"
-  
+  serial_number=$(dmidecode -s system-serial-number)
+  system_uuid=$(dmidecode -s system-uuid)
+	
   clear_and_move_down
   #Begin search using the computers client id
   for interface in `ls /sys/class/net | grep -v "lo" | sed 's/@//'`; do
     export mac=$(cat /sys/class/net/$interface/address)
-	serial_number=$(dmidecode -s system-serial-number)
-	system_uuid=$(dmidecode -s system-uuid)
+	
 	client_id="$mac.$(remove_whitespace $serial_number).$(remove_whitespace $system_uuid)"
 	
 	echo
@@ -201,11 +192,13 @@ function get_task_computer()
 	    log " ...... This Computer Was Not Found" "display"
 		continue
 	  else
-	    if [ "$(parse_json "$computer_task_object" .task)" = "upload" ] || [ "$(parse_json "$computer_task_object" .task)" = "deploy" ] || [ "$(parse_json "$computer_task_object" .task)" = "permanent_deploy" ]; then
+	    if [ "$(parse_json "$computer_task_object" .task)" = "upload" ] || [ "$(parse_json "$computer_task_object" .task)" = "deploy" ] || [ "$(parse_json "$computer_task_object" .task)" = "permanentdeploy" ]; then
 	      export computer_id="$(parse_json "$computer_task_object" .computerId)"
 	      export task="$(parse_json "$computer_task_object" .task)"
+		  export task_id="$(parse_json "$computer_task_object" .taskId)"
 		  log " ...... Success" "display"
 		  login_message="Found $task Task For This Computer"
+		  task_found="true"
 		  return
 		else
 		  export computer_id="$(parse_json "$computer_task_object" .computerId)"
@@ -216,44 +209,45 @@ function get_task_computer()
 	fi
   done
   
-  #Continue Search Looking Only for computer by mac address
-  for interface in `ls /sys/class/net | grep -v "lo" | sed 's/@//'`; do
-    export mac=$(cat /sys/class/net/$interface/address)
-	echo
-	log " ** Looking For Active Task For $mac ** " "display"
-	computer_task_object=$($curlCommand --data "idType=mac&id=$mac" "${web}DetermineTask" $curlEnd)
-	log "$computer_task_object"
-	if [  "$?" != "0" ]; then
-      log "$computer_task_object"
-	  login_message="Could Not Determine Task Type"
-	else
-	  if [ "$(parse_json "$computer_task_object" .computerId)" = "false" ] || [ -z "$(parse_json "$computer_task_object" .computerId)" ]; then
-	    log " ...... This Computer Was Not Found" "display"
-		continue
+  if [ "$task_found" != "true" ] && [ "$computer_id" = "false" ]; then
+    #Continue Search Looking Only for computer by mac address
+    for interface in `ls /sys/class/net | grep -v "lo" | sed 's/@//'`; do
+      export mac=$(cat /sys/class/net/$interface/address)
+	  echo
+	  log " ** Looking For Active Task For $mac ** " "display"
+	  computer_task_object=$($curlCommand --data "idType=mac&id=$mac" "${web}DetermineTask" $curlEnd)
+	  log "$computer_task_object"
+	  if [  "$?" != "0" ]; then
+        log "$computer_task_object"
+	    login_message="Could Not Determine Task Type"
 	  else
-	    if [ "$(parse_json "$computer_task_object" .task)" = "upload" ] || [ "$(parse_json "$computer_task_object" .task)" = "deploy" ] || [ "$(parse_json "$computer_task_object" .task)" = "permanent_deploy" ]; then
-	      export computer_id="$(parse_json "$computer_task_object" .computerId)"
-	      export task="$(parse_json "$computer_task_object" .task)"
-		  log " ...... Success" "display"
-		  login_message="Found $task Task For This Computer"
-		  return
-		else
-		  export computer_id="$(parse_json "$computer_task_object" .computerId)"
-		  log " ...... An Active Task Was Not Found For This Computer" "display"
+	    if [ "$(parse_json "$computer_task_object" .computerId)" = "false" ] || [ -z "$(parse_json "$computer_task_object" .computerId)" ]; then
+	      log " ...... This Computer Was Not Found" "display"
 		  continue
-		fi
+	    else
+	      if [ "$(parse_json "$computer_task_object" .task)" = "upload" ] || [ "$(parse_json "$computer_task_object" .task)" = "deploy" ] || [ "$(parse_json "$computer_task_object" .task)" = "permanentdeploy" ]; then
+	        export computer_id="$(parse_json "$computer_task_object" .computerId)"
+	        export task="$(parse_json "$computer_task_object" .task)"
+		    export task_id="$(parse_json "$computer_task_object" .taskId)"
+		    log " ...... Success" "display"
+		    login_message="Found $task Task For This Computer"
+		    return
+		  else
+		    export computer_id="$(parse_json "$computer_task_object" .computerId)"
+		    log " ...... An Active Task Was Not Found For This Computer" "display"
+		    continue
+		  fi
+	    fi
 	  fi
-	fi
-  done
+    done
+  fi
   
-  if [ -z "$computer_id" ]; then
+  if [ "$computer_id" = "false" ]; then
     login_message="This Computer Is Not Registered.  No Active Web Tasks Were Found For This Computer.  Starting On Demand Imaging."
   else
     login_message="No Active Web Tasks Were Found For This Computer.  Starting On Demand Imaging."
   fi
   
-  
-  log " No Active Web Tasks Were Found.  Falling Back To On Demand Mode" "display"
 }
 
 function clonedeploy_login()
@@ -341,7 +335,7 @@ function main()
   fi
 
   clear_and_move_down
-  echo "$login_message"
+  log "$login_message" "display"
   echo
   clonedeploy_login
 
@@ -359,7 +353,7 @@ function main()
   echo
   sleep 2
 
-  if [ "$task" = "deploy" ] || [ "$task" = "permanent_deploy" ]; then	
+  if [ "$task" = "deploy" ] || [ "$task" = "permanentdeploy" ] || [ "$task" = "multicast" ]; then	
 	  /bin/lie_deploy
 
   elif [ "$task" = "clobber" ]; then	

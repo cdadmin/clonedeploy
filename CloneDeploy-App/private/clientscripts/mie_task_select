@@ -5,16 +5,17 @@
 log "OS X NBI Version:"
 sw_vers >> $CLIENT_LOG
 
+#Assume task is on demand and computer does not exist until each are found
+task="ond"
+computer_id="false"
+serial_number=$(system_profiler SPHardwareDataType | awk '/Serial Number/ {print $4}')
+system_uuid=$(system_profiler SPHardwareDataType | awk '/UUID/ { print $3; }')
 mac_address_list=$(networksetup -listallhardwareports | grep "Ethernet Address:" | cut -d " " -f 3)
 
   #Begin search using the computers client id
 for mac_address in $mac_address_list; do
-   #Assume task is on demand and computer does not exist until each are found
-  task="ond"
-  computer_id="false"
+ 
   mac=$mac_address
-  serial_number=$(system_profiler SPHardwareDataType | awk '/Serial Number/ {print $4}')
-  system_uuid=$(system_profiler SPHardwareDataType | awk '/UUID/ { print $3; }')
   client_id="$mac.$(remove_whitespace $serial_number).$(remove_whitespace $system_uuid)"
 	
   echo
@@ -32,6 +33,7 @@ for mac_address in $mac_address_list; do
 	  if [ "$(parse_json "$computer_task_object" .task)" = "upload" ] || [ "$(parse_json "$computer_task_object" .task)" = "deploy" ] || [ "$(parse_json "$computer_task_object" .task)" = "permanent_deploy" ]; then
 	    computer_id="$(parse_json "$computer_task_object" .computerId)"
 	    task="$(parse_json "$computer_task_object" .task)"
+		task_id="$(parse_json "$computer_task_object" .taskId)"
 		log " ...... Success" "display"
 		login_message="Found $task Task For This Computer"
 		task_found="true"
@@ -45,7 +47,7 @@ for mac_address in $mac_address_list; do
   fi
 done
   
-if [ "$task_found" != "true" ]; then  
+if [ "$task_found" != "true" ] && [ "$computer_id" = "false" ]; then
   #Continue Search Looking Only for computer by mac address
 for mac_address in $mac_address_list; do
     mac=$mac_address
@@ -64,6 +66,7 @@ for mac_address in $mac_address_list; do
 	    if [ "$(parse_json "$computer_task_object" .task)" = "upload" ] || [ "$(parse_json "$computer_task_object" .task)" = "deploy" ] || [ "$(parse_json "$computer_task_object" .task)" = "permanent_deploy" ]; then
 	      computer_id="$(parse_json "$computer_task_object" .computerId)"
 	      task="$(parse_json "$computer_task_object" .task)"
+		  task_id="$(parse_json "$computer_task_object" .taskId)"
 		  log " ...... Success" "display"
 		  login_message="Found $task Task For This Computer"
 		  task_found="true"
@@ -81,13 +84,13 @@ fi
 echo
   if [ "$computer_id" = "false" ]; then
     log "This Computer Is Not Registered.  No Active Web Tasks Were Found For This Computer.  Starting Registration." "display"
-	sleep 10
+
 	. /usr/local/bin/mie_register
   fi
   
   if [ "$task_found" != "true" ]; then
     log "No Active Web Tasks Were Found For This Computer.  Starting On Demand Imaging." "display"
-	sleep 10
+
 	mac=$(networksetup -listallhardwareports | grep "Ethernet Address:" | cut -d " " -f 3 | head -n1)
     . /usr/local/bin/mie_ond
   fi
@@ -98,7 +101,7 @@ echo
 	  checkInStatus=$($curlAuth --data "mac=$mac&objectId=$image_profile_id&task=$task&userId=$user_id&computerId=$computer_id" "${web}OnDemandCheckIn" $curlEnd)
     else
 	  log " ** Verifying Active Task ** " "display"
-	  checkInStatus=`$curlAuth --data "computerId=$computer_id" "${web}CheckIn" $curlEnd`
+	  checkInStatus=`$curlAuth --data "taskId=$task_id" "${web}CheckIn" $curlEnd`
 	fi
   
   if [ ! "$?" = "0" ]; then
@@ -109,13 +112,23 @@ echo
 		else
 			sleep 1
 			for arg in "`parse_json "$checkInStatus" .TaskArguments`"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
+			
+			if [ "$(parse_json "$checkInStatus" .ImageEnvironment)" != "macOS" ]; then
+			  error "The Imaging Environment For The Image Does Not Match The Currently Loaded Environment"
+			fi
+			
+			 #On demand task ids are created later, get it now
+			if [ "$is_ondemand" = "true" ]; then
+			  task_id=$(parse_json "$checkInStatus" .TaskId)
+			fi
+			
 			log " ...... Success" "display"
 		fi
 	fi
   
-if [ "$task" = "upload" ]; then
+if [ "$task" = "upload" ] || [ "$task" = "unregupload" ] || [ "$task" = "ondupload" ]; then
   . /usr/local/bin/mie_upload
-elif [ "$task" = "deploy" ]; then
+elif [ "$task" = "deploy" ] || [ "$task" = "permanentdeploy" ] || [ "$task" = "unregdeploy" ] || [ "$task" = "onddeploy" ] ; then
   . /usr/local/bin/mie_deploy
 else
   error "Could Not Determine Task Type"

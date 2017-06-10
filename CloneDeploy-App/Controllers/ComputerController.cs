@@ -148,7 +148,8 @@ namespace CloneDeploy_App.Controllers
         [CustomAuth(Permission = "ComputerRead")]
         public IEnumerable<ComputerLogEntity> GetComputerLogs(int id)
         {
-            return _computerService.SearchComputerLogs(id);
+            var result = _computerService.SearchComputerLogs(id);
+            return result;
         }
 
         [CustomAuth(Permission = "ComputerSearch")]
@@ -298,7 +299,7 @@ namespace CloneDeploy_App.Controllers
         {
             return new ApiStringResponseDTO
             {
-                Value = new Unicast(id, "permanent_deploy", _userId, Request.GetClientIpAddress()).Start()
+                Value = new Unicast(id, "permanentdeploy", _userId, Request.GetClientIpAddress()).Start()
             };
         }
 

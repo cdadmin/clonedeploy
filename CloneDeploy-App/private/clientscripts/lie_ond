@@ -26,7 +26,11 @@ if [ "$taskType" = "1" ]; then
 		image_profile_id=$(dialog --backtitle "CloneDeploy" --title "Select An Image Profile" --clear --menu "" 20 60 15 `parse_json "$imageProfileList" .ImageProfiles[]` --stdout)
 	fi	
 	
-	task="deploy"
+	if [ "$computer_id" = "false" ]; then
+	  task="unregdeploy"
+	else
+	  task="onddeploy"
+	fi
 	. /bin/lie_deploy
     
 elif [ "$taskType" = "2" ]; then
@@ -77,7 +81,12 @@ elif [ "$taskType" = "2" ]; then
     else
       image_profile_id=$(dialog --backtitle "CloneDeploy" --title "Select An Image Profile" --clear --menu "" 20 60 15 `parse_json "$profile_list" .ImageProfiles[]` --stdout)
     fi
-  task="upload"
+	
+	if [ "$computer_id" = "false" ]; then
+	  task="unregupload"
+	else
+	  task="ondupload"
+	fi
   . /bin/lie_upload
 		
 elif [ "$taskType" = "3" ]; then
@@ -87,8 +96,8 @@ elif [ "$taskType" = "3" ]; then
 	  error "No Multicast Session Was Selected Or There Are No Active Sessions"
 	fi
 	
-	task="deploy"
-	multicast="true"
+
+	task="ondmulticast"	
 	. /bin/lie_deploy
 
 else

@@ -374,13 +374,21 @@ function create_image_schema()
         fi
       fi
 
+	  log "Calculating volume size for $partition"
       partclone.$partclone_type -SIic -s $partition -O /dev/null >& /tmp/$partition_number.size
-      log "Partition Volume Size"
+      cat /var/log/partclone.log >> $CLIENT_LOG
+	  log "Partition Volume Size"
       cat /tmp/$partition_number.size | grep volume_size >> $CLIENT_LOG
 	  log "Partition Used Size"
       cat /tmp/$partition_number.size | grep used_size >> $CLIENT_LOG
+	  
       volume_size=`cat /tmp/$partition_number.size | grep volume_size | cut -d"," -f 1 | cut -d ":" -f 2` #sed 's/ *$//'
       volume_used_mb=`cat /tmp/$partition_number.size | grep used_size | cut -d"," -f 2 | cut -d ":" -f 2` #sed 's/ *$//'
+	   
+	  if [ -z "$volume_size" ] || [ -z "$volume_used_mb" ]; then
+	    error "Unkown error while determining volume size"	
+	  fi
+	    
       volume_size=$(( $volume_size * 1000 * 1000 ))
 	  volume_size=$(( $volume_size / 1024 / 1024 ))
 	  volume_used_mb=$(( $volume_used_mb * 1000 * 1000 ))
@@ -454,13 +462,20 @@ function create_image_schema()
               fi
             fi
             
+			log "Calculating volume size for $logcial_volume_device"
             partclone.$partclone_type -SIic -s "$logical_volume_device" -O /dev/null >& /tmp/lv$logical_volume_counter.size
+			cat /var/log/partclone.log >> $CLIENT_LOG
             log "$logical_volume_device Volume Size"
             cat /tmp/lv$logical_volume_counter.size | grep volume_size >> $CLIENT_LOG
             cat /tmp/lv$logical_volume_counter.size | grep used_size >> $CLIENT_LOG
             lv_volume_size=`cat /tmp/lv$logical_volume_counter.size | grep volume_size | cut -d"," -f 1 | cut -d ":" -f 2` #sed 's/ *$//'
             lv_used_mb=`cat /tmp/lv$logical_volume_counter.size | grep used_size | cut -d"," -f 2 | cut -d ":" -f 2` #sed 's/ *$//'
-            lv_volume_size=$(( $lv_volume_size * 1000 * 1000 ))
+			
+			if [ -z "$lv_volume_size" ] || [ -z "$lv_used_mb" ]; then
+			  error "Unkown error while determining lv volume size"
+			fi
+            
+			lv_volume_size=$(( $lv_volume_size * 1000 * 1000 ))
 	        lv_volume_size=$(( $lv_volume_size / 1024 / 1024 ))
             lv_used_mb=$(( $lv_used_mb * 1000 * 1000 ))
 	        lv_used_mb=$(( $lv_used_mb / 1024 / 1024 ))
@@ -579,9 +594,9 @@ function upload_image()
 	wim_arguments=""
     log " ** Starting Image Upload For $partition ** " "display" 
 	
-	if [ -n "$computer_id" ]; then    
-	  null=$($curlAuth --data "computerId=$computer_id&partition=$partition" "${web}UpdateProgressPartition" $curlEnd)
-    fi
+
+	$curlAuth --data "taskId=$task_id&partition=$partition" "${web}UpdateProgressPartition" $curlEnd
+    
     sleep 7
     echo
     
@@ -653,15 +668,15 @@ function upload_image()
 		wimsource="/mnt/wimsource"
       fi 	  
 	  touch /tmp/wim.progress
-	  log " ...... lie_reporter $computer_id wim & wimcapture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
-	  eval "lie_reporter $computer_id wim & wimcapture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
+	  log " ...... lie_reporter $task_id wim & wimlib-imagex capture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
+	  eval "lie_reporter $task_id wim & wimlib-imagex capture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
 	  rm /tmp/wim.progress
 	  umount /mnt/wimsource &> /dev/null
     else
 	  touch /tmp/clone.progress
 	  cd /
-	  log " ...... lie_reporter $computer_id partclone & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension"    
-	  eval "lie_reporter $computer_id partclone & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension"
+	  log " ...... lie_reporter $task_id partclone & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension"    
+	  eval "lie_reporter $task_id partclone & partclone.$partclone_type -B -c -s $partition $partclone_out $compression_out $image_path/$output_name.$partclone_type.$compression_extension"
       rm /tmp/clone.progress
       cat /var/log/partclone.log >> $CLIENT_LOG
 	  cd $image_path

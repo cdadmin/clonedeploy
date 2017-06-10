@@ -34,7 +34,7 @@ namespace CloneDeploy_Services.Workflows
 
             if (_imageProfile.Image == null) return "The Image Does Not Exist";
 
-            if (_direction == "deploy" || _direction == "permanent_deploy")
+            if (_direction == "deploy" || _direction == "permanentdeploy")
             {
                 var validation = new ImageServices().CheckApprovalAndChecksum(_imageProfile.Image, _userId);
                 if (!validation.Success) return validation.ErrorMessage;
@@ -67,7 +67,7 @@ namespace CloneDeploy_Services.Workflows
             if (!activeImagingTaskServices.AddActiveImagingTask(_activeTask))
                 return "Could Not Create The Database Entry For This Task";
 
-            if (!new TaskBootMenu(_computer, _imageProfile, _direction).CreatePxeBootFiles())
+            if (!new TaskBootMenu(_computer, _imageProfile).CreatePxeBootFiles())
             {
                 activeImagingTaskServices.DeleteActiveImagingTask(_activeTask.Id);
                 return "Could Not Create PXE Boot File";
@@ -88,7 +88,7 @@ namespace CloneDeploy_Services.Workflows
                 case "deploy":
                     auditLog.AuditType = AuditEntry.Type.Deploy;
                     break;
-                case "permanent_deploy":
+                case "permanentdeploy":
                     auditLog.AuditType = AuditEntry.Type.PermanentPush;
                     break;
                 default:

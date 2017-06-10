@@ -47,7 +47,7 @@ function checkin()
 	   checkInStatus=$($curlAuth --data "mac=$mac&objectId=$image_profile_id&task=$task&userId=$user_id&computerId=$computer_id" "${web}OnDemandCheckIn" $curlEnd)
     else
 	  log " ** Verifying Active Task ** " "display"
-	  checkInStatus=`$curlAuth --data "computerId=$computer_id" "${web}CheckIn" $curlEnd`
+	  checkInStatus=`$curlAuth --data "taskId=$task_id" "${web}CheckIn" $curlEnd`
 	fi
 
 	if [ ! "$?" = "0" ]; then
@@ -58,15 +58,23 @@ function checkin()
 		else
 			sleep 1
 			for arg in "`parse_json "$checkInStatus" .TaskArguments`"; do case "$arg" in *=*) eval "$arg"; log "$arg"; esac; done
+			
+			if [ "$(parse_json "$checkInStatus" .ImageEnvironment)" != "linux" ] && [ "$(parse_json "$checkInStatus" .ImageEnvironment)" != "" ]; then
+			  error "The Imaging Environment For The Image Does Not Match The Currently Loaded Environment"
+			fi
+			
+			#On demand task ids are created later, get it now
+			if [ "$is_ondemand" = "true" ]; then
+			  task_id=$(parse_json "$checkInStatus" .TaskId)
+			fi
+	
 			log " ...... Success" "display"
 		fi
 	fi
 	
-	if [ "$task" = "upload" ] && [ "$imageProtected" = "1" ]; then
-      error "This Image Is Protected And Cannot Be Overwritten"
-    fi
 	
-	if [ "$is_ondemand " ] || [ "$task" = "clobber" ]; then
+
+
 	  if [ "$computer_name" = "" ] || [ "$computer_name" = "null" ]; then
 		echo "This Computer Was Not Found In The Database, Enter A Name For It Now:"
 		echo "Leave Blank To Skip Computer Renaming"
@@ -74,17 +82,17 @@ function checkin()
 		read computer_name
 		echo
 	  fi
-	fi
 	
-	if [ "$web_cancel" = "true" ] && [ "$is_ondemand" != "true" ]; then
-	  cd_cancel $computer_id &
+	
+	if [ "$web_cancel" = "true" ]; then
+	  . cd_cancel &
 	fi
 	echo
 	
-    if [ "$task" != "pull" ] && [ "$multicast" != "true" ]; then
+    if [ "$task" != "multicast" ] && [ "$task" != "ondmulticast" ]; then
 	   log " ** Checking Current Queue ** " "display"	
         while true; do
-	      queue_status=$($curlAuth --data "computerId=$computer_id" "${web}CheckQueue" $curlEnd)
+	      queue_status=$($curlAuth --data "taskId=$task_id" "${web}CheckQueue" $curlEnd)
 		  if [ "$(parse_json "$queue_status" .Result)" = "true" ]; then
 		    break
 		  else
@@ -96,7 +104,7 @@ function checkin()
 	    log " ...... Complete" "display"
 		echo
 	else
-	   $curlAuth --data "computerId=$computer_id" "${web}UpdateStatusInProgress" $curlEnd
+	   $curlAuth --data "taskId=$task_id" "${web}UpdateStatusInProgress" $curlEnd
 	fi
 	
 	sleep 2
@@ -118,10 +126,10 @@ function checkout()
 	fi
 		
 	
-	  if [ "$task" = "permanent_deploy" ]; then
-	    checkout_status=$($curlAuth --data "computerId=$computer_id" "${web}PermanentTaskCheckOut" $curlEnd)
+	  if [ "$task" = "permanentdeploy" ]; then
+	    checkout_status=$($curlAuth --data "taskId=$task_id" "${web}PermanentTaskCheckOut" $curlEnd)
 	  else
-	    checkout_status=$($curlAuth --data "computerId=$computer_id" "${web}CheckOut" $curlEnd)
+	    checkout_status=$($curlAuth --data "taskId=$task_id" "${web}CheckOut" $curlEnd)
 	  fi
 	  log " ...... $checkout_status" "display"
 	
@@ -150,17 +158,22 @@ function error()
 	echo
 	log " ** An Error Has Occurred ** " "display"
 	log " ...... $1" "display"
+	
+	#Expand any shrunk volumes 
+	for shrunk_volume in $shrunk_volumes; do
+	  log " ** Expanding Shrunk Volume $shrunk_volume ** " "display"
+      filesystem_type=`blkid -po udev $shrunk_volume | grep FS_TYPE | awk -F'=' '{print $2}'`
+      expand_volume $shrunk_volume $filesystem_type
+    done
+	
 	echo
 	echo " ** Rebooting In One Minute ** "
 	
 	cat /tmp/clientlog.log | grep -v "percent completed" > /tmp/cleanedlog.log
 	
-	if [ -z "$computer_id"  ]; then
-	  computer_id="-1"
-	else
-	  $curlAuth --data "computerId=$computer_id&error=$1" "${web}ErrorEmail" $curlEnd
-	fi
-	
+
+	$curlAuth --data "taskId=$task_id&error=$1" "${web}ErrorEmail" $curlEnd
+		
 	$curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/cleanedlog.log | base64)"  -F subType="$(echo -n $task | base64)"  -F mac="$(echo -n $mac | base64)" "${web}UploadLog" $curlEnd	
 	
 	if [ -n "$reboot_time" ]; then
@@ -378,8 +391,6 @@ function mount_smb()
 		fi
 	  fi
 	fi
-	
-	
 	
 	echo
 	sleep 2

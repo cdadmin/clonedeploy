@@ -6,6 +6,6 @@ namespace CloneDeploy_Entities.DTOs.ClientImaging
         public string Message { get; set; }
         public string TaskArguments { get; set; }
         public string ImageEnvironment { get; set; }
-        public string TaskType { get; set; }
+        public string TaskId { get; set; }
     }
 }

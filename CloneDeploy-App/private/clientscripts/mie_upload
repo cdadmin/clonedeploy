@@ -278,9 +278,9 @@ function upload_image()
     clear_and_move_down
     partition=$(get_device_node $volume_uuid)
     log " ** Starting Image Upload For $partition ** " "display" 
-	if [ -n "$computer_id" ]; then    
-	  null=$($curlAuth --data "computerId=$computer_id&partition=$partition" "${web}UpdateProgressPartition" $curlEnd)
-    fi
+ 
+	$curlAuth --data "taskId=$task_id&partition=$partition" "${web}UpdateProgressPartition" $curlEnd
+
     sleep 7
     echo
     
@@ -404,17 +404,13 @@ function process_hard_drives()
 function main()
 {
   
-  if [ "$imageProtected" = "1" ]; then
-    error "This Image Is Protected And Cannot Be Overwritten"
-  fi
-
   mount_smb
 
   get_hard_drives "upload"
 
 
   log " ** Updating Client Status To In-Progress ** "
-  $curlAuth --data "computerId=$computer_id" "${web}UpdateStatusInProgress" $curlEnd
+  $curlAuth --data "taskId=$task_id" "${web}UpdateStatusInProgress" $curlEnd
   
   log " ** Removing All Files For Existing Image: $image_name ** "
   $curlAuth --data "profileId=$profile_id" "${web}DeleteImage" $curlEnd

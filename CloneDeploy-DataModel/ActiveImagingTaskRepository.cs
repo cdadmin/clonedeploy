@@ -234,7 +234,7 @@ namespace CloneDeploy_DataModel
             return (from h in _context.ActiveImagingTasks
                     join t in _context.Computers on h.ComputerId equals t.Id into joined
                     from p in joined.DefaultIfEmpty()
-                    where h.Type == "permanent_deploy" && h.UserId == userId && h.ComputerId > -1
+                    where h.Type == "permanentdeploy" && h.UserId == userId && h.ComputerId > -1
                     select new
                     {
                         id = h.Id,
@@ -277,7 +277,7 @@ namespace CloneDeploy_DataModel
             return (from h in _context.ActiveImagingTasks
                     join t in _context.Computers on h.ComputerId equals t.Id into joined
                     from p in joined.DefaultIfEmpty()
-                    where h.Type == "permanent_deploy" && h.ComputerId > -1
+                    where h.Type == "permanentdeploy" && h.ComputerId > -1
                     select new
                     {
                         id = h.Id,

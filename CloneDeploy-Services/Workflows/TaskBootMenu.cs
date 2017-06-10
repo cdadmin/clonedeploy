@@ -13,15 +13,13 @@ namespace CloneDeploy_Services.Workflows
     public class TaskBootMenu
     {
         private readonly ComputerEntity _computer;
-        private readonly string _direction;
         private readonly ImageProfileEntity _imageProfile;
         private readonly ClusterGroupServices _clusterGroupServices;
         private readonly SecondaryServerServices _secondaryServerServices;
 
-        public TaskBootMenu(ComputerEntity computer, ImageProfileEntity imageProfile, string direction)
+        public TaskBootMenu(ComputerEntity computer, ImageProfileEntity imageProfile)
         {
             _computer = computer;
-            _direction = direction;
             _imageProfile = imageProfile;
             _clusterGroupServices = new ClusterGroupServices();
             _secondaryServerServices = new SecondaryServerServices();
@@ -40,7 +38,7 @@ namespace CloneDeploy_Services.Workflows
             ipxe.Append("#!ipxe" + newLineChar);
             ipxe.Append("kernel " + webPath + "IpxeBoot?filename=" + _imageProfile.Kernel +
                         "&type=kernel" + " initrd=" + _imageProfile.BootImage +
-                        " root=/dev/ram0 rw ramdisk_size=156000 task=" + _direction +
+                        " root=/dev/ram0 rw ramdisk_size=156000"  +
                         " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" + userToken + " " + globalComputerArgs +
                         " " + _imageProfile.KernelArguments + newLineChar);
             ipxe.Append("imgfetch --name " + _imageProfile.BootImage + " " + webPath +
@@ -53,7 +51,7 @@ namespace CloneDeploy_Services.Workflows
             sysLinux.Append("LABEL clonedeploy" + newLineChar);
             sysLinux.Append("KERNEL kernels" + Path.DirectorySeparatorChar + _imageProfile.Kernel + newLineChar);
             sysLinux.Append("APPEND initrd=images" + Path.DirectorySeparatorChar + _imageProfile.BootImage +
-                            " root=/dev/ram0 rw ramdisk_size=156000 task=" + _direction +
+                            " root=/dev/ram0 rw ramdisk_size=156000" +
                             " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" + userToken + " " +
                             globalComputerArgs +
                             " " + _imageProfile.KernelArguments + newLineChar);
@@ -66,8 +64,7 @@ namespace CloneDeploy_Services.Workflows
             grub.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
                         newLineChar);
             grub.Append("linux /kernels/" + _imageProfile.Kernel +
-                        " root=/dev/ram0 rw ramdisk_size=156000 task=" +
-                        _direction + " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" +
+                        " root=/dev/ram0 rw ramdisk_size=156000" + " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" +
                         userToken + " " +
                         globalComputerArgs + " " + _imageProfile.KernelArguments + newLineChar);
             grub.Append("initrd /images/" + _imageProfile.BootImage + newLineChar);

@@ -60,11 +60,11 @@ namespace CloneDeploy_App.Controllers
 
         [HttpPost]
         [ClientAuth]
-        public HttpResponseMessage CheckForCancelledTask(ComputerIdDTO computerIdDto)
+        public HttpResponseMessage CheckForCancelledTask(ActiveTaskDTO activeTaskDto)
         {
             _response.Content =
                 new StringContent(
-                    new ClientImagingServices().CheckForCancelledTask(Convert.ToInt32(computerIdDto.computerId)),
+                    new ClientImagingServices().CheckForCancelledTask(Convert.ToInt32(activeTaskDto.taskId)),
                     Encoding.UTF8, "text/plain");
             return _response;
         }
@@ -90,9 +90,9 @@ namespace CloneDeploy_App.Controllers
 
         [HttpPost]
         [ClientAuth]
-        public HttpResponseMessage CheckIn(CheckInTaskDTO checkInTaskDto)
+        public HttpResponseMessage CheckIn(ActiveTaskDTO activeTaskDto)
         {
-            _response.Content = new StringContent(new ClientImagingServices().CheckIn(checkInTaskDto.computerId),
+            _response.Content = new StringContent(new ClientImagingServices().CheckIn(activeTaskDto.taskId),
                 Encoding.UTF8, "text/plain");
             return _response;
         }
@@ -110,17 +110,17 @@ namespace CloneDeploy_App.Controllers
 
         [HttpPost]
         [ClientAuth]
-        public void CheckOut(ComputerIdDTO computerIdDto)
+        public void CheckOut(ActiveTaskDTO activeTaskDto)
         {
-            new ClientImagingServices().CheckOut(computerIdDto.computerId);
+            new ClientImagingServices().CheckOut(Convert.ToInt32(activeTaskDto.taskId));
         }
 
         [HttpPost]
         [ClientAuth]
-        public HttpResponseMessage CheckQueue(ComputerIdDTO computerIdDto)
+        public HttpResponseMessage CheckQueue(ActiveTaskDTO activeTaskDto)
         {
             _response.Content =
-                new StringContent(new ClientImagingServices().CheckQueue(Convert.ToInt32(computerIdDto.computerId)),
+                new StringContent(new ClientImagingServices().CheckQueue(Convert.ToInt32(activeTaskDto.taskId)),
                     Encoding.UTF8, "text/plain");
             return _response;
         }
@@ -198,7 +198,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public void ErrorEmail(ErrorEmailDTO errorEmailDto)
         {
-            new ClientImagingServices().ErrorEmail(Convert.ToInt32(errorEmailDto.computerId), errorEmailDto.error);
+            new ClientImagingServices().ErrorEmail(Convert.ToInt32(errorEmailDto.taskId), errorEmailDto.error);
         }
 
         [HttpPost]
@@ -387,9 +387,9 @@ namespace CloneDeploy_App.Controllers
 
         [HttpPost]
         [ClientAuth]
-        public void PermanentTaskCheckOut(ComputerIdDTO computerIdDto)
+        public void PermanentTaskCheckOut(ActiveTaskDTO activeTaskDto)
         {
-            new ClientImagingServices().PermanentTaskCheckOut(computerIdDto.computerId);
+            new ClientImagingServices().PermanentTaskCheckOut(Convert.ToInt32(activeTaskDto.taskId));
         }
 
         [HttpGet]
@@ -414,7 +414,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public void UpdateProgress(ProgressDTO progressDto)
         {
-            new ClientImagingServices().UpdateProgress(Convert.ToInt32(progressDto.computerId), progressDto.progress,
+            new ClientImagingServices().UpdateProgress(Convert.ToInt32(progressDto.taskId), progressDto.progress,
                 progressDto.progressType);
         }
 
@@ -422,15 +422,15 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public void UpdateProgressPartition(ProgressPartitionDTO progressPartitionDto)
         {
-            new ClientImagingServices().UpdateProgressPartition(Convert.ToInt32(progressPartitionDto.computerId),
+            new ClientImagingServices().UpdateProgressPartition(Convert.ToInt32(progressPartitionDto.taskId),
                 progressPartitionDto.partition);
         }
 
         [HttpPost]
         [ClientAuth]
-        public void UpdateStatusInProgress(ComputerIdDTO computerIdDto)
+        public void UpdateStatusInProgress(ActiveTaskDTO activeTaskDto)
         {
-            new ClientImagingServices().ChangeStatusInProgress(computerIdDto.computerId);
+            new ClientImagingServices().ChangeStatusInProgress(Convert.ToInt32(activeTaskDto.taskId));
         }
 
 

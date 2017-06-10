@@ -8,14 +8,14 @@ namespace CloneDeploy_Services.Workflows
     public class GetImageServer
     {
         private readonly ComputerEntity _computer;
-        private readonly string _direction;
+        private readonly string _task;
         private Random _random;
 
 
-        public GetImageServer(ComputerEntity computer,string direction)
+        public GetImageServer(ComputerEntity computer,string task)
         {
             _computer = computer;
-            _direction = direction;
+            _task = task;
             _random = new Random();
         }
 
@@ -73,7 +73,7 @@ namespace CloneDeploy_Services.Workflows
             foreach (var dp in availableDistributionPoints.Where(dp => dp.IsPrimary == 1))
             {
                 //Cluster Group has a primary, always return the primary for an upload, not necessary but saves syncing to the primary later
-                if (_direction == "upload")
+                if (_task.Contains("upload"))
                     return dp.Id;
             }
 

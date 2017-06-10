@@ -58,7 +58,7 @@ namespace CloneDeploy_Services.Workflows
             if (_computer != null)
             {
                 AppendString("computer_name=" + _computer.Name);
-                AppendString("computer_id=" + _computer.Id);
+                //AppendString("computer_id=" + _computer.Id);
             }
 
             AppendString("image_name=" + _imageProfile.Image.Name);
@@ -80,7 +80,6 @@ namespace CloneDeploy_Services.Workflows
 
             if (_direction == "upload")
             {
-                AppendString("image_direction=upload");
                 AppendString("osx_target_volume=" + "\"" + _imageProfile.OsxTargetVolume + "\"");
                 AppendString("image_type=" + _imageProfile.Image.Type);
                 if (Convert.ToBoolean(_imageProfile.RemoveGPT)) AppendString("remove_gpt_structures=true");
@@ -114,9 +113,6 @@ namespace CloneDeploy_Services.Workflows
                         AppendString("cust_attr_5=" + "\"" + _computer.CustomAttribute5 + "\"");
                 }
 
-
-                //Added for OSX NBI suppport
-                AppendString("image_direction=deploy");
                 if (Convert.ToBoolean(_imageProfile.OsxInstallMunki)) AppendString("install_munki=true");
                 AppendString("osx_target_volume=" + "\"" + _imageProfile.OsxTargetVolume + "\"");
                 AppendString("munki_repo_url=" + "\"" + _imageProfile.MunkiRepoUrl + "\"");

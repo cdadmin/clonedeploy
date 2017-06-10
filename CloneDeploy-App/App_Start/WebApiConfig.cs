@@ -15,6 +15,9 @@ namespace CloneDeploy_App
 
             config.Routes.MapHttpRoute("DefaultApi", "{controller}/{action}/{id}", new {id = RouteParameter.Optional}
                 );
+
+            var json = config.Formatters.JsonFormatter;
+            json.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Unspecified;
         }
     }
 }

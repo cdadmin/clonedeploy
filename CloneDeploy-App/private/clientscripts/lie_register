@@ -29,6 +29,7 @@ while true; do
   registerResult=$($curlAuth --data "name=$name&mac=$mac&clientIdentifier=$client_id" ${web}AddComputer $curlClose)
   if [ "$(parse_json "$registerResult" .Success)" = "true" ]; then
     result="Successfully Registered $name"
+	computer_id="$(parse_json "$registerResult" .Id)"
     break
   fi
 done

@@ -2,7 +2,7 @@
 {
     public class ErrorEmailDTO
     {
-        public string computerId { get; set; }
+        public string taskId { get; set; }
         public string error { get; set; }
     }
 }

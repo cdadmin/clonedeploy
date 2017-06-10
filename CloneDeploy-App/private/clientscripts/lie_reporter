@@ -2,13 +2,13 @@
 
 . /bin/lie_global_functions
 
-computer_id=$1
+task_id=$1
 reporter_type=$2
 
 if [ "$reporter_type" = "partclone" ]; then
   while [ -f "/tmp/clone.progress" ]; do
     post=$(tail -n 1 /tmp/clone.progress)
-    result=$($curlAuth --data "computerId=$computer_id&progress=$post&progressType=partclone" "${web}UpdateProgress" $curlEnd)        
+    result=$($curlAuth --data "taskId=$task_id&progress=$post&progressType=partclone" "${web}UpdateProgress" $curlEnd)        
     sleep 2
   done	
 else
@@ -23,7 +23,7 @@ else
       post="Please Wait."
     fi
     
-	result=$($curlAuth --data "computerId=$computer_id&progress=$post&progressType=wim" "${web}UpdateProgress" $curlEnd)        
+	result=$($curlAuth --data "taskId=$task_id&progress=$post&progressType=wim" "${web}UpdateProgress" $curlEnd)        
     sleep 2
   done
 fi

@@ -147,7 +147,8 @@ namespace CloneDeploy_ApiCalls
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetComputerLogs/{1}", Resource, id);
-            return _apiRequest.Execute<List<ComputerLogEntity>>(Request);
+            var result = _apiRequest.Execute<List<ComputerLogEntity>>(Request);
+            return result;
         }
 
         public IEnumerable<ComputerEntity> GetComputersWithoutGroup(int limit, string searchstring)

@@ -13,30 +13,29 @@ function log($message, $isDisplay)
 function Checkout()
 {
     log " ** Closing Active Task ** " "true"
-    $computerIdBytes = [System.Text.Encoding]::UTF8.GetBytes($computer_id)
+    $computerIdBytes = [System.Text.Encoding]::UTF8.GetBytes($script:computer_id)
     $computerIdEncoded =[Convert]::ToBase64String($computerIdBytes)
     (Get-Content $clientLog) -replace ("`0","") | Set-Content $clientLog
 	$logBytes = [System.IO.File]::ReadAllBytes("$clientLog")
     $logEncoded =[Convert]::ToBase64String($logBytes)
-    $imageDirectionBytes = [System.Text.Encoding]::UTF8.GetBytes($image_direction)
+    $imageDirectionBytes = [System.Text.Encoding]::UTF8.GetBytes($script:task)
     $imageDirectionEncoded =[Convert]::ToBase64String($imageDirectionBytes)
     $macBytes = [System.Text.Encoding]::UTF8.GetBytes($script:mac)
     $macEncoded =[Convert]::ToBase64String($macBytes)
     curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded -F computerId="$computerIdEncoded" -F logContents="$logEncoded" -F subType="$imageDirectionEncoded" -F mac="$macEncoded" "${script:web}UploadLog" --connect-timeout 10 --stderr -
 
-    if($multicast -eq "true")
+    if($script:task -eq "multicast" -or $script:task -eq "ondmulticast" )
     {
         curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "portBase=$multicast_port" "${script:web}MulticastCheckOut" --connect-timeout 10 --stderr -
 	}
 
-  
-    if(!$script:isPermanentTask)
+    if($script:task -eq "permanentdeploy")
     {
-        curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id" "${script:web}CheckOut" --connect-timeout 10 --stderr -
+        curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "taskId=$script:taskId" "${script:web}PermanentTaskCheckOut" --connect-timeout 10 --stderr -      
     }
     else
     {
-        curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id" "${script:web}PermanentTaskCheckOut" --connect-timeout 10 --stderr -
+        curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "taskId=$script:taskId" "${script:web}CheckOut" --connect-timeout 10 --stderr -
     }
     
 
@@ -63,21 +62,16 @@ function error($message, $rebootTime)
 	Write-Host
 	Write-Host " ** Rebooting In One Minute ** "
 	
-	if(!$computer_id)
-    {
-	  $computer_id="-1"
-	}
-    else
-    {
-        curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id&error=$1" ${script:web}ErrorEmail  --connect-timeout 10 --stderr -
-	}
+	
+    curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "taskId=$script:taskId&error=$1" ${script:web}ErrorEmail  --connect-timeout 10 --stderr -
+	
 
-    $computerIdBytes = [System.Text.Encoding]::UTF8.GetBytes($computer_id)
+    $computerIdBytes = [System.Text.Encoding]::UTF8.GetBytes($script:computer_id)
     $computerIdEncoded =[Convert]::ToBase64String($computerIdBytes)
     (Get-Content $clientLog) -replace ("`0","") | Set-Content $clientLog
 	$logBytes = [System.IO.File]::ReadAllBytes("$clientLog")
     $logEncoded =[Convert]::ToBase64String($logBytes)
-    $imageDirectionBytes = [System.Text.Encoding]::UTF8.GetBytes($image_direction)
+    $imageDirectionBytes = [System.Text.Encoding]::UTF8.GetBytes($script:task)
     $imageDirectionEncoded =[Convert]::ToBase64String($imageDirectionBytes)
     $macBytes = [System.Text.Encoding]::UTF8.GetBytes($script:mac)
     $macEncoded =[Convert]::ToBase64String($macBytes)
@@ -111,7 +105,7 @@ function Mount-SMB()
 {
     log " ** Mounting SMB Share ** " "true"
 	
-	$smbInfo=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "dpId=$dp_id&task=$image_direction" ${script:web}DistributionPoint  --connect-timeout 10 --stderr -)
+	$smbInfo=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "dpId=$script:dp_id&task=$script:task" ${script:web}DistributionPoint  --connect-timeout 10 --stderr -)
 	$smbInfo=$smbInfo | ConvertFrom-Json
     if(!$?)
     {
@@ -135,7 +129,7 @@ function Mount-SMB()
         Start-Sleep 2
 	    log -message " ...... Success" -isDisplay "true"
         Write-Host
-		cd s:\images\$img_name
+		cd s:\images\$image_name
 	    if(!$?)
         {
 	        error "Could Not Change Directory To s:\images\$image_name Verify The Directory Exists And Permissions Are Correct"

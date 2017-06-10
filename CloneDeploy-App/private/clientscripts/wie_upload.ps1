@@ -1,4 +1,4 @@
-. x:\winpe_global_functions.ps1
+. x:\wie_global_functions.ps1
 
 function Create-Image-Schema()
 {
@@ -102,15 +102,15 @@ function Upload-Image()
             
              
 	      
-            log "curl.exe  --data `"computerId=$computer_id&partition=$($partition.PartitionNumber)`" ${script:web}UpdateProgressPartition  --connect-timeout 10 --stderr -"
-            curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id&partition=$($partition.PartitionNumber)" ${script:web}UpdateProgressPartition  --connect-timeout 10 --stderr -
+            log "curl.exe  --data `"taskId=$script:taskId&partition=$($partition.PartitionNumber)`" ${script:web}UpdateProgressPartition  --connect-timeout 10 --stderr -"
+            curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "taskId=$script:taskId&partition=$($partition.PartitionNumber)" ${script:web}UpdateProgressPartition  --connect-timeout 10 --stderr -
             
             Start-Sleep 7
             Write-Host
     
             log " ...... partitionNumber: $($partition.PartitionNumber)"
 
-            $reporterProc=$(Start-Process powershell "x:\winpe_reporter.ps1 -web $script:web -computerId $computer_id -partitionNumber $($partition.PartitionNumber) -direction Uploading -curlOptions $script:curlOptions -userTokenEncoded $script:userTokenEncoded " -NoNewWindow -PassThru)
+            $reporterProc=$(Start-Process powershell "x:\wie_reporter.ps1 -web $script:web -taskId $script:taskId -partitionNumber $($partition.PartitionNumber) -direction Uploading -curlOptions $script:curlOptions -userTokenEncoded $script:userTokenEncoded " -NoNewWindow -PassThru)
             
             log "wimcapture $($updatedPartition.DriveLetter):\ $imagePath\part$($partition.PartitionNumber).winpe.wim $web_wim_args 2>>$clientLog > x:\wim.progress"
             wimcapture "$($updatedPartition.DriveLetter):\" "$imagePath\part$($partition.PartitionNumber).winpe.wim" $web_wim_args 2>>$clientLog > x:\wim.progress
@@ -131,7 +131,7 @@ Get-Hard-Drives("upload")
 
 
 log " ** Updating Client Status To In-Progress ** "
-curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id" ${script:web}UpdateStatusInProgress  --connect-timeout 10 --stderr -
+curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "taskId=$script:taskId" ${script:web}UpdateStatusInProgress  --connect-timeout 10 --stderr -
 
 
 log " ** Removing All Files For Existing Image: $image_name ** "

@@ -20,6 +20,7 @@ namespace CloneDeploy_Services
 
         public string AddComputer(string name, string mac, string clientIdentifier)
         {
+            clientIdentifier = clientIdentifier.ToUpper();
             var existingComputer = new ComputerServices().GetComputerFromClientIdentifier(clientIdentifier);
             if(existingComputer != null)
             {
@@ -111,16 +112,20 @@ namespace CloneDeploy_Services
             return false;
         }
 
-        public void ChangeStatusInProgress(int computerId)
+        public void ChangeStatusInProgress(int taskId)
         {
-            var computerTask = new ComputerServices().GetTaskForComputer(computerId);
-            computerTask.Status = "3";
-            new ActiveImagingTaskServices().UpdateActiveImagingTask(computerTask);
+            var task = new ActiveImagingTaskServices().GetTask(taskId);
+            task.Status = "3";
+            new ActiveImagingTaskServices().UpdateActiveImagingTask(task);
         }
 
-        public string CheckForCancelledTask(int computerId)
+        public string CheckForCancelledTask(int taskId)
         {
-            return new ComputerServices().IsComputerActive(computerId) ? "false" : "true";
+            var task = new ActiveImagingTaskServices().GetTask(taskId);
+            if (task == null)
+                return "false";
+            else
+                return "true";
         }
 
         public string CheckHdRequirements(int profileId, int clientHdNumber, string newHdSize, string imageSchemaDrives,
@@ -218,7 +223,7 @@ namespace CloneDeploy_Services
             ImageProfileWithImage imageProfile;
 
             var arguments = "";
-            if (task == "deploy" || task == "upload" || task == "clobber")
+            if (task == "deploy" || task == "upload" || task == "clobber" || task == "ondupload" || task == "onddeploy" || task == "unregupload" || task == "unregdeploy")
             {
                 imageProfile = new ImageProfileServices().ReadProfile(objectId);
                 arguments = new CreateTaskArguments(computer, imageProfile, task).Execute();
@@ -231,8 +236,20 @@ namespace CloneDeploy_Services
             }
 
             var imageDistributionPoint = new GetImageServer(computer, task).Run();
+
+            if (imageProfile.Image.Protected == 1 && (task == "upload" || task=="ondupload" || task=="unregupload"))
+            {
+                checkIn.Result = "false";
+                checkIn.Message = "This Image Is Protected";
+                return JsonConvert.SerializeObject(checkIn);
+            }
+
+            if (imageProfile.Image.Environment == "")
+                imageProfile.Image.Environment = "linux";
+            checkIn.ImageEnvironment = imageProfile.Image.Environment;
+            
             if (imageProfile.Image.Environment == "winpe")
-                arguments += " dp_id=\"" + imageDistributionPoint + "\"\r\n";
+                arguments += "dp_id=\"" + imageDistributionPoint + "\"\r\n";
             else
                 arguments += " dp_id=\"" + imageDistributionPoint + "\"";
 
@@ -251,7 +268,7 @@ namespace CloneDeploy_Services
                 int newComputerId = rnd.Next(-200000, -100000);
 
                 if (imageProfile.Image.Environment == "winpe")
-                    arguments += " computer_id=" + newComputerId + "\r\n";
+                    arguments += "computer_id=" + newComputerId + "\r\n";
                 else
                     arguments += " computer_id=" + newComputerId;
                 activeTask.ComputerId = newComputerId;
@@ -267,6 +284,7 @@ namespace CloneDeploy_Services
 
             checkIn.Result = "true";
             checkIn.TaskArguments = arguments;
+            checkIn.TaskId = activeTask.Id.ToString();
             return JsonConvert.SerializeObject(checkIn);
         }
 
@@ -275,10 +293,26 @@ namespace CloneDeploy_Services
             var determineTaskDto = new DetermineTaskDTO();
             var computerServices = new ComputerServices();
             ComputerEntity computer;
-            if(idType == "mac")
+            if (idType == "mac")
+            {
+                //When searching for computer by mac, that means the first check of searching by cliend id
+                //did not yield any results.  Fall back to mac only for legacy support, but don't include computers
+                //that have a valid client id.
                 computer = computerServices.GetComputerFromMac(id);
+                if(computer != null)
+                {
+                    if(!string.IsNullOrEmpty(computer.ClientIdentifier))
+                    {
+                        //act like a computer wasn't found
+                        computer = null;
+                    }
+                }
+            }
             else
+            {
+                id = id.ToUpper();
                 computer = computerServices.GetComputerFromClientIdentifier(id);
+            }
 
             if (computer == null)
             {
@@ -287,7 +321,7 @@ namespace CloneDeploy_Services
                 return JsonConvert.SerializeObject(determineTaskDto);
             }
 
-            var computerTask = computerServices.GetTaskForComputer(computer.Id);
+            var computerTask = computerServices.GetTaskForComputerCheckin(computer.Id);
             if (computerTask == null)
             {
                 determineTaskDto.computerId = computer.Id.ToString();
@@ -297,6 +331,7 @@ namespace CloneDeploy_Services
             {
                 determineTaskDto.computerId = computer.Id.ToString();
                 determineTaskDto.task = computerTask.Type;
+                determineTaskDto.taskId = computerTask.Id.ToString();
             }
 
             return JsonConvert.SerializeObject(determineTaskDto);
@@ -304,39 +339,47 @@ namespace CloneDeploy_Services
 
         }
 
-        public string CheckIn(string computerId)
+        public string CheckIn(string taskId)
         {
 
             var checkIn = new CheckIn();
             var computerServices = new ComputerServices();
 
-            var computer = computerServices.GetComputer(Convert.ToInt32(computerId));
+            var task = new ActiveImagingTaskServices().GetTask(Convert.ToInt32(taskId));
 
+            if (task == null)
+            {
+                checkIn.Result = "false";
+                checkIn.Message = "Could Not Find Task With Id" + taskId;
+                return JsonConvert.SerializeObject(checkIn);
+            }
+
+            var computer = computerServices.GetComputer(task.ComputerId);
             if (computer == null)
             {
                 checkIn.Result = "false";
-                checkIn.Message = "This Computer Was Not Found";
+                checkIn.Message = "The Computer Assigned To This Task Was Not Found";
                 return JsonConvert.SerializeObject(checkIn);
             }
 
-            var computerTask = computerServices.GetTaskForComputer(computer.Id);
-            if (computerTask == null)
+            var imageDistributionPoint = new GetImageServer(computer, task.Type).Run();
+
+            task.Status = "1";
+            task.DpId = imageDistributionPoint;
+
+            var image = new ImageServices().GetImage(computer.ImageId);
+            if(image.Protected == 1 && task.Type == "upload" )
             {
                 checkIn.Result = "false";
-                checkIn.Message = "An Active Task Was Not Found For This Computer";
+                checkIn.Message = "This Image Is Protected";
                 return JsonConvert.SerializeObject(checkIn);
             }
 
-            var imageDistributionPoint = new GetImageServer(computer, computerTask.Direction).Run();
-
-            computerTask.Status = "1";
-            computerTask.DpId = imageDistributionPoint;
-
-            if (new ActiveImagingTaskServices().UpdateActiveImagingTask(computerTask))
+            if (new ActiveImagingTaskServices().UpdateActiveImagingTask(task))
             {
                 checkIn.Result = "true";
 
-                var image = new ImageServices().GetImage(computer.ImageId);
+                
                 if (image != null)
                 {
                     if (image.Environment == "")
@@ -345,12 +388,11 @@ namespace CloneDeploy_Services
                 }
 
                 if (image.Environment == "winpe")
-                    checkIn.TaskArguments = computerTask.Arguments + " dp_id=\"" +
+                    checkIn.TaskArguments = task.Arguments + "dp_id=\"" +
                                             imageDistributionPoint + "\"\r\n";
                 else
-                    checkIn.TaskArguments = computerTask.Arguments + " dp_id=\"" +
+                    checkIn.TaskArguments = task.Arguments + " dp_id=\"" +
                                             imageDistributionPoint + "\"";
-                checkIn.TaskType = computerTask.Type;
                 return JsonConvert.SerializeObject(checkIn);
             }
             checkIn.Result = "false";
@@ -359,29 +401,27 @@ namespace CloneDeploy_Services
 
         }
 
-        public void CheckOut(int computerId)
+        public void CheckOut(int taskId)
         {
-            var computerTask = new ComputerServices().GetTaskForComputer(computerId);
             var activeImagingTaskServices = new ActiveImagingTaskServices();
-            if (computerId < 0)
-            {
-                activeImagingTaskServices.DeleteUnregisteredOndTask(computerTask.Id);
-            }
+            var task = activeImagingTaskServices.GetTask(taskId);
+            if(task.Type.Contains("unreg"))       
+                activeImagingTaskServices.DeleteUnregisteredOndTask(task.Id);
             else
-            {
-                activeImagingTaskServices.DeleteActiveImagingTask(computerTask.Id);
-            }
-            if (computerTask.Type != "multicast")
-                activeImagingTaskServices.SendTaskCompletedEmail(computerTask);
+                activeImagingTaskServices.DeleteActiveImagingTask(task.Id);
+            
+            if (task.Type != "multicast" && task.Type != "ondmulticast")
+                activeImagingTaskServices.SendTaskCompletedEmail(task);
         }
 
-        public string CheckQueue(int computerId)
+        public string CheckQueue(int taskId)
         {
             var queueStatus = new QueueStatus();
             var activeImagingTaskServices = new ActiveImagingTaskServices();
-
+            var thisComputerTask = activeImagingTaskServices.GetTask(taskId);
+            var computer = new ComputerServices().GetComputer(thisComputerTask.ComputerId);
             //Check if already part of the queue
-            var thisComputerTask = new ComputerServices().GetTaskForComputer(computerId);
+           
             if (thisComputerTask.Status == "2")
             {
                 //Check if the queue is open yet
@@ -393,21 +433,21 @@ namespace CloneDeploy_Services
                 {
                     //queue is open, is this computer next
                     var firstTaskInQueue = activeImagingTaskServices.GetNextComputerInQueue(thisComputerTask);
-                    if (firstTaskInQueue.ComputerId == computerId)
+                    if (firstTaskInQueue.ComputerId == computer.Id)
                     {
-                        ChangeStatusInProgress(computerId);
+                        ChangeStatusInProgress(taskId);
                         queueStatus.Result = "true";
                         queueStatus.Position = "0";
                         return JsonConvert.SerializeObject(queueStatus);
                     }
                     //not time for this computer yet
                     queueStatus.Result = "false";
-                    queueStatus.Position = new ComputerServices().GetQueuePosition(computerId);
+                    queueStatus.Position = activeImagingTaskServices.GetQueuePosition(thisComputerTask);
                     return JsonConvert.SerializeObject(queueStatus);
                 }
                 //queue not open yet
                 queueStatus.Result = "false";
-                queueStatus.Position = new ComputerServices().GetQueuePosition(computerId);
+                queueStatus.Position = activeImagingTaskServices.GetQueuePosition(thisComputerTask);
                 return JsonConvert.SerializeObject(queueStatus);
             }
             else
@@ -420,7 +460,7 @@ namespace CloneDeploy_Services
                 totalCapacity = dp.QueueSize;
                 if (inUse < totalCapacity)
                 {
-                    ChangeStatusInProgress(computerId);
+                    ChangeStatusInProgress(taskId);
 
                     queueStatus.Result = "true";
                     queueStatus.Position = "0";
@@ -436,7 +476,7 @@ namespace CloneDeploy_Services
                 activeImagingTaskServices.UpdateActiveImagingTask(thisComputerTask);
 
                 queueStatus.Result = "false";
-                queueStatus.Position = new ComputerServices().GetQueuePosition(computerId);
+                queueStatus.Position = activeImagingTaskServices.GetQueuePosition(thisComputerTask);
                 return JsonConvert.SerializeObject(queueStatus);
             }
         }
@@ -520,7 +560,7 @@ namespace CloneDeploy_Services
             smb.Domain = dp.Domain;
             smb.DisplayName = dp.DisplayName;
             smb.IsPrimary = dp.IsPrimary == 1 ? "true" : "false";
-            if (task == "upload")
+            if (task.Contains("upload"))
             {
                 smb.Username = dp.RwUsername;
                 smb.Password = new EncryptionServices().DecryptText(dp.RwPassword);
@@ -587,10 +627,11 @@ namespace CloneDeploy_Services
         }
 
 
-        public void ErrorEmail(int computerId, string error)
+        public void ErrorEmail(int taskId, string error)
         {
-            var computerTask = new ComputerServices().GetTaskForComputer(computerId);
-            new ActiveImagingTaskServices().SendTaskErrorEmail(computerTask, error);
+            var activeImagingTaskServices = new ActiveImagingTaskServices();
+            var task = activeImagingTaskServices.GetTask(taskId);
+            activeImagingTaskServices.SendTaskErrorEmail(task, error);
         }
 
         public string GetCustomPartitionScript(int profileId)
@@ -772,7 +813,7 @@ namespace CloneDeploy_Services
                     return SettingServices.GetSettingValue(SettingStrings.ClobberRequiresLogin);
                 case "deploy":
                     return SettingServices.GetSettingValue(SettingStrings.WebTaskRequiresLogin);
-                case "permanent_deploy":
+                case "permanentdeploy":
                     return SettingServices.GetSettingValue(SettingStrings.WebTaskRequiresLogin);
                 case "upload":
                     return SettingServices.GetSettingValue(SettingStrings.WebTaskRequiresLogin);
@@ -862,24 +903,25 @@ namespace CloneDeploy_Services
             return result;
         }
 
-        public void PermanentTaskCheckOut(int computerId)
+        public void PermanentTaskCheckOut(int taskId)
         {
-            var computerTask = new ComputerServices().GetTaskForComputer(computerId);
             var activeImagingTaskServices = new ActiveImagingTaskServices();
-            computerTask.Status = "0";
-            computerTask.Partition = "";
-            computerTask.Completed = "";
-            computerTask.Elapsed = "";
-            computerTask.Rate = "";
-            computerTask.Remaining = "";
-            activeImagingTaskServices.UpdateActiveImagingTask(computerTask);
+            var task = activeImagingTaskServices.GetTask(taskId);
+            task.Status = "0";
+            task.Partition = "";
+            task.Completed = "";
+            task.Elapsed = "";
+            task.Rate = "";
+            task.Remaining = "";
+            activeImagingTaskServices.UpdateActiveImagingTask(task);
 
-            activeImagingTaskServices.SendTaskCompletedEmail(computerTask);
+            activeImagingTaskServices.SendTaskCompletedEmail(task);
         }
 
-        public void UpdateProgress(int computerId, string progress, string progressType)
+        public void UpdateProgress(int taskId, string progress, string progressType)
         {
-            var task = new ComputerServices().GetTaskForComputer(computerId);
+            var activeImagingTaskServices = new ActiveImagingTaskServices();
+            var task = activeImagingTaskServices.GetTask(taskId);
             if (progressType == "wim")
             {
                 task.Elapsed = progress;
@@ -896,18 +938,19 @@ namespace CloneDeploy_Services
                 task.Rate = values[4];
             }
 
-            new ActiveImagingTaskServices().UpdateActiveImagingTask(task);
+            activeImagingTaskServices.UpdateActiveImagingTask(task);
         }
 
-        public void UpdateProgressPartition(int computerId, string partition)
+        public void UpdateProgressPartition(int taskId, string partition)
         {
-            var task = new ComputerServices().GetTaskForComputer(computerId);
+            var activeImagingTaskServices = new ActiveImagingTaskServices();
+            var task = activeImagingTaskServices.GetTask(taskId);
             task.Partition = partition;
             task.Elapsed = "Please Wait...";
             task.Remaining = "";
             task.Completed = "";
             task.Rate = "";
-            new ActiveImagingTaskServices().UpdateActiveImagingTask(task);
+            activeImagingTaskServices.UpdateActiveImagingTask(task);
         }
 
         public void UploadLog(int computerId, string logContents, string subType, string computerMac)

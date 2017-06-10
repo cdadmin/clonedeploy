@@ -51,14 +51,26 @@ function error()
 	echo
 	log " ** An Error Has Occurred ** " "display"
 	log " ...... $1" "display"
+	
+	log " shrunk_volumes: $shrunk_volumes"
+    unique_shrunk_volumes=$(echo $shrunk_volumes | xargs -n1 | sort -u | xargs)
+    log " unique_shrunk_volumes: $unique_shrunk_volumes"
+    log " ** Expanding Resized Volumes **" "display"
+    echo
+    for shrunk_volume in $unique_shrunk_volumes; do
+      if /usr/sbin/diskutil info $shrunk_volume | grep "Logical Volume" > /dev/null; then
+	    diskutil cs resizeVolume $shrunk_volume 0b 2>> $CLIENT_LOG
+	  else
+        diskutil resizeVolume $shrunk_volume R 2>> $CLIENT_LOG
+	  fi
+    done
+  
 	echo
 	echo " ** Rebooting In One Minute ** "
 	
-	if [ -z "$computer_id"  ]; then
-	  computer_id="-1"
-	else
-	  $curlAuth --data "computerId=$computer_id&error=$1" "${web}ErrorEmail" $curlEnd
-	fi
+	
+	$curlAuth --data "taskId=$task_id&error=$1" "${web}ErrorEmail" $curlEnd
+	
 	
 	$curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/clientlog.log | base64)"  -F subType="$(echo -n $task | base64)"  -F mac="$(echo -n $mac | base64)" "${web}UploadLog" $curlEnd	
 	
@@ -70,7 +82,7 @@ function error()
 	if [ "$task_completed_action" = "Power Off" ]; then
 		shutdown
 	elif [ "$task_completed_action" = "Exit To Shell" ]; then
-		exit
+		/bin/bash
 	else
 		reboot
 	fi 
@@ -84,13 +96,11 @@ function checkout()
 	sleep 10
 	umount /storage &> /dev/null
 	
-	if [ "$multicast" = "true" ]; then
-	mccheckoutResult=$($curlAuth --data "portBase=$multicast_port" "${web}MulticastCheckOut" $curlEnd)
-		log " ...... $mccheckoutResult"
+	if [ "$task" = "permanentdeploy" ]; then
+	  checkout_status=$($curlAuth --data "taskId=$task_id" "${web}PermanentTaskCheckOut" $curlEnd)
+	else
+	  checkout_status=$($curlAuth --data "taskId=$task_id" "${web}CheckOut" $curlEnd)
 	fi
-		
-
-	checkout_status=$($curlAuth --data "computerId=$computer_id" "${web}CheckOut" $curlEnd)
 	log " ...... $checkout_status" "display"
 	
 	echo

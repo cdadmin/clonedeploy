@@ -515,18 +515,19 @@ namespace CloneDeploy_Services
             return _uow.ComputerMunkiRepository.Get(x => x.ComputerId == computerId);
         }
 
-        public string GetQueuePosition(int computerId)
+        public ActiveImagingTaskEntity GetTaskForComputerQueue(int computerId)
         {
-            var computerTask = GetTaskForComputer(computerId);
-
-            return
-                _uow.ActiveImagingTaskRepository.Count(
-                    x => x.Status == "2" && x.QueuePosition < computerTask.QueuePosition);
+            return _uow.ActiveImagingTaskRepository.GetFirstOrDefault(x => x.ComputerId == computerId && (x.Status == "1" || x.Status =="2"));
         }
 
         public ActiveImagingTaskEntity GetTaskForComputer(int computerId)
         {
             return _uow.ActiveImagingTaskRepository.GetFirstOrDefault(x => x.ComputerId == computerId);
+        }
+
+        public ActiveImagingTaskEntity GetTaskForComputerCheckin(int computerId)
+        {
+            return _uow.ActiveImagingTaskRepository.GetFirstOrDefault(x => x.ComputerId == computerId && (x.Type == "upload" || x.Type == "deploy" || x.Type == "permanentdeploy" || x.Type == "multicast"));
         }
 
         public int ImportCsv(string csvContents)
@@ -552,8 +553,9 @@ namespace CloneDeploy_Services
 
         public List<ComputerLogEntity> SearchComputerLogs(int computerId)
         {
+          
             return _uow.ComputerLogRepository.Get(x => x.ComputerId == computerId,
-                q => q.OrderByDescending(x => x.LogTime));
+              q => q.OrderByDescending(x => x.LogTime));
         }
 
         public List<ComputerWithImage> SearchComputers(string searchString, int limit)

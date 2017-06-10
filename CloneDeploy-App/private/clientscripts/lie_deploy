@@ -216,9 +216,9 @@ function download_image()
   fi
   
   log " ** Starting Image Download For $destination ** " "display" 
-  if [ -n "$computer_id" ]; then    
-    null=$($curlAuth --data "computerId=$computer_id&partition=$destination" "${web}UpdateProgressPartition" $curlEnd)
-  fi
+
+  $curlAuth --data "taskId=$task_id&partition=$destination" "${web}UpdateProgressPartition" $curlEnd
+  
   sleep 7
   echo
 	
@@ -240,19 +240,19 @@ function download_image()
 			
   if [ "$multicast" = "true" ]; then
     if [ "$decompress_multicast_on_client" = "true" ]; then
-	    log "lie_reporter $computer_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
-      lie_reporter $computer_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
+	    log "lie_reporter $task_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
+      lie_reporter $task_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
 	else #dcompress on server
-      log "lie_reporter $computer_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
-      lie_reporter $computer_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
+      log "lie_reporter $task_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
+      lie_reporter $task_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
     fi
   else #unicast
     if [ "$partCompAlg" = "none" ]; then #no compression
-	   lie_reporter $computer_id partclone & partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -s $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).uncp -o $destination
-	   log "lie_reporter $computer_id partclone & partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -s $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).uncp -o $destination"
+	   lie_reporter $task_id partclone & partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -s $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).uncp -o $destination
+	   log "lie_reporter $task_id partclone & partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -s $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).uncp -o $destination"
 	else #compression in use
-      log "lie_reporter $computer_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
-      lie_reporter $computer_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
+      log "lie_reporter $task_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
+      lie_reporter $task_id partclone & $partCompAlg $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).$partCompExt | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
 	fi
   fi
 			
@@ -285,11 +285,11 @@ function download_image()
 	fi
 	
 	if [ "$multicast" = "true" ]; then
-	  log "lie_reporter $computer_id wim & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 $destination $wim_arguments"
-	  lie_reporter $computer_id wim & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 $destination $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress
+	  log "lie_reporter $task_id wim & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimlib-imagex apply - 1 $destination $wim_arguments"
+	  lie_reporter $task_id wim & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimlib-imagex apply - 1 $destination $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress
 	else
-	  log "lie_reporter $computer_id wim & wimapply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination $wim_arguments"
-	  lie_reporter $computer_id wim & wimapply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress
+	  log "lie_reporter $task_id wim & wimlib-imagex apply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination $wim_arguments"
+	  lie_reporter $task_id wim & wimlib-imagex apply $image_path/$file_name_prefix.$(parse_json "$current_object" .PartcloneFileSystem).wim 1 $destination $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress
 	fi
   fi 
 }

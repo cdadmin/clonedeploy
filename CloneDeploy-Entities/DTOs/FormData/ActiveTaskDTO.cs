@@ -1,8 +1,7 @@
 ﻿namespace CloneDeploy_Entities.DTOs.FormData
 {
-    public class ProgressPartitionDTO
+    public class ActiveTaskDTO
     {
         public string taskId { get; set; }
-        public string partition { get; set; }
     }
 }

@@ -31,7 +31,7 @@ namespace CloneDeploy_Services
 
         public string ActiveUnicastCount(int userId, string taskType="")
         {
-            if (taskType == "permanent_deploy")
+            if (taskType == "permanentdeploy")
             {
                 return _userServices.IsAdmin(userId)
                     ? _uow.ActiveImagingTaskRepository.Count(t => t.Type == taskType)
@@ -115,6 +115,14 @@ namespace CloneDeploy_Services
         public List<ActiveImagingTaskEntity> GetAll()
         {
             return _uow.ActiveImagingTaskRepository.Get();
+        }
+
+        public string GetQueuePosition(ActiveImagingTaskEntity task)
+        {
+
+            return
+                _uow.ActiveImagingTaskRepository.Count(
+                    x => x.Status == "2" && x.QueuePosition < task.QueuePosition);
         }
 
         public int GetCurrentQueue(ActiveImagingTaskEntity activeTask)

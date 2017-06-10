@@ -1,8 +1,11 @@
-. x:\winpe_global_functions.ps1
-. x:\winpe_menu.ps1
+. x:\wie_global_functions.ps1
+. x:\wie_menu.ps1
 $script:isOnDemand=$true
 
 clear
+log -message "No Active Web Tasks Were Found For This Computer.  Starting On Demand Imaging." -isDisplay "true"
+Write-Host
+
 $taskTable=[ordered]@{"deploy"="Deploy";"upload"="Upload";"multicast"="Multicast";}
 $taskType=$(fShowMenu "Select A Task" $taskTable)
 
@@ -29,7 +32,7 @@ if($taskType -eq "deploy")
 	$imageProfileList = $imageProfileList | ConvertFrom-Json
     if($imageProfileList.Count -eq "1")
     {
-		$imageProfileId=$imageProfileList.FirstProfileId
+		$script:imageProfileId=$imageProfileList.FirstProfileId
     }
 	else
     {
@@ -39,12 +42,17 @@ if($taskType -eq "deploy")
             $profileTable.Add($imageProfile.ProfileId,$imageProfile.ProfileName)
         }
         clear
-        $imageProfileId=$(fShowMenu "Select An Image Profile" $profileTable)	
+        $script:imageProfileId=$(fShowMenu "Select An Image Profile" $profileTable)	
     }
-    $task="push"
-    $ondObjectId=$imageProfileId
-    #$script:ondArgs=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "mac=$script:mac&objectId=$imageProfileId&task=push" ${script:web}GetOnDemandArguments --connect-timeout 10 --stderr -)
-	
+
+    if($script:computer_id -eq "false")
+    {
+        $script:task="unregdeploy"	
+    }
+    else
+    {
+        $script:task="onddeploy"
+    }
 }
 elseif($taskType -eq "upload")
 {
@@ -81,7 +89,7 @@ elseif($taskType -eq "upload")
             error "Could Not Parse Add New Image Result"
         }
 		
-			if($addImageResult.IsValid -eq "true")
+			if($addImageResult.Success -eq "true")
             {
 			  $imageId=$addImageResult.Message
 			  $isError="false"
@@ -121,7 +129,7 @@ elseif($taskType -eq "upload")
 	$imageProfileList = $imageProfileList | ConvertFrom-Json
     if($imageProfileList.Count -eq "1")
     {
-		$imageProfileId=$imageProfileList.FirstProfileId
+		$script:imageProfileId=$imageProfileList.FirstProfileId
     }
 	else
     {
@@ -131,11 +139,18 @@ elseif($taskType -eq "upload")
             $profileTable.Add($imageProfile.ProfileId,$imageProfile.ProfileName)
         }
         clear
-        $imageProfileId=$(fShowMenu "Select An Image Profile" $profileTable)	
+        $script:imageProfileId=$(fShowMenu "Select An Image Profile" $profileTable)	
     }
-    $task="pull"
-    $ondObjectId=$imageProfileId
-    #$script:ondArgs=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "mac=$script:mac&objectId=$imageProfileId&task=pull" ${script:web}GetOnDemandArguments --connect-timeout 10 --stderr -)
+
+    if($script:computer_id -eq "false")
+    {
+        $script:task="unregupload"	
+    }
+    else
+    {
+        $script:task="ondupload"
+    }
+
 }
 
 elseif($taskType -eq "multicast")
@@ -148,57 +163,18 @@ elseif($taskType -eq "multicast")
         $multicastTable.Add($multicast.Port,$multicast.Name)
     }
     clear
-    $multicastId=$(fShowMenu "Select A Multicast Session" $multicastTable)
+    $script:multicastId=$(fShowMenu "Select A Multicast Session" $multicastTable)
 
-    if(!$multicastId)
+    if(!$script:multicastId)
     {
 	  error "No Multicast Session Was Selected Or There Are No Active Sessions"
 	}
 
-    $task="multicast"
-    $ondObjectId=$multicastId
-    #$script:ondArgs=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "mac=$script:mac&objectId=$multicastId&task=multicast" ${script:web}GetOnDemandArguments --connect-timeout 10 --stderr -)
+    $script:task="ondmulticast"
 }
 
 else
 {
     error "Could Not Determine Task Type"
-}
-
-log " ** Using On Demand Mode ** "
-  $checkInStatus=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "mac=$script:mac&objectId=$ondObjectId&task=$task&userId=$script:userId" ${script:web}OnDemandCheckIn --connect-timeout 10 --stderr -)
-    $checkInStatus=$checkInStatus | ConvertFrom-Json
-    if(!$?)
-    {
-        $Error[0].Exception.Message
-        $checkInStatus
-        exit 1
-    }
-    else
-    {
-           log -message $checkInStatus.TaskArguments
-            $arr = $checkInStatus.TaskArguments -split '\r\n'
-            $pos = 0
-            while($pos -lt $arr.Count - 1)
-            {
-                $arg=$arr[$pos] -split '='
-                New-Variable -Name $arg[0] -Value $arg[1] -Scope Script -Force
-                $pos++
-            }
-    }
-
-
-clear
-if($image_direction -eq "pull")
-{
-  . x:\winpe_pull.ps1
-}
-elseif($image_direction -eq "push")
-{
-  . x:\winpe_push.ps1
-}
-else
-{
-  error -message "Could Not Determine Task Direction"
 }
 

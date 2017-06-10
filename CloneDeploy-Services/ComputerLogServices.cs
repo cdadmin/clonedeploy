@@ -3,6 +3,7 @@ using System.Linq;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using System;
 
 namespace CloneDeploy_Services
 {
@@ -18,7 +19,7 @@ namespace CloneDeploy_Services
         public ActionResultDTO AddComputerLog(ComputerLogEntity computerLog)
         {
             var actionResult = new ActionResultDTO();
-
+            computerLog.LogTime = DateTime.Now;
             _uow.ComputerLogRepository.Insert(computerLog);
             _uow.Save();
             actionResult.Success = true;

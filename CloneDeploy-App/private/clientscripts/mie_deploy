@@ -396,9 +396,9 @@ function download_image()
   fi
   
   log " ** Starting Image Download For $destination ** " "display" 
-  if [ -n "$computer_id" ]; then    
-    null=$($curlAuth --data "computerId=$computer_id&partition=$destination" "${web}UpdateProgressPartition" $curlEnd)
-  fi
+
+  $curlAuth --data "taskId=$task_id&partition=$destination" "${web}UpdateProgressPartition" $curlEnd
+  
   sleep 7
   echo
 	
@@ -517,7 +517,7 @@ function main()
  
 	  log " ** Checking Current Queue ** " "display"	
       while true; do
-	    queue_status=$($curlAuth --data "computerId=$computer_id" "${web}CheckQueue" $curlEnd)
+	    queue_status=$($curlAuth --data "taskId=$task_id" "${web}CheckQueue" $curlEnd)
 		if [ "$(parse_json "$queue_status" .Result)" = "true" ]; then
 		  break
 		else

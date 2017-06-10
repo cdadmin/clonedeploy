@@ -203,7 +203,7 @@ namespace CloneDeploy_Services.Workflows
         {
             foreach (var computer in _computers)
             {
-                if (!new TaskBootMenu(computer, _imageProfile, "deploy").CreatePxeBootFiles())
+                if (!new TaskBootMenu(computer, _imageProfile).CreatePxeBootFiles())
                     return false;
             }
             return true;

@@ -5,13 +5,13 @@
   if [ "$task" = "deploy" ]; then
     while [ -f "/tmp/osx.progress" ]; do
       post="$(tail -n 1 /tmp/osx.progress | cut -f2) %"
-      result=$($curlAuth --data "computerId=$computer_id&progress=$post&progressType=wim" "${web}UpdateProgress" $curlEnd)        
+      result=$($curlAuth --data "taskId=$task_id&progress=$post&progressType=wim" "${web}UpdateProgress" $curlEnd)        
       sleep 2
     done
   else
     while [ -f "/tmp/osx.progress" ]; do
       post=$(tail -n 1 /tmp/osx.progress)
-      result=$($curlAuth --data "computerId=$computer_id&progress=$post&progressType=wim" "${web}UpdateProgress" $curlEnd)        
+      result=$($curlAuth --data "taskId=$task_id&progress=$post&progressType=wim" "${web}UpdateProgress" $curlEnd)        
 	  echo "$post" | grep -i "created" > /dev/null
 	  if [ "$?" = "0" ]; then
 	    echo "$post" >> $CLIENT_LOG

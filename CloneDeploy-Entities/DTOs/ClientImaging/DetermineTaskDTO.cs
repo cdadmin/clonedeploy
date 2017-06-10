@@ -10,5 +10,6 @@ namespace CloneDeploy_Entities.DTOs.ClientImaging
     {
         public string task { get; set; }
         public string computerId { get; set; }
+        public string taskId { get; set; }
     }
 }

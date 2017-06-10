@@ -1,4 +1,4 @@
-. x:\winpe_global_functions.ps1
+. x:\wie_global_functions.ps1
 
 function Create-Partition-Layout()
 {
@@ -165,13 +165,12 @@ function Download-Image()
 {
     log " ** Starting Image Download For Hard Drive $($hardDrive.Number) Partition $($currentPartition.Number)" "true"
 
-    if(!$script:isOnDemand)
-    {    
-        curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id&partition=$($currentPartition.Number)" ${script:web}UpdateProgressPartition  --connect-timeout 10 --stderr -
-    }
+
+    curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "taskId=$script:taskId&partition=$($currentPartition.Number)" ${script:web}UpdateProgressPartition  --connect-timeout 10 --stderr -
+
     Set-Partition -DiskNumber $($hardDrive.Number) -PartitionNumber $($currentPartition.Number) -NewDriveLetter C 2>&1 >> $clientLog
 
-    $reporterProc=$(Start-Process powershell "x:\winpe_reporter.ps1 -web $script:web -computerId $computer_id -partitionNumber $($currentPartition.Number) -direction Deploying -curlOptions $script:curlOptions -userTokenEncoded $script:userTokenEncoded -isOnDemand $script:isOnDemand" -NoNewWindow -PassThru)
+    $reporterProc=$(Start-Process powershell "x:\wie_reporter.ps1 -web $script:web -taskId $script:taskId -partitionNumber $($currentPartition.Number) -direction Deploying -curlOptions $script:curlOptions -userTokenEncoded $script:userTokenEncoded -isOnDemand $script:isOnDemand" -NoNewWindow -PassThru)
     
     if($multicast -eq "true")
     {
@@ -348,18 +347,14 @@ function Process-Hard-Drives()
 }
 
 
-if($script:isOnDemand)
-{
-    log " ** Using On Demand Mode ** "	
-}
-else
-{
-    if($multicast -ne "true")
+
+
+    if($script:task -ne "multicast" -and $script:task -ne "ondmulticast")
     {
         Write-Host " ** Checking Current Queue ** " 	
         while($true)
         {
-            $queueStatus=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$computer_id" ${script:web}CheckQueue --connect-timeout 10 --stderr -)
+            $queueStatus=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "taskId=$script:taskId" ${script:web}CheckQueue --connect-timeout 10 --stderr -)
 	        $queueStatus=$queueStatus | ConvertFrom-Json
             if(!$?)
             {
@@ -381,7 +376,7 @@ else
 	    Write-Host " ...... Complete"
 		Write-Host	  		
     }
-}
+
 
   Start-Sleep 2
 

@@ -22,7 +22,11 @@ if [ "$taskType" = "1" ]; then
 		image_profile_id=$(dialog --backtitle "CloneDeploy" --title "Select An Image Profile" --clear --menu "" 20 60 15 `parse_json "$imageProfileList" .ImageProfiles[]` --stdout)
 	fi
 	
-	task="deploy"
+	if [ "$computer_id" = "false" ]; then
+	  task="unregdeploy"
+	else
+	  task="onddeploy"
+	fi
 
 elif [ "$taskType" = "2" ]; then 
   new_or_existing=$(dialog --backtitle "CloneDeploy" --title "New Or Existing?" --clear --menu "" 20 60 15 1 "New Image" 2 "Existing Image" --stdout)
@@ -70,7 +74,12 @@ elif [ "$taskType" = "2" ]; then
     image_profile_id=$(dialog --backtitle "CloneDeploy" --title "Select An Image Profile" --clear --menu "" 20 60 15 `parse_json "$profile_list" .ImageProfiles[]` --stdout)
   fi
   
-  task="upload"
+  if [ "$computer_id" = "false" ]; then
+	  task="unregdeploy"
+	else
+	  task="onddeploy"
+  fi
+
 else
 	error "An Error Occurred Or No Task Was Selected"
 fi
