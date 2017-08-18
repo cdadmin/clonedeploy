@@ -119,7 +119,7 @@ namespace CloneDeploy_Web.views.admin
         protected void PopulateForm()
         {
             ddlComputerImage.DataSource =
-                Call.ImageApi.GetAll(int.MaxValue, "")
+                Call.ImageApi.Get(int.MaxValue, "")
                     .Where(x => x.Environment == "linux" || x.Environment == "")
                     .Select(i => new {i.Id, i.Name})
                     .OrderBy(x => x.Name)

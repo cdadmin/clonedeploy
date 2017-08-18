@@ -12,16 +12,19 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 using CloneDeploy_Services.Workflows;
+using CloneDeploy_Common;
 
 namespace CloneDeploy_App.Controllers
 {
     public class GroupController : ApiController
     {
         private readonly GroupServices _groupServices;
-
+        private readonly int _userId;
         public GroupController()
         {
             _groupServices = new GroupServices();
+            _userId = Convert.ToInt32(((ClaimsIdentity)User.Identity).Claims.Where(c => c.Type == "user_id")
+                .Select(c => c.Value).SingleOrDefault());
         }
 
         [CustomAuth(Permission = "GroupDelete")]
@@ -50,24 +53,29 @@ namespace CloneDeploy_App.Controllers
 
 
         [CustomAuth(Permission = "GroupSearch")]
-        public IEnumerable<GroupWithImage> GetAll(string searchstring = "")
+        public IEnumerable<GroupWithImage> Get(string searchstring = "")
         {
-            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                .Select(c => c.Value).SingleOrDefault();
             return string.IsNullOrEmpty(searchstring)
-                ? _groupServices.SearchGroupsForUser(Convert.ToInt32(userId))
-                : _groupServices.SearchGroupsForUser(Convert.ToInt32(userId), searchstring);
+                ? _groupServices.SearchGroupsForUser(Convert.ToInt32(_userId))
+                : _groupServices.SearchGroupsForUser(Convert.ToInt32(_userId), searchstring);
         }
 
+        [CustomAuth(Permission = AuthorizationStrings.ReadGroup)]
+        public IEnumerable<GroupImageClassificationEntity> GetImageClassifications(int id)
+        {
+            return _groupServices.GetGroupImageClassifications(id);
+        }
+
+        [CustomAuth(Permission = AuthorizationStrings.DeleteGroup)]
+        public ApiBoolResponseDTO DeleteImageClassifications(int id)
+        {
+            return new ApiBoolResponseDTO() { Value = _groupServices.DeleteGroupImageClassifications(id) };
+
+        }
         [CustomAuth(Permission = "GroupSearch")]
         public ApiStringResponseDTO GetCount()
         {
-            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                .Select(c => c.Value).SingleOrDefault();
-
-            return new ApiStringResponseDTO {Value = _groupServices.GroupCountUser(Convert.ToInt32(userId))};
+            return new ApiStringResponseDTO {Value = _groupServices.GroupCountUser(Convert.ToInt32(_userId))};
         }
 
         [CustomAuth(Permission = "GroupRead")]
@@ -118,21 +126,14 @@ namespace CloneDeploy_App.Controllers
         [HttpPost]
         public ApiIntResponseDTO Import(ApiStringResponseDTO csvContents)
         {
-            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                .Select(c => c.Value).SingleOrDefault();
-            return new ApiIntResponseDTO {Value = _groupServices.ImportCsv(csvContents.Value, Convert.ToInt32(userId))};
+            return new ApiIntResponseDTO {Value = _groupServices.ImportCsv(csvContents.Value, Convert.ToInt32(_userId))};
         }
 
 
         [CustomAuth(Permission = "GroupCreate")]
         public ActionResultDTO Post(GroupEntity group)
         {
-            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                .Select(c => c.Value).SingleOrDefault();
-
-            var result = _groupServices.AddGroup(group, Convert.ToInt32(userId));
+            var result = _groupServices.AddGroup(group, Convert.ToInt32(_userId));
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
         }
@@ -171,13 +172,9 @@ namespace CloneDeploy_App.Controllers
         [CustomAuth(Permission = "ImageTaskDeployGroup")]
         public ApiIntResponseDTO StartGroupUnicast(int id)
         {
-            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                .Select(c => c.Value).SingleOrDefault();
-
             return new ApiIntResponseDTO
             {
-                Value = _groupServices.StartGroupUnicast(id, Convert.ToInt32(userId), Request.GetClientIpAddress())
+                Value = _groupServices.StartGroupUnicast(id, Convert.ToInt32(_userId), Request.GetClientIpAddress())
             };
         }
 
@@ -185,11 +182,7 @@ namespace CloneDeploy_App.Controllers
         [HttpGet]
         public ApiStringResponseDTO StartMulticast(int id)
         {
-            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                .Select(c => c.Value).SingleOrDefault();
-
-            return new ApiStringResponseDTO {Value = new Multicast(id, Convert.ToInt32(userId), Request.GetClientIpAddress()).Create()};
+            return new ApiStringResponseDTO {Value = new Multicast(id, Convert.ToInt32(_userId), Request.GetClientIpAddress()).Create()};
         }
 
         [HttpGet]

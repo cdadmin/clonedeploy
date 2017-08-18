@@ -401,10 +401,15 @@ namespace CloneDeploy_Services
 
         }
 
-        public void CheckOut(int taskId)
+        public void CheckOut(int taskId, int profileId)
         {
             var activeImagingTaskServices = new ActiveImagingTaskServices();
             var task = activeImagingTaskServices.GetTask(taskId);
+            if (task.Type.Contains("upload"))
+            {
+                
+            }
+
             if(task.Type.Contains("unreg"))       
                 activeImagingTaskServices.DeleteUnregisteredOndTask(task.Id);
             else
@@ -412,6 +417,17 @@ namespace CloneDeploy_Services
             
             if (task.Type != "multicast" && task.Type != "ondmulticast")
                 activeImagingTaskServices.SendTaskCompletedEmail(task);
+        }
+
+        public string UpdateGuid(int profileId)
+        {
+            var imageProfile = new ImageProfileServices().ReadProfile(profileId);
+            var imageServices = new ImageServices();
+            var image = imageServices.GetImage(imageProfile.ImageId);
+            var guid = Guid.NewGuid().ToString();
+            image.LastUploadGuid = guid;
+            imageServices.UpdateImage(image);
+            return guid;
         }
 
         public string CheckQueue(int taskId)
@@ -726,14 +742,15 @@ namespace CloneDeploy_Services
             return JsonConvert.SerializeObject(tag);
         }
 
-        public string ImageList(string environment, int userId = 0)
+        public string ImageList(string environment, int computerId, int userId = 0)
         {
             var images = new ImageServices().GetOnDemandImageList(userId);
+            var filteredImages = new ComputerImageClassificationServices().FilterForOnDemandList(computerId, images);
             if (environment == "winpe")
             {
-                images = images.Where(x => x.Environment == "winpe").ToList();
+                filteredImages = filteredImages.Where(x => x.Environment == "winpe").ToList();
                 var imageList = new List<WinPEImageList>();
-                foreach (var image in images)
+                foreach (var image in filteredImages)
                 {
                     var winpeImage = new WinPEImageList();
                     winpeImage.ImageId = image.Id.ToString();
@@ -746,10 +763,10 @@ namespace CloneDeploy_Services
             {
                 var imageList = new ImageList {Images = new List<string>()};
                 if (environment == "macOS")
-                    images = images.Where(x => x.Environment == "macOS").ToList();
+                    filteredImages = filteredImages.Where(x => x.Environment == "macOS").ToList();
                 else if (environment == "linux")
-                    images = images.Where(x => x.Environment != "macOS" && x.Environment != "winpe").ToList();
-                foreach (var image in images)
+                    filteredImages = filteredImages.Where(x => x.Environment != "macOS" && x.Environment != "winpe").ToList();
+                foreach (var image in filteredImages)
                     imageList.Images.Add(image.Id + " " + image.Name);
 
                 if (imageList.Images.Count == 0)

@@ -23,6 +23,8 @@ namespace CloneDeploy_Services
             var userGroup = GetUserGroup(userGroupId);
             user.Membership = userGroup.Membership;
             user.UserGroupId = userGroup.Id;
+            user.GroupManagementEnabled = userGroup.GroupManagementEnabled;
+            user.ImageManagementEnabled = userGroup.ImageManagementEnabled;
             new UserServices().UpdateUser(user);
 
 
@@ -157,6 +159,35 @@ namespace CloneDeploy_Services
             return _uow.UserGroupRepository.Get(u => u.Name.Contains(searchString));
         }
 
+        public bool ToggleImageManagement(int userGroupId, int value)
+        {
+            var cdUserGroup = GetUserGroup(userGroupId);
+            cdUserGroup.ImageManagementEnabled = value;
+            var result = UpdateUserGroup(cdUserGroup);
+
+            foreach (var user in GetGroupMembers(userGroupId))
+            {
+                user.ImageManagementEnabled = value;
+                _uow.UserRepository.Update(user,user.Id);
+            }
+            _uow.Save();
+            return result.Success;
+        }
+
+        public bool ToggleGroupManagement(int userGroupId, int value)
+        {
+            var cdUserGroup = GetUserGroup(userGroupId);
+            cdUserGroup.GroupManagementEnabled = value;
+            var result = UpdateUserGroup(cdUserGroup);
+            foreach (var user in GetGroupMembers(userGroupId))
+            {
+                user.GroupManagementEnabled = value;
+                _uow.UserRepository.Update(user, user.Id);
+            }
+            _uow.Save();
+            return result.Success;
+        }
+
         public string TotalCount()
         {
             return _uow.UserGroupRepository.Count();
@@ -209,7 +240,7 @@ namespace CloneDeploy_Services
             return true;
         }
 
-        public ActionResultDTO UpdateUser(CloneDeployUserGroupEntity userGroup)
+        public ActionResultDTO UpdateUserGroup(CloneDeployUserGroupEntity userGroup)
         {
             var ug = GetUserGroup(userGroup.Id);
             if (ug == null) return new ActionResultDTO {ErrorMessage = "User Group Not Found", Id = 0};

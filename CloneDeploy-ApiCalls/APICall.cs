@@ -306,5 +306,25 @@ namespace CloneDeploy_ApiCalls
         {
             get { return new NbiEntryAPI("NbiEntry"); }
         }
+
+        public ImageClassificationAPI ImageClassificationApi
+        {
+            get { return new ImageClassificationAPI("ImageClassification"); }
+        }
+
+        public AlternateServerIpAPI AlternateServerIpApi
+        {
+            get { return new AlternateServerIpAPI("AlternateServerIp"); }
+        }
+
+        public ComputerImageClassificationAPI ComputerImageClassificationApi
+        {
+            get { return new ComputerImageClassificationAPI("ComputerImageClassification"); }
+        }
+
+        public GroupImageClassificationAPI GroupImageClassificationApi
+        {
+            get { return new GroupImageClassificationAPI("GroupImageClassification"); }
+        }
     }
 }

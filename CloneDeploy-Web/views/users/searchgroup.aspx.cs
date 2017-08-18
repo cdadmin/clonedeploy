@@ -44,7 +44,7 @@ namespace CloneDeploy_Web.views.users
 
         protected void PopulateGrid()
         {
-            gvGroups.DataSource = Call.UserGroupApi.GetAll(int.MaxValue, txtSearch.Text).OrderBy(x => x.Name);
+            gvGroups.DataSource = Call.UserGroupApi.Get(int.MaxValue, txtSearch.Text).OrderBy(x => x.Name);
             gvGroups.DataBind();
 
             foreach (GridViewRow row in gvGroups.Rows)

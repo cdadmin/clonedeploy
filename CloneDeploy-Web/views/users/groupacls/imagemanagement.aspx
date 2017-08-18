@@ -27,7 +27,16 @@
             });
         });
     </script>
+      <div class="size-4 column">
+        Enable Image Management:
+    </div>
+    <div class="size-5 column">
+        <asp:CheckBox ID="chkEnabled" runat="server" OnCheckedChanged="chkEnabled_OnCheckedChanged" AutoPostBack="True"></asp:CheckBox>
 
+    </div>
+
+    <br class="clear"/>
+    <br/>
     <asp:GridView ID="gvImages" runat="server" AllowSorting="true" AutoGenerateColumns="False" CssClass="Gridview" DataKeyNames="Id" AlternatingRowStyle-CssClass="alt">
         <Columns>
             <asp:TemplateField>

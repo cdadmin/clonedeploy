@@ -44,6 +44,12 @@
     <Compile Include="ActiveImagingTaskEntity.cs" />
     <Compile Include="ActiveMulticastSession.cs" />
     <Compile Include="AuditEntry.cs" />
+    <Compile Include="AlternateServerIp.cs" />
+    <Compile Include="DTOs\FilterGroupClassificationDTO.cs" />
+    <Compile Include="DTOs\FilterComputerClassificationDTO.cs" />
+    <Compile Include="GroupImageClassification.cs" />
+    <Compile Include="ComputerImageClassification.cs" />
+    <Compile Include="ImageClassification.cs" />
     <Compile Include="AuditLogEntity.cs" />
     <Compile Include="ClusterGroupDistributionPoint.cs" />
     <Compile Include="ClusterGroupServer.cs" />

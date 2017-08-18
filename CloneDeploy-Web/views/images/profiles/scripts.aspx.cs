@@ -77,7 +77,7 @@ namespace CloneDeploy_Web.views.images.profiles
 
         protected void PopulateGrid()
         {
-            gvScripts.DataSource = Call.ScriptApi.GetAll(int.MaxValue, "");
+            gvScripts.DataSource = Call.ScriptApi.Get(int.MaxValue, "");
             gvScripts.DataBind();
             PopulateProfileScripts();
         }

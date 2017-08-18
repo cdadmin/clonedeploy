@@ -99,6 +99,13 @@
         <asp:TextBox ID="txtImageDesc" runat="server" TextMode="MultiLine" CssClass="descbox"></asp:TextBox>
     </div>
     <br class="clear"/>
+     <div class="size-4 column">
+        Classification:
+    </div>
+    <div class="size-5 column">
+        <asp:DropDownList ID="ddlClassification" runat="server" CssClass="ddlist"/>
+    </div>
+    <br class="clear"/>
     <div class="size-4 column">
         Enabled:
     </div>

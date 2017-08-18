@@ -82,7 +82,7 @@ namespace CloneDeploy_Web.views.images.profiles
 
         protected void PopulateGrid()
         {
-            gvFile.DataSource = Call.FileFolderApi.GetAll(int.MaxValue, "");
+            gvFile.DataSource = Call.FileFolderApi.Get(int.MaxValue, "");
             gvFile.DataBind();
             if (Image.Environment == "macOS")
             {

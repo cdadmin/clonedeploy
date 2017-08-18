@@ -72,7 +72,7 @@ namespace CloneDeploy_Web.views.images.profiles
 
         protected void PopulateGrid()
         {
-            gvSysprep.DataSource = Call.SysprepTagApi.GetAll(int.MaxValue, "");
+            gvSysprep.DataSource = Call.SysprepTagApi.Get(int.MaxValue, "");
             gvSysprep.DataBind();
             PopulateProfileScripts();
         }

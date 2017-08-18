@@ -48,8 +48,11 @@ namespace CloneDeploy_Web.views.users.acls
         {
             var listOfImages = Call.CloneDeployUserApi.GetImageManagements(CloneDeployUser.Id);
 
-            gvImages.DataSource = Call.ImageApi.GetAll(int.MaxValue, "");
+            gvImages.DataSource = Call.ImageApi.Get(int.MaxValue, "");
             gvImages.DataBind();
+
+            chkEnabled.Checked = Convert.ToBoolean(CloneDeployUser.ImageManagementEnabled);
+            
 
             foreach (GridViewRow row in gvImages.Rows)
             {
@@ -69,6 +72,16 @@ namespace CloneDeploy_Web.views.users.acls
         protected void SelectAll_CheckedChanged(object sender, EventArgs e)
         {
             ChkAll(gvImages);
+        }
+
+        protected void chkEnabled_OnCheckedChanged(object sender, EventArgs e)
+        {
+            if (CloneDeployUser.UserGroupId != -1)
+            {
+                EndUserMessage = "Cannot Update. This User's Image Management Is Controlled By A Group";
+                return;
+            }
+            Call.CloneDeployUserApi.ToggleImageManagement(CloneDeployUser.Id, chkEnabled.Checked ? 1 : 0);
         }
     }
 }

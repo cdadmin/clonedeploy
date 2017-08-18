@@ -5,7 +5,7 @@ using CloneDeploy_Web.BasePages;
 
 namespace CloneDeploy_Web.views.global.scripts
 {
-    public partial class views_admin_scripts_editcore : Global
+    public partial class views_admin_scripts_editcore : Admin
     {
         protected void buttonSaveCore_OnClick(object sender, EventArgs e)
         {

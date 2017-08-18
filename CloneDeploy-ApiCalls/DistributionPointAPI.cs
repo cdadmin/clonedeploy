@@ -32,10 +32,10 @@ namespace CloneDeploy_ApiCalls
         }
 
 
-        public List<DistributionPointEntity> GetAll(int limit, string searchstring)
+        public List<DistributionPointEntity> Get(int limit, string searchstring)
         {
             Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetAll", Resource);
+            Request.Resource = string.Format("api/{0}/Get", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
             return _apiRequest.Execute<List<DistributionPointEntity>>(Request);

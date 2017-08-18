@@ -24,7 +24,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "AdminUpdate")]
-        public IEnumerable<OnlineKernel> GetAll()
+        public IEnumerable<OnlineKernel> Get()
         {
             return _onlineKernelServices.GetAllOnlineKernels();
         }

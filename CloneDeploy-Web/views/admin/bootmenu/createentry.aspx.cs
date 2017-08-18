@@ -5,7 +5,7 @@ using CloneDeploy_Web.BasePages;
 
 namespace CloneDeploy_Web.views.global.boottemplates
 {
-    public partial class views_global_boottemplates_createentry : Global
+    public partial class views_global_boottemplates_createentry : Admin
     {
         protected void btnSubmit_OnClick(object sender, EventArgs e)
         {
@@ -28,7 +28,7 @@ namespace CloneDeploy_Web.views.global.boottemplates
             else
             {
                 EndUserMessage = "Successfully Added Boot Menu Entry";
-                Response.Redirect("~/views/global/boottemplates/editentry.aspx?cat=sub1&entryid=" + result.Id);
+                Response.Redirect("~/views/admin/bootmenu/editentry.aspx?&entryid=" + result.Id);
             }
         }
 

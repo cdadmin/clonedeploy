@@ -12,7 +12,7 @@ namespace CloneDeploy_Web.views.global.rooms
     {
         protected void BindGrid()
         {
-            gvRooms.DataSource = Call.RoomApi.GetAll(int.MaxValue, txtSearch.Text);
+            gvRooms.DataSource = Call.RoomApi.Get(int.MaxValue, txtSearch.Text);
             gvRooms.DataBind();
 
             if (gvRooms.Rows.Count == 0)

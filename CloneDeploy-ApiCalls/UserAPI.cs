@@ -70,10 +70,10 @@ namespace CloneDeploy_ApiCalls
             return response != null ? response.Value : 0;
         }
 
-        public List<UserWithUserGroup> GetAll(int limit, string searchstring)
+        public List<UserWithUserGroup> Get(int limit, string searchstring)
         {
             Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetAll", Resource);
+            Request.Resource = string.Format("api/{0}/Get", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
             return _apiRequest.Execute<List<UserWithUserGroup>>(Request);
@@ -94,6 +94,22 @@ namespace CloneDeploy_ApiCalls
             Request.AddParameter("limit", limit);
             return _apiRequest.Execute<List<AuditLogEntity>>(Request);
 
+        }
+
+        public IEnumerable<AuditLogEntity> GetUserTaskAuditLogs(int id, int limit)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetUserTaskAuditLogs/{1}", Resource, id);
+            Request.AddParameter("limit", limit);
+            return _apiRequest.Execute<List<AuditLogEntity>>(Request);
+
+        }
+
+        public IEnumerable<AuditLogEntity> GetUserLoginsDashboard()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetUserLoginsDashboard/", Resource);
+            return _apiRequest.Execute<List<AuditLogEntity>>(Request);
         }
 
         public string GetCount()
@@ -167,6 +183,24 @@ namespace CloneDeploy_ApiCalls
             if (response.Id == 0)
                 response.Success = false;
             return response;
+        }
+
+        public bool ToggleImageManagement(int id, int value)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/ToggleImageManagement/{1}", Resource, id);
+            Request.AddParameter("value", value);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
+        }
+
+        public bool ToggleGroupManagement(int id, int value)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/ToggleGroupManagement/{1}", Resource, id);
+            Request.AddParameter("value", value);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
         }
     }
 }

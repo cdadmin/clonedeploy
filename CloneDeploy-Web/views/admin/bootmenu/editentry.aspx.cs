@@ -5,7 +5,7 @@ using CloneDeploy_Web.BasePages;
 
 namespace CloneDeploy_Web.views.global.boottemplates
 {
-    public partial class views_global_boottemplates_editentry : Global
+    public partial class views_global_boottemplates_editentry : Admin
     {
         protected void btnSubmit_OnClick(object sender, EventArgs e)
         {

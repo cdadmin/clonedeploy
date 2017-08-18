@@ -27,13 +27,12 @@ namespace CloneDeploy_Services
             //All user rights don't have the required right.  No need to check group membership.
             if (_currentUserRights.All(right => right != _requiredRight)) return false;
 
-            var userGroupManagements = _userServices.GetUserGroupManagements(_cloneDeployUser.Id);
-            if (userGroupManagements.Count > 0)
+            if (_cloneDeployUser.GroupManagementEnabled == 1)
             {
-                //Group management is in use since at least 1 result was returned.  Now check if allowed
                 var computers = new ComputerServices().SearchComputersForUser(_cloneDeployUser.Id, int.MaxValue);
                 return computers.Any(x => x.Id == computerId);
             }
+          
             return IsAuthorized();
         }
 
@@ -44,12 +43,11 @@ namespace CloneDeploy_Services
             //All user rights don't have the required right.  No need to check group membership.
             if (_currentUserRights.All(right => right != _requiredRight)) return false;
 
-            var userGroupManagements = _userServices.GetUserGroupManagements(_cloneDeployUser.Id);
-            if (userGroupManagements.Count > 0)
+            if (_cloneDeployUser.GroupManagementEnabled == 1)
             {
-                //Group management is in use since at least 1 result was returned.  Now check if allowed
                 return new GroupServices().SearchGroupsForUser(_cloneDeployUser.Id).Any(x => x.Id == groupId);
             }
+        
             return IsAuthorized();
         }
 
@@ -60,10 +58,8 @@ namespace CloneDeploy_Services
             //All user rights don't have the required right.  No need to check group membership.
             if (_currentUserRights.All(right => right != _requiredRight)) return false;
 
-            var userImageManagements = _userServices.GetUserImageManagements(_cloneDeployUser.Id);
-            if (userImageManagements.Count > 0)
+            if (_cloneDeployUser.ImageManagementEnabled == 1)
             {
-                //Image management is in use since at least 1 result was returned.  Now check if allowed
                 return new ImageServices().SearchImagesForUser(_cloneDeployUser.Id).Any(x => x.Id == imageId);
             }
             return IsAuthorized();

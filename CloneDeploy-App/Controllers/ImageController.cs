@@ -69,7 +69,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "ImageSearch")]
-        public IEnumerable<ImageWithDate> GetAll(string searchstring = "")
+        public IEnumerable<ImageWithDate> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _imageServices.SearchImagesForUser(_userId)

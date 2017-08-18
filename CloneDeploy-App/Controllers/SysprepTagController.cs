@@ -35,7 +35,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "GlobalRead")]
-        public IEnumerable<SysprepTagEntity> GetAll(string searchstring = "")
+        public IEnumerable<SysprepTagEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _sysprepTagServices.SearchSysprepTags()

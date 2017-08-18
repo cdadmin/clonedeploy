@@ -12,6 +12,7 @@ using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 using CloneDeploy_Services.Workflows;
 using Newtonsoft.Json;
+using CloneDeploy_Common;
 
 namespace CloneDeploy_App.Controllers
 {
@@ -26,7 +27,7 @@ namespace CloneDeploy_App.Controllers
         {
             _computerService = new ComputerServices();
             _auditLogService = new AuditLogServices();
-            _userId = Convert.ToInt32(((ClaimsIdentity) User.Identity).Claims.Where(c => c.Type == "user_id")
+            _userId = Convert.ToInt32(((ClaimsIdentity)User.Identity).Claims.Where(c => c.Type == "user_id")
                 .Select(c => c.Value).SingleOrDefault());
             _auditLog = new AuditLogEntity();
             _auditLog.ObjectType = "Computer";
@@ -41,14 +42,14 @@ namespace CloneDeploy_App.Controllers
         public ApiBoolResponseDTO AddToSmartGroups(ComputerEntity computer)
         {
             _computerService.AddComputerToSmartGroups(computer);
-            return new ApiBoolResponseDTO {Value = true};
+            return new ApiBoolResponseDTO { Value = true };
         }
 
         [HttpGet]
         [CustomAuth(Permission = "ComputerUpdate")]
         public ApiBoolResponseDTO CreateCustomBootFiles(int id)
         {
-            return new ApiBoolResponseDTO {Value = _computerService.CreateBootFiles(id)};
+            return new ApiBoolResponseDTO { Value = _computerService.CreateBootFiles(id) };
         }
 
         [CustomAuth(Permission = "ComputerDelete")]
@@ -75,6 +76,18 @@ namespace CloneDeploy_App.Controllers
             var result = _computerService.DeleteComputerLogs(id);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
+        }
+
+        [CustomAuth(Permission = AuthorizationStrings.ReadComputer)]
+        public IEnumerable<ComputerImageClassificationEntity> GetImageClassifications(int id)
+        {
+            return _computerService.GetComputerImageClassifications(id);
+        }
+
+        [CustomAuth(Permission = AuthorizationStrings.DeleteComputer)]
+        public ApiBoolResponseDTO DeleteImageClassifications(int id)
+        {
+            return new ApiBoolResponseDTO() { Value = _computerService.DeleteComputerImageClassifications(id) };       
         }
 
         [CustomAuth(Permission = "ComputerDelete")]

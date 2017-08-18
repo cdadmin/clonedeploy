@@ -127,7 +127,7 @@ namespace CloneDeploy_Web.views.images
 
         protected void PopulateGrid()
         {
-            gvImages.DataSource = Call.ImageApi.GetAll(int.MaxValue, txtSearch.Text).OrderBy(x => x.Name).ToList();
+            gvImages.DataSource = Call.ImageApi.Get(int.MaxValue, txtSearch.Text).OrderBy(x => x.Name).ToList();
             gvImages.DataBind();
             lblTotal.Text = gvImages.Rows.Count + " Result(s) / " + Call.ImageApi.GetCount() + " Total Image(s)";
             PopulateSizes();

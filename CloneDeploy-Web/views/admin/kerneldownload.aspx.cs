@@ -38,7 +38,7 @@ namespace CloneDeploy_Web.views.admin
 
         private void PopulateKernels()
         {
-            var onlineKernels = Call.OnlineKernelApi.GetAll();
+            var onlineKernels = Call.OnlineKernelApi.Get();
             if (onlineKernels == null)
             {
                 EndUserMessage = "Could Not Get Online Kernel List.  Internet Access Is Required.";

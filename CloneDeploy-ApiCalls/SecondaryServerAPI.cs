@@ -32,10 +32,10 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<SecondaryServerEntity>(Request);
         }
 
-        public List<SecondaryServerEntity> GetAll(int limit, string searchstring)
+        public List<SecondaryServerEntity> Get(int limit, string searchstring)
         {
             Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetAll", Resource);
+            Request.Resource = string.Format("api/{0}/Get", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
             return _apiRequest.Execute<List<SecondaryServerEntity>>(Request);

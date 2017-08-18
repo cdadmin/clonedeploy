@@ -36,7 +36,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = AuthorizationStrings.ReadAdmin)]
-        public IEnumerable<NetBootProfileEntity> GetAll(string searchstring = "")
+        public IEnumerable<NetBootProfileEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _netBootProfileServices.SearchNetBootProfiles()

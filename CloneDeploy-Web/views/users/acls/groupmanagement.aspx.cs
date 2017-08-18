@@ -48,8 +48,10 @@ namespace CloneDeploy_Web.views.users.acls
         {
             var listOfGroups = Call.CloneDeployUserApi.GetGroupManagements(CloneDeployUser.Id);
 
-            gvGroups.DataSource = Call.GroupApi.GetAll(int.MaxValue, "");
+            gvGroups.DataSource = Call.GroupApi.Get(int.MaxValue, "");
             gvGroups.DataBind();
+
+            chkEnabled.Checked = Convert.ToBoolean(CloneDeployUser.GroupManagementEnabled);
 
             foreach (GridViewRow row in gvGroups.Rows)
             {
@@ -69,6 +71,16 @@ namespace CloneDeploy_Web.views.users.acls
         protected void SelectAll_CheckedChanged(object sender, EventArgs e)
         {
             ChkAll(gvGroups);
+        }
+
+        protected void chkEnabled_OnCheckedChanged(object sender, EventArgs e)
+        {
+            if (CloneDeployUser.UserGroupId != -1)
+            {
+                EndUserMessage = "Cannot Update. This User's Group Management Is Controlled By A Group";
+                return;
+            }
+            Call.CloneDeployUserApi.ToggleGroupManagement(CloneDeployUser.Id, chkEnabled.Checked ? 1 : 0);
         }
     }
 }

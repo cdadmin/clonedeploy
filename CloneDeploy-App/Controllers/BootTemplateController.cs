@@ -36,7 +36,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "GlobalRead")]
-        public IEnumerable<BootTemplateEntity> GetAll(string searchstring = "")
+        public IEnumerable<BootTemplateEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _bootTemplateServices.SearchBootTemplates()

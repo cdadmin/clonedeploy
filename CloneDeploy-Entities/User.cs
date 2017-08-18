@@ -53,6 +53,11 @@ namespace CloneDeploy_Entities
         [Column("clonedeploy_usergroup_id", Order = 15)]
         public int UserGroupId { get; set; }
 
+        [Column("image_management_enabled", Order = 16)]
+        public int ImageManagementEnabled { get; set; }
+
+        [Column("group_management_enabled", Order = 17)]
+        public int GroupManagementEnabled { get; set; }
        
     }
 

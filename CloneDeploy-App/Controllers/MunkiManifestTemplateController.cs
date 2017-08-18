@@ -148,7 +148,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "GlobalRead")]
-        public IEnumerable<MunkiManifestTemplateEntity> GetAll(string searchstring = "")
+        public IEnumerable<MunkiManifestTemplateEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _munkiManifestTemplateServices.SearchManifests()

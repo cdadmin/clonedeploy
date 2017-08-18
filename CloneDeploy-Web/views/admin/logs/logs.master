@@ -26,7 +26,7 @@
         <a href="<%= ResolveUrl("~/views/admin/logs/frontend.aspx") %>?level=2">
             <span class="sub-nav-text">Front End Logs</span></a>
     </li>
-    <li id="ond">
+    <li id="ond" runat="server">
         <a href="<%= ResolveUrl("~/views/admin/logs/ond.aspx") %>?level=2">
             <span class="sub-nav-text">On Demand Logs</span></a>
     </li>

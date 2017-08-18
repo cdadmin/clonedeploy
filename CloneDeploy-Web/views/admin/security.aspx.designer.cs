@@ -7,12 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-
-
-namespace CloneDeploy_Web.views.admin
-{
-    public partial class views_admin_security {
+namespace CloneDeploy_Web.views.admin {
     
+    
+    public partial class views_admin_security {
+        
         /// <summary>
         /// btnUpdateSettings control.
         /// </summary>
@@ -21,7 +20,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton btnUpdateSettings;
-    
+        
         /// <summary>
         /// chkImageApproval control.
         /// </summary>
@@ -30,16 +29,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkImageApproval;
-    
-        /// <summary>
-        /// ddlSSL control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlSSL;
-    
+        
         /// <summary>
         /// ddlOnd control.
         /// </summary>
@@ -48,7 +38,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlOnd;
-    
+        
         /// <summary>
         /// ddlDebugLogin control.
         /// </summary>
@@ -57,7 +47,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlDebugLogin;
-    
+        
         /// <summary>
         /// ddlOndLogin control.
         /// </summary>
@@ -66,7 +56,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlOndLogin;
-    
+        
         /// <summary>
         /// ddlRegisterLogin control.
         /// </summary>
@@ -75,7 +65,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlRegisterLogin;
-    
+        
         /// <summary>
         /// ddlWebTasksLogin control.
         /// </summary>
@@ -84,7 +74,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlWebTasksLogin;
-    
+        
         /// <summary>
         /// ddlClobberLogin control.
         /// </summary>
@@ -93,7 +83,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlClobberLogin;
-    
+        
         /// <summary>
         /// universal control.
         /// </summary>
@@ -102,7 +92,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl universal;
-    
+        
         /// <summary>
         /// btnGenKey control.
         /// </summary>
@@ -111,7 +101,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton btnGenKey;
-    
+        
         /// <summary>
         /// txtToken control.
         /// </summary>
@@ -120,7 +110,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtToken;
-    
+        
         /// <summary>
         /// chkldap control.
         /// </summary>
@@ -129,7 +119,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkldap;
-    
+        
         /// <summary>
         /// ad control.
         /// </summary>
@@ -138,7 +128,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl ad;
-    
+        
         /// <summary>
         /// txtldapServer control.
         /// </summary>
@@ -147,7 +137,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtldapServer;
-    
+        
         /// <summary>
         /// txtldapPort control.
         /// </summary>
@@ -156,7 +146,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtldapPort;
-    
+        
         /// <summary>
         /// txtldapAuthAttribute control.
         /// </summary>
@@ -165,7 +155,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtldapAuthAttribute;
-    
+        
         /// <summary>
         /// txtldapbasedn control.
         /// </summary>
@@ -174,7 +164,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtldapbasedn;
-    
+        
         /// <summary>
         /// ddlldapAuthType control.
         /// </summary>
@@ -183,7 +173,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlldapAuthType;
-    
+        
         /// <summary>
         /// lblTitle control.
         /// </summary>
@@ -192,7 +182,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblTitle;
-    
+        
         /// <summary>
         /// OkButton control.
         /// </summary>
@@ -201,7 +191,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton OkButton;
-    
+        
         /// <summary>
         /// CancelButton control.
         /// </summary>
@@ -210,7 +200,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton CancelButton;
-    
+        
         /// <summary>
         /// lblClientISO control.
         /// </summary>
@@ -219,7 +209,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblClientISO;
-    
+        
         /// <summary>
         /// lblDiscouraged control.
         /// </summary>
@@ -228,7 +218,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblDiscouraged;
-    
+        
         /// <summary>
         /// lnkOk control.
         /// </summary>

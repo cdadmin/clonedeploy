@@ -28,7 +28,8 @@ namespace CloneDeploy_Web.views.computers
                 CustomAttribute2 = txtCustom2.Text,
                 CustomAttribute3 = txtCustom3.Text,
                 CustomAttribute4 = txtCustom4.Text,
-                CustomAttribute5 = txtCustom5.Text
+                CustomAttribute5 = txtCustom5.Text,
+                AlternateServerIpId = Convert.ToInt32(altServerIp.SelectedValue)
             };
 
             var result = Call.ComputerApi.Post(computer);
@@ -69,6 +70,7 @@ namespace CloneDeploy_Web.views.computers
             PopulateBuildingsDdl(ddlBuilding);
             PopulateRoomsDdl(ddlRoom);
             PopulateClusterGroupsDdl(ddlClusterGroup);
+            PopulateAltServerIps(altServerIp);
         }
     }
 }

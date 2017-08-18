@@ -1,6 +1,4 @@
-﻿using CloneDeploy_Entities;
-
-namespace CloneDeploy_ApiCalls
+﻿namespace CloneDeploy_ApiCalls
 {
     public interface IAPICall
     {
@@ -61,5 +59,9 @@ namespace CloneDeploy_ApiCalls
         WorkflowAPI WorkflowApi { get; }
         NetBootProfileAPI NetBootProfileApi { get; }
         NbiEntryAPI NbiEntryApi { get; }
+        ImageClassificationAPI ImageClassificationApi { get; }
+        AlternateServerIpAPI AlternateServerIpApi { get; }
+
+
     }
 }

@@ -42,8 +42,10 @@ namespace CloneDeploy_Web.views.users.groupacls
         {
             var listOfGroups = Call.UserGroupApi.GetGroupManagements(CloneDeployUserGroup.Id);
 
-            gvGroups.DataSource = Call.GroupApi.GetAll(int.MaxValue, "");
+            gvGroups.DataSource = Call.GroupApi.Get(int.MaxValue, "");
             gvGroups.DataBind();
+
+            chkEnabled.Checked = Convert.ToBoolean(CloneDeployUserGroup.GroupManagementEnabled);
 
             foreach (GridViewRow row in gvGroups.Rows)
             {
@@ -63,6 +65,11 @@ namespace CloneDeploy_Web.views.users.groupacls
         protected void SelectAll_CheckedChanged(object sender, EventArgs e)
         {
             ChkAll(gvGroups);
+        }
+
+        protected void chkEnabled_OnCheckedChanged(object sender, EventArgs e)
+        {
+            Call.UserGroupApi.ToggleGroupManagement(CloneDeployUserGroup.Id, chkEnabled.Checked ? 1 : 0);
         }
     }
 }

@@ -49,7 +49,7 @@
     <div class="mobile-menu-right">
         <a href="<%= ResolveUrl("~/views/tasks/active.aspx") %>">Tasks</a>
         <a href="<%= ResolveUrl("~/views/users/search.aspx") %>">Users</a>
-        <a href="<%= ResolveUrl("~/views/admin/chooser.aspx") %>">Admin</a>
+        <a href="<%= ResolveUrl("~/views/admin/server/server.aspx") %>">Admin</a>
     </div>
 </div>
 
@@ -63,7 +63,7 @@
                 <a href="<%= ResolveUrl("~/views/dashboard/dash.aspx") %>">
                     <h1>CloneDeploy</h1>
                 </a>
-                <span class="version">1.2.0 <b><asp:Label runat="server" Id="lblServerId"></asp:Label></b></span>
+                <span class="version">1.3.0 <b><asp:Label runat="server" Id="lblServerId"></asp:Label></b></span>
             </div>
 
 
@@ -91,7 +91,7 @@
                         <a href="<%= ResolveUrl("~/views/global/chooser.aspx") %>" class="icon-global"></a>
                     </li>
                     <li id="nav-settings">
-                        <a href="<%= ResolveUrl("~/views/admin/chooser.aspx") %>" class="icon-setting"></a>
+                        <a href="<%= ResolveUrl("~/views/admin/server/server.aspx") %>" class="icon-setting"></a>
                     </li>
 
 

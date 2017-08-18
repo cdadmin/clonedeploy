@@ -62,6 +62,9 @@ namespace CloneDeploy_Entities
 
         [Column("client_identifier", Order = 19)]
         public string ClientIdentifier { get; set; }
+
+        [Column("alternate_server_ip_id", Order = 20)]
+        public int AlternateServerIpId { get; set; }
     }
 
     [NotMapped]

@@ -10,16 +10,20 @@ namespace CloneDeploy_App.Controllers
 {
     public class AuthorizationController : ApiController
     {
+        private readonly int _userId;
+        public AuthorizationController()
+        {
+            _userId = Convert.ToInt32(((ClaimsIdentity)User.Identity).Claims.Where(c => c.Type == "user_id")
+                .Select(c => c.Value).SingleOrDefault());
+        }
+
         [Authorize]
         [HttpGet]
         public ApiBoolResponseDTO ComputerManagement(string requiredRight, int computerId)
         {
-            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                .Select(c => c.Value).SingleOrDefault();
             return new ApiBoolResponseDTO
             {
-                Value = new AuthorizationServices(Convert.ToInt32(userId), requiredRight).ComputerManagement(computerId)
+                Value = new AuthorizationServices(Convert.ToInt32(_userId), requiredRight).ComputerManagement(computerId)
             };
         }
 
@@ -27,12 +31,9 @@ namespace CloneDeploy_App.Controllers
         [HttpGet]
         public ApiBoolResponseDTO GroupManagement(string requiredRight, int groupId)
         {
-            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                .Select(c => c.Value).SingleOrDefault();
             return new ApiBoolResponseDTO
             {
-                Value = new AuthorizationServices(Convert.ToInt32(userId), requiredRight).GroupManagement(groupId)
+                Value = new AuthorizationServices(Convert.ToInt32(_userId), requiredRight).GroupManagement(groupId)
             };
         }
 
@@ -40,12 +41,9 @@ namespace CloneDeploy_App.Controllers
         [HttpGet]
         public ApiBoolResponseDTO ImageManagement(string requiredRight, int imageId)
         {
-            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                .Select(c => c.Value).SingleOrDefault();
             return new ApiBoolResponseDTO
             {
-                Value = new AuthorizationServices(Convert.ToInt32(userId), requiredRight).ImageManagement(imageId)
+                Value = new AuthorizationServices(Convert.ToInt32(_userId), requiredRight).ImageManagement(imageId)
             };
         }
 
@@ -53,12 +51,9 @@ namespace CloneDeploy_App.Controllers
         [HttpGet]
         public ApiBoolResponseDTO IsAuthorized(string requiredRight)
         {
-            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                .Select(c => c.Value).SingleOrDefault();
             return new ApiBoolResponseDTO
             {
-                Value = new AuthorizationServices(Convert.ToInt32(userId), requiredRight).IsAuthorized()
+                Value = new AuthorizationServices(Convert.ToInt32(_userId), requiredRight).IsAuthorized()
             };
         }
     }

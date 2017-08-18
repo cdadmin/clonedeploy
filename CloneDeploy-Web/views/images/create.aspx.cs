@@ -18,7 +18,8 @@ namespace CloneDeploy_Web.views.images
                 Description = txtImageDesc.Text,
                 Protected = chkProtected.Checked ? 1 : 0,
                 IsVisible = chkVisible.Checked ? 1 : 0,
-                Enabled = 1
+                Enabled = 1,
+                ClassificationId = Convert.ToInt32(ddlClassification.SelectedValue)
             };
 
             image.Type = ddlEnvironment.Text == "macOS" ? "Block" : ddlImageType.Text;
@@ -66,7 +67,7 @@ namespace CloneDeploy_Web.views.images
         protected void Page_Load(object sender, EventArgs e)
         {
             if (IsPostBack) return;
-
+            PopulateImageClassifications(ddlClassification);
 
             chkVisible.Checked = true;
         }

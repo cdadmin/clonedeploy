@@ -35,7 +35,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "GlobalRead")]
-        public IEnumerable<FileFolderEntity> GetAll(string searchstring = "")
+        public IEnumerable<FileFolderEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _fileFolderServices.SearchFileFolders()

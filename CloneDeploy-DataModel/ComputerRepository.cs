@@ -31,7 +31,8 @@ namespace CloneDeploy_DataModel
                         profileId = h.ImageProfileId,
                         site = h.SiteId,
                         building = h.BuildingId,
-                        room = h.RoomId
+                        room = h.RoomId,
+                        alternateip = h.AlternateServerIpId
                     }).AsEnumerable().Select(x => new ComputerWithImage
                     {
                         Id = x.id,
@@ -41,7 +42,8 @@ namespace CloneDeploy_DataModel
                         ImageProfileId = x.profileId,
                         SiteId = x.site,
                         BuildingId = x.building,
-                        RoomId = x.room
+                        RoomId = x.room,
+                        AlternateServerIpId = x.alternateip
                     }).FirstOrDefault();
         }
 
@@ -75,7 +77,8 @@ namespace CloneDeploy_DataModel
                     profileId = h.ImageProfileId,
                     site = h.SiteId,
                     building = h.BuildingId,
-                    room = h.RoomId
+                    room = h.RoomId,
+                    altIp = h.AlternateServerIpId
                 }).AsEnumerable().Select(x => new ComputerWithImage
                 {
                     Id = x.id,
@@ -86,7 +89,8 @@ namespace CloneDeploy_DataModel
                     ImageProfileId = x.profileId,
                     SiteId = x.site,
                     BuildingId = x.building,
-                    RoomId = x.room
+                    RoomId = x.room,
+                    AlternateServerIpId = x.altIp
                 }).OrderBy(x => x.Name).Take(limit).ToList();
         }
 
@@ -105,7 +109,8 @@ namespace CloneDeploy_DataModel
                     profileId = h.ImageProfileId,
                     site = h.SiteId,
                     building = h.BuildingId,
-                    room = h.RoomId
+                    room = h.RoomId,
+                    altIp = h.AlternateServerIpId
                 }).AsEnumerable().Select(x => new ComputerWithImage
                 {
                     Id = x.id,
@@ -115,7 +120,8 @@ namespace CloneDeploy_DataModel
                     ImageProfileId = x.profileId,
                     SiteId = x.site,
                     BuildingId = x.building,
-                    RoomId = x.room
+                    RoomId = x.room,
+                    AlternateServerIpId = x.altIp
                 }).OrderBy(x => x.Name).Take(limit).ToList();
         }
     }

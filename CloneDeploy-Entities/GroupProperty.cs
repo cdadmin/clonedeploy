@@ -104,10 +104,19 @@ namespace CloneDeploy_Entities
         [Column("cluster_group_id", Order = 32)]
         public int ClusterGroupId { get; set; }
 
+        [Column("alternate_server_ip_id_enabled", Order = 33)]
+        public int AlternateServerIpEnabled { get; set; }
 
-     
+        [Column("alternate_server_ip_id", Order = 34)]
+        public int AlternateServerIpId { get; set; }
 
-      
+        [Column("image_classifications_enabled", Order = 35)]
+        public int ImageClassificationsEnabled { get; set; }
+
+
+
+
+
 
     }
 }

@@ -58,7 +58,7 @@ namespace CloneDeploy_Web.views.global.scripts
 
         protected void PopulateGrid()
         {
-            gvScripts.DataSource = Call.ScriptApi.GetAll(int.MaxValue, txtSearch.Text);
+            gvScripts.DataSource = Call.ScriptApi.Get(int.MaxValue, txtSearch.Text);
             gvScripts.DataBind();
 
             lblTotal.Text = gvScripts.Rows.Count + " Result(s) / " + Call.ScriptApi.GetCount() + " Total Script(s)";

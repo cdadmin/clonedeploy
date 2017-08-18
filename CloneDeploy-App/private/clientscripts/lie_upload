@@ -723,6 +723,9 @@ function process_hard_drives()
 
   done
 
+  image_guid=$($curlAuth --data "profileId=$profile_id" "${web}UpdateGuid" $curlEnd)
+  echo $image_guid > /storage/images/$image_name/guid
+  
   log " shrunk_volumes: $shrunk_volumes"
   for shrunk_volume in $shrunk_volumes; do
     filesystem_type=`blkid -po udev $shrunk_volume | grep FS_TYPE | awk -F'=' '{print $2}'`

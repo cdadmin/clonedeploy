@@ -387,6 +387,9 @@ function process_hard_drives()
 	
   done
 
+  image_guid=$($curlAuth --data "profileId=$profile_id" "${web}UpdateGuid" $curlEnd)
+  echo $image_guid > /storage/images/$image_name/guid
+  
   log " shrunk_volumes: $shrunk_volumes"
   unique_shrunk_volumes=$(echo $shrunk_volumes | xargs -n1 | sort -u | xargs)
   log " unique_shrunk_volumes: $unique_shrunk_volumes"

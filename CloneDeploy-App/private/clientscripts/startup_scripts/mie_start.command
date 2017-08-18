@@ -50,44 +50,50 @@ function test_server_conn()
 clear_and_move_down
 web=$(cat /usr/local/bin/weburl)
 export web
+USER_TOKEN=$(cat /usr/local/bin/universaltoken 2>/dev/null)
+
 set_curl_command
 test_server_conn
 
-loginCount=1
-echo " ** CloneDeploy.  Login To Continue Or Close Window To Cancel ** "
-echo
-while [ "$loginCount" -le "2" ]; do	
-  echo -n "Username: "
-  read username
-  echo -n "Password: "
-  stty -echo
-  read password
-  stty echo
+if [ -z "$USER_TOKEN" ]; then
+  loginCount=1
+  echo " ** CloneDeploy.  Login To Continue Or Close Window To Cancel ** "
   echo
+  while [ "$loginCount" -le "2" ]; do	
+    echo -n "Username: "
+    read username
+    echo -n "Password: "
+    stty -echo
+    read password
+    stty echo
+    echo
 
-  loginResult=$($curlCommand -F username="$(echo -n $username | base64)" -F password="$(echo -n $password | base64)" -F clientIP="$(echo -n $clientIP | base64)" -F task="$(echo -n $task | base64)" "${web}ConsoleLogin" $curlEnd)
+    loginResult=$($curlCommand -F username="$(echo -n $username | base64)" -F password="$(echo -n $password | base64)" -F clientIP="$(echo -n $clientIP | base64)" -F task="$(echo -n $task | base64)" "${web}ConsoleLogin" $curlEnd)
 			
-  if [ "$(parse_json "$loginResult" .valid)" != "true" ]; then
-    if [ "$loginCount" = "2" ]; then
-      echo
-      echo " ...... Incorrect Login....Exiting"
-      exit 1
+    if [ "$(parse_json "$loginResult" .valid)" != "true" ]; then
+      if [ "$loginCount" = "2" ]; then
+        echo
+        echo " ...... Incorrect Login....Exiting"
+        exit 1
+      else
+        echo
+        echo " ...... Incorrect Login"
+        echo
+      fi
     else
       echo
-      echo " ...... Incorrect Login"
-      echo
+      echo " ...... Login Successful"
+      echo			
+      export USER_TOKEN=$(parse_json "$loginResult" .user_token)
+      export user_id=$(parse_json "$loginResult" .user_id)
+      break
     fi
-  else
-    echo
-    echo " ...... Login Successful"
-    echo			
-    export USER_TOKEN=$(parse_json "$loginResult" .user_token)
-    export user_id=$(parse_json "$loginResult" .user_id)
-    break
-  fi
-  loginCount=$(( $loginCount + 1 ))
-done
-
+    loginCount=$(( $loginCount + 1 ))
+  done
+else
+  export USER_TOKEN
+  export user_id="0"
+fi
 set_curl_auth
 
 clear_and_move_down

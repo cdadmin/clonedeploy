@@ -47,7 +47,14 @@ namespace CloneDeploy_Entities
         public string OsxThinOs { get; set; }
 
         [Column("image_osx_thin_recovery", Order = 13)]
-        public string OsxThinRecovery { get; set; }        
+        public string OsxThinRecovery { get; set; }
+
+        [Column("image_classification_id", Order = 14)]
+        public int ClassificationId { get; set; }
+
+        [Column("last_upload_guid", Order = 15)]
+        public string LastUploadGuid { get; set; }       
+
     }
 
     [NotMapped]

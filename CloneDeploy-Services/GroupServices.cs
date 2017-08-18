@@ -29,8 +29,8 @@ namespace CloneDeploy_Services
                 actionResult.Success = true;
                 actionResult.Id = group.Id;
                 //If Group management is being used add this group to the allowed users list 
-                var userManagedGroups = new UserServices().GetUserGroupManagements(userId);
-                if (userManagedGroups.Count > 0)
+                var user = new UserServices().GetUser(userId);
+                if (user.GroupManagementEnabled == 1)
                     new UserGroupManagementServices().AddUserGroupManagements(
                         new List<UserGroupManagementEntity>
                         {
@@ -144,6 +144,18 @@ namespace CloneDeploy_Services
             return group;
         }
 
+        public List<GroupImageClassificationEntity> GetGroupImageClassifications(int groupId)
+        {
+            return _uow.GroupImageClassificationRepository.Get(x => x.GroupId == groupId);
+        }
+
+        public bool DeleteGroupImageClassifications(int groupId)
+        {
+            _uow.GroupImageClassificationRepository.DeleteRange(x => x.GroupId == groupId);
+            _uow.Save();
+            return true;
+        }
+
         public GroupBootMenuEntity GetGroupBootMenu(int groupId)
         {
             return _uow.GroupBootMenuRepository.GetFirstOrDefault(p => p.GroupId == groupId);
@@ -182,10 +194,16 @@ namespace CloneDeploy_Services
                 return TotalCount();
             }
 
-            var userManagedGroups = userServices.GetUserGroupManagements(userId);
-
-            //If count is zero image management is not being used return total count
-            return userManagedGroups.Count == 0 ? TotalCount() : userManagedGroups.Count.ToString();
+            var user = userServices.GetUser(userId);
+            if (user.GroupManagementEnabled == 1)
+            {
+                 var userManagedGroups = userServices.GetUserGroupManagements(userId);
+                return userManagedGroups.Count.ToString();
+            }
+            else
+            {
+                return TotalCount();
+            } 
         }
 
         public int ImportCsv(string csvContents, int userId)
@@ -216,10 +234,11 @@ namespace CloneDeploy_Services
             if (userServices.GetUser(userId).Membership == "Administrator")
                 return SearchGroups(searchString);
 
-            var userManagedGroups = userServices.GetUserGroupManagements(userId);
-            if (userManagedGroups.Count == 0)
+            var user = userServices.GetUser(userId);
+            if(user.GroupManagementEnabled == 0)
                 return SearchGroups(searchString);
 
+            var userManagedGroups = userServices.GetUserGroupManagements(userId);
             return
                 userManagedGroups.Select(
                     groupManagement => _uow.GroupRepository.GetGroupWithImage(searchString, groupManagement.GroupId))

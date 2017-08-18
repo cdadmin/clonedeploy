@@ -6,7 +6,7 @@ namespace CloneDeploy_Web.BasePages
 {
     public class Global : PageBaseMaster
     {
-        public BootEntryEntity BootEntry { get; set; }
+       
         public BootTemplateEntity BootTemplate { get; set; }
         public FileFolderEntity FileFolder { get; set; }
         public MunkiManifestTemplateEntity ManifestTemplate { get; set; }
@@ -21,9 +21,7 @@ namespace CloneDeploy_Web.BasePages
             BootTemplate = !string.IsNullOrEmpty(Request["templateid"])
                 ? Call.BootTemplateApi.Get(Convert.ToInt32(Request.QueryString["templateid"]))
                 : null;
-            BootEntry = !string.IsNullOrEmpty(Request["entryid"])
-                ? Call.BootEntryApi.Get(Convert.ToInt32(Request.QueryString["entryid"]))
-                : null;
+           
             FileFolder = !string.IsNullOrEmpty(Request["fileid"])
                 ? Call.FileFolderApi.Get(Convert.ToInt32(Request.QueryString["fileid"]))
                 : null;

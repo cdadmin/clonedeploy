@@ -16,11 +16,13 @@ namespace CloneDeploy_App.Controllers
     public class ActiveMulticastSessionController : ApiController
     {
         private readonly ActiveMulticastSessionServices _activeMulticastSessionServices;
-
+        private readonly int _userId;
 
         public ActiveMulticastSessionController()
         {
             _activeMulticastSessionServices = new ActiveMulticastSessionServices();
+            _userId = Convert.ToInt32(((ClaimsIdentity)User.Identity).Claims.Where(c => c.Type == "user_id")
+                .Select(c => c.Value).SingleOrDefault());
         }
 
         [CustomAuth(Permission = "ImageTaskMulticast")]
@@ -34,13 +36,9 @@ namespace CloneDeploy_App.Controllers
 
 
         [Authorize]
-        public IEnumerable<ActiveMulticastSessionEntity> GetAll()
+        public IEnumerable<ActiveMulticastSessionEntity> Get()
         {
-            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                .Select(c => c.Value).SingleOrDefault();
-
-            return _activeMulticastSessionServices.GetAllMulticastSessions(Convert.ToInt32(userId));
+            return _activeMulticastSessionServices.GetAllMulticastSessions(Convert.ToInt32(_userId));
         }
 
         [CustomAuth(Permission = "ImageTaskMulticast")]
@@ -52,13 +50,9 @@ namespace CloneDeploy_App.Controllers
         [Authorize]
         public ApiStringResponseDTO GetCount()
         {
-            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                .Select(c => c.Value).SingleOrDefault();
-
             return new ApiStringResponseDTO
             {
-                Value = _activeMulticastSessionServices.ActiveCount(Convert.ToInt32(userId))
+                Value = _activeMulticastSessionServices.ActiveCount(Convert.ToInt32(_userId))
             };
         }
 

@@ -65,7 +65,11 @@ namespace CloneDeploy_DataModel
         private CloneDeployUserRepository _userRepository;
         private IGenericRepository<UserRightEntity> _userRightRepository;
         private IGenericRepository<NetBootProfileEntity> _netBootProfileRepository;
-        private IGenericRepository<NbiEntryEntity> _nbiEntryRepository; 
+        private IGenericRepository<NbiEntryEntity> _nbiEntryRepository;
+        private IGenericRepository<AlternateServerIpEntity> _alternateServerIpRepository;
+        private IGenericRepository<ImageClassificationEntity> _imageClassificationRepository;
+        private IGenericRepository<ComputerImageClassificationEntity> _computerImageClassificationRepository;
+        private IGenericRepository<GroupImageClassificationEntity> _groupImageClassificationRepository;
 
         private bool disposed;
 
@@ -75,6 +79,26 @@ namespace CloneDeploy_DataModel
             GC.SuppressFinalize(this);
         }
 
+        public IGenericRepository<ComputerImageClassificationEntity> ComputerImageClassificationRepository
+        {
+            get
+            {
+                return _computerImageClassificationRepository ??
+                       (_computerImageClassificationRepository =
+                           new GenericRepository<ComputerImageClassificationEntity>(_context));
+            }
+        }
+
+        public IGenericRepository<GroupImageClassificationEntity> GroupImageClassificationRepository
+        {
+            get
+            {
+                return _groupImageClassificationRepository ??
+                       (_groupImageClassificationRepository =
+                           new GenericRepository<GroupImageClassificationEntity>(_context));
+            }
+
+        }
         public ActiveImagingTaskRepository ActiveImagingTaskRepository
         {
             get
@@ -94,6 +118,21 @@ namespace CloneDeploy_DataModel
             }
         }
 
+        public IGenericRepository<ImageClassificationEntity> ImageClassificationRepository
+        {
+            get
+            {
+                return _imageClassificationRepository ?? (_imageClassificationRepository = new GenericRepository<ImageClassificationEntity>(_context));
+            }
+        }
+
+        public IGenericRepository<AlternateServerIpEntity> AlternateServerIpRepository
+        {
+            get
+            {
+                return _alternateServerIpRepository ?? (_alternateServerIpRepository = new GenericRepository<AlternateServerIpEntity>(_context));
+            }
+        }
 
         public IGenericRepository<AuditLogEntity> AuditLogRepository
         {

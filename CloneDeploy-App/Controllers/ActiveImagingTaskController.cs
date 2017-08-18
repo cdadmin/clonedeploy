@@ -16,10 +16,13 @@ namespace CloneDeploy_App.Controllers
     public class ActiveImagingTaskController : ApiController
     {
         private readonly ActiveImagingTaskServices _activeImagingTaskServices;
+        private readonly int _userId;
 
         public ActiveImagingTaskController()
         {
             _activeImagingTaskServices = new ActiveImagingTaskServices();
+            _userId = Convert.ToInt32(((ClaimsIdentity)User.Identity).Claims.Where(c => c.Type == "user_id")
+                .Select(c => c.Value).SingleOrDefault());
         }
 
         [CustomAuth(Permission = "ImageTaskDelete")]
@@ -43,35 +46,24 @@ namespace CloneDeploy_App.Controllers
         [Authorize]
         public ApiStringResponseDTO GetActiveNotOwned()
         {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                .Select(c => c.Value).SingleOrDefault();
-
             return new ApiStringResponseDTO
             {
-                Value = _activeImagingTaskServices.ActiveCountNotOwnedByuser(Convert.ToInt32(userId))
+                Value = _activeImagingTaskServices.ActiveCountNotOwnedByuser(Convert.ToInt32(_userId))
             };
         }
 
         [Authorize]
         public IEnumerable<TaskWithComputer> GetActiveTasks()
         {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                .Select(c => c.Value).SingleOrDefault();
-            return _activeImagingTaskServices.ReadAll(Convert.ToInt32(userId));
+            return _activeImagingTaskServices.ReadAll(Convert.ToInt32(_userId));
         }
 
         [Authorize]
         public ApiStringResponseDTO GetActiveUnicastCount(string taskType)
         {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                .Select(c => c.Value).SingleOrDefault();
-
             return new ApiStringResponseDTO
             {
-                Value = _activeImagingTaskServices.ActiveUnicastCount(Convert.ToInt32(userId), taskType)
+                Value = _activeImagingTaskServices.ActiveUnicastCount(Convert.ToInt32(_userId), taskType)
             };
         }
 
@@ -79,24 +71,16 @@ namespace CloneDeploy_App.Controllers
         [Authorize]
         public ApiStringResponseDTO GetAllActiveCount()
         {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                .Select(c => c.Value).SingleOrDefault();
-
             return new ApiStringResponseDTO
             {
-                Value = _activeImagingTaskServices.AllActiveCount(Convert.ToInt32(userId))
+                Value = _activeImagingTaskServices.AllActiveCount(Convert.ToInt32(_userId))
             };
         }
 
         [Authorize]
         public IEnumerable<TaskWithComputer> GetUnicasts()
         {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                .Select(c => c.Value).SingleOrDefault();
-
-            return _activeImagingTaskServices.ReadUnicasts(Convert.ToInt32(userId));
+            return _activeImagingTaskServices.ReadUnicasts(Convert.ToInt32(_userId));
         }
 
         [Authorize]

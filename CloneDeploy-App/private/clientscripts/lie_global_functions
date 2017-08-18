@@ -63,7 +63,7 @@ function checkin()
 			  error "The Imaging Environment For The Image Does Not Match The Currently Loaded Environment"
 			fi
 			
-			#On demand task ids are created later, get it now
+			#On demand task ids are created later than web tasks, get it now
 			if [ "$is_ondemand" = "true" ]; then
 			  task_id=$(parse_json "$checkInStatus" .TaskId)
 			fi
@@ -408,7 +408,7 @@ function mount_smb_sub()
 		else
 			cd /storage/images/$image_name;
 			if [ "$?" != "0" ]; then
-				log " ...... Could Not Change Directory To /images/$image_name Check Permissions" "display"
+				log " ...... Could Not Change Directory To /storage/images/$image_name Check Permissions" "display"
 				cd /
 			    umount /storage
 			    echo "false"

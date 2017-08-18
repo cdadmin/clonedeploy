@@ -28,11 +28,19 @@ namespace CloneDeploy_Services.Workflows
         public bool CreatePxeBootFiles()
         {
             var pxeComputerMac = StringManipulationServices.MacToPxeMac(_computer.Mac);
-            var webPath = SettingServices.GetSettingValue(SettingStrings.WebPath);
+            var webPath = SettingServices.GetSettingValue(SettingStrings.WebPath) + "ClientImaging/";
             var globalComputerArgs = SettingServices.GetSettingValue(SettingStrings.GlobalComputerArgs);
             var userToken = SettingServices.GetSettingValue(SettingStrings.WebTaskRequiresLogin) == "No" ? SettingServices.GetSettingValue(SettingStrings.UniversalToken) : "";
             const string newLineChar = "\n";
 
+            if (_computer.AlternateServerIpId != -1)
+            {
+                var altServer = new AlternateServerIpServices().GetAlternateServerIp(_computer.AlternateServerIpId);
+                if (altServer != null)
+                {
+                    webPath = altServer.ApiUrl + "ClientImaging/";
+                }
+            }
 
             var ipxe = new StringBuilder();
             ipxe.Append("#!ipxe" + newLineChar);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
@@ -30,6 +31,13 @@ namespace CloneDeploy_Services
         public void UpdateComputerProperties(GroupPropertyEntity groupProperty)
         {
             if (groupProperty == null) return;
+            var groupImageClassifications = new List<GroupImageClassificationEntity>();
+            if (Convert.ToBoolean(groupProperty.ImageClassificationsEnabled))
+            {
+                groupImageClassifications =
+                       new GroupServices().GetGroupImageClassifications(groupProperty.GroupId);
+
+            }
             foreach (var computer in new GroupServices().GetGroupMembersWithImages(groupProperty.GroupId))
             {
                 if (Convert.ToBoolean(groupProperty.ImageEnabled))
@@ -58,6 +66,26 @@ namespace CloneDeploy_Services
                     computer.ProxyReservation = groupProperty.ProxyEnabled;
                 if (Convert.ToBoolean(groupProperty.ClusterGroupEnabled))
                     computer.ClusterGroupId = groupProperty.ClusterGroupId;
+                if (Convert.ToBoolean(groupProperty.AlternateServerIpEnabled))
+                    computer.AlternateServerIpId = groupProperty.AlternateServerIpId;
+                if (Convert.ToBoolean(groupProperty.ImageClassificationsEnabled))
+                {
+                   var computerImageClassifications = new List<ComputerImageClassificationEntity>();
+                    if (new ComputerServices().DeleteComputerImageClassifications(computer.Id))
+                    {
+                        foreach (var imageClass in groupImageClassifications)
+                        {
+                            computerImageClassifications.Add(
+
+                                new ComputerImageClassificationEntity()
+                                {
+                                    ComputerId = computer.Id,
+                                    ImageClassificationId = imageClass.ImageClassificationId
+                                });
+                        }
+                    }
+                    new ComputerImageClassificationServices().AddClassifications(computerImageClassifications);
+                }
 
                 var computerServices = new ComputerServices();
                 computerServices.UpdateComputer(computer);

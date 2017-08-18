@@ -63,7 +63,7 @@ namespace CloneDeploy_Web.views.global.sysprep
 
         protected void PopulateGrid()
         {
-            gvSysprepTags.DataSource = Call.SysprepTagApi.GetAll(int.MaxValue, txtSearch.Text);
+            gvSysprepTags.DataSource = Call.SysprepTagApi.Get(int.MaxValue, txtSearch.Text);
             gvSysprepTags.DataBind();
 
             lblTotal.Text = gvSysprepTags.Rows.Count + " Result(s) / " + Call.SysprepTagApi.GetCount() +

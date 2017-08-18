@@ -18,7 +18,7 @@ namespace CloneDeploy_Web.views.images
             image.Enabled = chkEnabled.Checked ? 1 : 0;
             image.Protected = chkProtected.Checked ? 1 : 0;
             image.IsVisible = chkVisible.Checked ? 1 : 0;
-
+            image.ClassificationId = Convert.ToInt32(ddlClassification.SelectedValue);
             var result = Call.ImageApi.Put(image.Id, image);
             EndUserMessage = result.Success ? "Successfully Updated Image" : result.ErrorMessage;
         }
@@ -31,11 +31,13 @@ namespace CloneDeploy_Web.views.images
         protected void PopulateForm()
         {
             ViewState["currentName"] = Image.Name;
+            PopulateImageClassifications(ddlClassification);
             chkEnabled.Checked = Convert.ToBoolean(Image.Enabled);
             txtImageName.Text = Image.Name;
             txtImageDesc.Text = Image.Description;
             ddlImageType.Text = Image.Type;
             ddlEnvironment.Text = Image.Environment;
+            ddlClassification.SelectedValue = Image.ClassificationId.ToString();
 
             if (Image.Environment == "winpe")
             {

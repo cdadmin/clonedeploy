@@ -123,6 +123,10 @@ function Upload-Image()
             }
         }
     }
+
+    $imageGuid=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "profileId=$profile_id" ${script:web}UpdateGuid  --connect-timeout 10 --stderr -)
+    Add-Content s:\images\$image_name\guid $imageGuid
+
 }
 
 Mount-SMB

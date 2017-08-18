@@ -35,7 +35,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "AdminRead")]
-        public IEnumerable<ClusterGroupEntity> GetAll(string searchstring = "")
+        public IEnumerable<ClusterGroupEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _clusterGroupServices.SearchClusterGroups()

@@ -24,29 +24,72 @@ namespace CloneDeploy_Services
             var dp = new DistributionPointServices().GetPrimaryDistributionPoint();
 
             var dpFreeSpace = new DpFreeSpaceDTO();
-            dpFreeSpace.dPPath = dp.PhysicalPath;
-
-            if (Directory.Exists(dp.PhysicalPath))
+            if (dp.Location == "Remote")
             {
-                ulong freespace = 0;
-                ulong total = 0;
-                var success = DriveFreeBytes(dp.PhysicalPath, out freespace, out total);
-
-                if (!success) return null;
-
-                var freePercent = 0;
-                var usedPercent = 0;
-
-                if (total > 0 && freespace > 0)
+                var basePath = @"\\" + dp.Server + @"\" + dp.ShareName;
+                dpFreeSpace.dPPath = basePath;
+                using (var unc = new UncServices())
                 {
-                    freePercent = (int) (0.5f + 100f*Convert.ToInt64(freespace)/Convert.ToInt64(total));
-                    usedPercent =
-                        (int) (0.5f + 100f*Convert.ToInt64(total - freespace)/Convert.ToInt64(total));
+                    
+                    var smbPassword = new EncryptionServices().DecryptText(dp.RwPassword);
+                    if (
+                        unc.NetUseWithCredentials(basePath, dp.RwUsername, dp.Domain,
+                            smbPassword) || unc.LastError == 1219)
+                    {
+                        ulong freespace = 0;
+                        ulong total = 0;
+                        var success = DriveFreeBytes(basePath, out freespace, out total);
+
+                        if (!success) return null;
+
+                        var freePercent = 0;
+                        var usedPercent = 0;
+
+                        if (total > 0 && freespace > 0)
+                        {
+                            freePercent = (int)(0.5f + 100f * Convert.ToInt64(freespace) / Convert.ToInt64(total));
+                            usedPercent =
+                                (int)(0.5f + 100f * Convert.ToInt64(total - freespace) / Convert.ToInt64(total));
+                        }
+                        dpFreeSpace.freespace = freespace;
+                        dpFreeSpace.total = total;
+                        dpFreeSpace.freePercent = freePercent;
+                        dpFreeSpace.usedPercent = usedPercent;
+                    }
+                    else
+                    {
+                        log.Debug("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
+                    }
                 }
-                dpFreeSpace.freespace = freespace;
-                dpFreeSpace.total = total;
-                dpFreeSpace.freePercent = freePercent;
-                dpFreeSpace.usedPercent = usedPercent;
+            }
+            else
+            {
+
+
+                dpFreeSpace.dPPath = dp.PhysicalPath;
+
+                if (Directory.Exists(dp.PhysicalPath))
+                {
+                    ulong freespace = 0;
+                    ulong total = 0;
+                    var success = DriveFreeBytes(dp.PhysicalPath, out freespace, out total);
+
+                    if (!success) return null;
+
+                    var freePercent = 0;
+                    var usedPercent = 0;
+
+                    if (total > 0 && freespace > 0)
+                    {
+                        freePercent = (int) (0.5f + 100f*Convert.ToInt64(freespace)/Convert.ToInt64(total));
+                        usedPercent =
+                            (int) (0.5f + 100f*Convert.ToInt64(total - freespace)/Convert.ToInt64(total));
+                    }
+                    dpFreeSpace.freespace = freespace;
+                    dpFreeSpace.total = total;
+                    dpFreeSpace.freePercent = freePercent;
+                    dpFreeSpace.usedPercent = usedPercent;
+                }
             }
 
             return dpFreeSpace;

@@ -36,7 +36,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "AdminRead")]
-        public IEnumerable<SecondaryServerEntity> GetAll(string searchstring = "")
+        public IEnumerable<SecondaryServerEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _secondaryServerServices.SearchSecondaryServers()

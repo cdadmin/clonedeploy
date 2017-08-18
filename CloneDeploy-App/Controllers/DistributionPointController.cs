@@ -35,7 +35,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "AdminRead")]
-        public IEnumerable<DistributionPointEntity> GetAll(string searchstring = "")
+        public IEnumerable<DistributionPointEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _distributionPointServices.SearchDistributionPoints()

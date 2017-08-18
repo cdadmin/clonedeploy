@@ -53,11 +53,13 @@
     <Compile Include="BootTemplateAPI.cs" />
     <Compile Include="BuildingAPI.cs" />
     <Compile Include="CdVersionAPI.cs" />
+    <Compile Include="GroupImageClassificationAPI.cs" />
     <Compile Include="ComputerBootMenuAPI.cs" />
     <Compile Include="ComputerProxyReservationAPI.cs" />
     <Compile Include="FileFolderAPI.cs" />
     <Compile Include="GroupBootMenuAPI.cs" />
     <Compile Include="GroupPropertyAPI.cs" />
+    <Compile Include="AlternateServerIpAPI.cs" />
     <Compile Include="ImageProfileFileFolderAPI.cs" />
     <Compile Include="ImageProfileScriptAPI.cs" />
     <Compile Include="ImageProfileSysprepTagAPI.cs" />
@@ -69,6 +71,7 @@
     <Compile Include="MunkiManifestOptionInstallAPI.cs" />
     <Compile Include="NbiEntryAPI.cs" />
     <Compile Include="PortAPI.cs" />
+    <Compile Include="ImageClassificationAPI.cs" />
     <Compile Include="RoomAPI.cs" />
     <Compile Include="ScriptAPI.cs" />
     <Compile Include="SecondaryServerAPI.cs" />
@@ -105,6 +108,7 @@
     <Compile Include="UserGroupManagementAPI.cs" />
     <Compile Include="UserGroupRightAPI.cs" />
     <Compile Include="UserImageManagementAPI.cs" />
+    <Compile Include="ComputeImageClassificationAPI.cs" />
     <Compile Include="UserRightAPI.cs" />
     <Compile Include="AuthorizationAPI.cs" />
     <Compile Include="WorkflowAPI.cs" />

@@ -61,7 +61,7 @@ namespace CloneDeploy_Web.views.admin.netboot
 
         protected void PopulateGrid()
         {
-            gvProfiles.DataSource = Call.NetBootProfileApi.GetAll(txtSearch.Text);
+            gvProfiles.DataSource = Call.NetBootProfileApi.Get(txtSearch.Text);
             gvProfiles.DataBind();
 
             lblTotal.Text = gvProfiles.Rows.Count + " Result(s) / " + Call.NetBootProfileApi.GetCount() +

@@ -75,7 +75,7 @@ namespace CloneDeploy_Web.views.groups
 
         protected void PopulateGrid()
         {
-            gvGroups.DataSource = Call.GroupApi.GetAll(int.MaxValue, txtSearch.Text);
+            gvGroups.DataSource = Call.GroupApi.Get(int.MaxValue, txtSearch.Text);
             gvGroups.DataBind();
 
             foreach (GridViewRow row in gvGroups.Rows)

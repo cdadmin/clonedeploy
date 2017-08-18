@@ -56,7 +56,7 @@ namespace CloneDeploy_Web.views.global.filesandfolders
 
         protected void PopulateGrid()
         {
-            gvFiles.DataSource = Call.FileFolderApi.GetAll(int.MaxValue, txtSearch.Text);
+            gvFiles.DataSource = Call.FileFolderApi.Get(int.MaxValue, txtSearch.Text);
             gvFiles.DataBind();
 
             lblTotal.Text = gvFiles.Rows.Count + " Result(s) / " + Call.FileFolderApi.GetCount() +

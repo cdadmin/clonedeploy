@@ -7,12 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-
-
-namespace CloneDeploy_Web.views.users.groupacls
-{
-    public partial class views_users_groupacls_groupmanagement {
+namespace CloneDeploy_Web.views.users.groupacls {
     
+    
+    public partial class views_users_groupacls_groupmanagement {
+        
         /// <summary>
         /// buttonUpdate control.
         /// </summary>
@@ -21,7 +20,16 @@ namespace CloneDeploy_Web.views.users.groupacls
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton buttonUpdate;
-    
+        
+        /// <summary>
+        /// chkEnabled control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkEnabled;
+        
         /// <summary>
         /// gvGroups control.
         /// </summary>

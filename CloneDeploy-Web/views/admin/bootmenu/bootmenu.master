@@ -29,6 +29,14 @@
         <a href="<%= ResolveUrl("~/views/admin/bootmenu/isogen.aspx") %>?level=2">
             <span class="sub-nav-text">ISO / USB Generator</span></a>
     </li>
+    <li id="searchentry">
+        <a href="<%= ResolveUrl("~/views/admin/bootmenu/searchentry.aspx") %>">
+            <span class="sub-nav-text">Search Entries</span></a>
+    </li>
+    <li id="createentry">
+        <a href="<%= ResolveUrl("~/views/admin/bootmenu/createentry.aspx") %>">
+            <span class="sub-nav-text">New Entry</span></a>
+    </li>
 </asp:Content>
 
 <asp:Content ID="Content7" ContentPlaceHolderID="SubContent" Runat="Server">

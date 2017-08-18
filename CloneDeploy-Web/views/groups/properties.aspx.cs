@@ -48,7 +48,10 @@ namespace CloneDeploy_Web.views.groups
                 TftpServer = txtTftp.Text,
                 BootFile = ddlBootFile.Text,
                 ClusterGroupId = Convert.ToInt32(ddlClusterGroup.SelectedValue),
-                ClusterGroupEnabled = Convert.ToInt16(chkClusterGroup.Checked)
+                ClusterGroupEnabled = Convert.ToInt16(chkClusterGroup.Checked),
+                AlternateServerIpEnabled = Convert.ToInt16(chkAltServer.Checked),
+                AlternateServerIpId = Convert.ToInt32(ddlAltServer.SelectedValue),
+                ImageClassificationsEnabled = Convert.ToInt16(chkImageClass.Checked)
             };
 
             if (_groupProperty == null)
@@ -85,11 +88,12 @@ namespace CloneDeploy_Web.views.groups
 
         protected void PopulateForm()
         {
-            PopulateImagesDdl(ddlComputerImage);
+            PopulateImagesDdlForGroup(Group.Id,ddlComputerImage);
             PopulateSitesDdl(ddlSite);
             PopulateBuildingsDdl(ddlBuilding);
             PopulateRoomsDdl(ddlRoom);
             PopulateClusterGroupsDdl(ddlClusterGroup);
+            PopulateAltServerIps(ddlAltServer);
 
             chkDefault.Checked = Convert.ToBoolean(Group.SetDefaultProperties);
             if (_groupProperty != null)
@@ -125,6 +129,9 @@ namespace CloneDeploy_Web.views.groups
                 ddlBootFile.Text = _groupProperty.BootFile;
                 ddlClusterGroup.SelectedValue = _groupProperty.ClusterGroupId.ToString();
                 chkClusterGroup.Checked = Convert.ToBoolean(_groupProperty.ClusterGroupEnabled);
+                chkAltServer.Checked = Convert.ToBoolean(_groupProperty.AlternateServerIpEnabled);
+                ddlAltServer.SelectedValue = _groupProperty.AlternateServerIpId.ToString();
+                chkImageClass.Checked = Convert.ToBoolean(_groupProperty.ImageClassificationsEnabled);
             }
         }
     }

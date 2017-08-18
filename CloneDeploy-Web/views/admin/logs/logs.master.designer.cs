@@ -40,6 +40,15 @@ namespace CloneDeploy_Web.views.admin.logs {
         protected global::System.Web.UI.WebControls.ContentPlaceHolder ActionsRightSub;
         
         /// <summary>
+        /// ond control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl ond;
+        
+        /// <summary>
         /// SubContent2 control.
         /// </summary>
         /// <remarks>

@@ -27,10 +27,7 @@
         <a href="<%= ResolveUrl("~/views/global/scripts/create.aspx?cat=sub1") %>">
             <span class="sub-nav-text">New Script</span></a>
     </li>
-    <li id="edit">
-        <a href="<%= ResolveUrl("~/views/global/scripts/editcore.aspx?cat=sub1") %>">
-            <span class="sub-nav-text">Edit Core Scripts</span></a>
-    </li>
+ 
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">

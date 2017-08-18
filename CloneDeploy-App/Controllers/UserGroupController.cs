@@ -60,7 +60,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "Administrator")]
-        public IEnumerable<CloneDeployUserGroupEntity> GetAll(string searchstring = "")
+        public IEnumerable<CloneDeployUserGroupEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _userGroupServices.SearchUserGroups()
@@ -117,7 +117,7 @@ namespace CloneDeploy_App.Controllers
         public ActionResultDTO Put(int id, CloneDeployUserGroupEntity userGroup)
         {
             userGroup.Id = id;
-            var result = _userGroupServices.UpdateUser(userGroup);
+            var result = _userGroupServices.UpdateUserGroup(userGroup);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
         }
@@ -141,6 +141,20 @@ namespace CloneDeploy_App.Controllers
         public ApiBoolResponseDTO UpdateMemberImages(int id)
         {
             return new ApiBoolResponseDTO {Value = _userGroupServices.UpdateAllGroupMembersImageMgmt(id)};
+        }
+
+        [HttpGet]
+        [CustomAuth(Permission = "Administrator")]
+        public ApiBoolResponseDTO ToggleImageManagement(int id, int value)
+        {
+            return new ApiBoolResponseDTO { Value = _userGroupServices.ToggleImageManagement(id,value) };
+        }
+
+        [HttpGet]
+        [CustomAuth(Permission = "Administrator")]
+        public ApiBoolResponseDTO ToggleGroupManagement(int id, int value)
+        {
+            return new ApiBoolResponseDTO { Value = _userGroupServices.ToggleGroupManagement(id,value) };
         }
     }
 }

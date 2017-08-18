@@ -16,10 +16,13 @@ namespace CloneDeploy_App.Controllers
     public class UserController : ApiController
     {
         private readonly UserServices _userServices;
+        private readonly int _userId;
 
         public UserController()
         {
             _userServices = new UserServices();
+            _userId = Convert.ToInt32(((ClaimsIdentity)User.Identity).Claims.Where(c => c.Type == "user_id")
+                .Select(c => c.Value).SingleOrDefault());
         }
 
         [CustomAuth(Permission = "Administrator")]
@@ -64,7 +67,7 @@ namespace CloneDeploy_App.Controllers
 
 
         [CustomAuth(Permission = "Administrator")]
-        public IEnumerable<UserWithUserGroup> GetAll(string searchstring = "")
+        public IEnumerable<UserWithUserGroup> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _userServices.SearchUsers()
@@ -75,6 +78,18 @@ namespace CloneDeploy_App.Controllers
         public IEnumerable<AuditLogEntity> GetUserAuditLogs(int id, int limit)
         {
             return _userServices.GetUserAuditLogs(id, limit);
+        }
+
+        [Authorize]
+        public IEnumerable<AuditLogEntity> GetUserTaskAuditLogs(int id, int limit)
+        {
+            return _userServices.GetUserTaskAuditLogs(id, limit);
+        }
+
+        [Authorize]
+        public IEnumerable<AuditLogEntity> GetUserLoginsDashboard()
+        {
+            return _userServices.GetUserLoginsDashboard(Convert.ToInt32(_userId));
         }
 
         [CustomAuth(Permission = "Administrator")]
@@ -94,11 +109,8 @@ namespace CloneDeploy_App.Controllers
         [Authorize]
         public ApiObjectResponseDTO GetForLogin(string username)
         {
-            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
-            var userId = identity.Claims.Where(c => c.Type == "user_id")
-                .Select(c => c.Value).SingleOrDefault();
             var user = _userServices.GetUser(username);
-            if (user.Id == Convert.ToInt32(userId))
+            if (user.Id == Convert.ToInt32(_userId))
                 return _userServices.GetUserForLogin(user.Id);
 
             throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
@@ -142,6 +154,20 @@ namespace CloneDeploy_App.Controllers
             var result = _userServices.UpdateUser(user);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
+        }
+
+        [HttpGet]
+        [CustomAuth(Permission = "Administrator")]
+        public ApiBoolResponseDTO ToggleImageManagement(int id, int value)
+        {
+            return new ApiBoolResponseDTO { Value = _userServices.ToggleImageManagement(id, value) };
+        }
+
+        [HttpGet]
+        [CustomAuth(Permission = "Administrator")]
+        public ApiBoolResponseDTO ToggleGroupManagement(int id, int value)
+        {
+            return new ApiBoolResponseDTO { Value = _userServices.ToggleGroupManagement(id, value) };
         }
     }
 }

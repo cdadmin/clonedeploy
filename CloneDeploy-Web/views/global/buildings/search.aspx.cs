@@ -12,7 +12,7 @@ namespace CloneDeploy_Web.views.global.buildings
     {
         protected void BindGrid()
         {
-            gvBuildings.DataSource = Call.BuildingApi.GetAll(int.MaxValue, txtSearch.Text);
+            gvBuildings.DataSource = Call.BuildingApi.Get(int.MaxValue, txtSearch.Text);
             gvBuildings.DataBind();
 
             if (gvBuildings.Rows.Count == 0)

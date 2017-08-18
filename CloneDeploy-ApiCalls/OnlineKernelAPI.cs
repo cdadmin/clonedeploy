@@ -23,10 +23,10 @@ namespace CloneDeploy_ApiCalls
             return response != null && response.Value;
         }
 
-        public List<OnlineKernel> GetAll()
+        public List<OnlineKernel> Get()
         {
             Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetAll", Resource);
+            Request.Resource = string.Format("api/{0}/Get", Resource);
 
             return _apiRequest.Execute<List<OnlineKernel>>(Request);
         }

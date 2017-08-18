@@ -83,7 +83,7 @@ namespace CloneDeploy_Web.views.groups
 
         protected void PopulateGrid()
         {
-            gvManifestTemplates.DataSource = Call.MunkiManifestTemplateApi.GetAll(int.MaxValue, "");
+            gvManifestTemplates.DataSource = Call.MunkiManifestTemplateApi.Get(int.MaxValue, "");
             gvManifestTemplates.DataBind();
 
 

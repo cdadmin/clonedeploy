@@ -36,7 +36,7 @@ namespace CloneDeploy_Web.views.admin.cluster
 
         protected void PopulateGrid()
         {
-            gvServers.DataSource = Call.SecondaryServerApi.GetAll(int.MaxValue, txtSearch.Text);
+            gvServers.DataSource = Call.SecondaryServerApi.Get(int.MaxValue, txtSearch.Text);
             gvServers.DataBind();
         }
 

@@ -13,7 +13,7 @@ $taskType=$(fShowMenu "Select A Task" $taskTable)
 if($taskType -eq "deploy")
 {
     
-    $imageList=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "environment=winpe&userId=$script:userId" ${script:web}ListImages --connect-timeout 10 --stderr -)
+    $imageList=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "environment=winpe&computerId=$script:computerId&userId=$script:userId" ${script:web}ListImages --connect-timeout 10 --stderr -)
     $imageList = $imageList | ConvertFrom-Json
     $imageTable=[ordered]@{}
     foreach($image in $imageList)
@@ -105,7 +105,7 @@ elseif($taskType -eq "upload")
     
   elseif($newOrExisting -eq "existing")
   {
-   $imageList=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "environment=winpe&userId=$script:userId" ${script:web}ListImages --connect-timeout 10 --stderr -)
+   $imageList=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "environment=winpe&computerId=$script:computerId&userId=$script:userId" ${script:web}ListImages --connect-timeout 10 --stderr -)
     $imageList = $imageList | ConvertFrom-Json
     $imageTable=[ordered]@{}
     foreach($image in $imageList)

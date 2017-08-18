@@ -35,7 +35,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "GlobalRead")]
-        public IEnumerable<RoomWithClusterGroup> GetAll(string searchstring = "")
+        public IEnumerable<RoomWithClusterGroup> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
                 ? _roomServices.SearchRooms()

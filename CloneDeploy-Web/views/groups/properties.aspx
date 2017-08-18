@@ -211,4 +211,26 @@
         <asp:CheckBox runat="server" Id="chkBootFile"/>
     </div>
     <br class="clear"/>
+    
+    <div class="size-4 column">
+        Alternate Server Ip:
+    </div>
+
+    <div class="size-5 column">
+        <asp:DropDownList ID="ddlAltServer" runat="server" CssClass="ddlist"/>
+            </div>
+    <div class="size-12 column">
+        <asp:CheckBox runat="server" Id="chkAltServer"/>
+    </div>
+      <br class="clear"/>
+    
+    <div class="size-4 column">
+        Image Classifications:
+    </div>
+
+    <div class="size-5 column">
+       </div>
+    <div class="size-12 column">
+        <asp:CheckBox runat="server" Id="chkImageClass"/>
+    </div>
 </asp:Content>

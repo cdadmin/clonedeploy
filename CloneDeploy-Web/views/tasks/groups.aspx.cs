@@ -84,7 +84,7 @@ namespace CloneDeploy_Web.views.tasks
 
         protected void PopulateGrid()
         {
-            gvGroups.DataSource = Call.GroupApi.GetAll(int.MaxValue, txtSearch.Text);
+            gvGroups.DataSource = Call.GroupApi.Get(int.MaxValue, txtSearch.Text);
             gvGroups.DataBind();
             lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + Call.GroupApi.GetCount() + " Total Group(s)";
         }

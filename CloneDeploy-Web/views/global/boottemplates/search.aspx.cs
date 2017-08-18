@@ -57,7 +57,7 @@ namespace CloneDeploy_Web.views.global.boottemplates
 
         protected void PopulateGrid()
         {
-            gvTemplates.DataSource = Call.BootTemplateApi.GetAll(int.MaxValue, txtSearch.Text);
+            gvTemplates.DataSource = Call.BootTemplateApi.Get(int.MaxValue, txtSearch.Text);
             gvTemplates.DataBind();
 
             lblTotal.Text = gvTemplates.Rows.Count + " Result(s) / " + Call.BootTemplateApi.GetCount() +

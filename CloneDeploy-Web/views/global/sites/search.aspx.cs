@@ -12,7 +12,7 @@ namespace CloneDeploy_Web.views.global.sites
     {
         protected void BindGrid()
         {
-            gvSites.DataSource = Call.SiteApi.GetAll(int.MaxValue, txtSearch.Text);
+            gvSites.DataSource = Call.SiteApi.Get(int.MaxValue, txtSearch.Text);
             gvSites.DataBind();
 
             if (gvSites.Rows.Count == 0)

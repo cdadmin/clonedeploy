@@ -42,9 +42,9 @@ namespace CloneDeploy_Web.views.users.groupacls
         {
             var listOfImages = Call.UserGroupApi.GetImageManagements(CloneDeployUserGroup.Id);
 
-            gvImages.DataSource = Call.ImageApi.GetAll(int.MaxValue, "");
+            gvImages.DataSource = Call.ImageApi.Get(int.MaxValue, "");
             gvImages.DataBind();
-
+            chkEnabled.Checked = Convert.ToBoolean(CloneDeployUserGroup.ImageManagementEnabled);
             foreach (GridViewRow row in gvImages.Rows)
             {
                 var chkBox = (CheckBox) row.FindControl("chkSelector");
@@ -63,6 +63,11 @@ namespace CloneDeploy_Web.views.users.groupacls
         protected void SelectAll_CheckedChanged(object sender, EventArgs e)
         {
             ChkAll(gvImages);
+        }
+
+        protected void chkEnabled_OnCheckedChanged(object sender, EventArgs e)
+        {
+            Call.UserGroupApi.ToggleImageManagement(CloneDeployUserGroup.Id, chkEnabled.Checked ? 1 : 0);
         }
     }
 }

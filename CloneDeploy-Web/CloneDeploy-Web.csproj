@@ -91,17 +91,22 @@
     <Content Include="views\admin\netboot\create.aspx" />
     <Content Include="views\admin\netboot\edit.aspx" />
     <Content Include="views\admin\netboot\search.aspx" />
+    <Content Include="views\admin\server\alternateips.aspx" />
+    <Content Include="views\admin\server\server.aspx" />
     <Content Include="views\computers\bootmenu\bootmenu.master" />
     <Content Include="views\computers\computers.master" />
     <Content Include="views\computers\history.aspx" />
+    <Content Include="views\computers\imageclassification.aspx" />
     <Content Include="views\computers\inventory\inventory.master" />
     <Content Include="views\global\boottemplates\boottemplates.master" />
     <Content Include="views\global\filesandfolders\filesandfolders.master" />
     <Content Include="views\global\global.master" />
+    <Content Include="views\global\imageclassifications\search.aspx" />
     <Content Include="views\global\munki\munki.master" />
     <Content Include="views\global\scripts\scripts.master" />
     <Content Include="views\global\sysprep\sysprep.master" />
     <Content Include="views\groups\groups.master" />
+    <Content Include="views\groups\imageclassification.aspx" />
     <Content Include="views\help\content.master" />
     <Content Include="views\help\help.master" />
     <Content Include="views\images\history.aspx" />
@@ -119,6 +124,7 @@
     <Content Include="views\admin\logs\logs.master" />
     <Content Include="views\admin\dp\dp.master" />
     <Content Include="views\admin\netboot\netboot.master" />
+    <Content Include="views\admin\server\server.master" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -655,7 +661,6 @@
     <Content Include="views\admin\munki.aspx" />
     <Content Include="views\admin\pxe.aspx" />
     <Content Include="views\admin\security.aspx" />
-    <Content Include="views\admin\server.aspx" />
     <Content Include="views\computers\bootmenu\active.aspx" />
     <Content Include="views\computers\bootmenu\custom.aspx" />
     <Content Include="views\computers\create.aspx" />
@@ -674,11 +679,11 @@
     <Content Include="views\computers\search.aspx" />
     <Content Include="views\dashboard\dash.aspx" />
     <Content Include="views\global\boottemplates\create.aspx" />
-    <Content Include="views\global\boottemplates\createentry.aspx" />
+    <Content Include="views\admin\bootmenu\createentry.aspx" />
     <Content Include="views\global\boottemplates\edit.aspx" />
-    <Content Include="views\global\boottemplates\editentry.aspx" />
+    <Content Include="views\admin\bootmenu\editentry.aspx" />
     <Content Include="views\global\boottemplates\search.aspx" />
-    <Content Include="views\global\boottemplates\searchentry.aspx" />
+    <Content Include="views\admin\bootmenu\searchentry.aspx" />
     <Content Include="views\global\buildings\search.aspx" />
     <Content Include="views\global\chooser.aspx" />
     <Content Include="views\global\filesandfolders\create.aspx" />
@@ -699,11 +704,11 @@
     <Content Include="views\global\munki\general.aspx" />
     <Content Include="views\global\munki\manifestcreate.aspx" />
     <Content Include="views\global\munki\manifestsearch.aspx" />
-    <Content Include="views\global\profileupdater\kernel.aspx" />
+    <Content Include="views\admin\profileupdater\kernel.aspx" />
     <Content Include="views\global\rooms\search.aspx" />
     <Content Include="views\global\scripts\create.aspx" />
     <Content Include="views\global\scripts\edit.aspx" />
-    <Content Include="views\global\scripts\editcore.aspx" />
+    <Content Include="views\admin\editcore.aspx" />
     <Content Include="views\global\scripts\search.aspx" />
     <Content Include="views\global\sites\search.aspx" />
     <Content Include="views\global\sysprep\create.aspx" />
@@ -1114,12 +1119,26 @@
     <Compile Include="views\admin\security.aspx.designer.cs">
       <DependentUpon>security.aspx</DependentUpon>
     </Compile>
-    <Compile Include="views\admin\server.aspx.cs">
+    <Compile Include="views\admin\server\alternateips.aspx.cs">
+      <DependentUpon>alternateips.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\server\alternateips.aspx.designer.cs">
+      <DependentUpon>alternateips.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\server\server.aspx.cs">
       <DependentUpon>server.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="views\admin\server.aspx.designer.cs">
+    <Compile Include="views\admin\server\server.aspx.designer.cs">
       <DependentUpon>server.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\server\server.master.cs">
+      <DependentUpon>server.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\server\server.master.designer.cs">
+      <DependentUpon>server.master</DependentUpon>
     </Compile>
     <Compile Include="views\computers\bootmenu\active.aspx.cs">
       <DependentUpon>active.aspx</DependentUpon>
@@ -1176,6 +1195,13 @@
     </Compile>
     <Compile Include="views\computers\history.aspx.designer.cs">
       <DependentUpon>history.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\computers\imageclassification.aspx.cs">
+      <DependentUpon>imageclassification.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\computers\imageclassification.aspx.designer.cs">
+      <DependentUpon>imageclassification.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\computers\import.aspx.cs">
       <DependentUpon>import.aspx</DependentUpon>
@@ -1282,11 +1308,11 @@
     <Compile Include="views\global\boottemplates\create.aspx.designer.cs">
       <DependentUpon>create.aspx</DependentUpon>
     </Compile>
-    <Compile Include="views\global\boottemplates\createentry.aspx.cs">
+    <Compile Include="views\admin\bootmenu\createentry.aspx.cs">
       <DependentUpon>createentry.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="views\global\boottemplates\createentry.aspx.designer.cs">
+    <Compile Include="views\admin\bootmenu\createentry.aspx.designer.cs">
       <DependentUpon>createentry.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\global\boottemplates\edit.aspx.cs">
@@ -1296,11 +1322,11 @@
     <Compile Include="views\global\boottemplates\edit.aspx.designer.cs">
       <DependentUpon>edit.aspx</DependentUpon>
     </Compile>
-    <Compile Include="views\global\boottemplates\editentry.aspx.cs">
+    <Compile Include="views\admin\bootmenu\editentry.aspx.cs">
       <DependentUpon>editentry.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="views\global\boottemplates\editentry.aspx.designer.cs">
+    <Compile Include="views\admin\bootmenu\editentry.aspx.designer.cs">
       <DependentUpon>editentry.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\global\boottemplates\search.aspx.cs">
@@ -1310,11 +1336,11 @@
     <Compile Include="views\global\boottemplates\search.aspx.designer.cs">
       <DependentUpon>search.aspx</DependentUpon>
     </Compile>
-    <Compile Include="views\global\boottemplates\searchentry.aspx.cs">
+    <Compile Include="views\admin\bootmenu\searchentry.aspx.cs">
       <DependentUpon>searchentry.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="views\global\boottemplates\searchentry.aspx.designer.cs">
+    <Compile Include="views\admin\bootmenu\searchentry.aspx.designer.cs">
       <DependentUpon>searchentry.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\global\buildings\search.aspx.cs">
@@ -1365,6 +1391,13 @@
     </Compile>
     <Compile Include="views\global\global.master.designer.cs">
       <DependentUpon>global.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\global\imageclassifications\search.aspx.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\global\imageclassifications\search.aspx.designer.cs">
+      <DependentUpon>search.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\global\munki\assignedcatalogs.aspx.cs">
       <DependentUpon>assignedcatalogs.aspx</DependentUpon>
@@ -1478,11 +1511,11 @@
     <Compile Include="views\global\munki\munki.master.designer.cs">
       <DependentUpon>munki.master</DependentUpon>
     </Compile>
-    <Compile Include="views\global\profileupdater\kernel.aspx.cs">
+    <Compile Include="views\admin\profileupdater\kernel.aspx.cs">
       <DependentUpon>kernel.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="views\global\profileupdater\kernel.aspx.designer.cs">
+    <Compile Include="views\admin\profileupdater\kernel.aspx.designer.cs">
       <DependentUpon>kernel.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\global\rooms\search.aspx.cs">
@@ -1506,11 +1539,11 @@
     <Compile Include="views\global\scripts\edit.aspx.designer.cs">
       <DependentUpon>edit.aspx</DependentUpon>
     </Compile>
-    <Compile Include="views\global\scripts\editcore.aspx.cs">
+    <Compile Include="views\admin\editcore.aspx.cs">
       <DependentUpon>editcore.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="views\global\scripts\editcore.aspx.designer.cs">
+    <Compile Include="views\admin\editcore.aspx.designer.cs">
       <DependentUpon>editcore.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\global\scripts\scripts.master.cs">
@@ -1603,6 +1636,13 @@
     </Compile>
     <Compile Include="views\groups\groups.master.designer.cs">
       <DependentUpon>groups.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\groups\imageclassification.aspx.cs">
+      <DependentUpon>imageclassification.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\groups\imageclassification.aspx.designer.cs">
+      <DependentUpon>imageclassification.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\groups\import.aspx.cs">
       <DependentUpon>import.aspx</DependentUpon>

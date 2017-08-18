@@ -112,7 +112,7 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public void CheckOut(ActiveTaskDTO activeTaskDto)
         {
-            new ClientImagingServices().CheckOut(Convert.ToInt32(activeTaskDto.taskId));
+            new ClientImagingServices().CheckOut(Convert.ToInt32(activeTaskDto.taskId),Convert.ToInt32(activeTaskDto.profileId));
         }
 
         [HttpPost]
@@ -154,6 +154,15 @@ namespace CloneDeploy_App.Controllers
         public void DeleteImage(ProfileDTO profileDto)
         {
             new ClientImagingServices().DeleteImage(Convert.ToInt32(profileDto.profileId));
+        }
+
+        [HttpPost]
+        [ClientAuth]
+        public HttpResponseMessage UpdateGuid(ProfileDTO profileDto)
+        {
+            _response.Content = new StringContent(
+                new ClientImagingServices().UpdateGuid(profileDto.profileId), Encoding.UTF8, "text/plain");
+            return _response;
         }
 
         [HttpPost]
@@ -361,7 +370,7 @@ namespace CloneDeploy_App.Controllers
                 imageListDto.userId = "0";
             _response.Content =
                 new StringContent(
-                    new ClientImagingServices().ImageList(imageListDto.environment, Convert.ToInt32(imageListDto.userId)),
+                    new ClientImagingServices().ImageList(imageListDto.environment, Convert.ToInt32(imageListDto.computerid), Convert.ToInt32(imageListDto.userId)),
                     Encoding.UTF8, "text/plain");
             return _response;
         }

@@ -35,7 +35,7 @@ namespace CloneDeploy_Web.views.admin
                     Value = txtToken.Text,
                     Id = Call.SettingApi.GetSetting("Universal Token").Id
                 },
-                new SettingEntity {Name = "Force SSL", Value = ddlSSL.Text, Id = Call.SettingApi.GetSetting("Force SSL").Id},
+               
                 new SettingEntity
                 {
                     Name = "Ldap Enabled",
@@ -144,33 +144,7 @@ namespace CloneDeploy_Web.views.admin
                     newClientIso = true;
                 }
 
-                if ((string) ViewState["forceSSL"] != ddlSSL.Text)
-                {
-                    newBootMenu = true;
-                    newClientIso = true;
-                    var webService = GetSetting(SettingStrings.WebPath);
-                    string updatedWebService = null;
-                    if (ddlSSL.Text == "Yes")
-                    {
-                        if (webService.ToLower().Contains("http://"))
-                            updatedWebService = webService.Replace("http://", "https://");
-                    }
-                    else
-                    {
-                        if (webService.ToLower().Contains("https://"))
-                            updatedWebService = webService.Replace("https://", "http://");
-                    }
-                    var sslSettingList = new List<SettingEntity>
-                    {
-                        new SettingEntity
-                        {
-                            Name = "Web Path",
-                            Value = updatedWebService,
-                            Id = Call.SettingApi.GetSetting("Web Path").Id
-                        }
-                    };
-                    Call.SettingApi.UpdateSettings(sslSettingList);
-                }
+               
             }
             else
             {
@@ -249,7 +223,7 @@ namespace CloneDeploy_Web.views.admin
             }
             ddlOnd.SelectedValue = GetSetting(SettingStrings.OnDemand);
             txtToken.Text = GetSetting(SettingStrings.UniversalToken);
-            ddlSSL.SelectedValue = GetSetting(SettingStrings.ForceSsL);
+         
             chkImageApproval.Checked = Convert.ToBoolean(GetSetting(SettingStrings.RequireImageApproval));
             ddlWebTasksLogin.Text = GetSetting(SettingStrings.WebTaskRequiresLogin);
             ddlOndLogin.Text = GetSetting(SettingStrings.OnDemandRequiresLogin);
@@ -263,7 +237,7 @@ namespace CloneDeploy_Web.views.admin
 
             //These require pxe boot menu or client iso to be recreated 
             ViewState["serverKey"] = txtToken.Text;
-            ViewState["forceSSL"] = ddlSSL.Text;
+           
             ViewState["debugLogin"] = ddlDebugLogin.Text;
             ViewState["ondLogin"] = ddlOndLogin.Text;
             ViewState["registerLogin"] = ddlRegisterLogin.Text;

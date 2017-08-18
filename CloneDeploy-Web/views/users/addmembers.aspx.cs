@@ -77,7 +77,7 @@ namespace CloneDeploy_Web.views.users
 
         protected void PopulateGrid()
         {
-            gvUsers.DataSource = Call.CloneDeployUserApi.GetAll(int.MaxValue, txtSearch.Text);
+            gvUsers.DataSource = Call.CloneDeployUserApi.Get(int.MaxValue, txtSearch.Text);
             gvUsers.DataBind();
             lblTotal.Text = gvUsers.Rows.Count + " Result(s) / " + Call.CloneDeployUserApi.GetCount() + " Total User(s)";
         }

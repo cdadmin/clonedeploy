@@ -122,7 +122,7 @@ namespace CloneDeploy_Web.views.global.munki
 
         protected void PopulateGrid()
         {
-            gvManifestTemplates.DataSource = Call.MunkiManifestTemplateApi.GetAll(int.MaxValue, txtSearch.Text);
+            gvManifestTemplates.DataSource = Call.MunkiManifestTemplateApi.Get(int.MaxValue, txtSearch.Text);
             gvManifestTemplates.DataBind();
 
             lblTotal.Text = gvManifestTemplates.Rows.Count + " Result(s) / " + Call.MunkiManifestTemplateApi.GetCount() +

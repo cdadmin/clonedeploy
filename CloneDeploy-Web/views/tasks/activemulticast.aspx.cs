@@ -100,7 +100,7 @@ namespace CloneDeploy_Web.views.tasks
 
         private void PopulateGrid()
         {
-            gvMcTasks.DataSource = Call.ActiveMulticastSessionApi.GetAll(int.MaxValue, "");
+            gvMcTasks.DataSource = Call.ActiveMulticastSessionApi.Get(int.MaxValue, "");
             gvMcTasks.DataBind();
             lblTotal.Text = Call.ActiveMulticastSessionApi.GetCount() + " Total Multicast(s)";
             GetMcInfo();

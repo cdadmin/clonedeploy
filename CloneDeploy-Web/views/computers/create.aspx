@@ -96,6 +96,14 @@
     </div>
 
     <br class="clear"/>
+    <div class="size-4 column">
+        Alternate Server Ip:
+    </div>
+    <div class="size-5 column">
+        <asp:DropDownList ID="altServerIp" runat="server" CssClass="ddlist"/>
+    </div>
+
+    <br class="clear"/>
 
     <div class="size-4 column">
         Custom Attribute 1:

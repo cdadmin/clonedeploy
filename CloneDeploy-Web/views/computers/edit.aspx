@@ -32,10 +32,18 @@
     </div>
     <br class="clear"/>
     <div class="size-4 column">
-        Primary MAC Address:
+        MAC Address:
     </div>
     <div class="size-5 column">
         <asp:TextBox ID="txtComputerMac" runat="server" CssClass="textbox" MaxLength="17"></asp:TextBox>
+    </div>
+    
+     <br class="clear"/>
+    <div class="size-4 column">
+        Client Identifier:
+    </div>
+    <div class="size-5 column">
+        <asp:TextBox ID="txtClientId" runat="server" CssClass="textbox"></asp:TextBox>
     </div>
     <br class="clear"/>
     <div class="size-4 column">
@@ -89,6 +97,13 @@
     </div>
     <div class="size-5 column">
         <asp:DropDownList ID="ddlRoom" runat="server" CssClass="ddlist"/>
+    </div>
+    <br class="clear"/>
+    <div class="size-4 column">
+        Alternate Server Ip:
+    </div>
+    <div class="size-5 column">
+        <asp:DropDownList ID="altServerIp" runat="server" CssClass="ddlist"/>
     </div>
     <br class="clear"/>
     <div class="size-4 column">

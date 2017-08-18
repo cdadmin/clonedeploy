@@ -112,6 +112,15 @@ namespace CloneDeploy_Web.views.images {
         protected global::System.Web.UI.WebControls.TextBox txtImageDesc;
         
         /// <summary>
+        /// ddlClassification control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlClassification;
+        
+        /// <summary>
         /// chkProtected control.
         /// </summary>
         /// <remarks>

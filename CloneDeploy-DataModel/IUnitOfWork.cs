@@ -61,7 +61,11 @@ namespace CloneDeploy_DataModel
         CloneDeployUserRepository UserRepository { get; }
         IGenericRepository<UserRightEntity> UserRightRepository { get; }
         IGenericRepository<NetBootProfileEntity> NetBootProfileRepository { get; }
-        IGenericRepository<NbiEntryEntity> NbiEntryRepository { get; } 
+        IGenericRepository<NbiEntryEntity> NbiEntryRepository { get; }
+        IGenericRepository<AlternateServerIpEntity> AlternateServerIpRepository { get; }
+        IGenericRepository<ImageClassificationEntity> ImageClassificationRepository { get; }
+        IGenericRepository<ComputerImageClassificationEntity> ComputerImageClassificationRepository { get; }
+        IGenericRepository<GroupImageClassificationEntity> GroupImageClassificationRepository { get; }
         void Save();
     }
 }

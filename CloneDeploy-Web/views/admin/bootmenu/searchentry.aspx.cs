@@ -5,7 +5,7 @@ using CloneDeploy_Web.BasePages;
 
 namespace CloneDeploy_Web.views.global.boottemplates
 {
-    public partial class views_global_boottemplates_searchentry : Global
+    public partial class views_global_boottemplates_searchentry : Admin
     {
         protected void ButtonConfirmDelete_Click(object sender, EventArgs e)
         {
@@ -37,7 +37,7 @@ namespace CloneDeploy_Web.views.global.boottemplates
 
         protected void PopulateGrid()
         {
-            gvEntries.DataSource = Call.BootEntryApi.GetAll(int.MaxValue, txtSearch.Text);
+            gvEntries.DataSource = Call.BootEntryApi.Get(int.MaxValue, txtSearch.Text);
             gvEntries.DataBind();
 
             lblTotal.Text = gvEntries.Rows.Count + " Result(s) / " + Call.BootEntryApi.GetCount() + " Total Boot Entry(s)";

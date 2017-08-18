@@ -5,11 +5,11 @@ using CloneDeploy_Web.BasePages;
 
 namespace CloneDeploy_Web.views.global.profileupdater
 {
-    public partial class views_global_profileupdater_kernel : Global
+    public partial class views_global_profileupdater_kernel : Admin
     {
         protected void btnUpdateKernel_OnClick(object sender, EventArgs e)
         {
-            RequiresAuthorization(AuthorizationStrings.UpdateGlobal);
+            RequiresAuthorization(AuthorizationStrings.UpdateAdmin);
             var updateCount = 0;
             foreach (GridViewRow row in gvProfiles.Rows)
             {
@@ -47,7 +47,7 @@ namespace CloneDeploy_Web.views.global.profileupdater
             ddlKernel.DataSource = Call.FilesystemApi.GetKernels();
             ddlKernel.DataBind();
             ddlKernel.SelectedValue = SettingStrings.DefaultKernel64;
-            gvProfiles.DataSource = Call.ImageProfileApi.GetAll(int.MaxValue, "");
+            gvProfiles.DataSource = Call.ImageProfileApi.Get(int.MaxValue, "");
             gvProfiles.DataBind();
         }
     }

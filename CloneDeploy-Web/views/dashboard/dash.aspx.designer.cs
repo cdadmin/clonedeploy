@@ -49,13 +49,22 @@ namespace CloneDeploy_Web.views.dashboard {
         protected global::System.Web.UI.WebControls.Label lblTotalImages;
         
         /// <summary>
-        /// lblTotalDP control.
+        /// LogOut control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTotalDP;
+        protected global::System.Web.UI.WebControls.LinkButton LogOut;
+        
+        /// <summary>
+        /// lblDpPath control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDpPath;
         
         /// <summary>
         /// lblDPfree control.
@@ -67,12 +76,30 @@ namespace CloneDeploy_Web.views.dashboard {
         protected global::System.Web.UI.WebControls.Label lblDPfree;
         
         /// <summary>
-        /// LogOut control.
+        /// lblDpTotal control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton LogOut;
+        protected global::System.Web.UI.WebControls.Label lblDpTotal;
+        
+        /// <summary>
+        /// gvLogins control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvLogins;
+        
+        /// <summary>
+        /// gvTasks control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvTasks;
     }
 }

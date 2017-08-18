@@ -36,7 +36,7 @@ namespace CloneDeploy_Web.views.admin.cluster
 
         protected void PopulateGrid()
         {
-            gvClusters.DataSource = Call.ClusterGroupApi.GetAll(int.MaxValue, txtSearch.Text);
+            gvClusters.DataSource = Call.ClusterGroupApi.Get(int.MaxValue, txtSearch.Text);
             gvClusters.DataBind();
         }
 

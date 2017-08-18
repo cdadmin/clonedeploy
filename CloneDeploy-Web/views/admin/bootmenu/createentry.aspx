@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/global/boottemplates/boottemplates.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.global.boottemplates.views_global_boottemplates_createentry" Codebehind="createentry.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/bootmenu/bootmenu.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.global.boottemplates.views_global_boottemplates_createentry" Codebehind="createentry.aspx.cs" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
     <li>New Boot Menu Entry</li>
 </asp:Content>

@@ -31,10 +31,10 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<NetBootProfileEntity>(Request);
         }
 
-        public List<NetBootProfileEntity> GetAll(string searchstring)
+        public List<NetBootProfileEntity> Get(string searchstring)
         {
             Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetAll", Resource);
+            Request.Resource = string.Format("api/{0}/Get", Resource);
             Request.AddParameter("searchstring", searchstring);
             return _apiRequest.Execute<List<NetBootProfileEntity>>(Request);
         }

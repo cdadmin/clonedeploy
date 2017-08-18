@@ -63,13 +63,11 @@ namespace CloneDeploy_Services
                 return TotalCount();
             }
 
-            var userManagedGroups = userServices.GetUserGroupManagements(userId);
-
-            //If count is zero image management is not being used return total count
-            if (userManagedGroups.Count == 0)
-            {
+            var user = userServices.GetUser(userId);
+            if(user.GroupManagementEnabled == 0)
                 return TotalCount();
-            }
+
+            var userManagedGroups = userServices.GetUserGroupManagements(userId);
             var computerCount = 0;
             foreach (var managedGroup in userManagedGroups)
             {
@@ -505,6 +503,18 @@ namespace CloneDeploy_Services
             return path;
         }
 
+        public List<ComputerImageClassificationEntity> GetComputerImageClassifications(int computerId)
+        {
+            return _uow.ComputerImageClassificationRepository.Get(x => x.ComputerId == computerId);
+        }
+
+        public bool DeleteComputerImageClassifications(int computerId)
+        {
+            _uow.ComputerImageClassificationRepository.DeleteRange(x => x.ComputerId == computerId);
+            _uow.Save();
+            return true;
+        }
+
         public ComputerProxyReservationEntity GetComputerProxyReservation(int computerId)
         {
             return _uow.ComputerProxyRepository.GetFirstOrDefault(p => p.ComputerId == computerId);
@@ -576,17 +586,17 @@ namespace CloneDeploy_Services
             if (userServices.GetUser(userId).Membership == "Administrator")
                 return SearchComputers(searchString, limit);
 
-            var listOfComputers = new List<ComputerWithImage>();
-
-            var userManagedGroups = userServices.GetUserGroupManagements(userId);
-            if (userManagedGroups.Count == 0)
+            var user = userServices.GetUser(userId);
+            if(user.GroupManagementEnabled == 0)
                 return SearchComputers(searchString, limit);
+
+            var listOfComputers = new List<ComputerWithImage>();
+            var userManagedGroups = userServices.GetUserGroupManagements(userId);                
             foreach (var managedGroup in userManagedGroups)
             {
                 listOfComputers.AddRange(new GroupServices().GetGroupMembersWithImages(managedGroup.GroupId,
                     searchString));
             }
-
 
             return listOfComputers;
         }
@@ -599,17 +609,17 @@ namespace CloneDeploy_Services
             if (userServices.GetUser(userId).Membership == "Administrator")
                 return SearchComputers(searchString, limit);
 
-            var listOfComputers = new List<ComputerWithImage>();
-
-            var userManagedGroups = userServices.GetUserGroupManagements(userId);
-            if (userManagedGroups.Count == 0)
+            var user = userServices.GetUser(userId);
+            if(user.GroupManagementEnabled == 0)
                 return SearchComputersByName(searchString, limit);
+
+            var listOfComputers = new List<ComputerWithImage>();
+            var userManagedGroups = userServices.GetUserGroupManagements(userId);                
             foreach (var managedGroup in userManagedGroups)
             {
                 listOfComputers.AddRange(new GroupServices().GetGroupMembersWithImages(managedGroup.GroupId,
                     searchString));
             }
-
 
             return listOfComputers;
         }

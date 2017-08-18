@@ -93,6 +93,24 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<List<ComputerEntity>>(Request);
         }
 
+        public List<ComputerImageClassificationEntity> GetImageClassifications(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetImageClassifications/{1}", Resource,id);
+            return _apiRequest.Execute<List<ComputerImageClassificationEntity>>(Request);
+        }
+
+        public bool DeleteImageClassifications(int id)
+        {
+            Request.Method = Method.DELETE;
+            Request.Resource = string.Format("api/{0}/DeleteImageClassifications/{1}", Resource, id);
+            var result = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            if (result != null)
+                return result.Value;
+            else
+                return false;
+        }
+
 
         public ActiveImagingTaskEntity GetActiveTask(int id)
         {

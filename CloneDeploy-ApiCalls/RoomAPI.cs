@@ -32,10 +32,10 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<RoomEntity>(Request);
         }
 
-        public List<RoomWithClusterGroup> GetAll(int limit, string searchstring)
+        public List<RoomWithClusterGroup> Get(int limit, string searchstring)
         {
             Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetAll", Resource);
+            Request.Resource = string.Format("api/{0}/Get", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
             return _apiRequest.Execute<List<RoomWithClusterGroup>>(Request);

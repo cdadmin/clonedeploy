@@ -37,6 +37,7 @@ namespace CloneDeploy_Web.views.admin.cluster
             EndUserMessage = Call.SettingApi.UpdateSettings(listSettings)
                 ? "Successfully Updated Settings"
                 : "Could Not Update Settings";
+            Response.Redirect("~/views/admin/cluster/roles.aspx?level=2");
         }
 
         protected void ddlOperationMode_OnSelectedIndexChanged(object sender, EventArgs e)

@@ -103,6 +103,15 @@ namespace CloneDeploy_Web.views.computers {
         protected global::System.Web.UI.WebControls.DropDownList ddlRoom;
         
         /// <summary>
+        /// altServerIp control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList altServerIp;
+        
+        /// <summary>
         /// txtCustom1 control.
         /// </summary>
         /// <remarks>

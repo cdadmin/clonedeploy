@@ -177,9 +177,11 @@ namespace CloneDeploy_Services
             if (_userServices.GetUser(userId).Membership == "Administrator")
                 return _uow.ImageRepository.Get(i => i.IsVisible == 1 && i.Enabled == 1, q => q.OrderBy(p => p.Name));
 
-            var userManagedImages = _userServices.GetUserImageManagements(userId);
-            if (userManagedImages.Count == 0)
+            var user = _userServices.GetUser(userId);
+            if (user.ImageManagementEnabled == 0)
                 return _uow.ImageRepository.Get(i => i.IsVisible == 1 && i.Enabled == 1, q => q.OrderBy(p => p.Name));
+
+            var userManagedImages = _userServices.GetUserImageManagements(userId);
             var listOfImages = new List<ImageEntity>();
             listOfImages.AddRange(
                 userManagedImages.Select(
@@ -202,10 +204,16 @@ namespace CloneDeploy_Services
             if (_userServices.GetUser(userId).Membership == "Administrator")
                 return TotalCount();
 
-            var userManagedImages = _userServices.GetUserImageManagements(userId);
-
-            //If count is zero image management is not being used return total count
-            return userManagedImages.Count == 0 ? TotalCount() : userManagedImages.Count.ToString();
+            var user = _userServices.GetUser(userId);
+            if (user.ImageManagementEnabled == 0)
+            {
+                return TotalCount();
+            }
+            else
+            {
+                var userManagedImages = _userServices.GetUserImageManagements(userId);
+                return userManagedImages.Count.ToString();
+            }
         }
 
         public string ImageSizeOnServerForGridView(string imageName, string hdNumber)
@@ -242,6 +250,7 @@ namespace CloneDeploy_Services
                 imageWithDate.Environment = image.Environment;
                 imageWithDate.Approved = image.Approved;
                 imageWithDate.LastUsed = new AuditLogServices().GetImageLastUsedDate(image.Id);
+                imageWithDate.ClassificationId = image.ClassificationId;
                 listWithDate.Add(imageWithDate);
             }
 
@@ -253,13 +262,12 @@ namespace CloneDeploy_Services
             if (_userServices.GetUser(userId).Membership == "Administrator")
                 return SearchImages(searchString);
 
-
-            var listOfImages = new List<ImageEntity>();
-
-            var userManagedImages = _userServices.GetUserImageManagements(userId);
-            if (userManagedImages.Count == 0)
+            var user = _userServices.GetUser(userId);
+            if(user.ImageManagementEnabled == 0)
                 return SearchImages(searchString);
 
+            var listOfImages = new List<ImageEntity>();
+            var userManagedImages = _userServices.GetUserImageManagements(userId);
             listOfImages.AddRange(
                 userManagedImages.Select(
                     managedImage =>
@@ -275,6 +283,7 @@ namespace CloneDeploy_Services
                 imageWithDate.Environment = image.Environment;
                 imageWithDate.Approved = image.Approved;
                 imageWithDate.LastUsed = new AuditLogServices().GetImageLastUsedDate(image.Id);
+                imageWithDate.ClassificationId = image.ClassificationId;
                 listWithDate.Add(imageWithDate);
             }
 

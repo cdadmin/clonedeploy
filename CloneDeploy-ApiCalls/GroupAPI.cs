@@ -39,10 +39,10 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<GroupEntity>(Request);
         }
 
-        public List<GroupWithImage> GetAll(int limit, string searchstring)
+        public List<GroupWithImage> Get(int limit, string searchstring)
         {
             Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetAll", Resource);
+            Request.Resource = string.Format("api/{0}/Get", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
             return _apiRequest.Execute<List<GroupWithImage>>(Request);
@@ -61,6 +61,25 @@ namespace CloneDeploy_ApiCalls
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetCustomBootMenu/{1}", Resource, id);
             return _apiRequest.Execute<GroupBootMenuEntity>(Request);
+        }
+
+        public List<GroupImageClassificationEntity> GetImageClassifications(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetImageClassifications/{1}", Resource, id);
+            return _apiRequest.Execute<List<GroupImageClassificationEntity>>(Request);
+        }
+
+        public bool DeleteImageClassifications(int id)
+        {
+            Request.Method = Method.DELETE;
+            Request.Resource = string.Format("api/{0}/DeleteImageClassifications/{1}", Resource, id);
+            var result = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            if (result != null)
+                return result.Value;
+            else
+                return false;
+
         }
 
         public string GetEffectiveManifest(int id)

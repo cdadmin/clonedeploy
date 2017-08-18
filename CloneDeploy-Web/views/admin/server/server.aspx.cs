@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using CloneDeploy_Common;
+﻿using CloneDeploy_Common;
 using CloneDeploy_Entities;
-using CloneDeploy_Web.BasePages;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 
-namespace CloneDeploy_Web.views.admin
+namespace CloneDeploy_Web.views.admin.server
 {
-    public partial class views_admin_server : Admin
+    public partial class serversettings : BasePages.Admin
     {
         protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
         {
@@ -58,17 +61,17 @@ namespace CloneDeploy_Web.views.admin
             if (Call.SettingApi.UpdateSettings(listSettings))
             {
                 EndUserMessage = "Successfully Updated Settings";
-                if ((string) ViewState["serverIP"] != txtIP.Text)
+                if ((string)ViewState["serverIP"] != txtIP.Text)
                 {
                     newBootMenu = true;
                     newClientIso = true;
                 }
-                if ((string) ViewState["serverPort"] != txtPort.Text)
+                if ((string)ViewState["serverPort"] != txtPort.Text)
                 {
                     newBootMenu = true;
                     newClientIso = true;
                 }
-                if ((string) ViewState["servicePath"] != PlaceHolderReplace(txtWebService.Text))
+                if ((string)ViewState["servicePath"] != PlaceHolderReplace(txtWebService.Text))
                 {
                     newBootMenu = true;
                     newClientIso = true;
@@ -102,6 +105,10 @@ namespace CloneDeploy_Web.views.admin
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (GetSetting(SettingStrings.OperationMode) == "Cluster Secondary")
+            {
+                divComputerView.Visible = false;
+            }
             if (IsPostBack) return;
             txtIP.Text = GetSetting(SettingStrings.ServerIp);
             txtPort.Text = GetSetting(SettingStrings.WebServerPort);
@@ -123,14 +130,19 @@ namespace CloneDeploy_Web.views.admin
             {
                 if (txtPort.Text != "80" && txtPort.Text != "443" && !string.IsNullOrEmpty(txtPort.Text))
                 {
-                    txtWebService.Text = "http://[server-ip]:" + txtPort.Text + "/clonedeploy/api/ClientImaging/";
+                    txtWebService.Text = "http://[server-ip]:" + txtPort.Text + "/clonedeploy/api/";
                 }
                 if (txtPort.Text == "80" || string.IsNullOrEmpty(txtPort.Text))
                 {
-                    txtWebService.Text = "http://[server-ip]/clonedeploy/api/ClientImaging/";
+                    txtWebService.Text = "http://[server-ip]/clonedeploy/api/";
                 }
                 if (txtPort.Text == "443")
-                    txtWebService.Text = "https://[server-ip]/clonedeploy/api/ClientImaging/";
+                    txtWebService.Text = "https://[server-ip]/clonedeploy/api/";
+            }
+            else
+            {
+                if (!txtWebService.Text.Trim().EndsWith("/"))
+                    txtWebService.Text += "/";
             }
             var seperator = Call.FilesystemApi.GetServerPaths("seperator", "");
             if (!txtTFTPPath.Text.Trim().EndsWith(seperator))

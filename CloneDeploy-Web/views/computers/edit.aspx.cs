@@ -29,6 +29,7 @@ namespace CloneDeploy_Web.views.computers
             Computer.CustomAttribute3 = txtCustom3.Text;
             Computer.CustomAttribute4 = txtCustom4.Text;
             Computer.CustomAttribute5 = txtCustom5.Text;
+            Computer.AlternateServerIpId = Convert.ToInt32(altServerIp.SelectedValue);
 
             
 
@@ -72,11 +73,12 @@ namespace CloneDeploy_Web.views.computers
 
         protected void PopulateForm()
         {
-            PopulateImagesDdl(ddlComputerImage);
+            PopulateImagesDdlForComputer(Computer.Id, ddlComputerImage);
             PopulateSitesDdl(ddlSite);
             PopulateBuildingsDdl(ddlBuilding);
             PopulateRoomsDdl(ddlRoom);
             PopulateClusterGroupsDdl(ddlClusterGroup);
+            PopulateAltServerIps(altServerIp);
             txtComputerName.Text = Computer.Name;
             txtComputerMac.Text = Computer.Mac;
             ddlComputerImage.SelectedValue = Computer.ImageId.ToString();
@@ -92,6 +94,9 @@ namespace CloneDeploy_Web.views.computers
             txtCustom3.Text = Computer.CustomAttribute3;
             txtCustom4.Text = Computer.CustomAttribute4;
             txtCustom5.Text = Computer.CustomAttribute5;
+            altServerIp.SelectedValue = Computer.AlternateServerIpId.ToString();
+            txtClientId.Text = Computer.ClientIdentifier;
+            txtClientId.ReadOnly = true;
         }
     }
 }

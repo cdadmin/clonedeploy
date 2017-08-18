@@ -89,7 +89,7 @@ namespace CloneDeploy_Web.views.admin.cluster
 
         protected void PopulateGrid()
         {
-            var secondaryServers = Call.SecondaryServerApi.GetAll(int.MaxValue, "");
+            var secondaryServers = Call.SecondaryServerApi.Get(int.MaxValue, "");
             if (GetSetting(SettingStrings.OperationMode) == "Cluster Primary")
             {
                 var primary = new SecondaryServerEntity();
@@ -125,7 +125,7 @@ namespace CloneDeploy_Web.views.admin.cluster
                 }
             }
 
-            gvDps.DataSource = Call.DistributionPointApi.GetAll(int.MaxValue, "");
+            gvDps.DataSource = Call.DistributionPointApi.Get(int.MaxValue, "");
             gvDps.DataBind();
         }
     }

@@ -60,7 +60,7 @@ namespace CloneDeploy_Web.views.admin.dp
 
         protected void PopulateGrid()
         {
-            gvDps.DataSource = Call.DistributionPointApi.GetAll(int.MaxValue, txtSearch.Text);
+            gvDps.DataSource = Call.DistributionPointApi.Get(int.MaxValue, txtSearch.Text);
             gvDps.DataBind();
 
             lblTotal.Text = gvDps.Rows.Count + " Result(s) / " + Call.DistributionPointApi.GetCount() +

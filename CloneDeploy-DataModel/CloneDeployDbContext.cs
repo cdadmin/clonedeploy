@@ -65,5 +65,9 @@ namespace CloneDeploy_DataModel
         public DbSet<CloneDeployUserEntity> Users { get; set; }
         public DbSet<NetBootProfileEntity> NetBootProfiles { get; set; }
         public DbSet<NbiEntryEntity> NetBootProfileEntries { get; set; }
+        public DbSet<ImageClassificationEntity> ImageClassifications { get; set; }
+        public DbSet<AlternateServerIpEntity> AlternateServerIps { get; set; }
+        public DbSet<ComputerImageClassificationEntity> ComputerImageClassifications { get; set; }
+        public DbSet<GroupImageClassificationEntity> GroupImageClassifications { get; set; }
     }
 }

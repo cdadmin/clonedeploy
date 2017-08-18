@@ -22,5 +22,11 @@ namespace CloneDeploy_Entities
 
         [Column("clonedeploy_user_group_ldapname", Order = 5)]
         public string GroupLdapName { get; set; }
+
+        [Column("image_management_enabled", Order = 6)]
+        public int ImageManagementEnabled { get; set; }
+
+        [Column("group_management_enabled", Order = 7)]
+        public int GroupManagementEnabled { get; set; }
     }
 }

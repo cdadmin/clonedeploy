@@ -264,6 +264,10 @@ function process_scripts()
 
 function mount_smb()
 {
+	local mount_result
+	local all_cluster_dps
+	local result
+	
 	log " ** Mounting SMB Share **" "display"
 	mkdir /storage >> $CLIENT_LOG 2>&1
 	
@@ -276,23 +280,75 @@ function mount_smb()
 	fi
 	
 	smbInfo=$($curlAuth --data "dpId=$dp_id&task=$task" "${web}DistributionPoint" $curlEnd)
+	log " ...... Connecting To $(parse_json "$smbInfo" .DisplayName)" "display"
 	#fix path that was originally only used for initrd
 	share_path=$(echo "$(parse_json "$smbInfo" .SharePath)" | sed 's~//~~g')
-    mount -t smbfs //"$(parse_json "$smbInfo" .Domain)"\;"$(parse_json "$smbInfo" .Username)":"$(parse_json "$smbInfo" .Password)"@"$share_path" /storage 2>/tmp/mntstat
-		
-		if [ ! $? = "0" ]; then
-			cat /tmp/mntstat >> $CLIENT_LOG
-			error "Could Not Mount SMB Share: $(cat /tmp/mntstat)"		
+	
+	mount_result=$(mount_smb_sub "$smbInfo")
+	if [ "$mount_result" = "true" ]; then
+	  log " ...... Success" "display"
+	else
+	  #Look for other distribution points
+	  log " ...... Looking For Additional Distribution Points"
+	  all_cluster_dps=$($curlAuth --data "computerId=$computer_id" "${web}GetAllClusterDps" $curlEnd)
+	  if [ ! "$?" = "0" ]; then
+		error "Could Not Find Additional Distribution Points"
+	  else
+	    if [ "$all_cluster_dps" = "single" ]; then
+			error "Could Not Mount SMB Share and Server Is Not Clustered"
+		elif [ "$all_cluster_dps" = "false" ]; then
+			error "Could Not Mount SMB Share and An Unknown Error Occurred While Looking For Others"
 		else
-			log " ...... Success" "display"
-
-			cd /storage/images/$imgName;
-			if [ "$?" != "0" ]; then
-				error "Could Not Change Directory To /images/$imgName Check Permissions"
+			for local_dp_id in $all_cluster_dps; do
+			  sleep 2
+			  smbInfo=$($curlAuth --data "dpId=$local_dp_id&task=$task" "${web}DistributionPoint" $curlEnd)
+			  log " ...... Connecting To $(parse_json "$smbInfo" .DisplayName)" "display"
+			  if [ "smb_debug" = "1" ]; then
+				log "$smbInfo"
+			  fi
+			  mount_result=$(mount_smb_sub "$smbInfo")
+			  if [ "$mount_result" = "true" ]; then
+			    log " ...... Success" "display"
+				dp_id=$local_dp_id
+				result="true"
+				break
+			  else
+			    result="false"
+			  fi
+			done
+			
+			if [ "$result" = "false" ]; then
+			  #no smb shares could be mounted
+			  error "Could Not Mount Any Available SMB Shares"
 			fi
 		fi
+	  fi
+	fi
+    
 	echo
 	sleep 2
+}
+
+function mount_smb_sub()
+{
+	local smbInfo=$1
+	share_path=$(echo "$(parse_json "$smbInfo" .SharePath)" | sed 's~//~~g')
+	mount -t smbfs //"$(parse_json "$smbInfo" .Domain)"\;"$(parse_json "$smbInfo" .Username)":"$(parse_json "$smbInfo" .Password)"@"$share_path" /storage 2>/tmp/mntstat
+		
+	if [ ! $? = "0" ]; then
+	  cat /tmp/mntstat >> $CLIENT_LOG
+	  log "Could Not Mount SMB Share: $(cat /tmp/mntstat)" "display"
+	  echo "false"
+	else
+	  cd /storage/images/$image_name;
+	  if [ "$?" != "0" ]; then
+	    log "Could Not Change Directory To /storage/images/$image_name Check Permissions" "display"
+		echo "false"
+		umount /storage &> /dev/null
+	  else
+	    echo "true"
+	  fi
+	fi
 }
 
 function process_file_copy()
