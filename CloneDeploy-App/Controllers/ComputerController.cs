@@ -7,12 +7,12 @@ using System.Security.Claims;
 using System.Text;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 using CloneDeploy_Services.Workflows;
 using Newtonsoft.Json;
-using CloneDeploy_Common;
 
 namespace CloneDeploy_App.Controllers
 {
@@ -27,7 +27,7 @@ namespace CloneDeploy_App.Controllers
         {
             _computerService = new ComputerServices();
             _auditLogService = new AuditLogServices();
-            _userId = Convert.ToInt32(((ClaimsIdentity)User.Identity).Claims.Where(c => c.Type == "user_id")
+            _userId = Convert.ToInt32(((ClaimsIdentity) User.Identity).Claims.Where(c => c.Type == "user_id")
                 .Select(c => c.Value).SingleOrDefault());
             _auditLog = new AuditLogEntity();
             _auditLog.ObjectType = "Computer";
@@ -42,14 +42,14 @@ namespace CloneDeploy_App.Controllers
         public ApiBoolResponseDTO AddToSmartGroups(ComputerEntity computer)
         {
             _computerService.AddComputerToSmartGroups(computer);
-            return new ApiBoolResponseDTO { Value = true };
+            return new ApiBoolResponseDTO {Value = true};
         }
 
         [HttpGet]
         [CustomAuth(Permission = "ComputerUpdate")]
         public ApiBoolResponseDTO CreateCustomBootFiles(int id)
         {
-            return new ApiBoolResponseDTO { Value = _computerService.CreateBootFiles(id) };
+            return new ApiBoolResponseDTO {Value = _computerService.CreateBootFiles(id)};
         }
 
         [CustomAuth(Permission = "ComputerDelete")]
@@ -78,22 +78,16 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = AuthorizationStrings.ReadComputer)]
-        public IEnumerable<ComputerImageClassificationEntity> GetImageClassifications(int id)
+        [CustomAuth(Permission = "ComputerDelete")]
+        public ActionResultDTO DeleteBootMenus(int id)
         {
-            return _computerService.GetComputerImageClassifications(id);
+            return _computerService.DeleteComputerBootMenus(id);
         }
 
         [CustomAuth(Permission = AuthorizationStrings.DeleteComputer)]
         public ApiBoolResponseDTO DeleteImageClassifications(int id)
         {
-            return new ApiBoolResponseDTO() { Value = _computerService.DeleteComputerImageClassifications(id) };       
-        }
-
-        [CustomAuth(Permission = "ComputerDelete")]
-        public ActionResultDTO DeleteBootMenus(int id)
-        {
-            return _computerService.DeleteComputerBootMenus(id);
+            return new ApiBoolResponseDTO {Value = _computerService.DeleteComputerImageClassifications(id)};
         }
 
         [CustomAuth(Permission = "ComputerDelete")]
@@ -121,23 +115,15 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "ComputerRead")]
-        public ComputerWithImage GetWithImage(int id)
+        public IEnumerable<ComputerEntity> Get()
         {
-            var computer = _computerService.GetWithImage(id);
-            if (computer == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
-            return computer;
+            return _computerService.GetAll();
         }
 
         [CustomAuth(Permission = "ComputerRead")]
         public ActiveImagingTaskEntity GetActiveTask(int id)
         {
             return _computerService.GetTaskForComputer(id);
-        }
-
-        [CustomAuth(Permission = "ComputerRead")]
-        public IEnumerable<ComputerEntity> Get()
-        {
-            return _computerService.GetAll();
         }
 
         [CustomAuth(Permission = "ComputerRead")]
@@ -153,9 +139,9 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "ComputerRead")]
-        public IEnumerable<AuditLogEntity> GetComputerAuditLogs(int id,int limit)
+        public IEnumerable<AuditLogEntity> GetComputerAuditLogs(int id, int limit)
         {
-            return _computerService.GetComputerAuditLogs(id,limit);
+            return _computerService.GetComputerAuditLogs(id, limit);
         }
 
         [CustomAuth(Permission = "ComputerRead")]
@@ -192,12 +178,17 @@ namespace CloneDeploy_App.Controllers
             return _computerService.GetAllComputerMemberships(id);
         }
 
+        [CustomAuth(Permission = AuthorizationStrings.ReadComputer)]
+        public IEnumerable<ComputerImageClassificationEntity> GetImageClassifications(int id)
+        {
+            return _computerService.GetComputerImageClassifications(id);
+        }
+
         [CustomAuth(Permission = "ComputerRead")]
         public IEnumerable<ComputerMunkiEntity> GetMunkiTemplates(int id)
         {
             return _computerService.GetMunkiTemplates(id);
         }
-
 
         [CustomAuth(Permission = "ComputerRead")]
         public ApiStringResponseDTO GetNonProxyPath(int id, bool isActiveOrCustom)
@@ -207,7 +198,6 @@ namespace CloneDeploy_App.Controllers
                 Value = _computerService.GetComputerNonProxyPath(id, isActiveOrCustom)
             };
         }
-
 
         [CustomAuth(Permission = "ComputerRead")]
         public ApiStringResponseDTO GetProxyPath(int id, bool isActiveOrCustom, string proxyType)
@@ -226,13 +216,29 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
+        [CustomAuth(Permission = "ComputerRead")]
+        public ComputerWithImage GetWithImage(int id)
+        {
+            var computer = _computerService.GetWithImage(id);
+            if (computer == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return computer;
+        }
+
+        [HttpGet]
+        [CustomAuth(Permission = "ComputerSearch")]
+        public IEnumerable<ComputerWithImage> GridViewSearch(int limit = 0, string searchstring = "")
+        {
+            return string.IsNullOrEmpty(searchstring)
+                ? _computerService.SearchComputersForUser(Convert.ToInt32(_userId), limit)
+                : _computerService.SearchComputersForUser(Convert.ToInt32(_userId), limit, searchstring);
+        }
+
         [CustomAuth(Permission = "ComputerCreate")]
         [HttpPost]
         public ApiIntResponseDTO Import(ApiStringResponseDTO csvContents)
         {
             return new ApiIntResponseDTO {Value = _computerService.ImportCsv(csvContents.Value)};
         }
-
 
         [HttpGet]
         [CustomAuth(Permission = "ComputerRead")]
@@ -253,7 +259,6 @@ namespace CloneDeploy_App.Controllers
                 _auditLog.Ip = Request.GetClientIpAddress();
                 _auditLog.ObjectJson = JsonConvert.SerializeObject(_computerService.GetComputer(result.Id));
                 _auditLogService.AddAuditLog(_auditLog);
-               
             }
             return result;
         }
@@ -273,18 +278,8 @@ namespace CloneDeploy_App.Controllers
                 _auditLog.Ip = Request.GetClientIpAddress();
                 _auditLog.ObjectJson = JsonConvert.SerializeObject(computer);
                 _auditLogService.AddAuditLog(_auditLog);
-                
             }
             return result;
-        }
-
-        [HttpGet]
-        [CustomAuth(Permission = "ComputerSearch")]
-        public IEnumerable<ComputerWithImage> GridViewSearch(int limit = 0, string searchstring = "")
-        {
-            return string.IsNullOrEmpty(searchstring)
-                ? _computerService.SearchComputersForUser(Convert.ToInt32(_userId), limit)
-                : _computerService.SearchComputersForUser(Convert.ToInt32(_userId), limit, searchstring);
         }
 
         [HttpGet]

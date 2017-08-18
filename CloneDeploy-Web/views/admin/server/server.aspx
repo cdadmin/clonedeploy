@@ -18,7 +18,7 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
     <script type="text/javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#serversub').addClass("nav-current");
         });
     </script>
@@ -78,20 +78,20 @@
             <asp:TextBox ID="txtTFTPPath" runat="server" CssClass="textbox"></asp:TextBox>
         </div>
         <br class="clear"/>
-        
+
         <div id="divComputerView" runat="server">
-        <div class="size-4 column">
+            <div class="size-4 column">
 
-            Computer View:
-        </div>
-        <div class="size-setting column ddl">
-
-            <asp:DropDownList ID="ddlComputerView" runat="server" CssClass="ddlist" ClientIDMode="Static">
-                <asp:ListItem>all</asp:ListItem>
-                <asp:ListItem>search</asp:ListItem>
-            </asp:DropDownList>
-        </div>
+                Computer View:
             </div>
+            <div class="size-setting column ddl">
+
+                <asp:DropDownList ID="ddlComputerView" runat="server" CssClass="ddlist" ClientIDMode="Static">
+                    <asp:ListItem>all</asp:ListItem>
+                    <asp:ListItem>search</asp:ListItem>
+                </asp:DropDownList>
+            </div>
+        </div>
     </div>
 
     <div id="confirmbox" class="confirm-box-outer">

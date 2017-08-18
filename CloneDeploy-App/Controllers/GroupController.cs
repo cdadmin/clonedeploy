@@ -5,14 +5,13 @@ using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
-using System.Threading;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
 using CloneDeploy_Services.Workflows;
-using CloneDeploy_Common;
 
 namespace CloneDeploy_App.Controllers
 {
@@ -20,10 +19,11 @@ namespace CloneDeploy_App.Controllers
     {
         private readonly GroupServices _groupServices;
         private readonly int _userId;
+
         public GroupController()
         {
             _groupServices = new GroupServices();
-            _userId = Convert.ToInt32(((ClaimsIdentity)User.Identity).Claims.Where(c => c.Type == "user_id")
+            _userId = Convert.ToInt32(((ClaimsIdentity) User.Identity).Claims.Where(c => c.Type == "user_id")
                 .Select(c => c.Value).SingleOrDefault());
         }
 
@@ -33,6 +33,12 @@ namespace CloneDeploy_App.Controllers
             var result = _groupServices.DeleteGroup(id);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
+        }
+
+        [CustomAuth(Permission = AuthorizationStrings.DeleteGroup)]
+        public ApiBoolResponseDTO DeleteImageClassifications(int id)
+        {
+            return new ApiBoolResponseDTO {Value = _groupServices.DeleteGroupImageClassifications(id)};
         }
 
         [CustomAuth(Permission = "GroupRead")]
@@ -51,7 +57,6 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-
         [CustomAuth(Permission = "GroupSearch")]
         public IEnumerable<GroupWithImage> Get(string searchstring = "")
         {
@@ -60,18 +65,6 @@ namespace CloneDeploy_App.Controllers
                 : _groupServices.SearchGroupsForUser(Convert.ToInt32(_userId), searchstring);
         }
 
-        [CustomAuth(Permission = AuthorizationStrings.ReadGroup)]
-        public IEnumerable<GroupImageClassificationEntity> GetImageClassifications(int id)
-        {
-            return _groupServices.GetGroupImageClassifications(id);
-        }
-
-        [CustomAuth(Permission = AuthorizationStrings.DeleteGroup)]
-        public ApiBoolResponseDTO DeleteImageClassifications(int id)
-        {
-            return new ApiBoolResponseDTO() { Value = _groupServices.DeleteGroupImageClassifications(id) };
-
-        }
         [CustomAuth(Permission = "GroupSearch")]
         public ApiStringResponseDTO GetCount()
         {
@@ -110,6 +103,12 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
+        [CustomAuth(Permission = AuthorizationStrings.ReadGroup)]
+        public IEnumerable<GroupImageClassificationEntity> GetImageClassifications(int id)
+        {
+            return _groupServices.GetGroupImageClassifications(id);
+        }
+
         [CustomAuth(Permission = "GroupRead")]
         public ApiStringResponseDTO GetMemberCount(int id)
         {
@@ -128,7 +127,6 @@ namespace CloneDeploy_App.Controllers
         {
             return new ApiIntResponseDTO {Value = _groupServices.ImportCsv(csvContents.Value, Convert.ToInt32(_userId))};
         }
-
 
         [CustomAuth(Permission = "GroupCreate")]
         public ActionResultDTO Post(GroupEntity group)
@@ -182,7 +180,10 @@ namespace CloneDeploy_App.Controllers
         [HttpGet]
         public ApiStringResponseDTO StartMulticast(int id)
         {
-            return new ApiStringResponseDTO {Value = new Multicast(id, Convert.ToInt32(_userId), Request.GetClientIpAddress()).Create()};
+            return new ApiStringResponseDTO
+            {
+                Value = new Multicast(id, Convert.ToInt32(_userId), Request.GetClientIpAddress()).Create()
+            };
         }
 
         [HttpGet]

@@ -30,15 +30,15 @@
         });
 
     </script>
-    
-     <div class="size-10 column">
+
+    <div class="size-10 column">
         <asp:DropDownList ID="ddlType" runat="server" CssClass="ddlist" AutoPostBack="True" OnSelectedIndexChanged="ddlType_OnSelectedIndexChanged">
             <asp:ListItem>Select Filter</asp:ListItem>
             <asp:ListItem>Create</asp:ListItem>
             <asp:ListItem>Update</asp:ListItem>
             <asp:ListItem>Deploy</asp:ListItem>
             <asp:ListItem>Upload</asp:ListItem>
-            </asp:DropDownList>
+        </asp:DropDownList>
     </div>
     <div class="size-11 column">
 
@@ -56,16 +56,16 @@
     <asp:GridView ID="gvHistory" runat="server" DataKeyNames="Id" AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
         <Columns>
             <asp:BoundField DataField="Id" HeaderText="AuditId" Visible="False"/>
-            <asp:BoundField DataField="UserName" HeaderText="User"  ItemStyle-CssClass="width_200"></asp:BoundField>
-            <asp:BoundField DataField="AuditType" HeaderText="Type" SortExpression="Mac" ItemStyle-CssClass="width_200" />
-              <asp:BoundField DataField="DateTime" HeaderText="Date"  ItemStyle-CssClass="width_200"></asp:BoundField>
-             <asp:BoundField DataField="Ip" HeaderText="Ip"  ItemStyle-CssClass="width_200"></asp:BoundField>
-             <asp:BoundField DataField="ObjectJson" HeaderText="Json" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"></asp:BoundField>
+            <asp:BoundField DataField="UserName" HeaderText="User" ItemStyle-CssClass="width_200"></asp:BoundField>
+            <asp:BoundField DataField="AuditType" HeaderText="Type" SortExpression="Mac" ItemStyle-CssClass="width_200"/>
+            <asp:BoundField DataField="DateTime" HeaderText="Date" ItemStyle-CssClass="width_200"></asp:BoundField>
+            <asp:BoundField DataField="Ip" HeaderText="Ip" ItemStyle-CssClass="width_200"></asp:BoundField>
+            <asp:BoundField DataField="ObjectJson" HeaderText="Json" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"></asp:BoundField>
         </Columns>
         <EmptyDataTemplate>
             No Computer History Found
         </EmptyDataTemplate>
     </asp:GridView>
 
-   
+
 </asp:Content>

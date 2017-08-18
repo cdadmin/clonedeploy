@@ -14,7 +14,6 @@ namespace CloneDeploy_ApiCalls
             _apiRequest = new ApiRequest();
         }
 
-
         public bool AddNewMember(int id, int userId)
         {
             Request.Method = Method.GET;
@@ -34,7 +33,6 @@ namespace CloneDeploy_ApiCalls
             return response;
         }
 
-
         public bool DeleteGroupManagements(int id)
         {
             Request.Method = Method.DELETE;
@@ -43,7 +41,6 @@ namespace CloneDeploy_ApiCalls
             return response != null && response.Value;
         }
 
-
         public bool DeleteImageManagements(int id)
         {
             Request.Method = Method.DELETE;
@@ -51,7 +48,6 @@ namespace CloneDeploy_ApiCalls
             var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
             return response != null && response.Value;
         }
-
 
         public bool DeleteRights(int id)
         {
@@ -85,14 +81,12 @@ namespace CloneDeploy_ApiCalls
             return responseData != null ? responseData.Value : string.Empty;
         }
 
-
         public IEnumerable<UserGroupGroupManagementEntity> GetGroupManagements(int id)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetGroupManagements/{1}", Resource, id);
             return _apiRequest.Execute<List<UserGroupGroupManagementEntity>>(Request);
         }
-
 
         public IEnumerable<CloneDeployUserEntity> GetGroupMembers(int id, string searchstring = "")
         {
@@ -101,7 +95,6 @@ namespace CloneDeploy_ApiCalls
             Request.AddParameter("searchstring", searchstring);
             return _apiRequest.Execute<List<CloneDeployUserEntity>>(Request);
         }
-
 
         public IEnumerable<UserGroupImageManagementEntity> GetImageManagements(int id)
         {
@@ -117,7 +110,6 @@ namespace CloneDeploy_ApiCalls
             var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
             return response != null ? response.Value : string.Empty;
         }
-
 
         public IEnumerable<UserGroupRightEntity> GetRights(int id)
         {
@@ -148,29 +140,11 @@ namespace CloneDeploy_ApiCalls
             return response;
         }
 
-
-        public bool UpdateMemberAcls(int id)
+        public bool ToggleGroupManagement(int id, int value)
         {
             Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/UpdateMemberAcls/{1}", Resource, id);
-            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
-            return response != null && response.Value;
-        }
-
-
-        public bool UpdateMemberGroups(int id)
-        {
-            Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/UpdateMemberGroups/{1}", Resource, id);
-            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
-            return response != null && response.Value;
-        }
-
-
-        public bool UpdateMemberImages(int id)
-        {
-            Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/UpdateMemberImages/{1}", Resource, id);
+            Request.Resource = string.Format("api/{0}/ToggleGroupManagement/{1}", Resource, id);
+            Request.AddParameter("value", value);
             var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
             return response != null && response.Value;
         }
@@ -184,11 +158,26 @@ namespace CloneDeploy_ApiCalls
             return response != null && response.Value;
         }
 
-        public bool ToggleGroupManagement(int id, int value)
+        public bool UpdateMemberAcls(int id)
         {
             Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/ToggleGroupManagement/{1}", Resource, id);
-            Request.AddParameter("value", value);
+            Request.Resource = string.Format("api/{0}/UpdateMemberAcls/{1}", Resource, id);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
+        }
+
+        public bool UpdateMemberGroups(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/UpdateMemberGroups/{1}", Resource, id);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response != null && response.Value;
+        }
+
+        public bool UpdateMemberImages(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/UpdateMemberImages/{1}", Resource, id);
             var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
             return response != null && response.Value;
         }

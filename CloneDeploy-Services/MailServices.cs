@@ -31,10 +31,12 @@ namespace CloneDeploy_Services.Helpers
                 Body = Body
             };
 
-            var client = new SmtpClient(SettingServices.GetSettingValue(SettingStrings.SmtpServer), Convert.ToInt32(SettingServices.GetSettingValue(SettingStrings.SmtpPort)))
+            var client = new SmtpClient(SettingServices.GetSettingValue(SettingStrings.SmtpServer),
+                Convert.ToInt32(SettingServices.GetSettingValue(SettingStrings.SmtpPort)))
             {
                 Credentials =
-                    new NetworkCredential(SettingServices.GetSettingValue(SettingStrings.SmtpUsername), new EncryptionServices().DecryptText(SettingServices.GetSettingValue(SettingStrings.SmtpPassword))),
+                    new NetworkCredential(SettingServices.GetSettingValue(SettingStrings.SmtpUsername),
+                        new EncryptionServices().DecryptText(SettingServices.GetSettingValue(SettingStrings.SmtpPassword))),
                 EnableSsl = SettingServices.GetSettingValue(SettingStrings.SmtpSsl) == "Yes"
             };
 

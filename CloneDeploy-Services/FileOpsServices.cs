@@ -64,7 +64,6 @@ namespace CloneDeploy_Services.Helpers
             {
                 log.Debug(ex.Message);
 
-
                 return false;
             }
         }
@@ -137,7 +136,6 @@ namespace CloneDeploy_Services.Helpers
                 Syscall.chmod(path,
                     FilePermissions.S_IRWXU | FilePermissions.S_IRWXG | FilePermissions.S_IRWXO);
         }
-
 
         public bool WritePath(string path, string contents)
         {

@@ -12,7 +12,6 @@ namespace CloneDeploy_Services
             _uow = new UnitOfWork();
         }
 
-
         public MunkiManifestIncludedManifestEntity GetIncludedManifest(int includedManifestId)
         {
             return _uow.MunkiIncludedManifestRepository.GetById(includedManifestId);

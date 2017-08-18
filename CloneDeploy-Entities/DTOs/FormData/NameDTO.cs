@@ -3,7 +3,5 @@
     public class NameDTO
     {
         public string name { get; set; }
-        
-       
     }
 }

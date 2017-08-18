@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
-using System.Threading;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
@@ -15,13 +14,13 @@ namespace CloneDeploy_App.Controllers
 {
     public class UserController : ApiController
     {
-        private readonly UserServices _userServices;
         private readonly int _userId;
+        private readonly UserServices _userServices;
 
         public UserController()
         {
             _userServices = new UserServices();
-            _userId = Convert.ToInt32(((ClaimsIdentity)User.Identity).Claims.Where(c => c.Type == "user_id")
+            _userId = Convert.ToInt32(((ClaimsIdentity) User.Identity).Claims.Where(c => c.Type == "user_id")
                 .Select(c => c.Value).SingleOrDefault());
         }
 
@@ -60,13 +59,6 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "Administrator")]
-        public ApiIntResponseDTO GetAdminCount()
-        {
-            return new ApiIntResponseDTO {Value = _userServices.GetAdminCount()};
-        }
-
-
-        [CustomAuth(Permission = "Administrator")]
         public IEnumerable<UserWithUserGroup> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
@@ -75,21 +67,9 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "Administrator")]
-        public IEnumerable<AuditLogEntity> GetUserAuditLogs(int id, int limit)
+        public ApiIntResponseDTO GetAdminCount()
         {
-            return _userServices.GetUserAuditLogs(id, limit);
-        }
-
-        [Authorize]
-        public IEnumerable<AuditLogEntity> GetUserTaskAuditLogs(int id, int limit)
-        {
-            return _userServices.GetUserTaskAuditLogs(id, limit);
-        }
-
-        [Authorize]
-        public IEnumerable<AuditLogEntity> GetUserLoginsDashboard()
-        {
-            return _userServices.GetUserLoginsDashboard(Convert.ToInt32(_userId));
+            return new ApiIntResponseDTO {Value = _userServices.GetAdminCount()};
         }
 
         [CustomAuth(Permission = "Administrator")]
@@ -134,6 +114,24 @@ namespace CloneDeploy_App.Controllers
             return _userServices.GetUserRights(id);
         }
 
+        [CustomAuth(Permission = "Administrator")]
+        public IEnumerable<AuditLogEntity> GetUserAuditLogs(int id, int limit)
+        {
+            return _userServices.GetUserAuditLogs(id, limit);
+        }
+
+        [Authorize]
+        public IEnumerable<AuditLogEntity> GetUserLoginsDashboard()
+        {
+            return _userServices.GetUserLoginsDashboard(Convert.ToInt32(_userId));
+        }
+
+        [Authorize]
+        public IEnumerable<AuditLogEntity> GetUserTaskAuditLogs(int id, int limit)
+        {
+            return _userServices.GetUserTaskAuditLogs(id, limit);
+        }
+
         [Authorize]
         [HttpGet]
         public ApiBoolResponseDTO IsAdmin(int id)
@@ -158,16 +156,16 @@ namespace CloneDeploy_App.Controllers
 
         [HttpGet]
         [CustomAuth(Permission = "Administrator")]
-        public ApiBoolResponseDTO ToggleImageManagement(int id, int value)
+        public ApiBoolResponseDTO ToggleGroupManagement(int id, int value)
         {
-            return new ApiBoolResponseDTO { Value = _userServices.ToggleImageManagement(id, value) };
+            return new ApiBoolResponseDTO {Value = _userServices.ToggleGroupManagement(id, value)};
         }
 
         [HttpGet]
         [CustomAuth(Permission = "Administrator")]
-        public ApiBoolResponseDTO ToggleGroupManagement(int id, int value)
+        public ApiBoolResponseDTO ToggleImageManagement(int id, int value)
         {
-            return new ApiBoolResponseDTO { Value = _userServices.ToggleGroupManagement(id, value) };
+            return new ApiBoolResponseDTO {Value = _userServices.ToggleImageManagement(id, value)};
         }
     }
 }

@@ -26,6 +26,6 @@ namespace CloneDeploy_Common
         public static string GenerateKey()
         {
             return Guid.NewGuid().ToString();
-        } 
+        }
     }
 }

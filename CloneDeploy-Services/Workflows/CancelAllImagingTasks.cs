@@ -11,9 +11,9 @@ namespace CloneDeploy_Services.Workflows
 {
     public class CancelAllImagingTasks
     {
-        private readonly ILog Log = LogManager.GetLogger("ApplicationLog");
         private readonly ComputerServices _computerServices;
         private readonly SecondaryServerServices _secondaryServerServices;
+        private readonly ILog Log = LogManager.GetLogger("ApplicationLog");
 
         public CancelAllImagingTasks()
         {
@@ -62,8 +62,6 @@ namespace CloneDeploy_Services.Workflows
                 }
             }
 
-
-
             if (Environment.OSVersion.ToString().Contains("Unix"))
             {
                 for (var x = 1; x <= 10; x++)
@@ -105,7 +103,6 @@ namespace CloneDeploy_Services.Workflows
                     Thread.Sleep(200);
                 }
             }
-
 
             if (!SettingServices.ServerIsClusterSecondary)
             {

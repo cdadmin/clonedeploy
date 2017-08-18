@@ -1,22 +1,19 @@
-﻿using CloneDeploy_Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
+using CloneDeploy_Entities;
+using CloneDeploy_Web.BasePages;
 
 namespace CloneDeploy_Web.views.groups
 {
-    public partial class imageclassification : BasePages.Groups
+    public partial class imageclassification : Groups
     {
         protected void buttonUpdate_OnClick(object sender, EventArgs e)
         {
-
             var list = new List<GroupImageClassificationEntity>();
             foreach (GridViewRow row in gvClassifications.Rows)
             {
-                var cb = (CheckBox)row.FindControl("chkSelector");
+                var cb = (CheckBox) row.FindControl("chkSelector");
                 if (cb == null || !cb.Checked) continue;
                 var dataKey = gvClassifications.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
@@ -48,7 +45,7 @@ namespace CloneDeploy_Web.views.groups
 
             foreach (GridViewRow row in gvClassifications.Rows)
             {
-                var chkBox = (CheckBox)row.FindControl("chkSelector");
+                var chkBox = (CheckBox) row.FindControl("chkSelector");
                 var dataKey = gvClassifications.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
                 foreach (var classification in listOfGroupClassifications)

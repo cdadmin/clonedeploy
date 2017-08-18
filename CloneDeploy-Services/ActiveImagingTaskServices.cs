@@ -14,7 +14,6 @@ namespace CloneDeploy_Services
     {
         private readonly UnitOfWork _uow;
         private readonly UserServices _userServices;
-      
 
         public ActiveImagingTaskServices()
         {
@@ -29,7 +28,7 @@ namespace CloneDeploy_Services
                 : _uow.ActiveImagingTaskRepository.Count(x => x.UserId != userId);
         }
 
-        public string ActiveUnicastCount(int userId, string taskType="")
+        public string ActiveUnicastCount(int userId, string taskType = "")
         {
             if (taskType == "permanentdeploy")
             {
@@ -37,12 +36,10 @@ namespace CloneDeploy_Services
                     ? _uow.ActiveImagingTaskRepository.Count(t => t.Type == taskType)
                     : _uow.ActiveImagingTaskRepository.Count(t => t.Type == taskType && t.UserId == userId);
             }
-            else
-            {
-                return _userServices.IsAdmin(userId)
-                  ? _uow.ActiveImagingTaskRepository.Count(t => t.Type == "deploy" || t.Type == "upload")
-                  : _uow.ActiveImagingTaskRepository.Count(t => (t.Type == "deploy" || t.Type == "upload") && t.UserId == userId);
-            }
+            return _userServices.IsAdmin(userId)
+                ? _uow.ActiveImagingTaskRepository.Count(t => t.Type == "deploy" || t.Type == "upload")
+                : _uow.ActiveImagingTaskRepository.Count(
+                    t => (t.Type == "deploy" || t.Type == "upload") && t.UserId == userId);
         }
 
         public bool AddActiveImagingTask(ActiveImagingTaskEntity activeImagingTask)
@@ -82,24 +79,6 @@ namespace CloneDeploy_Services
             return actionResult;
         }
 
-        public ActionResultDTO DeleteUnregisteredOndTask(int activeImagingTaskId)
-        {
-            var activeImagingTask = _uow.ActiveImagingTaskRepository.GetById(activeImagingTaskId);
-            if (activeImagingTask == null) return new ActionResultDTO { ErrorMessage = "Task Not Found", Id = 0 };
-            if(activeImagingTask.ComputerId > -1)
-                return new ActionResultDTO { ErrorMessage = "This Task Is Not An On Demand Task And Cannot Be Cancelled", Id = 0 };
-
-         
-            _uow.ActiveImagingTaskRepository.Delete(activeImagingTask.Id);
-            _uow.Save();
-
-            var actionResult = new ActionResultDTO();
-            actionResult.Success = true;
-            actionResult.Id = activeImagingTaskId;
-
-            return actionResult;
-        }
-
         public void DeleteAll()
         {
             _uow.ActiveImagingTaskRepository.DeleteRange();
@@ -112,17 +91,35 @@ namespace CloneDeploy_Services
             _uow.Save();
         }
 
+        public ActionResultDTO DeleteUnregisteredOndTask(int activeImagingTaskId)
+        {
+            var activeImagingTask = _uow.ActiveImagingTaskRepository.GetById(activeImagingTaskId);
+            if (activeImagingTask == null) return new ActionResultDTO {ErrorMessage = "Task Not Found", Id = 0};
+            if (activeImagingTask.ComputerId > -1)
+                return new ActionResultDTO
+                {
+                    ErrorMessage = "This Task Is Not An On Demand Task And Cannot Be Cancelled",
+                    Id = 0
+                };
+
+            _uow.ActiveImagingTaskRepository.Delete(activeImagingTask.Id);
+            _uow.Save();
+
+            var actionResult = new ActionResultDTO();
+            actionResult.Success = true;
+            actionResult.Id = activeImagingTaskId;
+
+            return actionResult;
+        }
+
         public List<ActiveImagingTaskEntity> GetAll()
         {
             return _uow.ActiveImagingTaskRepository.Get();
         }
 
-        public string GetQueuePosition(ActiveImagingTaskEntity task)
+        public List<ActiveImagingTaskEntity> GetAllOnDemandUnregistered()
         {
-
-            return
-                _uow.ActiveImagingTaskRepository.Count(
-                    x => x.Status == "2" && x.QueuePosition < task.QueuePosition);
+            return _uow.ActiveImagingTaskRepository.Get(x => x.ComputerId < -1);
         }
 
         public int GetCurrentQueue(ActiveImagingTaskEntity activeTask)
@@ -146,13 +143,19 @@ namespace CloneDeploy_Services
             return _uow.ActiveImagingTaskRepository.MulticastComputers(multicastId);
         }
 
-
         public ActiveImagingTaskEntity GetNextComputerInQueue(ActiveImagingTaskEntity activeTask)
         {
             return
                 _uow.ActiveImagingTaskRepository.Get(
                     x => x.Status == "2" && x.Type == activeTask.Type && x.DpId == activeTask.DpId,
                     q => q.OrderBy(t => t.QueuePosition)).FirstOrDefault();
+        }
+
+        public string GetQueuePosition(ActiveImagingTaskEntity task)
+        {
+            return
+                _uow.ActiveImagingTaskRepository.Count(
+                    x => x.Status == "2" && x.QueuePosition < task.QueuePosition);
         }
 
         public ActiveImagingTaskEntity GetTask(int taskId)
@@ -170,6 +173,11 @@ namespace CloneDeploy_Services
             return _uow.ActiveImagingTaskRepository.MulticastProgress(multicastId);
         }
 
+        public int OnDemandCount()
+        {
+            return Convert.ToInt32(_uow.ActiveImagingTaskRepository.Count(x => x.ComputerId < -1));
+        }
+
         public List<TaskWithComputer> ReadAll(int userId)
         {
             //Admins see all tasks
@@ -178,20 +186,8 @@ namespace CloneDeploy_Services
                 : _uow.ActiveImagingTaskRepository.GetAllTaskWithComputers(userId);
         }
 
-        public List<TaskWithComputer> ReadUnicasts(int userId)
-        {
-          
-                //Admins see all tasks
-                var activeImagingTasks = _userServices.IsAdmin(userId)
-                    ? _uow.ActiveImagingTaskRepository.GetUnicastsWithComputersForAdmin()
-                    : _uow.ActiveImagingTaskRepository.GetUnicastsWithComputers(userId);
-           
-            return activeImagingTasks;
-        }
-
         public List<TaskWithComputer> ReadPermanentUnicasts(int userId)
         {
-
             //Admins see all tasks
             var activeImagingTasks = _userServices.IsAdmin(userId)
                 ? _uow.ActiveImagingTaskRepository.GetPermanentUnicastsWithComputersForAdmin()
@@ -200,14 +196,14 @@ namespace CloneDeploy_Services
             return activeImagingTasks;
         }
 
-        public List<ActiveImagingTaskEntity> GetAllOnDemandUnregistered()
+        public List<TaskWithComputer> ReadUnicasts(int userId)
         {
-            return _uow.ActiveImagingTaskRepository.Get(x => x.ComputerId < -1);        
-        }
+            //Admins see all tasks
+            var activeImagingTasks = _userServices.IsAdmin(userId)
+                ? _uow.ActiveImagingTaskRepository.GetUnicastsWithComputersForAdmin()
+                : _uow.ActiveImagingTaskRepository.GetUnicastsWithComputers(userId);
 
-        public int OnDemandCount()
-        {
-            return Convert.ToInt32(_uow.ActiveImagingTaskRepository.Count(x => x.ComputerId < -1));
+            return activeImagingTasks;
         }
 
         public void SendTaskCompletedEmail(ActiveImagingTaskEntity task)

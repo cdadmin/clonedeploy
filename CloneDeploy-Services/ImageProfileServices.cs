@@ -36,7 +36,6 @@ namespace CloneDeploy_Services
             return actionResult;
         }
 
-
         public void CloneProfile(int imageProfileId)
         {
             var imageProfile = ReadProfile(imageProfileId);
@@ -98,7 +97,6 @@ namespace CloneDeploy_Services
 
             return actionResult;
         }
-
 
         public List<ImageProfileWithImage> GetAllProfiles()
         {
@@ -164,7 +162,6 @@ namespace CloneDeploy_Services
 
             return actionResult;
         }
-
 
         private ValidationResultDTO ValidateImageProfile(ImageProfileEntity imageProfile, bool isNewImageProfile)
         {

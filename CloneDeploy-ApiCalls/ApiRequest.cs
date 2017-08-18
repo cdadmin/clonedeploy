@@ -8,9 +8,9 @@ namespace CloneDeploy_ApiCalls
 {
     public class ApiRequest
     {
+        private readonly RestClient _client;
         private readonly ILog _log = LogManager.GetLogger("FrontEndLog");
         private readonly string _token;
-        private readonly RestClient _client;
 
         public ApiRequest()
         {
@@ -20,7 +20,6 @@ namespace CloneDeploy_ApiCalls
             var httpCookie = HttpContext.Current.Request.Cookies["cdtoken"];
             if (httpCookie != null)
                 _token = httpCookie.Value;
-           
         }
 
         public ApiRequest(string token, Uri baseUrl)
@@ -28,7 +27,6 @@ namespace CloneDeploy_ApiCalls
             _client = new RestClient();
             _client.BaseUrl = baseUrl;
             _token = token;
-           
         }
 
         public TClass Execute<TClass>(RestRequest request) where TClass : new()

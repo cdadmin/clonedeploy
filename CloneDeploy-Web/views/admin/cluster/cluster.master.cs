@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Web.UI;
 using CloneDeploy_Common;
 using CloneDeploy_Web.BasePages;
 
@@ -15,7 +14,6 @@ namespace CloneDeploy_Web.views.admin.cluster
                 newsecondary.Visible = false;
                 newcluster.Visible = false;
                 clustergroup.Visible = false;
-               
             }
         }
     }

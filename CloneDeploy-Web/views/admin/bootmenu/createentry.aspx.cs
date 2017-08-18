@@ -21,7 +21,6 @@ namespace CloneDeploy_Web.views.global.boottemplates
                 Default = chkDefault.Checked ? 1 : 0
             };
 
-
             var result = Call.BootEntryApi.Post(bootEntry);
             if (!result.Success)
                 EndUserMessage = result.ErrorMessage;

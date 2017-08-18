@@ -41,12 +41,10 @@ namespace CloneDeploy_Services
                 return new ActionResultDTO {ErrorMessage = "File Folder Not Found", Id = 0};
             var actionResult = new ActionResultDTO();
 
-
             _uow.FileFolderRepository.Delete(FileFolderId);
             _uow.Save();
             actionResult.Success = true;
             actionResult.Id = fileFolder.Id;
-
 
             return actionResult;
         }

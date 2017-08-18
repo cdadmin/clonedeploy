@@ -34,90 +34,89 @@
                 </a>
             </p>
         </div>
-    
+
     </div>
 
     <div class="column-center">
-          <h4 class="right">Current User</h4>
+        <h4 class="right">Current User</h4>
         <br/>
         <asp:LinkButton ID="LogOut" runat="server" OnClick="LogOut_OnClick"></asp:LinkButton>
-         
-   
-     
+
 
     </div>
 
     <div class="column-right">
-           <h4>Primary Distribution Point</h4>
-        <asp:Label runat="server" ID="lblDpPath" ></asp:Label>
-        <br />
-      
-            <div class="clearfix">
-                <table style="margin-top: 15px; margin-left: 30px; ">
-                    <tr>
-                        <td>
-                            <div>Free</div>
-                            <div class="c100 p<%=freePercent%> small">
-                                <span><%=freePercent%>%</span>
-                                <div class="slice">
-                                    <div class="bar"></div>
-                                    <div class="fill"></div>
-                                </div>
-                            </div>
-                        </td>
+        <h4>Primary Distribution Point</h4>
+        <asp:Label runat="server" ID="lblDpPath"></asp:Label>
+        <br/>
 
-                        <td>
-                            <div>Used</div>
-                            <div class="c100 p<%=usedPercent%> small"><span><%=usedPercent%>%</span><div class="slice">
+        <div class="clearfix">
+            <table style="margin-left: 30px; margin-top: 15px;">
+                <tr>
+                    <td>
+                        <div>Free</div>
+                        <div class="c100 p<%= freePercent %> small">
+                            <span><%= freePercent %>%</span>
+                            <div class="slice">
                                 <div class="bar"></div>
                                 <div class="fill"></div>
                             </div>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>Used</div>
+                        <div class="c100 p<%= usedPercent %> small">
+                            <span><%= usedPercent %>%</span><div class="slice">
+                                <div class="bar"></div>
+                                <div class="fill"></div>
                             </div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            
-               
-            <asp:Label ID="lblDPfree" runat="server"></asp:Label>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+
+        <asp:Label ID="lblDPfree" runat="server"></asp:Label>
         <br/>
         <asp:Label ID="lblDpTotal" runat="server"></asp:Label>
-           
-       
+
+
     </div>
-    
+
     <div class="column-left-half">
-             <div class="dash_left_second">
-        <h4>Recent Logins</h4>
-         <asp:GridView ID="gvLogins" runat="server" DataKeyNames="Id" AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
-        <Columns>
-            <asp:BoundField DataField="Id" HeaderText="" Visible="False"/>
-            <asp:BoundField DataField="ObjectName" HeaderText="User Name" ItemStyle-CssClass="width_200"></asp:BoundField>
-            <asp:BoundField DataField="AuditType" HeaderText="Type"  ItemStyle-CssClass="width_200"/>
-             <asp:BoundField DataField="DateTime" HeaderText="Date"  ItemStyle-CssClass="width_200"/>
-        </Columns>
-        <EmptyDataTemplate>
-            No Logins Found
-        </EmptyDataTemplate>
-    </asp:GridView>
-             </div>
+        <div class="dash_left_second">
+            <h4>Recent Logins</h4>
+            <asp:GridView ID="gvLogins" runat="server" DataKeyNames="Id" AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
+                <Columns>
+                    <asp:BoundField DataField="Id" HeaderText="" Visible="False"/>
+                    <asp:BoundField DataField="ObjectName" HeaderText="User Name" ItemStyle-CssClass="width_200"></asp:BoundField>
+                    <asp:BoundField DataField="AuditType" HeaderText="Type" ItemStyle-CssClass="width_200"/>
+                    <asp:BoundField DataField="DateTime" HeaderText="Date" ItemStyle-CssClass="width_200"/>
+                </Columns>
+                <EmptyDataTemplate>
+                    No Logins Found
+                </EmptyDataTemplate>
+            </asp:GridView>
+        </div>
     </div>
-    
+
     <div class="column-right-half">
-         <div class="dash_left_second">
-        <h4>Recent Tasks</h4>
-         <asp:GridView ID="gvTasks" runat="server" DataKeyNames="Id" AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
-        <Columns>
-            <asp:BoundField DataField="Id" HeaderText="" Visible="False"/>
-            <asp:BoundField DataField="ObjectName" HeaderText="Computer Name" ItemStyle-CssClass="width_200"></asp:BoundField>
-            <asp:BoundField DataField="AuditType" HeaderText="Type"  ItemStyle-CssClass="width_200"/>
-             <asp:BoundField DataField="DateTime" HeaderText="Date"  ItemStyle-CssClass="width_200"/>
-        </Columns>
-        <EmptyDataTemplate>
-            No Tasks Found
-        </EmptyDataTemplate>
-    </asp:GridView>
-            </div>
+        <div class="dash_left_second">
+            <h4>Recent Tasks</h4>
+            <asp:GridView ID="gvTasks" runat="server" DataKeyNames="Id" AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
+                <Columns>
+                    <asp:BoundField DataField="Id" HeaderText="" Visible="False"/>
+                    <asp:BoundField DataField="ObjectName" HeaderText="Computer Name" ItemStyle-CssClass="width_200"></asp:BoundField>
+                    <asp:BoundField DataField="AuditType" HeaderText="Type" ItemStyle-CssClass="width_200"/>
+                    <asp:BoundField DataField="DateTime" HeaderText="Date" ItemStyle-CssClass="width_200"/>
+                </Columns>
+                <EmptyDataTemplate>
+                    No Tasks Found
+                </EmptyDataTemplate>
+            </asp:GridView>
+        </div>
     </div>
 
 </asp:Content>

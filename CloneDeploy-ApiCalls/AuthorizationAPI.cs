@@ -12,7 +12,6 @@ namespace CloneDeploy_ApiCalls
             _apiRequest = new ApiRequest();
         }
 
-
         public bool ComputerManagement(string requiredRight, int computerId)
         {
             Request.Method = Method.GET;
@@ -32,7 +31,6 @@ namespace CloneDeploy_ApiCalls
             var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
             return response != null && response.Value;
         }
-
 
         public bool ImageManagement(string requiredRight, int imageId)
         {

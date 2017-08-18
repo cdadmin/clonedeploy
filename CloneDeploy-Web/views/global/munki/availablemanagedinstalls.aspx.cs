@@ -75,7 +75,9 @@ namespace CloneDeploy_Web.views.global.munki
 
         protected void PopulateGrid()
         {
-            var availableLimit = ddlLimitAvailable.Text == "All" ? int.MaxValue : Convert.ToInt32(ddlLimitAvailable.Text);
+            var availableLimit = ddlLimitAvailable.Text == "All"
+                ? int.MaxValue
+                : Convert.ToInt32(ddlLimitAvailable.Text);
 
             var listOfPackages = new List<MunkiPackageInfoEntity>();
             var pkgInfos = Call.FilesystemApi.GetMunkiResources("pkgsinfo");

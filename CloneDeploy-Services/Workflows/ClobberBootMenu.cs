@@ -31,9 +31,10 @@ namespace CloneDeploy_Services.Workflows
             if (_promptComputerName)
                 namePromptArg = " name_prompt=true";
 
-            var userToken = SettingServices.GetSettingValue(SettingStrings.ClobberRequiresLogin) == "No" ? SettingServices.GetSettingValue(SettingStrings.UniversalToken) : "";
+            var userToken = SettingServices.GetSettingValue(SettingStrings.ClobberRequiresLogin) == "No"
+                ? SettingServices.GetSettingValue(SettingStrings.UniversalToken)
+                : "";
             const string newLineChar = "\n";
-
 
             var ipxe = new StringBuilder();
             ipxe.Append("#!ipxe" + newLineChar);
@@ -47,7 +48,6 @@ namespace CloneDeploy_Services.Workflows
                         "IpxeBoot?filename=" + _imageProfile.BootImage + "&type=bootimage" + newLineChar);
             ipxe.Append("boot" + newLineChar);
 
-
             var sysLinux = new StringBuilder();
             sysLinux.Append("DEFAULT clonedeploy" + newLineChar);
             sysLinux.Append("LABEL clonedeploy" + newLineChar);
@@ -58,7 +58,6 @@ namespace CloneDeploy_Services.Workflows
                             " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" + userToken + " " +
                             globalComputerArgs +
                             " " + _imageProfile.KernelArguments + newLineChar);
-
 
             var grub = new StringBuilder();
             grub.Append("set default=0" + newLineChar);
@@ -99,20 +98,22 @@ namespace CloneDeploy_Services.Workflows
                         switch (bootMenu.Item2)
                         {
                             case ".cfg":
-                                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
+                                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "grub" +
+                                       Path.DirectorySeparatorChar + "grub.cfg";
                                 break;
                             case ".ipxe":
-                                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar + bootMenu.Item1 +
+                                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" +
+                                       Path.DirectorySeparatorChar + bootMenu.Item1 +
                                        Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar +
                                        "default.ipxe";
                                 break;
                             case "":
-                                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar + bootMenu.Item1 +
+                                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" +
+                                       Path.DirectorySeparatorChar + bootMenu.Item1 +
                                        Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar +
                                        "default";
                                 break;
                         }
-
 
                         if (!new FileOpsServices().WritePath(path, bootMenu.Item3))
                             return false;
@@ -167,18 +168,21 @@ namespace CloneDeploy_Services.Workflows
                 {
                     if (mode == "pxelinux" || mode == "syslinux_32_efi" || mode == "syslinux_64_efi")
                     {
-                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" +
+                               Path.DirectorySeparatorChar + "default";
                         fileContents = sysLinux.ToString();
                     }
 
                     else if (mode.Contains("ipxe"))
                     {
-                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default.ipxe";
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" +
+                               Path.DirectorySeparatorChar + "default.ipxe";
                         fileContents = ipxe.ToString();
                     }
                     else if (mode.Contains("grub"))
                     {
-                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "grub" +
+                               Path.DirectorySeparatorChar + "grub.cfg";
                         fileContents = grub.ToString();
                     }
 

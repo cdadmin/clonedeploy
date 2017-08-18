@@ -14,7 +14,6 @@ namespace CloneDeploy_Web.views.global.filesandfolders
             fileFolder.Path = txtPath.Text;
             fileFolder.Type = ddlType.Text;
 
-
             var result = Call.FileFolderApi.Put(fileFolder.Id, fileFolder);
             EndUserMessage = !result.Success ? result.ErrorMessage : "Successfully Updated File / Folder";
         }

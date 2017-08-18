@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Common;
@@ -23,6 +21,6 @@ namespace CloneDeploy_App.Controllers
         public ActionResultDTO Post(List<NbiEntryEntity> entries)
         {
             return _nbiEntryServices.AddNbiEntries(entries);
-        } 
+        }
     }
 }

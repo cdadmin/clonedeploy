@@ -11,6 +11,6 @@ namespace CloneDeploy_ApiCalls
         {
             Request = new RestRequest();
             Resource = resource;
-        }   
+        }
     }
 }

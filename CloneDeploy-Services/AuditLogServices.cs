@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
@@ -32,14 +31,7 @@ namespace CloneDeploy_Services
 
             if (auditLog != null)
                 return auditLog.DateTime;
-            else
-            {
-                return null;
-            }
+            return null;
         }
-
-       
-
-        
     }
 }

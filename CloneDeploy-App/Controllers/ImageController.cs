@@ -16,16 +16,16 @@ namespace CloneDeploy_App.Controllers
 {
     public class ImageController : ApiController
     {
-        private readonly ImageServices _imageServices;
         private readonly AuditLogEntity _auditLog;
         private readonly AuditLogServices _auditLogService;
+        private readonly ImageServices _imageServices;
         private readonly int _userId;
 
         public ImageController()
         {
             _imageServices = new ImageServices();
             _auditLogService = new AuditLogServices();
-            _userId = Convert.ToInt32(((ClaimsIdentity)User.Identity).Claims.Where(c => c.Type == "user_id")
+            _userId = Convert.ToInt32(((ClaimsIdentity) User.Identity).Claims.Where(c => c.Type == "user_id")
                 .Select(c => c.Value).SingleOrDefault());
             _auditLog = new AuditLogEntity();
             _auditLog.ObjectType = "Image";
@@ -79,7 +79,6 @@ namespace CloneDeploy_App.Controllers
         [CustomAuth(Permission = "ImageSearch")]
         public ApiStringResponseDTO GetCount()
         {
-           
             return new ApiStringResponseDTO {Value = _imageServices.ImageCountUser(_userId)};
         }
 
@@ -106,7 +105,6 @@ namespace CloneDeploy_App.Controllers
         {
             return _imageServices.GetPartitionImageFileInfoForGridView(id, selectedHd, selectedPartition);
         }
-
 
         [CustomAuth(Permission = "ComputerCreate")]
         [HttpPost]
@@ -146,7 +144,6 @@ namespace CloneDeploy_App.Controllers
                 _auditLog.Ip = Request.GetClientIpAddress();
                 _auditLog.ObjectJson = JsonConvert.SerializeObject(image);
                 _auditLogService.AddAuditLog(_auditLog);
-
             }
             return result;
         }

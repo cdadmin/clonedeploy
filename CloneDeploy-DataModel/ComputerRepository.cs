@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Security.Policy;
 using CloneDeploy_Entities;
 
 namespace CloneDeploy_DataModel
@@ -16,37 +14,6 @@ namespace CloneDeploy_DataModel
             _context = context;
         }
 
-        public ComputerWithImage GetComputerWithImage(int computerId)
-        {
-            return (from h in _context.Computers
-                    join t in _context.Images on h.ImageId equals t.Id into joinimage
-                    from p in joinimage.DefaultIfEmpty()
-                    where h.Id == computerId
-                    select new
-                    {
-                        id = h.Id,
-                        name = h.Name,
-                        mac = h.Mac,
-                        image = p,
-                        profileId = h.ImageProfileId,
-                        site = h.SiteId,
-                        building = h.BuildingId,
-                        room = h.RoomId,
-                        alternateip = h.AlternateServerIpId
-                    }).AsEnumerable().Select(x => new ComputerWithImage
-                    {
-                        Id = x.id,
-                        Name = x.name,
-                        Mac = x.mac,
-                        Image = x.image,
-                        ImageProfileId = x.profileId,
-                        SiteId = x.site,
-                        BuildingId = x.building,
-                        RoomId = x.room,
-                        AlternateServerIpId = x.alternateip
-                    }).FirstOrDefault();
-        }
-
         public List<ComputerEntity> GetComputersWithoutGroup(string searchString, int limit = int.MaxValue)
         {
             var list = (from c in _context.Computers.Where(x => x.Name.Contains(searchString))
@@ -58,6 +25,36 @@ namespace CloneDeploy_DataModel
             return list;
         }
 
+        public ComputerWithImage GetComputerWithImage(int computerId)
+        {
+            return (from h in _context.Computers
+                join t in _context.Images on h.ImageId equals t.Id into joinimage
+                from p in joinimage.DefaultIfEmpty()
+                where h.Id == computerId
+                select new
+                {
+                    id = h.Id,
+                    name = h.Name,
+                    mac = h.Mac,
+                    image = p,
+                    profileId = h.ImageProfileId,
+                    site = h.SiteId,
+                    building = h.BuildingId,
+                    room = h.RoomId,
+                    alternateip = h.AlternateServerIpId
+                }).AsEnumerable().Select(x => new ComputerWithImage
+                {
+                    Id = x.id,
+                    Name = x.name,
+                    Mac = x.mac,
+                    Image = x.image,
+                    ImageProfileId = x.profileId,
+                    SiteId = x.site,
+                    BuildingId = x.building,
+                    RoomId = x.room,
+                    AlternateServerIpId = x.alternateip
+                }).FirstOrDefault();
+        }
 
         public List<ComputerWithImage> Search(string searchString, int limit = int.MaxValue)
         {

@@ -11,6 +11,47 @@ namespace CloneDeploy_Web
 {
     public partial class Default : Page
     {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                Session.RemoveAll();
+                Session.Abandon();
+
+                FormsAuthentication.SignOut();
+                //http://stackoverflow.com/questions/6635349/how-to-delete-cookies-in-asp-net-website
+                if (HttpContext.Current != null)
+                {
+                    var cookieCount = HttpContext.Current.Request.Cookies.Count;
+                    for (var i = 0; i < cookieCount; i++)
+                    {
+                        var cookie = HttpContext.Current.Request.Cookies[i];
+                        if (cookie != null)
+                        {
+                            var cookieName = cookie.Name;
+                            var expiredCookie = new HttpCookie(cookieName) {Expires = DateTime.Now.AddDays(-1)};
+                            HttpContext.Current.Response.Cookies.Add(expiredCookie); // overwrite it
+                        }
+                    }
+
+                    // clear cookies server side
+                    HttpContext.Current.Request.Cookies.Clear();
+                }
+
+                if (Request.QueryString["session"] == "expired")
+                    SessionExpired.Visible = true;
+            }
+            else
+            {
+                SessionExpired.Visible = false;
+            }
+
+            if (Request.IsAuthenticated)
+            {
+                Response.Redirect("~/views/dashboard/dash.aspx");
+            }
+        }
+
         protected void WebLogin_Authenticate(object sender, AuthenticateEventArgs e)
         {
             //Get token
@@ -26,7 +67,6 @@ namespace CloneDeploy_Web
                 Value = token.access_token,
                 HttpOnly = true
             });
-
 
             if (token.access_token != null)
             {
@@ -64,48 +104,6 @@ namespace CloneDeploy_Web
                 e.Authenticated = false;
                 lblError.Text = token.error_description;
                 lblError.Visible = true;
-            }
-        }
-
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            if (!IsPostBack)
-            {
-                Session.RemoveAll();
-                Session.Abandon();
-
-                FormsAuthentication.SignOut();
-                //http://stackoverflow.com/questions/6635349/how-to-delete-cookies-in-asp-net-website
-                if (HttpContext.Current != null)
-                {
-                    var cookieCount = HttpContext.Current.Request.Cookies.Count;
-                    for (var i = 0; i < cookieCount; i++)
-                    {
-                        var cookie = HttpContext.Current.Request.Cookies[i];
-                        if (cookie != null)
-                        {
-                            var cookieName = cookie.Name;
-                            var expiredCookie = new HttpCookie(cookieName) {Expires = DateTime.Now.AddDays(-1)};
-                            HttpContext.Current.Response.Cookies.Add(expiredCookie); // overwrite it
-                        }
-                    }
-
-                    // clear cookies server side
-                    HttpContext.Current.Request.Cookies.Clear();
-                }
-
-                if (Request.QueryString["session"] == "expired")
-                    SessionExpired.Visible = true;
-            }
-            else
-            {
-                SessionExpired.Visible = false;
-            }
-
-
-            if (Request.IsAuthenticated)
-            {
-                Response.Redirect("~/views/dashboard/dash.aspx");
             }
         }
     }

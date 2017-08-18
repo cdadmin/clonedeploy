@@ -51,7 +51,6 @@ namespace CloneDeploy_Web.views.images
                 if (Image.OsxType == "thin")
                 {
                     thinImage.Visible = false;
-                   
 
                     ddlThinOS.Text = Image.OsxThinOs;
                     ddlThinRecovery.Text = Image.OsxThinRecovery;

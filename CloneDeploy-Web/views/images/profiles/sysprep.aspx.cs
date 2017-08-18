@@ -44,7 +44,6 @@ namespace CloneDeploy_Web.views.images.profiles
             }
         }
 
-
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();

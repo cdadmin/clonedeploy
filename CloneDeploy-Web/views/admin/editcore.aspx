@@ -29,7 +29,7 @@
     <asp:DropDownList runat="server" ID="ddlCoreScripts" OnSelectedIndexChanged="ddlCoreScripts_OnSelectedIndexChanged" AutoPostBack="True" CssClass="ddlist" Style="float: right; margin-right: 5px; margin-top: 20px; width: 200px;">
     </asp:DropDownList>
     <br class="clear"/>
-    <br />
+    <br/>
 
     <div id="aceEditor" runat="server">
         <br class="clear"/>

@@ -18,7 +18,7 @@ namespace CloneDeploy_Web.views.groups
 
         protected void PopulateForm()
         {
-            PopulateImagesDdlForGroup(Group.Id,ddlGroupImage);
+            PopulateImagesDdlForGroup(Group.Id, ddlGroupImage);
             PopulateClusterGroupsDdl(ddlClusterGroup);
             ddlGroupImage.SelectedValue = Group.ImageId.ToString();
             PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlGroupImage.SelectedValue));

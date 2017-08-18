@@ -14,7 +14,6 @@ namespace CloneDeploy_ApiCalls
             _apiRequest = new ApiRequest();
         }
 
-
         public ActionResultDTO Post(List<UserRightEntity> listOfRights)
         {
             Request.Method = Method.POST;

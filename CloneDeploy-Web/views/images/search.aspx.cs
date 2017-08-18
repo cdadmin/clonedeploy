@@ -124,7 +124,6 @@ namespace CloneDeploy_Web.views.images
             PopulateGrid();
         }
 
-
         protected void PopulateGrid()
         {
             gvImages.DataSource = Call.ImageApi.Get(int.MaxValue, txtSearch.Text).OrderBy(x => x.Name).ToList();

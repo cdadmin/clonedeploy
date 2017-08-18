@@ -57,6 +57,18 @@ namespace CloneDeploy_Services.Workflows
             _appleVendorDTO = new AppleVendorDTO();
         }
 
+        private string AddHexColons(string hex)
+        {
+            var sb = new StringBuilder();
+            for (var i = 0; i < hex.Length; i++)
+            {
+                if (i%2 == 0 && i != 0)
+                    sb.Append(':');
+                sb.Append(hex[i]);
+            }
+            return sb.ToString();
+        }
+
         public AppleVendorDTO Execute(string ipAddress)
         {
             var netBootProfile = _netBootProfileServices.GetProfileFromIp(ipAddress);
@@ -154,18 +166,6 @@ namespace CloneDeploy_Services.Workflows
             _appleVendorDTO.VendorString = vendorOptions.ToString();
             _appleVendorDTO.Instructions = directions;
             return _appleVendorDTO;
-        }
-
-        private string AddHexColons(string hex)
-        {
-            var sb = new StringBuilder();
-            for (var i = 0; i < hex.Length; i++)
-            {
-                if (i % 2 == 0 && i != 0)
-                    sb.Append(':');
-                sb.Append(hex[i]);
-            }
-            return sb.ToString();
         }
 
         private string StringToHex(string hexstring)

@@ -23,7 +23,6 @@ namespace CloneDeploy_ApiCalls
             return response != null && response.Value;
         }
 
-
         public bool AddManagedInstallToTemplate(MunkiManifestManagedInstallEntity managedInstall)
         {
             Request.Method = Method.POST;
@@ -32,7 +31,6 @@ namespace CloneDeploy_ApiCalls
             var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
             return response != null && response.Value;
         }
-
 
         public bool AddManagedUninstallsToTemplate(MunkiManifestManagedUnInstallEntity managedUninstall)
         {
@@ -43,7 +41,6 @@ namespace CloneDeploy_ApiCalls
             return response != null && response.Value;
         }
 
-
         public bool AddManagedUpdateToTemplate(MunkiManifestManagedUpdateEntity managedUpdate)
         {
             Request.Method = Method.POST;
@@ -53,7 +50,6 @@ namespace CloneDeploy_ApiCalls
             return response != null && response.Value;
         }
 
-
         public bool AddManifestToTemplate(MunkiManifestIncludedManifestEntity manifest)
         {
             Request.Method = Method.POST;
@@ -62,7 +58,6 @@ namespace CloneDeploy_ApiCalls
             var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
             return response != null && response.Value;
         }
-
 
         public bool AddOptionalInstallToTemplate(MunkiManifestOptionInstallEntity optionalInstall)
         {
@@ -99,7 +94,6 @@ namespace CloneDeploy_ApiCalls
             return response != null && response.Value;
         }
 
-
         public bool DeleteManagedInstallsFromTemplate(int id)
         {
             Request.Method = Method.DELETE;
@@ -107,7 +101,6 @@ namespace CloneDeploy_ApiCalls
             var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
             return response != null && response.Value;
         }
-
 
         public bool DeleteManageUninstallsFromTemplate(int id)
         {
@@ -117,7 +110,6 @@ namespace CloneDeploy_ApiCalls
             return response != null && response.Value;
         }
 
-
         public bool DeleteManifestsFromTemplate(int id)
         {
             Request.Method = Method.DELETE;
@@ -125,7 +117,6 @@ namespace CloneDeploy_ApiCalls
             var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
             return response != null && response.Value;
         }
-
 
         public bool DeleteOptonalInstallsFromTemplate(int id)
         {
@@ -151,7 +142,6 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<List<MunkiManifestTemplateEntity>>(Request);
         }
 
-
         public string GetCatalogCount(int id)
         {
             Request.Method = Method.GET;
@@ -176,7 +166,6 @@ namespace CloneDeploy_ApiCalls
             return response != null ? response.Value : string.Empty;
         }
 
-
         public string GetIncludedManifestCount(int id)
         {
             Request.Method = Method.GET;
@@ -184,7 +173,6 @@ namespace CloneDeploy_ApiCalls
             var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
             return response != null ? response.Value : string.Empty;
         }
-
 
         public string GetManagedInstallCount(int id)
         {
@@ -194,7 +182,6 @@ namespace CloneDeploy_ApiCalls
             return response != null ? response.Value : string.Empty;
         }
 
-
         public string GetManagedUninstallCount(int id)
         {
             Request.Method = Method.GET;
@@ -202,7 +189,6 @@ namespace CloneDeploy_ApiCalls
             var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
             return response != null ? response.Value : string.Empty;
         }
-
 
         public string GetManagedUpdateCount(int id)
         {
@@ -219,7 +205,6 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<List<MunkiManifestCatalogEntity>>(Request);
         }
 
-
         public IEnumerable<MunkiManifestIncludedManifestEntity> GetManifestIncludedManifests(int id)
         {
             Request.Method = Method.GET;
@@ -227,14 +212,12 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<List<MunkiManifestIncludedManifestEntity>>(Request);
         }
 
-
         public IEnumerable<MunkiManifestManagedInstallEntity> GetManifestManagedInstalls(int id)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetManifestManagedInstalls/{1}", Resource, id);
             return _apiRequest.Execute<List<MunkiManifestManagedInstallEntity>>(Request);
         }
-
 
         public IEnumerable<MunkiManifestManagedUnInstallEntity> GetManifestManagedUninstalls(int id)
         {
@@ -250,14 +233,12 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<List<MunkiManifestManagedUpdateEntity>>(Request);
         }
 
-
         public IEnumerable<MunkiManifestOptionInstallEntity> GetManifestOptionalInstalls(int id)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetManifestOptionalInstalls/{1}", Resource, id);
             return _apiRequest.Execute<List<MunkiManifestOptionInstallEntity>>(Request);
         }
-
 
         public string GetOptionalInstallCount(int id)
         {
@@ -295,7 +276,6 @@ namespace CloneDeploy_ApiCalls
                 response.Success = false;
             return response;
         }
-
 
         public bool RemoveManagedUpdatesFromTemplate(int id)
         {

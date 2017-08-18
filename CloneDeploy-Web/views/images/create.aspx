@@ -92,8 +92,8 @@
         <asp:TextBox ID="txtImageDesc" runat="server" TextMode="MultiLine" CssClass="descbox"></asp:TextBox>
     </div>
     <br class="clear"/>
-    
-     <div class="size-4 column">
+
+    <div class="size-4 column">
         Classification:
     </div>
     <div class="size-5 column">

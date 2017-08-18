@@ -26,7 +26,9 @@ namespace CloneDeploy_App.Controllers
         public HttpResponseMessage AddComputer(AddComputerDTO addComputerDto)
         {
             _response.Content =
-                new StringContent(new ClientImagingServices().AddComputer(addComputerDto.name, addComputerDto.mac, addComputerDto.clientIdentifier),
+                new StringContent(
+                    new ClientImagingServices().AddComputer(addComputerDto.name, addComputerDto.mac,
+                        addComputerDto.clientIdentifier),
                     Encoding.UTF8, "text/plain");
             return _response;
         }
@@ -82,13 +84,6 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpPost]
-        public HttpResponseMessage DetermineTask(IdTypeDTO idTypeDto)
-        {
-            _response.Content = new StringContent(new ClientImagingServices().DetermineTask(idTypeDto.idType, idTypeDto.id), Encoding.UTF8, "text/plain");
-            return _response;
-        }
-
-        [HttpPost]
         [ClientAuth]
         public HttpResponseMessage CheckIn(ActiveTaskDTO activeTaskDto)
         {
@@ -99,20 +94,10 @@ namespace CloneDeploy_App.Controllers
 
         [HttpPost]
         [ClientAuth]
-        public HttpResponseMessage OnDemandCheckin(OnDemandDTO onDemandDto)
-        {
-            _response.Content =
-                new StringContent(
-                    new ClientImagingServices().OnDemandCheckIn(onDemandDto.mac,
-                        Convert.ToInt32(onDemandDto.objectId), onDemandDto.task,onDemandDto.userId,onDemandDto.computerId), Encoding.UTF8, "text/plain");
-            return _response;
-        }
-
-        [HttpPost]
-        [ClientAuth]
         public void CheckOut(ActiveTaskDTO activeTaskDto)
         {
-            new ClientImagingServices().CheckOut(Convert.ToInt32(activeTaskDto.taskId),Convert.ToInt32(activeTaskDto.profileId));
+            new ClientImagingServices().CheckOut(Convert.ToInt32(activeTaskDto.taskId),
+                Convert.ToInt32(activeTaskDto.profileId));
         }
 
         [HttpPost]
@@ -129,7 +114,8 @@ namespace CloneDeploy_App.Controllers
         [ClientAuth]
         public HttpResponseMessage CheckTaskAuth(TaskDTO taskDto)
         {
-            var userToken = StringManipulationServices.Decode(HttpContext.Current.Request.Headers["Authorization"], "Authorization");
+            var userToken = StringManipulationServices.Decode(HttpContext.Current.Request.Headers["Authorization"],
+                "Authorization");
             _response.Content = new StringContent(new ClientImagingServices().CheckTaskAuth(taskDto.task, userToken),
                 Encoding.UTF8, "text/plain");
             return _response;
@@ -157,11 +143,11 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpPost]
-        [ClientAuth]
-        public HttpResponseMessage UpdateGuid(ProfileDTO profileDto)
+        public HttpResponseMessage DetermineTask(IdTypeDTO idTypeDto)
         {
-            _response.Content = new StringContent(
-                new ClientImagingServices().UpdateGuid(profileDto.profileId), Encoding.UTF8, "text/plain");
+            _response.Content =
+                new StringContent(new ClientImagingServices().DetermineTask(idTypeDto.idType, idTypeDto.id),
+                    Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -171,15 +157,6 @@ namespace CloneDeploy_App.Controllers
         {
             _response.Content = new StringContent(
                 new ClientImagingServices().DistributionPoint(dpDto.dpId, dpDto.task), Encoding.UTF8, "text/plain");
-            return _response;
-        }
-
-        [HttpPost]
-        [ClientAuth]
-        public HttpResponseMessage GetAllClusterDps(ComputerIdDTO computerIdDto)
-        {
-            _response.Content = new StringContent(
-                new ClientImagingServices().GetAllClusterDps(computerIdDto.computerId), Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -208,6 +185,15 @@ namespace CloneDeploy_App.Controllers
         public void ErrorEmail(ErrorEmailDTO errorEmailDto)
         {
             new ClientImagingServices().ErrorEmail(Convert.ToInt32(errorEmailDto.taskId), errorEmailDto.error);
+        }
+
+        [HttpPost]
+        [ClientAuth]
+        public HttpResponseMessage GetAllClusterDps(ComputerIdDTO computerIdDto)
+        {
+            _response.Content = new StringContent(
+                new ClientImagingServices().GetAllClusterDps(computerIdDto.computerId), Encoding.UTF8, "text/plain");
+            return _response;
         }
 
         [HttpPost]
@@ -257,7 +243,6 @@ namespace CloneDeploy_App.Controllers
             return _response;
         }
 
-       
         [HttpPost]
         [ClientAuth]
         public HttpResponseMessage GetOriginalLvm(OriginalLVM originalLvm)
@@ -313,7 +298,8 @@ namespace CloneDeploy_App.Controllers
         {
             if (type == "kernel")
             {
-                var path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "kernels" + Path.DirectorySeparatorChar;
+                var path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "kernels" +
+                           Path.DirectorySeparatorChar;
                 HttpContext.Current.Response.ContentType = "application/octet-stream";
                 HttpContext.Current.Response.AppendHeader("Content-Disposition", "inline; filename=" + filename);
                 HttpContext.Current.Response.TransmitFile(path + filename);
@@ -321,7 +307,8 @@ namespace CloneDeploy_App.Controllers
             }
             else
             {
-                var path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "images" + Path.DirectorySeparatorChar;
+                var path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "images" +
+                           Path.DirectorySeparatorChar;
                 HttpContext.Current.Response.ContentType = "application/x-gzip";
                 HttpContext.Current.Response.AppendHeader("Content-Disposition", "inline; filename=" + filename);
                 HttpContext.Current.Response.TransmitFile(path + filename);
@@ -370,7 +357,8 @@ namespace CloneDeploy_App.Controllers
                 imageListDto.userId = "0";
             _response.Content =
                 new StringContent(
-                    new ClientImagingServices().ImageList(imageListDto.environment, Convert.ToInt32(imageListDto.computerid), Convert.ToInt32(imageListDto.userId)),
+                    new ClientImagingServices().ImageList(imageListDto.environment,
+                        Convert.ToInt32(imageListDto.computerid), Convert.ToInt32(imageListDto.userId)),
                     Encoding.UTF8, "text/plain");
             return _response;
         }
@@ -396,6 +384,18 @@ namespace CloneDeploy_App.Controllers
 
         [HttpPost]
         [ClientAuth]
+        public HttpResponseMessage OnDemandCheckin(OnDemandDTO onDemandDto)
+        {
+            _response.Content =
+                new StringContent(
+                    new ClientImagingServices().OnDemandCheckIn(onDemandDto.mac,
+                        Convert.ToInt32(onDemandDto.objectId), onDemandDto.task, onDemandDto.userId,
+                        onDemandDto.computerId), Encoding.UTF8, "text/plain");
+            return _response;
+        }
+
+        [HttpPost]
+        [ClientAuth]
         public void PermanentTaskCheckOut(ActiveTaskDTO activeTaskDto)
         {
             new ClientImagingServices().PermanentTaskCheckOut(Convert.ToInt32(activeTaskDto.taskId));
@@ -413,9 +413,19 @@ namespace CloneDeploy_App.Controllers
         public HttpResponseMessage UpdateBcd()
         {
             var bcd = StringManipulationServices.Decode(HttpContext.Current.Request.Form["bcd"], "bcd");
-            var offsetBytes = StringManipulationServices.Decode(HttpContext.Current.Request.Form["offsetBytes"], "offsetBytes");
+            var offsetBytes = StringManipulationServices.Decode(HttpContext.Current.Request.Form["offsetBytes"],
+                "offsetBytes");
             _response.Content = new StringContent(new BcdServices().UpdateEntry(bcd, Convert.ToInt64(offsetBytes)),
                 Encoding.UTF8, "text/plain");
+            return _response;
+        }
+
+        [HttpPost]
+        [ClientAuth]
+        public HttpResponseMessage UpdateGuid(ProfileDTO profileDto)
+        {
+            _response.Content = new StringContent(
+                new ClientImagingServices().UpdateGuid(profileDto.profileId), Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -442,13 +452,14 @@ namespace CloneDeploy_App.Controllers
             new ClientImagingServices().ChangeStatusInProgress(Convert.ToInt32(activeTaskDto.taskId));
         }
 
-
         [HttpPost]
         [ClientAuth]
         public void UploadLog()
         {
-            var computerId = StringManipulationServices.Decode(HttpContext.Current.Request.Form["computerId"], "computerId");
-            var logContents = StringManipulationServices.Decode(HttpContext.Current.Request.Form["logContents"], "logContents");
+            var computerId = StringManipulationServices.Decode(HttpContext.Current.Request.Form["computerId"],
+                "computerId");
+            var logContents = StringManipulationServices.Decode(HttpContext.Current.Request.Form["logContents"],
+                "logContents");
             var subType = StringManipulationServices.Decode(HttpContext.Current.Request.Form["subType"], "subType");
             var computerMac = StringManipulationServices.Decode(HttpContext.Current.Request.Form["mac"], "mac");
             new ClientImagingServices().UploadLog(Convert.ToInt32(computerId), logContents, subType, computerMac);

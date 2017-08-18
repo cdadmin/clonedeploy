@@ -30,7 +30,6 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<List<LogicalVolume>>(Request);
         }
 
-
         public List<Partition> GetPartitions(ImageSchemaRequestDTO schemaRequest)
         {
             Request.Method = Method.POST;
@@ -38,7 +37,6 @@ namespace CloneDeploy_ApiCalls
             Request.AddJsonBody(schemaRequest);
             return _apiRequest.Execute<List<Partition>>(Request);
         }
-
 
         public ImageSchemaGridView GetSchema(ImageSchemaRequestDTO schemaRequest)
         {

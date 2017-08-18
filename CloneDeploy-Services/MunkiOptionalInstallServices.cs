@@ -12,7 +12,6 @@ namespace CloneDeploy_Services
             _uow = new UnitOfWork();
         }
 
-
         public MunkiManifestOptionInstallEntity GetOptionalInstall(int optionalInstallId)
         {
             return _uow.MunkiOptionalInstallRepository.GetById(optionalInstallId);

@@ -2,8 +2,8 @@
 {
     public class ProgressDTO
     {
-        public string taskId { get; set; }
         public string progress { get; set; }
         public string progressType { get; set; }
+        public string taskId { get; set; }
     }
 }

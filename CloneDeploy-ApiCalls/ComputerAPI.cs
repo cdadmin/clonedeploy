@@ -22,7 +22,6 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<ApiBoolResponseDTO>(Request);
         }
 
-
         public bool CreateCustomBootFiles(int id)
         {
             Request.Method = Method.GET;
@@ -41,7 +40,6 @@ namespace CloneDeploy_ApiCalls
             return response;
         }
 
-
         public ActionResultDTO DeleteAllComputerLogs(int id)
         {
             Request.Method = Method.DELETE;
@@ -56,6 +54,15 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<ActionResultDTO>(Request);
         }
 
+        public bool DeleteImageClassifications(int id)
+        {
+            Request.Method = Method.DELETE;
+            Request.Resource = string.Format("api/{0}/DeleteImageClassifications/{1}", Resource, id);
+            var result = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            if (result != null)
+                return result.Value;
+            return false;
+        }
 
         public ActionResultDTO DeleteMunkiTemplates(int id)
         {
@@ -79,13 +86,6 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<ComputerEntity>(Request);
         }
 
-        public ComputerWithImage GetWithImage(int id)
-        {
-            Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetWithImage/{1}", Resource, id);
-            return _apiRequest.Execute<ComputerWithImage>(Request);
-        }
-
         public List<ComputerEntity> Get()
         {
             Request.Method = Method.GET;
@@ -93,50 +93,12 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<List<ComputerEntity>>(Request);
         }
 
-        public List<ComputerImageClassificationEntity> GetImageClassifications(int id)
-        {
-            Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetImageClassifications/{1}", Resource,id);
-            return _apiRequest.Execute<List<ComputerImageClassificationEntity>>(Request);
-        }
-
-        public bool DeleteImageClassifications(int id)
-        {
-            Request.Method = Method.DELETE;
-            Request.Resource = string.Format("api/{0}/DeleteImageClassifications/{1}", Resource, id);
-            var result = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
-            if (result != null)
-                return result.Value;
-            else
-                return false;
-        }
-
-
         public ActiveImagingTaskEntity GetActiveTask(int id)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetActiveTask/{1}", Resource, id);
             return _apiRequest.Execute<ActiveImagingTaskEntity>(Request);
         }
-
-        public List<ComputerWithImage> GridViewSearch(int limit, string searchstring)
-        {
-            Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GridViewSearch", Resource);
-            Request.AddParameter("limit", limit);
-            Request.AddParameter("searchstring", searchstring);
-            return _apiRequest.Execute<List<ComputerWithImage>>(Request);
-        }
-
-        public IEnumerable<ComputerEntity> SearchByNameOnly(int limit = 0, string searchstring = "")
-        {
-            Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/SearchByNameOnly", Resource);
-            Request.AddParameter("limit", limit);
-            Request.AddParameter("searchstring", searchstring);
-            return _apiRequest.Execute<List<ComputerEntity>>(Request);
-        }
-
 
         public ComputerBootMenuEntity GetBootMenu(int id)
         {
@@ -153,14 +115,14 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<ComputerEntity>(Request);
         }
 
-        public IEnumerable<AuditLogEntity> GetComputerAuditLogs(int id,int limit)
+        public IEnumerable<AuditLogEntity> GetComputerAuditLogs(int id, int limit)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetComputerAuditLogs/{1}", Resource, id);
             Request.AddParameter("limit", limit);
             return _apiRequest.Execute<List<AuditLogEntity>>(Request);
-
         }
+
         public IEnumerable<ComputerLogEntity> GetComputerLogs(int id)
         {
             Request.Method = Method.GET;
@@ -186,14 +148,12 @@ namespace CloneDeploy_ApiCalls
             return responseData != null ? responseData.Value : string.Empty;
         }
 
-
         public string GetEffectiveManifest(int id)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetEffectiveManifest/{1}", Resource, id);
             return _apiRequest.Execute<ApiStringResponseDTO>(Request).Value;
         }
-
 
         public IEnumerable<GroupMembershipEntity> GetGroupMemberships(int id)
         {
@@ -202,6 +162,12 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<List<GroupMembershipEntity>>(Request);
         }
 
+        public List<ComputerImageClassificationEntity> GetImageClassifications(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetImageClassifications/{1}", Resource, id);
+            return _apiRequest.Execute<List<ComputerImageClassificationEntity>>(Request);
+        }
 
         public IEnumerable<ComputerMunkiEntity> GetMunkiTemplates(int id)
         {
@@ -209,7 +175,6 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/GetMunkiTemplates/{1}", Resource, id);
             return _apiRequest.Execute<List<ComputerMunkiEntity>>(Request);
         }
-
 
         public string GetNonProxyPath(int id, bool isActiveOrCustom)
         {
@@ -219,7 +184,6 @@ namespace CloneDeploy_ApiCalls
             var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
             return response != null ? response.Value : string.Empty;
         }
-
 
         public string GetProxyPath(int id, bool isActiveOrCustom, string proxyType)
         {
@@ -231,12 +195,27 @@ namespace CloneDeploy_ApiCalls
             return response != null ? response.Value : string.Empty;
         }
 
-
         public ComputerProxyReservationEntity GetProxyReservation(int id)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetProxyReservation/{1}", Resource, id);
             return _apiRequest.Execute<ComputerProxyReservationEntity>(Request);
+        }
+
+        public ComputerWithImage GetWithImage(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetWithImage/{1}", Resource, id);
+            return _apiRequest.Execute<ComputerWithImage>(Request);
+        }
+
+        public List<ComputerWithImage> GridViewSearch(int limit, string searchstring)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GridViewSearch", Resource);
+            Request.AddParameter("limit", limit);
+            Request.AddParameter("searchstring", searchstring);
+            return _apiRequest.Execute<List<ComputerWithImage>>(Request);
         }
 
         public int Import(ApiStringResponseDTO csvContents)
@@ -277,6 +256,14 @@ namespace CloneDeploy_ApiCalls
             return response;
         }
 
+        public IEnumerable<ComputerEntity> SearchByNameOnly(int limit = 0, string searchstring = "")
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/SearchByNameOnly", Resource);
+            Request.AddParameter("limit", limit);
+            Request.AddParameter("searchstring", searchstring);
+            return _apiRequest.Execute<List<ComputerEntity>>(Request);
+        }
 
         public string StartDeploy(int id)
         {
@@ -294,7 +281,6 @@ namespace CloneDeploy_ApiCalls
             return response != null ? response.Value : string.Empty;
         }
 
-
         public string StartUpload(int id)
         {
             Request.Method = Method.GET;
@@ -302,7 +288,6 @@ namespace CloneDeploy_ApiCalls
             var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
             return response != null ? response.Value : string.Empty;
         }
-
 
         public bool ToggleBootMenu(int id, bool status)
         {
@@ -312,7 +297,6 @@ namespace CloneDeploy_ApiCalls
             var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
             return response != null && response.Value;
         }
-
 
         public bool ToggleProxyReservation(int id, bool status)
         {

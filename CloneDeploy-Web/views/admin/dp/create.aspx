@@ -109,12 +109,12 @@
 
     <br class="clear"/>
     <br/>
-    
-     <div class="size-4 column">
+
+    <div class="size-4 column">
         Queue Size:
     </div>
     <div class="size-5 column">
-        <asp:TextBox ID="qSize" runat="server" CssClass="textbox" Text="2" />
+        <asp:TextBox ID="qSize" runat="server" CssClass="textbox" Text="2"/>
     </div>
 
 
@@ -130,19 +130,18 @@
                 <asp:ListItem>Remote</asp:ListItem>
             </asp:DropDownList>
         </div>
-        <br class="clear" />
+        <br class="clear"/>
         <div id="PhysicalPath" runat="server" visible="False">
             <div class="size-4 column">
                 Physical Path:
             </div>
             <div class="size-1 column">
-                <asp:TextBox ID="txtPhysicalPath" runat="server" CssClass="textbox" />
+                <asp:TextBox ID="txtPhysicalPath" runat="server" CssClass="textbox"/>
             </div>
 
-            <br class="clear" />
+            <br class="clear"/>
         </div>
     </div>
 
 
-  
 </asp:Content>

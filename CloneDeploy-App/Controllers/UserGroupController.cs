@@ -67,7 +67,6 @@ namespace CloneDeploy_App.Controllers
                 : _userGroupServices.SearchUserGroups(searchstring);
         }
 
-
         [CustomAuth(Permission = "Administrator")]
         public ApiStringResponseDTO GetCount()
         {
@@ -106,7 +105,6 @@ namespace CloneDeploy_App.Controllers
             return _userGroupServices.GetUserGroupRights(id);
         }
 
-
         [CustomAuth(Permission = "Administrator")]
         public ActionResultDTO Post(CloneDeployUserGroupEntity userGroup)
         {
@@ -120,6 +118,20 @@ namespace CloneDeploy_App.Controllers
             var result = _userGroupServices.UpdateUserGroup(userGroup);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
+        }
+
+        [HttpGet]
+        [CustomAuth(Permission = "Administrator")]
+        public ApiBoolResponseDTO ToggleGroupManagement(int id, int value)
+        {
+            return new ApiBoolResponseDTO {Value = _userGroupServices.ToggleGroupManagement(id, value)};
+        }
+
+        [HttpGet]
+        [CustomAuth(Permission = "Administrator")]
+        public ApiBoolResponseDTO ToggleImageManagement(int id, int value)
+        {
+            return new ApiBoolResponseDTO {Value = _userGroupServices.ToggleImageManagement(id, value)};
         }
 
         [CustomAuth(Permission = "Administrator")]
@@ -141,20 +153,6 @@ namespace CloneDeploy_App.Controllers
         public ApiBoolResponseDTO UpdateMemberImages(int id)
         {
             return new ApiBoolResponseDTO {Value = _userGroupServices.UpdateAllGroupMembersImageMgmt(id)};
-        }
-
-        [HttpGet]
-        [CustomAuth(Permission = "Administrator")]
-        public ApiBoolResponseDTO ToggleImageManagement(int id, int value)
-        {
-            return new ApiBoolResponseDTO { Value = _userGroupServices.ToggleImageManagement(id,value) };
-        }
-
-        [HttpGet]
-        [CustomAuth(Permission = "Administrator")]
-        public ApiBoolResponseDTO ToggleGroupManagement(int id, int value)
-        {
-            return new ApiBoolResponseDTO { Value = _userGroupServices.ToggleGroupManagement(id,value) };
         }
     }
 }

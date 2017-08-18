@@ -26,7 +26,6 @@ namespace CloneDeploy_Web.views.images
             image.Type = ddlEnvironment.Text == "winpe" ? "File" : ddlImageType.Text;
             image.OsxType = ddlEnvironment.Text == "macOS" ? "thick" : "";
 
-
             var result = Call.ImageApi.Post(image);
             if (result.Success)
             {
@@ -56,7 +55,6 @@ namespace CloneDeploy_Web.views.images
             if (ddlOsxImageType.Text == "thin")
             {
                 thinImage.Visible = true;
-               
             }
             else
             {

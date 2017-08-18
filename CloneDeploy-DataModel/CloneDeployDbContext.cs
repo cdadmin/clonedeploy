@@ -11,6 +11,7 @@ namespace CloneDeploy_DataModel
 
         public DbSet<ActiveImagingTaskEntity> ActiveImagingTasks { get; set; }
         public DbSet<ActiveMulticastSessionEntity> ActiveMulticastSessions { get; set; }
+        public DbSet<AlternateServerIpEntity> AlternateServerIps { get; set; }
         public DbSet<AuditLogEntity> AuditLogs { get; set; }
         public DbSet<BootEntryEntity> BootEntries { get; set; }
         public DbSet<BootTemplateEntity> BootTemplates { get; set; }
@@ -21,16 +22,19 @@ namespace CloneDeploy_DataModel
         public DbSet<ClusterGroupServerEntity> ClusterGroupServers { get; set; }
 
         public DbSet<ComputerBootMenuEntity> ComputerBootMenus { get; set; }
+        public DbSet<ComputerImageClassificationEntity> ComputerImageClassifications { get; set; }
         public DbSet<ComputerLogEntity> ComputerLogs { get; set; }
         public DbSet<ComputerMunkiEntity> ComputerMunkis { get; set; }
         public DbSet<ComputerEntity> Computers { get; set; }
         public DbSet<DistributionPointEntity> DistributionPoints { get; set; }
         public DbSet<FileFolderEntity> FilesFolders { get; set; }
         public DbSet<GroupBootMenuEntity> GroupBootMenus { get; set; }
+        public DbSet<GroupImageClassificationEntity> GroupImageClassifications { get; set; }
         public DbSet<GroupMembershipEntity> GroupMemberships { get; set; }
         public DbSet<GroupMunkiEntity> GroupMunkis { get; set; }
         public DbSet<GroupPropertyEntity> GroupProperties { get; set; }
         public DbSet<GroupEntity> Groups { get; set; }
+        public DbSet<ImageClassificationEntity> ImageClassifications { get; set; }
         public DbSet<ImageProfileFileFolderEntity> ImageProfileFilesFolders { get; set; }
         public DbSet<ImageProfilePartitionLayoutEntity> ImageProfilePartitions { get; set; }
         public DbSet<ImageProfileEntity> ImageProfiles { get; set; }
@@ -44,6 +48,8 @@ namespace CloneDeploy_DataModel
         public DbSet<MunkiManifestManagedUpdateEntity> MunkiManifestManagedUpdates { get; set; }
         public DbSet<MunkiManifestOptionInstallEntity> MunkiManifestOptionalInstalls { get; set; }
         public DbSet<MunkiManifestTemplateEntity> MunkiManifestTemplates { get; set; }
+        public DbSet<NbiEntryEntity> NetBootProfileEntries { get; set; }
+        public DbSet<NetBootProfileEntity> NetBootProfiles { get; set; }
         public DbSet<PartitionLayoutEntity> PartitionLayouts { get; set; }
         public DbSet<PartitionEntity> Partitions { get; set; }
         public DbSet<PortEntity> Ports { get; set; }
@@ -63,11 +69,5 @@ namespace CloneDeploy_DataModel
         public DbSet<UserLockoutEntity> UserLockouts { get; set; }
         public DbSet<UserRightEntity> UserRight { get; set; }
         public DbSet<CloneDeployUserEntity> Users { get; set; }
-        public DbSet<NetBootProfileEntity> NetBootProfiles { get; set; }
-        public DbSet<NbiEntryEntity> NetBootProfileEntries { get; set; }
-        public DbSet<ImageClassificationEntity> ImageClassifications { get; set; }
-        public DbSet<AlternateServerIpEntity> AlternateServerIps { get; set; }
-        public DbSet<ComputerImageClassificationEntity> ComputerImageClassifications { get; set; }
-        public DbSet<GroupImageClassificationEntity> GroupImageClassifications { get; set; }
     }
 }

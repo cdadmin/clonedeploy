@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using CloneDeploy_Common;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
@@ -52,7 +51,6 @@ namespace CloneDeploy_Services
             actionResult.Success = true;
             actionResult.Id = dp.Id;
 
-
             return actionResult;
         }
 
@@ -92,10 +90,7 @@ namespace CloneDeploy_Services
                 distributionPoint.RoPassword = dp.RoPassword;
             else
                 distributionPoint.RoPassword = new EncryptionServices().EncryptText(distributionPoint.RoPassword);
-            
 
-           
-           
             var validationResult = ValidateDistributionPoint(distributionPoint, false);
             if (validationResult.Success)
             {
@@ -117,7 +112,6 @@ namespace CloneDeploy_Services
         {
             var validationResult = new ValidationResultDTO {Success = true};
 
-
             if (Convert.ToBoolean(distributionPoint.IsPrimary))
                 if (!distributionPoint.PhysicalPath.Trim().EndsWith(Path.DirectorySeparatorChar.ToString()))
                     distributionPoint.PhysicalPath += Path.DirectorySeparatorChar;
@@ -138,7 +132,6 @@ namespace CloneDeploy_Services
                     validationResult.ErrorMessage = "There Can Only Be One Primary Distribution Point";
                     return validationResult;
                 }
-
 
                 if (_uow.DistributionPointRepository.Exists(h => h.DisplayName == distributionPoint.DisplayName))
                 {
@@ -173,7 +166,5 @@ namespace CloneDeploy_Services
 
             return validationResult;
         }
-
-      
     }
 }

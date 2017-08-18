@@ -43,7 +43,7 @@ namespace CloneDeploy_App.Controllers
         [HttpPost]
         public ApiBoolResponseDTO UpdatePxeSettings(List<SettingEntity> listSettings)
         {
-            return new ApiBoolResponseDTO { Value = _settingServices.UpdatePxeSettings(listSettings) };
+            return new ApiBoolResponseDTO {Value = _settingServices.UpdatePxeSettings(listSettings)};
         }
 
         [CustomAuth(Permission = "AdminUpdate")]
@@ -52,6 +52,5 @@ namespace CloneDeploy_App.Controllers
         {
             return new ApiBoolResponseDTO {Value = _settingServices.UpdateSetting(listSettings)};
         }
-
     }
 }

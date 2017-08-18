@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
@@ -37,7 +36,8 @@ namespace CloneDeploy_Services
         public ActionResultDTO DeleteAlternateServerIp(int alternateServerIpId)
         {
             var alternateServerIp = GetAlternateServerIp(alternateServerIpId);
-            if (alternateServerIp == null) return new ActionResultDTO {ErrorMessage = "Alternate Server Ip Not Found", Id = 0};
+            if (alternateServerIp == null)
+                return new ActionResultDTO {ErrorMessage = "Alternate Server Ip Not Found", Id = 0};
             _uow.AlternateServerIpRepository.Delete(alternateServerIpId);
             _uow.Save();
             var actionResult = new ActionResultDTO();
@@ -49,8 +49,8 @@ namespace CloneDeploy_Services
         public List<AlternateServerIpEntity> GetAll()
         {
             return _uow.AlternateServerIpRepository.Get();
-
         }
+
         public AlternateServerIpEntity GetAlternateServerIp(int alternateServerIpId)
         {
             return _uow.AlternateServerIpRepository.GetById(alternateServerIpId);
@@ -80,14 +80,15 @@ namespace CloneDeploy_Services
             return actionResult;
         }
 
-        private ValidationResultDTO ValidateAlternateServerIp(AlternateServerIpEntity alternateServerIp, bool isNewAlternateServerIp)
+        private ValidationResultDTO ValidateAlternateServerIp(AlternateServerIpEntity alternateServerIp,
+            bool isNewAlternateServerIp)
         {
             var validationResult = new ValidationResultDTO {Success = true};
 
             if (!alternateServerIp.ApiUrl.Trim().EndsWith("/"))
                 alternateServerIp.ApiUrl += "/";
 
-            if (string.IsNullOrEmpty(alternateServerIp.Ip) || (string.IsNullOrEmpty(alternateServerIp.ApiUrl)))
+            if (string.IsNullOrEmpty(alternateServerIp.Ip) || string.IsNullOrEmpty(alternateServerIp.ApiUrl))
             {
                 validationResult.Success = false;
                 validationResult.ErrorMessage = "Empty Values Are Not Valid";

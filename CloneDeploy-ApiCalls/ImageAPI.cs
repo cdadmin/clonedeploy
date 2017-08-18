@@ -54,6 +54,13 @@ namespace CloneDeploy_ApiCalls
             return responseData != null ? responseData.Value : string.Empty;
         }
 
+        public IEnumerable<AuditLogEntity> GetImageAuditLogs(int id, int limit)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetImageAuditLogs/{1}", Resource, id);
+            Request.AddParameter("limit", limit);
+            return new ApiRequest().Execute<List<AuditLogEntity>>(Request);
+        }
 
         public IEnumerable<ImageProfileEntity> GetImageProfiles(int id)
         {
@@ -62,14 +69,6 @@ namespace CloneDeploy_ApiCalls
             return new ApiRequest().Execute<List<ImageProfileEntity>>(Request);
         }
 
-        public IEnumerable<AuditLogEntity> GetImageAuditLogs(int id, int limit)
-        {
-            Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetImageAuditLogs/{1}", Resource, id);
-            Request.AddParameter("limit", limit);
-            return new ApiRequest().Execute<List<AuditLogEntity>>(Request);
-
-        }
         public string GetImageSizeOnServer(string imageName, string hdNumber)
         {
             Request.Method = Method.GET;
@@ -132,7 +131,6 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/SeedDefaultProfile/{1}", Resource, id);
             return new ApiRequest().Execute<ImageProfileEntity>(Request);
         }
-
 
         public bool SendImageApprovedMail(int id)
         {

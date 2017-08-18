@@ -52,14 +52,14 @@ namespace CloneDeploy_Services
             return true;
         }
 
-        public NetBootProfileEntity GetProfileFromIp(string ip)
-        {
-            return _uow.NetBootProfileRepository.GetFirstOrDefault(x => x.Ip == ip);
-        }
-
         public NetBootProfileEntity GetProfile(int profileId)
         {
             return _uow.NetBootProfileRepository.GetById(profileId);
+        }
+
+        public NetBootProfileEntity GetProfileFromIp(string ip)
+        {
+            return _uow.NetBootProfileRepository.GetFirstOrDefault(x => x.Ip == ip);
         }
 
         public List<NbiEntryEntity> GetProfileNbiEntries(int profileId)

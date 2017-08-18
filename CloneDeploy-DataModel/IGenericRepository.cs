@@ -21,9 +21,7 @@ namespace CloneDeploy_DataModel
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             string includeProperties = "");
 
-
         TEntity GetById(object id);
-
 
         TEntity GetFirstOrDefault(Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null);

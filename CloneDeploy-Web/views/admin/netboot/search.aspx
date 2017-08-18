@@ -50,8 +50,7 @@
             <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="~/views/admin/netboot/edit.aspx?level=2&netbootid={0}" Text="View" ItemStyle-CssClass="chkboxwidth"/>
             <asp:BoundField DataField="Id" HeaderText="Id" SortExpression="Id" Visible="False"/>
             <asp:BoundField DataField="Name" HeaderText="Profile Name" SortExpression="Name" ItemStyle-CssClass="width_200"></asp:BoundField>
-            <asp:BoundField DataField="Ip" HeaderText="IP" SortExpression="Ip" />
-           
+            <asp:BoundField DataField="Ip" HeaderText="IP" SortExpression="Ip"/>
 
 
         </Columns>

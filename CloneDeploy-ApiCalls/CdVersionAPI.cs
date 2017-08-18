@@ -28,7 +28,6 @@ namespace CloneDeploy_ApiCalls
             return response != null && response.Value;
         }
 
-
         public ActionResultDTO Put(int id, CdVersionEntity tObject)
         {
             Request.Method = Method.PUT;

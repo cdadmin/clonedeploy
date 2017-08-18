@@ -50,7 +50,6 @@ namespace CloneDeploy_Web.views.users
             updatedUser.NotifyComplete = chkComplete.Checked ? 1 : 0;
             updatedUser.NotifyImageApproved = chkApproved.Checked ? 1 : 0;
 
-
             var result = Call.CloneDeployUserApi.Put(updatedUser.Id, updatedUser);
             EndUserMessage = !result.Success ? result.ErrorMessage : "Successfully Updated User";
         }

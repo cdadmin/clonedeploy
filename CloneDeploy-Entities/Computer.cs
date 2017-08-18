@@ -7,37 +7,17 @@ namespace CloneDeploy_Entities
     [Table("computers")]
     public class ComputerEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("computer_id", Order = 1)]
-        public int Id { get; set; }
-
-        [Column("computer_name", Order = 2)]
-        public string Name { get; set; }
-
-        [Column("computer_primary_mac", Order = 3)]
-        public string Mac { get; set; }
-
-        [Column("computer_description", Order = 4)]
-        public string Description { get; set; }
-
-        [Column("computer_site_id", Order = 6)]
-        public int SiteId { get; set; }
+        [Column("alternate_server_ip_id", Order = 20)]
+        public int AlternateServerIpId { get; set; }
 
         [Column("computer_building_id", Order = 7)]
         public int BuildingId { get; set; }
 
-        [Column("computer_room_id", Order = 8)]
-        public int RoomId { get; set; }
+        [Column("client_identifier", Order = 19)]
+        public string ClientIdentifier { get; set; }
 
-        [Column("computer_image_id", Order = 9)]
-        public int ImageId { get; set; }
-
-        [Column("computer_image_profile_id", Order = 10)]
-        public int ImageProfileId { get; set; }
-
-        [Column("computer_has_custom_menu", Order = 11)]
-        public int CustomBootEnabled { get; set; }
+        [Column("cluster_group_id", Order = 18)]
+        public int ClusterGroupId { get; set; }
 
         [Column("custom_attr_1", Order = 12)]
         public string CustomAttribute1 { get; set; }
@@ -54,17 +34,37 @@ namespace CloneDeploy_Entities
         [Column("custom_attr_5", Order = 16)]
         public string CustomAttribute5 { get; set; }
 
+        [Column("computer_has_custom_menu", Order = 11)]
+        public int CustomBootEnabled { get; set; }
+
+        [Column("computer_description", Order = 4)]
+        public string Description { get; set; }
+
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("computer_id", Order = 1)]
+        public int Id { get; set; }
+
+        [Column("computer_image_id", Order = 9)]
+        public int ImageId { get; set; }
+
+        [Column("computer_image_profile_id", Order = 10)]
+        public int ImageProfileId { get; set; }
+
+        [Column("computer_primary_mac", Order = 3)]
+        public string Mac { get; set; }
+
+        [Column("computer_name", Order = 2)]
+        public string Name { get; set; }
+
         [Column("proxy_reservation_enabled", Order = 17)]
         public int ProxyReservation { get; set; }
 
-        [Column("cluster_group_id", Order = 18)]
-        public int ClusterGroupId { get; set; }
+        [Column("computer_room_id", Order = 8)]
+        public int RoomId { get; set; }
 
-        [Column("client_identifier", Order = 19)]
-        public string ClientIdentifier { get; set; }
-
-        [Column("alternate_server_ip_id", Order = 20)]
-        public int AlternateServerIpId { get; set; }
+        [Column("computer_site_id", Order = 6)]
+        public int SiteId { get; set; }
     }
 
     [NotMapped]
@@ -89,6 +89,4 @@ namespace CloneDeploy_Entities
             Map(m => m.ClientIdentifier).Name("ClientIdentifier");
         }
     }
-
-  
 }

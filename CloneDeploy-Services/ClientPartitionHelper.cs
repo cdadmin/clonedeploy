@@ -38,7 +38,6 @@ namespace CloneDeploy_Services
                 else
                 {
                     schema = new FilesystemServices().ReadSchemaFile(imageProfile.Image.Name);
-                  
                 }
             }
 
@@ -169,7 +168,7 @@ namespace CloneDeploy_Services
         public List<PhysicalPartition> GetActivePartitions(int schemaHdNumber, ImageProfileWithImage imageProfile)
         {
             var listPhysicalPartition = new List<PhysicalPartition>();
-         
+
             foreach (
                 var partition in _imageSchema.HardDrives[schemaHdNumber].Partitions.Where(partition => partition.Active)
                 )
@@ -184,7 +183,6 @@ namespace CloneDeploy_Services
                 string imageFile = null;
                 foreach (var ext in new[] {"ntfs", "fat", "extfs", "hfsp", "imager", "xfs"})
                 {
-
                     imageFile = new FilesystemServices().GetFileNameWithFullPath(imageProfile.Image.Name,
                         schemaHdNumber.ToString(), partition.Number, "." + ext);
 
@@ -227,12 +225,11 @@ namespace CloneDeploy_Services
                         clientLogicalVolume.FileSystem = logicalVolume.FsType;
                         clientLogicalVolume.Uuid = logicalVolume.Uuid;
 
-
                         foreach (var ext in new[] {"ntfs", "fat", "extfs", "hfsp", "imager", "xfs"})
                         {
                             imageFile = new FilesystemServices().GetLVMFileNameWithFullPath(imageProfile.Image.Name,
                                 schemaHdNumber.ToString(), partition.VolumeGroup.Name, logicalVolume.Name, ext);
-                            
+
                             if (!string.IsNullOrEmpty(imageFile))
                             {
                                 clientLogicalVolume.PartcloneFileSystem = ext;
@@ -344,7 +341,6 @@ namespace CloneDeploy_Services
                 {
                     imageFile = new FilesystemServices().GetLVMFileNameWithFullPath(_imageProfile.Image.Name,
                         hdNumberToGet.ToString(), lv.VolumeGroup, lv.Name, ext);
-                 
 
                     if (!string.IsNullOrEmpty(imageFile)) break;
                 }
@@ -411,7 +407,7 @@ namespace CloneDeploy_Services
 
             partitionHelper.VolumeGroupHelper = VolumeGroup(hdNumberToGet, partNumberToGet, newHdSize);
             var lbsByte = _imageSchema.HardDrives[hdNumberToGet].Lbs;
-         
+
             //Look if any volume groups are present for this partition.  If so set the volumesize for the volume group to the minimum size
             //required for the volume group.  Volume groups are always treated as resizable even if none of the individual 
             //logical volumes are resizable
@@ -420,7 +416,6 @@ namespace CloneDeploy_Services
                 partitionHelper.PartitionHasVolumeGroup = true;
                 partition.VolumeSize = partitionHelper.VolumeGroupHelper.MinSizeBlk*lbsByte/1024/1024;
             }
-
 
             if (partition.ForceFixedSize)
             {
@@ -475,7 +470,7 @@ namespace CloneDeploy_Services
                     {
                         imageFile = new FilesystemServices().GetFileNameWithFullPath(_imageProfile.Image.Name,
                             hdNumberToGet.ToString(), partition.Number, ext);
-                       
+
                         if (!string.IsNullOrEmpty(imageFile)) break;
                     }
                     if (Path.GetExtension(imageFile) == ".wim")

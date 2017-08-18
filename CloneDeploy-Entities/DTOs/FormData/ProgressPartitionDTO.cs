@@ -2,7 +2,7 @@
 {
     public class ProgressPartitionDTO
     {
-        public string taskId { get; set; }
         public string partition { get; set; }
+        public string taskId { get; set; }
     }
 }

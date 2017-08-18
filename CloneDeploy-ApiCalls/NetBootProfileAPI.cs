@@ -24,6 +24,14 @@ namespace CloneDeploy_ApiCalls
             return response;
         }
 
+        public ApiBoolResponseDTO DeleteProfileNbiEntries(int profileId)
+        {
+            Request.Method = Method.DELETE;
+            Request.Resource = string.Format("api/{0}/DeleteProfileNbiEntries/{1}", Resource, profileId);
+            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            return response;
+        }
+
         public NetBootProfileEntity Get(int id)
         {
             Request.Method = Method.GET;
@@ -47,6 +55,13 @@ namespace CloneDeploy_ApiCalls
             return responseData != null ? responseData.Value : string.Empty;
         }
 
+        public List<NbiEntryEntity> GetProfileNbiEntries(int profileId)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetProfileNbiEntries/{1}", Resource, profileId);
+            return _apiRequest.Execute<List<NbiEntryEntity>>(Request);
+        }
+
         public ActionResultDTO Post(NetBootProfileEntity tObject)
         {
             Request.Method = Method.POST;
@@ -67,22 +82,6 @@ namespace CloneDeploy_ApiCalls
             if (response.Id == 0)
                 response.Success = false;
             return response;
-        }
-
-        public ApiBoolResponseDTO DeleteProfileNbiEntries(int profileId)
-        {
-            Request.Method = Method.DELETE;
-            Request.Resource = string.Format("api/{0}/DeleteProfileNbiEntries/{1}", Resource, profileId);
-            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);        
-            return response;
-        }
-
-
-        public List<NbiEntryEntity> GetProfileNbiEntries(int profileId)
-        {
-            Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetProfileNbiEntries/{1}", Resource, profileId);
-            return _apiRequest.Execute<List<NbiEntryEntity>>(Request);
         }
     }
 }

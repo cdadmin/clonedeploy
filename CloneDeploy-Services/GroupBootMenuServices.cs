@@ -30,13 +30,10 @@ namespace CloneDeploy_Services
             actionResult.Success = true;
             actionResult.Id = groupBootMenu.Id;
 
-
             UpdateGroupMemberBootMenus(groupBootMenu);
-
 
             return actionResult;
         }
-
 
         public void UpdateGroupMemberBootMenus(GroupBootMenuEntity groupBootMenu)
         {

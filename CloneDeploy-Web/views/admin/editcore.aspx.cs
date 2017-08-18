@@ -27,7 +27,6 @@ namespace CloneDeploy_Web.views.global.scripts
             if (ddlCoreScripts.Text == "Select A Script") return;
             var path = Call.FilesystemApi.GetServerPaths("clientScript", ddlCoreScripts.Text);
 
-
             scriptEditor.Value = Call.FilesystemApi.ReadFileText(path);
         }
 

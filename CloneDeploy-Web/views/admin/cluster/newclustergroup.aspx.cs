@@ -51,7 +51,6 @@ namespace CloneDeploy_Web.views.admin.cluster
                     var cb = (CheckBox) row.FindControl("chkSelector");
                     if (!cb.Checked) continue;
 
-
                     var dataKey = gvDps.DataKeys[row.RowIndex];
                     if (dataKey == null) continue;
 
@@ -59,12 +58,10 @@ namespace CloneDeploy_Web.views.admin.cluster
                     clusterGroupDistributionPoint.ClusterGroupId = result.Id;
                     clusterGroupDistributionPoint.DistributionPointId = Convert.ToInt32(dataKey.Value);
 
-
                     listOfDps.Add(clusterGroupDistributionPoint);
                 }
 
                 Call.ClusterGroupDistributionPointApi.Post(listOfDps);
-
 
                 EndUserMessage = "Successfully Created Cluster Group";
                 Response.Redirect("~/views/admin/cluster/editcluster.aspx?cat=sub1&clusterid=" + result.Id);
@@ -97,7 +94,8 @@ namespace CloneDeploy_Web.views.admin.cluster
                 primary.Name = GetSetting(SettingStrings.ServerIdentifier);
 
                 primary.TftpRole = Convert.ToBoolean(Convert.ToInt16(GetSetting(SettingStrings.TftpServerRole))) ? 1 : 0;
-                primary.MulticastRole = Convert.ToBoolean(Convert.ToInt16(GetSetting(SettingStrings.MulticastServerRole))) ? 1 : 0;
+                primary.MulticastRole =
+                    Convert.ToBoolean(Convert.ToInt16(GetSetting(SettingStrings.MulticastServerRole))) ? 1 : 0;
                 secondaryServers.Insert(0, primary);
             }
             gvServers.DataSource = secondaryServers;
@@ -112,7 +110,8 @@ namespace CloneDeploy_Web.views.admin.cluster
                 if (Convert.ToInt32(dataKey.Value) == -1)
                 {
                     cbTftp.Visible = Convert.ToBoolean(Convert.ToInt16(GetSetting(SettingStrings.TftpServerRole)));
-                    cbMulticast.Visible = Convert.ToBoolean(Convert.ToInt16(GetSetting(SettingStrings.MulticastServerRole)));
+                    cbMulticast.Visible =
+                        Convert.ToBoolean(Convert.ToInt16(GetSetting(SettingStrings.MulticastServerRole)));
                 }
                 else
                 {

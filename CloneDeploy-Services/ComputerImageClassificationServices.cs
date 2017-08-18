@@ -1,11 +1,7 @@
-﻿using CloneDeploy_DataModel;
+﻿using System.Collections.Generic;
+using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CloneDeploy_Services
 {
@@ -33,7 +29,7 @@ namespace CloneDeploy_Services
         {
             var filteredImageList = new List<ImageWithDate>();
             var imageClassifications = new ComputerServices().GetComputerImageClassifications(computerId);
-            if(imageClassifications == null) return listImages;
+            if (imageClassifications == null) return listImages;
             if (imageClassifications.Count == 0) return listImages;
             foreach (var image in listImages)
             {

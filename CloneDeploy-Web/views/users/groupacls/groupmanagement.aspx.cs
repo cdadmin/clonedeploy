@@ -32,6 +32,11 @@ namespace CloneDeploy_Web.views.users.groupacls
             EndUserMessage = "Updated Group Management";
         }
 
+        protected void chkEnabled_OnCheckedChanged(object sender, EventArgs e)
+        {
+            Call.UserGroupApi.ToggleGroupManagement(CloneDeployUserGroup.Id, chkEnabled.Checked ? 1 : 0);
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             RequiresAuthorization(AuthorizationStrings.Administrator);
@@ -65,11 +70,6 @@ namespace CloneDeploy_Web.views.users.groupacls
         protected void SelectAll_CheckedChanged(object sender, EventArgs e)
         {
             ChkAll(gvGroups);
-        }
-
-        protected void chkEnabled_OnCheckedChanged(object sender, EventArgs e)
-        {
-            Call.UserGroupApi.ToggleGroupManagement(CloneDeployUserGroup.Id, chkEnabled.Checked ? 1 : 0);
         }
     }
 }

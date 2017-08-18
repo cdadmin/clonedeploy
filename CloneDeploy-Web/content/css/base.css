@@ -290,8 +290,9 @@ hr {
     border-radius: 3px;
 }
 
-.dash_left_second { margin-top: 30px;}
-.dash_right_second { margin-top: 190px;}
+.dash_left_second { margin-top: 30px; }
+
+.dash_right_second { margin-top: 190px; }
 
 /* Mobile Menu Top
 ================================================== */
@@ -844,7 +845,7 @@ a.keygen {
     background: #3D4F5D;
     color: #fff;
     font-size: 24px;
-    padding: 7px 9px;  
+    padding: 7px 9px;
 }
 
 .spb-toggle:after {
@@ -882,7 +883,7 @@ a.keygen {
 .split-btn .spb-primary a {
     background: #3D4F5D;
     color: #fff;
-    padding: 10px; 
+    padding: 10px;
 }
 
 .split-btn .spb-secondary a:hover {

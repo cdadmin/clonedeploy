@@ -33,35 +33,33 @@ namespace CloneDeploy_Web.views.admin.dp
             PrimaryParams.Visible = chkPrimary.Checked;
         }
 
+        protected void ddlPrimaryType_OnSelectedIndexChanged(object sender, EventArgs e)
+        {
+            PhysicalPath.Visible = ddlPrimaryType.Text == "Local";
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack) PopulateForm();
         }
 
-
         protected void PopulateForm()
         {
             var distributionPoint = Call.DistributionPointApi.Get(Convert.ToInt32(Request.QueryString["dpid"]));
-            
 
             txtDisplayName.Text = distributionPoint.DisplayName;
             txtServer.Text = distributionPoint.Server;
             ddlProtocol.Text = distributionPoint.Protocol;
             txtShareName.Text = distributionPoint.ShareName;
             txtDomain.Text = distributionPoint.Domain;
-            txtRwUsername.Text = distributionPoint.RwUsername;           
-            txtRoUsername.Text = distributionPoint.RoUsername;           
-            chkPrimary.Checked = Convert.ToBoolean(distributionPoint.IsPrimary);          
+            txtRwUsername.Text = distributionPoint.RwUsername;
+            txtRoUsername.Text = distributionPoint.RoUsername;
+            chkPrimary.Checked = Convert.ToBoolean(distributionPoint.IsPrimary);
             txtPhysicalPath.Text = distributionPoint.PhysicalPath;
             qSize.Text = distributionPoint.QueueSize.ToString();
             ddlPrimaryType.Text = distributionPoint.Location;
             if (ddlPrimaryType.Text == "Local") PhysicalPath.Visible = true;
             PrimaryParams.Visible = Convert.ToBoolean(distributionPoint.IsPrimary);
-        }
-
-        protected void ddlPrimaryType_OnSelectedIndexChanged(object sender, EventArgs e)
-        {
-            PhysicalPath.Visible = ddlPrimaryType.Text == "Local";
         }
     }
 }

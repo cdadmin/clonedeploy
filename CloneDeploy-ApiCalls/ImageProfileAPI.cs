@@ -32,7 +32,6 @@ namespace CloneDeploy_ApiCalls
             return response;
         }
 
-
         public ImageProfileWithImage Get(int id)
         {
             Request.Method = Method.GET;
@@ -49,14 +48,12 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<List<ImageProfileWithImage>>(Request);
         }
 
-
         public IEnumerable<ImageProfileFileFolderEntity> GetFileFolders(int id)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetFileFolders/{1}", Resource, id);
             return _apiRequest.Execute<List<ImageProfileFileFolderEntity>>(Request);
         }
-
 
         public string GetMinimumClientSize(int id, int hdNumber)
         {
@@ -71,7 +68,6 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/GetScripts/{1}", Resource, id);
             return _apiRequest.Execute<List<ImageProfileScriptEntity>>(Request);
         }
-
 
         public IEnumerable<ImageProfileSysprepTagEntity> GetSysprepTags(int id)
         {
@@ -102,7 +98,6 @@ namespace CloneDeploy_ApiCalls
             return response;
         }
 
-
         public ActionResultDTO RemoveProfileFileFolders(int id)
         {
             Request.Method = Method.DELETE;
@@ -110,14 +105,12 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<ActionResultDTO>(Request);
         }
 
-
         public ActionResultDTO RemoveProfileScripts(int id)
         {
             Request.Method = Method.DELETE;
             Request.Resource = string.Format("api/{0}/RemoveProfileScripts/{1}", Resource, id);
             return _apiRequest.Execute<ActionResultDTO>(Request);
         }
-
 
         public bool RemoveProfileSysprepTags(int id)
         {

@@ -38,7 +38,8 @@ namespace CloneDeploy_Web.views.computers
             switch (action)
             {
                 case "delete":
-                    ComputerBasePage.RequiresAuthorizationOrManagedComputer(AuthorizationStrings.DeleteComputer, Computer.Id);
+                    ComputerBasePage.RequiresAuthorizationOrManagedComputer(AuthorizationStrings.DeleteComputer,
+                        Computer.Id);
                     var result = ComputerBasePage.Call.ComputerApi.Delete(Computer.Id);
                     if (result.Success)
                     {
@@ -50,13 +51,15 @@ namespace CloneDeploy_Web.views.computers
                     break;
                 case "push":
                 {
-                    ComputerBasePage.RequiresAuthorizationOrManagedComputer(AuthorizationStrings.ImageDeployTask, Computer.Id);
+                    ComputerBasePage.RequiresAuthorizationOrManagedComputer(AuthorizationStrings.ImageDeployTask,
+                        Computer.Id);
                     PageBaseMaster.EndUserMessage = ComputerBasePage.Call.ComputerApi.StartDeploy(Computer.Id);
                 }
                     break;
                 case "pull":
                 {
-                    ComputerBasePage.RequiresAuthorizationOrManagedComputer(AuthorizationStrings.ImageUploadTask, Computer.Id);
+                    ComputerBasePage.RequiresAuthorizationOrManagedComputer(AuthorizationStrings.ImageUploadTask,
+                        Computer.Id);
                     PageBaseMaster.EndUserMessage = ComputerBasePage.Call.ComputerApi.StartUpload(Computer.Id);
                 }
                     break;

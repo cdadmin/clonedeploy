@@ -29,28 +29,28 @@
     </div>
     <br class="clear"/>
     <div class="size-4 column">
-         Proxy DHCP Bound Ip Address:
+        Proxy DHCP Bound Ip Address:
     </div>
     <div class="size-5 column">
         <asp:TextBox ID="txtIp" runat="server" CssClass="textbox"></asp:TextBox>
     </div>
     <br class="clear"/>
-   
-    
+
+
     <br/>
     <div class="size-1 column">
         <asp:GridView ID="gvNetBoot" runat="server" AutoGenerateColumns="false" DataKeyNames="ImageId" CssClass="Gridview extraPad"
-                  OnRowEditing="OnRowEditing" OnRowCancelingEdit="OnRowCancelingEdit" ShowFooter="True"
-                  OnRowUpdating="OnRowUpdating" OnRowDeleting="OnRowDeleting" AlternatingRowStyle-CssClass="alt">
+                      OnRowEditing="OnRowEditing" OnRowCancelingEdit="OnRowCancelingEdit" ShowFooter="True"
+                      OnRowUpdating="OnRowUpdating" OnRowDeleting="OnRowDeleting" AlternatingRowStyle-CssClass="alt">
             <Columns>
 
                 <asp:TemplateField HeaderText="NBI Id" ItemStyle-Width="150">
                     <ItemTemplate>
                         <asp:Label ID="lblImageId" runat="server" Text='<%# Eval("ImageId") %>'></asp:Label>
                     </ItemTemplate>
-                     <EditItemTemplate>
-                    <asp:TextBox ID="txtIdEdit" runat="server" Text='<%# Eval("ImageId") %>'></asp:TextBox>
-                </EditItemTemplate>
+                    <EditItemTemplate>
+                        <asp:TextBox ID="txtIdEdit" runat="server" Text='<%# Eval("ImageId") %>'></asp:TextBox>
+                    </EditItemTemplate>
                     <FooterTemplate>
                         <asp:TextBox ID="txtIdAdd" runat="server"></asp:TextBox>
                     </FooterTemplate>
@@ -60,9 +60,9 @@
                     <ItemTemplate>
                         <asp:Label ID="lblName" runat="server" Text='<%# Eval("Name") %>'></asp:Label>
                     </ItemTemplate>
-                       <EditItemTemplate>
-                    <asp:TextBox ID="txtNameEdit" runat="server" Text='<%# Eval("Name") %>'></asp:TextBox>
-                </EditItemTemplate>
+                    <EditItemTemplate>
+                        <asp:TextBox ID="txtNameEdit" runat="server" Text='<%# Eval("Name") %>'></asp:TextBox>
+                    </EditItemTemplate>
                     <FooterTemplate>
                         <asp:TextBox ID="txtNameAdd" runat="server"></asp:TextBox>
                     </FooterTemplate>
@@ -70,18 +70,18 @@
 
 
                 <asp:TemplateField ShowHeader="False">
-                      <EditItemTemplate>
-                    <asp:LinkButton ID="LinkButton1" runat="server" CausesValidation="True"
-                                    CommandName="Update" Text="Update" CssClass="btn btn-default">
-                    </asp:LinkButton>
-                    &nbsp;<asp:LinkButton ID="LinkButton2" runat="server" CausesValidation="False"
-                                          CommandName="Cancel" Text="Cancel" CssClass="btn btn-default">
-                    </asp:LinkButton>
-                </EditItemTemplate>
+                    <EditItemTemplate>
+                        <asp:LinkButton ID="LinkButton1" runat="server" CausesValidation="True"
+                                        CommandName="Update" Text="Update" CssClass="btn btn-default">
+                        </asp:LinkButton>
+                        &nbsp;<asp:LinkButton ID="LinkButton2" runat="server" CausesValidation="False"
+                                              CommandName="Cancel" Text="Cancel" CssClass="btn btn-default">
+                        </asp:LinkButton>
+                    </EditItemTemplate>
                     <ItemTemplate>
-                         <asp:LinkButton ID="LinkButton1" runat="server" CausesValidation="False"
-                                    CommandName="Edit" Text="Edit" CssClass="btn btn-default">
-                    </asp:LinkButton>
+                        <asp:LinkButton ID="LinkButton1" runat="server" CausesValidation="False"
+                                        CommandName="Edit" Text="Edit" CssClass="btn btn-default">
+                        </asp:LinkButton>
                         <asp:LinkButton ID="LinkButton3" runat="server" CausesValidation="False"
                                         CommandName="Delete" Text="Delete">
                         </asp:LinkButton>
@@ -91,16 +91,16 @@
                         <asp:LinkButton ID="btnAdd1" runat="server" Text="Add" OnClick="btnAdd1_OnClick" CssClass="btn-default"/>
                     </FooterTemplate>
                 </asp:TemplateField>
-              
+
             </Columns>
         </asp:GridView>
     </div>
     <br class="clear"/>
     <h4>Instructions:</h4>
-    <asp:Label runat="server" ID="directions">       
+    <asp:Label runat="server" ID="directions">
     </asp:Label>
     <h4>Vendor String:</h4>
     <asp:Label runat="server" Id="vendorString"></asp:Label>
 
-  
+
 </asp:Content>

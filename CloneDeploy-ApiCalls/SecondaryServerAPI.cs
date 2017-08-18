@@ -24,7 +24,6 @@ namespace CloneDeploy_ApiCalls
             return response;
         }
 
-
         public SecondaryServerEntity Get(int id)
         {
             Request.Method = Method.GET;
@@ -59,7 +58,6 @@ namespace CloneDeploy_ApiCalls
                 response.Success = false;
             return response;
         }
-
 
         public ActionResultDTO Put(int id, SecondaryServerEntity tObject)
         {

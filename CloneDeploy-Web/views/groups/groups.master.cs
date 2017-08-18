@@ -41,7 +41,6 @@ namespace CloneDeploy_Web.views.groups
             }
         }
 
-
         protected void btnDelete_Click(object sender, EventArgs e)
         {
             lblTitle.Text = "Delete This Group?";

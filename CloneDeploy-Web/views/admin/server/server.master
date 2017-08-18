@@ -26,7 +26,7 @@
         <a href="<%= ResolveUrl("~/views/admin/server/alternateips.aspx") %>?level=2">
             <span class="sub-nav-text">Alternate Server Ips</span></a>
     </li>
-   
+
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">

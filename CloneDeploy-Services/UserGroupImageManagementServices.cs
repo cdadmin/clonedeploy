@@ -25,7 +25,6 @@ namespace CloneDeploy_Services
             return actionResult;
         }
 
-
         //check this
         public bool DeleteAllForImage(int imageId)
         {

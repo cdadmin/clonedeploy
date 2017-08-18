@@ -11,7 +11,6 @@ namespace CloneDeploy_Services
         private readonly string _requiredRight;
         private readonly UserServices _userServices;
 
-
         public AuthorizationServices(int userId, string requiredRight)
         {
             _userServices = new UserServices();
@@ -32,7 +31,7 @@ namespace CloneDeploy_Services
                 var computers = new ComputerServices().SearchComputersForUser(_cloneDeployUser.Id, int.MaxValue);
                 return computers.Any(x => x.Id == computerId);
             }
-          
+
             return IsAuthorized();
         }
 
@@ -47,7 +46,7 @@ namespace CloneDeploy_Services
             {
                 return new GroupServices().SearchGroupsForUser(_cloneDeployUser.Id).Any(x => x.Id == groupId);
             }
-        
+
             return IsAuthorized();
         }
 

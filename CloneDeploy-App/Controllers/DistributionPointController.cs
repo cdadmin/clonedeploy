@@ -48,7 +48,6 @@ namespace CloneDeploy_App.Controllers
             return new ApiStringResponseDTO {Value = _distributionPointServices.TotalCount()};
         }
 
-
         [CustomAuth(Permission = "AdminUpdate")]
         public ActionResultDTO Post(DistributionPointEntity distributionPoint)
         {

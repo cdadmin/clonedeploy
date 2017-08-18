@@ -49,7 +49,8 @@ namespace CloneDeploy_Web.views.images.profiles
                 {
                     var dataKey = gvProfiles.DataKeys[row.RowIndex];
                     if (dataKey == null) continue;
-                    lblClient.Text = Call.ImageProfileApi.GetMinimumClientSize(Convert.ToInt32(dataKey.Value), selectedHd);
+                    lblClient.Text = Call.ImageProfileApi.GetMinimumClientSize(Convert.ToInt32(dataKey.Value),
+                        selectedHd);
                 }
             }
         }
@@ -78,7 +79,6 @@ namespace CloneDeploy_Web.views.images.profiles
             ToggleCheckState(hcb.Checked);
         }
 
-
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
@@ -91,7 +91,6 @@ namespace CloneDeploy_Web.views.images.profiles
                         : listProfiles.OrderByDescending(h => h.Name).ToList();
                     break;
             }
-
 
             gvProfiles.DataSource = listProfiles;
             gvProfiles.DataBind();

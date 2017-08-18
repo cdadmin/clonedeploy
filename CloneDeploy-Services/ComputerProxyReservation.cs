@@ -20,7 +20,6 @@ namespace CloneDeploy_Services
             return true;
         }
 
-
         public ActionResultDTO UpdateComputerProxyReservation(ComputerProxyReservationEntity computerProxyReservation)
         {
             if (_uow.ComputerProxyRepository.Exists(x => x.ComputerId == computerProxyReservation.ComputerId))

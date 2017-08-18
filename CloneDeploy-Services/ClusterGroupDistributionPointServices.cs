@@ -32,7 +32,6 @@ namespace CloneDeploy_Services
             if (firstDp != null)
                 DeleteClusterGroupDistributionPoints(firstDp.ClusterGroupId);
 
-
             foreach (var dp in listOfDps)
                 _uow.ClusterGroupDistributionPointRepository.Insert(dp);
             _uow.Save();

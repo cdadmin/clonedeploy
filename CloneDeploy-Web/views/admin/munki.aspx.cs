@@ -46,7 +46,6 @@ namespace CloneDeploy_Web.views.admin
                     Id = Call.SettingApi.GetSetting("Munki SMB Password Encrypted").Id
                 });
 
-
             EndUserMessage = Call.SettingApi.UpdateSettings(listSettings)
                 ? "Successfully Updated Settings"
                 : "Could Not Update Settings";

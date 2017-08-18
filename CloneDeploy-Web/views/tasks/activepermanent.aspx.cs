@@ -26,7 +26,8 @@ namespace CloneDeploy_Web.views.tasks
             if (IsPostBack) return;
             ViewState["clickTracker"] = "1";
             PopulateGrid();
-            lblTotal.Text = Call.ActiveImagingTaskApi.GetActiveUnicastCount("permanentdeploy") + " Total Permanent Task(s)";
+            lblTotal.Text = Call.ActiveImagingTaskApi.GetActiveUnicastCount("permanentdeploy") +
+                            " Total Permanent Task(s)";
         }
 
         private void PopulateGrid()
@@ -38,7 +39,8 @@ namespace CloneDeploy_Web.views.tasks
         protected void Timer_Tick(object sender, EventArgs e)
         {
             PopulateGrid();
-            lblTotal.Text = Call.ActiveImagingTaskApi.GetActiveUnicastCount("permanentdeploy") + " Total Permanent Task(s)";
+            lblTotal.Text = Call.ActiveImagingTaskApi.GetActiveUnicastCount("permanentdeploy") +
+                            " Total Permanent Task(s)";
             UpdatePanel1.Update();
         }
     }

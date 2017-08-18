@@ -29,7 +29,7 @@
             });
         });
     </script>
-      <div class="size-4 column">
+    <div class="size-4 column">
         Enable Image Management:
     </div>
     <div class="size-5 column">

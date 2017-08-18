@@ -23,7 +23,6 @@ namespace CloneDeploy_Services.Workflows
             imageProfile = new ImageProfileServices().ReadProfile(profileId);
             ImageSchema = new ClientPartitionHelper(imageProfile).GetImageSchema();
 
-
             clientSchema =
                 new ClientPartitionSchemaServices(HdNumberToGet, NewHdSize, imageProfile, partitionPrefix)
                     .GenerateClientSchema();
@@ -97,7 +96,6 @@ namespace CloneDeploy_Services.Workflows
 
             //otherwise both the original image block size and the destination hard block size are the same, no changes needed
             //End Handle moving from / to hard drives with different sector sizes
-
 
             if (imageProfile.Image.Environment == "linux" || string.IsNullOrEmpty(imageProfile.Image.Environment))
             {
@@ -204,7 +202,6 @@ namespace CloneDeploy_Services.Workflows
                     partitionCommands += "FDISK\r\n";
                 }
 
-
                 var logicalCounter = 0;
                 foreach (var logicalPart in clientSchema.LogicalPartitions)
                 {
@@ -213,7 +210,6 @@ namespace CloneDeploy_Services.Workflows
 
                     if (clientSchema.PrimaryAndExtendedPartitions.Count < 4)
                         partitionCommands += "l\r\n";
-
 
                     partitionCommands += "\r\n";
 
@@ -227,7 +223,6 @@ namespace CloneDeploy_Services.Workflows
                         else if (clientBlockSize == 4096)
                             partitionCommands += "+" + (Convert.ToInt64(logicalPart.Size) - logicalCounter*257) + "\r\n";
                     }
-
 
                     partitionCommands += "t\r\n";
 
@@ -288,9 +283,7 @@ namespace CloneDeploy_Services.Workflows
                     //GDISK seems to NOT include the starting sector in size so don't subtract 1 like in FDISK
                     partitionCommands += "+" + Convert.ToInt64(part.Size) + "\r\n";
 
-
                     partitionCommands += part.FsId + "\r\n";
-
 
                     if (counter != partCount) continue;
                     partitionCommands += "w\r\n";
@@ -299,7 +292,6 @@ namespace CloneDeploy_Services.Workflows
                 }
                 partitionScript += partitionCommands;
             }
-
 
             foreach (var part in from part in ImageSchema.HardDrives[HdNumberToGet].Partitions
                 where part.Active
@@ -379,7 +371,6 @@ namespace CloneDeploy_Services.Workflows
                     p.Size = p.Size*clientBlockSize/1024/1024;
             }
 
-
             var neededPartitionCount = clientSchema.PrimaryAndExtendedPartitions.Count;
 
             foreach (var partition in clientSchema.PrimaryAndExtendedPartitions)
@@ -455,7 +446,7 @@ namespace CloneDeploy_Services.Workflows
                         partitionScript +=
                             "New-Partition " + ClientHd + " -GptType '{c12a7328-f81f-11d2-ba4b-00a0c93ec93b}' -Size " +
                             partitionSize + "MB 2>&1 >> $clientLog\r\n";
-                            // | Format-Volume -FileSystem FAT32 -NewFileSystemLabel System\r\n";
+                        // | Format-Volume -FileSystem FAT32 -NewFileSystemLabel System\r\n";
                     }
                     else if (partition.Type.ToLower() == "reserved")
                     {

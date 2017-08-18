@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Web.UI;
 using CloneDeploy_Common;
 using CloneDeploy_Web.BasePages;
 
@@ -23,7 +22,6 @@ namespace CloneDeploy_Web.views.admin
                 multicast.Visible = false;
                 pxe.Visible = false;
                 security.Visible = false;
-             
             }
         }
     }

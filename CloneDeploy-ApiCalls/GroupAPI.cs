@@ -24,6 +24,16 @@ namespace CloneDeploy_ApiCalls
             return response;
         }
 
+        public bool DeleteImageClassifications(int id)
+        {
+            Request.Method = Method.DELETE;
+            Request.Resource = string.Format("api/{0}/DeleteImageClassifications/{1}", Resource, id);
+            var result = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
+            if (result != null)
+                return result.Value;
+            return false;
+        }
+
         public ApiBoolResponseDTO Export(string path)
         {
             Request.Method = Method.GET;
@@ -63,25 +73,6 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<GroupBootMenuEntity>(Request);
         }
 
-        public List<GroupImageClassificationEntity> GetImageClassifications(int id)
-        {
-            Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetImageClassifications/{1}", Resource, id);
-            return _apiRequest.Execute<List<GroupImageClassificationEntity>>(Request);
-        }
-
-        public bool DeleteImageClassifications(int id)
-        {
-            Request.Method = Method.DELETE;
-            Request.Resource = string.Format("api/{0}/DeleteImageClassifications/{1}", Resource, id);
-            var result = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
-            if (result != null)
-                return result.Value;
-            else
-                return false;
-
-        }
-
         public string GetEffectiveManifest(int id)
         {
             Request.Method = Method.GET;
@@ -98,12 +89,18 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<List<ComputerWithImage>>(Request);
         }
 
-
         public GroupPropertyEntity GetGroupProperties(int id)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetGroupProperties/{1}", Resource, id);
             return _apiRequest.Execute<GroupPropertyEntity>(Request);
+        }
+
+        public List<GroupImageClassificationEntity> GetImageClassifications(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetImageClassifications/{1}", Resource, id);
+            return _apiRequest.Execute<List<GroupImageClassificationEntity>>(Request);
         }
 
         public string GetMemberCount(int id)
@@ -160,7 +157,6 @@ namespace CloneDeploy_ApiCalls
             return response != null && response.Value;
         }
 
-
         public bool RemoveGroupMember(int id, int computerId)
         {
             Request.Method = Method.GET;
@@ -170,7 +166,6 @@ namespace CloneDeploy_ApiCalls
             return response != null && response.Value;
         }
 
-
         public bool RemoveMunkiTemplates(int id)
         {
             Request.Method = Method.DELETE;
@@ -178,7 +173,6 @@ namespace CloneDeploy_ApiCalls
             var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
             return response != null && response.Value;
         }
-
 
         public int StartGroupUnicast(int id)
         {

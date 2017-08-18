@@ -25,7 +25,6 @@ namespace CloneDeploy_Services
             return actionResult;
         }
 
-
         public List<GroupMunkiEntity> GetGroupsForManifestTemplate(int templateId)
         {
             return _uow.GroupMunkiRepository.Get(x => x.MunkiTemplateId == templateId);

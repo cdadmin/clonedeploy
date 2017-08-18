@@ -10,14 +10,14 @@
     </li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="ActionsRightSub">
-      <button type="button" class="btn btn-default dropdown-toggle width_140" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <button type="button" class="btn btn-default dropdown-toggle width_140" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <span class="caret"></span>
     </button>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="SubContent2" Runat="Server">
     <script type="text/javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#alternateips').addClass("nav-current");
         });
     </script>
@@ -26,7 +26,7 @@
 
     <asp:GridView ID="gvIps" runat="server" AutoGenerateColumns="false" DataKeyNames="Id" CssClass="Gridview extraPad"
                   OnRowEditing="OnRowEditing" OnRowCancelingEdit="OnRowCancelingEdit" ShowFooter="True"
-                  OnRowUpdating="OnRowUpdating" OnRowDeleting="OnRowDeleting"  AlternatingRowStyle-CssClass="alt">
+                  OnRowUpdating="OnRowUpdating" OnRowDeleting="OnRowDeleting" AlternatingRowStyle-CssClass="alt">
         <Columns>
 
             <asp:TemplateField HeaderText="Ip Address" ItemStyle-Width="150">
@@ -53,7 +53,6 @@
                 </FooterTemplate>
             </asp:TemplateField>
 
-          
 
             <asp:TemplateField ShowHeader="False">
                 <EditItemTemplate>

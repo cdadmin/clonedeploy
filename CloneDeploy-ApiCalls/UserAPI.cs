@@ -27,7 +27,6 @@ namespace CloneDeploy_ApiCalls
             return response;
         }
 
-
         public bool DeleteGroupManagements(int id)
         {
             Request.Method = Method.DELETE;
@@ -36,7 +35,6 @@ namespace CloneDeploy_ApiCalls
             return response != null && response.Value;
         }
 
-
         public bool DeleteImageManagements(int id)
         {
             Request.Method = Method.DELETE;
@@ -44,7 +42,6 @@ namespace CloneDeploy_ApiCalls
             var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
             return response != null && response.Value;
         }
-
 
         public bool DeleteRights(int id)
         {
@@ -61,15 +58,6 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<CloneDeployUserEntity>(Request);
         }
 
-
-        public int GetAdminCount()
-        {
-            Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetAdminCount/", Resource);
-            var response = _apiRequest.Execute<ApiIntResponseDTO>(Request);
-            return response != null ? response.Value : 0;
-        }
-
         public List<UserWithUserGroup> Get(int limit, string searchstring)
         {
             Request.Method = Method.GET;
@@ -79,37 +67,20 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<List<UserWithUserGroup>>(Request);
         }
 
+        public int GetAdminCount()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetAdminCount/", Resource);
+            var response = _apiRequest.Execute<ApiIntResponseDTO>(Request);
+            return response != null ? response.Value : 0;
+        }
+
         public CloneDeployUserEntity GetByName(string username)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetByName/", Resource);
             Request.AddParameter("username", username);
             return _apiRequest.Execute<CloneDeployUserEntity>(Request);
-        }
-
-        public IEnumerable<AuditLogEntity> GetUserAuditLogs(int id, int limit)
-        {
-            Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetUserAuditLogs/{1}", Resource, id);
-            Request.AddParameter("limit", limit);
-            return _apiRequest.Execute<List<AuditLogEntity>>(Request);
-
-        }
-
-        public IEnumerable<AuditLogEntity> GetUserTaskAuditLogs(int id, int limit)
-        {
-            Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetUserTaskAuditLogs/{1}", Resource, id);
-            Request.AddParameter("limit", limit);
-            return _apiRequest.Execute<List<AuditLogEntity>>(Request);
-
-        }
-
-        public IEnumerable<AuditLogEntity> GetUserLoginsDashboard()
-        {
-            Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetUserLoginsDashboard/", Resource);
-            return _apiRequest.Execute<List<AuditLogEntity>>(Request);
         }
 
         public string GetCount()
@@ -139,7 +110,6 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<List<UserGroupManagementEntity>>(Request);
         }
 
-
         public IEnumerable<UserImageManagementEntity> GetImageManagements(int id)
         {
             Request.Method = Method.GET;
@@ -154,6 +124,28 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<List<UserRightEntity>>(Request);
         }
 
+        public IEnumerable<AuditLogEntity> GetUserAuditLogs(int id, int limit)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetUserAuditLogs/{1}", Resource, id);
+            Request.AddParameter("limit", limit);
+            return _apiRequest.Execute<List<AuditLogEntity>>(Request);
+        }
+
+        public IEnumerable<AuditLogEntity> GetUserLoginsDashboard()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetUserLoginsDashboard/", Resource);
+            return _apiRequest.Execute<List<AuditLogEntity>>(Request);
+        }
+
+        public IEnumerable<AuditLogEntity> GetUserTaskAuditLogs(int id, int limit)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetUserTaskAuditLogs/{1}", Resource, id);
+            Request.AddParameter("limit", limit);
+            return _apiRequest.Execute<List<AuditLogEntity>>(Request);
+        }
 
         public bool IsAdmin(int id)
         {
@@ -185,19 +177,19 @@ namespace CloneDeploy_ApiCalls
             return response;
         }
 
-        public bool ToggleImageManagement(int id, int value)
+        public bool ToggleGroupManagement(int id, int value)
         {
             Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/ToggleImageManagement/{1}", Resource, id);
+            Request.Resource = string.Format("api/{0}/ToggleGroupManagement/{1}", Resource, id);
             Request.AddParameter("value", value);
             var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
             return response != null && response.Value;
         }
 
-        public bool ToggleGroupManagement(int id, int value)
+        public bool ToggleImageManagement(int id, int value)
         {
             Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/ToggleGroupManagement/{1}", Resource, id);
+            Request.Resource = string.Format("api/{0}/ToggleImageManagement/{1}", Resource, id);
             Request.AddParameter("value", value);
             var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
             return response != null && response.Value;

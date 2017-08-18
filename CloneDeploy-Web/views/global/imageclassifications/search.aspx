@@ -22,13 +22,13 @@
             $('#imageclassification').addClass("nav-current");
         });
     </script>
-   
+
     <br class="clear"/>
 
 
     <asp:GridView ID="gvImageClass" runat="server" AutoGenerateColumns="false" DataKeyNames="Id" CssClass="Gridview extraPad"
                   OnRowEditing="OnRowEditing" OnRowCancelingEdit="OnRowCancelingEdit" ShowFooter="True"
-                  OnRowUpdating="OnRowUpdating" OnRowDeleting="OnRowDeleting"  AlternatingRowStyle-CssClass="alt">
+                  OnRowUpdating="OnRowUpdating" OnRowDeleting="OnRowDeleting" AlternatingRowStyle-CssClass="alt">
         <Columns>
 
             <asp:TemplateField HeaderText="Name" ItemStyle-Width="150">
@@ -43,7 +43,6 @@
                 </FooterTemplate>
             </asp:TemplateField>
 
-          
 
             <asp:TemplateField ShowHeader="False">
                 <EditItemTemplate>

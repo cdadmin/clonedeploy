@@ -48,7 +48,6 @@ namespace CloneDeploy_Web.views.admin
                     }
                 };
 
-
                 var newBootMenu = false;
                 if (Call.SettingApi.UpdatePxeSettings(listSettings))
                 {

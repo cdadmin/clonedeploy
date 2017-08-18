@@ -4,6 +4,7 @@
     {
         ActiveImagingTaskAPI ActiveImagingTaskApi { get; }
         ActiveMulticastSessionAPI ActiveMulticastSessionApi { get; }
+        AlternateServerIpAPI AlternateServerIpApi { get; }
         AuthorizationAPI AuthorizationApi { get; }
         BootEntryAPI BootEntryApi { get; }
         BootTemplateAPI BootTemplateApi { get; }
@@ -27,6 +28,7 @@
         GroupMunkiAPI GroupMunkiApi { get; }
         GroupPropertyAPI GroupPropertyApi { get; }
         ImageAPI ImageApi { get; }
+        ImageClassificationAPI ImageClassificationApi { get; }
         ImageProfileAPI ImageProfileApi { get; }
         ImageProfileFileFolderAPI ImageProfileFileFolderApi { get; }
         ImageProfileScriptAPI ImageProfileScriptApi { get; }
@@ -39,6 +41,8 @@
         MunkiManifestManagedUpdateAPI MunkiManifestManagedUpdateEntityApi { get; }
         MunkiManifestOptionInstallAPI MunkiManifestOptionInstallEntity { get; }
         MunkiManifestTemplateAPI MunkiManifestTemplateApi { get; }
+        NbiEntryAPI NbiEntryApi { get; }
+        NetBootProfileAPI NetBootProfileApi { get; }
         OnlineKernelAPI OnlineKernelApi { get; }
         PortAPI PortApi { get; }
         RoomAPI RoomApi { get; }
@@ -57,11 +61,5 @@
         UserImageManagementAPI UserImageManagementApi { get; }
         UserRightAPI UserRightApi { get; }
         WorkflowAPI WorkflowApi { get; }
-        NetBootProfileAPI NetBootProfileApi { get; }
-        NbiEntryAPI NbiEntryApi { get; }
-        ImageClassificationAPI ImageClassificationApi { get; }
-        AlternateServerIpAPI AlternateServerIpApi { get; }
-
-
     }
 }

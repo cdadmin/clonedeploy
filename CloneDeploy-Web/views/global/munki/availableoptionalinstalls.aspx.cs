@@ -30,7 +30,6 @@ namespace CloneDeploy_Web.views.global.munki
                     ManifestTemplateId = ManifestTemplate.Id
                 };
 
-
                 var cbUseVersion = (CheckBox) row.FindControl("chkUseVersion");
                 if (cbUseVersion.Checked)
                 {
@@ -54,7 +53,6 @@ namespace CloneDeploy_Web.views.global.munki
                 EndUserMessage = "Could Not Update Optional Installs";
             }
 
-
             PopulateGrid();
         }
 
@@ -76,8 +74,9 @@ namespace CloneDeploy_Web.views.global.munki
 
         protected void PopulateGrid()
         {
-            var availableLimit = ddlLimitAvailable.Text == "All" ? int.MaxValue : Convert.ToInt32(ddlLimitAvailable.Text);
-
+            var availableLimit = ddlLimitAvailable.Text == "All"
+                ? int.MaxValue
+                : Convert.ToInt32(ddlLimitAvailable.Text);
 
             var listOfPackages = new List<MunkiPackageInfoEntity>();
             var pkgInfos = Call.FilesystemApi.GetMunkiResources("pkgsinfo");
@@ -111,7 +110,6 @@ namespace CloneDeploy_Web.views.global.munki
         {
             PopulateGrid();
         }
-
 
         protected void showAvailable_OnClick(object sender, EventArgs e)
         {

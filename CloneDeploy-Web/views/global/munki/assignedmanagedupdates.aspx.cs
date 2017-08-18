@@ -49,7 +49,6 @@ namespace CloneDeploy_Web.views.global.munki
                 EndUserMessage = "Could Not Update Managed Updates";
             }
 
-
             PopulateGrid();
         }
 

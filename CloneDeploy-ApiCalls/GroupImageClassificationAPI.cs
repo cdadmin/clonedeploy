@@ -14,6 +14,13 @@ namespace CloneDeploy_ApiCalls
             _apiRequest = new ApiRequest();
         }
 
+        public List<ImageWithDate> FilterClassifications(FilterGroupClassificationDTO filterGroupClassificationDto)
+        {
+            Request.Method = Method.POST;
+            Request.Resource = string.Format("api/{0}/FilterClassifications/", Resource);
+            Request.AddJsonBody(filterGroupClassificationDto);
+            return _apiRequest.Execute<List<ImageWithDate>>(Request);
+        }
 
         public ActionResultDTO Post(List<GroupImageClassificationEntity> listOfClassifications)
         {
@@ -21,15 +28,6 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/Post/", Resource);
             Request.AddJsonBody(listOfClassifications);
             return _apiRequest.Execute<ActionResultDTO>(Request);
-        }
-
-        public List<ImageWithDate> FilterClassifications(FilterGroupClassificationDTO filterGroupClassificationDto)
-        {
-            Request.Method = Method.POST;
-            Request.Resource = string.Format("api/{0}/FilterClassifications/", Resource);
-            Request.AddJsonBody(filterGroupClassificationDto);
-            return _apiRequest.Execute<List<ImageWithDate>>(Request);
-
         }
     }
 }

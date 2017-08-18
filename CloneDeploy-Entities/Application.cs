@@ -6,6 +6,9 @@ namespace CloneDeploy_Entities
     [Table("applications")]
     public class ApplicationEntity
     {
+        [Column("application_guid", Order = 4)]
+        public string Guid { get; set; }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("application_id", Order = 1)]
@@ -16,8 +19,5 @@ namespace CloneDeploy_Entities
 
         [Column("application_version", Order = 3)]
         public string Version { get; set; }
-
-        [Column("application_guid", Order = 4)]
-        public string Guid { get; set; }
     }
 }

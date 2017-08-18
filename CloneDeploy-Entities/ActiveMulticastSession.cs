@@ -11,6 +11,9 @@ namespace CloneDeploy_Entities
         [Column("multicast_session_id", Order = 1)]
         public int Id { get; set; }
 
+        [Column("ond_image_profile_id", Order = 6)]
+        public int ImageProfileId { get; set; }
+
         [Column("multicast_name", Order = 2)]
         public string Name { get; set; }
 
@@ -20,14 +23,10 @@ namespace CloneDeploy_Entities
         [Column("multicast_port", Order = 4)]
         public int Port { get; set; }
 
-        [Column("user_id", Order = 5)]
-        public int UserId { get; set; }
-
-        [Column("ond_image_profile_id", Order = 6)]
-        public int ImageProfileId { get; set; }
-
         [Column("server_id", Order = 7)]
         public int ServerId { get; set; }
-        
+
+        [Column("user_id", Order = 5)]
+        public int UserId { get; set; }
     }
 }

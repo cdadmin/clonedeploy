@@ -143,7 +143,6 @@ namespace CloneDeploy_Web.views.images.profiles
                     break;
             }
 
-
             var isSchemaError = false;
             if (imageProfile.PartitionMethod == "Standard" && Image.Environment == "winpe")
             {
@@ -176,7 +175,6 @@ namespace CloneDeploy_Web.views.images.profiles
             }
         }
 
-
         protected void btnVG_Click(object sender, EventArgs e)
         {
             var control = sender as Control;
@@ -185,7 +183,6 @@ namespace CloneDeploy_Web.views.images.profiles
             var gv = (GridView) gvRow.FindControl("gvLVS");
 
             var selectedHd = (string) ViewState["selectedHD"];
-
 
             var btn = (LinkButton) gvRow.FindControl("vgClick");
             if (gv.Visible == false)
@@ -256,7 +253,6 @@ namespace CloneDeploy_Web.views.images.profiles
                 imageSchema.Visible = false;
             }
         }
-
 
         protected void ddlPartitionMethod_OnSelectedIndexChanged(object sender, EventArgs e)
         {
@@ -430,22 +426,26 @@ namespace CloneDeploy_Web.views.images.profiles
                         {
                             var lvBoxPart = lv.FindControl("chkPartActive") as CheckBox;
                             if (lvBoxPart != null)
-                                schema.HardDrives[rowCounter].Partitions[partCounter].VolumeGroup.LogicalVolumes[lvCounter]
+                                schema.HardDrives[rowCounter].Partitions[partCounter].VolumeGroup.LogicalVolumes[
+                                    lvCounter]
                                     .Active = lvBoxPart.Checked;
 
                             var lvTxtCustomSize = lv.FindControl("txtCustomSize") as TextBox;
                             if (lvTxtCustomSize != null)
-                                schema.HardDrives[rowCounter].Partitions[partCounter].VolumeGroup.LogicalVolumes[lvCounter]
+                                schema.HardDrives[rowCounter].Partitions[partCounter].VolumeGroup.LogicalVolumes[
+                                    lvCounter]
                                     .CustomSize = lvTxtCustomSize.Text;
 
                             var lvDdlUnit = lv.FindControl("ddlUnit") as DropDownList;
                             if (lvDdlUnit != null)
-                                schema.HardDrives[rowCounter].Partitions[partCounter].VolumeGroup.LogicalVolumes[lvCounter]
+                                schema.HardDrives[rowCounter].Partitions[partCounter].VolumeGroup.LogicalVolumes[
+                                    lvCounter]
                                     .CustomSizeUnit = lvDdlUnit.Text;
 
                             var lvChkFixed = lv.FindControl("chkFixed") as CheckBox;
                             if (lvChkFixed != null)
-                                schema.HardDrives[rowCounter].Partitions[partCounter].VolumeGroup.LogicalVolumes[lvCounter]
+                                schema.HardDrives[rowCounter].Partitions[partCounter].VolumeGroup.LogicalVolumes[
+                                    lvCounter]
                                     .ForceFixedSize = lvChkFixed.Checked;
                             lvCounter++;
                         }

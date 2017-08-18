@@ -26,7 +26,6 @@ namespace CloneDeploy_Services
             return actionResult;
         }
 
-
         public List<ComputerMunkiEntity> GetComputersForManifestTemplate(int templateId)
         {
             return _uow.ComputerMunkiRepository.Get(x => x.MunkiTemplateId == templateId);

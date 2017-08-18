@@ -43,7 +43,6 @@ namespace CloneDeploy_Web.views.global.boottemplates
                     break;
             }
 
-
             gvTemplates.DataSource = listSysprepTags;
             gvTemplates.DataBind();
         }

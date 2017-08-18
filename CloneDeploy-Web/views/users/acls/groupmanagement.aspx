@@ -28,7 +28,7 @@
             });
         });
     </script>
-      <div class="size-4 column">
+    <div class="size-4 column">
         Enable Group Management:
     </div>
     <div class="size-5 column">

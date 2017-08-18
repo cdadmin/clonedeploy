@@ -43,7 +43,6 @@ namespace CloneDeploy_Services
 
             actionResult.Id = bootEntry.Id;
 
-
             return actionResult;
         }
 

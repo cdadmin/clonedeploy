@@ -6,6 +6,9 @@ namespace CloneDeploy_Entities
     [Table("admin_settings")]
     public class SettingEntity
     {
+        [Column("admin_setting_category", Order = 4)]
+        public string Category { get; set; }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("admin_setting_id", Order = 1)]
@@ -16,10 +19,5 @@ namespace CloneDeploy_Entities
 
         [Column("admin_setting_value", Order = 3)]
         public string Value { get; set; }
-
-        [Column("admin_setting_category", Order = 4)]
-        public string Category { get; set; }
-
-        
     }
 }

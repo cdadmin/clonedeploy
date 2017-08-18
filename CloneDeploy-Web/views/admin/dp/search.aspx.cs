@@ -32,7 +32,6 @@ namespace CloneDeploy_Web.views.admin.dp
             ChkAll(gvDps);
         }
 
-
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
@@ -46,7 +45,6 @@ namespace CloneDeploy_Web.views.admin.dp
                         : listDistributionPoints.OrderByDescending(h => h.DisplayName).ToList();
                     break;
             }
-
 
             gvDps.DataSource = listDistributionPoints;
             gvDps.DataBind();

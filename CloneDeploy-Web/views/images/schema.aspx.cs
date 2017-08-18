@@ -21,7 +21,6 @@ namespace CloneDeploy_Web.views.images
             ViewState["selectedHD"] = gvRow.RowIndex.ToString();
             ViewState["selectedHDName"] = selectedHd;
 
-
             var schemaRequestOptions = new ImageSchemaRequestDTO();
             schemaRequestOptions.image = Image;
             schemaRequestOptions.imageProfile = null;
@@ -95,7 +94,6 @@ namespace CloneDeploy_Web.views.images
             }
         }
 
-
         protected void btnVG_Click(object sender, EventArgs e)
         {
             var control = sender as Control;
@@ -104,7 +102,6 @@ namespace CloneDeploy_Web.views.images
             var gv = (GridView) gvRow.FindControl("gvLVS");
 
             var selectedHd = (string) ViewState["selectedHD"];
-
 
             var btn = (LinkButton) gvRow.FindControl("vgClick");
             if (gv.Visible == false)

@@ -31,7 +31,6 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<DistributionPointEntity>(Request);
         }
 
-
         public List<DistributionPointEntity> Get(int limit, string searchstring)
         {
             Request.Method = Method.GET;

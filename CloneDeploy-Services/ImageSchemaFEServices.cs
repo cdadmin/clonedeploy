@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.ImageSchemaFE;
@@ -65,7 +64,6 @@ namespace CloneDeploy_Services
             return hardDrives;
         }
 
-
         public ImageSchemaGridView GetImageSchema()
         {
             return _imageSchema;
@@ -91,7 +89,6 @@ namespace CloneDeploy_Services
                             " GB";
                     lv.UsedMb = lv.UsedMb + " MB";
 
-
                     lv.VolumeSize = lv.VolumeSize + " MB";
 
                     lvList.Add(lv);
@@ -114,7 +111,6 @@ namespace CloneDeploy_Services
                         part.Size = (Convert.ToInt64(part.Size)*hardDrive.Lbs/1024f/1024f/1024f).ToString("#.##") +
                                     " GB";
                     part.UsedMb = part.UsedMb + " MB";
-
 
                     part.VolumeSize = part.VolumeSize + " MB";
                     partitions.Add(part);

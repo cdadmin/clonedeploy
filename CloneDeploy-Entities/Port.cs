@@ -13,7 +13,5 @@ namespace CloneDeploy_Entities
 
         [Column("multicast_port_number", Order = 2)]
         public int Number { get; set; }
-
-       
     }
 }

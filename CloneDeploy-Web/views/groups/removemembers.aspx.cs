@@ -36,7 +36,6 @@ namespace CloneDeploy_Web.views.groups
             ChkAll(gvComputers);
         }
 
-
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
@@ -54,7 +53,6 @@ namespace CloneDeploy_Web.views.groups
                         : listComputers.OrderByDescending(h => h.Mac).ToList();
                     break;
             }
-
 
             gvComputers.DataSource = listComputers;
             gvComputers.DataBind();

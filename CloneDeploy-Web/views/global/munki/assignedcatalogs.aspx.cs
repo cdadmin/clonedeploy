@@ -49,7 +49,6 @@ namespace CloneDeploy_Web.views.global.munki
                 EndUserMessage = "Could Not Update Catalogs";
             }
 
-
             PopulateGrid();
         }
 
@@ -73,7 +72,6 @@ namespace CloneDeploy_Web.views.global.munki
         {
             PopulateGrid();
         }
-
 
         protected void showAssigned_OnClick(object sender, EventArgs e)
         {

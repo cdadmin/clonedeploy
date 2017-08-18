@@ -48,7 +48,6 @@ namespace CloneDeploy_Services
                 return actionResult;
             }
 
-
             return actionResult;
         }
 
@@ -104,7 +103,6 @@ namespace CloneDeploy_Services
                 }
             }
 
-
             actionResult.Success = true;
             return actionResult;
         }
@@ -122,7 +120,6 @@ namespace CloneDeploy_Services
             _uow.Save();
             return true;
         }
-
 
         public ActionResultDTO DeleteImage(int imageId)
         {
@@ -146,7 +143,7 @@ namespace CloneDeploy_Services
             DeleteAllProfilesForImage(image.Id);
             var delDirectoryResult = new FilesystemServices().DeleteImageFolders(image.Name);
             result.Success = delDirectoryResult;
-      
+
             return result;
         }
 
@@ -167,7 +164,11 @@ namespace CloneDeploy_Services
         public List<AuditLogEntity> GetImageAuditLogs(int imageId, int limit)
         {
             if (limit == 0) limit = int.MaxValue;
-            return _uow.AuditLogRepository.Get(x => x.ObjectType == "Image" && x.ObjectId == imageId).OrderByDescending(x => x.Id).Take(limit).ToList();
+            return
+                _uow.AuditLogRepository.Get(x => x.ObjectType == "Image" && x.ObjectId == imageId)
+                    .OrderByDescending(x => x.Id)
+                    .Take(limit)
+                    .ToList();
         }
 
         public List<ImageEntity> GetOnDemandImageList(int userId = 0)
@@ -195,9 +196,8 @@ namespace CloneDeploy_Services
             string selectedPartition)
         {
             var image = GetImage(imageId);
-            return new FilesystemServices().GetPartitionFileSize(image.Name, selectedHd, selectedPartition);         
+            return new FilesystemServices().GetPartitionFileSize(image.Name, selectedHd, selectedPartition);
         }
-
 
         public string ImageCountUser(int userId)
         {
@@ -209,11 +209,8 @@ namespace CloneDeploy_Services
             {
                 return TotalCount();
             }
-            else
-            {
-                var userManagedImages = _userServices.GetUserImageManagements(userId);
-                return userManagedImages.Count.ToString();
-            }
+            var userManagedImages = _userServices.GetUserImageManagements(userId);
+            return userManagedImages.Count.ToString();
         }
 
         public string ImageSizeOnServerForGridView(string imageName, string hdNumber)
@@ -263,7 +260,7 @@ namespace CloneDeploy_Services
                 return SearchImages(searchString);
 
             var user = _userServices.GetUser(userId);
-            if(user.ImageManagementEnabled == 0)
+            if (user.ImageManagementEnabled == 0)
                 return SearchImages(searchString);
 
             var listOfImages = new List<ImageEntity>();
@@ -345,7 +342,6 @@ namespace CloneDeploy_Services
                 mail.Send();
             }
         }
-
 
         private string TotalCount()
         {

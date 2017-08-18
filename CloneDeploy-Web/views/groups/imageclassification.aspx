@@ -11,7 +11,7 @@
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
-       <asp:LinkButton ID="buttonUpdate" runat="server" OnClick="buttonUpdate_OnClick" Text="Update Classifications" CssClass="btn btn-default"></asp:LinkButton>
+    <asp:LinkButton ID="buttonUpdate" runat="server" OnClick="buttonUpdate_OnClick" Text="Update Classifications" CssClass="btn btn-default"></asp:LinkButton>
     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <span class="caret"></span>
     </button>
@@ -32,7 +32,7 @@
 
     </script>
 
-     <asp:GridView ID="gvClassifications" runat="server" AutoGenerateColumns="False" CssClass="Gridview" DataKeyNames="Id" AlternatingRowStyle-CssClass="alt">
+    <asp:GridView ID="gvClassifications" runat="server" AutoGenerateColumns="False" CssClass="Gridview" DataKeyNames="Id" AlternatingRowStyle-CssClass="alt">
         <Columns>
             <asp:TemplateField>
                 <HeaderStyle CssClass="chkboxwidth"></HeaderStyle>

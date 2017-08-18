@@ -38,7 +38,7 @@ input::-moz-focus-inner {
     touch-action: manipulation;
     user-select: none;
     vertical-align: middle;
-    white-space: nowrap; 
+    white-space: nowrap;
 }
 
 .btn:focus,

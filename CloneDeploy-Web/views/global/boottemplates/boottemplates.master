@@ -28,7 +28,7 @@
         <a href="<%= ResolveUrl("~/views/global/boottemplates/create.aspx?cat=sub1") %>">
             <span class="sub-nav-text">New Template</span></a>
     </li>
-    
+
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
     <script type="text/javascript">

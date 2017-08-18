@@ -39,7 +39,6 @@ namespace CloneDeploy_Web.views.groups
             PopulateGrid();
         }
 
-
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
@@ -57,7 +56,6 @@ namespace CloneDeploy_Web.views.groups
                         : listComputers.OrderByDescending(h => h.Mac).ToList();
                     break;
             }
-
 
             gvComputers.DataSource = listComputers;
             gvComputers.DataBind();
@@ -82,7 +80,8 @@ namespace CloneDeploy_Web.views.groups
             gvComputers.DataSource = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
             gvComputers.DataBind();
 
-            lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + Call.ComputerApi.GetCount() + " Total Computer(s)";
+            lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + Call.ComputerApi.GetCount() +
+                            " Total Computer(s)";
         }
 
         protected void search_Changed(object sender, EventArgs e)

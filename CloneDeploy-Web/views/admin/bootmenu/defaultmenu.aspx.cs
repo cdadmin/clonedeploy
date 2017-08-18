@@ -14,7 +14,6 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         public string efi64Lbl;
         public string noProxyLbl;
 
-
         public void btnSubmit_Click(object sender, EventArgs e)
         {
             RequiresAuthorization(AuthorizationStrings.UpdateAdmin);
@@ -184,7 +183,6 @@ namespace CloneDeploy_Web.views.admin.bootmenu
                 bootPasswords.Visible = true;
                 divStandardMode.Visible = true;
 
-
                 if (pxeMode.Contains("ipxe"))
                 {
                     passboxes.Visible = false;
@@ -202,7 +200,6 @@ namespace CloneDeploy_Web.views.admin.bootmenu
                 ddlComputerKernel.DataSource = Call.FilesystemApi.GetKernels();
                 ddlComputerKernel.DataBind();
                 ddlComputerKernel.SelectedValue = SettingStrings.DefaultKernel32;
-
 
                 ddlComputerBootImage.DataSource = Call.FilesystemApi.GetBootImages();
                 ddlComputerBootImage.DataBind();

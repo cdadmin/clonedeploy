@@ -24,7 +24,6 @@ namespace CloneDeploy_Services
             return actionResult;
         }
 
-
         //check this
         public bool DeleteAllForGroup(int groupId)
         {

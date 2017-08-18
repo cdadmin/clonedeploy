@@ -108,14 +108,13 @@
         Queue Size:
     </div>
     <div class="size-5 column">
-        <asp:TextBox ID="qSize" runat="server" CssClass="textbox" />
+        <asp:TextBox ID="qSize" runat="server" CssClass="textbox"/>
     </div>
 
 
     <br class="clear"/>
 
-  
-    
+
     <div id="PrimaryParams" runat="server" Visible="False">
         <div class="size-4 column">
             Location:
@@ -127,19 +126,18 @@
             </asp:DropDownList>
         </div>
 
-        <br class="clear" />
+        <br class="clear"/>
         <div id="PhysicalPath" runat="server" visible="False">
             <div class="size-4 column">
                 Physical Path:
             </div>
             <div class="size-1 column">
-                <asp:TextBox ID="txtPhysicalPath" runat="server" CssClass="textbox" />
+                <asp:TextBox ID="txtPhysicalPath" runat="server" CssClass="textbox"/>
             </div>
 
-            <br class="clear" />
+            <br class="clear"/>
         </div>
     </div>
 
 
-   
 </asp:Content>

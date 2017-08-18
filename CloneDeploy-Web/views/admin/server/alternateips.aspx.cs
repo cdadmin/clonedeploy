@@ -1,19 +1,17 @@
-﻿using CloneDeploy_Common;
-using CloneDeploy_Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using CloneDeploy_Common;
+using CloneDeploy_Entities;
+using CloneDeploy_Web.BasePages;
 
 namespace CloneDeploy_Web.views.admin.server
 {
-    public partial class alternateips : BasePages.Admin
+    public partial class alternateips : Admin
     {
         protected void BindGrid()
         {
-
             gvIps.DataSource = Call.AlternateServerIpApi.Get();
             gvIps.DataBind();
 
@@ -31,16 +29,14 @@ namespace CloneDeploy_Web.views.admin.server
             }
         }
 
-
         protected void Insert(object sender, EventArgs e)
         {
             RequiresAuthorization(AuthorizationStrings.UpdateAdmin);
-            var gvRow = (GridViewRow)(sender as Control).Parent.Parent;
+            var gvRow = (GridViewRow) (sender as Control).Parent.Parent;
             var alternateIp = new AlternateServerIpEntity
             {
-                Ip = ((TextBox)gvRow.FindControl("txtIpAdd")).Text,
-                ApiUrl = ((TextBox)gvRow.FindControl("txtApiAdd")).Text,
-
+                Ip = ((TextBox) gvRow.FindControl("txtIpAdd")).Text,
+                ApiUrl = ((TextBox) gvRow.FindControl("txtApiAdd")).Text
             };
 
             Call.AlternateServerIpApi.Post(alternateIp);
@@ -66,7 +62,6 @@ namespace CloneDeploy_Web.views.admin.server
             BindGrid();
         }
 
-
         protected void OnRowUpdating(object sender, GridViewUpdateEventArgs e)
         {
             RequiresAuthorization(AuthorizationStrings.UpdateAdmin);
@@ -74,9 +69,8 @@ namespace CloneDeploy_Web.views.admin.server
             var alternateIp = new AlternateServerIpEntity
             {
                 Id = Convert.ToInt32(gvIps.DataKeys[e.RowIndex].Values[0]),
-                Ip = ((TextBox)gvRow.FindControl("txtIp")).Text,
-                ApiUrl = ((TextBox)gvRow.FindControl("txtApi")).Text,
-
+                Ip = ((TextBox) gvRow.FindControl("txtIp")).Text,
+                ApiUrl = ((TextBox) gvRow.FindControl("txtApi")).Text
             };
             Call.AlternateServerIpApi.Put(alternateIp.Id, alternateIp);
 

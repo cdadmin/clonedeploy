@@ -18,8 +18,10 @@ namespace CloneDeploy_App.Controllers
         {
             return new ApiBoolResponseDTO
             {
-                Value = new FileOpsServices().FileExists(SettingServices.GetSettingValue(SettingStrings.TftpPath) + Path.DirectorySeparatorChar + "boot" +
-                                                 Path.DirectorySeparatorChar + "boot.sdi")
+                Value =
+                    new FileOpsServices().FileExists(SettingServices.GetSettingValue(SettingStrings.TftpPath) +
+                                                     Path.DirectorySeparatorChar + "boot" +
+                                                     Path.DirectorySeparatorChar + "boot.sdi")
             };
         }
 
@@ -93,14 +95,11 @@ namespace CloneDeploy_App.Controllers
             return FilesystemServices.GetScripts(type);
         }
 
-
         [CustomAuth(Permission = "AdminRead")]
         public ApiStringResponseDTO GetServerPaths(string type, string subType)
         {
             return new ApiStringResponseDTO {Value = new FilesystemServices().GetServerPaths(type, subType)};
         }
-
-      
 
         [HttpGet]
         [Authorize]
@@ -111,7 +110,6 @@ namespace CloneDeploy_App.Controllers
                 Value = new FileOpsServices().ReadAllText(path)
             };
         }
-
 
         [HttpGet]
         [Authorize]

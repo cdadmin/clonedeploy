@@ -12,9 +12,9 @@ namespace CloneDeploy_Services.Workflows
 {
     public class TaskBootMenu
     {
+        private readonly ClusterGroupServices _clusterGroupServices;
         private readonly ComputerEntity _computer;
         private readonly ImageProfileEntity _imageProfile;
-        private readonly ClusterGroupServices _clusterGroupServices;
         private readonly SecondaryServerServices _secondaryServerServices;
 
         public TaskBootMenu(ComputerEntity computer, ImageProfileEntity imageProfile)
@@ -30,7 +30,9 @@ namespace CloneDeploy_Services.Workflows
             var pxeComputerMac = StringManipulationServices.MacToPxeMac(_computer.Mac);
             var webPath = SettingServices.GetSettingValue(SettingStrings.WebPath) + "ClientImaging/";
             var globalComputerArgs = SettingServices.GetSettingValue(SettingStrings.GlobalComputerArgs);
-            var userToken = SettingServices.GetSettingValue(SettingStrings.WebTaskRequiresLogin) == "No" ? SettingServices.GetSettingValue(SettingStrings.UniversalToken) : "";
+            var userToken = SettingServices.GetSettingValue(SettingStrings.WebTaskRequiresLogin) == "No"
+                ? SettingServices.GetSettingValue(SettingStrings.UniversalToken)
+                : "";
             const string newLineChar = "\n";
 
             if (_computer.AlternateServerIpId != -1)
@@ -46,13 +48,12 @@ namespace CloneDeploy_Services.Workflows
             ipxe.Append("#!ipxe" + newLineChar);
             ipxe.Append("kernel " + webPath + "IpxeBoot?filename=" + _imageProfile.Kernel +
                         "&type=kernel" + " initrd=" + _imageProfile.BootImage +
-                        " root=/dev/ram0 rw ramdisk_size=156000"  +
+                        " root=/dev/ram0 rw ramdisk_size=156000" +
                         " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" + userToken + " " + globalComputerArgs +
                         " " + _imageProfile.KernelArguments + newLineChar);
             ipxe.Append("imgfetch --name " + _imageProfile.BootImage + " " + webPath +
                         "IpxeBoot?filename=" + _imageProfile.BootImage + "&type=bootimage" + newLineChar);
             ipxe.Append("boot" + newLineChar);
-
 
             var sysLinux = new StringBuilder();
             sysLinux.Append("DEFAULT clonedeploy" + newLineChar);
@@ -64,7 +65,6 @@ namespace CloneDeploy_Services.Workflows
                             globalComputerArgs +
                             " " + _imageProfile.KernelArguments + newLineChar);
 
-
             var grub = new StringBuilder();
             grub.Append("set default=0" + newLineChar);
             grub.Append("set timeout=0" + newLineChar);
@@ -72,7 +72,8 @@ namespace CloneDeploy_Services.Workflows
             grub.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
                         newLineChar);
             grub.Append("linux /kernels/" + _imageProfile.Kernel +
-                        " root=/dev/ram0 rw ramdisk_size=156000" + " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" +
+                        " root=/dev/ram0 rw ramdisk_size=156000" + " consoleblank=0" + " web=" + webPath +
+                        " USER_TOKEN=" +
                         userToken + " " +
                         globalComputerArgs + " " + _imageProfile.KernelArguments + newLineChar);
             grub.Append("initrd /images/" + _imageProfile.BootImage + newLineChar);
@@ -97,7 +98,8 @@ namespace CloneDeploy_Services.Workflows
                 {
                     foreach (var bootMenu in list)
                     {
-                        var path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar + bootMenu.Item1 +
+                        var path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" +
+                                   Path.DirectorySeparatorChar + bootMenu.Item1 +
                                    Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar +
                                    pxeComputerMac +
                                    bootMenu.Item2;
@@ -115,7 +117,8 @@ namespace CloneDeploy_Services.Workflows
                         {
                             if (tftpServer.ServerId == -1)
                             {
-                                var path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar + bootMenu.Item1 +
+                                var path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" +
+                                           Path.DirectorySeparatorChar + bootMenu.Item1 +
                                            Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar +
                                            pxeComputerMac +
                                            bootMenu.Item2;
@@ -155,7 +158,8 @@ namespace CloneDeploy_Services.Workflows
                 var path = "";
                 if (SettingServices.ServerIsNotClustered)
                 {
-                    path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeComputerMac;
+                    path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" +
+                           Path.DirectorySeparatorChar + pxeComputerMac;
 
                     string fileContents = null;
                     if (mode == "pxelinux" || mode == "syslinux_32_efi" || mode == "syslinux_64_efi")
@@ -185,7 +189,8 @@ namespace CloneDeploy_Services.Workflows
                     {
                         if (tftpServer.ServerId == -1)
                         {
-                            path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeComputerMac;
+                            path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" +
+                                   Path.DirectorySeparatorChar + pxeComputerMac;
                         }
                         else
                         {

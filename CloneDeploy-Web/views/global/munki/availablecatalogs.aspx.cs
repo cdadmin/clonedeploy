@@ -38,7 +38,6 @@ namespace CloneDeploy_Web.views.global.munki
                 if (Call.MunkiManifestTemplateApi.AddCatalogToTemplate(catalog)) updateCount++;
             }
 
-
             if (updateCount > 0)
             {
                 EndUserMessage = "Successfully Updated Catalogs";
@@ -49,7 +48,6 @@ namespace CloneDeploy_Web.views.global.munki
             {
                 EndUserMessage = "Could Not Update Catalogs";
             }
-
 
             PopulateGrid();
         }
@@ -83,7 +81,6 @@ namespace CloneDeploy_Web.views.global.munki
         {
             PopulateGrid();
         }
-
 
         protected void showAvailable_OnClick(object sender, EventArgs e)
         {

@@ -41,7 +41,6 @@ namespace CloneDeploy_Web.views.computers
             PopulateGrid();
         }
 
-
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
@@ -66,7 +65,6 @@ namespace CloneDeploy_Web.views.computers
                     break;
             }
 
-
             gvComputers.DataSource = listComputers;
             gvComputers.DataBind();
         }
@@ -89,7 +87,6 @@ namespace CloneDeploy_Web.views.computers
         {
             var limit = 0;
             limit = ddlLimit.Text == "All" ? int.MaxValue : Convert.ToInt32(ddlLimit.Text);
-
 
             var listOfComputers = Call.ComputerApi.GridViewSearch(limit, txtSearch.Text);
             listOfComputers = listOfComputers.GroupBy(c => c.Id).Select(g => g.First()).ToList();
@@ -137,8 +134,6 @@ namespace CloneDeploy_Web.views.computers
             //gvComputers.Columns.Add(test);
 
             gvComputers.DataBind();
-
-            
 
             lblTotal.Text = gvComputers.Rows.Count + " Result(s) / " + Call.ComputerApi.GetCount() + " Computer(s)";
         }

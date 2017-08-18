@@ -17,13 +17,14 @@ namespace CloneDeploy_Services
 
         public ActionResultDTO AddNbiEntries(List<NbiEntryEntity> nbiEntries)
         {
-            if (nbiEntries.Count == 0) return new ActionResultDTO() { ErrorMessage = "NBI List Was Empty", Id = 0, Success = false };
+            if (nbiEntries.Count == 0)
+                return new ActionResultDTO {ErrorMessage = "NBI List Was Empty", Id = 0, Success = false};
             foreach (var nbiEntry in nbiEntries)
             {
                 var validationResult = ValidateEntry(nbiEntry);
                 if (!validationResult.Success)
                 {
-                    return new ActionResultDTO() {ErrorMessage = validationResult.ErrorMessage, Id = 0, Success = false};
+                    return new ActionResultDTO {ErrorMessage = validationResult.ErrorMessage, Id = 0, Success = false};
                 }
             }
 
@@ -33,10 +34,8 @@ namespace CloneDeploy_Services
             }
 
             _uow.Save();
-            return new ActionResultDTO() {Success = true};
+            return new ActionResultDTO {Success = true};
         }
-
-       
 
         private ValidationResultDTO ValidateEntry(NbiEntryEntity entry)
         {

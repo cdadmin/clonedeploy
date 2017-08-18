@@ -15,7 +15,6 @@ namespace CloneDeploy_ApiCalls
             _apiRequest = new ApiRequest();
         }
 
-
         public bool BootSdiExists()
         {
             Request.Method = Method.GET;
@@ -92,7 +91,6 @@ namespace CloneDeploy_ApiCalls
             return response;
         }
 
-
         public List<FileInfo> GetMunkiResources(string resourceType)
         {
             Request.Method = Method.GET;
@@ -102,7 +100,6 @@ namespace CloneDeploy_ApiCalls
 
             return response;
         }
-
 
         public MunkiPackageInfoEntity GetPlist(string file)
         {
@@ -134,8 +131,6 @@ namespace CloneDeploy_ApiCalls
 
             return response != null ? response.Value : string.Empty;
         }
-
-       
 
         public string ReadFileText(string path)
         {

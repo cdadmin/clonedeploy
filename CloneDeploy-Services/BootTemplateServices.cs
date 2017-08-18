@@ -48,7 +48,6 @@ namespace CloneDeploy_Services
             actionResult.Success = true;
             actionResult.Id = bootTemplate.Id;
 
-
             return actionResult;
         }
 

@@ -50,7 +50,6 @@ namespace CloneDeploy_Web.views.global.munki
                 EndUserMessage = "Could Not Update Optional Installs";
             }
 
-
             PopulateGrid();
         }
 

@@ -35,7 +35,7 @@ namespace CloneDeploy_Services.Workflows
                     {
                         imageFile = new FilesystemServices().GetFileNameWithFullPath(mArgs.ImageName,
                             schemaCounter.ToString(), part.Number, ext);
-                     
+
                         if (!string.IsNullOrEmpty(imageFile)) break;
 
                         //Look for lvm
@@ -103,8 +103,8 @@ namespace CloneDeploy_Services.Workflows
                         else
                             prefix = " ; ";
 
-
-                        if (compAlg == "none" || SettingServices.GetSettingValue(SettingStrings.MulticastDecompression) == "client")
+                        if (compAlg == "none" ||
+                            SettingServices.GetSettingValue(SettingStrings.MulticastDecompression) == "client")
                         {
                             processArguments += prefix + "cat " + "\"" + imageFile + "\"" + " | udp-sender" +
                                                 " --portbase " + mArgs.Port + minReceivers + " " +
@@ -139,7 +139,8 @@ namespace CloneDeploy_Services.Workflows
                                 if (x == 1)
                                 {
                                     prefix = " /c \"net use \\\\" + primaryDp.Server + "\\" + primaryDp.ShareName +
-                                             " /user:" + primaryDp.RoUsername + " " +  new EncryptionServices().DecryptText(primaryDp.RoPassword) + " & ";
+                                             " /user:" + primaryDp.RoUsername + " " +
+                                             new EncryptionServices().DecryptText(primaryDp.RoPassword) + " & ";
                                 }
                                 else
                                 {
@@ -150,8 +151,8 @@ namespace CloneDeploy_Services.Workflows
                         else
                             prefix = " & ";
 
-
-                        if (compAlg == "none" || SettingServices.GetSettingValue(SettingStrings.MulticastDecompression) == "client")
+                        if (compAlg == "none" ||
+                            SettingServices.GetSettingValue(SettingStrings.MulticastDecompression) == "client")
                         {
                             processArguments += prefix + "\"" + appPath +
                                                 "udp-sender.exe" + "\"" + " --file " + "\"" + imageFile + "\"" +
@@ -186,7 +187,6 @@ namespace CloneDeploy_Services.Workflows
 
             var shell = isUnix ? "/bin/bash" : "cmd.exe";
 
-
             var senderInfo = new ProcessStartInfo {FileName = shell, Arguments = processArguments};
 
             //Fix
@@ -201,11 +201,9 @@ namespace CloneDeploy_Services.Workflows
                           + Environment.NewLine;
             File.AppendAllText(logPath, logText);
 
-
             Process sender;
             try
             {
-                
                 sender = Process.Start(senderInfo);
             }
             catch (Exception ex)
@@ -226,7 +224,6 @@ namespace CloneDeploy_Services.Workflows
                     "Session " + groupName + " Started And Was Forced To Quit, Try Running The Command Manually");
                 return 0;
             }
-
 
             return sender.Id;
         }

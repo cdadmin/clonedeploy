@@ -1,23 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using CloneDeploy_Common;
 using CloneDeploy_Entities;
+using CloneDeploy_Web.BasePages;
 
 namespace CloneDeploy_Web.views.admin.netboot
 {
-    public partial class create : BasePages.Admin
+    public partial class create : Admin
     {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            if (!IsPostBack) BindGrid();
-         
-        }
-
         protected void BindGrid()
         {
             DataTable dt;
@@ -44,15 +37,15 @@ namespace CloneDeploy_Web.views.admin.netboot
                 emptyTable.Columns.Add("Name");
                 emptyTable.Clear();
                 ViewState["nbiEntries"] = emptyTable;
-            } 
+            }
         }
 
         protected void btnAdd1_OnClick(object sender, EventArgs e)
         {
-            var gvRow = (GridViewRow)(sender as Control).Parent.Parent;
-            var id = ((TextBox)gvRow.FindControl("txtIdAdd")).Text;
-            var name = ((TextBox)gvRow.FindControl("txtNameAdd")).Text;
-            var dt = (DataTable)ViewState["nbiEntries"];
+            var gvRow = (GridViewRow) (sender as Control).Parent.Parent;
+            var id = ((TextBox) gvRow.FindControl("txtIdAdd")).Text;
+            var name = ((TextBox) gvRow.FindControl("txtNameAdd")).Text;
+            var dt = (DataTable) ViewState["nbiEntries"];
             var dataRow = dt.NewRow();
             dataRow[0] = id;
             dataRow[1] = name;
@@ -73,9 +66,9 @@ namespace CloneDeploy_Web.views.admin.netboot
                 var nbiList = new List<NbiEntryEntity>();
                 foreach (GridViewRow row in gvNetBoot.Rows)
                 {
-                    var nbiId = Convert.ToInt32(((Label)row.FindControl("lblImageId")).Text); 
-                    var nbiName = ((Label)row.FindControl("lblName")).Text;
-                    nbiList.Add(new NbiEntryEntity(){NbiId = nbiId,ProfileId = result.Id,NbiName = nbiName});
+                    var nbiId = Convert.ToInt32(((Label) row.FindControl("lblImageId")).Text);
+                    var nbiName = ((Label) row.FindControl("lblName")).Text;
+                    nbiList.Add(new NbiEntryEntity {NbiId = nbiId, ProfileId = result.Id, NbiName = nbiName});
                 }
                 var nbiResult = Call.NbiEntryApi.Post(nbiList);
                 if (nbiResult.Success)
@@ -88,16 +81,13 @@ namespace CloneDeploy_Web.views.admin.netboot
                     EndUserMessage = nbiResult.ErrorMessage;
                     Response.Redirect("~/views/admin/netboot/edit.aspx?level=2&netbootid=" + result.Id);
                 }
-               
             }
             else
             {
                 EndUserMessage = result.ErrorMessage;
             }
-
         }
 
-       
         protected void OnRowCancelingEdit(object sender, EventArgs e)
         {
             gvNetBoot.EditIndex = -1;
@@ -106,7 +96,7 @@ namespace CloneDeploy_Web.views.admin.netboot
 
         protected void OnRowDeleting(object sender, GridViewDeleteEventArgs e)
         {
-            var dt = (DataTable)ViewState["nbiEntries"];
+            var dt = (DataTable) ViewState["nbiEntries"];
             dt.Rows[e.RowIndex].Delete();
             gvNetBoot.DataSource = dt;
             gvNetBoot.DataBind();
@@ -115,7 +105,6 @@ namespace CloneDeploy_Web.views.admin.netboot
                 ViewState["nbiEntries"] = null;
                 BindGrid();
             }
-
         }
 
         protected void OnRowEditing(object sender, GridViewEditEventArgs e)
@@ -124,11 +113,10 @@ namespace CloneDeploy_Web.views.admin.netboot
             BindGrid();
         }
 
-
         protected void OnRowUpdating(object sender, GridViewUpdateEventArgs e)
         {
             var gvRow = gvNetBoot.Rows[e.RowIndex];
-            var dt = (DataTable)ViewState["nbiEntries"];         
+            var dt = (DataTable) ViewState["nbiEntries"];
             dt.Rows[e.RowIndex]["ImageId"] = ((TextBox) gvRow.FindControl("txtIdEdit")).Text;
             dt.Rows[e.RowIndex]["Name"] = ((TextBox) gvRow.FindControl("txtNameEdit")).Text;
             ViewState["nbiEntries"] = dt;
@@ -136,6 +124,9 @@ namespace CloneDeploy_Web.views.admin.netboot
             BindGrid();
         }
 
-       
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack) BindGrid();
+        }
     }
 }

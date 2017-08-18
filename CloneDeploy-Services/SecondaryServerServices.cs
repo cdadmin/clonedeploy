@@ -67,7 +67,8 @@ namespace CloneDeploy_Services
 
             secondaryServer.TftpRole = Convert.ToInt16(serverRoles.IsTftpServer);
             secondaryServer.MulticastRole = Convert.ToInt16(serverRoles.IsMulticastServer);
-            secondaryServer.ServiceAccountPassword = new EncryptionServices().EncryptText(secondaryServer.ServiceAccountPassword);
+            secondaryServer.ServiceAccountPassword =
+                new EncryptionServices().EncryptText(secondaryServer.ServiceAccountPassword);
 
             var validationResult = ValidateSecondaryServer(secondaryServer, true);
             if (validationResult.Success)
@@ -83,7 +84,6 @@ namespace CloneDeploy_Services
                 actionResult.ErrorMessage = validationResult.ErrorMessage;
             }
 
-
             return actionResult;
         }
 
@@ -98,6 +98,31 @@ namespace CloneDeploy_Services
             actionResult.Success = true;
             actionResult.Id = secondaryServer.Id;
             return actionResult;
+        }
+
+        public List<SecondaryServerEntity> GetAllWithActiveRoles()
+        {
+            return _uow.SecondaryServerRepository.Get(x => x.MulticastRole == 1 || x.TftpRole == 1);
+        }
+
+        public List<SecondaryServerEntity> GetAllWithMulticastRole()
+        {
+            return _uow.SecondaryServerRepository.Get(x => x.MulticastRole == 1);
+        }
+
+        public List<SecondaryServerEntity> GetAllWithTftpRole()
+        {
+            return _uow.SecondaryServerRepository.Get(x => x.TftpRole == 1);
+        }
+
+        public SecondaryServerEntity GetSecondaryServer(int secondaryServerId)
+        {
+            return _uow.SecondaryServerRepository.GetById(secondaryServerId);
+        }
+
+        public SecondaryServerEntity GetSecondaryServerByName(string serverName)
+        {
+            return _uow.SecondaryServerRepository.GetFirstOrDefault(x => x.Name == serverName);
         }
 
         public CustomApiCallDTO GetToken(string serverName)
@@ -123,31 +148,6 @@ namespace CloneDeploy_Services
                 _uow.Save();
             }
             return customApiCall;
-        }
-
-        public List<SecondaryServerEntity> GetAllWithActiveRoles()
-        {
-            return _uow.SecondaryServerRepository.Get(x => x.MulticastRole == 1 || x.TftpRole == 1);
-        }
-
-        public List<SecondaryServerEntity> GetAllWithTftpRole()
-        {
-            return _uow.SecondaryServerRepository.Get(x => x.TftpRole == 1);
-        }
-
-        public List<SecondaryServerEntity> GetAllWithMulticastRole()
-        {
-            return _uow.SecondaryServerRepository.Get(x => x.MulticastRole == 1);
-        }
-
-        public SecondaryServerEntity GetSecondaryServer(int secondaryServerId)
-        {
-            return _uow.SecondaryServerRepository.GetById(secondaryServerId);
-        }
-
-        public SecondaryServerEntity GetSecondaryServerByName(string serverName)
-        {
-            return _uow.SecondaryServerRepository.GetFirstOrDefault(x => x.Name == serverName);
         }
 
         public List<SecondaryServerEntity> SearchSecondaryServers(string searchString = "")

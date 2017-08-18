@@ -27,6 +27,13 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
+        [CustomAuth(Permission = AuthorizationStrings.UpdateAdmin)]
+        public ApiBoolResponseDTO DeleteProfileNbiEntries(int id)
+        {
+            var result = _netBootProfileServices.DeleteProfileNbiEntries(id);
+            return new ApiBoolResponseDTO {Value = result};
+        }
+
         [CustomAuth(Permission = AuthorizationStrings.ReadAdmin)]
         public NetBootProfileEntity Get(int id)
         {
@@ -49,6 +56,12 @@ namespace CloneDeploy_App.Controllers
             return new ApiStringResponseDTO {Value = _netBootProfileServices.TotalCount()};
         }
 
+        [CustomAuth(Permission = AuthorizationStrings.ReadAdmin)]
+        public IEnumerable<NbiEntryEntity> GetProfileNbiEntries(int id)
+        {
+            return _netBootProfileServices.GetProfileNbiEntries(id);
+        }
+
         [CustomAuth(Permission = AuthorizationStrings.UpdateAdmin)]
         public ActionResultDTO Post(NetBootProfileEntity profile)
         {
@@ -62,19 +75,6 @@ namespace CloneDeploy_App.Controllers
             var result = _netBootProfileServices.UpdateNetBootProfile(profile);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
-        }
-
-        [CustomAuth(Permission = AuthorizationStrings.UpdateAdmin)]
-        public ApiBoolResponseDTO DeleteProfileNbiEntries(int id)
-        {
-            var result = _netBootProfileServices.DeleteProfileNbiEntries(id);
-            return new ApiBoolResponseDTO() {Value = result};
-        }
-
-        [CustomAuth(Permission = AuthorizationStrings.ReadAdmin)]
-        public IEnumerable<NbiEntryEntity> GetProfileNbiEntries(int id)
-        {
-            return _netBootProfileServices.GetProfileNbiEntries(id);
         }
     }
 }

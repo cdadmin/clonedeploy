@@ -18,7 +18,6 @@ namespace CloneDeploy_Services
             _uow = new UnitOfWork();
         }
 
-
         public void DeleteBootFiles(ComputerEntity computer)
         {
             if (new ComputerServices().IsComputerActive(computer.Id))
@@ -36,16 +35,18 @@ namespace CloneDeploy_Services
             };
             foreach (var tuple in list)
             {
-                new FileOpsServices().DeletePath(SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
-                                         Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar +
-                                         pxeMac +
-                                         tuple.Item2);
+                new FileOpsServices().DeletePath(SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" +
+                                                 Path.DirectorySeparatorChar + tuple.Item1 +
+                                                 Path.DirectorySeparatorChar + "pxelinux.cfg" +
+                                                 Path.DirectorySeparatorChar +
+                                                 pxeMac +
+                                                 tuple.Item2);
             }
 
-
             foreach (var ext in new[] {"", ".ipxe", ".cfg"})
-                new FileOpsServices().DeletePath(SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar +
-                                         pxeMac + ext);
+                new FileOpsServices().DeletePath(SettingServices.GetSettingValue(SettingStrings.TftpPath) +
+                                                 "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                                                 pxeMac + ext);
         }
 
         public ActionResultDTO UpdateComputerBootMenu(ComputerBootMenuEntity computerBootMenu)

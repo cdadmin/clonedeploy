@@ -1,6 +1,5 @@
 ﻿using System;
 using CloneDeploy_Common;
-using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
 
 namespace CloneDeploy_Web.views.computers
@@ -30,8 +29,6 @@ namespace CloneDeploy_Web.views.computers
             Computer.CustomAttribute4 = txtCustom4.Text;
             Computer.CustomAttribute5 = txtCustom5.Text;
             Computer.AlternateServerIpId = Convert.ToInt32(altServerIp.SelectedValue);
-
-            
 
             var result = Call.ComputerApi.Put(Computer.Id, Computer);
 

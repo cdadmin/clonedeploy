@@ -9,10 +9,9 @@ namespace CloneDeploy_Services.Workflows
     {
         private readonly ComputerEntity _computer;
         private readonly string _task;
-        private Random _random;
+        private readonly Random _random;
 
-
-        public GetImageServer(ComputerEntity computer,string task)
+        public GetImageServer(ComputerEntity computer, string task)
         {
             _computer = computer;
             _task = task;
@@ -31,10 +30,7 @@ namespace CloneDeploy_Services.Workflows
                 var dp = distributionPointServices.GetPrimaryDistributionPoint();
                 if (dp != null)
                     return dp.Id;
-                else
-                {
-                    return -1;
-                }
+                return -1;
             }
 
             var clusterServices = new ClusterGroupServices();

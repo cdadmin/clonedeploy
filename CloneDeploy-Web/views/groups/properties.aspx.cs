@@ -88,7 +88,7 @@ namespace CloneDeploy_Web.views.groups
 
         protected void PopulateForm()
         {
-            PopulateImagesDdlForGroup(Group.Id,ddlComputerImage);
+            PopulateImagesDdlForGroup(Group.Id, ddlComputerImage);
             PopulateSitesDdl(ddlSite);
             PopulateBuildingsDdl(ddlBuilding);
             PopulateRoomsDdl(ddlRoom);

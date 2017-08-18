@@ -30,7 +30,7 @@
 
 <asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
     <script type="text/javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#netboot').addClass("nav-current");
         });
     </script>

@@ -11,7 +11,8 @@ namespace CloneDeploy_App.Controllers.Authorization
     {
         public override void OnAuthorization(HttpActionContext actionContext)
         {
-            var userToken = StringManipulationServices.Decode(HttpContext.Current.Request.Headers["Authorization"], "Authorization");
+            var userToken = StringManipulationServices.Decode(HttpContext.Current.Request.Headers["Authorization"],
+                "Authorization");
             if (!new ClientImagingServices().Authorize(userToken))
             {
                 var response = actionContext.Request.CreateResponse(HttpStatusCode.Forbidden);

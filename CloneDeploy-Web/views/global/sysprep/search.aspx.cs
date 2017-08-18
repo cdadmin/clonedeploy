@@ -30,7 +30,6 @@ namespace CloneDeploy_Web.views.global.sysprep
             ChkAll(gvSysprepTags);
         }
 
-
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
@@ -48,7 +47,6 @@ namespace CloneDeploy_Web.views.global.sysprep
                         : listSysprepTags.OrderByDescending(s => s.OpeningTag).ToList();
                     break;
             }
-
 
             gvSysprepTags.DataSource = listSysprepTags;
             gvSysprepTags.DataBind();

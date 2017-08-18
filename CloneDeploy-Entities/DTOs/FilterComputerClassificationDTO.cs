@@ -5,7 +5,6 @@ namespace CloneDeploy_Entities.DTOs
     public class FilterComputerClassificationDTO
     {
         public int ComputerId { get; set; }
-        public List<ImageWithDate> ListImages  { get; set; }
-
+        public List<ImageWithDate> ListImages { get; set; }
     }
 }

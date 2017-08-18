@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading;
 using System.Web.Http;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
@@ -11,9 +10,10 @@ namespace CloneDeploy_App.Controllers
     public class AuthorizationController : ApiController
     {
         private readonly int _userId;
+
         public AuthorizationController()
         {
-            _userId = Convert.ToInt32(((ClaimsIdentity)User.Identity).Claims.Where(c => c.Type == "user_id")
+            _userId = Convert.ToInt32(((ClaimsIdentity) User.Identity).Claims.Where(c => c.Type == "user_id")
                 .Select(c => c.Value).SingleOrDefault());
         }
 
@@ -23,7 +23,8 @@ namespace CloneDeploy_App.Controllers
         {
             return new ApiBoolResponseDTO
             {
-                Value = new AuthorizationServices(Convert.ToInt32(_userId), requiredRight).ComputerManagement(computerId)
+                Value =
+                    new AuthorizationServices(Convert.ToInt32(_userId), requiredRight).ComputerManagement(computerId)
             };
         }
 

@@ -19,6 +19,36 @@ namespace CloneDeploy_Services
             _uow = new UnitOfWork();
         }
 
+        public static bool ImageServerRole
+        {
+            get { return GetSettingValue(SettingStrings.ImageServerRole) == "1"; }
+        }
+
+        public static bool MulticastServerRole
+        {
+            get { return GetSettingValue(SettingStrings.MulticastServerRole) == "1"; }
+        }
+
+        public static bool ServerIsClusterPrimary
+        {
+            get { return GetSettingValue(SettingStrings.OperationMode) == "Cluster Primary"; }
+        }
+
+        public static bool ServerIsClusterSecondary
+        {
+            get { return GetSettingValue(SettingStrings.OperationMode) == "Cluster Secondary"; }
+        }
+
+        public static bool ServerIsNotClustered
+        {
+            get { return GetSettingValue(SettingStrings.OperationMode) == "Single"; }
+        }
+
+        public static bool TftpServerRole
+        {
+            get { return GetSettingValue(SettingStrings.TftpServerRole) == "1"; }
+        }
+
         public ServerRoleDTO GetServerRoles()
         {
             var srDto = new ServerRoleDTO();
@@ -29,7 +59,6 @@ namespace CloneDeploy_Services
             srDto.IsMulticastServer = Convert.ToBoolean(SettingStrings.MulticastServerRole);
             return srDto;
         }
-
 
         public SettingEntity GetSetting(string settingName)
         {
@@ -55,7 +84,7 @@ namespace CloneDeploy_Services
                     new SecondaryServerServices().SearchSecondaryServers()
                         .Where(x => x.TftpRole == 1);
 
-                foreach(var server in secondaryServers)
+                foreach (var server in secondaryServers)
                 {
                     var result = new APICall(new SecondaryServerServices().GetToken(server.Name))
                         .ServiceAccountApi.UpdateSettings(settings);
@@ -74,7 +103,7 @@ namespace CloneDeploy_Services
             foreach (var setting in listSettings)
             {
                 if (setting.Name == "Munki SMB Password Encrypted" || setting.Name == "Smtp Password Encrypted")
-                    
+
                     setting.Value = new EncryptionServices().EncryptText(setting.Value);
                 _uow.SettingRepository.Update(setting, setting.Id);
             }
@@ -82,39 +111,5 @@ namespace CloneDeploy_Services
 
             return true;
         }
-
-        public static bool ServerIsClusterPrimary
-        {
-            get { return GetSettingValue(SettingStrings.OperationMode) == "Cluster Primary"; }
-        }
-
-        public static bool ServerIsClusterSecondary
-        {
-            get { return GetSettingValue(SettingStrings.OperationMode) == "Cluster Secondary"; }
-        }
-
-        public static bool ServerIsNotClustered
-        {
-            get { return GetSettingValue(SettingStrings.OperationMode) == "Single"; }
-        }
-
-        public static bool ImageServerRole
-        {
-            get { return GetSettingValue(SettingStrings.ImageServerRole) == "1"; }
-        }
-
-        public static bool MulticastServerRole
-        {
-            get { return GetSettingValue(SettingStrings.MulticastServerRole) == "1"; }
-        }
-
-        public static bool TftpServerRole
-        {
-            get { return GetSettingValue(SettingStrings.TftpServerRole) == "1"; }
-        }
-
-
-
-        
     }
 }

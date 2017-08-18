@@ -32,6 +32,11 @@ namespace CloneDeploy_Web.views.users.groupacls
             EndUserMessage = "Updated Image Management";
         }
 
+        protected void chkEnabled_OnCheckedChanged(object sender, EventArgs e)
+        {
+            Call.UserGroupApi.ToggleImageManagement(CloneDeployUserGroup.Id, chkEnabled.Checked ? 1 : 0);
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             RequiresAuthorization(AuthorizationStrings.Administrator);
@@ -63,11 +68,6 @@ namespace CloneDeploy_Web.views.users.groupacls
         protected void SelectAll_CheckedChanged(object sender, EventArgs e)
         {
             ChkAll(gvImages);
-        }
-
-        protected void chkEnabled_OnCheckedChanged(object sender, EventArgs e)
-        {
-            Call.UserGroupApi.ToggleImageManagement(CloneDeployUserGroup.Id, chkEnabled.Checked ? 1 : 0);
         }
     }
 }

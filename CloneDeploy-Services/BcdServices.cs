@@ -65,7 +65,6 @@ namespace CloneDeploy_Services
                 bcd = regex.Replace(bcd, newOffsetHex);
             }
 
-
             return StringManipulationServices.Encode(bcd);
         }
     }

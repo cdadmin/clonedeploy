@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 using CloneDeploy_Common;
 using CloneDeploy_Entities;
+using CloneDeploy_Web.BasePages;
 
 namespace CloneDeploy_Web.views.admin.netboot
 {
-    public partial class search : BasePages.Admin
+    public partial class search : Admin
     {
         protected void ButtonConfirmDelete_Click(object sender, EventArgs e)
         {
@@ -17,7 +16,7 @@ namespace CloneDeploy_Web.views.admin.netboot
             var deletedCount = 0;
             foreach (GridViewRow row in gvProfiles.Rows)
             {
-                var cb = (CheckBox)row.FindControl("chkSelector");
+                var cb = (CheckBox) row.FindControl("chkSelector");
                 if (cb == null || !cb.Checked) continue;
                 var dataKey = gvProfiles.DataKeys[row.RowIndex];
                 if (dataKey == null) continue;
@@ -33,12 +32,11 @@ namespace CloneDeploy_Web.views.admin.netboot
             ChkAll(gvProfiles);
         }
 
-
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
 
-            var listNetBootProfiles = (List<NetBootProfileEntity>)gvProfiles.DataSource;
+            var listNetBootProfiles = (List<NetBootProfileEntity>) gvProfiles.DataSource;
             switch (e.SortExpression)
             {
                 case "Name":
@@ -47,7 +45,6 @@ namespace CloneDeploy_Web.views.admin.netboot
                         : listNetBootProfiles.OrderByDescending(h => h.Name).ToList();
                     break;
             }
-
 
             gvProfiles.DataSource = listNetBootProfiles;
             gvProfiles.DataBind();

@@ -1,4 +1,5 @@
 ﻿using System.Web.Http;
+using Newtonsoft.Json;
 
 namespace CloneDeploy_App
 {
@@ -17,7 +18,7 @@ namespace CloneDeploy_App
                 );
 
             var json = config.Formatters.JsonFormatter;
-            json.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Unspecified;
+            json.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Unspecified;
         }
     }
 }

@@ -3,10 +3,10 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
-using CloneDeploy_Common;
 
 namespace CloneDeploy_App.Controllers
 {
@@ -39,7 +39,6 @@ namespace CloneDeploy_App.Controllers
         public IEnumerable<AlternateServerIpEntity> Get()
         {
             return _alternateServerIpServices.GetAll();
-           
         }
 
         [CustomAuth(Permission = AuthorizationStrings.ReadAdmin)]

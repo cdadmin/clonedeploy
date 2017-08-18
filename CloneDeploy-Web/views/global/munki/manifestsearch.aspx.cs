@@ -93,7 +93,6 @@ namespace CloneDeploy_Web.views.global.munki
                 EndUserMessage = "Successfully Updated Manifests";
         }
 
-
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
@@ -107,11 +106,9 @@ namespace CloneDeploy_Web.views.global.munki
                     break;
             }
 
-
             gvManifestTemplates.DataSource = listManifestTemplates;
             gvManifestTemplates.DataBind();
         }
-
 
         protected void Page_Load(object sender, EventArgs e)
         {

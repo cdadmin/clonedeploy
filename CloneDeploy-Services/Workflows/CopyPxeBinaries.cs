@@ -13,27 +13,33 @@ namespace CloneDeploy_Services.Workflows
         private readonly string[] _grubEfi64Files = {"bootx64.efi", "grubx64.efi"};
         private readonly string[] _ipxeBiosFiles = {"undionly.kpxe"};
         private readonly string[] _ipxeEfiFiles = {"ipxe.efi", "snp.efi", "snponly.efi"};
-        private readonly string _sourceRootPath = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "static" + Path.DirectorySeparatorChar;
+
+        private readonly SecondaryServerServices _secondaryServerServices;
+
+        private readonly string _sourceRootPath = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "static" +
+                                                  Path.DirectorySeparatorChar;
+
         private readonly string[] _syslinuxBiosFiles =
         {
             "ldlinux.c32", "libcom32.c32", "libutil.c32", "vesamenu.c32",
             "pxelinux.0"
         };
+
         private readonly string[] _syslinuxEfi32Files =
         {
             "ldlinux.e32", "libcom32.c32", "libutil.c32", "vesamenu.c32",
             "syslinux.efi"
         };
+
         private readonly string[] _syslinuxEfi64Files =
         {
             "ldlinux.e64", "libcom32.c32", "libutil.c32", "vesamenu.c32",
             "syslinux.efi"
         };
+
         private readonly string[] _winPEBiosFiles = {"bootmgr.exe", "pxeboot.n12"};
         private readonly string[] _winPEEfiFiles = {"bootmgfw.efi"};
         private readonly ILog log = LogManager.GetLogger("ApplicationLog");
-
-        private readonly SecondaryServerServices _secondaryServerServices;
 
         public CopyPxeBinaries()
         {
@@ -53,7 +59,8 @@ namespace CloneDeploy_Services.Workflows
                     Path.DirectorySeparatorChar + sArch + Path.DirectorySeparatorChar + sName,
                     destinationRootPath + dArch + Path.DirectorySeparatorChar + dName, true);
 
-                new FileOpsServices().SetUnixPermissions(destinationRootPath + dArch + Path.DirectorySeparatorChar + dName);
+                new FileOpsServices().SetUnixPermissions(destinationRootPath + dArch + Path.DirectorySeparatorChar +
+                                                         dName);
             }
             catch (Exception ex)
             {
@@ -61,27 +68,6 @@ namespace CloneDeploy_Services.Workflows
                 return false;
             }
             return true;
-        }
-
-        public bool Execute()
-        {
-            var copyResult = false;
-            if (SettingServices.ServerIsNotClustered || 
-                (SettingServices.ServerIsClusterSecondary && SettingServices.TftpServerRole) ||
-                (SettingServices.ServerIsClusterPrimary && SettingServices.TftpServerRole))
-            {
-                copyResult = SettingServices.GetSettingValue(SettingStrings.ProxyDhcp) == "Yes" ? CopyFilesForProxy() : CopyFilesForNonProxy();
-            }
-
-            if (SettingServices.ServerIsClusterPrimary)
-            {
-                foreach (var tftpServer in _secondaryServerServices.GetAllWithTftpRole())
-                {
-                    copyResult = new APICall(_secondaryServerServices.GetToken(tftpServer.Name))
-                        .ServiceAccountApi.CopyPxeBinaries();
-                }
-            }
-            return copyResult;
         }
 
         private bool CopyFilesForNonProxy()
@@ -165,10 +151,15 @@ namespace CloneDeploy_Services.Workflows
                 case "winpe_bios32":
                     try
                     {
-                        File.Copy(SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" + Path.DirectorySeparatorChar + "BCDx86",
-                            SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" + Path.DirectorySeparatorChar + "BCD", true);
-                        new FileOpsServices().SetUnixPermissions(SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" + Path.DirectorySeparatorChar +
-                                                         "BCD");
+                        File.Copy(
+                            SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" +
+                            Path.DirectorySeparatorChar + "BCDx86",
+                            SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" +
+                            Path.DirectorySeparatorChar + "BCD", true);
+                        new FileOpsServices().SetUnixPermissions(
+                            SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" +
+                            Path.DirectorySeparatorChar +
+                            "BCD");
                     }
                     catch (Exception ex)
                     {
@@ -190,10 +181,15 @@ namespace CloneDeploy_Services.Workflows
                 case "winpe_bios64":
                     try
                     {
-                        File.Copy(SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" + Path.DirectorySeparatorChar + "BCDx64",
-                            SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" + Path.DirectorySeparatorChar + "BCD", true);
-                        new FileOpsServices().SetUnixPermissions(SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" + Path.DirectorySeparatorChar +
-                                                         "BCD");
+                        File.Copy(
+                            SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" +
+                            Path.DirectorySeparatorChar + "BCDx64",
+                            SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" +
+                            Path.DirectorySeparatorChar + "BCD", true);
+                        new FileOpsServices().SetUnixPermissions(
+                            SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" +
+                            Path.DirectorySeparatorChar +
+                            "BCD");
                     }
                     catch (Exception ex)
                     {
@@ -215,10 +211,15 @@ namespace CloneDeploy_Services.Workflows
                 case "winpe_efi32":
                     try
                     {
-                        File.Copy(SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" + Path.DirectorySeparatorChar + "BCDx86",
-                            SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" + Path.DirectorySeparatorChar + "BCD", true);
-                        new FileOpsServices().SetUnixPermissions(SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" + Path.DirectorySeparatorChar +
-                                                         "BCD");
+                        File.Copy(
+                            SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" +
+                            Path.DirectorySeparatorChar + "BCDx86",
+                            SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" +
+                            Path.DirectorySeparatorChar + "BCD", true);
+                        new FileOpsServices().SetUnixPermissions(
+                            SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" +
+                            Path.DirectorySeparatorChar +
+                            "BCD");
                     }
                     catch (Exception ex)
                     {
@@ -230,10 +231,15 @@ namespace CloneDeploy_Services.Workflows
                 case "winpe_efi64":
                     try
                     {
-                        File.Copy(SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" + Path.DirectorySeparatorChar + "BCDx64",
-                            SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" + Path.DirectorySeparatorChar + "BCD", true);
-                        new FileOpsServices().SetUnixPermissions(SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" + Path.DirectorySeparatorChar +
-                                                         "BCD");
+                        File.Copy(
+                            SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" +
+                            Path.DirectorySeparatorChar + "BCDx64",
+                            SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" +
+                            Path.DirectorySeparatorChar + "BCD", true);
+                        new FileOpsServices().SetUnixPermissions(
+                            SettingServices.GetSettingValue(SettingStrings.TftpPath) + "boot" +
+                            Path.DirectorySeparatorChar +
+                            "BCD");
                     }
                     catch (Exception ex)
                     {
@@ -305,8 +311,9 @@ namespace CloneDeploy_Services.Workflows
             }
 
             if (
-                new FileOpsServices().FileExists(SettingServices.GetSettingValue(SettingStrings.TftpPath) + Path.DirectorySeparatorChar + "boot" +
-                                         Path.DirectorySeparatorChar + "boot.sdi"))
+                new FileOpsServices().FileExists(SettingServices.GetSettingValue(SettingStrings.TftpPath) +
+                                                 Path.DirectorySeparatorChar + "boot" +
+                                                 Path.DirectorySeparatorChar + "boot.sdi"))
             {
                 foreach (var file in _winPEEfiFiles)
                 {
@@ -337,6 +344,29 @@ namespace CloneDeploy_Services.Workflows
             }
 
             return true;
+        }
+
+        public bool Execute()
+        {
+            var copyResult = false;
+            if (SettingServices.ServerIsNotClustered ||
+                (SettingServices.ServerIsClusterSecondary && SettingServices.TftpServerRole) ||
+                (SettingServices.ServerIsClusterPrimary && SettingServices.TftpServerRole))
+            {
+                copyResult = SettingServices.GetSettingValue(SettingStrings.ProxyDhcp) == "Yes"
+                    ? CopyFilesForProxy()
+                    : CopyFilesForNonProxy();
+            }
+
+            if (SettingServices.ServerIsClusterPrimary)
+            {
+                foreach (var tftpServer in _secondaryServerServices.GetAllWithTftpRole())
+                {
+                    copyResult = new APICall(_secondaryServerServices.GetToken(tftpServer.Name))
+                        .ServiceAccountApi.CopyPxeBinaries();
+                }
+            }
+            return copyResult;
         }
     }
 }

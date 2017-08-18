@@ -30,7 +30,6 @@ namespace CloneDeploy_Services
             lastPort =
                 _uow.PortRepository.GetFirstOrDefault(orderBy: q => q.OrderByDescending(p => p.Id));
 
-
             if (lastPort == null)
                 nextPort.Number = Convert.ToInt32(SettingServices.GetSettingValue(SettingStrings.StartPort));
             else if (nextPort.Number >= Convert.ToInt32(SettingServices.GetSettingValue(SettingStrings.EndPort)))

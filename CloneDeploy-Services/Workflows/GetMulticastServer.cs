@@ -8,7 +8,8 @@ namespace CloneDeploy_Services.Workflows
     public class GetMulticastServer
     {
         private readonly GroupEntity _group;
-        private Random _random;
+        private readonly Random _random;
+
         public GetMulticastServer(GroupEntity group)
         {
             _group = group;
@@ -25,7 +26,6 @@ namespace CloneDeploy_Services.Workflows
             //Find the best multicast server to use
 
             var serverId = -1;
-
 
             if (SettingServices.ServerIsNotClustered)
                 return serverId;
@@ -60,7 +60,6 @@ namespace CloneDeploy_Services.Workflows
                 taskInUseDict.Add(mServer.ServerId, counter);
             }
 
-
             if (taskInUseDict.Count == 1)
                 serverId = taskInUseDict.Keys.First();
 
@@ -71,7 +70,7 @@ namespace CloneDeploy_Services.Workflows
                 if (taskInUseDict.Values.Distinct().Count() == 1)
                 {
                     //all multicast server have equal tasks - randomly choose one.
-                   
+
                     var index = _random.Next(0, taskInUseDict.Count);
                     serverId = taskInUseDict[index];
                 }

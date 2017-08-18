@@ -41,7 +41,6 @@ namespace CloneDeploy_Web.views.groups
             }
         }
 
-
         protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
         {
             ChkAll(gvManifestTemplates);
@@ -55,7 +54,6 @@ namespace CloneDeploy_Web.views.groups
             Response.End();
         }
 
-
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
@@ -68,7 +66,6 @@ namespace CloneDeploy_Web.views.groups
                         : listManifestTemplates.OrderByDescending(s => s.Name).ToList();
                     break;
             }
-
 
             gvManifestTemplates.DataSource = listManifestTemplates;
             gvManifestTemplates.DataBind();
@@ -85,7 +82,6 @@ namespace CloneDeploy_Web.views.groups
         {
             gvManifestTemplates.DataSource = Call.MunkiManifestTemplateApi.Get(int.MaxValue, "");
             gvManifestTemplates.DataBind();
-
 
             var listOfTemplates = Call.GroupApi.GetMunkiTemplates(Group.Id);
             foreach (GridViewRow row in gvManifestTemplates.Rows)

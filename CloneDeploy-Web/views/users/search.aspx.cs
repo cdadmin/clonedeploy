@@ -42,7 +42,6 @@ namespace CloneDeploy_Web.views.users
             ChkAll(gvUsers);
         }
 
-
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();

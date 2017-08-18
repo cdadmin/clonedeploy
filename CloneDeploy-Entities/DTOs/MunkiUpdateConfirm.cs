@@ -4,8 +4,8 @@ namespace CloneDeploy_Entities.DTOs
 {
     public class MunkiUpdateConfirmDTO
     {
-        public List<MunkiManifestTemplateEntity> manifestTemplates { get; set; }
-        public int groupCount { get; set; }
         public int computerCount { get; set; }
+        public int groupCount { get; set; }
+        public List<MunkiManifestTemplateEntity> manifestTemplates { get; set; }
     }
 }

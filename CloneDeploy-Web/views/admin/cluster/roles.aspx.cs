@@ -19,7 +19,6 @@ namespace CloneDeploy_Web.views.admin.cluster
                     Value = ddlOperationMode.Text,
                     Id = Call.SettingApi.GetSetting("Operation Mode").Id
                 },
-               
                 new SettingEntity
                 {
                     Name = "Tftp Server Role",
@@ -58,7 +57,8 @@ namespace CloneDeploy_Web.views.admin.cluster
             if (ddlOperationMode.Text != "single")
             {
                 chkTftpServer.Checked = Convert.ToBoolean(Convert.ToInt16(GetSetting(SettingStrings.TftpServerRole)));
-                chkMulticastServer.Checked = Convert.ToBoolean(Convert.ToInt16(GetSetting(SettingStrings.MulticastServerRole)));
+                chkMulticastServer.Checked =
+                    Convert.ToBoolean(Convert.ToInt16(GetSetting(SettingStrings.MulticastServerRole)));
             }
             DisplayRoles();
         }

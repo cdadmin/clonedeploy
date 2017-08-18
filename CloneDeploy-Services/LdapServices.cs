@@ -34,7 +34,8 @@ namespace CloneDeploy_Services
                 // Bind to the native AdsObject to force authentication.
                 var obj = entry.NativeObject;
                 var search = new DirectorySearcher(entry);
-                search.Filter = "(" + SettingServices.GetSettingValue(SettingStrings.LdapAuthAttribute) + "=" + username + ")";
+                search.Filter = "(" + SettingServices.GetSettingValue(SettingStrings.LdapAuthAttribute) + "=" + username +
+                                ")";
                 search.PropertiesToLoad.Add("cn");
                 search.PropertiesToLoad.Add("memberOf");
 
@@ -60,7 +61,6 @@ namespace CloneDeploy_Services
             }
             return true;
         }
-
 
         public bool GetGroups(string _filterAttribute, string _path, string ldapGroup)
         {

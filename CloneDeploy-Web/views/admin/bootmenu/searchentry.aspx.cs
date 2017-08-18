@@ -22,7 +22,6 @@ namespace CloneDeploy_Web.views.global.boottemplates
             PopulateGrid();
         }
 
-
         protected void chkSelectAll_OnCheckedChanged(object sender, EventArgs e)
         {
             ChkAll(gvEntries);
@@ -40,7 +39,8 @@ namespace CloneDeploy_Web.views.global.boottemplates
             gvEntries.DataSource = Call.BootEntryApi.Get(int.MaxValue, txtSearch.Text);
             gvEntries.DataBind();
 
-            lblTotal.Text = gvEntries.Rows.Count + " Result(s) / " + Call.BootEntryApi.GetCount() + " Total Boot Entry(s)";
+            lblTotal.Text = gvEntries.Rows.Count + " Result(s) / " + Call.BootEntryApi.GetCount() +
+                            " Total Boot Entry(s)";
         }
 
         protected void txtSearch_OnTextChanged(object sender, EventArgs e)

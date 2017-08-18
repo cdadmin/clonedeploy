@@ -43,7 +43,6 @@ namespace CloneDeploy_Services
         public string DebugStatus { get; set; }
         public ExtendedPartitionHelper ExtendedPartitionHelper { get; set; }
 
-
         public long FirstPartitionStartSector { get; set; }
         private int HdNumberToGet { get; set; }
 
@@ -90,11 +89,9 @@ namespace CloneDeploy_Services
                 if (!LogicalPartitionLayout())
                     return null;
 
-
             if (VolumeGroupHelpers.Any())
                 if (!LogicalVolumeLayout())
                     return null;
-
 
             //Order partitions based of block start
             PrimaryAndExtendedPartitions =
@@ -207,7 +204,6 @@ namespace CloneDeploy_Services
                     continue;
                 }
 
-
                 if (totalExtendedPercentage <= 1)
                 {
                     long totalAllocatedBlk = 0;
@@ -262,7 +258,6 @@ namespace CloneDeploy_Services
 
                     var percentCounter = -.1;
 
-
                     while (!singleLvVerified)
                     {
                         percentCounter += .1;
@@ -285,7 +280,6 @@ namespace CloneDeploy_Services
                                 VgUuid = volumeGroup.Uuid,
                                 FsType = lv.FsType
                             };
-
 
                             var logicalVolumeHelper = new ClientPartitionHelper(_imageProfile).LogicalVolume(lv, LbsByte,
                                 _newHdSize, HdNumberToGet);
@@ -337,13 +331,11 @@ namespace CloneDeploy_Services
                                 }
                             }
 
-
                             if (logicalVolumeHelper.MinSizeBlk > tmpClientPartitionSizeLvBlk)
                             {
                                 isError = true;
                                 break;
                             }
-
 
                             clientPartitionLv.Size = tmpClientPartitionSizeLvBlk;
                             totalPvPercentage += percentOfPvForThisLv;
@@ -357,7 +349,6 @@ namespace CloneDeploy_Services
                         //This partition size doesn't work, continuation of break from earlier
                         if (isError)
                             continue;
-
 
                         if (totalPvPercentage <= 1)
                         {
@@ -442,12 +433,10 @@ namespace CloneDeploy_Services
                         FsType = schemaPartition.FsType
                     };
 
-
                     var partitionHelper = new ClientPartitionHelper(_imageProfile).Partition(HdNumberToGet, partCounter,
                         _newHdSize);
                     var percentOfHdForThisPartition = (double) partitionHelper.MinSizeBlk/NewHdBlk;
                     var tmpClientPartitionSizeBlk = partitionHelper.MinSizeBlk;
-
 
                     if (partitionHelper.IsDynamicSize)
                     {
@@ -460,7 +449,6 @@ namespace CloneDeploy_Services
 
                         //If a partition's used space is almost maxed out to the size of the partition this can cause
                         //problems with calculations. 
-
 
                         if (upSizeLock.ContainsKey(schemaPartition.Number))
                             tmpClientPartitionSizeBlk = upSizeLock[schemaPartition.Number];
@@ -496,7 +484,6 @@ namespace CloneDeploy_Services
                             percentOfHdForThisPartition = (double) tmpClientPartitionSizeBlk/NewHdBlk;
                     }
 
-
                     if (partitionHelper.MinSizeBlk > tmpClientPartitionSizeBlk)
                     {
                         isError = true;
@@ -516,7 +503,6 @@ namespace CloneDeploy_Services
                     totalHdPercentage += percentOfHdForThisPartition;
                     PrimaryAndExtendedPartitions.Add(clientPartition);
                 }
-
 
                 //Could not determine a partition layout that works with this hard drive
                 if (isError && percentCounter > 99)

@@ -34,7 +34,7 @@ namespace CloneDeploy_ApiCalls
             return response;
         }
 
-            public string GetActiveNotOwned()
+        public string GetActiveNotOwned()
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetActiveNotOwned/", Resource);
@@ -49,7 +49,7 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<List<TaskWithComputer>>(Request);
         }
 
-        public string GetActiveUnicastCount(string taskType="")
+        public string GetActiveUnicastCount(string taskType = "")
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetActiveUnicastCount/", Resource);
@@ -66,10 +66,10 @@ namespace CloneDeploy_ApiCalls
             return response != null ? response.Value : string.Empty;
         }
 
-        public IEnumerable<TaskWithComputer> GetUnicasts()
+        public IEnumerable<ActiveImagingTaskEntity> GetAllOnDemandUnregistered()
         {
             Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetUnicasts/", Resource);
+            Request.Resource = string.Format("api/{0}/GetAllOnDemandUnregistered/", Resource);
             return _apiRequest.Execute<List<TaskWithComputer>>(Request);
         }
 
@@ -80,10 +80,10 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<List<TaskWithComputer>>(Request);
         }
 
-        public IEnumerable<ActiveImagingTaskEntity> GetAllOnDemandUnregistered()
+        public IEnumerable<TaskWithComputer> GetUnicasts()
         {
             Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetAllOnDemandUnregistered/", Resource);
+            Request.Resource = string.Format("api/{0}/GetUnicasts/", Resource);
             return _apiRequest.Execute<List<TaskWithComputer>>(Request);
         }
 
@@ -93,7 +93,7 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/OnDemandCount/", Resource);
             var response = _apiRequest.Execute<ApiIntResponseDTO>(Request);
             if (response != null) return response.Value;
-            else return 0;
+            return 0;
         }
     }
 }

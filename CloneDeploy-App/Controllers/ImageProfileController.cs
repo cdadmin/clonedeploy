@@ -18,7 +18,6 @@ namespace CloneDeploy_App.Controllers
             _imageProfileServices = new ImageProfileServices();
         }
 
-
         [HttpGet]
         [CustomAuth(Permission = "ProfileCreate")]
         public ApiBoolResponseDTO Clone(int id)
@@ -42,7 +41,6 @@ namespace CloneDeploy_App.Controllers
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
         }
-
 
         [CustomAuth(Permission = "ProfileSearch")]
         public IEnumerable<ImageProfileWithImage> Get()
@@ -76,7 +74,6 @@ namespace CloneDeploy_App.Controllers
         {
             return _imageProfileServices.SearchImageProfileSysprepTags(id);
         }
-
 
         [CustomAuth(Permission = "ProfileCreate")]
         public ActionResultDTO Post(ImageProfileEntity imageProfile)

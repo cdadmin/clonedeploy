@@ -47,7 +47,7 @@
                 <a href="<%= ResolveUrl("~/views/computers/proxy.aspx") %>?computerid=<%= Computer.Id %>">
                     <span class="sub-nav-text">Proxy DHCP Reservation</span></a>
             </li>
-             <li id="imageclassification">
+            <li id="imageclassification">
                 <a href="<%= ResolveUrl("~/views/computers/imageclassification.aspx") %>?computerid=<%= Computer.Id %>">
                     <span class="sub-nav-text">Image Classifications</span></a>
             </li>

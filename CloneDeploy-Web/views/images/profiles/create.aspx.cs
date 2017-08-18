@@ -17,7 +17,8 @@ namespace CloneDeploy_Web.views.images.profiles
             if (result.Success)
             {
                 EndUserMessage = "Successfully Created Image Profile";
-                Response.Redirect("~/views/images/profiles/general.aspx?imageid=" + defaultProfile.ImageId + "&profileid=" +
+                Response.Redirect("~/views/images/profiles/general.aspx?imageid=" + defaultProfile.ImageId +
+                                  "&profileid=" +
                                   result.Id + "&cat=profiles");
             }
             else

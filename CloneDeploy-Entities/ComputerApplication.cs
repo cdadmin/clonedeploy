@@ -6,15 +6,15 @@ namespace CloneDeploy_Entities
     [Table("computer_applications")]
     public class ComputerApplicationEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("computer_application_id", Order = 1)]
-        public int Id { get; set; }
+        [Column("application_id", Order = 3)]
+        public int ApplicationId { get; set; }
 
         [Column("computer_id", Order = 2)]
         public int ComputerId { get; set; }
 
-        [Column("application_id", Order = 3)]
-        public int ApplicationId { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("computer_application_id", Order = 1)]
+        public int Id { get; set; }
     }
 }

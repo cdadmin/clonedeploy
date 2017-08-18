@@ -30,7 +30,6 @@ namespace CloneDeploy_Web.views.global.scripts
             ChkAll(gvScripts);
         }
 
-
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
@@ -43,7 +42,6 @@ namespace CloneDeploy_Web.views.global.scripts
                         : listScripts.OrderByDescending(s => s.Name).ToList();
                     break;
             }
-
 
             gvScripts.DataSource = listScripts;
             gvScripts.DataBind();

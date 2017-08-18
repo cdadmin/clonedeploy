@@ -28,7 +28,8 @@ namespace CloneDeploy_Services.Workflows
         public IsoGen(IsoGenOptionsDTO isoGenOptions)
         {
             _isoOptions = isoGenOptions;
-            if (SettingServices.GetSettingValue(SettingStrings.DebugRequiresLogin) == "No" || SettingServices.GetSettingValue(SettingStrings.OnDemandRequiresLogin) == "No" ||
+            if (SettingServices.GetSettingValue(SettingStrings.DebugRequiresLogin) == "No" ||
+                SettingServices.GetSettingValue(SettingStrings.OnDemandRequiresLogin) == "No" ||
                 SettingServices.GetSettingValue(SettingStrings.RegisterRequiresLogin) == "No")
                 _userToken = SettingServices.GetSettingValue(SettingStrings.UniversalToken);
             else
@@ -139,13 +140,11 @@ namespace CloneDeploy_Services.Workflows
             grubMenu.Append("}" + NewLineChar);
             grubMenu.Append("" + NewLineChar);
 
-
             var outFile = _configOutPath + "EFI" + Path.DirectorySeparatorChar + "boot" + Path.DirectorySeparatorChar +
                           "grub.cfg";
 
             new FileOpsServices().WritePath(outFile, grubMenu.ToString());
         }
-
 
         private void CreateSyslinuxMenu()
         {
@@ -267,9 +266,13 @@ namespace CloneDeploy_Services.Workflows
                 Directory.CreateDirectory(_configOutPath + "EFI");
                 Directory.CreateDirectory(_configOutPath + "EFI" + Path.DirectorySeparatorChar + "boot");
                 Directory.CreateDirectory(_configOutPath + "syslinux");
-                File.Copy(SettingServices.GetSettingValue(SettingStrings.TftpPath) + "images" + Path.DirectorySeparatorChar + _isoOptions.bootImage,
+                File.Copy(
+                    SettingServices.GetSettingValue(SettingStrings.TftpPath) + "images" + Path.DirectorySeparatorChar +
+                    _isoOptions.bootImage,
                     _configOutPath + "clonedeploy" + Path.DirectorySeparatorChar + _isoOptions.bootImage, true);
-                File.Copy(SettingServices.GetSettingValue(SettingStrings.TftpPath) + "kernels" + Path.DirectorySeparatorChar + _isoOptions.kernel,
+                File.Copy(
+                    SettingServices.GetSettingValue(SettingStrings.TftpPath) + "kernels" + Path.DirectorySeparatorChar +
+                    _isoOptions.kernel,
                     _configOutPath + "clonedeploy" + Path.DirectorySeparatorChar + _isoOptions.kernel, true);
             }
             catch (Exception ex)
@@ -289,7 +292,6 @@ namespace CloneDeploy_Services.Workflows
             {
                 CreateUsb();
             }
-
 
             return true;
         }
@@ -330,7 +332,6 @@ namespace CloneDeploy_Services.Workflows
             new FileOpsServices().Copy(_rootfsPath, _buildPath);
             //copy newly generated config files on top of temporary location
             new FileOpsServices().Copy(_configOutPath, _buildPath);
-
 
             var isUnix = Environment.OSVersion.ToString().Contains("Unix");
             var shell = isUnix ? "/bin/bash" : "cmd.exe";

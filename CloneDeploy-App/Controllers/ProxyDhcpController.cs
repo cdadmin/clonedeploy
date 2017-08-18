@@ -9,7 +9,7 @@ using CloneDeploy_Services.Workflows;
 
 namespace CloneDeploy_App.Controllers
 {
-    [EnableCorsAttribute("*","*","*")]
+    [EnableCors("*", "*", "*")]
     public class ProxyDhcpController : ApiController
     {
         private readonly ProxyDhcpServices _proxyDhcpServices;
@@ -26,6 +26,12 @@ namespace CloneDeploy_App.Controllers
             if (allTftpServers == null)
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return allTftpServers;
+        }
+
+        [HttpGet]
+        public AppleVendorDTO GetAppleVendorString(string ip)
+        {
+            return new CreateAppleVendorString().Execute(ip);
         }
 
         [HttpGet]
@@ -50,12 +56,6 @@ namespace CloneDeploy_App.Controllers
         public ApiBoolResponseDTO Test()
         {
             return new ApiBoolResponseDTO {Value = true};
-        }
-
-        [HttpGet]
-        public AppleVendorDTO GetAppleVendorString(string ip)
-        {
-            return new CreateAppleVendorString().Execute(ip);
         }
     }
 }

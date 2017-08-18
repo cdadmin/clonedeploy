@@ -47,7 +47,6 @@ namespace CloneDeploy_Web.views.global.munki
                 EndUserMessage = "Could Not Update Included Manifests";
             }
 
-
             PopulateGrid();
         }
 
@@ -69,7 +68,9 @@ namespace CloneDeploy_Web.views.global.munki
 
         protected void PopulateGrid()
         {
-            var availableLimit = ddlLimitAvailable.Text == "All" ? int.MaxValue : Convert.ToInt32(ddlLimitAvailable.Text);
+            var availableLimit = ddlLimitAvailable.Text == "All"
+                ? int.MaxValue
+                : Convert.ToInt32(ddlLimitAvailable.Text);
 
             var listOfManifests = new List<MunkiPackageInfoEntity>();
             var manifests = Call.FilesystemApi.GetMunkiResources("manifests");

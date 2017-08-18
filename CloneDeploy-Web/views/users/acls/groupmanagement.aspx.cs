@@ -38,6 +38,16 @@ namespace CloneDeploy_Web.views.users.acls
                 : "Could Not Update Group Management";
         }
 
+        protected void chkEnabled_OnCheckedChanged(object sender, EventArgs e)
+        {
+            if (CloneDeployUser.UserGroupId != -1)
+            {
+                EndUserMessage = "Cannot Update. This User's Group Management Is Controlled By A Group";
+                return;
+            }
+            Call.CloneDeployUserApi.ToggleGroupManagement(CloneDeployUser.Id, chkEnabled.Checked ? 1 : 0);
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             RequiresAuthorization(AuthorizationStrings.Administrator);
@@ -71,16 +81,6 @@ namespace CloneDeploy_Web.views.users.acls
         protected void SelectAll_CheckedChanged(object sender, EventArgs e)
         {
             ChkAll(gvGroups);
-        }
-
-        protected void chkEnabled_OnCheckedChanged(object sender, EventArgs e)
-        {
-            if (CloneDeployUser.UserGroupId != -1)
-            {
-                EndUserMessage = "Cannot Update. This User's Group Management Is Controlled By A Group";
-                return;
-            }
-            Call.CloneDeployUserApi.ToggleGroupManagement(CloneDeployUser.Id, chkEnabled.Checked ? 1 : 0);
         }
     }
 }

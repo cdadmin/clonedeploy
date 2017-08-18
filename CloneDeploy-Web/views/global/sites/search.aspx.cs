@@ -29,7 +29,6 @@ namespace CloneDeploy_Web.views.global.sites
             }
         }
 
-
         protected void gvSites_OnRowDataBound(object sender, GridViewRowEventArgs e)
         {
             DropDownList ddlDps = null;
@@ -83,7 +82,6 @@ namespace CloneDeploy_Web.views.global.sites
             gvSites.EditIndex = e.NewEditIndex;
             BindGrid();
         }
-
 
         protected void OnRowUpdating(object sender, GridViewUpdateEventArgs e)
         {

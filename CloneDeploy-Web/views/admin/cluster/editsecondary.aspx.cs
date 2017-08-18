@@ -39,7 +39,6 @@ namespace CloneDeploy_Web.views.admin.cluster
             if (!IsPostBack) PopulateForm();
         }
 
-
         protected void PopulateForm()
         {
             lblServerId.Text = SecondaryServer.Name;

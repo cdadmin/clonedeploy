@@ -46,6 +46,32 @@ namespace CloneDeploy_Web.BasePages
             HttpContext.Current.Response.End();
         }
 
+        public static List<string> GetFeLogs()
+        {
+            var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
+                          Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar;
+
+            var logFiles = Directory.GetFiles(logPath, "*.*");
+            var result = new List<string>();
+            for (var x = 0; x < logFiles.Length; x++)
+                result.Add(Path.GetFileName(logFiles[x]));
+
+            return result;
+        }
+
+        public static List<string> GetLogContents(string name, int limit)
+        {
+            var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
+                          Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar + name;
+            return File.ReadLines(logPath).Reverse().Take(limit).Reverse().ToList();
+        }
+
+        public static string GetSetting(string settingName)
+        {
+            var setting = new APICall().SettingApi.GetSetting(settingName);
+            return setting != null ? setting.Value : string.Empty;
+        }
+
         public string GetSortDirection(string sortExpression)
         {
             if (ViewState[sortExpression] == null)
@@ -85,6 +111,35 @@ namespace CloneDeploy_Web.BasePages
             HttpContext.Current.Session.Remove("Message");
         }
 
+        public static string PlaceHolderReplace(string parameter)
+        {
+            if (string.IsNullOrEmpty(parameter)) return parameter;
+            var start = parameter.IndexOf("[", StringComparison.Ordinal);
+            var to = parameter.IndexOf("]", start + "[".Length, StringComparison.Ordinal);
+            if (start < 0 || to < 0) return parameter;
+            var s = parameter.Substring(
+                start + "[".Length,
+                to - start - "[".Length);
+            if (s == "server-ip")
+            {
+                return parameter.Replace("[server-ip]", GetSetting(SettingStrings.ServerIp));
+            }
+            if (s == "tftp-server-ip")
+            {
+                return parameter.Replace("[tftp-server-ip]", GetSetting(SettingStrings.TftpServerIp));
+            }
+            return s;
+        }
+
+        protected void PopulateAltServerIps(DropDownList ddl)
+        {
+            ddl.DataSource = Call.AlternateServerIpApi.Get().Select(i => new {i.Id, i.Ip});
+            ddl.DataValueField = "Id";
+            ddl.DataTextField = "Ip";
+            ddl.DataBind();
+            ddl.Items.Insert(0, new ListItem("Select Alternate Ip", "-1"));
+        }
+
         protected void PopulateBootTemplatesDdl(DropDownList ddl)
         {
             ddl.DataSource = Call.BootTemplateApi.Get(int.MaxValue, "").Select(i => new {i.Id, i.Name});
@@ -122,6 +177,15 @@ namespace CloneDeploy_Web.BasePages
             ddlGroups.Items.Insert(0, new ListItem("Select Group", "-1"));
         }
 
+        protected void PopulateImageClassifications(DropDownList ddl)
+        {
+            ddl.DataSource = Call.ImageClassificationApi.Get().Select(i => new {i.Id, i.Name});
+            ddl.DataValueField = "Id";
+            ddl.DataTextField = "Name";
+            ddl.DataBind();
+            ddl.Items.Insert(0, new ListItem("Select Classification", "-1"));
+        }
+
         protected void PopulateImageProfilesDdl(DropDownList ddlImageProfile, int value)
         {
             ddlImageProfile.DataSource = Call.ImageApi.GetImageProfiles(value).Select(i => new {i.Id, i.Name});
@@ -141,7 +205,7 @@ namespace CloneDeploy_Web.BasePages
             ddlImages.Items.Insert(0, new ListItem("Select Image", "-1"));
         }
 
-        protected void PopulateImagesDdlForComputer(int computerId,DropDownList ddlImages)
+        protected void PopulateImagesDdlForComputer(int computerId, DropDownList ddlImages)
         {
             var images = Call.ImageApi.Get(int.MaxValue, "");
             var filterDto = new FilterComputerClassificationDTO();
@@ -149,7 +213,7 @@ namespace CloneDeploy_Web.BasePages
             filterDto.ListImages = images;
             var filteredClassifications = Call.ComputerImageClassificationApi.FilterClassifications(filterDto);
             ddlImages.DataSource =
-                filteredClassifications.Select(i => new { i.Id, i.Name }).OrderBy(x => x.Name).ToList();
+                filteredClassifications.Select(i => new {i.Id, i.Name}).OrderBy(x => x.Name).ToList();
 
             ddlImages.DataValueField = "Id";
             ddlImages.DataTextField = "Name";
@@ -165,7 +229,7 @@ namespace CloneDeploy_Web.BasePages
             filterDto.ListImages = images;
             var filteredClassifications = Call.GroupImageClassificationApi.FilterClassifications(filterDto);
             ddlImages.DataSource =
-                filteredClassifications.Select(i => new { i.Id, i.Name }).OrderBy(x => x.Name).ToList();
+                filteredClassifications.Select(i => new {i.Id, i.Name}).OrderBy(x => x.Name).ToList();
 
             ddlImages.DataValueField = "Id";
             ddlImages.DataTextField = "Name";
@@ -191,24 +255,6 @@ namespace CloneDeploy_Web.BasePages
             ddl.Items.Insert(0, new ListItem("Select Site", "-1"));
         }
 
-        protected void PopulateAltServerIps(DropDownList ddl)
-        {
-            ddl.DataSource = Call.AlternateServerIpApi.Get().Select(i => new { i.Id, i.Ip });
-            ddl.DataValueField = "Id";
-            ddl.DataTextField = "Ip";
-            ddl.DataBind();
-            ddl.Items.Insert(0, new ListItem("Select Alternate Ip", "-1"));
-        }
-
-        protected void PopulateImageClassifications(DropDownList ddl)
-        {
-            ddl.DataSource = Call.ImageClassificationApi.Get().Select(i => new { i.Id, i.Name });
-            ddl.DataValueField = "Id";
-            ddl.DataTextField = "Name";
-            ddl.DataBind();
-            ddl.Items.Insert(0, new ListItem("Select Classification", "-1"));
-        }
-
         public void RequiresAuthorization(string requiredRight)
         {
             if (!Call.AuthorizationApi.IsAuthorized(requiredRight))
@@ -231,52 +277,6 @@ namespace CloneDeploy_Web.BasePages
         {
             if (!Call.AuthorizationApi.ImageManagement(requiredRight, imageId))
                 Response.Redirect("~/views/dashboard/dash.aspx?access=denied");
-        }
-
-        public static string PlaceHolderReplace(string parameter)
-        {
-            if (string.IsNullOrEmpty(parameter)) return parameter;
-            var start = parameter.IndexOf("[", StringComparison.Ordinal);
-            var to = parameter.IndexOf("]", start + "[".Length, StringComparison.Ordinal);
-            if (start < 0 || to < 0) return parameter;
-            var s = parameter.Substring(
-                start + "[".Length,
-                to - start - "[".Length);
-            if (s == "server-ip")
-            {
-                return parameter.Replace("[server-ip]", GetSetting(SettingStrings.ServerIp));
-            }
-            if (s == "tftp-server-ip")
-            {
-                return parameter.Replace("[tftp-server-ip]", GetSetting(SettingStrings.TftpServerIp));
-            }
-            return s;
-        }
-
-        public static List<string> GetFeLogs()
-        {
-            var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
-                          Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar;
-
-            var logFiles = Directory.GetFiles(logPath, "*.*");
-            var result = new List<string>();
-            for (var x = 0; x < logFiles.Length; x++)
-                result.Add(Path.GetFileName(logFiles[x]));
-
-            return result;
-        }
-
-        public static List<string> GetLogContents(string name, int limit)
-        {
-            var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
-                          Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar + name;
-            return File.ReadLines(logPath).Reverse().Take(limit).Reverse().ToList();
-        }
-
-        public static string GetSetting(string settingName)
-        {
-            var setting = new APICall().SettingApi.GetSetting(settingName);
-            return setting != null ? setting.Value : string.Empty;
         }
     }
 }

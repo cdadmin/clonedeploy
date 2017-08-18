@@ -138,7 +138,6 @@ namespace CloneDeploy_Web.views.login
                     });
                 }
 
-
                 Call.SettingApi.UpdateSettings(listSettings);
 
                 var defaultBootMenuOptions = new BootMenuGenOptionsDTO();
@@ -163,7 +162,6 @@ namespace CloneDeploy_Web.views.login
             if (Call.CdVersionApi.IsFirstRunCompleted())
                 Response.Redirect("~/views/dashboard/dash.aspx");
         }
-
 
         private bool ValidateForm()
         {

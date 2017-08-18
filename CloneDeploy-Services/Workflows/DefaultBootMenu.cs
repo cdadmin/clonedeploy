@@ -19,9 +19,9 @@ namespace CloneDeploy_Services.Workflows
         private readonly BootEntryServices _bootEntryServices;
         private readonly BootMenuGenOptionsDTO _defaultBoot;
         private readonly string _globalComputerArgs = SettingServices.GetSettingValue(SettingStrings.GlobalComputerArgs);
+        private readonly SecondaryServerServices _secondaryServerServices;
         private readonly string _webPath = SettingServices.GetSettingValue(SettingStrings.WebPath);
         private readonly ILog log = LogManager.GetLogger("ApplicationLog");
-        private readonly SecondaryServerServices _secondaryServerServices;
 
         public DefaultBootMenu(BootMenuGenOptionsDTO defaultBootMenu)
         {
@@ -31,35 +31,6 @@ namespace CloneDeploy_Services.Workflows
         }
 
         private string _userToken { get; set; }
-
-        public void Execute()
-        {
-            if (SettingServices.GetSettingValue(SettingStrings.DebugRequiresLogin) == "No" || SettingServices.GetSettingValue(SettingStrings.OnDemandRequiresLogin) == "No" ||
-                SettingServices.GetSettingValue(SettingStrings.RegisterRequiresLogin) == "No")
-                _userToken = SettingServices.GetSettingValue(SettingStrings.UniversalToken);
-            else
-            {
-                _userToken = "";
-            }
-
-            var mode = SettingServices.GetSettingValue(SettingStrings.PxeMode);
-
-            if (_defaultBoot.Type == "standard")
-            {
-                if (mode.Contains("ipxe"))
-                    CreateIpxeMenu();
-                else if (mode.Contains("grub"))
-                    CreateGrubMenu();
-                else
-                    CreateSyslinuxMenu();
-            }
-            else
-            {
-                CreateIpxeMenu();
-                CreateSyslinuxMenu();
-                CreateGrubMenu();
-            }
-        }
 
         private void CreateGrubMenu()
         {
@@ -111,7 +82,6 @@ namespace CloneDeploy_Services.Workflows
                             NewLineChar);
             grubMenu.Append(@"mac=01-$b1-$b2-$b3-$b4-$b5-$b6" + NewLineChar);
             grubMenu.Append("" + NewLineChar);
-
 
             if (_defaultBoot.Type == "standard")
             {
@@ -206,14 +176,15 @@ namespace CloneDeploy_Services.Workflows
                 grubMenu.Append("" + NewLineChar);
             }
 
-            var path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "grub" + Path.DirectorySeparatorChar + "grub.cfg";
+            var path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "grub" + Path.DirectorySeparatorChar +
+                       "grub.cfg";
 
             if (SettingServices.ServerIsNotClustered)
                 new FileOpsServices().WritePath(path, grubMenu.ToString());
             else
             {
                 if (SettingServices.TftpServerRole)
-                    new FileOpsServices().WritePath(path, grubMenu.ToString());              
+                    new FileOpsServices().WritePath(path, grubMenu.ToString());
                 foreach (var tftpServer in _secondaryServerServices.GetAllWithTftpRole())
                 {
                     var tftpPath =
@@ -301,7 +272,8 @@ namespace CloneDeploy_Services.Workflows
                 ipxeMenu.Append("param bootImage " + _defaultBoot.BootImage + "" + NewLineChar);
                 ipxeMenu.Append("param task " + "${task}" + "" + NewLineChar);
                 ipxeMenu.Append("echo Authenticating" + NewLineChar);
-                ipxeMenu.Append("chain --timeout 15000 " + SettingServices.GetSettingValue(SettingStrings.WebPath) + "IpxeLogin##params || goto Menu" +
+                ipxeMenu.Append("chain --timeout 15000 " + SettingServices.GetSettingValue(SettingStrings.WebPath) +
+                                "IpxeLogin##params || goto Menu" +
                                 NewLineChar);
             }
             else
@@ -311,52 +283,64 @@ namespace CloneDeploy_Services.Workflows
                 ipxeMenu.Append("" + NewLineChar);
 
                 ipxeMenu.Append(":console" + NewLineChar);
-                ipxeMenu.Append("kernel " + SettingServices.GetSettingValue(SettingStrings.WebPath) + "IpxeBoot?filename=" + _defaultBoot.Kernel +
+                ipxeMenu.Append("kernel " + SettingServices.GetSettingValue(SettingStrings.WebPath) +
+                                "IpxeBoot?filename=" + _defaultBoot.Kernel +
                                 "&type=kernel" +
                                 " initrd=" + _defaultBoot.BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " +
                                 " web=" +
-                                SettingServices.GetSettingValue(SettingStrings.WebPath) + " USER_TOKEN=" + _userToken + " task=debug" + " consoleblank=0 " +
+                                SettingServices.GetSettingValue(SettingStrings.WebPath) + " USER_TOKEN=" + _userToken +
+                                " task=debug" + " consoleblank=0 " +
                                 _globalComputerArgs + NewLineChar);
-                ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " + SettingServices.GetSettingValue(SettingStrings.WebPath) +
+                ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " +
+                                SettingServices.GetSettingValue(SettingStrings.WebPath) +
                                 "IpxeBoot?filename=" +
                                 _defaultBoot.BootImage + "&type=bootimage" + NewLineChar);
                 ipxeMenu.Append("boot" + NewLineChar);
                 ipxeMenu.Append("" + NewLineChar);
 
                 ipxeMenu.Append(":register" + NewLineChar);
-                ipxeMenu.Append("kernel " + SettingServices.GetSettingValue(SettingStrings.WebPath) + "IpxeBoot?filename=" + _defaultBoot.Kernel +
+                ipxeMenu.Append("kernel " + SettingServices.GetSettingValue(SettingStrings.WebPath) +
+                                "IpxeBoot?filename=" + _defaultBoot.Kernel +
                                 "&type=kernel" +
                                 " initrd=" + _defaultBoot.BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " +
                                 " web=" +
-                                SettingServices.GetSettingValue(SettingStrings.WebPath) + " USER_TOKEN=" + _userToken + " task=register" + " consoleblank=0 " +
+                                SettingServices.GetSettingValue(SettingStrings.WebPath) + " USER_TOKEN=" + _userToken +
+                                " task=register" + " consoleblank=0 " +
                                 _globalComputerArgs + NewLineChar);
-                ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " + SettingServices.GetSettingValue(SettingStrings.WebPath) +
+                ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " +
+                                SettingServices.GetSettingValue(SettingStrings.WebPath) +
                                 "IpxeBoot?filename=" +
                                 _defaultBoot.BootImage + "&type=bootimage" + NewLineChar);
                 ipxeMenu.Append("boot" + NewLineChar);
                 ipxeMenu.Append("" + NewLineChar);
 
                 ipxeMenu.Append(":ond" + NewLineChar);
-                ipxeMenu.Append("kernel " + SettingServices.GetSettingValue(SettingStrings.WebPath) + "IpxeBoot?filename=" + _defaultBoot.Kernel +
+                ipxeMenu.Append("kernel " + SettingServices.GetSettingValue(SettingStrings.WebPath) +
+                                "IpxeBoot?filename=" + _defaultBoot.Kernel +
                                 "&type=kernel" +
                                 " initrd=" + _defaultBoot.BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " +
                                 " web=" +
-                                SettingServices.GetSettingValue(SettingStrings.WebPath) + " USER_TOKEN=" + _userToken + " task=ond" + " consoleblank=0 " +
+                                SettingServices.GetSettingValue(SettingStrings.WebPath) + " USER_TOKEN=" + _userToken +
+                                " task=ond" + " consoleblank=0 " +
                                 _globalComputerArgs + NewLineChar);
-                ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " + SettingServices.GetSettingValue(SettingStrings.WebPath) +
+                ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " +
+                                SettingServices.GetSettingValue(SettingStrings.WebPath) +
                                 "IpxeBoot?filename=" +
                                 _defaultBoot.BootImage + "&type=bootimage" + NewLineChar);
                 ipxeMenu.Append("boot" + NewLineChar);
                 ipxeMenu.Append("" + NewLineChar);
 
                 ipxeMenu.Append(":diag" + NewLineChar);
-                ipxeMenu.Append("kernel " + SettingServices.GetSettingValue(SettingStrings.WebPath) + "IpxeBoot?filename=" + _defaultBoot.Kernel +
+                ipxeMenu.Append("kernel " + SettingServices.GetSettingValue(SettingStrings.WebPath) +
+                                "IpxeBoot?filename=" + _defaultBoot.Kernel +
                                 "&type=kernel" +
                                 " initrd=" + _defaultBoot.BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " +
                                 " web=" +
-                                SettingServices.GetSettingValue(SettingStrings.WebPath) + " USER_TOKEN=" + _userToken + " task=diag" + " consoleblank=0 " +
+                                SettingServices.GetSettingValue(SettingStrings.WebPath) + " USER_TOKEN=" + _userToken +
+                                " task=diag" + " consoleblank=0 " +
                                 _globalComputerArgs + NewLineChar);
-                ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " + SettingServices.GetSettingValue(SettingStrings.WebPath) +
+                ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " +
+                                SettingServices.GetSettingValue(SettingStrings.WebPath) +
                                 "IpxeBoot?filename=" +
                                 _defaultBoot.BootImage + "&type=bootimage" + NewLineChar);
                 ipxeMenu.Append("boot" + NewLineChar);
@@ -372,11 +356,12 @@ namespace CloneDeploy_Services.Workflows
 
             string path;
             if (_defaultBoot.Type == "standard")
-                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default.ipxe";
+                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" +
+                       Path.DirectorySeparatorChar + "default.ipxe";
             else
-                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar + _defaultBoot.Type +
+                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar +
+                       _defaultBoot.Type +
                        Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default.ipxe";
-
 
             if (SettingServices.ServerIsNotClustered)
                 new FileOpsServices().WritePath(path, ipxeMenu.ToString());
@@ -489,7 +474,6 @@ namespace CloneDeploy_Services.Workflows
                                 _userToken +
                                 " task=diag consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
 
-
             sysLinuxMenu.Append("MENU LABEL Diagnostics" + NewLineChar);
             sysLinuxMenu.Append("" + NewLineChar);
 
@@ -509,11 +493,12 @@ namespace CloneDeploy_Services.Workflows
 
             string path;
             if (_defaultBoot.Type == "standard")
-                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
+                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" +
+                       Path.DirectorySeparatorChar + "default";
             else
-                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar + _defaultBoot.Type +
+                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar +
+                       _defaultBoot.Type +
                        Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + "default";
-
 
             if (SettingServices.ServerIsNotClustered)
                 new FileOpsServices().WritePath(path, sysLinuxMenu.ToString());
@@ -540,6 +525,36 @@ namespace CloneDeploy_Services.Workflows
                     new APICall(_secondaryServerServices.GetToken(tftpServer.Name))
                         .ServiceAccountApi.WriteTftpFile(tftpFile);
                 }
+            }
+        }
+
+        public void Execute()
+        {
+            if (SettingServices.GetSettingValue(SettingStrings.DebugRequiresLogin) == "No" ||
+                SettingServices.GetSettingValue(SettingStrings.OnDemandRequiresLogin) == "No" ||
+                SettingServices.GetSettingValue(SettingStrings.RegisterRequiresLogin) == "No")
+                _userToken = SettingServices.GetSettingValue(SettingStrings.UniversalToken);
+            else
+            {
+                _userToken = "";
+            }
+
+            var mode = SettingServices.GetSettingValue(SettingStrings.PxeMode);
+
+            if (_defaultBoot.Type == "standard")
+            {
+                if (mode.Contains("ipxe"))
+                    CreateIpxeMenu();
+                else if (mode.Contains("grub"))
+                    CreateGrubMenu();
+                else
+                    CreateSyslinuxMenu();
+            }
+            else
+            {
+                CreateIpxeMenu();
+                CreateSyslinuxMenu();
+                CreateGrubMenu();
             }
         }
     }

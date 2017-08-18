@@ -12,7 +12,6 @@ namespace CloneDeploy_Web.views.global.munki
         {
             RequiresAuthorization(AuthorizationStrings.UpdateGlobal);
 
-
             var updateCount = 0;
             foreach (GridViewRow row in gvTemplateInstalls.Rows)
             {
@@ -29,7 +28,8 @@ namespace CloneDeploy_Web.views.global.munki
 
                 else
                 {
-                    var managedUnInstall = Call.MunkiManifestManagedUnInstallEntityApi.Get(Convert.ToInt32(dataKey.Value));
+                    var managedUnInstall =
+                        Call.MunkiManifestManagedUnInstallEntityApi.Get(Convert.ToInt32(dataKey.Value));
 
                     var txtCondition = row.FindControl("txtCondition") as TextBox;
                     if (txtCondition != null)
@@ -51,10 +51,8 @@ namespace CloneDeploy_Web.views.global.munki
                 EndUserMessage = "Could Not Update Managed Uninstalls";
             }
 
-
             PopulateGrid();
         }
-
 
         protected void ddlLimit_OnSelectedIndexChanged(object sender, EventArgs e)
         {
@@ -88,7 +86,6 @@ namespace CloneDeploy_Web.views.global.munki
         {
             PopulateGrid();
         }
-
 
         protected void showAssigned_OnClick(object sender, EventArgs e)
         {

@@ -24,7 +24,6 @@ namespace CloneDeploy_ApiCalls
             return response;
         }
 
-
         public BootEntryEntity Get(int id)
         {
             Request.Method = Method.GET;

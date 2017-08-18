@@ -6,16 +6,13 @@ namespace CloneDeploy_Entities
     [Table("munki_manifest_managed_uninstalls")]
     public class MunkiManifestManagedUnInstallEntity
     {
+        [Column("munki_manifest_condition", Order = 6)]
+        public string Condition { get; set; }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("munki_manifest_managed_uninstall_id", Order = 1)]
         public int Id { get; set; }
-
-        [Column("munki_manifest_managed_uninstall_name", Order = 2)]
-        public string Name { get; set; }
-
-        [Column("munki_manifest_managed_uninstall_version", Order = 3)]
-        public string Version { get; set; }
 
         [Column("munki_manifest_managed_uninstall_include_version", Order = 4)]
         public int IncludeVersion { get; set; }
@@ -23,7 +20,10 @@ namespace CloneDeploy_Entities
         [Column("munki_manifest_template_id", Order = 5)]
         public int ManifestTemplateId { get; set; }
 
-        [Column("munki_manifest_condition", Order = 6)]
-        public string Condition { get; set; }
+        [Column("munki_manifest_managed_uninstall_name", Order = 2)]
+        public string Name { get; set; }
+
+        [Column("munki_manifest_managed_uninstall_version", Order = 3)]
+        public string Version { get; set; }
     }
 }

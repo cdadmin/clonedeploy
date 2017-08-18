@@ -14,12 +14,12 @@ namespace CloneDeploy_Services.Workflows
 {
     public class EffectiveMunkiTemplate
     {
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
         private readonly ComputerMunkiServices _computerMunkiServices;
         private readonly ComputerServices _computerServices;
         private readonly GroupMunkiServices _groupMunkiServices;
         private readonly GroupServices _groupServices;
         private readonly MunkiManifestTemplateServices _munkiManifestTemplateServices;
+        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
         private List<int> _templateIds;
 
         public EffectiveMunkiTemplate()
@@ -34,7 +34,8 @@ namespace CloneDeploy_Services.Workflows
         public int Apply(int templateId)
         {
             var errorCount = 0;
-            var basePath = SettingServices.GetSettingValue(SettingStrings.MunkiBasePath) + Path.DirectorySeparatorChar + "manifests" +
+            var basePath = SettingServices.GetSettingValue(SettingStrings.MunkiBasePath) + Path.DirectorySeparatorChar +
+                           "manifests" +
                            Path.DirectorySeparatorChar;
 
             var groups = _groupMunkiServices.GetGroupsForManifestTemplate(templateId);
@@ -55,10 +56,15 @@ namespace CloneDeploy_Services.Workflows
             {
                 using (var unc = new UncServices())
                 {
-                    var smbPassword = new EncryptionServices().DecryptText(SettingServices.GetSettingValue(SettingStrings.MunkiSMBPassword));
-                    var smbDomain = string.IsNullOrEmpty(SettingServices.GetSettingValue(SettingStrings.MunkiSMBDomain)) ? "" : SettingServices.GetSettingValue(SettingStrings.MunkiSMBDomain);
+                    var smbPassword =
+                        new EncryptionServices().DecryptText(
+                            SettingServices.GetSettingValue(SettingStrings.MunkiSMBPassword));
+                    var smbDomain = string.IsNullOrEmpty(SettingServices.GetSettingValue(SettingStrings.MunkiSMBDomain))
+                        ? ""
+                        : SettingServices.GetSettingValue(SettingStrings.MunkiSMBDomain);
                     if (
-                        unc.NetUseWithCredentials(SettingServices.GetSettingValue(SettingStrings.MunkiBasePath), SettingServices.GetSettingValue(SettingStrings.MunkiSMBUsername), smbDomain,
+                        unc.NetUseWithCredentials(SettingServices.GetSettingValue(SettingStrings.MunkiBasePath),
+                            SettingServices.GetSettingValue(SettingStrings.MunkiSMBUsername), smbDomain,
                             smbPassword) || unc.LastError == 1219)
                     {
                         foreach (var munkiGroup in groups)
@@ -76,7 +82,9 @@ namespace CloneDeploy_Services.Workflows
                     }
                     else
                     {
-                        log.Debug("Failed to connect to " + SettingServices.GetSettingValue(SettingStrings.MunkiBasePath) + "\r\nLastError = " + unc.LastError);
+                        log.Debug("Failed to connect to " +
+                                  SettingServices.GetSettingValue(SettingStrings.MunkiBasePath) + "\r\nLastError = " +
+                                  unc.LastError);
                         foreach (var munkiGroup in groups)
                         {
                             var computersInGroup = _groupServices.GetGroupMembersWithImages(munkiGroup.GroupId);
@@ -100,10 +108,15 @@ namespace CloneDeploy_Services.Workflows
             {
                 using (var unc = new UncServices())
                 {
-                    var smbPassword = new EncryptionServices().DecryptText(SettingServices.GetSettingValue(SettingStrings.MunkiSMBPassword));
-                    var smbDomain = string.IsNullOrEmpty(SettingServices.GetSettingValue(SettingStrings.MunkiSMBDomain)) ? "" : SettingServices.GetSettingValue(SettingStrings.MunkiSMBDomain);
+                    var smbPassword =
+                        new EncryptionServices().DecryptText(
+                            SettingServices.GetSettingValue(SettingStrings.MunkiSMBPassword));
+                    var smbDomain = string.IsNullOrEmpty(SettingServices.GetSettingValue(SettingStrings.MunkiSMBDomain))
+                        ? ""
+                        : SettingServices.GetSettingValue(SettingStrings.MunkiSMBDomain);
                     if (
-                        unc.NetUseWithCredentials(SettingServices.GetSettingValue(SettingStrings.MunkiBasePath), SettingServices.GetSettingValue(SettingStrings.MunkiSMBUsername), smbDomain,
+                        unc.NetUseWithCredentials(SettingServices.GetSettingValue(SettingStrings.MunkiBasePath),
+                            SettingServices.GetSettingValue(SettingStrings.MunkiSMBUsername), smbDomain,
                             smbPassword) || unc.LastError == 1219)
                     {
                         foreach (var munkiComputer in computers)
@@ -111,7 +124,6 @@ namespace CloneDeploy_Services.Workflows
                             var effectiveManifest =
                                 new EffectiveMunkiTemplate().Computer(munkiComputer.ComputerId);
                             var computer = _computerServices.GetComputer(munkiComputer.ComputerId);
-
 
                             if (
                                 !WritePath(basePath + computer.Name,
@@ -121,7 +133,8 @@ namespace CloneDeploy_Services.Workflows
                     }
                     else
                     {
-                        log.Debug("Failed to connect to " + SettingServices.GetSettingValue(SettingStrings.MunkiBasePath) + "\r\nLastError = " +
+                        log.Debug("Failed to connect to " +
+                                  SettingServices.GetSettingValue(SettingStrings.MunkiBasePath) + "\r\nLastError = " +
                                   unc.LastError);
                         errorCount += computers.Count();
                     }

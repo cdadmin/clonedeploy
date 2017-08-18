@@ -2,7 +2,7 @@
 {
     public class SysprepDTO
     {
-        public int tagId { get; set; }
         public string imageEnvironment { get; set; }
+        public int tagId { get; set; }
     }
 }

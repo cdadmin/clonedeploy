@@ -38,7 +38,6 @@ namespace CloneDeploy_ApiCalls
             return response != null && response.Value;
         }
 
-
         public bool CreateDefaultBootMenu(BootMenuGenOptionsDTO defaultMenuOptions)
         {
             Request.Method = Method.POST;
@@ -56,6 +55,15 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.ExecuteRaw(Request);
         }
 
+        public AppleVendorDTO GetAppleVendorString(string ip)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetAppleVendorString/", Resource);
+            Request.AddParameter("ip", ip);
+            var response = _apiRequest.Execute<AppleVendorDTO>(Request);
+            return response;
+        }
+
         public string StartOnDemandMulticast(int profileId, string clientCount)
         {
             Request.Method = Method.GET;
@@ -64,15 +72,6 @@ namespace CloneDeploy_ApiCalls
             Request.AddParameter("clientCount", clientCount);
             var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
             return response != null ? response.Value : string.Empty;
-        }
-
-        public AppleVendorDTO GetAppleVendorString(string ip)
-        {
-            Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetAppleVendorString/", Resource);
-            Request.AddParameter("ip", ip);
-            var response = _apiRequest.Execute<AppleVendorDTO>(Request);
-            return response;
         }
     }
 }

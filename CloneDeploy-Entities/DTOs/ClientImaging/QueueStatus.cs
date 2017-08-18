@@ -2,7 +2,7 @@
 {
     public class QueueStatus
     {
-        public string Result { get; set; }
         public string Position { get; set; }
+        public string Result { get; set; }
     }
 }

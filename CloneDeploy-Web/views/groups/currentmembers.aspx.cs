@@ -28,7 +28,6 @@ namespace CloneDeploy_Web.views.groups
                     break;
             }
 
-
             gvComputers.DataSource = listComputers;
             gvComputers.DataBind();
         }

@@ -188,7 +188,6 @@ namespace CloneDeploy_Web.views.admin.bootmenu
             }
         }
 
-
         protected void saveEditor_Click(object sender, EventArgs e)
         {
             RequiresAuthorization(AuthorizationStrings.UpdateAdmin);

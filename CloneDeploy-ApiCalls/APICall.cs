@@ -15,6 +15,15 @@ namespace CloneDeploy_ApiCalls
         {
         }
 
+        public ComputerImageClassificationAPI ComputerImageClassificationApi
+        {
+            get { return new ComputerImageClassificationAPI("ComputerImageClassification"); }
+        }
+
+        public GroupImageClassificationAPI GroupImageClassificationApi
+        {
+            get { return new GroupImageClassificationAPI("GroupImageClassification"); }
+        }
 
         public ActiveImagingTaskAPI ActiveImagingTaskApi
         {
@@ -26,11 +35,15 @@ namespace CloneDeploy_ApiCalls
             get { return new ActiveMulticastSessionAPI("ActiveMulticastSession"); }
         }
 
+        public AlternateServerIpAPI AlternateServerIpApi
+        {
+            get { return new AlternateServerIpAPI("AlternateServerIp"); }
+        }
+
         public AuthorizationAPI AuthorizationApi
         {
             get { return new AuthorizationAPI("Authorization"); }
         }
-
 
         public BootEntryAPI BootEntryApi
         {
@@ -142,6 +155,11 @@ namespace CloneDeploy_ApiCalls
             get { return new ImageAPI("Image"); }
         }
 
+        public ImageClassificationAPI ImageClassificationApi
+        {
+            get { return new ImageClassificationAPI("ImageClassification"); }
+        }
+
         public ImageProfileAPI ImageProfileApi
         {
             get { return new ImageProfileAPI("ImageProfile"); }
@@ -200,6 +218,16 @@ namespace CloneDeploy_ApiCalls
         public MunkiManifestTemplateAPI MunkiManifestTemplateApi
         {
             get { return new MunkiManifestTemplateAPI("MunkiManifestTemplate"); }
+        }
+
+        public NbiEntryAPI NbiEntryApi
+        {
+            get { return new NbiEntryAPI("NbiEntry"); }
+        }
+
+        public NetBootProfileAPI NetBootProfileApi
+        {
+            get { return new NetBootProfileAPI("NetBootProfile"); }
         }
 
         public OnlineKernelAPI OnlineKernelApi
@@ -295,36 +323,6 @@ namespace CloneDeploy_ApiCalls
         public WorkflowAPI WorkflowApi
         {
             get { return new WorkflowAPI("Workflow"); }
-        }
-
-        public NetBootProfileAPI NetBootProfileApi
-        {
-            get { return new NetBootProfileAPI("NetBootProfile"); }
-        }
-
-        public NbiEntryAPI NbiEntryApi
-        {
-            get { return new NbiEntryAPI("NbiEntry"); }
-        }
-
-        public ImageClassificationAPI ImageClassificationApi
-        {
-            get { return new ImageClassificationAPI("ImageClassification"); }
-        }
-
-        public AlternateServerIpAPI AlternateServerIpApi
-        {
-            get { return new AlternateServerIpAPI("AlternateServerIp"); }
-        }
-
-        public ComputerImageClassificationAPI ComputerImageClassificationApi
-        {
-            get { return new ComputerImageClassificationAPI("ComputerImageClassification"); }
-        }
-
-        public GroupImageClassificationAPI GroupImageClassificationApi
-        {
-            get { return new GroupImageClassificationAPI("GroupImageClassification"); }
         }
     }
 }

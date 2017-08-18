@@ -1,14 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using CloneDeploy_Web.BasePages;
 
 namespace CloneDeploy_Web.views.users
 {
-    public partial class history : BasePages.Users
+    public partial class history : Users
     {
+        protected void ddl_OnSelectedIndexChanged(object sender, EventArgs e)
+        {
+            PopulateGrid();
+        }
+
+        protected void ddlType_OnSelectedIndexChanged(object sender, EventArgs e)
+        {
+            PopulateGrid();
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack) PopulateGrid();
@@ -25,16 +32,6 @@ namespace CloneDeploy_Web.views.users
                     listOfAuditLogs.Where(c => c.AuditType.ToString() == ddlType.Text).Take(limit).ToList();
             gvHistory.DataSource = listOfAuditLogs;
             gvHistory.DataBind();
-        }
-
-        protected void ddl_OnSelectedIndexChanged(object sender, EventArgs e)
-        {
-            PopulateGrid();
-        }
-
-        protected void ddlType_OnSelectedIndexChanged(object sender, EventArgs e)
-        {
-            PopulateGrid();
         }
     }
 }

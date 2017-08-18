@@ -9,12 +9,10 @@ namespace CloneDeploy_ApiCalls
     {
         private readonly ApiRequest _apiRequest;
 
-
         public UserGroupImageManagementAPI(string resource) : base(resource)
         {
             _apiRequest = new ApiRequest();
         }
-
 
         public ActionResultDTO Post(List<UserGroupImageManagementEntity> listOfImages)
         {

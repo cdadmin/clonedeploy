@@ -29,7 +29,6 @@ namespace CloneDeploy_Web.views.groups
             PopulateGrid();
         }
 
-
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)
         {
             PopulateGrid();
@@ -88,7 +87,6 @@ namespace CloneDeploy_Web.views.groups
                 if (lbl != null)
                     lbl.Text = Call.GroupApi.GetMemberCount(group.Id);
             }
-
 
             lblTotal.Text = gvGroups.Rows.Count + " Result(s) / " + Call.GroupApi.GetCount() + " Total Group(s)";
         }

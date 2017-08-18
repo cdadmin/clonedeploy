@@ -6,6 +6,9 @@ namespace CloneDeploy_Entities
     [Table("clonedeploy_user_group_mgmt")]
     public class UserGroupManagementEntity
     {
+        [Column("group_id", Order = 3)]
+        public int GroupId { get; set; }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("clonedeploy_user_group_mgmt_id", Order = 1)]
@@ -13,8 +16,5 @@ namespace CloneDeploy_Entities
 
         [Column("user_id", Order = 2)]
         public int UserId { get; set; }
-
-        [Column("group_id", Order = 3)]
-        public int GroupId { get; set; }
     }
 }

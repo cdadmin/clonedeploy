@@ -28,7 +28,6 @@ namespace CloneDeploy_App.Controllers.Authorization
 
             if (userId == null) return;
 
-
             var authorized = false;
             switch (Permission)
             {
@@ -73,7 +72,9 @@ namespace CloneDeploy_App.Controllers.Authorization
                     break;
                 case AuthorizationStrings.ImageTaskDeployGroup:
                     var groupId_a = Convert.ToInt32(actionContext.ControllerContext.RouteData.Values["id"]);
-                    if (new AuthorizationServices(Convert.ToInt32(userId), AuthorizationStrings.ImageDeployTask).GroupManagement(groupId_a))
+                    if (
+                        new AuthorizationServices(Convert.ToInt32(userId), AuthorizationStrings.ImageDeployTask)
+                            .GroupManagement(groupId_a))
                         authorized = true;
                     break;
                 case AuthorizationStrings.DeleteImage:
@@ -106,8 +107,9 @@ namespace CloneDeploy_App.Controllers.Authorization
                     var activeImagingTask = new ActiveImagingTaskServices().GetTask(objectId);
                     var computer = new ComputerServices().GetComputer(activeImagingTask.ComputerId);
                     if (
-                        new AuthorizationServices(Convert.ToInt32(userId), AuthorizationStrings.ImageDeployTask).ComputerManagement(
-                            computer.Id))
+                        new AuthorizationServices(Convert.ToInt32(userId), AuthorizationStrings.ImageDeployTask)
+                            .ComputerManagement(
+                                computer.Id))
                         authorized = true;
                     break;
             }

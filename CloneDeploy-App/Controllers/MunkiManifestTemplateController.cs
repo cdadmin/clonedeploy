@@ -92,13 +92,11 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-
         [CustomAuth(Permission = "GlobalDelete")]
         public ApiBoolResponseDTO DeleteCatalogsFromTemplate(int id)
         {
             return new ApiBoolResponseDTO {Value = _munkiManifestTemplateServices.DeleteCatalogFromTemplate(id)};
         }
-
 
         [CustomAuth(Permission = "GlobalDelete")]
         public ApiBoolResponseDTO DeleteManagedInstallsFromTemplate(int id)
@@ -109,7 +107,6 @@ namespace CloneDeploy_App.Controllers
             };
         }
 
-
         [CustomAuth(Permission = "GlobalDelete")]
         public ApiBoolResponseDTO DeleteManageUninstallsFromTemplate(int id)
         {
@@ -119,7 +116,6 @@ namespace CloneDeploy_App.Controllers
             };
         }
 
-
         [CustomAuth(Permission = "GlobalDelete")]
         public ApiBoolResponseDTO DeleteManifestsFromTemplate(int id)
         {
@@ -128,7 +124,6 @@ namespace CloneDeploy_App.Controllers
                 Value = _munkiManifestTemplateServices.DeleteIncludedManifestFromTemplate(id)
             };
         }
-
 
         [CustomAuth(Permission = "GlobalDelete")]
         public ApiBoolResponseDTO DeleteOptonalInstallsFromTemplate(int id)
@@ -260,7 +255,6 @@ namespace CloneDeploy_App.Controllers
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
         }
-
 
         [CustomAuth(Permission = "GlobalDelete")]
         public ApiBoolResponseDTO RemoveManagedUpdatesFromTemplate(int id)

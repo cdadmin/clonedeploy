@@ -10,6 +10,7 @@ namespace CloneDeploy_Entities.DTOs.ClientPartition
             LogicalCount = 0;
             MinSizeBlk = 0;
         }
+
         public long AgreedSizeBlk { get; set; }
         public bool HasLogical { get; set; }
         public bool IsOnlySwap { get; set; }

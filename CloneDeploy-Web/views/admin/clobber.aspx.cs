@@ -42,7 +42,8 @@ namespace CloneDeploy_Web.views.admin
             {
                 if (GetSetting(SettingStrings.ClobberEnabled) == "1")
                 {
-                    var imageProfile = Call.ImageProfileApi.Get(Convert.ToInt32(GetSetting(SettingStrings.ClobberProfileId)));
+                    var imageProfile =
+                        Call.ImageProfileApi.Get(Convert.ToInt32(GetSetting(SettingStrings.ClobberProfileId)));
                     var promptForName = GetSetting(SettingStrings.ClobberPromptComputerName) == "1";
 
                     var bootMenuResult = Call.WorkflowApi.CreateClobberBootMenu(imageProfile.Id, promptForName);

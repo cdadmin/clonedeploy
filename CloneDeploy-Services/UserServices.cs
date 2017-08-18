@@ -86,6 +86,13 @@ namespace CloneDeploy_Services
             return _uow.UserRepository.GetFirstOrDefault(u => u.Name == userName);
         }
 
+        public List<AuditLogEntity> GetUserAuditLogs(int userId, int limit)
+        {
+            if (limit == 0) limit = int.MaxValue;
+            return
+                _uow.AuditLogRepository.Get(x => x.UserId == userId).OrderByDescending(x => x.Id).Take(limit).ToList();
+        }
+
         public CloneDeployUserEntity GetUserByApiId(string apiId)
         {
             return _uow.UserRepository.GetFirstOrDefault(x => x.ApiId == apiId);
@@ -115,13 +122,41 @@ namespace CloneDeploy_Services
             return result;
         }
 
-        public List<AuditLogEntity> GetUserAuditLogs(int userId, int limit)
+        public List<UserGroupManagementEntity> GetUserGroupManagements(int userId)
         {
-            if (limit == 0) limit = int.MaxValue;
-            return _uow.AuditLogRepository.Get(x => x.UserId == userId).OrderByDescending(x => x.Id).Take(limit).ToList();
+            return _uow.UserGroupManagementRepository.Get(x => x.UserId == userId);
         }
 
-      
+        public List<UserImageManagementEntity> GetUserImageManagements(int userId)
+        {
+            return _uow.UserImageManagementRepository.Get(x => x.UserId == userId);
+        }
+
+        public List<AuditLogEntity> GetUserLoginsDashboard(int userId)
+        {
+            if (IsAdmin(userId))
+                return
+                    _uow.AuditLogRepository.Get(
+                        x =>
+                            x.AuditType == AuditEntry.Type.SuccessfulLogin || x.AuditType == AuditEntry.Type.FailedLogin)
+                        .OrderByDescending(x => x.Id)
+                        .Take(25)
+                        .ToList();
+            return
+                _uow.AuditLogRepository.Get(
+                    x =>
+                        x.UserId == userId &&
+                        (x.AuditType == AuditEntry.Type.SuccessfulLogin || x.AuditType == AuditEntry.Type.FailedLogin))
+                    .OrderByDescending(x => x.Id)
+                    .Take(25)
+                    .ToList();
+        }
+
+        public List<UserRightEntity> GetUserRights(int userId)
+        {
+            return _uow.UserRightRepository.Get(x => x.UserId == userId);
+        }
+
         public List<AuditLogEntity> GetUserTaskAuditLogs(int userId, int limit)
         {
             if (limit == 0) limit = int.MaxValue;
@@ -139,44 +174,16 @@ namespace CloneDeploy_Services
                         .Take(limit)
                         .ToList();
             }
-            else
-            {
-                return
-              _uow.AuditLogRepository.Get(
-                  x =>
-                      x.UserId == userId && x.ObjectType == "Computer" &&
-                      (x.AuditType == AuditEntry.Type.Multicast || x.AuditType == AuditEntry.Type.OndMulticast ||
-                       x.AuditType == AuditEntry.Type.Deploy || x.AuditType == AuditEntry.Type.Upload ||
-                       x.AuditType == AuditEntry.Type.PermanentPush))
-                  .OrderByDescending(x => x.Id)
-                  .Take(limit)
-                  .ToList();
-            }
-         
-          
-        }
-
-        public List<AuditLogEntity> GetUserLoginsDashboard(int userId)
-        {
-            if(IsAdmin(userId))
-                return _uow.AuditLogRepository.Get(x => x.AuditType == AuditEntry.Type.SuccessfulLogin || x.AuditType == AuditEntry.Type.FailedLogin).OrderByDescending(x => x.Id).Take(25).ToList();
-            else
-                return _uow.AuditLogRepository.Get(x => x.UserId == userId && (x.AuditType == AuditEntry.Type.SuccessfulLogin || x.AuditType == AuditEntry.Type.FailedLogin)).OrderByDescending(x => x.Id).Take(25).ToList();
-        }
-
-        public List<UserGroupManagementEntity> GetUserGroupManagements(int userId)
-        {
-            return _uow.UserGroupManagementRepository.Get(x => x.UserId == userId);
-        }
-
-        public List<UserImageManagementEntity> GetUserImageManagements(int userId)
-        {
-            return _uow.UserImageManagementRepository.Get(x => x.UserId == userId);
-        }
-
-        public List<UserRightEntity> GetUserRights(int userId)
-        {
-            return _uow.UserRightRepository.Get(x => x.UserId == userId);
+            return
+                _uow.AuditLogRepository.Get(
+                    x =>
+                        x.UserId == userId && x.ObjectType == "Computer" &&
+                        (x.AuditType == AuditEntry.Type.Multicast || x.AuditType == AuditEntry.Type.OndMulticast ||
+                         x.AuditType == AuditEntry.Type.Deploy || x.AuditType == AuditEntry.Type.Upload ||
+                         x.AuditType == AuditEntry.Type.PermanentPush))
+                    .OrderByDescending(x => x.Id)
+                    .Take(limit)
+                    .ToList();
         }
 
         public bool IsAdmin(int userId)
@@ -225,7 +232,6 @@ namespace CloneDeploy_Services
             return result.Success;
         }
 
-
         public string TotalCount()
         {
             return _uow.UserRepository.Count();
@@ -271,7 +277,6 @@ namespace CloneDeploy_Services
                     validationResult.ErrorMessage = "Password Is Not Valid";
                     return validationResult;
                 }
-
 
                 if (_uow.UserRepository.Exists(h => h.Name == user.Name))
                 {

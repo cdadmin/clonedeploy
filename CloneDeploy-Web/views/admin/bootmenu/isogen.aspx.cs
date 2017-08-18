@@ -16,9 +16,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
             isoGenOptions.kernel = ddlKernel.Text;
             isoGenOptions.arguments = txtKernelArgs.Text;
 
-
             var clientboot = Call.WorkflowApi.GenerateLinuxIsoConfig(isoGenOptions);
-
 
             Response.Clear();
             var ms = new MemoryStream(clientboot);
@@ -32,7 +30,6 @@ namespace CloneDeploy_Web.views.admin.bootmenu
                 Response.ContentType = "application/zip";
                 Response.AddHeader("content-disposition", "attachment;filename=clientboot.zip");
             }
-
 
             Response.Buffer = true;
             ms.WriteTo(Response.OutputStream);

@@ -38,7 +38,6 @@ namespace CloneDeploy_App.Controllers
         public IEnumerable<ImageClassificationEntity> Get()
         {
             return _imageClassificationServices.GetAll();
-          
         }
 
         [CustomAuth(Permission = "GlobalRead")]

@@ -2,9 +2,9 @@
 {
     public class OnlineKernel
     {
-        public string FileName { get; set; }
-        public string Description { get; set; }
         public string BaseVersion { get; set; }
         public string Config { get; set; }
+        public string Description { get; set; }
+        public string FileName { get; set; }
     }
 }

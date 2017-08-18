@@ -6,15 +6,16 @@ namespace CloneDeploy_Entities
     [Table("buildings")]
     public class BuildingEntity
     {
+        [Column("building_distribution_point", Order = 3)]
+        public int ClusterGroupId { get; set; }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("building_id", Order = 1)]
         public int Id { get; set; }
+
         [Column("building_name", Order = 2)]
         public string Name { get; set; }
-        
-        [Column("building_distribution_point", Order = 3)]
-        public int ClusterGroupId { get; set; }
     }
 
     [NotMapped]

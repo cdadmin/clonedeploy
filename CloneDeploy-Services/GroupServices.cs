@@ -78,7 +78,6 @@ namespace CloneDeploy_Services
             return true;
         }
 
-
         public ActionResultDTO DeleteGroup(int groupId)
         {
             var group = GetGroup(groupId);
@@ -96,6 +95,13 @@ namespace CloneDeploy_Services
             result.Id = group.Id;
 
             return result;
+        }
+
+        public bool DeleteGroupImageClassifications(int groupId)
+        {
+            _uow.GroupImageClassificationRepository.DeleteRange(x => x.GroupId == groupId);
+            _uow.Save();
+            return true;
         }
 
         public bool DeleteMembership(int computerId, int groupId)
@@ -133,7 +139,6 @@ namespace CloneDeploy_Services
                 return cg ?? cgServices.GetDefaultClusterGroup();
             }
 
-
             return cgServices.GetDefaultClusterGroup();
         }
 
@@ -144,21 +149,14 @@ namespace CloneDeploy_Services
             return group;
         }
 
-        public List<GroupImageClassificationEntity> GetGroupImageClassifications(int groupId)
-        {
-            return _uow.GroupImageClassificationRepository.Get(x => x.GroupId == groupId);
-        }
-
-        public bool DeleteGroupImageClassifications(int groupId)
-        {
-            _uow.GroupImageClassificationRepository.DeleteRange(x => x.GroupId == groupId);
-            _uow.Save();
-            return true;
-        }
-
         public GroupBootMenuEntity GetGroupBootMenu(int groupId)
         {
             return _uow.GroupBootMenuRepository.GetFirstOrDefault(p => p.GroupId == groupId);
+        }
+
+        public List<GroupImageClassificationEntity> GetGroupImageClassifications(int groupId)
+        {
+            return _uow.GroupImageClassificationRepository.Get(x => x.GroupId == groupId);
         }
 
         public string GetGroupMemberCount(int groupId)
@@ -197,13 +195,10 @@ namespace CloneDeploy_Services
             var user = userServices.GetUser(userId);
             if (user.GroupManagementEnabled == 1)
             {
-                 var userManagedGroups = userServices.GetUserGroupManagements(userId);
+                var userManagedGroups = userServices.GetUserGroupManagements(userId);
                 return userManagedGroups.Count.ToString();
             }
-            else
-            {
-                return TotalCount();
-            } 
+            return TotalCount();
         }
 
         public int ImportCsv(string csvContents, int userId)
@@ -222,7 +217,6 @@ namespace CloneDeploy_Services
             return importCounter;
         }
 
-
         public List<GroupWithImage> SearchGroups(string searchString = "")
         {
             return _uow.GroupRepository.GetGroupsWithImage(searchString);
@@ -235,7 +229,7 @@ namespace CloneDeploy_Services
                 return SearchGroups(searchString);
 
             var user = userServices.GetUser(userId);
-            if(user.GroupManagementEnabled == 0)
+            if (user.GroupManagementEnabled == 0)
                 return SearchGroups(searchString);
 
             var userManagedGroups = userServices.GetUserGroupManagements(userId);

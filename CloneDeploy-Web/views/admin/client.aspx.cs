@@ -22,7 +22,6 @@ namespace CloneDeploy_Web.views.admin
                 }
             };
 
-
             EndUserMessage = Call.SettingApi.UpdateSettings(listSettings)
                 ? "Successfully Updated Settings"
                 : "Could Not Update Settings";

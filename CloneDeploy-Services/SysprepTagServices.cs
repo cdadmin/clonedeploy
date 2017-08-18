@@ -34,7 +34,6 @@ namespace CloneDeploy_Services
             return actionResult;
         }
 
-
         public ActionResultDTO DeleteSysprepTag(int sysprepTagId)
         {
             var tag = GetSysprepTag(sysprepTagId);
@@ -47,12 +46,10 @@ namespace CloneDeploy_Services
             return actionResult;
         }
 
-
         public SysprepTagEntity GetSysprepTag(int sysprepTagId)
         {
             return _uow.SysprepTagRepository.GetById(sysprepTagId);
         }
-
 
         public List<SysprepTagEntity> SearchSysprepTags(string searchString = "")
         {
@@ -87,7 +84,6 @@ namespace CloneDeploy_Services
 
             return actionResult;
         }
-
 
         private ValidationResultDTO ValidateSysprepTag(SysprepTagEntity sysprepTag, bool isNewSysprepTag)
         {

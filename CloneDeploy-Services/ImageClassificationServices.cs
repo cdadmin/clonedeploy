@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
@@ -37,7 +36,8 @@ namespace CloneDeploy_Services
         public ActionResultDTO DeleteImageClassification(int imageClassificationId)
         {
             var imageClassification = GetImageClassification(imageClassificationId);
-            if (imageClassification == null) return new ActionResultDTO {ErrorMessage = "Image Classification Not Found", Id = 0};
+            if (imageClassification == null)
+                return new ActionResultDTO {ErrorMessage = "Image Classification Not Found", Id = 0};
             _uow.ImageClassificationRepository.Delete(imageClassificationId);
             _uow.Save();
             var actionResult = new ActionResultDTO();
@@ -46,14 +46,14 @@ namespace CloneDeploy_Services
             return actionResult;
         }
 
-        public ImageClassificationEntity GetImageClassification(int imageClassificationId)
-        {
-            return _uow.ImageClassificationRepository.GetById(imageClassificationId);
-        }
-
         public List<ImageClassificationEntity> GetAll()
         {
             return _uow.ImageClassificationRepository.Get();
+        }
+
+        public ImageClassificationEntity GetImageClassification(int imageClassificationId)
+        {
+            return _uow.ImageClassificationRepository.GetById(imageClassificationId);
         }
 
         public string TotalCount()
@@ -80,7 +80,8 @@ namespace CloneDeploy_Services
             return actionResult;
         }
 
-        private ValidationResultDTO ValidateImageClassification(ImageClassificationEntity imageClassification, bool isNewImageClassification)
+        private ValidationResultDTO ValidateImageClassification(ImageClassificationEntity imageClassification,
+            bool isNewImageClassification)
         {
             var validationResult = new ValidationResultDTO {Success = true};
 

@@ -12,9 +12,9 @@ namespace CloneDeploy_ApiCalls
     {
         private readonly Uri _baseUrl;
         private readonly RestClient _client = new RestClient();
+        private readonly ILog _log = LogManager.GetLogger("FrontEndLog");
         private readonly RestRequest _request = new RestRequest();
         private readonly string _resource;
-        private readonly ILog _log = LogManager.GetLogger("FrontEndLog");
 
         public TokenApi(string resource)
         {
@@ -46,12 +46,12 @@ namespace CloneDeploy_ApiCalls
                 token.error_description = "Did Not Receive A Response From The Auth Server.";
                 return token;
             }
-            
-            if(response.Data != null)
+
+            if (response.Data != null)
             {
                 token = response.Data;
             }
-           
+
             if (response.ErrorException != null)
             {
                 _log.Debug("Error With Token API: " + response.ErrorException);

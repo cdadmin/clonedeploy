@@ -10,6 +10,7 @@ namespace CloneDeploy_Web.views.dashboard
     {
         public int freePercent;
         public int usedPercent;
+
         protected void LogOut_OnClick(object sender, EventArgs e)
         {
             FormsAuthentication.SignOut();
@@ -30,10 +31,8 @@ namespace CloneDeploy_Web.views.dashboard
             PopulateStats();
         }
 
-
         protected void PopulateStats()
         {
-
             //FixMe: get all the numbers in own function, don't slowly create full lists of unused stuff 
 
             var computersList = Call.ComputerApi.GridViewSearch(int.MaxValue, "");
@@ -55,18 +54,16 @@ namespace CloneDeploy_Web.views.dashboard
             lblDPfree.Text = string.Format("<b>Free Space:</b>{0,15:D}", SizeSuffix(Convert.ToInt64(free.freespace)));
             lblDpTotal.Text = string.Format("<b>Total Space:</b>{0,15:D}", SizeSuffix(Convert.ToInt64(free.total)));
 
-
             gvLogins.DataSource = Call.CloneDeployUserApi.GetUserLoginsDashboard();
             gvLogins.DataBind();
 
             gvTasks.DataSource = Call.CloneDeployUserApi.GetUserTaskAuditLogs(CloneDeployCurrentUser.Id, 25);
             gvTasks.DataBind();
-
         }
 
         private string SizeSuffix(long value)
         {
-            string[] SizeSuffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+            string[] SizeSuffixes = {"bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
 
             if (value < 0)
             {
@@ -77,8 +74,8 @@ namespace CloneDeploy_Web.views.dashboard
                 return "0.0 bytes";
             }
 
-            var mag = (int)Math.Log(value, 1024);
-            var adjustedSize = (decimal)value / (1L << (mag * 10));
+            var mag = (int) Math.Log(value, 1024);
+            var adjustedSize = (decimal) value/(1L << (mag*10));
 
             return string.Format("{0:n1} {1}", adjustedSize, SizeSuffixes[mag]);
         }

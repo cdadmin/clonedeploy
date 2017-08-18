@@ -11,14 +11,13 @@ namespace CloneDeploy_Entities
         [Column("munki_manifest_catalog_id", Order = 1)]
         public int Id { get; set; }
 
+        [Column("munki_manifest_template_id", Order = 4)]
+        public int ManifestTemplateId { get; set; }
+
         [Column("munki_manifest_catalog_name", Order = 2)]
         public string Name { get; set; }
 
         [Column("munki_manifest_catalog_priority", Order = 3)]
         public int Priority { get; set; }
-
-        [Column("munki_manifest_template_id", Order = 4)]
-        public int ManifestTemplateId { get; set; }
-  
     }
 }

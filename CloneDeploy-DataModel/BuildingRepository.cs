@@ -14,7 +14,6 @@ namespace CloneDeploy_DataModel
             _context = context;
         }
 
-
         public List<BuildingWithClusterGroup> Get(string searchString)
         {
             return (from s in _context.Buildings

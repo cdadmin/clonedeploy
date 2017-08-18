@@ -83,7 +83,6 @@ namespace CloneDeploy_Web.views.global.rooms
             BindGrid();
         }
 
-
         protected void OnRowUpdating(object sender, GridViewUpdateEventArgs e)
         {
             RequiresAuthorization(AuthorizationStrings.UpdateGlobal);

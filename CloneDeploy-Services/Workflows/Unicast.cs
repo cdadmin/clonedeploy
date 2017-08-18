@@ -61,7 +61,6 @@ namespace CloneDeploy_Services.Workflows
 
             _activeTask.Type = _direction;
 
-
             var activeImagingTaskServices = new ActiveImagingTaskServices();
 
             if (!activeImagingTaskServices.AddActiveImagingTask(_activeTask))

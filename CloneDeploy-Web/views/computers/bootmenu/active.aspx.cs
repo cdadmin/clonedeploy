@@ -2,7 +2,6 @@
 using CloneDeploy_Common;
 using CloneDeploy_Web.BasePages;
 
-
 namespace CloneDeploy_Web.views.computers.bootmenu
 {
     public partial class views_computers_bootmenu_active : Computers

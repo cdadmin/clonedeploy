@@ -9,26 +9,6 @@ namespace CloneDeploy_Services
     {
         private static readonly ILog log = LogManager.GetLogger("ApplicationLog");
 
-        public static string PlaceHolderReplace(string parameter)
-        {
-            if (String.IsNullOrEmpty(parameter)) return parameter;
-            var start = parameter.IndexOf("[", StringComparison.Ordinal);
-            var to = parameter.IndexOf("]", start + "[".Length, StringComparison.Ordinal);
-            if (start < 0 || to < 0) return parameter;
-            var s = parameter.Substring(
-                start + "[".Length,
-                to - start - "[".Length);
-            if (s == "server-ip")
-            {
-                return parameter.Replace("[server-ip]", SettingServices.GetSettingValue(SettingStrings.ServerIp));
-            }
-            if (s == "tftp-server-ip")
-            {
-                return parameter.Replace("[tftp-server-ip]", SettingServices.GetSettingValue(SettingStrings.TftpServerIp));
-            }
-            return s;
-        }
-
         public static string Decode(string encoded, string parameter)
         {
             string decoded = null;
@@ -79,7 +59,7 @@ namespace CloneDeploy_Services
                 var sb = new StringBuilder();
                 for (var i = 0; i < mac.Length; i++)
                 {
-                    if (i % 2 == 0 && i != 0)
+                    if (i%2 == 0 && i != 0)
                         sb.Append(':');
                     sb.Append(mac[i]);
                 }
@@ -97,9 +77,30 @@ namespace CloneDeploy_Services
             return pxeMac;
         }
 
+        public static string PlaceHolderReplace(string parameter)
+        {
+            if (string.IsNullOrEmpty(parameter)) return parameter;
+            var start = parameter.IndexOf("[", StringComparison.Ordinal);
+            var to = parameter.IndexOf("]", start + "[".Length, StringComparison.Ordinal);
+            if (start < 0 || to < 0) return parameter;
+            var s = parameter.Substring(
+                start + "[".Length,
+                to - start - "[".Length);
+            if (s == "server-ip")
+            {
+                return parameter.Replace("[server-ip]", SettingServices.GetSettingValue(SettingStrings.ServerIp));
+            }
+            if (s == "tftp-server-ip")
+            {
+                return parameter.Replace("[tftp-server-ip]",
+                    SettingServices.GetSettingValue(SettingStrings.TftpServerIp));
+            }
+            return s;
+        }
+
         public static string WindowsToUnixFilePath(string path)
         {
-            return path != null ? path.Replace("\\", "/") : String.Empty;
+            return path != null ? path.Replace("\\", "/") : string.Empty;
         }
     }
 }

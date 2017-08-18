@@ -88,7 +88,6 @@ namespace CloneDeploy_Web.views.images.profiles
             EndUserMessage = result.Success ? "Successfully Updated Image Profile" : result.ErrorMessage;
         }
 
-
         protected void btnVG_Click(object sender, EventArgs e)
         {
             var control = sender as Control;
@@ -97,7 +96,6 @@ namespace CloneDeploy_Web.views.images.profiles
             var gv = (GridView) gvRow.FindControl("gvLVS");
 
             var selectedHd = (string) ViewState["selectedHD"];
-
 
             var btn = (LinkButton) gvRow.FindControl("vgClick");
             if (gv.Visible == false)
@@ -231,12 +229,14 @@ namespace CloneDeploy_Web.views.images.profiles
                         {
                             var lvBoxPart = lv.FindControl("chkPartActive") as CheckBox;
                             if (lvBoxPart != null)
-                                schema.HardDrives[rowCounter].Partitions[partCounter].VolumeGroup.LogicalVolumes[lvCounter]
+                                schema.HardDrives[rowCounter].Partitions[partCounter].VolumeGroup.LogicalVolumes[
+                                    lvCounter]
                                     .Active = lvBoxPart.Checked;
 
                             var lvChkFixed = lv.FindControl("chkFixed") as CheckBox;
                             if (lvChkFixed != null)
-                                schema.HardDrives[rowCounter].Partitions[partCounter].VolumeGroup.LogicalVolumes[lvCounter]
+                                schema.HardDrives[rowCounter].Partitions[partCounter].VolumeGroup.LogicalVolumes[
+                                    lvCounter]
                                     .ForceFixedSize = lvChkFixed.Checked;
                             lvCounter++;
                         }

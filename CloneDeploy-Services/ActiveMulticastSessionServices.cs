@@ -88,7 +88,6 @@ namespace CloneDeploy_Services
                 actionResult.Success = false;
             }
 
-
             return actionResult;
         }
 

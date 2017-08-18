@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
-using System.Threading;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
@@ -21,7 +20,7 @@ namespace CloneDeploy_App.Controllers
         public ActiveMulticastSessionController()
         {
             _activeMulticastSessionServices = new ActiveMulticastSessionServices();
-            _userId = Convert.ToInt32(((ClaimsIdentity)User.Identity).Claims.Where(c => c.Type == "user_id")
+            _userId = Convert.ToInt32(((ClaimsIdentity) User.Identity).Claims.Where(c => c.Type == "user_id")
                 .Select(c => c.Value).SingleOrDefault());
         }
 
@@ -33,7 +32,6 @@ namespace CloneDeploy_App.Controllers
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound, result));
             return result;
         }
-
 
         [Authorize]
         public IEnumerable<ActiveMulticastSessionEntity> Get()

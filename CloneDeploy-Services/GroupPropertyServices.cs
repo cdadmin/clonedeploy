@@ -35,8 +35,7 @@ namespace CloneDeploy_Services
             if (Convert.ToBoolean(groupProperty.ImageClassificationsEnabled))
             {
                 groupImageClassifications =
-                       new GroupServices().GetGroupImageClassifications(groupProperty.GroupId);
-
+                    new GroupServices().GetGroupImageClassifications(groupProperty.GroupId);
             }
             foreach (var computer in new GroupServices().GetGroupMembersWithImages(groupProperty.GroupId))
             {
@@ -70,14 +69,13 @@ namespace CloneDeploy_Services
                     computer.AlternateServerIpId = groupProperty.AlternateServerIpId;
                 if (Convert.ToBoolean(groupProperty.ImageClassificationsEnabled))
                 {
-                   var computerImageClassifications = new List<ComputerImageClassificationEntity>();
+                    var computerImageClassifications = new List<ComputerImageClassificationEntity>();
                     if (new ComputerServices().DeleteComputerImageClassifications(computer.Id))
                     {
                         foreach (var imageClass in groupImageClassifications)
                         {
                             computerImageClassifications.Add(
-
-                                new ComputerImageClassificationEntity()
+                                new ComputerImageClassificationEntity
                                 {
                                     ComputerId = computer.Id,
                                     ImageClassificationId = imageClass.ImageClassificationId
@@ -102,7 +100,6 @@ namespace CloneDeploy_Services
                 }
             }
         }
-
 
         public ActionResultDTO UpdateGroupProperty(GroupPropertyEntity groupProperty)
         {

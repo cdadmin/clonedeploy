@@ -67,7 +67,6 @@ namespace CloneDeploy_Web.views.computers.bootmenu
             PopulateBootTemplatesDdl(ddlTemplates);
             var bootMenu = Call.ComputerApi.GetBootMenu(Computer.Id);
 
-
             if (GetSetting(SettingStrings.ProxyDhcp) == "Yes")
             {
                 divProxy.Visible = true;

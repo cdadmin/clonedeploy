@@ -9,6 +9,7 @@ using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.ImageSchemaBE;
 using CloneDeploy_Services.Helpers;
 using log4net;
+
 #if __MonoCS__  
 using Mono.Unix; // requires reference to  Mono.Posix.dll
 #endif
@@ -30,7 +31,6 @@ namespace CloneDeploy_Services
                 dpFreeSpace.dPPath = basePath;
                 using (var unc = new UncServices())
                 {
-                    
                     var smbPassword = new EncryptionServices().DecryptText(dp.RwPassword);
                     if (
                         unc.NetUseWithCredentials(basePath, dp.RwUsername, dp.Domain,
@@ -47,9 +47,9 @@ namespace CloneDeploy_Services
 
                         if (total > 0 && freespace > 0)
                         {
-                            freePercent = (int)(0.5f + 100f * Convert.ToInt64(freespace) / Convert.ToInt64(total));
+                            freePercent = (int) (0.5f + 100f*Convert.ToInt64(freespace)/Convert.ToInt64(total));
                             usedPercent =
-                                (int)(0.5f + 100f * Convert.ToInt64(total - freespace) / Convert.ToInt64(total));
+                                (int) (0.5f + 100f*Convert.ToInt64(total - freespace)/Convert.ToInt64(total));
                         }
                         dpFreeSpace.freespace = freespace;
                         dpFreeSpace.total = total;
@@ -64,8 +64,6 @@ namespace CloneDeploy_Services
             }
             else
             {
-
-
                 dpFreeSpace.dPPath = dp.PhysicalPath;
 
                 if (Directory.Exists(dp.PhysicalPath))
@@ -321,7 +319,8 @@ namespace CloneDeploy_Services
 
         public static List<string> GetBootImages()
         {
-            var bootImagePath = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "images" + Path.DirectorySeparatorChar;
+            var bootImagePath = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "images" +
+                                Path.DirectorySeparatorChar;
 
             var bootImageFiles = new List<string>();
             try
@@ -338,11 +337,10 @@ namespace CloneDeploy_Services
             return bootImageFiles;
         }
 
-
-
         public static List<string> GetKernels()
         {
-            var kernelPath = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "kernels" + Path.DirectorySeparatorChar;
+            var kernelPath = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "kernels" +
+                             Path.DirectorySeparatorChar;
             var result = new List<string>();
             try
             {
@@ -399,16 +397,15 @@ namespace CloneDeploy_Services
                 try
                 {
                     Directory.CreateDirectory(primaryDp.PhysicalPath + "images" + Path.DirectorySeparatorChar +
-                                           imageName);
+                                              imageName);
                     new FileOpsServices().SetUnixPermissionsImage(primaryDp.PhysicalPath + "images" +
-                                                          Path.DirectorySeparatorChar + imageName);
+                                                                  Path.DirectorySeparatorChar + imageName);
                 }
                 catch (Exception ex)
                 {
                     log.Debug(ex.Message);
                     return false;
                 }
-               
             }
             else if (primaryDp.Location == "Remote")
             {
@@ -423,9 +420,9 @@ namespace CloneDeploy_Services
                         try
                         {
                             Directory.CreateDirectory(basePath + @"\images" + @"\" +
-                                          imageName);
+                                                      imageName);
                             new FileOpsServices().SetUnixPermissionsImage(basePath + @"\images" +
-                                                                  @"\" + imageName);
+                                                                          @"\" + imageName);
                         }
                         catch (Exception ex)
                         {
@@ -459,15 +456,14 @@ namespace CloneDeploy_Services
             {
                 try
                 {
-                        Directory.Delete(primaryDp.PhysicalPath + "images" + Path.DirectorySeparatorChar + imageName,
-                            true);
+                    Directory.Delete(primaryDp.PhysicalPath + "images" + Path.DirectorySeparatorChar + imageName,
+                        true);
                 }
                 catch (Exception ex)
                 {
                     log.Debug(ex.Message);
                     return false;
                 }
-
             }
             else if (primaryDp.Location == "Remote")
             {
@@ -482,7 +478,7 @@ namespace CloneDeploy_Services
                         try
                         {
                             Directory.Delete(basePath + @"\images" + @"\" +
-                                          imageName,true);
+                                             imageName, true);
                         }
                         catch (Exception ex)
                         {
@@ -515,17 +511,17 @@ namespace CloneDeploy_Services
                 try
                 {
                     var imageFile =
-                   Directory.GetFiles(
-                       primaryDp.PhysicalPath + "images" + Path.DirectorySeparatorChar + imageName +
-                       Path.DirectorySeparatorChar + "hd" + hd +
-                       Path.DirectorySeparatorChar,
-                       "part" + partition + ".*").FirstOrDefault();
+                        Directory.GetFiles(
+                            primaryDp.PhysicalPath + "images" + Path.DirectorySeparatorChar + imageName +
+                            Path.DirectorySeparatorChar + "hd" + hd +
+                            Path.DirectorySeparatorChar,
+                            "part" + partition + ".*").FirstOrDefault();
 
                     var fi = new FileInfo(imageFile);
                     imageFileInfo = new ImageFileInfo
                     {
                         FileName = fi.Name,
-                        FileSize = (fi.Length / 1024f / 1024f).ToString("#.##") + " MB"
+                        FileSize = (fi.Length/1024f/1024f).ToString("#.##") + " MB"
                     };
                 }
                 catch (Exception ex)
@@ -533,7 +529,6 @@ namespace CloneDeploy_Services
                     log.Debug(ex.Message);
                     return null;
                 }
-
             }
             else if (primaryDp.Location == "Remote")
             {
@@ -549,7 +544,7 @@ namespace CloneDeploy_Services
                         {
                             var imageFile =
                                 Directory.GetFiles(basePath + @"\images\" + imageName +
-                                    @"\" + "hd" + hd + @"\", "part" + partition + ".*").FirstOrDefault();
+                                                   @"\" + "hd" + hd + @"\", "part" + partition + ".*").FirstOrDefault();
 
                             var fi = new FileInfo(imageFile);
                             imageFileInfo = new ImageFileInfo
@@ -577,7 +572,7 @@ namespace CloneDeploy_Services
                 return null;
             }
 
-            return new List<ImageFileInfo>(){imageFileInfo};
+            return new List<ImageFileInfo> {imageFileInfo};
         }
 
         public string GetHdFileSize(string imageName, string hd)
@@ -589,16 +584,15 @@ namespace CloneDeploy_Services
                 {
                     var imagePath = primaryDp.PhysicalPath + "images" + Path.DirectorySeparatorChar + imageName +
                                     Path.DirectorySeparatorChar + "hd" + hd;
-                    var size = new FileOpsServices().GetDirectorySize(new DirectoryInfo(imagePath)) / 1024f / 1024f / 1024f;
+                    var size = new FileOpsServices().GetDirectorySize(new DirectoryInfo(imagePath))/1024f/1024f/1024f;
                     return Math.Abs(size) < 0.1f ? "< 100M" : size.ToString("#.##") + " GB";
                 }
                 catch
                 {
                     return "N/A";
                 }
-
             }
-            else if (primaryDp.Location == "Remote")
+            if (primaryDp.Location == "Remote")
             {
                 using (var unc = new UncServices())
                 {
@@ -610,8 +604,9 @@ namespace CloneDeploy_Services
                     {
                         try
                         {
-                            var imagePath = basePath + @"\images\" + imageName +  @"\hd" + hd;
-                            var size = new FileOpsServices().GetDirectorySize(new DirectoryInfo(imagePath)) / 1024f / 1024f / 1024f;
+                            var imagePath = basePath + @"\images\" + imageName + @"\hd" + hd;
+                            var size = new FileOpsServices().GetDirectorySize(new DirectoryInfo(imagePath))/1024f/1024f/
+                                       1024f;
                             return Math.Abs(size) < 0.1f ? "< 100M" : size.ToString("#.##") + " GB";
                         }
                         catch
@@ -619,18 +614,12 @@ namespace CloneDeploy_Services
                             return "N/A";
                         }
                     }
-                    else
-                    {
-                        log.Debug("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
-                        return "N/A";
-                    }
+                    log.Debug("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
+                    return "N/A";
                 }
             }
-            else
-            {
-                log.Debug("Could Not Determine Primary Distribution Point Location Type");
-                return "N/A";
-            }
+            log.Debug("Could Not Determine Primary Distribution Point Location Type");
+            return "N/A";
         }
 
         public string ReadSchemaFile(string imageName)
@@ -648,14 +637,12 @@ namespace CloneDeploy_Services
                     {
                         schemaText = reader.ReadLine() ?? "";
                     }
-
                 }
                 catch (Exception ex)
                 {
                     log.Debug("Could Not Read Schema File On The Primary Distribution Point");
                     log.Debug(ex.Message);
                 }
-
             }
             else if (primaryDp.Location == "Remote")
             {
@@ -675,7 +662,6 @@ namespace CloneDeploy_Services
                             {
                                 schemaText = reader.ReadLine() ?? "";
                             }
-
                         }
                         catch (Exception ex)
                         {
@@ -696,7 +682,6 @@ namespace CloneDeploy_Services
             }
 
             return schemaText;
-
         }
 
         public bool RenameImageFolder(string oldName, string newName)
@@ -708,14 +693,13 @@ namespace CloneDeploy_Services
                 try
                 {
                     var imagePath = primaryDp.PhysicalPath + "images" + Path.DirectorySeparatorChar;
-                        Directory.Move(imagePath + oldName, imagePath + newName);
+                    Directory.Move(imagePath + oldName, imagePath + newName);
                 }
                 catch (Exception ex)
                 {
                     log.Debug(ex.Message);
                     return false;
                 }
-
             }
             else if (primaryDp.Location == "Remote")
             {
@@ -762,8 +746,6 @@ namespace CloneDeploy_Services
             var filePath = "";
             if (primaryDp.Location == "Local")
             {
-               
-
                 var imagePath = primaryDp.PhysicalPath + "images" +
                                 Path.DirectorySeparatorChar + imageName + Path.DirectorySeparatorChar + "hd" +
                                 schemaHdNumber;
@@ -778,7 +760,6 @@ namespace CloneDeploy_Services
                 {
                     log.Debug(ex.Message);
                 }
-
             }
             else if (primaryDp.Location == "Remote")
             {
@@ -803,24 +784,19 @@ namespace CloneDeploy_Services
                         {
                             log.Debug(ex.Message);
                         }
-
-
                     }
                     else
                     {
                         log.Debug("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
-
                     }
                 }
             }
             else
             {
                 log.Debug("Could Not Determine Primary Distribution Point Location Type");
-
             }
 
             return filePath;
-
         }
 
         public string GetLVMFileNameWithFullPath(string imageName, string schemaHdNumber, string vgName, string lvName,
@@ -846,7 +822,6 @@ namespace CloneDeploy_Services
                 {
                     log.Debug(ex.Message);
                 }
-
             }
             else if (primaryDp.Location == "Remote")
             {
@@ -862,7 +837,6 @@ namespace CloneDeploy_Services
                                         schemaHdNumber;
                         try
                         {
-
                             filePath =
                                 Directory.GetFiles(
                                     imagePath + @"\",
@@ -873,24 +847,19 @@ namespace CloneDeploy_Services
                         {
                             log.Debug(ex.Message);
                         }
-
-
                     }
                     else
                     {
                         log.Debug("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
-
                     }
                 }
             }
             else
             {
                 log.Debug("Could Not Determine Primary Distribution Point Location Type");
-
             }
 
             return filePath;
-
         }
     }
 }

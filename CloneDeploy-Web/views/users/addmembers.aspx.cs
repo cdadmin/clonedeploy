@@ -16,7 +16,6 @@ namespace CloneDeploy_Web.views.users
                 return;
             }
 
-
             //Don't remove all administrators
             if (CloneDeployUserGroup.Membership == "User")
             {

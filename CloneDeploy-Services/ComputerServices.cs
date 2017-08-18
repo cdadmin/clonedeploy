@@ -64,7 +64,7 @@ namespace CloneDeploy_Services
             }
 
             var user = userServices.GetUser(userId);
-            if(user.GroupManagementEnabled == 0)
+            if (user.GroupManagementEnabled == 0)
                 return TotalCount();
 
             var userManagedGroups = userServices.GetUserGroupManagements(userId);
@@ -114,7 +114,8 @@ namespace CloneDeploy_Services
                 {
                     foreach (var tuple in list)
                     {
-                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" +
+                               Path.DirectorySeparatorChar + tuple.Item1 +
                                Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeMac +
                                tuple.Item2;
 
@@ -128,7 +129,8 @@ namespace CloneDeploy_Services
                     {
                         foreach (var tuple in list)
                         {
-                            path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar + tuple.Item1 +
+                            path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" +
+                                   Path.DirectorySeparatorChar + tuple.Item1 +
                                    Path.DirectorySeparatorChar + "pxelinux.cfg" + Path.DirectorySeparatorChar + pxeMac +
                                    tuple.Item2;
 
@@ -163,7 +165,8 @@ namespace CloneDeploy_Services
             else
             {
                 var mode = SettingServices.GetSettingValue(SettingStrings.PxeMode);
-                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" +
+                       Path.DirectorySeparatorChar +
                        pxeMac;
 
                 if (SettingServices.ServerIsNotClustered)
@@ -180,7 +183,8 @@ namespace CloneDeploy_Services
                 {
                     if (SettingServices.TftpServerRole)
                     {
-                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" +
+                               Path.DirectorySeparatorChar +
                                pxeMac;
                         if (mode.Contains("ipxe"))
                             path += ".ipxe";
@@ -217,7 +221,6 @@ namespace CloneDeploy_Services
             return true;
         }
 
-
         public ActionResultDTO DeleteComputer(int id)
         {
             var computer = GetComputer(id);
@@ -246,7 +249,6 @@ namespace CloneDeploy_Services
         {
             var actionResult = new ActionResultDTO();
 
-
             using (var uow = new UnitOfWork())
             {
                 uow.ComputerBootMenuRepository.DeleteRange(x => x.ComputerId == computerId);
@@ -255,6 +257,13 @@ namespace CloneDeploy_Services
                 actionResult.Id = computerId;
             }
             return actionResult;
+        }
+
+        public bool DeleteComputerImageClassifications(int computerId)
+        {
+            _uow.ComputerImageClassificationRepository.DeleteRange(x => x.ComputerId == computerId);
+            _uow.Save();
+            return true;
         }
 
         public ActionResultDTO DeleteComputerLogs(int computerId)
@@ -269,7 +278,6 @@ namespace CloneDeploy_Services
             _uow.Save();
             actionResult.Success = true;
             actionResult.Id = computerId;
-
 
             return actionResult;
         }
@@ -307,11 +315,6 @@ namespace CloneDeploy_Services
         public List<ComputerEntity> GetAll()
         {
             return _uow.ComputerRepository.Get();
-        }
-
-        public ComputerWithImage GetWithImage(int computerId)
-        {
-            return _uow.ComputerRepository.GetComputerWithImage(computerId);
         }
 
         public List<GroupMembershipEntity> GetAllComputerMemberships(int computerId)
@@ -373,16 +376,30 @@ namespace CloneDeploy_Services
             return cgServices.GetDefaultClusterGroup();
         }
 
-
         public ComputerEntity GetComputer(int computerId)
         {
             var computer = _uow.ComputerRepository.GetById(computerId);
             return computer;
         }
 
+        public List<AuditLogEntity> GetComputerAuditLogs(int computerId, int limit)
+        {
+            if (limit == 0) limit = int.MaxValue;
+            return
+                _uow.AuditLogRepository.Get(x => x.ObjectType == "Computer" && x.ObjectId == computerId)
+                    .OrderByDescending(x => x.Id)
+                    .Take(limit)
+                    .ToList();
+        }
+
         public ComputerBootMenuEntity GetComputerBootMenu(int computerId)
         {
             return _uow.ComputerBootMenuRepository.GetFirstOrDefault(p => p.ComputerId == computerId);
+        }
+
+        public ComputerEntity GetComputerFromClientIdentifier(string clientIdentifier)
+        {
+            return _uow.ComputerRepository.GetFirstOrDefault(p => p.ClientIdentifier == clientIdentifier);
         }
 
         public ComputerEntity GetComputerFromMac(string mac)
@@ -395,15 +412,9 @@ namespace CloneDeploy_Services
             return _uow.ComputerRepository.GetFirstOrDefault(p => p.Name == name);
         }
 
-        public ComputerEntity GetComputerFromClientIdentifier(string clientIdentifier)
+        public List<ComputerImageClassificationEntity> GetComputerImageClassifications(int computerId)
         {
-            return _uow.ComputerRepository.GetFirstOrDefault(p => p.ClientIdentifier == clientIdentifier);
-        }
-
-        public List<AuditLogEntity> GetComputerAuditLogs(int computerId,int limit)
-        {
-            if (limit == 0) limit = int.MaxValue;
-            return _uow.AuditLogRepository.Get(x => x.ObjectType == "Computer" && x.ObjectId == computerId).OrderByDescending(x => x.Id).Take(limit).ToList();
+            return _uow.ComputerImageClassificationRepository.Get(x => x.ComputerId == computerId);
         }
 
         public string GetComputerNonProxyPath(int computerId, bool isActiveOrCustom)
@@ -416,23 +427,27 @@ namespace CloneDeploy_Services
             var fileName = isActiveOrCustom ? pxeComputerMac : "default";
 
             if (mode.Contains("ipxe"))
-                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" +
+                       Path.DirectorySeparatorChar +
                        fileName + ".ipxe";
             else if (mode.Contains("grub"))
             {
                 if (isActiveOrCustom)
                 {
-                    path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                    path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" +
+                           Path.DirectorySeparatorChar +
                            pxeComputerMac + ".cfg";
                 }
                 else
                 {
-                    path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "grub" + Path.DirectorySeparatorChar
+                    path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "grub" +
+                           Path.DirectorySeparatorChar
                            + "grub.cfg";
                 }
             }
             else
-                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" + Path.DirectorySeparatorChar +
+                path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "pxelinux.cfg" +
+                       Path.DirectorySeparatorChar +
                        fileName;
 
             return path;
@@ -444,7 +459,6 @@ namespace CloneDeploy_Services
             var pxeComputerMac = StringManipulationServices.MacToPxeMac(computer.Mac);
             string path = null;
 
-
             var biosFile = SettingServices.GetSettingValue(SettingStrings.ProxyBiosFile);
             var efi32File = SettingServices.GetSettingValue(SettingStrings.ProxyEfi32File);
             var efi64File = SettingServices.GetSettingValue(SettingStrings.ProxyEfi64File);
@@ -455,35 +469,41 @@ namespace CloneDeploy_Services
                 case "bios":
                     if (biosFile.Contains("ipxe"))
                     {
-                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar +
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" +
+                               Path.DirectorySeparatorChar +
                                proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
                                Path.DirectorySeparatorChar + fileName + ".ipxe";
                     }
                     else
-                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar +
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" +
+                               Path.DirectorySeparatorChar +
                                proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
                                Path.DirectorySeparatorChar + fileName;
                     break;
                 case "efi32":
                     if (efi32File.Contains("ipxe"))
-                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar +
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" +
+                               Path.DirectorySeparatorChar +
                                proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
                                Path.DirectorySeparatorChar + fileName + ".ipxe";
                     else
-                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar +
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" +
+                               Path.DirectorySeparatorChar +
                                proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
                                Path.DirectorySeparatorChar + fileName;
                     break;
                 case "efi64":
                     if (efi64File.Contains("ipxe"))
-                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar +
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" +
+                               Path.DirectorySeparatorChar +
                                proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
                                Path.DirectorySeparatorChar + fileName + ".ipxe";
                     else if (efi64File.Contains("grub"))
                     {
                         if (isActiveOrCustom)
                         {
-                            path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar +
+                            path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" +
+                                   Path.DirectorySeparatorChar +
                                    proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
                                    Path.DirectorySeparatorChar + pxeComputerMac + ".cfg";
                         }
@@ -494,25 +514,14 @@ namespace CloneDeploy_Services
                         }
                     }
                     else
-                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" + Path.DirectorySeparatorChar +
+                        path = SettingServices.GetSettingValue(SettingStrings.TftpPath) + "proxy" +
+                               Path.DirectorySeparatorChar +
                                proxyType + Path.DirectorySeparatorChar + "pxelinux.cfg" +
                                Path.DirectorySeparatorChar + fileName;
                     break;
             }
 
             return path;
-        }
-
-        public List<ComputerImageClassificationEntity> GetComputerImageClassifications(int computerId)
-        {
-            return _uow.ComputerImageClassificationRepository.Get(x => x.ComputerId == computerId);
-        }
-
-        public bool DeleteComputerImageClassifications(int computerId)
-        {
-            _uow.ComputerImageClassificationRepository.DeleteRange(x => x.ComputerId == computerId);
-            _uow.Save();
-            return true;
         }
 
         public ComputerProxyReservationEntity GetComputerProxyReservation(int computerId)
@@ -525,11 +534,6 @@ namespace CloneDeploy_Services
             return _uow.ComputerMunkiRepository.Get(x => x.ComputerId == computerId);
         }
 
-        public ActiveImagingTaskEntity GetTaskForComputerQueue(int computerId)
-        {
-            return _uow.ActiveImagingTaskRepository.GetFirstOrDefault(x => x.ComputerId == computerId && (x.Status == "1" || x.Status =="2"));
-        }
-
         public ActiveImagingTaskEntity GetTaskForComputer(int computerId)
         {
             return _uow.ActiveImagingTaskRepository.GetFirstOrDefault(x => x.ComputerId == computerId);
@@ -537,7 +541,24 @@ namespace CloneDeploy_Services
 
         public ActiveImagingTaskEntity GetTaskForComputerCheckin(int computerId)
         {
-            return _uow.ActiveImagingTaskRepository.GetFirstOrDefault(x => x.ComputerId == computerId && (x.Type == "upload" || x.Type == "deploy" || x.Type == "permanentdeploy" || x.Type == "multicast"));
+            return
+                _uow.ActiveImagingTaskRepository.GetFirstOrDefault(
+                    x =>
+                        x.ComputerId == computerId &&
+                        (x.Type == "upload" || x.Type == "deploy" || x.Type == "permanentdeploy" ||
+                         x.Type == "multicast"));
+        }
+
+        public ActiveImagingTaskEntity GetTaskForComputerQueue(int computerId)
+        {
+            return
+                _uow.ActiveImagingTaskRepository.GetFirstOrDefault(
+                    x => x.ComputerId == computerId && (x.Status == "1" || x.Status == "2"));
+        }
+
+        public ComputerWithImage GetWithImage(int computerId)
+        {
+            return _uow.ComputerRepository.GetComputerWithImage(computerId);
         }
 
         public int ImportCsv(string csvContents)
@@ -563,9 +584,8 @@ namespace CloneDeploy_Services
 
         public List<ComputerLogEntity> SearchComputerLogs(int computerId)
         {
-          
             return _uow.ComputerLogRepository.Get(x => x.ComputerId == computerId,
-              q => q.OrderByDescending(x => x.LogTime));
+                q => q.OrderByDescending(x => x.LogTime));
         }
 
         public List<ComputerWithImage> SearchComputers(string searchString, int limit)
@@ -578,7 +598,6 @@ namespace CloneDeploy_Services
             return _uow.ComputerRepository.SearchByName(searchString, limit);
         }
 
-
         public List<ComputerWithImage> SearchComputersForUser(int userId, int limit, string searchString = "")
         {
             var userServices = new UserServices();
@@ -587,11 +606,11 @@ namespace CloneDeploy_Services
                 return SearchComputers(searchString, limit);
 
             var user = userServices.GetUser(userId);
-            if(user.GroupManagementEnabled == 0)
+            if (user.GroupManagementEnabled == 0)
                 return SearchComputers(searchString, limit);
 
             var listOfComputers = new List<ComputerWithImage>();
-            var userManagedGroups = userServices.GetUserGroupManagements(userId);                
+            var userManagedGroups = userServices.GetUserGroupManagements(userId);
             foreach (var managedGroup in userManagedGroups)
             {
                 listOfComputers.AddRange(new GroupServices().GetGroupMembersWithImages(managedGroup.GroupId,
@@ -610,11 +629,11 @@ namespace CloneDeploy_Services
                 return SearchComputers(searchString, limit);
 
             var user = userServices.GetUser(userId);
-            if(user.GroupManagementEnabled == 0)
+            if (user.GroupManagementEnabled == 0)
                 return SearchComputersByName(searchString, limit);
 
             var listOfComputers = new List<ComputerWithImage>();
-            var userManagedGroups = userServices.GetUserGroupManagements(userId);                
+            var userManagedGroups = userServices.GetUserGroupManagements(userId);
             foreach (var managedGroup in userManagedGroups)
             {
                 listOfComputers.AddRange(new GroupServices().GetGroupMembersWithImages(managedGroup.GroupId,
@@ -705,9 +724,12 @@ namespace CloneDeploy_Services
                     if (_uow.ComputerRepository.Exists(h => h.Mac == computer.Mac))
                     {
                         var existingComputer = GetComputerFromMac(computer.Mac);
-                        if ((string.IsNullOrEmpty(existingComputer.ClientIdentifier) || string.IsNullOrEmpty(computer.ClientIdentifier)) || existingComputer.ClientIdentifier == computer.ClientIdentifier)
+                        if (string.IsNullOrEmpty(existingComputer.ClientIdentifier) ||
+                            string.IsNullOrEmpty(computer.ClientIdentifier) ||
+                            existingComputer.ClientIdentifier == computer.ClientIdentifier)
                         {
-                            validationResult.ErrorMessage = "Duplicate MAC Addresses Are Only Allowed If Each Computer Has A Unique Client Identifier";
+                            validationResult.ErrorMessage =
+                                "Duplicate MAC Addresses Are Only Allowed If Each Computer Has A Unique Client Identifier";
                             return validationResult;
                         }
                     }
@@ -728,11 +750,14 @@ namespace CloneDeploy_Services
                         if (_uow.ComputerRepository.Exists(h => h.Mac == computer.Mac))
                         {
                             var existingComputer = GetComputerFromMac(computer.Mac);
-                            if ((string.IsNullOrEmpty(existingComputer.ClientIdentifier) || string.IsNullOrEmpty(computer.ClientIdentifier)) || existingComputer.ClientIdentifier == computer.ClientIdentifier)
+                            if (string.IsNullOrEmpty(existingComputer.ClientIdentifier) ||
+                                string.IsNullOrEmpty(computer.ClientIdentifier) ||
+                                existingComputer.ClientIdentifier == computer.ClientIdentifier)
                             {
-                                validationResult.ErrorMessage = "Duplicate MAC Addresses Are Only Allowed If Each Computer Has A Unique Client Identifier";
+                                validationResult.ErrorMessage =
+                                    "Duplicate MAC Addresses Are Only Allowed If Each Computer Has A Unique Client Identifier";
                                 return validationResult;
-                            }                           
+                            }
                         }
                     }
                 }

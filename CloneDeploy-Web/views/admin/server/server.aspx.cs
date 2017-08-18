@@ -1,15 +1,12 @@
-﻿using CloneDeploy_Common;
-using CloneDeploy_Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using CloneDeploy_Common;
+using CloneDeploy_Entities;
+using CloneDeploy_Web.BasePages;
 
 namespace CloneDeploy_Web.views.admin.server
 {
-    public partial class serversettings : BasePages.Admin
+    public partial class serversettings : Admin
     {
         protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
         {
@@ -17,7 +14,12 @@ namespace CloneDeploy_Web.views.admin.server
             if (!ValidateSettings()) return;
             var listSettings = new List<SettingEntity>
             {
-                new SettingEntity {Name = "Server IP", Value = txtIP.Text, Id = Call.SettingApi.GetSetting("Server IP").Id},
+                new SettingEntity
+                {
+                    Name = "Server IP",
+                    Value = txtIP.Text,
+                    Id = Call.SettingApi.GetSetting("Server IP").Id
+                },
                 new SettingEntity
                 {
                     Name = "Server Identifier",
@@ -61,17 +63,17 @@ namespace CloneDeploy_Web.views.admin.server
             if (Call.SettingApi.UpdateSettings(listSettings))
             {
                 EndUserMessage = "Successfully Updated Settings";
-                if ((string)ViewState["serverIP"] != txtIP.Text)
+                if ((string) ViewState["serverIP"] != txtIP.Text)
                 {
                     newBootMenu = true;
                     newClientIso = true;
                 }
-                if ((string)ViewState["serverPort"] != txtPort.Text)
+                if ((string) ViewState["serverPort"] != txtPort.Text)
                 {
                     newBootMenu = true;
                     newClientIso = true;
                 }
-                if ((string)ViewState["servicePath"] != PlaceHolderReplace(txtWebService.Text))
+                if ((string) ViewState["servicePath"] != PlaceHolderReplace(txtWebService.Text))
                 {
                     newBootMenu = true;
                     newClientIso = true;
@@ -84,7 +86,6 @@ namespace CloneDeploy_Web.views.admin.server
 
             if (!newBootMenu) return;
 
-
             lblTitle.Text =
                 "Your Settings Changes Require A New PXE Boot File Be Created.  <br>Go There Now?";
             if (newClientIso)
@@ -96,7 +97,6 @@ namespace CloneDeploy_Web.views.admin.server
                 true);
             Session.Remove("Message");
         }
-
 
         protected void OkButton_Click(object sender, EventArgs e)
         {

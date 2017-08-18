@@ -37,8 +37,8 @@
     <div class="size-5 column">
         <asp:TextBox ID="txtComputerMac" runat="server" CssClass="textbox" MaxLength="17"></asp:TextBox>
     </div>
-    
-     <br class="clear"/>
+
+    <br class="clear"/>
     <div class="size-4 column">
         Client Identifier:
     </div>

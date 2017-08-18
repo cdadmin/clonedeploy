@@ -198,8 +198,10 @@ namespace CloneDeploy_Services
         {
             var newLineChar = "\n";
             string userToken;
-            if (SettingServices.GetSettingValue(SettingStrings.DebugRequiresLogin) == "No" || SettingServices.GetSettingValue(SettingStrings.OnDemandRequiresLogin) == "No" ||
-                SettingServices.GetSettingValue(SettingStrings.RegisterRequiresLogin) == "No" || SettingServices.GetSettingValue(SettingStrings.WebTaskRequiresLogin) == "No")
+            if (SettingServices.GetSettingValue(SettingStrings.DebugRequiresLogin) == "No" ||
+                SettingServices.GetSettingValue(SettingStrings.OnDemandRequiresLogin) == "No" ||
+                SettingServices.GetSettingValue(SettingStrings.RegisterRequiresLogin) == "No" ||
+                SettingServices.GetSettingValue(SettingStrings.WebTaskRequiresLogin) == "No")
                 userToken = SettingServices.GetSettingValue(SettingStrings.UniversalToken);
             else
             {
@@ -209,11 +211,14 @@ namespace CloneDeploy_Services
             var validationResult = GlobalLogin(username, password, "iPXE");
             if (!validationResult.Success) return "goto Menu";
             var lines = "#!ipxe" + newLineChar;
-            lines += "kernel " + SettingServices.GetSettingValue(SettingStrings.WebPath) + "IpxeBoot?filename=" + kernel + "&type=kernel" +
+            lines += "kernel " + SettingServices.GetSettingValue(SettingStrings.WebPath) + "IpxeBoot?filename=" + kernel +
+                     "&type=kernel" +
                      " initrd=" + bootImage + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
-                     SettingServices.GetSettingValue(SettingStrings.WebPath) + " USER_TOKEN=" + userToken + " task=" + task + " consoleblank=0 " +
+                     SettingServices.GetSettingValue(SettingStrings.WebPath) + " USER_TOKEN=" + userToken + " task=" +
+                     task + " consoleblank=0 " +
                      globalComputerArgs + newLineChar;
-            lines += "imgfetch --name " + bootImage + " " + SettingServices.GetSettingValue(SettingStrings.WebPath) + "IpxeBoot?filename=" +
+            lines += "imgfetch --name " + bootImage + " " + SettingServices.GetSettingValue(SettingStrings.WebPath) +
+                     "IpxeBoot?filename=" +
                      bootImage + "&type=bootimage" + newLineChar;
             lines += "boot";
 

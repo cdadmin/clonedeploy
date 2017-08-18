@@ -8,10 +8,12 @@ namespace CloneDeploy_DataModel
 {
     public class UnitOfWork : IUnitOfWork
     {
+        private readonly CloneDeployDbContext _context = new CloneDeployDbContext();
         private readonly ILog log = LogManager.GetLogger("ApplicationLog");
         private ActiveImagingTaskRepository _activeImagingTaskRepository;
 
         private IGenericRepository<ActiveMulticastSessionEntity> _activeMulticastSessionRepository;
+        private IGenericRepository<AlternateServerIpEntity> _alternateServerIpRepository;
         private IGenericRepository<AuditLogEntity> _auditLogRepository;
         private IGenericRepository<BootEntryEntity> _bootEntryRepository;
         private IGenericRepository<BootTemplateEntity> _bootTemplateRepository;
@@ -21,18 +23,20 @@ namespace CloneDeploy_DataModel
         private IGenericRepository<ClusterGroupEntity> _clusterGroupRepository;
         private IGenericRepository<ClusterGroupServerEntity> _clusterGroupServersRepository;
         private IGenericRepository<ComputerBootMenuEntity> _computerBootMenuRepository;
+        private IGenericRepository<ComputerImageClassificationEntity> _computerImageClassificationRepository;
         private IGenericRepository<ComputerLogEntity> _computerLogRepository;
         private IGenericRepository<ComputerMunkiEntity> _computerMunkiRepository;
         private IGenericRepository<ComputerProxyReservationEntity> _computerProxyRepository;
         private ComputerRepository _computerRepository;
-        private readonly CloneDeployDbContext _context = new CloneDeployDbContext();
         private IGenericRepository<DistributionPointEntity> _distributionPointRepository;
         private IGenericRepository<FileFolderEntity> _fileFolderRepository;
         private IGenericRepository<GroupBootMenuEntity> _groupBootMenuRepository;
+        private IGenericRepository<GroupImageClassificationEntity> _groupImageClassificationRepository;
         private IGenericRepository<GroupMembershipEntity> _groupMembershipRepository;
         private IGenericRepository<GroupMunkiEntity> _groupMunkiRepository;
         private IGenericRepository<GroupPropertyEntity> _groupPropertyRepository;
         private GroupRepository _groupRepository;
+        private IGenericRepository<ImageClassificationEntity> _imageClassificationRepository;
         private IGenericRepository<ImageProfileFileFolderEntity> _imageProfileFileFolderRepository;
         private IGenericRepository<ImageProfilePartitionLayoutEntity> _imageProfilePartitionRepository;
         private ImageProfileRepository _imageProfileRepository;
@@ -46,6 +50,8 @@ namespace CloneDeploy_DataModel
         private IGenericRepository<MunkiManifestManagedUpdateEntity> _munkiManagedUpdateRepository;
         private IGenericRepository<MunkiManifestTemplateEntity> _munkiManifestRepository;
         private IGenericRepository<MunkiManifestOptionInstallEntity> _munkiOptionalInstallRepository;
+        private IGenericRepository<NbiEntryEntity> _nbiEntryRepository;
+        private IGenericRepository<NetBootProfileEntity> _netBootProfileRepository;
         private IGenericRepository<PartitionLayoutEntity> _partitionLayoutRepository;
         private IGenericRepository<PartitionEntity> _partitionRepository;
         private IGenericRepository<PortEntity> _portRepository;
@@ -64,12 +70,6 @@ namespace CloneDeploy_DataModel
         private IGenericRepository<UserLockoutEntity> _userLockoutRepository;
         private CloneDeployUserRepository _userRepository;
         private IGenericRepository<UserRightEntity> _userRightRepository;
-        private IGenericRepository<NetBootProfileEntity> _netBootProfileRepository;
-        private IGenericRepository<NbiEntryEntity> _nbiEntryRepository;
-        private IGenericRepository<AlternateServerIpEntity> _alternateServerIpRepository;
-        private IGenericRepository<ImageClassificationEntity> _imageClassificationRepository;
-        private IGenericRepository<ComputerImageClassificationEntity> _computerImageClassificationRepository;
-        private IGenericRepository<GroupImageClassificationEntity> _groupImageClassificationRepository;
 
         private bool disposed;
 
@@ -79,26 +79,6 @@ namespace CloneDeploy_DataModel
             GC.SuppressFinalize(this);
         }
 
-        public IGenericRepository<ComputerImageClassificationEntity> ComputerImageClassificationRepository
-        {
-            get
-            {
-                return _computerImageClassificationRepository ??
-                       (_computerImageClassificationRepository =
-                           new GenericRepository<ComputerImageClassificationEntity>(_context));
-            }
-        }
-
-        public IGenericRepository<GroupImageClassificationEntity> GroupImageClassificationRepository
-        {
-            get
-            {
-                return _groupImageClassificationRepository ??
-                       (_groupImageClassificationRepository =
-                           new GenericRepository<GroupImageClassificationEntity>(_context));
-            }
-
-        }
         public ActiveImagingTaskRepository ActiveImagingTaskRepository
         {
             get
@@ -118,19 +98,12 @@ namespace CloneDeploy_DataModel
             }
         }
 
-        public IGenericRepository<ImageClassificationEntity> ImageClassificationRepository
-        {
-            get
-            {
-                return _imageClassificationRepository ?? (_imageClassificationRepository = new GenericRepository<ImageClassificationEntity>(_context));
-            }
-        }
-
         public IGenericRepository<AlternateServerIpEntity> AlternateServerIpRepository
         {
             get
             {
-                return _alternateServerIpRepository ?? (_alternateServerIpRepository = new GenericRepository<AlternateServerIpEntity>(_context));
+                return _alternateServerIpRepository ??
+                       (_alternateServerIpRepository = new GenericRepository<AlternateServerIpEntity>(_context));
             }
         }
 
@@ -209,6 +182,16 @@ namespace CloneDeploy_DataModel
             }
         }
 
+        public IGenericRepository<ComputerImageClassificationEntity> ComputerImageClassificationRepository
+        {
+            get
+            {
+                return _computerImageClassificationRepository ??
+                       (_computerImageClassificationRepository =
+                           new GenericRepository<ComputerImageClassificationEntity>(_context));
+            }
+        }
+
         public IGenericRepository<ComputerLogEntity> ComputerLogRepository
         {
             get
@@ -268,6 +251,16 @@ namespace CloneDeploy_DataModel
             }
         }
 
+        public IGenericRepository<GroupImageClassificationEntity> GroupImageClassificationRepository
+        {
+            get
+            {
+                return _groupImageClassificationRepository ??
+                       (_groupImageClassificationRepository =
+                           new GenericRepository<GroupImageClassificationEntity>(_context));
+            }
+        }
+
         public IGenericRepository<GroupMembershipEntity> GroupMembershipRepository
         {
             get
@@ -298,6 +291,15 @@ namespace CloneDeploy_DataModel
         public GroupRepository GroupRepository
         {
             get { return _groupRepository ?? (_groupRepository = new GroupRepository(_context)); }
+        }
+
+        public IGenericRepository<ImageClassificationEntity> ImageClassificationRepository
+        {
+            get
+            {
+                return _imageClassificationRepository ??
+                       (_imageClassificationRepository = new GenericRepository<ImageClassificationEntity>(_context));
+            }
         }
 
         public IGenericRepository<ImageProfileFileFolderEntity> ImageProfileFileFolderRepository
@@ -416,6 +418,23 @@ namespace CloneDeploy_DataModel
             }
         }
 
+        public IGenericRepository<NbiEntryEntity> NbiEntryRepository
+        {
+            get
+            {
+                return _nbiEntryRepository ?? (_nbiEntryRepository = new GenericRepository<NbiEntryEntity>(_context));
+            }
+        }
+
+        public IGenericRepository<NetBootProfileEntity> NetBootProfileRepository
+        {
+            get
+            {
+                return _netBootProfileRepository ??
+                       (_netBootProfileRepository = new GenericRepository<NetBootProfileEntity>(_context));
+            }
+        }
+
         public IGenericRepository<PartitionLayoutEntity> PartitionLayoutRepository
         {
             get
@@ -437,7 +456,6 @@ namespace CloneDeploy_DataModel
         {
             get { return _portRepository ?? (_portRepository = new GenericRepository<PortEntity>(_context)); }
         }
-
 
         public RoomRepository RoomRepository
         {
@@ -581,22 +599,6 @@ namespace CloneDeploy_DataModel
             get
             {
                 return _userRightRepository ?? (_userRightRepository = new GenericRepository<UserRightEntity>(_context));
-            }
-        }
-
-        public IGenericRepository<NetBootProfileEntity> NetBootProfileRepository
-        {
-            get
-            {
-                return _netBootProfileRepository ?? (_netBootProfileRepository = new GenericRepository<NetBootProfileEntity>(_context));
-            }
-        }
-
-        public IGenericRepository<NbiEntryEntity> NbiEntryRepository
-        {
-            get
-            {
-                return _nbiEntryRepository ?? (_nbiEntryRepository = new GenericRepository<NbiEntryEntity>(_context));
             }
         }
 

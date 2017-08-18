@@ -121,7 +121,6 @@ namespace CloneDeploy_Services.Helpers
         {
             Dictionary<string, Dictionary<string, string>> normalizedContent = null;
 
-
             content = path;
             encoding = GetEncoding();
 

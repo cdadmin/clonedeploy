@@ -20,7 +20,7 @@ namespace CloneDeploy_App.Controllers
         [HttpGet]
         public ApiBoolResponseDTO CancelAllImagingTasks()
         {
-            return new ApiBoolResponseDTO {Value = new CloneDeploy_Services.Workflows.CancelAllImagingTasks().Execute()};
+            return new ApiBoolResponseDTO {Value = new CancelAllImagingTasks().Execute()};
         }
 
         [CustomAuth(Permission = "AdminUpdate")]
@@ -58,7 +58,6 @@ namespace CloneDeploy_App.Controllers
             else
                 basePath += "clientboot.zip";
 
-
             var result = new HttpResponseMessage(HttpStatusCode.OK);
             var stream = new FileStream(basePath, FileMode.Open);
             result.Content = new StreamContent(stream);
@@ -67,6 +66,13 @@ namespace CloneDeploy_App.Controllers
             result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
             result.Content.Headers.ContentLength = stream.Length;
             return result;
+        }
+
+        [CustomAuth(Permission = "AdminRead")]
+        [HttpGet]
+        public AppleVendorDTO GetAppleVendorString(string ip)
+        {
+            return new CreateAppleVendorString().Execute(ip);
         }
 
         [CustomAuth(Permission = "AllowOnd")]
@@ -79,15 +85,9 @@ namespace CloneDeploy_App.Controllers
 
             return new ApiStringResponseDTO
             {
-                Value = new Multicast(profileId, clientCount, Convert.ToInt32(userId), Request.GetClientIpAddress()).Create()
+                Value =
+                    new Multicast(profileId, clientCount, Convert.ToInt32(userId), Request.GetClientIpAddress()).Create()
             };
-        }
-
-        [CustomAuth(Permission = "AdminRead")]
-        [HttpGet]
-        public AppleVendorDTO GetAppleVendorString(string ip)
-        {
-            return new CreateAppleVendorString().Execute(ip);
         }
     }
 }

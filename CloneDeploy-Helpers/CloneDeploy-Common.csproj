@@ -30,34 +30,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthorizationStrings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingStrings.cs" />
     <Compile Include="Utility.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CloneDeploy-ApiCalls\CloneDeploy-ApiCalls.csproj">
-      <Project>{f5a4e04d-fa84-4abb-9690-df2539f425cd}</Project>
-      <Name>CloneDeploy-ApiCalls</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CloneDeploy-Entities\CloneDeploy-Entities.csproj">
-      <Project>{453080da-87a4-4f5f-aa1f-2c49e37d2f21}</Project>
-      <Name>CloneDeploy-Entities</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

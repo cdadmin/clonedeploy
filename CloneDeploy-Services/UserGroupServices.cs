@@ -27,7 +27,6 @@ namespace CloneDeploy_Services
             user.ImageManagementEnabled = userGroup.ImageManagementEnabled;
             new UserServices().UpdateUser(user);
 
-
             var rights = GetUserGroupRights(userGroup.Id);
             var groupManagement = GetUserGroupGroupManagements(userGroup.Id);
             var imageManagement = GetUserGroupImageManagements(userGroup.Id);
@@ -37,13 +36,11 @@ namespace CloneDeploy_Services
             _userServices.DeleteUserRights(user.Id);
             new UserRightServices().AddUserRights(userRights);
 
-
             var userGroupManagement =
                 groupManagement.Select(g => new UserGroupManagementEntity {GroupId = g.GroupId, UserId = user.Id})
                     .ToList();
             _userServices.DeleteUserGroupManagements(user.Id);
             new UserGroupManagementServices().AddUserGroupManagements(userGroupManagement);
-
 
             var userImageManagement =
                 imageManagement.Select(g => new UserImageManagementEntity {ImageId = g.ImageId, UserId = user.Id})
@@ -85,7 +82,6 @@ namespace CloneDeploy_Services
                 new UserServices().UpdateUser(groupMember);
             }
 
-
             _uow.UserGroupRepository.Delete(userGroupId);
             _uow.Save();
             var actionResult = new ActionResultDTO();
@@ -121,12 +117,10 @@ namespace CloneDeploy_Services
                 q => q.OrderBy(p => p.Name));
         }
 
-
         public List<CloneDeployUserGroupEntity> GetLdapGroups()
         {
             return _uow.UserGroupRepository.Get(x => x.IsLdapGroup == 1);
         }
-
 
         public CloneDeployUserGroupEntity GetUserGroup(int userGroupId)
         {
@@ -153,10 +147,23 @@ namespace CloneDeploy_Services
             return _uow.UserRepository.Count(x => x.UserGroupId == userGroupId);
         }
 
-
         public List<CloneDeployUserGroupEntity> SearchUserGroups(string searchString = "")
         {
             return _uow.UserGroupRepository.Get(u => u.Name.Contains(searchString));
+        }
+
+        public bool ToggleGroupManagement(int userGroupId, int value)
+        {
+            var cdUserGroup = GetUserGroup(userGroupId);
+            cdUserGroup.GroupManagementEnabled = value;
+            var result = UpdateUserGroup(cdUserGroup);
+            foreach (var user in GetGroupMembers(userGroupId))
+            {
+                user.GroupManagementEnabled = value;
+                _uow.UserRepository.Update(user, user.Id);
+            }
+            _uow.Save();
+            return result.Success;
         }
 
         public bool ToggleImageManagement(int userGroupId, int value)
@@ -168,20 +175,6 @@ namespace CloneDeploy_Services
             foreach (var user in GetGroupMembers(userGroupId))
             {
                 user.ImageManagementEnabled = value;
-                _uow.UserRepository.Update(user,user.Id);
-            }
-            _uow.Save();
-            return result.Success;
-        }
-
-        public bool ToggleGroupManagement(int userGroupId, int value)
-        {
-            var cdUserGroup = GetUserGroup(userGroupId);
-            cdUserGroup.GroupManagementEnabled = value;
-            var result = UpdateUserGroup(cdUserGroup);
-            foreach (var user in GetGroupMembers(userGroupId))
-            {
-                user.GroupManagementEnabled = value;
                 _uow.UserRepository.Update(user, user.Id);
             }
             _uow.Save();
@@ -260,7 +253,6 @@ namespace CloneDeploy_Services
 
             return actionResult;
         }
-
 
         private ValidationResultDTO ValidateUserGroup(CloneDeployUserGroupEntity userGroup, bool isNewUserGroup)
         {

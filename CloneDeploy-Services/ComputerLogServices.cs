@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using System;
 
 namespace CloneDeploy_Services
 {
@@ -34,7 +34,6 @@ namespace CloneDeploy_Services
             if (computerLog == null)
                 return new ActionResultDTO {ErrorMessage = "Computer Log Not Found", Id = 0};
 
-
             var actionResult = new ActionResultDTO();
 
             _uow.ComputerLogRepository.Delete(computerLogId);
@@ -49,7 +48,6 @@ namespace CloneDeploy_Services
         {
             return _uow.ComputerLogRepository.GetById(computerLogId);
         }
-
 
         public List<ComputerLogEntity> SearchOnDemand(int limit)
         {

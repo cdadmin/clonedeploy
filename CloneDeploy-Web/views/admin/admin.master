@@ -16,77 +16,74 @@
                     </span>
                 </a>
             </li>
-             <li id="bootmenu" runat="server">
+            <li id="bootmenu" runat="server">
                 <a href="<%= ResolveUrl("~/views/admin/bootmenu/defaultmenu.aspx?level=2") %>">
                     <span class="nav-text">Boot Menu</span>
                 </a>
             </li>
-              <li id="client" runat="server">
+            <li id="client" runat="server">
                 <a href="<%= ResolveUrl("~/views/admin/client.aspx") %>">
                     <span class="nav-text">Client</span>
                 </a>
             </li>
-              <li id="clobber" runat="server">
+            <li id="clobber" runat="server">
                 <a href="<%= ResolveUrl("~/views/admin/clobber.aspx") %>">
                     <span class="nav-text">Clobber Mode</span>
                 </a>
             </li>
-                 <li id="cluster">
+            <li id="cluster">
                 <a href="<%= ResolveUrl("~/views/admin/cluster/roles.aspx?level=2") %>">
                     <span class="nav-text">Cluster</span>
                 </a>
             </li>
-            
-             <li id="editcore" runat="server">
-                    <a href="<%= ResolveUrl("~/views/admin/editcore.aspx") %>">
-                        <span class="sub-nav-text">Core Scripts</span>
-                    </a>
-                </li>
-              <li id="distribution" runat="server">
+
+            <li id="editcore" runat="server">
+                <a href="<%= ResolveUrl("~/views/admin/editcore.aspx") %>">
+                    <span class="sub-nav-text">Core Scripts</span>
+                </a>
+            </li>
+            <li id="distribution" runat="server">
                 <a href="<%= ResolveUrl("~/views/admin/dp/search.aspx?level=2") %>">
                     <span class="nav-text">Distribution Points</span>
                 </a>
             </li>
-               <li id="export" runat="server">
+            <li id="export" runat="server">
                 <a href="<%= ResolveUrl("~/views/admin/export.aspx") %>">
                     <span class="nav-text">Export</span>
                 </a>
             </li>
-              <li id="email" runat="server">
+            <li id="email" runat="server">
                 <a href="<%= ResolveUrl("~/views/admin/email.aspx") %>">
                     <span class="nav-text">E-mail</span>
                 </a>
             </li>
-               <li id="kernel" runat="server">
-                    <a href="<%= ResolveUrl("~/views/admin/profileupdater/kernel.aspx") %>">
-                        <span class="sub-nav-text">Image Profile Updater</span>
-                    </a>
-                </li>
-          
-             <li id="kerneldownload" runat="server">
+            <li id="kernel" runat="server">
+                <a href="<%= ResolveUrl("~/views/admin/profileupdater/kernel.aspx") %>">
+                    <span class="sub-nav-text">Image Profile Updater</span>
+                </a>
+            </li>
+
+            <li id="kerneldownload" runat="server">
                 <a href="<%= ResolveUrl("~/views/admin/kerneldownload.aspx") %>">
                     <span class="nav-text">Kernel Downloads</span>
                 </a>
             </li>
-             <li id="logs">
+            <li id="logs">
                 <a href="<%= ResolveUrl("~/views/admin/logs/application.aspx?level=2") %>">
                     <span class="nav-text">Logs</span>
                 </a>
             </li>
-           <li id="multicast" runat="server">
+            <li id="multicast" runat="server">
                 <a href="<%= ResolveUrl("~/views/admin/multicast.aspx") %>">
                     <span class="nav-text">Multicast</span>
                 </a>
             </li>
-              <li id="munki" runat="server">
+            <li id="munki" runat="server">
                 <a href="<%= ResolveUrl("~/views/admin/munki.aspx") %>">
                     <span class="nav-text">Munki</span>
                 </a>
             </li>
-       
 
-
-          
 
             <li id="pxe" runat="server">
                 <a href="<%= ResolveUrl("~/views/admin/pxe.aspx") %>">
@@ -94,7 +91,6 @@
                 </a>
             </li>
 
-           
 
             <li id="security" runat="server">
                 <a href="<%= ResolveUrl("~/views/admin/security.aspx") %>">
@@ -108,18 +104,6 @@
                 </a>
             </li>
 
-           
-
-          
-
-           
-
-         
-          
-           
-          
-           
-           
 
         </ul>
     </div>

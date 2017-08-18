@@ -14,7 +14,6 @@ namespace CloneDeploy_ApiCalls
             _apiRequest = new ApiRequest();
         }
 
-
         public ActionResultDTO Post(List<UserImageManagementEntity> listOfImages)
         {
             Request.Method = Method.POST;

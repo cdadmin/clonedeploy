@@ -21,6 +21,6 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/Post/", Resource);
             var response = _apiRequest.Execute<ActionResultDTO>(Request);
             return response;
-        }   
+        }
     }
 }

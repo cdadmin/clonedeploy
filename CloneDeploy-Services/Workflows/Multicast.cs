@@ -11,7 +11,9 @@ namespace CloneDeploy_Services.Workflows
     public class Multicast
     {
         private readonly string _clientCount;
+        private readonly ComputerServices _computerServices;
         private readonly GroupEntity _group;
+        private readonly string _ipAddress;
         private readonly bool _isOnDemand;
         private readonly ActiveMulticastSessionEntity _multicastSession;
         private readonly int _userId;
@@ -19,8 +21,6 @@ namespace CloneDeploy_Services.Workflows
         private List<ComputerEntity> _computers;
         private ImageProfileWithImage _imageProfile;
         private int _multicastServerId;
-        private readonly ComputerServices _computerServices;
-        private readonly string _ipAddress;
 
         //Constructor For Starting Multicast For Group
         public Multicast(int groupId, int userId, string userIp)
@@ -71,7 +71,6 @@ namespace CloneDeploy_Services.Workflows
             if (_multicastServerId == -2)
                 return "Could Not Find Any Available Multicast Servers";
 
-
             _multicastSession.UserId = _userId;
             //End of the road for starting an on demand multicast
             if (_isOnDemand)
@@ -81,7 +80,6 @@ namespace CloneDeploy_Services.Workflows
                 var onDemandprocessArguments = GenerateProcessArguments();
                 if (onDemandprocessArguments == 0)
                     return "Could Not Start The Multicast Application";
-
 
                 var ondAuditLog = new AuditLogEntity();
                 ondAuditLog.AuditType = AuditEntry.Type.OndMulticast;
@@ -158,7 +156,6 @@ namespace CloneDeploy_Services.Workflows
             auditLog.ObjectType = "Image";
             new AuditLogServices().AddAuditLog(auditLog);
 
-
             return "Successfully Started Multicast " + _group.Name;
         }
 
@@ -215,7 +212,8 @@ namespace CloneDeploy_Services.Workflows
             {
                 var activeTask = _computerServices.GetTaskForComputer(computer.Id);
                 activeTask.Arguments =
-                    new CreateTaskArguments(computer, _imageProfile, "multicast").Execute(_multicastSession.Port.ToString());
+                    new CreateTaskArguments(computer, _imageProfile, "multicast").Execute(
+                        _multicastSession.Port.ToString());
                 if (!new ActiveImagingTaskServices().UpdateActiveImagingTask(activeTask))
                     return false;
             }

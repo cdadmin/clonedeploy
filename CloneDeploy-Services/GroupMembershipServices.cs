@@ -29,7 +29,6 @@ namespace CloneDeploy_Services
             _uow.Save();
             actionResult.Success = true;
 
-
             if (group.SetDefaultProperties == 1)
             {
                 var groupProperty = new GroupServices().GetGroupProperty(group.Id);

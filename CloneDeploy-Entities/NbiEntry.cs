@@ -11,16 +11,13 @@ namespace CloneDeploy_Entities
         [Column("nbi_entry_id", Order = 1)]
         public int Id { get; set; }
 
-        [Column("netboot_profile_id", Order = 2)]
-        public int ProfileId { get; set; }
-
         [Column("nbi_id", Order = 3)]
         public int NbiId { get; set; }
 
         [Column("nbi_name", Order = 4)]
         public string NbiName { get; set; }
 
+        [Column("netboot_profile_id", Order = 2)]
+        public int ProfileId { get; set; }
     }
-
-
 }

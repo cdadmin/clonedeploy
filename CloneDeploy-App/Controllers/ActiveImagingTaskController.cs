@@ -21,7 +21,7 @@ namespace CloneDeploy_App.Controllers
         public ActiveImagingTaskController()
         {
             _activeImagingTaskServices = new ActiveImagingTaskServices();
-            _userId = Convert.ToInt32(((ClaimsIdentity)User.Identity).Claims.Where(c => c.Type == "user_id")
+            _userId = Convert.ToInt32(((ClaimsIdentity) User.Identity).Claims.Where(c => c.Type == "user_id")
                 .Select(c => c.Value).SingleOrDefault());
         }
 
@@ -67,7 +67,6 @@ namespace CloneDeploy_App.Controllers
             };
         }
 
-
         [Authorize]
         public ApiStringResponseDTO GetAllActiveCount()
         {
@@ -78,15 +77,15 @@ namespace CloneDeploy_App.Controllers
         }
 
         [Authorize]
-        public IEnumerable<TaskWithComputer> GetUnicasts()
+        public IEnumerable<ActiveImagingTaskEntity> GetAllOnDemandUnregistered()
         {
-            return _activeImagingTaskServices.ReadUnicasts(Convert.ToInt32(_userId));
+            return _activeImagingTaskServices.GetAllOnDemandUnregistered();
         }
 
         [Authorize]
         public IEnumerable<TaskWithComputer> GetPermanentUnicasts()
         {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                 .Select(c => c.Value).SingleOrDefault();
 
@@ -94,16 +93,16 @@ namespace CloneDeploy_App.Controllers
         }
 
         [Authorize]
-        public IEnumerable<ActiveImagingTaskEntity> GetAllOnDemandUnregistered()
+        public IEnumerable<TaskWithComputer> GetUnicasts()
         {
-            return _activeImagingTaskServices.GetAllOnDemandUnregistered();
+            return _activeImagingTaskServices.ReadUnicasts(Convert.ToInt32(_userId));
         }
 
         [Authorize]
         [HttpGet]
         public ApiIntResponseDTO OnDemandCount()
         {
-            return new ApiIntResponseDTO { Value = _activeImagingTaskServices.OnDemandCount() };
+            return new ApiIntResponseDTO {Value = _activeImagingTaskServices.OnDemandCount()};
         }
     }
 }

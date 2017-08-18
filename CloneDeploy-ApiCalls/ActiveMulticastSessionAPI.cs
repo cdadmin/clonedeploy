@@ -55,7 +55,6 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<List<TaskWithComputer>>(Request);
         }
 
-
         public IEnumerable<ActiveImagingTaskEntity> GetProgress(int id)
         {
             Request.Method = Method.GET;

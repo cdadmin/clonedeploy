@@ -28,7 +28,7 @@ namespace CloneDeploy_Services
                 }
             }
 
-            return WebDownload(onlineKernel);  
+            return WebDownload(onlineKernel);
         }
 
         public List<OnlineKernel> GetAllOnlineKernels()
@@ -44,7 +44,7 @@ namespace CloneDeploy_Services
             {
                 log.Debug(ex.Message);
                 return null;
-            }  
+            }
         }
 
         private bool WebDownload(OnlineKernel onlineKernel)
@@ -55,7 +55,8 @@ namespace CloneDeploy_Services
                 try
                 {
                     wc.DownloadFile(new Uri(baseUrl + onlineKernel.BaseVersion + "/" + onlineKernel.FileName),
-                        SettingServices.GetSettingValue(SettingStrings.TftpPath) + "kernels" + Path.DirectorySeparatorChar + onlineKernel.FileName);
+                        SettingServices.GetSettingValue(SettingStrings.TftpPath) + "kernels" +
+                        Path.DirectorySeparatorChar + onlineKernel.FileName);
                     return true;
                 }
                 catch (Exception ex)

@@ -28,14 +28,18 @@ namespace CloneDeploy_Web.views.admin
                     Value = chkImageApproval.Checked.ToString(),
                     Id = Call.SettingApi.GetSetting("Require Image Approval").Id
                 },
-                new SettingEntity {Name = "On Demand", Value = ddlOnd.Text, Id = Call.SettingApi.GetSetting("On Demand").Id},
+                new SettingEntity
+                {
+                    Name = "On Demand",
+                    Value = ddlOnd.Text,
+                    Id = Call.SettingApi.GetSetting("On Demand").Id
+                },
                 new SettingEntity
                 {
                     Name = "Universal Token",
                     Value = txtToken.Text,
                     Id = Call.SettingApi.GetSetting("Universal Token").Id
                 },
-               
                 new SettingEntity
                 {
                     Name = "Ldap Enabled",
@@ -80,7 +84,6 @@ namespace CloneDeploy_Web.views.admin
                 }
             };
 
-
             listSettings.Add(new SettingEntity
             {
                 Name = "On Demand Requires Login",
@@ -105,7 +108,6 @@ namespace CloneDeploy_Web.views.admin
                 Value = ddlClobberLogin.Text,
                 Id = Call.SettingApi.GetSetting("Clobber Requires Login").Id
             });
-
 
             var newBootMenu = false;
             var newClientIso = false;
@@ -143,14 +145,11 @@ namespace CloneDeploy_Web.views.admin
                     newBootMenu = true;
                     newClientIso = true;
                 }
-
-               
             }
             else
             {
                 EndUserMessage = "Could Not Update Settings";
             }
-
 
             if (!newBootMenu) return;
 
@@ -201,7 +200,6 @@ namespace CloneDeploy_Web.views.admin
             }
         }
 
-
         protected void OkButton_Click(object sender, EventArgs e)
         {
             Response.Redirect("~/views/admin/bootmenu/defaultmenu.aspx?level=2");
@@ -223,7 +221,7 @@ namespace CloneDeploy_Web.views.admin
             }
             ddlOnd.SelectedValue = GetSetting(SettingStrings.OnDemand);
             txtToken.Text = GetSetting(SettingStrings.UniversalToken);
-         
+
             chkImageApproval.Checked = Convert.ToBoolean(GetSetting(SettingStrings.RequireImageApproval));
             ddlWebTasksLogin.Text = GetSetting(SettingStrings.WebTaskRequiresLogin);
             ddlOndLogin.Text = GetSetting(SettingStrings.OnDemandRequiresLogin);
@@ -237,7 +235,7 @@ namespace CloneDeploy_Web.views.admin
 
             //These require pxe boot menu or client iso to be recreated 
             ViewState["serverKey"] = txtToken.Text;
-           
+
             ViewState["debugLogin"] = ddlDebugLogin.Text;
             ViewState["ondLogin"] = ddlOndLogin.Text;
             ViewState["registerLogin"] = ddlRegisterLogin.Text;

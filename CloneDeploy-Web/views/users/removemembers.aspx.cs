@@ -45,7 +45,8 @@ namespace CloneDeploy_Web.views.users
         {
             gvUsers.DataSource = Call.UserGroupApi.GetGroupMembers(CloneDeployUserGroup.Id, txtSearch.Text);
             gvUsers.DataBind();
-            lblTotal.Text = gvUsers.Rows.Count + " Result(s) / " + Call.UserGroupApi.GetMemberCount(CloneDeployUserGroup.Id) +
+            lblTotal.Text = gvUsers.Rows.Count + " Result(s) / " +
+                            Call.UserGroupApi.GetMemberCount(CloneDeployUserGroup.Id) +
                             " Total User(s)";
         }
 

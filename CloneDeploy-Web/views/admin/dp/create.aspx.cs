@@ -44,12 +44,12 @@ namespace CloneDeploy_Web.views.admin.dp
             PrimaryParams.Visible = chkPrimary.Checked;
         }
 
-        protected void Page_Load(object sender, EventArgs e)
+        protected void ddlPrimaryType_OnSelectedIndexChanged(object sender, EventArgs e)
         {
             PhysicalPath.Visible = ddlPrimaryType.Text == "Local";
         }
 
-        protected void ddlPrimaryType_OnSelectedIndexChanged(object sender, EventArgs e)
+        protected void Page_Load(object sender, EventArgs e)
         {
             PhysicalPath.Visible = ddlPrimaryType.Text == "Local";
         }

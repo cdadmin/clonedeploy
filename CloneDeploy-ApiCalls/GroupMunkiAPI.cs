@@ -13,7 +13,6 @@ namespace CloneDeploy_ApiCalls
             _apiRequest = new ApiRequest();
         }
 
-
         public ActionResultDTO Post(GroupMunkiEntity tObject)
         {
             Request.Method = Method.POST;

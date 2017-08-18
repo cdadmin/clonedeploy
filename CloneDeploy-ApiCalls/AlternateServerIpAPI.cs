@@ -24,7 +24,6 @@ namespace CloneDeploy_ApiCalls
             return response;
         }
 
-
         public AlternateServerIpEntity Get(int id)
         {
             Request.Method = Method.GET;
@@ -38,8 +37,6 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/Get", Resource);
             return _apiRequest.Execute<List<AlternateServerIpEntity>>(Request);
         }
-
-
 
         public string GetCount()
         {
