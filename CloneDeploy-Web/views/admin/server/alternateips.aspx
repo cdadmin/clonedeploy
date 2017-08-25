@@ -41,7 +41,7 @@
                 </FooterTemplate>
             </asp:TemplateField>
 
-            <asp:TemplateField HeaderText="Base Api Url" ItemStyle-Width="150">
+            <asp:TemplateField HeaderText="Base Url" ItemStyle-Width="150">
                 <ItemTemplate>
                     <asp:Label ID="lblApi" runat="server" Text='<%# Eval("ApiUrl") %>'></asp:Label>
                 </ItemTemplate>

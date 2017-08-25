@@ -30,8 +30,10 @@ namespace CloneDeploy_Services
                     var tServer =
                         new APICall(new SecondaryServerServices().GetToken(tftpServer.Name)).ServiceAccountApi
                             .GetTftpServer();
-                    if (tServer != null)
+                    if (!string.IsNullOrEmpty(tServer))
+                    {
                         tftpDto.TftpServers.Add(tServer);
+                    }
                 }
             }
 

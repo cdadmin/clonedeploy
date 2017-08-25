@@ -22,7 +22,7 @@ while true; do
   
   #Cancel Button
   if [ "$?" = "1" ]; then
-    result="Computer Not Registered"
+    result="Registration Skipped"
     break
   fi
 

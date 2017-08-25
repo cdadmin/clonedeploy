@@ -7,12 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-
-
-namespace CloneDeploy_Web.views.admin.bootmenu
-{
-    public partial class views_admin_bootmenu_defaultmenu {
+namespace CloneDeploy_Web.views.admin.bootmenu {
     
+    
+    public partial class views_admin_bootmenu_defaultmenu {
+        
         /// <summary>
         /// btnSubmitDefault control.
         /// </summary>
@@ -21,7 +20,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton btnSubmitDefault;
-    
+        
         /// <summary>
         /// btnSubmitDefaultProxy control.
         /// </summary>
@@ -30,7 +29,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton btnSubmitDefaultProxy;
-    
+        
         /// <summary>
         /// consoleSha control.
         /// </summary>
@@ -39,7 +38,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField consoleSha;
-    
+        
         /// <summary>
         /// addcomputerSha control.
         /// </summary>
@@ -48,7 +47,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField addcomputerSha;
-    
+        
         /// <summary>
         /// ondsha control.
         /// </summary>
@@ -57,7 +56,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField ondsha;
-    
+        
         /// <summary>
         /// diagsha control.
         /// </summary>
@@ -66,7 +65,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField diagsha;
-    
+        
         /// <summary>
         /// consoleShaProxy control.
         /// </summary>
@@ -75,7 +74,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField consoleShaProxy;
-    
+        
         /// <summary>
         /// addcomputerShaProxy control.
         /// </summary>
@@ -84,7 +83,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField addcomputerShaProxy;
-    
+        
         /// <summary>
         /// ondshaProxy control.
         /// </summary>
@@ -93,7 +92,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField ondshaProxy;
-    
+        
         /// <summary>
         /// diagshaProxy control.
         /// </summary>
@@ -102,7 +101,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField diagshaProxy;
-    
+        
         /// <summary>
         /// lblNoMenu control.
         /// </summary>
@@ -111,7 +110,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblNoMenu;
-    
+        
         /// <summary>
         /// divStandardMode control.
         /// </summary>
@@ -120,7 +119,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divStandardMode;
-    
+        
         /// <summary>
         /// bootPasswords control.
         /// </summary>
@@ -129,7 +128,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl bootPasswords;
-    
+        
         /// <summary>
         /// ddlComputerKernel control.
         /// </summary>
@@ -138,7 +137,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlComputerKernel;
-    
+        
         /// <summary>
         /// ddlComputerBootImage control.
         /// </summary>
@@ -147,7 +146,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlComputerBootImage;
-    
+        
         /// <summary>
         /// passboxes control.
         /// </summary>
@@ -156,25 +155,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl passboxes;
-    
-        /// <summary>
-        /// txtDebugPwd control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDebugPwd;
-    
-        /// <summary>
-        /// txtAddPwd control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtAddPwd;
-    
+        
         /// <summary>
         /// txtOndPwd control.
         /// </summary>
@@ -183,16 +164,16 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtOndPwd;
-    
+        
         /// <summary>
-        /// txtdiagPwd control.
+        /// txtDebugPwd control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtdiagPwd;
-    
+        protected global::System.Web.UI.WebControls.TextBox txtDebugPwd;
+        
         /// <summary>
         /// ipxePassBoxes control.
         /// </summary>
@@ -201,7 +182,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl ipxePassBoxes;
-    
+        
         /// <summary>
         /// chkIpxeLogin control.
         /// </summary>
@@ -210,7 +191,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkIpxeLogin;
-    
+        
         /// <summary>
         /// grubPassBoxes control.
         /// </summary>
@@ -219,7 +200,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl grubPassBoxes;
-    
+        
         /// <summary>
         /// txtGrubUsername control.
         /// </summary>
@@ -228,7 +209,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtGrubUsername;
-    
+        
         /// <summary>
         /// txtGrubPassword control.
         /// </summary>
@@ -237,7 +218,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtGrubPassword;
-    
+        
         /// <summary>
         /// divProxyDHCP control.
         /// </summary>
@@ -246,7 +227,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divProxyDHCP;
-    
+        
         /// <summary>
         /// lblBiosHidden control.
         /// </summary>
@@ -255,7 +236,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblBiosHidden;
-    
+        
         /// <summary>
         /// divProxyBios control.
         /// </summary>
@@ -264,7 +245,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divProxyBios;
-    
+        
         /// <summary>
         /// ddlBiosKernel control.
         /// </summary>
@@ -273,7 +254,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlBiosKernel;
-    
+        
         /// <summary>
         /// ddlBiosBootImage control.
         /// </summary>
@@ -282,7 +263,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlBiosBootImage;
-    
+        
         /// <summary>
         /// lblEfi32Hidden control.
         /// </summary>
@@ -291,7 +272,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblEfi32Hidden;
-    
+        
         /// <summary>
         /// divProxyEfi32 control.
         /// </summary>
@@ -300,7 +281,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divProxyEfi32;
-    
+        
         /// <summary>
         /// ddlEfi32Kernel control.
         /// </summary>
@@ -309,7 +290,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlEfi32Kernel;
-    
+        
         /// <summary>
         /// ddlEfi32BootImage control.
         /// </summary>
@@ -318,7 +299,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlEfi32BootImage;
-    
+        
         /// <summary>
         /// lblEfi64Hidden control.
         /// </summary>
@@ -327,7 +308,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblEfi64Hidden;
-    
+        
         /// <summary>
         /// divProxyEfi64 control.
         /// </summary>
@@ -336,7 +317,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divProxyEfi64;
-    
+        
         /// <summary>
         /// ddlEfi64Kernel control.
         /// </summary>
@@ -345,7 +326,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlEfi64Kernel;
-    
+        
         /// <summary>
         /// ddlEfi64BootImage control.
         /// </summary>
@@ -354,7 +335,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlEfi64BootImage;
-    
+        
         /// <summary>
         /// proxyPassBoxes control.
         /// </summary>
@@ -363,25 +344,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl proxyPassBoxes;
-    
-        /// <summary>
-        /// txtProxDebugPwd control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtProxDebugPwd;
-    
-        /// <summary>
-        /// txtProxAddPwd control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtProxAddPwd;
-    
+        
         /// <summary>
         /// txtProxOndPwd control.
         /// </summary>
@@ -390,16 +353,16 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtProxOndPwd;
-    
+        
         /// <summary>
-        /// txtProxDiagPwd control.
+        /// txtProxDebugPwd control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtProxDiagPwd;
-    
+        protected global::System.Web.UI.WebControls.TextBox txtProxDebugPwd;
+        
         /// <summary>
         /// ipxeProxyPasses control.
         /// </summary>
@@ -408,7 +371,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl ipxeProxyPasses;
-    
+        
         /// <summary>
         /// chkIpxeProxy control.
         /// </summary>
@@ -417,7 +380,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkIpxeProxy;
-    
+        
         /// <summary>
         /// grubProxyPasses control.
         /// </summary>
@@ -426,7 +389,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl grubProxyPasses;
-    
+        
         /// <summary>
         /// txtGrubProxyUsername control.
         /// </summary>
@@ -435,7 +398,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtGrubProxyUsername;
-    
+        
         /// <summary>
         /// txtGrubProxyPassword control.
         /// </summary>

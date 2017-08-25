@@ -78,7 +78,7 @@ namespace CloneDeploy_Services.Workflows
                 AppendString("web_cancel=true");
             AppendString("task_completed_action=" + "\"" + _imageProfile.TaskCompletedAction + "\"");
 
-            if (_direction == "upload")
+            if (_direction.Contains("upload"))
             {
                 AppendString("osx_target_volume=" + "\"" + _imageProfile.OsxTargetVolume + "\"");
                 AppendString("image_type=" + _imageProfile.Image.Type);

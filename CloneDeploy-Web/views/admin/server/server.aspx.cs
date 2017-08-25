@@ -130,14 +130,14 @@ namespace CloneDeploy_Web.views.admin.server
             {
                 if (txtPort.Text != "80" && txtPort.Text != "443" && !string.IsNullOrEmpty(txtPort.Text))
                 {
-                    txtWebService.Text = "http://[server-ip]:" + txtPort.Text + "/clonedeploy/api/";
+                    txtWebService.Text = "http://[server-ip]:" + txtPort.Text + "/clonedeploy/";
                 }
                 if (txtPort.Text == "80" || string.IsNullOrEmpty(txtPort.Text))
                 {
-                    txtWebService.Text = "http://[server-ip]/clonedeploy/api/";
+                    txtWebService.Text = "http://[server-ip]/clonedeploy/";
                 }
                 if (txtPort.Text == "443")
-                    txtWebService.Text = "https://[server-ip]/clonedeploy/api/";
+                    txtWebService.Text = "https://[server-ip]/clonedeploy/";
             }
             else
             {

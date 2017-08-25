@@ -14,7 +14,9 @@
 <form id="form1" runat="server">
     <div class="loginwrapper">
 
-        <img src="<%= ResolveUrl("~/") %>content/img/logo.png" alt="logo" class="logo"/>
+        <img src="<%= ResolveUrl("~/") %>content/img/logo.png" alt="logo"/>
+        <br class="clear"/>
+        <b>Server:</b> <asp:DropDownList runat="server" ID="ddlApplicationServers" CssClass="logo"/>
         <asp:Login ID="WebLogin" runat="server" OnAuthenticate="WebLogin_Authenticate" DestinationPageUrl="~/views/dashboard/dash.aspx">
             <LayoutTemplate>
                 <asp:TextBox ID="UserName" runat="server" CssClass="uname" ClientIDMode="Static"></asp:TextBox>

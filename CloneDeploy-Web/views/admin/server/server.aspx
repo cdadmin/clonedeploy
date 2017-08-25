@@ -56,7 +56,7 @@
         <br class="clear"/>
         <br/>
         <div class="size-4 column">
-            API Url:
+            Base Url:
         </div>
         <div class="size-setting column">
             <asp:TextBox ID="txtWebService" runat="server" CssClass="textbox"></asp:TextBox>

@@ -30,5 +30,16 @@ namespace CloneDeploy_App.Controllers
         {
             return new ApiBoolResponseDTO {Value = _cdVersionServices.FirstRunCompleted()};
         }
+
+        [Authorize]
+        public ActionResultDTO Put(int id, CdVersionEntity cdVersion)
+        {
+            cdVersion.Id = id;
+            var result = _cdVersionServices.Update(cdVersion);
+            if (result.Id == 0)
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound, result));
+          
+            return result;
+        }
     }
 }

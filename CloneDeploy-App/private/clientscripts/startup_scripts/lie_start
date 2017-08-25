@@ -243,7 +243,8 @@ function get_task_computer()
   fi
   
   if [ "$computer_id" = "false" ]; then
-    login_message="This Computer Is Not Registered.  No Active Web Tasks Were Found For This Computer.  Starting On Demand Imaging."
+    login_message="This Computer Is Not Registered.  No Active Web Tasks Were Found For This Computer.  Starting Registration."
+	task="register"
   else
     login_message="No Active Web Tasks Were Found For This Computer.  Starting On Demand Imaging."
   fi

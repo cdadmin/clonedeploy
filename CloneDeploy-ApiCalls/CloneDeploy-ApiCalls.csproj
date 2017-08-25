@@ -118,6 +118,10 @@
       <Project>{453080da-87a4-4f5f-aa1f-2c49e37d2f21}</Project>
       <Name>CloneDeploy-Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CloneDeploy-Helpers\CloneDeploy-Common.csproj">
+      <Project>{6ead11e1-3464-40a1-b6cd-24d40ad2507a}</Project>
+      <Name>CloneDeploy-Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

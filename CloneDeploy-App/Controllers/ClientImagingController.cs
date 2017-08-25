@@ -358,7 +358,7 @@ namespace CloneDeploy_App.Controllers
             _response.Content =
                 new StringContent(
                     new ClientImagingServices().ImageList(imageListDto.environment,
-                        Convert.ToInt32(imageListDto.computerid), Convert.ToInt32(imageListDto.userId)),
+                        imageListDto.computerid, Convert.ToInt32(imageListDto.userId)),
                     Encoding.UTF8, "text/plain");
             return _response;
         }
@@ -462,7 +462,7 @@ namespace CloneDeploy_App.Controllers
                 "logContents");
             var subType = StringManipulationServices.Decode(HttpContext.Current.Request.Form["subType"], "subType");
             var computerMac = StringManipulationServices.Decode(HttpContext.Current.Request.Form["mac"], "mac");
-            new ClientImagingServices().UploadLog(Convert.ToInt32(computerId), logContents, subType, computerMac);
+            new ClientImagingServices().UploadLog(computerId, logContents, subType, computerMac);
         }
     }
 }

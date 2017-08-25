@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Configuration;
 using System.Net;
+using System.Web;
 using CloneDeploy_Entities;
 using log4net;
 using Newtonsoft.Json;
@@ -31,7 +31,7 @@ namespace CloneDeploy_ApiCalls
         {
             var token = new TokenEntity();
 
-            _client.BaseUrl = _baseUrl ?? new Uri(ConfigurationManager.AppSettings["api_base_url"]);
+            _client.BaseUrl = _baseUrl ?? new Uri(HttpContext.Current.Request.Cookies["cdBaseUrl"].Value);
             _request.Method = Method.POST;
             _request.Resource = string.Format("api/{0}", _resource);
             _request.AddParameter("grant_type", "password");

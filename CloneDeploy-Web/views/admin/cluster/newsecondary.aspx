@@ -21,7 +21,7 @@
     </script>
 
     <div class="size-4 column">
-        API Url:
+        Base Url:
     </div>
     <div class="size-5 column">
         <asp:TextBox runat="server" Id="txtApi" CssClass="textbox"></asp:TextBox>

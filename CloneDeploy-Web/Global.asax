@@ -1,5 +1,6 @@
 ﻿<%@ Application Language="C#" %>
 <%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="CloneDeploy_Common" %>
 <%@ Import Namespace="log4net" %>
 <%@ Import Namespace="log4net.Config" %>
 
@@ -19,6 +20,7 @@
 
     private void Application_Start(object sender, EventArgs e)
     {
+       
         var logPath = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
                       Path.DirectorySeparatorChar + "logs" + Path.DirectorySeparatorChar + "CloneDeployFE.log";
         GlobalContext.Properties["LogFile"] = logPath;
@@ -35,6 +37,7 @@
 
     private void Session_Start(object sender, EventArgs e)
     {
+        ApplicationServers.Configure();
         // Code that runs when a new session is started
     }
 

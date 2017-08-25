@@ -72,18 +72,6 @@ function checkin()
 		fi
 	fi
 	
-	
-
-
-	  if [ "$computer_name" = "" ] || [ "$computer_name" = "null" ]; then
-		echo "This Computer Was Not Found In The Database, Enter A Name For It Now:"
-		echo "Leave Blank To Skip Computer Renaming"
-		echo
-		read computer_name
-		echo
-	  fi
-	
-	
 	if [ "$web_cancel" = "true" ]; then
 	  . cd_cancel &
 	fi

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using CloneDeploy_ApiCalls;
 using CloneDeploy_Common;
@@ -54,9 +53,8 @@ namespace CloneDeploy_Services
             var srDto = new ServerRoleDTO();
             srDto.Identifier = GetSettingValue(SettingStrings.ServerIdentifier);
             srDto.OperationMode = GetSettingValue(SettingStrings.OperationMode);
-            srDto.IsImageServer = Convert.ToBoolean(GetSettingValue(SettingStrings.ImageServerRole));
-            srDto.IsTftpServer = Convert.ToBoolean(GetSettingValue(SettingStrings.TftpServerRole));
-            srDto.IsMulticastServer = Convert.ToBoolean(SettingStrings.MulticastServerRole);
+            srDto.IsTftpServer = TftpServerRole;
+            srDto.IsMulticastServer = MulticastServerRole;
             return srDto;
         }
 

@@ -196,6 +196,7 @@ namespace CloneDeploy_Services
 
         public string IpxeLogin(string username, string password, string kernel, string bootImage, string task)
         {
+            var webPath = SettingServices.GetSettingValue(SettingStrings.WebPath) + "api/ClientImaging/";
             var newLineChar = "\n";
             string userToken;
             if (SettingServices.GetSettingValue(SettingStrings.DebugRequiresLogin) == "No" ||
@@ -211,13 +212,12 @@ namespace CloneDeploy_Services
             var validationResult = GlobalLogin(username, password, "iPXE");
             if (!validationResult.Success) return "goto Menu";
             var lines = "#!ipxe" + newLineChar;
-            lines += "kernel " + SettingServices.GetSettingValue(SettingStrings.WebPath) + "IpxeBoot?filename=" + kernel +
+            lines += "kernel " + webPath + "IpxeBoot?filename=" + kernel +
                      "&type=kernel" +
                      " initrd=" + bootImage + " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" +
-                     SettingServices.GetSettingValue(SettingStrings.WebPath) + " USER_TOKEN=" + userToken + " task=" +
-                     task + " consoleblank=0 " +
+                     webPath + " USER_TOKEN=" + userToken + " consoleblank=0 " +
                      globalComputerArgs + newLineChar;
-            lines += "imgfetch --name " + bootImage + " " + SettingServices.GetSettingValue(SettingStrings.WebPath) +
+            lines += "imgfetch --name " + bootImage + " " + webPath +
                      "IpxeBoot?filename=" +
                      bootImage + "&type=bootimage" + newLineChar;
             lines += "boot";

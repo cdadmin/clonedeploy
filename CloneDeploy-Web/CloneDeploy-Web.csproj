@@ -125,6 +125,7 @@
     <Content Include="views\admin\dp\dp.master" />
     <Content Include="views\admin\netboot\netboot.master" />
     <Content Include="views\admin\server\server.master" />
+    <Content Include="serverlist.csv" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

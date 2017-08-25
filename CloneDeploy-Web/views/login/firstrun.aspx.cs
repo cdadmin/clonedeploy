@@ -66,65 +66,11 @@ namespace CloneDeploy_Web.views.login
                         Value = tftpPath,
                         Id = Call.SettingApi.GetSetting("Tftp Path").Id
                     },
-                    new SettingEntity
+                     new SettingEntity
                     {
-                        Name = "Image Share Type",
-                        Value = "Local",
-                        Id = Call.SettingApi.GetSetting("Image Share Type").Id
-                    },
-                    new SettingEntity
-                    {
-                        Name = "Image Server Ip",
-                        Value = "[server-ip]",
-                        Id = Call.SettingApi.GetSetting("Image Server Ip").Id
-                    },
-                    new SettingEntity
-                    {
-                        Name = "Image Share Name",
-                        Value = "cd_share",
-                        Id = Call.SettingApi.GetSetting("Image Share Name").Id
-                    },
-                    new SettingEntity
-                    {
-                        Name = "Image Domain",
-                        Value = "Workgroup",
-                        Id = Call.SettingApi.GetSetting("Image Domain").Id
-                    },
-                    new SettingEntity
-                    {
-                        Name = "Image ReadWrite Username",
-                        Value = "cd_share_rw",
-                        Id = Call.SettingApi.GetSetting("Image ReadWrite Username").Id
-                    },
-                    new SettingEntity
-                    {
-                        Name = "Image ReadWrite Password Encrypted",
-                        Value = txtReadWrite.Text,
-                        Id = Call.SettingApi.GetSetting("Image ReadWrite Password Encrypted").Id
-                    },
-                    new SettingEntity
-                    {
-                        Name = "Image ReadOnly Username",
-                        Value = "cd_share_ro",
-                        Id = Call.SettingApi.GetSetting("Image ReadOnly Username").Id
-                    },
-                    new SettingEntity
-                    {
-                        Name = "Image ReadOnly Password Encrypted",
-                        Value = txtReadOnly.Text,
-                        Id = Call.SettingApi.GetSetting("Image ReadOnly Password Encrypted").Id
-                    },
-                    new SettingEntity
-                    {
-                        Name = "Image Physical Path",
-                        Value = physicalPath,
-                        Id = Call.SettingApi.GetSetting("Image Physical Path").Id
-                    },
-                    new SettingEntity
-                    {
-                        Name = "Image Queue Size",
-                        Value = "3",
-                        Id = Call.SettingApi.GetSetting("Image Queue Size").Id
+                        Name = "Tftp Server IP",
+                        Value = txtServerIP.Text,
+                        Id = Call.SettingApi.GetSetting("Tftp Server IP").Id
                     }
                 };
 
@@ -139,6 +85,23 @@ namespace CloneDeploy_Web.views.login
                 }
 
                 Call.SettingApi.UpdateSettings(listSettings);
+
+                var distributionPoint = new DistributionPointEntity();
+                distributionPoint.DisplayName = "Local_Default";
+                distributionPoint.Server = "[server-ip]";
+                distributionPoint.Protocol = "SMB";
+                distributionPoint.ShareName = "cd_share";
+                distributionPoint.Domain = "Workgroup";
+                distributionPoint.RwUsername = "cd_share_rw";
+                distributionPoint.RwPassword = txtReadWrite.Text;
+                distributionPoint.RoUsername = "cd_share_ro";
+                distributionPoint.RoPassword = txtReadOnly.Text;
+                distributionPoint.IsPrimary = 1;
+                distributionPoint.QueueSize = 3;
+                distributionPoint.PhysicalPath = physicalPath;
+                distributionPoint.Location = "Local";
+                Call.DistributionPointApi.Post(distributionPoint);
+
 
                 var defaultBootMenuOptions = new BootMenuGenOptionsDTO();
                 defaultBootMenuOptions.Kernel = SettingStrings.DefaultKernel32;

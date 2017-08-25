@@ -25,7 +25,7 @@ namespace CloneDeploy_Services.Workflows
 
         public bool Execute()
         {
-            var webPath = SettingServices.GetSettingValue(SettingStrings.WebPath);
+            var webPath = SettingServices.GetSettingValue(SettingStrings.WebPath) + "api/ClientImaging/";
             var globalComputerArgs = SettingServices.GetSettingValue(SettingStrings.GlobalComputerArgs);
             var namePromptArg = "";
             if (_promptComputerName)

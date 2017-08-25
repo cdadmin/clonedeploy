@@ -24,16 +24,12 @@
 
     function get_shas_proxy() {
         $('#<%= consoleShaProxy.ClientID %>').val(syslinux_sha512(document.getElementById('<%= txtProxDebugPwd.ClientID %>').value));
-        $('#<%= addcomputerShaProxy.ClientID %>').val(syslinux_sha512(document.getElementById('<%= txtProxAddPwd.ClientID %>').value));
         $('#<%= ondshaProxy.ClientID %>').val(syslinux_sha512(document.getElementById('<%= txtProxOndPwd.ClientID %>').value));
-        $('#<%= diagshaProxy.ClientID %>').val(syslinux_sha512(document.getElementById('<%= txtProxDiagPwd.ClientID %>').value));
     }
 
     function get_shas() {
-        $('#<%= consoleSha.ClientID %>').val(syslinux_sha512(document.getElementById('<%= txtDebugPwd.ClientID %>').value));
-        $('#<%= addcomputerSha.ClientID %>').val(syslinux_sha512(document.getElementById('<%= txtAddPwd.ClientID %>').value));
+        $('#<%= consoleSha.ClientID %>').val(syslinux_sha512(document.getElementById('<%= txtDebugPwd.ClientID %>').value));  
         $('#<%= ondsha.ClientID %>').val(syslinux_sha512(document.getElementById('<%= txtOndPwd.ClientID %>').value));
-        $('#<%= diagsha.ClientID %>').val(syslinux_sha512(document.getElementById('<%= txtdiagPwd.ClientID %>').value));
     }
 </script>
 
@@ -73,6 +69,14 @@
         <div id="passboxes" runat="server">
             <br/>
             <h4>Boot Menu Passwords - Optional</h4>
+              <div class="size-4 column">
+                CloneDeploy Password:
+            </div>
+            <div class="size-5 column">
+                <asp:TextBox ID="txtOndPwd" runat="server" CssClass="textbox" type="password"></asp:TextBox>
+            </div>
+            <br class="clear"/>
+
             <div class="size-4 column">
                 Client Console Password:
             </div>
@@ -80,27 +84,9 @@
                 <asp:TextBox ID="txtDebugPwd" runat="server" CssClass="textbox" type="password"></asp:TextBox>
             </div>
             <br class="clear"/>
-            <div class="size-4 column">
-                Add Computer Password:
-            </div>
-            <div class="size-5 column">
-                <asp:TextBox ID="txtAddPwd" runat="server" CssClass="textbox" type="password"></asp:TextBox>
-            </div>
-            <br class="clear"/>
-            <div class="size-4 column">
-                On Demand Password:
-            </div>
-            <div class="size-5 column">
-                <asp:TextBox ID="txtOndPwd" runat="server" CssClass="textbox" type="password"></asp:TextBox>
-            </div>
-            <br class="clear"/>
-            <div class="size-4 column">
-                Diagnostics Password:
-            </div>
-            <div class="size-5 column">
-                <asp:TextBox ID="txtdiagPwd" runat="server" CssClass="textbox" type="password"></asp:TextBox>
-            </div>
-            <br class="clear"/>
+           
+          
+          
         </div>
         <div id="ipxePassBoxes" runat="server" visible="false" style="margin-top: 0;">
             <br/>
@@ -218,6 +204,14 @@
         <br class="clear"/>
         <br/>
         <h4>Syslinux Boot Menu Passwords - Optional</h4>
+        
+          <div class="size-4 column">
+            CloneDeploy Password:
+        </div>
+        <div class="size-5 column">
+            <asp:TextBox ID="txtProxOndPwd" runat="server" CssClass="textbox" type="password"></asp:TextBox>
+        </div>
+        <br class="clear"/>
 
         <div class="size-4 column">
             Client Console Password:
@@ -226,27 +220,9 @@
             <asp:TextBox ID="txtProxDebugPwd" runat="server" CssClass="textbox" type="password"></asp:TextBox>
         </div>
         <br class="clear"/>
-        <div class="size-4 column">
-            Add Computer Password:
-        </div>
-        <div class="size-5 column">
-            <asp:TextBox ID="txtProxAddPwd" runat="server" CssClass="textbox" type="password"></asp:TextBox>
-        </div>
-        <br class="clear"/>
-        <div class="size-4 column">
-            On Demand Password:
-        </div>
-        <div class="size-5 column">
-            <asp:TextBox ID="txtProxOndPwd" runat="server" CssClass="textbox" type="password"></asp:TextBox>
-        </div>
-        <br class="clear"/>
-        <div class="size-4 column">
-            Diagnostics Password:
-        </div>
-        <div class="size-5 column">
-            <asp:TextBox ID="txtProxDiagPwd" runat="server" CssClass="textbox" type="password"></asp:TextBox>
-        </div>
-        <br class="clear"/>
+      
+      
+       
     </div>
     <div id="ipxeProxyPasses" runat="server" visible="false" style="margin-top: 0;">
         <br/>

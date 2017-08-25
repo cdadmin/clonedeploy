@@ -4,6 +4,7 @@ using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using CloneDeploy_ApiCalls;
+using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using Newtonsoft.Json;
 
@@ -11,32 +12,42 @@ namespace CloneDeploy_Web
 {
     public partial class Default : Page
     {
+        private void ClearSession()
+        {
+            Session.RemoveAll();
+            Session.Abandon();
+
+            FormsAuthentication.SignOut();
+            //http://stackoverflow.com/questions/6635349/how-to-delete-cookies-in-asp-net-website
+            if (HttpContext.Current != null)
+            {
+                var cookieCount = HttpContext.Current.Request.Cookies.Count;
+                for (var i = 0; i < cookieCount; i++)
+                {
+                    var cookie = HttpContext.Current.Request.Cookies[i];
+                    if (cookie != null)
+                    {
+                        var cookieName = cookie.Name;
+                        var expiredCookie = new HttpCookie(cookieName) { Expires = DateTime.Now.AddDays(-1) };
+                        HttpContext.Current.Response.Cookies.Add(expiredCookie); // overwrite it
+                    }
+                }
+
+                // clear cookies server side
+                HttpContext.Current.Request.Cookies.Clear();
+            }
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                Session.RemoveAll();
-                Session.Abandon();
+                ddlApplicationServers.DataSource = ApplicationServers.ServerList;
+                ddlApplicationServers.DataValueField = "BaseUrl";
+                ddlApplicationServers.DataTextField = "DisplayName";
+                ddlApplicationServers.DataBind();
 
-                FormsAuthentication.SignOut();
-                //http://stackoverflow.com/questions/6635349/how-to-delete-cookies-in-asp-net-website
-                if (HttpContext.Current != null)
-                {
-                    var cookieCount = HttpContext.Current.Request.Cookies.Count;
-                    for (var i = 0; i < cookieCount; i++)
-                    {
-                        var cookie = HttpContext.Current.Request.Cookies[i];
-                        if (cookie != null)
-                        {
-                            var cookieName = cookie.Name;
-                            var expiredCookie = new HttpCookie(cookieName) {Expires = DateTime.Now.AddDays(-1)};
-                            HttpContext.Current.Response.Cookies.Add(expiredCookie); // overwrite it
-                        }
-                    }
-
-                    // clear cookies server side
-                    HttpContext.Current.Request.Cookies.Clear();
-                }
+                ClearSession();
 
                 if (Request.QueryString["session"] == "expired")
                     SessionExpired.Visible = true;
@@ -54,6 +65,24 @@ namespace CloneDeploy_Web
 
         protected void WebLogin_Authenticate(object sender, AuthenticateEventArgs e)
         {
+            
+            //ApplicationServers._baseApiUrl = ddlApplicationServers.SelectedValue;
+            HttpCookie baseUrlCookie = Request.Cookies["cdBaseUrl"];
+            if (baseUrlCookie == null)
+            {
+                baseUrlCookie = new HttpCookie("cdBaseUrl")
+            {
+                Value = ddlApplicationServers.SelectedValue,
+                HttpOnly = true
+            };
+                Response.Cookies.Add(baseUrlCookie);
+            }
+            else
+            {
+                baseUrlCookie.Value = ddlApplicationServers.SelectedValue;
+                Response.Cookies.Add(baseUrlCookie);
+            }
+
             //Get token
             var token = new APICall().TokenApi.Get(WebLogin.UserName, WebLogin.Password);
             if (token == null)
@@ -62,11 +91,21 @@ namespace CloneDeploy_Web
                 return;
             }
 
-            HttpContext.Current.Response.Cookies.Add(new HttpCookie("cdtoken")
+            HttpCookie tokenCookie = Request.Cookies["cdtoken"];
+            if (tokenCookie == null)
             {
-                Value = token.access_token,
-                HttpOnly = true
-            });
+                tokenCookie = new HttpCookie("cdtoken")
+                {
+                    Value = token.access_token,
+                    HttpOnly = true
+                };
+                Response.Cookies.Add(tokenCookie);
+            }
+            else
+            {
+                tokenCookie.Value = token.access_token;
+                Response.Cookies.Add(tokenCookie);
+            }
 
             if (token.access_token != null)
             {

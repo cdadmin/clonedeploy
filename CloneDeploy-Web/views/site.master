@@ -72,26 +72,26 @@
 
 
                     <li id="navhosts" runat="server">
-                        <a href="<%= ResolveUrl("~/views/computers/search.aspx") %>" class="icon-host"></a>
+                        <a href="<%= ResolveUrl("~/views/computers/search.aspx") %>" class="icon-host" title="Computers"></a>
                     </li>
                     <li id="navgroups" runat="server">
-                        <a href="<%= ResolveUrl("~/views/groups/search.aspx") %>" class="icon-group"></a>
+                        <a href="<%= ResolveUrl("~/views/groups/search.aspx") %>" class="icon-group" title="Groups"></a>
                     </li>
                     <li id="navimages" runat="server">
-                        <a href="<%= ResolveUrl("~/views/images/search.aspx") %>" class="icon-image"></a>
+                        <a href="<%= ResolveUrl("~/views/images/search.aspx") %>" class="icon-image" title="Images"></a>
                     </li>
                     <li id="navtasks" runat="server">
-                        <a href="<%= ResolveUrl("~/views/tasks/active.aspx") %>" class="icon-task"></a>
+                        <a href="<%= ResolveUrl("~/views/tasks/active.aspx") %>" class="icon-task" title="Tasks"></a>
                     </li>
                     <li id="nav-users">
-                        <a href="<%= ResolveUrl("~/views/users/search.aspx") %>" class="icon-user"></a>
+                        <a href="<%= ResolveUrl("~/views/users/search.aspx") %>" class="icon-user" title="Users"></a>
                     </li>
 
                     <li id="navglobal" runat="server">
-                        <a href="<%= ResolveUrl("~/views/global/chooser.aspx") %>" class="icon-global"></a>
+                        <a href="<%= ResolveUrl("~/views/global/chooser.aspx") %>" class="icon-global" title="Global Properties"></a>
                     </li>
                     <li id="nav-settings">
-                        <a href="<%= ResolveUrl("~/views/admin/server/server.aspx") %>" class="icon-setting"></a>
+                        <a href="<%= ResolveUrl("~/views/admin/server/server.aspx") %>" class="icon-setting" title="Admin Settings"></a>
                     </li>
 
 

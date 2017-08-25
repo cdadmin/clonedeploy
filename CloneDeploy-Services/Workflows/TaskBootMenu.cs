@@ -28,7 +28,7 @@ namespace CloneDeploy_Services.Workflows
         public bool CreatePxeBootFiles()
         {
             var pxeComputerMac = StringManipulationServices.MacToPxeMac(_computer.Mac);
-            var webPath = SettingServices.GetSettingValue(SettingStrings.WebPath) + "ClientImaging/";
+            var webPath = SettingServices.GetSettingValue(SettingStrings.WebPath) + "api/ClientImaging/";
             var globalComputerArgs = SettingServices.GetSettingValue(SettingStrings.GlobalComputerArgs);
             var userToken = SettingServices.GetSettingValue(SettingStrings.WebTaskRequiresLogin) == "No"
                 ? SettingServices.GetSettingValue(SettingStrings.UniversalToken)
@@ -40,7 +40,7 @@ namespace CloneDeploy_Services.Workflows
                 var altServer = new AlternateServerIpServices().GetAlternateServerIp(_computer.AlternateServerIpId);
                 if (altServer != null)
                 {
-                    webPath = altServer.ApiUrl + "ClientImaging/";
+                    webPath = altServer.ApiUrl + "api/ClientImaging/";
                 }
             }
 

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Configuration;
+using System.Net;
 using System.Web;
 using log4net;
 using RestSharp;
@@ -15,7 +15,9 @@ namespace CloneDeploy_ApiCalls
         public ApiRequest()
         {
             _client = new RestClient();
-            _client.BaseUrl = new Uri(ConfigurationManager.AppSettings["api_base_url"]);
+            var cookie = HttpContext.Current.Request.Cookies["cdBaseUrl"];
+            if (cookie != null)
+                _client.BaseUrl = new Uri(cookie.Value);
 
             var httpCookie = HttpContext.Current.Request.Cookies["cdtoken"];
             if (httpCookie != null)
@@ -45,6 +47,18 @@ namespace CloneDeploy_ApiCalls
                 _log.Debug("Could Not Complete API Request.  The Response was empty." + request.Resource);
                 return default(TClass);
             }
+
+            if (response.StatusCode == HttpStatusCode.InternalServerError)
+            {
+                _log.Debug("Could Not Complete API Request.  The Response Produced An Error." + request.Resource);
+                _log.Debug(response.Content);
+                return default(TClass);
+            }
+
+            /*if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                throw new HttpException();
+            }*/
 
             if (response.ErrorException != null)
             {

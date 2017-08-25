@@ -652,10 +652,12 @@ namespace CloneDeploy_Services
             return JsonConvert.SerializeObject(tag);
         }
 
-        public string ImageList(string environment, int computerId, int userId = 0)
+        public string ImageList(string environment, string computerId, int userId = 0)
         {
             var images = new ImageServices().GetOnDemandImageList(userId);
-            var filteredImages = new ComputerImageClassificationServices().FilterForOnDemandList(computerId, images);
+            if (computerId == "false")
+                computerId = "0";
+            var filteredImages = new ComputerImageClassificationServices().FilterForOnDemandList(Convert.ToInt32(computerId), images);
             if (environment == "winpe")
             {
                 filteredImages = filteredImages.Where(x => x.Environment == "winpe").ToList();
@@ -970,11 +972,13 @@ namespace CloneDeploy_Services
             activeImagingTaskServices.UpdateActiveImagingTask(task);
         }
 
-        public void UploadLog(int computerId, string logContents, string subType, string computerMac)
+        public void UploadLog(string computerId, string logContents, string subType, string computerMac)
         {
+            if (computerId == "false")
+                computerId = "-1";
             var computerLog = new ComputerLogEntity
             {
-                ComputerId = computerId,
+                ComputerId = Convert.ToInt32(computerId),
                 Contents = logContents,
                 Type = "image",
                 SubType = subType,
