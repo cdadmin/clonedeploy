@@ -70,6 +70,8 @@
     <Content Include="content\fonts\OpenSans-Light.eot" />
     <Content Include="content\fonts\OpenSans-Light.ttf" />
     <Content Include="content\fonts\OpenSans-Regular.ttf" />
+    <Content Include="content\js\images\hsizegrip.png" />
+    <Content Include="content\js\jquery-resizable.js" />
     <Content Include="packages.config" />
     <Content Include="private\logs\.gitignore" />
     <Content Include="views\admin\admin.master" />

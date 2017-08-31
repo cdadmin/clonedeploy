@@ -11,7 +11,7 @@
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">
     <asp:LinkButton ID="cancelTasks" runat="server" Text="Cancel All Tasks " OnClick="cancelTasks_Click" CssClass="btn btn-default"/>
-    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <span class="caret"></span>
     </button>
 </asp:Content>
@@ -22,9 +22,7 @@
             $('#all').addClass("nav-current");
         });
     </script>
-    <asp:ScriptManager ID="ScriptManager1" runat="server">
-    </asp:ScriptManager>
-
+  
     <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
             <asp:Timer ID="Timer" runat="server" Interval="2000" OnTick="Timer_Tick">

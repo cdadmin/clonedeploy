@@ -1,6 +1,9 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/computers/computers.master" AutoEventWireup="true" CodeBehind="history.aspx.cs" Inherits="CloneDeploy_Web.views.computers.history" %>
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
-    <li>Search</li>
+     <li>
+        <a href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?computerid=<%= Computer.Id %>"><%= Computer.Name %></a>
+    </li>
+    <li>History</li>
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="Help">

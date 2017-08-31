@@ -1,9 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/admin.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.global.scripts.views_admin_scripts_editcore" ValidateRequest="False" Codebehind="editcore.aspx.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
-    <li >
-        <a href="<%= ResolveUrl("~/views/admin/editcore.aspx") %>">Scripts</a>
-    </li>
+  
     <li>Edit Core Scripts</li>
 </asp:Content>
 

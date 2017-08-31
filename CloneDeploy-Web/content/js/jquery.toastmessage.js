@@ -56,10 +56,10 @@
 (function($) {
     var settings = {
         inEffect: { opacity: "show" }, // in effect
-        inEffectDuration: 600, // in effect duration in miliseconds
+        inEffectDuration: 0, // in effect duration in miliseconds
         stayTime: 5000, // time in miliseconds before the item has to disappear
         text: "", // content of the item. Might be a string or a jQuery object. Be aware that any jQuery object which is acting as a message will be deleted when the toast is fading away.
-        sticky: false, // should the toast item sticky or not?
+        sticky: true, // should the toast item sticky or not?
         type: "notice", // notice, warning, error, success
         position: "top", // top-left, top-center, top-right, middle-left, middle-center, middle-right ... Position of the toast container holding different toast. Position can be set only once at the very first call, changing the position after the first call does nothing
         closeText: "", // text which will be shown as close button, set to '' when you want to introduce an image via css

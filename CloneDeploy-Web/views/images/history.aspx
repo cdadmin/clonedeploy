@@ -1,5 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/images/images.master" AutoEventWireup="true" CodeBehind="history.aspx.cs" Inherits="CloneDeploy_Web.views.images.history" %>
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
+     <li>
+        <a href="<%= ResolveUrl("~/views/images/edit.aspx") %>?imageid=<%= Image.Id %>"><%= Image.Name %></a>
+    </li>
     <li>History</li>
 </asp:Content>
 

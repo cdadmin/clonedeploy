@@ -27,19 +27,19 @@
         <a href="<%= ResolveUrl("~/views/admin/cluster/roles.aspx") %>?level=2">
             <span class="sub-nav-text">Server Roles</span></a>
     </li>
-    <li id="secondary" runat="server">
+    <li id="secondary" runat="server" ClientIDMode="Static">
         <a href="<%= ResolveUrl("~/views/admin/cluster/secondary.aspx") %>?level=2">
             <span class="sub-nav-text">Secondary Servers</span></a>
     </li>
-    <li id="newsecondary" runat="server">
+    <li id="newsecondary" runat="server" ClientIDMode="Static">
         <a href="<%= ResolveUrl("~/views/admin/cluster/newsecondary.aspx") %>?level=2">
             <span class="sub-nav-text">Add Secondary Server</span></a>
     </li>
-    <li id="clustergroup" runat="server">
+    <li id="clustergroup" runat="server" ClientIDMode="Static">
         <a href="<%= ResolveUrl("~/views/admin/cluster/clustergroup.aspx") %>?level=2">
             <span class="sub-nav-text">Cluster Groups</span></a>
     </li>
-    <li id="newcluster" runat="server">
+    <li id="newcluster" runat="server" ClientIDMode="Static">
         <a href="<%= ResolveUrl("~/views/admin/cluster/newclustergroup.aspx") %>?level=2">
             <span class="sub-nav-text">New Cluster Group</span></a>
     </li>

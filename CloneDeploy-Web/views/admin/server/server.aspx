@@ -1,6 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/admin/server/server.master" AutoEventWireup="true" CodeBehind="server.aspx.cs" Inherits="CloneDeploy_Web.views.admin.server.serversettings" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub2" Runat="Server">
-    <li>Server Settings</li>
+    <li>Server</li>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="SubHelp" Runat="Server">

@@ -7,21 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-
-
-namespace CloneDeploy_Web.views.tasks
-{
+namespace CloneDeploy_Web.views.tasks {
+    
+    
     public partial class views_tasks_activepermanent {
-    
-        /// <summary>
-        /// ScriptManager1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.ScriptManager ScriptManager1;
-    
+        
         /// <summary>
         /// UpdatePanel1 control.
         /// </summary>
@@ -30,7 +20,7 @@ namespace CloneDeploy_Web.views.tasks
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UpdatePanel UpdatePanel1;
-    
+        
         /// <summary>
         /// Timer control.
         /// </summary>
@@ -39,7 +29,7 @@ namespace CloneDeploy_Web.views.tasks
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.Timer Timer;
-    
+        
         /// <summary>
         /// lblTotal control.
         /// </summary>
@@ -48,7 +38,7 @@ namespace CloneDeploy_Web.views.tasks
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblTotal;
-    
+        
         /// <summary>
         /// gvUcTasks control.
         /// </summary>

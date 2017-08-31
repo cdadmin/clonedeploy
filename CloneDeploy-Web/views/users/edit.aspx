@@ -57,14 +57,14 @@
             User Password:
         </div>
         <div class="size-5 column">
-            <asp:TextBox ID="txtUserPwd" runat="server" CssClass="textbox" TextMode="Password"></asp:TextBox>
+            <asp:TextBox ID="txtUserPwd" runat="server" CssClass="textbox password" TextMode="Password"></asp:TextBox>
         </div>
         <br class="clear"/>
         <div class="size-4 column">
             Confirm Password:
         </div>
         <div class="size-5 column">
-            <asp:TextBox ID="txtUserPwdConfirm" runat="server" CssClass="textbox" TextMode="Password"></asp:TextBox>
+            <asp:TextBox ID="txtUserPwdConfirm" runat="server" CssClass="textbox password" TextMode="Password"></asp:TextBox>
         </div>
         <br class="clear"/>
     </div>
@@ -77,7 +77,7 @@
     <br class="clear"/>
     <div class="size-4 column">
         <p style="margin-bottom: 5px;">
-            Imaging Client Token:
+            Imaging Token:
             <asp:LinkButton ID="btnGenKey" runat="server" Text="Generate" OnClick="btnGenKey_OnClick" CssClass="btn btn-default right"/>
         </p>
     </div>

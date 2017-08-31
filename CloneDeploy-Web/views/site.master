@@ -1,15 +1,14 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.SiteMaster" Codebehind="site.master.cs" %>
+﻿<%@ Master Language="C#" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.SiteMaster" CodeBehind="site.master.cs" %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <meta http-equiv="X-UA-Compatible" content="IE=EDGE"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <title>CloneDeploy</title>
 
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery-1.9.1.js") %>"></script>
-    <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery-migrate-1.2.1.min.js") %>"></script>
-    <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery-ui.js") %>"></script>
+    <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery-resizable.js") %>" charset="utf-8"></script>
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery.toastmessage.js") %>"></script>
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery.watermark.min.js") %>"></script>
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/classie.js") %>"></script>
@@ -21,171 +20,295 @@
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/scrollsaver.js") %>" charset="utf-8"></script>
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/bootstrap.min.js") %>" charset="utf-8"></script>
 
-    <link href="~/content/css/splitbutton.css" rel="stylesheet" type="text/css"/>
-    <link rel="stylesheet" type="text/css" href="~/content/css/BreadCrumb.css"/>
+    <link href="~/content/css/splitbutton.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="~/content/css/BreadCrumb.css" />
 
-    <link href="~/content/js/jquery-labelauty.css" rel="stylesheet" type="text/css"/>
-    <link href="~/content/css/base.css" rel="stylesheet" type="text/css"/>
-    <link href="~/content/css/icons.css" rel="stylesheet" type="text/css"/>
-    <link href="~/content/css/layout.css" rel="stylesheet" type="text/css"/>
+    <link href="~/content/js/jquery-labelauty.css" rel="stylesheet" type="text/css" />
+    <link href="~/content/css/base.css" rel="stylesheet" type="text/css" />
+    <link href="~/content/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="~/content/css/layout.css" rel="stylesheet" type="text/css" />
 
     <!-- percent circle source: http://circle.firchow.net/ -->
-    <link rel="stylesheet" href="~/content/css/circle.css"/>
+    <link rel="stylesheet" href="~/content/css/circle.css" />
 
 </head>
 <body>
 
-<div class="nav-bar-mobile">
-    <a href="#" class="icon-mobile-nav"></a>
-</div>
-<div class="nav-menu-mobile" id="menu-mobile">
-
-    <div class="mobile-menu-left">
-        <a href="<%= ResolveUrl("~/views/computers/search.aspx") %>">Computers</a>
-        <a href="<%= ResolveUrl("~/views/groups/search.aspx") %>">Groups</a>
-        <a href="<%= ResolveUrl("~/views/images/search.aspx") %>">Images</a>
-        <a href="<%= ResolveUrl("~/views/global/chooser.aspx") %>">Global</a>
+    <div class="nav-bar-mobile">
+        <a href="#" class="icon-mobile-nav"></a>
     </div>
-    <div class="mobile-menu-right">
-        <a href="<%= ResolveUrl("~/views/tasks/active.aspx") %>">Tasks</a>
-        <a href="<%= ResolveUrl("~/views/users/search.aspx") %>">Users</a>
-        <a href="<%= ResolveUrl("~/views/admin/server/server.aspx") %>">Admin</a>
-    </div>
-</div>
+    <div class="nav-menu-mobile" id="menu-mobile">
 
-<form id="form1" runat="server" class="form">
-
-    <div class="container">
-
-
-        <div class="nav">
-            <div id="title">
-                <a href="<%= ResolveUrl("~/views/dashboard/dash.aspx") %>">
-                    <h1>CloneDeploy</h1>
-                </a>
-                <span class="version">1.3.0 <b><asp:Label runat="server" Id="lblServerId"></asp:Label></b></span>
-            </div>
-
-
-            <div class="navmenu">
-                <ul>
-
-
-                    <li id="navhosts" runat="server">
-                        <a href="<%= ResolveUrl("~/views/computers/search.aspx") %>" class="icon-host" title="Computers"></a>
-                    </li>
-                    <li id="navgroups" runat="server">
-                        <a href="<%= ResolveUrl("~/views/groups/search.aspx") %>" class="icon-group" title="Groups"></a>
-                    </li>
-                    <li id="navimages" runat="server">
-                        <a href="<%= ResolveUrl("~/views/images/search.aspx") %>" class="icon-image" title="Images"></a>
-                    </li>
-                    <li id="navtasks" runat="server">
-                        <a href="<%= ResolveUrl("~/views/tasks/active.aspx") %>" class="icon-task" title="Tasks"></a>
-                    </li>
-                    <li id="nav-users">
-                        <a href="<%= ResolveUrl("~/views/users/search.aspx") %>" class="icon-user" title="Users"></a>
-                    </li>
-
-                    <li id="navglobal" runat="server">
-                        <a href="<%= ResolveUrl("~/views/global/chooser.aspx") %>" class="icon-global" title="Global Properties"></a>
-                    </li>
-                    <li id="nav-settings">
-                        <a href="<%= ResolveUrl("~/views/admin/server/server.aspx") %>" class="icon-setting" title="Admin Settings"></a>
-                    </li>
-
-
-                </ul>
-
-            </div>
-
-
+        <div class="mobile-menu-left">
+            <a href="<%= ResolveUrl("~/views/computers/search.aspx") %>">Computers</a>
+            <a href="<%= ResolveUrl("~/views/groups/search.aspx") %>">Groups</a>
+            <a href="<%= ResolveUrl("~/views/images/search.aspx") %>">Images</a>
+            <a href="<%= ResolveUrl("~/views/global/chooser.aspx") %>">Global</a>
         </div>
+        <div class="mobile-menu-right">
+            <a href="<%= ResolveUrl("~/views/tasks/active.aspx") %>">Tasks</a>
+            <a href="<%= ResolveUrl("~/views/users/search.aspx") %>">Users</a>
+            <a href="<%= ResolveUrl("~/views/admin/server/server.aspx") %>">Admin</a>
+        </div>
+    </div>
 
-        <div class="content_container">
+    <form id="form1" runat="server" class="form">
+           <asp:ScriptManager ID="ScriptManager1" runat="server">
+    </asp:ScriptManager>
+        <div class="container">
+            <div class="file-menu">
+              <div class="dropdown">
+  <button class="dropbtn">  <span class="version">CloneDeploy 1.3.0</span></button>
+  <div class="dropdown-content">
+    <a href="<%= ResolveUrl("~/views/dashboard/dash.aspx") %>">Dashboard</a>
+     <a href="<%= ResolveUrl("~/views/help/default.aspx") %>">Help</a>
+    <asp:LinkButton ID="LogOut" runat="server" OnClick="LogOut_OnClick">Logout</asp:LinkButton>
+      <a href="<%= ResolveUrl("http://clonedeploy.org/donate") %>">Donate</a>
+  </div>
+</div>
+              
+                <span class="version-right"><b>
+                    <asp:Label runat="server" ID="lblServerId"></asp:Label></b></span>
 
-            <br class="clear;"/>
-            <div id="leftnav">
-                <div class="sub-nav">
-                    <asp:ContentPlaceHolder ID="SubNav" runat="server">
-                    </asp:ContentPlaceHolder>
+            </div>
+            <div class="nav">
+
+                <div class="module breadcrumb_container">
+                    <div id="bread-crumb1" class="breadCrumb module">
+                        <ul>
+                            <asp:ContentPlaceHolder ID="Breadcrumb" runat="server">
+                            </asp:ContentPlaceHolder>
+                        </ul>
+
+                    </div>
+                </div>
+
+                <div class="navmenu">
+                    <ul>
+                        <li id="navhosts" runat="server">
+                            <a href="<%= ResolveUrl("~/views/computers/search.aspx") %>" class="icon-host" title="Computers"></a>
+                        </li>
+                        <li id="navgroups" runat="server">
+                            <a href="<%= ResolveUrl("~/views/groups/search.aspx") %>" class="icon-group" title="Groups"></a>
+                        </li>
+                        <li id="navimages" runat="server">
+                            <a href="<%= ResolveUrl("~/views/images/search.aspx") %>" class="icon-image" title="Images"></a>
+                        </li>
+                        <li id="navtasks" runat="server">
+                            <a href="<%= ResolveUrl("~/views/tasks/active.aspx") %>" class="icon-task" title="Tasks"></a>
+                        </li>
+                        <li id="nav-users">
+                            <a href="<%= ResolveUrl("~/views/users/search.aspx") %>" class="icon-user" title="Users"></a>
+                        </li>
+
+                        <li id="navglobal" runat="server">
+                            <a href="<%= ResolveUrl("~/views/global/chooser.aspx") %>" class="icon-global" title="Global Properties"></a>
+                        </li>
+                        <li id="nav-settings">
+                            <a href="<%= ResolveUrl("~/views/admin/server/server.aspx") %>" class="icon-setting" title="Admin Settings"></a>
+                        </li>
+
+
+                    </ul>
 
                 </div>
 
 
             </div>
 
-            <div class="content-wrapper">
+            <div class="panel-container-vertical">
+                <div class="panel-top">
+                    <div class="content_container">
 
-                <div class="content-header">
-
-                    <div class="module breadcrumb_container">
-                        <div id="bread-crumb1" class="breadCrumb module">
-                            <ul>
-                                <asp:ContentPlaceHolder ID="Breadcrumb" runat="server">
+                        <br class="clear;" />
+                        <div id="leftnav">
+                            <div class="sub-nav">
+                                <asp:ContentPlaceHolder ID="SubNav" runat="server">
                                 </asp:ContentPlaceHolder>
-                            </ul>
+
+                            </div>
+
+
+                        </div>
+
+                        <div class="content-wrapper">
+
+                            <div class="content-header">
+                                <div class="toast-container"></div>
+
+
+
+
+                                <div class="actions_container">
+                                    <div class="btn-group">
+                                        <asp:ContentPlaceHolder ID="PageActions" runat="server">
+                                        </asp:ContentPlaceHolder>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div id="content-main">
+                                <br class="clear" />
+                                <div class="page-nav">
+                                    <ul class="page-nav-menu">
+                                        <asp:ContentPlaceHolder ID="PageNav" runat="server"></asp:ContentPlaceHolder>
+                                    </ul>
+                                </div>
+
+                                <div class="size-fullgrid column">
+                                    <asp:ContentPlaceHolder ID="Content" runat="server">
+                                    </asp:ContentPlaceHolder>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="splitter-horizontal">
+                </div>
+                <div class="panel-bottom">
+
+
+                    <div class="task-footer">
+
+                        <ul class="tabs">
+                            <li class="tab-link current" data-tab="tab-1">Tasks</li>
+                            <li class="tab-link" data-tab="tab-2">History</li>
+                        </ul>
+
+                        <div class="sub-footer">
+                            <div id="tab-1" class="tab-content current">
+                               
+
+    <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
+        <ContentTemplate>
+            <asp:Timer ID="Timer" runat="server" Interval="30000" OnTick="Timer_Tick">
+            </asp:Timer>
+            <p class="total">
+                <asp:Label ID="lblTotal" runat="server"></asp:Label>
+            </p>
+            <br class="clear"/>
+            <p class="total">
+                <asp:Label ID="lblTotalNotOwned" runat="server"></asp:Label>
+            </p>
+            <br class="clear"/>
+            <br/>
+            <asp:GridView ID="gvTasks" runat="server" AutoGenerateColumns="False" DataKeyNames="Id" CssClass="Gridview extraPad" AlternatingRowStyle-CssClass="alt">
+                <Columns>
+                    <asp:TemplateField ShowHeader="False" ItemStyle-CssClass="chkboxwidth">
+                        <ItemTemplate>
+                            <asp:LinkButton ID="btnCancel" runat="server" CausesValidation="false" CommandName="" Text="Cancel" OnClick="btnCancel_Click"></asp:LinkButton>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:BoundField DataField="Id" HeaderText="taskID" SortExpression="_taskID" InsertVisible="False" ReadOnly="True" Visible="False"/>
+                    <asp:TemplateField ItemStyle-CssClass="width_100" HeaderText="Name">
+                        <ItemTemplate>
+                            <asp:Label ID="lblComputer" runat="server" Text='<%# Bind("Computer.Name") %>'/>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:BoundField DataField="Status" HeaderText="Status" SortExpression="_taskStatus" ItemStyle-CssClass="width_50"/>
+                    <asp:BoundField DataField="Type" HeaderText="Type" SortExpression="_taskStatus" ItemStyle-CssClass="width_50"/>
+                    <asp:BoundField DataField="QueuePosition" HeaderText="Queue Position" SortExpression="_taskStatus" ItemStyle-CssClass="width_50"/>
+                    <asp:BoundField DataField="Partition" HeaderText="Partition" ItemStyle-CssClass="mobi-hide-smaller" HeaderStyle-CssClass="mobi-hide-smaller"/>
+                    <asp:BoundField DataField="Elapsed" HeaderText="Elapsed" ItemStyle-CssClass="mobi-hide-small" HeaderStyle-CssClass="mobi-hide-small"/>
+                    <asp:BoundField DataField="Remaining" HeaderText="Remaining" ItemStyle-CssClass="mobi-hide-small" HeaderStyle-CssClass="mobi-hide-small"/>
+                    <asp:BoundField DataField="Completed" HeaderText="Completed"/>
+                    <asp:BoundField DataField="Rate" HeaderText="Rate" ItemStyle-CssClass="mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"/>
+
+                </Columns>
+                <EmptyDataTemplate>
+                    No Active Tasks
+                </EmptyDataTemplate>
+            </asp:GridView>
+        </ContentTemplate>
+    </asp:UpdatePanel>
+                            </div>
+                            <div id="tab-2" class="tab-content">
+                               <asp:GridView ID="gvHistory" runat="server" DataKeyNames="Id" AutoGenerateColumns="False" CssClass="Gridview" AlternatingRowStyle-CssClass="alt">
+        <Columns>
+            <asp:BoundField DataField="Id" HeaderText="AuditId" Visible="False"/>
+            <asp:BoundField DataField="ObjectType" HeaderText="Object Type" ItemStyle-CssClass="width_200"></asp:BoundField>
+            <asp:BoundField DataField="ObjectName" HeaderText="Object Name" ItemStyle-CssClass="width_200"></asp:BoundField>
+            <asp:BoundField DataField="AuditType" HeaderText="Type" SortExpression="Mac" ItemStyle-CssClass="width_200"/>
+            <asp:BoundField DataField="DateTime" HeaderText="Date" ItemStyle-CssClass="width_200"></asp:BoundField>
+            <asp:BoundField DataField="Ip" HeaderText="Ip" ItemStyle-CssClass="width_200"></asp:BoundField>
+            <asp:BoundField DataField="ObjectJson" HeaderText="Json" ItemStyle-CssClass="width_200 mobi-hide-smallest" HeaderStyle-CssClass="mobi-hide-smallest"></asp:BoundField>
+        </Columns>
+        <EmptyDataTemplate>
+            No User History Found
+        </EmptyDataTemplate>
+    </asp:GridView>
+                            </div>
 
                         </div>
                     </div>
-
-                </div>
-
-                <div class="actions_container">
-                    <div class="btn-group">
-                        <asp:ContentPlaceHolder ID="PageActions" runat="server">
-                        </asp:ContentPlaceHolder>
-                    </div>
-
-                </div>
-
-
-                <div id="content-main">
-                    <br class="clear"/>
-                    <div class="page-nav">
-                        <ul class="page-nav-menu">
-                            <asp:ContentPlaceHolder ID="PageNav" runat="server"></asp:ContentPlaceHolder>
-                        </ul>
-                    </div>
-
-                    <div class="size-fullgrid column">
-                        <asp:ContentPlaceHolder ID="Content" runat="server">
-                        </asp:ContentPlaceHolder>
-                    </div>
-
                 </div>
             </div>
-
         </div>
+    </form>
 
-    </div>
+    <script type="text/javascript">
+       
 
-</form>
+        $(document).ready(function () {
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        $(":checkbox").labelauty({ label: false });
+            $('ul.tabs li').click(function() {
+                var tab_id = $(this).attr('data-tab');
 
-        jQuery("#bread-crumb1").jBreadCrumb();
-        $('.searchbox').watermark('Search', { useNative: false });
-        $('.txt-generate').watermark('Password', { useNative: false });
-        $('.password').watermark('******', { useNative: false });
+                $('ul.tabs li').removeClass('current');
+                $('.tab-content').removeClass('current');
 
-        $(".confirm").click(function() {
-            var menuTop = document.getElementById('confirmbox');
-            classie.toggle(menuTop, 'confirm-box-outer-open');
+                $(this).addClass('current');
+                $("#" + tab_id).addClass('current');
+            });
+
+            $(window).resize(function () {
+                var $panel = $('.panel-top');
+                var max_height = $(window).height() - 150;
+                $(".panel-top").css("max-height", max_height);
+                $(".task-footer").css("height", max_height);
+                $(".task-footer").css("height", window.innerHeight - $panel.height() - 110);
+            });
+
+            var max_height = $(window).height() -150;
+            $(".panel-top").css("max-height", max_height);
+            $(".task-footer").css("height", max_height);
+            $(".panel-top").css("height", localStorage.getItem("topPanelHeight"));
+            var $panel = $('.panel-top');
+            $(".task-footer").css("height", window.innerHeight - $panel.height() - 110);
+            $(".panel-top").resizable({
+                handleSelector: ".splitter-horizontal",
+                resizeWidth: false,
+                onDragEnd: function (e, $el, opt) {
+                    var $panel = $('.panel-top');
+                    localStorage.setItem("topPanelHeight", $panel.height());
+                    $(".task-footer").css("height", window.innerHeight - $panel.height() -110);
+                }
+            });
+            $(":checkbox").labelauty({ label: false });
+
+            jQuery("#bread-crumb1").jBreadCrumb();
+            $('.searchbox').watermark('Search', { useNative: false });
+            $('.txt-generate').watermark('Password', { useNative: false });
+            $('.password').watermark('******', { useNative: false });
+
+            $(".confirm").click(function () {
+                var menuTop = document.getElementById('confirmbox');
+                classie.toggle(menuTop, 'confirm-box-outer-open');
+            });
+
+            $(".icon-mobile-nav").click(function () {
+                var menuTop = document.getElementById('menu-mobile');
+                classie.toggle(menuTop, 'nav-menu-mobile-open');
+            });
+
+            $(".icon-mobile-nav2").click(function () {
+                var menuTop = document.getElementById('menu-mobile');
+                classie.toggle(menuTop, 'nav-menu-mobile-open');
+            });
         });
-
-        $(".icon-mobile-nav").click(function() {
-            var menuTop = document.getElementById('menu-mobile');
-            classie.toggle(menuTop, 'nav-menu-mobile-open');
-        });
-
-        $(".icon-mobile-nav2").click(function() {
-            var menuTop = document.getElementById('menu-mobile');
-            classie.toggle(menuTop, 'nav-menu-mobile-open');
-        });
-    });
-</script>
+    </script>
 </body>
 </html>

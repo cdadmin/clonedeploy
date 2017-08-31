@@ -45,14 +45,23 @@ namespace CloneDeploy_Web.views.dashboard
             var groupsList = Call.GroupApi.Get(int.MaxValue, "");
             lblTotalGroups.Text = groupsList.Count + " Total Group(s)";
 
-            var free = Call.FilesystemApi.GetDpFreeSpace();
+            try
+            {
+                var free = Call.FilesystemApi.GetDpFreeSpace();
 
-            lblDpPath.Text = free.dPPath;
-            freePercent = free.freePercent;
-            usedPercent = free.usedPercent;
+                lblDpPath.Text = free.dPPath;
+                freePercent = free.freePercent;
+                usedPercent = free.usedPercent;
 
-            lblDPfree.Text = string.Format("<b>Free Space:</b>{0,15:D}", SizeSuffix(Convert.ToInt64(free.freespace)));
-            lblDpTotal.Text = string.Format("<b>Total Space:</b>{0,15:D}", SizeSuffix(Convert.ToInt64(free.total)));
+                lblDPfree.Text = string.Format("<b>Free Space:</b>{0,15:D}", SizeSuffix(Convert.ToInt64(free.freespace)));
+                lblDpTotal.Text = string.Format("<b>Total Space:</b>{0,15:D}", SizeSuffix(Convert.ToInt64(free.total)));
+            }
+            catch
+            {
+                //ignored
+                
+            }
+         
 
             gvLogins.DataSource = Call.CloneDeployUserApi.GetUserLoginsDashboard();
             gvLogins.DataBind();

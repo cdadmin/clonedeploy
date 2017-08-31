@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Common;
@@ -84,6 +85,13 @@ namespace CloneDeploy_App.Controllers
         public ApiBoolResponseDTO WriteTftpFile(TftpFileDTO tftpFile)
         {
             return new ApiBoolResponseDTO {Value = new FileOpsServices().WritePath(tftpFile.Path, tftpFile.Contents)};
+        }
+
+        [CustomAuth(Permission = "ServiceAccount")]
+        [HttpGet]
+        public ApiStringResponseDTO GetPathSeperator()
+        {
+            return new ApiStringResponseDTO() { Value = Path.DirectorySeparatorChar.ToString() };
         }
     }
 }

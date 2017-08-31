@@ -9,6 +9,37 @@
     width: 100%;
 }
 
+.file-menu {
+    background: #2f3f4b;
+    height: 20px;
+
+}
+.panel-top {
+    flex: 0 0 auto;  /* only manually resize */
+    height: 500px;
+    width: 100%;                        
+    display: block;
+    height: 520px;
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    position: relative;
+
+}
+.splitter-horizontal {
+    flex: 0 0 auto;
+    height: 5px;
+    background: url(../js/images/hsizegrip.png) center center no-repeat #535353;            
+    cursor: row-resize;
+}
+.panel-bottom {
+    flex: 1 1 auto; /* resizable */
+    padding: 0px;
+
+    background: #eee;
+
+}
+
 .content_container {
     background-color: #fff;
     display: block;
@@ -20,11 +51,27 @@
     width: 1460px;
 }
 
+.task-footer {
+    border-top:1px solid #2f3f4b;
+    height: 600px;
+    min-height: 50px;
+    background: #c4d9e4;
+   
+    overflow: hidden;
+    padding-bottom: 40px;
+}
+.sub-footer {
+    background: #f9f9f9;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+}
+
 .nav {
     background: #fff;
     border-bottom: 1px solid #3D4F5D;
     float: left;
-    height: 50px;
+    height: 40px;
     left: 0;
     list-style-type: none;
     margin: 0;
@@ -46,22 +93,23 @@
     overflow-y: hidden;
     position: relative;
     top: -20px;
-    width: calc(100% - 241px);
+    width: calc(100% - 201px);
 }
 
 .content-header {
     background: #fff;
     float: left;
-    height: 30px;
+    height: 45px;
     left: 0;
     list-style-type: none;
     margin: 0;
-    overflow: hidden;
+    overflow: visible;
     padding: 0;
-    padding-bottom: 5px;
+    padding-bottom: 8px;
     position: relative;
-    top: 0;
-    width: 700px;
+     border-bottom: 1px solid #eee;
+    width: 100%;
+    
 }
 
 .breadcrumb_container {
@@ -77,14 +125,14 @@
     position: relative;
     right: 0;
     top: 0px;
-    width: 100%;
+     width: calc(100% - 450px);
 }
 
 #content-main {
     background-color: #fff;
     display: inline;
     float: left;
-    height: calc(100% - 155px);
+    height: calc(100% - 50px);
     overflow-x: hidden;
     overflow-y: visible;
     padding: 0;
@@ -96,13 +144,15 @@
 .actions_container {
     float: right;
     margin-right: 30px;
-    margin-top: 10px;
+    margin-top: 3px;
+
 }
 
 .container .column {
     display: inline;
     float: left;
     margin-right: 10px;
+    color: #666;
 }
 
 .container .full.column {
@@ -119,6 +169,7 @@
 .container .size-4.column {
     color: #666;
     font-size: 16px;
+    font-weight: bold;
     line-height: 30px;
     width: 250px;
 }
@@ -155,7 +206,7 @@
 
 .container .size-10.column {
     margin-bottom: 5px;
-    width: 170px;
+    width: 150px;
 }
 
 .container .size-11.column {
@@ -174,8 +225,8 @@
 .container .offset-1 { padding-left: 200px; }
 
 .container .size-fullgrid.column {
-    border-top: 1px solid #eee;
-    margin-top: 10px;
+   
+    margin-top: 3px;
     overflow-x: auto;
     padding-top: 10px;
     width: calc(100% - 5px);
@@ -218,40 +269,42 @@
 #leftnav {
     border-bottom: 0;
     float: left;
-    height: calc(100% - 105px);
+    height: calc(100% - 20px);
     overflow-x: hidden;
     overflow-y: auto;
-    width: 170px;
+    width: 165px;
+    border-right: 1px solid #eee;
 }
 
 @media only screen and (min-width: 1251px) and (max-width: 1420px) {
-    .content_container { width: 1300px; }
+    .content_container { width: 1300px;}
 }
 
 @media only screen and  (min-width: 1071px) and (max-width: 1250px) {
-    .content_container { width: 1120px; }
+    .content_container { width: 1120px;  }
 
-    .content-main { height: calc(100% - 165px); }
+    .content-main { height: calc(100% - 165px);}
 }
 
 @media only screen and (min-width: 821px) and (max-width: 1070px) {
-    body { overflow-x: initial; }
 
-    .form { height: auto; }
+  .panel-top{ overflow: auto;}
 
     .content_container {
         height: auto;
         overflow-y: hidden;
         width: 780px;
+             
     }
 
     .content-wrapper {
         margin-left: 0;
         top: 0;
         width: 100%;
+          
     }
 
-    .content-main { height: calc(100% - 165px); }
+    .content-main { height: calc(100% - 165px);  }
 
     .container .size-fullgrid.column {
         overflow-x: auto;
@@ -277,14 +330,13 @@
 
 
 @media only screen and (min-width: 680px) and (max-width: 820px) {
-    body { overflow-x: initial; }
-
-    .form { height: auto; }
+  .panel-top{ overflow: auto;}
 
     .content_container {
         height: auto;
         overflow-y: hidden;
         width: 660px;
+        
     }
 
     .content-wrapper {
@@ -328,9 +380,7 @@
 }
 
 @media only screen and (min-width: 480px) and (max-width: 679px) {
-    body { overflow-x: initial; }
-
-    .form { height: auto; }
+  .panel-top{ overflow: auto;margin-top:10px}
 
     .content_container {
         height: auto;
@@ -414,9 +464,7 @@
 
 
 @media only screen and (max-width: 479px) {
-    body { overflow-x: initial; }
-
-    .form { height: auto; }
+  .panel-top{ overflow: auto;margin-top:10px}
 
     .content_container {
         height: auto;

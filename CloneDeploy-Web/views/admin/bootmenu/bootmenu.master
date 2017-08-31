@@ -39,9 +39,9 @@
     </li>
 </asp:Content>
 
-<asp:Content ID="Content7" ContentPlaceHolderID="SubContent" Runat="Server">
+<asp:Content ID="Content2" ContentPlaceHolderID="SubContent" Runat="Server">
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#bootmenu').addClass("nav-current");
         });
     </script>

@@ -24,8 +24,7 @@
         });
     </script>
 
-    <asp:ScriptManager ID="ScriptManager1" runat="server">
-    </asp:ScriptManager>
+   
     <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
             <asp:Timer ID="Timer" runat="server" Interval="2000" OnTick="Timer_Tick">

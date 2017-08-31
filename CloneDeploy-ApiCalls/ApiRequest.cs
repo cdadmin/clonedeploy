@@ -60,6 +60,11 @@ namespace CloneDeploy_ApiCalls
                 throw new HttpException();
             }*/
 
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                throw new HttpException();
+            }
+
             if (response.ErrorException != null)
             {
                 _log.Debug("Error Retrieving API Response: " + response.ErrorException);

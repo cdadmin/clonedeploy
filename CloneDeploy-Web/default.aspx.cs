@@ -76,11 +76,13 @@ namespace CloneDeploy_Web
                 HttpOnly = true
             };
                 Response.Cookies.Add(baseUrlCookie);
+                Request.Cookies.Add(baseUrlCookie);
             }
             else
             {
                 baseUrlCookie.Value = ddlApplicationServers.SelectedValue;
                 Response.Cookies.Add(baseUrlCookie);
+                Request.Cookies.Add(baseUrlCookie);
             }
 
             //Get token
@@ -100,11 +102,13 @@ namespace CloneDeploy_Web
                     HttpOnly = true
                 };
                 Response.Cookies.Add(tokenCookie);
+                Request.Cookies.Add(tokenCookie);
             }
             else
             {
                 tokenCookie.Value = token.access_token;
                 Response.Cookies.Add(tokenCookie);
+                Request.Cookies.Add(tokenCookie);
             }
 
             if (token.access_token != null)

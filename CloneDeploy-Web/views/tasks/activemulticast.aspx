@@ -22,8 +22,7 @@
             $('#multicast').addClass("nav-current");
         });
     </script>
-    <asp:ScriptManager ID="ScriptManager1" runat="server">
-    </asp:ScriptManager>
+ 
     <asp:UpdatePanel ID="UpdatePanel" runat="server">
         <ContentTemplate>
             <asp:Timer ID="TimerMC" runat="server" Interval="2000" OnTick="TimerMC_Tick">

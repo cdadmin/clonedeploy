@@ -1,5 +1,10 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/site.master" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.dashboard.Dashboard" ValidateRequest="false" Codebehind="dash.aspx.cs" %>
 
+<asp:Content runat="server" ID="Breadcrumb" ContentPlaceHolderID="Breadcrumb">
+    <li>
+        <a href="<%= ResolveUrl("~/views/dashboard/dash.aspx") %>">Dashboard</a>
+    </li>
+</asp:Content>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="SubNav" runat="Server">
     &nbsp;

@@ -162,14 +162,14 @@ hr {
 /* Desktop Menu Top
 ================================================== */
 
-.nav li {
+.navmenu li {
     display: inline;
     float: left;
-    margin-top: 15px;
+    margin-top: 7px;
     width: 60px;
 }
 
-.nav li a {
+.navmenu li a {
     -moz-transition: background .1s ease-in-out;
     -webkit-transition: background .1s ease-in-out;
     color: #3D4F5D;
@@ -179,12 +179,12 @@ hr {
     transition: background .1s ease-in-out;
 }
 
-.nav li a:hover {
+.navmenu li a:hover {
     border: none;
     color: #5D9FCC;
 }
 
-.nav li.nav-current a {
+.navmenu li.nav-current a {
     background: #3d4f5d;
     border-radius: 3px;
     border-right: none;
@@ -192,7 +192,7 @@ hr {
     padding-right: 5px;
 }
 
-.nav li a:before {
+.navmenu li a:before {
     -webkit-font-smoothing: antialiased;
     font-family: Flaticon;
     font-size: 1em;
@@ -386,7 +386,7 @@ hr {
 .confirm-box-outer {
     background: #3d4f5d;
     color: #fff;
-    height: 300px;
+
     left: 0;
     overflow: hidden;
     position: fixed;
@@ -662,7 +662,7 @@ a.confirm_yes {
     -webkit-border-radius: 5px;
     background-color: #fff;
     border-radius: 5px;
-    color: #47a3da;
+
     display: inline-block;
     padding: 15px 30px;
     text-decoration: none;
@@ -676,7 +676,7 @@ a.confirm_no {
     -webkit-border-radius: 5px;
     background-color: #fff;
     border-radius: 5px;
-    color: #47a3da;
+
     display: inline-block;
     padding: 15px 30px;
     text-decoration: none;
@@ -684,7 +684,7 @@ a.confirm_no {
 }
 
 a.confirm_yes:link, a.confirm_yes:visited, a.confirm_no:link, a.confirm_no:visited {
-    color: #47a3da;
+
     font: normal 1em/1em Calibri, Arial;
     font-size: 24px;
     outline: none;
@@ -738,41 +738,46 @@ a.keygen {
 ================================================== */
 
 .toast-container {
-    width: 100%;
-    z-index: 9999;
-}
+  height: 20px; width: calc(100% - 400px);margin-top: 15px;margin-left: 50px;float: left;}
 
-.toast-container { position: absolute; }
+
+
 
 .toast-item {
-    display: block;
-    height: 100%;
+
+    height: 20px;
     margin: 0;
-    padding: 0 6px 20px 6px;
-    position: relative;
+    width: 100%;
+
 }
 
 .toast-item p {
-    color: #fff;
-    font-size: 18px;
+    color: #000;
+    font-size: 14px;
     text-align: center;
+    margin-top: -20px;
+
+    background: #ffffe1;
+    border: 1px solid #d3e2eb;
 }
 
 .toast-item-close {
     height: 100%;
-    position: absolute;
+
     width: 100%;
 }
 
 .toast-type-success {
-    background: #3d4f5d;
-    color: #fff;
+    
+    color: #000;
+    width:100%
 }
 
 .toast-position-top {
-    position: fixed;
-    top: 0;
+
+    
 }
+
 
 /* Misc
 ================================================== */
@@ -831,7 +836,8 @@ a.keygen {
     width: 100%;
 }
 
-.version { font-size: 12px; }
+.version { font-size: 12px;color: #fff;margin-left: 10px; }
+.version-right { font-size: 12px;color: #fff;float: right;margin-right:10px; }
 
 .username {
     bottom: 0px;
@@ -916,4 +922,81 @@ a.keygen {
 .hover_row {
     background: #3d4f5d;
     color: #fff;
+}
+
+
+
+
+
+        	ul.tabs{
+			margin: 0px;
+			padding: 0px;
+			list-style: none;
+		}
+		ul.tabs li{
+			background: none;
+		
+			display: inline-block;
+			padding: 10px 15px;
+			cursor: pointer;
+		}
+
+		ul.tabs li.current{
+				position: relative;
+			top: 1px;
+			background: #f9f9f9;
+			color: black;
+			font-weight: bold;
+		}
+
+		.tab-content{
+			display: none;
+
+		}
+
+		.tab-content.current{
+			display: inherit;
+		}
+
+
+
+
+.dropbtn {
+
+    color: white;
+    background: none;
+
+    border: none;
+
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 999999;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+
 }

@@ -72,8 +72,8 @@
     </div>
     <br class="clear"/>
     <div class="size-4 column">
-        Security Token:
-        <asp:LinkButton ID="btnGenKey" runat="server" Text="Generate" OnClick="btnGenKey_OnClick" CssClass="generic-btn" Style="margin: 0"/>
+        Imaging Token:
+        <asp:LinkButton ID="btnGenKey" runat="server" Text="Generate" OnClick="btnGenKey_OnClick" CssClass="btn btn-default right" Style="margin: 0"/>
     </div>
     <div class="size-9 column">
         <asp:TextBox ID="txtToken" runat="server" CssClass="textbox"></asp:TextBox>

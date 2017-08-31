@@ -20,7 +20,7 @@ namespace CloneDeploy_Web.views.global.munki
             if (result.Success)
             {
                 EndUserMessage = "Successfully Created Manifest Template";
-                Response.Redirect("~/views/global/munki/general.aspx?cat=sub2&manifestid=" + manifestTemplate.Id);
+                Response.Redirect("~/views/global/munki/general.aspx?cat=sub2&manifestid=" + result.Id);
             }
             else
             {

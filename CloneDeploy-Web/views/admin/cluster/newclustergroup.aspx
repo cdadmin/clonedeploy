@@ -16,7 +16,7 @@
 <asp:Content ID="Content4" ContentPlaceHolderID="SubContent2" runat="server">
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#new-cluster').addClass("nav-current");
+            $('#newcluster').addClass("nav-current");
         });
     </script>
 

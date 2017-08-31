@@ -150,7 +150,7 @@ namespace CloneDeploy_ApiCalls
         public bool IsAdmin(int id)
         {
             Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/IsAdmin/", Resource);
+            Request.Resource = string.Format("api/{0}/IsAdmin/{1}", Resource,id);
             var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
             return response != null && response.Value;
         }

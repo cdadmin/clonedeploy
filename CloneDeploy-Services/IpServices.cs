@@ -12,19 +12,28 @@ namespace CloneDeploy_Services
         //http://stackoverflow.com/questions/735350/how-to-get-a-users-client-ip-address-in-asp-net
         public static string GetIPAddress()
         {
-            var context = HttpContext.Current;
-            var ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-
-            if (!string.IsNullOrEmpty(ipAddress))
+            try
             {
-                var addresses = ipAddress.Split(',');
-                if (addresses.Length != 0)
-                {
-                    return addresses[0];
-                }
-            }
+                var context = HttpContext.Current;
+                var ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
 
-            return context.Request.ServerVariables["REMOTE_ADDR"];
+                if (!string.IsNullOrEmpty(ipAddress))
+                {
+                    var addresses = ipAddress.Split(',');
+                    if (addresses.Length != 0)
+                    {
+                        return addresses[0];
+                    }
+                }
+
+                return context.Request.ServerVariables["REMOTE_ADDR"];
+            }
+            catch
+            {
+
+                return "";
+            }
+           
         }
 
         public static void WakeUp(string mac)

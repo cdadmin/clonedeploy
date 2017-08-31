@@ -1,5 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/views/computers/computers.master" AutoEventWireup="true" CodeBehind="imageclassification.aspx.cs" Inherits="CloneDeploy_Web.views.computers.imageclassification" %>
 <asp:Content ID="Breadcrumb" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
+     <li>
+        <a href="<%= ResolveUrl("~/views/computers/edit.aspx") %>?computerid=<%= Computer.Id %>"><%= Computer.Name %></a>
+    </li>
     <li>Image Classifications</li>
 </asp:Content>
 
