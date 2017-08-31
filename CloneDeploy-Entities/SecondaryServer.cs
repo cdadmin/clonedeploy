@@ -28,5 +28,8 @@ namespace CloneDeploy_Entities
 
         [Column("tftp_role", Order = 6)]
         public int TftpRole { get; set; }
+
+        [Column("is_active", Order = 9)]
+        public int IsActive { get; set; }
     }
 }

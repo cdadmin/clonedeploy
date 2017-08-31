@@ -14,7 +14,8 @@ namespace CloneDeploy_Web.views.admin.cluster
             {
                 ApiURL = txtApi.Text,
                 ServiceAccountName = txtAccountName.Text,
-                ServiceAccountPassword = txtAccountPassword.Text
+                ServiceAccountPassword = txtAccountPassword.Text,
+                IsActive = 1
             };
 
             var result = Call.SecondaryServerApi.Post(secondaryServer);

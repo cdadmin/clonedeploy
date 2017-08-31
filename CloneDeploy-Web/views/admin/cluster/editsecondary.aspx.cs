@@ -19,8 +19,11 @@ namespace CloneDeploy_Web.views.admin.cluster
             {
                 ApiURL = txtApi.Text,
                 ServiceAccountName = txtAccountName.Text,
-                ServiceAccountPassword = txtAccountPassword.Text
+                ServiceAccountPassword = txtAccountPassword.Text,
+                IsActive = chkActive.Checked ? 1 : 0
             };
+
+           
 
             var result = Call.SecondaryServerApi.Put(SecondaryServer.Id, secondaryServer);
             if (result.Success)
@@ -45,7 +48,7 @@ namespace CloneDeploy_Web.views.admin.cluster
             txtApi.Text = SecondaryServer.ApiURL;
             txtAccountName.Text = SecondaryServer.ServiceAccountName;
             txtAccountPassword.Text = SecondaryServer.ServiceAccountPassword;
-
+            chkActive.Checked = SecondaryServer.IsActive == 1;
             lblTftp.Text = SecondaryServer.TftpRole == 1 ? "Yes" : "No";
             lblMulticast.Text = SecondaryServer.MulticastRole == 1 ? "Yes" : "No";
         }

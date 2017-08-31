@@ -49,6 +49,7 @@
 
             <asp:BoundField DataField="TftpRole" HeaderText="Tftp Role" SortExpression="Server" ItemStyle-CssClass="width_200"/>
             <asp:BoundField DataField="MulticastRole" HeaderText="Multicast Role" SortExpression="Server"/>
+            <asp:BoundField DataField="IsActive" HeaderText="Active" SortExpression="IsActive"/>
 
 
         </Columns>

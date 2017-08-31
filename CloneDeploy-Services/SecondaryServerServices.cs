@@ -166,59 +166,70 @@ namespace CloneDeploy_Services
 
             var s = GetSecondaryServer(secondaryServer.Id);
             if (s == null) return new ActionResultDTO {ErrorMessage = "Secondary Server Not Found", Id = 0};
+            secondaryServer.Name = s.Name;
+            secondaryServer.MulticastRole = s.MulticastRole;
+            secondaryServer.TftpRole = s.TftpRole;
 
             var password = !string.IsNullOrEmpty(secondaryServer.ServiceAccountPassword)
                 ? secondaryServer.ServiceAccountPassword
                 : new EncryptionServices().DecryptText(s.ServiceAccountPassword);
 
-            //Verify connection to secondary server
-            //Get token
-            var customApiCall = new CustomApiCallDTO();
-            customApiCall.BaseUrl = new Uri(secondaryServer.ApiURL);
-            var token = new APICall(customApiCall).TokenApi.Get(secondaryServer.ServiceAccountName, password);
-            var serverRoles = new ServerRoleDTO();
-            if (token != null)
-            {
-                if (!string.IsNullOrEmpty(token.error_description))
-                {
-                    actionResult.ErrorMessage = token.error_description;
-                    return actionResult;
-                }
-                customApiCall.Token = token.access_token;
-                serverRoles = new APICall(customApiCall).ServiceAccountApi.GetServerRoles();
-                if (serverRoles.OperationMode != "Cluster Secondary")
-                {
-                    actionResult.ErrorMessage =
-                        "Could Not Add Secondary Server.  It's Operation Mode Must First Be Changed To Cluster Secondary.";
-                    return actionResult;
-                }
-                if (!serverRoles.IsImageServer && !serverRoles.IsTftpServer && !serverRoles.IsMulticastServer)
-                {
-                    actionResult.ErrorMessage =
-                        "Could Not Add Secondary Server.  You Must First Assign Roles To The Server";
-                    return actionResult;
-                }
-                if (serverRoles.Identifier == SettingServices.GetSettingValue(SettingStrings.ServerIdentifier))
-                {
-                    actionResult.ErrorMessage =
-                        "Could Not Add Secondary Server.  Server Identifiers Must Be Different";
-                    return actionResult;
-                }
-            }
-            else
-            {
-                actionResult.ErrorMessage = "Unknown Error While Attempting To Contact Secondary Server";
-                return actionResult;
-            }
 
-            secondaryServer.Name = serverRoles.Identifier;
+            if (secondaryServer.IsActive == 1)
+            {
+                //Verify connection to secondary server
+                //Get token
+                var customApiCall = new CustomApiCallDTO();
+                customApiCall.BaseUrl = new Uri(secondaryServer.ApiURL);
+                var token = new APICall(customApiCall).TokenApi.Get(secondaryServer.ServiceAccountName, password);
+                var serverRoles = new ServerRoleDTO();
+                if (token != null)
+                {
+                    if (!string.IsNullOrEmpty(token.error_description))
+                    {
+                        actionResult.ErrorMessage = token.error_description;
+                        return actionResult;
+                    }
+                    customApiCall.Token = token.access_token;
+                    serverRoles = new APICall(customApiCall).ServiceAccountApi.GetServerRoles();
+                    if (serverRoles.OperationMode != "Cluster Secondary")
+                    {
+                        actionResult.ErrorMessage =
+                            "Could Not Add Secondary Server.  It's Operation Mode Must First Be Changed To Cluster Secondary.";
+                        return actionResult;
+                    }
+                    if (!serverRoles.IsImageServer && !serverRoles.IsTftpServer && !serverRoles.IsMulticastServer)
+                    {
+                        actionResult.ErrorMessage =
+                            "Could Not Add Secondary Server.  You Must First Assign Roles To The Server";
+                        return actionResult;
+                    }
+                    if (serverRoles.Identifier == SettingServices.GetSettingValue(SettingStrings.ServerIdentifier))
+                    {
+                        actionResult.ErrorMessage =
+                            "Could Not Add Secondary Server.  Server Identifiers Must Be Different";
+                        return actionResult;
+                    }
+                }
+                else
+                {
+                    actionResult.ErrorMessage = "Unknown Error While Attempting To Contact Secondary Server";
+                    return actionResult;
+                }
 
-            secondaryServer.TftpRole = Convert.ToInt16(serverRoles.IsTftpServer);
-            secondaryServer.MulticastRole = Convert.ToInt16(serverRoles.IsMulticastServer);
+
+                secondaryServer.Name = serverRoles.Identifier;
+
+                secondaryServer.TftpRole = Convert.ToInt16(serverRoles.IsTftpServer);
+                secondaryServer.MulticastRole = Convert.ToInt16(serverRoles.IsMulticastServer);
+            }
+            
+
+
             secondaryServer.ServiceAccountPassword = !string.IsNullOrEmpty(secondaryServer.ServiceAccountPassword)
-                ? new EncryptionServices().EncryptText(secondaryServer.ServiceAccountPassword)
-                : s.ServiceAccountPassword;
-
+                    ? new EncryptionServices().EncryptText(secondaryServer.ServiceAccountPassword)
+                    : s.ServiceAccountPassword;
+            
             var validationResult = ValidateSecondaryServer(secondaryServer, false);
 
             if (validationResult.Success)

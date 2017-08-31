@@ -17,7 +17,14 @@
 
 
 <asp:Content ID="Content4" ContentPlaceHolderID="SubContent2" runat="server">
-
+    
+    <div class="size-4 column">
+        Active:
+    </div>
+       <div class="size-setting column">
+        <asp:CheckBox runat="server" id="chkActive"/>
+    </div>
+    <br class="clear"/>
     <div class="size-4 column">
         Server Id:
     </div>
@@ -43,7 +50,7 @@
         Service Account Password:
     </div>
     <div class="size-5 column">
-        <asp:TextBox runat="server" Id="txtAccountPassword" CssClass="textbox" TextMode="Password"></asp:TextBox>
+        <asp:TextBox runat="server" Id="txtAccountPassword" CssClass="textbox password" TextMode="Password"></asp:TextBox>
     </div>
     <br class="clear"/>
 
