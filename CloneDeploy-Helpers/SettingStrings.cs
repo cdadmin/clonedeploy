@@ -115,5 +115,9 @@
         public const string WebServerPort = "Web Server Port";
 
         public const string WebTaskRequiresLogin = "Web Task Requires Login";
+
+        public const string MonitorSecondaryServer = "Monitor Secondary Server";
+
+        public const string SecondaryServerMonitorInterval = "Secondary Server Monitor Interval";
     }
 }

@@ -17,6 +17,17 @@ namespace CloneDeploy_ApiCalls
             _apiRequest = new ApiRequest();
         }
 
+        public ActionResultDTO ChangePassword(CloneDeployUserEntity tObject)
+        {
+            Request.Method = Method.PUT;
+            Request.AddJsonBody(tObject);
+            Request.Resource = string.Format("api/{0}/ChangePassword/", Resource);
+            var response = _apiRequest.Execute<ActionResultDTO>(Request);
+            if (response.Id == 0)
+                response.Success = false;
+            return response;
+        }
+
         public ActionResultDTO Delete(int id)
         {
             Request.Method = Method.DELETE;
@@ -55,6 +66,13 @@ namespace CloneDeploy_ApiCalls
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/Get/{1}", Resource, id);
+            return _apiRequest.Execute<CloneDeployUserEntity>(Request);
+        }
+
+        public CloneDeployUserEntity GetSelf()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetSelf/", Resource);
             return _apiRequest.Execute<CloneDeployUserEntity>(Request);
         }
 
@@ -128,6 +146,14 @@ namespace CloneDeploy_ApiCalls
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetUserAuditLogs/{1}", Resource, id);
+            Request.AddParameter("limit", limit);
+            return _apiRequest.Execute<List<AuditLogEntity>>(Request);
+        }
+
+        public IEnumerable<AuditLogEntity> GetCurrentUserAuditLogs(int limit)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetCurrentUserAuditLogs/", Resource);
             Request.AddParameter("limit", limit);
             return _apiRequest.Execute<List<AuditLogEntity>>(Request);
         }

@@ -14,7 +14,7 @@ namespace CloneDeploy_Services.Workflows
         private readonly ClusterGroupServices _clusterGroupServices;
         private readonly ComputerEntity _computer;
         private readonly ComputerServices _computerServices;
-        private readonly ILog _log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog _log = LogManager.GetLogger(typeof(CleanTaskBootFiles));
         private readonly SecondaryServerServices _secondaryServerServices;
 
         public CleanTaskBootFiles(ComputerEntity computer)
@@ -39,7 +39,7 @@ namespace CloneDeploy_Services.Workflows
                 }
                 catch (Exception ex)
                 {
-                    _log.Debug(ex.Message);
+                    _log.Error(ex.Message);
                 }
             }
             else
@@ -59,7 +59,7 @@ namespace CloneDeploy_Services.Workflows
                         }
                         catch (Exception ex)
                         {
-                            _log.Debug(ex.Message);
+                            _log.Error(ex.Message);
                         }
                     }
                     else
@@ -92,7 +92,7 @@ namespace CloneDeploy_Services.Workflows
                 }
                 catch (Exception ex)
                 {
-                    _log.Debug(ex.Message);
+                    _log.Error(ex.Message);
                 }
             }
             else
@@ -110,7 +110,7 @@ namespace CloneDeploy_Services.Workflows
                         }
                         catch (Exception ex)
                         {
-                            _log.Debug(ex.Message);
+                            _log.Error(ex.Message);
                         }
                     }
                     else

@@ -46,8 +46,10 @@ namespace CloneDeploy_Web.views.users
                 NotifyError = chkError.Checked ? 1 : 0,
                 NotifyComplete = chkComplete.Checked ? 1 : 0,
                 NotifyImageApproved = chkApproved.Checked ? 1 : 0,
+                NotifyServerStatusChange = chkSecServer.Checked ? 1: 0,
                 IsLdapUser = chkldap.Checked ? 1 : 0,
                 UserGroupId = -1
+
             };
 
             user.Password = Utility.CreatePasswordHash(txtUserPwd.Text, user.Salt);
@@ -63,12 +65,7 @@ namespace CloneDeploy_Web.views.users
 
         protected void chkldap_OnCheckedChanged(object sender, EventArgs e)
         {
-            if (chkldap.Checked)
-                passwords.Visible = false;
-            else
-            {
-                passwords.Visible = true;
-            }
+            passwords.Visible = !chkldap.Checked;
         }
 
         protected void Page_Load(object sender, EventArgs e)

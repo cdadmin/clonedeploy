@@ -149,6 +149,7 @@ function create_image_schema()
           partition_json="$partition_json} }"
         
           if [ "$partition_counter" = "$partition_count" ]; then
+		    log "partition schema end $partition_counter $partition_count"
             complete_partition_json="$complete_partition_json$partition_json] }"
           else
             complete_partition_json="$complete_partition_json$partition_json,"
@@ -162,6 +163,7 @@ function create_image_schema()
     
     complete_hd_json=$complete_hd_json$hard_drive_json$complete_partition_json
     if [ "$hard_drive_counter" = "$hard_drive_count" ]; then
+	     log "hard drive schema end $hard_drive_counter $hard_drive_count"
       complete_hd_json="$complete_hd_json] }" 
     else
       complete_hd_json="$complete_hd_json,"

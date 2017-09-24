@@ -39,7 +39,7 @@ namespace CloneDeploy_Services.Workflows
 
         private readonly string[] _winPEBiosFiles = {"bootmgr.exe", "pxeboot.n12"};
         private readonly string[] _winPEEfiFiles = {"bootmgfw.efi"};
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog log = LogManager.GetLogger(typeof(CopyPxeBinaries));
 
         public CopyPxeBinaries()
         {
@@ -64,7 +64,7 @@ namespace CloneDeploy_Services.Workflows
             }
             catch (Exception ex)
             {
-                log.Debug(ex.Message);
+                log.Error(ex.Message);
                 return false;
             }
             return true;
@@ -163,7 +163,7 @@ namespace CloneDeploy_Services.Workflows
                     }
                     catch (Exception ex)
                     {
-                        log.Debug(ex.Message);
+                        log.Error(ex.Message);
                         return false;
                     }
                     foreach (var file in _winPEBiosFiles)
@@ -193,7 +193,7 @@ namespace CloneDeploy_Services.Workflows
                     }
                     catch (Exception ex)
                     {
-                        log.Debug(ex.Message);
+                        log.Error(ex.Message);
                         return false;
                     }
                     foreach (var file in _winPEBiosFiles)
@@ -223,7 +223,7 @@ namespace CloneDeploy_Services.Workflows
                     }
                     catch (Exception ex)
                     {
-                        log.Debug(ex.Message);
+                        log.Error(ex.Message);
                         return false;
                     }
                     if (!CopyCommand("winpe", "", "winpe_efi_32", "", "bootmgfw.efi", BootFile)) return false;
@@ -243,7 +243,7 @@ namespace CloneDeploy_Services.Workflows
                     }
                     catch (Exception ex)
                     {
-                        log.Debug(ex.Message);
+                        log.Error(ex.Message);
                         return false;
                     }
                     if (!CopyCommand("winpe", "", "winpe_efi_64", "", "bootmgfw.efi", BootFile)) return false;

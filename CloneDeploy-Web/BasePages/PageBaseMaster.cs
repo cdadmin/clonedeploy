@@ -212,13 +212,22 @@ namespace CloneDeploy_Web.BasePages
             filterDto.ComputerId = computerId;
             filterDto.ListImages = images;
             var filteredClassifications = Call.ComputerImageClassificationApi.FilterClassifications(filterDto);
-            ddlImages.DataSource =
+            var filteredImages =
                 filteredClassifications.Select(i => new {i.Id, i.Name}).OrderBy(x => x.Name).ToList();
-
+         
+            ddlImages.DataSource = filteredImages;
             ddlImages.DataValueField = "Id";
             ddlImages.DataTextField = "Name";
             ddlImages.DataBind();
             ddlImages.Items.Insert(0, new ListItem("Select Image", "-1"));
+
+            var computer = Call.ComputerApi.GetWithImage(computerId);
+            if (!string.IsNullOrEmpty(computer.Image.Name))
+            {
+                var currentImage = new ListItem(computer.Image.Name, computer.Image.Id.ToString());
+                if (!ddlImages.Items.Contains(currentImage))
+                    ddlImages.Items.Add(currentImage);
+            }
         }
 
         protected void PopulateImagesDdlForGroup(int groupId, DropDownList ddlImages)
@@ -235,6 +244,46 @@ namespace CloneDeploy_Web.BasePages
             ddlImages.DataTextField = "Name";
             ddlImages.DataBind();
             ddlImages.Items.Insert(0, new ListItem("Select Image", "-1"));
+
+            var group = Call.GroupApi.Get(groupId);
+
+            var image = Call.ImageApi.Get(group.ImageId);
+            if (image != null)
+            {
+                var currentImage = new ListItem(image.Name, image.Id.ToString());
+                if (!ddlImages.Items.Contains(currentImage))
+                    ddlImages.Items.Add(currentImage);
+            }
+          
+        }
+
+        protected void PopulateImagesDdlForGroupProperties(int groupId, DropDownList ddlImages)
+        {
+            var images = Call.ImageApi.Get(int.MaxValue, "");
+            var filterDto = new FilterGroupClassificationDTO();
+            filterDto.GroupId = groupId;
+            filterDto.ListImages = images;
+            var filteredClassifications = Call.GroupImageClassificationApi.FilterClassifications(filterDto);
+            ddlImages.DataSource =
+                filteredClassifications.Select(i => new { i.Id, i.Name }).OrderBy(x => x.Name).ToList();
+
+            ddlImages.DataValueField = "Id";
+            ddlImages.DataTextField = "Name";
+            ddlImages.DataBind();
+            ddlImages.Items.Insert(0, new ListItem("Select Image", "-1"));
+
+            var groupProperties = Call.GroupApi.GetGroupProperties(groupId);
+            if (groupProperties != null)
+            {
+                var image = Call.ImageApi.Get(groupProperties.ImageId);
+                if (image != null)
+                {
+                    var currentImage = new ListItem(image.Name, image.Id.ToString());
+                    if (!ddlImages.Items.Contains(currentImage))
+                        ddlImages.Items.Add(currentImage);
+                }
+            }
+
         }
 
         protected void PopulateRoomsDdl(DropDownList ddl)

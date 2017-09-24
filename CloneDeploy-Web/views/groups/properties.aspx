@@ -179,7 +179,7 @@
 
 </div>
 <div class="size-5 column">
-    <asp:TextBox runat="server" ID="txtTftp" CssClass="textbox" Text="[server-ip]"></asp:TextBox>
+    <asp:TextBox runat="server" ID="txtTftp" CssClass="textbox" Text="[tftp-server-ip]"></asp:TextBox>
 </div>
 
 <div class="size-12 column">

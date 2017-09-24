@@ -49,7 +49,7 @@ namespace CloneDeploy_Web.views.users
             updatedUser.NotifyError = chkError.Checked ? 1 : 0;
             updatedUser.NotifyComplete = chkComplete.Checked ? 1 : 0;
             updatedUser.NotifyImageApproved = chkApproved.Checked ? 1 : 0;
-
+            updatedUser.NotifyServerStatusChange = chkSecServer.Checked ? 1 : 0;
             var result = Call.CloneDeployUserApi.Put(updatedUser.Id, updatedUser);
             EndUserMessage = !result.Success ? result.ErrorMessage : "Successfully Updated User";
         }
@@ -75,6 +75,7 @@ namespace CloneDeploy_Web.views.users
             chkError.Checked = CloneDeployUser.NotifyError == 1;
             chkComplete.Checked = CloneDeployUser.NotifyComplete == 1;
             chkApproved.Checked = CloneDeployUser.NotifyImageApproved == 1;
+            chkSecServer.Checked = CloneDeployUser.NotifyServerStatusChange == 1;
         }
     }
 }

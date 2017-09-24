@@ -9,20 +9,20 @@ namespace CloneDeploy_Web.views.admin.bootmenu
 {
     public partial class views_admin_bootmenu_editor : Admin
     {
-        private readonly ILog log = LogManager.GetLogger("FrontEndLog");
+        private readonly ILog log = LogManager.GetLogger(typeof(views_admin_bootmenu_editor));
 
         protected void btnGrubGen_Click(object sender, EventArgs e)
         {
             try
             {
                 txtGrubSha.Text =
-                    new WebClient().DownloadString("http://docs.clonedeploy.org/grub-pass-gen/encrypt.php?password=" +
+                    new WebClient().DownloadString("https://docs.clonedeploy.org/grub-pass-gen/encrypt.php?password=" +
                                                    txtGrubPass.Text);
                 txtGrubSha.Text = txtGrubSha.Text.Replace("\n \n\n\n", "");
             }
             catch
             {
-                txtGrubSha.Text = "Coud not contact http://clonedeploy.org to encrypt password.";
+                txtGrubSha.Text = "Coud not contact https://clonedeploy.org to encrypt password.";
             }
         }
 
@@ -88,7 +88,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
             }
             catch (Exception ex)
             {
-                log.Debug(ex.Message);
+                log.Error(ex.Message);
             }
         }
 
@@ -184,7 +184,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
             }
             catch (Exception ex)
             {
-                log.Debug(ex.Message);
+                log.Error(ex.Message);
             }
         }
 

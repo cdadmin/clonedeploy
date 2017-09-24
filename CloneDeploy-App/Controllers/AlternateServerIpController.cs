@@ -27,7 +27,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = AuthorizationStrings.ReadAdmin)]
+        [Authorize]
         public AlternateServerIpEntity Get(int id)
         {
             var result = _alternateServerIpServices.GetAlternateServerIp(id);
@@ -35,7 +35,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = AuthorizationStrings.ReadAdmin)]
+        [Authorize]
         public IEnumerable<AlternateServerIpEntity> Get()
         {
             return _alternateServerIpServices.GetAll();

@@ -106,7 +106,7 @@ namespace CloneDeploy_App.Controllers
             return new ApiBoolResponseDTO {Value = true};
         }
 
-        [CustomAuth(Permission = "ComputerRead")]
+        [Authorize]
         public ComputerEntity Get(int id)
         {
             var computer = _computerService.GetComputer(id);
@@ -114,7 +114,7 @@ namespace CloneDeploy_App.Controllers
             return computer;
         }
 
-        [CustomAuth(Permission = "ComputerRead")]
+        [Authorize]
         public IEnumerable<ComputerEntity> Get()
         {
             return _computerService.GetAll();
@@ -159,7 +159,7 @@ namespace CloneDeploy_App.Controllers
                 : _computerService.ComputersWithoutGroup(limit, searchstring);
         }
 
-        [CustomAuth(Permission = "ComputerSearch")]
+        [Authorize]
         public ApiStringResponseDTO GetCount()
         {
             return new ApiStringResponseDTO {Value = _computerService.ComputerCountUser(_userId)};
@@ -212,11 +212,11 @@ namespace CloneDeploy_App.Controllers
         public ComputerProxyReservationEntity GetProxyReservation(int id)
         {
             var result = _computerService.GetComputerProxyReservation(id);
-            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            //if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;
         }
 
-        [CustomAuth(Permission = "ComputerRead")]
+        [Authorize]
         public ComputerWithImage GetWithImage(int id)
         {
             var computer = _computerService.GetWithImage(id);
@@ -225,7 +225,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpGet]
-        [CustomAuth(Permission = "ComputerSearch")]
+        [Authorize]
         public IEnumerable<ComputerWithImage> GridViewSearch(int limit = 0, string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)

@@ -100,23 +100,29 @@ namespace CloneDeploy_Services
             return actionResult;
         }
 
+        public List<SecondaryServerEntity> GetAll()
+        {
+            return _uow.SecondaryServerRepository.Get();
+        }
+
         public List<SecondaryServerEntity> GetAllWithActiveRoles()
         {
-            return _uow.SecondaryServerRepository.Get(x => x.MulticastRole == 1 || x.TftpRole == 1);
+            return _uow.SecondaryServerRepository.Get(x => (x.MulticastRole == 1 || x.TftpRole == 1) && x.IsActive == 1);
         }
 
         public List<SecondaryServerEntity> GetAllWithMulticastRole()
         {
-            return _uow.SecondaryServerRepository.Get(x => x.MulticastRole == 1);
+            return _uow.SecondaryServerRepository.Get(x => x.MulticastRole == 1 && x.IsActive == 1);
         }
 
         public List<SecondaryServerEntity> GetAllWithTftpRole()
         {
-            return _uow.SecondaryServerRepository.Get(x => x.TftpRole == 1);
+            return _uow.SecondaryServerRepository.Get(x => x.TftpRole == 1 && x.IsActive == 1);
         }
 
         public SecondaryServerEntity GetSecondaryServer(int secondaryServerId)
         {
+            if (secondaryServerId == -1) return new SecondaryServerEntity() {IsActive = 1, Id = -1};
             return _uow.SecondaryServerRepository.GetById(secondaryServerId);
         }
 

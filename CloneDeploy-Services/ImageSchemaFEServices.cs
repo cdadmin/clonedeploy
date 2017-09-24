@@ -35,7 +35,7 @@ namespace CloneDeploy_Services
                 }
                 else
                 {
-                    schema = new FilesystemServices().ReadSchemaFile(schemaRequest.imageProfile.Name);
+                    schema = new FilesystemServices().ReadSchemaFile(schemaRequest.imageProfile.Image.Name);
                 }
             }
 

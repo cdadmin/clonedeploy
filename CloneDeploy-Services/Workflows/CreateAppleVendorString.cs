@@ -49,7 +49,7 @@ namespace CloneDeploy_Services.Workflows
 
         private readonly NetBootProfileServices _netBootProfileServices;
 
-        private readonly ILog log = LogManager.GetLogger("FrontEndLog");
+        private readonly ILog log = LogManager.GetLogger(typeof(CreateAppleVendorString));
 
         public CreateAppleVendorString()
         {
@@ -89,7 +89,7 @@ namespace CloneDeploy_Services.Workflows
             }
             catch (Exception ex)
             {
-                log.Debug("Could Not Parse IP Address. " + ipAddress + " " + ex.Message);
+                log.Error("Could Not Parse IP Address. " + ipAddress + " " + ex.Message);
                 _appleVendorDTO.Success = false;
                 _appleVendorDTO.ErrorMessage = "Could Not Parse IP Address";
                 return _appleVendorDTO;

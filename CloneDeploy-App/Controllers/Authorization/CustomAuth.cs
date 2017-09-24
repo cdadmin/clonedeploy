@@ -15,12 +15,12 @@ namespace CloneDeploy_App.Controllers.Authorization
 {
     public class CustomAuthAttribute : AuthorizeAttribute
     {
-        private readonly ILog _log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog _log = LogManager.GetLogger(typeof(CustomAuthAttribute));
         public string Permission { get; set; }
 
         public override void OnAuthorization(HttpActionContext actionContext)
         {
-            _log.Debug("Resource Requested: " + actionContext.Request.RequestUri);
+            _log.Debug(actionContext.Request.RequestUri);
             base.OnAuthorization(actionContext);
             var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")

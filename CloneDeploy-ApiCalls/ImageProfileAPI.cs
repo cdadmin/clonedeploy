@@ -59,6 +59,7 @@ namespace CloneDeploy_ApiCalls
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetMinimumClientSize/{1}", Resource, id);
+            Request.AddParameter("hdNumber", hdNumber);
             return _apiRequest.Execute<ApiStringResponseDTO>(Request).Value;
         }
 

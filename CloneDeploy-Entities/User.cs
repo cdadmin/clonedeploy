@@ -47,6 +47,9 @@ namespace CloneDeploy_Entities
         [Column("notify_on_lockout", Order = 8)]
         public int NotifyLockout { get; set; }
 
+        [Column("notify_on_server_status_change", Order = 18)]
+        public int NotifyServerStatusChange { get; set; }
+
         [Column("clonedeploy_user_pwd", Order = 3)]
         public string Password { get; set; }
 

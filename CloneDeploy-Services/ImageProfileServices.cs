@@ -38,7 +38,7 @@ namespace CloneDeploy_Services
 
         public void CloneProfile(int imageProfileId)
         {
-            var imageProfile = ReadProfile(imageProfileId);
+            var imageProfile = _uow.ImageProfileRepository.GetById(imageProfileId);
             var originalName = imageProfile.Name;
             using (var uow = new UnitOfWork())
             {
@@ -121,6 +121,8 @@ namespace CloneDeploy_Services
         {
             return _uow.ImageProfileRepository.GetImageProfileWithImage(profileId);
         }
+
+
 
         public List<ImageProfileFileFolderEntity> SearchImageProfileFileFolders(int profileId)
         {

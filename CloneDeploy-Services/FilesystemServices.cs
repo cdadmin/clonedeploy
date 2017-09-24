@@ -18,7 +18,7 @@ namespace CloneDeploy_Services
 {
     public class FilesystemServices
     {
-        private static readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private static readonly ILog log = LogManager.GetLogger(typeof(FilesystemServices));
 
         public DpFreeSpaceDTO GetDpFreeSpace()
         {
@@ -58,7 +58,7 @@ namespace CloneDeploy_Services
                     }
                     else
                     {
-                        log.Debug("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
+                        log.Error("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
                     }
                 }
             }
@@ -235,7 +235,7 @@ namespace CloneDeploy_Services
 
             catch (Exception ex)
             {
-                log.Debug(ex.Message);
+                log.Error(ex.Message);
                 return false;
             }
         }
@@ -256,7 +256,7 @@ namespace CloneDeploy_Services
 
             catch (Exception ex)
             {
-                log.Debug(ex.Message);
+                log.Error(ex.Message);
                 return false;
             }
         }
@@ -309,11 +309,11 @@ namespace CloneDeploy_Services
                 }
                 catch (Exception ex)
                 {
-                    log.Debug(ex.Message);
+                    log.Error(ex.Message);
                     return false;
                 }
             }
-            log.Debug("Could Not Delete Tftp File " + path + " It Is Not A Sub Directory Of The Base Tftp Path");
+            log.Error("Could Not Delete Tftp File " + path + " It Is Not A Sub Directory Of The Base Tftp Path");
             return false;
         }
 
@@ -332,7 +332,7 @@ namespace CloneDeploy_Services
             }
             catch (Exception ex)
             {
-                log.Debug(ex.Message);
+                log.Error(ex.Message);
             }
             return bootImageFiles;
         }
@@ -352,7 +352,7 @@ namespace CloneDeploy_Services
 
             catch (Exception ex)
             {
-                log.Debug(ex.Message);
+                log.Error(ex.Message);
             }
             return result;
         }
@@ -371,7 +371,7 @@ namespace CloneDeploy_Services
 
             catch (Exception ex)
             {
-                log.Debug(ex.Message);
+                log.Error(ex.Message);
             }
             return result;
         }
@@ -403,7 +403,7 @@ namespace CloneDeploy_Services
                 }
                 catch (Exception ex)
                 {
-                    log.Debug(ex.Message);
+                    log.Error(ex.Message);
                     return false;
                 }
             }
@@ -426,20 +426,20 @@ namespace CloneDeploy_Services
                         }
                         catch (Exception ex)
                         {
-                            log.Debug(ex.Message);
+                            log.Error(ex.Message);
                             return false;
                         }
                     }
                     else
                     {
-                        log.Debug("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
+                        log.Error("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
                         return false;
                     }
                 }
             }
             else
             {
-                log.Debug("Could Not Determine Primary Distribution Point Location Type");
+                log.Error("Could Not Determine Primary Distribution Point Location Type");
                 return false;
             }
 
@@ -461,7 +461,7 @@ namespace CloneDeploy_Services
                 }
                 catch (Exception ex)
                 {
-                    log.Debug(ex.Message);
+                    log.Error(ex.Message);
                     return false;
                 }
             }
@@ -482,20 +482,20 @@ namespace CloneDeploy_Services
                         }
                         catch (Exception ex)
                         {
-                            log.Debug(ex.Message);
+                            log.Error(ex.Message);
                             return false;
                         }
                     }
                     else
                     {
-                        log.Debug("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
+                        log.Error("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
                         return false;
                     }
                 }
             }
             else
             {
-                log.Debug("Could Not Determine Primary Distribution Point Location Type");
+                log.Error("Could Not Determine Primary Distribution Point Location Type");
                 return false;
             }
 
@@ -526,7 +526,7 @@ namespace CloneDeploy_Services
                 }
                 catch (Exception ex)
                 {
-                    log.Debug(ex.Message);
+                    log.Error(ex.Message);
                     return null;
                 }
             }
@@ -555,20 +555,20 @@ namespace CloneDeploy_Services
                         }
                         catch (Exception ex)
                         {
-                            log.Debug(ex.Message);
+                            log.Error(ex.Message);
                             return null;
                         }
                     }
                     else
                     {
-                        log.Debug("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
+                        log.Error("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
                         return null;
                     }
                 }
             }
             else
             {
-                log.Debug("Could Not Determine Primary Distribution Point Location Type");
+                log.Error("Could Not Determine Primary Distribution Point Location Type");
                 return null;
             }
 
@@ -614,11 +614,11 @@ namespace CloneDeploy_Services
                             return "N/A";
                         }
                     }
-                    log.Debug("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
+                    log.Error("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
                     return "N/A";
                 }
             }
-            log.Debug("Could Not Determine Primary Distribution Point Location Type");
+            log.Error("Could Not Determine Primary Distribution Point Location Type");
             return "N/A";
         }
 
@@ -640,8 +640,8 @@ namespace CloneDeploy_Services
                 }
                 catch (Exception ex)
                 {
-                    log.Debug("Could Not Read Schema File On The Primary Distribution Point");
-                    log.Debug(ex.Message);
+                    log.Error("Could Not Read Schema File On The Primary Distribution Point");
+                    log.Error(ex.Message);
                 }
             }
             else if (primaryDp.Location == "Remote")
@@ -665,20 +665,20 @@ namespace CloneDeploy_Services
                         }
                         catch (Exception ex)
                         {
-                            log.Debug("Could Not Read Schema File On The Primary Distribution Point");
-                            log.Debug(ex.Message);
+                            log.Error("Could Not Read Schema File On The Primary Distribution Point");
+                            log.Error(ex.Message);
                         }
                     }
                     else
                     {
-                        log.Debug("Could Not Read Schema File On The Primary Distribution Point");
-                        log.Debug("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
+                        log.Error("Could Not Read Schema File On The Primary Distribution Point");
+                        log.Error("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
                     }
                 }
             }
             else
             {
-                log.Debug("Could Not Determine Primary Distribution Point Location Type");
+                log.Error("Could Not Determine Primary Distribution Point Location Type");
             }
 
             return schemaText;
@@ -697,7 +697,7 @@ namespace CloneDeploy_Services
                 }
                 catch (Exception ex)
                 {
-                    log.Debug(ex.Message);
+                    log.Error(ex.Message);
                     return false;
                 }
             }
@@ -718,20 +718,20 @@ namespace CloneDeploy_Services
                         }
                         catch (Exception ex)
                         {
-                            log.Debug(ex.Message);
+                            log.Error(ex.Message);
                             return false;
                         }
                     }
                     else
                     {
-                        log.Debug("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
+                        log.Error("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
                         return false;
                     }
                 }
             }
             else
             {
-                log.Debug("Could Not Determine Primary Distribution Point Location Type");
+                log.Error("Could Not Determine Primary Distribution Point Location Type");
                 return false;
             }
 
@@ -753,12 +753,12 @@ namespace CloneDeploy_Services
                 {
                     filePath =
                         Directory.GetFiles(
-                            imagePath + Path.DirectorySeparatorChar, "part" + partitionNumber + extension + ".*")
+                            imagePath + Path.DirectorySeparatorChar, "part" + partitionNumber + "." + extension + ".*")
                             .FirstOrDefault();
                 }
                 catch (Exception ex)
                 {
-                    log.Debug(ex.Message);
+                    log.Error(ex.Message);
                 }
             }
             else if (primaryDp.Location == "Remote")
@@ -777,23 +777,23 @@ namespace CloneDeploy_Services
                         {
                             filePath =
                                 Directory.GetFiles(
-                                    imagePath + @"\", "part" + partitionNumber + extension + ".*")
+                                    imagePath + @"\", "part" + partitionNumber + "." + extension + ".*")
                                     .FirstOrDefault();
                         }
                         catch (Exception ex)
                         {
-                            log.Debug(ex.Message);
+                            log.Error(ex.Message);
                         }
                     }
                     else
                     {
-                        log.Debug("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
+                        log.Error("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
                     }
                 }
             }
             else
             {
-                log.Debug("Could Not Determine Primary Distribution Point Location Type");
+                log.Error("Could Not Determine Primary Distribution Point Location Type");
             }
 
             return filePath;
@@ -815,12 +815,12 @@ namespace CloneDeploy_Services
                     filePath =
                         Directory.GetFiles(
                             imagePath + Path.DirectorySeparatorChar,
-                            vgName + "-" + lvName + extension + ".*")
+                            vgName + "-" + lvName + "." + extension + ".*")
                             .FirstOrDefault();
                 }
                 catch (Exception ex)
                 {
-                    log.Debug(ex.Message);
+                    log.Error(ex.Message);
                 }
             }
             else if (primaryDp.Location == "Remote")
@@ -840,23 +840,23 @@ namespace CloneDeploy_Services
                             filePath =
                                 Directory.GetFiles(
                                     imagePath + @"\",
-                                    vgName + "-" + lvName + extension + ".*")
+                                    vgName + "-" + lvName + "." + extension + ".*")
                                     .FirstOrDefault();
                         }
                         catch (Exception ex)
                         {
-                            log.Debug(ex.Message);
+                            log.Error(ex.Message);
                         }
                     }
                     else
                     {
-                        log.Debug("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
+                        log.Error("Failed to connect to " + basePath + "\r\nLastError = " + unc.LastError);
                     }
                 }
             }
             else
             {
-                log.Debug("Could Not Determine Primary Distribution Point Location Type");
+                log.Error("Could Not Determine Primary Distribution Point Location Type");
             }
 
             return filePath;

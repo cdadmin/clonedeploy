@@ -5,6 +5,7 @@ while true; do
   result=$($curlAuth --data "taskId=$task_id" "${web}CheckForCancelledTask" $curlEnd)
   if [ "$result" = "true" ]; then
     error "Task Has Been Cancelled" 3
+	break;
   fi
   sleep 10
 done

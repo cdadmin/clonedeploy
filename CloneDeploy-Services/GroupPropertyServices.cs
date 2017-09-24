@@ -92,6 +92,11 @@ namespace CloneDeploy_Services
                 {
                     var proxyServices = new ComputerProxyReservationServices();
                     var computerProxy = computerServices.GetComputerProxyReservation(computer.Id);
+                    if (computerProxy == null)
+                    {
+                        computerProxy = new ComputerProxyReservationEntity();
+                        computerProxy.ComputerId = computer.Id;
+                    }
                     if (Convert.ToBoolean(groupProperty.TftpServerEnabled))
                         computerProxy.NextServer = groupProperty.TftpServer;
                     if (Convert.ToBoolean(groupProperty.BootFileEnabled))

@@ -134,7 +134,7 @@ namespace CloneDeploy_App.Controllers
             };
         }
 
-        [CustomAuth(Permission = "GlobalRead")]
+        [Authorize]
         public MunkiManifestTemplateEntity Get(int id)
         {
             var result = _munkiManifestTemplateServices.GetManifest(id);
@@ -142,7 +142,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = "GlobalRead")]
+        [Authorize]
         public IEnumerable<MunkiManifestTemplateEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)

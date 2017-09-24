@@ -20,7 +20,7 @@ namespace CloneDeploy_Services
     {
         private readonly ImageProfileWithImage _imageProfile;
         private readonly ImageSchema _imageSchema;
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog log = LogManager.GetLogger(typeof(ClientPartitionHelper));
 
         public ClientPartitionHelper(ImageProfileWithImage imageProfile)
         {
@@ -184,7 +184,7 @@ namespace CloneDeploy_Services
                 foreach (var ext in new[] {"ntfs", "fat", "extfs", "hfsp", "imager", "xfs"})
                 {
                     imageFile = new FilesystemServices().GetFileNameWithFullPath(imageProfile.Image.Name,
-                        schemaHdNumber.ToString(), partition.Number, "." + ext);
+                        schemaHdNumber.ToString(), partition.Number,  ext);
 
                     if (!string.IsNullOrEmpty(imageFile))
                     {
@@ -441,6 +441,7 @@ namespace CloneDeploy_Services
                 }
                 partitionHelper.MinSizeBlk = customSizeBytes/lbsByte;
                 partitionHelper.IsDynamicSize = false;
+                
             }
 
             //If partition is not resizable.  Determine partition size.  Also if the partition is less than 5 gigs assume it is that

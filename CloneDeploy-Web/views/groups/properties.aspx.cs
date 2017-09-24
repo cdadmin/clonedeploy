@@ -78,6 +78,14 @@ namespace CloneDeploy_Web.views.groups
         {
             if (ddlComputerImage.Text == "Select Image") return;
             PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlComputerImage.SelectedValue));
+            try
+            {
+                ddlImageProfile.SelectedIndex = 1;
+            }
+            catch
+            {
+                //ignore
+            }
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -88,7 +96,7 @@ namespace CloneDeploy_Web.views.groups
 
         protected void PopulateForm()
         {
-            PopulateImagesDdlForGroup(Group.Id, ddlComputerImage);
+            PopulateImagesDdlForGroupProperties(Group.Id, ddlComputerImage);
             PopulateSitesDdl(ddlSite);
             PopulateBuildingsDdl(ddlBuilding);
             PopulateRoomsDdl(ddlRoom);

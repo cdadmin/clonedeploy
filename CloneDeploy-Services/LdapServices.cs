@@ -10,7 +10,7 @@ namespace CloneDeploy_Services
     /// </summary>
     public class LdapServices
     {
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog log = LogManager.GetLogger(typeof(LdapServices));
 
         public bool Authenticate(string username, string pwd, string ldapGroup = null)
         {
@@ -51,7 +51,7 @@ namespace CloneDeploy_Services
             }
             catch (Exception ex)
             {
-                log.Debug("Could Not Authenticate User: " + username + " " + ex.Message);
+                log.Error("Could Not Authenticate User: " + username + " " + ex.Message);
                 return false;
             }
 
@@ -95,7 +95,7 @@ namespace CloneDeploy_Services
             }
             catch (Exception ex)
             {
-                log.Debug("Error obtaining group names. " + ex.Message);
+                log.Error("Error obtaining group names. " + ex.Message);
                 return false;
             }
             return false;

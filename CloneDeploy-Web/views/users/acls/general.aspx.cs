@@ -59,6 +59,7 @@ namespace CloneDeploy_Web.views.users.acls
                 GlobalDelete,
                 GlobalRead,
                 GlobalUpdate,
+                AdminRead,
                 AdminUpdate,
                 ImageTaskUpload,
                 ImageTaskDeploy,

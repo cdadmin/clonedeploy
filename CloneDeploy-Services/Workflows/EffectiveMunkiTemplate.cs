@@ -19,7 +19,7 @@ namespace CloneDeploy_Services.Workflows
         private readonly GroupMunkiServices _groupMunkiServices;
         private readonly GroupServices _groupServices;
         private readonly MunkiManifestTemplateServices _munkiManifestTemplateServices;
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog log = LogManager.GetLogger(typeof(EffectiveMunkiTemplate));
         private List<int> _templateIds;
 
         public EffectiveMunkiTemplate()
@@ -82,7 +82,7 @@ namespace CloneDeploy_Services.Workflows
                     }
                     else
                     {
-                        log.Debug("Failed to connect to " +
+                        log.Error("Failed to connect to " +
                                   SettingServices.GetSettingValue(SettingStrings.MunkiBasePath) + "\r\nLastError = " +
                                   unc.LastError);
                         foreach (var munkiGroup in groups)
@@ -133,7 +133,7 @@ namespace CloneDeploy_Services.Workflows
                     }
                     else
                     {
-                        log.Debug("Failed to connect to " +
+                        log.Error("Failed to connect to " +
                                   SettingServices.GetSettingValue(SettingStrings.MunkiBasePath) + "\r\nLastError = " +
                                   unc.LastError);
                         errorCount += computers.Count();
@@ -218,7 +218,7 @@ namespace CloneDeploy_Services.Workflows
             }
             catch (Exception ex)
             {
-                log.Debug(ex.Message);
+                log.Error(ex.Message);
             }
 
             return rdr;
@@ -554,7 +554,7 @@ namespace CloneDeploy_Services.Workflows
             }
             catch (Exception ex)
             {
-                log.Debug("Could Not Write " + path + " " + ex.Message);
+                log.Error("Could Not Write " + path + " " + ex.Message);
                 return false;
             }
         }

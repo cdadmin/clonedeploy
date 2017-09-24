@@ -21,7 +21,20 @@ namespace CloneDeploy_Web.BasePages
             if (Image == null)
                 RequiresAuthorization(AuthorizationStrings.SearchImage);
             else
+            {
                 RequiresAuthorizationOrManagedImage(AuthorizationStrings.ReadImage, Image.Id);
+                var isProfilePage = !string.IsNullOrEmpty(Request.QueryString["cat"]) ? true : false;
+                if (isProfilePage)
+                {
+                    if (ImageProfile == null)
+                        RequiresAuthorization(AuthorizationStrings.SearchProfile);
+                    else
+                    {
+                        RequiresAuthorization(AuthorizationStrings.ReadProfile);
+                    }
+                }
+
+            }
         }
     }
 }

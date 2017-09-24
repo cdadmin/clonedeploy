@@ -13,7 +13,7 @@ namespace CloneDeploy_Services.Workflows
     {
         private readonly ComputerServices _computerServices;
         private readonly SecondaryServerServices _secondaryServerServices;
-        private readonly ILog Log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog log = LogManager.GetLogger(typeof(CancelAllImagingTasks));
 
         public CancelAllImagingTasks()
         {
@@ -57,7 +57,7 @@ namespace CloneDeploy_Services.Workflows
                 }
                 catch (Exception ex)
                 {
-                    Log.Debug(ex.ToString());
+                    log.Error(ex.ToString());
                     return false;
                 }
             }
@@ -97,7 +97,7 @@ namespace CloneDeploy_Services.Workflows
                         }
                         catch (Exception ex)
                         {
-                            Log.Debug(ex.ToString());
+                            log.Error(ex.ToString());
                         }
                     }
                     Thread.Sleep(200);

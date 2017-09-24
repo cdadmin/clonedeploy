@@ -9,7 +9,7 @@ namespace CloneDeploy_Web.views.admin
 {
     public partial class views_admin_multicast : Admin
     {
-        private readonly ILog log = LogManager.GetLogger("FrontEndLog");
+        private readonly ILog log = LogManager.GetLogger(typeof(views_admin_multicast));
 
         protected void btnUpdateSettings_OnClick(object sender, EventArgs e)
         {
@@ -109,7 +109,7 @@ namespace CloneDeploy_Web.views.admin
             }
             catch (Exception ex)
             {
-                log.Debug(ex.Message);
+                log.Error(ex.Message);
                 return false;
             }
         }

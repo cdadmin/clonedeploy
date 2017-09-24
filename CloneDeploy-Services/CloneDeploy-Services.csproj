@@ -86,6 +86,7 @@
     <Compile Include="ImageClassificationServices.cs" />
     <Compile Include="StringManipulationServices.cs" />
     <Compile Include="Workflows\CreateAppleVendorString.cs" />
+    <Compile Include="Workflows\SecondaryServerMonitor.cs" />
     <Compile Include="ZipServices.cs" />
     <Compile Include="OnlineKernelServices.cs" />
     <Compile Include="ProxyDhcpServices.cs" />

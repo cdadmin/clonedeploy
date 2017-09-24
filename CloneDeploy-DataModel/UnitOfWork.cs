@@ -9,7 +9,7 @@ namespace CloneDeploy_DataModel
     public class UnitOfWork : IUnitOfWork
     {
         private readonly CloneDeployDbContext _context = new CloneDeployDbContext();
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog log = LogManager.GetLogger(typeof(UnitOfWork));
         private ActiveImagingTaskRepository _activeImagingTaskRepository;
 
         private IGenericRepository<ActiveMulticastSessionEntity> _activeMulticastSessionRepository;
@@ -472,21 +472,21 @@ namespace CloneDeploy_DataModel
             {
                 foreach (var eve in ex.EntityValidationErrors)
                 {
-                    log.Debug(
+                    log.Error(
                         string.Format(
                             "{0}: Entity of type \"{1}\" in state \"{2}\" has the following validation errors:",
                             DateTime.Now, eve.Entry.Entity.GetType().Name, eve.Entry.State));
                     foreach (var ve in eve.ValidationErrors)
                     {
-                        log.Debug(string.Format("- Property: \"{0}\", Error: \"{1}\"", ve.PropertyName, ve.ErrorMessage));
+                        log.Error(string.Format("- Property: \"{0}\", Error: \"{1}\"", ve.PropertyName, ve.ErrorMessage));
                     }
                 }
                 throw;
             }
             catch (DbUpdateException ex)
             {
-                log.Debug(ex.Message);
-                log.Debug(ex.InnerException);
+                log.Error(ex.Message);
+                log.Error(ex.InnerException);
                 throw;
             }
         }

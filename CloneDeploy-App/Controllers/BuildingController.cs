@@ -26,7 +26,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = "GlobalRead")]
+        [Authorize]
         public BuildingEntity Get(int id)
         {
             var result = _buildingServices.GetBuilding(id);
@@ -34,7 +34,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = "GlobalRead")]
+        [Authorize]
         public IEnumerable<BuildingWithClusterGroup> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)

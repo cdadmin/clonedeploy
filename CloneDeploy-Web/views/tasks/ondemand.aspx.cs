@@ -18,7 +18,16 @@ namespace CloneDeploy_Web.views.tasks
 
         protected void ddlComputerImage_OnSelectedIndexChanged(object sender, EventArgs e)
         {
+            if (ddlComputerImage.Text == "Select Image") return;
             PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlComputerImage.SelectedValue));
+            try
+            {
+                ddlImageProfile.SelectedIndex = 1;
+            }
+            catch
+            {
+                //ignore
+            }
         }
 
         protected void Page_Load(object sender, EventArgs e)

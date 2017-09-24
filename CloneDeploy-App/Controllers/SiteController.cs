@@ -26,7 +26,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = "GlobalRead")]
+        [Authorize]
         public SiteEntity Get(int id)
         {
             var result = _siteServices.GetSite(id);
@@ -34,7 +34,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = "GlobalRead")]
+        [Authorize]
         public IEnumerable<SiteWithClusterGroup> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)

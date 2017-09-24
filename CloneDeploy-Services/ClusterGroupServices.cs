@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
@@ -57,17 +58,26 @@ namespace CloneDeploy_Services
 
         public List<ClusterGroupServerEntity> GetClusterMulticastServers(int clusterId)
         {
-            return _uow.ClusterGroupServersRepository.Get(x => x.ClusterGroupId == clusterId && x.MulticastRole == 1);
+            var multicastServers = _uow.ClusterGroupServersRepository.Get(x => x.ClusterGroupId == clusterId && x.MulticastRole == 1);
+            return (from multicastServer in multicastServers let secServer = new SecondaryServerServices().GetSecondaryServer(multicastServer.ServerId) where secServer.IsActive == 1 select multicastServer).ToList();
         }
 
         public List<ClusterGroupServerEntity> GetClusterServers(int clusterId)
         {
-            return _uow.ClusterGroupServersRepository.Get(x => x.ClusterGroupId == clusterId);
+           return _uow.ClusterGroupServersRepository.Get(x => x.ClusterGroupId == clusterId);
+           
+        }
+
+        public List<ClusterGroupServerEntity> GetActiveClusterServers(int clusterId)
+        {
+            var clusterServers = _uow.ClusterGroupServersRepository.Get(x => x.ClusterGroupId == clusterId);
+            return (from clusterServer in clusterServers let secServer = new SecondaryServerServices().GetSecondaryServer(clusterServer.ServerId) where secServer.IsActive == 1 select clusterServer).ToList();
         }
 
         public List<ClusterGroupServerEntity> GetClusterTftpServers(int clusterId)
         {
-            return _uow.ClusterGroupServersRepository.Get(x => x.ClusterGroupId == clusterId && x.TftpRole == 1);
+            var tftpServers = _uow.ClusterGroupServersRepository.Get(x => x.ClusterGroupId == clusterId && x.TftpRole == 1);
+            return (from tftpServer in tftpServers let secServer = new SecondaryServerServices().GetSecondaryServer(tftpServer.ServerId) where secServer.IsActive == 1 select tftpServer).ToList();
         }
 
         public ClusterGroupEntity GetDefaultClusterGroup()

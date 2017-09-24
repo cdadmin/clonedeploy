@@ -13,7 +13,7 @@ namespace CloneDeploy_Services
 {
     public class OnlineKernelServices
     {
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog log = LogManager.GetLogger(typeof(OnlineKernelServices));
 
         public bool DownloadKernel(OnlineKernel onlineKernel)
         {
@@ -42,7 +42,7 @@ namespace CloneDeploy_Services
             }
             catch (Exception ex)
             {
-                log.Debug(ex.Message);
+                log.Error(ex.Message);
                 return null;
             }
         }
@@ -61,7 +61,7 @@ namespace CloneDeploy_Services
                 }
                 catch (Exception ex)
                 {
-                    log.Debug(ex.Message);
+                    log.Error(ex.Message);
                     return false;
                 }
             }

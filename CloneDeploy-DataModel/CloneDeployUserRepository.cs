@@ -30,6 +30,8 @@ namespace CloneDeploy_DataModel
                     notifyError = s.NotifyError,
                     notifyApproved = s.NotifyImageApproved,
                     notifyLockout = s.NotifyLockout,
+                    notifyServer = s.NotifyServerStatusChange,
+                    email = s.Email,
                     userGroup = j
                 }).AsEnumerable().Select(x => new UserWithUserGroup
                 {
@@ -40,7 +42,9 @@ namespace CloneDeploy_DataModel
                     NotifyError = x.notifyError,
                     NotifyImageApproved = x.notifyApproved,
                     NotifyLockout = x.notifyLockout,
-                    UserGroup = x.userGroup
+                    UserGroup = x.userGroup,
+                    Email = x.email,
+                    NotifyServerStatusChange = x.notifyServer
                 }).ToList();
         }
     }

@@ -49,7 +49,7 @@ namespace CloneDeploy_App.Controllers
             return new ApiBoolResponseDTO {Value = true};
         }
 
-        [CustomAuth(Permission = "GroupRead")]
+        [Authorize]
         public GroupEntity Get(int id)
         {
             var result = _groupServices.GetGroup(id);
@@ -57,7 +57,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = "GroupSearch")]
+        [Authorize]
         public IEnumerable<GroupWithImage> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
@@ -65,7 +65,7 @@ namespace CloneDeploy_App.Controllers
                 : _groupServices.SearchGroupsForUser(Convert.ToInt32(_userId), searchstring);
         }
 
-        [CustomAuth(Permission = "GroupSearch")]
+        [Authorize]
         public ApiStringResponseDTO GetCount()
         {
             return new ApiStringResponseDTO {Value = _groupServices.GroupCountUser(Convert.ToInt32(_userId))};
@@ -109,7 +109,7 @@ namespace CloneDeploy_App.Controllers
             return _groupServices.GetGroupImageClassifications(id);
         }
 
-        [CustomAuth(Permission = "GroupRead")]
+        [Authorize]
         public ApiStringResponseDTO GetMemberCount(int id)
         {
             return new ApiStringResponseDTO {Value = _groupServices.GetGroupMemberCount(id)};

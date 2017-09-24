@@ -867,9 +867,6 @@
     <Compile Include="BasePages\PageBaseMaster.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="BasePages\Profiles.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
     <Compile Include="BasePages\Tasks.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>

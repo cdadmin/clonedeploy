@@ -14,7 +14,7 @@ namespace CloneDeploy_Services
 {
     public class MunkiManifestTemplateServices
     {
-        private static readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private static readonly ILog log = LogManager.GetLogger(typeof(MunkiManifestTemplateServices));
 
         private readonly UnitOfWork _uow;
 
@@ -288,7 +288,7 @@ namespace CloneDeploy_Services
                 }
                 catch (Exception ex)
                 {
-                    log.Debug(ex.Message);
+                    log.Error(ex.Message);
                 }
             }
 
@@ -314,12 +314,12 @@ namespace CloneDeploy_Services
                         }
                         catch (Exception ex)
                         {
-                            log.Debug(ex.Message);
+                            log.Error(ex.Message);
                         }
                     }
                     else
                     {
-                        log.Debug("Failed to connect to " +
+                        log.Error("Failed to connect to " +
                                   SettingServices.GetSettingValue(SettingStrings.MunkiBasePath) + "\r\nLastError = " +
                                   unc.LastError);
                     }
@@ -346,7 +346,7 @@ namespace CloneDeploy_Services
             }
             catch (Exception ex)
             {
-                log.Debug(ex.Message);
+                log.Error(ex.Message);
                 return null;
             }
         }

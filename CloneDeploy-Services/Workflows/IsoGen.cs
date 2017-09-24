@@ -22,7 +22,7 @@ namespace CloneDeploy_Services.Workflows
         private readonly IsoGenOptionsDTO _isoOptions;
         private readonly string _rootfsPath;
         private readonly string _webPath = SettingServices.GetSettingValue(SettingStrings.WebPath) + "api/ClientImaging/";
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog log = LogManager.GetLogger(typeof(IsoGen));
         private string _outputPath;
 
         public IsoGen(IsoGenOptionsDTO isoGenOptions)
@@ -205,7 +205,7 @@ namespace CloneDeploy_Services.Workflows
             }
             catch (Exception ex)
             {
-                log.Debug(ex.Message);
+                log.Error(ex.Message);
                 return false;
             }
 
@@ -275,7 +275,7 @@ namespace CloneDeploy_Services.Workflows
             }
             catch (Exception ex)
             {
-                log.Debug(ex.ToString());
+                log.Error(ex.ToString());
                 return false;
             }
 

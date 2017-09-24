@@ -3,11 +3,11 @@ using System.IO;
 using log4net;
 using Mono.Unix.Native;
 
-namespace CloneDeploy_Services.Helpers
+namespace CloneDeploy_Services
 {
     public class FileOpsServices
     {
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog log = LogManager.GetLogger(typeof(FileOpsServices));
 
         public void Copy(string sourceDirectory, string targetDirectory)
         {
@@ -62,7 +62,7 @@ namespace CloneDeploy_Services.Helpers
             }
             catch (Exception ex)
             {
-                log.Debug(ex.Message);
+                log.Error(ex.Message);
 
                 return false;
             }
@@ -115,7 +115,7 @@ namespace CloneDeploy_Services.Helpers
             }
             catch (Exception ex)
             {
-                log.Debug(ex.Message);
+                log.Error(ex.Message);
                 fileText = "Could Not Read File";
             }
 
@@ -151,7 +151,7 @@ namespace CloneDeploy_Services.Helpers
             }
             catch (Exception ex)
             {
-                log.Debug(ex.Message);
+                log.Error(ex.Message);
                 return false;
             }
         }

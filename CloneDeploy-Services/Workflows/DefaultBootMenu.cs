@@ -21,7 +21,7 @@ namespace CloneDeploy_Services.Workflows
         private readonly string _globalComputerArgs = SettingServices.GetSettingValue(SettingStrings.GlobalComputerArgs);
         private readonly SecondaryServerServices _secondaryServerServices;
         private readonly string _webPath = SettingServices.GetSettingValue(SettingStrings.WebPath)+ "api/ClientImaging/";
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog log = LogManager.GetLogger(typeof(DefaultBootMenu));
 
         public DefaultBootMenu(BootMenuGenOptionsDTO defaultBootMenu)
         {
@@ -62,7 +62,7 @@ namespace CloneDeploy_Services.Workflows
                 }
                 catch
                 {
-                    log.Debug("Could not generate sha for grub password.  Could not contact http://clonedeploy.org");
+                    log.Error("Could not generate sha for grub password.  Could not contact http://clonedeploy.org");
                 }
                 grubMenu.Append("password_pbkdf2 " + _defaultBoot.GrubUserName + " " + sha + "" + NewLineChar);
                 grubMenu.Append("export superusers" + NewLineChar);
@@ -193,6 +193,7 @@ namespace CloneDeploy_Services.Workflows
             ipxeMenu.Append("menu Boot Menu" + NewLineChar);
             ipxeMenu.Append("item bootLocal Boot To Local Machine" + NewLineChar);
             ipxeMenu.Append("item clonedeploy CloneDeploy" + NewLineChar);
+            ipxeMenu.Append("item console Client Console" + NewLineChar);
            
             foreach (var customEntry in customMenuEntries)
             {

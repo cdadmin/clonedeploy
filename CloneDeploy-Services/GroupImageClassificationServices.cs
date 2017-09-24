@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
@@ -22,6 +24,35 @@ namespace CloneDeploy_Services
             _uow.Save();
             var actionResult = new ActionResultDTO();
             actionResult.Success = true;
+
+            var firstClass = listOfClassifications.FirstOrDefault();
+            if (firstClass != null)
+            {
+                var groupProperties = new GroupServices().GetGroupProperty(firstClass.GroupId);
+                if(groupProperties == null) return actionResult;
+                
+                if (Convert.ToBoolean(groupProperties.ImageClassificationsEnabled))
+                {
+                    foreach (var computer in new GroupServices().GetGroupMembersWithImages(groupProperties.GroupId))
+                    {
+                        var computerImageClassifications = new List<ComputerImageClassificationEntity>();
+                        if (new ComputerServices().DeleteComputerImageClassifications(computer.Id))
+                        {
+                            foreach (var imageClass in listOfClassifications)
+                            {
+                                computerImageClassifications.Add(
+                                    new ComputerImageClassificationEntity
+                                    {
+                                        ComputerId = computer.Id,
+                                        ImageClassificationId = imageClass.ImageClassificationId
+                                    });
+                            }
+                        }
+                        new ComputerImageClassificationServices().AddClassifications(computerImageClassifications);
+                    }
+                }
+            }
+
             return actionResult;
         }
 

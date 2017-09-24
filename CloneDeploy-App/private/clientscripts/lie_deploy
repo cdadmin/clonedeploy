@@ -516,6 +516,8 @@ function update_efi_nvram()
 	return 1
   fi
   
+  boot_current=$(efibootmgr -v | awk '$1 == "BootCurrent:" {print $2}')
+  boot_order=$(efibootmgr -v | awk '$1 == "BootOrder:" {print $2}')
   boot_entries_to_delete=$(efibootmgr -v | grep "File(\\\\" | cut -d " " -f1 | sed 's/Boot//g' | cut -d* -f1)
 
   local array_index=-1
@@ -537,6 +539,7 @@ function update_efi_nvram()
 	  #Update it and don't delete
 	  efibootmgr -B -b $boot_number 2>>$CLIENT_LOG
 	  efibootmgr -c -d $hard_drive -p "$(parse_json "$current_partition" .Number)" -L "$(echo "$(parse_json "$current_partition" .EfiBootLoader)" | cut -d# -f1)"  -l "$(echo "$(parse_json "$current_partition" .EfiBootLoader)" | cut -d# -f2)" 2>>$CLIENT_LOG
+	  efibootmgr -o $(move_to_front_of_list $boot_current , $boot_order) 2>>$CLIENT_LOG
 	  boot_entries_to_delete=$(echo $boot_entries_to_delete | sed "s/$boot_number//g")
 	else
 	  #Partition Does not exist in the nvram
@@ -545,6 +548,7 @@ function update_efi_nvram()
 	     log "Creating New NVRAM Entry"
 	    #Entry needs added
 	    efibootmgr -c -d $hard_drive -p "$(parse_json "$current_partition" .Number)" -L "$(echo "$(parse_json "$current_partition" .EfiBootLoader)" | cut -d# -f1)" -l "$(echo "$(parse_json "$current_partition" .EfiBootLoader)" | cut -d# -f2)" 2>>$CLIENT_LOG
+		efibootmgr -o $(move_to_front_of_list $boot_current , $boot_order) 2>>$CLIENT_LOG
 	  fi
 	fi
   done

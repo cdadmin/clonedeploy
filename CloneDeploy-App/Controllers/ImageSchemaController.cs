@@ -3,37 +3,45 @@ using System.Web.Http;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Entities.DTOs.ImageSchemaFE;
 using CloneDeploy_Services;
+using Newtonsoft.Json;
 
 namespace CloneDeploy_App.Controllers
 {
+    // The restsharp deserializer does not work when calling these methods.
+    // Must have something to do with when LVM is used.
+    // Workaround is to just return the string and deserialize using newtonsoft
     public class ImageSchemaController : ApiController
     {
         [Authorize]
         [HttpPost]
-        public IEnumerable<HardDrive> GetHardDrives(ImageSchemaRequestDTO schemaRequest)
+        public ApiStringResponseDTO GetHardDrives(ImageSchemaRequestDTO schemaRequest)
         {
-            return new ImageSchemaFEServices(schemaRequest).GetHardDrivesForGridView();
+            var hardDrives = new ImageSchemaFEServices(schemaRequest).GetHardDrivesForGridView();
+            return new ApiStringResponseDTO(){Value=JsonConvert.SerializeObject(hardDrives)};
         }
 
         [Authorize]
         [HttpPost]
-        public List<LogicalVolume> GetLogicalVolumes(ImageSchemaRequestDTO schemaRequest)
+        public ApiStringResponseDTO GetLogicalVolumes(ImageSchemaRequestDTO schemaRequest)
         {
-            return new ImageSchemaFEServices(schemaRequest).GetLogicalVolumesForGridView(schemaRequest.selectedHd);
+            var logicalVolumes = new ImageSchemaFEServices(schemaRequest).GetLogicalVolumesForGridView(schemaRequest.selectedHd);
+            return new ApiStringResponseDTO() { Value = JsonConvert.SerializeObject(logicalVolumes) };
         }
 
         [Authorize]
         [HttpPost]
-        public List<Partition> GetPartitions(ImageSchemaRequestDTO schemaRequest)
+        public ApiStringResponseDTO GetPartitions(ImageSchemaRequestDTO schemaRequest)
         {
-            return new ImageSchemaFEServices(schemaRequest).GetPartitionsForGridView(schemaRequest.selectedHd);
+            var partitions = new ImageSchemaFEServices(schemaRequest).GetPartitionsForGridView(schemaRequest.selectedHd);
+            return new ApiStringResponseDTO() { Value = JsonConvert.SerializeObject(partitions) };
         }
 
         [Authorize]
         [HttpPost]
-        public ImageSchemaGridView GetSchema(ImageSchemaRequestDTO schemaRequest)
+        public ApiStringResponseDTO GetSchema(ImageSchemaRequestDTO schemaRequest)
         {
-            return new ImageSchemaFEServices(schemaRequest).GetImageSchema();
+            var schema = new ImageSchemaFEServices(schemaRequest).GetImageSchema();
+            return new ApiStringResponseDTO() { Value = JsonConvert.SerializeObject(schema) };
         }
     }
 }

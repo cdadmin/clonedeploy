@@ -19,7 +19,7 @@ namespace CloneDeploy_Services
         private readonly UnitOfWork _uow;
 
         private readonly UserServices _userServices = new UserServices();
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog log = LogManager.GetLogger(typeof(ImageServices));
 
         public ImageServices()
         {
@@ -299,7 +299,7 @@ namespace CloneDeploy_Services
         {
             var image = GetImage(imageId);
             var imageProfile = new ImageProfileEntity();
-            imageProfile.Kernel = SettingStrings.DefaultKernel32;
+            imageProfile.Kernel = SettingStrings.DefaultKernel64;
             imageProfile.BootImage = "initrd.xz";
             imageProfile.Name = "default";
             imageProfile.Description = "Auto Generated Via New Image.";

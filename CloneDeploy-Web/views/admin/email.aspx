@@ -91,7 +91,7 @@
         Smtp Password:
     </div>
     <div class="size-setting column">
-        <asp:TextBox ID="txtSmtpPassword" runat="server" CssClass="textbox" TextMode="Password"></asp:TextBox>
+        <asp:TextBox ID="txtSmtpPassword" runat="server" CssClass="textbox password" TextMode="Password"></asp:TextBox>
     </div>
     <br class="clear"/>
 

@@ -17,7 +17,7 @@ namespace CloneDeploy_Services.Workflows
         private readonly bool _isOnDemand;
         private readonly ActiveMulticastSessionEntity _multicastSession;
         private readonly int _userId;
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog log = LogManager.GetLogger(typeof(Multicast));
         private List<ComputerEntity> _computers;
         private ImageProfileWithImage _imageProfile;
         private int _multicastServerId;

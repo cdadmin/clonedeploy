@@ -58,12 +58,12 @@ namespace CloneDeploy_Services
                 if (computer == null)
                 {
                     var cg = new ClusterGroupServices().GetDefaultClusterGroup();
-                    clusterServers = clusterServices.GetClusterServers(cg.Id);
+                    clusterServers = clusterServices.GetActiveClusterServers(cg.Id);
                 }
                 else
                 {
                     var cg = new ComputerServices().GetClusterGroup(computer.Id);
-                    clusterServers = clusterServices.GetClusterServers(cg.Id);
+                    clusterServers = clusterServices.GetActiveClusterServers(cg.Id);
                 }
 
                 foreach (var tftpServer in clusterServers.Where(x => x.TftpRole == 1))

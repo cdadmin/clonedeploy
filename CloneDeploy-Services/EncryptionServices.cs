@@ -12,7 +12,7 @@ namespace CloneDeploy_Services.Helpers
     /// </summary>
     public class EncryptionServices
     {
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog log = LogManager.GetLogger(typeof(EncryptionServices));
 
         private byte[] AES_Decrypt(byte[] bytesToBeDecrypted, byte[] passwordBytes)
         {
@@ -91,7 +91,7 @@ namespace CloneDeploy_Services.Helpers
             }
             catch (Exception)
             {
-                log.Debug("Could Not Decrypt Password.  Ensure Your Encryption Key is Correct.");
+                log.Error("Could Not Decrypt Password.  Ensure Your Encryption Key is Correct.");
                 return null;
             }
         }

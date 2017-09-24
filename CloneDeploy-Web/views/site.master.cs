@@ -46,7 +46,7 @@ namespace CloneDeploy_Web.views
 
             var currentUser = Session["CloneDeployUser"];
             var cu = (CloneDeployUserEntity) currentUser;
-            var listOfAuditLogs = new APICall().CloneDeployUserApi.GetUserAuditLogs(cu.Id, 1000);
+            var listOfAuditLogs = new APICall().CloneDeployUserApi.GetCurrentUserAuditLogs(1000);
             gvHistory.DataSource = listOfAuditLogs;
             gvHistory.DataBind();
         }

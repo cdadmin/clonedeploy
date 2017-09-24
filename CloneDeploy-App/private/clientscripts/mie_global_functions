@@ -177,7 +177,7 @@ function get_hard_drives()
 		hard_drive_count=$(( $hard_drive_count + 1 ))
 	done
 		
-	log " ...... Found $hdCount Drive(s)" 
+	log " ...... Found $hard_drive_count Drive(s)" 
 	log " ...... Drive(s): $hard_drives" 
 	
 	if [ "$hard_drive_count" = "0" ]; then

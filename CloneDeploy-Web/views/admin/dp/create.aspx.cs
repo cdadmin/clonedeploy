@@ -22,7 +22,7 @@ namespace CloneDeploy_Web.views.admin.dp
                 RoUsername = txtRoUsername.Text,
                 RoPassword = txtRoPassword.Text,
                 IsPrimary = Convert.ToInt16(chkPrimary.Checked),
-                PhysicalPath = chkPrimary.Checked ? txtPhysicalPath.Text : "",
+                PhysicalPath = txtPhysicalPath.Text,
                 QueueSize = Convert.ToInt32(qSize.Text),
                 Location = ddlPrimaryType.Text
             };
@@ -41,7 +41,7 @@ namespace CloneDeploy_Web.views.admin.dp
 
         protected void chkPrimary_OnCheckedChanged(object sender, EventArgs e)
         {
-            PrimaryParams.Visible = chkPrimary.Checked;
+            //PrimaryParams.Visible = chkPrimary.Checked;
         }
 
         protected void ddlPrimaryType_OnSelectedIndexChanged(object sender, EventArgs e)

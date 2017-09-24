@@ -25,7 +25,7 @@ namespace CloneDeploy_App.Controllers
                 .Select(c => c.Value).SingleOrDefault());
         }
 
-        [CustomAuth(Permission = "ImageTaskDelete")]
+        [Authorize]
         public ActionResultDTO Delete(int id)
         {
             var result = _activeImagingTaskServices.DeleteActiveImagingTask(id);

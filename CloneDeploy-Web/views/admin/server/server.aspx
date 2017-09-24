@@ -92,6 +92,27 @@
                 </asp:DropDownList>
             </div>
         </div>
+        
+         <br class="clear"/>
+         <div class="size-4 column">
+            Monitor Secondary Servers:
+        </div>
+        <div class="size-setting column">
+            <asp:CheckBox ID="chkMonitorServers" runat="server"></asp:CheckBox>
+        </div>
+
+        <br class="clear"/>
+          <br/>
+        <div class="size-4 column">
+            Monitor Interval:
+        </div>
+        <div class="size-setting column">
+            <asp:TextBox ID="txtInterval" runat="server" CssClass="textbox"></asp:TextBox>
+        </div>
+
+
+        <br class="clear"/>
+
     </div>
 
     <div id="confirmbox" class="confirm-box-outer">

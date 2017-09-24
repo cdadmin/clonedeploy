@@ -26,7 +26,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = "GlobalRead")]
+        [Authorize]
         public ImageClassificationEntity Get(int id)
         {
             var result = _imageClassificationServices.GetImageClassification(id);
@@ -34,7 +34,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = "GlobalRead")]
+        [Authorize]
         public IEnumerable<ImageClassificationEntity> Get()
         {
             return _imageClassificationServices.GetAll();

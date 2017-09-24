@@ -103,6 +103,24 @@ namespace CloneDeploy_Web.views.admin.server {
         protected global::System.Web.UI.WebControls.DropDownList ddlComputerView;
         
         /// <summary>
+        /// chkMonitorServers control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkMonitorServers;
+        
+        /// <summary>
+        /// txtInterval control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtInterval;
+        
+        /// <summary>
         /// lblTitle control.
         /// </summary>
         /// <remarks>

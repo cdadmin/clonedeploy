@@ -120,7 +120,7 @@
 
     <br class="clear"/>
 
-    <div id="PrimaryParams" runat="server" Visible="False">
+    <div id="PrimaryParams" runat="server" >
         <div class="size-4 column">
             Location:
         </div>

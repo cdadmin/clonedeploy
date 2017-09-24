@@ -75,9 +75,9 @@ elif [ "$taskType" = "2" ]; then
   fi
   
   if [ "$computer_id" = "false" ]; then
-	  task="unregdeploy"
+	  task="unregupload"
 	else
-	  task="onddeploy"
+	  task="ondupload"
   fi
 
 else

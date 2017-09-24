@@ -180,7 +180,12 @@ namespace CloneDeploy_Services.Workflows
                                              (Convert.ToInt64(clientSchema.ExtendedPartitionHelper.AgreedSizeBlk) - 1) +
                                              "\r\n";
                     else //FDISK seems to include the starting sector in size so we need to subtract 1
-                        partitionCommands += "+" + (Convert.ToInt64(part.Size) - 1) + "\r\n";
+                    {
+                        if (counter == partCount && part.SizeIsDynamic && part.FsType != "swap") //expand last partition to fill rest of drive if it's a dynamic size
+                            partitionCommands += "\r\n";
+                        else
+                            partitionCommands += "+" + (Convert.ToInt64(part.Size) - 1) + "\r\n";              
+                    }
 
                     partitionCommands += "t\r\n";
                     if (counter == 1)
@@ -281,7 +286,13 @@ namespace CloneDeploy_Services.Workflows
                     else
                         partitionCommands += "\r\n";
                     //GDISK seems to NOT include the starting sector in size so don't subtract 1 like in FDISK
-                    partitionCommands += "+" + Convert.ToInt64(part.Size) + "\r\n";
+                    
+                    
+
+                    if(counter == partCount && part.SizeIsDynamic) //expand last partition to fill rest of drive if it's a dynamic size
+                        partitionCommands += "\r\n";
+                    else
+                        partitionCommands += "+" + Convert.ToInt64(part.Size) + "\r\n";
 
                     partitionCommands += part.FsId + "\r\n";
 

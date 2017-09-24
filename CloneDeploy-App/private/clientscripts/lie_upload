@@ -191,7 +191,7 @@ function shrink_volume()
     if [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ]; then
       newextsize="";
       log " ...... Shrinking EXT Volume On $volume_to_shrink (This May Take A Few Minutes) " "display"
-      e2fsck -fp "$volume_to_shrink" &> /dev/null
+      e2fsck -fy "$volume_to_shrink" &>> $CLIENT_LOG
       extfs_total_blocks=`resize2fs -P "$volume_to_shrink" 2>/dev/null | awk -F': ' '{print $2}'`;
       extfs_block_size=`dumpe2fs -h "$volume_to_shrink" 2>/dev/null | grep "^Block size:" | awk '{print $3}'`;
       extfs_volume_size_bytes=`expr $extfs_total_blocks '*' $extfs_block_size`;
@@ -333,7 +333,7 @@ function create_image_schema()
         partclone_type="ntfs"
           
       elif [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ]; then
-        e2fsck -fp $partition &> /dev/null
+        e2fsck -fy $partition &>> $CLIENT_LOG
         partclone_type="extfs"
       elif [ "$filesystem_type" = "xfs" ]; then
         partclone_type="xfs"
@@ -441,7 +441,7 @@ function create_image_schema()
               partclone_type="ntfs"
           
             elif [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ]; then
-              e2fsck -fp "$logical_volume_device" &> /dev/null
+              e2fsck -fy "$logical_volume_device" &>> $CLIENT_LOG
               partclone_type="extfs"
             elif [ "$filesystem_type" = "xfs" ]; then
               partclone_type="xfs"

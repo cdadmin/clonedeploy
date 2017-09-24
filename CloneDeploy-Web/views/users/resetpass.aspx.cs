@@ -8,7 +8,7 @@ namespace CloneDeploy_Web.views.users
     {
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            var updatedUser = Call.CloneDeployUserApi.Get(Convert.ToInt32(Session["UserId"]));
+            var updatedUser = Call.CloneDeployUserApi.GetSelf();
             if (!string.IsNullOrEmpty(txtUserPwd.Text))
             {
                 if (txtUserPwd.Text == txtUserPwdConfirm.Text)
@@ -29,7 +29,7 @@ namespace CloneDeploy_Web.views.users
             updatedUser.NotifyComplete = chkComplete.Checked ? 1 : 0;
             updatedUser.NotifyImageApproved = chkApproved.Checked ? 1 : 0;
 
-            var result = Call.CloneDeployUserApi.Put(updatedUser.Id, updatedUser);
+            var result = Call.CloneDeployUserApi.ChangePassword(updatedUser);
             EndUserMessage = !result.Success ? result.ErrorMessage : "Successfully Updated User";
         }
 
@@ -45,16 +45,17 @@ namespace CloneDeploy_Web.views.users
 
         private void PopulateForm()
         {
-            if (CloneDeployCurrentUser.IsLdapUser == 1)
+            var user = Call.CloneDeployUserApi.GetSelf();
+            if (user.IsLdapUser == 1)
             {
                 chkldap.Checked = true;
                 passwords.Visible = false;
             }
-            txtEmail.Text = CloneDeployCurrentUser.Email;
-            chkLockout.Checked = CloneDeployCurrentUser.NotifyLockout == 1;
-            chkError.Checked = CloneDeployCurrentUser.NotifyError == 1;
-            chkComplete.Checked = CloneDeployCurrentUser.NotifyComplete == 1;
-            chkApproved.Checked = CloneDeployCurrentUser.NotifyImageApproved == 1;
+            txtEmail.Text = user.Email;
+            chkLockout.Checked = user.NotifyLockout == 1;
+            chkError.Checked = user.NotifyError == 1;
+            chkComplete.Checked = user.NotifyComplete == 1;
+            chkApproved.Checked = user.NotifyImageApproved == 1;
         }
     }
 }

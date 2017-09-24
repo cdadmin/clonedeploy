@@ -15,7 +15,7 @@ namespace CloneDeploy_Services
 {
     public class ClientImagingServices
     {
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog log = LogManager.GetLogger(typeof(ClientImagingServices));
 
         public string AddComputer(string name, string mac, string clientIdentifier)
         {
@@ -128,8 +128,8 @@ namespace CloneDeploy_Services
         {
             var task = new ActiveImagingTaskServices().GetTask(taskId);
             if (task == null)
-                return "false";
-            return "true";
+                return "true";
+            return "false";
         }
 
         public string CheckHdRequirements(int profileId, int clientHdNumber, string newHdSize, string imageSchemaDrives,
@@ -169,7 +169,7 @@ namespace CloneDeploy_Services
             {
                 if (clientLbs != imageSchema.HardDrives[result.SchemaHdNumber].Lbs)
                 {
-                    log.Debug("Error: The Logical Block Size Of This Hard Drive " + clientLbs +
+                    log.Error("Error: The Logical Block Size Of This Hard Drive " + clientLbs +
                               " Does Not Match The Original Image " + imageSchema.HardDrives[result.SchemaHdNumber].Lbs);
 
                     result.IsValid = "false";
@@ -182,7 +182,7 @@ namespace CloneDeploy_Services
 
             if (minimumSize > newHdBytes)
             {
-                log.Debug("Error:  " + newHdBytes/1024/1024 +
+                log.Error("Error:  " + newHdBytes/1024/1024 +
                           " MB Is Less Than The Minimum Required HD Size For This Image(" +
                           minimumSize/1024/1024 + " MB)");
 
@@ -546,8 +546,8 @@ namespace CloneDeploy_Services
             }
             catch (Exception ex)
             {
-                log.Debug("Could Not Select Random Distribution Point");
-                log.Debug(ex.Message);
+                log.Error("Could Not Select Random Distribution Point");
+                log.Error(ex.Message);
                 return "false";
             }
 

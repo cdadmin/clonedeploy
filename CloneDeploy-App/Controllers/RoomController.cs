@@ -26,7 +26,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = "GlobalRead")]
+        [Authorize]
         public RoomEntity Get(int id)
         {
             var result = _roomServices.GetRoom(id);
@@ -34,7 +34,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = "GlobalRead")]
+        [Authorize]
         public IEnumerable<RoomWithClusterGroup> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)

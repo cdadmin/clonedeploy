@@ -27,7 +27,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = "GlobalRead")]
+        [Authorize]
         public BootTemplateEntity Get(int id)
         {
             var result = _bootTemplateServices.GetBootTemplate(id);
@@ -35,7 +35,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = "GlobalRead")]
+        [Authorize]
         public IEnumerable<BootTemplateEntity> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)

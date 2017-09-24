@@ -7,7 +7,7 @@ namespace CloneDeploy_Services
 {
     public class StringManipulationServices
     {
-        private static readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private static readonly ILog log = LogManager.GetLogger(typeof(StringManipulationServices));
 
         public static string Decode(string encoded, string parameter)
         {
@@ -19,7 +19,7 @@ namespace CloneDeploy_Services
             }
             catch (Exception ex)
             {
-                log.Debug(parameter + " Base64 Decoding Failed. " + ex.Message);
+                log.Error(parameter + " Base64 Decoding Failed. " + ex.Message);
             }
 
             return decoded;
@@ -35,7 +35,7 @@ namespace CloneDeploy_Services
             }
             catch (Exception ex)
             {
-                log.Debug("Base64 Encoding Failed. " + ex.Message);
+                log.Error("Base64 Encoding Failed. " + ex.Message);
             }
 
             return encoded;

@@ -120,6 +120,14 @@
     </div>
     <br class="clear"/>
     <br/>
+    <div class="size-4 column">
+        Notify On Secondary Server Status Change:
+    </div>
+    <div class="size-5 column">
+        <asp:Checkbox ID="chkSecServer" runat="server"></asp:Checkbox>
+    </div>
+    <br class="clear"/>
+    <br/>
 
 
 </asp:Content>

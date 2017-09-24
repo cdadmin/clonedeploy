@@ -58,6 +58,14 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
+        [Authorize]
+        public CloneDeployUserEntity GetSelf()
+        {
+            var result = _userServices.GetUser(_userId);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
+        }
+
         [CustomAuth(Permission = "Administrator")]
         public IEnumerable<UserWithUserGroup> Get(string searchstring = "")
         {
@@ -121,6 +129,12 @@ namespace CloneDeploy_App.Controllers
         }
 
         [Authorize]
+        public IEnumerable<AuditLogEntity> GetCurrentUserAuditLogs(int limit)
+        {
+            return _userServices.GetUserAuditLogs(_userId, limit);
+        }
+
+        [Authorize]
         public IEnumerable<AuditLogEntity> GetUserLoginsDashboard()
         {
             return _userServices.GetUserLoginsDashboard(Convert.ToInt32(_userId));
@@ -149,6 +163,16 @@ namespace CloneDeploy_App.Controllers
         public ActionResultDTO Put(int id, CloneDeployUserEntity user)
         {
             user.Id = id;
+            var result = _userServices.UpdateUser(user);
+            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            return result;
+        }
+
+        [Authorize]
+        [HttpPut]
+        public ActionResultDTO ChangePassword(CloneDeployUserEntity user)
+        {
+            user.Id = _userId;
             var result = _userServices.UpdateUser(user);
             if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             return result;

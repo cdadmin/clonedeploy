@@ -12,7 +12,7 @@ namespace CloneDeploy_ApiCalls
     {
         private readonly Uri _baseUrl;
         private readonly RestClient _client = new RestClient();
-        private readonly ILog _log = LogManager.GetLogger("FrontEndLog");
+        private readonly ILog _log = LogManager.GetLogger(typeof(TokenApi));
         private readonly RestRequest _request = new RestRequest();
         private readonly string _resource;
 
@@ -42,7 +42,7 @@ namespace CloneDeploy_ApiCalls
 
             if (response == null)
             {
-                _log.Debug("Could Not Complete Token Request.  The Response was empty." + _request.Resource);
+                _log.Error("Could Not Complete Token Request.  The Response was empty." + _request.Resource);
                 token.error_description = "Did Not Receive A Response From The Auth Server.";
                 return token;
             }
@@ -54,7 +54,7 @@ namespace CloneDeploy_ApiCalls
 
             if (response.ErrorException != null)
             {
-                _log.Debug("Error With Token API: " + response.ErrorException);
+                _log.Error("Error With Token API: " + response.ErrorException);
             }
 
             switch (response.StatusCode)
@@ -71,7 +71,7 @@ namespace CloneDeploy_ApiCalls
                     break;
                 default:
                     token.error_description = "Unknown Error With Token API";
-                    _log.Debug("Error With Token API: " + response.Content);
+                    _log.Error("Error With Token API: " + response.Content);
                     break;
             }
 

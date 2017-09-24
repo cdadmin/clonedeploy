@@ -60,7 +60,7 @@ namespace CloneDeploy_App.Controllers
             return new ApiBoolResponseDTO {Value = true};
         }
 
-        [CustomAuth(Permission = "ImageRead")]
+        [Authorize]
         public ImageEntity Get(int id)
         {
             var result = _imageServices.GetImage(id);
@@ -68,7 +68,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = "ImageSearch")]
+        [Authorize]
         public IEnumerable<ImageWithDate> Get(string searchstring = "")
         {
             return string.IsNullOrEmpty(searchstring)
@@ -88,7 +88,7 @@ namespace CloneDeploy_App.Controllers
             return _imageServices.GetImageAuditLogs(id, limit);
         }
 
-        [CustomAuth(Permission = "ImageRead")]
+        [Authorize]
         public IEnumerable<ImageProfileEntity> GetImageProfiles(int id)
         {
             return _imageServices.SearchProfiles(id);

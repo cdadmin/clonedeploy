@@ -25,6 +25,11 @@ namespace CloneDeploy_Services
                 _uow.Save();
                 actionResult.Success = true;
                 actionResult.Id = script.Id;
+            
+            }
+            else
+            {
+                actionResult.ErrorMessage = validationResult.ErrorMessage;
             }
 
             return actionResult;

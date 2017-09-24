@@ -42,7 +42,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = "ProfileSearch")]
+        [Authorize]
         public IEnumerable<ImageProfileWithImage> Get()
         {
             return _imageProfileServices.GetAllProfiles();

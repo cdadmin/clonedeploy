@@ -13,7 +13,7 @@ namespace CloneDeploy_Services.Workflows
 {
     public class MulticastArguments
     {
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog log = LogManager.GetLogger(typeof(MulticastArguments));
 
         public int GenerateProcessArguments(MulticastArgsDTO mArgs)
         {
@@ -208,7 +208,7 @@ namespace CloneDeploy_Services.Workflows
             }
             catch (Exception ex)
             {
-                log.Debug(ex.ToString());
+                log.Error(ex.ToString());
                 File.AppendAllText(logPath,
                     "Could Not Start Session " + groupName + " Try Pasting The Command Into A Command Prompt");
                 return 0;

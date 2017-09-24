@@ -12,10 +12,9 @@ namespace CloneDeploy_Services.Helpers
     /// </summary>
     public class MailServices
     {
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog log = LogManager.GetLogger(typeof(MailServices));
         public string Body { get; set; }
         public string MailTo { get; set; }
-
         public string Subject { get; set; }
 
         public void Send()
@@ -25,28 +24,31 @@ namespace CloneDeploy_Services.Helpers
 
         private void SendMailAsync()
         {
-            var message = new MailMessage(SettingServices.GetSettingValue(SettingStrings.SmtpMailFrom), MailTo)
-            {
-                Subject = "Clone Deploy " + "(" + Subject + ")",
-                Body = Body
-            };
-
-            var client = new SmtpClient(SettingServices.GetSettingValue(SettingStrings.SmtpServer),
-                Convert.ToInt32(SettingServices.GetSettingValue(SettingStrings.SmtpPort)))
-            {
-                Credentials =
-                    new NetworkCredential(SettingServices.GetSettingValue(SettingStrings.SmtpUsername),
-                        new EncryptionServices().DecryptText(SettingServices.GetSettingValue(SettingStrings.SmtpPassword))),
-                EnableSsl = SettingServices.GetSettingValue(SettingStrings.SmtpSsl) == "Yes"
-            };
-
             try
             {
+                var message = new MailMessage(SettingServices.GetSettingValue(SettingStrings.SmtpMailFrom), MailTo)
+                {
+                    Subject = "CloneDeploy " + "(" + Subject + ")",
+                    Body = Body
+                };
+
+                var client = new SmtpClient(SettingServices.GetSettingValue(SettingStrings.SmtpServer),
+                    Convert.ToInt32(SettingServices.GetSettingValue(SettingStrings.SmtpPort)))
+                {
+                    Credentials =
+                        new NetworkCredential(SettingServices.GetSettingValue(SettingStrings.SmtpUsername),
+                            new EncryptionServices().DecryptText(
+                                SettingServices.GetSettingValue(SettingStrings.SmtpPassword))),
+                    EnableSsl = SettingServices.GetSettingValue(SettingStrings.SmtpSsl) == "Yes"
+                };
+
+
                 client.Send(message);
             }
             catch (Exception ex)
             {
-                log.Debug(ex.Message);
+                
+                log.Error(ex.Message);
             }
         }
     }

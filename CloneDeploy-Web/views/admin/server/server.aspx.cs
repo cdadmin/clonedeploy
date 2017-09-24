@@ -55,6 +55,18 @@ namespace CloneDeploy_Web.views.admin.server
                     Name = "Tftp Server IP",
                     Value = txtTftpServerIp.Text,
                     Id = Call.SettingApi.GetSetting("Tftp Server IP").Id
+                },
+                 new SettingEntity
+                {
+                    Name = SettingStrings.MonitorSecondaryServer,
+                    Value = chkMonitorServers.Checked ? "1" : "0",
+                    Id = Call.SettingApi.GetSetting(SettingStrings.MonitorSecondaryServer).Id
+                },
+                 new SettingEntity
+                {
+                    Name = SettingStrings.SecondaryServerMonitorInterval,
+                    Value = txtInterval.Text,
+                    Id = Call.SettingApi.GetSetting(SettingStrings.SecondaryServerMonitorInterval).Id
                 }
             };
 
@@ -117,7 +129,8 @@ namespace CloneDeploy_Web.views.admin.server
             txtWebService.Text = GetSetting(SettingStrings.WebPath);
             txtId.Text = GetSetting(SettingStrings.ServerIdentifier);
             txtTftpServerIp.Text = GetSetting(SettingStrings.TftpServerIp);
-
+            txtInterval.Text = GetSetting(SettingStrings.SecondaryServerMonitorInterval);
+            chkMonitorServers.Checked = GetSetting(SettingStrings.MonitorSecondaryServer) == "1";
             //These require pxe boot menu or client iso to be recreated
             ViewState["serverIP"] = txtIP.Text;
             ViewState["serverPort"] = txtPort.Text;

@@ -8,7 +8,16 @@ namespace CloneDeploy_Web.views.groups
     {
         protected void ddlGroupImage_OnSelectedIndexChanged(object sender, EventArgs e)
         {
+            if (ddlGroupImage.Text == "Select Image") return;
             PopulateImageProfilesDdl(ddlImageProfile, Convert.ToInt32(ddlGroupImage.SelectedValue));
+            try
+            {
+                ddlImageProfile.SelectedIndex = 1;
+            }
+            catch
+            {
+                //ignore
+            }
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -40,5 +49,8 @@ namespace CloneDeploy_Web.views.groups
             var result = Call.GroupApi.Put(group.Id, group);
             EndUserMessage = !result.Success ? result.ErrorMessage : "Successfully Updated Group";
         }
+
+       
+
     }
 }

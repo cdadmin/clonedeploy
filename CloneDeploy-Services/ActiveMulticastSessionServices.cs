@@ -16,7 +16,7 @@ namespace CloneDeploy_Services
 {
     public class ActiveMulticastSessionServices
     {
-        private static readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private static readonly ILog log = LogManager.GetLogger(typeof(ActiveMulticastSessionServices));
         private readonly UnitOfWork _uow;
         private readonly UserServices _userServices;
 
@@ -83,7 +83,7 @@ namespace CloneDeploy_Services
             }
             catch (Exception ex)
             {
-                log.Debug(ex.ToString());
+                log.Error(ex.ToString());
                 //Message.Text = "Could Not Kill Process.  Check The Exception Log For More Info";
                 actionResult.Success = false;
             }
@@ -141,7 +141,7 @@ namespace CloneDeploy_Services
             }
             catch (Exception ex)
             {
-                log.Debug(ex.ToString());
+                log.Error(ex.ToString());
             }
         }
 
@@ -158,7 +158,7 @@ namespace CloneDeploy_Services
             }
             catch (Exception ex)
             {
-                log.Debug(ex.ToString());
+                log.Error(ex.ToString());
             }
         }
 

@@ -73,7 +73,7 @@ function checkin()
 	fi
 	
 	if [ "$web_cancel" = "true" ]; then
-	  . cd_cancel &
+	  . lie_cancel &
 	fi
 	echo
 	
@@ -160,13 +160,14 @@ function error()
 	cat /tmp/clientlog.log | grep -v "percent completed" > /tmp/cleanedlog.log
 	
 
-	$curlAuth --data "taskId=$task_id&error=$1" "${web}ErrorEmail" $curlEnd
+	
 		
 	$curlAuth -F computerId="$(echo -n $computer_id | base64)" -F logContents="$(cat /tmp/cleanedlog.log | base64)"  -F subType="$(echo -n $task | base64)"  -F mac="$(echo -n $mac | base64)" "${web}UploadLog" $curlEnd	
 	
 	if [ -n "$reboot_time" ]; then
 	  sleep $reboot_time
 	else
+	  $curlAuth --data "taskId=$task_id&error=$1" "${web}ErrorEmail" $curlEnd
 	  sleep 60
 	fi
 	if [ "$task_completed_action" = "Power Off" ]; then
@@ -199,7 +200,7 @@ function expand_volume()
 			log " ...... Success" "display"
 		fi
 		echo
-		e2fsck -fp $1 &>/dev/null
+		e2fsck -fy $1 &>>$CLIENT_LOG
 	
 	elif [ "$filesystem" = "ntfs" ]; then
 	  ntfsfix -b -d $1 &>>$CLIENT_LOG
@@ -412,6 +413,14 @@ function mount_smb_sub()
 			echo "false"
 		fi
 	done
+}
+
+function move_to_front_of_list()
+{
+  local item=$1
+  local delim=$2
+  local list=$3
+  echo ${item} $(echo "$list" | tr "${delim}" " " | xargs -n 1 | grep -v "^${item}$") | xargs | tr " " "${delim}"
 }
 
 function process_scripts()

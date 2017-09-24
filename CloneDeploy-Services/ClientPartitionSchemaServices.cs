@@ -24,7 +24,7 @@ namespace CloneDeploy_Services
 
         private readonly ImageSchema _imageSchema;
         private readonly long _newHdSize;
-        private readonly ILog log = LogManager.GetLogger("ApplicationLog");
+        private readonly ILog log = LogManager.GetLogger(typeof(ClientPartitionSchemaServices));
 
         public ClientPartitionSchemaServices(int hdToGet, string newHdSize, ImageProfileWithImage imageProfile,
             string partitionPrefix)
@@ -193,8 +193,8 @@ namespace CloneDeploy_Services
                 //Could not determine a partition layout that works with this hard drive
                 if (isError && percentCounter > 99)
                 {
-                    log.Debug(JsonConvert.SerializeObject(PrimaryAndExtendedPartitions));
-                    log.Debug(JsonConvert.SerializeObject(LogicalPartitions));
+                    log.Error(JsonConvert.SerializeObject(PrimaryAndExtendedPartitions));
+                    log.Error(JsonConvert.SerializeObject(LogicalPartitions));
                     return false;
                 }
 
@@ -435,6 +435,7 @@ namespace CloneDeploy_Services
 
                     var partitionHelper = new ClientPartitionHelper(_imageProfile).Partition(HdNumberToGet, partCounter,
                         _newHdSize);
+                    
                     var percentOfHdForThisPartition = (double) partitionHelper.MinSizeBlk/NewHdBlk;
                     var tmpClientPartitionSizeBlk = partitionHelper.MinSizeBlk;
 

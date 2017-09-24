@@ -9,7 +9,7 @@ namespace CloneDeploy_ApiCalls
     public class ApiRequest
     {
         private readonly RestClient _client;
-        private readonly ILog _log = LogManager.GetLogger("FrontEndLog");
+        private readonly ILog _log = LogManager.GetLogger(typeof(ApiRequest));
         private readonly string _token;
 
         public ApiRequest()
@@ -35,7 +35,7 @@ namespace CloneDeploy_ApiCalls
         {
             if (request == null)
             {
-                _log.Debug("Could Not Execute API Request.  The Request was empty." + new TClass().GetType());
+                _log.Error("Could Not Execute API Request.  The Request was empty." + new TClass().GetType());
                 return default(TClass);
             }
             request.AddHeader("Authorization", "bearer " + _token);
@@ -44,14 +44,20 @@ namespace CloneDeploy_ApiCalls
 
             if (response == null)
             {
-                _log.Debug("Could Not Complete API Request.  The Response was empty." + request.Resource);
+                _log.Error("Could Not Complete API Request.  The Response was empty." + request.Resource);
+                return default(TClass);
+            }
+
+            if (response.Data == null)
+            {
+                _log.Error("Response Data Was Null For Resource: " + request.Resource);
                 return default(TClass);
             }
 
             if (response.StatusCode == HttpStatusCode.InternalServerError)
             {
-                _log.Debug("Could Not Complete API Request.  The Response Produced An Error." + request.Resource);
-                _log.Debug(response.Content);
+                _log.Error("Could Not Complete API Request.  The Response Produced An Error." + request.Resource);
+                _log.Error(response.Content);
                 return default(TClass);
             }
 
@@ -62,22 +68,17 @@ namespace CloneDeploy_ApiCalls
 
             if (response.StatusCode == HttpStatusCode.NotFound)
             {
+                _log.Error("Error Retrieving API Response: Not Found " + request.Resource);
                 throw new HttpException();
             }
 
             if (response.ErrorException != null)
             {
-                _log.Debug("Error Retrieving API Response: " + response.ErrorException);
+                _log.Error("Error Retrieving API Response: " + response.ErrorException);
                 return default(TClass);
             }
 
-            if (response.Data == null)
-            {
-                _log.Debug("Response Data Was Null For Resource: " + request.Resource);
-                return default(TClass);
-            }
-
-            _log.Debug("Requesting Resource: " + request.Resource);
+            _log.Debug(request.Resource);
             return response.Data;
         }
 
@@ -85,7 +86,7 @@ namespace CloneDeploy_ApiCalls
         {
             if (request == null)
             {
-                _log.Debug("Could Not Execute Raw API Request.  The Request was empty.");
+                _log.Error("Could Not Execute Raw API Request.  The Request was empty.");
                 return null;
             }
 
@@ -95,11 +96,11 @@ namespace CloneDeploy_ApiCalls
 
             if (response == null)
             {
-                _log.Debug("Could Not Complete Raw API Request.  The Response was empty." + request.Resource);
+                _log.Error("Could Not Complete Raw API Request.  The Response was empty." + request.Resource);
                 return null;
             }
 
-            _log.Debug("Requesting Resource: " + request.Resource);
+            _log.Debug(request.Resource);
             return response;
         }
     }
