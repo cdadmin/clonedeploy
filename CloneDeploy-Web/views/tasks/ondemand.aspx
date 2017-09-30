@@ -48,4 +48,13 @@
     <div class="size-5 column">
         <asp:TextBox runat="server" ID="txtClientCount" CssClass="textbox"></asp:TextBox>
     </div>
+    <br class="clear" />
+        <div class="size-4 column">
+        Cluster Group:
+    </div>
+    <div class="size-5 column">
+        <asp:DropDownList ID="ddlClusterGroup" runat="server" CssClass="ddlist"/>
+    </div>
+
+    <br class="clear"/>
 </asp:Content>

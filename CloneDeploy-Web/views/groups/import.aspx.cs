@@ -20,6 +20,8 @@ namespace CloneDeploy_Web.views.groups
 
                 var count = Call.GroupApi.Import(new ApiStringResponseDTO {Value = csvContent});
                 EndUserMessage = "Successfully Imported " + count + " Groups";
+                Call.GroupApi.ReCalcSmart();
+                
             }
         }
 

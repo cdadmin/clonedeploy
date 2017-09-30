@@ -31,7 +31,7 @@ namespace CloneDeploy_Services.Workflows
                 {
                     if (!part.Active) continue;
                     string imageFile = null;
-                    foreach (var ext in new[] {".ntfs", ".fat", ".extfs", ".hfsp", ".imager", ".winpe", ".xfs"})
+                    foreach (var ext in new[] {"ntfs", "fat", "extfs", "hfsp", "imager", "winpe", "xfs"})
                     {
                         imageFile = new FilesystemServices().GetFileNameWithFullPath(mArgs.ImageName,
                             schemaCounter.ToString(), part.Number, ext);

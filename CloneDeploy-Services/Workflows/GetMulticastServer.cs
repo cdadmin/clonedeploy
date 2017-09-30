@@ -9,6 +9,7 @@ namespace CloneDeploy_Services.Workflows
     {
         private readonly GroupEntity _group;
         private readonly Random _random;
+        private readonly int _clusterId;
 
         public GetMulticastServer(GroupEntity group)
         {
@@ -16,9 +17,10 @@ namespace CloneDeploy_Services.Workflows
             _random = new Random();
         }
 
-        public GetMulticastServer()
+        public GetMulticastServer(int clusterId)
         {
             //For on demand no group
+            _clusterId = clusterId;
         }
 
         public int Run()
@@ -41,7 +43,12 @@ namespace CloneDeploy_Services.Workflows
             {
                 //on demand group might be null
                 //use default cluster group
+                if(_clusterId == -1)
                 clusterGroup = clusterServices.GetDefaultClusterGroup();
+                else
+                {
+                    clusterGroup = new ClusterGroupServices().GetClusterGroup(_clusterId);
+                }
             }
 
             var availableMulticastServers =

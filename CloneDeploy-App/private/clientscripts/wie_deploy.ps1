@@ -172,7 +172,7 @@ function Download-Image()
 
     $reporterProc=$(Start-Process powershell "x:\wie_reporter.ps1 -web $script:web -taskId $script:taskId -partitionNumber $($currentPartition.Number) -direction Deploying -curlOptions $script:curlOptions -userTokenEncoded $script:userTokenEncoded -isOnDemand $script:isOnDemand" -NoNewWindow -PassThru)
     
-    if($multicast -eq "true")
+     if($script:task -eq "multicast" -or $script:task -eq "ondmulticast" )
     {
         log "udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 C: 2>>$clientLog > x:\wim.progress"
         $udpProc=$(Start-Process cmd "/c udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 C: 2>>x:\wim.log > x:\wim.progress" -NoNewWindow -PassThru)

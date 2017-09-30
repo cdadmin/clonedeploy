@@ -24,7 +24,7 @@ namespace CloneDeploy_Services
                     tftpDto.TftpServers.Add(
                         StringManipulationServices.PlaceHolderReplace(
                             SettingServices.GetSettingValue(SettingStrings.TftpServerIp)));
-                var tftpServers = new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
+                var tftpServers = new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1 && x.IsActive == 1);
                 foreach (var tftpServer in tftpServers)
                 {
                     var tServer =

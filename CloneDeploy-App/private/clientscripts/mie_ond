@@ -10,7 +10,7 @@ if [ "$taskType" != "1" ] && [ "$taskType" != "2" ]; then
 fi
 
 if [ "$taskType" = "1" ]; then    
-	imageList=`$curlAuth --data "environment=macOS&computerId=$computer_id&userId=$user_id" "${web}ListImages" $curlEnd`
+	imageList=`$curlAuth --data "environment=macOS&computerId=$computer_id&task=deploy&userId=$user_id" "${web}ListImages" $curlEnd`
 	imageId=$(dialog --backtitle "CloneDeploy" --title "Select An Image" --clear --menu "" 20 60 15 `parse_json "$imageList" .Images[]` --stdout)
 	if [ -z "$imageId" ]; then
 	  error "No Image Was Selected Or No Images Have Been Added Yet"
@@ -60,7 +60,7 @@ elif [ "$taskType" = "2" ]; then
 		fi
    done
   else
-    image_list=`$curlAuth --data "environment=macOS&computerId=$computer_id&userId=$user_id" "${web}ListImages" $curlEnd`
+    image_list=`$curlAuth --data "environment=macOS&computerId=$computer_id&task=upload&userId=$user_id" "${web}ListImages" $curlEnd`
     image_id=$(dialog --backtitle "CloneDeploy" --title "Select An Image" --clear --menu "" 20 60 15 `parse_json "$image_list" .Images[]` --stdout)
   fi
   

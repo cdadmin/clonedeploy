@@ -17,6 +17,7 @@ namespace CloneDeploy_Services.Workflows
         private readonly bool _isOnDemand;
         private readonly ActiveMulticastSessionEntity _multicastSession;
         private readonly int _userId;
+        private readonly int _clusterId;
         private readonly ILog log = LogManager.GetLogger(typeof(Multicast));
         private List<ComputerEntity> _computers;
         private ImageProfileWithImage _imageProfile;
@@ -35,7 +36,7 @@ namespace CloneDeploy_Services.Workflows
         }
 
         //Constructor For Starting Multicast For On Demand
-        public Multicast(int imageProfileId, string clientCount, int userId, string userIp)
+        public Multicast(int imageProfileId, string clientCount, int userId, string userIp, int clusterId)
         {
             _multicastSession = new ActiveMulticastSessionEntity();
             _isOnDemand = true;
@@ -46,6 +47,7 @@ namespace CloneDeploy_Services.Workflows
             _multicastSession.ImageProfileId = _imageProfile.Id;
             _computerServices = new ComputerServices();
             _ipAddress = userIp;
+            _clusterId = clusterId;
         }
 
         public string Create()
@@ -65,7 +67,7 @@ namespace CloneDeploy_Services.Workflows
             }
 
             _multicastServerId = _isOnDemand
-                ? new GetMulticastServer().Run()
+                ? new GetMulticastServer(_clusterId).Run()
                 : new GetMulticastServer(_group).Run();
 
             if (_multicastServerId == -2)

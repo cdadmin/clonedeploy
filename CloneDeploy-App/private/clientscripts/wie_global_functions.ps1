@@ -126,6 +126,7 @@ function Mount-SMB()
         #look for other distribution points
         log -message " ...... Looking For Other Distribution Points"
         $allClusterDps=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "computerId=$script:computer_id" ${script:web}GetAllClusterDps  --connect-timeout 10 --stderr -)
+        log $allClusterDps
         if(!$?)
         {
             $Error[0].Exception.Message
@@ -144,8 +145,9 @@ function Mount-SMB()
             }
             else
             {
-                foreach($localDpId in $allClusterDps)
+                foreach($localDpId in $allClusterDps.Split(' '))
                 {
+                    log $localDpId
                     Start-Sleep 2
                     $smbInfo=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "dpId=$localDpId&task=$script:task" ${script:web}DistributionPoint  --connect-timeout 10 --stderr -)
 	                $smbInfo=$smbInfo | ConvertFrom-Json

@@ -165,10 +165,13 @@ function check_auth()
   fi
 }
 
+
 function get_task_computer()
 {
- #Assume task is on demand and computer does not exist until each are found
-  export task="ond"
+ #Assume task is on demand unless clobber mode and computer does not exist until each are found 
+  if [ -z "$task" ]; then
+    export task="ond"
+  fi
   export computer_id="false"
   serial_number=$(dmidecode -s system-serial-number)
   system_uuid=$(dmidecode -s system-uuid)
@@ -192,7 +195,7 @@ function get_task_computer()
 	    log " ...... This Computer Was Not Found" "display"
 		continue
 	  else
-	    if [ "$(parse_json "$computer_task_object" .task)" = "upload" ] || [ "$(parse_json "$computer_task_object" .task)" = "deploy" ] || [ "$(parse_json "$computer_task_object" .task)" = "permanentdeploy" ]; then
+	    if [ "$(parse_json "$computer_task_object" .task)" = "upload" ] || [ "$(parse_json "$computer_task_object" .task)" = "deploy" ] || [ "$(parse_json "$computer_task_object" .task)" = "permanentdeploy" ] || [ "$(parse_json "$computer_task_object" .task)" = "multicast" ]; then
 	      export computer_id="$(parse_json "$computer_task_object" .computerId)"
 	      export task="$(parse_json "$computer_task_object" .task)"
 		  export task_id="$(parse_json "$computer_task_object" .taskId)"
@@ -225,7 +228,7 @@ function get_task_computer()
 	      log " ...... This Computer Was Not Found" "display"
 		  continue
 	    else
-	      if [ "$(parse_json "$computer_task_object" .task)" = "upload" ] || [ "$(parse_json "$computer_task_object" .task)" = "deploy" ] || [ "$(parse_json "$computer_task_object" .task)" = "permanentdeploy" ]; then
+	      if [ "$(parse_json "$computer_task_object" .task)" = "upload" ] || [ "$(parse_json "$computer_task_object" .task)" = "deploy" ] || [ "$(parse_json "$computer_task_object" .task)" = "permanentdeploy" ] || [ "$(parse_json "$computer_task_object" .task)" = "multicast" ]; then
 	        export computer_id="$(parse_json "$computer_task_object" .computerId)"
 	        export task="$(parse_json "$computer_task_object" .task)"
 		    export task_id="$(parse_json "$computer_task_object" .taskId)"
@@ -242,12 +245,24 @@ function get_task_computer()
     done
   fi
   
-  if [ "$computer_id" = "false" ]; then
-    login_message="This Computer Is Not Registered.  No Active Web Tasks Were Found For This Computer.  Starting Registration."
-	task="register"
+  if [ "$task" = "clobber" ]; then
+    if [ "$computer_id" = "false" ] && [ "$name_prompt" = "true" ]; then
+      login_message="This Computer Is Not Registered.  No Active Web Tasks Were Found For This Computer.  Starting Registration."
+	  task="register_clobber"
+    else
+      login_message="No Active Web Tasks Were Found For This Computer.  Starting Clobber Imaging."
+    fi
+	
   else
-    login_message="No Active Web Tasks Were Found For This Computer.  Starting On Demand Imaging."
+     if [ "$computer_id" = "false" ]; then
+      login_message="This Computer Is Not Registered.  No Active Web Tasks Were Found For This Computer.  Starting Registration."
+	  task="register"
+    else
+      login_message="No Active Web Tasks Were Found For This Computer.  Starting On Demand Imaging."
+    fi
   fi
+  
+ 
   
 }
 
@@ -331,7 +346,7 @@ function main()
   utcDateTime=$($curlCommand ${web}GetUtcDateTime $curlEnd)
   date -s "$utcDateTime" &>> /dev/null
 
-  if [ -z "$task" ]; then
+  if [ -z "$task" ] || [ "$task" = "clobber" ]; then
     get_task_computer
   fi
 
@@ -364,6 +379,9 @@ function main()
   elif [ "$task" = "upload" ]; then	
 	  /bin/lie_upload
 
+   elif [ "$task" = "register_clobber" ]; then
+	  /bin/lie_register "clobber"
+	  
   elif [ "$task" = "register" ]; then
 	  /bin/lie_register
 

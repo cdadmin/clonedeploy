@@ -80,7 +80,7 @@ namespace CloneDeploy_Services
             {
                 var secondaryServers =
                     new SecondaryServerServices().SearchSecondaryServers()
-                        .Where(x => x.TftpRole == 1);
+                        .Where(x => x.TftpRole == 1 && x.IsActive == 1);
 
                 foreach (var server in secondaryServers)
                 {
@@ -89,10 +89,8 @@ namespace CloneDeploy_Services
                     if (!result)
                         return false;
                 }
-
                 return true;
             }
-
             return true;
         }
 

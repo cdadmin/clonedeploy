@@ -12,8 +12,10 @@ namespace CloneDeploy_Web.views.tasks
         {
             RequiresAuthorization(AuthorizationStrings.ImageMulticastTask);
             if (ddlComputerImage.Text == "Select Image") return;
+
+
             EndUserMessage = Call.WorkflowApi.StartOnDemandMulticast(Convert.ToInt32(ddlImageProfile.SelectedValue),
-                txtClientCount.Text);
+                txtClientCount.Text,Convert.ToInt32(ddlClusterGroup.SelectedValue));
         }
 
         protected void ddlComputerImage_OnSelectedIndexChanged(object sender, EventArgs e)
@@ -53,6 +55,7 @@ namespace CloneDeploy_Web.views.tasks
             ddlComputerImage.DataTextField = "Name";
             ddlComputerImage.DataBind();
             ddlComputerImage.Items.Insert(0, new ListItem("Select Image", "-1"));
+            PopulateClusterGroupsDdl(ddlClusterGroup);
         }
     }
 }

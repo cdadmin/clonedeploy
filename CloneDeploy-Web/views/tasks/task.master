@@ -28,7 +28,7 @@
                 </li>
                 <li id="unregond">
                     <a href="<%= ResolveUrl("~/views/tasks/activeond.aspx") %>">
-                        <span class="sub-nav-text">Active On Demand Tasks</span></a>
+                        <span class="sub-nav-text">Unregistered On Demand Tasks</span></a>
                 </li>
                 <li id="computer">
                     <a href="<%= ResolveUrl("~/views/tasks/computers.aspx") %>">

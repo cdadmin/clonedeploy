@@ -59,8 +59,14 @@ namespace CloneDeploy_Services
 
             new ActiveImagingTaskServices().DeleteForMulticast(multicastId);
 
-            foreach (var computer in computers)
-                new CleanTaskBootFiles(computer).Execute();
+            if (computers != null)
+            {
+                foreach (var computer in computers)
+                {
+                    if (computer != null)
+                        new CleanTaskBootFiles(computer).Execute();
+                }
+            }
 
             try
             {

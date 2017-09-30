@@ -7,7 +7,6 @@ using CloneDeploy_Common;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Services.Helpers;
 using CsvHelper;
 
 namespace CloneDeploy_Services
@@ -140,7 +139,7 @@ namespace CloneDeploy_Services
                     }
 
                     var secondaryServers =
-                        new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
+                        new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1 && x.IsActive == 1);
                     foreach (var server in secondaryServers)
                     {
                         var tftpPath =
@@ -195,7 +194,7 @@ namespace CloneDeploy_Services
                             new FileOpsServices().WritePath(path, bootMenu.BiosMenu);
                     }
                     var secondaryServers =
-                        new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1);
+                        new SecondaryServerServices().SearchSecondaryServers().Where(x => x.TftpRole == 1 && x.IsActive == 1);
                     foreach (var server in secondaryServers)
                     {
                         var tftpPath =

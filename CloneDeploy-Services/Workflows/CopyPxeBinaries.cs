@@ -2,7 +2,6 @@
 using System.IO;
 using CloneDeploy_ApiCalls;
 using CloneDeploy_Common;
-using CloneDeploy_Services.Helpers;
 using log4net;
 
 namespace CloneDeploy_Services.Workflows

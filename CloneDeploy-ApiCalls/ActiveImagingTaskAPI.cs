@@ -95,5 +95,12 @@ namespace CloneDeploy_ApiCalls
             if (response != null) return response.Value;
             return 0;
         }
+
+        public void RecreatePermanentTasks()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/RecreatePermanentTasks/", Resource);
+            _apiRequest.Execute<ApiIntResponseDTO>(Request);
+        }
     }
 }

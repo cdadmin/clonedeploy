@@ -51,14 +51,14 @@ namespace CloneDeploy_ApiCalls
         public IEnumerable<TaskWithComputer> GetMemberStatus(int id)
         {
             Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetUnicasts/{1}", Resource, id);
+            Request.Resource = string.Format("api/{0}/GetMemberStatus/{1}", Resource, id);
             return _apiRequest.Execute<List<TaskWithComputer>>(Request);
         }
 
         public IEnumerable<ActiveImagingTaskEntity> GetProgress(int id)
         {
             Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetUnicasts/{1}", Resource, id);
+            Request.Resource = string.Format("api/{0}/GetProgress/{1}", Resource, id);
             return _apiRequest.Execute<List<ActiveImagingTaskEntity>>(Request);
         }
     }

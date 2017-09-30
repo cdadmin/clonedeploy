@@ -171,7 +171,7 @@ namespace CloneDeploy_Services
                     .ToList();
         }
 
-        public List<ImageEntity> GetOnDemandImageList(int userId = 0)
+        public List<ImageEntity> GetOnDemandImageList(string task,int userId = 0)
         {
             if (userId == 0)
                 return _uow.ImageRepository.Get(i => i.IsVisible == 1 && i.Enabled == 1, q => q.OrderBy(p => p.Name));
@@ -179,16 +179,41 @@ namespace CloneDeploy_Services
                 return _uow.ImageRepository.Get(i => i.IsVisible == 1 && i.Enabled == 1, q => q.OrderBy(p => p.Name));
 
             var user = _userServices.GetUser(userId);
+
+            var requireImageApproval = new SettingServices().GetSetting(SettingStrings.RequireImageApproval).Value;
+
             if (user.ImageManagementEnabled == 0)
-                return _uow.ImageRepository.Get(i => i.IsVisible == 1 && i.Enabled == 1, q => q.OrderBy(p => p.Name));
+            {
+                if (requireImageApproval == "True" && !task.Contains("upload"))
+                    return _uow.ImageRepository.Get(i => i.IsVisible == 1 && i.Enabled == 1 && i.Approved == 1, q => q.OrderBy(p => p.Name));
+                else
+                    return _uow.ImageRepository.Get(i => i.IsVisible == 1 && i.Enabled == 1, q => q.OrderBy(p => p.Name));
+            }
 
             var userManagedImages = _userServices.GetUserImageManagements(userId);
             var listOfImages = new List<ImageEntity>();
-            listOfImages.AddRange(
-                userManagedImages.Select(
-                    managedImage =>
-                        _uow.ImageRepository.GetFirstOrDefault(
-                            i => i.IsVisible == 1 && i.Id == managedImage.ImageId && i.Enabled == 1)));
+            if (requireImageApproval == "True" && !task.Contains("upload"))
+            {
+                foreach (var userManagedImage in userManagedImages)
+                {
+                    var image =_uow.ImageRepository.GetFirstOrDefault(
+                                i => i.IsVisible == 1 && i.Id == userManagedImage.ImageId && i.Enabled == 1 && i.Approved == 1);
+                    if(image != null)
+                        listOfImages.Add(image);
+                }
+              
+            }
+            else
+            {
+                foreach (var userManagedImage in userManagedImages)
+                {
+                    var image = _uow.ImageRepository.GetFirstOrDefault(
+                                i => i.IsVisible == 1 && i.Id == userManagedImage.ImageId && i.Enabled == 1);
+                    if (image != null)
+                        listOfImages.Add(image);
+                }
+            }
+          
             return listOfImages;
         }
 
@@ -248,6 +273,9 @@ namespace CloneDeploy_Services
                 imageWithDate.Approved = image.Approved;
                 imageWithDate.LastUsed = new AuditLogServices().GetImageLastUsedDate(image.Id);
                 imageWithDate.ClassificationId = image.ClassificationId;
+                imageWithDate.LastUploadGuid = image.LastUploadGuid;
+                imageWithDate.Type = image.Type;
+                imageWithDate.Description = image.Description;
                 listWithDate.Add(imageWithDate);
             }
 

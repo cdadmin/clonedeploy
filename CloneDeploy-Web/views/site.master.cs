@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Linq;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using CloneDeploy_ApiCalls;
 using CloneDeploy_Common;
-using CloneDeploy_Entities;
 using CloneDeploy_Web.BasePages;
 
 namespace CloneDeploy_Web.views
@@ -44,8 +42,7 @@ namespace CloneDeploy_Web.views
             gvTasks.DataSource = new APICall().ActiveImagingTaskApi.GetActiveTasks();
             gvTasks.DataBind();
 
-            var currentUser = Session["CloneDeployUser"];
-            var cu = (CloneDeployUserEntity) currentUser;
+
             var listOfAuditLogs = new APICall().CloneDeployUserApi.GetCurrentUserAuditLogs(1000);
             gvHistory.DataSource = listOfAuditLogs;
             gvHistory.DataBind();

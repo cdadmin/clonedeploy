@@ -6,7 +6,6 @@ using System.Text.RegularExpressions;
 using CloneDeploy_ApiCalls;
 using CloneDeploy_Common;
 using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Services.Helpers;
 using log4net;
 
 namespace CloneDeploy_Services.Workflows

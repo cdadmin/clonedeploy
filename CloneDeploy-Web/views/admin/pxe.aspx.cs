@@ -51,6 +51,7 @@ namespace CloneDeploy_Web.views.admin
                 var newBootMenu = false;
                 if (Call.SettingApi.UpdatePxeSettings(listSettings))
                 {
+                    Call.ActiveImagingTaskApi.RecreatePermanentTasks();
                     if (!Call.WorkflowApi.CopyPxeBinaries())
                     {
                         EndUserMessage = "Could Not Copy PXE Binaries";

@@ -31,14 +31,16 @@ namespace CloneDeploy_Services
             var imageClassifications = new ComputerServices().GetComputerImageClassifications(computerId);
             if (imageClassifications == null) return listImages;
             if (imageClassifications.Count == 0) return listImages;
+
             foreach (var image in listImages)
             {
-                if (image.ClassificationId == -1)
+                //Debatable - Should computers with image classifications be able to see unclassified images - Currently no
+                /*if (image.ClassificationId == -1 || image.ClassificationId == 0)
                 {
                     //Image has no classification, add it
                     filteredImageList.Add(image);
                     continue;
-                }
+                }*/
 
                 foreach (var classification in imageClassifications)
                 {

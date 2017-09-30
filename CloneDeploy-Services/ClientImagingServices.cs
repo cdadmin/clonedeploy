@@ -56,7 +56,9 @@ namespace CloneDeploy_Services
                 Enabled = 1,
                 IsVisible = 1,
                 Os = "",
-                Description = ""
+                Description = "",
+                ClassificationId = -1
+                
             };
             var result = new ImageServices().AddImage(image);
             if (result.Success)
@@ -76,7 +78,8 @@ namespace CloneDeploy_Services
                 Enabled = 1,
                 IsVisible = 1,
                 Os = "",
-                Description = ""
+                Description = "",
+                ClassificationId = -1
             };
             var result = new ImageServices().AddImage(image);
             if (result.Success)
@@ -95,7 +98,8 @@ namespace CloneDeploy_Services
                 Enabled = 1,
                 IsVisible = 1,
                 Os = "",
-                Description = ""
+                Description = "",
+                ClassificationId = -1
             };
             var result = new ImageServices().AddImage(image);
             if (result.Success)
@@ -241,8 +245,18 @@ namespace CloneDeploy_Services
             task.Status = "1";
             task.DpId = imageDistributionPoint;
 
-            var image = new ImageServices().GetImage(computer.ImageId);
-            if (image.Protected == 1 && task.Type == "upload")
+            ImageEntity image = null;
+            if (task.Type == "multicast")
+            {
+                var mcTask = new ActiveMulticastSessionServices().Get(task.MulticastId);
+                var group = new GroupServices().GetGroupByName(mcTask.Name);
+                image = new ImageServices().GetImage(group.ImageId);
+            }
+            else
+            {
+                image = new ImageServices().GetImage(computer.ImageId);
+            }
+            if (image.Protected == 1 && task.Type.Contains("upload"))
             {
                 checkIn.Result = "false";
                 checkIn.Message = "This Image Is Protected";
@@ -652,9 +666,16 @@ namespace CloneDeploy_Services
             return JsonConvert.SerializeObject(tag);
         }
 
-        public string ImageList(string environment, string computerId, int userId = 0)
+        public string ImageList(string environment, string computerId,string task, int userId = 0)
         {
-            var images = new ImageServices().GetOnDemandImageList(userId);
+            var images = new ImageServices().GetOnDemandImageList(task,userId);
+
+            if (images.Count == 0)
+            {
+                var imageList = new ImageList { Images = new List<string>() };
+                imageList.Images.Add(-1 + " " + "No_Images_Found");
+                return JsonConvert.SerializeObject(imageList);
+            }
             if (computerId == "false")
                 computerId = "0";
             var filteredImages = new ComputerImageClassificationServices().FilterForOnDemandList(Convert.ToInt32(computerId), images);
@@ -673,7 +694,14 @@ namespace CloneDeploy_Services
             }
             else
             {
-                var imageList = new ImageList {Images = new List<string>()};
+                var imageList = new ImageList { Images = new List<string>() };
+                if (images.Count == 0)
+                {
+                    imageList.Images.Add(-1 + " " + "No_Images_Found");
+                    return JsonConvert.SerializeObject(imageList);
+                }
+
+
                 if (environment == "macOS")
                     filteredImages = filteredImages.Where(x => x.Environment == "macOS").ToList();
                 else if (environment == "linux")
@@ -838,6 +866,46 @@ namespace CloneDeploy_Services
             var checkIn = new CheckIn();
             var computerServices = new ComputerServices();
 
+            if (userId != null) //on demand
+            {
+                //Check permissions
+                if (task.Contains("deploy"))
+                {
+                    if (
+                        !new AuthorizationServices(Convert.ToInt32(userId), AuthorizationStrings.ImageDeployTask)
+                            .IsAuthorized())
+                    {
+                        checkIn.Result = "false";
+                        checkIn.Message = "This User Is Not Authorized To Deploy Images";
+                        return JsonConvert.SerializeObject(checkIn);
+                    }
+                }
+
+                if (task.Contains("upload"))
+                {
+                    if (
+                        !new AuthorizationServices(Convert.ToInt32(userId), AuthorizationStrings.ImageUploadTask)
+                            .IsAuthorized())
+                    {
+                        checkIn.Result = "false";
+                        checkIn.Message = "This User Is Not Authorized To Upload Images";
+                        return JsonConvert.SerializeObject(checkIn);
+                    }
+                }
+
+                if (task.Contains("multicast"))
+                {
+                    if (
+                        !new AuthorizationServices(Convert.ToInt32(userId), AuthorizationStrings.ImageMulticastTask)
+                            .IsAuthorized())
+                    {
+                        checkIn.Result = "false";
+                        checkIn.Message = "This User Is Not Authorized To Multicast Images";
+                        return JsonConvert.SerializeObject(checkIn);
+                    }
+                }
+            }
+
             ComputerEntity computer = null;
             if (computerId != "false")
                 computer = computerServices.GetComputer(Convert.ToInt32(computerId));
@@ -940,6 +1008,7 @@ namespace CloneDeploy_Services
         public void UpdateProgress(int taskId, string progress, string progressType)
         {
             var activeImagingTaskServices = new ActiveImagingTaskServices();
+            if (string.IsNullOrEmpty(progress)) return;
             var task = activeImagingTaskServices.GetTask(taskId);
             if (progressType == "wim")
             {

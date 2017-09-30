@@ -41,7 +41,11 @@ function checkin()
     if [ "$is_ondemand" = "true" ]; then
 	  log " ** Using On Demand Mode ** "
       log " ** Creating Active Task ** " "display"
-	  checkInStatus=$($curlAuth --data "mac=$mac&objectId=$image_profile_id&task=$task&userId=$user_id&computerId=$computer_id" "${web}OnDemandCheckIn" $curlEnd)
+	  if [ "$task" = "ondmulticast" ]; then
+	     checkInStatus=$($curlAuth --data "mac=$mac&objectId=$multicastId&task=$task&userId=$user_id&computerId=$computer_id" "${web}OnDemandCheckIn" $curlEnd)
+	  else
+	     checkInStatus=$($curlAuth --data "mac=$mac&objectId=$image_profile_id&task=$task&userId=$user_id&computerId=$computer_id" "${web}OnDemandCheckIn" $curlEnd)
+	  fi
     elif [ "$task" = "clobber" ]; then
 	   log " ** Using Clobber Mode ** "
 	   checkInStatus=$($curlAuth --data "mac=$mac&objectId=$image_profile_id&task=$task&userId=$user_id&computerId=$computer_id" "${web}OnDemandCheckIn" $curlEnd)
@@ -64,7 +68,7 @@ function checkin()
 			fi
 			
 			#On demand task ids are created later than web tasks, get it now
-			if [ "$is_ondemand" = "true" ]; then
+			if [ "$is_ondemand" = "true" ] || [ "$task" = "clobber" ]; then
 			  task_id=$(parse_json "$checkInStatus" .TaskId)
 			fi
 	
@@ -108,7 +112,7 @@ function checkout()
 	
 	cat /tmp/clientlog.log | grep -v "percent completed" > /tmp/cleanedlog.log
 	
-	if [ "$multicast" = "true" ]; then
+	if [ "$task" = "multicast" ] || [ "$task" = "ondmulticast" ]; then
 	mccheckoutResult=$($curlAuth --data "portBase=$multicast_port" "${web}MulticastCheckOut" $curlEnd)
 		log " ...... $mccheckoutResult"
 	fi

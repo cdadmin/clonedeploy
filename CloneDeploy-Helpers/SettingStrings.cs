@@ -18,9 +18,9 @@
 
         public const string DefaultInit = "initrd.xz";
 
-        public const string DefaultKernel32 = "4.10.1";
+        public const string DefaultKernel32 = "4.13.2";
 
-        public const string DefaultKernel64 = "4.10.1x64";
+        public const string DefaultKernel64 = "4.13.2x64";
 
         public const string EndPort = "Udpcast End Port";
 

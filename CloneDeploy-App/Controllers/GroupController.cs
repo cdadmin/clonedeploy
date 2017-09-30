@@ -146,6 +146,7 @@ namespace CloneDeploy_App.Controllers
         }
 
         [Authorize]
+        [HttpGet]
         public ApiBoolResponseDTO ReCalcSmart()
         {
             _groupServices.UpdateAllSmartGroupsMembers();

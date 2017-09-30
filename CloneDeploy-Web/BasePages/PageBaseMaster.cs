@@ -222,11 +222,14 @@ namespace CloneDeploy_Web.BasePages
             ddlImages.Items.Insert(0, new ListItem("Select Image", "-1"));
 
             var computer = Call.ComputerApi.GetWithImage(computerId);
-            if (!string.IsNullOrEmpty(computer.Image.Name))
+            if (computer.Image != null)
             {
-                var currentImage = new ListItem(computer.Image.Name, computer.Image.Id.ToString());
-                if (!ddlImages.Items.Contains(currentImage))
-                    ddlImages.Items.Add(currentImage);
+                if (!string.IsNullOrEmpty(computer.Image.Name))
+                {
+                    var currentImage = new ListItem(computer.Image.Name, computer.Image.Id.ToString());
+                    if (!ddlImages.Items.Contains(currentImage))
+                        ddlImages.Items.Add(currentImage);
+                }
             }
         }
 

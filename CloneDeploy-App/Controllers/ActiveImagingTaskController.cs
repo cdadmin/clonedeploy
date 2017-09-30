@@ -6,7 +6,6 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Threading;
 using System.Web.Http;
-using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services;
@@ -89,7 +88,18 @@ namespace CloneDeploy_App.Controllers
             var userId = identity.Claims.Where(c => c.Type == "user_id")
                 .Select(c => c.Value).SingleOrDefault();
 
-            return _activeImagingTaskServices.ReadUnicasts(Convert.ToInt32(userId));
+            return _activeImagingTaskServices.ReadPermanentUnicasts(Convert.ToInt32(userId));
+        }
+
+        [Authorize]
+        [HttpGet]
+        public void RecreatePermanentTasks()
+        {
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var userId = identity.Claims.Where(c => c.Type == "user_id")
+                .Select(c => c.Value).SingleOrDefault();
+
+            _activeImagingTaskServices.RecreatePermanentTasks(Convert.ToInt32(userId));
         }
 
         [Authorize]

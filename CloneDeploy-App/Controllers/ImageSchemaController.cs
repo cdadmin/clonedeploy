@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Web.Http;
+﻿using System.Web.Http;
 using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Entities.DTOs.ImageSchemaFE;
 using CloneDeploy_Services;
 using Newtonsoft.Json;
 

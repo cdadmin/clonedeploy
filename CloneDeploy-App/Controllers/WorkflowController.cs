@@ -77,7 +77,7 @@ namespace CloneDeploy_App.Controllers
 
         [CustomAuth(Permission = "AllowOnd")]
         [HttpGet]
-        public ApiStringResponseDTO StartOnDemandMulticast(int profileId, string clientCount)
+        public ApiStringResponseDTO StartOnDemandMulticast(int profileId, string clientCount,int clusterId)
         {
             var identity = (ClaimsPrincipal) Thread.CurrentPrincipal;
             var userId = identity.Claims.Where(c => c.Type == "user_id")
@@ -86,7 +86,7 @@ namespace CloneDeploy_App.Controllers
             return new ApiStringResponseDTO
             {
                 Value =
-                    new Multicast(profileId, clientCount, Convert.ToInt32(userId), Request.GetClientIpAddress()).Create()
+                    new Multicast(profileId, clientCount, Convert.ToInt32(userId), Request.GetClientIpAddress(),clusterId).Create()
             };
         }
     }

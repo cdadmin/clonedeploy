@@ -148,6 +148,12 @@ namespace CloneDeploy_Services
 
             return group;
         }
+        public GroupEntity GetGroupByName(string groupName)
+        {
+            var group = _uow.GroupRepository.GetFirstOrDefault(x => x.Name == groupName);
+
+            return group;
+        }
 
         public GroupBootMenuEntity GetGroupBootMenu(int groupId)
         {

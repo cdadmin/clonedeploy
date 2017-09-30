@@ -2,6 +2,21 @@
 
 . /bin/lie_global_functions
 
+function check_auth()
+{
+  task_authorized=$($curlAuth --data "task=$task" "${web}CheckTaskAuth" $curlEnd)
+  if [ "$login_debug" = "1" ]; then
+    echo "$curlAuth --data "task=$task" "${web}CheckTaskAuth" $curlEnd"
+	echo "$task_authorized"
+  fi
+  if [ "$task_authorized" != "true" ]; then
+    error "Not Authorized"
+  fi
+}
+
+function main()
+{
+  local local_task=$1
 if [ "$started_from_init" != "true" ]; then
 	error "Script Cannot Be Started This Way, Exports Are Not Set."
 fi
@@ -35,6 +50,14 @@ while true; do
   fi
 done
 
+  if [ "$local_task" = "clobber" ]; then
+    task="clobber"
+    check_auth
+	/bin/lie_deploy
+	#Shouldn't hit next line, but could happen
+	reboot -f
+  fi
+
 while true; do
   taskType=$(dialog --backtitle "CloneDeploy" --title "Select A Task" --clear  --menu "$result" 20 60 15 1 "Shutdown" 2 "Reboot" 3 "Start On Demand Task"  --stdout)
   #Cancel Button
@@ -47,9 +70,12 @@ while true; do
   elif [ "$taskType" = "2" ]; then
     reboot -f
   else
+     task="ond"
+	 check_auth
     /bin/lie_ond
   fi
 done
 
+}
 
-
+main "$@"

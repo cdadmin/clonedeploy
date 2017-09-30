@@ -238,7 +238,7 @@ function download_image()
   		
   touch /tmp/clone.progress
 			
-  if [ "$multicast" = "true" ]; then
+  if [ "$task" = "multicast" ] || [ "$task" = "ondmulticast" ]; then
     if [ "$decompress_multicast_on_client" = "true" ]; then
 	    log "lie_reporter $task_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination"
       lie_reporter $task_id partclone & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | $partCompAlg | partclone.$(parse_json "$current_object" .PartcloneFileSystem) -B -r -o $destination
@@ -284,7 +284,7 @@ function download_image()
 	  destination="/mnt/fs"
 	fi
 	
-	if [ "$multicast" = "true" ]; then
+	if [ "$task" = "multicast" ] || [ "$task" = "ondmulticast" ]; then
 	  log "lie_reporter $task_id wim & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimlib-imagex apply - 1 $destination $wim_arguments"
 	  lie_reporter $task_id wim & udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimlib-imagex apply - 1 $destination $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress
 	else

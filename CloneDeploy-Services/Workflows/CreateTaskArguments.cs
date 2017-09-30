@@ -64,7 +64,7 @@ namespace CloneDeploy_Services.Workflows
             AppendString("image_name=" + _imageProfile.Image.Name);
             AppendString("profile_id=" + _imageProfile.Id);
             AppendString("server_ip=" + SettingServices.GetSettingValue(SettingStrings.ServerIp));
-            AppendString(_direction == "multicast" ? "multicast=true" : "multicast=false");
+            //AppendString(_direction == "multicast" ? "multicast=true" : "multicast=false");
             AppendString("pre_scripts=" + preScripts);
             AppendString("post_scripts=" + postScripts);
             AppendString("file_copy=" + areFilesToCopy);
@@ -131,7 +131,7 @@ namespace CloneDeploy_Services.Workflows
                     AppendString("custom_deploy_schema=true");
                     SetCustomSchemaDeploy();
                 }
-                if (_direction == "multicast")
+                if (_direction.Contains("multicast"))
                 {
                     if (SettingServices.GetSettingValue(SettingStrings.MulticastDecompression) == "client")
                         AppendString("decompress_multicast_on_client=true");

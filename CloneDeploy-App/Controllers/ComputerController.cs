@@ -57,8 +57,7 @@ namespace CloneDeploy_App.Controllers
         {
             var computer = _computerService.GetComputer(id);
             var result = _computerService.DeleteComputer(id);
-            if (result.Id == 0)
-                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound, result));
+         
             if (result.Success)
             {
                 _auditLog.AuditType = AuditEntry.Type.Delete;

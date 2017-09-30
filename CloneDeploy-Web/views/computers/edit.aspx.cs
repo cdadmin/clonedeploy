@@ -29,6 +29,7 @@ namespace CloneDeploy_Web.views.computers
             Computer.CustomAttribute4 = txtCustom4.Text;
             Computer.CustomAttribute5 = txtCustom5.Text;
             Computer.AlternateServerIpId = Convert.ToInt32(altServerIp.SelectedValue);
+            Computer.ClientIdentifier = txtClientId.Text;
 
             var result = Call.ComputerApi.Put(Computer.Id, Computer);
 
@@ -93,7 +94,7 @@ namespace CloneDeploy_Web.views.computers
             txtCustom5.Text = Computer.CustomAttribute5;
             altServerIp.SelectedValue = Computer.AlternateServerIpId.ToString();
             txtClientId.Text = Computer.ClientIdentifier;
-            txtClientId.ReadOnly = true;
+
         }
     }
 }

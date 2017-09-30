@@ -70,6 +70,7 @@ namespace CloneDeploy_Entities
             Map(m => m.Description).Name("Description");
             Map(m => m.Type).Name("Type");
             Map(m => m.Environment).Name("Environment");
+            Map(m => m.LastUploadGuid).Name("LastUploadGuid");
         }
     }
 }

@@ -6,7 +6,6 @@ using CloneDeploy_ApiCalls;
 using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
-using CloneDeploy_Services.Helpers;
 
 namespace CloneDeploy_Services.Workflows
 {
@@ -40,7 +39,7 @@ namespace CloneDeploy_Services.Workflows
             ipxe.Append("#!ipxe" + newLineChar);
             ipxe.Append("kernel " + webPath + "IpxeBoot?filename=" + _imageProfile.Kernel +
                         "&type=kernel" + " initrd=" + _imageProfile.BootImage +
-                        " root=/dev/ram0 rw ramdisk_size=156000 task=clobber " + "imageProfileId=" + _imageProfile.Id +
+                        " root=/dev/ram0 rw ramdisk_size=156000 task=clobber " + "image_profile_id=" + _imageProfile.Id +
                         namePromptArg +
                         " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" + userToken + " " + globalComputerArgs +
                         " " + _imageProfile.KernelArguments + newLineChar);
@@ -53,7 +52,7 @@ namespace CloneDeploy_Services.Workflows
             sysLinux.Append("LABEL clonedeploy" + newLineChar);
             sysLinux.Append("KERNEL kernels" + Path.DirectorySeparatorChar + _imageProfile.Kernel + newLineChar);
             sysLinux.Append("APPEND initrd=images" + Path.DirectorySeparatorChar + _imageProfile.BootImage +
-                            " root=/dev/ram0 rw ramdisk_size=156000 task=clobber " + "imageProfileId=" +
+                            " root=/dev/ram0 rw ramdisk_size=156000 task=clobber " + "image_profile_id=" +
                             _imageProfile.Id + namePromptArg +
                             " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" + userToken + " " +
                             globalComputerArgs +
@@ -66,7 +65,7 @@ namespace CloneDeploy_Services.Workflows
             grub.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
                         newLineChar);
             grub.Append("linux /kernels/" + _imageProfile.Kernel +
-                        " root=/dev/ram0 rw ramdisk_size=156000 task=clobber " + "imageProfileId=" + _imageProfile.Id +
+                        " root=/dev/ram0 rw ramdisk_size=156000 task=clobber " + "image_profile_id=" + _imageProfile.Id +
                         namePromptArg + " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" +
                         userToken + " " +
                         globalComputerArgs + " " + _imageProfile.KernelArguments + newLineChar);

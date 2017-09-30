@@ -435,6 +435,7 @@ namespace CloneDeploy_Services.Workflows
             string partitionScript = null;
             if (ImageSchema.HardDrives[HdNumberToGet].Table.ToLower() == "gpt")
             {
+                var counter = 1;
                 foreach (var partition in clientSchema.PrimaryAndExtendedPartitions)
                 {
                     if (partition.Type.ToLower() == "recovery")
@@ -468,15 +469,28 @@ namespace CloneDeploy_Services.Workflows
                     }
                     else if (partition.Type.ToLower() == "basic")
                     {
-                        partitionScript +=
-                            "New-Partition " + ClientHd + " -GptType '{ebd0a0a2-b9e5-4433-87c0-68b6b72699c7}' -Size " +
-                            partition.Size*ImageSchema.HardDrives[HdNumberToGet].Lbs/1024/1024 +
-                            "MB | Format-Volume -FileSystem NTFS 2>&1 >> $clientLog\r\n";
+                        if (partition.SizeIsDynamic && counter == clientSchema.PrimaryAndExtendedPartitions.Count)
+                        {
+                            partitionScript +=
+                               "New-Partition " + ClientHd +
+                               " -GptType '{ebd0a0a2-b9e5-4433-87c0-68b6b72699c7}' -UseMaximumSize " +
+                               " | Format-Volume -FileSystem NTFS 2>&1 >> $clientLog\r\n";
+                        }
+                        else
+                        {
+                            partitionScript +=
+                                "New-Partition " + ClientHd +
+                                " -GptType '{ebd0a0a2-b9e5-4433-87c0-68b6b72699c7}' -Size " +
+                                partition.Size*ImageSchema.HardDrives[HdNumberToGet].Lbs/1024/1024 +
+                                "MB | Format-Volume -FileSystem NTFS 2>&1 >> $clientLog\r\n";
+                        }
                     }
+                    counter++;
                 }
             }
             else //mbr
             {
+                var counter = 1;
                 foreach (var partition in clientSchema.PrimaryAndExtendedPartitions)
                 {
                     var isActive = "";
@@ -484,10 +498,21 @@ namespace CloneDeploy_Services.Workflows
                         isActive = "-IsActive";
                     if (partition.Type == "Unknown") //Not sure how to handle this yet
                         partition.Type = "IFS";
-                    partitionScript +=
-                        "New-Partition " + ClientHd + " -MbrType " + partition.Type + " -Size " +
-                        partition.Size*ImageSchema.HardDrives[HdNumberToGet].Lbs/1024/1024 + "MB " + isActive +
-                        " | Format-Volume -FileSystem " + partition.FsType + " 2>&1 >> $clientLog\r\n";
+
+                    if (partition.SizeIsDynamic && clientSchema.PrimaryAndExtendedPartitions.Count == counter)
+                    {
+                        partitionScript +=
+                            "New-Partition " + ClientHd + " -MbrType " + partition.Type + " -UseMaximumSize " + isActive +
+                            " | Format-Volume -FileSystem " + partition.FsType + " 2>&1 >> $clientLog\r\n";
+                    }
+                    else
+                    {
+                        partitionScript +=
+                           "New-Partition " + ClientHd + " -MbrType " + partition.Type + " -Size " +
+                           partition.Size * ImageSchema.HardDrives[HdNumberToGet].Lbs / 1024 / 1024 + "MB " + isActive +
+                           " | Format-Volume -FileSystem " + partition.FsType + " 2>&1 >> $clientLog\r\n";
+                    }
+                    counter++;
                 }
             }
 

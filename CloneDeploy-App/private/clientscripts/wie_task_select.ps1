@@ -63,7 +63,7 @@ ForEach ($nic in $nicList)
         }
         else
         {
-            if($computerTaskObject.task -eq "upload" -or $computerTaskObject.task -eq "deploy" -or $computerTaskObject.task -eq "permanentdeploy")
+            if($computerTaskObject.task -eq "upload" -or $computerTaskObject.task -eq "deploy" -or $computerTaskObject.task -eq "permanentdeploy" -or $computerTaskObject.task -eq "multicast")
             {
                 $script:computer_id=$computerTaskObject.computerId
                 $script:task=$computerTaskObject.task
@@ -109,7 +109,7 @@ ForEach ($nic in $nicList)
             }
             else
             {
-                if($computerTaskObject.task -eq "upload" -or $computerTaskObject.task -eq "deploy" -or $computerTaskObject.task -eq "permanantdeploy")
+                if($computerTaskObject.task -eq "upload" -or $computerTaskObject.task -eq "deploy" -or $computerTaskObject.task -eq "permanantdeploy" -or $computerTaskObject.task -eq "multicast")
                 {
                     $script:computer_id=$computerTaskObject.computerId
                     $script:task=$computerTaskObject.task
@@ -147,7 +147,16 @@ if($script:isOnDemand)
 {
     log -message " ** Using On Demand Mode ** "
     log -message " ** Creating Active Task ** " -isDisplay "true"
-    $checkInStatus=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "mac=$script:mac&objectId=$script:imageProfileId&task=$script:task&userId=$script:userId&computerId=$script:computer_id" ${script:web}OnDemandCheckIn --connect-timeout 10 --stderr -)
+
+    if($script:task -eq "ondmulticast")
+    {
+        $checkInStatus=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "mac=$script:mac&objectId=$script:multicastId&task=$script:task&userId=$script:userId&computerId=$script:computer_id" ${script:web}OnDemandCheckIn --connect-timeout 10 --stderr -)
+    }
+    else
+    {
+        $checkInStatus=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "mac=$script:mac&objectId=$script:imageProfileId&task=$script:task&userId=$script:userId&computerId=$script:computer_id" ${script:web}OnDemandCheckIn --connect-timeout 10 --stderr -)
+    }
+    
 }
 else
 {

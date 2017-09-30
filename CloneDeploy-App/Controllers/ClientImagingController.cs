@@ -358,7 +358,7 @@ namespace CloneDeploy_App.Controllers
             _response.Content =
                 new StringContent(
                     new ClientImagingServices().ImageList(imageListDto.environment,
-                        imageListDto.computerid, Convert.ToInt32(imageListDto.userId)),
+                        imageListDto.computerid,imageListDto.task, Convert.ToInt32(imageListDto.userId)),
                     Encoding.UTF8, "text/plain");
             return _response;
         }

@@ -74,6 +74,7 @@ namespace CloneDeploy_Services
             actionResult.Success = true;
             actionResult.Id = activeImagingTaskId;
 
+            if(computer != null)
             new CleanTaskBootFiles(computer).Execute();
 
             return actionResult;
@@ -196,6 +197,12 @@ namespace CloneDeploy_Services
             return activeImagingTasks;
         }
 
+        public List<TaskWithComputer> GetAllPermanentTasks()
+        {
+            //For recreate permanent tasks workflow
+            return _uow.ActiveImagingTaskRepository.GetPermanentUnicastsWithComputersForAdmin();
+        }
+
         public List<TaskWithComputer> ReadUnicasts(int userId)
         {
             //Admins see all tasks
@@ -206,11 +213,24 @@ namespace CloneDeploy_Services
             return activeImagingTasks;
         }
 
+        public void RecreatePermanentTasks(int userId)
+        {
+            var activeImagingServices = new ActiveImagingTaskServices();
+            var permananentTasks = activeImagingServices.GetAllPermanentTasks();
+            foreach (var task in permananentTasks)
+            {
+                var computerId = task.ComputerId;
+                activeImagingServices.DeleteActiveImagingTask(task.Id);
+                new Workflows.Unicast(computerId, "permanentdeploy", userId, "").Start();
+            }
+        }
+
         public void SendTaskCompletedEmail(ActiveImagingTaskEntity task)
         {
             //Mail not enabled
             if (SettingServices.GetSettingValue(SettingStrings.SmtpEnabled) == "0") return;
             var computer = new ComputerServices().GetComputer(task.ComputerId);
+            if (computer == null) return;
             foreach (
                 var user in
                     _userServices.SearchUsers("").Where(x => x.NotifyComplete == 1 && !string.IsNullOrEmpty(x.Email)))
@@ -239,6 +259,11 @@ namespace CloneDeploy_Services
             {
                 if (task.UserId == user.Id)
                 {
+                    if (computer == null)
+                    {
+                        computer = new ComputerEntity();
+                        computer.Name = "Unknown Computer";
+                    }
                     var mail = new MailServices
                     {
                         MailTo = user.Email,

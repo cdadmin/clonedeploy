@@ -25,7 +25,7 @@ namespace CloneDeploy_Services
             var auditLog = _uow.AuditLogRepository.Get(
                 x =>
                     x.ObjectType == "Image" && x.ObjectId == imageId &&
-                    (x.AuditType.ToString() == "Deploy" || x.AuditType.ToString() == "Upload"))
+                    (x.AuditType.ToString().ToLower().Contains("deploy") || x.AuditType.ToString().ToLower().Contains("upload") || x.AuditType.ToString().ToLower().Contains("push") || x.AuditType.ToString().ToLower().Contains("multicast")))
                 .OrderByDescending(x => x.Id)
                 .FirstOrDefault();
 
