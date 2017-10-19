@@ -19,10 +19,17 @@
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/jquery-labelauty.js") %>" charset="utf-8"></script>
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/scrollsaver.js") %>" charset="utf-8"></script>
     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/bootstrap.min.js") %>" charset="utf-8"></script>
+    
+    
+
+     <link href="~/content/js/fineuploader/fine-uploader-gallery.min.css" rel="stylesheet" type="text/css" />
+     <link href="~/content/js/fineuploader/fine-uploader-new.css" rel="stylesheet" type="text/css" />
+     <script type="text/javascript" src="<%= ResolveUrl("~/content/js/fineuploader/fine-uploader.min.js") %>"></script>
+    
 
     <link href="~/content/css/splitbutton.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="~/content/css/BreadCrumb.css" />
-
+ 
     <link href="~/content/js/jquery-labelauty.css" rel="stylesheet" type="text/css" />
     <link href="~/content/css/base.css" rel="stylesheet" type="text/css" />
     <link href="~/content/css/icons.css" rel="stylesheet" type="text/css" />
@@ -106,6 +113,9 @@
                         </li>
                         <li id="nav-settings">
                             <a href="<%= ResolveUrl("~/views/admin/server/server.aspx") %>" class="icon-setting" title="Admin Settings"></a>
+                        </li>
+                          <li id="nav-policies">
+                            <a href="<%= ResolveUrl("~/views/policies/search.aspx") %>" class="icon-setting" title="Policies"></a>
                         </li>
 
 

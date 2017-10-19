@@ -1,0 +1,92 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/views/site.master" AutoEventWireup="true" CodeBehind="policies.master.cs" Inherits="CloneDeploy_Web.views.policies.policies" %>
+<asp:Content ID="SubNav" ContentPlaceHolderID="SubNav" runat="Server">
+
+    <div id="Level1" runat="server">
+        <ul>
+            <li id="search">
+                <a href="<%= ResolveUrl("~/views/policies/search.aspx") %>">
+                    <span class="sub-nav-text">Policies</span></a>
+            </li>
+            <li id="software">
+                <a href="<%= ResolveUrl("~/views/policies/softwaremodules/search.aspx") %>">
+                    <span class="sub-nav-text">Software Modules</span></a>
+            </li>
+             <li id="printer">
+                <a href="<%= ResolveUrl("~/views/policies/printermodules/search.aspx") %>">
+                    <span class="sub-nav-text">Printer Modules</span></a>
+            </li>
+             <li id="command">
+                <a href="<%= ResolveUrl("~/views/policies/commandmodules/search.aspx") %>">
+                    <span class="sub-nav-text">Command Modules</span></a>
+            </li>
+             <li id="script">
+                <a href="<%= ResolveUrl("~/views/policies/scriptmodules/search.aspx") %>">
+                    <span class="sub-nav-text">Script Modules</span></a>
+            </li>
+             <li id="file">
+                <a href="<%= ResolveUrl("~/views/policies/filecopymodules/search.aspx") %>">
+                    <span class="sub-nav-text">File Copy Modules</span></a>
+            </li>
+
+           
+        </ul>
+    </div>
+
+    <div id="Level2" runat="server">
+
+
+    </div>
+
+</asp:Content>
+
+<asp:Content runat="server" ID="Breadcrumb" ContentPlaceHolderID="Breadcrumb">
+    <li>
+        <a href="<%= ResolveUrl("~/views/policies/search.aspx") %>">Policies</a>
+    </li>
+    <asp:ContentPlaceHolder ID="BreadcrumbSub" runat="server">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+
+<asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="PageActions">
+
+
+    <asp:ContentPlaceHolder ID="SubPageActionsRight" runat="server">
+    </asp:ContentPlaceHolder>
+
+    <ul class="dropdown-menu">
+        <asp:ContentPlaceHolder ID="AdditionalActions" runat="server"></asp:ContentPlaceHolder>
+      
+
+
+        <asp:ContentPlaceHolder ID="Help" runat="server"></asp:ContentPlaceHolder>
+    </ul>
+
+</asp:Content>
+
+<asp:Content runat="server" ID="PageNav" ContentPlaceHolderID="PageNav">
+    <asp:ContentPlaceHolder runat="server" ID="PageNavSub"></asp:ContentPlaceHolder>
+</asp:Content>
+<asp:Content ID="MainContent" ContentPlaceHolderID="Content" runat="Server">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#navhosts').addClass("nav-current");
+        });
+    </script>
+    <asp:ContentPlaceHolder ID="SubContent" runat="server">
+    </asp:ContentPlaceHolder>
+
+    <br class="clear"/>
+    <div id="confirmbox" class="confirm-box-outer">
+        <div class="confirm-box-inner">
+            <h4>
+                <asp:Label ID="lblTitle" runat="server" CssClass="modaltitle"></asp:Label>
+            </h4>
+
+            <div class="confirm-box-btns">
+                <asp:LinkButton ID="buttonConfirm" OnClick="buttonConfirm_Click" runat="server" Text="Yes" CssClass="confirm_yes"/>
+                <asp:LinkButton ID="CancelButton" runat="server" Text="No" CssClass="confirm_no"/>
+            </div>
+        </div>
+    </div>
+</asp:Content>

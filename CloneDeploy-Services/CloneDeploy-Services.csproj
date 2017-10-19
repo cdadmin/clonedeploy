@@ -69,6 +69,7 @@
     <Compile Include="ClientImagingServices.cs" />
     <Compile Include="ClusterGroupDistributionPointServices.cs" />
     <Compile Include="ComputerBootMenuServices.cs" />
+    <Compile Include="FileUploadServices.cs" />
     <Compile Include="TokenServices.cs" />
     <Compile Include="GroupImageClassificationServices.cs" />
     <Compile Include="ComputerImageClassificationServices.cs" />

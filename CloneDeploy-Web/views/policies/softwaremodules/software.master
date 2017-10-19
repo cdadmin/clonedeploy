@@ -1,0 +1,40 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/views/policies/policies.master" AutoEventWireup="true" CodeBehind="software.master.cs" Inherits="CloneDeploy_Web.views.policies.softwaremodules.software" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="BreadcrumbSub" Runat="Server">
+    <li >
+        <a href="<%= ResolveUrl("~/views/policies/softwaremodules/search.aspx") %>?level=2">Software Modules</a>
+    </li>
+    <asp:ContentPlaceHolder runat="server" ID="BreadcrumbSub2">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content runat="server" ID="Help" ContentPlaceHolderID="Help">
+    <asp:ContentPlaceHolder runat="server" ID="SubHelp">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content runat="server" ID="ActionsRight" ContentPlaceHolderID="SubPageActionsRight">
+    <asp:ContentPlaceHolder runat="server" ID="ActionsRightSub">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="PageNavSub" Runat="Server">
+    <li id="search">
+        <a href="<%= ResolveUrl("~/views/policies/softwaremodules/search.aspx") %>?level=2">
+            <span class="sub-nav-text">Search Software Modules</span></a>
+    </li>
+    <li id="create">
+        <a href="<%= ResolveUrl("~/views/policies/softwaremodules/create.aspx") %>?level=2">
+            <span class="sub-nav-text">New Software Module</span></a>
+    </li>
+</asp:Content>
+
+<asp:Content ID="Content3" ContentPlaceHolderID="SubContent" Runat="Server">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#software').addClass("nav-current");
+        });
+    </script>
+    <asp:ContentPlaceHolder ID="SubContent2" runat="server">
+    </asp:ContentPlaceHolder>
+</asp:Content>

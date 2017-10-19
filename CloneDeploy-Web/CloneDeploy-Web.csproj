@@ -52,6 +52,11 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -70,10 +75,54 @@
     <Content Include="content\fonts\OpenSans-Light.eot" />
     <Content Include="content\fonts\OpenSans-Light.ttf" />
     <Content Include="content\fonts\OpenSans-Regular.ttf" />
+    <Content Include="content\js\fineuploader\continue.gif" />
+    <Content Include="content\js\fineuploader\dnd.js" />
+    <Content Include="content\js\fineuploader\dnd.min.js" />
+    <Content Include="content\js\fineuploader\edit.gif" />
+    <Content Include="content\js\fineuploader\fine-uploader-gallery.css" />
+    <Content Include="content\js\fineuploader\fine-uploader-gallery.min.css" />
+    <Content Include="content\js\fineuploader\fine-uploader-new.css" />
+    <Content Include="content\js\fineuploader\fine-uploader-new.min.css" />
+    <Content Include="content\js\fineuploader\fine-uploader.core.js" />
+    <Content Include="content\js\fineuploader\fine-uploader.core.min.js" />
+    <Content Include="content\js\fineuploader\fine-uploader.css" />
+    <Content Include="content\js\fineuploader\fine-uploader.js" />
+    <Content Include="content\js\fineuploader\fine-uploader.min.css" />
+    <Content Include="content\js\fineuploader\fine-uploader.min.js" />
+    <Content Include="content\js\fineuploader\jquery.fine-uploader.js" />
+    <Content Include="content\js\fineuploader\jquery.fine-uploader.min.js" />
+    <Content Include="content\js\fineuploader\loading.gif" />
+    <Content Include="content\js\fineuploader\pause.gif" />
+    <Content Include="content\js\fineuploader\placeholders\not_available-generic.png" />
+    <Content Include="content\js\fineuploader\placeholders\waiting-generic.png" />
+    <Content Include="content\js\fineuploader\processing.gif" />
+    <Content Include="content\js\fineuploader\retry.gif" />
+    <Content Include="content\js\fineuploader\templates\default.html" />
+    <Content Include="content\js\fineuploader\templates\gallery.html" />
+    <Content Include="content\js\fineuploader\templates\simple-thumbnails.html" />
+    <Content Include="content\js\fineuploader\trash.gif" />
     <Content Include="content\js\images\hsizegrip.png" />
     <Content Include="content\js\jquery-resizable.js" />
     <Content Include="packages.config" />
     <Content Include="private\logs\.gitignore" />
+    <Content Include="scripts\plupload\jquery.plupload.queue\css\jquery.plupload.queue.css" />
+    <Content Include="scripts\plupload\jquery.plupload.queue\img\backgrounds.gif" />
+    <Content Include="scripts\plupload\jquery.plupload.queue\img\backgrounds.png" />
+    <Content Include="scripts\plupload\jquery.plupload.queue\img\buttons-disabled.png" />
+    <Content Include="scripts\plupload\jquery.plupload.queue\img\buttons.png" />
+    <Content Include="scripts\plupload\jquery.plupload.queue\img\delete.gif" />
+    <Content Include="scripts\plupload\jquery.plupload.queue\img\done.gif" />
+    <Content Include="scripts\plupload\jquery.plupload.queue\img\done.png" />
+    <Content Include="scripts\plupload\jquery.plupload.queue\img\error.gif" />
+    <Content Include="scripts\plupload\jquery.plupload.queue\img\error.png" />
+    <Content Include="scripts\plupload\jquery.plupload.queue\img\throbber.gif" />
+    <Content Include="scripts\plupload\jquery.plupload.queue\img\transp50.png" />
+    <Content Include="scripts\plupload\jquery.plupload.queue\jquery.plupload.queue.js" />
+    <Content Include="scripts\plupload\plupload.flash.swf" />
+    <Content Include="scripts\plupload\plupload.full.js" />
+    <Content Include="scripts\plupload\plupload.full.source.js" />
+    <Content Include="scripts\plupload\plupload.silverlight.xap" />
+    <Content Include="scripts\plupload\_readme.txt" />
     <Content Include="views\admin\admin.master" />
     <Content Include="views\admin\bootmenu\bootmenu.master" />
     <Content Include="views\admin\cluster\clustergroup.aspx" />
@@ -114,6 +163,7 @@
     <Content Include="views\images\history.aspx" />
     <Content Include="views\images\images.master" />
     <Content Include="views\images\profiles\profiles.master" />
+    <Content Include="views\policies\search.aspx" />
     <Content Include="views\site.master" />
     <Content Include="views\tasks\activeond.aspx" />
     <Content Include="views\tasks\task.master" />
@@ -121,6 +171,18 @@
     <Content Include="views\users\groupacls\groupacls.master" />
     <Content Include="views\users\history.aspx" />
     <Content Include="views\users\user.master" />
+    <Content Include="content\js\fineuploader\dnd.js.map" />
+    <Content Include="content\js\fineuploader\dnd.min.js.map" />
+    <Content Include="content\js\fineuploader\fine-uploader-gallery.min.css.map" />
+    <Content Include="content\js\fineuploader\fine-uploader-new.min.css.map" />
+    <Content Include="content\js\fineuploader\fine-uploader.core.js.map" />
+    <Content Include="content\js\fineuploader\fine-uploader.core.min.js.map" />
+    <Content Include="content\js\fineuploader\fine-uploader.js.map" />
+    <Content Include="content\js\fineuploader\fine-uploader.min.css.map" />
+    <Content Include="content\js\fineuploader\fine-uploader.min.js.map" />
+    <Content Include="content\js\fineuploader\jquery.fine-uploader.js.map" />
+    <Content Include="content\js\fineuploader\jquery.fine-uploader.min.js.map" />
+    <Content Include="content\js\fineuploader\LICENSE" />
     <None Include="Properties\PublishProfiles\web.pubxml" />
     <Content Include="views\admin\cluster\cluster.master" />
     <Content Include="views\admin\logs\logs.master" />
@@ -128,6 +190,8 @@
     <Content Include="views\admin\netboot\netboot.master" />
     <Content Include="views\admin\server\server.master" />
     <Content Include="serverlist.csv" />
+    <Content Include="views\policies\policies.master" />
+    <Content Include="views\policies\softwaremodules\software.master" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1840,6 +1904,27 @@
     <Compile Include="default.aspx.designer.cs">
       <DependentUpon>default.aspx</DependentUpon>
     </Compile>
+    <Compile Include="views\policies\policies.master.cs">
+      <DependentUpon>policies.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\policies\policies.master.designer.cs">
+      <DependentUpon>policies.master</DependentUpon>
+    </Compile>
+    <Compile Include="views\policies\search.aspx.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\policies\search.aspx.designer.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\policies\softwaremodules\software.master.cs">
+      <DependentUpon>software.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\policies\softwaremodules\software.master.designer.cs">
+      <DependentUpon>software.master</DependentUpon>
+    </Compile>
     <Compile Include="views\site.master.cs">
       <DependentUpon>site.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2044,7 +2129,12 @@
       <DependentUpon>user.master</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="views\policies\commandmodules\" />
+    <Folder Include="views\policies\filecopymodules\" />
+    <Folder Include="views\policies\printermodules\" />
+    <Folder Include="views\policies\scriptmodules\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CloneDeploy-ApiCalls\CloneDeploy-ApiCalls.csproj">
       <Project>{f5a4e04d-fa84-4abb-9690-df2539f425cd}</Project>

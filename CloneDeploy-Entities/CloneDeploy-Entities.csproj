@@ -45,6 +45,7 @@
     <Compile Include="ActiveMulticastSession.cs" />
     <Compile Include="AuditEntry.cs" />
     <Compile Include="AlternateServerIp.cs" />
+    <Compile Include="DTOs\FileUploadDTO.cs" />
     <Compile Include="DTOs\FilterGroupClassificationDTO.cs" />
     <Compile Include="DTOs\FilterComputerClassificationDTO.cs" />
     <Compile Include="GroupImageClassification.cs" />
