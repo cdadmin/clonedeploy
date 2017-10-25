@@ -39,7 +39,7 @@
     <link rel="stylesheet" href="~/content/css/circle.css" />
 
 </head>
-<body>
+<body onkeydown = "return (event.keyCode!=13)">
 
     <div class="nav-bar-mobile">
         <a href="#" class="icon-mobile-nav"></a>

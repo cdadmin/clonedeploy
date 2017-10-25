@@ -254,7 +254,7 @@ hr {
     border-radius: 3px;
 }
 
-.page-nav-menu { margin-bottom: -10px; }
+.page-nav-menu { margin-bottom: 10px;border-bottom: 1px solid #eee; }
 
 .page-nav-menu li {
     display: inline-block;
@@ -997,6 +997,33 @@ a.keygen {
     display: block;
 }
 
-.dropdown:hover .dropbtn {
-
+#trigger-upload {
+    margin-left: 10px;
+   
 }
+
+ .qq-upload-button, #trigger-upload {
+     background: #3D4F5D !important;
+    color: #fff;
+    font-size: 14px;
+    padding: 7px 9px;
+     border: none !important;
+}
+.qq-upload-button-hover {
+    background: #3D4F5D;
+}
+.qq-upload-button-focus {
+    outline: 1px dotted #000000;
+}
+
+  #fine-uploader-manual-trigger .qq-upload-button {
+            margin-right: 15px;
+        }
+
+        #fine-uploader-manual-trigger .buttons {
+            width: 36%;
+        }
+
+        #fine-uploader-manual-trigger .qq-uploader .qq-total-progress-bar-container {
+            width: 60%;
+        }

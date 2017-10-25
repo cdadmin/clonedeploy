@@ -130,7 +130,9 @@
     <Content Include="private\apps\mkisofs.exe" />
     <Content Include="private\apps\udp-receiver.exe" />
     <Content Include="private\apps\udp-sender.exe" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\SwaggerConfig.cs" />
@@ -156,6 +158,7 @@
     <Compile Include="Controllers\ProxyDhcpController.cs" />
     <Compile Include="Controllers\NetBootProfileController.cs" />
     <Compile Include="Controllers\ComputerImageClassificationController.cs" />
+    <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="Controllers\WorkflowController.cs" />
     <Compile Include="Controllers\UserGroupController.cs" />
     <Compile Include="Controllers\UserGroupGroupManagementController.cs" />

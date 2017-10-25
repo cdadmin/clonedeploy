@@ -3,7 +3,7 @@
 
     <div id="Level1" runat="server">
         <ul>
-            <li id="search">
+            <li id="policies">
                 <a href="<%= ResolveUrl("~/views/policies/search.aspx") %>">
                     <span class="sub-nav-text">Policies</span></a>
             </li>

@@ -33,6 +33,16 @@ namespace CloneDeploy_App.Controllers
 
             var baseDir = Context.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
                           Path.DirectorySeparatorChar + "policy_uploads";
+
+            if (Request["module"] == "software")
+                baseDir = Path.Combine(baseDir, "softwaremodules");
+            else
+            {
+                Response.Write(new FineUploaderResult(false, error: "Module Not Defined").BuildResponse());
+                Response.End();
+            }
+
+
             var upload = new FileUploadDTO()
             {
                 Filename = xFileName ?? qqFile ?? formFilename,

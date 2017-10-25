@@ -52,10 +52,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -105,24 +101,6 @@
     <Content Include="content\js\jquery-resizable.js" />
     <Content Include="packages.config" />
     <Content Include="private\logs\.gitignore" />
-    <Content Include="scripts\plupload\jquery.plupload.queue\css\jquery.plupload.queue.css" />
-    <Content Include="scripts\plupload\jquery.plupload.queue\img\backgrounds.gif" />
-    <Content Include="scripts\plupload\jquery.plupload.queue\img\backgrounds.png" />
-    <Content Include="scripts\plupload\jquery.plupload.queue\img\buttons-disabled.png" />
-    <Content Include="scripts\plupload\jquery.plupload.queue\img\buttons.png" />
-    <Content Include="scripts\plupload\jquery.plupload.queue\img\delete.gif" />
-    <Content Include="scripts\plupload\jquery.plupload.queue\img\done.gif" />
-    <Content Include="scripts\plupload\jquery.plupload.queue\img\done.png" />
-    <Content Include="scripts\plupload\jquery.plupload.queue\img\error.gif" />
-    <Content Include="scripts\plupload\jquery.plupload.queue\img\error.png" />
-    <Content Include="scripts\plupload\jquery.plupload.queue\img\throbber.gif" />
-    <Content Include="scripts\plupload\jquery.plupload.queue\img\transp50.png" />
-    <Content Include="scripts\plupload\jquery.plupload.queue\jquery.plupload.queue.js" />
-    <Content Include="scripts\plupload\plupload.flash.swf" />
-    <Content Include="scripts\plupload\plupload.full.js" />
-    <Content Include="scripts\plupload\plupload.full.source.js" />
-    <Content Include="scripts\plupload\plupload.silverlight.xap" />
-    <Content Include="scripts\plupload\_readme.txt" />
     <Content Include="views\admin\admin.master" />
     <Content Include="views\admin\bootmenu\bootmenu.master" />
     <Content Include="views\admin\cluster\clustergroup.aspx" />
@@ -164,6 +142,8 @@
     <Content Include="views\images\images.master" />
     <Content Include="views\images\profiles\profiles.master" />
     <Content Include="views\policies\search.aspx" />
+    <Content Include="views\policies\softwaremodules\create.aspx" />
+    <Content Include="views\policies\softwaremodules\search.aspx" />
     <Content Include="views\site.master" />
     <Content Include="views\tasks\activeond.aspx" />
     <Content Include="views\tasks\task.master" />
@@ -1916,6 +1896,20 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="views\policies\search.aspx.designer.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\policies\softwaremodules\create.aspx.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\policies\softwaremodules\create.aspx.designer.cs">
+      <DependentUpon>create.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\policies\softwaremodules\search.aspx.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\policies\softwaremodules\search.aspx.designer.cs">
       <DependentUpon>search.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\policies\softwaremodules\software.master.cs">

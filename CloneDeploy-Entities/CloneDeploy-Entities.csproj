@@ -43,6 +43,10 @@
   <ItemGroup>
     <Compile Include="ActiveImagingTaskEntity.cs" />
     <Compile Include="ActiveMulticastSession.cs" />
+    <Compile Include="CommandModule.cs" />
+    <Compile Include="FileCopyModule.cs" />
+    <Compile Include="ScriptModule.cs" />
+    <Compile Include="SoftwareModule.cs" />
     <Compile Include="AuditEntry.cs" />
     <Compile Include="AlternateServerIp.cs" />
     <Compile Include="DTOs\FileUploadDTO.cs" />
