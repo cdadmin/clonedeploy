@@ -211,7 +211,7 @@ namespace CloneDeploy_App.Controllers
         public ComputerProxyReservationEntity GetProxyReservation(int id)
         {
             var result = _computerService.GetComputerProxyReservation(id);
-            //if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            if (result == null) return new ComputerProxyReservationEntity() { BootFile = "bios_pxelinux", NextServer = "[tftp-server-ip]" };
             return result;
         }
 
