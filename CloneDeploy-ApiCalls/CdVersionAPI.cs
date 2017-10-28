@@ -20,6 +20,13 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<CdVersionEntity>(Request);
         }
 
+        public VersionDTO GetAllVersionInfo()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetAllVersionInfo", Resource);
+            return _apiRequest.Execute<VersionDTO>(Request);
+        }
+
         public bool IsFirstRunCompleted()
         {
             Request.Method = Method.GET;

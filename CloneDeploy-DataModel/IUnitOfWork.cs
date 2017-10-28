@@ -65,7 +65,9 @@ namespace CloneDeploy_DataModel
         IGenericRepository<UserImageManagementEntity> UserImageManagementRepository { get; }
         IGenericRepository<UserLockoutEntity> UserLockoutRepository { get; }
         CloneDeployUserRepository UserRepository { get; }
+        
         IGenericRepository<UserRightEntity> UserRightRepository { get; }
+      
         void Save();
     }
 }

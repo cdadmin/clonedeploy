@@ -70,7 +70,7 @@ namespace CloneDeploy_DataModel
         private IGenericRepository<UserLockoutEntity> _userLockoutRepository;
         private CloneDeployUserRepository _userRepository;
         private IGenericRepository<UserRightEntity> _userRightRepository;
-
+    
         private bool disposed;
 
         public void Dispose()
@@ -97,6 +97,8 @@ namespace CloneDeploy_DataModel
                            new GenericRepository<ActiveMulticastSessionEntity>(_context));
             }
         }
+
+   
 
         public IGenericRepository<AlternateServerIpEntity> AlternateServerIpRepository
         {

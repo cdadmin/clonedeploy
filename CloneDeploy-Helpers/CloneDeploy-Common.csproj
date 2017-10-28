@@ -36,11 +36,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthorizationStrings.cs" />
+    <Compile Include="DbUpgrades\1301.cs" />
+    <Compile Include="DbUpgrades\IDbScript.cs" />
+    <Compile Include="DbUpgrades\VersionMapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerList.cs" />
     <Compile Include="SettingStrings.cs" />
     <Compile Include="Utility.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

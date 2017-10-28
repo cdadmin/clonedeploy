@@ -20,8 +20,16 @@ namespace CloneDeploy_Web.views.dashboard
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!Call.CdVersionApi.IsFirstRunCompleted())
-                Response.Redirect("~/views/login/firstrun.aspx");
+            //Only check after login
+            if (Request.QueryString["fromlogin"] == "true")
+            {
+                //check for db upgrades here
+                var versionInfo = Call.CdVersionApi.GetAllVersionInfo();
+                if (!versionInfo.FirstRunCompleted)
+                    Response.Redirect("~/views/login/firstrun.aspx");
+                if (versionInfo.DatabaseVersion != versionInfo.TargetDbVersion)
+                    Response.Redirect("~/views/login/dbupdate.aspx");
+            }
 
             if (Request.QueryString["access"] == "denied")
             {

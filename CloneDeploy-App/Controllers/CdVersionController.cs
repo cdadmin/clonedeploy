@@ -24,6 +24,12 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
+        [Authorize]
+        public VersionDTO GetAllVersionInfo()
+        {
+            return _cdVersionServices.GetAllVersionInfo();
+        }
+
         [HttpGet]
         [Authorize]
         public ApiBoolResponseDTO IsFirstRunCompleted()

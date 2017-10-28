@@ -17,7 +17,7 @@
         <img src="<%= ResolveUrl("~/") %>content/img/logo.png" alt="logo"/>
         <br class="clear"/>
         <b>Server:</b> <asp:DropDownList runat="server" ID="ddlApplicationServers" CssClass="logo"/>
-        <asp:Login ID="WebLogin" runat="server" OnAuthenticate="WebLogin_Authenticate" DestinationPageUrl="~/views/dashboard/dash.aspx">
+        <asp:Login ID="WebLogin" runat="server" OnAuthenticate="WebLogin_Authenticate" DestinationPageUrl="~/views/dashboard/dash.aspx?fromlogin=true">
             <LayoutTemplate>
                 <asp:TextBox ID="UserName" runat="server" CssClass="uname" ClientIDMode="Static"></asp:TextBox>
                 <asp:TextBox ID="Password" runat="server" TextMode="Password" CssClass="password" ClientIDMode="Static"></asp:TextBox>

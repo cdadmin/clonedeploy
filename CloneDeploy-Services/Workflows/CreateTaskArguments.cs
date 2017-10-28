@@ -122,6 +122,7 @@ namespace CloneDeploy_Services.Workflows
                 if (Convert.ToBoolean(_imageProfile.ChangeName)) AppendString("change_computer_name=true");
                 if (Convert.ToBoolean(_imageProfile.SkipExpandVolumes)) AppendString("skip_expand_volumes=true");
                 if (Convert.ToBoolean(_imageProfile.FixBcd)) AppendString("fix_bcd=true");
+                if (Convert.ToBoolean(_imageProfile.SkipNvramUpdate)) AppendString("skip_nvram=true");
                 if (Convert.ToBoolean(_imageProfile.FixBootloader)) AppendString("fix_bootloader=true");
                 if (Convert.ToBoolean(_imageProfile.ForceDynamicPartitions))
                     AppendString("force_dynamic_partitions=true");

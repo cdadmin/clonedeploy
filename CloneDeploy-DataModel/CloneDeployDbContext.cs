@@ -69,5 +69,6 @@ namespace CloneDeploy_DataModel
         public DbSet<UserLockoutEntity> UserLockouts { get; set; }
         public DbSet<UserRightEntity> UserRight { get; set; }
         public DbSet<CloneDeployUserEntity> Users { get; set; }
+    
     }
 }

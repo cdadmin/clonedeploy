@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RawSqlServices.cs" />
     <Compile Include="ActiveImagingTaskServices.cs" />
     <Compile Include="ActiveMulticastSessionServices.cs" />
     <Compile Include="AuthorizationServices.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="ImageClassificationServices.cs" />
     <Compile Include="StringManipulationServices.cs" />
     <Compile Include="Workflows\CreateAppleVendorString.cs" />
+    <Compile Include="Workflows\DbUpdater.cs" />
     <Compile Include="Workflows\SecondaryServerMonitor.cs" />
     <Compile Include="ZipServices.cs" />
     <Compile Include="OnlineKernelServices.cs" />

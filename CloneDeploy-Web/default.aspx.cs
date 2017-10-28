@@ -66,7 +66,6 @@ namespace CloneDeploy_Web
         protected void WebLogin_Authenticate(object sender, AuthenticateEventArgs e)
         {
             
-            //ApplicationServers._baseApiUrl = ddlApplicationServers.SelectedValue;
             HttpCookie baseUrlCookie = Request.Cookies["cdBaseUrl"];
             if (baseUrlCookie == null)
             {
@@ -134,6 +133,8 @@ namespace CloneDeploy_Web
                     var cloneDeployUser = JsonConvert.DeserializeObject<CloneDeployUserEntity>(result.ObjectJson);
                     Session["CloneDeployUser"] = cloneDeployUser;
                     e.Authenticated = true;
+
+               
                 }
                 else
                 {

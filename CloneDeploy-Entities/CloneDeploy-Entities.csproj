@@ -47,6 +47,7 @@
     <Compile Include="AlternateServerIp.cs" />
     <Compile Include="DTOs\FilterGroupClassificationDTO.cs" />
     <Compile Include="DTOs\FilterComputerClassificationDTO.cs" />
+    <Compile Include="DTOs\VersionDTO.cs" />
     <Compile Include="GroupImageClassification.cs" />
     <Compile Include="ComputerImageClassification.cs" />
     <Compile Include="ImageClassification.cs" />

@@ -47,6 +47,14 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "AdminUpdate")]
+        [HttpGet]
+        public ActionResultDTO UpdateDatabase()
+        {
+            return new DbUpdater().Update();
+         
+        }
+
+        [CustomAuth(Permission = "AdminUpdate")]
         [HttpPost]
         public HttpResponseMessage GenerateLinuxIsoConfig(IsoGenOptionsDTO isoOptions)
         {

@@ -47,6 +47,8 @@ namespace CloneDeploy_ApiCalls
             return response != null && response.Value;
         }
 
+      
+
         public byte[] GenerateLinuxIsoConfig(IsoGenOptionsDTO isoOptions)
         {
             Request.Method = Method.POST;
@@ -73,6 +75,14 @@ namespace CloneDeploy_ApiCalls
             Request.AddParameter("clusterId", clusterId);
             var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
             return response != null ? response.Value : string.Empty;
+        }
+
+        public ActionResultDTO UpdateDatabase()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/UpdateDatabase/", Resource);
+            return _apiRequest.Execute<ActionResultDTO>(Request);
+            
         }
     }
 }

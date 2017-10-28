@@ -114,6 +114,7 @@
     <Content Include="views\images\history.aspx" />
     <Content Include="views\images\images.master" />
     <Content Include="views\images\profiles\profiles.master" />
+    <Content Include="views\login\dbupdate.aspx" />
     <Content Include="views\site.master" />
     <Content Include="views\tasks\activeond.aspx" />
     <Content Include="views\tasks\task.master" />
@@ -1825,6 +1826,13 @@
     </Compile>
     <Compile Include="views\images\search.aspx.designer.cs">
       <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\login\dbupdate.aspx.cs">
+      <DependentUpon>dbupdate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\login\dbupdate.aspx.designer.cs">
+      <DependentUpon>dbupdate.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\login\firstrun.aspx.cs">
       <DependentUpon>firstrun.aspx</DependentUpon>

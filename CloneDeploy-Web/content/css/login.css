@@ -68,8 +68,8 @@ input[type="submit"] {
 input[type="submit"]:hover {
     -moz-transition: background .2s ease-in-out;
     -webkit-transition: background .2s ease-in-out;
-    background: #47a3da;
-    border: 1px solid #47a3da;
+    background: #3D4F5D;
+    border: 1px solid #3D4F5D;
     color: #fff;
     text-shadow: none;
     transition: background .2s ease-in-out;
