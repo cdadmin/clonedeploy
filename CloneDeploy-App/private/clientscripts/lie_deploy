@@ -56,7 +56,9 @@ function process_hard_drives()
 	  sgdisk $hard_drive -U$(parse_json "$hd_schema" .Guid) &>> $CLIENT_LOG
 	  log "$(parse_json "$hd_schema" .Guid)"
 	  #hard drive and partition guids must be restored prior to updating nvram
-	  update_efi_nvram
+	  if [ "$skip_nvram" != "true" ]; then
+	    update_efi_nvram
+	  fi
 	fi
 	
     imaged_schema_drives="$imaged_schema_drives $(parse_json "$hd_schema" .SchemaHdNumber) "

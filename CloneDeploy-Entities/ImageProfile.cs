@@ -109,6 +109,9 @@ namespace CloneDeploy_Entities
 
         [Column("wim_enabled_multicast", Order = 34)]
         public int WimMulticastEnabled { get; set; }
+
+        [Column("skip_nvram", Order = 35)]
+        public int SkipNvramUpdate { get; set; }
     }
 
     [NotMapped]

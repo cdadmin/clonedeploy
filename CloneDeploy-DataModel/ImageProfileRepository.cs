@@ -58,6 +58,7 @@ namespace CloneDeploy_DataModel
                     MunkiAuthUsername = x.profile.MunkiAuthUsername,
                     MunkiAuthPassword = x.profile.MunkiAuthPassword,
                     WimMulticastEnabled = x.profile.WimMulticastEnabled,
+                    SkipNvramUpdate = x.profile.SkipNvramUpdate,
                     Image = x.image
                 }).OrderBy(x => x.Name).ToList();
         }
@@ -107,6 +108,7 @@ namespace CloneDeploy_DataModel
                     MunkiAuthUsername = x.profile.MunkiAuthUsername,
                     MunkiAuthPassword = x.profile.MunkiAuthPassword,
                     WimMulticastEnabled = x.profile.WimMulticastEnabled,
+                    SkipNvramUpdate = x.profile.SkipNvramUpdate,
                     Image = x.image
                 }).FirstOrDefault();
         }

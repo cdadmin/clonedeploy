@@ -100,6 +100,7 @@ namespace CloneDeploy_Web.views.images.profiles
             imageProfile.OsxInstallMunki = Convert.ToInt16(chkInstallMunki.Checked);
             imageProfile.MunkiRepoUrl = txtMunkiRepoUrl.Text;
             imageProfile.OsxTargetVolume = txtTargetVolume.Text;
+            ImageProfile.SkipNvramUpdate = Convert.ToInt16(chkNvram.Checked);
             if (Image.Environment == "macOS")
                 imageProfile.PartitionMethod = ddlPartitionMethodMac.Text;
             else if (Image.Environment == "winpe")
@@ -328,6 +329,7 @@ namespace CloneDeploy_Web.views.images.profiles
             chkChangeName.Checked = Convert.ToBoolean(ImageProfile.ChangeName);
             chkAlignBCD.Checked = Convert.ToBoolean(ImageProfile.FixBcd);
             chkRunFixBoot.Checked = Convert.ToBoolean(ImageProfile.FixBootloader);
+            chkNvram.Checked = Convert.ToBoolean(ImageProfile.SkipNvramUpdate);
 
             if (Image.Environment == "macOS")
             {
