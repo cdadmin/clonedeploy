@@ -2,6 +2,7 @@
 using CloneDeploy_Common;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
+using log4net;
 using Newtonsoft.Json;
 
 namespace CloneDeploy_Services
@@ -13,7 +14,7 @@ namespace CloneDeploy_Services
     {
         private readonly UserGroupServices _userGroupServices;
         private readonly UserLockoutServices _userLockoutServices;
-
+        private readonly ILog log = LogManager.GetLogger(typeof(AuthenticationServices));
         private readonly UserServices _userServices;
 
         public AuthenticationServices()
@@ -25,18 +26,21 @@ namespace CloneDeploy_Services
 
         public string ConsoleLogin(string username, string password, string task, string ip)
         {
+            log.Info("Console Login Request Received: " + username + " " + password + " " + task + " " + ip);
             var result = new Dictionary<string, string>();
 
             var validationResult = GlobalLogin(username, password, "Console");
 
             if (!validationResult.Success)
             {
+                log.Info("Console Login Request Failed");
                 result.Add("valid", "false");
                 result.Add("user_id", "");
                 result.Add("user_token", "");
             }
             else
             {
+                log.Info("Console Login Request Succeeded");
                 var cloneDeployUser = _userServices.GetUser(username);
                 result.Add("valid", "true");
                 result.Add("user_id", cloneDeployUser.Id.ToString());
@@ -54,6 +58,7 @@ namespace CloneDeploy_Services
                 Success = false
             };
 
+            
             var auditLog = new AuditLogEntity();
             var auditLogService = new AuditLogServices();
             auditLog.ObjectId = -1;
