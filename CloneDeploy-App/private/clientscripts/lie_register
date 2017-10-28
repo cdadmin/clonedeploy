@@ -28,6 +28,10 @@ system_uuid=$(dmidecode -s system-uuid)
 client_id="$mac.$(remove_whitespace $serial_number).$(remove_whitespace $system_uuid)"
 	
 while true; do
+  if [ "$skip_registration" = "true" ]; then
+    break
+  fi
+
   if [ -n "$(parse_json "$registerResult" .ErrorMessage)" ] && [ "$(parse_json "$registerResult" .ErrorMessage)" != "null" ]; then
     name=$(dialog --backtitle "CloneDeploy" --title "Enter Computer Name" --clear --inputbox "Interface  : $net_if \nMAC address: $mac \nClient Id  : $client_id \n\nError: $(parse_json "$registerResult" .ErrorMessage)" 20 130 --stdout)
   elif [ -n "$registerResult" ]; then

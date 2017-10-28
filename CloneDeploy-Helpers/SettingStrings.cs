@@ -119,5 +119,9 @@
         public const string MonitorSecondaryServer = "Monitor Secondary Server";
 
         public const string SecondaryServerMonitorInterval = "Secondary Server Monitor Interval";
+
+        public const string RegistrationEnabled = "Registration Enabled";
+
+        public const int Version = 131;
     }
 }

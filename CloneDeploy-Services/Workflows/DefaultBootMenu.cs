@@ -21,12 +21,15 @@ namespace CloneDeploy_Services.Workflows
         private readonly SecondaryServerServices _secondaryServerServices;
         private readonly string _webPath = SettingServices.GetSettingValue(SettingStrings.WebPath)+ "api/ClientImaging/";
         private readonly ILog log = LogManager.GetLogger(typeof(DefaultBootMenu));
-
+        private readonly string _registration;
         public DefaultBootMenu(BootMenuGenOptionsDTO defaultBootMenu)
         {
             _defaultBoot = defaultBootMenu;
             _bootEntryServices = new BootEntryServices();
             _secondaryServerServices = new SecondaryServerServices();
+            _registration = SettingServices.GetSettingValue(SettingStrings.RegistrationEnabled) == "No" ? " skip_registration=true " : string.Empty;
+
+
         }
 
         private string _userToken { get; set; }
@@ -116,7 +119,7 @@ namespace CloneDeploy_Services.Workflows
             grubMenu.Append("linux /kernels/" + _defaultBoot.Kernel + " root=/dev/ram0 rw ramdisk_size=156000 " +
                             " web=" +
                             _webPath +
-                            " USER_TOKEN=" + _userToken + " consoleblank=0 " + _globalComputerArgs + "" +
+                            " USER_TOKEN=" + _userToken + " consoleblank=0 " + _registration + _globalComputerArgs + "" +
                             NewLineChar);
             grubMenu.Append("initrd /images/" + _defaultBoot.BootImage + "" + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
@@ -253,7 +256,7 @@ namespace CloneDeploy_Services.Workflows
                                 " initrd=" + _defaultBoot.BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " +
                                 " web=" +
                                 _webPath + " USER_TOKEN=" + _userToken +
-                                " consoleblank=0 " +
+                                " consoleblank=0 " + _registration +
                                 _globalComputerArgs + NewLineChar);
                 ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " +
                                 _webPath +
@@ -370,7 +373,7 @@ namespace CloneDeploy_Services.Workflows
             sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + _defaultBoot.BootImage +
                                 " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" + _webPath + " USER_TOKEN=" +
                                 _userToken +
-                                " consoleblank=0 " + _globalComputerArgs + "" + NewLineChar);
+                                " consoleblank=0 " + _registration + _globalComputerArgs + "" + NewLineChar);
             sysLinuxMenu.Append("MENU LABEL CloneDeploy" + NewLineChar);
             sysLinuxMenu.Append("" + NewLineChar);
 

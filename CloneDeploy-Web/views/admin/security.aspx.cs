@@ -109,6 +109,13 @@ namespace CloneDeploy_Web.views.admin
                 Id = Call.SettingApi.GetSetting("Clobber Requires Login").Id
             });
 
+            listSettings.Add(new SettingEntity
+            {
+                Name = SettingStrings.RegistrationEnabled,
+                Value = ddlRegistration.Text,
+                Id = Call.SettingApi.GetSetting(SettingStrings.RegistrationEnabled).Id
+            });
+
             var newBootMenu = false;
             var newClientIso = false;
             if (Call.SettingApi.UpdateSettings(listSettings))
@@ -228,7 +235,7 @@ namespace CloneDeploy_Web.views.admin
             ddlDebugLogin.Text = GetSetting(SettingStrings.DebugRequiresLogin);
             ddlRegisterLogin.Text = GetSetting(SettingStrings.RegisterRequiresLogin);
             ddlClobberLogin.Text = GetSetting(SettingStrings.ClobberRequiresLogin);
-
+            ddlRegistration.Text = GetSetting(SettingStrings.RegistrationEnabled);
             if (ddlDebugLogin.Text == "No" || ddlOndLogin.Text == "No" || ddlRegisterLogin.Text == "No" ||
                 ddlWebTasksLogin.Text == "No" || ddlClobberLogin.Text == "No")
                 universal.Visible = true;

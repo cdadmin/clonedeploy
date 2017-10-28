@@ -44,7 +44,16 @@
         </asp:DropDownList>
     </div>
     <br class="clear"/>
-
+     <div class="size-4 column">
+        Registration Enabled:
+    </div>
+    <div class="size-setting column">
+        <asp:DropDownList ID="ddlRegistration" runat="server" CssClass="ddlist" >
+            <asp:ListItem>Yes</asp:ListItem>
+            <asp:ListItem>No</asp:ListItem>
+        </asp:DropDownList>
+    </div>
+    <br class="clear"/>
     <div class="size-4 column">
         Debug Requires Login:
     </div>
@@ -95,6 +104,7 @@
         </asp:DropDownList>
     </div>
     <br class="clear"/>
+    
     <div id="universal" runat="server" visible="False">
         <div class="size-4 column">
             Universal Token:
