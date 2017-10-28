@@ -10,9 +10,6 @@ using CloneDeploy_Entities.DTOs.ImageSchemaBE;
 using CloneDeploy_Services.Helpers;
 using log4net;
 
-#if __MonoCS__  
-using Mono.Unix; // requires reference to  Mono.Posix.dll
-#endif
 
 namespace CloneDeploy_Services
 {
@@ -68,9 +65,22 @@ namespace CloneDeploy_Services
 
                 if (Directory.Exists(dp.PhysicalPath))
                 {
+                    //mono debugging
+                    log.Info(dp.PhysicalPath + "Exists");
                     ulong freespace = 0;
                     ulong total = 0;
-                    var success = DriveFreeBytes(dp.PhysicalPath, out freespace, out total);
+
+                     var isUnix = Environment.OSVersion.ToString().Contains("Unix");
+                    bool success;
+                    if (isUnix)
+                    {
+                        success = MonoDriveFreeBytes(dp.PhysicalPath, out freespace, out total);
+                    }
+                    else
+                    {
+                        success = DriveFreeBytes(dp.PhysicalPath, out freespace, out total);
+                    }
+                    
 
                     if (!success) return null;
 
@@ -94,13 +104,14 @@ namespace CloneDeploy_Services
         }
 
         // if running on Mono
-#if __MonoCS__     
-        public static bool DriveFreeBytes(string folderName, out ulong freespace, out ulong total)
+    
+        public static bool MonoDriveFreeBytes(string folderName, out ulong freespace, out ulong total)
         {
             freespace = 0;
             total = 0;
             
-            UnixDriveInfo[] drives = UnixDriveInfo.GetDrives();
+            var drives = Mono.Unix.UnixDriveInfo.GetDrives();
+            log.Info(drives.FirstOrDefault() + ": First Drive Found");
             int idx = -1, count = -1;
             for (int i = 0; i < drives.Length; ++i)
             {
@@ -116,7 +127,7 @@ namespace CloneDeploy_Services
             total = (ulong)drives[idx].TotalSize; 
             return true;
         }   
-#else
+
 
         // using GetDiskFreeSpaceEx because this handles mountpoints, quota and UNC 
         // there are reports that old CIFS doesn't support unc-share to a mountpoint, needs Windows 2008/SMB2        
@@ -151,7 +162,7 @@ namespace CloneDeploy_Services
             }
             return false;
         }
-#endif
+
 
         public string GetDefaultBootMenuPath(string type)
         {
