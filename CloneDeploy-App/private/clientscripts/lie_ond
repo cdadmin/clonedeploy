@@ -59,7 +59,7 @@ elif [ "$taskType" = "2" ]; then
 			error "Could Not Add Image: $addImageResult"
 		else
 			if [ "$(parse_json "$addImageResult" .Success)" = "true" ]; then
-			  image_id="$(parse_json "$addImageResult" .ErrorMessage)"
+			  image_id="$(parse_json "$addImageResult" .Id)"
 			  isError="false"
 			else
 			  isError="true"

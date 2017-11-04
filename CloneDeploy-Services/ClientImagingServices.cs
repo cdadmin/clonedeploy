@@ -62,7 +62,7 @@ namespace CloneDeploy_Services
             };
             var result = new ImageServices().AddImage(image);
             if (result.Success)
-                result.ErrorMessage = image.Id.ToString();
+                result.Id = image.Id;
 
             return JsonConvert.SerializeObject(result);
         }
@@ -83,7 +83,7 @@ namespace CloneDeploy_Services
             };
             var result = new ImageServices().AddImage(image);
             if (result.Success)
-                result.ErrorMessage = image.Id.ToString();
+                result.Id = image.Id;
 
             return JsonConvert.SerializeObject(result);
         }
@@ -103,7 +103,7 @@ namespace CloneDeploy_Services
             };
             var result = new ImageServices().AddImage(image);
             if (result.Success)
-                result.ErrorMessage = image.Id.ToString();
+                result.Id = image.Id;
 
             return JsonConvert.SerializeObject(result);
         }

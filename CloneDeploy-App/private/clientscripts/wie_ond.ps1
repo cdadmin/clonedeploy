@@ -91,7 +91,7 @@ elseif($taskType -eq "upload")
 		
 			if($addImageResult.Success -eq "true")
             {
-			  $imageId=$addImageResult.Message
+			  $imageId=$addImageResult.Id
 			  $isError="false"
             }
 			else
