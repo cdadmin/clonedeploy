@@ -61,14 +61,15 @@
         <asp:CheckBox ID="chkRunFixBoot" runat="server" CssClass="textbox"></asp:CheckBox>
     </div>
     <br class="clear"/>
-</div>
-      <div class="size-9 column">
+       <div class="size-9 column">
        Don't Update NVRAM
     </div>
     <div class="size-8 column">
         <asp:CheckBox ID="chkNvram" runat="server" CssClass="textbox"></asp:CheckBox>
     </div>
     <br class="clear"/>
+</div>
+   
 <div id="divOsx" runat="server">
     <div class="size-9 column">
         OS X Target Volume
