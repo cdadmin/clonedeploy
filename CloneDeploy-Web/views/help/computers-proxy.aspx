@@ -20,7 +20,7 @@
     </p>
     <p>* The WinPE Boot File options do not display until the WinPE Imaging Environment has been enabled.</p>
     <p>
-        * The TFTP server should most likely always be set to <b>[server-ip]</b>
+        * The TFTP server should most likely always be set to <b>[tftp-server-ip]</b>
     </p>
     <p>* The Proxy Reservations have no effect on the macOS imaging environment.</p>
 </asp:Content>

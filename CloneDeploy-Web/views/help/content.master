@@ -29,6 +29,12 @@
         <li id="computers-proxy">
             <a href="<%= ResolveUrl("~/views/help/computers-proxy.aspx#computers") %>">Proxy DHCP Reservation</a>
         </li>
+         <li id="computers-classifications">
+            <a href="<%= ResolveUrl("~/views/help/computers-classifications.aspx#computers") %>">Image Classifications</a>
+        </li>
+         <li id="computers-history">
+            <a href="<%= ResolveUrl("~/views/help/computers-history.aspx#computers") %>">History</a>
+        </li>
     </ul>
 </li>
 <li id="groups">
@@ -67,6 +73,9 @@
         <li id="groups-munki">
             <a href="<%= ResolveUrl("~/views/help/groups-munki.aspx#groups") %>">Munki Templates</a>
         </li>
+          <li id="groups-classifications">
+            <a href="<%= ResolveUrl("~/views/help/groups-classifications.aspx#groups") %>">Image Classifications</a>
+        </li>
     </ul>
 </li>
 <li id="images">
@@ -83,6 +92,9 @@
         </li>
         <li id="images-schema">
             <a href="<%= ResolveUrl("~/views/help/images-schema.aspx#images") %>">Schema</a>
+        </li>
+          <li id="images-history">
+            <a href="<%= ResolveUrl("~/views/help/images-history.aspx#images") %>">History</a>
         </li>
         <li id="profiles">
             <a href="<%= ResolveUrl("~/views/help/images-profiles.aspx#images") %>">Profiles</a>

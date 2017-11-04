@@ -7,7 +7,7 @@
 <asp:Content runat="server" ContentPlaceHolderID="Help">
     <li role="separator" class="divider"></li>
     <li>
-        <a href="<%= ResolveUrl("~/views/help/images-search.aspx") %>" target="_blank">Help</a>
+        <a href="<%= ResolveUrl("~/views/help/images-search.aspx#images") %>" target="_blank">Help</a>
     </li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">

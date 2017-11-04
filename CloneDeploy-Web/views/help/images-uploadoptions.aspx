@@ -8,35 +8,39 @@
         });
     </script>
     <h1>Images->Upload Options</h1>
-    <h3>Remove GPT Structures</h3>
+    <h3>Remove GPT Structures (LIE)</h3>
 
     <p>
         A hard drive can actually have an mbr and a gpt partition table. Hard drives that have both will not function with CloneDeploy.
         If you are certain that you are using mbr, this will clear out the gpt part of the table before the upload.
     </p>
-    <h3>Don’t Shrink Volumes</h3>
+    <h3>Don’t Shrink Volumes (LIE)</h3>
 
     <p>
         By default, when a Block image is uploaded, all ntfs or extfs filesystems that are larger than 5GB are shrunk to the smallest
         volume size possible to allow restoring to hard drives that are smaller than the current one being captured. If this is causing
         problems you can disable that here.
     </p>
-    <h3>Don’t Shrink LVM Volumes</h3>
+    <h3>Don’t Shrink LVM Volumes (LIE)</h3>
 
     <p>Same as above but specifically for LVM. Don’t Shrink Volumes will supersede this setting, but not vice versa.</p>
-    <h3>Compression Algorithm</h3>
+    <h3>Compression Algorithm (LIE)</h3>
 
     <p>A few different ways to compress or not compress your image</p>
-    <h3>Compression Level</h3>
-
+    <h3>Compression Level (LIE)</h3>
+    
+  
     <p>Higher is greater compression</p>
-    <h3>Upload Schema Only</h3>
+    
+      <h3>Enable Multicast Support (WIE LIE-File Mode)</h3>
+    <p>When using the WinPE Imaging Environment or Linux set to File, if you later want to multicast the image, this must be checked before upload.</p>
+    <h3>Only Upload Schema (LIE MIE WIE)</h3>
 
     <p>
         If you want to control what hard drives or partitions to upload, this is the first step. Turn this setting On and start an
         upload task. Instead of uploading an entire image, it will only upload the schema.
     </p>
-    <h3>Use Custom Upload Schema</h3>
+    <h3>Use Custom Upload Schema(LIE MIE WIE)</h3>
 
     <p>
         If you want to control what hard drives or partitions to upload, this is the second step. Check this box and a new table will

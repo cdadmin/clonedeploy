@@ -109,7 +109,11 @@
     <Content Include="views\global\sysprep\sysprep.master" />
     <Content Include="views\groups\groups.master" />
     <Content Include="views\groups\imageclassification.aspx" />
+    <Content Include="views\help\images-history.aspx" />
+    <Content Include="views\help\computers-history.aspx" />
+    <Content Include="views\help\computers-classifications.aspx" />
     <Content Include="views\help\content.master" />
+    <Content Include="views\help\groups-classifications.aspx" />
     <Content Include="views\help\help.master" />
     <Content Include="views\images\history.aspx" />
     <Content Include="views\images\images.master" />

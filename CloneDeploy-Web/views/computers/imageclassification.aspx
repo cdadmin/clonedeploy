@@ -9,7 +9,7 @@
 <asp:Content runat="server" ContentPlaceHolderID="Help">
     <li role="separator" class="divider"></li>
     <li>
-        <a href="<%= ResolveUrl("~/views/help/computers-imageclass.aspx") %>" class="" target="_blank">Help</a>
+        <a href="<%= ResolveUrl("~/views/help/computers-classifications.aspx") %>" class="" target="_blank">Help</a>
     </li>
 </asp:Content>
 

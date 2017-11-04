@@ -11,6 +11,6 @@
     <p>
         Used to set the Image and Image Profile that are used when multicasting a group of computers. This image may or may not be the same as the image currently assigned to the computer.
         Setting this option does not change the image assigned to the computers in the group. Having a separate image set specifically for multicasting gives you more flexibility in how you use
-        your groups.
+        your groups.  Finally, an option for cluster group can be used to assign a group's multicast session to a specific multicast server.
     </p>
 </asp:Content>

@@ -8,57 +8,100 @@
         });
     </script>
     <h1>Images->Deploy Options</h1>
-    <h3>Change Computer Name</h3>
+    <h3>Change Computer Name (LIE MIE WIE)</h3>
 
     <p>
         When this option is checked the computer’s name will be updated match what you have stored in CloneDeploy either by modifying
         the sysprep file or the registry during the imaging process. This is currently only implemented for Windows.
     </p>
-    <h3>Don’t Expand Volumes</h3>
+    <h3>Don’t Expand Volumes (LIE)</h3>
 
     <p>
         During the deployment process ntfs and extfs filesystems are expanded to fill the full partition. Setting this option will
         disable that. I honestly can’t think of reason to do this, but it may be helpful for debugging.
     </p>
-    <h3>Update BCD</h3>
+    <h3>Update BCD (LIE)</h3>
 
     <p>
         If your computer does not boot after deployment, try turning this on. If during the deployment process your Windows partition
         starting sector changes from the original image, this will update the BCD to the correct location. This only applies to mbr
         partition tables. GPT partitions are handled in a different way where this should never be needed.
     </p>
-    <h3>Fix Bootloader</h3>
+    <h3>Fix Bootloader (LIE)</h3>
 
     <p>
         This fixes the partition that is set to active / boot in cases where the NTFS geometry is incorrect. This should almost be
         left checked. Only applies to mbr partition tables.
     </p>
-    <h3>Create Partition Method</h3>
+    <h3>Don't Update NVRAM (LIE)</h3>
+    <p>When deploying an EFI image.  The NVRAM is updated in order to make the machine bootable.  In some cases this may cause problems and can be disabled here.  Many new systems will automatically detect the correct partition to boot even without correct NVRAM values.</p>
+    
+    <h3>OSX Target Volume (MIE)</h3>
+    <p>Used to specify the correct volume to change computer name, set startup, etc.  This is typically Macintosh HD, but must be changed if not.</p>
+    <h3>Install Munki (MIE)</h3>
+    <p>Option to install Munki on Target Volume before imaging is completed.  The munkitools.pkg must be in your distribution point's resources folder.</p>
+    <h3>Munki Repo URL (MIE)</h3>
+    <p>For use with Install Munki.  Installation Parameter SofwareRepoURL.</p>
+    <h3>Munki Basic Auth Username (MIE)</h3>
+    <p>For use with Install Munki.  Installation Parameter AdditionalHttpHeaders</p>
+    <h3>Munki Basic Auth Password (MIE)</h3>
+    <p>For use with Install Munki.  Installation Parameter AdditionalHttpHeaders</p>
+    
 
-    <p>
-        This option selects how the partition tables will be setup on the client machine before the imaging is done.
+    <h3>Create Partition Method (LIE MIE WIE)</h3>
+    <p>This option selects how the partition tables will be setup on the client machine before image deployment.
         The default option is Dynamic and should work for most situations. This means that CloneDeploy will generate the appropriate
-        sized partitions based on many different factors. It could possibly shrink or grow a partition to make them fit the new hard drive.
+        sized partitions based on many different factors. It could possibly shrink or grow a partition to make them fit the new hard drive.</p>
+    <h4><u>LIE</u></h4>
+    <b>Use Original MBR / GPT</b><br/>
+     <p>Restores the exact same partition table that was used on the original image. This option should
+        only be used if you are having problems with the dynamic option. You can also only use this if the new hard drive is the same
+        size or larger than the original. If you create an image from 80GB hard drive and you deploy to a 120GB hard drive, the 120GB
+        hard drive will effectively become an 80GB hard drive. You would manually need to resize the partitions.</p>
+    <b>Dynamic</b><br/>
+     <p>Generates / resizes the appropriate partitions to fit on the destination drive based on many different factors.</p>
+    <b>Custom Script</b><br/>
+     <p>Allows you to make your own partitions via a shell script. You can use the partitioning
+        tools available in the client boot image. These include fdisk, gdisk, and parted.</p>
+    <h4><u>MIE</u></h4>
+    <b>Standard</b><br/>
+    <p>CloneDeploy does not attempt to calculate appropriate partition sizes.  A simple standard partition table is created, as if a new installation with default partitioning and then only the OS volume 
+    image is restored.</p>
+    <b>Standard Core Storage</b><br/>
+     <p> CloneDeploy does not attempt to calculate appropriate partition sizes.  A simple standard Core Storage partition table is created, as if a new installation with default partitioning and then only the OS volume 
+    image is restored.</p>
+    <b>Dynamic</b><br/>
+      <p>Generates / resizes the appropriate partitions to fit on the destination drive based on many different factors.</p>
+    <b>Custom Script</b><br/>
+   <p> Allows you to make your own partitions via a shell script. You can use the partitioning
+        tools available in the NBI, such as diskutil.</p>
+    <h4><u>WIE</u></h4>
+    <b>Standard</b><br/>
+   <p> CloneDeploy does not attempt to calculate appropriate partition sizes.  A simple standard partition table is created, as if a new installation with default partitioning and then only the OS volume 
+    image is restored.</p>
+    <b>Dynamic</b><br/>
+    <p> Generates / resizes the appropriate partitions to fit on the destination drive based on many different factors.</p>
+    <b>Custom Script</b><br/>
+    <p> Allows you to make your own partitions via a powershell script. You can use the partitioning
+        tools available in WinPE, such as diskpart and powershell.</p>
+    <p>
+        
         There is one exception to this, if a hard drive you are deploying to exactly matches the size the image was created from,
         the partition method will automatically change to Original MBR / GPT. In this case CloneDeploy does not need to perform any
         calculations, it simply restores the original mbr / gpt.
 
-        The Use Original MBR / GPT option will restore the same partition table that was used on the original image. This option should
-        only be used if you are having problems with the dynamic option. You can also only use this if the new hard drive is the same
-        size or larger than the original. If you create an image from 80GB hard drive and you deploy to a 120GB hard drive, the 120GB
-        hard drive will effectively become an 80GB hard drive. You would manually need to resize the partitions.
+      
 
-        Finally the Custom Script option allows you to make your own partitions via a shell script. You can use the partitioning
-        tools available in the client boot image. These include fdisk, gdisk, and parted.
+       
     </p>
-    <h3>Force Dynamic Partitions For Exact Hdd Match</h3>
+    <h3>Force Dynamic Partitions For Exact Hdd Match (LIE)</h3>
 
     <p>
-        In the previous topic I mentioned how the Original MBR /GPT is always used if a hard drive size is an exact match to the
-        original image. This option will disable that and force the Dynamic partition option to be used, for cases where the mbr / gpt
+        When deploying an image to a hard drive that is the exact same size as the source.  They dynamic partition method is not used even if selected.
+        The Use Original MBR / GPT option is used. This option will disable that and force the Dynamic partition option to be used, for cases where the mbr / gpt
         does not restore properly.
     </p>
-    <h3>Modify The Image Schema</h3>
+    <h3>Modify The Image Schema (LIE MIE WIE)</h3>
 
     <p>
         Checking this box gives you control over what hard drives and partitions will be deployed, where they will restore to and give

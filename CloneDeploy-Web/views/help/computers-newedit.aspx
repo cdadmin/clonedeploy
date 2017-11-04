@@ -14,6 +14,10 @@
     <h3>MAC Address</h3>
 
     The computer’s mac address must be correct for CloneDeploy to work. This is how the computer identifies itself to the Server when pxe booting. Valid formats include – 00:00:00:00:00:00 – 00-00-00-00-00-00 – 000000000000
+    
+    <h3>Client Identifier</h3>
+    A unique identifier used with the imaging environments.  This field is only populated when the computer is added from and imaging environment.  This is the recommended way to add computers in order to avoid issues when computers have the same mac address.  This should not be modified in most circumstances. 
+
     <h3>Image</h3>
 
     The current assigned image of the computer. Both uploading and deploying will use this image.
@@ -23,9 +27,17 @@
     <h3>Description (optional)</h3>
 
     The description field is for your own use.
+    
+    <h3>Cluster Group</h3>
+    If CloneDeploy has clustering enabled, this field sets the group that this computer should use for pxe booting, imaging, and multicasting.  If not set, the default cluster group is used.  Cluster groups that are assigned to sites, buildings, or rooms have a higher priority than this.
+
     <h3>Sites, Buildings, Rooms</h3>
 
-    This is new feature of CloneDeploy and is still under development. This allows you to organize your computer in a physical manner. It is also a key component of distribution points. This allows you to setup multiple SMB shares for your images and point your computer to the appropriate one based on it’s physical location.
+    This allows you to organize your computers in a physical manner and assign specific cluster groups to them,  allowing for distribution of images, tftp, etc according to physical location.
+    
+    <h3>Alternate Server Ip</h3>
+    This defines which Ip a client computer should use to communicate with the CloneDeploy API for http traffic.  This does not effect pxe booting, smb, or multicasting.  A use case for this is when your network is completely separated by different vlans and you must use a separate nic for each vlan on your CloneDeploy server.  By default the server ip is the admin setting server ip which would not work for different vlans.
+    
     <h3>Custom Attributes</h3>
 
     Custom attributes allow you to set custom values that can be used with custom scripting. An example of this may be a product key. You can access the custom attribute values within a script with $cust_attr_x replacing x with the number of the attribute.
