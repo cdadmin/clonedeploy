@@ -519,47 +519,62 @@ function update_efi_nvram()
   fi
   
   boot_current=$(efibootmgr -v | awk '$1 == "BootCurrent:" {print $2}')
-  boot_order=$(efibootmgr -v | awk '$1 == "BootOrder:" {print $2}')
-  boot_entries_to_delete=$(efibootmgr -v | grep "File(\\\\" | cut -d " " -f1 | sed 's/Boot//g' | cut -d* -f1)
+  original_boot_order=$(efibootmgr -v | awk '$1 == "BootOrder:" {print $2}')
+  current_first_boot=$(echo $original_boot_order | cut -d, -f1)
 
+  log "Current Boot: $boot_current First Boot: $current_first_boot"
+ 
   local array_index=-1
   while [  "$(( $array_index + 1 ))" -lt "$(parse_json "$hd_schema" .PhysicalPartitionCount)" ]; do
     array_index=$(( $array_index + 1))
     clear_and_move_down
     current_partition="$(parse_json "$hd_schema" .PhysicalPartitions[$array_index])"
-	existing_bootloader=$(efibootmgr -v | grep -i "$(parse_json "$current_partition" .Guid)" | grep -o "File(.*)" | cut -d "(" -f2 | cut -d ")" -f1 | uniq)
-	boot_number=$(efibootmgr -v | grep -i "$(parse_json "$current_partition" .Guid)" | cut -d "*" -f1 | sed 's/Boot//g')
+	existing_bootloader=$(efibootmgr -v | grep -i "$(parse_json "$current_partition" .Guid)" -m1 | grep -o "File(.*)" | cut -d "(" -f2 | cut -d ")" -f1 | uniq)
+	boot_number=$(efibootmgr -v | grep -i "$(parse_json "$current_partition" .Guid)" -m1 | cut -d "*" -f1 | sed 's/Boot//g')
 	log "$(parse_json "$current_partition" .Number) $existing_bootloader $boot_number"
-	if [ -n "$existing_bootloader" ] && [ "$existing_bootloader" = "$(parse_json "$current_partition" .EfiBootLoader)" ]; then
-	  log "NVRAM Entry Already Exists"
+	partition_bootloader="$(echo "$(parse_json "$current_partition" .EfiBootLoader)" | cut -d# -f2)"
+	log "partition_bootloader: $partition_bootloader"
+	if [ -n "$existing_bootloader" ] && [ "$existing_bootloader" = "$partition_bootloader" ]; then
+	  log "NVRAM Entry Already Exists.  No changes made."
 	  #This partition already has a matching entry in the nvram
-	  #Remove from entries to delete
-	  boot_entries_to_delete=$(echo $boot_entries_to_delete | sed "s/$boot_number//g")
 	elif [ -n "$existing_bootloader" ]; then
 	  log "Updating NVRAM Entry"
 	  #Partition has entry in nvram but bootloader doesn't match
-	  #Update it and don't delete
+	  #Remove it and recreate with proper bootloader
 	  efibootmgr -B -b $boot_number 2>>$CLIENT_LOG
 	  efibootmgr -c -d $hard_drive -p "$(parse_json "$current_partition" .Number)" -L "$(echo "$(parse_json "$current_partition" .EfiBootLoader)" | cut -d# -f1)"  -l "$(echo "$(parse_json "$current_partition" .EfiBootLoader)" | cut -d# -f2)" 2>>$CLIENT_LOG
-	  efibootmgr -o $(move_to_front_of_list $boot_current , $boot_order) 2>>$CLIENT_LOG
-	  boot_entries_to_delete=$(echo $boot_entries_to_delete | sed "s/$boot_number//g")
+	  #efibootmgr -c automatically sets new entry to front of boot order, efibootmgr -C would prevent this, but this seems to work
+	  #this should leave the boot order exactly as it was when booted, but this may not be what the user wants, especially if the computer was unbootable to begin with
+	  #might need to add option in WebUI to let the user select first boot device
+	  
+	  #find newly created boot number
+	  updated_boot_order=$(efibootmgr -v | awk '$1 == "BootOrder:" {print $2}')
+	  new_first_boot=$(echo $updated_boot_order | cut -d, -f1)
+	  new_boot_order=$(echo $original_boot_order | sed 's/'$boot_number'/'$new_first_boot'/g' )
+	  log "New Boot Order: $new_boot_order"
+	  efibootmgr -o $new_boot_order 2>>$CLIENT_LOG
 	else
 	  #Partition Does not exist in the nvram
 	  #Check if it should
 	  if [ -n "$(parse_json "$current_partition" .EfiBootLoader)" ] && [ "$(parse_json "$current_partition" .EfiBootLoader)" != "null" ]; then
 	     log "Creating New NVRAM Entry"
 	    #Entry needs added
+		#efibootmgr -c automatically sets new entry to front of boot order, efibootmgr -C would prevent this, but this seems to work
 	    efibootmgr -c -d $hard_drive -p "$(parse_json "$current_partition" .Number)" -L "$(echo "$(parse_json "$current_partition" .EfiBootLoader)" | cut -d# -f1)" -l "$(echo "$(parse_json "$current_partition" .EfiBootLoader)" | cut -d# -f2)" 2>>$CLIENT_LOG
-		efibootmgr -o $(move_to_front_of_list $boot_current , $boot_order) 2>>$CLIENT_LOG
+		
+		 if [ "$current_first_boot" = "$boot_current" ]; then
+           log "Current Boot and First Boot Match.  Setting boot order back to original."
+		   new_boot_order=$(efibootmgr -v | awk '$1 == "BootOrder:" {print $2}')
+		   #if current boot and boot current match, we can assume that it must be pxe,usb,or cd boot first or we wouldn't be here.  Assume user wants this to stay first.
+		   efibootmgr -o $(move_to_front_of_list $boot_current , $new_boot_order) 2>>$CLIENT_LOG
+         else
+		   #assume this is a one time pxe,usb, or cd boot.  Let the new entry move to first boot.  Again this may not be what user wants, may need to add option in webui to select
+		   log "Current Boot and First Boot Do Not Match.  This bootloader has been moved to the first position."
+		 fi
+		
 	  fi
 	fi
   done
-  
-  #Delete remaining boot entries
-  #As of 2016-17 no longer delete nvram entries, only add as it could brick poorly implemented efi systems
-   #for efi_boot in $boot_entries_to_delete; do
-    #efibootmgr -B -b $efi_boot 2>>$CLIENT_LOG
-  #done	
   
   log "Updated NVRAM"
   efibootmgr -v &>> $CLIENT_LOG
