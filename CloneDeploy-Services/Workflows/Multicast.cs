@@ -73,6 +73,7 @@ namespace CloneDeploy_Services.Workflows
             if (_multicastServerId == -2)
                 return "Could Not Find Any Available Multicast Servers";
 
+            _multicastSession.ServerId = _multicastServerId;
             _multicastSession.UserId = _userId;
             //End of the road for starting an on demand multicast
             if (_isOnDemand)
