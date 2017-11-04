@@ -102,7 +102,6 @@ clear
 if ($private:uToken)
 {
     $private:userToken=$private:uToken
-    $script:userId=0
 }
 else
 {
