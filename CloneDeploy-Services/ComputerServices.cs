@@ -8,13 +8,14 @@ using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CsvHelper;
+using log4net;
 
 namespace CloneDeploy_Services
 {
     public class ComputerServices
     {
         private readonly UnitOfWork _uow;
-
+        private static readonly ILog log = LogManager.GetLogger(typeof(ComputerServices));
         public ComputerServices()
         {
             _uow = new UnitOfWork();
@@ -398,7 +399,35 @@ namespace CloneDeploy_Services
 
         public ComputerEntity GetComputerFromClientIdentifier(string clientIdentifier)
         {
-            return _uow.ComputerRepository.GetFirstOrDefault(p => p.ClientIdentifier == clientIdentifier);
+            //Don't know if uuid is raw or pretty.  Check for both
+            var result = _uow.ComputerRepository.GetFirstOrDefault(p => p.ClientIdentifier == clientIdentifier);
+            if (result != null) return result;
+            else
+            {
+                //Check for opposite uuid
+                try
+                {
+                    var uuid = clientIdentifier.Substring(clientIdentifier.LastIndexOf('.') + 1);
+                    var clientIdFirst = clientIdentifier.Replace(uuid, string.Empty);
+                    var uuidGuid = new Guid(uuid);
+                    var uuidBytes = uuidGuid.ToByteArray();
+                    var strReverseUuid = "";
+                    foreach (var b in uuidBytes)
+                    {
+                        strReverseUuid += b.ToString("X2");
+                    }
+                    var reverseUuid = new Guid(strReverseUuid);
+                    var newClientId = clientIdFirst + reverseUuid;
+                    return _uow.ComputerRepository.GetFirstOrDefault(p => p.ClientIdentifier == newClientId.ToUpper());
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Could Not Check For Reverse UUID. " + clientIdentifier + " " + ex.Message);
+                    return null;
+
+                }
+              
+            }
         }
 
         public ComputerEntity GetComputerFromMac(string mac)
