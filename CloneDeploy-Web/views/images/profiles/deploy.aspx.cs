@@ -130,7 +130,7 @@ namespace CloneDeploy_Web.views.images.profiles
                     imageProfile.CustomSchema = chkModifySchema.Checked ? SetCustomSchema() : "";
                     break;
                 case "Standard":
-                    if (Image.Environment == "winpe")
+                    if (Image.Environment == "winpe" || Image.Environment == "linux")
                     {
                         imageProfile.CustomSchema = SetCustomSchema();
                     }
@@ -145,7 +145,7 @@ namespace CloneDeploy_Web.views.images.profiles
             }
 
             var isSchemaError = false;
-            if (imageProfile.PartitionMethod == "Standard" && Image.Environment == "winpe")
+            if (imageProfile.PartitionMethod == "Standard" && (Image.Environment == "winpe" || Image.Environment == "linux"))
             {
                 var customSchema = JsonConvert.DeserializeObject<ImageSchema>(imageProfile.CustomSchema);
 
@@ -257,19 +257,15 @@ namespace CloneDeploy_Web.views.images.profiles
 
         protected void ddlPartitionMethod_OnSelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Image.Environment == "winpe")
-            {
+          
                 ForceDiv.Visible = false;
                 if (ddlObject.Text == "Standard" || ddlObject.Text == "Standard Core Storage")
                 {
                     chkModifySchema.Checked = true;
                     chkModifySchema.Enabled = false;
                 }
-            }
-            else
-            {
-                ForceDiv.Visible = ddlPartitionMethodLin.Text == "Dynamic";
-            }
+            
+            
             DisplayLayout();
         }
 

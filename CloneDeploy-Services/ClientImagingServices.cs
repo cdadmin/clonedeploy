@@ -171,16 +171,20 @@ namespace CloneDeploy_Services
 
             if (clientLbs != 0) //if zero should be from the osx imaging environment or winpe
             {
-                if (clientLbs != imageSchema.HardDrives[result.SchemaHdNumber].Lbs)
+                if (imageProfile.Image.Type != "File")
                 {
-                    log.Error("Error: The Logical Block Size Of This Hard Drive " + clientLbs +
-                              " Does Not Match The Original Image " + imageSchema.HardDrives[result.SchemaHdNumber].Lbs);
+                    if (clientLbs != imageSchema.HardDrives[result.SchemaHdNumber].Lbs)
+                    {
+                        log.Error("Error: The Logical Block Size Of This Hard Drive " + clientLbs +
+                                  " Does Not Match The Original Image" +
+                                  imageSchema.HardDrives[result.SchemaHdNumber].Lbs);
 
-                    result.IsValid = "false";
-                    result.Message = "The Logical Block Size Of This Hard Drive " + clientLbs +
-                                     " Does Not Match The Original Image " +
-                                     imageSchema.HardDrives[result.SchemaHdNumber].Lbs;
-                    return JsonConvert.SerializeObject(result);
+                        result.IsValid = "false";
+                        result.Message = "The Logical Block Size Of This Hard Drive " + clientLbs +
+                                         " Does Not Match The Original Image" +
+                                         imageSchema.HardDrives[result.SchemaHdNumber].Lbs;
+                        return JsonConvert.SerializeObject(result);
+                    }
                 }
             }
 

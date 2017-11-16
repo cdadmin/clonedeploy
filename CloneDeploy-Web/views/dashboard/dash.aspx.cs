@@ -29,6 +29,8 @@ namespace CloneDeploy_Web.views.dashboard
                     Response.Redirect("~/views/login/firstrun.aspx");
                 if (versionInfo.DatabaseVersion != versionInfo.TargetDbVersion)
                     Response.Redirect("~/views/login/dbupdate.aspx");
+               
+              
             }
 
             if (Request.QueryString["access"] == "denied")

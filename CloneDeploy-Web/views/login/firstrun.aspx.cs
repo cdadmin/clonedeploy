@@ -115,7 +115,7 @@ namespace CloneDeploy_Web.views.login
                 if (Call.CdVersionApi.Put(cdVersion.Id, cdVersion).Success)
                 {
                     EndUserMessage = "Setup Complete";
-                    Response.Redirect("~/views/dashboard/dash.aspx");
+                    Response.Redirect("~/views/dashboard/dash.aspx?fromlogin=true");
                 }
             }
         }

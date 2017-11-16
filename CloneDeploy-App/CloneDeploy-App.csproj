@@ -242,6 +242,8 @@
     <Content Include="private\clientscripts\startup_scripts\mie_start.command" />
     <Content Include="private\clientscripts\startup_scripts\README" />
     <Content Include="private\clientscripts\startup_scripts\wie_start.ps1" />
+    <Content Include="private\bcd\legacy" />
+    <Content Include="private\bcd\efi" />
     <None Include="Properties\PublishProfiles\app.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

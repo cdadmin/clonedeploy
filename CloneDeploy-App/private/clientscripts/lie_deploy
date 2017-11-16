@@ -45,23 +45,11 @@ function process_hard_drives()
 	
     process_partitions
 	
-	#Only update BCD for mbr.  EFI BCD is based on GUID's not offsets which are restored to the partitions, keeping the BCD intact.
-	#In the future if I decided to randomize guid's the BCD for efi will also need updated
-	if [ "$(parse_json "$hd_schema" .PartitionType)" = "mbr" ]; then
-      update_bcd
-	fi
+	make_bootable
 	
-    if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
-	  log " ** Restoring GUID On $hard_drive ** "
-	  sgdisk $hard_drive -U$(parse_json "$hd_schema" .Guid) &>> $CLIENT_LOG
-	  log "$(parse_json "$hd_schema" .Guid)"
-	  #hard drive and partition guids must be restored prior to updating nvram
-	  if [ "$skip_nvram" != "true" ]; then
-	    update_efi_nvram
-	  fi
-	fi
-	
-    imaged_schema_drives="$imaged_schema_drives $(parse_json "$hd_schema" .SchemaHdNumber) "
+	update_efi_nvram
+    
+	imaged_schema_drives="$imaged_schema_drives $(parse_json "$hd_schema" .SchemaHdNumber) "
 	
 	if [ -n "$post_scripts" ]; then
 	  process_scripts "$post_scripts"
@@ -143,17 +131,21 @@ function process_partitions()
 	fi
 	
 	get_partitions_according_to_mbr_gpt
-	partition_counter=0
 	for partition in $mbr_gpt_partitions; do
-      partition_counter=$(( $partition_counter + 1 ))
-      partition_number=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
-     if [ "$(parse_json "$current_partition" .Number)" = "$partition_number" ]; then
-	    partition_prefix=$(echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[0-9]*//g')
-		break
-	  else
-        partition_prefix=""
-      fi
+	  partition_prefix=$(echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[0-9]*//g')
 	done
+	
+	if [ "$standard_partition_type" = "legacy" ]; then
+	  this_partition=${hard_drive}${partition_prefix}2
+	  this_number=2
+	elif [ "$standard_partition_type" = "efi" ]; then
+	  this_partition=${hard_drive}${partition_prefix}4
+	  this_number=4
+	else
+      this_partition=${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)
+      this_number=$(parse_json "$current_partition" .Number)
+	fi
+	
 	
     if [ "$(parse_json "$current_partition" .FileSystem)" = "swap" ]; then
       log "Creating Swap On $hard_drive${partition_prefix}$(parse_json "$current_partition" .Number)"
@@ -164,31 +156,35 @@ function process_partitions()
 			
     download_image "$current_partition" part
 		
-	partition_size_bytes=$(parted -s $hard_drive unit b print all | grep " $(parse_json "$current_partition" .Number) " -m 1 | awk -F' ' '{print $4}' | sed 's/B//g')
+	partition_size_bytes=$(parted -s $hard_drive unit b print all | grep " $this_number " -m 1 | awk -F' ' '{print $4}' | sed 's/B//g')
 
     if [ "$skip_expand_volumes" != "true" ]; then 
       if [ "$(parse_json "$current_partition" .ImageType)" = "Block" ] && [ "$partition_size_bytes" -gt "5368709120" ]; then #partition smaller than 5GB probably that way for a reason, leave it alone.
-        expand_volume ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number) $(parse_json "$current_partition" .FileSystem)  
+        expand_volume $this_partition $(parse_json "$current_partition" .FileSystem)  
       fi
     fi
-		
-    if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
-      log " ** Restoring GUID On ${hard_drive}$(parse_json "$current_partition" .Number) ** "
-      log " ...... part $part gptGUID: $(parse_json "$current_partition" .Guid) "
-      sgdisk $hard_drive -u$(parse_json "$current_partition" .Number):$(parse_json "$current_partition" .Guid) &>> $CLIENT_LOG
-    fi
-		
-    if [ "$(parse_json "$hd_schema" .BootPartition)" = "$(parse_json "$current_partition" .Number)" ] && [ "$(parse_json "$current_partition" .FileSystem)" = "ntfs" ]; then
-      fix_ntfs_boot ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)
-    fi
+	
+	if [ "$partition_method" != "standard" ]; then
+      if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
+        log " ** Restoring GUID On ${hard_drive}$(parse_json "$current_partition" .Number) ** "
+        log " ...... part $part gptGUID: $(parse_json "$current_partition" .Guid) "
+        sgdisk $hard_drive -u$(parse_json "$current_partition" .Number):$(parse_json "$current_partition" .Guid) &>> $CLIENT_LOG
+      fi
+	fi
+	
+	if [ "$partition_method" != "standard" ]; then
+      if [ "$(parse_json "$hd_schema" .BootPartition)" = "$(parse_json "$current_partition" .Number)" ] && [ "$(parse_json "$current_partition" .FileSystem)" = "ntfs" ]; then
+        fix_ntfs_boot ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)
+      fi
+	fi
 	
 	#Todo: Add support for linux change name
 	if [ "$(parse_json "$current_partition" .FileSystem)" = "ntfs" ] && [ -n "$computer_name" ] && [ "$change_computer_name" = "true" ]; then
-      change_computer_name ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)
+      change_computer_name $this_partition
 	fi
 	
 	if [ "$(parse_json "$current_partition" .FileSystem)" = "ntfs" ] && [ -n "$sysprep_tags" ]; then
-      process_sysprep_tags  ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)
+      process_sysprep_tags  $this_partition
 	fi
 	
 	if [ "$(parse_json "$current_partition" .FileSystem)" = "hfsplus" ]; then
@@ -213,8 +209,15 @@ function download_image()
     destination="/dev/mapper/$file_name_prefix"
 	file_name_prefix=$(echo $file_name_prefix | sed 's/--/-/g')
   else
-    destination=${hard_drive}${partition_prefix}$(parse_json "$current_object" .Number)
-    file_name_prefix=part"$(parse_json "$current_object" .Number)"
+    if [ "$standard_partition_type" = "legacy" ]; then
+	  destination=${hard_drive}${partition_prefix}2
+	elif [ "$standard_partition_type" = "efi" ]; then
+	  destination=${hard_drive}${partition_prefix}4
+	else
+      destination=${hard_drive}${partition_prefix}$(parse_json "$current_object" .Number)
+     
+	fi
+	 file_name_prefix=part"$(parse_json "$current_object" .Number)"
   fi
   
   log " ** Starting Image Download For $destination ** " "display" 
@@ -266,6 +269,7 @@ function download_image()
     if [ "$(parse_json "$current_object" .FileSystem)" = "ntfs" ]; then
 	  log "mkfs.$(parse_json "$current_object" .FileSystem) -f $destination"
 	  mkfs.$(parse_json "$current_object" .FileSystem) -f $destination &>> $CLIENT_LOG
+	  ms-sys -n -f $destination	2>> $CLIENT_LOG
 	elif [ "$(parse_json "$current_object" .FileSystem)" = "xfs" ]; then
 	  log "mkfs.$(parse_json "$current_object" .FileSystem) -f $destination"
 	  wim_arguments=" --unix-data"
@@ -345,24 +349,54 @@ function create_partition_layout()
     sleep 10
     continue		
   elif [ "$(parse_json "$hd_schema" .IsValid)" = "original" ]; then
-    log " ...... HD Matches Original Size Of Image, Dynamic Partition Layout Will Not Be Used"
+    log " ...... HD Matches Original Size Of Image"
   else
     error "Unknown Error Occurred While Determining Minimum HD Size Required.  Check The Exception Log"
   fi
 	
   erase_mbr_gpt
-  restore_mbr_gpt
   
-  get_partitions_according_to_mbr_gpt
-  partition_counter=0
-	for partition in $mbr_gpt_partitions; do
-      partition_counter=$(( $partition_counter + 1 ))
-      partition_number=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
-      partition_prefix=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[0-9]*//g'`
-	  break
-	done
-	
-  if [ "$partition_method" = "script" ]; then # create partitions from image profile script
+  
+  if [ "$partition_method" != "standard" ]; then 
+    restore_mbr_gpt	
+    get_partitions_according_to_mbr_gpt
+    partition_counter=0
+	  for partition in $mbr_gpt_partitions; do
+        partition_counter=$(( $partition_counter + 1 ))
+        partition_number=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
+        partition_prefix=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[0-9]*//g'`
+	    break
+	  done
+  fi
+
+  if [ "$partition_method" = "standard" ]; then
+    log "Checking For Type Of Standard Partition To Create"
+	if [ "$force_legacy_layout" = "true" ]; then
+	  log "Legacy Partition Layout Forced"
+	  standard_partition_type="legacy"
+	elif [ "$force_efi_layout" = "true" ]; then
+	  log "Efi Partition Layout Forced"
+	  standard_partition_type="efi"
+	else
+      mount -t efivarfs none /sys/firmware/efi/efivars &>>$CLIENT_LOG
+	  efibootmgr -v &>> $CLIENT_LOG
+      if [ "$?" != "0" ]; then
+        log "Legacy Partition Layout Selected"
+	    standard_partition_type="legacy"
+	  else
+	    standard_partition_type="efi"
+      fi
+	fi
+	if [ "$standard_partition_type" = "legacy" ]; then
+	  parted -s $hard_drive -- mklabel msdos mkpart primary ntfs 2048s 1026047s mkpart primary ntfs 1026048s -2049s set 1 boot on
+	else #efi
+	  if [ "$lbs" = "512" ]; then #512 or advanced or format, only efi support 4k native no need to check for legacy
+	    parted -s $hard_drive -- mklabel gpt mkpart ntfs 2048s 923647s mkpart fat32 923648s 1126399s mkpart fat32 1126400s 1159167s mkpart ntfs 1159168s -2049s set 1 hidden on set 1 diag on set 2 boot on set 3 msftres on
+	  else #4k native
+	    parted -s $hard_drive -- mklabel gpt mkpart ntfs 256s 115455s mkpart fat32 115456s 182015s mkpart fat32 182016s 186111s mkpart ntfs 186112s -257s set 1 hidden on set 1 diag on set 2 boot on set 3 msftres on
+	  fi
+	fi
+  elif [ "$partition_method" = "script" ]; then # create partitions from image profile script
      log " ** Creating Partition Table On $hard_drive From Custom Script ** " "display"
     $curlAuth --data "profileId=$profile_id" "${web}GetCustomPartitionScript" $curlEnd | dos2unix > /tmp/newPartLayout
 	cat /tmp/newPartLayout >> $CLIENT_LOG
@@ -459,6 +493,14 @@ function create_partition_layout()
       return 0
     fi
   fi
+  
+  if [ "$(parse_json "$hd_schema" .PartitionType)" = "gpt" ]; then
+	if [ "$partition_method" != "standard" ]; then
+	  log " ** Restoring GUID On $hard_drive ** "
+	  sgdisk $hard_drive -U$(parse_json "$hd_schema" .Guid) &>> $CLIENT_LOG
+	  log "$(parse_json "$hd_schema" .Guid)"
+	fi
+  fi
 }
 
 function create_hybrid_gpt()
@@ -501,6 +543,11 @@ function get_partitions_according_to_mbr_gpt()
 
 function update_efi_nvram()
 {
+  if [ "$skip_nvram" = "true" ]; then
+    log "NVRAM update skipped via image profile"
+    return 0
+  fi
+  
   log "Updating NVRAM"
   gdisk -l $hard_drive | grep EF00
   if [ "$?" != "0" ]; then
@@ -513,7 +560,7 @@ function update_efi_nvram()
   
   log "Existing NVRAM"
   efibootmgr -v &>> $CLIENT_LOG
-  if [ "$?" != "0"]; then
+  if [ "$?" != "0" ]; then
     log "EFI Variables Are Not Available"
 	return 1
   fi
@@ -534,7 +581,25 @@ function update_efi_nvram()
 	log "$(parse_json "$current_partition" .Number) $existing_bootloader $boot_number"
 	partition_bootloader="$(echo "$(parse_json "$current_partition" .EfiBootLoader)" | cut -d# -f2)"
 	log "partition_bootloader: $partition_bootloader"
-	if [ -n "$existing_bootloader" ] && [ "$existing_bootloader" = "$partition_bootloader" ]; then
+	
+	if [ "$partition_method" = "standard" ]; then
+	  #Remove any existing Windows Boot Loaders
+	  boot_entries_to_delete=$(efibootmgr | grep "Windows Boot Manager" | cut -d "*" -f1 | sed 's/Boot//g')
+	  for efi_boot in $boot_entries_to_delete; do
+        efibootmgr -B -b $efi_boot 2>>$CLIENT_LOG
+      done
+	  #Add Standard nvram entry
+	   efibootmgr -c -d $hard_drive -p 2 -L "Windows Boot Manager" -l "\\EFI\\Microsoft\\Boot\\bootmgfw.efi" 2>>$CLIENT_LOG
+	    if [ "$current_first_boot" = "$boot_current" ]; then
+           log "Current Boot and First Boot Match.  Setting boot order back to original."
+		   new_boot_order=$(efibootmgr -v | awk '$1 == "BootOrder:" {print $2}')
+		   #if current boot and boot current match, we can assume that it must be pxe,usb,or cd boot first or we wouldn't be here.  Assume user wants this to stay first.
+		   efibootmgr -o $(move_to_front_of_list $boot_current , $new_boot_order) 2>>$CLIENT_LOG
+         else
+		   #assume this is a one time pxe,usb, or cd boot.  Let the new entry move to first boot.  Again this may not be what user wants, may need to add option in webui to select
+		   log "Current Boot and First Boot Do Not Match.  This bootloader has been moved to the first position."
+		 fi
+	elif [ -n "$existing_bootloader" ] && [ "$existing_bootloader" = "$partition_bootloader" ]; then
 	  log "NVRAM Entry Already Exists.  No changes made."
 	  #This partition already has a matching entry in the nvram
 	elif [ -n "$existing_bootloader" ]; then
@@ -557,8 +622,15 @@ function update_efi_nvram()
 	  #Partition Does not exist in the nvram
 	  #Check if it should
 	  if [ -n "$(parse_json "$current_partition" .EfiBootLoader)" ] && [ "$(parse_json "$current_partition" .EfiBootLoader)" != "null" ]; then
-	     log "Creating New NVRAM Entry"
-	    #Entry needs added
+	    log "Creating New NVRAM Entry"
+		
+		#Remove any existing Windows Boot Loaders
+	    boot_entries_to_delete=$(efibootmgr | grep "Windows Boot Manager" | cut -d "*" -f1 | sed 's/Boot//g')
+	    for efi_boot in $boot_entries_to_delete; do
+          efibootmgr -B -b $efi_boot 2>>$CLIENT_LOG
+        done
+		
+		#Entry needs added
 		#efibootmgr -c automatically sets new entry to front of boot order, efibootmgr -C would prevent this, but this seems to work
 	    efibootmgr -c -d $hard_drive -p "$(parse_json "$current_partition" .Number)" -L "$(echo "$(parse_json "$current_partition" .EfiBootLoader)" | cut -d# -f1)" -l "$(echo "$(parse_json "$current_partition" .EfiBootLoader)" | cut -d# -f2)" 2>>$CLIENT_LOG
 		
@@ -571,7 +643,6 @@ function update_efi_nvram()
 		   #assume this is a one time pxe,usb, or cd boot.  Let the new entry move to first boot.  Again this may not be what user wants, may need to add option in webui to select
 		   log "Current Boot and First Boot Do Not Match.  This bootloader has been moved to the first position."
 		 fi
-		
 	  fi
 	fi
   done
@@ -581,64 +652,6 @@ function update_efi_nvram()
   
 }
 
-function update_bcd()
-{
-  #Fix Me.  Function is run once against each hard drive.  If hard drive is dual boot of multiple version of Windows, this will fail.
-  local windows_partition
-  local windows_partition_offset
-  local bcd_partition
-  local original_bcd
-  local updated_bcd
-  
-  if [ "$fix_bcd" != "true" ]; then
-    log "BCD Update Has Been Skipped Via Image Profile"
-    return 0
-  fi
-
-  local array_index=-1
-  while [  "$(( $array_index + 1 ))" -lt "$(parse_json "$hd_schema" .PhysicalPartitionCount)" ]; do
-    array_index=$(( $array_index + 1))
-    clear_and_move_down
-    current_partition="$(parse_json "$hd_schema" .PhysicalPartitions[$array_index])"
-    if [ "$(parse_json "$current_partition" .FileSystem)" != "ntfs" ]; then
-      continue
-    fi
-
-	umount /mnt/ntfs
-    log " ** Updating BCD ** " "display"
-    mkdir /mnt/ntfs
-    ntfs-3g -o force,rw,remove_hiberfile ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number) /mnt/ntfs 2>> $CLIENT_LOG
-    if [ -f "/mnt/ntfs/Windows/System32/winload.exe" ] || [ -f "/mnt/ntfs/Windows/system32/winload.exe" ]; then
-      log " ...... Found Windows Partition On ${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)" "display"
-      windows_partition=${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)	
-      windows_partition_offset=$(parted -s $hard_drive unit b print all | grep " $(parse_json "$current_partition" .Number) " -m 1 | awk -F' ' '{print $2}' | sed 's/B//g')			
-    fi
-		
-    if [ -f "/mnt/ntfs/Boot/BCD" ]; then
-      log " ...... Found BCD Partition On${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)" "display"
-      bcd_partition=${hard_drive}${partition_prefix}$(parse_json "$current_partition" .Number)
-      reged -x /mnt/ntfs/Boot/BCD . Objects /tmp/regbcd >> /dev/null
-      original_bcd=$(cat /tmp/regbcd)
-    fi
-    umount /mnt/ntfs
-  done
-  
-   if [ -n "$windows_partition" ] && [ -n "$bcd_partition" ]; then
-    updated_bcd=$($curlAuth -F bcd="$(echo -n "$original_bcd" | base64)" -F offsetBytes="$(echo -n "$windows_partition_offset" | base64)" "${web}UpdateBcd" $curlEnd)
-    echo $updated_bcd | base64 -d >>/tmp/updatedbcd
-    log " ** Updated BCD Is ** "
-    cat /tmp/updatedbcd >> $CLIENT_LOG	
-    ntfs-3g -o force,rw,remove_hiberfile $bcd_partition /mnt/ntfs 2>> $CLIENT_LOG
-    reged -I -C /mnt/ntfs/Boot/BCD . /tmp/updatedbcd >> $CLIENT_LOG
-    umount /mnt/ntfs
-    log " ...... Success" "display"
-  else
-    log " ...... Could Not Verify Windows Partition Or BCD Partition.  BCD Has Not Been Changed" "display"
-    log " ...... windows_partition: $windows_partition bcd_partition: $bcd_partition" 
-  fi	
-  echo
-}
-
 function fix_ntfs_boot()
 {
   if [ "$fix_bootloader" != "true" ]; then
@@ -646,7 +659,7 @@ function fix_ntfs_boot()
     return 0
   fi
   local partition="$1"
-  log " ** Fixing NTFS Bootloader ** " "display"
+  log " ** Fixing NTFS Boot sector ** " "display"
   partclone.ntfsfixboot -p $partition >> $CLIENT_LOG
   partclone.ntfsfixboot -w $partition >> $CLIENT_LOG
 		
@@ -757,7 +770,207 @@ function change_computer_name()
   umount /mnt/ntfs	
 }
 
+#Function currently only supports Windows.
+#Todo: Add linux support
+function make_bootable()
+{
+  if [ "$standard_partition_type" = "legacy" ] || [ "$standard_partition_type" = "efi" ]; then
+    partitions=$(lsblk -ipno KNAME | sort | grep "$hard_drive" | grep -vw "$hard_drive" | grep -v "boot")
+    for partition in $partitions; do
+	  partition_prefix=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[0-9]*//g'`
+	  break
+	done
+	
+	umount /mnt/ntfs
+	if [ "$standard_partition_type" = "legacy" ]; then
+	  log "Making system bootable - legacy"
+	  mkfs.ntfs -f ${hard_drive}${partition_prefix}1 2>> $CLIENT_LOG
+	  mkdir /mnt/bcd
+	  mkdir /mnt/win
+	  ntfs-3g -o force,rw,remove_hiberfile ${hard_drive}${partition_prefix}1 /mnt/bcd 2>> $CLIENT_LOG
+	  ntfs-3g -o force,rw,remove_hiberfile ${hard_drive}${partition_prefix}2 /mnt/win 2>> $CLIENT_LOG
+	  mkdir /mnt/bcd/Boot
+	  if [ ! -d "/mnt/win/Windows/Boot/PCAT/" ]; then
+	    log "Legacy boot files could not be found.  System will not be bootable."
+		ls /mnt/win >> $CLIENT_LOG
+		ls /mnt/win/Windows >> $CLIENT_LOG
+		ls /mnt/win/Windows/Boot >> $CLIENT_LOG
+	    ls /mnt/win/Windows/Boot/PCAT >> $CLIENT_LOG
+		return 1
+	  fi
+	  cp -R /mnt/win/Windows/Boot/PCAT/* /mnt/bcd/Boot/ 2>> $CLIENT_LOG
+	  cp /usr/share/bcd/legacy /mnt/bcd/Boot/BCD 2>> $CLIENT_LOG
+	  cp /mnt/win/Windows/Boot/PCAT/bootmgr /mnt/bcd 2>> $CLIENT_LOG
+	  cp /mnt/win/Windows/Boot/PCAT/bootnxt /mnt/bcd 2>> $CLIENT_LOG
+	  
+	  disk_signature=$(fdisk -l $hard_drive | grep -i "disk identifier:" | cut -d " " -f3)
+	  updated_bcd=$($curlAuth -F diskSignature="$(echo -n "$disk_signature" | base64)" "${web}GetStandardLegacyBcd" $curlEnd)
+	  echo $updated_bcd | base64 -d >/tmp/updatedbcd
+	  #cat /tmp/updatedbcd >> $CLIENT_LOG
+	  reged -I -C /mnt/bcd/Boot/BCD . /tmp/updatedbcd >> $CLIENT_LOG
+	  umount /mnt/bcd
+	  umount /mnt/win
+	  ms-sys -7 -f $hard_drive 2>> $CLIENT_LOG
+	  ms-sys -n -f ${hard_drive}${partition_prefix}1	2>> $CLIENT_LOG
+	else # standard efi
+	  log "Making system bootable - efi"
+	  mkfs.ntfs -f ${hard_drive}${partition_prefix}1 2>> $CLIENT_LOG
+	  mkfs.fat -F 32 ${hard_drive}${partition_prefix}2 2>> $CLIENT_LOG
+	  mkdir /mnt/bcd
+	  mkdir /mnt/win
+	  mount ${hard_drive}${partition_prefix}2 /mnt/bcd 2>> $CLIENT_LOG
+	  ntfs-3g -o force,rw,remove_hiberfile ${hard_drive}${partition_prefix}4 /mnt/win 2>> $CLIENT_LOG
+	  if [ ! -d "/mnt/win/Windows/Boot/EFI/" ]; then
+	    log "Legacy boot files could not be found.  System will not be bootable."
+		ls /mnt/win >> $CLIENT_LOG
+		ls /mnt/win/Windows >> $CLIENT_LOG
+		ls /mnt/win/Windows/Boot >> $CLIENT_LOG
+	    ls /mnt/win/Windows/Boot/EFI >> $CLIENT_LOG
+		return 1
+	  fi
+	  mkdir -p /mnt/bcd/EFI/Microsoft/Boot
+	  cp -R /mnt/win/Windows/Boot/EFI/* /mnt/bcd/EFI/Microsoft/Boot 2>> $CLIENT_LOG
+	  cp /usr/share/bcd/efi /mnt/bcd/EFI/Microsoft/Boot/BCD 2>> $CLIENT_LOG
+	  
+	  disk_guid=$(gdisk -l $hard_drive | grep GUID | awk -F': ' '{print $2}')
+	  recovery_guid=$(sgdisk $hard_drive -i1 | grep "unique GUID" | awk -F ' ' '{print $4}')
+	  windows_guid=$(sgdisk $hard_drive -i4 | grep "unique GUID" | awk -F ' ' '{print $4}')
+	  
+	  updated_bcd=$($curlAuth -F diskGuid="$(echo -n "$disk_guid" | base64)" -F windowsGuid="$(echo -n "$windows_guid" | base64)" -F recoveryGuid="$(echo -n "$recovery_guid" | base64)" "${web}GetStandardEfiBcd" $curlEnd)
+	  echo $updated_bcd | base64 -d >/tmp/updatedbcd
+	  #cat /tmp/updatedbcd >> $CLIENT_LOG
+	  reged -I -C /mnt/bcd/EFI/Microsoft/Boot/BCD . /tmp/updatedbcd >> $CLIENT_LOG
+	  umount /mnt/bcd
+	  umount /mnt/win
+	  ms-sys -7 -f $hard_drive
+	  	  
+	fi
 
+  else
+    if [ "$fix_bcd" != "true" ]; then
+      log "BCD Update Has Been Skipped Via Image Profile"
+      return 0
+    fi
+	  umount /mnt/ntfs 2>/dev/null
+      log " ** Updating BCD ** " "display"
+	mkdir /mnt/bootcheck
+	mkdir /mnt/bcd
+	mkdir /mnt/windows
+	  
+	#search through partitions to find boot and windows, or system and boot to be confusing
+	local partitions=$(lsblk -ipno KNAME | sort | grep "$hard_drive" | grep -vw "$hard_drive" | grep -v "boot")
+    for partition in $partitions; do
+	  local partition_prefix=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[0-9]*//g'`
+	  local filesystem_type=`blkid -po udev $partition | grep FS_TYPE | awk -F'=' '{print $2}'`
+	
+      if [ "$filesystem_type" = "ntfs" ]; then
+	    ntfs-3g -o force,rw,remove_hiberfile $partition /mnt/bootcheck 2>> $CLIENT_LOG
+	  elif [ "$filesystem_type" = "vfat" ]; then
+	    mount $partition /mnt/bootcheck 2>> $CLIENT_LOG
+	  else
+	    continue
+	  fi
+	
+	  if [ -d "/mnt/bootcheck/Windows" ] || [ -d "/mnt/bootcheck/windows" ]; then
+	    local windows_partition=$partition
+		umount /mnt/bootcheck
+	    ntfs-3g -o force,rw,remove_hiberfile $partition /mnt/windows 2>> $CLIENT_LOG
+	  elif [ -f "/mnt/bootcheck/Boot/BCD" ] || [ -f "/mnt/bootcheck/EFI/Microsoft/Boot/BCD" ]; then
+	    local boot_partition=$partition
+		umount /mnt/bootcheck
+		if [ "$filesystem_type" = "ntfs" ]; then
+	      ntfs-3g -o force,rw,remove_hiberfile $partition /mnt/bcd 2>> $CLIENT_LOG
+	    else
+	      mount $partition /mnt/bcd 2>> $CLIENT_LOG
+	    fi
+	  fi
+	
+	  if [ -n "$windows_partition" ] && [ -n "$boot_partition" ]; then
+	    break
+	  fi
+	   umount /mnt/bootcheck
+	  done
+	  
+	  if [ -z "$windows_partition" ] && [ -z "$boot_partition" ]; then
+	    log "Could not determine the system and boot partitions.  Computer may not boot."
+		log "windows_partition: $windows_partition"
+		log "boot_partition: $boot_partition"
+		return 1
+	  fi
+	  
+	  mount -t efivarfs none /sys/firmware/efi/efivars 2>>$CLIENT_LOG
+	  efibootmgr -v 2>> $CLIENT_LOG
+      if [ "$?" != "0" ]; then
+        log "Legacy Boot Layout Selected"
+	    boot_layout="legacy"
+		if [ "$randomize_guids" = "true" ]; then
+		  new_signature=$(uuidgen | cut -c -8)
+		  log "new_signature: $new_signature"
+		  fdisk $hard_drive <<EOF > /dev/null
+x
+i
+0x${new_signature}
+r
+w
+EOF
+	    fi
+		
+		local partition_number=`echo $windows_partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
+		windows_partition_offset=$(parted -s $hard_drive unit b print all | grep " $partition_number " -m 1 | awk -F' ' '{print $2}' | sed 's/B//g')
+		disk_signature=$(fdisk -l $hard_drive | grep -i "disk identifier:" | cut -d " " -f3)
+		reged -x /mnt/bcd/Boot/BCD . Objects /tmp/regbcd >> /dev/null
+        original_bcd=$(cat /tmp/regbcd | perl -pe 's/\\\r\n//' | sed 's/,  /,/g')
+		updated_bcd=$($curlAuth -F bcd="$(echo -n "$original_bcd" | base64)" -F offsetBytes="$(echo -n "$windows_partition_offset" | base64)" -F diskSignature="$(echo -n "$disk_signature" | base64)" "${web}UpdateLegacyBcd" $curlEnd)
+        echo $updated_bcd | base64 -d >>/tmp/updatedbcd
+        log " ** Updated BCD Is ** "
+        cat /tmp/updatedbcd >> $CLIENT_LOG
+		
+		#cp -R /mnt/windows/Windows/Boot/PCAT/* /mnt/bcd/Boot/ 2>> $CLIENT_LOG
+	    #cp /mnt/windows/Windows/Boot/PCAT/bootmgr /mnt/bcd 2>> $CLIENT_LOG
+	    #cp /mnt/windows/Windows/Boot/PCAT/bootnxt /mnt/bcd 2>> $CLIENT_LOG
+	  
+        reged -I -C /mnt/bcd/Boot/BCD . /tmp/updatedbcd >> $CLIENT_LOG
+		ms-sys -7 -f $hard_drive 2>> $CLIENT_LOG
+	    ms-sys -n -f $boot_partition	2>> $CLIENT_LOG
+
+	  else
+	    log "Efi Boot Layout Selected"
+	    boot_layout="efi"
+		if [ "$randomize_guids" = "true" ]; then
+		  sgdisk -G $hard_drive
+		fi
+		
+		local windows_number=`echo $windows_partition | awk -F $hard_drive ' {print $2}' | sed 's/[^0-9]//g'`
+		local recovery_number=$(parted -s $hard_drive print all | grep diag | head -1 | cut -d" " -f2)
+	    disk_guid=$(gdisk -l $hard_drive | grep GUID | awk -F': ' '{print $2}')
+	    recovery_guid=$(sgdisk $hard_drive -i$recovery_number | grep "unique GUID" | awk -F ' ' '{print $4}')
+	    windows_guid=$(sgdisk $hard_drive -i$windows_number | grep "unique GUID" | awk -F ' ' '{print $4}')
+	    reged -x /mnt/bcd/EFI/Microsoft/Boot/BCD . Objects /tmp/regbcd >> /dev/null
+        original_bcd=$(cat /tmp/regbcd | perl -pe 's/\\\r\n//' | sed 's/,  /,/g')
+	    updated_bcd=$($curlAuth -F bcd="$(echo -n "$original_bcd" | base64)" -F diskGuid="$(echo -n "$disk_guid" | base64)" -F windowsGuid="$(echo -n "$windows_guid" | base64)" -F recoveryGuid="$(echo -n "$recovery_guid" | base64)" "${web}UpdateEfiBcd" $curlEnd)
+		
+		log "1:$windows_number"
+		log "2:$recovery_number"
+		log "3:$disk_guid"
+		log "4:$recovery_guid"
+		log "5:$windows_guid"
+		echo $updated_bcd | base64 -d >>/tmp/updatedbcd
+        log " ** Updated BCD Is ** "
+        cat /tmp/updatedbcd >> $CLIENT_LOG
+		
+		#cp -R /mnt/windows/Windows/Boot/EFI/* /mnt/bcd/EFI/Microsoft/Boot 2>> $CLIENT_LOG
+		reged -I -C /mnt/bcd/EFI/Microsoft/Boot/BCD . /tmp/updatedbcd &>> $CLIENT_LOG
+		ms-sys -7 -f $hard_drive
+		
+      fi
+	  
+	  umount /mnt/windows
+	  umount /mnt/bcd
+	  
+	  
+  fi
+ 
+}
 
 
 function main()

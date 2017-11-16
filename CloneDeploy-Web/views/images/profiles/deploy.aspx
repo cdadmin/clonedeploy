@@ -118,6 +118,7 @@
     <div class="size-5 column">
         <asp:dropdownlist ID="ddlPartitionMethodLin" runat="server" CssClass="ddlist" OnSelectedIndexChanged="ddlPartitionMethod_OnSelectedIndexChanged" AutoPostBack="True">
             <asp:ListItem>Use Original MBR / GPT</asp:ListItem>
+            <asp:ListItem>Standard</asp:ListItem>
             <asp:ListItem>Dynamic</asp:ListItem>
             <asp:ListItem>Custom Script</asp:ListItem>
         </asp:dropdownlist>

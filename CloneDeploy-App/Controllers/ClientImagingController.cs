@@ -410,12 +410,54 @@ namespace CloneDeploy_App.Controllers
 
         [HttpPost]
         [ClientAuth]
-        public HttpResponseMessage UpdateBcd()
+        public HttpResponseMessage UpdateLegacyBcd()
         {
             var bcd = StringManipulationServices.Decode(HttpContext.Current.Request.Form["bcd"], "bcd");
             var offsetBytes = StringManipulationServices.Decode(HttpContext.Current.Request.Form["offsetBytes"],
                 "offsetBytes");
-            _response.Content = new StringContent(new BcdServices().UpdateEntry(bcd, Convert.ToInt64(offsetBytes)),
+            var diskSignature = StringManipulationServices.Decode(HttpContext.Current.Request.Form["diskSignature"],
+               "diskSignature");
+            _response.Content = new StringContent(new BcdServices().UpdateLegacy(bcd, diskSignature,Convert.ToInt64(offsetBytes)),
+                Encoding.UTF8, "text/plain");
+            return _response;
+        }
+
+        [HttpPost]
+        [ClientAuth]
+        public HttpResponseMessage GetStandardLegacyBcd()
+        {
+            var diskSignature = StringManipulationServices.Decode(HttpContext.Current.Request.Form["diskSignature"],
+               "diskSignature");
+            _response.Content = new StringContent(new BcdServices().GetStandardLegacy(diskSignature),
+                Encoding.UTF8, "text/plain");
+            return _response;
+        }
+
+        [HttpPost]
+        [ClientAuth]
+        public HttpResponseMessage GetStandardEfiBcd()
+        {
+            var diskGuid = StringManipulationServices.Decode(HttpContext.Current.Request.Form["diskGuid"], "diskGuid");
+            var windowsGuid = StringManipulationServices.Decode(HttpContext.Current.Request.Form["windowsGuid"],
+                "windowsGuid");
+            var recoveryGuid = StringManipulationServices.Decode(HttpContext.Current.Request.Form["recoveryGuid"],
+               "recoveryGuid");
+            _response.Content = new StringContent(new BcdServices().GetStandardEfi(diskGuid,recoveryGuid,windowsGuid),
+                Encoding.UTF8, "text/plain");
+            return _response;
+        }
+
+        [HttpPost]
+        [ClientAuth]
+        public HttpResponseMessage UpdateEfiBcd()
+        {
+            var bcd = StringManipulationServices.Decode(HttpContext.Current.Request.Form["bcd"], "bcd");
+            var diskGuid = StringManipulationServices.Decode(HttpContext.Current.Request.Form["diskGuid"], "diskGuid");
+            var windowsGuid = StringManipulationServices.Decode(HttpContext.Current.Request.Form["windowsGuid"],
+                "windowsGuid");
+            var recoveryGuid = StringManipulationServices.Decode(HttpContext.Current.Request.Form["recoveryGuid"],
+               "recoveryGuid");
+            _response.Content = new StringContent(new BcdServices().UpdateEfi(bcd,diskGuid, recoveryGuid, windowsGuid),
                 Encoding.UTF8, "text/plain");
             return _response;
         }

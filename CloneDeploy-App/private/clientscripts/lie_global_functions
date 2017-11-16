@@ -483,25 +483,33 @@ function process_file_copy()
   local current_object="$1"
   local object_type="$2"
   local array_index=-1
+  local destination
    log " ** Processing File Copy ** " "display"
    sleep 5
+   if [ "$standard_partition_type" = "legacy" ]; then
+	  destination=${hard_drive}${partition_prefix}2
+	elif [ "$standard_partition_type" = "efi" ]; then
+	  destination=${hard_drive}${partition_prefix}4
+	else
+      destination=${hard_drive}${partition_prefix}$(parse_json "$current_object" .Number)
+	fi
   while [  "$(( $array_index + 1 ))" -lt "$(parse_json "$file_copy_schema" .Count)" ]; do
     array_index=$(( $array_index + 1))
     current_file="$(parse_json "$file_copy_schema" .FilesAndFolders[$array_index])"
     log "$current_file"
 	if [ "$object_type" = "partition" ]; then
-	  if [ "$(parse_json "$current_object" .Number)" = "$(parse_json "$current_file" .DestinationPartition)" ]; then
+	  if [ "$(parse_json "$current_object" .Number)" = "$(parse_json "$current_file" .DestinationPartition)" ] || [ "$partition_method" = "standard" ]; then
 	    log "Copying /storage/resources/$(parse_json "$current_file" .SourcePath)"
 		if [ "$(parse_json "$current_object" .FileSystem)" = "ntfs" ]; then
           mkdir /mnt/fs &> /dev/null
-		  ntfs-3g -o force,rw,remove_hiberfile ${hard_drive}${partition_prefix}$(parse_json "$current_object" .Number) /mnt/fs &>/dev/null
+		  ntfs-3g -o force,rw,remove_hiberfile $destination /mnt/fs &>/dev/null
           if [ "$?" != "0" ]; then
             log "Could Not Mount NTFS"
 	        return 1
           fi
 		else # only ext or xfs
 		  mkdir /mnt/fs &> /dev/null
-		  mount ${hard_drive}${partition_prefix}$(parse_json "$current_object" .Number) /mnt/fs
+		  mount $destination /mnt/fs
 		   if [ "$?" != "0" ]; then
              log "Could Not Mount Filesystem"
 	         return 1
