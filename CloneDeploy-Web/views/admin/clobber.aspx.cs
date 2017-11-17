@@ -73,17 +73,17 @@ namespace CloneDeploy_Web.views.admin
         protected void CreateProxyMenu()
         {
             var defaultBootMenuOptions = new BootMenuGenOptionsDTO();
-            defaultBootMenuOptions.Kernel = "4.5";
+            defaultBootMenuOptions.Kernel = SettingStrings.DefaultKernel32;
             defaultBootMenuOptions.BootImage = "initrd.xz";
             defaultBootMenuOptions.Type = "bios";
             Call.WorkflowApi.CreateDefaultBootMenu(defaultBootMenuOptions);
 
-            defaultBootMenuOptions.Kernel = "4.5";
+            defaultBootMenuOptions.Kernel = SettingStrings.DefaultKernel32;
             defaultBootMenuOptions.BootImage = "initrd.xz";
             defaultBootMenuOptions.Type = "efi32";
             Call.WorkflowApi.CreateDefaultBootMenu(defaultBootMenuOptions);
 
-            defaultBootMenuOptions.Kernel = "4.5x64";
+            defaultBootMenuOptions.Kernel = SettingStrings.DefaultKernel64;
             defaultBootMenuOptions.BootImage = "initrd.xz";
             defaultBootMenuOptions.Type = "efi64";
             Call.WorkflowApi.CreateDefaultBootMenu(defaultBootMenuOptions);
@@ -92,7 +92,7 @@ namespace CloneDeploy_Web.views.admin
         protected void CreateStandardMenu()
         {
             var defaultBootMenuOptions = new BootMenuGenOptionsDTO();
-            defaultBootMenuOptions.Kernel = "4.5x64";
+            defaultBootMenuOptions.Kernel = SettingStrings.DefaultKernel64;
             defaultBootMenuOptions.BootImage = "initrd.xz";
             defaultBootMenuOptions.Type = "standard";
             Call.WorkflowApi.CreateDefaultBootMenu(defaultBootMenuOptions);

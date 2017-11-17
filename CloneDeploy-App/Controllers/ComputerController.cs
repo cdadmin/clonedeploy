@@ -165,6 +165,13 @@ namespace CloneDeploy_App.Controllers
         }
 
         [CustomAuth(Permission = "ComputerRead")]
+        public ComputerLogEntity GetLastLog(int id)
+        {
+            var result = _computerService.GetLastLog(id);
+            return result;
+        }
+
+        [CustomAuth(Permission = "ComputerRead")]
         public ApiStringResponseDTO GetEffectiveManifest(int id)
         {
             var effectiveManifest = new EffectiveMunkiTemplate().Computer(id);

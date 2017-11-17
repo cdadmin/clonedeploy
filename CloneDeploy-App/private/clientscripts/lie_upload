@@ -331,7 +331,8 @@ function create_image_schema()
       if [ "$filesystem_type" = "ntfs" ]; then
         ntfsfix -b -d $partition &>/dev/null
         partclone_type="ntfs"
-          
+      elif [ "$filesystem_type" = "vfat" ]; then
+	    partclone_type="fat"
       elif [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ]; then
         e2fsck -fy $partition &>> $CLIENT_LOG
         partclone_type="extfs"
@@ -616,7 +617,7 @@ function upload_image()
       ntfs_tasks
     elif [ "$filesystem_type" = "vfat" ]; then
       partclone_type="fat"
-      
+      wim_arguments=" $web_wim_args"
     elif [ "$filesystem_type" = "ext2" ] || [ "$filesystem_type" = "ext3" ] || [ "$filesystem_type" = "ext4" ]; then
       partclone_type="extfs"
       wim_arguments=" --unix-data $web_wim_args"

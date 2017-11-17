@@ -148,6 +148,14 @@ namespace CloneDeploy_ApiCalls
             return responseData != null ? responseData.Value : string.Empty;
         }
 
+        public ComputerLogEntity GetLastLog(int id)
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/GetLastLog/{1}", Resource, id);
+            var result = _apiRequest.Execute<ComputerLogEntity>(Request);
+            return result;
+        }
+
         public string GetEffectiveManifest(int id)
         {
             Request.Method = Method.GET;

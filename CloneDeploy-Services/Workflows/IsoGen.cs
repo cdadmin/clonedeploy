@@ -25,12 +25,17 @@ namespace CloneDeploy_Services.Workflows
         private readonly ILog log = LogManager.GetLogger(typeof(IsoGen));
         private string _outputPath;
         private readonly string _registration;
+        private readonly string _namePromptArg;
+        private readonly bool _isClobber;
+        private readonly int _imageProfileId;
+
         public IsoGen(IsoGenOptionsDTO isoGenOptions)
         {
             _isoOptions = isoGenOptions;
             if (SettingServices.GetSettingValue(SettingStrings.DebugRequiresLogin) == "No" ||
                 SettingServices.GetSettingValue(SettingStrings.OnDemandRequiresLogin) == "No" ||
-                SettingServices.GetSettingValue(SettingStrings.RegisterRequiresLogin) == "No")
+                SettingServices.GetSettingValue(SettingStrings.RegisterRequiresLogin) == "No" ||
+                SettingServices.GetSettingValue(SettingStrings.ClobberRequiresLogin) == "No")
                 _userToken = SettingServices.GetSettingValue(SettingStrings.UniversalToken);
             else
             {
@@ -45,6 +50,15 @@ namespace CloneDeploy_Services.Workflows
             _configOutPath = _basePath + "client_iso" + Path.DirectorySeparatorChar + "config" +
                              Path.DirectorySeparatorChar;
             _registration = SettingServices.GetSettingValue(SettingStrings.RegistrationEnabled) == "No" ? " skip_registration=true " : string.Empty;
+
+            if (SettingServices.GetSettingValue(SettingStrings.ClobberEnabled) == "1")
+            {
+                _isClobber = true;
+                _namePromptArg = SettingServices.GetSettingValue(SettingStrings.ClobberPromptComputerName) == "1" ? " name_prompt=true" : string.Empty;
+                _imageProfileId = Convert.ToInt32(SettingServices.GetSettingValue(SettingStrings.ClobberProfileId));
+            }
+           
+ 
         }
 
         private string _userToken { get; set; }
@@ -55,6 +69,49 @@ namespace CloneDeploy_Services.Workflows
             {
                 Directory.Delete(_buildPath, true);
             }
+        }
+
+        private void CreateGrubClobber()
+        {
+            var grub = new StringBuilder();
+            grub.Append("set default=0" + NewLineChar);
+            grub.Append("set timeout=0" + NewLineChar);
+            grub.Append("menuentry CloneDeploy --unrestricted {" + NewLineChar);
+            grub.Append("echo Please Wait While The Boot Image Is Transferred.  This May Take A Few Minutes." +
+                        NewLineChar);
+            grub.Append("linux /clonedeploy/" + _isoOptions.kernel +
+                        " root=/dev/ram0 rw ramdisk_size=156000 task=clobber " + "image_profile_id=" + _imageProfileId +
+                        _namePromptArg + " consoleblank=0" + " web=" + _webPath + " USER_TOKEN=" +
+                        _userToken + " " +
+                        _isoOptions.arguments + NewLineChar);
+            grub.Append("initrd /clonedeploy/" + _isoOptions.bootImage + NewLineChar);
+            grub.Append("}" + NewLineChar);
+
+            var outFile = _configOutPath + "EFI" + Path.DirectorySeparatorChar + "boot" + Path.DirectorySeparatorChar +
+                       "grub.cfg";
+
+            new FileOpsServices().WritePath(outFile, grub.ToString());
+        }
+
+        private void CreateSyslinuxClobber()
+        {
+            var sysLinux = new StringBuilder();
+            sysLinux.Append("DEFAULT clonedeploy" + NewLineChar);
+            sysLinux.Append("LABEL clonedeploy" + NewLineChar);
+            sysLinux.Append("KERNEL /clonedeploy/" + _isoOptions.kernel + NewLineChar);
+            sysLinux.Append("APPEND initrd=/clonedeploy/" + _isoOptions.bootImage +
+                            " root=/dev/ram0 rw ramdisk_size=156000 task=clobber " + "image_profile_id=" +
+                            _imageProfileId + _namePromptArg +
+                            " consoleblank=0" + " web=" + _webPath + " USER_TOKEN=" + _userToken + " " +
+                            _isoOptions.arguments + NewLineChar);
+
+            string outFile;
+            if (_isoOptions.buildType == "ISO")
+                outFile = _configOutPath + "syslinux" + Path.DirectorySeparatorChar + "isolinux.cfg";
+            else
+                outFile = _configOutPath + "syslinux" + Path.DirectorySeparatorChar + "syslinux.cfg";
+
+            new FileOpsServices().WritePath(outFile, sysLinux.ToString());
         }
 
         private void CreateGrubMenu()
@@ -210,8 +267,17 @@ namespace CloneDeploy_Services.Workflows
                 return false;
             }
 
-            CreateSyslinuxMenu();
-            CreateGrubMenu();
+            if (_isClobber)
+            {
+                CreateSyslinuxClobber();
+                CreateGrubClobber();
+            }
+            else
+            {
+                CreateSyslinuxMenu();
+                CreateGrubMenu();
+            }
+           
 
             if (_isoOptions.buildType == "ISO")
             {

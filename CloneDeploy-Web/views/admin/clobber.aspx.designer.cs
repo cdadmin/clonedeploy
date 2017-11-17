@@ -7,12 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-
-
-namespace CloneDeploy_Web.views.admin
-{
-    public partial class views_admin_clobber {
+namespace CloneDeploy_Web.views.admin {
     
+    
+    public partial class views_admin_clobber {
+        
         /// <summary>
         /// chkClobber control.
         /// </summary>
@@ -21,7 +20,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkClobber;
-    
+        
         /// <summary>
         /// ddlComputerImage control.
         /// </summary>
@@ -30,7 +29,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlComputerImage;
-    
+        
         /// <summary>
         /// ddlImageProfile control.
         /// </summary>
@@ -39,7 +38,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlImageProfile;
-    
+        
         /// <summary>
         /// chkPromptName control.
         /// </summary>
@@ -48,7 +47,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkPromptName;
-    
+        
         /// <summary>
         /// lblTitle control.
         /// </summary>
@@ -57,7 +56,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblTitle;
-    
+        
         /// <summary>
         /// ConfirmButton control.
         /// </summary>
@@ -66,7 +65,7 @@ namespace CloneDeploy_Web.views.admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton ConfirmButton;
-    
+        
         /// <summary>
         /// CancelButton control.
         /// </summary>

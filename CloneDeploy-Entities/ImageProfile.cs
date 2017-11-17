@@ -112,6 +112,15 @@ namespace CloneDeploy_Entities
 
         [Column("skip_nvram", Order = 35)]
         public int SkipNvramUpdate { get; set; }
+
+        [Column("randomize_guids", Order = 36)]
+        public int RandomizeGuids { get; set; }
+
+        [Column("force_standard_efi", Order = 37)]
+        public int ForceStandardEfi { get; set; }
+
+        [Column("force_standard_legacy", Order = 38)]
+        public int ForceStandardLegacy { get; set; }
     }
 
     [NotMapped]

@@ -53,9 +53,17 @@
         <asp:CheckBox ID="chkAlignBCD" runat="server" CssClass="textbox"></asp:CheckBox>
     </div>
     <br class="clear"/>
+    
+     <div class="size-9 column">
+        Randomize GUIDs
+    </div>
+    <div class="size-8 column">
+        <asp:CheckBox ID="chkRandomize" runat="server" CssClass="textbox"></asp:CheckBox>
+    </div>
+    <br class="clear"/>
 
     <div class="size-9 column">
-        Fix Bootloader
+        Fix Boot Sector
     </div>
     <div class="size-8 column">
         <asp:CheckBox ID="chkRunFixBoot" runat="server" CssClass="textbox"></asp:CheckBox>
@@ -151,6 +159,23 @@
             <asp:ListItem>Dynamic</asp:ListItem>
             <asp:ListItem>Custom Script</asp:ListItem>
         </asp:dropdownlist>
+    </div>
+    <br class="clear"/>
+</div>
+
+<div id="DivStandardOptions" runat="server" Visible="False">
+     <div class="size-9 column">
+        Force Standard EFI Partitions
+    </div>
+    <div class="size-8 column">
+        <asp:CheckBox ID="chkForceEfi" runat="server" CssClass="textbox"></asp:CheckBox>
+    </div>
+    <br class="clear"/>
+     <div class="size-9 column">
+        Force Standard Legacy Partitions
+    </div>
+    <div class="size-8 column">
+        <asp:CheckBox ID="chkForceLegacy" runat="server" CssClass="textbox"></asp:CheckBox>
     </div>
     <br class="clear"/>
 </div>

@@ -381,6 +381,13 @@ namespace CloneDeploy_Services
             //only check ond and debug because web tasks can't even be started if user isn't authorized
             if (task == "ond" && SettingServices.GetSettingValue(SettingStrings.OnDemand) != "Enabled")
             {
+                log.Debug("A client tried to image with on demand mode, but it is not enabled on the server");
+                return "false";
+            }
+
+            if (task == "clobber" && SettingServices.GetSettingValue(SettingStrings.ClobberEnabled) != "1")
+            {
+                log.Debug("A client tried to image with clobber mode, but it is not enabled on the server");
                 return "false";
             }
 

@@ -101,6 +101,9 @@ namespace CloneDeploy_Web.views.images.profiles
             imageProfile.MunkiRepoUrl = txtMunkiRepoUrl.Text;
             imageProfile.OsxTargetVolume = txtTargetVolume.Text;
             ImageProfile.SkipNvramUpdate = Convert.ToInt16(chkNvram.Checked);
+            ImageProfile.RandomizeGuids = Convert.ToInt16(chkRandomize.Checked);
+            ImageProfile.ForceStandardLegacy = Convert.ToInt16(chkForceLegacy.Checked);
+            ImageProfile.ForceStandardEfi = Convert.ToInt16(chkForceEfi.Checked);
             if (Image.Environment == "macOS")
                 imageProfile.PartitionMethod = ddlPartitionMethodMac.Text;
             else if (Image.Environment == "winpe")
@@ -258,12 +261,30 @@ namespace CloneDeploy_Web.views.images.profiles
         protected void ddlPartitionMethod_OnSelectedIndexChanged(object sender, EventArgs e)
         {
           
-                ForceDiv.Visible = false;
                 if (ddlObject.Text == "Standard" || ddlObject.Text == "Standard Core Storage")
                 {
                     chkModifySchema.Checked = true;
                     chkModifySchema.Enabled = false;
+                    chkDownForceDynamic.Enabled = false;
+                    chkDownForceDynamic.Checked = true;
                 }
+                else
+                {
+                    chkModifySchema.Enabled = true;
+                    chkDownForceDynamic.Enabled = true;
+                    chkModifySchema.Checked = false;
+                    chkDownForceDynamic.Checked = false;
+                }
+
+            if (ddlObject.Text == "Standard" && Image.Environment == "linux")
+            {
+                DivStandardOptions.Visible = true;
+                
+            }
+            else
+            {
+                DivStandardOptions.Visible = false;
+            }
             
             
             DisplayLayout();
@@ -326,6 +347,9 @@ namespace CloneDeploy_Web.views.images.profiles
             chkAlignBCD.Checked = Convert.ToBoolean(ImageProfile.FixBcd);
             chkRunFixBoot.Checked = Convert.ToBoolean(ImageProfile.FixBootloader);
             chkNvram.Checked = Convert.ToBoolean(ImageProfile.SkipNvramUpdate);
+            chkRandomize.Checked = Convert.ToBoolean(ImageProfile.RandomizeGuids);
+            chkForceEfi.Checked = Convert.ToBoolean(ImageProfile.ForceStandardEfi);
+            chkForceLegacy.Checked = Convert.ToBoolean(ImageProfile.ForceStandardLegacy);
 
             if (Image.Environment == "macOS")
             {

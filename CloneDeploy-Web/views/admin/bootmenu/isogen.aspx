@@ -20,6 +20,8 @@
             $('#iso').addClass("nav-current");
         });
     </script>
+    <asp:Label runat="server" ID="clobberNotice" CssClass="denied_text"></asp:Label>
+
     <div class="size-4 column">
         Build Type:
     </div>

@@ -557,6 +557,12 @@ namespace CloneDeploy_Services
             return _uow.ComputerProxyRepository.GetFirstOrDefault(p => p.ComputerId == computerId);
         }
 
+        public ComputerLogEntity GetLastLog(int computerId)
+        {
+            return _uow.ComputerLogRepository.Get(x => x.ComputerId == computerId,
+               q => q.OrderByDescending(x => x.LogTime)).FirstOrDefault();
+        }
+
         public List<ComputerMunkiEntity> GetMunkiTemplates(int computerId)
         {
             return _uow.ComputerMunkiRepository.Get(x => x.ComputerId == computerId);

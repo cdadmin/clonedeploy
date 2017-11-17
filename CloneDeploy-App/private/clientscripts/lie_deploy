@@ -270,6 +270,9 @@ function download_image()
 	  log "mkfs.$(parse_json "$current_object" .FileSystem) -f $destination"
 	  mkfs.$(parse_json "$current_object" .FileSystem) -f $destination &>> $CLIENT_LOG
 	  ms-sys -n -f $destination	2>> $CLIENT_LOG
+	elif [ "$(parse_json "$current_object" .FileSystem)" = "vfat" ]; then
+	  log "mkfs.$(parse_json "$current_object" .FileSystem) -f $destination"
+	  mkfs.fat -F 32 $destination 2>> $CLIENT_LOG
 	elif [ "$(parse_json "$current_object" .FileSystem)" = "xfs" ]; then
 	  log "mkfs.$(parse_json "$current_object" .FileSystem) -f $destination"
 	  wim_arguments=" --unix-data"

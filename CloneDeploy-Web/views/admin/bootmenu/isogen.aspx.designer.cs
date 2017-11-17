@@ -7,12 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-
-
-namespace CloneDeploy_Web.views.admin.bootmenu
-{
-    public partial class views_admin_bootmenu_isogen {
+namespace CloneDeploy_Web.views.admin.bootmenu {
     
+    
+    public partial class views_admin_bootmenu_isogen {
+        
         /// <summary>
         /// btnGenerate control.
         /// </summary>
@@ -21,7 +20,16 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton btnGenerate;
-    
+        
+        /// <summary>
+        /// clobberNotice control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label clobberNotice;
+        
         /// <summary>
         /// ddlBuildType control.
         /// </summary>
@@ -30,7 +38,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlBuildType;
-    
+        
         /// <summary>
         /// ddlKernel control.
         /// </summary>
@@ -39,7 +47,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlKernel;
-    
+        
         /// <summary>
         /// ddlBootImage control.
         /// </summary>
@@ -48,7 +56,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlBootImage;
-    
+        
         /// <summary>
         /// txtKernelArgs control.
         /// </summary>

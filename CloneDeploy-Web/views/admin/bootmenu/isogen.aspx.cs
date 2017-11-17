@@ -38,6 +38,11 @@ namespace CloneDeploy_Web.views.admin.bootmenu
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (GetSetting(SettingStrings.ClobberEnabled) == "1")
+            {
+                clobberNotice.Text =
+                    "Clobber Mode Is Currently Enabled.  Creating A Bootable ISO / USB While Clobber Is Enabled, Will Create A Clobber ISO / USB.  Be Careful.";
+            }
             if (!IsPostBack)
             {
                 ddlKernel.DataSource = Call.FilesystemApi.GetKernels();

@@ -122,6 +122,6 @@
 
         public const string RegistrationEnabled = "Registration Enabled";
 
-        public const int Version = 131;
+        public const int Version = 132;
     }
 }
