@@ -67,6 +67,12 @@ namespace CloneDeploy_Web.views.admin.server
                     Name = SettingStrings.SecondaryServerMonitorInterval,
                     Value = txtInterval.Text,
                     Id = Call.SettingApi.GetSetting(SettingStrings.SecondaryServerMonitorInterval).Id
+                },
+                 new SettingEntity
+                {
+                    Name = SettingStrings.TaskTimeout,
+                    Value = txtTaskTimeout.Text,
+                    Id = Call.SettingApi.GetSetting(SettingStrings.TaskTimeout).Id
                 }
             };
 
@@ -131,6 +137,7 @@ namespace CloneDeploy_Web.views.admin.server
             txtTftpServerIp.Text = GetSetting(SettingStrings.TftpServerIp);
             txtInterval.Text = GetSetting(SettingStrings.SecondaryServerMonitorInterval);
             chkMonitorServers.Checked = GetSetting(SettingStrings.MonitorSecondaryServer) == "1";
+            txtTaskTimeout.Text = GetSetting(SettingStrings.TaskTimeout);
             //These require pxe boot menu or client iso to be recreated
             ViewState["serverIP"] = txtIP.Text;
             ViewState["serverPort"] = txtPort.Text;

@@ -7,6 +7,7 @@ using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
 using CloneDeploy_Services.Helpers;
 using CloneDeploy_Services.Workflows;
+using log4net;
 
 namespace CloneDeploy_Services
 {
@@ -14,6 +15,7 @@ namespace CloneDeploy_Services
     {
         private readonly UnitOfWork _uow;
         private readonly UserServices _userServices;
+        private readonly ILog log = LogManager.GetLogger(typeof(ActiveImagingTaskServices));
 
         public ActiveImagingTaskServices()
         {
@@ -59,6 +61,23 @@ namespace CloneDeploy_Services
         public int AllActiveCountAdmin()
         {
             return Convert.ToInt32(_uow.ActiveImagingTaskRepository.Count());
+        }
+
+        public void CancelTimedOutTasks()
+        {
+            var timeout = SettingServices.GetSettingValue(SettingStrings.TaskTimeout);
+            if (string.IsNullOrEmpty(timeout)) return;
+            if (timeout == "0") return;
+            var tasks = GetAll();
+
+            foreach (var task in tasks.Where(task => task.Status == "3" && !task.Type.ToLower().Contains("upload")))
+            {
+                if(DateTime.Now > task.LastUpdateTime.AddMinutes(Convert.ToInt32(timeout)))
+                {
+                    DeleteActiveImagingTask(task.Id);
+                    log.Debug("Task Timeout Hit. Task " + task.Id + "Cancelled.  Computer Id " + task.ComputerId);
+                }
+            }
         }
 
         public ActionResultDTO DeleteActiveImagingTask(int activeImagingTaskId)

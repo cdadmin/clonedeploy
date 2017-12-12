@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CloneDeploy_Entities
@@ -58,6 +59,9 @@ namespace CloneDeploy_Entities
 
         [Column("user_id", Order = 13)]
         public int UserId { get; set; }
+
+        [Column("last_update_time", Order = 15)]
+        public DateTime LastUpdateTime { get; set; }
     }
 
     [NotMapped]
