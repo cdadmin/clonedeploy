@@ -348,7 +348,9 @@ namespace CloneDeploy_Services.Workflows
                                                    "\" >>/tmp/lvmcommands \r\n";
                             }
                         }
-                        partitionScript += "echo \"" + rlv.Uuid + "\" >>/tmp/" + rlv.Vg +
+
+                        var uuid = rlv.FsType == "swap" ? rlv.Uuid.Split('#')[0] : rlv.Uuid;
+                        partitionScript += "echo \"" + uuid + "\" >>/tmp/" + rlv.Vg +
                                            "-" + rlv.Name + "\r\n";
                     }
                 }
