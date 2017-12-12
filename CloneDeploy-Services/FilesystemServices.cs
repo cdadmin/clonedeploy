@@ -20,6 +20,7 @@ namespace CloneDeploy_Services
         public DpFreeSpaceDTO GetDpFreeSpace()
         {
             var dp = new DistributionPointServices().GetPrimaryDistributionPoint();
+            if (dp == null) return new DpFreeSpaceDTO();
 
             var dpFreeSpace = new DpFreeSpaceDTO();
             if (dp.Location == "Remote")
@@ -403,6 +404,7 @@ namespace CloneDeploy_Services
         public bool CreateNewImageFolders(string imageName)
         {
             var primaryDp = new DistributionPointServices().GetPrimaryDistributionPoint();
+            if (primaryDp == null) return false;
             if (primaryDp.Location == "Local")
             {
                 try
@@ -463,6 +465,7 @@ namespace CloneDeploy_Services
             if (string.IsNullOrEmpty(imageName)) return false;
 
             var primaryDp = new DistributionPointServices().GetPrimaryDistributionPoint();
+            if (primaryDp == null) return false;
             if (primaryDp.Location == "Local")
             {
                 try
@@ -516,6 +519,7 @@ namespace CloneDeploy_Services
         public List<ImageFileInfo> GetPartitionFileSize(string imageName, string hd, string partition)
         {
             var primaryDp = new DistributionPointServices().GetPrimaryDistributionPoint();
+            if (primaryDp == null) return null;
             var imageFileInfo = new ImageFileInfo();
             if (primaryDp.Location == "Local")
             {
@@ -589,6 +593,7 @@ namespace CloneDeploy_Services
         public string GetHdFileSize(string imageName, string hd)
         {
             var primaryDp = new DistributionPointServices().GetPrimaryDistributionPoint();
+            if (primaryDp == null) return "No Primary Dp";
             if (primaryDp.Location == "Local")
             {
                 try
@@ -636,6 +641,7 @@ namespace CloneDeploy_Services
         public string ReadSchemaFile(string imageName)
         {
             var primaryDp = new DistributionPointServices().GetPrimaryDistributionPoint();
+            if (primaryDp == null) return string.Empty;
             var schemaText = "";
             if (primaryDp.Location == "Local")
             {
@@ -699,6 +705,7 @@ namespace CloneDeploy_Services
         {
             if (string.IsNullOrEmpty(oldName)) return false;
             var primaryDp = new DistributionPointServices().GetPrimaryDistributionPoint();
+            if (primaryDp == null) return false;
             if (primaryDp.Location == "Local")
             {
                 try
@@ -753,7 +760,7 @@ namespace CloneDeploy_Services
             string extension)
         {
             var primaryDp = new DistributionPointServices().GetPrimaryDistributionPoint();
-
+            if (primaryDp == null) return string.Empty;
             var filePath = "";
             if (primaryDp.Location == "Local")
             {
@@ -814,6 +821,7 @@ namespace CloneDeploy_Services
             string extension)
         {
             var primaryDp = new DistributionPointServices().GetPrimaryDistributionPoint();
+            if (primaryDp == null) return string.Empty;
 
             var filePath = "";
             if (primaryDp.Location == "Local")

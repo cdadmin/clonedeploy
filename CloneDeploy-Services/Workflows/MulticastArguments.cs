@@ -130,6 +130,7 @@ namespace CloneDeploy_Services.Workflows
                         {
                             //Relative to the multicast server being called
                             var primaryDp = new DistributionPointServices().GetPrimaryDistributionPoint();
+                            if (primaryDp == null) return 0;
                             if (primaryDp.Location == "Local")
                             {
                                 prefix = x == 1 ? " /c \"" : " & ";
@@ -174,6 +175,7 @@ namespace CloneDeploy_Services.Workflows
             }
 
             var pDp = new DistributionPointServices().GetPrimaryDistributionPoint();
+            if (pDp == null) return 0;
             if (pDp.Location == "Remote")
                 processArguments += " & net use /delete \\\\" + pDp.Server + "\\" + pDp.ShareName;
             processArguments += "\"";
