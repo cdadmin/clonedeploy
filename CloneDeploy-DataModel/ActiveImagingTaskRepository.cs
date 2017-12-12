@@ -19,7 +19,7 @@ namespace CloneDeploy_DataModel
             return (from h in _context.ActiveImagingTasks
                 join t in _context.Computers on h.ComputerId equals t.Id into joined
                 from p in joined.DefaultIfEmpty()
-                where h.UserId == userId && h.ComputerId > -1
+                where h.UserId == userId 
                 select new
                 {
                     id = h.Id,
@@ -53,7 +53,7 @@ namespace CloneDeploy_DataModel
                     MulticastId = x.multicastId,
                     UserId = x.userId,
                     DpId = x.dpId,
-                    Computer = x.computer
+                    Computer = x.computer ?? new ComputerEntity() { Name = x.arguments }
                 }).OrderBy(x => x.Computer.Name).ToList();
         }
 
@@ -62,7 +62,7 @@ namespace CloneDeploy_DataModel
             return (from h in _context.ActiveImagingTasks
                 join t in _context.Computers on h.ComputerId equals t.Id into joined
                 from p in joined.DefaultIfEmpty()
-                where h.ComputerId > -1
+               
                 select new
                 {
                     id = h.Id,
@@ -79,7 +79,7 @@ namespace CloneDeploy_DataModel
                     multicastId = h.MulticastId,
                     userId = h.UserId,
                     dpId = h.DpId,
-                    computer = p
+                    computer = p 
                 }).AsEnumerable().Select(x => new TaskWithComputer
                 {
                     Id = x.id,
@@ -96,7 +96,7 @@ namespace CloneDeploy_DataModel
                     MulticastId = x.multicastId,
                     UserId = x.userId,
                     DpId = x.dpId,
-                    Computer = x.computer
+                    Computer = x.computer ?? new ComputerEntity() { Name = x.arguments }
                 }).OrderBy(x => x.Computer.Name).ToList();
         }
 
