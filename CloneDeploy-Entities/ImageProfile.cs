@@ -121,6 +121,12 @@ namespace CloneDeploy_Entities
 
         [Column("force_standard_legacy", Order = 38)]
         public int ForceStandardLegacy { get; set; }
+
+        [Column("simple_upload_schema", Order = 39)]
+        public int SimpleUploadSchema { get; set; }
+
+        [Column("erase_partitions", Order = 40)]
+        public int ErasePartitions { get; set; }
     }
 
     [NotMapped]

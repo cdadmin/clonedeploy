@@ -79,14 +79,14 @@
 </div>
    
 <div id="divOsx" runat="server">
+   
     <div class="size-9 column">
-        OS X Target Volume
+        Erase Partitions (Standard Auto Only)
     </div>
-    <div class="size-5 column">
-        <asp:TextBox ID="txtTargetVolume" runat="server" CssClass="textbox"></asp:TextBox>
+    <div class="size-8 column">
+        <asp:CheckBox ID="chkErase" runat="server" CssClass="textbox"></asp:CheckBox>
     </div>
     <br class="clear"/>
-
     <div class="size-9 column">
         Install Munki
     </div>
@@ -154,7 +154,9 @@
     </div>
     <div class="size-5 column">
         <asp:dropdownlist ID="ddlPartitionMethodMac" runat="server" CssClass="ddlist" OnSelectedIndexChanged="ddlPartitionMethod_OnSelectedIndexChanged" AutoPostBack="True">
-            <asp:ListItem>Standard</asp:ListItem>
+            <asp:ListItem>Standard Auto</asp:ListItem>
+             <asp:ListItem>Standard HFSP</asp:ListItem>
+             <asp:ListItem>Standard APFS</asp:ListItem>
             <asp:ListItem>Standard Core Storage</asp:ListItem>
             <asp:ListItem>Dynamic</asp:ListItem>
             <asp:ListItem>Custom Script</asp:ListItem>

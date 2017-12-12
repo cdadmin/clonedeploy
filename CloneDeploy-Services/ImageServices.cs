@@ -345,7 +345,11 @@ namespace CloneDeploy_Services
             imageProfile.TaskCompletedAction = "Reboot";
             imageProfile.ChangeName = 1;
             if (image.Environment == "macOS")
+            {
                 imageProfile.OsxTargetVolume = "Macintosh HD";
+                imageProfile.PartitionMethod = "Standard Auto";
+                imageProfile.SimpleUploadSchema = 1;
+            }
 
             return imageProfile;
         }

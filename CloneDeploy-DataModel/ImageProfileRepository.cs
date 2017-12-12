@@ -62,6 +62,8 @@ namespace CloneDeploy_DataModel
                     RandomizeGuids = x.profile.RandomizeGuids,
                     ForceStandardEfi = x.profile.ForceStandardEfi,
                     ForceStandardLegacy = x.profile.ForceStandardLegacy,
+                    SimpleUploadSchema = x.profile.SimpleUploadSchema,
+                    ErasePartitions = x.profile.ErasePartitions,
                     Image = x.image
                 }).OrderBy(x => x.Name).ToList();
         }
@@ -115,6 +117,8 @@ namespace CloneDeploy_DataModel
                     RandomizeGuids = x.profile.RandomizeGuids,
                     ForceStandardEfi = x.profile.ForceStandardEfi,
                     ForceStandardLegacy = x.profile.ForceStandardLegacy,
+                    SimpleUploadSchema = x.profile.SimpleUploadSchema,
+                    ErasePartitions = x.profile.ErasePartitions,
                     Image = x.image
                 }).FirstOrDefault();
         }

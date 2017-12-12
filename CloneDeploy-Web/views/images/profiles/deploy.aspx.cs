@@ -99,11 +99,12 @@ namespace CloneDeploy_Web.views.images.profiles
             imageProfile.FixBootloader = Convert.ToInt16(chkRunFixBoot.Checked);
             imageProfile.OsxInstallMunki = Convert.ToInt16(chkInstallMunki.Checked);
             imageProfile.MunkiRepoUrl = txtMunkiRepoUrl.Text;
-            imageProfile.OsxTargetVolume = txtTargetVolume.Text;
+           
             ImageProfile.SkipNvramUpdate = Convert.ToInt16(chkNvram.Checked);
             ImageProfile.RandomizeGuids = Convert.ToInt16(chkRandomize.Checked);
             ImageProfile.ForceStandardLegacy = Convert.ToInt16(chkForceLegacy.Checked);
             ImageProfile.ForceStandardEfi = Convert.ToInt16(chkForceEfi.Checked);
+            ImageProfile.ErasePartitions = Convert.ToInt16(chkErase.Checked);
             if (Image.Environment == "macOS")
                 imageProfile.PartitionMethod = ddlPartitionMethodMac.Text;
             else if (Image.Environment == "winpe")
@@ -141,6 +142,11 @@ namespace CloneDeploy_Web.views.images.profiles
                     {
                         imageProfile.CustomSchema = chkModifySchema.Checked ? SetCustomSchema() : "";
                     }
+                    break;
+                case "Standard Auto":
+                case "Standard HFSP":
+                case "Standard APFS":
+                    imageProfile.CustomSchema = chkModifySchema.Checked ? SetCustomSchema() : "";
                     break;
                 default:
                     imageProfile.CustomPartitionScript = "";
@@ -350,6 +356,7 @@ namespace CloneDeploy_Web.views.images.profiles
             chkRandomize.Checked = Convert.ToBoolean(ImageProfile.RandomizeGuids);
             chkForceEfi.Checked = Convert.ToBoolean(ImageProfile.ForceStandardEfi);
             chkForceLegacy.Checked = Convert.ToBoolean(ImageProfile.ForceStandardLegacy);
+            chkErase.Checked = Convert.ToBoolean(ImageProfile.ErasePartitions);
 
             if (Image.Environment == "macOS")
             {
@@ -381,7 +388,7 @@ namespace CloneDeploy_Web.views.images.profiles
             chkDownForceDynamic.Checked = Convert.ToBoolean(ImageProfile.ForceDynamicPartitions);
             chkInstallMunki.Checked = Convert.ToBoolean(ImageProfile.OsxInstallMunki);
             txtMunkiRepoUrl.Text = ImageProfile.MunkiRepoUrl;
-            txtTargetVolume.Text = ImageProfile.OsxTargetVolume;
+           
             txtMunkiUsername.Text = ImageProfile.MunkiAuthUsername;
 
             DisplayLayout();

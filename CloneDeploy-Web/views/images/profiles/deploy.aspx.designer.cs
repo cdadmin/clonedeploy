@@ -103,13 +103,13 @@ namespace CloneDeploy_Web.views.images.profiles {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divOsx;
         
         /// <summary>
-        /// txtTargetVolume control.
+        /// chkErase control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtTargetVolume;
+        protected global::System.Web.UI.WebControls.CheckBox chkErase;
         
         /// <summary>
         /// chkInstallMunki control.

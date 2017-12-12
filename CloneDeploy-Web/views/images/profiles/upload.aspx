@@ -97,6 +97,16 @@
     <br class="clear"/>
 </div>
 
+<div id="DivSimple" runat="server">
+<div class="size-9 column">
+    Use Simple Upload Schema
+</div>
+<div class="size-8 column">
+    <asp:CheckBox ID="chkSimpleSchema" runat="server" CssClass="textbox"></asp:CheckBox>
+</div>
+
+<br class="clear"/>
+    </div>
 <div class="size-9 column">
     Only Upload Schema
 </div>

@@ -80,6 +80,7 @@ namespace CloneDeploy_Services.Workflows
 
             if (_direction.Contains("upload"))
             {
+                
                 AppendString("osx_target_volume=" + "\"" + _imageProfile.OsxTargetVolume + "\"");
                 AppendString("image_type=" + _imageProfile.Image.Type);
                 if (Convert.ToBoolean(_imageProfile.RemoveGPT)) AppendString("remove_gpt_structures=true");
@@ -88,6 +89,7 @@ namespace CloneDeploy_Services.Workflows
                 AppendString("compression_algorithm=" + _imageProfile.Compression);
                 AppendString("compression_level=-" + _imageProfile.CompressionLevel);
                 if (Convert.ToBoolean(_imageProfile.UploadSchemaOnly)) AppendString("upload_schema_only=true");
+                if (Convert.ToBoolean(_imageProfile.SimpleUploadSchema)) AppendString("simple_upload_schema=true");
                 if (_imageProfile.Image.Type == "File" && Convert.ToBoolean(_imageProfile.WimMulticastEnabled))
                     AppendString("web_wim_args=--pipable");
                 if (!string.IsNullOrEmpty(_imageProfile.CustomUploadSchema))
@@ -127,6 +129,7 @@ namespace CloneDeploy_Services.Workflows
                 if (Convert.ToBoolean(_imageProfile.ForceStandardEfi)) AppendString("force_efi_layout=true");
                 if (Convert.ToBoolean(_imageProfile.SkipNvramUpdate)) AppendString("skip_nvram=true");
                 if (Convert.ToBoolean(_imageProfile.FixBootloader)) AppendString("fix_bootloader=true");
+                if (Convert.ToBoolean(_imageProfile.ErasePartitions)) AppendString("erase_partitions=true");
                 if (Convert.ToBoolean(_imageProfile.ForceDynamicPartitions))
                     AppendString("force_dynamic_partitions=true");
                 AppendString(SetPartitionMethod());
@@ -233,8 +236,17 @@ namespace CloneDeploy_Services.Workflows
                 case "Standard":
                     return "partition_method=standard";
 
+                case "Standard Auto":
+                    return "partition_method=standard_auto";
+
+                case "Standard HFSP":
+                    return "partition_method=standard_hfsp";
+
+                case "Standard APFS":
+                    return "partition_method=standard_apfs";
+
                 case "Standard Core Storage":
-                    return "partition_method=standardCS";
+                    return "partition_method=standard_cs";
                 default:
                     return "";
             }

@@ -84,6 +84,7 @@ namespace CloneDeploy_Web.views.images.profiles
             imageProfile.CompressionLevel = ddlCompLevel.Text;
             imageProfile.UploadSchemaOnly = Convert.ToInt16(chkSchemaOnly.Checked);
             imageProfile.WimMulticastEnabled = Convert.ToInt16(chkWimMulticast.Checked);
+            imageProfile.SimpleUploadSchema = Convert.ToInt16(chkSimpleSchema.Checked);
             var result = Call.ImageProfileApi.Put(imageProfile.Id, imageProfile);
             EndUserMessage = result.Success ? "Successfully Updated Image Profile" : result.ErrorMessage;
         }
@@ -144,27 +145,32 @@ namespace CloneDeploy_Web.views.images.profiles
                 divGpt.Visible = false;
                 divShrink.Visible = false;
                 divWimMulticast.Visible = false;
+                DivSimple.Visible = true;
             }
             else if (Image.Environment == "winpe")
             {
                 divCompression.Visible = false;
                 divGpt.Visible = false;
                 divShrink.Visible = false;
+                DivSimple.Visible = false;
             }
             else if (Image.Environment == "linux" && Image.Type == "Block" ||
                      Image.Environment == "" && Image.Type == "Block")
             {
                 divWimMulticast.Visible = false;
+                DivSimple.Visible = false;
             }
             else if (Image.Environment == "linux" && Image.Type == "File" ||
                      Image.Environment == "" && Image.Type == "File")
             {
                 divCompression.Visible = false;
                 divShrink.Visible = false;
+                DivSimple.Visible = false;
             }
             chkRemoveGpt.Checked = Convert.ToBoolean(ImageProfile.RemoveGPT);
             chkUpNoShrink.Checked = Convert.ToBoolean(ImageProfile.SkipShrinkVolumes);
             chkUpNoShrinkLVM.Checked = Convert.ToBoolean(ImageProfile.SkipShrinkLvm);
+            chkSimpleSchema.Checked = Convert.ToBoolean(ImageProfile.SimpleUploadSchema);
             ddlCompAlg.Text = ImageProfile.Compression;
             ddlCompLevel.Text = ImageProfile.CompressionLevel;
             chkSchemaOnly.Checked = Convert.ToBoolean(ImageProfile.UploadSchemaOnly);

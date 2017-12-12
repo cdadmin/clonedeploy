@@ -9,11 +9,13 @@ os_version=$(sw_vers -productVersion | cut -d. -f1 -f2)
 if [ "$os_version" = "10.11" ]; then
   hd_size_param="Total Size:"
   partition_size_param="Total Size:"
+  free_space_param="Volume Free Space:"
 fi
 
-if [ "$os_version" = "10.12" ]; then
+if [ "$os_version" = "10.12" ] || [ "$os_version" = "10.13" ]; then
   hd_size_param="Disk Size:"
   partition_size_param="Disk Size:"
+  free_space_param="Volume Available Space:"
 fi
 
 function get_volume_min_size()
@@ -24,7 +26,7 @@ function get_volume_min_size()
     echo "$(diskutil resizeVolume $volume_to_shrink limits 2>> $CLIENT_LOG | grep "Minimum" | cut -d "(" -f2 | cut -d " " -f1)"
   fi
   
-  if [ "$os_version" = "10.12" ]; then
+  if [ "$os_version" = "10.12" ] || [ "$os_version" = "10.13" ]; then
     echo "$(diskutil resizeVolume $volume_to_shrink limits 2>> $CLIENT_LOG | grep "Recommended minimum size" | cut -d "(" -f3 | cut -d " " -f1)"
   fi
 }
@@ -149,13 +151,15 @@ function get_hard_drives()
 	log " ** Looking For Hard Drive(s) ** "
 	log " ...... Displaying Available Devices "
 	diskutil list >> $CLIENT_LOG 2>&1
+	diskutil corestorage list >> $CLIENT_LOG 2>&1
+	diskutil apfs list >> $CLIENT_LOG 2>&1
 	
 	if [ -n "$custom_hard_drives" ]; then
 		hard_drives="$custom_hard_drives"
 		log " ...... Hard Drive(s) Set By Image Profile: $hard_drives"	
 	else
 	  if [ "$task_type" = "upload" ]; then
-		all_hard_drives=$(diskutil list | grep "(internal\|(external" | cut -d " " -f1)
+		all_hard_drives=$(diskutil list | grep "(internal\|(synthesized" | cut -d " " -f1)
 		log "all_hard_drives: $all_hard_drives"
 		for hdd in $all_hard_drives; do
 		  disk_name=$(echo $hdd | sed 's~/dev/~~g')
@@ -164,11 +168,16 @@ function get_hard_drives()
             partition_count=$(diskutil list | grep ${disk_name} | grep -vw ${disk_name} -c)
             if [ "$partition_count" -gt "0" ]; then
               hard_drives="$hard_drives $hdd "
-            fi	    
+			elif [ "$simple_upload_schema" = "true" ]; then
+			  #when using a simple image schema add logical volumes to the hard drive list
+			  if diskutil info $disk_name | grep "LV UUID" > /dev/null; then
+			    hard_drives="$hard_drives $hdd "
+			  fi
+            fi
 		done
 	  else #deploy
 	    #When deploying it is very possible the hard drive won't have a disk label so don't use the method used for uploads
-	    hard_drives=$(diskutil list | grep "(internal\|(external" | cut -d " " -f1)
+	    hard_drives=$(diskutil list | grep "(internal\|(synthesized" | cut -d " " -f1)
 	  fi
 	fi
 	
@@ -189,12 +198,28 @@ function get_hard_drives()
 
 function get_all_volume_uuids()
 {
+  all_volume_uuids=""
+  log "Getting all volume uuids"
+
   local volume_uuid
   
   for partition in $partitions; do
+    log "$partition"
     volume_uuid=$(diskutil info $partition | grep "Volume UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
-    all_volume_uuids="$all_volume_uuids $volume_uuid"
+    log "$volume_uuid"
+	if [ -z "$volume_uuid" ]; then
+	  volume_uuid=$(diskutil info $partition | grep "Partition UUID:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
+	fi
+	all_volume_uuids="$all_volume_uuids $volume_uuid"
   done
+  
+  log "All volume uuids for $hard_drive"
+  log "$all_volume_uuids"
+  all_uuids_count=0  
+  for vuuid in $all_volume_uuids; do
+    all_uuids_count=$(( $all_uuids_count + 1 ))
+  done
+  log "$all_uuids_count"
 }
 
 function get_volume_uuid()
