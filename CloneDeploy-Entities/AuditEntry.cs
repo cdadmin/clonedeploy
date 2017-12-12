@@ -13,7 +13,9 @@
             Upload = 7,
             PermanentPush = 8,
             Multicast = 9,
-            OndMulticast = 10
+            OndMulticast = 10,
+            OndUpload = 11,
+            OndDeploy = 12
         }
     }
 }
