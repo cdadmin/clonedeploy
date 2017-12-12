@@ -313,11 +313,13 @@ namespace CloneDeploy_Services
             var queueStatus = new QueueStatus();
             var activeImagingTaskServices = new ActiveImagingTaskServices();
             var thisComputerTask = activeImagingTaskServices.GetTask(taskId);
-            var computer = new ComputerServices().GetComputer(thisComputerTask.ComputerId);
+            //var computer = new ComputerServices().GetComputer(thisComputerTask.ComputerId);
             //Check if already part of the queue
 
             if (thisComputerTask.Status == "2")
             {
+                //Delete Any tasks that have passed the timeout value
+                activeImagingTaskServices.CancelTimedOutTasks();
                 //Check if the queue is open yet
                 var inUse = activeImagingTaskServices.GetCurrentQueue(thisComputerTask);
                 var totalCapacity = 0;
@@ -327,7 +329,7 @@ namespace CloneDeploy_Services
                 {
                     //queue is open, is this computer next
                     var firstTaskInQueue = activeImagingTaskServices.GetNextComputerInQueue(thisComputerTask);
-                    if (firstTaskInQueue.ComputerId == computer.Id)
+                    if (firstTaskInQueue.ComputerId == thisComputerTask.ComputerId)
                     {
                         ChangeStatusInProgress(taskId);
                         queueStatus.Result = "true";
@@ -649,7 +651,8 @@ namespace CloneDeploy_Services
                 {
                     result += "lvcreate --yes -L " + lv.Size + "s -n " + lv.Name + " " +
                               lv.VolumeGroup + "\r\n";
-                    result += "echo \"" + lv.Uuid + "\" >>/tmp/" + lv.VolumeGroup + "-" +
+                    var uuid = lv.FsType == "swap" ? lv.Uuid.Split('#')[0] : lv.Uuid;
+                    result += "echo \"" + uuid + "\" >>/tmp/" + lv.VolumeGroup + "-" +
                               lv.Name + "\r\n";
                 }
                 result += "vgcfgbackup -f /tmp/lvm-" + part.VolumeGroup.Name + "\r\n";
@@ -983,6 +986,44 @@ namespace CloneDeploy_Services
                 activeTask.Arguments = arguments;
             }
             new ActiveImagingTaskServices().AddActiveImagingTask(activeTask);
+        
+            var auditLog = new AuditLogEntity();
+            switch (task)
+            {
+                case "ondupload":
+                case "unregupload":
+                case "upload":
+                    auditLog.AuditType = AuditEntry.Type.OndUpload;
+                    break;        
+                default:
+                    auditLog.AuditType = AuditEntry.Type.OndDeploy;
+                    break;
+            }
+
+            try
+            {
+                auditLog.ObjectId = activeTask.ComputerId;
+                var user = new UserServices().GetUser(activeTask.UserId);
+                if (user != null)
+                    auditLog.UserName = user.Name;
+                auditLog.ObjectName = computer != null ? computer.Name : mac;
+                auditLog.Ip = "";
+                auditLog.UserId = activeTask.UserId;
+                auditLog.ObjectType = "Computer";
+                auditLog.ObjectJson = JsonConvert.SerializeObject(activeTask);
+                new AuditLogServices().AddAuditLog(auditLog);
+
+                auditLog.ObjectId = imageProfile.ImageId;
+                auditLog.ObjectName = imageProfile.Image.Name;
+                auditLog.ObjectType = "Image";
+                new AuditLogServices().AddAuditLog(auditLog);
+
+            }
+            catch
+            {
+                //Do Nothing              
+            }
+          
 
             checkIn.Result = "true";
             checkIn.TaskArguments = arguments;
