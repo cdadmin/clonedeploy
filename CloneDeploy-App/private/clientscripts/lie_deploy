@@ -77,7 +77,8 @@ function process_lvm()
 	if [ "$(parse_json "$current_logical_volume" .FileSystem)" = "swap" ]; then
       log "Creating Swap On $volume_group-$escaped_lv_name"
       log "$(parse_json "$current_logical_volume" .Uuid)"
-      mkswap /dev/mapper/$volume_group-$escaped_lv_name -U $(parse_json "$current_logical_volume" .Uuid) &>> /tmp/makeswap
+	  swap_uuid=$(echo $(parse_json "$current_logical_volume" .Uuid) | cut -d# -f2)
+      mkswap /dev/mapper/$volume_group-$escaped_lv_name -U $swap_uuid &>> /tmp/makeswap
       cat /tmp/makeswap >>$CLIENT_LOG
       make_swap_result=$(cat /tmp/makeswap | grep "parsing UUID failed")
       if [ "$?" = "0" ]; then
@@ -551,7 +552,7 @@ function update_efi_nvram()
     return 0
   fi
   
-  log "Updating NVRAM"
+  log "Checking if NVRAM needs updated"
   gdisk -l $hard_drive | grep EF00
   if [ "$?" != "0" ]; then
     log "No EFI System Partition Found."

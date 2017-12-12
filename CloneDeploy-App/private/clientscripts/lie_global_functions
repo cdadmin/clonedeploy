@@ -195,7 +195,7 @@ function expand_volume()
 		partprobe &>/dev/null;
 		sleep 5
 
-		resize2fs $1 &>/dev/null
+		resize2fs $1 2>>$CLIENT_LOG
 		
 		if [ ! "$?" = "0" ]; then
 			log "Warning, EXT File System Did Not Resize Properly.  Check Your Disk Size After Booting" "display"
@@ -205,7 +205,23 @@ function expand_volume()
 		fi
 		echo
 		e2fsck -fy $1 &>>$CLIENT_LOG
-	
+	elif [ "$filesystem" = "xfs" ]; then
+	  log " ** Expanding XFS Volume On $1 ** " "display"
+	  partprobe &>/dev/null;
+	  sleep 5
+
+	  mkdir /mnt/xfs &>/dev/null
+	  mount $1 /mnt/xfs
+	  xfs_growfs $1 2>>$CLIENT_LOG
+		
+      if [ ! "$?" = "0" ]; then
+	    log "Warning, XFS File System Did Not Resize Properly.  Check Your Disk Size After Booting" "display"
+			$curlAuth --data "computerId=$computer_id&error=Ext Volume Did Not Expand Properly" "${web}ErrorEmail" $curlEnd
+		else
+			log " ...... Success" "display"
+		fi
+		echo
+	  umount /mnt/xfs
 	elif [ "$filesystem" = "ntfs" ]; then
 	  ntfsfix -b -d $1 &>>$CLIENT_LOG
 		volumeSize=`ntfsresize -f -i -P $1 | grep -i "current volume size:" | cut -d " " -f4`

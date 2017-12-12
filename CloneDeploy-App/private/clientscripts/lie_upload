@@ -448,6 +448,11 @@ function create_image_schema()
               partclone_type="xfs"
 			elif [ "$filesystem_type" = "hfsplus" ]; then
               partclone_type="hfsp"
+			elif [ "$filesystem_type" = "swap" ]; then
+			  #an extra uuid is needed for swap
+			  swap_uuid=`blkid -po udev $logical_volume_device | grep ID_FS_UUID= | awk -F'=' '{print $2}'`
+			  logical_volume_uuid=${logical_volume_uuid}#${swap_uuid}
+			  partclone_type="imager"
             else
               partclone_type="imager"
             fi
@@ -463,7 +468,7 @@ function create_image_schema()
               fi
             fi
             
-			log "Calculating volume size for $logcial_volume_device"
+			log "Calculating volume size for $logical_volume_device"
             partclone.$partclone_type -SIic -s "$logical_volume_device" -O /dev/null >& /tmp/lv$logical_volume_counter.size
 			cat /var/log/partclone.log >> $CLIENT_LOG
             log "$logical_volume_device Volume Size"
