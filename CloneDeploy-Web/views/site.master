@@ -58,7 +58,7 @@
         <div class="container">
             <div class="file-menu">
               <div class="dropdown">
-  <button class="dropbtn">  <span class="version">CloneDeploy 1.3.2</span></button>
+  <button class="dropbtn">  <span class="version">CloneDeploy 1.3.3</span></button>
   <div class="dropdown-content">
     <a href="<%= ResolveUrl("~/views/dashboard/dash.aspx") %>">Dashboard</a>
      <a href="<%= ResolveUrl("~/views/help/default.aspx") %>">Help</a>

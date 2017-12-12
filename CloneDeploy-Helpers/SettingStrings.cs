@@ -122,6 +122,8 @@
 
         public const string RegistrationEnabled = "Registration Enabled";
 
-        public const int Version = 132;
+        public const string TaskTimeout = "Task Timeout";
+
+        public const int Version = 133;
     }
 }
