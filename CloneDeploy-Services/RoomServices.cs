@@ -84,7 +84,7 @@ namespace CloneDeploy_Services
         {
             var validationResult = new ValidationResultDTO {Success = true};
 
-            if (string.IsNullOrEmpty(room.Name) || !room.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
+            if (string.IsNullOrEmpty(room.Name))
             {
                 validationResult.Success = false;
                 validationResult.ErrorMessage = "Room Name Is Not Valid";

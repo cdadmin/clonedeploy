@@ -111,6 +111,7 @@ function process_partitions()
   if [ "$file_copy" = "True" ]; then
     log "file_copy_schema: profileId=$profile_id"
 	 file_copy_schema=$($curlAuth --data "profileId=$profile_id" "${web}GetFileCopySchema" $curlEnd)
+	 log "File Copy Schema: $file_copy_schema"
   fi
 	
   while [  "$(( $array_index + 1 ))" -lt "$(parse_json "$hd_schema" .PhysicalPartitionCount)" ]; do

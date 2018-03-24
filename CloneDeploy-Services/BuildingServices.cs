@@ -89,7 +89,7 @@ namespace CloneDeploy_Services
         {
             var validationResult = new ValidationResultDTO {Success = true};
 
-            if (string.IsNullOrEmpty(building.Name) || building.Name.Contains(" "))
+            if (string.IsNullOrEmpty(building.Name))
             {
                 validationResult.Success = false;
                 validationResult.ErrorMessage = "Building Name Is Not Valid";

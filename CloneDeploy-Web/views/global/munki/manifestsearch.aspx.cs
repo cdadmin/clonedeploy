@@ -13,6 +13,7 @@ namespace CloneDeploy_Web.views.global.munki
     {
         protected void btnApply_OnClick(object sender, EventArgs e)
         {
+            Session["manifestBtnClick"] = "Apply";
             var control = sender as Control;
             if (control != null)
             {
@@ -59,20 +60,7 @@ namespace CloneDeploy_Web.views.global.munki
             }
         }
 
-        protected void ButtonConfirmDelete_Click(object sender, EventArgs e)
-        {
-            RequiresAuthorization(AuthorizationStrings.DeleteGlobal);
-            foreach (GridViewRow row in gvManifestTemplates.Rows)
-            {
-                var cb = (CheckBox) row.FindControl("chkSelector");
-                if (cb == null || !cb.Checked) continue;
-                var dataKey = gvManifestTemplates.DataKeys[row.RowIndex];
-                if (dataKey == null) continue;
-                Call.MunkiManifestTemplateApi.Delete(Convert.ToInt32(dataKey.Value));
-            }
-
-            PopulateGrid();
-        }
+      
 
         protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
         {
@@ -81,16 +69,36 @@ namespace CloneDeploy_Web.views.global.munki
 
         protected void ConfirmButton_OnClick(object sender, EventArgs e)
         {
-            var manifestTemplateId = (int) Session["manifestTemplateId"];
-            Session.Remove("manifestTemplateId");
-            var failedCount = Call.MunkiManifestTemplateApi.Apply(manifestTemplateId);
+            if ((string) Session["manifestBtnClick"] == "Apply")
+            {
+                Session.Remove("manifestBtnClick");
+                var manifestTemplateId = (int)Session["manifestTemplateId"];
+                Session.Remove("manifestTemplateId");
+                var failedCount = Call.MunkiManifestTemplateApi.Apply(manifestTemplateId);
 
-            PopulateGrid();
-            if (failedCount > 0)
-                EndUserMessage = "Failed To Update " + failedCount + "Manifests";
+                PopulateGrid();
+                if (failedCount > 0)
+                    EndUserMessage = "Failed To Update " + failedCount + "Manifests";
+                else
+
+                    EndUserMessage = "Successfully Updated Manifests";
+            }
             else
+            {
+                
+                RequiresAuthorization(AuthorizationStrings.DeleteGlobal);
+                foreach (GridViewRow row in gvManifestTemplates.Rows)
+                {
+                    var cb = (CheckBox)row.FindControl("chkSelector");
+                    if (cb == null || !cb.Checked) continue;
+                    var dataKey = gvManifestTemplates.DataKeys[row.RowIndex];
+                    if (dataKey == null) continue;
+                    Call.MunkiManifestTemplateApi.Delete(Convert.ToInt32(dataKey.Value));
+                }
 
-                EndUserMessage = "Successfully Updated Manifests";
+                PopulateGrid();
+            }
+           
         }
 
         protected void gridView_Sorting(object sender, GridViewSortEventArgs e)

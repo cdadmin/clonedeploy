@@ -81,7 +81,7 @@
     <div id="confirmbox" class="confirm-box-outer">
         <div class="confirm-box-inner">
             <h4>
-                <asp:Label ID="lblTitle" runat="server"></asp:Label>
+                <asp:Label ID="lblTitle" runat="server" Text="Delete The Selected Templates?"></asp:Label>
                 <asp:Label ID="lblSubTitle" runat="server" CssClass="smalltext"></asp:Label>
             </h4>
             <div class="confirm-box-btns">

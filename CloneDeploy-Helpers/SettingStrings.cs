@@ -124,6 +124,6 @@
 
         public const string TaskTimeout = "Task Timeout";
 
-        public const int Version = 133;
+        public const int Version = 134;
     }
 }

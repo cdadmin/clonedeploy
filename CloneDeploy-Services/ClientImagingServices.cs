@@ -784,11 +784,11 @@ namespace CloneDeploy_Services
                 case "clobber":
                     return SettingServices.GetSettingValue(SettingStrings.ClobberRequiresLogin);
                 case "deploy":
-                    return SettingServices.GetSettingValue(SettingStrings.WebTaskRequiresLogin);
                 case "permanentdeploy":
-                    return SettingServices.GetSettingValue(SettingStrings.WebTaskRequiresLogin);
                 case "upload":
+                case "multicast":
                     return SettingServices.GetSettingValue(SettingStrings.WebTaskRequiresLogin);
+              
 
                 default:
                     return "Yes";

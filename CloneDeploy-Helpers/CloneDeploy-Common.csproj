@@ -36,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthorizationStrings.cs" />
+    <Compile Include="DbUpgrades\1304.cs" />
     <Compile Include="DbUpgrades\1303.cs" />
     <Compile Include="DbUpgrades\1302.cs" />
     <Compile Include="DbUpgrades\1301.cs" />
@@ -46,7 +47,6 @@
     <Compile Include="SettingStrings.cs" />
     <Compile Include="Utility.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

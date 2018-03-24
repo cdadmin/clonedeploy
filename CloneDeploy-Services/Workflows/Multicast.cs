@@ -232,7 +232,9 @@ namespace CloneDeploy_Services.Workflows
             multicastArgs.Port = _multicastSession.Port.ToString();
             if (_isOnDemand)
             {
-                multicastArgs.ExtraArgs = SettingServices.GetSettingValue(SettingStrings.SenderArgs);
+                multicastArgs.ExtraArgs = string.IsNullOrEmpty(_imageProfile.SenderArguments)
+                    ? SettingServices.GetSettingValue(SettingStrings.SenderArgs)
+                    : _imageProfile.SenderArguments;
                 if (!string.IsNullOrEmpty(_clientCount))
                     multicastArgs.clientCount = _clientCount;
             }

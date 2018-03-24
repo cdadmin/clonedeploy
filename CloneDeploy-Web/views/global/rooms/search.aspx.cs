@@ -45,7 +45,7 @@ namespace CloneDeploy_Web.views.global.rooms
                 if (ddlDps != null)
                 {
                     PopulateClusterGroupsDdl(ddlDps);
-                    ddlDps.SelectedValue = ((RoomWithClusterGroup) e.Row.DataItem).ClusterGroup.Id.ToString();
+                    ddlDps.SelectedValue = ((RoomEntity) e.Row.DataItem).ClusterGroupId.ToString();
                 }
             }
         }

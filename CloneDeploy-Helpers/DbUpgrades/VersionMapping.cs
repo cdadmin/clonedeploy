@@ -13,6 +13,7 @@ namespace CloneDeploy_Common.DbUpgrades
             _mapping.Add(131, 1301);
             _mapping.Add(132, 1302);
             _mapping.Add(133, 1303);
+            _mapping.Add(134, 1304);
         }
 
         public Dictionary<int, int> Get()
