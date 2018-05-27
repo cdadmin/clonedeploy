@@ -18,9 +18,9 @@
 
         public const string DefaultInit = "initrd.xz";
 
-        public const string DefaultKernel32 = "4.13.2";
+        public const string DefaultKernel32 = "4.16.1";
 
-        public const string DefaultKernel64 = "4.13.2x64";
+        public const string DefaultKernel64 = "4.16.1x64";
 
         public const string EndPort = "Udpcast End Port";
 
@@ -124,6 +124,6 @@
 
         public const string TaskTimeout = "Task Timeout";
 
-        public const int Version = 134;
+        public const int Version = 135;
     }
 }

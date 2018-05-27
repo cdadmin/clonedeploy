@@ -409,7 +409,7 @@ function create_partition_layout()
     partprobe &>/dev/null
   elif [ "$partition_method" = "original" ]; then # create partitions from original mbr / gpt
      log " ** Creating Partition Table On $hard_drive From Original MBR / GPT ** " "display"
-	 #This doesn't really do anything, partition table was already restored, it's just here so the next elif does run
+	 partprobe &>/dev/null
   elif [ "$(parse_json "$hd_schema" .IsValid)" = "true" ] || [ "$force_dynamic_partitions" = "true" ]; then # create partitions dynamically from image profile settings
     log " ** Creating Partition Table On $hard_drive ** " "display"
     $curlAuth --data "imageProfileId=$profile_id&hdToGet=$image_hd_to_use&newHDSize=$drive_size_bytes&clientHD=$hard_drive&taskType=deploy&partitionPrefix=$partition_prefix&lbs=$lbs" "${web}GetPartLayout" $curlEnd | dos2unix > /tmp/newPartLayout
