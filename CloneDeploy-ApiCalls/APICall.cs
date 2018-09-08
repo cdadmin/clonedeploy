@@ -15,6 +15,11 @@ namespace CloneDeploy_ApiCalls
         {
         }
 
+        public ImageProfileTemplateAPI ImageProfileTemplateApi
+        {
+            get { return new ImageProfileTemplateAPI("ImageProfileTemplate");}
+        }
+
         public ComputerImageClassificationAPI ComputerImageClassificationApi
         {
             get { return new ComputerImageClassificationAPI("ComputerImageClassification"); }
@@ -100,10 +105,7 @@ namespace CloneDeploy_ApiCalls
             get { return new ComputerLogAPI("ComputerLog"); }
         }
 
-        public ComputerMunkiAPI ComputerMunkiApi
-        {
-            get { return new ComputerMunkiAPI("ComputerMunki"); }
-        }
+      
 
         public ComputerProxyReservationAPI ComputerProxyReservationApi
         {
@@ -140,10 +142,7 @@ namespace CloneDeploy_ApiCalls
             get { return new GroupMembershipAPI("GroupMembership"); }
         }
 
-        public GroupMunkiAPI GroupMunkiApi
-        {
-            get { return new GroupMunkiAPI("GroupMunki"); }
-        }
+     
 
         public GroupPropertyAPI GroupPropertyApi
         {
@@ -185,40 +184,9 @@ namespace CloneDeploy_ApiCalls
             get { return new ImageSchemaAPI("ImageSchema"); }
         }
 
-        public MunkiManifestCatalogAPI MunkiManifestCatalogApi
-        {
-            get { return new MunkiManifestCatalogAPI("MunkiManifestCatalog"); }
-        }
+   
 
-        public MunkiManifestIncludedManifestAPI MunkiManifestIncludedManifestApi
-        {
-            get { return new MunkiManifestIncludedManifestAPI("MunkiManifestIncludedManifest"); }
-        }
-
-        public MunkiManifestManagedInstallAPI MunkiManifestManagedInstallApi
-        {
-            get { return new MunkiManifestManagedInstallAPI("MunkiManifestManagedInstall"); }
-        }
-
-        public MunkiManifestManagedUnInstallAPI MunkiManifestManagedUnInstallEntityApi
-        {
-            get { return new MunkiManifestManagedUnInstallAPI("MunkiManifestManagedUninstall"); }
-        }
-
-        public MunkiManifestManagedUpdateAPI MunkiManifestManagedUpdateEntityApi
-        {
-            get { return new MunkiManifestManagedUpdateAPI("MunkiManifestManagedUpdate"); }
-        }
-
-        public MunkiManifestOptionInstallAPI MunkiManifestOptionInstallEntity
-        {
-            get { return new MunkiManifestOptionInstallAPI("MunkiManifestOptionalInstall"); }
-        }
-
-        public MunkiManifestTemplateAPI MunkiManifestTemplateApi
-        {
-            get { return new MunkiManifestTemplateAPI("MunkiManifestTemplate"); }
-        }
+      
 
         public NbiEntryAPI NbiEntryApi
         {
