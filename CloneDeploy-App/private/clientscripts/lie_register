@@ -28,16 +28,16 @@ system_uuid=$(dmidecode -s system-uuid)
 client_id="$mac.$(remove_whitespace $serial_number).$(remove_whitespace $system_uuid)"
 	
 while true; do
-  if [ "$skip_registration" = "true" ]; then
+  if [ "$skip_registration" = "true" ] && [ "$keep_name_prompt" != "true" ]; then
     break
   fi
 
   if [ -n "$(parse_json "$registerResult" .ErrorMessage)" ] && [ "$(parse_json "$registerResult" .ErrorMessage)" != "null" ]; then
-    name=$(dialog --backtitle "CloneDeploy" --title "Enter Computer Name" --clear --inputbox "Interface  : $net_if \nMAC address: $mac \nClient Id  : $client_id \n\nError: $(parse_json "$registerResult" .ErrorMessage)" 20 130 --stdout)
+    name=$(dialog --backtitle "CloneDeploy" --title "Enter Computer Name" --clear --inputbox "Interface  : $net_if \nMAC address: $mac \nClient Id  : $client_id \n\nError: $(parse_json "$registerResult" .ErrorMessage)" 20 130 2>&1 >/dev/tty0)
   elif [ -n "$registerResult" ]; then
-    name=$(dialog --backtitle "CloneDeploy" --title "Enter Computer Name" --clear --inputbox "Interface  : $net_if \nMAC address: $mac \nClient Id  : $client_id \n\nError: $registerResult" 20 130 --stdout)
+    name=$(dialog --backtitle "CloneDeploy" --title "Enter Computer Name" --clear --inputbox "Interface  : $net_if \nMAC address: $mac \nClient Id  : $client_id \n\nError: $registerResult" 20 130 2>&1 >/dev/tty0)
   else
-    name=$(dialog --backtitle "CloneDeploy" --title "Enter Computer Name" --clear --inputbox "Interface  : $net_if \nMAC address: $mac \nClient Id  : $client_id" 20 130 --stdout)
+    name=$(dialog --backtitle "CloneDeploy" --title "Enter Computer Name" --clear --inputbox "Interface  : $net_if \nMAC address: $mac \nClient Id  : $client_id" 20 130 2>&1 >/dev/tty0)
   fi
   
   #Cancel Button
@@ -46,6 +46,12 @@ while true; do
     break
   fi
 
+  if [ "$keep_name_prompt" != "true" ]; then
+	computer_name="$name"
+	break
+  fi
+  
+  
   registerResult=$($curlAuth --data "name=$name&mac=$mac&clientIdentifier=$client_id" ${web}AddComputer $curlClose)
   if [ "$(parse_json "$registerResult" .Success)" = "true" ]; then
     result="Successfully Registered $name"
@@ -54,16 +60,23 @@ while true; do
   fi
 done
 
-  if [ "$local_task" = "clobber" ]; then
+  if [ "$local_task" = "register_clobber" ]; then
     task="clobber"
     check_auth
 	/bin/lie_deploy
 	#Shouldn't hit next line, but could happen
 	reboot -f
   fi
+  
+  if [ "$local_task" = "register_modelmatch" ]; then
+    task="modelmatchdeploy"
+	/bin/lie_deploy
+	#Shouldn't hit next line, but could happen
+	reboot -f
+  fi
 
 while true; do
-  taskType=$(dialog --backtitle "CloneDeploy" --title "Select A Task" --clear  --menu "$result" 20 60 15 1 "Shutdown" 2 "Reboot" 3 "Start On Demand Task"  --stdout)
+  taskType=$(dialog --backtitle "CloneDeploy" --title "Select A Task" --clear  --menu "$result" 20 60 15 1 "Shutdown" 2 "Reboot" 3 "Start On Demand Task"  2>&1 >/dev/tty0)
   #Cancel Button
   if [ "$?" = "1" ]; then
     poweroff -f
