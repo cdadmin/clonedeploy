@@ -36,7 +36,7 @@ namespace CloneDeploy_Services
             var wc = new WebClient();
             try
             {
-                var data = wc.DownloadData("https://sourceforge.net/projects/clonedeploy/files/kernels.json");
+                var data = wc.DownloadData("http://files.clonedeploy.org/kernels/kernels.json");
                 var text = Encoding.UTF8.GetString(data);
                 return JsonConvert.DeserializeObject<List<OnlineKernel>>(text);
             }
@@ -49,7 +49,7 @@ namespace CloneDeploy_Services
 
         private bool WebDownload(OnlineKernel onlineKernel)
         {
-            var baseUrl = "https://sourceforge.net/projects/clonedeploy/files/kernels/";
+            var baseUrl = "http://files.clonedeploy.org/kernels/";
             using (var wc = new WebClient())
             {
                 try
