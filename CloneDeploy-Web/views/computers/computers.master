@@ -35,10 +35,7 @@
                 <a href="<%= ResolveUrl("~/views/computers/log.aspx") %>?computerid=<%= Computer.Id %>">
                     <span class="sub-nav-text">Logs</span></a>
             </li>
-            <li id="munki">
-                <a href="<%= ResolveUrl("~/views/computers/munki.aspx") %>?computerid=<%= Computer.Id %>">
-                    <span class="sub-nav-text">Munki Templates</span></a>
-            </li>
+         
             <li id="groups">
                 <a href="<%= ResolveUrl("~/views/computers/groups.aspx") %>?computerid=<%= Computer.Id %>">
                     <span class="sub-nav-text">Group Membership</span></a>

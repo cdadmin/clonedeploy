@@ -112,42 +112,6 @@ namespace CloneDeploy_Web.views.images.profiles {
         protected global::System.Web.UI.WebControls.CheckBox chkErase;
         
         /// <summary>
-        /// chkInstallMunki control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkInstallMunki;
-        
-        /// <summary>
-        /// txtMunkiRepoUrl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtMunkiRepoUrl;
-        
-        /// <summary>
-        /// txtMunkiUsername control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtMunkiUsername;
-        
-        /// <summary>
-        /// txtMunkiPassword control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtMunkiPassword;
-        
-        /// <summary>
         /// DivPartDdlLin control.
         /// </summary>
         /// <remarks>

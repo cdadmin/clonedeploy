@@ -63,17 +63,12 @@ namespace CloneDeploy_Services.Workflows
 
             AppendString("image_name=" + _imageProfile.Image.Name);
             AppendString("profile_id=" + _imageProfile.Id);
-            AppendString("server_ip=" + SettingServices.GetSettingValue(SettingStrings.ServerIp));
-            //AppendString(_direction == "multicast" ? "multicast=true" : "multicast=false");
             AppendString("pre_scripts=" + preScripts);
             AppendString("post_scripts=" + postScripts);
             AppendString("file_copy=" + areFilesToCopy);
             AppendString("sysprep_tags=" + sysprepTags);
 
-            if (Convert.ToBoolean(_imageProfile.SkipCore))
-                AppendString("skip_core_download=true");
-            if (Convert.ToBoolean(_imageProfile.SkipClock))
-                AppendString("skip_clock=true");
+         
             if (Convert.ToBoolean(_imageProfile.WebCancel))
                 AppendString("web_cancel=true");
             AppendString("task_completed_action=" + "\"" + _imageProfile.TaskCompletedAction + "\"");
@@ -115,12 +110,9 @@ namespace CloneDeploy_Services.Workflows
                         AppendString("cust_attr_5=" + "\"" + _computer.CustomAttribute5 + "\"");
                 }
 
-                if (Convert.ToBoolean(_imageProfile.OsxInstallMunki)) AppendString("install_munki=true");
+               
                 AppendString("osx_target_volume=" + "\"" + _imageProfile.OsxTargetVolume + "\"");
-                AppendString("munki_repo_url=" + "\"" + _imageProfile.MunkiRepoUrl + "\"");
-                if (!string.IsNullOrEmpty(_imageProfile.MunkiAuthUsername) &&
-                    !string.IsNullOrEmpty(_imageProfile.MunkiAuthPassword))
-                    AppendString("munki_requires_auth=true");
+               
                 if (Convert.ToBoolean(_imageProfile.ChangeName)) AppendString("change_computer_name=true");
                 if (Convert.ToBoolean(_imageProfile.SkipExpandVolumes)) AppendString("skip_expand_volumes=true");
                 if (Convert.ToBoolean(_imageProfile.FixBcd)) AppendString("fix_bcd=true");
@@ -142,7 +134,13 @@ namespace CloneDeploy_Services.Workflows
                 {
                     if (SettingServices.GetSettingValue(SettingStrings.MulticastDecompression) == "client")
                         AppendString("decompress_multicast_on_client=true");
-                    AppendString("client_receiver_args=" + "\"" + _imageProfile.ReceiverArguments + "\"");
+                    if(string.IsNullOrEmpty(_imageProfile.ReceiverArguments))
+                        AppendString("client_receiver_args=" + "\"" + SettingServices.GetSettingValue(SettingStrings.ClientReceiverArgs) + "\"");
+                    else
+                    {
+                        AppendString("client_receiver_args=" + "\"" + _imageProfile.ReceiverArguments + "\"");
+                    }
+                    
                     AppendString("multicast_port=" + multicastPort);
                 }
             }

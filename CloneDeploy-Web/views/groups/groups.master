@@ -57,10 +57,7 @@
                 <a href="<%= ResolveUrl("~/views/groups/bootmenu.aspx") %>?groupid=<%= Group.Id %>">
                     <span class="sub-nav-text">Boot Menu</span></a>
             </li>
-            <li id="munki">
-                <a href="<%= ResolveUrl("~/views/groups/munki.aspx") %>?groupid=<%= Group.Id %>">
-                    <span class="sub-nav-text">Munki Templates</span></a>
-            </li>
+           
             <li id="imageclassification">
                 <a href="<%= ResolveUrl("~/views/groups/imageclassification.aspx") %>?groupid=<%= Group.Id %>">
                     <span class="sub-nav-text">Image Classifications</span></a>

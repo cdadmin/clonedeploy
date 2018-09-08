@@ -87,36 +87,6 @@
         <asp:CheckBox ID="chkErase" runat="server" CssClass="textbox"></asp:CheckBox>
     </div>
     <br class="clear"/>
-    <div class="size-9 column">
-        Install Munki
-    </div>
-    <div class="size-8 column">
-        <asp:CheckBox ID="chkInstallMunki" runat="server" CssClass="textbox"></asp:CheckBox>
-    </div>
-    <br class="clear"/>
-
-    <div class="size-9 column">
-        Munki Repo URL
-    </div>
-    <div class="size-5 column">
-        <asp:TextBox ID="txtMunkiRepoUrl" runat="server" CssClass="textbox"></asp:TextBox>
-    </div>
-    <br class="clear"/>
-
-    <div class="size-9 column">
-        Munki Basic Auth Username
-    </div>
-    <div class="size-5 column">
-        <asp:TextBox ID="txtMunkiUsername" runat="server" CssClass="textbox"></asp:TextBox>
-    </div>
-    <br class="clear"/>
-    <div class="size-9 column">
-        Munki Basic Auth Password
-    </div>
-    <div class="size-5 column">
-        <asp:TextBox ID="txtMunkiPassword" runat="server" CssClass="textbox" TextMode="Password"></asp:TextBox>
-    </div>
-    <br class="clear"/>
 </div>
 
 <div id="DivPartDdlLin" runat="server" Visible="False">

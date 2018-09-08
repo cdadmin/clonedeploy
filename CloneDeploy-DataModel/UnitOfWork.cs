@@ -25,7 +25,7 @@ namespace CloneDeploy_DataModel
         private IGenericRepository<ComputerBootMenuEntity> _computerBootMenuRepository;
         private IGenericRepository<ComputerImageClassificationEntity> _computerImageClassificationRepository;
         private IGenericRepository<ComputerLogEntity> _computerLogRepository;
-        private IGenericRepository<ComputerMunkiEntity> _computerMunkiRepository;
+     
         private IGenericRepository<ComputerProxyReservationEntity> _computerProxyRepository;
         private ComputerRepository _computerRepository;
         private IGenericRepository<DistributionPointEntity> _distributionPointRepository;
@@ -33,27 +33,20 @@ namespace CloneDeploy_DataModel
         private IGenericRepository<GroupBootMenuEntity> _groupBootMenuRepository;
         private IGenericRepository<GroupImageClassificationEntity> _groupImageClassificationRepository;
         private IGenericRepository<GroupMembershipEntity> _groupMembershipRepository;
-        private IGenericRepository<GroupMunkiEntity> _groupMunkiRepository;
+     
         private IGenericRepository<GroupPropertyEntity> _groupPropertyRepository;
         private GroupRepository _groupRepository;
         private IGenericRepository<ImageClassificationEntity> _imageClassificationRepository;
         private IGenericRepository<ImageProfileFileFolderEntity> _imageProfileFileFolderRepository;
-        private IGenericRepository<ImageProfilePartitionLayoutEntity> _imageProfilePartitionRepository;
+      
         private ImageProfileRepository _imageProfileRepository;
         private IGenericRepository<ImageProfileScriptEntity> _imageProfileScriptRepository;
         private IGenericRepository<ImageProfileSysprepTagEntity> _imageProfileSysprepRepository;
         private IGenericRepository<ImageEntity> _imageRepository;
-        private IGenericRepository<MunkiManifestCatalogEntity> _munkiCatalogRepository;
-        private IGenericRepository<MunkiManifestIncludedManifestEntity> _munkiIncludedManifestRepository;
-        private IGenericRepository<MunkiManifestManagedInstallEntity> _munkiManagedInstallRepository;
-        private IGenericRepository<MunkiManifestManagedUnInstallEntity> _munkiManagedUninstallRepository;
-        private IGenericRepository<MunkiManifestManagedUpdateEntity> _munkiManagedUpdateRepository;
-        private IGenericRepository<MunkiManifestTemplateEntity> _munkiManifestRepository;
-        private IGenericRepository<MunkiManifestOptionInstallEntity> _munkiOptionalInstallRepository;
+     
         private IGenericRepository<NbiEntryEntity> _nbiEntryRepository;
         private IGenericRepository<NetBootProfileEntity> _netBootProfileRepository;
-        private IGenericRepository<PartitionLayoutEntity> _partitionLayoutRepository;
-        private IGenericRepository<PartitionEntity> _partitionRepository;
+       
         private IGenericRepository<PortEntity> _portRepository;
         private RoomRepository _roomRepository;
         private IGenericRepository<ScriptEntity> _scriptRepository;
@@ -70,6 +63,7 @@ namespace CloneDeploy_DataModel
         private IGenericRepository<UserLockoutEntity> _userLockoutRepository;
         private CloneDeployUserRepository _userRepository;
         private IGenericRepository<UserRightEntity> _userRightRepository;
+        private IGenericRepository<ImageProfileTemplate> _imageProfileTemplateRepository; 
     
         private bool disposed;
 
@@ -85,6 +79,16 @@ namespace CloneDeploy_DataModel
             {
                 return _activeImagingTaskRepository ??
                        (_activeImagingTaskRepository = new ActiveImagingTaskRepository(_context));
+            }
+        }
+
+        public IGenericRepository<ImageProfileTemplate> ImageProfileTemplateRepository
+        {
+            get
+            {
+                return _imageProfileTemplateRepository ??
+                       (_imageProfileTemplateRepository =
+                           new GenericRepository<ImageProfileTemplate>(_context));
             }
         }
 
@@ -203,14 +207,7 @@ namespace CloneDeploy_DataModel
             }
         }
 
-        public IGenericRepository<ComputerMunkiEntity> ComputerMunkiRepository
-        {
-            get
-            {
-                return _computerMunkiRepository ??
-                       (_computerMunkiRepository = new GenericRepository<ComputerMunkiEntity>(_context));
-            }
-        }
+    
 
         public IGenericRepository<ComputerProxyReservationEntity> ComputerProxyRepository
         {
@@ -272,14 +269,7 @@ namespace CloneDeploy_DataModel
             }
         }
 
-        public IGenericRepository<GroupMunkiEntity> GroupMunkiRepository
-        {
-            get
-            {
-                return _groupMunkiRepository ??
-                       (_groupMunkiRepository = new GenericRepository<GroupMunkiEntity>(_context));
-            }
-        }
+      
 
         public IGenericRepository<GroupPropertyEntity> GroupPropertyRepository
         {
@@ -314,15 +304,7 @@ namespace CloneDeploy_DataModel
             }
         }
 
-        public IGenericRepository<ImageProfilePartitionLayoutEntity> ImageProfilePartitionRepository
-        {
-            get
-            {
-                return _imageProfilePartitionRepository ??
-                       (_imageProfilePartitionRepository =
-                           new GenericRepository<ImageProfilePartitionLayoutEntity>(_context));
-            }
-        }
+    
 
         public ImageProfileRepository ImageProfileRepository
         {
@@ -352,74 +334,17 @@ namespace CloneDeploy_DataModel
             get { return _imageRepository ?? (_imageRepository = new GenericRepository<ImageEntity>(_context)); }
         }
 
-        public IGenericRepository<MunkiManifestCatalogEntity> MunkiCatalogRepository
-        {
-            get
-            {
-                return _munkiCatalogRepository ??
-                       (_munkiCatalogRepository = new GenericRepository<MunkiManifestCatalogEntity>(_context));
-            }
-        }
+     
 
-        public IGenericRepository<MunkiManifestIncludedManifestEntity> MunkiIncludedManifestRepository
-        {
-            get
-            {
-                return _munkiIncludedManifestRepository ??
-                       (_munkiIncludedManifestRepository =
-                           new GenericRepository<MunkiManifestIncludedManifestEntity>(_context));
-            }
-        }
+    
 
-        public IGenericRepository<MunkiManifestManagedInstallEntity> MunkiManagedInstallRepository
-        {
-            get
-            {
-                return _munkiManagedInstallRepository ??
-                       (_munkiManagedInstallRepository =
-                           new GenericRepository<MunkiManifestManagedInstallEntity>(_context));
-            }
-        }
+     
 
-        public IGenericRepository<MunkiManifestManagedUnInstallEntity> MunkiManagedUnInstallRepository
-        {
-            get
-            {
-                return _munkiManagedUninstallRepository ??
-                       (_munkiManagedUninstallRepository =
-                           new GenericRepository<MunkiManifestManagedUnInstallEntity>(_context));
-            }
-        }
+      
 
-        public IGenericRepository<MunkiManifestManagedUpdateEntity> MunkiManagedUpdateRepository
-        {
-            get
-            {
-                return _munkiManagedUpdateRepository ??
-                       (_munkiManagedUpdateRepository =
-                           new GenericRepository<MunkiManifestManagedUpdateEntity>(_context));
-            }
-        }
+      
 
-        public IGenericRepository<MunkiManifestTemplateEntity> MunkiManifestRepository
-        {
-            get
-            {
-                return _munkiManifestRepository ??
-                       (_munkiManifestRepository = new GenericRepository<MunkiManifestTemplateEntity>(_context));
-            }
-        }
-
-        public IGenericRepository<MunkiManifestOptionInstallEntity> MunkiOptionalInstallRepository
-        {
-            get
-            {
-                return _munkiOptionalInstallRepository ??
-                       (_munkiOptionalInstallRepository =
-                           new GenericRepository<MunkiManifestOptionInstallEntity>(_context));
-            }
-        }
-
+       
         public IGenericRepository<NbiEntryEntity> NbiEntryRepository
         {
             get
@@ -437,22 +362,7 @@ namespace CloneDeploy_DataModel
             }
         }
 
-        public IGenericRepository<PartitionLayoutEntity> PartitionLayoutRepository
-        {
-            get
-            {
-                return _partitionLayoutRepository ??
-                       (_partitionLayoutRepository = new GenericRepository<PartitionLayoutEntity>(_context));
-            }
-        }
-
-        public IGenericRepository<PartitionEntity> PartitionRepository
-        {
-            get
-            {
-                return _partitionRepository ?? (_partitionRepository = new GenericRepository<PartitionEntity>(_context));
-            }
-        }
+     
 
         public IGenericRepository<PortEntity> PortRepository
         {

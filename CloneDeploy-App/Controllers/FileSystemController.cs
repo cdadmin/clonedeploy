@@ -75,20 +75,6 @@ namespace CloneDeploy_App.Controllers
 
         [HttpGet]
         [Authorize]
-        public List<FileInfo> GetMunkiResources(string resourceType)
-        {
-            return new MunkiManifestTemplateServices().GetMunkiResources(resourceType);
-        }
-
-        [HttpGet]
-        [Authorize]
-        public MunkiPackageInfoEntity GetPlist(string file)
-        {
-            return new MunkiManifestTemplateServices().ReadPlist(file);
-        }
-
-        [HttpGet]
-        [Authorize]
         public List<string> GetScripts(string type)
         {
             return FilesystemServices.GetScripts(type);

@@ -79,13 +79,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = "GroupRead")]
-        public ApiStringResponseDTO GetEffectiveManifest(int id)
-        {
-            var effectiveManifest = new EffectiveMunkiTemplate().Group(id);
-            return new ApiStringResponseDTO {Value = Encoding.UTF8.GetString(effectiveManifest.ToArray())};
-        }
-
+   
         [CustomAuth(Permission = "GroupRead")]
         public IEnumerable<ComputerWithImage> GetGroupMembers(int id, string searchstring = "")
         {
@@ -115,11 +109,7 @@ namespace CloneDeploy_App.Controllers
             return new ApiStringResponseDTO {Value = _groupServices.GetGroupMemberCount(id)};
         }
 
-        [CustomAuth(Permission = "GroupRead")]
-        public IEnumerable<GroupMunkiEntity> GetMunkiTemplates(int id)
-        {
-            return _groupServices.GetGroupMunkiTemplates(id);
-        }
+ 
 
         [CustomAuth(Permission = "GroupCreate")]
         [HttpPost]
@@ -160,12 +150,7 @@ namespace CloneDeploy_App.Controllers
             return new ApiBoolResponseDTO {Value = _groupServices.DeleteMembership(computerId, id)};
         }
 
-        [HttpDelete]
-        [CustomAuth(Permission = "GroupUpdate")]
-        public ApiBoolResponseDTO RemoveMunkiTemplates(int id)
-        {
-            return new ApiBoolResponseDTO {Value = _groupServices.DeleteMunkiTemplates(id)};
-        }
+    
 
         [HttpGet]
         [CustomAuth(Permission = "ImageTaskDeployGroup")]

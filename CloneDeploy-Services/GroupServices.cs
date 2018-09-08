@@ -112,12 +112,7 @@ namespace CloneDeploy_Services
             return true;
         }
 
-        public bool DeleteMunkiTemplates(int groupId)
-        {
-            _uow.GroupMunkiRepository.DeleteRange(x => x.GroupId == groupId);
-            _uow.Save();
-            return true;
-        }
+     
 
         public void ExportCsv(string path)
         {
@@ -180,10 +175,7 @@ namespace CloneDeploy_Services
             return _uow.GroupRepository.GetGroupMembersWithImages(groupId, searchString);
         }
 
-        public List<GroupMunkiEntity> GetGroupMunkiTemplates(int groupId)
-        {
-            return _uow.GroupMunkiRepository.Get(x => x.GroupId == groupId);
-        }
+  
 
         public GroupPropertyEntity GetGroupProperty(int groupId)
         {
@@ -296,7 +288,7 @@ namespace CloneDeploy_Services
         {
             var group = GetGroup(groupId);
             DeleteAllMembershipsForGroup(group.Id);
-            var computers = new ComputerServices().SearchComputersByName(group.SmartCriteria, int.MaxValue);
+            var computers = new ComputerServices().SearchComputersByName(group.SmartCriteria,int.MaxValue, group.SmartType );
             var memberships =
                 computers.Select(computer => new GroupMembershipEntity {GroupId = @group.Id, ComputerId = computer.Id})
                     .ToList();

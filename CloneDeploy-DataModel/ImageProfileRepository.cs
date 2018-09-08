@@ -53,10 +53,7 @@ namespace CloneDeploy_DataModel
                     WebCancel = x.profile.WebCancel,
                     ChangeName = x.profile.ChangeName,
                     OsxTargetVolume = x.profile.OsxTargetVolume,
-                    OsxInstallMunki = x.profile.OsxInstallMunki,
-                    MunkiRepoUrl = x.profile.MunkiRepoUrl,
-                    MunkiAuthUsername = x.profile.MunkiAuthUsername,
-                    MunkiAuthPassword = x.profile.MunkiAuthPassword,
+                  
                     WimMulticastEnabled = x.profile.WimMulticastEnabled,
                     SkipNvramUpdate = x.profile.SkipNvramUpdate,
                     RandomizeGuids = x.profile.RandomizeGuids,
@@ -64,7 +61,9 @@ namespace CloneDeploy_DataModel
                     ForceStandardLegacy = x.profile.ForceStandardLegacy,
                     SimpleUploadSchema = x.profile.SimpleUploadSchema,
                     ErasePartitions = x.profile.ErasePartitions,
-                    Image = x.image
+                    Image = x.image,
+                    ModelMatch = x.profile.ModelMatch,
+                    ModelMatchType = x.profile.ModelMatchType
                 }).OrderBy(x => x.Name).ToList();
         }
 
@@ -108,10 +107,7 @@ namespace CloneDeploy_DataModel
                     WebCancel = x.profile.WebCancel,
                     ChangeName = x.profile.ChangeName,
                     OsxTargetVolume = x.profile.OsxTargetVolume,
-                    OsxInstallMunki = x.profile.OsxInstallMunki,
-                    MunkiRepoUrl = x.profile.MunkiRepoUrl,
-                    MunkiAuthUsername = x.profile.MunkiAuthUsername,
-                    MunkiAuthPassword = x.profile.MunkiAuthPassword,
+                 
                     WimMulticastEnabled = x.profile.WimMulticastEnabled,
                     SkipNvramUpdate = x.profile.SkipNvramUpdate,
                     RandomizeGuids = x.profile.RandomizeGuids,
@@ -119,7 +115,9 @@ namespace CloneDeploy_DataModel
                     ForceStandardLegacy = x.profile.ForceStandardLegacy,
                     SimpleUploadSchema = x.profile.SimpleUploadSchema,
                     ErasePartitions = x.profile.ErasePartitions,
-                    Image = x.image
+                    Image = x.image,
+                    ModelMatch = x.profile.ModelMatch,
+                    ModelMatchType = x.profile.ModelMatchType
                 }).FirstOrDefault();
         }
     }

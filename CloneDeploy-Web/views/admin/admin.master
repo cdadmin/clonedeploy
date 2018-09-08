@@ -57,6 +57,12 @@
                     <span class="nav-text">E-mail</span>
                 </a>
             </li>
+             <li id="profileTemplate" runat="server" clientidmode="Static">
+                <a href="<%= ResolveUrl("~/views/admin/profiletemplate.aspx") %>">
+                    <span class="sub-nav-text">Image Profile Templates</span>
+                </a>
+            </li>
+
             <li id="kernel" runat="server" clientidmode="Static">
                 <a href="<%= ResolveUrl("~/views/admin/profileupdater/kernel.aspx") %>">
                     <span class="sub-nav-text">Image Profile Updater</span>
@@ -78,12 +84,7 @@
                     <span class="nav-text">Multicast</span>
                 </a>
             </li>
-            <li id="munki" runat="server" clientidmode="Static">
-                <a href="<%= ResolveUrl("~/views/admin/munki.aspx") %>">
-                    <span class="nav-text">Munki</span>
-                </a>
-            </li>
-
+          
 
             <li id="pxe" runat="server" clientidmode="Static">
                 <a href="<%= ResolveUrl("~/views/admin/pxe.aspx") %>">

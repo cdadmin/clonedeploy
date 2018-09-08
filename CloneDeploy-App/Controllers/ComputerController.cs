@@ -89,13 +89,7 @@ namespace CloneDeploy_App.Controllers
             return new ApiBoolResponseDTO {Value = _computerService.DeleteComputerImageClassifications(id)};
         }
 
-        [CustomAuth(Permission = "ComputerDelete")]
-        public ActionResultDTO DeleteMunkiTemplates(int id)
-        {
-            var result = _computerService.DeleteMunkiTemplates(id);
-            if (result == null) throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
-            return result;
-        }
+    
 
         [CustomAuth(Permission = "ComputerRead")]
         [HttpGet]
@@ -171,13 +165,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = "ComputerRead")]
-        public ApiStringResponseDTO GetEffectiveManifest(int id)
-        {
-            var effectiveManifest = new EffectiveMunkiTemplate().Computer(id);
-            return new ApiStringResponseDTO {Value = Encoding.UTF8.GetString(effectiveManifest.ToArray())};
-        }
-
+   
         [CustomAuth(Permission = "ComputerRead")]
         public List<GroupMembershipEntity> GetGroupMemberships(int id)
         {
@@ -190,12 +178,7 @@ namespace CloneDeploy_App.Controllers
             return _computerService.GetComputerImageClassifications(id);
         }
 
-        [CustomAuth(Permission = "ComputerRead")]
-        public IEnumerable<ComputerMunkiEntity> GetMunkiTemplates(int id)
-        {
-            return _computerService.GetMunkiTemplates(id);
-        }
-
+    
         [CustomAuth(Permission = "ComputerRead")]
         public ApiStringResponseDTO GetNonProxyPath(int id, bool isActiveOrCustom)
         {
@@ -295,6 +278,15 @@ namespace CloneDeploy_App.Controllers
             return string.IsNullOrEmpty(searchstring)
                 ? _computerService.SearchComputersForUserByName(Convert.ToInt32(_userId), limit)
                 : _computerService.SearchComputersForUserByName(Convert.ToInt32(_userId), limit, searchstring);
+        }
+
+        [HttpGet]
+        [CustomAuth(Permission = "ComputerSearch")]
+        public IEnumerable<ComputerEntity> TestSmartQuery(string smartType, int limit = 0, string searchstring = "")
+        {
+            return string.IsNullOrEmpty(searchstring)
+                ? _computerService.SearchComputersByName("",limit,smartType)
+                : _computerService.SearchComputersByName(searchstring,limit,smartType);
         }
 
         [HttpGet]

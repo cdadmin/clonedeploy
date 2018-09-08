@@ -97,8 +97,7 @@ namespace CloneDeploy_Web.views.images.profiles
             imageProfile.SkipExpandVolumes = Convert.ToInt16(chkDownNoExpand.Checked);
             imageProfile.FixBcd = Convert.ToInt16(chkAlignBCD.Checked);
             imageProfile.FixBootloader = Convert.ToInt16(chkRunFixBoot.Checked);
-            imageProfile.OsxInstallMunki = Convert.ToInt16(chkInstallMunki.Checked);
-            imageProfile.MunkiRepoUrl = txtMunkiRepoUrl.Text;
+        
            
             ImageProfile.SkipNvramUpdate = Convert.ToInt16(chkNvram.Checked);
             ImageProfile.RandomizeGuids = Convert.ToInt16(chkRandomize.Checked);
@@ -112,9 +111,7 @@ namespace CloneDeploy_Web.views.images.profiles
             else
                 imageProfile.PartitionMethod = ddlPartitionMethodLin.Text;
             imageProfile.ForceDynamicPartitions = Convert.ToInt16(chkDownForceDynamic.Checked);
-            imageProfile.MunkiAuthUsername = txtMunkiUsername.Text;
-            if (!string.IsNullOrEmpty(txtMunkiPassword.Text))
-                imageProfile.MunkiAuthPassword = txtMunkiPassword.Text;
+       
 
             switch (ddlObject.Text)
             {
@@ -323,6 +320,12 @@ namespace CloneDeploy_Web.views.images.profiles
 
                     break;
             }
+
+            if (ddlObject.Text == "Standard" && Image.Environment == "linux")
+            {
+                DivStandardOptions.Visible = true;
+
+            }
         }
 
         protected void lnkExport_OnClick(object sender, EventArgs e)
@@ -386,10 +389,7 @@ namespace CloneDeploy_Web.views.images.profiles
                 ForceDiv.Visible = ddlPartitionMethodLin.Text == "Dynamic";
             }
             chkDownForceDynamic.Checked = Convert.ToBoolean(ImageProfile.ForceDynamicPartitions);
-            chkInstallMunki.Checked = Convert.ToBoolean(ImageProfile.OsxInstallMunki);
-            txtMunkiRepoUrl.Text = ImageProfile.MunkiRepoUrl;
-           
-            txtMunkiUsername.Text = ImageProfile.MunkiAuthUsername;
+          
 
             DisplayLayout();
         }

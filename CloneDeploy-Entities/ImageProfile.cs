@@ -53,20 +53,8 @@ namespace CloneDeploy_Entities
         [Column("profile_kernel_arguments", Order = 7)]
         public string KernelArguments { get; set; }
 
-        [Column("munki_auth_password", Order = 33)]
-        public string MunkiAuthPassword { get; set; }
-
-        [Column("munki_auth_username", Order = 32)]
-        public string MunkiAuthUsername { get; set; }
-
-        [Column("munki_repo_url", Order = 31)]
-        public string MunkiRepoUrl { get; set; }
-
         [Column("profile_name", Order = 2)]
         public string Name { get; set; }
-
-        [Column("osx_install_munki", Order = 30)]
-        public int OsxInstallMunki { get; set; }
 
         [Column("osx_target_volume", Order = 29)]
         public string OsxTargetVolume { get; set; }
@@ -127,6 +115,12 @@ namespace CloneDeploy_Entities
 
         [Column("erase_partitions", Order = 40)]
         public int ErasePartitions { get; set; }
+
+        [Column("model_match", Order = 41)]
+        public string ModelMatch { get; set; }
+
+        [Column("model_match_type", Order = 42)]
+        public string ModelMatchType { get; set; }
     }
 
     [NotMapped]

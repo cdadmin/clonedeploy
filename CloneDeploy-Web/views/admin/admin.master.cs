@@ -18,7 +18,6 @@ namespace CloneDeploy_Web.views.admin
                 export.Visible = false;
                 kernel.Visible = false;
                 kerneldownload.Visible = false;
-                munki.Visible = false;
                 multicast.Visible = false;
                 pxe.Visible = false;
                 security.Visible = false;

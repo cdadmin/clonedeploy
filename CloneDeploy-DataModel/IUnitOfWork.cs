@@ -20,7 +20,7 @@ namespace CloneDeploy_DataModel
         IGenericRepository<ComputerBootMenuEntity> ComputerBootMenuRepository { get; }
         IGenericRepository<ComputerImageClassificationEntity> ComputerImageClassificationRepository { get; }
         IGenericRepository<ComputerLogEntity> ComputerLogRepository { get; }
-        IGenericRepository<ComputerMunkiEntity> ComputerMunkiRepository { get; }
+       
         IGenericRepository<ComputerProxyReservationEntity> ComputerProxyRepository { get; }
         ComputerRepository ComputerRepository { get; }
         IGenericRepository<DistributionPointEntity> DistributionPointRepository { get; }
@@ -28,27 +28,20 @@ namespace CloneDeploy_DataModel
         IGenericRepository<GroupBootMenuEntity> GroupBootMenuRepository { get; }
         IGenericRepository<GroupImageClassificationEntity> GroupImageClassificationRepository { get; }
         IGenericRepository<GroupMembershipEntity> GroupMembershipRepository { get; }
-        IGenericRepository<GroupMunkiEntity> GroupMunkiRepository { get; }
+      
         IGenericRepository<GroupPropertyEntity> GroupPropertyRepository { get; }
         GroupRepository GroupRepository { get; }
         IGenericRepository<ImageClassificationEntity> ImageClassificationRepository { get; }
         IGenericRepository<ImageProfileFileFolderEntity> ImageProfileFileFolderRepository { get; }
-        IGenericRepository<ImageProfilePartitionLayoutEntity> ImageProfilePartitionRepository { get; }
+       
         ImageProfileRepository ImageProfileRepository { get; }
         IGenericRepository<ImageProfileScriptEntity> ImageProfileScriptRepository { get; }
         IGenericRepository<ImageProfileSysprepTagEntity> ImageProfileSysprepRepository { get; }
         IGenericRepository<ImageEntity> ImageRepository { get; }
-        IGenericRepository<MunkiManifestCatalogEntity> MunkiCatalogRepository { get; }
-        IGenericRepository<MunkiManifestIncludedManifestEntity> MunkiIncludedManifestRepository { get; }
-        IGenericRepository<MunkiManifestManagedInstallEntity> MunkiManagedInstallRepository { get; }
-        IGenericRepository<MunkiManifestManagedUnInstallEntity> MunkiManagedUnInstallRepository { get; }
-        IGenericRepository<MunkiManifestManagedUpdateEntity> MunkiManagedUpdateRepository { get; }
-        IGenericRepository<MunkiManifestTemplateEntity> MunkiManifestRepository { get; }
-        IGenericRepository<MunkiManifestOptionInstallEntity> MunkiOptionalInstallRepository { get; }
+      
         IGenericRepository<NbiEntryEntity> NbiEntryRepository { get; }
         IGenericRepository<NetBootProfileEntity> NetBootProfileRepository { get; }
-        IGenericRepository<PartitionLayoutEntity> PartitionLayoutRepository { get; }
-        IGenericRepository<PartitionEntity> PartitionRepository { get; }
+      
         IGenericRepository<PortEntity> PortRepository { get; }
 
         RoomRepository RoomRepository { get; }
@@ -67,6 +60,7 @@ namespace CloneDeploy_DataModel
         CloneDeployUserRepository UserRepository { get; }
         
         IGenericRepository<UserRightEntity> UserRightRepository { get; }
+        IGenericRepository<ImageProfileTemplate> ImageProfileTemplateRepository { get; } 
       
         void Save();
     }

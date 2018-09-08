@@ -8,7 +8,6 @@ namespace CloneDeploy_Web.BasePages
     {
         public BootTemplateEntity BootTemplate { get; set; }
         public FileFolderEntity FileFolder { get; set; }
-        public MunkiManifestTemplateEntity ManifestTemplate { get; set; }
         public SysprepTagEntity SysprepTag { get; set; }
 
         protected override void OnInit(EventArgs e)
@@ -24,9 +23,7 @@ namespace CloneDeploy_Web.BasePages
             FileFolder = !string.IsNullOrEmpty(Request["fileid"])
                 ? Call.FileFolderApi.Get(Convert.ToInt32(Request.QueryString["fileid"]))
                 : null;
-            ManifestTemplate = !string.IsNullOrEmpty(Request["manifestid"])
-                ? Call.MunkiManifestTemplateApi.Get(Convert.ToInt32(Request.QueryString["manifestid"]))
-                : null;
+       
 
             RequiresAuthorization(AuthorizationStrings.ReadGlobal);
         }

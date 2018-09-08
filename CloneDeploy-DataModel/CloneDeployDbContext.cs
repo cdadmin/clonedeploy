@@ -24,34 +24,27 @@ namespace CloneDeploy_DataModel
         public DbSet<ComputerBootMenuEntity> ComputerBootMenus { get; set; }
         public DbSet<ComputerImageClassificationEntity> ComputerImageClassifications { get; set; }
         public DbSet<ComputerLogEntity> ComputerLogs { get; set; }
-        public DbSet<ComputerMunkiEntity> ComputerMunkis { get; set; }
+     
         public DbSet<ComputerEntity> Computers { get; set; }
         public DbSet<DistributionPointEntity> DistributionPoints { get; set; }
         public DbSet<FileFolderEntity> FilesFolders { get; set; }
         public DbSet<GroupBootMenuEntity> GroupBootMenus { get; set; }
         public DbSet<GroupImageClassificationEntity> GroupImageClassifications { get; set; }
         public DbSet<GroupMembershipEntity> GroupMemberships { get; set; }
-        public DbSet<GroupMunkiEntity> GroupMunkis { get; set; }
+       
         public DbSet<GroupPropertyEntity> GroupProperties { get; set; }
         public DbSet<GroupEntity> Groups { get; set; }
         public DbSet<ImageClassificationEntity> ImageClassifications { get; set; }
         public DbSet<ImageProfileFileFolderEntity> ImageProfileFilesFolders { get; set; }
-        public DbSet<ImageProfilePartitionLayoutEntity> ImageProfilePartitions { get; set; }
+        
         public DbSet<ImageProfileEntity> ImageProfiles { get; set; }
         public DbSet<ImageProfileScriptEntity> ImageProfileScripts { get; set; }
         public DbSet<ImageProfileSysprepTagEntity> ImageProfileSysprepTags { get; set; }
         public DbSet<ImageEntity> Images { get; set; }
-        public DbSet<MunkiManifestCatalogEntity> MunkiManifestCatalogs { get; set; }
-        public DbSet<MunkiManifestIncludedManifestEntity> MunkiManifestIncludedManifests { get; set; }
-        public DbSet<MunkiManifestManagedInstallEntity> MunkiManifestManagedInstalls { get; set; }
-        public DbSet<MunkiManifestManagedUnInstallEntity> MunkiManifestManagedUnInstalls { get; set; }
-        public DbSet<MunkiManifestManagedUpdateEntity> MunkiManifestManagedUpdates { get; set; }
-        public DbSet<MunkiManifestOptionInstallEntity> MunkiManifestOptionalInstalls { get; set; }
-        public DbSet<MunkiManifestTemplateEntity> MunkiManifestTemplates { get; set; }
+      
         public DbSet<NbiEntryEntity> NetBootProfileEntries { get; set; }
         public DbSet<NetBootProfileEntity> NetBootProfiles { get; set; }
-        public DbSet<PartitionLayoutEntity> PartitionLayouts { get; set; }
-        public DbSet<PartitionEntity> Partitions { get; set; }
+     
         public DbSet<PortEntity> Ports { get; set; }
         public DbSet<ComputerProxyReservationEntity> ProxyReservations { get; set; }
         public DbSet<RoomEntity> Rooms { get; set; }
@@ -69,6 +62,7 @@ namespace CloneDeploy_DataModel
         public DbSet<UserLockoutEntity> UserLockouts { get; set; }
         public DbSet<UserRightEntity> UserRight { get; set; }
         public DbSet<CloneDeployUserEntity> Users { get; set; }
+        public DbSet<ImageProfileTemplate> ImageProfileTemplates { get; set; }
     
     }
 }

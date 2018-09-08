@@ -47,7 +47,7 @@ namespace CloneDeploy_Services
             foreach (var group in groups.Where(x => x.Type == "smart"))
             {
                 var computers =
-                    SearchComputersByName(group.SmartCriteria, int.MaxValue).Where(x => x.Name == computer.Name);
+                    SearchComputersByName(group.SmartCriteria, int.MaxValue, group.SmartType).Where(x => x.Name == computer.Name);
                 var memberships =
                     computers.Select(comp => new GroupMembershipEntity {GroupId = @group.Id, ComputerId = comp.Id})
                         .ToList();
@@ -230,9 +230,7 @@ namespace CloneDeploy_Services
             var result = new ActionResultDTO();
             if (validationResult.Success)
             {
-                DeleteComputerMemberships(computer.Id);
-                DeleteComputerBootMenus(computer.Id);
-                DeleteComputerLogs(computer.Id);
+                DeleteComputerLogs(computer.Id); //no fk on logs because on demand logs don't have a computer
                 _uow.ComputerRepository.Delete(computer.Id);
                 _uow.Save();
                 result.Success = true;
@@ -289,19 +287,7 @@ namespace CloneDeploy_Services
             return true;
         }
 
-        public ActionResultDTO DeleteMunkiTemplates(int computerId)
-        {
-            var existingcomputer = new ComputerServices().GetComputer(computerId);
-            if (existingcomputer == null)
-                return new ActionResultDTO {ErrorMessage = "Computer Not Found", Id = 0};
-            var actionResult = new ActionResultDTO();
-
-            _uow.ComputerMunkiRepository.DeleteRange(x => x.ComputerId == computerId);
-            _uow.Save();
-            actionResult.Success = true;
-            actionResult.Id = computerId;
-            return actionResult;
-        }
+     
 
         public void ExportCsv(string path)
         {
@@ -563,10 +549,7 @@ namespace CloneDeploy_Services
                q => q.OrderByDescending(x => x.LogTime)).FirstOrDefault();
         }
 
-        public List<ComputerMunkiEntity> GetMunkiTemplates(int computerId)
-        {
-            return _uow.ComputerMunkiRepository.Get(x => x.ComputerId == computerId);
-        }
+     
 
         public ActiveImagingTaskEntity GetTaskForComputer(int computerId)
         {
@@ -627,9 +610,9 @@ namespace CloneDeploy_Services
             return _uow.ComputerRepository.Search(searchString, limit);
         }
 
-        public List<ComputerWithImage> SearchComputersByName(string searchString, int limit)
+        public List<ComputerWithImage> SearchComputersByName(string searchString, int limit, string smartType)
         {
-            return _uow.ComputerRepository.SearchByName(searchString, limit);
+            return _uow.ComputerRepository.SearchByName(searchString, smartType, limit);
         }
 
         public List<ComputerWithImage> SearchComputersForUser(int userId, int limit, string searchString = "")
@@ -660,11 +643,11 @@ namespace CloneDeploy_Services
             if (limit == 0) limit = int.MaxValue;
 
             if (userServices.GetUser(userId).Membership == "Administrator")
-                return SearchComputers(searchString, limit);
+                return SearchComputersByName(searchString, limit, "Like");
 
             var user = userServices.GetUser(userId);
             if (user.GroupManagementEnabled == 0)
-                return SearchComputersByName(searchString, limit);
+                return SearchComputersByName(searchString, limit, "Like");
 
             var listOfComputers = new List<ComputerWithImage>();
             var userManagedGroups = userServices.GetUserGroupManagements(userId);
