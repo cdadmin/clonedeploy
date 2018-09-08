@@ -9,7 +9,7 @@ namespace CloneDeploy_Web.views.groups
     {
         protected void btnTestQuery_OnClick(object sender, EventArgs e)
         {
-            gvComputers.DataSource = Call.ComputerApi.SearchByNameOnly(int.MaxValue, txtContains.Text);
+            gvComputers.DataSource = Call.ComputerApi.TestSmartQuery(ddlSmartType.Text, int.MaxValue, txtContains.Text);
             gvComputers.DataBind();
             lblTotal.Text = gvComputers.Rows.Count + " Result(s)";
         }
@@ -20,6 +20,7 @@ namespace CloneDeploy_Web.views.groups
             RequiresAuthorization(AuthorizationStrings.UpdateSmart);
             var group = Group;
             group.SmartCriteria = txtContains.Text;
+            group.SmartType = ddlSmartType.Text;
             var result = Call.GroupApi.Put(group.Id, group);
             EndUserMessage = result.Success ? "Successfully Updated Smart Criteria" : result.ErrorMessage;
             Call.GroupApi.UpdateSmartMembership(group.Id);
@@ -37,7 +38,10 @@ namespace CloneDeploy_Web.views.groups
         protected void PopulateForm()
         {
             if (Group.Type == "smart")
+            {
                 txtContains.Text = Group.SmartCriteria;
+                ddlSmartType.Text = Group.SmartType;
+            }
         }
     }
 }

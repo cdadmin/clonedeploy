@@ -91,35 +91,68 @@ namespace CloneDeploy_DataModel
                 }).OrderBy(x => x.Name).Take(limit).ToList();
         }
 
-        public List<ComputerWithImage> SearchByName(string searchString, int limit = int.MaxValue)
+        public List<ComputerWithImage> SearchByName(string searchString, string smartType, int limit = int.MaxValue)
         {
-            return (from h in _context.Computers
-                join t in _context.Images on h.ImageId equals t.Id into joined
-                from p in joined.DefaultIfEmpty()
-                where h.Name.Contains(searchString)
-                select new
-                {
-                    id = h.Id,
-                    name = h.Name,
-                    mac = h.Mac,
-                    image = p,
-                    profileId = h.ImageProfileId,
-                    site = h.SiteId,
-                    building = h.BuildingId,
-                    room = h.RoomId,
-                    altIp = h.AlternateServerIpId
-                }).AsEnumerable().Select(x => new ComputerWithImage
-                {
-                    Id = x.id,
-                    Name = x.name,
-                    Mac = x.mac,
-                    Image = x.image,
-                    ImageProfileId = x.profileId,
-                    SiteId = x.site,
-                    BuildingId = x.building,
-                    RoomId = x.room,
-                    AlternateServerIpId = x.altIp
-                }).OrderBy(x => x.Name).Take(limit).ToList();
+            if (string.IsNullOrEmpty(smartType) || smartType.Equals("Like"))
+            {
+                return (from h in _context.Computers
+                    join t in _context.Images on h.ImageId equals t.Id into joined
+                    from p in joined.DefaultIfEmpty()
+                    where h.Name.Contains(searchString)
+                    select new
+                    {
+                        id = h.Id,
+                        name = h.Name,
+                        mac = h.Mac,
+                        image = p,
+                        profileId = h.ImageProfileId,
+                        site = h.SiteId,
+                        building = h.BuildingId,
+                        room = h.RoomId,
+                        altIp = h.AlternateServerIpId
+                    }).AsEnumerable().Select(x => new ComputerWithImage
+                    {
+                        Id = x.id,
+                        Name = x.name,
+                        Mac = x.mac,
+                        Image = x.image,
+                        ImageProfileId = x.profileId,
+                        SiteId = x.site,
+                        BuildingId = x.building,
+                        RoomId = x.room,
+                        AlternateServerIpId = x.altIp
+                    }).OrderBy(x => x.Name).Take(limit).ToList();
+            }
+            else
+            {
+                return (from h in _context.Computers
+                        join t in _context.Images on h.ImageId equals t.Id into joined
+                        from p in joined.DefaultIfEmpty()
+                        where !h.Name.Contains(searchString)
+                        select new
+                        {
+                            id = h.Id,
+                            name = h.Name,
+                            mac = h.Mac,
+                            image = p,
+                            profileId = h.ImageProfileId,
+                            site = h.SiteId,
+                            building = h.BuildingId,
+                            room = h.RoomId,
+                            altIp = h.AlternateServerIpId
+                        }).AsEnumerable().Select(x => new ComputerWithImage
+                        {
+                            Id = x.id,
+                            Name = x.name,
+                            Mac = x.mac,
+                            Image = x.image,
+                            ImageProfileId = x.profileId,
+                            SiteId = x.site,
+                            BuildingId = x.building,
+                            RoomId = x.room,
+                            AlternateServerIpId = x.altIp
+                        }).OrderBy(x => x.Name).Take(limit).ToList();
+            }
         }
     }
 }

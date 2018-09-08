@@ -7,12 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-
-
-namespace CloneDeploy_Web.views.groups
-{
-    public partial class views_groups_smartcriteria {
+namespace CloneDeploy_Web.views.groups {
     
+    
+    public partial class views_groups_smartcriteria {
+        
         /// <summary>
         /// btnUpdate control.
         /// </summary>
@@ -21,7 +20,16 @@ namespace CloneDeploy_Web.views.groups
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton btnUpdate;
-    
+        
+        /// <summary>
+        /// ddlSmartType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlSmartType;
+        
         /// <summary>
         /// txtContains control.
         /// </summary>
@@ -30,7 +38,7 @@ namespace CloneDeploy_Web.views.groups
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtContains;
-    
+        
         /// <summary>
         /// btnTestQuery control.
         /// </summary>
@@ -39,7 +47,7 @@ namespace CloneDeploy_Web.views.groups
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton btnTestQuery;
-    
+        
         /// <summary>
         /// lblTotal control.
         /// </summary>
@@ -48,7 +56,7 @@ namespace CloneDeploy_Web.views.groups
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblTotal;
-    
+        
         /// <summary>
         /// gvComputers control.
         /// </summary>

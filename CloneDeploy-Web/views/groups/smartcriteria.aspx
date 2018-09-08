@@ -28,7 +28,10 @@
     </script>
 
     <div class="size-4 column">
-        Where Computer Name Contains:
+        Computer Name: &nbsp; <asp:DropDownList runat="server" ID="ddlSmartType" CssClass="ddl" Style="display:inline;width:100px;"> 
+            <asp:ListItem>Like</asp:ListItem>
+            <asp:ListItem>Not Like</asp:ListItem>
+            </asp:DropDownList>
     </div>
     <div class="size-5 column">
         <asp:TextBox ID="txtContains" runat="server" CssClass="textbox"></asp:TextBox>
