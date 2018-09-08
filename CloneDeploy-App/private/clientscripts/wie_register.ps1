@@ -1,6 +1,13 @@
 . x:\wie_global_functions.ps1
 clear
 
+$registration=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded ${script:web}RegistrationSettings --connect-timeout 10 --stderr -)
+$registration=$registration | ConvertFrom-Json
+if($registration.registrationEnabled -eq "No" -and $registration.keepNamePrompt -eq "No")
+{
+    return 0
+}
+
 $script:clientId="$script:mac.$script:serialNumber.$script:systemUuid"
 Write-Host " ** This Computer Is Not Registered ** "
 Write-Host
@@ -10,9 +17,18 @@ Write-Host " ** Client Id  : $script:clientId"
 
 while($true)
 {
-	
+
+    if($registration.registrationEnabled -eq "No" -and $registration.keepNamePrompt -eq "Yes")
+    {
+        Write-Host " ** Registration Is Disabled.  Enter A Computer Name To Rename During Imaging.  Leave Blank To Skip. ** "
+        Write-Host
+	    $computer_name = Read-Host -Prompt "Computer Name "
+	    break
+    }    	
+
+
 	Write-Host " ** Enter A Computer Name To Register.  Leave Blank To Skip Registration. ** "
-	Write-Host
+    Write-Host
 	$name = Read-Host -Prompt "Computer Name "
 	if(!$name)
     { 
@@ -47,3 +63,4 @@ while($true)
 		}
     }
 }
+
