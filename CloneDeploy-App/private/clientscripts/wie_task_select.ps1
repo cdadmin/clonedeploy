@@ -35,6 +35,7 @@ $script:task="ond"
 $script:computer_id="false"
 $script:serialNumber=$(get-wmiobject Win32_ComputerSystemProduct  | Select-Object -ExpandProperty IdentifyingNumber)
 $script:systemUuid=$(get-wmiobject Win32_ComputerSystemProduct  | Select-Object -ExpandProperty UUID)
+$script:systemModel=$(get-wmiobject Win32_ComputerSystemProduct  | Select-Object -ExpandProperty Name)
 $nicList = Get-WmiObject -Class "Win32_NetworkAdapterConfiguration" #-Filter "IpEnabled = TRUE"
 
 ForEach ($nic in $nicList) 
@@ -129,25 +130,53 @@ ForEach ($nic in $nicList)
     }
 }
 
-Write-Host
-if($script:computer_id -eq "false" -or $global:register)
-{
-    $script:mac=$nicList.MacAddress | select -first 1
-    log -message "This Computer Is Not Registered.  No Active Web Tasks Were Found For This Computer.  Starting Registration." -isDisplay "true"
-	. x:\wie_register.ps1
-}
+
   
 if(!$taskFound)
 {
-	$script:mac=$nicList.MacAddress | select -first 1
-    . x:\wie_ond.ps1
-}
-
-if($script:isOnDemand)
-{
     log -message " ** Using On Demand Mode ** "
-    log -message " ** Creating Active Task ** " -isDisplay "true"
+    $script:isOnDemand=$true
+    Write-Host
+	$script:mac=$nicList.MacAddress | select -first 1
 
+    log -message " ** Looking For Model Match Task For $script:systemModel ** " -isDisplay "true"
+    $modelMatchTask=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "environment=winpe&systemModel=$script:systemModel" ${script:web}ModelMatch --connect-timeout 10 --stderr -)
+    $modelMatchTask=$modelMatchTask | ConvertFrom-Json
+    if(!$?)
+    {
+        log -message " ** Could Not Determine Model Match.  Ignoring. ** "
+    }  
+    elseif($modelMatchTask.imageName)
+    {
+        $script:task="modelmatchdeploy"
+        $script:imageProfileId=$modelMatchTask.imageProfileId
+        if($script:computer_id -eq "false")
+        {
+            log -message "This Computer Is Not Registered.  A Model Match Was Found For This Computer.  Image Deploy Will Auto Start After Registration, If Enabled.  Image: $($modelMatchTask.imageName) Profile: $($modelMatchTask.imageProfileName)" -isDisplay "true"
+            . x:\wie_register.ps1
+        }
+        else
+        {
+             log -message "A Model Match Was Found For This Computer.  Image: $($modelMatchTask.imageName) Profile: $($modelMatchTask.imageProfileName)" -isDisplay "true"
+             Write-Host
+             Write-Host "Image Deployment Will Begin Now.   Close This Window To Cancel, Or:"
+             pause
+        }
+    }
+    else
+    {
+        
+        if($script:computer_id -eq "false")
+        {
+            log -message "This Computer Is Not Registered.  No Active Web Tasks Were Found For This Computer.  Starting Registration." -isDisplay "true"
+            . x:\wie_register.ps1
+        }
+
+
+        . x:\wie_ond.ps1
+    }
+    
+  
     if($script:task -eq "ondmulticast")
     {
         $checkInStatus=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "mac=$script:mac&objectId=$script:multicastId&task=$script:task&userId=$script:userId&computerId=$script:computer_id" ${script:web}OnDemandCheckIn --connect-timeout 10 --stderr -)
@@ -216,7 +245,7 @@ if($script:task -eq "upload" -or $script:task -eq "unregupload" -or $script:task
 {
   . x:\wie_upload.ps1
 }
-elseif($script:task -eq "deploy" -or $script:task -eq "permanentdeploy" -or $script:task -eq "multicast" -or $script:task -eq "ondmulticast" -or $script:task -eq "unregdeploy" -or $script:task -eq "onddeploy" -or $script:task -eq "clobber")
+elseif($script:task -eq "deploy" -or $script:task -eq "permanentdeploy" -or $script:task -eq "multicast" -or $script:task -eq "ondmulticast" -or $script:task -eq "unregdeploy" -or $script:task -eq "onddeploy" -or $script:task -eq "clobber" -or $script:task -eq "modelmatchdeploy")
 {
   . x:\wie_deploy.ps1
 }
