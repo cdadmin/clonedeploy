@@ -74,7 +74,7 @@ namespace CloneDeploy_Entities
         public ImageProfileEntity ImageProfile { get; set; }
     }
 
-    public sealed class ComputerCsvMap : CsvClassMap<ComputerEntity>
+    public sealed class ComputerCsvMap : ClassMap<ComputerEntity>
     {
         public ComputerCsvMap()
         {

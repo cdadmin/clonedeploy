@@ -62,7 +62,7 @@ namespace CloneDeploy_Entities
         public DateTime? LastUsed { get; set; }
     }
 
-    public sealed class ImageCsvMap : CsvClassMap<ImageEntity>
+    public sealed class ImageCsvMap : ClassMap<ImageEntity>
     {
         public ImageCsvMap()
         {

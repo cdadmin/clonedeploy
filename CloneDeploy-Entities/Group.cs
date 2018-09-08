@@ -46,6 +46,9 @@ namespace CloneDeploy_Entities
 
         [Column("group_type", Order = 6)]
         public string Type { get; set; }
+
+        [Column("smart_type", Order = 11)]
+        public string SmartType { get; set; }
     }
 
     [NotMapped]
@@ -54,7 +57,7 @@ namespace CloneDeploy_Entities
         public ImageEntity Image { get; set; }
     }
 
-    public sealed class GroupCsvMap : CsvClassMap<GroupEntity>
+    public sealed class GroupCsvMap : ClassMap<GroupEntity>
     {
         public GroupCsvMap()
         {
