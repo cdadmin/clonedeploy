@@ -13,13 +13,15 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CloneDeploy_Web</RootNamespace>
     <AssemblyName>CloneDeploy-Web</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <UseIISExpress>false</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
+    <TargetFrameworkProfile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,20 +41,23 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net">
-      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="content\fonts\drop.eot" />
@@ -72,7 +77,6 @@
     <Content Include="content\fonts\OpenSans-Regular.ttf" />
     <Content Include="content\js\images\hsizegrip.png" />
     <Content Include="content\js\jquery-resizable.js" />
-    <Content Include="packages.config" />
     <Content Include="private\logs\.gitignore" />
     <Content Include="views\admin\admin.master" />
     <Content Include="views\admin\bootmenu\bootmenu.master" />
@@ -93,6 +97,7 @@
     <Content Include="views\admin\netboot\create.aspx" />
     <Content Include="views\admin\netboot\edit.aspx" />
     <Content Include="views\admin\netboot\search.aspx" />
+    <Content Include="views\admin\profiletemplate.aspx" />
     <Content Include="views\admin\server\alternateips.aspx" />
     <Content Include="views\admin\server\server.aspx" />
     <Content Include="views\computers\bootmenu\bootmenu.master" />
@@ -104,7 +109,6 @@
     <Content Include="views\global\filesandfolders\filesandfolders.master" />
     <Content Include="views\global\global.master" />
     <Content Include="views\global\imageclassifications\search.aspx" />
-    <Content Include="views\global\munki\munki.master" />
     <Content Include="views\global\scripts\scripts.master" />
     <Content Include="views\global\sysprep\sysprep.master" />
     <Content Include="views\groups\groups.master" />
@@ -126,6 +130,9 @@
     <Content Include="views\users\groupacls\groupacls.master" />
     <Content Include="views\users\history.aspx" />
     <Content Include="views\users\user.master" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\PublishProfiles\web.pubxml" />
     <Content Include="views\admin\cluster\cluster.master" />
     <Content Include="views\admin\logs\logs.master" />
@@ -666,7 +673,6 @@
     <Content Include="views\admin\email.aspx" />
     <Content Include="views\admin\export.aspx" />
     <Content Include="views\admin\multicast.aspx" />
-    <Content Include="views\admin\munki.aspx" />
     <Content Include="views\admin\pxe.aspx" />
     <Content Include="views\admin\security.aspx" />
     <Content Include="views\computers\bootmenu\active.aspx" />
@@ -682,7 +688,6 @@
     <Content Include="views\computers\inventory\printers.aspx" />
     <Content Include="views\computers\inventory\userlogins.aspx" />
     <Content Include="views\computers\log.aspx" />
-    <Content Include="views\computers\munki.aspx" />
     <Content Include="views\computers\proxy.aspx" />
     <Content Include="views\computers\search.aspx" />
     <Content Include="views\dashboard\dash.aspx" />
@@ -697,21 +702,6 @@
     <Content Include="views\global\filesandfolders\create.aspx" />
     <Content Include="views\global\filesandfolders\edit.aspx" />
     <Content Include="views\global\filesandfolders\search.aspx" />
-    <Content Include="views\global\munki\assignedcatalogs.aspx" />
-    <Content Include="views\global\munki\assignedmanagedinstalls.aspx" />
-    <Content Include="views\global\munki\assignedmanageduninstalls.aspx" />
-    <Content Include="views\global\munki\assignedmanagedupdates.aspx" />
-    <Content Include="views\global\munki\assignedmanifests.aspx" />
-    <Content Include="views\global\munki\assignedoptionalinstalls.aspx" />
-    <Content Include="views\global\munki\availablecatalogs.aspx" />
-    <Content Include="views\global\munki\availablemanagedinstalls.aspx" />
-    <Content Include="views\global\munki\availablemanageduninstalls.aspx" />
-    <Content Include="views\global\munki\availablemanagedupdates.aspx" />
-    <Content Include="views\global\munki\availablemanifests.aspx" />
-    <Content Include="views\global\munki\availableoptionalinstalls.aspx" />
-    <Content Include="views\global\munki\general.aspx" />
-    <Content Include="views\global\munki\manifestcreate.aspx" />
-    <Content Include="views\global\munki\manifestsearch.aspx" />
     <Content Include="views\admin\profileupdater\kernel.aspx" />
     <Content Include="views\global\rooms\search.aspx" />
     <Content Include="views\global\scripts\create.aspx" />
@@ -729,7 +719,6 @@
     <Content Include="views\groups\edit.aspx" />
     <Content Include="views\groups\import.aspx" />
     <Content Include="views\groups\multicast.aspx" />
-    <Content Include="views\groups\munki.aspx" />
     <Content Include="views\groups\properties.aspx" />
     <Content Include="views\groups\removemembers.aspx" />
     <Content Include="views\groups\search.aspx" />
@@ -1075,13 +1064,6 @@
     <Compile Include="views\admin\multicast.aspx.designer.cs">
       <DependentUpon>multicast.aspx</DependentUpon>
     </Compile>
-    <Compile Include="views\admin\munki.aspx.cs">
-      <DependentUpon>munki.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\admin\munki.aspx.designer.cs">
-      <DependentUpon>munki.aspx</DependentUpon>
-    </Compile>
     <Compile Include="views\admin\netboot\create.aspx.cs">
       <DependentUpon>create.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1109,6 +1091,13 @@
     </Compile>
     <Compile Include="views\admin\netboot\search.aspx.designer.cs">
       <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="views\admin\profiletemplate.aspx.cs">
+      <DependentUpon>profiletemplate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="views\admin\profiletemplate.aspx.designer.cs">
+      <DependentUpon>profiletemplate.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\admin\pxe.aspx.cs">
       <DependentUpon>pxe.aspx</DependentUpon>
@@ -1271,13 +1260,6 @@
     <Compile Include="views\computers\log.aspx.designer.cs">
       <DependentUpon>log.aspx</DependentUpon>
     </Compile>
-    <Compile Include="views\computers\munki.aspx.cs">
-      <DependentUpon>munki.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\computers\munki.aspx.designer.cs">
-      <DependentUpon>munki.aspx</DependentUpon>
-    </Compile>
     <Compile Include="views\computers\proxy.aspx.cs">
       <DependentUpon>proxy.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1403,118 +1385,6 @@
     </Compile>
     <Compile Include="views\global\imageclassifications\search.aspx.designer.cs">
       <DependentUpon>search.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\global\munki\assignedcatalogs.aspx.cs">
-      <DependentUpon>assignedcatalogs.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\global\munki\assignedcatalogs.aspx.designer.cs">
-      <DependentUpon>assignedcatalogs.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\global\munki\assignedmanagedinstalls.aspx.cs">
-      <DependentUpon>assignedmanagedinstalls.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\global\munki\assignedmanagedinstalls.aspx.designer.cs">
-      <DependentUpon>assignedmanagedinstalls.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\global\munki\assignedmanageduninstalls.aspx.cs">
-      <DependentUpon>assignedmanageduninstalls.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\global\munki\assignedmanageduninstalls.aspx.designer.cs">
-      <DependentUpon>assignedmanageduninstalls.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\global\munki\assignedmanagedupdates.aspx.cs">
-      <DependentUpon>assignedmanagedupdates.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\global\munki\assignedmanagedupdates.aspx.designer.cs">
-      <DependentUpon>assignedmanagedupdates.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\global\munki\assignedmanifests.aspx.cs">
-      <DependentUpon>assignedmanifests.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\global\munki\assignedmanifests.aspx.designer.cs">
-      <DependentUpon>assignedmanifests.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\global\munki\assignedoptionalinstalls.aspx.cs">
-      <DependentUpon>assignedoptionalinstalls.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\global\munki\assignedoptionalinstalls.aspx.designer.cs">
-      <DependentUpon>assignedoptionalinstalls.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\global\munki\availablecatalogs.aspx.cs">
-      <DependentUpon>availablecatalogs.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\global\munki\availablecatalogs.aspx.designer.cs">
-      <DependentUpon>availablecatalogs.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\global\munki\availablemanagedinstalls.aspx.cs">
-      <DependentUpon>availablemanagedinstalls.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\global\munki\availablemanagedinstalls.aspx.designer.cs">
-      <DependentUpon>availablemanagedinstalls.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\global\munki\availablemanageduninstalls.aspx.cs">
-      <DependentUpon>availablemanageduninstalls.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\global\munki\availablemanageduninstalls.aspx.designer.cs">
-      <DependentUpon>availablemanageduninstalls.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\global\munki\availablemanagedupdates.aspx.cs">
-      <DependentUpon>availablemanagedupdates.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\global\munki\availablemanagedupdates.aspx.designer.cs">
-      <DependentUpon>availablemanagedupdates.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\global\munki\availablemanifests.aspx.cs">
-      <DependentUpon>availablemanifests.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\global\munki\availablemanifests.aspx.designer.cs">
-      <DependentUpon>availablemanifests.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\global\munki\availableoptionalinstalls.aspx.cs">
-      <DependentUpon>availableoptionalinstalls.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\global\munki\availableoptionalinstalls.aspx.designer.cs">
-      <DependentUpon>availableoptionalinstalls.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\global\munki\general.aspx.cs">
-      <DependentUpon>general.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\global\munki\general.aspx.designer.cs">
-      <DependentUpon>general.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\global\munki\manifestcreate.aspx.cs">
-      <DependentUpon>manifestcreate.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\global\munki\manifestcreate.aspx.designer.cs">
-      <DependentUpon>manifestcreate.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\global\munki\manifestsearch.aspx.cs">
-      <DependentUpon>manifestsearch.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\global\munki\manifestsearch.aspx.designer.cs">
-      <DependentUpon>manifestsearch.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\global\munki\munki.master.cs">
-      <DependentUpon>munki.master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\global\munki\munki.master.designer.cs">
-      <DependentUpon>munki.master</DependentUpon>
     </Compile>
     <Compile Include="views\admin\profileupdater\kernel.aspx.cs">
       <DependentUpon>kernel.aspx</DependentUpon>
@@ -1662,13 +1532,6 @@
     </Compile>
     <Compile Include="views\groups\multicast.aspx.designer.cs">
       <DependentUpon>multicast.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\groups\munki.aspx.cs">
-      <DependentUpon>munki.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\groups\munki.aspx.designer.cs">
-      <DependentUpon>munki.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\groups\properties.aspx.cs">
       <DependentUpon>properties.aspx</DependentUpon>

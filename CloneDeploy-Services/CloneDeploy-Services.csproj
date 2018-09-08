@@ -9,8 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CloneDeploy_Services</RootNamespace>
     <AssemblyName>CloneDeploy-Services</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,23 +33,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CsvHelper">
-      <HintPath>..\packages\CsvHelper.2.13.5.0\lib\net40-client\CsvHelper.dll</HintPath>
+    <Reference Include="CsvHelper, Version=7.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.7.1.1\lib\net45\CsvHelper.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=1.0.0.999, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.1.0.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Posix">
-      <HintPath>..\packages\Mono.Posix-4.5.4.5.0\lib\net45\Mono.Posix.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="plist-cil">
-      <HintPath>..\packages\plist-cil.1.14\lib\plist-cil.dll</HintPath>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -57,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ImageProfileTemplateServices.cs" />
     <Compile Include="RawSqlServices.cs" />
     <Compile Include="ActiveImagingTaskServices.cs" />
     <Compile Include="ActiveMulticastSessionServices.cs" />
@@ -74,7 +73,6 @@
     <Compile Include="GroupImageClassificationServices.cs" />
     <Compile Include="ComputerImageClassificationServices.cs" />
     <Compile Include="ComputerLogServices.cs" />
-    <Compile Include="ComputerMunkiServices.cs" />
     <Compile Include="ComputerProxyReservation.cs" />
     <Compile Include="ClientPartitionSchemaServices.cs" />
     <Compile Include="ClientPartitionHelper.cs" />
@@ -96,7 +94,6 @@
     <Compile Include="GroupServices.cs" />
     <Compile Include="GroupBootMenuServices.cs" />
     <Compile Include="GroupMembershipServices.cs" />
-    <Compile Include="GroupMunkiServices.cs" />
     <Compile Include="GroupPropertyServices.cs" />
     <Compile Include="ImageServices.cs" />
     <Compile Include="ImageProfileServices.cs" />
@@ -105,13 +102,6 @@
     <Compile Include="ImageProfileSysprepTagServices.cs" />
     <Compile Include="ImageSchemaFEServices.cs" />
     <Compile Include="LdapServices.cs" />
-    <Compile Include="MunkiCatalogServices.cs" />
-    <Compile Include="MunkiIncludedManifestServices.cs" />
-    <Compile Include="MunkiManagedInstallServices.cs" />
-    <Compile Include="MunkiManagedUninstallServices.cs" />
-    <Compile Include="MunkiManagedUpdateServices.cs" />
-    <Compile Include="MunkiManifestTemplateServices.cs" />
-    <Compile Include="MunkiOptionalInstallServices.cs" />
     <Compile Include="PortServices.cs" />
     <Compile Include="RoomServices.cs" />
     <Compile Include="ClusterGroupServices.cs" />
@@ -138,7 +128,6 @@
     <Compile Include="Workflows\CreateTaskArguments.cs" />
     <Compile Include="Workflows\DefaultBootMenu.cs" />
     <Compile Include="Workflows\DynamicPartitionScript.cs" />
-    <Compile Include="Workflows\EffectiveMunkiTemplate.cs" />
     <Compile Include="Workflows\GetImageServer.cs" />
     <Compile Include="Workflows\GetMulticastServer.cs" />
     <Compile Include="Workflows\IsoGen.cs" />
@@ -176,6 +165,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Mono.Posix.5.4.0.201\build\net45\Mono.Posix.targets" Condition="Exists('..\packages\Mono.Posix.5.4.0.201\build\net45\Mono.Posix.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Mono.Posix.5.4.0.201\build\net45\Mono.Posix.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Mono.Posix.5.4.0.201\build\net45\Mono.Posix.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

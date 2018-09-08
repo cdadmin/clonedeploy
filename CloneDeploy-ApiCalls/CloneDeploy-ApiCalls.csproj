@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CloneDeploy_ApiCalls</RootNamespace>
     <AssemblyName>CloneDeploy-ApiCalls</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,14 +31,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net">
-      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="RestSharp">
-      <HintPath>..\packages\RestSharp.105.2.3\lib\net45\RestSharp.dll</HintPath>
+    <Reference Include="RestSharp, Version=106.3.1.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.3.1\lib\net452\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -51,6 +52,7 @@
     <Compile Include="ApiRequest.cs" />
     <Compile Include="BootEntryAPI.cs" />
     <Compile Include="BootTemplateAPI.cs" />
+    <Compile Include="ImageProfileTemplateAPI.cs" />
     <Compile Include="BuildingAPI.cs" />
     <Compile Include="CdVersionAPI.cs" />
     <Compile Include="GroupImageClassificationAPI.cs" />
@@ -63,12 +65,6 @@
     <Compile Include="ImageProfileFileFolderAPI.cs" />
     <Compile Include="ImageProfileScriptAPI.cs" />
     <Compile Include="ImageProfileSysprepTagAPI.cs" />
-    <Compile Include="MunkiManifestCatalogAPI.cs" />
-    <Compile Include="MunkiManifestIncludedManifestAPI.cs" />
-    <Compile Include="MunkiManifestManagedInstallAPI.cs" />
-    <Compile Include="MunkiManifestManagedUnInstallAPI.cs" />
-    <Compile Include="MunkiManifestManagedUpdateAPI.cs" />
-    <Compile Include="MunkiManifestOptionInstallAPI.cs" />
     <Compile Include="NbiEntryAPI.cs" />
     <Compile Include="PortAPI.cs" />
     <Compile Include="ImageClassificationAPI.cs" />
@@ -80,8 +76,6 @@
     <Compile Include="ComputerAPI.cs" />
     <Compile Include="ComputerLogAPI.cs" />
     <Compile Include="DistributionPointAPI.cs" />
-    <Compile Include="GroupMunkiAPI.cs" />
-    <Compile Include="ComputerMunkiAPI.cs" />
     <Compile Include="FilesystemAPI.cs" />
     <Compile Include="BaseAPI.cs" />
     <Compile Include="GroupAPI.cs" />
@@ -91,7 +85,6 @@
     <Compile Include="ImageAPI.cs" />
     <Compile Include="ImageProfileAPI.cs" />
     <Compile Include="ImageSchemaAPI.cs" />
-    <Compile Include="MunkiManifestTemplateAPI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingAPI.cs" />
     <Compile Include="NetBootProfileAPI.cs" />
