@@ -128,8 +128,9 @@ function Process-Partitions()
         if(Test-Path c:\Windows)
         {
             $script:windowsPartition=$(Get-Partition -DiskNumber $($hardDrive.Number) -PartitionNumber $($currentPartition.Number))
-                
-            bcdboot c:\Windows /s q: >> $clientLog 
+            
+            log " ** Making System Bootable ** " "true"
+            bcdboot c:\Windows /s q: /f ALL >> $clientLog 
 
             if($change_computer_name -eq "true" -and $computer_name)
             {
@@ -174,8 +175,8 @@ function Download-Image()
     
      if($script:task -eq "multicast" -or $script:task -eq "ondmulticast" )
     {
-        log "udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 C: 2>>$clientLog > x:\wim.progress"
-        $udpProc=$(Start-Process cmd "/c udp-receiver --portbase $multicast_port --no-progress --mcast-rdv-address $server_ip $client_receiver_args | wimapply - 1 C: 2>>x:\wim.log > x:\wim.progress" -NoNewWindow -PassThru)
+        log "udp-receiver --portbase $multicast_port --no-progress $client_receiver_args | wimapply - 1 C: 2>>$clientLog > x:\wim.progress"
+        $udpProc=$(Start-Process cmd "/c udp-receiver --portbase $multicast_port --no-progress $client_receiver_args | wimapply - 1 C: 2>>x:\wim.log > x:\wim.progress" -NoNewWindow -PassThru)
         Start-Sleep 5
         $wimProc=$(Get-Process wimlib-imagex)
         Wait-Process $wimProc.Id
