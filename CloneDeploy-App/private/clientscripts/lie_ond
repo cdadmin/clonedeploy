@@ -7,7 +7,7 @@ if [ "$started_from_init" != "true" ]; then
 fi
 
 is_ondemand="true"
-taskType=$(dialog --backtitle "CloneDeploy" --title "Select A Task" --clear --menu "" 20 60 15 1 Deploy 2 Upload 3 Multicast --stdout)
+taskType=$(dialog --backtitle "CloneDeploy" --title "Select A Task" --clear --menu "" 20 60 15 1 Deploy 2 Upload 3 Multicast 2>&1 >/dev/tty0)
 
 if [ "$taskType" != "1" ] && [ "$taskType" != "2" ] && [ "$taskType" != "3" ]; then
 	error "Could Not Determine Task Type"
@@ -15,7 +15,7 @@ fi
 
 if [ "$taskType" = "1" ]; then
 	imageList=`$curlAuth --data "environment=linux&computerId=$computer_id&task=deploy&userId=$user_id" "${web}ListImages" $curlEnd`
-	imageId=$(dialog --backtitle "CloneDeploy" --title "Select An Image" --clear --menu "" 20 60 15 `parse_json "$imageList" .Images[]` --stdout)
+	imageId=$(dialog --backtitle "CloneDeploy" --title "Select An Image" --clear --menu "" 20 60 15 `parse_json "$imageList" .Images[]` 2>&1 >/dev/tty0)
 	if [ -z "$imageId" ]; then
 	  error "No Image Was Selected Or No Images Have Been Added Yet"
 	fi
@@ -23,7 +23,7 @@ if [ "$taskType" = "1" ]; then
 	if [ "`parse_json "$imageProfileList" .Count`" = "1" ]; then
 		image_profile_id=`parse_json "$imageProfileList" .FirstProfileId`
 	else
-		image_profile_id=$(dialog --backtitle "CloneDeploy" --title "Select An Image Profile" --clear --menu "" 20 60 15 `parse_json "$imageProfileList" .ImageProfiles[]` --stdout)
+		image_profile_id=$(dialog --backtitle "CloneDeploy" --title "Select An Image Profile" --clear --menu "" 20 60 15 `parse_json "$imageProfileList" .ImageProfiles[]` 2>&1 >/dev/tty0)
 	fi	
 	
 	if [ "$computer_id" = "false" ]; then
@@ -35,7 +35,7 @@ if [ "$taskType" = "1" ]; then
     
 elif [ "$taskType" = "2" ]; then
 
-  new_or_existing=$(dialog --backtitle "CloneDeploy" --title "New Or Existing?" --clear --menu "" 20 60 15 1 "New Image" 2 "Existing Image" --stdout)
+  new_or_existing=$(dialog --backtitle "CloneDeploy" --title "New Or Existing?" --clear --menu "" 20 60 15 1 "New Image" 2 "Existing Image" 2>&1 >/dev/tty0)
 
   if [ "$new_or_existing" != "1" ] && [ "$new_or_existing" != "2" ]; then
 	error "Could Not Determine If This Is A New Or Existing Image"
@@ -45,9 +45,9 @@ elif [ "$taskType" = "2" ]; then
   if [ "$new_or_existing" = "1" ]; then
     while [ "$isError" != "false" ]; do
 	  if [ "$isError" = "true" ]; then
-	    new_image_name=$(dialog --backtitle "CloneDeploy" --title "Enter Image Name" --clear --inputbox "Invalid Name.  Enter An Image Name" 20 60 --stdout)
+	    new_image_name=$(dialog --backtitle "CloneDeploy" --title "Enter Image Name" --clear --inputbox "Invalid Name.  Enter An Image Name" 20 60 2>&1 >/dev/tty0)
 	  else
-	     new_image_name=$(dialog --backtitle "CloneDeploy" --title "Enter Image Name" --clear --inputbox "Enter An Image Name" 20 60 --stdout)
+	     new_image_name=$(dialog --backtitle "CloneDeploy" --title "Enter Image Name" --clear --inputbox "Enter An Image Name" 20 60 2>&1 >/dev/tty0)
 	  fi	
 	  
 	  if [ -z "$new_image_name" ]; then
@@ -69,7 +69,7 @@ elif [ "$taskType" = "2" ]; then
     
   else
     image_list=`$curlAuth --data "environment=linux&computerId=$computer_id&task=upload&userId=$user_id" "${web}ListImages" $curlEnd`
-    image_id=$(dialog --backtitle "CloneDeploy" --title "Select An Image" --clear --menu "" 20 60 15 `parse_json "$image_list" .Images[]` --stdout)
+    image_id=$(dialog --backtitle "CloneDeploy" --title "Select An Image" --clear --menu "" 20 60 15 `parse_json "$image_list" .Images[]` 2>&1 >/dev/tty0)
   fi
   
     if [ -z "$image_id" ]; then
@@ -79,7 +79,7 @@ elif [ "$taskType" = "2" ]; then
     if [ "$(parse_json "$profile_list" .Count)" = "1" ]; then
       image_profile_id=`parse_json "$profile_list" .FirstProfileId`
     else
-      image_profile_id=$(dialog --backtitle "CloneDeploy" --title "Select An Image Profile" --clear --menu "" 20 60 15 `parse_json "$profile_list" .ImageProfiles[]` --stdout)
+      image_profile_id=$(dialog --backtitle "CloneDeploy" --title "Select An Image Profile" --clear --menu "" 20 60 15 `parse_json "$profile_list" .ImageProfiles[]` 2>&1 >/dev/tty0)
     fi
 	
 	if [ "$computer_id" = "false" ]; then
@@ -91,7 +91,7 @@ elif [ "$taskType" = "2" ]; then
 		
 elif [ "$taskType" = "3" ]; then
 	multicastList=`$curlAuth  --data "environment=linux" "${web}ListMulticasts" $curlEnd`
-	multicastId=$(dialog --backtitle "CloneDeploy" --title "Select A Multicast Session" --clear --menu "" 20 60 15 `parse_json "$multicastList" .Multicasts[]` --stdout)
+	multicastId=$(dialog --backtitle "CloneDeploy" --title "Select A Multicast Session" --clear --menu "" 20 60 15 `parse_json "$multicastList" .Multicasts[]` 2>&1 >/dev/tty0)
 	if [ -z "$multicastId" ]; then
 	  error "No Multicast Session Was Selected Or There Are No Active Sessions"
 	fi
@@ -103,4 +103,6 @@ elif [ "$taskType" = "3" ]; then
 else
 	error "An Error Occurred Or No Task Was Selected"
 fi
+
+
 
