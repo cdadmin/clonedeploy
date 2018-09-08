@@ -87,7 +87,7 @@ function error($message, $rebootTime)
 	}
 	if($task_completed_action.trim("`"") -eq "Power Off")
     {
-		shutdown
+		wpeutil shutdown
     }
 
 	elseif($task_completed_action.trim("`"") -eq "Exit To Shell")
@@ -96,7 +96,7 @@ function error($message, $rebootTime)
     }
 	else
     {
-		reboot
+		wpeutil reboot
 
 	} 
 }
