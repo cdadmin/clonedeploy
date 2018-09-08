@@ -430,9 +430,9 @@ function create_image_schema()
 			fi
             logical_volume_counter=$(( $logical_volume_counter + 1 ))
             filesystem_type=`blkid -po udev "$logical_volume_device" | grep FS_TYPE | awk -F'=' '{print $2}'`
-            logical_volume_uuid=`lvs --noheadings -v 2>/dev/null | grep "$volume_group" | grep "$volume_name" | awk '/^ / {print $10}'`
-            logical_volume_size_block=`lvs --noheadings --units s | grep "$volume_group" | grep "$volume_name" | awk '/^ / {print $4}' | sed 's/S//'`
-			logical_volume_size_bytes=`lvs --noheadings --units b | grep "$volume_group" | grep "$volume_name" | awk '/^ / {print $4}' | sed 's/B//'`
+            logical_volume_uuid=`lvs --noheadings -v 2>/dev/null | grep -w "$volume_group" | grep -w "$volume_name" | awk '/^ / {print $10}'`
+            logical_volume_size_block=`lvs --noheadings --units s | grep -w "$volume_group" | grep -w "$volume_name" | awk '/^ / {print $4}' | sed 's/S//'`
+			logical_volume_size_bytes=`lvs --noheadings --units b | grep -w "$volume_group" | grep -w "$volume_name" | awk '/^ / {print $4}' | sed 's/B//'`
 
             #In addition to setting partclone type, clean filesystems for better compatibility moving forward
             if [ "$filesystem_type" = "ntfs" ]; then
@@ -674,8 +674,8 @@ function upload_image()
 		wimsource="/mnt/wimsource"
       fi 	  
 	  touch /tmp/wim.progress
-	  log " ...... lie_reporter $task_id wim & wimlib-imagex capture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
-	  eval "lie_reporter $task_id wim & wimlib-imagex capture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments 2>> $CLIENT_LOG | tee /tmp/wim.progress"
+	  log " ...... lie_reporter $task_id wim & wimlib-imagex capture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments --compress=fast 2>> $CLIENT_LOG | tee /tmp/wim.progress"
+	  eval "lie_reporter $task_id wim & wimlib-imagex capture $wimsource $image_path/$output_name.$partclone_type.wim $wim_arguments --compress=fast 2>> $CLIENT_LOG | tee /tmp/wim.progress"
 	  rm /tmp/wim.progress
 	  umount /mnt/wimsource &> /dev/null
     else
@@ -758,3 +758,4 @@ function main()
 
 main "$@"
   
+
