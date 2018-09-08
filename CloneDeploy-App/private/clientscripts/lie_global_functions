@@ -49,6 +49,9 @@ function checkin()
     elif [ "$task" = "clobber" ]; then
 	   log " ** Using Clobber Mode ** "
 	   checkInStatus=$($curlAuth --data "mac=$mac&objectId=$image_profile_id&task=$task&userId=$user_id&computerId=$computer_id" "${web}OnDemandCheckIn" $curlEnd)
+	elif [ "$task" = "modelmatchdeploy" ]; then
+	   log " ** Using Model Match Mode ** "
+	   checkInStatus=$($curlAuth --data "mac=$mac&objectId=$image_profile_id&task=$task&userId=$user_id&computerId=$computer_id" "${web}OnDemandCheckIn" $curlEnd)
     else
 	  log " ** Verifying Active Task ** " "display"
 	  checkInStatus=`$curlAuth --data "taskId=$task_id" "${web}CheckIn" $curlEnd`
@@ -68,7 +71,7 @@ function checkin()
 			fi
 			
 			#On demand task ids are created later than web tasks, get it now
-			if [ "$is_ondemand" = "true" ] || [ "$task" = "clobber" ]; then
+			if [ "$is_ondemand" = "true" ] || [ "$task" = "clobber" ] || [ "$task" = "modelmatchdeploy" ]; then
 			  task_id=$(parse_json "$checkInStatus" .TaskId)
 			fi
 	
@@ -212,7 +215,7 @@ function expand_volume()
 
 	  mkdir /mnt/xfs &>/dev/null
 	  mount $1 /mnt/xfs
-	  xfs_growfs $1 2>>$CLIENT_LOG
+	  xfs_growfs /mnt/xfs 2>>$CLIENT_LOG
 		
       if [ ! "$?" = "0" ]; then
 	    log "Warning, XFS File System Did Not Resize Properly.  Check Your Disk Size After Booting" "display"
