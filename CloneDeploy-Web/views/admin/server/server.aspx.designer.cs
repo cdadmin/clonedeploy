@@ -67,6 +67,15 @@ namespace CloneDeploy_Web.views.admin.server {
         protected global::System.Web.UI.WebControls.TextBox txtWebService;
         
         /// <summary>
+        /// chkIpxeSsl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkIpxeSsl;
+        
+        /// <summary>
         /// txtTftpServerIp control.
         /// </summary>
         /// <remarks>
