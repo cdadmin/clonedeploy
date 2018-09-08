@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using CloneDeploy_Common;
+using CloneDeploy_Common.Enum;
 using CloneDeploy_DataModel;
 using CloneDeploy_Entities;
 using CloneDeploy_Entities.DTOs;
@@ -11,6 +12,7 @@ using CloneDeploy_Entities.DTOs.ImageSchemaBE;
 using CloneDeploy_Services.Helpers;
 using CsvHelper;
 using log4net;
+using Newtonsoft.Json;
 
 namespace CloneDeploy_Services
 {
@@ -139,8 +141,34 @@ namespace CloneDeploy_Services
             result.Id = imageId;
             //Check if image name is empty or null, return if so or something will be deleted that shouldn't be
             if (string.IsNullOrEmpty(image.Name)) return result;
-            DeleteAllUserManagementsForImage(image.Id);
-            DeleteAllProfilesForImage(image.Id);
+
+            var computers = _uow.ComputerRepository.Get(x => x.ImageId == imageId);
+            var computerService = new ComputerServices();
+            foreach (var computer in computers)
+            {
+                computer.ImageId = -1;
+                computer.ImageProfileId = -1;
+                computerService.UpdateComputer(computer);
+            }
+
+            var groups = _uow.GroupRepository.Get(x => x.ImageId == imageId);
+            var groupService = new GroupServices();
+            foreach (var group in groups)
+            {
+                group.ImageId = -1;
+                group.ImageProfileId = -1;
+                groupService.UpdateGroup(group);
+            }
+
+            var groupProperties = _uow.GroupPropertyRepository.Get(x => x.ImageId == imageId);
+            var groupPropertyService = new GroupPropertyServices();
+            foreach (var groupProperty in groupProperties)
+            {
+                groupProperty.ImageId = -1;
+                groupProperty.ImageProfileId = -1;
+                groupPropertyService.UpdateGroupProperty(groupProperty);
+            }
+            
             var delDirectoryResult = new FilesystemServices().DeleteImageFolders(image.Name);
             result.Success = delDirectoryResult;
 
@@ -326,32 +354,37 @@ namespace CloneDeploy_Services
         public ImageProfileEntity SeedDefaultImageProfile(int imageId)
         {
             var image = GetImage(imageId);
-            var imageProfile = new ImageProfileEntity();
-            imageProfile.Kernel = SettingStrings.DefaultKernel64;
-            imageProfile.BootImage = "initrd.xz";
-            imageProfile.Name = "default";
-            imageProfile.Description = "Auto Generated Via New Image.";
-            imageProfile.SkipCore = 0;
-            imageProfile.SkipClock = 0;
-            imageProfile.RemoveGPT = 0;
-            imageProfile.SkipShrinkVolumes = 0;
-            imageProfile.SkipShrinkLvm = 0;
-            imageProfile.SkipExpandVolumes = 0;
-            imageProfile.FixBcd = 0;
-            imageProfile.FixBootloader = 1;
-            imageProfile.PartitionMethod = "Dynamic";
-            imageProfile.Compression = "lz4";
-            imageProfile.CompressionLevel = "1";
-            imageProfile.TaskCompletedAction = "Reboot";
-            imageProfile.ChangeName = 1;
-            if (image.Environment == "macOS")
+            if (image.Environment.Equals("linux") && image.Type.Equals("Block"))
             {
-                imageProfile.OsxTargetVolume = "Macintosh HD";
-                imageProfile.PartitionMethod = "Standard Auto";
-                imageProfile.SimpleUploadSchema = 1;
+                var template =
+                    new ImageProfileTemplateServices().GetTemplate(EnumProfileTemplate.TemplateType.LinuxBlock);
+                var json = JsonConvert.SerializeObject(template);
+                return JsonConvert.DeserializeObject<ImageProfileEntity>(json);
+
+            }
+            else if (image.Environment.Equals("linux") && image.Type.Equals("File"))
+            {
+                var template =
+                   new ImageProfileTemplateServices().GetTemplate(EnumProfileTemplate.TemplateType.LinuxFile);
+                var json = JsonConvert.SerializeObject(template);
+                return JsonConvert.DeserializeObject<ImageProfileEntity>(json);
+            }
+            else if (image.Environment.Equals("macOS"))
+            {
+                var template =
+                   new ImageProfileTemplateServices().GetTemplate(EnumProfileTemplate.TemplateType.MacOS);
+                var json = JsonConvert.SerializeObject(template);
+                return JsonConvert.DeserializeObject<ImageProfileEntity>(json);
+            }
+            else //winpe
+            {
+                var template =
+                   new ImageProfileTemplateServices().GetTemplate(EnumProfileTemplate.TemplateType.WinPE);
+                var json = JsonConvert.SerializeObject(template);
+                return JsonConvert.DeserializeObject<ImageProfileEntity>(json);
             }
 
-            return imageProfile;
+      
         }
 
         public void SendImageApprovedEmail(int imageId)

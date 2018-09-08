@@ -40,6 +40,55 @@ namespace CloneDeploy_Services
             if (clusterGroup == null) return new ActionResultDTO {ErrorMessage = "Cluster Group Not Found", Id = 0};
             _uow.ClusterGroupRepository.Delete(clusterGroupId);
             _uow.Save();
+            
+            var sites = _uow.SiteRepository.Get(x => x.ClusterGroupId == clusterGroupId);
+            var siteService = new SiteServices();
+            foreach (var site in sites)
+            {
+                site.ClusterGroupId = -1;
+                siteService.UpdateSite(site);
+            }
+
+            var buildings = _uow.BuildingRepository.Get(x => x.ClusterGroupId == clusterGroupId);
+            var buildingService = new BuildingServices();
+            foreach (var building in buildings)
+            {
+                building.ClusterGroupId = -1;
+                buildingService.UpdateBuilding(building);
+            }
+
+            var rooms = _uow.RoomRepository.Get(x => x.ClusterGroupId == clusterGroupId);
+            var roomService = new RoomServices();
+            foreach (var room in rooms)
+            {
+                room.ClusterGroupId = -1;
+                roomService.UpdateRoom(room);
+            }
+
+            var computers = _uow.ComputerRepository.Get(x => x.ClusterGroupId == clusterGroupId);
+            var computerService = new ComputerServices();
+            foreach (var computer in computers)
+            {
+                computer.ClusterGroupId = -1;
+                computerService.UpdateComputer(computer);
+            }
+
+            var groups = _uow.GroupRepository.Get(x => x.ClusterGroupId == clusterGroupId);
+            var groupService = new GroupServices();
+            foreach (var group in groups)
+            {
+                group.ClusterGroupId = -1;
+                groupService.UpdateGroup(group);
+            }
+
+            var groupProperties = _uow.GroupPropertyRepository.Get(x => x.ClusterGroupId == clusterGroupId);
+            var groupPropertyService = new GroupPropertyServices();
+            foreach (var groupProperty in groupProperties)
+            {
+                groupProperty.ClusterGroupId = -1;
+                groupPropertyService.UpdateGroupProperty(groupProperty);
+            }
+
             var actionResult = new ActionResultDTO();
             actionResult.Success = true;
             actionResult.Id = clusterGroup.Id;

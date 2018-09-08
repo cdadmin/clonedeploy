@@ -42,6 +42,22 @@ namespace CloneDeploy_Services
 
             _uow.BuildingRepository.Delete(buildingId);
             _uow.Save();
+
+            var computers = _uow.ComputerRepository.Get(x => x.BuildingId == buildingId);
+            var computerService = new ComputerServices();
+            foreach (var computer in computers)
+            {
+                computer.BuildingId = -1;
+                computerService.UpdateComputer(computer);
+            }
+
+            var groupProperties = _uow.GroupPropertyRepository.Get(x => x.BuildingId == buildingId);
+            var groupPropertyService = new GroupPropertyServices();
+            foreach (var groupProperty in groupProperties)
+            {
+                groupProperty.BuildingId = -1;
+                groupPropertyService.UpdateGroupProperty(groupProperty);
+            }
             actionResult.Success = true;
             actionResult.Id = buildingId;
 

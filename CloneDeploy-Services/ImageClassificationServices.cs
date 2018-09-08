@@ -40,6 +40,16 @@ namespace CloneDeploy_Services
                 return new ActionResultDTO {ErrorMessage = "Image Classification Not Found", Id = 0};
             _uow.ImageClassificationRepository.Delete(imageClassificationId);
             _uow.Save();
+
+            var images = _uow.ImageRepository.Get(x => x.ClassificationId == imageClassificationId);
+            var imageService = new ImageServices();
+            foreach (var image in images)
+            {
+                image.ClassificationId = -1;
+                imageService.UpdateImage(image);
+            }
+
+    
             var actionResult = new ActionResultDTO();
             actionResult.Success = true;
             actionResult.Id = imageClassification.Id;

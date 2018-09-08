@@ -39,6 +39,23 @@ namespace CloneDeploy_Services
             if (site == null) return new ActionResultDTO {ErrorMessage = "Site Not Found", Id = 0};
             _uow.SiteRepository.Delete(siteId);
             _uow.Save();
+
+            var computers = _uow.ComputerRepository.Get(x => x.SiteId == siteId);
+            var computerService = new ComputerServices();
+            foreach (var computer in computers)
+            {
+                computer.SiteId = -1;
+                computerService.UpdateComputer(computer);
+            }
+
+            var groupProperties = _uow.GroupPropertyRepository.Get(x => x.SiteId == siteId);
+            var groupPropertyService = new GroupPropertyServices();
+            foreach (var groupProperty in groupProperties)
+            {
+                groupProperty.SiteId = -1;
+                groupPropertyService.UpdateGroupProperty(groupProperty);
+            }
+
             var actionResult = new ActionResultDTO();
             actionResult.Success = true;
             actionResult.Id = site.Id;

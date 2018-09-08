@@ -40,6 +40,22 @@ namespace CloneDeploy_Services
                 return new ActionResultDTO {ErrorMessage = "Alternate Server Ip Not Found", Id = 0};
             _uow.AlternateServerIpRepository.Delete(alternateServerIpId);
             _uow.Save();
+            var computers = _uow.ComputerRepository.Get(x => x.AlternateServerIpId == alternateServerIpId);
+            var computerService = new ComputerServices();
+            foreach (var computer in computers)
+            {
+                computer.AlternateServerIpId = -1;
+                computerService.UpdateComputer(computer);
+            }
+
+          
+            var groupProperties = _uow.GroupPropertyRepository.Get(x => x.AlternateServerIpId == alternateServerIpId);
+            var groupPropertyService = new GroupPropertyServices();
+            foreach (var groupProperty in groupProperties)
+            {
+                groupProperty.AlternateServerIpId = -1;
+                groupPropertyService.UpdateGroupProperty(groupProperty);
+            }
             var actionResult = new ActionResultDTO();
             actionResult.Success = true;
             actionResult.Id = alternateServerIp.Id;

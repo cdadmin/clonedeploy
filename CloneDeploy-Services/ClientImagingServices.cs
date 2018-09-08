@@ -442,6 +442,14 @@ namespace CloneDeploy_Services
             return "false";
         }
 
+        public string GetRegistrationSettings()
+        {
+            var regDto = new RegistrationDTO();
+            regDto.registrationEnabled = SettingServices.GetSettingValue(SettingStrings.RegistrationEnabled);
+            regDto.keepNamePrompt = SettingServices.GetSettingValue(SettingStrings.OnDemandNamePrompt);
+            return JsonConvert.SerializeObject(regDto);
+        }
+
         public void DeleteImage(int profileId)
         {
             var profile = new ImageProfileServices().ReadProfile(profileId);
@@ -453,6 +461,23 @@ namespace CloneDeploy_Services
             var delResult = new FilesystemServices().DeleteImageFolders(profile.Image.Name);
             if (delResult)
                 new FilesystemServices().CreateNewImageFolders(profile.Image.Name);
+        }
+
+        public string CheckModelMatch(string environment, string systemModel)
+        {
+            var modelTask = new ModelTaskDTO();
+            //Check for model match
+            var modelMatchProfile = new ImageProfileServices().GetModelMatch(systemModel,environment);
+            if (modelMatchProfile != null)
+            {
+                var image = new ImageServices().GetImage(modelMatchProfile.ImageId);
+                if (image != null)
+                    modelTask.imageName = image.Name;
+                modelTask.imageProfileId = modelMatchProfile.Id.ToString();
+                modelTask.imageProfileName = modelMatchProfile.Name;
+                return JsonConvert.SerializeObject(modelTask);
+            }
+            return JsonConvert.SerializeObject(new ModelTaskDTO());
         }
 
         public string DetermineTask(string idType, string id)
@@ -503,6 +528,8 @@ namespace CloneDeploy_Services
 
             return JsonConvert.SerializeObject(determineTaskDto);
         }
+
+        
 
         public string DistributionPoint(string dpId, string task)
         {
@@ -619,12 +646,7 @@ namespace CloneDeploy_Services
             return JsonConvert.SerializeObject(fileFolderSchema);
         }
 
-        public string GetMunkiBasicAuth(int profileId)
-        {
-            var imageProfile = new ImageProfileServices().ReadProfile(profileId);
-            var authString = imageProfile.MunkiAuthUsername + ":" + imageProfile.MunkiAuthPassword;
-            return StringManipulationServices.Encode(authString);
-        }
+      
 
         public string GetOriginalLvm(int profileId, string clientHd, string hdToGet, string partitionPrefix)
         {
@@ -787,6 +809,7 @@ namespace CloneDeploy_Services
                 case "permanentdeploy":
                 case "upload":
                 case "multicast":
+                case "modelmatchdeploy":
                     return SettingServices.GetSettingValue(SettingStrings.WebTaskRequiresLogin);
               
 
@@ -928,7 +951,7 @@ namespace CloneDeploy_Services
 
             var arguments = "";
             if (task == "deploy" || task == "upload" || task == "clobber" || task == "ondupload" || task == "onddeploy" ||
-                task == "unregupload" || task == "unregdeploy")
+                task == "unregupload" || task == "unregdeploy" || task =="modelmatchdeploy")
             {
                 imageProfile = new ImageProfileServices().ReadProfile(objectId);
                 arguments = new CreateTaskArguments(computer, imageProfile, task).Execute();

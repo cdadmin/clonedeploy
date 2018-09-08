@@ -40,6 +40,23 @@ namespace CloneDeploy_Services
             if (room == null) return new ActionResultDTO {ErrorMessage = "Room Not Found", Id = 0};
             _uow.RoomRepository.Delete(roomId);
             _uow.Save();
+
+            var computers = _uow.ComputerRepository.Get(x => x.RoomId == roomId);
+            var computerService = new ComputerServices();
+            foreach (var computer in computers)
+            {
+                computer.RoomId = -1;
+                computerService.UpdateComputer(computer);
+            }
+
+            var groupProperties = _uow.GroupPropertyRepository.Get(x => x.RoomId == roomId);
+            var groupPropertyService = new GroupPropertyServices();
+            foreach (var groupProperty in groupProperties)
+            {
+                groupProperty.RoomId = -1;
+                groupPropertyService.UpdateGroupProperty(groupProperty);
+            }
+
             var actionResult = new ActionResultDTO();
             actionResult.Success = true;
             actionResult.Id = room.Id;

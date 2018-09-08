@@ -23,8 +23,7 @@ namespace CloneDeploy_Services
         {
             var validationResult = ValidateImageProfile(profile, true);
             var actionResult = new ActionResultDTO();
-            if (!string.IsNullOrEmpty(profile.MunkiAuthPassword))
-                profile.MunkiAuthPassword = new EncryptionServices().EncryptText(profile.MunkiAuthPassword);
+          
             if (validationResult.Success)
             {
                 _uow.ImageProfileRepository.Insert(profile);
@@ -91,6 +90,30 @@ namespace CloneDeploy_Services
             _uow.ImageProfileRepository.Delete(profileId);
 
             _uow.Save();
+            var computers = _uow.ComputerRepository.Get(x => x.ImageProfileId == profileId);
+            var computerService = new ComputerServices();
+            foreach (var computer in computers)
+            {
+                computer.ImageProfileId = -1;
+                computerService.UpdateComputer(computer);
+            }
+
+            var groups = _uow.GroupRepository.Get(x => x.ImageProfileId == profileId);
+            var groupService = new GroupServices();
+            foreach (var group in groups)
+            {
+                group.ImageProfileId = -1;
+                groupService.UpdateGroup(group);
+            }
+
+            var groupProperties = _uow.GroupPropertyRepository.Get(x => x.ImageProfileId == profileId);
+            var groupPropertyService = new GroupPropertyServices();
+            foreach (var groupProperty in groupProperties)
+            {
+                groupProperty.ImageProfileId = -1;
+                groupPropertyService.UpdateGroupProperty(groupProperty);
+            }
+
             var actionResult = new ActionResultDTO();
             actionResult.Success = true;
             actionResult.Id = profile.Id;
@@ -148,10 +171,11 @@ namespace CloneDeploy_Services
 
             var actionResult = new ActionResultDTO();
             var validationResult = ValidateImageProfile(profile, false);
-            if (!string.IsNullOrEmpty(profile.MunkiAuthPassword))
-                profile.MunkiAuthPassword = new EncryptionServices().EncryptText(profile.MunkiAuthPassword);
+         
             if (validationResult.Success)
             {
+                if (!string.IsNullOrEmpty(profile.ModelMatch))
+                    profile.ModelMatch = profile.ModelMatch.ToLower();
                 _uow.ImageProfileRepository.Update(profile, profile.Id);
                 _uow.Save();
                 actionResult.Success = true;
@@ -163,6 +187,48 @@ namespace CloneDeploy_Services
             }
 
             return actionResult;
+        }
+
+        public ImageProfileEntity GetModelMatch(string model,string environment)
+        {
+            if (string.IsNullOrEmpty(model)) return null;
+            var profiles =
+                _uow.ImageProfileRepository.Get(
+                    x => !string.IsNullOrEmpty(x.ModelMatch) && !x.ModelMatchType.Equals("Disabled"));
+            if (!profiles.Any()) return null;
+            model = model.ToLower();
+
+            var environmentProfiles = new List<ImageProfileEntity>();
+            foreach (var profile in profiles)
+            {
+                var image = new ImageServices().GetImage(profile.ImageId);
+                if(image.Environment.Equals(environment))
+                    environmentProfiles.Add(profile);
+            }
+
+
+            //done in seperate loops to match most specific first
+            foreach (var profile in environmentProfiles)
+            {
+                if (profile.ModelMatchType.Equals("Equals") && model.Equals(profile.ModelMatch))
+                    return profile;
+            }
+            foreach (var profile in environmentProfiles)
+            {
+                if (profile.ModelMatchType.Equals("Starts With") && model.StartsWith(profile.ModelMatch))
+                    return profile;
+            }
+            foreach (var profile in environmentProfiles)
+            {
+                if (profile.ModelMatchType.Equals("Ends With") && model.EndsWith(profile.ModelMatch))
+                    return profile;
+            }
+            foreach (var profile in environmentProfiles)
+            {
+                if (profile.ModelMatchType.Equals("Contains") && model.Contains(profile.ModelMatch))
+                    return profile;
+            }
+            return null;
         }
 
         private ValidationResultDTO ValidateImageProfile(ImageProfileEntity imageProfile, bool isNewImageProfile)
@@ -200,6 +266,18 @@ namespace CloneDeploy_Services
                         validationResult.Success = false;
                         validationResult.ErrorMessage = "This Image Profile Already Exists";
                         return validationResult;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(imageProfile.ModelMatch))
+                {
+                    var profilesWithModelMatch =
+                        _uow.ImageProfileRepository.Get(x => x.ModelMatch.Equals(imageProfile.ModelMatch.ToLower()) && x.Id != imageProfile.Id);
+                    if (profilesWithModelMatch.Any())
+                    {
+                        var image = _uow.ImageRepository.GetById(profilesWithModelMatch.First().ImageId);
+                        validationResult.Success = false;
+                        validationResult.ErrorMessage = "This Model Match Already Exists On Image: " + image.Name;
                     }
                 }
             }
