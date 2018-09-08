@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.SiteMaster" CodeBehind="site.master.cs" %>
+﻿<%@ Master Language="C#" AutoEventWireup="true" Inherits="CloneDeploy_Web.views.SiteMaster" CodeBehind="site.master.cs"  %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">

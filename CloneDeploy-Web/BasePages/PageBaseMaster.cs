@@ -85,6 +85,7 @@ namespace CloneDeploy_Web.BasePages
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
+
             Call = new APICall();
             var currentUser = Session["CloneDeployUser"];
 

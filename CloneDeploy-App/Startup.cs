@@ -50,6 +50,7 @@ namespace CloneDeploy_App
 
     public class Startup
     {
+        
         public static OAuthAuthorizationServerOptions OAuthOptions { get; private set; }
 
         public void Configuration(IAppBuilder app)
@@ -68,6 +69,7 @@ namespace CloneDeploy_App
 
 
             // Hangfire initialization
+            
             if (SettingServices.GetSettingValue(SettingStrings.OperationMode) == "Cluster Primary")
             {
                 var stringInterval = SettingServices.GetSettingValue(SettingStrings.SecondaryServerMonitorInterval);

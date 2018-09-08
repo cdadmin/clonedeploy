@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CloneDeploy_Entities</RootNamespace>
     <AssemblyName>CloneDeploy-Entities</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,12 +31,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CsvHelper">
-      <HintPath>..\packages\CsvHelper.2.13.5.0\lib\net40-client\CsvHelper.dll</HintPath>
+    <Reference Include="CsvHelper, Version=7.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.7.1.1\lib\net45\CsvHelper.dll</HintPath>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -45,6 +47,9 @@
     <Compile Include="ActiveMulticastSession.cs" />
     <Compile Include="AuditEntry.cs" />
     <Compile Include="AlternateServerIp.cs" />
+    <Compile Include="DTOs\ClientImaging\RegistrationDTO.cs" />
+    <Compile Include="DTOs\ClientImaging\ModelTaskDTO.cs" />
+    <Compile Include="DTOs\FormData\ModelMatchDto.cs" />
     <Compile Include="DTOs\FilterGroupClassificationDTO.cs" />
     <Compile Include="DTOs\FilterComputerClassificationDTO.cs" />
     <Compile Include="DTOs\VersionDTO.cs" />
@@ -59,6 +64,7 @@
     <Compile Include="DTOs\FormData\CheckInTaskDTO.cs" />
     <Compile Include="DTOs\FormData\IdTypeDTO.cs" />
     <Compile Include="DTOs\FormData\ActiveTaskDTO.cs" />
+    <Compile Include="ImageProfileTemplate.cs" />
     <Compile Include="NbiEntry.cs" />
     <Compile Include="NetBootProfile.cs" />
     <Compile Include="DistributionPoint.cs" />
@@ -76,10 +82,8 @@
     <Compile Include="DTOs\DpFreeSpaceDTO.cs" />
     <Compile Include="DTOs\CoreScriptDTO.cs" />
     <Compile Include="DTOs\IsoGenOptionsDTO.cs" />
-    <Compile Include="DTOs\MunkiUpdateConfirm.cs" />
     <Compile Include="DTOs\ValidationResultDTO.cs" />
     <Compile Include="DTOs\ApiBoolDTO.cs" />
-    <Compile Include="Application.cs" />
     <Compile Include="BootEntry.cs" />
     <Compile Include="BootTemplate.cs" />
     <Compile Include="Building.cs" />
@@ -105,16 +109,9 @@
     <Compile Include="DTOs\ClientPartition\ClientLogicalVolume.cs" />
     <Compile Include="DTOs\ClientPartition\ClientPartition.cs" />
     <Compile Include="Computer.cs" />
-    <Compile Include="ComputerApplication.cs" />
     <Compile Include="ComputerBootMenu.cs" />
-    <Compile Include="ComputerHardDrive.cs" />
-    <Compile Include="ComputerInventory.cs" />
     <Compile Include="ComputerLog.cs" />
-    <Compile Include="ComputerLogin.cs" />
-    <Compile Include="ComputerMunki.cs" />
-    <Compile Include="ComputerPrinter.cs" />
     <Compile Include="ComputerProxyReservation.cs" />
-    <Compile Include="ComputerUser.cs" />
     <Compile Include="DTOs\ClientPartition\ClientVolumeGroupHelper.cs" />
     <Compile Include="DTOs\ClientPartition\ExtendedPartitionHelper.cs" />
     <Compile Include="DTOs\ClientPartition\PartitionHelper.cs" />
@@ -155,26 +152,14 @@
     <Compile Include="Group.cs" />
     <Compile Include="GroupBootMenu.cs" />
     <Compile Include="GroupMembership.cs" />
-    <Compile Include="GroupMunki.cs" />
     <Compile Include="GroupProperty.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="ImageProfile.cs" />
     <Compile Include="ImageProfileFileFolder.cs" />
-    <Compile Include="ImageProfilePartitionLayout.cs" />
     <Compile Include="ImageProfileScript.cs" />
     <Compile Include="ImageProfileSysprepTag.cs" />
     <Compile Include="DTOs\ImageSchemaFE\ImageSchemaGridView.cs" />
     <Compile Include="DTOs\ImageSchemaBE\ImageSchema.cs" />
-    <Compile Include="MunkiManifestCatalog.cs" />
-    <Compile Include="MunkiManifestIncludedManifest.cs" />
-    <Compile Include="MunkiManifestManagedInstall.cs" />
-    <Compile Include="MunkiManifestManagedUninstall.cs" />
-    <Compile Include="MunkiManifestManagedUpdate.cs" />
-    <Compile Include="MunkiManifestOptionalInstall.cs" />
-    <Compile Include="MunkiManifestTemplate.cs" />
-    <Compile Include="Partition.cs" />
-    <Compile Include="PartitionLayout.cs" />
-    <Compile Include="Plist.cs" />
     <Compile Include="Port.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Room.cs" />
@@ -192,6 +177,12 @@
     <Compile Include="UserImageManagement.cs" />
     <Compile Include="UserLockout.cs" />
     <Compile Include="UserRight.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CloneDeploy-Helpers\CloneDeploy-Common.csproj">
+      <Project>{6ead11e1-3464-40a1-b6cd-24d40ad2507a}</Project>
+      <Name>CloneDeploy-Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
