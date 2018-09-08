@@ -66,13 +66,14 @@ namespace CloneDeploy_ApiCalls
             return response;
         }
 
-        public string StartOnDemandMulticast(int profileId, string clientCount,int clusterId)
+        public string StartOnDemandMulticast(int profileId, string clientCount,string sessionName, int clusterId)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/StartOnDemandMulticast/", Resource);
             Request.AddParameter("profileId", profileId);
             Request.AddParameter("clientCount", clientCount);
             Request.AddParameter("clusterId", clusterId);
+            Request.AddParameter("sessionName", sessionName);
             var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
             return response != null ? response.Value : string.Empty;
         }

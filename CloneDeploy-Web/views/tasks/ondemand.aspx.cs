@@ -15,7 +15,7 @@ namespace CloneDeploy_Web.views.tasks
 
 
             EndUserMessage = Call.WorkflowApi.StartOnDemandMulticast(Convert.ToInt32(ddlImageProfile.SelectedValue),
-                txtClientCount.Text,Convert.ToInt32(ddlClusterGroup.SelectedValue));
+                txtClientCount.Text,txtSessionName.Text,Convert.ToInt32(ddlClusterGroup.SelectedValue));
         }
 
         protected void ddlComputerImage_OnSelectedIndexChanged(object sender, EventArgs e)

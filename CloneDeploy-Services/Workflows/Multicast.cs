@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using CloneDeploy_ApiCalls;
 using CloneDeploy_Common;
 using CloneDeploy_Entities;
@@ -36,7 +37,7 @@ namespace CloneDeploy_Services.Workflows
         }
 
         //Constructor For Starting Multicast For On Demand
-        public Multicast(int imageProfileId, string clientCount, int userId, string userIp, int clusterId)
+        public Multicast(int imageProfileId, string clientCount,string sessionName, int userId, string userIp, int clusterId)
         {
             _multicastSession = new ActiveMulticastSessionEntity();
             _isOnDemand = true;
@@ -48,6 +49,7 @@ namespace CloneDeploy_Services.Workflows
             _computerServices = new ComputerServices();
             _ipAddress = userIp;
             _clusterId = clusterId;
+            _multicastSession.Name = sessionName;
         }
 
         public string Create()
@@ -78,8 +80,13 @@ namespace CloneDeploy_Services.Workflows
             //End of the road for starting an on demand multicast
             if (_isOnDemand)
             {
-                _multicastSession.Name = _group.Name;
-                _group.Name = _multicastSession.Port.ToString();
+                if (string.IsNullOrEmpty(_multicastSession.Name))
+                    _multicastSession.Name = _multicastSession.Port.ToString();
+
+                if (string.IsNullOrEmpty(_multicastSession.Name) || !_multicastSession.Name.All(c => char.IsLetterOrDigit(c) || c == '_' || c == '-'))
+                    return "Multicast Session Name Is Not Valid";
+
+                _group.Name = _multicastSession.Name;
                 var onDemandprocessArguments = GenerateProcessArguments();
                 if (onDemandprocessArguments == 0)
                     return "Could Not Start The Multicast Application";

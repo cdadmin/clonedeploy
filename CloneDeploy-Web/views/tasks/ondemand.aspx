@@ -24,6 +24,14 @@
             $('#ond').addClass("nav-current");
         });
     </script>
+    
+    <div class="size-4 column">
+        Session Name:
+    </div>
+    <div class="size-5 column">
+        <asp:TextBox runat="server" ID="txtSessionName" CssClass="textbox"></asp:TextBox>
+    </div>
+    <br class="clear" />
 
     <div class="size-4 column">
         Image:
