@@ -53,7 +53,20 @@
             <asp:ListItem>No</asp:ListItem>
         </asp:DropDownList>
     </div>
+      <br class="clear"/>
+    
+    <div id="divKeepName" runat="server">
+     <div class="size-4 column">
+        Registration Disabled Keep Name Prompt:
+    </div>
+    <div class="size-setting column">
+        <asp:DropDownList ID="ddlKeepNamePrompt" runat="server" CssClass="ddlist" >
+            <asp:ListItem>Yes</asp:ListItem>
+            <asp:ListItem>No</asp:ListItem>
+        </asp:DropDownList>
+    </div>
     <br class="clear"/>
+        </div>
     <div class="size-4 column">
         Debug Requires Login:
     </div>

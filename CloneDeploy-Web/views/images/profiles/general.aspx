@@ -39,5 +39,25 @@
     <div class="size-5 column">
         <asp:TextBox ID="txtProfileDesc" runat="server" CssClass="descbox" TextMode="MultiLine"></asp:TextBox>
     </div>
+    <br class="clear"/>
+     <div class="size-4 column">
+        Model Match:
+    </div>
+    <div class="size-5 column">
+        <asp:TextBox ID="txtModelMatch" runat="server" CssClass="textbox"></asp:TextBox>
+    </div>
+      <br class="clear"/>
+     <div class="size-4 column">
+        Model Match Criteria:
+    </div>
+    <div class="size-5 column">
+        <asp:DropDownList ID="ddlMatchCriteria" runat="server" CssClass="textbox">
+            <asp:ListItem>Disabled</asp:ListItem>
+             <asp:ListItem>Equals</asp:ListItem>
+             <asp:ListItem>Starts With</asp:ListItem>
+             <asp:ListItem>Ends With</asp:ListItem>
+             <asp:ListItem>Contains</asp:ListItem>
+        </asp:DropDownList>
+    </div>
 
 </asp:Content>

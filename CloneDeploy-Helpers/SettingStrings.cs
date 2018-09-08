@@ -124,6 +124,12 @@
 
         public const string TaskTimeout = "Task Timeout";
 
+        public const string MulticastRdvIp = "Multicast Rdv Ip";
+
+        public const string IpxeSSL = "Ipxe SSL";
+
+        public const string OnDemandNamePrompt = "On Demand Prompt Computer Name";
+
         public const int Version = 135;
     }
 }

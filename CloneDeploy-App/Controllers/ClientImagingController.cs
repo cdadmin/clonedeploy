@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Http;
 using CloneDeploy_App.Controllers.Authorization;
 using CloneDeploy_Common;
+using CloneDeploy_Entities.DTOs.ClientImaging;
 using CloneDeploy_Entities.DTOs.FormData;
 using CloneDeploy_Services;
 using CloneDeploy_Services.Workflows;
@@ -152,11 +153,29 @@ namespace CloneDeploy_App.Controllers
         }
 
         [HttpPost]
+        public HttpResponseMessage ModelMatch(ModelMatchDTO modelMatch)
+        {
+            _response.Content =
+                new StringContent(new ClientImagingServices().CheckModelMatch(modelMatch.environment,modelMatch.systemModel),
+                    Encoding.UTF8, "text/plain");
+            return _response;
+        }
+
+        [HttpPost]
         [ClientAuth]
         public HttpResponseMessage DistributionPoint(DpDTO dpDto)
         {
             _response.Content = new StringContent(
                 new ClientImagingServices().DistributionPoint(dpDto.dpId, dpDto.task), Encoding.UTF8, "text/plain");
+            return _response;
+        }
+
+        [HttpGet]
+        [ClientAuth]
+        public HttpResponseMessage RegistrationSettings()
+        {
+            _response.Content = new StringContent(
+                new ClientImagingServices().GetRegistrationSettings(), Encoding.UTF8, "text/plain");
             return _response;
         }
 
@@ -233,15 +252,7 @@ namespace CloneDeploy_App.Controllers
             return _response;
         }
 
-        [HttpPost]
-        [ClientAuth]
-        public HttpResponseMessage GetMunkiBasicAuth(ProfileDTO profileDto)
-        {
-            _response.Content =
-                new StringContent(new ClientImagingServices().GetMunkiBasicAuth(Convert.ToInt32(profileDto.profileId)),
-                    Encoding.UTF8, "text/plain");
-            return _response;
-        }
+       
 
         [HttpPost]
         [ClientAuth]

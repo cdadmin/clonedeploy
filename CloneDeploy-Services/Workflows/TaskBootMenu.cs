@@ -43,14 +43,24 @@ namespace CloneDeploy_Services.Workflows
                 }
             }
 
+            var replacedPath = webPath;
+            if (SettingServices.GetSettingValue(SettingStrings.IpxeSSL).Equals("1"))
+            {
+                replacedPath = replacedPath.ToLower().Replace("http", "https");
+            }
+            else
+            {
+                replacedPath = replacedPath.ToLower().Replace("https", "http");
+            }
+
             var ipxe = new StringBuilder();
             ipxe.Append("#!ipxe" + newLineChar);
-            ipxe.Append("kernel " + webPath + "IpxeBoot?filename=" + _imageProfile.Kernel +
+            ipxe.Append("kernel " + replacedPath + "IpxeBoot?filename=" + _imageProfile.Kernel +
                         "&type=kernel" + " initrd=" + _imageProfile.BootImage +
                         " root=/dev/ram0 rw ramdisk_size=156000" +
                         " consoleblank=0" + " web=" + webPath + " USER_TOKEN=" + userToken + " " + globalComputerArgs +
                         " " + _imageProfile.KernelArguments + newLineChar);
-            ipxe.Append("imgfetch --name " + _imageProfile.BootImage + " " + webPath +
+            ipxe.Append("imgfetch --name " + _imageProfile.BootImage + " " + replacedPath +
                         "IpxeBoot?filename=" + _imageProfile.BootImage + "&type=bootimage" + newLineChar);
             ipxe.Append("boot" + newLineChar);
 

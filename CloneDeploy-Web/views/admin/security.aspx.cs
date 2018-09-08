@@ -81,7 +81,8 @@ namespace CloneDeploy_Web.views.admin
                     Name = "Web Task Requires Login",
                     Value = ddlWebTasksLogin.Text,
                     Id = Call.SettingApi.GetSetting("Web Task Requires Login").Id
-                }
+                },
+               
             };
 
             listSettings.Add(new SettingEntity
@@ -116,6 +117,13 @@ namespace CloneDeploy_Web.views.admin
                 Id = Call.SettingApi.GetSetting(SettingStrings.RegistrationEnabled).Id
             });
 
+            listSettings.Add(new SettingEntity
+            {
+                Name = SettingStrings.OnDemandNamePrompt,
+                Value = ddlKeepNamePrompt.Text,
+                Id = Call.SettingApi.GetSetting(SettingStrings.OnDemandNamePrompt).Id
+            });
+
             var newBootMenu = false;
             var newClientIso = false;
             if (Call.SettingApi.UpdateSettings(listSettings))
@@ -148,6 +156,12 @@ namespace CloneDeploy_Web.views.admin
                     newClientIso = true;
                 }
                 if ((string) ViewState["clobberLogin"] != ddlClobberLogin.Text)
+                {
+                    newBootMenu = true;
+                    newClientIso = true;
+                }
+
+                if ((string)ViewState["keepNamePrompt"] != ddlKeepNamePrompt.Text)
                 {
                     newBootMenu = true;
                     newClientIso = true;
@@ -214,8 +228,10 @@ namespace CloneDeploy_Web.views.admin
 
         protected void Page_Load(object sender, EventArgs e)
         {
+
             if (IsPostBack) return;
 
+           
             chkldap.Checked = GetSetting(SettingStrings.LdapEnabled) == "1";
             if (chkldap.Checked)
             {
@@ -236,18 +252,21 @@ namespace CloneDeploy_Web.views.admin
             ddlRegisterLogin.Text = GetSetting(SettingStrings.RegisterRequiresLogin);
             ddlClobberLogin.Text = GetSetting(SettingStrings.ClobberRequiresLogin);
             ddlRegistration.Text = GetSetting(SettingStrings.RegistrationEnabled);
+            ddlKeepNamePrompt.Text = GetSetting(SettingStrings.OnDemandNamePrompt);
             if (ddlDebugLogin.Text == "No" || ddlOndLogin.Text == "No" || ddlRegisterLogin.Text == "No" ||
                 ddlWebTasksLogin.Text == "No" || ddlClobberLogin.Text == "No")
                 universal.Visible = true;
 
             //These require pxe boot menu or client iso to be recreated 
             ViewState["serverKey"] = txtToken.Text;
-
+            ViewState["keepNamePrompt"] = ddlKeepNamePrompt.Text;
             ViewState["debugLogin"] = ddlDebugLogin.Text;
             ViewState["ondLogin"] = ddlOndLogin.Text;
             ViewState["registerLogin"] = ddlRegisterLogin.Text;
             ViewState["webTaskLogin"] = ddlWebTasksLogin.Text;
             ViewState["clobberLogin"] = ddlClobberLogin.Text;
         }
+
+      
     }
 }

@@ -22,13 +22,16 @@ namespace CloneDeploy_Services.Workflows
         private readonly string _webPath = SettingServices.GetSettingValue(SettingStrings.WebPath)+ "api/ClientImaging/";
         private readonly ILog log = LogManager.GetLogger(typeof(DefaultBootMenu));
         private readonly string _registration;
+        private readonly string _keepNamePrompt;
         public DefaultBootMenu(BootMenuGenOptionsDTO defaultBootMenu)
         {
             _defaultBoot = defaultBootMenu;
             _bootEntryServices = new BootEntryServices();
             _secondaryServerServices = new SecondaryServerServices();
             _registration = SettingServices.GetSettingValue(SettingStrings.RegistrationEnabled) == "No" ? " skip_registration=true " : string.Empty;
-
+            _keepNamePrompt = SettingServices.GetSettingValue(SettingStrings.OnDemandNamePrompt) == "Yes"
+             ? " keep_name_prompt=true "
+             : string.Empty;
 
         }
 
@@ -119,7 +122,7 @@ namespace CloneDeploy_Services.Workflows
             grubMenu.Append("linux /kernels/" + _defaultBoot.Kernel + " root=/dev/ram0 rw ramdisk_size=156000 " +
                             " web=" +
                             _webPath +
-                            " USER_TOKEN=" + _userToken + " consoleblank=0 " + _registration + _globalComputerArgs + "" +
+                            " USER_TOKEN=" + _userToken + " consoleblank=0 " + _registration  + _keepNamePrompt + _globalComputerArgs + "" +
                             NewLineChar);
             grubMenu.Append("initrd /images/" + _defaultBoot.BootImage + "" + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
@@ -178,6 +181,15 @@ namespace CloneDeploy_Services.Workflows
 
         private void CreateIpxeMenu()
         {
+            var replacedPath = _webPath;
+            if (SettingServices.GetSettingValue(SettingStrings.IpxeSSL).Equals("1"))
+            {
+                replacedPath = replacedPath.ToLower().Replace("http", "https");
+            }
+            else
+            {
+                replacedPath = replacedPath.ToLower().Replace("https", "http");
+            }
             var customMenuEntries =
                 _bootEntryServices.SearchBootEntrys()
                     .Where(x => x.Type == "ipxe" && x.Active == 1)
@@ -239,7 +251,7 @@ namespace CloneDeploy_Services.Workflows
                 ipxeMenu.Append("param bootImage " + _defaultBoot.BootImage + "" + NewLineChar);
                 ipxeMenu.Append("param task " + "${task}" + "" + NewLineChar);
                 ipxeMenu.Append("echo Authenticating" + NewLineChar);
-                ipxeMenu.Append("chain --timeout 15000 " + _webPath +
+                ipxeMenu.Append("chain --timeout 15000 " + replacedPath +
                                 "IpxeLogin##params || goto Menu" +
                                 NewLineChar);
             }
@@ -250,23 +262,23 @@ namespace CloneDeploy_Services.Workflows
                 ipxeMenu.Append("" + NewLineChar);
 
                 ipxeMenu.Append(":clonedeploy" + NewLineChar);
-                ipxeMenu.Append("kernel " + _webPath +
+                ipxeMenu.Append("kernel " + replacedPath +
                                 "IpxeBoot?filename=" + _defaultBoot.Kernel +
                                 "&type=kernel" +
                                 " initrd=" + _defaultBoot.BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " +
                                 " web=" +
                                 _webPath + " USER_TOKEN=" + _userToken +
-                                " consoleblank=0 " + _registration +
+                                " consoleblank=0 " + _registration + _keepNamePrompt +
                                 _globalComputerArgs + NewLineChar);
                 ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " +
-                                _webPath +
+                                replacedPath +
                                 "IpxeBoot?filename=" +
                                 _defaultBoot.BootImage + "&type=bootimage" + NewLineChar);
                 ipxeMenu.Append("boot" + NewLineChar);
                 ipxeMenu.Append("" + NewLineChar);
 
                 ipxeMenu.Append(":console" + NewLineChar);
-                ipxeMenu.Append("kernel " + _webPath +
+                ipxeMenu.Append("kernel " + replacedPath +
                                 "IpxeBoot?filename=" + _defaultBoot.Kernel +
                                 "&type=kernel" +
                                 " initrd=" + _defaultBoot.BootImage + " root=/dev/ram0 rw ramdisk_size=156000 " +
@@ -275,7 +287,7 @@ namespace CloneDeploy_Services.Workflows
                                 " task=debug" + " consoleblank=0 " +
                                 _globalComputerArgs + NewLineChar);
                 ipxeMenu.Append("imgfetch --name " + _defaultBoot.BootImage + " " +
-                                _webPath +
+                                replacedPath +
                                 "IpxeBoot?filename=" +
                                 _defaultBoot.BootImage + "&type=bootimage" + NewLineChar);
                 ipxeMenu.Append("boot" + NewLineChar);
@@ -373,7 +385,7 @@ namespace CloneDeploy_Services.Workflows
             sysLinuxMenu.Append("append initrd=images" + Path.DirectorySeparatorChar + _defaultBoot.BootImage +
                                 " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" + _webPath + " USER_TOKEN=" +
                                 _userToken +
-                                " consoleblank=0 " + _registration + _globalComputerArgs + "" + NewLineChar);
+                                " consoleblank=0 " + _registration + _keepNamePrompt + _globalComputerArgs + "" + NewLineChar);
             sysLinuxMenu.Append("MENU LABEL CloneDeploy" + NewLineChar);
             sysLinuxMenu.Append("" + NewLineChar);
 

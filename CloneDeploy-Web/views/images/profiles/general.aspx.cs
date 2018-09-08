@@ -12,6 +12,8 @@ namespace CloneDeploy_Web.views.images.profiles
             var imageProfile = ImageProfile;
             imageProfile.Name = txtProfileName.Text;
             imageProfile.Description = txtProfileDesc.Text;
+            imageProfile.ModelMatch = txtModelMatch.Text;
+            imageProfile.ModelMatchType = ddlMatchCriteria.Text;
             var result = Call.ImageProfileApi.Put(imageProfile.Id, imageProfile);
             EndUserMessage = result.Success ? "Successfully Updated Image Profile" : result.ErrorMessage;
         }
@@ -22,6 +24,8 @@ namespace CloneDeploy_Web.views.images.profiles
             {
                 txtProfileName.Text = ImageProfile.Name;
                 txtProfileDesc.Text = ImageProfile.Description;
+                txtModelMatch.Text = ImageProfile.ModelMatch;
+                ddlMatchCriteria.Text = ImageProfile.ModelMatchType;
             }
         }
     }

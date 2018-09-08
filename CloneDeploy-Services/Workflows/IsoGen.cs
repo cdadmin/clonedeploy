@@ -26,6 +26,7 @@ namespace CloneDeploy_Services.Workflows
         private string _outputPath;
         private readonly string _registration;
         private readonly string _namePromptArg;
+        private readonly string _keepNamePrompt;
         private readonly bool _isClobber;
         private readonly int _imageProfileId;
 
@@ -50,6 +51,9 @@ namespace CloneDeploy_Services.Workflows
             _configOutPath = _basePath + "client_iso" + Path.DirectorySeparatorChar + "config" +
                              Path.DirectorySeparatorChar;
             _registration = SettingServices.GetSettingValue(SettingStrings.RegistrationEnabled) == "No" ? " skip_registration=true " : string.Empty;
+            _keepNamePrompt = SettingServices.GetSettingValue(SettingStrings.OnDemandNamePrompt) == "Yes"
+                ? " keep_name_prompt=true "
+                : string.Empty;
 
             if (SettingServices.GetSettingValue(SettingStrings.ClobberEnabled) == "1")
             {
@@ -142,7 +146,7 @@ namespace CloneDeploy_Services.Workflows
             grubMenu.Append("set gfxpayload=keep" + NewLineChar);
             grubMenu.Append("linux	/clonedeploy/" + _isoOptions.kernel + " ramdisk_size=156000 root=/dev/ram0 rw web=" +
                             _webPath +
-                            " USER_TOKEN=" + _userToken + " consoleblank=0 " +_registration + _isoOptions.arguments +
+                            " USER_TOKEN=" + _userToken + " consoleblank=0 " +_registration + _keepNamePrompt + _isoOptions.arguments +
                             NewLineChar);
             grubMenu.Append("initrd	/clonedeploy/" + _isoOptions.bootImage + NewLineChar);
             grubMenu.Append("}" + NewLineChar);
@@ -196,7 +200,7 @@ namespace CloneDeploy_Services.Workflows
 
             sysLinuxMenu.Append("LABEL CloneDeploy" + NewLineChar);
             sysLinuxMenu.Append("kernel /clonedeploy/" + _isoOptions.kernel + "" + NewLineChar);
-            sysLinuxMenu.Append("append initrd=/clonedeploy/" + _registration + _isoOptions.bootImage +
+            sysLinuxMenu.Append("append initrd=/clonedeploy/" + _registration + _keepNamePrompt + _isoOptions.bootImage +
                                 " root=/dev/ram0 rw ramdisk_size=156000 " + " web=" + _webPath + " USER_TOKEN=" +
                                 _userToken +
                                 " consoleblank=0 " + _isoOptions.arguments + "" + NewLineChar);

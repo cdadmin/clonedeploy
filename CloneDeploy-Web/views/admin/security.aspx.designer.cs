@@ -49,6 +49,24 @@ namespace CloneDeploy_Web.views.admin {
         protected global::System.Web.UI.WebControls.DropDownList ddlRegistration;
         
         /// <summary>
+        /// divKeepName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divKeepName;
+        
+        /// <summary>
+        /// ddlKeepNamePrompt control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlKeepNamePrompt;
+        
+        /// <summary>
         /// ddlDebugLogin control.
         /// </summary>
         /// <remarks>
