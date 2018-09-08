@@ -17,15 +17,13 @@
         ComputerAPI ComputerApi { get; }
         ComputerBootMenuAPI ComputerBootMenuApi { get; }
         ComputerLogAPI ComputerLogApi { get; }
-        ComputerMunkiAPI ComputerMunkiApi { get; }
         ComputerProxyReservationAPI ComputerProxyReservationApi { get; }
         DistributionPointAPI DistributionPointApi { get; }
         FileFolderAPI FileFolderApi { get; }
         FilesystemAPI FilesystemApi { get; }
         GroupAPI GroupApi { get; }
         GroupBootMenuAPI GroupBootMenuApi { get; }
-        GroupMembershipAPI GroupMembershipApi { get; }
-        GroupMunkiAPI GroupMunkiApi { get; }
+        GroupMembershipAPI GroupMembershipApi { get; }  
         GroupPropertyAPI GroupPropertyApi { get; }
         ImageAPI ImageApi { get; }
         ImageClassificationAPI ImageClassificationApi { get; }
@@ -34,13 +32,6 @@
         ImageProfileScriptAPI ImageProfileScriptApi { get; }
         ImageProfileSysprepTagAPI ImageProfileSysprepTagApi { get; }
         ImageSchemaAPI ImageSchemaApi { get; }
-        MunkiManifestCatalogAPI MunkiManifestCatalogApi { get; }
-        MunkiManifestIncludedManifestAPI MunkiManifestIncludedManifestApi { get; }
-        MunkiManifestManagedInstallAPI MunkiManifestManagedInstallApi { get; }
-        MunkiManifestManagedUnInstallAPI MunkiManifestManagedUnInstallEntityApi { get; }
-        MunkiManifestManagedUpdateAPI MunkiManifestManagedUpdateEntityApi { get; }
-        MunkiManifestOptionInstallAPI MunkiManifestOptionInstallEntity { get; }
-        MunkiManifestTemplateAPI MunkiManifestTemplateApi { get; }
         NbiEntryAPI NbiEntryApi { get; }
         NetBootProfileAPI NetBootProfileApi { get; }
         OnlineKernelAPI OnlineKernelApi { get; }
@@ -61,5 +52,6 @@
         UserImageManagementAPI UserImageManagementApi { get; }
         UserRightAPI UserRightApi { get; }
         WorkflowAPI WorkflowApi { get; }
+        ImageProfileTemplateAPI ImageProfileTemplateApi { get; }
     }
 }

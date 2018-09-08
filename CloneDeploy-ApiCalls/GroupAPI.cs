@@ -111,12 +111,7 @@ namespace CloneDeploy_ApiCalls
             return response != null ? response.Value : string.Empty;
         }
 
-        public IEnumerable<GroupMunkiEntity> GetMunkiTemplates(int id)
-        {
-            Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetMunkiTemplates/{1}", Resource, id);
-            return _apiRequest.Execute<List<GroupMunkiEntity>>(Request);
-        }
+     
 
         public int Import(ApiStringResponseDTO csvContents)
         {
@@ -166,13 +161,7 @@ namespace CloneDeploy_ApiCalls
             return response != null && response.Value;
         }
 
-        public bool RemoveMunkiTemplates(int id)
-        {
-            Request.Method = Method.DELETE;
-            Request.Resource = string.Format("api/{0}/RemoveMunkiTemplates/{1}", Resource, id);
-            var response = _apiRequest.Execute<ApiBoolResponseDTO>(Request);
-            return response != null && response.Value;
-        }
+ 
 
         public int StartGroupUnicast(int id)
         {

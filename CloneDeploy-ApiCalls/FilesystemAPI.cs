@@ -101,15 +101,7 @@ namespace CloneDeploy_ApiCalls
             return response;
         }
 
-        public MunkiPackageInfoEntity GetPlist(string file)
-        {
-            Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetPlist/", Resource);
-            Request.AddParameter("file", file);
-            var response = _apiRequest.Execute<MunkiPackageInfoEntity>(Request);
-
-            return response;
-        }
+     
 
         public List<string> GetScripts(string type)
         {

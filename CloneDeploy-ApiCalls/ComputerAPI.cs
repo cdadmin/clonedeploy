@@ -64,12 +64,7 @@ namespace CloneDeploy_ApiCalls
             return false;
         }
 
-        public ActionResultDTO DeleteMunkiTemplates(int id)
-        {
-            Request.Method = Method.DELETE;
-            Request.Resource = string.Format("api/{0}/DeleteMunkiTemplates/{1}", Resource, id);
-            return _apiRequest.Execute<ActionResultDTO>(Request);
-        }
+     
 
         public ApiBoolResponseDTO Export(string path)
         {
@@ -177,12 +172,7 @@ namespace CloneDeploy_ApiCalls
             return _apiRequest.Execute<List<ComputerImageClassificationEntity>>(Request);
         }
 
-        public IEnumerable<ComputerMunkiEntity> GetMunkiTemplates(int id)
-        {
-            Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetMunkiTemplates/{1}", Resource, id);
-            return _apiRequest.Execute<List<ComputerMunkiEntity>>(Request);
-        }
+   
 
         public string GetNonProxyPath(int id, bool isActiveOrCustom)
         {
@@ -270,6 +260,16 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/SearchByNameOnly", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
+            return _apiRequest.Execute<List<ComputerEntity>>(Request);
+        }
+
+        public IEnumerable<ComputerEntity> TestSmartQuery(string smartType, int limit = 0, string searchstring = "")
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/TestSmartQuery", Resource);
+            Request.AddParameter("limit", limit);
+            Request.AddParameter("searchstring", searchstring);
+            Request.AddParameter("smartType", smartType);
             return _apiRequest.Execute<List<ComputerEntity>>(Request);
         }
 
