@@ -46,7 +46,8 @@ packages/
 *.pidb
 *.log
 *.scc
-
+*.userprefs
+*.dgml
 # Visual Studio profiler
 *.psess
 *.vsp
