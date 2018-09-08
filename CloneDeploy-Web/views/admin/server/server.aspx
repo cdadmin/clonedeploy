@@ -61,7 +61,14 @@
         <div class="size-setting column">
             <asp:TextBox ID="txtWebService" runat="server" CssClass="textbox"></asp:TextBox>
         </div>
-
+        
+         <br class="clear"/>
+        <div class="size-4 column">
+            Ipxe Use SSL:
+        </div>
+        <div class="size-setting column">
+            <asp:CheckBox ID="chkIpxeSsl" runat="server"></asp:CheckBox>
+        </div>
 
         <br class="clear"/>
         <div class="size-4 column">

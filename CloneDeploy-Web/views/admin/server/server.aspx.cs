@@ -73,7 +73,13 @@ namespace CloneDeploy_Web.views.admin.server
                     Name = SettingStrings.TaskTimeout,
                     Value = txtTaskTimeout.Text,
                     Id = Call.SettingApi.GetSetting(SettingStrings.TaskTimeout).Id
-                }
+                },
+                   new SettingEntity
+                {
+                    Name = SettingStrings.IpxeSSL,
+                    Value = chkIpxeSsl.Checked ? "1" : "0",
+                    Id = Call.SettingApi.GetSetting(SettingStrings.IpxeSSL).Id
+                },
             };
 
             var newBootMenu = false;
@@ -96,6 +102,11 @@ namespace CloneDeploy_Web.views.admin.server
                     newBootMenu = true;
                     newClientIso = true;
                 }
+                if ((bool)ViewState["ipxeSsl"] != chkIpxeSsl.Checked)
+                {
+                    newBootMenu = true;
+                }
+
             }
             else
             {
@@ -138,10 +149,12 @@ namespace CloneDeploy_Web.views.admin.server
             txtInterval.Text = GetSetting(SettingStrings.SecondaryServerMonitorInterval);
             chkMonitorServers.Checked = GetSetting(SettingStrings.MonitorSecondaryServer) == "1";
             txtTaskTimeout.Text = GetSetting(SettingStrings.TaskTimeout);
+            chkIpxeSsl.Checked = GetSetting(SettingStrings.IpxeSSL) == "1";
             //These require pxe boot menu or client iso to be recreated
             ViewState["serverIP"] = txtIP.Text;
             ViewState["serverPort"] = txtPort.Text;
             ViewState["servicePath"] = txtWebService.Text;
+            ViewState["ipxeSsl"] = chkIpxeSsl.Checked;
         }
 
         protected bool ValidateSettings()
