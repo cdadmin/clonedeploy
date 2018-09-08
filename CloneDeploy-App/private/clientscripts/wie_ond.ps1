@@ -1,6 +1,5 @@
 . x:\wie_global_functions.ps1
 . x:\wie_menu.ps1
-$script:isOnDemand=$true
 
 clear
 log -message "No Active Web Tasks Were Found For This Computer.  Starting On Demand Imaging." -isDisplay "true"
@@ -105,7 +104,7 @@ elseif($taskType -eq "upload")
     
   elseif($newOrExisting -eq "existing")
   {
-   $imageList=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "environment=winpe&computerId=$script:computerId&task=upload&userId=$script:userId" ${script:web}ListImages --connect-timeout 10 --stderr -)
+    $imageList=$(curl.exe $script:curlOptions -H Authorization:$script:userTokenEncoded --data "environment=winpe&computerId=$script:computerId&task=upload&userId=$script:userId" ${script:web}ListImages --connect-timeout 10 --stderr -)
     $imageList = $imageList | ConvertFrom-Json
     $imageTable=[ordered]@{}
     foreach($image in $imageList)
