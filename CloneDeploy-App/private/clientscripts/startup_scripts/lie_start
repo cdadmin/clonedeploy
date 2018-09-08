@@ -175,7 +175,7 @@ function get_task_computer()
   export computer_id="false"
   serial_number=$(dmidecode -s system-serial-number)
   system_uuid=$(dmidecode -s system-uuid)
-	
+  system_model=$(dmidecode -s system-product-name)
   clear_and_move_down
   #Begin search using the computers client id
   for interface in `ls /sys/class/net | grep -v "lo" | sed 's/@//'`; do
@@ -187,7 +187,7 @@ function get_task_computer()
 	log " ** Looking For Active Task For $client_id ** " "display"
 	computer_task_object=$($curlCommand --data "idType=clientId&id=$client_id" "${web}DetermineTask" $curlEnd)
 	log "$computer_task_object"
-	if [  "$?" != "0" ]; then
+	if [ "$?" != "0" ]; then
       log "$computer_task_object"
 	  login_message="Could Not Determine Task Type"
 	else
@@ -220,7 +220,7 @@ function get_task_computer()
 	  log " ** Looking For Active Task For $mac ** " "display"
 	  computer_task_object=$($curlCommand --data "idType=mac&id=$mac" "${web}DetermineTask" $curlEnd)
 	  log "$computer_task_object"
-	  if [  "$?" != "0" ]; then
+	  if [ "$?" != "0" ]; then
         log "$computer_task_object"
 	    login_message="Could Not Determine Task Type"
 	  else
@@ -252,18 +252,43 @@ function get_task_computer()
     else
       login_message="No Active Web Tasks Were Found For This Computer.  Starting Clobber Imaging."
     fi
+  
+  elif [ "$task" = "ond" ]; then
+    #check for a model match task
+	log " ** Looking For Model Match Task For $system_model ** " "display"
+	model_match_task=$($curlCommand --data "environment=linux&systemModel=$system_model" "${web}ModelMatch" $curlEnd)
+	log "$model_match_task"
 	
-  else
-     if [ "$computer_id" = "false" ]; then
-      login_message="This Computer Is Not Registered.  No Active Web Tasks Were Found For This Computer.  Starting Registration."
-	  task="register"
-    else
-      login_message="No Active Web Tasks Were Found For This Computer.  Starting On Demand Imaging."
-    fi
+	if [ "$?" != "0" ]; then
+	  log "Could Not Determine Model Match.  Ignoring."
+	  if [ "$computer_id" = "false" ]; then
+	    login_message="This Computer Is Not Registered.  No Active Web Tasks Were Found For This Computer.  Starting Registration."
+	    task="register"
+      else
+        login_message="No Active Web Tasks Were Found For This Computer.  Starting On Demand Imaging."
+      fi
+	else
+	  image_name="$(parse_json "$model_match_task" .imageName)"
+	  if [ "$image_name" != "" ] && [ "$image_name" != "null" ]; then
+	    task="modelmatchdeploy"
+	    export image_profile_id="$(parse_json "$model_match_task" .imageProfileId)"
+		profile_name="$(parse_json "$model_match_task" .imageProfileName)"
+		if [ "$computer_id" = "false" ]; then
+	      login_message="This Computer Is Not Registered.  A Model Match Was Found For This Computer.  Image Deploy Will Auto Start After Registration, If Enabled.  Image: $image_name Profile: $profile_name"
+	      task="register_modelmatch"
+        else
+          login_message="A Model Match Was Found For This Computer.  Image Deploy Will Auto Start After Login.  Image: $image_name Profile: $profile_name"
+        fi
+	  else
+	    if [ "$computer_id" = "false" ]; then
+	      login_message="This Computer Is Not Registered.  No Active Web Tasks Were Found For This Computer.  Starting Registration."
+	      task="register"
+        else
+          login_message="No Active Web Tasks Were Found For This Computer.  Starting On Demand Imaging."
+        fi
+	  fi
+	fi
   fi
-  
- 
-  
 }
 
 function clonedeploy_login()
@@ -369,7 +394,7 @@ function main()
   echo
   sleep 2
 
-  if [ "$task" = "deploy" ] || [ "$task" = "permanentdeploy" ] || [ "$task" = "multicast" ]; then	
+  if [ "$task" = "deploy" ] || [ "$task" = "permanentdeploy" ] || [ "$task" = "multicast" ] || [ "$task" = "modelmatchdeploy" ]; then	
 	  /bin/lie_deploy
 
   elif [ "$task" = "clobber" ]; then	
@@ -379,8 +404,8 @@ function main()
   elif [ "$task" = "upload" ]; then	
 	  /bin/lie_upload
 
-   elif [ "$task" = "register_clobber" ]; then
-	  /bin/lie_register "clobber"
+  elif [ "$task" = "register_clobber" ] || [ "$task" = "register_modelmatch" ]; then
+	  /bin/lie_register $task
 	  
   elif [ "$task" = "register" ]; then
 	  /bin/lie_register
