@@ -54,7 +54,7 @@ function create_image_schema()
         fi
         local v_counter=0
         for v in "$osx_target_volume"; do #loop isn't necessary just planning ahead
-          v_partition=$(diskutil list | grep "$v" | awk -F " " '{print $NF}')
+          v_partition=$(diskutil list | grep "$v" | awk -F " " '{print $NF}' | head -n 1)
           if diskutil info "$v_partition" > /dev/null; then
             partition_size="0";partition_size_bytes="0";volume_size="0";volume_size_mb="0";
             whole_disk=$(diskutil info "$v_partition" | grep -i "Part of Whole:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
@@ -95,7 +95,7 @@ function create_image_schema()
       else
         local v_counter=0
         for v in "$osx_target_volume" "Recovery HD"; do
-          v_partition=$(diskutil list | grep "$v" | awk -F " " '{print $NF}')
+          v_partition=$(diskutil list | grep "$v" | awk -F " " '{print $NF}' | head -n 1)
           partition_size="0";partition_size_bytes="0";volume_size="0";volume_size_mb="0";
           if diskutil info "$v_partition" > /dev/null; then
             device_node=$(diskutil info "$v_partition" | grep "Device Node:" | cut -d : -f2 | sed -e 's/^[ \t]*//')
@@ -467,12 +467,7 @@ function upload_image()
       killall mie_reporter &>/dev/null
       rm /tmp/osx.progress
       
-      
-      
-      
     else
-      
-      
       
       for simple_volume in "$osx_target_volume" "Recovery HD"; do
         
