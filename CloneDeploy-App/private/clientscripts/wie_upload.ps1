@@ -53,7 +53,8 @@ function Create-Image-Schema()
 
 
         $completeHdJson="$completeHdJson$hardDriveJson$completePartitionJson"
-        if($hardDriveCounter -eq @($Global:HardDrives).count)
+        
+        if($hardDriveCounter -eq @($script:HardDrives).count)
         {
             $completeHdJson="$completeHdJson] }" 
         }
@@ -112,8 +113,8 @@ function Upload-Image()
 
             $reporterProc=$(Start-Process powershell "x:\wie_reporter.ps1 -web $script:web -taskId $script:taskId -partitionNumber $($partition.PartitionNumber) -direction Uploading -curlOptions $script:curlOptions -userTokenEncoded $script:userTokenEncoded " -NoNewWindow -PassThru)
             
-            log "wimcapture $($updatedPartition.DriveLetter):\ $imagePath\part$($partition.PartitionNumber).winpe.wim $web_wim_args 2>>$clientLog > x:\wim.progress"
-            wimcapture "$($updatedPartition.DriveLetter):\" "$imagePath\part$($partition.PartitionNumber).winpe.wim" $web_wim_args 2>>$clientLog > x:\wim.progress
+            log "wimcapture $($updatedPartition.DriveLetter):\ $imagePath\part$($partition.PartitionNumber).winpe.wim $web_wim_args --compress=fast 2>>$clientLog > x:\wim.progress"
+            wimcapture "$($updatedPartition.DriveLetter):\" "$imagePath\part$($partition.PartitionNumber).winpe.wim" $web_wim_args --compress=fast 2>>$clientLog > x:\wim.progress
             
             Stop-Process $reporterProc
             
