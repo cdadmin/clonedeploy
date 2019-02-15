@@ -400,6 +400,12 @@ function create_partition_layout()
 	  else #4k native
 	    parted -s $hard_drive -- mklabel gpt mkpart ntfs 256s 115455s mkpart fat32 115456s 182015s mkpart fat32 182016s 186111s mkpart ntfs 186112s -257s set 1 hidden on set 1 diag on set 2 boot on set 3 msftres on
 	  fi
+	  #not sure why this is needed, fdisk gdisk and parted don't seem to agree on partition type, but only on gpt disks
+	  sfdisk --part-type $hard_drive 1 14 &>>$CLIENT_LOG
+	  sfdisk --part-type $hard_drive 2 1 &>>$CLIENT_LOG
+	  sfdisk --part-type $hard_drive 3 10 &>>$CLIENT_LOG
+	  sfdisk --part-type $hard_drive 4 11 &>>$CLIENT_LOG
+	  
 	fi
   elif [ "$partition_method" = "script" ]; then # create partitions from image profile script
      log " ** Creating Partition Table On $hard_drive From Custom Script ** " "display"
@@ -811,8 +817,10 @@ function make_bootable()
 	  disk_signature=$(fdisk -l $hard_drive | grep -i "disk identifier:" | cut -d " " -f3)
 	  updated_bcd=$($curlAuth -F diskSignature="$(echo -n "$disk_signature" | base64)" "${web}GetStandardLegacyBcd" $curlEnd)
 	  echo $updated_bcd | base64 -d >/tmp/updatedbcd
+	  
+	  #log " ** Updated BCD Is ** "
 	  #cat /tmp/updatedbcd >> $CLIENT_LOG
-	  reged -I -C /mnt/bcd/Boot/BCD . /tmp/updatedbcd >> $CLIENT_LOG
+	  reged -I -C /mnt/bcd/Boot/BCD . /tmp/updatedbcd &>/dev/null
 	  umount /mnt/bcd
 	  umount /mnt/win
 	  ms-sys -7 -f $hard_drive 2>> $CLIENT_LOG
@@ -826,7 +834,7 @@ function make_bootable()
 	  mount ${hard_drive}${partition_prefix}2 /mnt/bcd 2>> $CLIENT_LOG
 	  ntfs-3g -o force,rw,remove_hiberfile ${hard_drive}${partition_prefix}4 /mnt/win 2>> $CLIENT_LOG
 	  if [ ! -d "/mnt/win/Windows/Boot/EFI/" ]; then
-	    log "Legacy boot files could not be found.  System will not be bootable."
+	    log "EFI boot files could not be found.  System will not be bootable."
 		ls /mnt/win >> $CLIENT_LOG
 		ls /mnt/win/Windows >> $CLIENT_LOG
 		ls /mnt/win/Windows/Boot >> $CLIENT_LOG
@@ -840,11 +848,18 @@ function make_bootable()
 	  disk_guid=$(gdisk -l $hard_drive | grep GUID | awk -F': ' '{print $2}')
 	  recovery_guid=$(sgdisk $hard_drive -i1 | grep "unique GUID" | awk -F ' ' '{print $4}')
 	  windows_guid=$(sgdisk $hard_drive -i4 | grep "unique GUID" | awk -F ' ' '{print $4}')
+	  efi_guid=$(sgdisk $hard_drive -i2 | grep "unique GUID" | awk -F ' ' '{print $4}')
 	  
-	  updated_bcd=$($curlAuth -F diskGuid="$(echo -n "$disk_guid" | base64)" -F windowsGuid="$(echo -n "$windows_guid" | base64)" -F recoveryGuid="$(echo -n "$recovery_guid" | base64)" "${web}GetStandardEfiBcd" $curlEnd)
+	  log "disk_guid: $disk_guid"
+	  log "recovery_guid: $recovery_guid"
+	  log "windows_guid: $windows_guid"
+	  log "efi_guid: $efi_guid"
+
+	  updated_bcd=$($curlAuth -F diskGuid="$(echo -n "$disk_guid" | base64)" -F windowsGuid="$(echo -n "$windows_guid" | base64)" -F recoveryGuid="$(echo -n "$recovery_guid" | base64)" -F efiGuid="$(echo -n "$efi_guid" | base64)" "${web}GetStandardEfiBcd" $curlEnd)
 	  echo $updated_bcd | base64 -d >/tmp/updatedbcd
+	  #log " ** Updated BCD Is ** "
 	  #cat /tmp/updatedbcd >> $CLIENT_LOG
-	  reged -I -C /mnt/bcd/EFI/Microsoft/Boot/BCD . /tmp/updatedbcd >> $CLIENT_LOG
+	  reged -I -C /mnt/bcd/EFI/Microsoft/Boot/BCD . /tmp/updatedbcd &>/dev/null
 	  umount /mnt/bcd
 	  umount /mnt/win
 	  ms-sys -7 -f $hard_drive
@@ -927,14 +942,14 @@ EOF
         original_bcd=$(cat /tmp/regbcd | perl -pe 's/\\\r\n//' | sed 's/,  /,/g')
 		updated_bcd=$($curlAuth -F bcd="$(echo -n "$original_bcd" | base64)" -F offsetBytes="$(echo -n "$windows_partition_offset" | base64)" -F diskSignature="$(echo -n "$disk_signature" | base64)" "${web}UpdateLegacyBcd" $curlEnd)
         echo $updated_bcd | base64 -d >>/tmp/updatedbcd
-        log " ** Updated BCD Is ** "
-        cat /tmp/updatedbcd >> $CLIENT_LOG
+        #log " ** Updated BCD Is ** "
+        #cat /tmp/updatedbcd >> $CLIENT_LOG
 		
 		#cp -R /mnt/windows/Windows/Boot/PCAT/* /mnt/bcd/Boot/ 2>> $CLIENT_LOG
 	    #cp /mnt/windows/Windows/Boot/PCAT/bootmgr /mnt/bcd 2>> $CLIENT_LOG
 	    #cp /mnt/windows/Windows/Boot/PCAT/bootnxt /mnt/bcd 2>> $CLIENT_LOG
 	  
-        reged -I -C /mnt/bcd/Boot/BCD . /tmp/updatedbcd >> $CLIENT_LOG
+        reged -I -C /mnt/bcd/Boot/BCD . /tmp/updatedbcd &>/dev/null
 		ms-sys -7 -f $hard_drive 2>> $CLIENT_LOG
 	    ms-sys -n -f $boot_partition	2>> $CLIENT_LOG
 
@@ -954,17 +969,16 @@ EOF
         original_bcd=$(cat /tmp/regbcd | perl -pe 's/\\\r\n//' | sed 's/,  /,/g')
 	    updated_bcd=$($curlAuth -F bcd="$(echo -n "$original_bcd" | base64)" -F diskGuid="$(echo -n "$disk_guid" | base64)" -F windowsGuid="$(echo -n "$windows_guid" | base64)" -F recoveryGuid="$(echo -n "$recovery_guid" | base64)" "${web}UpdateEfiBcd" $curlEnd)
 		
-		log "1:$windows_number"
-		log "2:$recovery_number"
-		log "3:$disk_guid"
-		log "4:$recovery_guid"
-		log "5:$windows_guid"
+		log "disk_guid: $disk_guid"
+	    log "recovery_guid: $recovery_guid"
+	    log "windows_guid: $windows_guid"
+	    
 		echo $updated_bcd | base64 -d >>/tmp/updatedbcd
-        log " ** Updated BCD Is ** "
-        cat /tmp/updatedbcd >> $CLIENT_LOG
+        #log " ** Updated BCD Is ** "
+        #cat /tmp/updatedbcd >> $CLIENT_LOG
 		
 		#cp -R /mnt/windows/Windows/Boot/EFI/* /mnt/bcd/EFI/Microsoft/Boot 2>> $CLIENT_LOG
-		reged -I -C /mnt/bcd/EFI/Microsoft/Boot/BCD . /tmp/updatedbcd &>> $CLIENT_LOG
+		reged -I -C /mnt/bcd/EFI/Microsoft/Boot/BCD . /tmp/updatedbcd &>/dev/null
 		ms-sys -7 -f $hard_drive
 		
       fi

@@ -43,14 +43,7 @@ namespace CloneDeploy_App.Controllers
             return _response;
         }
 
-        [HttpPost]
-        [ClientAuth]
-        public HttpResponseMessage AddImageOsxEnv(NameDTO nameDto)
-        {
-            _response.Content = new StringContent(new ClientImagingServices().AddImageOsxEnv(nameDto.name),
-                Encoding.UTF8, "text/plain");
-            return _response;
-        }
+   
 
         [HttpPost]
         [ClientAuth]
@@ -453,7 +446,9 @@ namespace CloneDeploy_App.Controllers
                 "windowsGuid");
             var recoveryGuid = StringManipulationServices.Decode(HttpContext.Current.Request.Form["recoveryGuid"],
                "recoveryGuid");
-            _response.Content = new StringContent(new BcdServices().GetStandardEfi(diskGuid,recoveryGuid,windowsGuid),
+            var efiGuid = StringManipulationServices.Decode(HttpContext.Current.Request.Form["efiGuid"],
+              "recoveryGuid");
+            _response.Content = new StringContent(new BcdServices().GetStandardEfi(diskGuid,recoveryGuid,windowsGuid,efiGuid),
                 Encoding.UTF8, "text/plain");
             return _response;
         }
