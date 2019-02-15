@@ -31,12 +31,12 @@ namespace CloneDeploy_Services
             return StringManipulationServices.Encode(bcd);
         }
 
-        public string GetStandardEfi(string diskGuid, string recoveryGuid, string windowsGuid)
+        public string GetStandardEfi(string diskGuid, string recoveryGuid, string windowsGuid, string efiGuid)
         {
             var reorderedDisk = GuidReorder(diskGuid);
             var reorderedRecovery = GuidReorder(recoveryGuid);
             var reorderedWindows = GuidReorder(windowsGuid);
-
+            var reorderedEfi = GuidReorder(efiGuid);
             var path = HttpContext.Current.Server.MapPath("~") + Path.DirectorySeparatorChar + "private" +
                           Path.DirectorySeparatorChar + "bcd" + Path.DirectorySeparatorChar +
                           "efi";
@@ -50,6 +50,10 @@ namespace CloneDeploy_Services
 
             regex = new Regex("RECOVERY_GUID", RegexOptions.IgnoreCase);
             bcd = regex.Replace(bcd, reorderedRecovery);
+
+            regex = new Regex("EFI_GUID", RegexOptions.IgnoreCase);
+            bcd = regex.Replace(bcd, reorderedEfi);
+
 
 
             return StringManipulationServices.Encode(bcd);
