@@ -32,8 +32,6 @@
         ImageProfileScriptAPI ImageProfileScriptApi { get; }
         ImageProfileSysprepTagAPI ImageProfileSysprepTagApi { get; }
         ImageSchemaAPI ImageSchemaApi { get; }
-        NbiEntryAPI NbiEntryApi { get; }
-        NetBootProfileAPI NetBootProfileApi { get; }
         OnlineKernelAPI OnlineKernelApi { get; }
         PortAPI PortApi { get; }
         RoomAPI RoomApi { get; }

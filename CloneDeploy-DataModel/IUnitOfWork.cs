@@ -39,8 +39,6 @@ namespace CloneDeploy_DataModel
         IGenericRepository<ImageProfileSysprepTagEntity> ImageProfileSysprepRepository { get; }
         IGenericRepository<ImageEntity> ImageRepository { get; }
       
-        IGenericRepository<NbiEntryEntity> NbiEntryRepository { get; }
-        IGenericRepository<NetBootProfileEntity> NetBootProfileRepository { get; }
       
         IGenericRepository<PortEntity> PortRepository { get; }
 

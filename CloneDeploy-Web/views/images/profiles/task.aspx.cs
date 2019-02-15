@@ -12,7 +12,7 @@ namespace CloneDeploy_Web.views.images.profiles
             var imageProfile = ImageProfile;
             imageProfile.WebCancel = Convert.ToInt16(chkWebCancel.Checked);
             imageProfile.TaskCompletedAction = ddlTaskComplete.Text;
-            imageProfile.OsxTargetVolume = txtTargetVolume.Text;
+
             var result = Call.ImageProfileApi.Put(imageProfile.Id, imageProfile);
             EndUserMessage = result.Success ? "Successfully Updated Image Profile" : result.ErrorMessage;
         }
@@ -23,8 +23,7 @@ namespace CloneDeploy_Web.views.images.profiles
             {
                 chkWebCancel.Checked = Convert.ToBoolean(ImageProfile.WebCancel);
                 ddlTaskComplete.Text = ImageProfile.TaskCompletedAction;
-                divOsx.Visible = Image.Environment == "macOS";
-                txtTargetVolume.Text = ImageProfile.OsxTargetVolume;
+
             }
         }
     }

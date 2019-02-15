@@ -45,15 +45,5 @@
             <asp:ListItem>Exit To Shell</asp:ListItem>
         </asp:DropDownList>
     </div>
-    <div id="divOsx" runat="server">
-        <br class="clear"/>
-     <div class="size-9 column">
-        OS X Target Volume
-    </div>
-    <div class="size-5 column">
-        <asp:TextBox ID="txtTargetVolume" runat="server" CssClass="textbox"></asp:TextBox>
-    </div>
-    <br class="clear"/>
-        </div>
 
 </asp:Content>

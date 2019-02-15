@@ -110,16 +110,8 @@
    
      <br class="clear"/>
     
-    <div id="mac1" runat="server"> 
-    <div class="size-9 column">
-        OS X Target Volume
-    </div>
-    <div class="size-5 column">
-        <asp:TextBox ID="txtTargetVolume" runat="server" CssClass="textbox"></asp:TextBox>
-    </div>
-    </div>
 
-    <br class="clear"/>
+
     <br/>
   
     
@@ -180,17 +172,7 @@
     </div>
    
 
-   
-    <div id="mac2" runat="server">
-    <div class="size-9 column">
-        Erase Partitions (Standard Auto Only)
-    </div>
-    <div class="size-8 column">
-        <asp:CheckBox ID="chkErase" runat="server" CssClass="textbox"></asp:CheckBox>
-    </div>
-    <br class="clear"/>
-    </div>
-   
+     
     
     <div id="LinuxAll3" runat="server">
     <div class="size-9 column">
@@ -222,25 +204,7 @@
     <br class="clear"/>
         </div>
 
-    
-    <div id="mac3" runat="server">
-    <div class="size-9 column">
-        Create Partitions Method
-    </div>
-    <div class="size-5 column">
-        <asp:dropdownlist ID="ddlPartitionMethodMac" runat="server" CssClass="ddlist"  AutoPostBack="True">
-            <asp:ListItem>Standard Auto</asp:ListItem>
-             <asp:ListItem>Standard HFSP</asp:ListItem>
-             <asp:ListItem>Standard APFS</asp:ListItem>
-            <asp:ListItem>Standard Core Storage</asp:ListItem>
-            <asp:ListItem>Dynamic</asp:ListItem>
-            <asp:ListItem>Custom Script</asp:ListItem>
-        </asp:dropdownlist>
-    </div>
-    <br class="clear"/>
-    </div>
-
-
+   
     
     <div id="LinuxAll4" runat="server">
      <div class="size-9 column">
@@ -278,6 +242,22 @@
     </div>
     <div class="size-8 column">
         <asp:CheckBox ID="chkRemoveGpt" runat="server" CssClass="textbox"></asp:CheckBox>
+    </div>
+    <br class="clear"/>
+        
+      <div class="size-9 column">
+        Skip Hibernation Check
+    </div>
+    <div class="size-8 column">
+        <asp:CheckBox ID="chkSkipHibernation" runat="server" CssClass="textbox"></asp:CheckBox>
+    </div>
+    <br class="clear"/>
+
+      <div class="size-9 column">
+        Skip Bitlocker Check
+    </div>
+    <div class="size-8 column">
+        <asp:CheckBox ID="chkSkipBitlocker" runat="server" CssClass="textbox"></asp:CheckBox>
     </div>
     <br class="clear"/>
         </div>
@@ -339,17 +319,6 @@
         <asp:CheckBox ID="chkWimMulticast" runat="server"/>
     </div>
     <br class="clear"/>
-        </div>
-
-    <div id="mac4" runat="server">
-<div class="size-9 column">
-    Use Simple Upload Schema
-</div>
-<div class="size-8 column">
-    <asp:CheckBox ID="chkSimpleSchema" runat="server" CssClass="textbox"></asp:CheckBox>
-</div>
-
-<br class="clear"/>
         </div>
 
 <div class="size-9 column">

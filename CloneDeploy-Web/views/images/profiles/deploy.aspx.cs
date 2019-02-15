@@ -103,10 +103,8 @@ namespace CloneDeploy_Web.views.images.profiles
             ImageProfile.RandomizeGuids = Convert.ToInt16(chkRandomize.Checked);
             ImageProfile.ForceStandardLegacy = Convert.ToInt16(chkForceLegacy.Checked);
             ImageProfile.ForceStandardEfi = Convert.ToInt16(chkForceEfi.Checked);
-            ImageProfile.ErasePartitions = Convert.ToInt16(chkErase.Checked);
-            if (Image.Environment == "macOS")
-                imageProfile.PartitionMethod = ddlPartitionMethodMac.Text;
-            else if (Image.Environment == "winpe")
+
+            if (Image.Environment == "winpe")
                 imageProfile.PartitionMethod = ddlPartitionMethodWin.Text;
             else
                 imageProfile.PartitionMethod = ddlPartitionMethodLin.Text;
@@ -127,9 +125,7 @@ namespace CloneDeploy_Web.views.images.profiles
                     imageProfile.CustomPartitionScript = fixedLineEnding;
                     imageProfile.CustomSchema = chkModifySchema.Checked ? SetCustomSchema() : "";
                     break;
-                case "Standard Core Storage":
-                    imageProfile.CustomSchema = chkModifySchema.Checked ? SetCustomSchema() : "";
-                    break;
+
                 case "Standard":
                     if (Image.Environment == "winpe" || Image.Environment == "linux")
                     {
@@ -140,11 +136,7 @@ namespace CloneDeploy_Web.views.images.profiles
                         imageProfile.CustomSchema = chkModifySchema.Checked ? SetCustomSchema() : "";
                     }
                     break;
-                case "Standard Auto":
-                case "Standard HFSP":
-                case "Standard APFS":
-                    imageProfile.CustomSchema = chkModifySchema.Checked ? SetCustomSchema() : "";
-                    break;
+          
                 default:
                     imageProfile.CustomPartitionScript = "";
                     break;
@@ -343,9 +335,7 @@ namespace CloneDeploy_Web.views.images.profiles
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Image.Environment == "macOS")
-                ddlObject = ddlPartitionMethodMac;
-            else if (Image.Environment == "winpe")
+            if (Image.Environment == "winpe")
                 ddlObject = ddlPartitionMethodWin;
             else
                 ddlObject = ddlPartitionMethodLin;
@@ -359,22 +349,14 @@ namespace CloneDeploy_Web.views.images.profiles
             chkRandomize.Checked = Convert.ToBoolean(ImageProfile.RandomizeGuids);
             chkForceEfi.Checked = Convert.ToBoolean(ImageProfile.ForceStandardEfi);
             chkForceLegacy.Checked = Convert.ToBoolean(ImageProfile.ForceStandardLegacy);
-            chkErase.Checked = Convert.ToBoolean(ImageProfile.ErasePartitions);
 
-            if (Image.Environment == "macOS")
-            {
-                divBoot.Visible = false;
-                divExpandVol.Visible = false;
-                ForceDiv.Visible = false;
-                DivPartDdlMac.Visible = true;
-                ddlPartitionMethodMac.Text = ImageProfile.PartitionMethod;
-            }
-            else if (Image.Environment == "winpe")
+
+        
+            if (Image.Environment == "winpe")
             {
                 divExpandVol.Visible = false;
                 divBoot.Visible = false;
                 ForceDiv.Visible = false;
-                divOsx.Visible = false;
                 DivPartDdlWin.Visible = true;
                 ddlPartitionMethodWin.Text = ImageProfile.PartitionMethod;
             }
@@ -382,7 +364,6 @@ namespace CloneDeploy_Web.views.images.profiles
             {
                 if (Image.Type == "File")
                     divExpandVol.Visible = false;
-                divOsx.Visible = false;
                 DivPartDdlLin.Visible = true;
                 ddlPartitionMethodLin.Text = ImageProfile.PartitionMethod;
                 if (chkDownForceDynamic.Checked) ddlPartitionMethodLin.Enabled = false;

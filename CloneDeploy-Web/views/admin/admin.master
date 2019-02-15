@@ -10,12 +10,7 @@
 
     <div id="Level1" runat="server">
         <ul>
-            <li id="netboot">
-                <a href="<%= ResolveUrl("~/views/admin/netboot/search.aspx?level=2") %>">
-                    <span class="nav-text">Apple NetBoot
-                    </span>
-                </a>
-            </li>
+           
             <li id="bootmenu" runat="server" clientidmode="Static">
                 <a href="<%= ResolveUrl("~/views/admin/bootmenu/defaultmenu.aspx?level=2") %>">
                     <span class="nav-text">Boot Menu</span>

@@ -12,8 +12,7 @@ namespace CloneDeploy_Common.Enum
         {
             LinuxBlock = 0,
             LinuxFile = 1,
-            MacOS = 2,
-            WinPE = 3,
+            WinPE = 2,
         }
     }
 }

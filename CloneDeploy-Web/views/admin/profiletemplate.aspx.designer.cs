@@ -103,24 +103,6 @@ namespace CloneDeploy_Web.views.admin {
         protected global::System.Web.UI.WebControls.DropDownList ddlTaskComplete;
         
         /// <summary>
-        /// mac1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl mac1;
-        
-        /// <summary>
-        /// txtTargetVolume control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtTargetVolume;
-        
-        /// <summary>
         /// chkChangeName control.
         /// </summary>
         /// <remarks>
@@ -193,24 +175,6 @@ namespace CloneDeploy_Web.views.admin {
         protected global::System.Web.UI.WebControls.CheckBox chkNvram;
         
         /// <summary>
-        /// mac2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl mac2;
-        
-        /// <summary>
-        /// chkErase control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkErase;
-        
-        /// <summary>
         /// LinuxAll3 control.
         /// </summary>
         /// <remarks>
@@ -245,24 +209,6 @@ namespace CloneDeploy_Web.views.admin {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlPartitionMethodWin;
-        
-        /// <summary>
-        /// mac3 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl mac3;
-        
-        /// <summary>
-        /// ddlPartitionMethodMac control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlPartitionMethodMac;
         
         /// <summary>
         /// LinuxAll4 control.
@@ -317,6 +263,24 @@ namespace CloneDeploy_Web.views.admin {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkRemoveGpt;
+        
+        /// <summary>
+        /// chkSkipHibernation control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkSkipHibernation;
+        
+        /// <summary>
+        /// chkSkipBitlocker control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkSkipBitlocker;
         
         /// <summary>
         /// LinuxBlock2 control.
@@ -380,24 +344,6 @@ namespace CloneDeploy_Web.views.admin {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkWimMulticast;
-        
-        /// <summary>
-        /// mac4 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl mac4;
-        
-        /// <summary>
-        /// chkSimpleSchema control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkSimpleSchema;
         
         /// <summary>
         /// chkSchemaOnly control.

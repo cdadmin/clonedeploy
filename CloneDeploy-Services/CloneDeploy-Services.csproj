@@ -79,12 +79,9 @@
     <Compile Include="DistributionPoint.cs" />
     <Compile Include="FileFolderServices.cs" />
     <Compile Include="AlternateServerIpServices.cs" />
-    <Compile Include="NbiEntryServices.cs" />
     <Compile Include="IpServices.cs" />
-    <Compile Include="NetbootProfileServices.cs" />
     <Compile Include="ImageClassificationServices.cs" />
     <Compile Include="StringManipulationServices.cs" />
-    <Compile Include="Workflows\CreateAppleVendorString.cs" />
     <Compile Include="Workflows\DbUpdater.cs" />
     <Compile Include="Workflows\SecondaryServerMonitor.cs" />
     <Compile Include="ZipServices.cs" />

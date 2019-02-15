@@ -94,24 +94,6 @@ namespace CloneDeploy_Web.views.images.profiles {
         protected global::System.Web.UI.WebControls.CheckBox chkNvram;
         
         /// <summary>
-        /// divOsx control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divOsx;
-        
-        /// <summary>
-        /// chkErase control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkErase;
-        
-        /// <summary>
         /// DivPartDdlLin control.
         /// </summary>
         /// <remarks>
@@ -146,24 +128,6 @@ namespace CloneDeploy_Web.views.images.profiles {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlPartitionMethodWin;
-        
-        /// <summary>
-        /// DivPartDdlMac control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivPartDdlMac;
-        
-        /// <summary>
-        /// ddlPartitionMethodMac control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlPartitionMethodMac;
         
         /// <summary>
         /// DivStandardOptions control.

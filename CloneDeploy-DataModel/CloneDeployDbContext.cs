@@ -41,10 +41,7 @@ namespace CloneDeploy_DataModel
         public DbSet<ImageProfileScriptEntity> ImageProfileScripts { get; set; }
         public DbSet<ImageProfileSysprepTagEntity> ImageProfileSysprepTags { get; set; }
         public DbSet<ImageEntity> Images { get; set; }
-      
-        public DbSet<NbiEntryEntity> NetBootProfileEntries { get; set; }
-        public DbSet<NetBootProfileEntity> NetBootProfiles { get; set; }
-     
+           
         public DbSet<PortEntity> Ports { get; set; }
         public DbSet<ComputerProxyReservationEntity> ProxyReservations { get; set; }
         public DbSet<RoomEntity> Rooms { get; set; }

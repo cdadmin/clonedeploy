@@ -78,16 +78,6 @@
     <br class="clear"/>
 </div>
    
-<div id="divOsx" runat="server">
-   
-    <div class="size-9 column">
-        Erase Partitions (Standard Auto Only)
-    </div>
-    <div class="size-8 column">
-        <asp:CheckBox ID="chkErase" runat="server" CssClass="textbox"></asp:CheckBox>
-    </div>
-    <br class="clear"/>
-</div>
 
 <div id="DivPartDdlLin" runat="server" Visible="False">
     <div class="size-9 column">
@@ -118,22 +108,6 @@
     <br class="clear"/>
 </div>
 
-<div id="DivPartDdlMac" runat="server" Visible="False">
-    <div class="size-9 column">
-        Create Partitions Method
-    </div>
-    <div class="size-5 column">
-        <asp:dropdownlist ID="ddlPartitionMethodMac" runat="server" CssClass="ddlist" OnSelectedIndexChanged="ddlPartitionMethod_OnSelectedIndexChanged" AutoPostBack="True">
-            <asp:ListItem>Standard Auto</asp:ListItem>
-             <asp:ListItem>Standard HFSP</asp:ListItem>
-             <asp:ListItem>Standard APFS</asp:ListItem>
-            <asp:ListItem>Standard Core Storage</asp:ListItem>
-            <asp:ListItem>Dynamic</asp:ListItem>
-            <asp:ListItem>Custom Script</asp:ListItem>
-        </asp:dropdownlist>
-    </div>
-    <br class="clear"/>
-</div>
 
 <div id="DivStandardOptions" runat="server" Visible="False">
      <div class="size-9 column">

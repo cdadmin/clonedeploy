@@ -36,19 +36,15 @@ namespace CloneDeploy_Web.views.admin
             template.BootImage = ddlBootImage.Text;
             template.WebCancel = Convert.ToInt16(chkWebCancel.Checked); 
             template.TaskCompletedAction = ddlTaskComplete.Text;
-            template.OsxTargetVolume = txtTargetVolume.Text;
             template.ChangeName = Convert.ToInt16(chkChangeName.Checked);
             template.SkipExpandVolumes = Convert.ToInt16(chkDownNoExpand.Checked);
             template.FixBcd = Convert.ToInt16(chkAlignBCD.Checked);
             template.RandomizeGuids = Convert.ToInt16(chkRandomize.Checked);
             template.FixBootloader = Convert.ToInt16(chkRunFixBoot.Checked);
             template.SkipNvramUpdate = Convert.ToInt16(chkNvram.Checked);
-            template.ErasePartitions = Convert.ToInt16(chkErase.Checked);
 
             if (ddlImageType.Text == EnumProfileTemplate.TemplateType.LinuxBlock.ToString() || ddlImageType.Text == EnumProfileTemplate.TemplateType.LinuxFile.ToString())
                 template.PartitionMethod = ddlPartitionMethodLin.Text;
-            else if (ddlImageType.Text == EnumProfileTemplate.TemplateType.MacOS.ToString())
-                template.PartitionMethod = ddlPartitionMethodMac.Text;
             else if (ddlImageType.Text == EnumProfileTemplate.TemplateType.WinPE.ToString())
                 template.PartitionMethod = ddlPartitionMethodWin.Text;
 
@@ -61,11 +57,11 @@ namespace CloneDeploy_Web.views.admin
             template.Compression = ddlCompAlg.Text;
             template.CompressionLevel = ddlCompLevel.Text;
             template.WimMulticastEnabled = Convert.ToInt16(chkWimMulticast.Checked);
-            template.SimpleUploadSchema = Convert.ToInt16(chkSimpleSchema.Checked);
             template.UploadSchemaOnly = Convert.ToInt16(chkSchemaOnly.Checked);
             template.SenderArguments = txtSender.Text;
             template.ReceiverArguments = txtReceiver.Text;
-
+            template.SkipHibernationCheck = Convert.ToInt16(chkSkipHibernation.Checked);
+            template.SkipBitlockerCheck = Convert.ToInt16(chkSkipBitlocker.Checked);
             var result = Call.ImageProfileTemplateApi.Put(template);
             if (result.Success) EndUserMessage = "Successfully Updated " + template.TemplateType;
             else
@@ -121,19 +117,15 @@ namespace CloneDeploy_Web.views.admin
 
             chkWebCancel.Checked = Convert.ToBoolean(template.WebCancel);
             ddlTaskComplete.Text = template.TaskCompletedAction;
-            txtTargetVolume.Text = template.OsxTargetVolume;
             chkChangeName.Checked = Convert.ToBoolean(template.ChangeName);
             chkDownNoExpand.Checked = Convert.ToBoolean(template.SkipExpandVolumes);
             chkAlignBCD.Checked = Convert.ToBoolean(template.FixBcd);
             chkRandomize.Checked = Convert.ToBoolean(template.RandomizeGuids);
             chkRunFixBoot.Checked = Convert.ToBoolean(template.FixBootloader);
             chkNvram.Checked = Convert.ToBoolean(template.SkipNvramUpdate);
-            chkErase.Checked = Convert.ToBoolean(template.ErasePartitions);
 
             if (ddlImageType.Text == EnumProfileTemplate.TemplateType.LinuxBlock.ToString() || ddlImageType.Text == EnumProfileTemplate.TemplateType.LinuxFile.ToString())
             ddlPartitionMethodLin.Text = template.PartitionMethod;
-            else if (ddlImageType.Text == EnumProfileTemplate.TemplateType.MacOS.ToString())
-                ddlPartitionMethodMac.Text = template.PartitionMethod;
             else if (ddlImageType.Text == EnumProfileTemplate.TemplateType.WinPE.ToString())
                 ddlPartitionMethodWin.Text = template.PartitionMethod;
 
@@ -146,11 +138,11 @@ namespace CloneDeploy_Web.views.admin
             ddlCompAlg.Text = template.Compression;
             ddlCompLevel.Text = template.CompressionLevel;
             chkWimMulticast.Checked = Convert.ToBoolean(template.WimMulticastEnabled);
-            chkSimpleSchema.Checked = Convert.ToBoolean(template.SimpleUploadSchema);
             chkSchemaOnly.Checked = Convert.ToBoolean(template.UploadSchemaOnly);
             txtSender.Text = template.SenderArguments;
             txtReceiver.Text = template.ReceiverArguments;
-
+            chkSkipHibernation.Checked = Convert.ToBoolean(template.SkipHibernationCheck);
+            chkSkipBitlocker.Checked = Convert.ToBoolean(template.SkipBitlockerCheck);
 
             LinuxAll1.Visible = false;
             LinuxAll2.Visible = false;
@@ -161,10 +153,6 @@ namespace CloneDeploy_Web.views.admin
             LinuxBlock1.Visible = false;
             LinuxBlock2.Visible = false;
             LinuxFileWinpe1.Visible = false;
-            mac1.Visible = false;
-            mac2.Visible = false;
-            mac3.Visible = false;
-            mac4.Visible = false;
             winpe1.Visible = false;
 
             if (ddlImageType.Text == EnumProfileTemplate.TemplateType.LinuxBlock.ToString())
@@ -188,13 +176,7 @@ namespace CloneDeploy_Web.views.admin
                 LinuxAll6.Visible = true;
                 LinuxFileWinpe1.Visible = true;
             }
-            else if (ddlImageType.Text == EnumProfileTemplate.TemplateType.MacOS.ToString())
-            {
-                mac1.Visible = true;
-                mac2.Visible = true;
-                mac3.Visible = true;
-                mac4.Visible = true;
-            }
+
             else if (ddlImageType.Text == EnumProfileTemplate.TemplateType.WinPE.ToString())
             {
                 LinuxFileWinpe1.Visible = true;

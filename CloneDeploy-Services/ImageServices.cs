@@ -369,13 +369,7 @@ namespace CloneDeploy_Services
                 var json = JsonConvert.SerializeObject(template);
                 return JsonConvert.DeserializeObject<ImageProfileEntity>(json);
             }
-            else if (image.Environment.Equals("macOS"))
-            {
-                var template =
-                   new ImageProfileTemplateServices().GetTemplate(EnumProfileTemplate.TemplateType.MacOS);
-                var json = JsonConvert.SerializeObject(template);
-                return JsonConvert.DeserializeObject<ImageProfileEntity>(json);
-            }
+         
             else //winpe
             {
                 var template =

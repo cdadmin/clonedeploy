@@ -58,51 +58,6 @@ namespace CloneDeploy_Web.views.images {
         protected global::System.Web.UI.WebControls.DropDownList ddlImageType;
         
         /// <summary>
-        /// osxImageType control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl osxImageType;
-        
-        /// <summary>
-        /// ddlOsxImageType control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlOsxImageType;
-        
-        /// <summary>
-        /// thinImage control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl thinImage;
-        
-        /// <summary>
-        /// ddlThinOS control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlThinOS;
-        
-        /// <summary>
-        /// ddlThinRecovery control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlThinRecovery;
-        
-        /// <summary>
         /// txtImageDesc control.
         /// </summary>
         /// <remarks>

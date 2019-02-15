@@ -28,11 +28,7 @@ namespace CloneDeploy_App.Controllers
             return allTftpServers;
         }
 
-        [HttpGet]
-        public AppleVendorDTO GetAppleVendorString(string ip)
-        {
-            return new CreateAppleVendorString().Execute(ip);
-        }
+     
 
         [HttpGet]
         public TftpServerDTO GetComputerTftpServers(string mac)

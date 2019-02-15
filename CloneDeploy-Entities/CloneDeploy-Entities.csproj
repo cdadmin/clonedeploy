@@ -65,8 +65,6 @@
     <Compile Include="DTOs\FormData\IdTypeDTO.cs" />
     <Compile Include="DTOs\FormData\ActiveTaskDTO.cs" />
     <Compile Include="ImageProfileTemplate.cs" />
-    <Compile Include="NbiEntry.cs" />
-    <Compile Include="NetBootProfile.cs" />
     <Compile Include="DistributionPoint.cs" />
     <Compile Include="DTOs\MulticastArgsDTO.cs" />
     <Compile Include="DTOs\TftpServerDTO.cs" />

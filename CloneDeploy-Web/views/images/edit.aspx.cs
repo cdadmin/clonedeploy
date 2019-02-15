@@ -43,19 +43,7 @@ namespace CloneDeploy_Web.views.images
             {
                 imageType.Visible = false;
             }
-            else if (Image.Environment == "macOS")
-            {
-                osxImageType.Visible = false;
-                imageType.Visible = false;
-                ddlOsxImageType.Text = Image.OsxType;
-                if (Image.OsxType == "thin")
-                {
-                    thinImage.Visible = false;
-
-                    ddlThinOS.Text = Image.OsxThinOs;
-                    ddlThinRecovery.Text = Image.OsxThinRecovery;
-                }
-            }
+          
             if (Image.Protected == 1)
                 chkProtected.Checked = true;
             if (Image.IsVisible == 1)
@@ -64,7 +52,6 @@ namespace CloneDeploy_Web.views.images
             //Image types can't be changed after they are created
             ddlImageType.Enabled = false;
             ddlEnvironment.Enabled = false;
-            ddlOsxImageType.Enabled = false;
         }
     }
 }

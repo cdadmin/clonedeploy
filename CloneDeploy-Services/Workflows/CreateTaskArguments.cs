@@ -76,7 +76,6 @@ namespace CloneDeploy_Services.Workflows
             if (_direction.Contains("upload"))
             {
                 
-                AppendString("osx_target_volume=" + "\"" + _imageProfile.OsxTargetVolume + "\"");
                 AppendString("image_type=" + _imageProfile.Image.Type);
                 if (Convert.ToBoolean(_imageProfile.RemoveGPT)) AppendString("remove_gpt_structures=true");
                 if (Convert.ToBoolean(_imageProfile.SkipShrinkVolumes)) AppendString("skip_shrink_volumes=true");
@@ -92,6 +91,8 @@ namespace CloneDeploy_Services.Workflows
                     AppendString("custom_upload_schema=true");
                     SetCustomSchemaUpload();
                 }
+                if (Convert.ToBoolean(_imageProfile.SkipBitlockerCheck)) AppendString("skip_bitlocker_check=true");
+                if (Convert.ToBoolean(_imageProfile.SkipHibernationCheck)) AppendString("skip_hibernation_check=true");
             }
             else // push or multicast
             {
@@ -110,9 +111,7 @@ namespace CloneDeploy_Services.Workflows
                         AppendString("cust_attr_5=" + "\"" + _computer.CustomAttribute5 + "\"");
                 }
 
-               
-                AppendString("osx_target_volume=" + "\"" + _imageProfile.OsxTargetVolume + "\"");
-               
+                              
                 if (Convert.ToBoolean(_imageProfile.ChangeName)) AppendString("change_computer_name=true");
                 if (Convert.ToBoolean(_imageProfile.SkipExpandVolumes)) AppendString("skip_expand_volumes=true");
                 if (Convert.ToBoolean(_imageProfile.FixBcd)) AppendString("fix_bcd=true");
@@ -121,7 +120,7 @@ namespace CloneDeploy_Services.Workflows
                 if (Convert.ToBoolean(_imageProfile.ForceStandardEfi)) AppendString("force_efi_layout=true");
                 if (Convert.ToBoolean(_imageProfile.SkipNvramUpdate)) AppendString("skip_nvram=true");
                 if (Convert.ToBoolean(_imageProfile.FixBootloader)) AppendString("fix_bootloader=true");
-                if (Convert.ToBoolean(_imageProfile.ErasePartitions)) AppendString("erase_partitions=true");
+
                 if (Convert.ToBoolean(_imageProfile.ForceDynamicPartitions))
                     AppendString("force_dynamic_partitions=true");
                 AppendString(SetPartitionMethod());
@@ -234,17 +233,6 @@ namespace CloneDeploy_Services.Workflows
                 case "Standard":
                     return "partition_method=standard";
 
-                case "Standard Auto":
-                    return "partition_method=standard_auto";
-
-                case "Standard HFSP":
-                    return "partition_method=standard_hfsp";
-
-                case "Standard APFS":
-                    return "partition_method=standard_apfs";
-
-                case "Standard Core Storage":
-                    return "partition_method=standard_cs";
                 default:
                     return "";
             }

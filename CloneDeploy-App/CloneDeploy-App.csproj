@@ -201,14 +201,12 @@
     <Compile Include="Controllers\DistributionPointController.cs" />
     <Compile Include="Controllers\AlternateServerIpController.cs" />
     <Compile Include="Controllers\Ip.cs" />
-    <Compile Include="Controllers\NbiEntryController.cs" />
     <Compile Include="Controllers\OnlineKernelController.cs" />
     <Compile Include="Controllers\ImageClassificationController.cs" />
     <Compile Include="Controllers\SecondaryServerController.cs" />
     <Compile Include="Controllers\ClusterGroupServersController.cs" />
     <Compile Include="Controllers\ServiceAccountController.cs" />
     <Compile Include="Controllers\ProxyDhcpController.cs" />
-    <Compile Include="Controllers\NetBootProfileController.cs" />
     <Compile Include="Controllers\ComputerImageClassificationController.cs" />
     <Compile Include="Controllers\WorkflowController.cs" />
     <Compile Include="Controllers\UserGroupController.cs" />

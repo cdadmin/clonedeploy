@@ -44,9 +44,7 @@ namespace CloneDeploy_DataModel
         private IGenericRepository<ImageProfileSysprepTagEntity> _imageProfileSysprepRepository;
         private IGenericRepository<ImageEntity> _imageRepository;
      
-        private IGenericRepository<NbiEntryEntity> _nbiEntryRepository;
-        private IGenericRepository<NetBootProfileEntity> _netBootProfileRepository;
-       
+      
         private IGenericRepository<PortEntity> _portRepository;
         private RoomRepository _roomRepository;
         private IGenericRepository<ScriptEntity> _scriptRepository;
@@ -343,24 +341,6 @@ namespace CloneDeploy_DataModel
       
 
       
-
-       
-        public IGenericRepository<NbiEntryEntity> NbiEntryRepository
-        {
-            get
-            {
-                return _nbiEntryRepository ?? (_nbiEntryRepository = new GenericRepository<NbiEntryEntity>(_context));
-            }
-        }
-
-        public IGenericRepository<NetBootProfileEntity> NetBootProfileRepository
-        {
-            get
-            {
-                return _netBootProfileRepository ??
-                       (_netBootProfileRepository = new GenericRepository<NetBootProfileEntity>(_context));
-            }
-        }
 
      
 

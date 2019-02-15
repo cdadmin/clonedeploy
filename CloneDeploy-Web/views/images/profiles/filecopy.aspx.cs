@@ -83,21 +83,7 @@ namespace CloneDeploy_Web.views.images.profiles
         {
             gvFile.DataSource = Call.FileFolderApi.Get(int.MaxValue, "");
             gvFile.DataBind();
-            if (Image.Environment == "macOS")
-            {
-                foreach (GridViewRow row in gvFile.Rows)
-                {
-                    var dataKey = gvFile.DataKeys[row.RowIndex];
-                    if (dataKey == null) continue;
-
-                    var txtPartition = row.FindControl("txtPartition") as TextBox;
-                    if (txtPartition != null)
-                    {
-                        txtPartition.Text = "/Volumes/" + ImageProfile.OsxTargetVolume;
-                        txtPartition.Enabled = false;
-                    }
-                }
-            }
+           
             PopulateProfileScripts();
         }
 

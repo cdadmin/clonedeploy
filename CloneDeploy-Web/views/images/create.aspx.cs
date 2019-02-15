@@ -22,9 +22,7 @@ namespace CloneDeploy_Web.views.images
                 ClassificationId = Convert.ToInt32(ddlClassification.SelectedValue)
             };
 
-            image.Type = ddlEnvironment.Text == "macOS" ? "Block" : ddlImageType.Text;
             image.Type = ddlEnvironment.Text == "winpe" ? "File" : ddlImageType.Text;
-            image.OsxType = ddlEnvironment.Text == "macOS" ? "thick" : "";
 
             var result = Call.ImageApi.Post(image);
             if (result.Success)
@@ -40,7 +38,7 @@ namespace CloneDeploy_Web.views.images
 
         protected void ddlEnvironment_OnSelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ddlEnvironment.Text == "macOS" || ddlEnvironment.Text == "winpe")
+            if (ddlEnvironment.Text == "winpe")
             {
                 imageType.Visible = false;
             }
@@ -50,17 +48,7 @@ namespace CloneDeploy_Web.views.images
             }
         }
 
-        protected void ddlOsxImageType_OnSelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (ddlOsxImageType.Text == "thin")
-            {
-                thinImage.Visible = true;
-            }
-            else
-            {
-                thinImage.Visible = false;
-            }
-        }
+     
 
         protected void Page_Load(object sender, EventArgs e)
         {

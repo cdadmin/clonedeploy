@@ -76,6 +76,7 @@
     <Content Include="content\fonts\OpenSans-Light.ttf" />
     <Content Include="content\fonts\OpenSans-Regular.ttf" />
     <Content Include="content\js\images\hsizegrip.png" />
+    <Content Include="content\js\jquery.js" />
     <Content Include="content\js\jquery-resizable.js" />
     <Content Include="private\logs\.gitignore" />
     <Content Include="views\admin\admin.master" />
@@ -94,9 +95,6 @@
     <Content Include="views\admin\logs\application.aspx" />
     <Content Include="views\admin\logs\frontend.aspx" />
     <Content Include="views\admin\logs\ond.aspx" />
-    <Content Include="views\admin\netboot\create.aspx" />
-    <Content Include="views\admin\netboot\edit.aspx" />
-    <Content Include="views\admin\netboot\search.aspx" />
     <Content Include="views\admin\profiletemplate.aspx" />
     <Content Include="views\admin\server\alternateips.aspx" />
     <Content Include="views\admin\server\server.aspx" />
@@ -137,7 +135,6 @@
     <Content Include="views\admin\cluster\cluster.master" />
     <Content Include="views\admin\logs\logs.master" />
     <Content Include="views\admin\dp\dp.master" />
-    <Content Include="views\admin\netboot\netboot.master" />
     <Content Include="views\admin\server\server.master" />
     <Content Include="serverlist.csv" />
     <None Include="Web.Debug.config">
@@ -1063,34 +1060,6 @@
     </Compile>
     <Compile Include="views\admin\multicast.aspx.designer.cs">
       <DependentUpon>multicast.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\admin\netboot\create.aspx.cs">
-      <DependentUpon>create.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\admin\netboot\create.aspx.designer.cs">
-      <DependentUpon>create.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\admin\netboot\edit.aspx.cs">
-      <DependentUpon>edit.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\admin\netboot\edit.aspx.designer.cs">
-      <DependentUpon>edit.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="views\admin\netboot\netboot.master.cs">
-      <DependentUpon>netboot.master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\admin\netboot\netboot.master.designer.cs">
-      <DependentUpon>netboot.master</DependentUpon>
-    </Compile>
-    <Compile Include="views\admin\netboot\search.aspx.cs">
-      <DependentUpon>search.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="views\admin\netboot\search.aspx.designer.cs">
-      <DependentUpon>search.aspx</DependentUpon>
     </Compile>
     <Compile Include="views\admin\profiletemplate.aspx.cs">
       <DependentUpon>profiletemplate.aspx</DependentUpon>

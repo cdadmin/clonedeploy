@@ -85,6 +85,8 @@ namespace CloneDeploy_Web.views.images.profiles
             imageProfile.UploadSchemaOnly = Convert.ToInt16(chkSchemaOnly.Checked);
             imageProfile.WimMulticastEnabled = Convert.ToInt16(chkWimMulticast.Checked);
             imageProfile.SimpleUploadSchema = Convert.ToInt16(chkSimpleSchema.Checked);
+            imageProfile.SkipHibernationCheck = Convert.ToInt16(chkSkipHibernation.Checked);
+            imageProfile.SkipBitlockerCheck = Convert.ToInt16(chkSkipBitlocker.Checked);
             var result = Call.ImageProfileApi.Put(imageProfile.Id, imageProfile);
             EndUserMessage = result.Success ? "Successfully Updated Image Profile" : result.ErrorMessage;
         }
@@ -139,15 +141,8 @@ namespace CloneDeploy_Web.views.images.profiles
 
         protected void DisplayLayout()
         {
-            if (Image.Environment == "macOS")
-            {
-                divCompression.Visible = false;
-                divGpt.Visible = false;
-                divShrink.Visible = false;
-                divWimMulticast.Visible = false;
-                DivSimple.Visible = true;
-            }
-            else if (Image.Environment == "winpe")
+          
+            if (Image.Environment == "winpe")
             {
                 divCompression.Visible = false;
                 divGpt.Visible = false;
@@ -175,6 +170,8 @@ namespace CloneDeploy_Web.views.images.profiles
             ddlCompLevel.Text = ImageProfile.CompressionLevel;
             chkSchemaOnly.Checked = Convert.ToBoolean(ImageProfile.UploadSchemaOnly);
             chkWimMulticast.Checked = Convert.ToBoolean(ImageProfile.WimMulticastEnabled);
+            chkSkipHibernation.Checked = Convert.ToBoolean(ImageProfile.SkipHibernationCheck);
+            chkSkipBitlocker.Checked = Convert.ToBoolean(ImageProfile.SkipBitlockerCheck);
             if (!string.IsNullOrEmpty(ImageProfile.CustomUploadSchema))
             {
                 chkCustomUpload.Checked = true;

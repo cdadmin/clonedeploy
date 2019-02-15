@@ -22,5 +22,5 @@
     <p>
         * The TFTP server should most likely always be set to <b>[tftp-server-ip]</b>
     </p>
-    <p>* The Proxy Reservations have no effect on the macOS imaging environment.</p>
+
 </asp:Content>

@@ -67,26 +67,7 @@ namespace CloneDeploy_Services
             return JsonConvert.SerializeObject(result);
         }
 
-        public string AddImageOsxEnv(string imageName)
-        {
-            var image = new ImageEntity
-            {
-                Name = imageName,
-                Environment = "macOS",
-                Type = "Block",
-                OsxType = "thick",
-                Enabled = 1,
-                IsVisible = 1,
-                Os = "",
-                Description = "",
-                ClassificationId = -1
-            };
-            var result = new ImageServices().AddImage(image);
-            if (result.Success)
-                result.Id = image.Id;
-
-            return JsonConvert.SerializeObject(result);
-        }
+    
 
         public string AddImageWinPEEnv(string imageName)
         {
@@ -169,7 +150,7 @@ namespace CloneDeploy_Services
             var newHdBytes = Convert.ToInt64(newHdSize);
             var minimumSize = partitionHelper.HardDrive(result.SchemaHdNumber, newHdBytes);
 
-            if (clientLbs != 0) //if zero should be from the osx imaging environment or winpe
+            if (clientLbs != 0) //if zero should be from the winpe imaging environment
             {
                 if (imageProfile.Image.Type != "File")
                 {
@@ -315,11 +296,11 @@ namespace CloneDeploy_Services
             var thisComputerTask = activeImagingTaskServices.GetTask(taskId);
             //var computer = new ComputerServices().GetComputer(thisComputerTask.ComputerId);
             //Check if already part of the queue
-
+            activeImagingTaskServices.CancelTimedOutTasks();
             if (thisComputerTask.Status == "2")
             {
                 //Delete Any tasks that have passed the timeout value
-                activeImagingTaskServices.CancelTimedOutTasks();
+                
                 //Check if the queue is open yet
                 var inUse = activeImagingTaskServices.GetCurrentQueue(thisComputerTask);
                 var totalCapacity = 0;
@@ -738,11 +719,10 @@ namespace CloneDeploy_Services
                 }
 
 
-                if (environment == "macOS")
-                    filteredImages = filteredImages.Where(x => x.Environment == "macOS").ToList();
-                else if (environment == "linux")
+            
+                if (environment == "linux")
                     filteredImages =
-                        filteredImages.Where(x => x.Environment != "macOS" && x.Environment != "winpe").ToList();
+                        filteredImages.Where(x => x.Environment != "winpe").ToList();
                 foreach (var image in filteredImages)
                     imageList.Images.Add(image.Id + " " + image.Name);
 

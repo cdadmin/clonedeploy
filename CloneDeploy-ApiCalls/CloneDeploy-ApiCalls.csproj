@@ -65,7 +65,6 @@
     <Compile Include="ImageProfileFileFolderAPI.cs" />
     <Compile Include="ImageProfileScriptAPI.cs" />
     <Compile Include="ImageProfileSysprepTagAPI.cs" />
-    <Compile Include="NbiEntryAPI.cs" />
     <Compile Include="PortAPI.cs" />
     <Compile Include="ImageClassificationAPI.cs" />
     <Compile Include="RoomAPI.cs" />
@@ -87,7 +86,6 @@
     <Compile Include="ImageSchemaAPI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingAPI.cs" />
-    <Compile Include="NetBootProfileAPI.cs" />
     <Compile Include="SiteAPI.cs" />
     <Compile Include="OnlineKernelAPI.cs" />
     <Compile Include="SysprepTagAPI.cs" />

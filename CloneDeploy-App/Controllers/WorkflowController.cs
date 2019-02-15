@@ -76,13 +76,7 @@ namespace CloneDeploy_App.Controllers
             return result;
         }
 
-        [CustomAuth(Permission = "AdminRead")]
-        [HttpGet]
-        public AppleVendorDTO GetAppleVendorString(string ip)
-        {
-            return new CreateAppleVendorString().Execute(ip);
-        }
-
+  
         [CustomAuth(Permission = "AllowOnd")]
         [HttpGet]
         public ApiStringResponseDTO StartOnDemandMulticast(int profileId,string clientCount,string sessionName, int clusterId)

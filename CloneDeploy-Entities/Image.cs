@@ -40,15 +40,6 @@ namespace CloneDeploy_Entities
         [Column("image_os", Order = 3)]
         public string Os { get; set; }
 
-        [Column("image_osx_thin_os", Order = 12)]
-        public string OsxThinOs { get; set; }
-
-        [Column("image_osx_thin_recovery", Order = 13)]
-        public string OsxThinRecovery { get; set; }
-
-        [Column("image_osx_type", Order = 11)]
-        public string OsxType { get; set; }
-
         [Column("image_is_protected", Order = 5)]
         public int Protected { get; set; }
 

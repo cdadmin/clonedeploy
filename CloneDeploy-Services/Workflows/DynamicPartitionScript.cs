@@ -101,10 +101,7 @@ namespace CloneDeploy_Services.Workflows
             {
                 return LinuxLayout();
             }
-            if (imageProfile.Image.Environment == "macOS")
-            {
-                return OsxNbiLayout();
-            }
+          
             if (imageProfile.Image.Environment == "winpe")
             {
                 return WinPELayout();
@@ -252,23 +249,8 @@ namespace CloneDeploy_Services.Workflows
 
                 var partitionCommands = "gdisk " + ClientHd + " &>>/tmp/clientlog.log <<GDISK\r\n";
 
-                var isApple = false;
-                foreach (var part in clientSchema.PrimaryAndExtendedPartitions)
-                {
-                    if (part.FsType.Contains("hfs"))
-                    {
-                        isApple = true;
-                        break;
-                    }
-                }
-                //Not sure about this one for 4k native
-                if (clientBlockSize == 512)
-                {
-                    if (clientSchema.FirstPartitionStartSector < 2048 && isApple) //osx cylinder boundary is 8
-                    {
-                        partitionCommands += "x\r\nl\r\n8\r\nm\r\n";
-                    }
-                }
+               
+             
                 foreach (var part in clientSchema.PrimaryAndExtendedPartitions)
                 {
                     counter++;
@@ -278,9 +260,7 @@ namespace CloneDeploy_Services.Workflows
                     partitionCommands += part.Number + "\r\n";
                     if (counter == 1)
                     {
-                        if (isApple && clientBlockSize == 4096) //not sure about this one either
-                            partitionCommands += "256" + "\r\n";
-                        else
+                      
                             partitionCommands += clientSchema.FirstPartitionStartSector + "\r\n";
                     }
                     else
@@ -360,77 +340,7 @@ namespace CloneDeploy_Services.Workflows
             return partitionScript;
         }
 
-        private string OsxNbiLayout()
-        {
-            var partitionScript = "echo \'diskutil partitionDisk " + ClientHd + " ";
-            if (TaskType == "debug")
-            {
-                if (clientSchema.PrimaryAndExtendedPartitions.Count == 0)
-                    return partitionScript;
-                try
-                {
-                    clientSchema.ExtendedPartitionHelper.AgreedSizeBlk =
-                        clientSchema.ExtendedPartitionHelper.AgreedSizeBlk*clientBlockSize/1024/1024;
-                }
-                catch
-                {
-                    // ignored
-                }
-                foreach (var p in clientSchema.PrimaryAndExtendedPartitions)
-                    p.Size = p.Size*clientBlockSize/1024/1024;
-                foreach (var p in clientSchema.LogicalPartitions)
-                    p.Size = p.Size*clientBlockSize/1024/1024;
-                foreach (var p in clientSchema.LogicalVolumes)
-                    p.Size = p.Size*clientBlockSize/1024/1024;
-            }
-
-            var neededPartitionCount = clientSchema.PrimaryAndExtendedPartitions.Count;
-
-            foreach (var partition in clientSchema.PrimaryAndExtendedPartitions)
-            {
-                if (partition.Type.ToLower() == "efi" || partition.Type.ToLower() == "boot os x")
-                    neededPartitionCount -= 1;
-            }
-
-            //Add 1 for the free space partition
-            neededPartitionCount += 1;
-            partitionScript += neededPartitionCount + " ";
-
-            foreach (var partition in clientSchema.PrimaryAndExtendedPartitions)
-            {
-                if (partition.Type.ToLower() == "efi" || partition.Type.ToLower() == "boot os x")
-                    continue; //osx automatically creates the efi partition and boot partition if needed
-
-                partitionScript += "\"" + partition.FsType + "\"" + " " + "\"" + partition.Type + "\"" + " " +
-                                   partition.Size + "DBS ";
-            }
-
-            partitionScript += "\"" + "Free Space" + "\"" + " " + "\"" + "" + "\"" + " " + "R" +
-                               " 2>>/tmp/clientlog.log\' > /tmp/createPartitions\n";
-
-            foreach (var part in from part in ImageSchema.HardDrives[HdNumberToGet].Partitions
-                where part.Active
-                where part.VolumeGroup != null
-                where part.VolumeGroup.LogicalVolumes != null
-                select part)
-            {
-                foreach (var lv in part.VolumeGroup.LogicalVolumes)
-                {
-                    foreach (var rlv in clientSchema.LogicalVolumes)
-                    {
-                        if (lv.Name != rlv.Name || lv.VolumeGroup != rlv.Vg) continue;
-
-                        partitionScript += "echo \"" + part.VolumeGroup.Name + ":" + ClientHd + partitionPrefix +
-                                           part.VolumeGroup.PhysicalVolume[part.VolumeGroup.PhysicalVolume.Length - 1] +
-                                           ":" + part.VolumeGroup.Uuid + ":" + rlv.Name +
-                                           ":" + rlv.Size*clientBlockSize + ":" + rlv.FsType + ":" + rlv.Uuid +
-                                           "\" >> /tmp/corestorage\n";
-                    }
-                }
-            }
-
-            return partitionScript;
-        }
+       
 
         private string WinPELayout()
         {

@@ -184,19 +184,6 @@ namespace CloneDeploy_ApiCalls
             get { return new ImageSchemaAPI("ImageSchema"); }
         }
 
-   
-
-      
-
-        public NbiEntryAPI NbiEntryApi
-        {
-            get { return new NbiEntryAPI("NbiEntry"); }
-        }
-
-        public NetBootProfileAPI NetBootProfileApi
-        {
-            get { return new NetBootProfileAPI("NetBootProfile"); }
-        }
 
         public OnlineKernelAPI OnlineKernelApi
         {
