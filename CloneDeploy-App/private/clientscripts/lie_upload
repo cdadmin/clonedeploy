@@ -51,10 +51,10 @@ MOUNT
 function save_mbr_gpt()
 {
   log " ** Checking For Partition Table Types Before Upload On $hard_drive ** "
-    gpt_status=`gdisk -l $hard_drive <<< "q" 2>> $CLIENT_LOG | grep 'GPT:' | awk '{$1=""; print $0}' | sed 's/^ //'`
+    gpt_status=`gdisk -l $hard_drive 2>> $CLIENT_LOG <<< "q" 2>> $CLIENT_LOG | grep 'GPT:' | awk '{$1=""; print $0}' | sed 's/^ //'`
     if [ "$gpt_status" = "present" ]; then
       usingGPT=true
-      mbr_status=`gdisk -l $hard_drive <<< "q" 2>> $CLIENT_LOG | grep 'MBR:' | awk '{$1=""; print $0}' | sed 's/^ //'`
+      mbr_status=`gdisk -l $hard_drive 2>> $CLIENT_LOG <<< "q" 2>> $CLIENT_LOG | grep 'MBR:' | awk '{$1=""; print $0}' | sed 's/^ //'`
       if [ "$mbr_status" = "MBR only" ]; then
         error "This Hard Drive Appears To Have Both GPT And MBR.  CloneDeploy Does Not Know What To Use.  You Must First Convert The Drive To One Or The Other Before Uploading"
       fi
@@ -66,7 +66,7 @@ function save_mbr_gpt()
   log " ** Saving MBR / GPT On $hard_drive ** " "display"  
 
   if [ "$usingGPT" = "true" ]; then
-    checkPartStart=$(gdisk $hard_drive -l | awk '/^ / {print $2+0}' | grep -vw "0" | sort -n | head -n1)
+    checkPartStart=$(gdisk $hard_drive -l 2>> $CLIENT_LOG | awk '/^ / {print $2+0}' | grep -vw "0" | sort -n | head -n1)
   else
     checkPartStart=$(parted -s $hard_drive unit s print all | grep "Disk /dev/" -m1 -A50 | awk -F' ' '{print $2+0}' | grep -vw "0" | sort -n | head -n1)
   fi
@@ -220,9 +220,11 @@ function shrink_volume()
 	  mkdir -p /mnt/ntfs 2>> /dev/null
 	  ntfs-3g -o force,rw $volume_to_shrink /mnt/ntfs 2>> $CLIENT_LOG
 
-	  if [ -f "/mnt/ntfs/Hiberfil.sys" ] || [ -f "/mnt/ntfs/hiberfil.sys" ]; then
-	    error "Hibernation Must Be Completely Disabled Before Resizing A Partition.  From An Elevated CMD Prompt Run powercfg.exe /h off"
-		umount /mnt/ntfs &> /dev/null
+	  if [ ! "$skip_hibernation_check" = "true" ]; then
+	    if [ -f "/mnt/ntfs/Hiberfil.sys" ] || [ -f "/mnt/ntfs/hiberfil.sys" ]; then
+	      error "Hibernation Must Be Completely Disabled Before Resizing A Partition.  From An Elevated CMD Prompt Run powercfg.exe /h off"
+		  umount /mnt/ntfs &> /dev/null
+	    fi
 	  fi
 	  umount /mnt/ntfs &> /dev/null
 	  
@@ -301,7 +303,7 @@ function create_image_schema()
     if [ "$gpt_status" = "present" ]; then
       mbr_status=`gdisk -l $hard_drive <<< "q" 2>> $CLIENT_LOG| grep 'MBR:' | awk '{$1=""; print $0}' | sed 's/^ //'`
       layout_type="gpt"
-      hard_drive_guid=`gdisk -l $hard_drive | grep GUID | awk -F': ' '{print $2}'`
+      hard_drive_guid=`gdisk -l $hard_drive 2>> $CLIENT_LOG | grep GUID | awk -F': ' '{print $2}'`
 	  log "Current NVRAM Entries"
 	  efibootmgr -v &>> $CLIENT_LOG
       if [ "$mbr_status" = "MBR only" ]; then
@@ -327,6 +329,14 @@ function create_image_schema()
         partition_guid=`sgdisk $hard_drive -i$partition_number | grep "unique GUID" | awk -F ' ' '{print $4}'`
       fi
       
+	  #check bitlocker enabled
+	  if [ ! "$skip_bitlocker_check" = "true" ]; then
+	    dd if=$partition bs=128 count=1 2>/dev/null | hexdump -C | grep FVE-FS
+	    if [ "$?" = "0" ]; then
+          error "This drive appears to have Bitlocker enabled.  It must be disabled prior to image upload."
+        fi
+	  fi
+	  
       #In addition to setting partclone type, clean filesystems for better compatibility moving forward
       if [ "$filesystem_type" = "ntfs" ]; then
         ntfsfix -b -d $partition &>/dev/null
@@ -353,7 +363,7 @@ function create_image_schema()
         partition_type=$(parted -s $hard_drive unit s print all | grep "Number  Start" -m1 -A50 | grep " $partition_number " -m 1| awk -F' ' '{print $5}')
         fsid=$(sfdisk --part-type $hard_drive $partition_number | sed 's/ //g' 2>> $CLIENT_LOG)
       else
-        fsid=$(gdisk $hard_drive -l | grep " $partition_number " | awk '/^ / {print $6}')
+        fsid=$(gdisk $hard_drive -l 2>> $CLIENT_LOG | grep " $partition_number " | awk '/^ / {print $6}')
         #find any matching boot entry in the nvram for this partition.  Find them all incase of multiboot systems
 		efi_bootloader="";efi_bootloader_name="";efi_bootlmgr_id="";efi_boot_info="";
 		efi_bootloader=$(efibootmgr -v | grep -i "$partition_guid" | grep -o "File(\\\\.*)" | cut -d "(" -f2 | cut -d ")" -f1 | uniq | sed 's/\\/\\\\/g')
@@ -644,7 +654,7 @@ function upload_image()
     else
       if [ "$upload_type" = "physical" ]; then
         mbr_filesystem_id=$(sfdisk --part-type $hard_drive $partition_number 2>> $CLIENT_LOG)
-        gpt_filesystem_id=$(gdisk $hard_drive -l | grep " $partition_number " | awk '/^ / {print $6}')
+        gpt_filesystem_id=$(gdisk $hard_drive -l 2>> $CLIENT_LOG | grep " $partition_number " | awk '/^ / {print $6}')
       
         if [ "$mbr_filesystem_id" = "8e" ] || [ "$gpt_filesystem_id" = "8E00" ]; then
           if [ "$skip_shrink_lvm" != "true" ]; then
@@ -686,7 +696,7 @@ function upload_image()
       rm /tmp/clone.progress
       cat /var/log/partclone.log >> $CLIENT_LOG
 	  cd $image_path
-	  killall lie_reporter &>/dev/null
+	  #killall lie_reporter &>/dev/null
 	fi
   done
 }

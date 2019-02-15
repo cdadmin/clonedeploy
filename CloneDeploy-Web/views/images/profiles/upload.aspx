@@ -53,6 +53,22 @@
         <asp:CheckBox ID="chkUpNoShrinkLVM" runat="server" CssClass="textbox"></asp:CheckBox>
     </div>
     <br class="clear"/>
+
+      <div class="size-9 column">
+        Skip Hibernation Check
+    </div>
+    <div class="size-8 column">
+        <asp:CheckBox ID="chkSkipHibernation" runat="server" CssClass="textbox"></asp:CheckBox>
+    </div>
+    <br class="clear"/>
+
+      <div class="size-9 column">
+        Skip Bitlocker Check
+    </div>
+    <div class="size-8 column">
+        <asp:CheckBox ID="chkSkipBitlocker" runat="server" CssClass="textbox"></asp:CheckBox>
+    </div>
+    <br class="clear"/>
 </div>
 
 <div id="divCompression" runat="server">

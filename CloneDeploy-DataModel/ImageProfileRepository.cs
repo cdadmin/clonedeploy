@@ -52,7 +52,6 @@ namespace CloneDeploy_DataModel
                     ReceiverArguments = x.profile.ReceiverArguments,
                     WebCancel = x.profile.WebCancel,
                     ChangeName = x.profile.ChangeName,
-                    OsxTargetVolume = x.profile.OsxTargetVolume,
                   
                     WimMulticastEnabled = x.profile.WimMulticastEnabled,
                     SkipNvramUpdate = x.profile.SkipNvramUpdate,
@@ -60,10 +59,11 @@ namespace CloneDeploy_DataModel
                     ForceStandardEfi = x.profile.ForceStandardEfi,
                     ForceStandardLegacy = x.profile.ForceStandardLegacy,
                     SimpleUploadSchema = x.profile.SimpleUploadSchema,
-                    ErasePartitions = x.profile.ErasePartitions,
                     Image = x.image,
                     ModelMatch = x.profile.ModelMatch,
-                    ModelMatchType = x.profile.ModelMatchType
+                    ModelMatchType = x.profile.ModelMatchType,
+                    SkipBitlockerCheck = x.profile.SkipBitlockerCheck,
+                    SkipHibernationCheck = x.profile.SkipHibernationCheck
                 }).OrderBy(x => x.Name).ToList();
         }
 
@@ -106,7 +106,6 @@ namespace CloneDeploy_DataModel
                     ReceiverArguments = x.profile.ReceiverArguments,
                     WebCancel = x.profile.WebCancel,
                     ChangeName = x.profile.ChangeName,
-                    OsxTargetVolume = x.profile.OsxTargetVolume,
                  
                     WimMulticastEnabled = x.profile.WimMulticastEnabled,
                     SkipNvramUpdate = x.profile.SkipNvramUpdate,
@@ -114,10 +113,11 @@ namespace CloneDeploy_DataModel
                     ForceStandardEfi = x.profile.ForceStandardEfi,
                     ForceStandardLegacy = x.profile.ForceStandardLegacy,
                     SimpleUploadSchema = x.profile.SimpleUploadSchema,
-                    ErasePartitions = x.profile.ErasePartitions,
                     Image = x.image,
                     ModelMatch = x.profile.ModelMatch,
-                    ModelMatchType = x.profile.ModelMatchType
+                    ModelMatchType = x.profile.ModelMatchType,
+                    SkipBitlockerCheck = x.profile.SkipBitlockerCheck,
+                    SkipHibernationCheck = x.profile.SkipHibernationCheck
                 }).FirstOrDefault();
         }
     }

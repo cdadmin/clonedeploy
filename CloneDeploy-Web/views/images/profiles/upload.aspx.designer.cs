@@ -67,6 +67,24 @@ namespace CloneDeploy_Web.views.images.profiles {
         protected global::System.Web.UI.WebControls.CheckBox chkUpNoShrinkLVM;
         
         /// <summary>
+        /// chkSkipHibernation control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkSkipHibernation;
+        
+        /// <summary>
+        /// chkSkipBitlocker control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkSkipBitlocker;
+        
+        /// <summary>
         /// divCompression control.
         /// </summary>
         /// <remarks>
