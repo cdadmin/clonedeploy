@@ -235,8 +235,7 @@ namespace CloneDeploy_Services
         {
             var validationResult = new ValidationResultDTO {Success = true};
 
-            if (string.IsNullOrEmpty(imageProfile.Name) ||
-                !imageProfile.Name.All(c => char.IsLetterOrDigit(c) || c == '_'))
+            if (string.IsNullOrEmpty(imageProfile.Name))
             {
                 validationResult.Success = false;
                 validationResult.ErrorMessage = "Image Profile Name Is Not Valid";

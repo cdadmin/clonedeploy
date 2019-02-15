@@ -7,114 +7,114 @@ namespace CloneDeploy_Entities
     [Table("image_profile_templates")]
     public class ImageProfileTemplate
     {
-        [Column("profile_boot_image", Order = 6)]
+        [Column("profile_boot_image")]
         public string BootImage { get; set; }
 
-        [Column("change_name", Order = 28)]
+        [Column("change_name")]
         public int ChangeName { get; set; }
 
-        [Column("compression_algorithm", Order = 20)]
+        [Column("compression_algorithm")]
         public string Compression { get; set; }
 
-        [Column("compression_level", Order = 21)]
+        [Column("compression_level")]
         public string CompressionLevel { get; set; }
 
-        [Column("custom_partition_script", Order = 19)]
+        [Column("custom_partition_script")]
         public string CustomPartitionScript { get; set; }
 
-        [Column("custom_image_schema", Order = 22)]
+        [Column("custom_image_schema")]
         public string CustomSchema { get; set; }
 
-        [Column("custom_upload_schema", Order = 23)]
+        [Column("custom_upload_schema")]
         public string CustomUploadSchema { get; set; }
 
-        [Column("profile_description", Order = 3)]
+        [Column("profile_description")]
         public string Description { get; set; }
 
-        [Column("fix_bcd", Order = 15)]
+        [Column("fix_bcd")]
         public int FixBcd { get; set; }
 
-        [Column("fix_bootloader", Order = 16)]
+        [Column("fix_bootloader")]
         public int FixBootloader { get; set; }
 
-        [Column("force_dynamic_partitions", Order = 18)]
+        [Column("force_dynamic_partitions")]
         public int ForceDynamicPartitions { get; set; }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("image_profile_template_id", Order = 1)]
+        [Column("image_profile_template_id")]
         public int Id { get; set; }
 
-        [Column("profile_kernel", Order = 5)]
+        [Column("profile_kernel")]
         public string Kernel { get; set; }
 
-        [Column("profile_kernel_arguments", Order = 7)]
+        [Column("profile_kernel_arguments")]
         public string KernelArguments { get; set; }
 
-        [Column("profile_name", Order = 2)]
+        [Column("profile_name")]
         public string Name { get; set; }
 
-        [Column("osx_target_volume", Order = 29)]
-        public string OsxTargetVolume { get; set; }
-
-        [Column("partition_method", Order = 17)]
+        [Column("partition_method")]
         public string PartitionMethod { get; set; }
 
-        [Column("multicast_receiver_arguments", Order = 26)]
+        [Column("multicast_receiver_arguments")]
         public string ReceiverArguments { get; set; }
 
-        [Column("remove_gpt_structures", Order = 11)]
+        [Column("remove_gpt_structures")]
         public int RemoveGPT { get; set; }
 
-        [Column("multicast_sender_arguments", Order = 25)]
+        [Column("multicast_sender_arguments")]
         public string SenderArguments { get; set; }
 
-        [Column("skip_set_clock", Order = 9)]
+        [Column("skip_set_clock")]
         public int SkipClock { get; set; }
 
-        [Column("skip_core_download", Order = 8)]
+        [Column("skip_core_download")]
         public int SkipCore { get; set; }
 
-        [Column("skip_volume_expand", Order = 14)]
+        [Column("skip_volume_expand")]
         public int SkipExpandVolumes { get; set; }
 
-        [Column("skip_lvm_shrink", Order = 13)]
+        [Column("skip_lvm_shrink")]
         public int SkipShrinkLvm { get; set; }
 
-        [Column("skip_volume_shrink", Order = 12)]
+        [Column("skip_volume_shrink")]
         public int SkipShrinkVolumes { get; set; }
 
-        [Column("task_completed_action", Order = 10)]
+        [Column("task_completed_action")]
         public string TaskCompletedAction { get; set; }
 
-        [Column("upload_schema_only", Order = 24)]
+        [Column("upload_schema_only")]
         public int UploadSchemaOnly { get; set; }
 
-        [Column("web_cancel", Order = 27)]
+        [Column("web_cancel")]
         public int WebCancel { get; set; }
 
-        [Column("wim_enabled_multicast", Order = 34)]
+        [Column("wim_enabled_multicast")]
         public int WimMulticastEnabled { get; set; }
 
-        [Column("skip_nvram", Order = 35)]
+        [Column("skip_nvram")]
         public int SkipNvramUpdate { get; set; }
 
-        [Column("randomize_guids", Order = 36)]
+        [Column("randomize_guids")]
         public int RandomizeGuids { get; set; }
 
-        [Column("force_standard_efi", Order = 37)]
+        [Column("force_standard_efi")]
         public int ForceStandardEfi { get; set; }
 
-        [Column("force_standard_legacy", Order = 38)]
+        [Column("force_standard_legacy")]
         public int ForceStandardLegacy { get; set; }
 
-        [Column("simple_upload_schema", Order = 39)]
+        [Column("simple_upload_schema")]
         public int SimpleUploadSchema { get; set; }
-
-        [Column("erase_partitions", Order = 40)]
-        public int ErasePartitions { get; set; }
 
         [Column("template_type")]
         public  EnumProfileTemplate.TemplateType TemplateType { get; set; }
+
+        [Column("skip_hibernation_check")]
+        public int SkipHibernationCheck { get; set; }
+
+        [Column("skip_bitlocker_check")]
+        public int SkipBitlockerCheck { get; set; }
     }
 }

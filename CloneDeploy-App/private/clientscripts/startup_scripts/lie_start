@@ -118,11 +118,11 @@ function assign_static_ip()
 	clear_and_move_down
 	echo -n "   IP Address: "
 	read ip_address
-	echo -n "Subnet Mask: "
+	echo -n "  Subnet Mask: "
 	read ip_netmask
 	echo -n "      Gateway: "
 	read ip_gateway
-	echo -n "             DNS: "
+	echo -n "          DNS: "
 	read ip_dns
 	
 	echo "auto lo" > /etc/network/interfaces
@@ -176,6 +176,8 @@ function get_task_computer()
   serial_number=$(dmidecode -s system-serial-number)
   system_uuid=$(dmidecode -s system-uuid)
   system_model=$(dmidecode -s system-product-name)
+  
+  log "System Model: $system_model"
   clear_and_move_down
   #Begin search using the computers client id
   for interface in `ls /sys/class/net | grep -v "lo" | sed 's/@//'`; do
