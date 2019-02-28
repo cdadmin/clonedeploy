@@ -36,7 +36,11 @@ namespace CloneDeploy_ApiCalls
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetOnDemandLogs/", Resource);
             Request.AddParameter("limit", limit);
-            return _apiRequest.Execute<List<ComputerLogEntity>>(Request);
+            var result = _apiRequest.Execute<List<ComputerLogEntity>>(Request);
+            if (result == null)
+                return new List<ComputerLogEntity>();
+            else
+                return result;
         }
 
         public ActionResultDTO Post(ComputerLogEntity tObject)

@@ -8,13 +8,13 @@ namespace CloneDeploy_Entities
     [Table("group_membership")]
     public class GroupMembershipEntity
     {
-        [Column("computer_id", Order = 2)]
+        [Column("computer_id")]
         public int ComputerId { get; set; }
 
-        [Column("group_id", Order = 3)]
+        [Column("group_id")]
         public int GroupId { get; set; }
 
-        [Column("group_membership_id", Order = 1)]
+        [Column("group_membership_id")]
         public int Id { get; set; }
     }
 }

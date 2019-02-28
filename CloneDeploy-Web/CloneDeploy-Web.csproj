@@ -111,12 +111,19 @@
     <Content Include="views\global\sysprep\sysprep.master" />
     <Content Include="views\groups\groups.master" />
     <Content Include="views\groups\imageclassification.aspx" />
+    <Content Include="views\help\admin-alternateips.aspx" />
+    <Content Include="views\help\admin-kerneldownload.aspx" />
+    <Content Include="views\help\admin-core.aspx" />
+    <Content Include="views\help\admin-cluster.aspx" />
+    <Content Include="views\help\admin-profileupdater.aspx" />
+    <Content Include="views\help\admin-profiletemplates.aspx" />
     <Content Include="views\help\images-history.aspx" />
     <Content Include="views\help\computers-history.aspx" />
     <Content Include="views\help\computers-classifications.aspx" />
     <Content Include="views\help\content.master" />
     <Content Include="views\help\groups-classifications.aspx" />
     <Content Include="views\help\help.master" />
+    <Content Include="views\help\tasks-ond.aspx" />
     <Content Include="views\images\history.aspx" />
     <Content Include="views\images\images.master" />
     <Content Include="views\images\profiles\profiles.master" />
@@ -131,6 +138,7 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\web.pubxml" />
     <Content Include="views\admin\cluster\cluster.master" />
     <Content Include="views\admin\logs\logs.master" />
@@ -728,7 +736,6 @@
     <Content Include="views\help\admin-export.aspx" />
     <Content Include="views\help\admin-logs.aspx" />
     <Content Include="views\help\admin-multicast.aspx" />
-    <Content Include="views\help\admin-munki.aspx" />
     <Content Include="views\help\admin-pxe.aspx" />
     <Content Include="views\help\admin-security.aspx" />
     <Content Include="views\help\admin-server.aspx" />
@@ -736,7 +743,6 @@
     <Content Include="views\help\computers-group.aspx" />
     <Content Include="views\help\computers-import.aspx" />
     <Content Include="views\help\computers-logs.aspx" />
-    <Content Include="views\help\computers-munki.aspx" />
     <Content Include="views\help\computers-newedit.aspx" />
     <Content Include="views\help\computers-proxy.aspx" />
     <Content Include="views\help\computers-search.aspx" />
@@ -744,8 +750,7 @@
     <Content Include="views\help\global-bootmenutemplates.aspx" />
     <Content Include="views\help\global-buildings.aspx" />
     <Content Include="views\help\global-files.aspx" />
-    <Content Include="views\help\global-munki.aspx" />
-    <Content Include="views\help\global-profileupdater.aspx" />
+    <Content Include="views\help\global-imageclass.aspx" />
     <Content Include="views\help\global-rooms.aspx" />
     <Content Include="views\help\global-scripts.aspx" />
     <Content Include="views\help\global-sites.aspx" />
@@ -755,7 +760,6 @@
     <Content Include="views\help\groups-currentmembers.aspx" />
     <Content Include="views\help\groups-import.aspx" />
     <Content Include="views\help\groups-multicast.aspx" />
-    <Content Include="views\help\groups-munki.aspx" />
     <Content Include="views\help\groups-newedit.aspx" />
     <Content Include="views\help\groups-properties.aspx" />
     <Content Include="views\help\groups-removemembers.aspx" />
@@ -1906,6 +1910,24 @@
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />

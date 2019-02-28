@@ -45,5 +45,5 @@
 
     <h3>Notifications</h3>
 
-    <p>The last 4 check boxes set the type of email notifications you want that user to receive.</p>
+    <p>The last 5 check boxes set the type of email notifications you want that user to receive.</p>
 </asp:Content>

@@ -8,13 +8,13 @@ namespace CloneDeploy_Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("clonedeploy_user_image_mgmt_id", Order = 1)]
+        [Column("clonedeploy_user_image_mgmt_id")]
         public int Id { get; set; }
 
-        [Column("image_id", Order = 3)]
+        [Column("image_id")]
         public int ImageId { get; set; }
 
-        [Column("user_id", Order = 2)]
+        [Column("user_id")]
         public int UserId { get; set; }
     }
 }

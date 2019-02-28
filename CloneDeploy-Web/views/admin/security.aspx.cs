@@ -160,12 +160,6 @@ namespace CloneDeploy_Web.views.admin
                     newBootMenu = true;
                     newClientIso = true;
                 }
-
-                if ((string)ViewState["keepNamePrompt"] != ddlKeepNamePrompt.Text)
-                {
-                    newBootMenu = true;
-                    newClientIso = true;
-                }
             }
             else
             {
@@ -259,7 +253,6 @@ namespace CloneDeploy_Web.views.admin
 
             //These require pxe boot menu or client iso to be recreated 
             ViewState["serverKey"] = txtToken.Text;
-            ViewState["keepNamePrompt"] = ddlKeepNamePrompt.Text;
             ViewState["debugLogin"] = ddlDebugLogin.Text;
             ViewState["ondLogin"] = ddlOndLogin.Text;
             ViewState["registerLogin"] = ddlRegisterLogin.Text;

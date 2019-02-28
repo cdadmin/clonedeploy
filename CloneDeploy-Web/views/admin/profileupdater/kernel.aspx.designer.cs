@@ -7,12 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-
-
-namespace CloneDeploy_Web.views.global.profileupdater
-{
-    public partial class views_global_profileupdater_kernel {
+namespace CloneDeploy_Web.views.global.profileupdater {
     
+    
+    public partial class views_global_profileupdater_kernel {
+        
         /// <summary>
         /// btnUpdateKernel control.
         /// </summary>
@@ -21,7 +20,7 @@ namespace CloneDeploy_Web.views.global.profileupdater
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton btnUpdateKernel;
-    
+        
         /// <summary>
         /// ddlKernel control.
         /// </summary>
@@ -30,7 +29,7 @@ namespace CloneDeploy_Web.views.global.profileupdater
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlKernel;
-    
+        
         /// <summary>
         /// gvProfiles control.
         /// </summary>

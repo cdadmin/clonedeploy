@@ -82,7 +82,11 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/Get", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
-            return _apiRequest.Execute<List<UserWithUserGroup>>(Request);
+            var result = _apiRequest.Execute<List<UserWithUserGroup>>(Request);
+            if (result == null)
+                return new List<UserWithUserGroup>();
+            else
+                return result;
         }
 
         public int GetAdminCount()
@@ -125,21 +129,33 @@ namespace CloneDeploy_ApiCalls
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetGroupManagements/{1}", Resource, id);
-            return _apiRequest.Execute<List<UserGroupManagementEntity>>(Request);
+            var result = _apiRequest.Execute<List<UserGroupManagementEntity>>(Request);
+            if (result == null)
+                return new List<UserGroupManagementEntity>();
+            else
+                return result;
         }
 
         public IEnumerable<UserImageManagementEntity> GetImageManagements(int id)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetImageManagements/{1}", Resource, id);
-            return _apiRequest.Execute<List<UserImageManagementEntity>>(Request);
+            var result = _apiRequest.Execute<List<UserImageManagementEntity>>(Request);
+            if (result == null)
+                return new List<UserImageManagementEntity>();
+            else
+                return result;
         }
 
         public IEnumerable<UserRightEntity> GetRights(int id)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetRights/{1}", Resource, id);
-            return _apiRequest.Execute<List<UserRightEntity>>(Request);
+            var result = _apiRequest.Execute<List<UserRightEntity>>(Request);
+            if (result == null)
+                return new List<UserRightEntity>();
+            else
+                return result;
         }
 
         public IEnumerable<AuditLogEntity> GetUserAuditLogs(int id, int limit)
@@ -147,7 +163,11 @@ namespace CloneDeploy_ApiCalls
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetUserAuditLogs/{1}", Resource, id);
             Request.AddParameter("limit", limit);
-            return _apiRequest.Execute<List<AuditLogEntity>>(Request);
+            var result = _apiRequest.Execute<List<AuditLogEntity>>(Request);
+            if (result == null)
+                return new List<AuditLogEntity>();
+            else
+                return result;
         }
 
         public IEnumerable<AuditLogEntity> GetCurrentUserAuditLogs(int limit)
@@ -155,14 +175,22 @@ namespace CloneDeploy_ApiCalls
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetCurrentUserAuditLogs/", Resource);
             Request.AddParameter("limit", limit);
-            return _apiRequest.Execute<List<AuditLogEntity>>(Request);
+            var result = _apiRequest.Execute<List<AuditLogEntity>>(Request);
+            if (result == null)
+                return new List<AuditLogEntity>();
+            else
+                return result;
         }
 
         public IEnumerable<AuditLogEntity> GetUserLoginsDashboard()
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetUserLoginsDashboard/", Resource);
-            return _apiRequest.Execute<List<AuditLogEntity>>(Request);
+            var result = _apiRequest.Execute<List<AuditLogEntity>>(Request);
+            if (result == null)
+                return new List<AuditLogEntity>();
+            else
+                return result;
         }
 
         public IEnumerable<AuditLogEntity> GetUserTaskAuditLogs(int id, int limit)
@@ -170,7 +198,11 @@ namespace CloneDeploy_ApiCalls
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetUserTaskAuditLogs/{1}", Resource, id);
             Request.AddParameter("limit", limit);
-            return _apiRequest.Execute<List<AuditLogEntity>>(Request);
+            var result = _apiRequest.Execute<List<AuditLogEntity>>(Request);
+            if (result == null)
+                return new List<AuditLogEntity>();
+            else
+                return result;
         }
 
         public bool IsAdmin(int id)

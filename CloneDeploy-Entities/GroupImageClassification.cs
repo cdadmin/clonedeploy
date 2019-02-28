@@ -6,15 +6,15 @@ namespace CloneDeploy_Entities
     [Table("group_image_classifications")]
     public class GroupImageClassificationEntity
     {
-        [Column("group_id", Order = 2)]
+        [Column("group_id")]
         public int GroupId { get; set; }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("group_image_classification_id", Order = 1)]
+        [Column("group_image_classification_id")]
         public int Id { get; set; }
 
-        [Column("image_classification_id", Order = 3)]
+        [Column("image_classification_id")]
         public int ImageClassificationId { get; set; }
     }
 }

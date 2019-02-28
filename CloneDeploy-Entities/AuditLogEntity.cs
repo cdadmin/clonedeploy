@@ -12,36 +12,36 @@ namespace CloneDeploy_Entities
             DateTime = DateTime.Now;
         }
 
-        [Column("audit_type", Order = 3)]
+        [Column("audit_type")]
         public AuditEntry.Type AuditType { get; set; }
 
-        [Column("date_time", Order = 8)]
+        [Column("date_time")]
         public DateTime DateTime { get; set; }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("audit_log_id", Order = 1)]
+        [Column("audit_log_id")]
         public int Id { get; set; }
 
-        [Column("ip_address", Order = 7)]
+        [Column("ip_address")]
         public string Ip { get; set; }
 
-        [Column("object_id", Order = 5)]
+        [Column("object_id")]
         public int ObjectId { get; set; }
 
-        [Column("object_json", Order = 10)]
+        [Column("object_json")]
         public string ObjectJson { get; set; }
 
-        [Column("object_name", Order = 6)]
+        [Column("object_name")]
         public string ObjectName { get; set; }
 
-        [Column("object_type", Order = 4)]
+        [Column("object_type")]
         public string ObjectType { get; set; }
 
-        [Column("user_id", Order = 2)]
+        [Column("user_id")]
         public int UserId { get; set; }
 
-        [Column("user_name", Order = 9)]
+        [Column("user_name")]
         public string UserName { get; set; }
     }
 }

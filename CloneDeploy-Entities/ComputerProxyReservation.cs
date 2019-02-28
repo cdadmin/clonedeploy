@@ -5,16 +5,16 @@ namespace CloneDeploy_Entities
     [Table("computer_proxy_reservations")]
     public class ComputerProxyReservationEntity
     {
-        [Column("boot_file", Order = 4)]
+        [Column("boot_file")]
         public string BootFile { get; set; }
 
-        [Column("computer_id", Order = 2)]
+        [Column("computer_id")]
         public int ComputerId { get; set; }
 
-        [Column("computer_proxy_reservation_id", Order = 1)]
+        [Column("computer_proxy_reservation_id")]
         public int Id { get; set; }
 
-        [Column("next_server", Order = 3)]
+        [Column("next_server")]
         public string NextServer { get; set; }
     }
 }

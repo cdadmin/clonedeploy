@@ -10,15 +10,18 @@
     <h1>Admin->Security</h1>
     <h3>Require Image Approval</h3>
     <p>Determines if you want to require newly uploaded images to be approved before they can be deployed. Administrators can always deploy even with an image being approved.</p>
-    <h3>Force SSL</h3>
-    <p>Will automatically redirect all WebUI requests to https. You must first setup SSL in your web application and very https is working before you enable this.</p>
+   
     <h3>On Demand Mode</h3>
     <p>Determines if On Demand Imaging is available.</p>
+    <h3>Registration Enabled</h3>
+    <p>Determines if you wanted to be prompted to register a computer before imaging if it hasn't been registered already.</p>
+    <h3>Registration Disabled Keep Name Prompt</h3>
+    <p>If registration is disabled, you may still want to prompt for a computer name, to rename the computer during imaging.</p>
     <h3>Debug Requires Login</h3>
     <p>Determines if the client console requires a login. If set to no a universal token must be generated. Only applies to the Linux Imaging Environment.</p>
     <h3>On Demand Requires Login</h3>
     <p>Determines if On Demand Mode requires a login. If set to no a universal token must be generated. Only applies to the Linux Imaging Environment.</p>
-    <h3>Add Computer Requires Login</h3>
+    <h3>Registration Requires Login</h3>
     <p>Determines if adding a client computer from the pxe boot menu requires a login. If set to no a universal token must be generated. Only applies to the Linux Imaging Environment.</p>
     <h3>Web Tasks Require Login</h3>
     <p>Determines if after starting an imaging task from the webui do the client computers still need to login in. If set to no a universal token must be generated. Only applies to the Linux Imaging Environment.</p>

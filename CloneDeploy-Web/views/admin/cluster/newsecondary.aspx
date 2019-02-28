@@ -5,7 +5,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="SubHelp" runat="server">
     <li role="separator" class="divider"></li>
     <li>
-        <a href="<%= ResolveUrl("~/views/help/admin-newsecondary.aspx") %>" target="_blank">Help</a>
+        <a href="<%= ResolveUrl("~/views/help/admin-cluster.aspx#admin") %>" target="_blank">Help</a>
     </li>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ActionsRightSub" runat="server">

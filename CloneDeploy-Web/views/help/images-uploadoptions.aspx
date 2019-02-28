@@ -24,6 +24,13 @@
     <h3>Don’t Shrink LVM Volumes (LIE)</h3>
 
     <p>Same as above but specifically for LVM. Don’t Shrink Volumes will supersede this setting, but not vice versa.</p>
+
+    <h3>Skip Hibernation Check (LIE)</h3>
+    <p>Before an image is uploaded, it checks for the presence of hiberfil.sys and cancels the upload if it exists.  Uploading an image while hibernated can completely break the original image.  Enabling this option will
+        skip this check.</p>
+    
+    <h3>Skip Bitlocker Check (LIE)</h3>
+    <p>Bitlocker is not supported and must be disabled before uploading an image.  CloneDeploy will attempt to see if Bitlocker is enabled and error out if so.  Enabling this option skips the bitlocker check.</p>
     <h3>Compression Algorithm (LIE)</h3>
 
     <p>A few different ways to compress or not compress your image</p>
@@ -34,13 +41,13 @@
     
       <h3>Enable Multicast Support (WIE LIE-File Mode)</h3>
     <p>When using the WinPE Imaging Environment or Linux set to File, if you later want to multicast the image, this must be checked before upload.</p>
-    <h3>Only Upload Schema (LIE MIE WIE)</h3>
+    <h3>Only Upload Schema (LIE WIE)</h3>
 
     <p>
         If you want to control what hard drives or partitions to upload, this is the first step. Turn this setting On and start an
         upload task. Instead of uploading an entire image, it will only upload the schema.
     </p>
-    <h3>Use Custom Upload Schema(LIE MIE WIE)</h3>
+    <h3>Use Custom Upload Schema(LIE WIE)</h3>
 
     <p>
         If you want to control what hard drives or partitions to upload, this is the second step. Check this box and a new table will

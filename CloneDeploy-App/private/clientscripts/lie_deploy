@@ -313,10 +313,13 @@ function restore_mbr_gpt()
   log " ** Restoring MBR / GPT On $hard_drive ** " "display"
   dd if=$image_path/table of=$hard_drive &>>$CLIENT_LOG				
 		
-  #Sometimes restoring results in damaged GPT.
-  gpt_status=$(gdisk -l $hard_drive <<< "2" 2>>$CLIENT_LOG | grep 'GPT:' | awk '{$1=""; print $0}' | sed 's/^ //')
+  #Sometimes restoring results in damaged GPT.  Done the long way to hide error messages.
+  gdisk -l $hard_drive <<< "2" &>/tmp/gptstatus
+  cat /tmp/gptstatus >> $CLIENT_LOG
+  gpt_status=$(cat /tmp/gptstatus | grep 'GPT:' | awk '{$1=""; print $0}' | sed 's/^ //')
   if [ "$gpt_status" = "damaged" ]; then
-    gdisk $hard_drive << eof >> $CLIENT_LOG
+    log "Repairing Damaged GPT Table"
+    gdisk $hard_drive << eof &>/dev/null
 2
 w
 y
@@ -491,14 +494,14 @@ function create_partition_layout()
 		
       new_volume_groups=$(vgs --noheadings | awk '/^ / {print $1}')
       for vg in $new_volume_groups; do
-        new_logical_volumes=$(lvs | grep "$vg" | awk '/^ / {print $1}')
-        volume_group_uuid=$(vgs -v  2>/dev/null | grep "$vg" | awk '/^ / {print $9}')
+        new_logical_volumes=$(lvs | grep -w "$vg" | awk '/^ / {print $1}')
+        volume_group_uuid=$(vgs -v  2>/dev/null | grep -w "$vg" | awk '/^ / {print $9}')
         sed -i "s/$volume_group_uuid/$(cat /tmp/vg-$vg)/g" /tmp/lvm-$vg 
         for logical_volume in $new_logical_volumes; do		
-          logical_volume_uuid=$(lvs -v 2>/dev/null | grep "$vg" | grep "$logical_volume" | awk '/^ / {print $10}')
+          logical_volume_uuid=$(lvs -v 2>/dev/null | grep -w "$vg" | grep -w "$logical_volume" | awk '/^ / {print $10}')
           sed -i "s/$logical_volume_uuid/$(cat /tmp/$vg-$logical_volume)/g" /tmp/lvm-$vg 
         done
-        vgcfgrestore $vg -f /tmp/lvm-$vg
+        vgcfgrestore $vg -qy -f /tmp/lvm-$vg
       done			
     else
       return 0

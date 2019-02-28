@@ -13,54 +13,54 @@ namespace CloneDeploy_Entities
             QueuePosition = 0;
         }
 
-        [Column("task_arguments", Order = 10)]
+        [Column("task_arguments")]
         public string Arguments { get; set; }
 
-        [Column("task_completed", Order = 7)]
+        [Column("task_completed")]
         public string Completed { get; set; }
 
-        [Column("computer_id", Order = 2)]
+        [Column("computer_id")]
         public int ComputerId { get; set; }
 
         [NotMapped]
         public string Direction { get; set; }
 
-        [Column("distribution_point_id", Order = 14)]
+        [Column("distribution_point_id")]
         public int DpId { get; set; }
 
-        [Column("task_elapsed", Order = 5)]
+        [Column("task_elapsed")]
         public string Elapsed { get; set; }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("active_task_id", Order = 1)]
+        [Column("active_task_id")]
         public int Id { get; set; }
 
-        [Column("multicast_id", Order = 12)]
+        [Column("multicast_id")]
         public int MulticastId { get; set; }
 
-        [Column("task_partition", Order = 9)]
+        [Column("task_partition")]
         public string Partition { get; set; }
 
-        [Column("task_queue_position", Order = 4)]
+        [Column("task_queue_position")]
         public int QueuePosition { get; set; }
 
-        [Column("task_rate", Order = 8)]
+        [Column("task_rate")]
         public string Rate { get; set; }
 
-        [Column("task_remaining", Order = 6)]
+        [Column("task_remaining")]
         public string Remaining { get; set; }
 
-        [Column("task_status", Order = 3)]
+        [Column("task_status")]
         public string Status { get; set; }
 
-        [Column("task_type", Order = 11)]
+        [Column("task_type")]
         public string Type { get; set; }
 
-        [Column("user_id", Order = 13)]
+        [Column("user_id")]
         public int UserId { get; set; }
 
-        [Column("last_update_time", Order = 15)]
+        [Column("last_update_time")]
         public DateTime LastUpdateTime { get; set; }
     }
 

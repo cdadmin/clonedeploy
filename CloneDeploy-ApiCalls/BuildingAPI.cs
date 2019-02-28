@@ -37,7 +37,11 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/Get", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
-            return _apiRequest.Execute<List<BuildingWithClusterGroup>>(Request);
+            var result = _apiRequest.Execute<List<BuildingWithClusterGroup>>(Request);
+            if (result == null)
+                return new List<BuildingWithClusterGroup>();
+            else
+                return result;
         }
 
         public string GetCount()

@@ -37,21 +37,33 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/Get", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
-            return _apiRequest.Execute<List<ClusterGroupEntity>>(Request);
+            var result = _apiRequest.Execute<List<ClusterGroupEntity>>(Request);
+            if (result == null)
+                return new List<ClusterGroupEntity>();
+            else
+                return result;
         }
 
         public IEnumerable<ClusterGroupDistributionPointEntity> GetClusterDistributionPoints(int id)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetClusterDistributionPoints/{1}", Resource, id);
-            return _apiRequest.Execute<List<ClusterGroupDistributionPointEntity>>(Request);
+            var result = _apiRequest.Execute<List<ClusterGroupDistributionPointEntity>>(Request);
+            if (result == null)
+                return new List<ClusterGroupDistributionPointEntity>();
+            else
+                return result;
         }
 
         public IEnumerable<ClusterGroupServerEntity> GetClusterServers(int id)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetClusterServers/{1}", Resource, id);
-            return _apiRequest.Execute<List<ClusterGroupServerEntity>>(Request);
+            var result = _apiRequest.Execute<List<ClusterGroupServerEntity>>(Request);
+            if (result == null)
+                return new List<ClusterGroupServerEntity>();
+            else
+                return result;
         }
 
         public string GetCount()

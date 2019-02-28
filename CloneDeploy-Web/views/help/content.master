@@ -20,9 +20,7 @@
         <li id="computers-logs">
             <a href="<%= ResolveUrl("~/views/help/computers-logs.aspx#computers") %>">Logs</a>
         </li>
-        <li id="computers-munki">
-            <a href="<%= ResolveUrl("~/views/help/computers-munki.aspx#computers") %>">Munki Templates</a>
-        </li>
+     
         <li id="computers-group">
             <a href="<%= ResolveUrl("~/views/help/computers-group.aspx#computers") %>">Group Membership</a>
         </li>
@@ -70,9 +68,7 @@
         <li id="groups-bootmenu">
             <a href="<%= ResolveUrl("~/views/help/groups-bootmenu.aspx#groups") %>">Boot Menu</a>
         </li>
-        <li id="groups-munki">
-            <a href="<%= ResolveUrl("~/views/help/groups-munki.aspx#groups") %>">Munki Templates</a>
-        </li>
+    
           <li id="groups-classifications">
             <a href="<%= ResolveUrl("~/views/help/groups-classifications.aspx#groups") %>">Image Classifications</a>
         </li>
@@ -141,6 +137,9 @@
         </li>
         <li id="tasks-activepermanent">
             <a href="<%= ResolveUrl("~/views/help/tasks-activepermanent.aspx#tasks") %>">Active Permanent Tasks</a>
+        </li>
+         <li id="tasks-unregistered">
+            <a href="<%= ResolveUrl("~/views/help/tasks-ond.aspx#tasks") %>">Unregistered Tasks</a>
         </li>
         <li id="tasks-startcomputer">
             <a href="<%= ResolveUrl("~/views/help/tasks-startcomputer.aspx#tasks") %>">Start Computer Task</a>
@@ -215,53 +214,87 @@
         <li id="global-rooms">
             <a href="<%= ResolveUrl("~/views/help/global-rooms.aspx#global") %>">Rooms</a>
         </li>
-        <li id="global-munki">
-            <a href="<%= ResolveUrl("~/views/help/global-munki.aspx#global") %>">Munki</a>
-        </li>
-        <li id="global-profileupdater">
-            <a href="<%= ResolveUrl("~/views/help/global-profileupdater.aspx#global") %>">Image Profile Updater</a>
+      
+        <li id="global-imageclass">
+            <a href="<%= ResolveUrl("~/views/help/global-imageclass.aspx#global") %>">Image Classifications</a>
         </li>
     </ul>
 </li>
 <li id="admin">
     <h4>Admin</h4>
     <ul class="nav navbar-nav">
-        <li id="admin-server">
-            <a href="<%= ResolveUrl("~/views/help/admin-server.aspx#admin") %>">Server</a>
+          <li id="admin-bootmenu">
+            <a href="<%= ResolveUrl("~/views/help/admin-bootmenu.aspx#admin") %>">Boot Menu</a>
         </li>
-        <li id="admin-dp">
-            <a href="<%= ResolveUrl("~/views/help/admin-dp.aspx#admin") %>">Distribution Points</a>
-        </li>
-        <li id="admin-client">
+            <li id="admin-client">
             <a href="<%= ResolveUrl("~/views/help/admin-client.aspx#admin") %>">Client</a>
         </li>
+
+          <li id="admin-clobber">
+            <a href="<%= ResolveUrl("~/views/help/admin-clobber.aspx#admin") %>">Clobber Mode</a>
+        </li>
+
+          <li id="admin-cluster">
+            <a href="<%= ResolveUrl("~/views/help/admin-cluster.aspx#admin") %>">Cluster</a>
+        </li>
+
+          <li id="admin-core">
+            <a href="<%= ResolveUrl("~/views/help/admin-core.aspx#admin") %>">Core Scripts</a>
+        </li>
+
+          <li id="admin-dp">
+            <a href="<%= ResolveUrl("~/views/help/admin-dp.aspx#admin") %>">Distribution Points</a>
+        </li>
+
+           <li id="admin-export">
+            <a href="<%= ResolveUrl("~/views/help/admin-export.aspx#admin") %>">Export</a>
+        </li>
+
+           <li id="admin-email">
+            <a href="<%= ResolveUrl("~/views/help/admin-email.aspx#admin") %>">E-mail</a>
+        </li>
+
+         <li id="admin-profiletemplate">
+            <a href="<%= ResolveUrl("~/views/help/admin-profiletemplates.aspx#admin") %>">Image Profile Templates</a>
+        </li>
+
+        <li id="admin-profileupdater">
+            <a href="<%= ResolveUrl("~/views/help/admin-profileupdater.aspx#admin") %>">Image Profile Updater</a>
+        </li>
+
+           <li id="admin-kerneldownloads">
+            <a href="<%= ResolveUrl("~/views/help/admin-kerneldownload.aspx#admin") %>">Kernel Downloads</a>
+        </li>
+      
+          <li id="admin-logs">
+            <a href="<%= ResolveUrl("~/views/help/admin-logs.aspx#admin") %>">Logs</a>
+        </li>
+
+           <li id="admin-multicast">
+            <a href="<%= ResolveUrl("~/views/help/admin-multicast.aspx#admin") %>">Multicast</a>
+        </li>
+
         <li id="admin-pxe">
             <a href="<%= ResolveUrl("~/views/help/admin-pxe.aspx#admin") %>">PXE</a>
         </li>
-        <li id="admin-multicast">
-            <a href="<%= ResolveUrl("~/views/help/admin-multicast.aspx#admin") %>">Multicast</a>
-        </li>
+     
         <li id="admin-security">
             <a href="<%= ResolveUrl("~/views/help/admin-security.aspx#admin") %>">Security</a>
         </li>
-        <li id="admin-email">
-            <a href="<%= ResolveUrl("~/views/help/admin-email.aspx#admin") %>">E-mail</a>
+
+        <li id="admin-server">
+            <a href="<%= ResolveUrl("~/views/help/admin-server.aspx#admin") %>">Server</a>
         </li>
-        <li id="admin-bootmenu">
-            <a href="<%= ResolveUrl("~/views/help/admin-bootmenu.aspx#admin") %>">Boot Menu</a>
+
+          <li id="admin-alternateips">
+            <a href="<%= ResolveUrl("~/views/help/admin-alternateips.aspx#admin") %>">Alternate Server Ips</a>
         </li>
-        <li id="admin-munki">
-            <a href="<%= ResolveUrl("~/views/help/admin-munki.aspx#admin") %>">Munki</a>
-        </li>
-        <li id="admin-logs">
-            <a href="<%= ResolveUrl("~/views/help/admin-logs.aspx#admin") %>">Logs</a>
-        </li>
-        <li id="admin-export">
-            <a href="<%= ResolveUrl("~/views/help/admin-export.aspx#admin") %>">Export</a>
-        </li>
-        <li id="admin-clobber">
-            <a href="<%= ResolveUrl("~/views/help/admin-clobber.aspx#admin") %>">Clobber Mode</a>
-        </li>
+     
+      
+      
+      
+     
+      
     </ul>
 </li>
 </ul>

@@ -10,7 +10,6 @@
     <h1>Users->Image Management</h1>
     <p>
         If you want to limit a user to only have control over specific images this is where you do it.
-        Anytime you have checked at least one image, this feature is enabled, otherwise it is disabled.
         By default the ACLs for images apply to all images. This setting would disable the global
         permission and assign those permissions only to the selected images.
     </p>

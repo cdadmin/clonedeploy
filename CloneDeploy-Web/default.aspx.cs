@@ -88,7 +88,7 @@ namespace CloneDeploy_Web
             var token = new APICall().TokenApi.Get(WebLogin.UserName, WebLogin.Password);
             if (token == null)
             {
-                lblError.Text = "Unknown API Error";
+                lblError.Text = "Invalid Token Response.  Verify The API Is Working.";
                 return;
             }
 

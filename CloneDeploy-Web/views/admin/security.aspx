@@ -88,7 +88,7 @@
     </div>
     <br class="clear"/>
     <div class="size-4 column">
-        Add Computer Requires Login:
+        Registration Requires Login:
     </div>
     <div class="size-setting column">
         <asp:DropDownList ID="ddlRegisterLogin" runat="server" CssClass="ddlist" AutoPostBack="True" OnSelectedIndexChanged="LoginsChanged">

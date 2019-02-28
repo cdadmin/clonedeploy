@@ -35,7 +35,11 @@ namespace CloneDeploy_ApiCalls
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/Get", Resource);
-            return _apiRequest.Execute<List<ImageClassificationEntity>>(Request);
+            var result = _apiRequest.Execute<List<ImageClassificationEntity>>(Request);
+            if (result == null)
+                return new List<ImageClassificationEntity>();
+            else
+                return result;
         }
 
         public string GetCount()

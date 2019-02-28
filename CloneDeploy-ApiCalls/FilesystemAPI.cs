@@ -38,9 +38,12 @@ namespace CloneDeploy_ApiCalls
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetBootImages/", Resource);
-            var response = _apiRequest.Execute<List<string>>(Request);
+            var result = _apiRequest.Execute<List<string>>(Request);
 
-            return response;
+            if (result == null)
+                return new List<string>();
+            else
+                return result;
         }
 
         public string GetDefaultBootFilePath(string type)
@@ -66,9 +69,12 @@ namespace CloneDeploy_ApiCalls
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetKernels/", Resource);
-            var response = _apiRequest.Execute<List<string>>(Request);
+            var result = _apiRequest.Execute<List<string>>(Request);
 
-            return response;
+            if (result == null)
+                return new List<string>();
+            else
+                return result;
         }
 
         public IEnumerable<string> GetLogContents(string name, int limit)
@@ -77,40 +83,37 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/GetLogContents/", Resource);
             Request.AddParameter("name", name);
             Request.AddParameter("limit", limit);
-            var response = _apiRequest.Execute<List<string>>(Request);
+            var result = _apiRequest.Execute<List<string>>(Request);
 
-            return response;
+            if (result == null)
+                return new List<string>();
+            else
+                return result;
         }
 
         public List<string> GetLogs()
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetLogs/", Resource);
-            var response = _apiRequest.Execute<List<string>>(Request);
+            var result = _apiRequest.Execute<List<string>>(Request);
 
-            return response;
+            if (result == null)
+                return new List<string>();
+            else
+                return result;
         }
-
-        public List<FileInfo> GetMunkiResources(string resourceType)
-        {
-            Request.Method = Method.GET;
-            Request.Resource = string.Format("api/{0}/GetMunkiResources/", Resource);
-            Request.AddParameter("resourceType", resourceType);
-            var response = _apiRequest.Execute<List<FileInfo>>(Request);
-
-            return response;
-        }
-
-     
 
         public List<string> GetScripts(string type)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetScripts/", Resource);
             Request.AddParameter("type", type);
-            var response = _apiRequest.Execute<List<string>>(Request);
+            var result = _apiRequest.Execute<List<string>>(Request);
 
-            return response;
+            if (result == null)
+                return new List<string>();
+            else
+                return result;
         }
 
         public string GetServerPaths(string type, string subType)

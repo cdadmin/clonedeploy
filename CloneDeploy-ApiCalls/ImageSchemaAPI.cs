@@ -23,7 +23,11 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/GetHardDrives", Resource);
             Request.AddJsonBody(schemaRequest);
             var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
-            return JsonConvert.DeserializeObject<List<HardDrive>>(response.Value);
+            var result = JsonConvert.DeserializeObject<List<HardDrive>>(response.Value);
+            if (result == null)
+                return new List<HardDrive>();
+            else
+                return result;
         }
 
         public List<LogicalVolume> GetLogicalVolumes(ImageSchemaRequestDTO schemaRequest)
@@ -32,7 +36,11 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/GetLogicalVolumes", Resource);
             Request.AddJsonBody(schemaRequest);
             var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
-            return JsonConvert.DeserializeObject<List<LogicalVolume>>(response.Value);
+            var result = JsonConvert.DeserializeObject<List<LogicalVolume>>(response.Value);
+            if (result == null)
+                return new List<LogicalVolume>();
+            else
+                return result;
         }
 
         public List<Partition> GetPartitions(ImageSchemaRequestDTO schemaRequest)
@@ -41,7 +49,11 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/GetPartitions", Resource);
             Request.AddJsonBody(schemaRequest);
             var response = _apiRequest.Execute<ApiStringResponseDTO>(Request);
-            return JsonConvert.DeserializeObject<List<Partition>>(response.Value);
+            var result = JsonConvert.DeserializeObject<List<Partition>>(response.Value);
+            if (result == null)
+                return new List<Partition>();
+            else
+                return result;
         }
 
         public ImageSchemaGridView GetSchema(ImageSchemaRequestDTO schemaRequest)

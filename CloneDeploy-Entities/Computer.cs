@@ -7,63 +7,63 @@ namespace CloneDeploy_Entities
     [Table("computers")]
     public class ComputerEntity
     {
-        [Column("alternate_server_ip_id", Order = 20)]
+        [Column("alternate_server_ip_id")]
         public int AlternateServerIpId { get; set; }
 
-        [Column("computer_building_id", Order = 7)]
+        [Column("computer_building_id")]
         public int BuildingId { get; set; }
 
-        [Column("client_identifier", Order = 19)]
+        [Column("client_identifier")]
         public string ClientIdentifier { get; set; }
 
-        [Column("cluster_group_id", Order = 18)]
+        [Column("cluster_group_id")]
         public int ClusterGroupId { get; set; }
 
-        [Column("custom_attr_1", Order = 12)]
+        [Column("custom_attr_1")]
         public string CustomAttribute1 { get; set; }
 
-        [Column("custom_attr_2", Order = 13)]
+        [Column("custom_attr_2")]
         public string CustomAttribute2 { get; set; }
 
-        [Column("custom_attr_3", Order = 14)]
+        [Column("custom_attr_3")]
         public string CustomAttribute3 { get; set; }
 
-        [Column("custom_attr_4", Order = 15)]
+        [Column("custom_attr_4")]
         public string CustomAttribute4 { get; set; }
 
-        [Column("custom_attr_5", Order = 16)]
+        [Column("custom_attr_5")]
         public string CustomAttribute5 { get; set; }
 
-        [Column("computer_has_custom_menu", Order = 11)]
+        [Column("computer_has_custom_menu")]
         public int CustomBootEnabled { get; set; }
 
-        [Column("computer_description", Order = 4)]
+        [Column("computer_description")]
         public string Description { get; set; }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("computer_id", Order = 1)]
+        [Column("computer_id")]
         public int Id { get; set; }
 
-        [Column("computer_image_id", Order = 9)]
+        [Column("computer_image_id")]
         public int ImageId { get; set; }
 
-        [Column("computer_image_profile_id", Order = 10)]
+        [Column("computer_image_profile_id")]
         public int ImageProfileId { get; set; }
 
-        [Column("computer_primary_mac", Order = 3)]
+        [Column("computer_primary_mac")]
         public string Mac { get; set; }
 
-        [Column("computer_name", Order = 2)]
+        [Column("computer_name")]
         public string Name { get; set; }
 
-        [Column("proxy_reservation_enabled", Order = 17)]
+        [Column("proxy_reservation_enabled")]
         public int ProxyReservation { get; set; }
 
-        [Column("computer_room_id", Order = 8)]
+        [Column("computer_room_id")]
         public int RoomId { get; set; }
 
-        [Column("computer_site_id", Order = 6)]
+        [Column("computer_site_id")]
         public int SiteId { get; set; }
     }
 

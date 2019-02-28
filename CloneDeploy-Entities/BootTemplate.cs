@@ -5,16 +5,16 @@ namespace CloneDeploy_Entities
     [Table("boot_menu_templates")]
     public class BootTemplateEntity
     {
-        [Column("boot_menu_template_contents", Order = 4)]
+        [Column("boot_menu_template_contents")]
         public string Contents { get; set; }
 
-        [Column("boot_menu_template_description", Order = 3)]
+        [Column("boot_menu_template_description")]
         public string Description { get; set; }
 
-        [Column("boot_menu_template_id", Order = 1)]
+        [Column("boot_menu_template_id")]
         public int Id { get; set; }
 
-        [Column("boot_menu_template_name", Order = 2)]
+        [Column("boot_menu_template_name")]
         public string Name { get; set; }
     }
 }

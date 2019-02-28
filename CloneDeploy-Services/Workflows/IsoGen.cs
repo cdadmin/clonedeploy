@@ -129,11 +129,11 @@ namespace CloneDeploy_Services.Workflows
             grubMenu.Append("set pager=1" + NewLineChar);
 
             grubMenu.Append("if loadfont /EFI/boot/unicode.pf2; then" + NewLineChar);
-            grubMenu.Append("set gfxmode=1024x768,auto" + NewLineChar);
             grubMenu.Append("insmod efi_gop" + NewLineChar);
             grubMenu.Append("insmod efi_uga" + NewLineChar);
-            grubMenu.Append("insmod gfxterm" + NewLineChar);
-            grubMenu.Append("terminal_output gfxterm" + NewLineChar);
+            grubMenu.Append("insmod video_bochs" + NewLineChar);
+            grubMenu.Append("insmod video_cirrus" + NewLineChar);
+            grubMenu.Append("insmod all_video" + NewLineChar);
             grubMenu.Append("fi" + NewLineChar);
 
             grubMenu.Append("" + NewLineChar);

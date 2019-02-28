@@ -36,6 +36,13 @@ namespace CloneDeploy_Web.views.dashboard
             if (Request.QueryString["access"] == "denied")
             {
                 lblDenied.Text = "You Are Not Authorized For That Action<br><br>";
+                var tokenExpired = Call.SettingApi.CheckExpiredToken();
+                if (tokenExpired)
+                {
+                    HttpContext.Current.Session.Abandon();
+                    FormsAuthentication.SignOut();
+                    Response.Redirect("~/?session=expired", true);
+                }
             }
             LogOut.Text = HttpContext.Current.User.Identity.Name;
             PopulateStats();

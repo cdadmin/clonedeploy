@@ -8,42 +8,42 @@ namespace CloneDeploy_Entities
     [Table("images")]
     public class ImageEntity
     {
-        [Column("image_approved", Order = 10)]
+        [Column("image_approved")]
         public int Approved { get; set; }
 
-        [Column("image_classification_id", Order = 14)]
+        [Column("image_classification_id")]
         public int ClassificationId { get; set; }
 
-        [Column("image_description", Order = 4)]
+        [Column("image_description")]
         public string Description { get; set; }
 
-        [Column("image_enabled", Order = 7)]
+        [Column("image_enabled")]
         public int Enabled { get; set; }
 
-        [Column("image_environment", Order = 9)]
+        [Column("image_environment")]
         public string Environment { get; set; }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("image_id", Order = 1)]
+        [Column("image_id")]
         public int Id { get; set; }
 
-        [Column("image_is_viewable_ond", Order = 6)]
+        [Column("image_is_viewable_ond")]
         public int IsVisible { get; set; }
 
-        [Column("last_upload_guid", Order = 15)]
+        [Column("last_upload_guid")]
         public string LastUploadGuid { get; set; }
 
-        [Column("image_name", Order = 2)]
+        [Column("image_name")]
         public string Name { get; set; }
 
-        [Column("image_os", Order = 3)]
+        [Column("image_os")]
         public string Os { get; set; }
 
-        [Column("image_is_protected", Order = 5)]
+        [Column("image_is_protected")]
         public int Protected { get; set; }
 
-        [Column("image_type", Order = 8)]
+        [Column("image_type")]
         public string Type { get; set; }
     }
 

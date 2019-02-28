@@ -6,21 +6,21 @@ namespace CloneDeploy_Entities
     [Table("cluster_group_servers")]
     public class ClusterGroupServerEntity
     {
-        [Column("cluster_group_id", Order = 2)]
+        [Column("cluster_group_id")]
         public int ClusterGroupId { get; set; }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("cluster_group_servers_id", Order = 1)]
+        [Column("cluster_group_servers_id")]
         public int Id { get; set; }
 
-        [Column("multicast_role", Order = 5)]
+        [Column("multicast_role")]
         public int MulticastRole { get; set; }
 
-        [Column("secondary_server_id", Order = 3)]
+        [Column("secondary_server_id")]
         public int ServerId { get; set; }
 
-        [Column("tftp_role", Order = 4)]
+        [Column("tftp_role")]
         public int TftpRole { get; set; }
     }
 }

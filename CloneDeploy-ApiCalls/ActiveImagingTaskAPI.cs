@@ -46,7 +46,11 @@ namespace CloneDeploy_ApiCalls
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetActiveTasks/", Resource);
-            return _apiRequest.Execute<List<TaskWithComputer>>(Request);
+            var result = _apiRequest.Execute<List<TaskWithComputer>>(Request);
+            if (result == null)
+                return new List<TaskWithComputer>();
+            else
+                return result;
         }
 
         public string GetActiveUnicastCount(string taskType = "")
@@ -70,21 +74,33 @@ namespace CloneDeploy_ApiCalls
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetAllOnDemandUnregistered/", Resource);
-            return _apiRequest.Execute<List<TaskWithComputer>>(Request);
+            var result = _apiRequest.Execute<List<ActiveImagingTaskEntity>>(Request);
+            if (result == null)
+                return new List<ActiveImagingTaskEntity>();
+            else
+                return result;
         }
 
         public IEnumerable<TaskWithComputer> GetPermanentUnicasts()
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetPermanentUnicasts/", Resource);
-            return _apiRequest.Execute<List<TaskWithComputer>>(Request);
+            var result = _apiRequest.Execute<List<TaskWithComputer>>(Request);
+            if (result == null)
+                return new List<TaskWithComputer>();
+            else
+                return result;
         }
 
         public IEnumerable<TaskWithComputer> GetUnicasts()
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetUnicasts/", Resource);
-            return _apiRequest.Execute<List<TaskWithComputer>>(Request);
+            var result = _apiRequest.Execute<List<TaskWithComputer>>(Request);
+            if (result == null)
+                return new List<TaskWithComputer>();
+            else
+                return result;
         }
 
         public int OnDemandCount()

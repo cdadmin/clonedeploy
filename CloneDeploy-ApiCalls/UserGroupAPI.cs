@@ -70,7 +70,11 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/Get", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
-            return _apiRequest.Execute<List<CloneDeployUserGroupEntity>>(Request);
+            var result = _apiRequest.Execute<List<CloneDeployUserGroupEntity>>(Request);
+            if (result == null)
+                return new List<CloneDeployUserGroupEntity>();
+            else
+                return result;
         }
 
         public string GetCount()
@@ -85,7 +89,11 @@ namespace CloneDeploy_ApiCalls
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetGroupManagements/{1}", Resource, id);
-            return _apiRequest.Execute<List<UserGroupGroupManagementEntity>>(Request);
+            var result = _apiRequest.Execute<List<UserGroupGroupManagementEntity>>(Request);
+            if (result == null)
+                return new List<UserGroupGroupManagementEntity>();
+            else
+                return result;
         }
 
         public IEnumerable<CloneDeployUserEntity> GetGroupMembers(int id, string searchstring = "")
@@ -93,14 +101,22 @@ namespace CloneDeploy_ApiCalls
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetGroupMembers/{1}", Resource, id);
             Request.AddParameter("searchstring", searchstring);
-            return _apiRequest.Execute<List<CloneDeployUserEntity>>(Request);
+            var result = _apiRequest.Execute<List<CloneDeployUserEntity>>(Request);
+            if (result == null)
+                return new List<CloneDeployUserEntity>();
+            else
+                return result;
         }
 
         public IEnumerable<UserGroupImageManagementEntity> GetImageManagements(int id)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetImageManagements/{1}", Resource, id);
-            return _apiRequest.Execute<List<UserGroupImageManagementEntity>>(Request);
+            var result = _apiRequest.Execute<List<UserGroupImageManagementEntity>>(Request);
+            if (result == null)
+                return new List<UserGroupImageManagementEntity>();
+            else
+                return result;
         }
 
         public string GetMemberCount(int id)
@@ -115,7 +131,11 @@ namespace CloneDeploy_ApiCalls
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetRights/{1}", Resource, id);
-            return _apiRequest.Execute<List<UserGroupRightEntity>>(Request);
+            var result = _apiRequest.Execute<List<UserGroupRightEntity>>(Request);
+            if (result == null)
+                return new List<UserGroupRightEntity>();
+            else
+                return result;
         }
 
         public ActionResultDTO Post(CloneDeployUserGroupEntity tObject)

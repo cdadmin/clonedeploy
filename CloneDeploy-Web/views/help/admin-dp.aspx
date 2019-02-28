@@ -34,5 +34,7 @@
     <h3>Primary Distribution Point</h3>
     <p>There must always be 1 primary distribution point, uploads always go to the primary distribution point. Check this box if it's primary.</p>
     <h3>Physical Path</h3>
-    <p>The physical path to share according to the CloneDeploy Server OS. This box is only available for the primary distribution point. It may also be a UNC path if permissions are setup correctly.</p>
+    <p>The local path to the share.  Only used when Location is set to Local.</p>
+      <h3>Queue Size</h3>
+    <p>The number of simultaneous imaging sessions that can be used with this Distribution Point.</p>
 </asp:Content>

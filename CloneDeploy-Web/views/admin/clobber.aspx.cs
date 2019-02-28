@@ -73,7 +73,7 @@ namespace CloneDeploy_Web.views.admin
         protected void CreateProxyMenu()
         {
             var defaultBootMenuOptions = new BootMenuGenOptionsDTO();
-            defaultBootMenuOptions.Kernel = SettingStrings.DefaultKernel32;
+            defaultBootMenuOptions.Kernel = SettingStrings.DefaultKernel64;
             defaultBootMenuOptions.BootImage = "initrd.xz";
             defaultBootMenuOptions.Type = "bios";
             Call.WorkflowApi.CreateDefaultBootMenu(defaultBootMenuOptions);

@@ -11,22 +11,22 @@ namespace CloneDeploy_Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("image_profile_script_id", Order = 1)]
+        [Column("image_profile_script_id")]
         public int Id { get; set; }
 
-        [Column("priority", Order = 6)]
+        [Column("priority")]
         public int Priority { get; set; }
 
-        [Column("image_profile_id", Order = 2)]
+        [Column("image_profile_id")]
         public int ProfileId { get; set; }
 
-        [Column("run_post", Order = 5)]
+        [Column("run_post")]
         public int RunPost { get; set; }
 
-        [Column("run_pre", Order = 4)]
+        [Column("run_pre")]
         public int RunPre { get; set; }
 
-        [Column("script_id", Order = 3)]
+        [Column("script_id")]
         public int ScriptId { get; set; }
     }
 }

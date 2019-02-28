@@ -8,16 +8,16 @@ namespace CloneDeploy_Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("file_folder_id", Order = 1)]
+        [Column("file_folder_id")]
         public int Id { get; set; }
 
-        [Column("file_folder_display_name", Order = 2)]
+        [Column("file_folder_display_name")]
         public string Name { get; set; }
 
-        [Column("file_folder_path", Order = 3)]
+        [Column("file_folder_path")]
         public string Path { get; set; }
 
-        [Column("file_folder_type", Order = 4)]
+        [Column("file_folder_type")]
         public string Type { get; set; }
     }
 }

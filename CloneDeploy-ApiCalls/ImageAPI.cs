@@ -43,7 +43,11 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/Get", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
-            return new ApiRequest().Execute<List<ImageWithDate>>(Request);
+            var result = new ApiRequest().Execute<List<ImageWithDate>>(Request);
+            if (result == null)
+                return new List<ImageWithDate>();
+            else
+                return result;
         }
 
         public string GetCount()
@@ -59,14 +63,22 @@ namespace CloneDeploy_ApiCalls
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetImageAuditLogs/{1}", Resource, id);
             Request.AddParameter("limit", limit);
-            return new ApiRequest().Execute<List<AuditLogEntity>>(Request);
+            var result = new ApiRequest().Execute<List<AuditLogEntity>>(Request);
+            if (result == null)
+                return new List<AuditLogEntity>();
+            else
+                return result;
         }
 
         public IEnumerable<ImageProfileEntity> GetImageProfiles(int id)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetImageProfiles/{1}", Resource, id);
-            return new ApiRequest().Execute<List<ImageProfileEntity>>(Request);
+            var result = new ApiRequest().Execute<List<ImageProfileEntity>>(Request);
+            if (result == null)
+                return new List<ImageProfileEntity>();
+            else
+                return result;
         }
 
         public string GetImageSizeOnServer(string imageName, string hdNumber)
@@ -84,7 +96,11 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/GetPartitionFileInfo/{1}", Resource, id);
             Request.AddParameter("selectedHd", selectedHd);
             Request.AddParameter("selectedPartition", selectedPartition);
-            return new ApiRequest().Execute<List<ImageFileInfo>>(Request);
+            var result = new ApiRequest().Execute<List<ImageFileInfo>>(Request);
+            if (result == null)
+                return new List<ImageFileInfo>();
+            else
+                return result;
         }
 
         public int Import(ApiStringResponseDTO csvContents)
@@ -122,7 +138,11 @@ namespace CloneDeploy_ApiCalls
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/Search/", Resource);
             Request.AddParameter("searchstring", searchstring);
-            return new ApiRequest().Execute<List<ImageWithDate>>(Request);
+            var result = new ApiRequest().Execute<List<ImageWithDate>>(Request);
+            if (result == null)
+                return new List<ImageWithDate>();
+            else
+                return result;
         }
 
         public ImageProfileEntity SeedDefaultProfile(int id)

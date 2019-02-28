@@ -55,7 +55,11 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/Get", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
-            return _apiRequest.Execute<List<GroupWithImage>>(Request);
+            var result = _apiRequest.Execute<List<GroupWithImage>>(Request);
+            if (result == null)
+                return new List<GroupWithImage>();
+            else
+                return result;
         }
 
         public string GetCount()
@@ -86,7 +90,11 @@ namespace CloneDeploy_ApiCalls
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetGroupMembers/{1}", Resource, id);
             Request.AddParameter("searchstring", searchstring);
-            return _apiRequest.Execute<List<ComputerWithImage>>(Request);
+            var result = _apiRequest.Execute<List<ComputerWithImage>>(Request);
+            if (result == null)
+                return new List<ComputerWithImage>();
+            else
+                return result;
         }
 
         public GroupPropertyEntity GetGroupProperties(int id)
@@ -100,7 +108,11 @@ namespace CloneDeploy_ApiCalls
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetImageClassifications/{1}", Resource, id);
-            return _apiRequest.Execute<List<GroupImageClassificationEntity>>(Request);
+            var result = _apiRequest.Execute<List<GroupImageClassificationEntity>>(Request);
+            if (result == null)
+                return new List<GroupImageClassificationEntity>();
+            else
+                return result;
         }
 
         public string GetMemberCount(int id)

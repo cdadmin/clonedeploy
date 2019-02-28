@@ -15,39 +15,39 @@ namespace CloneDeploy_Entities
             SetDefaultBootMenu = 0;
         }
 
-        [Column("cluster_group_id", Order = 10)]
+        [Column("cluster_group_id")]
         public int ClusterGroupId { get; set; }
 
-        [Column("group_description", Order = 3)]
+        [Column("group_description")]
         public string Description { get; set; }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("group_id", Order = 1)]
+        [Column("group_id")]
         public int Id { get; set; }
 
-        [Column("group_image_id", Order = 4)]
+        [Column("group_image_id")]
         public int ImageId { get; set; }
 
-        [Column("group_image_profile_id", Order = 5)]
+        [Column("group_image_profile_id")]
         public int ImageProfileId { get; set; }
 
-        [Column("group_name", Order = 2)]
+        [Column("group_name")]
         public string Name { get; set; }
 
-        [Column("group_default_bootmenu_enabled", Order = 9)]
+        [Column("group_default_bootmenu_enabled")]
         public int SetDefaultBootMenu { get; set; }
 
-        [Column("group_default_properties_enabled", Order = 8)]
+        [Column("group_default_properties_enabled")]
         public int SetDefaultProperties { get; set; }
 
-        [Column("group_smart_criteria", Order = 7)]
+        [Column("group_smart_criteria")]
         public string SmartCriteria { get; set; }
 
-        [Column("group_type", Order = 6)]
+        [Column("group_type")]
         public string Type { get; set; }
 
-        [Column("smart_type", Order = 11)]
+        [Column("smart_type")]
         public string SmartType { get; set; }
     }
 

@@ -6,15 +6,15 @@ namespace CloneDeploy_Entities
     [Table("alternate_server_ips")]
     public class AlternateServerIpEntity
     {
-        [Column("alternate_server_ip_api", Order = 3)]
+        [Column("alternate_server_ip_api")]
         public string ApiUrl { get; set; }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("alternate_server_ip_id", Order = 1)]
+        [Column("alternate_server_ip_id")]
         public int Id { get; set; }
 
-        [Column("alternate_server_ip", Order = 2)]
+        [Column("alternate_server_ip")]
         public string Ip { get; set; }
     }
 }

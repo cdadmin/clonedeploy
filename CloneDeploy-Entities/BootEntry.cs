@@ -5,28 +5,28 @@ namespace CloneDeploy_Entities
     [Table("boot_menu_entries")]
     public class BootEntryEntity
     {
-        [Column("boot_menu_entry_is_active", Order = 7)]
+        [Column("boot_menu_entry_is_active")]
         public int Active { get; set; }
 
-        [Column("boot_menu_entry_content", Order = 6)]
+        [Column("boot_menu_entry_content")]
         public string Content { get; set; }
 
-        [Column("boot_menu_entry_is_default", Order = 8)]
+        [Column("boot_menu_entry_is_default")]
         public int Default { get; set; }
 
-        [Column("boot_menu_entry_description", Order = 3)]
+        [Column("boot_menu_entry_description")]
         public string Description { get; set; }
 
-        [Column("boot_menu_entry_id", Order = 1)]
+        [Column("boot_menu_entry_id")]
         public int Id { get; set; }
 
-        [Column("boot_menu_entry_name", Order = 2)]
+        [Column("boot_menu_entry_name")]
         public string Name { get; set; }
 
-        [Column("boot_menu_entry_order", Order = 5)]
+        [Column("boot_menu_entry_order")]
         public string Order { get; set; }
 
-        [Column("boot_menu_entry_type", Order = 4)]
+        [Column("boot_menu_entry_type")]
         public string Type { get; set; }
     }
 }

@@ -8,13 +8,31 @@ using CloneDeploy_Services.Workflows;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Microsoft.Owin;
+using Microsoft.Owin.Security.Infrastructure;
 using Microsoft.Owin.Security.OAuth;
 using Owin;
+using AppFunc = System.Func<System.Collections.Generic.IDictionary<string, object>, System.Threading.Tasks.Task>;
 
 [assembly: OwinStartup(typeof (Startup))]
 
 namespace CloneDeploy_App
 {
+    public class CustomAuthenticationTokenProvider : AuthenticationTokenProvider
+    {
+        public override void Receive(AuthenticationTokenReceiveContext context)
+        {
+            context.DeserializeTicket(context.Token);
+
+            if (context.Ticket != null &&
+                context.Ticket.Properties.ExpiresUtc.HasValue &&
+                context.Ticket.Properties.ExpiresUtc.Value.LocalDateTime < DateTime.Now)
+            {
+
+                context.OwinContext.Set("custom.ExpiredToken", true);
+            }
+        }
+    }
+
     public class SimpleAuthorizationServerProvider : OAuthAuthorizationServerProvider
     {
         public override Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
@@ -65,11 +83,30 @@ namespace CloneDeploy_App
 
             // Token Generation
             app.UseOAuthAuthorizationServer(OAuthServerOptions);
-            app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
+            app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions()
+            {
+                AccessTokenProvider = new CustomAuthenticationTokenProvider()
+            });
+
+            app.Use(new Func<AppFunc, AppFunc>(next => (env) =>
+            {
+                var ctx = new OwinContext(env);
+                if (ctx.Get<bool>("custom.ExpiredToken"))
+                {
+                    ctx.Response.StatusCode = 403;
+                    ctx.Response.ReasonPhrase = "Expired Token";
+
+                    return Task.FromResult(0);
+                }
+                else
+                {
+                    return next(env);
+                }
+            }));
 
 
             // Hangfire initialization
-            
+
             if (SettingServices.GetSettingValue(SettingStrings.OperationMode) == "Cluster Primary")
             {
                 var stringInterval = SettingServices.GetSettingValue(SettingStrings.SecondaryServerMonitorInterval);

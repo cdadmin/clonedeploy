@@ -45,14 +45,22 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/Get", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
-            return _apiRequest.Execute<List<ImageProfileWithImage>>(Request);
+            var result = _apiRequest.Execute<List<ImageProfileWithImage>>(Request);
+            if (result == null)
+                return new List<ImageProfileWithImage>();
+            else
+                return result;
         }
 
         public IEnumerable<ImageProfileFileFolderEntity> GetFileFolders(int id)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetFileFolders/{1}", Resource, id);
-            return _apiRequest.Execute<List<ImageProfileFileFolderEntity>>(Request);
+            var result = _apiRequest.Execute<List<ImageProfileFileFolderEntity>>(Request);
+            if (result == null)
+                return new List<ImageProfileFileFolderEntity>();
+            else
+                return result;
         }
 
         public string GetMinimumClientSize(int id, int hdNumber)
@@ -67,14 +75,22 @@ namespace CloneDeploy_ApiCalls
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetScripts/{1}", Resource, id);
-            return _apiRequest.Execute<List<ImageProfileScriptEntity>>(Request);
+            var result = _apiRequest.Execute<List<ImageProfileScriptEntity>>(Request);
+            if (result == null)
+                return new List<ImageProfileScriptEntity>();
+            else
+                return result;
         }
 
         public IEnumerable<ImageProfileSysprepTagEntity> GetSysprepTags(int id)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetSysprepTags/{1}", Resource, id);
-            return _apiRequest.Execute<List<ImageProfileSysprepTagEntity>>(Request);
+            var result = _apiRequest.Execute<List<ImageProfileSysprepTagEntity>>(Request);
+            if (result == null)
+                return new List<ImageProfileSysprepTagEntity>();
+            else
+                return result;
         }
 
         public ActionResultDTO Post(ImageProfileEntity tObject)

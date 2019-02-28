@@ -148,7 +148,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
 
                 ddlBiosKernel.DataSource = Call.FilesystemApi.GetKernels();
                 ddlBiosKernel.DataBind();
-                ddlBiosKernel.SelectedValue = SettingStrings.DefaultKernel32;
+                ddlBiosKernel.SelectedValue = SettingStrings.DefaultKernel64;
                 ddlEfi32Kernel.DataSource = Call.FilesystemApi.GetKernels();
                 ddlEfi32Kernel.DataBind();
                 ddlEfi32Kernel.SelectedValue = SettingStrings.DefaultKernel32;
@@ -199,7 +199,7 @@ namespace CloneDeploy_Web.views.admin.bootmenu
 
                 ddlComputerKernel.DataSource = Call.FilesystemApi.GetKernels();
                 ddlComputerKernel.DataBind();
-                ddlComputerKernel.SelectedValue = SettingStrings.DefaultKernel32;
+                ddlComputerKernel.SelectedValue = SettingStrings.DefaultKernel64;
 
                 ddlComputerBootImage.DataSource = Call.FilesystemApi.GetBootImages();
                 ddlComputerBootImage.DataBind();

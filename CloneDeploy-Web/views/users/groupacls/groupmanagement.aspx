@@ -30,7 +30,7 @@
         });
     </script>
     <div class="size-4 column">
-        Enable Image Management:
+        Enable Group Management:
     </div>
     <div class="size-5 column">
         <asp:CheckBox ID="chkEnabled" runat="server" OnCheckedChanged="chkEnabled_OnCheckedChanged" AutoPostBack="True"></asp:CheckBox>

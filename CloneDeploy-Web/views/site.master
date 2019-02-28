@@ -58,12 +58,12 @@
         <div class="container">
             <div class="file-menu">
               <div class="dropdown">
-  <button class="dropbtn">  <span class="version">CloneDeploy 1.3.5</span></button>
+  <button class="dropbtn">  <span class="version">CloneDeploy 1.4.0</span></button>
   <div class="dropdown-content">
     <a href="<%= ResolveUrl("~/views/dashboard/dash.aspx") %>">Dashboard</a>
      <a href="<%= ResolveUrl("~/views/help/default.aspx") %>">Help</a>
     <asp:LinkButton ID="LogOut" runat="server" OnClick="LogOut_OnClick">Logout</asp:LinkButton>
-      <a href="<%= ResolveUrl("http://clonedeploy.org/donate") %>">Donate</a>
+      <a href="<%= ResolveUrl("http://clonedeploy.org/contribute") %>">Contribute To CloneDeploy</a>
   </div>
 </div>
               

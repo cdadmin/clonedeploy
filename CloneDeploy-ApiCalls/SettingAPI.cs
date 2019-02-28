@@ -19,6 +19,15 @@ namespace CloneDeploy_ApiCalls
             _apiRequest = new ApiRequest(cApiDto.Token, cApiDto.BaseUrl);
         }
 
+        public bool CheckExpiredToken()
+        {
+            Request.Method = Method.GET;
+            Request.Resource = string.Format("api/{0}/CheckExpiredToken/", Resource);
+            var result = _apiRequest.ExecuteExpired<ApiBoolResponseDTO>(Request);
+            if (result == null) return false;
+            return result;
+        }
+
         public SettingEntity GetSetting(string name)
         {
             Request.Method = Method.GET;

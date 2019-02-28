@@ -74,15 +74,14 @@ namespace CloneDeploy_Web.views.login
                     }
                 };
 
-                if (unixDist == "bsd")
-                {
+              
                     listSettings.Add(new SettingEntity
                     {
                         Name = "Sender Args",
                         Value = "--interface " + txtServerIP.Text,
                         Id = Call.SettingApi.GetSetting("Sender Args").Id
                     });
-                }
+                
 
                 Call.SettingApi.UpdateSettings(listSettings);
 
@@ -104,7 +103,7 @@ namespace CloneDeploy_Web.views.login
 
 
                 var defaultBootMenuOptions = new BootMenuGenOptionsDTO();
-                defaultBootMenuOptions.Kernel = SettingStrings.DefaultKernel32;
+                defaultBootMenuOptions.Kernel = SettingStrings.DefaultKernel64;
                 defaultBootMenuOptions.BootImage = "initrd.xz";
                 defaultBootMenuOptions.Type = "standard";
                 Call.WorkflowApi.CreateDefaultBootMenu(defaultBootMenuOptions);

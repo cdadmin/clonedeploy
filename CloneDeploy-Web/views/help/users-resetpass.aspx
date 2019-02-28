@@ -8,5 +8,5 @@
         });
     </script>
     <h1>Users->Reset Password</h1>
-
+    <p>This page is available to users that are not administrators.  It provides the ability to change password and update email and notification settings.</p>
 </asp:Content>

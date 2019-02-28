@@ -8,7 +8,7 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="Help" Runat="Server">
     <li role="separator" class="divider"></li>
     <li>
-        <a href="<%= ResolveUrl("~/views/help/global-scripts.aspx") %>" target="_blank">Help</a>
+        <a href="<%= ResolveUrl("~/views/help/admin-core.aspx") %>" target="_blank">Help</a>
     </li>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="SubPageActionsRight" Runat="Server">

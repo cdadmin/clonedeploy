@@ -52,5 +52,12 @@ namespace CloneDeploy_App.Controllers
         {
             return new ApiBoolResponseDTO {Value = _settingServices.UpdateSetting(listSettings)};
         }
+
+        [Authorize]
+        [HttpGet]
+        public ApiBoolResponseDTO CheckExpiredToken()
+        {
+            return new ApiBoolResponseDTO { Value = false };
+        }
     }
 }

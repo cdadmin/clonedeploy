@@ -6,27 +6,27 @@ namespace CloneDeploy_Entities
     [Table("clonedeploy_user_groups")]
     public class CloneDeployUserGroupEntity
     {
-        [Column("clonedeploy_user_group_ldapname", Order = 5)]
+        [Column("clonedeploy_user_group_ldapname")]
         public string GroupLdapName { get; set; }
 
-        [Column("group_management_enabled", Order = 7)]
+        [Column("group_management_enabled")]
         public int GroupManagementEnabled { get; set; }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("clonedeploy_user_group_id", Order = 1)]
+        [Column("clonedeploy_user_group_id")]
         public int Id { get; set; }
 
-        [Column("image_management_enabled", Order = 6)]
+        [Column("image_management_enabled")]
         public int ImageManagementEnabled { get; set; }
 
-        [Column("clonedeploy_user_group_ldap", Order = 4)]
+        [Column("clonedeploy_user_group_ldap")]
         public int IsLdapGroup { get; set; }
 
-        [Column("clonedeploy_user_group_role", Order = 3)]
+        [Column("clonedeploy_user_group_role")]
         public string Membership { get; set; }
 
-        [Column("clonedeploy_user_group_name", Order = 2)]
+        [Column("clonedeploy_user_group_name")]
         public string Name { get; set; }
     }
 }

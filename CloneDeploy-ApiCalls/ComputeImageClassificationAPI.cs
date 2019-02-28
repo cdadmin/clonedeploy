@@ -19,7 +19,11 @@ namespace CloneDeploy_ApiCalls
             Request.Method = Method.POST;
             Request.Resource = string.Format("api/{0}/FilterClassifications/", Resource);
             Request.AddJsonBody(filterComputerClassificationDto);
-            return _apiRequest.Execute<List<ImageWithDate>>(Request);
+            var result = _apiRequest.Execute<List<ImageWithDate>>(Request);
+            if (result == null)
+                return new List<ImageWithDate>();
+            else
+                return result;
         }
 
         public ActionResultDTO Post(List<ComputerImageClassificationEntity> listOfClassifications)

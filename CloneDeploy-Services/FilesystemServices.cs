@@ -295,10 +295,10 @@ namespace CloneDeploy_Services
                 case "exports":
                     return basePath + seperator + "private" + seperator + "exports" + seperator;
                 case "defaultTftp":
-                    return Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) +
+                    return Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) +
                            seperator + "clonedeploy" + seperator + "tftpboot" + seperator;
                 case "defaultDp":
-                    return Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) +
+                    return Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) +
                            seperator + "clonedeploy" +
                            seperator + "cd_dp";
                 case "seperator":

@@ -82,8 +82,16 @@ namespace CloneDeploy_Services.Workflows
                             stdout = " - ";
                             break;
                         case ".gz":
-                            compAlg = isUnix ? "gzip -c -d " : "gzip.exe\" -c -d ";
-                            stdout = "";
+                            if (isUnix)
+                            {
+                                compAlg = "gzip -c -d ";
+                                stdout = "";
+                            }
+                            else
+                            {
+                                compAlg = "7za.exe\" x ";
+                                stdout = " -so ";
+                            }
                             break;
                         case ".uncp":
                             compAlg = "none";

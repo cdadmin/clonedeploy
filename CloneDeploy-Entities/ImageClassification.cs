@@ -8,10 +8,10 @@ namespace CloneDeploy_Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("image_classification_id", Order = 1)]
+        [Column("image_classification_id")]
         public int Id { get; set; }
 
-        [Column("image_classification_name", Order = 2)]
+        [Column("image_classification_name")]
         public string Name { get; set; }
     }
 }

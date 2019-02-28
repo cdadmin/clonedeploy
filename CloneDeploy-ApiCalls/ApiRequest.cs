@@ -103,5 +103,29 @@ namespace CloneDeploy_ApiCalls
             _log.Debug(request.Resource);
             return response;
         }
+
+        public bool ExecuteExpired<TClass>(RestRequest request) where TClass : new()
+        {
+            if (request == null)
+            {
+                return false;
+            }
+            request.AddHeader("Authorization", "bearer " + _token);
+
+            var response = _client.Execute<TClass>(request);
+
+            if (response == null)
+            {
+                return false;
+            }
+
+            if (response.StatusCode == HttpStatusCode.Forbidden)
+            {
+                if (response.StatusDescription.Equals("Expired Token"))
+                    return true;
+            }
+
+            return false;
+        }
     }
 }

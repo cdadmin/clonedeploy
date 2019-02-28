@@ -6,15 +6,15 @@ namespace CloneDeploy_Entities
     [Table("cluster_group_distribution_points")]
     public class ClusterGroupDistributionPointEntity
     {
-        [Column("cluster_group_id", Order = 2)]
+        [Column("cluster_group_id")]
         public int ClusterGroupId { get; set; }
 
-        [Column("distribution_point_id", Order = 3)]
+        [Column("distribution_point_id")]
         public int DistributionPointId { get; set; }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("cluster_group_distribution_points_id", Order = 1)]
+        [Column("cluster_group_distribution_points_id")]
         public int Id { get; set; }
     }
 }

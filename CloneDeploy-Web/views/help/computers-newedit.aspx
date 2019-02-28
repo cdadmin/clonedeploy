@@ -29,14 +29,14 @@
     The description field is for your own use.
     
     <h3>Cluster Group</h3>
-    If CloneDeploy has clustering enabled, this field sets the group that this computer should use for pxe booting, imaging, and multicasting.  If not set, the default cluster group is used.  Cluster groups that are assigned to sites, buildings, or rooms have a higher priority than this.
+    If CloneDeploy has clustering enabled, this field sets the group that this computer should use for pxe booting, imaging, and multicasting.  If not set, the default cluster group is used.  Cluster group precedence goes in order of the smallest scope.  Computer,Room,Building, then site.
 
     <h3>Sites, Buildings, Rooms</h3>
 
     This allows you to organize your computers in a physical manner and assign specific cluster groups to them,  allowing for distribution of images, tftp, etc according to physical location.
     
     <h3>Alternate Server Ip</h3>
-    This defines which Ip a client computer should use to communicate with the CloneDeploy API for http traffic.  This does not effect pxe booting, smb, or multicasting.  A use case for this is when your network is completely separated by different vlans and you must use a separate nic for each vlan on your CloneDeploy server.  By default the server ip is the admin setting server ip which would not work for different vlans.
+    This defines which Ip a client computer should use to communicate with the CloneDeploy API for http traffic.  This does not effect pxe booting, smb, or multicasting.  A use case for this is when your network is completely separated by different vlans and you must use a separate nic for each vlan on your CloneDeploy server.  By default the server ip is the admin setting server ip which would not work for different vlans if they cannot route to each other.
     
     <h3>Custom Attributes</h3>
 

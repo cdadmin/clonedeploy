@@ -7,27 +7,27 @@ namespace CloneDeploy_Entities
     [Table("computer_logs")]
     public class ComputerLogEntity
     {
-        [Column("computer_id", Order = 2)]
+        [Column("computer_id")]
         public int ComputerId { get; set; }
 
-        [Column("log_contents", Order = 5)]
+        [Column("log_contents")]
         public string Contents { get; set; }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("computer_log_id", Order = 1)]
+        [Column("computer_log_id")]
         public int Id { get; set; }
 
-        [Column("log_time", Order = 6)]
+        [Column("log_time")]
         public DateTime? LogTime { get; set; }
 
-        [Column("computer_mac", Order = 7)]
+        [Column("computer_mac")]
         public string Mac { get; set; }
 
-        [Column("log_sub_type", Order = 4)]
+        [Column("log_sub_type")]
         public string SubType { get; set; }
 
-        [Column("log_type", Order = 3)]
+        [Column("log_type")]
         public string Type { get; set; }
     }
 }

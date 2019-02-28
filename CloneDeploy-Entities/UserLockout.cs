@@ -7,18 +7,18 @@ namespace CloneDeploy_Entities
     [Table("clonedeploy_user_lockouts")]
     public class UserLockoutEntity
     {
-        [Column("bad_login_count", Order = 3)]
+        [Column("bad_login_count")]
         public int BadLoginCount { get; set; }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("clonedeploy_user_lockout_id", Order = 1)]
+        [Column("clonedeploy_user_lockout_id")]
         public int Id { get; set; }
 
-        [Column("locked_until_time_utc", Order = 4)]
+        [Column("locked_until_time_utc")]
         public DateTime? LockedUntil { get; set; }
 
-        [Column("user_id", Order = 2)]
+        [Column("user_id")]
         public int UserId { get; set; }
     }
 }

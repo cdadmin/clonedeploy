@@ -8,7 +8,7 @@
         });
     </script>
     <h1>Images->Import</h1>
-    <p>Import allows you to import a list of images from a CSV file. The expected header is:</p>
+    <p>Import allows you to import a list of images from a CSV file.  This only creates the images in the database, the actual image files need to be manually copied to the images folder The expected header is:</p>
     <p>
         <b>Name,Description,Type,Environment</b>
     </p>

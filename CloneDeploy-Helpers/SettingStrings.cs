@@ -18,13 +18,11 @@
 
         public const string DefaultInit = "initrd.xz";
 
-        public const string DefaultKernel32 = "4.16.1";
+        public const string DefaultKernel32 = "4.20.10";
 
-        public const string DefaultKernel64 = "4.16.1x64";
+        public const string DefaultKernel64 = "4.20.10x64";
 
         public const string EndPort = "Udpcast End Port";
-
-        public const string ForceSsL = "Force SSL";
 
         public const string GlobalComputerArgs = "Global Computer Args";
 
@@ -124,12 +122,10 @@
 
         public const string TaskTimeout = "Task Timeout";
 
-        public const string MulticastRdvIp = "Multicast Rdv Ip";
-
         public const string IpxeSSL = "Ipxe SSL";
 
         public const string OnDemandNamePrompt = "On Demand Prompt Computer Name";
 
-        public const int Version = 135;
+        public const int Version = 140;
     }
 }

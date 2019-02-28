@@ -6,7 +6,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="Help" Runat="Server">
     <li role="separator" class="divider"></li>
     <li>
-        <a href="<%= ResolveUrl("~/views/help/global-profileupdater.aspx") %>" target="_blank">Help</a>
+        <a href="<%= ResolveUrl("~/views/help/admin-profileupdater.aspx") %>" target="_blank">Help</a>
     </li>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="SubPageActionsRight">

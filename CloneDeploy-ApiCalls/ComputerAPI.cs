@@ -85,7 +85,11 @@ namespace CloneDeploy_ApiCalls
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/Get", Resource);
-            return _apiRequest.Execute<List<ComputerEntity>>(Request);
+            var result = _apiRequest.Execute<List<ComputerEntity>>(Request);
+            if (result == null)
+                return new List<ComputerEntity>();
+            else
+                return result;
         }
 
         public ActiveImagingTaskEntity GetActiveTask(int id)
@@ -115,7 +119,11 @@ namespace CloneDeploy_ApiCalls
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetComputerAuditLogs/{1}", Resource, id);
             Request.AddParameter("limit", limit);
-            return _apiRequest.Execute<List<AuditLogEntity>>(Request);
+            var result = _apiRequest.Execute<List<AuditLogEntity>>(Request);
+            if (result == null)
+                return new List<AuditLogEntity>();
+            else
+                return result;
         }
 
         public IEnumerable<ComputerLogEntity> GetComputerLogs(int id)
@@ -123,7 +131,10 @@ namespace CloneDeploy_ApiCalls
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetComputerLogs/{1}", Resource, id);
             var result = _apiRequest.Execute<List<ComputerLogEntity>>(Request);
-            return result;
+            if (result == null)
+                return new List<ComputerLogEntity>();
+            else
+                return result;
         }
 
         public IEnumerable<ComputerEntity> GetComputersWithoutGroup(int limit, string searchstring)
@@ -132,7 +143,11 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/GetComputersWithoutGroup", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
-            return _apiRequest.Execute<List<ComputerEntity>>(Request);
+            var result = _apiRequest.Execute<List<ComputerEntity>>(Request);
+            if (result == null)
+                return new List<ComputerEntity>();
+            else
+                return result;
         }
 
         public string GetCount()
@@ -162,14 +177,22 @@ namespace CloneDeploy_ApiCalls
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetGroupMemberships/{1}", Resource, id);
-            return _apiRequest.Execute<List<GroupMembershipEntity>>(Request);
+            var result = _apiRequest.Execute<List<GroupMembershipEntity>>(Request);
+            if (result == null)
+                return new List<GroupMembershipEntity>();
+            else
+                return result;
         }
 
         public List<ComputerImageClassificationEntity> GetImageClassifications(int id)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetImageClassifications/{1}", Resource, id);
-            return _apiRequest.Execute<List<ComputerImageClassificationEntity>>(Request);
+            var result = _apiRequest.Execute<List<ComputerImageClassificationEntity>>(Request);
+            if (result == null)
+                return new List<ComputerImageClassificationEntity>();
+            else
+                return result;
         }
 
    
@@ -213,7 +236,11 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/GridViewSearch", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
-            return _apiRequest.Execute<List<ComputerWithImage>>(Request);
+            var result = _apiRequest.Execute<List<ComputerWithImage>>(Request);
+            if (result == null)
+                return new List<ComputerWithImage>();
+            else
+                return result;
         }
 
         public int Import(ApiStringResponseDTO csvContents)
@@ -260,7 +287,11 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/SearchByNameOnly", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
-            return _apiRequest.Execute<List<ComputerEntity>>(Request);
+            var result = _apiRequest.Execute<List<ComputerEntity>>(Request);
+            if (result == null)
+                return new List<ComputerEntity>();
+            else
+                return result;
         }
 
         public IEnumerable<ComputerEntity> TestSmartQuery(string smartType, int limit = 0, string searchstring = "")
@@ -270,7 +301,11 @@ namespace CloneDeploy_ApiCalls
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
             Request.AddParameter("smartType", smartType);
-            return _apiRequest.Execute<List<ComputerEntity>>(Request);
+            var result = _apiRequest.Execute<List<ComputerEntity>>(Request);
+            if (result == null)
+                return new List<ComputerEntity>();
+            else
+                return result;
         }
 
         public string StartDeploy(int id)

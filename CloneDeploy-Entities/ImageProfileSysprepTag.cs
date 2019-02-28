@@ -8,16 +8,16 @@ namespace CloneDeploy_Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("image_profile_sysprep_tag_id", Order = 1)]
+        [Column("image_profile_sysprep_tag_id")]
         public int Id { get; set; }
 
-        [Column("priority", Order = 4)]
+        [Column("priority")]
         public int Priority { get; set; }
 
-        [Column("image_profile_id", Order = 2)]
+        [Column("image_profile_id")]
         public int ProfileId { get; set; }
 
-        [Column("sysprep_tag_id", Order = 3)]
+        [Column("sysprep_tag_id")]
         public int SysprepId { get; set; }
     }
 }

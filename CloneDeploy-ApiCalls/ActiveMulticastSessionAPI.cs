@@ -30,14 +30,22 @@ namespace CloneDeploy_ApiCalls
             Request.Resource = string.Format("api/{0}/Get", Resource);
             Request.AddParameter("limit", limit);
             Request.AddParameter("searchstring", searchstring);
-            return _apiRequest.Execute<List<ActiveMulticastSessionEntity>>(Request);
+            var result = _apiRequest.Execute<List<ActiveMulticastSessionEntity>>(Request);
+            if (result == null)
+                return new List<ActiveMulticastSessionEntity>();
+            else
+                return result;
         }
 
         public IEnumerable<ComputerEntity> GetComputers(int id)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetComputers/{1}", Resource, id);
-            return _apiRequest.Execute<List<ComputerEntity>>(Request);
+            var result = _apiRequest.Execute<List<ComputerEntity>>(Request);
+            if (result == null)
+                return new List<ComputerEntity>();
+            else
+                return result;
         }
 
         public string GetCount()
@@ -52,14 +60,22 @@ namespace CloneDeploy_ApiCalls
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetMemberStatus/{1}", Resource, id);
-            return _apiRequest.Execute<List<TaskWithComputer>>(Request);
+            var result = _apiRequest.Execute<List<TaskWithComputer>>(Request);
+            if (result == null)
+                return new List<TaskWithComputer>();
+            else
+                return result;
         }
 
         public IEnumerable<ActiveImagingTaskEntity> GetProgress(int id)
         {
             Request.Method = Method.GET;
             Request.Resource = string.Format("api/{0}/GetProgress/{1}", Resource, id);
-            return _apiRequest.Execute<List<ActiveImagingTaskEntity>>(Request);
+            var result = _apiRequest.Execute<List<ActiveImagingTaskEntity>>(Request);
+            if (result == null)
+                return new List<ActiveImagingTaskEntity>();
+            else
+                return result;
         }
     }
 }

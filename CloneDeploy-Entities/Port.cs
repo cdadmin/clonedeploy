@@ -8,10 +8,10 @@ namespace CloneDeploy_Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("multicast_port_id", Order = 1)]
+        [Column("multicast_port_id")]
         public int Id { get; set; }
 
-        [Column("multicast_port_number", Order = 2)]
+        [Column("multicast_port_number")]
         public int Number { get; set; }
     }
 }
