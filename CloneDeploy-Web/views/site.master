@@ -85,23 +85,23 @@
 
                 <div class="navmenu">
                     <ul>
-                        <li id="navhosts" runat="server">
+                        <li id="navhosts" runat="server" ClientIDMode="Static">
                             <a href="<%= ResolveUrl("~/views/computers/search.aspx") %>" class="icon-host" title="Computers"></a>
                         </li>
-                        <li id="navgroups" runat="server">
+                        <li id="navgroups" runat="server" ClientIDMode="Static">
                             <a href="<%= ResolveUrl("~/views/groups/search.aspx") %>" class="icon-group" title="Groups"></a>
                         </li>
-                        <li id="navimages" runat="server">
+                        <li id="navimages" runat="server" ClientIDMode="Static">
                             <a href="<%= ResolveUrl("~/views/images/search.aspx") %>" class="icon-image" title="Images"></a>
                         </li>
-                        <li id="navtasks" runat="server">
+                        <li id="navtasks" runat="server" ClientIDMode="Static">
                             <a href="<%= ResolveUrl("~/views/tasks/active.aspx") %>" class="icon-task" title="Tasks"></a>
                         </li>
                         <li id="nav-users">
                             <a href="<%= ResolveUrl("~/views/users/search.aspx") %>" class="icon-user" title="Users"></a>
                         </li>
 
-                        <li id="navglobal" runat="server">
+                        <li id="navglobal" runat="server" ClientIDMode="Static">
                             <a href="<%= ResolveUrl("~/views/global/chooser.aspx") %>" class="icon-global" title="Global Properties"></a>
                         </li>
                         <li id="nav-settings">

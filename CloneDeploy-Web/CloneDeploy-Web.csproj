@@ -75,6 +75,8 @@
     <Content Include="content\fonts\OpenSans-Light.eot" />
     <Content Include="content\fonts\OpenSans-Light.ttf" />
     <Content Include="content\fonts\OpenSans-Regular.ttf" />
+    <Content Include="content\img\default.ico" />
+    <Content Include="content\img\default.png" />
     <Content Include="content\js\images\hsizegrip.png" />
     <Content Include="content\js\jquery.js" />
     <Content Include="content\js\jquery-resizable.js" />
