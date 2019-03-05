@@ -24,20 +24,8 @@ namespace CloneDeploy_Web.views.login
                 string tftpPath = null;
                 if (Environment.OSVersion.ToString().Contains("Unix"))
                 {
-                    string dist = null;
-                    var distInfo = new ProcessStartInfo
-                    {
-                        UseShellExecute = false,
-                        FileName = "uname",
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true
-                    };
-
-                    using (var process = Process.Start(distInfo))
-                        if (process != null) dist = process.StandardOutput.ReadToEnd();
-
-                    unixDist = dist != null && dist.ToLower().Contains("bsd") ? "bsd" : "linux";
-                    tftpPath = unixDist == "bsd" ? "/usr/pbi/clonedeploy-amd64/tftpboot/" : "/tftpboot/";
+                   
+                    tftpPath = "/tftpboot/";
                 }
                 else
                 {
@@ -46,7 +34,7 @@ namespace CloneDeploy_Web.views.login
 
                 var physicalPath = "";
                 if (Environment.OSVersion.ToString().Contains("Unix"))
-                    physicalPath = unixDist == "bsd" ? "/usr/pbi/clonedeploy-amd64/cd_dp" : "/cd_dp";
+                    physicalPath = "/cd_dp";
                 else
                 {
                     physicalPath = Call.FilesystemApi.GetServerPaths("defaultDp", "");

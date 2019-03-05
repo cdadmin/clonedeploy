@@ -193,9 +193,29 @@ namespace CloneDeploy_Services.Workflows
 
         private int StartMulticastSender(string processArguments, string groupName)
         {
-            var isUnix = Environment.OSVersion.ToString().Contains("Unix");
+            var shell = "";
+            if (Environment.OSVersion.ToString().Contains("Unix"))
+            {
+                string dist = null;
+                var distInfo = new ProcessStartInfo
+                {
+                    UseShellExecute = false,
+                    FileName = "uname",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                };
 
-            var shell = isUnix ? "/bin/bash" : "cmd.exe";
+                using (var process = Process.Start(distInfo))
+                    if (process != null) dist = process.StandardOutput.ReadToEnd();
+
+                var unixDist = dist != null && dist.ToLower().Contains("bsd") ? "bsd" : "linux";
+                shell = unixDist == "bsd" ? "/bin/tcsh" : "/bin/bash";
+            }
+            else
+            {
+                shell = "cmd.exe";
+            }
+          
 
             var senderInfo = new ProcessStartInfo {FileName = shell, Arguments = processArguments};
 

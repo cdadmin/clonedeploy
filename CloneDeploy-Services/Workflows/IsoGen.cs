@@ -346,8 +346,29 @@ namespace CloneDeploy_Services.Workflows
             //copy newly generated config files on top of temporary location
             new FileOpsServices().Copy(_configOutPath, _buildPath);
 
-            var isUnix = Environment.OSVersion.ToString().Contains("Unix");
-            var shell = isUnix ? "/bin/bash" : "cmd.exe";
+            var shell = "";
+            if (Environment.OSVersion.ToString().Contains("Unix"))
+            {
+                string dist = null;
+                var distInfo = new ProcessStartInfo
+                {
+                    UseShellExecute = false,
+                    FileName = "uname",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                };
+
+                using (var process = Process.Start(distInfo))
+                    if (process != null) dist = process.StandardOutput.ReadToEnd();
+
+                var unixDist = dist != null && dist.ToLower().Contains("bsd") ? "bsd" : "linux";
+                shell = unixDist == "bsd" ? "/bin/tcsh" : "/bin/bash";
+            }
+            else
+            {
+                shell = "cmd.exe";
+            }
+           
 
             var processArguments = GenerateArgs();
             if (processArguments == null) return false;
