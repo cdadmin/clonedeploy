@@ -12,7 +12,6 @@ namespace CloneDeploy_Web.views.login
     {
         protected void btnSubmit_OnClick(object sender, EventArgs e)
         {
-            string unixDist = null;
             if (ValidateForm())
             {
                 var adminUser = Call.CloneDeployUserApi.GetByName("clonedeploy");
