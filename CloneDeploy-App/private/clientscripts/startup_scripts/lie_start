@@ -89,7 +89,7 @@ function test_conn()
 	
     while true; do
       echo 
-      taskType=$(dialog --backtitle "CloneDeploy" --title "Select A Task" --clear --menu "" 20 60 15 1 "Display Available NICs" 2 "Assign Static IP" 3 Shutdown  --stdout)
+      taskType=$(dialog --backtitle "CloneDeploy" --title "Select A Task" --clear --menu "" 20 60 15 1 "Display Available NICs" 2 "Assign Static IP" 3 Shutdown  2>&1 >/dev/tty0)
       if [ "$taskType" = "1" ]; then
         clear_and_move_down
         echo "Displaying Available Network Interfaces"
@@ -114,7 +114,7 @@ function assign_static_ip()
 	  interface_list="$interface_list $interface -"
 	done
 	
-	net_if=$(dialog --backtitle "CloneDeploy" --title "Select An Interface" --clear --menu "" 20 60 15 $interface_list  --stdout)
+	net_if=$(dialog --backtitle "CloneDeploy" --title "Select An Interface" --clear --menu "" 20 60 15 $interface_list  2>&1 >/dev/tty0)
 	clear_and_move_down
 	echo -n "   IP Address: "
 	read ip_address
