@@ -156,7 +156,7 @@ function get_partitions()
     fi
   else
     #added grep -v boot to exclude boot partitions on emmc drives.  Not sure if this may effect anything else
-    partitions=$(lsblk -ipno KNAME | sort | grep "$hard_drive" | grep -vw "$hard_drive" | grep -v "boot" 2>> $CLIENT_LOG)  
+    partitions=$(lsblk -ipno KNAME | sort | grep "$hard_drive" | grep -vw "$hard_drive" | grep -v "boot" | grep -v "rpmb" 2>> $CLIENT_LOG)  
   fi
     
   partition_count=0  

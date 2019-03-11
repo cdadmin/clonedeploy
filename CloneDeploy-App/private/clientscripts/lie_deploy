@@ -552,7 +552,7 @@ eof
 function get_partitions_according_to_mbr_gpt()
 {
   mbr_gpt_partitions=""
-  mbr_gpt_partitions=$(lsblk -ipno KNAME | grep "$hard_drive" | grep -vw "$hard_drive" | grep -v "boot" 2>> $CLIENT_LOG)  
+  mbr_gpt_partitions=$(lsblk -ipno KNAME | grep "$hard_drive" | grep -vw "$hard_drive" | grep -v "boot" | grep -v "rpmb" 2>> $CLIENT_LOG)  
 }
 
 function update_efi_nvram()
@@ -789,7 +789,7 @@ function change_computer_name()
 function make_bootable()
 {
   if [ "$standard_partition_type" = "legacy" ] || [ "$standard_partition_type" = "efi" ]; then
-    partitions=$(lsblk -ipno KNAME | sort | grep "$hard_drive" | grep -vw "$hard_drive" | grep -v "boot")
+    partitions=$(lsblk -ipno KNAME | sort | grep "$hard_drive" | grep -vw "$hard_drive" | grep -v "boot" | grep -v "rpmb")
     for partition in $partitions; do
 	  partition_prefix=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[0-9]*//g'`
 	  break
@@ -881,7 +881,7 @@ function make_bootable()
 	mkdir /mnt/windows
 	  
 	#search through partitions to find boot and windows, or system and boot to be confusing
-	local partitions=$(lsblk -ipno KNAME | sort | grep "$hard_drive" | grep -vw "$hard_drive" | grep -v "boot")
+	local partitions=$(lsblk -ipno KNAME | sort | grep "$hard_drive" | grep -vw "$hard_drive" | grep -v "boot" | grep -v "rpmb")
     for partition in $partitions; do
 	  local partition_prefix=`echo $partition | awk -F $hard_drive ' {print $2}' | sed 's/[0-9]*//g'`
 	  local filesystem_type=`blkid -po udev $partition | grep FS_TYPE | awk -F'=' '{print $2}'`

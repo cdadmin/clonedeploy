@@ -276,7 +276,7 @@ function get_hard_drives()
 		log " ...... Hard Drive(s) Set By Image Profile: $hard_drives" "display"		
 	else
 	  if [ "$task_type" = "upload" ]; then
-		all_hard_drives=`lsblk -ipdno KNAME`
+		all_hard_drives=`lsblk -ipdno KNAME | grep -v boot | grep -v rpmb`
 		log "all_hard_drives: $all_hard_drives"
 		for hdd in $all_hard_drives; do
 		  disk_label=$(fdisk -l $hdd | grep -i "disklabel type" | tr -d ' ' | awk -F ':' '{print $2}')
@@ -302,7 +302,7 @@ function get_hard_drives()
 		done
 	  else #deploy
 	    #When deploying it is very possible the hard drive won't have a disk label so don't use the method used for uploads
-	    all_hard_drives=`lsblk -ipdno KNAME | grep -v boot`
+	    all_hard_drives=`lsblk -ipdno KNAME | grep -v boot | grep -v rpmb`
 		for hdd in $all_hard_drives; do
 		  #Exclude usb drive
 		  drive_name=$(echo "$hdd" | sed 's/\/dev\//''/g')
