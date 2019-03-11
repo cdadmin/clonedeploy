@@ -68,7 +68,31 @@ namespace CloneDeploy_Web.views.login
                         Value = "--interface " + txtServerIP.Text,
                         Id = Call.SettingApi.GetSetting("Sender Args").Id
                     });
-                
+
+                if (Environment.OSVersion.ToString().Contains("Unix"))
+                {
+                    string dist = null;
+                    var distInfo = new ProcessStartInfo
+                    {
+                        UseShellExecute = false,
+                        FileName = "uname",
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true
+                    };
+
+                    using (var process = Process.Start(distInfo))
+                        if (process != null) dist = process.StandardOutput.ReadToEnd();
+
+                    if(dist.ToLower().Contains("bsd"))
+                    {
+                        listSettings.Add(new SettingEntity
+                        {
+                            Name = SettingStrings.WebPath,
+                            Value = "http://[server-ip]/",
+                            Id = Call.SettingApi.GetSetting(SettingStrings.WebPath).Id
+                        });
+                    }
+                }
 
                 Call.SettingApi.UpdateSettings(listSettings);
 

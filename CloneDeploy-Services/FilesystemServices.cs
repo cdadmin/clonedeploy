@@ -66,8 +66,6 @@ namespace CloneDeploy_Services
 
                 if (Directory.Exists(dp.PhysicalPath))
                 {
-                    //mono debugging
-                    log.Info(dp.PhysicalPath + "Exists");
                     ulong freespace = 0;
                     ulong total = 0;
 
