@@ -176,11 +176,7 @@ namespace CloneDeploy_Services.Workflows
         private void CreateIpxeMenu()
         {
             var replacedPath = _webPath;
-            if (SettingServices.GetSettingValue(SettingStrings.IpxeSSL).Equals("1"))
-            {
-                replacedPath = replacedPath.ToLower().Replace("http", "https");
-            }
-            else
+            if (SettingServices.GetSettingValue(SettingStrings.IpxeSSL).Equals("0"))
             {
                 replacedPath = replacedPath.ToLower().Replace("https", "http");
             }
